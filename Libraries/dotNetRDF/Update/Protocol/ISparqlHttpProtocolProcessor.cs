@@ -25,11 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #if !NO_ASP
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Net;
 using VDS.RDF.Web;
 
 namespace VDS.RDF.Update.Protocol

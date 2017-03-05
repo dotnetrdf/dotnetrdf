@@ -26,12 +26,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Newtonsoft.Json.Linq;
 #if SILVERLIGHT && !WINDOWS_PHONE && !NETCORE
 using System.ComponentModel.DataAnnotations;
 #endif
-using System.Linq;
-using System.Text;
-using Newtonsoft.Json.Linq;
 
 namespace VDS.RDF.Storage.Management.Provisioning.Stardog
 {

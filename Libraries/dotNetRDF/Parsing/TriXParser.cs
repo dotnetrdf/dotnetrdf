@@ -27,16 +27,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //#define NO_XMLDOM
 
 using System;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.IO;
 using System.Xml;
-#if !NO_XSL
-using System.Xml.Xsl;
-#endif
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing;
+#if !NO_XSL
+using System.Xml.Xsl;
+#endif
 
 namespace VDS.RDF.Parsing
 {

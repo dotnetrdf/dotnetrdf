@@ -26,11 +26,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if !NO_COMPRESSION
 
 using System;
-using System.Collections.Generic;
-using System.IO.Compression;
 using System.IO;
-using System.Linq;
-using System.Text;
+using System.IO.Compression;
 using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Parsing

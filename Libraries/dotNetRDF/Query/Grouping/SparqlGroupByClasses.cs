@@ -29,7 +29,6 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
-using VDS.RDF.Query.Filters;
 
 namespace VDS.RDF.Query.Grouping
 {

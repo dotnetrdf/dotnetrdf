@@ -32,6 +32,7 @@ using System.Reflection;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Operators;
+
 #if !NO_SYSTEMCONFIGURATION
 using SysConfig = System.Configuration;
 #endif

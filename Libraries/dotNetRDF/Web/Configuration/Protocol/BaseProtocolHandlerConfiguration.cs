@@ -26,9 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if !NO_ASP
 
 using System;
-using System.Collections.Generic;
 using VDS.RDF.Configuration;
-using VDS.RDF.Configuration.Permissions;
 using VDS.RDF.Update.Protocol;
 
 namespace VDS.RDF.Web.Configuration.Protocol

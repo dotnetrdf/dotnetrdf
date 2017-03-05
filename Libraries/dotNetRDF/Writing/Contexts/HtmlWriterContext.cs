@@ -24,14 +24,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
+using VDS.RDF.Writing.Formatting;
 #if !NO_WEB
 using System.Web.UI;
 #endif
-using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing.Contexts
 {

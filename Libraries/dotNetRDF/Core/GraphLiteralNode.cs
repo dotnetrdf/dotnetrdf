@@ -28,12 +28,13 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-#if !SILVERLIGHT
-using VDS.RDF.Writing.Serialization;
-#endif
+using VDS.RDF.Nodes;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
-using VDS.RDF.Nodes;
+using VDS.RDF.Writing.Serialization;
+
+#if !SILVERLIGHT
+#endif
 
 namespace VDS.RDF
 {

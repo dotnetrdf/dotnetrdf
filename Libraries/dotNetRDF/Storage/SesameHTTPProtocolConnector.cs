@@ -31,18 +31,16 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-#if !NO_WEB
-using System.Web;
-#endif
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Storage.Management;
-using VDS.RDF.Storage.Management.Provisioning;
-using VDS.RDF.Storage.Management.Provisioning.Sesame;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
+#if !NO_WEB
+using System.Web;
+#endif
 
 namespace VDS.RDF.Storage
 {

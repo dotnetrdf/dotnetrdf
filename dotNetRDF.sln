@@ -6,15 +6,18 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8AF0B3BE-7B01-45FF-8EA5-CCF0C596F7E7}"
 	ProjectSection(SolutionItems) = preProject
 		appveyor.yml = appveyor.yml
+		dotnetrdf.ruleset = dotnetrdf.ruleset
 		Build\dotNetRDF.snk = Build\dotNetRDF.snk
 		dotNetRDF.vsmdi = dotNetRDF.vsmdi
 		global.json = global.json
+		stylecop.json = stylecop.json
 		Todo.txt = Todo.txt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{3CDA014A-AA30-48E7-84C6-44BA1AA0C7DD}"
 	ProjectSection(SolutionItems) = preProject
 		Build\Build and Release Process.txt = Build\Build and Release Process.txt
+		stylecop.json = stylecop.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{05FF69EA-EC65-4CD6-AC82-12D110E6D626}"

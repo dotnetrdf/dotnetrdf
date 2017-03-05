@@ -27,8 +27,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Nodes;
-using VDS.RDF.Query.Operators.Numeric;
 using VDS.RDF.Query.Operators.DateTime;
+using VDS.RDF.Query.Operators.Numeric;
 
 namespace VDS.RDF.Query.Operators
 {

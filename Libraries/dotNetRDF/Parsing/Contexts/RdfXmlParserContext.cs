@@ -26,12 +26,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Xml;
-using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Parsing.Events;
 using VDS.RDF.Parsing.Events.RdfXml;
+using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Parsing.Contexts
 {

@@ -25,16 +25,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
-#if !SILVERLIGHT
 using VDS.RDF.Writing.Serialization;
+
+#if !SILVERLIGHT
+
 #endif
 
 namespace VDS.RDF

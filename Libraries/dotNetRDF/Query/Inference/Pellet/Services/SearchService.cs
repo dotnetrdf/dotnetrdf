@@ -28,12 +28,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
+using Newtonsoft.Json.Linq;
 #if !NO_WEB
 using System.Web;
 #endif
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace VDS.RDF.Query.Inference.Pellet.Services
 {

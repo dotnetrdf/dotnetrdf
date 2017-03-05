@@ -24,17 +24,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Xml;
-#if !NO_WEB
-using System.Web;
-#endif
 using VDS.RDF.Parsing.Contexts;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
+#if !NO_WEB
+using System.Web;
+#endif
 
 namespace VDS.RDF.Parsing
 {

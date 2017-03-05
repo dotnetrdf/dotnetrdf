@@ -26,11 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using VDS.Common;
-using VDS.RDF.Query.Expressions;
-using VDS.RDF.Nodes;
-using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
 {

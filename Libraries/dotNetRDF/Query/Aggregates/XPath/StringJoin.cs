@@ -27,9 +27,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Expressions;
-using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Aggregates.XPath

@@ -24,12 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.Net;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;

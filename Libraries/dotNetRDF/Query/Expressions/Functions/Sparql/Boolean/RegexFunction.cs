@@ -26,8 +26,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
 {

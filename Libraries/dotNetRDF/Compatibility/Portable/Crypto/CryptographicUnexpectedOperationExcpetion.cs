@@ -27,10 +27,6 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System.Globalization;
-using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
-
 namespace System.Security.Cryptography {
 
 	public class CryptographicUnexpectedOperationException : CryptographicException {

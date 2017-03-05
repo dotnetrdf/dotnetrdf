@@ -32,14 +32,7 @@
 
 #if !FULL_AOT_RUNTIME
 
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
 
 namespace System.Security.Cryptography {
 

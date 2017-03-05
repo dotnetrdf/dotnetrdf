@@ -25,23 +25,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
+using VDS.RDF.Parsing;
+using VDS.RDF.Query.Algebra;
+using VDS.RDF.Writing;
+using VDS.RDF.Writing.Serialization;
 #if !NO_DATA
 using System.Data;
 #endif
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Xml;
-using System.Xml.Serialization;
-using System.Xml.Schema;
-using VDS.RDF.Parsing;
-using VDS.RDF.Query.Aggregates;
-using VDS.RDF.Query.Algebra;
-using VDS.RDF.Query.Patterns;
-using VDS.RDF.Writing;
 #if !SILVERLIGHT
-using VDS.RDF.Writing.Serialization;
+
 #endif
 
 namespace VDS.RDF.Query

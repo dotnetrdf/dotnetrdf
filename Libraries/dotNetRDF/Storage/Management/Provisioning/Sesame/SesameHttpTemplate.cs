@@ -24,11 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using VDS.RDF;
 
 namespace VDS.RDF.Storage.Management.Provisioning.Sesame
 {

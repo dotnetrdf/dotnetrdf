@@ -7,7 +7,11 @@
 
   "dependencies": {
     "Newtonsoft.Json": "9.0.1",
-    "VDS.Common": "1.7.0"
+    "VDS.Common": "1.7.0",
+    "StyleCop.Analyzers": {
+      "version": "1.0.0",
+      "type": "build"
+    }
   },
   "tools": {
     "dotnet-version": "1.1.0"
@@ -167,7 +171,8 @@
     "embed": [
       "Configuration/configuration.ttl"
     ],
-    "xmlDoc": true
+    "xmlDoc": true,
+    "additionalArguments": [ "/ruleset:../../dotnetrdf.ruleset", "/additionalfile:../../stylecop.json" ]
   }
 
 }

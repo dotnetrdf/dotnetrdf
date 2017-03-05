@@ -36,8 +36,8 @@ using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
-using VDS.RDF.Update;
 using VDS.RDF.Storage.Management;
+using VDS.RDF.Update;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Storage

@@ -25,10 +25,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 #if !NO_DATA
 using System.Data;
 #endif
-using System.Xml.Serialization;
 
 namespace VDS.RDF
 {

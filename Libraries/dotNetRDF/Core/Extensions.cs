@@ -28,13 +28,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Security.Cryptography;
+using System.Text;
 using System.Xml;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
-using VDS.RDF.Query.Expressions.Functions.Leviathan.Hash;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF

@@ -27,11 +27,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Query.Algebra;
-using VDS.RDF.Query.Expressions;
-using VDS.RDF.Query.Expressions.Functions;
-using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
-using VDS.RDF.Query.Expressions.Comparison;
-using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Update;
 

@@ -33,7 +33,6 @@ using System.Net;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
-using System.Web;
 using VDS.RDF.Configuration.Permissions;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;

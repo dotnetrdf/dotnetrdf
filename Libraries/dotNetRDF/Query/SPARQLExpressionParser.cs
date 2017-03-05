@@ -28,20 +28,16 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Contexts;
 using VDS.RDF.Parsing.Tokens;
-using VDS.RDF.Query.Aggregates.Sparql;
 using VDS.RDF.Query.Aggregates.Leviathan;
-using VDS.RDF.Query.Patterns;
+using VDS.RDF.Query.Aggregates.Sparql;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Arithmetic;
 using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Conditional;
-using VDS.RDF.Nodes;
-using VDS.RDF.Query.Expressions.Primary;
-using VDS.RDF.Query.Expressions.Functions;
 using VDS.RDF.Query.Expressions.Functions.Sparql;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Constructor;
@@ -50,6 +46,7 @@ using VDS.RDF.Query.Expressions.Functions.Sparql.Hash;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Numeric;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Set;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;
+using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query
 {

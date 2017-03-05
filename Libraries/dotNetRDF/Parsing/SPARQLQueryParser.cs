@@ -39,8 +39,8 @@ using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Grouping;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Ordering;
-using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.Paths;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Parsing
 {

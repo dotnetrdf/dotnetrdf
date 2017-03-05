@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if !NO_ASP
 
 using System;
-using System.Web;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Web.Configuration.Protocol;

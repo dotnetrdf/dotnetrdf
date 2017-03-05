@@ -24,6 +24,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using VDS.RDF.Query;
+using VDS.RDF.Query.Datasets;
+using VDS.RDF.Storage;
+using VDS.RDF.Update;
+using VDS.RDF.Update.Protocol;
+
 /*
 
 Copyright Robert Vesse 2009-10
@@ -58,13 +64,6 @@ us at the above stated email address to discuss alternative
 terms.
 
 */
-
-using VDS.RDF.Query;
-using VDS.RDF.Query.Datasets;
-using VDS.RDF.Query.Inference.Pellet;
-using VDS.RDF.Storage;
-using VDS.RDF.Update;
-using VDS.RDF.Update.Protocol;
 
 namespace VDS.RDF.Configuration
 {

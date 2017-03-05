@@ -27,8 +27,9 @@
         "Core/ObjectPropertiesGetter.cs",
         "Core/SPINUtil.cs",
         "Util/DatasetUtil.cs"
-      ] 
-    }
+      ]
+    },
+    "xmlDoc": true
   }
 
 }

@@ -24,10 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Security.Cryptography;
+using System.Text;
 using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash

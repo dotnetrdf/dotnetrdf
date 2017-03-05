@@ -24,14 +24,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Reflection;
 using System.Runtime.Serialization;
 using System.Xml;
-using System.Xml.Schema;
 using System.Xml.Serialization;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
-using VDS.RDF.Nodes;
 
 namespace VDS.RDF
 {

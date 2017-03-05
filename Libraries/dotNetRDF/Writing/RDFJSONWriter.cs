@@ -25,11 +25,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.IO;
 using Newtonsoft.Json;
-using VDS.RDF.Query;
 
 namespace VDS.RDF.Writing
 {

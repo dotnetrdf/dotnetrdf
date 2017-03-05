@@ -28,14 +28,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-#if !NO_WEB
-using System.Web;
-#endif
-using System.Threading;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing;
+#if !NO_WEB
+using System.Web;
+#endif
 
 namespace VDS.RDF.Storage
 {
@@ -47,7 +46,7 @@ namespace VDS.RDF.Storage
     /// The <a href="http://www.w3.org/TR/sparql11-http-rdf-update/">SPARQL Graph Store HTTP Protocol</a> is defined as part of SPARQL 1.1 and is currently a working draft so implementations are not guaranteed to be fully compliant with the draft and the protocol may change in the future.
     /// </para>
     /// <para>
-    /// <strong>Note:</strong> While this connector supports the update of a Graph the Graph Store HTTP Protocol only allows for the addition of data to an existing Graph and not the removal of data, therefore any calls to <see cref="SparqlHttpProtocolConnector.UpdateGraph(Uri,IEnumerable{Triple},IEnumerable{Triple})">UpdateGraph()</see> that would require the removal of Triple(s) will result in an error.
+    /// <strong>Note:</strong> While this connector supports the update of a Graph the Graph Store HTTP Protocol only allows for the addition of data to an existing Graph and not the removal of data, therefore any calls to <see cref="SparqlHttpProtocolConnector.UpdateGraph(Uri,System.Collections.Generic.IEnumerable{VDS.RDF.Triple},IEnumerable{Triple})">UpdateGraph()</see> that would require the removal of Triple(s) will result in an error.
     /// </para>
     /// </remarks>
     public class SparqlHttpProtocolConnector 

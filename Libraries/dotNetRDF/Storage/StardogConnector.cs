@@ -32,15 +32,15 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-#if !NO_WEB
-using System.Web;
-#endif
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Storage.Management;
 using VDS.RDF.Writing;
+#if !NO_WEB
+using System.Web;
+#endif
 
 namespace VDS.RDF.Storage
 {
@@ -511,7 +511,7 @@ namespace VDS.RDF.Storage
         /// <param name="g">Graph to save</param>
         /// <remarks>
         /// <para>
-        /// If the Graph has no URI then the contents will be appended to the Store's Default Graph.  If the Graph has a URI then existing Graph associated with that URI will be replaced.  To append to a named Graph use the <see cref="StardogConnector.UpdateGraph(Uri,IEnumerable{Triple},IEnumerable{Triple})">UpdateGraph()</see> method instead
+        /// If the Graph has no URI then the contents will be appended to the Store's Default Graph.  If the Graph has a URI then existing Graph associated with that URI will be replaced.  To append to a named Graph use the <see cref="StardogConnector.UpdateGraph(Uri,System.Collections.Generic.IEnumerable{VDS.RDF.Triple},IEnumerable{Triple})">UpdateGraph()</see> method instead
         /// </para>
         /// </remarks>
         public virtual void SaveGraph(IGraph g)

@@ -28,11 +28,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 //This code originally contributed by Peter Kahle as part of his Windows Phone 7 porting efforts
 
-using System.Linq;
-using VDS.RDF.Parsing.Tokens;
 #if WINDOWS_PHONE
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace VDS.RDF
 {

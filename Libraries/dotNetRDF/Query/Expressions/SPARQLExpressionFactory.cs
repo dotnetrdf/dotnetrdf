@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Expressions.Functions;
 using VDS.RDF.Query.Expressions.Functions.XPath.Cast;
@@ -38,7 +37,7 @@ namespace VDS.RDF.Query.Expressions
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Allows for users of the Library to implement and register Custom Expression Factories which can generate Expressions for their own Extension functions which they wish to use in their SPARQL queries.   Custom factories may be globally scoped by registering them with the <see cref="SparqlExpressionFactory.AddCustomFactory">AddCustomFactory()</see> method or locally by passing them to the three argument constructor of the <see cref="SparqlExpressionFactory.CreateExpression(Uri, List{ISparqlExpression}, IEnumerable{ISparqlCustomExpressionFactory})">CreateExpression()</see> method.
+    /// Allows for users of the Library to implement and register Custom Expression Factories which can generate Expressions for their own Extension functions which they wish to use in their SPARQL queries.   Custom factories may be globally scoped by registering them with the <see cref="SparqlExpressionFactory.AddCustomFactory">AddCustomFactory()</see> method or locally by passing them to the three argument constructor of the <see cref="SparqlExpressionFactory.CreateExpression(Uri, System.Collections.Generic.List{VDS.RDF.Query.Expressions.ISparqlExpression}, IEnumerable{ISparqlCustomExpressionFactory})">CreateExpression()</see> method.
     /// </para>
     /// </remarks>
     public static class SparqlExpressionFactory

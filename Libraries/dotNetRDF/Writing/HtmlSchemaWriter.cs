@@ -28,13 +28,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-#if !NO_WEB
-using System.Web.UI;
-#endif
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Contexts;
 using VDS.RDF.Writing.Formatting;
+#if !NO_WEB
+using System.Web.UI;
+#endif
 
 //TODO: Embed RDFa in the HTML Output
 

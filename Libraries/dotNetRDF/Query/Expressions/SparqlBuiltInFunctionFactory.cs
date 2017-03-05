@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Aggregates.Sparql;
 using VDS.RDF.Query.Expressions.Functions.Sparql;
@@ -35,7 +34,6 @@ using VDS.RDF.Query.Expressions.Functions.Sparql.Constructor;
 using VDS.RDF.Query.Expressions.Functions.Sparql.DateTime;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Hash;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Numeric;
-using VDS.RDF.Query.Expressions.Functions.Sparql.Set;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;
 using VDS.RDF.Query.Expressions.Primary;
 

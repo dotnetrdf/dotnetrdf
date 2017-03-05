@@ -32,11 +32,12 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using VDS.Common.Collections;
-using VDS.RDF.Parsing;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Writing.Formatting;
-#if !SILVERLIGHT
 using VDS.RDF.Writing.Serialization;
+
+#if !SILVERLIGHT
+
 #endif
 
 namespace VDS.RDF.Query

@@ -27,9 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Query.Builder.Expressions;
-using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Ordering;
-using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
 {

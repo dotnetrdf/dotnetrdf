@@ -27,11 +27,8 @@ using System;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
-using System.Xml.Schema;
 using System.Xml.Serialization;
 using VDS.RDF.Parsing;
-using System.Threading;
-using System.Globalization;
 
 namespace VDS.RDF
 {

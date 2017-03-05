@@ -29,10 +29,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading;
-#if !NO_WEB
-using System.Web;
-#endif
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
@@ -40,6 +36,9 @@ using VDS.RDF.Query;
 using VDS.RDF.Update;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
+#if !NO_WEB
+using System.Web;
+#endif
 
 namespace VDS.RDF.Storage
 {

@@ -30,14 +30,14 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-#if !NO_WEB
-using System.Web;
-#endif
 using Newtonsoft.Json.Linq;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage.Management.Provisioning;
 using VDS.RDF.Storage.Management.Provisioning.Stardog;
+#if !NO_WEB
+using System.Web;
+#endif
 
 namespace VDS.RDF.Storage.Management
 {

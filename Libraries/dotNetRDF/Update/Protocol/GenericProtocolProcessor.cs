@@ -27,10 +27,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
+using System.Linq;
 using System.Net;
-using System.Web;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
@@ -88,7 +87,7 @@ namespace VDS.RDF.Update.Protocol
         /// <strong>Warning: </strong> If the underlying <see cref="IStorageProvider">IStorageProvider</see> is read-only then this operation returns a 403 Forbidden.
         /// </para>
         /// <para>
-        /// Otherwise this is implemented using <see cref="IStorageProvider.UpdateGraph(Uri,IEnumerable{Triple},IEnumerable{Triple})">UpdateGraph()</see> if updates are supported, if not then the Graph has to be loaded, the POSTed data merged into it and then the Graph is saved again.
+        /// Otherwise this is implemented using <see cref="IStorageProvider.UpdateGraph(Uri,System.Collections.Generic.IEnumerable{VDS.RDF.Triple},IEnumerable{Triple})">UpdateGraph()</see> if updates are supported, if not then the Graph has to be loaded, the POSTed data merged into it and then the Graph is saved again.
         /// </para>
         /// </remarks>
         public override void ProcessPost(IHttpContext context)

@@ -27,14 +27,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using VDS.RDF.Query.Expressions;
 using VDS.RDF.Nodes;
-using VDS.RDF.Query.Filters;
+using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Optimisation;
-using VDS.RDF.Query.Ordering;
 using VDS.RDF.Query.Patterns;
-using VDS.RDF.Update;
 
 namespace VDS.RDF.Query.Algebra
 {

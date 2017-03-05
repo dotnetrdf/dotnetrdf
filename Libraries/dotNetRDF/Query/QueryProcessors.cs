@@ -25,14 +25,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using VDS.RDF.Parsing.Handlers;
-using VDS.RDF.Query.Algebra;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
     /// <summary>
-    /// A SPARQL Query Processor where the query is processed by passing it to the <see cref="INativelyQueryableStore.ExecuteQuery(String)">ExecuteQuery()</see> method of an <see cref="INativelyQueryableStore">INativelyQueryableStore</see>
+    /// A SPARQL Query Processor where the query is processed by passing it to the <see cref="INativelyQueryableStore.ExecuteQuery(string)">ExecuteQuery()</see> method of an <see cref="INativelyQueryableStore">INativelyQueryableStore</see>
     /// </summary>
     public class SimpleQueryProcessor 
         : ISparqlQueryProcessor

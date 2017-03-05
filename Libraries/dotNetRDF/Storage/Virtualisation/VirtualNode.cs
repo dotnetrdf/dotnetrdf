@@ -27,13 +27,11 @@ using System;
 using System.Runtime.Serialization;
 using System.Xml;
 using System.Xml.Schema;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
-using VDS.RDF.Nodes;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
-using System.Globalization;
-using System.Threading;
 
 namespace VDS.RDF.Storage.Virtualisation
 {

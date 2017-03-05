@@ -28,11 +28,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define NO_XMLDOM
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
 using System.Xml;
-using System.IO;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 

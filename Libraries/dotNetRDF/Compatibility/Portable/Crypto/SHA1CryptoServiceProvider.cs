@@ -35,8 +35,6 @@
 // Mono must provide those two class for binary compatibility.
 // In our case both class are wrappers around a managed internal class SHA1Internal.
 
-using System.Runtime.InteropServices;
-
 namespace System.Security.Cryptography {
 
 	internal class SHA1Internal {

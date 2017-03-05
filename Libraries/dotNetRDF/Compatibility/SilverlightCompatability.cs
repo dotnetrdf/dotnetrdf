@@ -25,16 +25,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading;
+using VDS.RDF.Parsing;
+using VDS.RDF.Query;
 #if !NO_HTMLAGILITYPACK
 using HtmlAgilityPack;
 #endif
-using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 
 namespace VDS.RDF
 {

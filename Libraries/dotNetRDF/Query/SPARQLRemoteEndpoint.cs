@@ -25,18 +25,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security;
 using System.Text;
-using System.Net;
-using System.IO;
-using System.Threading;
-#if !NO_WEB
-using System.Web;
-#endif
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
+#if !NO_WEB
+using System.Web;
+#endif
 
 namespace VDS.RDF.Query
 {

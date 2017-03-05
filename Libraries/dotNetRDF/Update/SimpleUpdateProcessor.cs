@@ -29,7 +29,7 @@ using VDS.RDF.Update.Commands;
 namespace VDS.RDF.Update
 {
     /// <summary>
-    /// SPARQL Update Processor which processes updates by handing them off to the <see cref="IUpdateableTripleStore.ExecuteUpdate(String)">ExecuteUpdate()</see> method of an <see cref="IUpdateableTripleStore">IUpdateableTripleStore</see>
+    /// SPARQL Update Processor which processes updates by handing them off to the <see cref="IUpdateableTripleStore.ExecuteUpdate(string)">ExecuteUpdate()</see> method of an <see cref="IUpdateableTripleStore">IUpdateableTripleStore</see>
     /// </summary>
     public class SimpleUpdateProcessor : ISparqlUpdateProcessor
     {

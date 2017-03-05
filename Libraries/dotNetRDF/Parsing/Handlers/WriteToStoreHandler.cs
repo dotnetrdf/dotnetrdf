@@ -26,13 +26,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
-    /// A RDF Handler which writes the Triples being parsed directly to a <see cref="IStorageProvider">IStorageProvider</see> in batches provided the manager supports the <see cref="IStorageProvider.UpdateGraph(Uri,IEnumerable{Triple},IEnumerable{Triple})">UpdateGraph()</see> method
+    /// A RDF Handler which writes the Triples being parsed directly to a <see cref="IStorageProvider">IStorageProvider</see> in batches provided the manager supports the <see cref="IStorageProvider.UpdateGraph(Uri,System.Collections.Generic.IEnumerable{VDS.RDF.Triple},IEnumerable{Triple})">UpdateGraph()</see> method
     /// </summary>
     public class WriteToStoreHandler
         : BaseRdfHandler

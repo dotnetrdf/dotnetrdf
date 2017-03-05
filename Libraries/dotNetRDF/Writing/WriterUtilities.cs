@@ -28,7 +28,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 using VDS.RDF.Writing.Contexts;
 
 namespace VDS.RDF.Writing

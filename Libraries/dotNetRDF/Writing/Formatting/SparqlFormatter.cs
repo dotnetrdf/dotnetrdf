@@ -32,7 +32,6 @@ using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Aggregates;
 using VDS.RDF.Query.Expressions;
-using VDS.RDF.Query.Expressions.Functions;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Grouping;

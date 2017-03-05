@@ -24,15 +24,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
-using VDS.RDF.Query.Describe;
 using VDS.RDF.Query.Datasets;
+using VDS.RDF.Query.Describe;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query

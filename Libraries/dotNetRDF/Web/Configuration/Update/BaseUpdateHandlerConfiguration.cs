@@ -26,10 +26,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if !NO_ASP
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using VDS.RDF.Configuration;
-using VDS.RDF.Configuration.Permissions;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Update;
 
