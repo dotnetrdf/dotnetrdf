@@ -627,5 +627,22 @@ namespace VDS.RDF.Query.Builder
             Assert.That(union.IsUnion, Is.False);
             Assert.That(union.TriplePatterns, Has.Count.EqualTo(1));
         }
+
+        [Test]
+        public void CanBuildSelectSumWithGrouping()
+        {
+            // given
+            var o = new VariableTerm("o");
+
+            // when
+            var query = QueryBuilder.Select(ex => ex.Sum(o)).As("sum")
+                .Where(BuildSPOPattern)
+                .GroupBy("s")
+                .BuildQuery();
+
+            // then
+            Assert.That(query.Variables, Has.Count.EqualTo(1));
+            Assert.That(query.GroupBy.Variables.Count(), Is.EqualTo(1));
+        }
     }
 }
