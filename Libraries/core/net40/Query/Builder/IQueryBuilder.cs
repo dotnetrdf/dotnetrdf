@@ -67,6 +67,10 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         IQueryBuilder OrderByDescending(Func<ExpressionBuilder, SparqlExpression> buildOrderExpression);
         /// <summary>
+        /// Adds a GROUP BY clause to the query.
+        /// </summary>
+        IQueryBuilder GroupBy(string variableName);
+        /// <summary>
         /// Builds and returns a <see cref="SparqlQuery"/>
         /// </summary>
         SparqlQuery BuildQuery();

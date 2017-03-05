@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Grouping;
 using VDS.RDF.Query.Ordering;
 using VDS.RDF.Query.Patterns;
 
@@ -48,6 +49,7 @@ namespace VDS.RDF.Query.Builder
         private DescribeGraphPatternBuilder _constructGraphPatternBuilder;
         private readonly SelectBuilder _selectBuilder;
         private readonly IList<Func<INamespaceMapper, ISparqlOrderBy>> _buildOrderings = new List<Func<INamespaceMapper, ISparqlOrderBy>>();
+        private readonly IList<Func<INamespaceMapper, ISparqlGroupBy>> _buildGroups = new List<Func<INamespaceMapper, ISparqlGroupBy>>();
         private readonly SparqlQueryType _sparqlQueryType;
         private int _queryLimit = -1;
         private int _queryOffset;
@@ -161,6 +163,15 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
+        /// Creates a new SELECT query which will return an aggregation
+        /// </summary>
+        public static IAssignmentVariableNamePart<ISelectBuilder> Select(Func<AggregateBuilder, AggregateExpression> buildAssignmentExpression)
+        {
+            SelectBuilder selectBuilder = (SelectBuilder)Select(new SparqlVariable[0]);
+            return new AggregateNameBuilder(selectBuilder, buildAssignmentExpression);
+        }
+
+        /// <summary>
         /// Creates a new query, which will DESCRIBE the given <paramref name="uris"/>
         /// </summary>
         public static IDescribeBuilder Describe(params Uri[] uris)
@@ -243,6 +254,12 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
+        public IQueryBuilder GroupBy(string variableName)
+        {
+            _buildGroups.Add(prefixes => new GroupByVariable(variableName));
+            return this;
+        }
+
         private void AppendOrdering(Func<ExpressionBuilder, SparqlExpression> orderExpression, bool descending)
         {
             _buildOrderings.Add(prefixes =>
@@ -283,6 +300,7 @@ namespace VDS.RDF.Query.Builder
             }
 
             BuildRootGraphPattern(query);
+            BuildGroupByClauses(query);
             BuildAndChainOrderings(query);
 
             query.NamespaceMap.Import(Prefixes);
@@ -326,6 +344,26 @@ namespace VDS.RDF.Query.Builder
             {
                 query.AddVariable(selectVariable);
             }
+        }
+
+        private void BuildGroupByClauses(SparqlQuery query)
+        {
+            ISparqlGroupBy rootGroup = null;
+            ISparqlGroupBy lastGroup = null;
+
+            foreach (var buildGroup in _buildGroups)
+            {
+                if (rootGroup == null)
+                {
+                    rootGroup = lastGroup = buildGroup(Prefixes);
+                }
+                else
+                {
+                    lastGroup.Child = buildGroup(Prefixes);
+                }
+            }
+
+            query.GroupBy = rootGroup;
         }
 
         private void BuildAndChainOrderings(SparqlQuery executableQuery)
