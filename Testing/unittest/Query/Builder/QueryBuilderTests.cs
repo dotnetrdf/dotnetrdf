@@ -643,8 +643,8 @@ namespace VDS.RDF.Query.Builder
                 .BuildQuery();
 
             // then
-            Assert.That(query.Variables, Has.Count.EqualTo(1));
-            Assert.That(query.GroupBy.Variables.Count(), Is.EqualTo(1));
+            Assert.That(query.Variables.Single().Name, Is.EqualTo("sum"));
+            Assert.That(query.GroupBy.Variables.Single(), Is.EqualTo("s"));
         }
     }
 }
