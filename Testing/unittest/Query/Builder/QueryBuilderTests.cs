@@ -27,6 +27,8 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query.Aggregates;
+using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;

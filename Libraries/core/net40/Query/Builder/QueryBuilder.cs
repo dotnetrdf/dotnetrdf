@@ -156,19 +156,10 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Creates a new SELECT query which will return an expression
         /// </summary>
-        public static IAssignmentVariableNamePart<ISelectBuilder> Select(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
+        public static IAssignmentVariableNamePart<ISelectBuilder> Select<TExpression>(Func<ExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression)
         {
             SelectBuilder selectBuilder = (SelectBuilder)Select(new SparqlVariable[0]);
-            return new SelectAssignmentVariableNamePart(selectBuilder, buildAssignmentExpression);
-        }
-
-        /// <summary>
-        /// Creates a new SELECT query which will return an aggregation
-        /// </summary>
-        public static IAssignmentVariableNamePart<ISelectBuilder> Select(Func<AggregateBuilder, AggregateExpression> buildAssignmentExpression)
-        {
-            SelectBuilder selectBuilder = (SelectBuilder)Select(new SparqlVariable[0]);
-            return new AggregateNameBuilder(selectBuilder, buildAssignmentExpression);
+            return new SelectAssignmentVariableNamePart<TExpression>(selectBuilder, buildAssignmentExpression);
         }
 
         /// <summary>

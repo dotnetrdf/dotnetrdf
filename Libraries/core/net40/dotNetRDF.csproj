@@ -137,8 +137,8 @@
     <Compile Include="Query\Algebra\PropertyFunction.cs" />
     <Compile Include="Query\Algebra\SetDistinctnessComparer.cs" />
     <Compile Include="Query\Algebra\Table.cs" />
+    <Compile Include="Query\Builder\ExpressionBuilderAggregateExtensions.cs" />
     <Compile Include="Query\Builder\Expressions\AggregateExpression.cs" />
-    <Compile Include="Query\Builder\AggregateNameBuilder.cs" />
     <Compile Include="Query\Builder\BindAssignmentVariableNamePart.cs" />
     <Compile Include="Query\Builder\DescribeBuilder.cs" />
     <Compile Include="Query\Builder\DescribeGraphPatternBuilder.cs" />
@@ -150,6 +150,7 @@
     <Compile Include="Query\Builder\ExpressionBuilderStringExtensions.cs" />
     <Compile Include="Query\Builder\Expressions\LiteralExpressionExtensions.cs" />
     <Compile Include="Query\Builder\Expressions\NumericExpression.cs" />
+    <Compile Include="Query\Builder\Expressions\PrimaryExpression.cs" />
     <Compile Include="Query\Builder\Expressions\VariableExpressionLiteralArithmeticOperators.cs" />
     <Compile Include="Query\Builder\Expressions\VariableExpressionLiteralComparisonOperators.cs" />
     <Compile Include="Query\Builder\Expressions\VariableExpressionLiteralExpressionOperators.cs" />

@@ -23,25 +23,23 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-
-namespace VDS.RDF.Query.Builder
+namespace VDS.RDF.Query.Builder.Expressions
 {
-    internal sealed class AggregateNameBuilder : IAssignmentVariableNamePart<ISelectBuilder>
+    /// <summary>
+    /// Represents a SPARQL expression (variable, function, operator, term or aggregate)
+    /// </summary>
+#pragma warning disable 660,661
+    public abstract class PrimaryExpression<TExpression>
+#pragma warning restore 660,661
     {
-        private readonly SelectBuilder _selectBuilder;
-        private readonly Func<AggregateBuilder, AggregateExpression> _buildAssignmentExpression;
-
-        public AggregateNameBuilder(SelectBuilder selectBuilder, Func<AggregateBuilder, AggregateExpression> buildAssignmentExpression)
+        internal PrimaryExpression(TExpression expression)
         {
-            _selectBuilder = selectBuilder;
-            _buildAssignmentExpression = buildAssignmentExpression;
+            Expression = expression;
         }
 
-        public ISelectBuilder As(string variableName)
-        {
-            _selectBuilder.And(mapper => new SparqlVariable(variableName, _buildAssignmentExpression(new AggregateBuilder()).Aggregate));
-            return _selectBuilder;
-        }
+        /// <summary>
+        /// The undelrying expression
+        /// </summary>
+        public TExpression Expression { get; set; }
     }
 }

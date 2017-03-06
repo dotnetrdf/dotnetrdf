@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Adds additional SELECT expression
         /// </summary>
-        IAssignmentVariableNamePart<ISelectBuilder> And(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression);
+        IAssignmentVariableNamePart<ISelectBuilder> And<TExpression>(Func<ExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression);
         /// <summary>
         /// Applies the DISTINCT modifier if the Query is a SELECT, otherwise leaves query unchanged (since results from any other query are DISTINCT by default)
         /// </summary>

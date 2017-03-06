@@ -25,8 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using VDS.RDF.Query.Builder.Expressions;
-using VDS.RDF.Query.Expressions;
-using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
 {
@@ -42,16 +40,16 @@ namespace VDS.RDF.Query.Builder
         T As(string variableName);
     }
 
-    internal abstract class AssignmentVariableNamePart
+    internal abstract class AssignmentVariableNamePart<TExpression>
     {
-        private readonly Func<ExpressionBuilder, SparqlExpression> _buildAssignmentExpression;
+        private readonly Func<ExpressionBuilder, PrimaryExpression<TExpression>> _buildAssignmentExpression;
 
-        protected AssignmentVariableNamePart(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
+        protected AssignmentVariableNamePart(Func<ExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression)
         {
             _buildAssignmentExpression = buildAssignmentExpression;
         }
 
-        protected ISparqlExpression BuildAssignmentExpression(INamespaceMapper prefixes)
+        protected TExpression BuildAssignmentExpression(INamespaceMapper prefixes)
         {
             var expressionBuilder = new ExpressionBuilder(prefixes);
             var assignment = _buildAssignmentExpression(expressionBuilder);

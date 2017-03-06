@@ -23,20 +23,25 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using VDS.RDF.Query.Aggregates;
+using VDS.RDF.Query.Aggregates.Sparql;
+using VDS.RDF.Query.Builder.Expressions;
+using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Builder.Expressions
+namespace VDS.RDF.Query.Builder
 {
     /// <summary>
-    /// Represents a SPARQL aggregate
+    /// Provides methods for creating aggregates expressions
     /// </summary>
-    public class AggregateExpression : PrimaryExpression<ISparqlAggregate>
+    public static class ExpressionBuilderAggregateExtensions
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AggregateExpression"/> class.
+        /// Creates a SUM aggregate
         /// </summary>
-        public AggregateExpression(ISparqlAggregate expression) : base(expression)
+        public static AggregateExpression Sum(this ExpressionBuilder builder, VariableTerm variable)
         {
+            var sumAggregate = new SumAggregate(variable);
+
+            return new AggregateExpression(sumAggregate);
         }
     }
 }
