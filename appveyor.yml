@@ -24,7 +24,7 @@ test_script:
 on_finish:
   - ps: $wc = New-Object 'System.Net.WebClient'
   - ps: $wc.UploadFile("https://ci.appveyor.com/api/testresults/nunit3/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestResult.xml))
+  - ps: Push-AppveyorArtifact .\TestResult.xml
 
 artifacts:
   - path: 'nugets\*.nupkg'
-  - path: 'TestResult.xml'
