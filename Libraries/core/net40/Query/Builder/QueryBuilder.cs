@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Grouping;
 using VDS.RDF.Query.Ordering;
 using VDS.RDF.Query.Patterns;
@@ -50,6 +51,7 @@ namespace VDS.RDF.Query.Builder
         private readonly SelectBuilder _selectBuilder;
         private readonly IList<Func<INamespaceMapper, ISparqlOrderBy>> _buildOrderings = new List<Func<INamespaceMapper, ISparqlOrderBy>>();
         private readonly IList<Func<INamespaceMapper, ISparqlGroupBy>> _buildGroups = new List<Func<INamespaceMapper, ISparqlGroupBy>>();
+        private readonly IList<Func<INamespaceMapper, ISparqlExpression>> _buildHavings = new List<Func<INamespaceMapper, ISparqlExpression>>();
         private readonly SparqlQueryType _sparqlQueryType;
         private int _queryLimit = -1;
         private int _queryOffset;
@@ -251,6 +253,12 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
+        public IQueryBuilder Having(Func<ExpressionBuilder, BooleanExpression> buildHavingConstraint)
+        {
+            _buildHavings.Add(prefixes => buildHavingConstraint(new ExpressionBuilder(prefixes)).Expression);
+            return this;
+        }
+
         private void AppendOrdering(Func<ExpressionBuilder, SparqlExpression> orderExpression, bool descending)
         {
             _buildOrderings.Add(prefixes =>
@@ -292,6 +300,7 @@ namespace VDS.RDF.Query.Builder
 
             BuildRootGraphPattern(query);
             BuildGroupByClauses(query);
+            BuildHavingClauses(query);
             BuildAndChainOrderings(query);
 
             query.NamespaceMap.Import(Prefixes);
@@ -355,6 +364,17 @@ namespace VDS.RDF.Query.Builder
             }
 
             query.GroupBy = rootGroup;
+        }
+
+        private void BuildHavingClauses(SparqlQuery query)
+        {
+            var filters = (from builder in _buildHavings
+                           select new UnaryExpressionFilter(builder(Prefixes))).ToList();
+
+            if (filters.Any())
+            {
+                query.Having = new ChainFilter(filters);
+            }
         }
 
         private void BuildAndChainOrderings(SparqlQuery executableQuery)

@@ -26,10 +26,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Linq;
 using NUnit.Framework;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Aggregates;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;
 using VDS.RDF.Query.Expressions.Primary;
@@ -645,6 +647,34 @@ namespace VDS.RDF.Query.Builder
             // then
             Assert.That(query.Variables.Single().Name, Is.EqualTo("sum"));
             Assert.That(query.GroupBy.Variables.Single(), Is.EqualTo("s"));
+        }
+
+        [Test]
+        public void CanBuildSelectSumWithHaving()
+        {
+            // given
+            var o = new VariableTerm("o");
+
+            // when
+            var query = QueryBuilder.Select(ex => ex.Sum(o)).As("sum")
+                .Where(BuildSPOPattern)
+                .Having(ex => ex.Variable("sum") > 10)
+                .BuildQuery();
+
+            // then
+            Assert.That(query.Having.Expression.ToString().Trim(), Is.EqualTo("?sum > 10"));
+        }
+
+        [Test]
+        public void WithoutCallingHavingItIsNullOnBuiltQuery()
+        {
+            // when
+            var query = QueryBuilder.Select("o")
+                .Where(BuildSPOPattern)
+                .BuildQuery();
+
+            // then
+            Assert.That(query.Having, Is.Null);
         }
     }
 }

@@ -3,7 +3,7 @@ dotNetRDF is free and open source software licensed under the MIT License
 
 -----------------------------------------------------------------------------
 
-Copyright (c) 2009-2013 dotNetRDF Project (dotnetrdf-developer@lists.sf.net)
+Copyright (c) 2009-2017 dotNetRDF Project
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -70,6 +70,10 @@ namespace VDS.RDF.Query.Builder
         /// Adds a GROUP BY clause to the query.
         /// </summary>
         IQueryBuilder GroupBy(string variableName);
+        /// <summary>
+        /// Adds a HAVING clause to the query.
+        /// </summary>
+        IQueryBuilder Having(Func<ExpressionBuilder, BooleanExpression> buildHavingConstraint);
         /// <summary>
         /// Builds and returns a <see cref="SparqlQuery"/>
         /// </summary>
