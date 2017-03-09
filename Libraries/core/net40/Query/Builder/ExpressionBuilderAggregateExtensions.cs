@@ -43,5 +43,23 @@ namespace VDS.RDF.Query.Builder
 
             return new AggregateExpression(sumAggregate);
         }
+
+        /// <summary>
+        /// Creates a SUM aggregate
+        /// </summary>
+        public static AggregateExpression Sum(this ExpressionBuilder builder, string variable)
+        {
+            return Sum(builder, new VariableTerm(variable));
+        }
+
+        /// <summary>
+        /// Creates a SUM aggregate
+        /// </summary>
+        public static AggregateExpression Sum(this ExpressionBuilder builder, SparqlExpression expression)
+        {
+            var sumAggregate = new SumAggregate(expression.Expression);
+
+            return new AggregateExpression(sumAggregate);
+        }
     }
 }

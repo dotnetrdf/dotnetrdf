@@ -27,8 +27,6 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Moq;
-using VDS.RDF.Query.Builder;
-using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Constructor;
@@ -616,6 +614,26 @@ namespace VDS.RDF.Query.Builder.Expressions
 
             // then
             Assert.IsNotNull(cast);
+        }
+
+        [Test]
+        public void CanBuildSumAggregateGivenVariableName()
+        {
+            // when
+            var sum = Builder.Sum("s");
+
+            // then
+            Assert.That(sum.Expression.ToString(), Is.EqualTo("SUM(?s)"));
+        }
+
+        [Test]
+        public void CanBuildSumAggregateGivenAnExpression()
+        {
+            // when
+            var sum = Builder.Sum(Builder.StrLen(Builder.Variable("x")));
+
+            // then
+            Assert.That(sum.Expression.ToString(), Is.EqualTo("SUM(STRLEN(?x))"));
         }
     }
 }
