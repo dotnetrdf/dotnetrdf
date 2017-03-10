@@ -137,7 +137,7 @@
     <Compile Include="Query\Algebra\PropertyFunction.cs" />
     <Compile Include="Query\Algebra\SetDistinctnessComparer.cs" />
     <Compile Include="Query\Algebra\Table.cs" />
-    <Compile Include="Query\Builder\ExpressionBuilderAggregateExtensions.cs" />
+    <Compile Include="Query\Builder\ExpressionBuilder.Aggregates.cs" />
     <Compile Include="Query\Builder\Expressions\AggregateExpression.cs" />
     <Compile Include="Query\Builder\BindAssignmentVariableNamePart.cs" />
     <Compile Include="Query\Builder\DescribeBuilder.cs" />
@@ -160,6 +160,7 @@
     <Compile Include="Query\Builder\GraphPatternBuilder.cs" />
     <Compile Include="Query\Builder\GraphPatternType.cs" />
     <Compile Include="Query\Builder\AssignmentVariableNamePart.cs" />
+    <Compile Include="Query\Builder\IAggregateBuilder.cs" />
     <Compile Include="Query\Builder\IDescribeGraphPatternBuilder.cs" />
     <Compile Include="Query\Builder\IDescribeBuilder.cs" />
     <Compile Include="Query\Builder\IGraphPatternBuilder.cs" />
@@ -172,7 +173,6 @@
     <Compile Include="Query\Builder\QueryBuilderExtensions.cs" />
     <Compile Include="Query\Builder\SelectAssignmentVariableNamePart.cs" />
     <Compile Include="Query\Builder\SelectBuilder.cs" />
-    <Compile Include="Query\Builder\SelectExpressionBuilder.cs" />
     <Compile Include="Query\Builder\SparqlCastBuilder.cs" />
     <Compile Include="Query\Builder\TriplePatternBuilder.cs" />
     <Compile Include="Query\Builder\TriplePatternObjectPart.cs" />

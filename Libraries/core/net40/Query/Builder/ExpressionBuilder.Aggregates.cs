@@ -29,19 +29,51 @@ using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Builder
 {
-    /// <summary>
-    /// Provides methods for building SPARQL aggregations
-    /// </summary>
-    public sealed class AggregateBuilder
+    public partial class ExpressionBuilder
     {
-        /// <summary>
-        /// Creates a SUM aggregate
-        /// </summary>
+        private bool _distinctAggregate;
+
+        public IAggregateBuilder Distinct => new ExpressionBuilder(Prefixes)
+        {
+            _distinctAggregate = true
+        };
+
         public AggregateExpression Sum(VariableTerm variable)
         {
-            var sumAggregate = new SumAggregate(variable);
+            var sumAggregate = new SumAggregate(variable, _distinctAggregate);
 
             return new AggregateExpression(sumAggregate);
+        }
+
+        public AggregateExpression Sum(string variable)
+        {
+            return Sum(new VariableTerm(variable));
+        }
+
+        public AggregateExpression Sum(SparqlExpression expression)
+        {
+            var sumAggregate = new SumAggregate(expression.Expression, _distinctAggregate);
+
+            return new AggregateExpression(sumAggregate);
+        }
+
+        public AggregateExpression Avg(VariableTerm variable)
+        {
+            var aggregate = new AverageAggregate(variable, _distinctAggregate);
+
+            return new AggregateExpression(aggregate);
+        }
+
+        public AggregateExpression Avg(string variable)
+        {
+            return Avg(new VariableTerm(variable));
+        }
+
+        public AggregateExpression Avg(SparqlExpression expression)
+        {
+            var aggregate = new AverageAggregate(expression.Expression, _distinctAggregate);
+
+            return new AggregateExpression(aggregate);
         }
     }
 }

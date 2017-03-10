@@ -637,6 +637,16 @@ namespace VDS.RDF.Query.Builder.Expressions
         }
 
         [Test]
+        public void CanBuildDisctinctSumAggregateGivenVariableName()
+        {
+            // when
+            var sum = Builder.Distinct.Sum("s");
+
+            // then
+            Assert.That(sum.Expression.ToString(), Is.EqualTo("SUM(DISTINCT ?s)"));
+        }
+
+        [Test]
         public void CanBuildAvgAggregateGivenVariableName()
         {
             // when
@@ -664,6 +674,16 @@ namespace VDS.RDF.Query.Builder.Expressions
 
             // then
             Assert.That(sum.Expression.ToString(), Is.EqualTo("AVG(STRLEN(?x))"));
+        }
+
+        [Test]
+        public void CanBuildDisctinctAvgAggregateGivenVariableName()
+        {
+            // when
+            var sum = Builder.Distinct.Avg("s");
+
+            // then
+            Assert.That(sum.Expression.ToString(), Is.EqualTo("AVG(DISTINCT ?s)"));
         }
     }
 }

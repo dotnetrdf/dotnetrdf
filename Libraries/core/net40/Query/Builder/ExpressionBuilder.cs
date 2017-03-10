@@ -33,7 +33,7 @@ namespace VDS.RDF.Query.Builder
     /// <summary>
     /// Provides methods for building SPARQL expressions
     /// </summary>
-    public class ExpressionBuilder
+    public partial class ExpressionBuilder : IAggregateBuilder
     {
         private readonly INamespaceMapper _prefixes;
 
