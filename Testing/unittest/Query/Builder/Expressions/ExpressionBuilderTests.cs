@@ -765,5 +765,35 @@ namespace VDS.RDF.Query.Builder.Expressions
             // then
             Assert.That(max.Expression.ToString(), Is.EqualTo("MAX(DISTINCT ?s)"));
         }
+
+        [Test]
+        public void CanBuildSampleAggregateGivenVariableName()
+        {
+            // when
+            var sample = Builder.Sample("s");
+
+            // then
+            Assert.That(sample.Expression.ToString(), Is.EqualTo("SAMPLE(?s)"));
+        }
+
+        [Test]
+        public void CanBuildSampleAggregateGivenVariable()
+        {
+            // when
+            var sample = Builder.Sample(new VariableTerm("s"));
+
+            // then
+            Assert.That(sample.Expression.ToString(), Is.EqualTo("SAMPLE(?s)"));
+        }
+
+        [Test]
+        public void CanBuildSampleAggregateGivenAnExpression()
+        {
+            // when
+            var sample = Builder.Sample(Builder.StrLen(Builder.Variable("x")));
+
+            // then
+            Assert.That(sample.Expression.ToString(), Is.EqualTo("SAMPLE(STRLEN(?x))"));
+        }
     }
 }

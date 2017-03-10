@@ -33,7 +33,7 @@ namespace VDS.RDF.Query.Builder
     {
         private bool _distinctAggregate;
 
-        public IAggregateBuilder Distinct => new ExpressionBuilder(Prefixes)
+        public IDistinctAggregateBuilder Distinct => new ExpressionBuilder(Prefixes)
         {
             _distinctAggregate = true
         };
@@ -110,6 +110,25 @@ namespace VDS.RDF.Query.Builder
         public AggregateExpression Max(SparqlExpression expression)
         {
             var aggregate = new MaxAggregate(expression.Expression, _distinctAggregate);
+
+            return new AggregateExpression(aggregate);
+        }
+
+        public AggregateExpression Sample(VariableTerm variable)
+        {
+            var aggregate = new SampleAggregate(variable);
+
+            return new AggregateExpression(aggregate);
+        }
+
+        public AggregateExpression Sample(string variable)
+        {
+            return Sample(new VariableTerm(variable));
+        }
+
+        public AggregateExpression Sample(SparqlExpression expression)
+        {
+            var aggregate = new SampleAggregate(expression.Expression);
 
             return new AggregateExpression(aggregate);
         }

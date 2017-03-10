@@ -163,6 +163,7 @@
     <Compile Include="Query\Builder\IAggregateBuilder.cs" />
     <Compile Include="Query\Builder\IDescribeGraphPatternBuilder.cs" />
     <Compile Include="Query\Builder\IDescribeBuilder.cs" />
+    <Compile Include="Query\Builder\IDistinctAggregateBuilder.cs" />
     <Compile Include="Query\Builder\IGraphPatternBuilder.cs" />
     <Compile Include="Query\Builder\ISelectBuilder.cs" />
     <Compile Include="Query\Builder\ITriplePatternBuilder.cs" />
