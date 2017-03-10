@@ -685,5 +685,85 @@ namespace VDS.RDF.Query.Builder.Expressions
             // then
             Assert.That(sum.Expression.ToString(), Is.EqualTo("AVG(DISTINCT ?s)"));
         }
+
+        [Test]
+        public void CanBuildMinAggregateGivenVariableName()
+        {
+            // when
+            var min = Builder.Min("s");
+
+            // then
+            Assert.That(min.Expression.ToString(), Is.EqualTo("MIN(?s)"));
+        }
+
+        [Test]
+        public void CanBuildMinAggregateGivenVariable()
+        {
+            // when
+            var min = Builder.Min(new VariableTerm("s"));
+
+            // then
+            Assert.That(min.Expression.ToString(), Is.EqualTo("MIN(?s)"));
+        }
+
+        [Test]
+        public void CanBuildMinAggregateGivenAnExpression()
+        {
+            // when
+            var min = Builder.Min(Builder.StrLen(Builder.Variable("x")));
+
+            // then
+            Assert.That(min.Expression.ToString(), Is.EqualTo("MIN(STRLEN(?x))"));
+        }
+
+        [Test]
+        public void CanBuildDisctinctMinAggregateGivenVariableName()
+        {
+            // when
+            var min = Builder.Distinct.Min("s");
+
+            // then
+            Assert.That(min.Expression.ToString(), Is.EqualTo("MIN(DISTINCT ?s)"));
+        }
+
+        [Test]
+        public void CanBuildMaxAggregateGivenVariableName()
+        {
+            // when
+            var max = Builder.Max("s");
+
+            // then
+            Assert.That(max.Expression.ToString(), Is.EqualTo("MAX(?s)"));
+        }
+
+        [Test]
+        public void CanBuildMaxAggregateGivenVariable()
+        {
+            // when
+            var max = Builder.Max(new VariableTerm("s"));
+
+            // then
+            Assert.That(max.Expression.ToString(), Is.EqualTo("MAX(?s)"));
+        }
+
+        [Test]
+        public void CanBuildMaxAggregateGivenAnExpression()
+        {
+            // when
+            var max = Builder.Max(Builder.StrLen(Builder.Variable("x")));
+
+            // then
+            Assert.That(max.Expression.ToString(), Is.EqualTo("MAX(STRLEN(?x))"));
+        }
+
+        [Test]
+        public void CanBuildDisctinctMaxAggregateGivenVariableName()
+        {
+            // when
+            var max = Builder.Distinct.Max("s");
+
+            // then
+            Assert.That(max.Expression.ToString(), Is.EqualTo("MAX(DISTINCT ?s)"));
+        }
     }
 }

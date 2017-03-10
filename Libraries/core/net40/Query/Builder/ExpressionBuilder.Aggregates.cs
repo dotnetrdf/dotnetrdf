@@ -75,5 +75,43 @@ namespace VDS.RDF.Query.Builder
 
             return new AggregateExpression(aggregate);
         }
+
+        public AggregateExpression Min(VariableTerm variable)
+        {
+            var aggregate = new MinAggregate(variable, _distinctAggregate);
+
+            return new AggregateExpression(aggregate);
+        }
+
+        public AggregateExpression Min(string variable)
+        {
+            return Min(new VariableTerm(variable));
+        }
+
+        public AggregateExpression Min(SparqlExpression expression)
+        {
+            var aggregate = new MinAggregate(expression.Expression, _distinctAggregate);
+
+            return new AggregateExpression(aggregate);
+        }
+
+        public AggregateExpression Max(VariableTerm variable)
+        {
+            var aggregate = new MaxAggregate(variable, _distinctAggregate);
+
+            return new AggregateExpression(aggregate);
+        }
+
+        public AggregateExpression Max(string variable)
+        {
+            return Max(new VariableTerm(variable));
+        }
+
+        public AggregateExpression Max(SparqlExpression expression)
+        {
+            var aggregate = new MaxAggregate(expression.Expression, _distinctAggregate);
+
+            return new AggregateExpression(aggregate);
+        }
     }
 }

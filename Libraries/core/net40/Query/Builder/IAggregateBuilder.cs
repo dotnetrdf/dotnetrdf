@@ -42,5 +42,35 @@ namespace VDS.RDF.Query.Builder
         /// Creates a AVG aggregate
         /// </summary>
         AggregateExpression Avg(SparqlExpression expression);
+
+        /// <summary>
+        /// Creates a MIN aggregate
+        /// </summary>
+        AggregateExpression Min(VariableTerm variable);
+
+        /// <summary>
+        /// Creates a MIN aggregate
+        /// </summary>
+        AggregateExpression Min(string variable);
+
+        /// <summary>
+        /// Creates a MIN aggregate
+        /// </summary>
+        AggregateExpression Min(SparqlExpression expression);
+
+        /// <summary>
+        /// Creates a MAX aggregate
+        /// </summary>
+        AggregateExpression Max(VariableTerm variable);
+
+        /// <summary>
+        /// Creates a MAX aggregate
+        /// </summary>
+        AggregateExpression Max(string variable);
+
+        /// <summary>
+        /// Creates a MAX aggregate
+        /// </summary>
+        AggregateExpression Max(SparqlExpression expression);
     }
 }
