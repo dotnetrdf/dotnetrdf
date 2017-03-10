@@ -61,5 +61,33 @@ namespace VDS.RDF.Query.Builder
 
             return new AggregateExpression(sumAggregate);
         }
+
+        /// <summary>
+        /// Creates a AVG aggregate
+        /// </summary>
+        public static AggregateExpression Avg(this ExpressionBuilder builder, VariableTerm variable)
+        {
+            var aggregate = new AverageAggregate(variable);
+
+            return new AggregateExpression(aggregate);
+        }
+
+        /// <summary>
+        /// Creates a AVG aggregate
+        /// </summary>
+        public static AggregateExpression Avg(this ExpressionBuilder builder, string variable)
+        {
+            return Avg(builder, new VariableTerm(variable));
+        }
+
+        /// <summary>
+        /// Creates a AVG aggregate
+        /// </summary>
+        public static AggregateExpression Avg(this ExpressionBuilder builder, SparqlExpression expression)
+        {
+            var aggregate = new AverageAggregate(expression.Expression);
+
+            return new AggregateExpression(aggregate);
+        }
     }
 }

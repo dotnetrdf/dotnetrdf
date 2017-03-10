@@ -635,5 +635,35 @@ namespace VDS.RDF.Query.Builder.Expressions
             // then
             Assert.That(sum.Expression.ToString(), Is.EqualTo("SUM(STRLEN(?x))"));
         }
+
+        [Test]
+        public void CanBuildAvgAggregateGivenVariableName()
+        {
+            // when
+            var sum = Builder.Avg("s");
+
+            // then
+            Assert.That(sum.Expression.ToString(), Is.EqualTo("AVG(?s)"));
+        }
+
+        [Test]
+        public void CanBuildAvgAggregateGivenVariable()
+        {
+            // when
+            var sum = Builder.Avg(new VariableTerm("s"));
+
+            // then
+            Assert.That(sum.Expression.ToString(), Is.EqualTo("AVG(?s)"));
+        }
+
+        [Test]
+        public void CanBuildAvgAggregateGivenAnExpression()
+        {
+            // when
+            var sum = Builder.Avg(Builder.StrLen(Builder.Variable("x")));
+
+            // then
+            Assert.That(sum.Expression.ToString(), Is.EqualTo("AVG(STRLEN(?x))"));
+        }
     }
 }
