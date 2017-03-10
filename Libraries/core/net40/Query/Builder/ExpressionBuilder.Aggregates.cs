@@ -114,6 +114,41 @@ namespace VDS.RDF.Query.Builder
             return new AggregateExpression(aggregate);
         }
 
+        public AggregateExpression GroupConcat(VariableTerm variable, string separator = " ")
+        {
+            GroupConcatAggregate aggregate;
+            if (separator != " ")
+            {
+                aggregate = new GroupConcatAggregate(variable, this.Constant(separator).Expression, _distinctAggregate);
+            }
+            else
+            {
+                aggregate = new GroupConcatAggregate(variable, _distinctAggregate);
+            }
+
+            return new AggregateExpression(aggregate);
+        }
+
+        public AggregateExpression GroupConcat(string variable, string separator = " ")
+        {
+            return GroupConcat(new VariableTerm(variable), separator);
+        }
+
+        public AggregateExpression GroupConcat(SparqlExpression expression, string separator = " ")
+        {
+            GroupConcatAggregate aggregate;
+            if (separator != " ")
+            {
+                aggregate = new GroupConcatAggregate(expression.Expression, this.Constant(separator).Expression, _distinctAggregate);
+            }
+            else
+            {
+                aggregate = new GroupConcatAggregate(expression.Expression, _distinctAggregate);
+            }
+
+            return new AggregateExpression(aggregate);
+        }
+
         public AggregateExpression Sample(VariableTerm variable)
         {
             var aggregate = new SampleAggregate(variable);

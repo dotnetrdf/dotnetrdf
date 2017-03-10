@@ -795,5 +795,75 @@ namespace VDS.RDF.Query.Builder.Expressions
             // then
             Assert.That(sample.Expression.ToString(), Is.EqualTo("SAMPLE(STRLEN(?x))"));
         }
+
+        [Test]
+        public void CanBuildGroupConcatAggregateGivenVariableName()
+        {
+            // when
+            var groupConcat = Builder.GroupConcat("s");
+
+            // then
+            Assert.That(groupConcat.Expression.ToString(), Is.EqualTo("GROUP_CONCAT(?s)"));
+        }
+
+        [Test]
+        public void CanBuildGroupConcatAggregateGivenVariable()
+        {
+            // when
+            var groupConcat = Builder.GroupConcat(new VariableTerm("s"));
+
+            // then
+            Assert.That(groupConcat.Expression.ToString(), Is.EqualTo("GROUP_CONCAT(?s)"));
+        }
+
+        [Test]
+        public void CanBuildGroupConcatAggregateGivenAnExpression()
+        {
+            // when
+            var groupConcat = Builder.GroupConcat(Builder.StrLen(Builder.Variable("x")));
+
+            // then
+            Assert.That(groupConcat.Expression.ToString(), Is.EqualTo("GROUP_CONCAT(STRLEN(?x))"));
+        }
+
+        [Test]
+        public void CanBuildDisctinctGroupConcatAggregateGivenVariableName()
+        {
+            // when
+            var groupConcat = Builder.Distinct.GroupConcat("s");
+
+            // then
+            Assert.That(groupConcat.Expression.ToString(), Is.EqualTo("GROUP_CONCAT(DISTINCT ?s)"));
+        }
+
+        [Test]
+        public void CanBuildGroupConcatAggregateGivenVariableNameWithSeparator()
+        {
+            // when
+            var groupConcat = Builder.GroupConcat("s", ", ");
+
+            // then
+            Assert.That(groupConcat.Expression.ToString(), Is.EqualTo("GROUP_CONCAT(?s ; SEPARATOR = \", \")"));
+        }
+
+        [Test]
+        public void CanBuildGroupConcatAggregateGivenVariableWithSeparator()
+        {
+            // when
+            var groupConcat = Builder.GroupConcat(new VariableTerm("s"), ", ");
+
+            // then
+            Assert.That(groupConcat.Expression.ToString(), Is.EqualTo("GROUP_CONCAT(?s ; SEPARATOR = \", \")"));
+        }
+
+        [Test]
+        public void CanBuildGroupConcatAggregateGivenAnExpressionWithSeparator()
+        {
+            // when
+            var groupConcat = Builder.GroupConcat(Builder.StrLen(Builder.Variable("x")), ", ");
+
+            // then
+            Assert.That(groupConcat.Expression.ToString(), Is.EqualTo("GROUP_CONCAT(STRLEN(?x) ; SEPARATOR = \", \")"));
+        }
     }
 }

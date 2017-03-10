@@ -92,5 +92,20 @@ namespace VDS.RDF.Query.Builder
         /// Creates a MAX aggregate
         /// </summary>
         AggregateExpression Max(SparqlExpression expression);
+
+        /// <summary>
+        /// Creates a GROUP_CONCAT aggregate
+        /// </summary>
+        AggregateExpression GroupConcat(VariableTerm variable, string separator = " ");
+
+        /// <summary>
+        /// Creates a GROUP_CONCAT aggregate
+        /// </summary>
+        AggregateExpression GroupConcat(string variable, string separator = " ");
+
+        /// <summary>
+        /// Creates a GROUP_CONCAT aggregate
+        /// </summary>
+        AggregateExpression GroupConcat(SparqlExpression expression, string separator = " ");
     }
 }
