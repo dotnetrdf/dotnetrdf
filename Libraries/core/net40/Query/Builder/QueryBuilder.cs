@@ -253,6 +253,17 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
+        public IQueryBuilder GroupBy(Func<ExpressionBuilder, SparqlExpression> buildGroupingExpression)
+        {
+            _buildGroups.Add(prefixes =>
+            {
+                var expressionBuilder = new ExpressionBuilder(prefixes);
+                var sparqlExpression = buildGroupingExpression(expressionBuilder).Expression;
+                return new GroupByExpression(sparqlExpression);
+            });
+            return this;
+        }
+
         public IQueryBuilder Having(Func<ExpressionBuilder, BooleanExpression> buildHavingConstraint)
         {
             _buildHavings.Add(prefixes => buildHavingConstraint(new ExpressionBuilder(prefixes)).Expression);

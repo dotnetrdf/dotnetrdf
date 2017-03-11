@@ -650,6 +650,19 @@ namespace VDS.RDF.Query.Builder
         }
 
         [Test]
+        public void CanBuildGroupingWithExpression()
+        {
+            // when
+            var query = QueryBuilder.SelectAll()
+                .Where(BuildSPOPattern)
+                .GroupBy(eb => eb.Datatype(eb.Variable("s")))
+                .BuildQuery();
+
+            // then
+            Assert.That(query.GroupBy.Expression.ToString(), Is.EqualTo("DATATYPE(?s)"));
+        }
+
+        [Test]
         public void CanBuildSelectSumWithHaving()
         {
             // given

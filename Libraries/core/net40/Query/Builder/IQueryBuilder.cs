@@ -71,6 +71,10 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         IQueryBuilder GroupBy(string variableName);
         /// <summary>
+        /// Adds a GROUP BY clause to the query.
+        /// </summary>
+        IQueryBuilder GroupBy(Func<ExpressionBuilder, SparqlExpression> buildGroupingExpression);
+        /// <summary>
         /// Adds a HAVING clause to the query.
         /// </summary>
         IQueryBuilder Having(Func<ExpressionBuilder, BooleanExpression> buildHavingConstraint);
