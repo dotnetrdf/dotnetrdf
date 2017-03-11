@@ -865,5 +865,55 @@ namespace VDS.RDF.Query.Builder.Expressions
             // then
             Assert.That(groupConcat.Expression.ToString(), Is.EqualTo("GROUP_CONCAT(STRLEN(?x) ; SEPARATOR = \", \")"));
         }
+
+        [Test]
+        public void CanBuildCountStarAggregateGivenVariableName()
+        {
+            // when
+            var count = Builder.Count();
+
+            // then
+            Assert.That(count.Expression.ToString(), Is.EqualTo("COUNT(*)"));
+        }
+
+        [Test]
+        public void CanBuildCountAggregateGivenVariableName()
+        {
+            // when
+            var count = Builder.Count("s");
+
+            // then
+            Assert.That(count.Expression.ToString(), Is.EqualTo("COUNT(?s)"));
+        }
+
+        [Test]
+        public void CanBuildCountAggregateGivenVariable()
+        {
+            // when
+            var count = Builder.Count(new VariableTerm("s"));
+
+            // then
+            Assert.That(count.Expression.ToString(), Is.EqualTo("COUNT(?s)"));
+        }
+
+        [Test]
+        public void CanBuildCountAggregateGivenAnExpression()
+        {
+            // when
+            var count = Builder.Count(Builder.StrLen(Builder.Variable("x")));
+
+            // then
+            Assert.That(count.Expression.ToString(), Is.EqualTo("COUNT(STRLEN(?x))"));
+        }
+
+        [Test]
+        public void CanBuildDisctinctCountAggregateGivenVariableName()
+        {
+            // when
+            var count = Builder.Distinct.Count("s");
+
+            // then
+            Assert.That(count.Expression.ToString(), Is.EqualTo("COUNT(DISTINCT ?s)"));
+        }
     }
 }

@@ -23,6 +23,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using VDS.RDF.Query.Aggregates;
 using VDS.RDF.Query.Aggregates.Sparql;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
@@ -164,6 +165,38 @@ namespace VDS.RDF.Query.Builder
         public AggregateExpression Sample(SparqlExpression expression)
         {
             var aggregate = new SampleAggregate(expression.Expression);
+
+            return new AggregateExpression(aggregate);
+        }
+
+        public AggregateExpression Count()
+        {
+            var aggregate = _distinctAggregate 
+                ? (ISparqlAggregate)new CountAllDistinctAggregate()
+                : new CountAllAggregate();
+
+            return new AggregateExpression(aggregate);
+        }
+
+        public AggregateExpression Count(VariableTerm variable)
+        {
+            var aggregate = _distinctAggregate
+                ? (ISparqlAggregate)new CountDistinctAggregate(variable)
+                : new CountAggregate(variable);
+
+            return new AggregateExpression(aggregate);
+        }
+
+        public AggregateExpression Count(string variable)
+        {
+            return Count(new VariableTerm(variable));
+        }
+
+        public AggregateExpression Count(SparqlExpression expression)
+        {
+            var aggregate = _distinctAggregate
+                ? (ISparqlAggregate)new CountDistinctAggregate(expression.Expression)
+                : new CountAggregate(expression.Expression);
 
             return new AggregateExpression(aggregate);
         }

@@ -107,5 +107,10 @@ namespace VDS.RDF.Query.Builder
         /// Creates a GROUP_CONCAT aggregate
         /// </summary>
         AggregateExpression GroupConcat(SparqlExpression expression, string separator = " ");
+
+        AggregateExpression Count();
+        AggregateExpression Count(VariableTerm variable);
+        AggregateExpression Count(string variable);
+        AggregateExpression Count(SparqlExpression expression);
     }
 }
