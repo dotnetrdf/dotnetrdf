@@ -30,7 +30,7 @@ using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Builder
 {
-    public partial class ExpressionBuilder
+    public partial class ExpressionBuilder : IAggregateBuilder
     {
         private bool _distinctAggregate;
 

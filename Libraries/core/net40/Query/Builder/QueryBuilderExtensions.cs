@@ -77,7 +77,7 @@ namespace VDS.RDF.Query.Builder
             return describeBuilder.GetQueryBuilder().Service(serviceUri, buildGraphPattern);
         }
 
-        public static IAssignmentVariableNamePart<IQueryBuilder> Bind(this IDescribeBuilder describeBuilder, Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
+        public static IAssignmentVariableNamePart<IQueryBuilder> Bind(this IDescribeBuilder describeBuilder, Func<IExpressionBuilder, SparqlExpression> buildAssignmentExpression)
         {
             return describeBuilder.GetQueryBuilder().Bind(buildAssignmentExpression);
         }

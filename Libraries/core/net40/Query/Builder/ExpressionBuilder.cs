@@ -33,7 +33,7 @@ namespace VDS.RDF.Query.Builder
     /// <summary>
     /// Provides methods for building SPARQL expressions
     /// </summary>
-    public partial class ExpressionBuilder : IAggregateBuilder
+    public partial class ExpressionBuilder : IExpressionBuilder
     {
         private readonly INamespaceMapper _prefixes;
 
@@ -48,7 +48,7 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         public SparqlQuerySyntax SparqlVersion { get; set; }
 
-        internal INamespaceMapper Prefixes
+        private INamespaceMapper Prefixes
         {
             get { return _prefixes; }
         }

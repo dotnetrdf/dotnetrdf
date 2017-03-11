@@ -232,7 +232,7 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Adds ascending ordering by an expression to the query
         /// </summary>
-        public IQueryBuilder OrderBy(Func<ExpressionBuilder, SparqlExpression> buildOrderExpression)
+        public IQueryBuilder OrderBy(Func<IExpressionBuilder, SparqlExpression> buildOrderExpression)
         {
             AppendOrdering(buildOrderExpression, false);
             return this;
@@ -241,7 +241,7 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Adds descending ordering by an expression to the query
         /// </summary>
-        public IQueryBuilder OrderByDescending(Func<ExpressionBuilder, SparqlExpression> buildOrderExpression)
+        public IQueryBuilder OrderByDescending(Func<IExpressionBuilder, SparqlExpression> buildOrderExpression)
         {
             AppendOrdering(buildOrderExpression, true);
             return this;
@@ -253,7 +253,7 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        public IQueryBuilder GroupBy(Func<ExpressionBuilder, SparqlExpression> buildGroupingExpression)
+        public IQueryBuilder GroupBy(Func<IExpressionBuilder, SparqlExpression> buildGroupingExpression)
         {
             _buildGroups.Add(prefixes =>
             {
@@ -399,7 +399,7 @@ namespace VDS.RDF.Query.Builder
             executableQuery.OrderBy = orderings.FirstOrDefault();
         }
 
-        public IAssignmentVariableNamePart<IQueryBuilder> Bind(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
+        public IAssignmentVariableNamePart<IQueryBuilder> Bind(Func<IExpressionBuilder, SparqlExpression> buildAssignmentExpression)
         {
             return new BindAssignmentVariableNamePart(this, buildAssignmentExpression);
         }
