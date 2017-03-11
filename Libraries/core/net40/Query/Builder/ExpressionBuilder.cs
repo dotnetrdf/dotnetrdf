@@ -35,11 +35,9 @@ namespace VDS.RDF.Query.Builder
     /// </summary>
     public partial class ExpressionBuilder : IExpressionBuilder
     {
-        private readonly INamespaceMapper _prefixes;
-
         internal ExpressionBuilder(INamespaceMapper prefixes)
         {
-            _prefixes = prefixes;
+            Prefixes = prefixes;
             SparqlVersion = SparqlQuerySyntax.Sparql_1_1;
         }
 
@@ -48,10 +46,7 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         public SparqlQuerySyntax SparqlVersion { get; set; }
 
-        private INamespaceMapper Prefixes
-        {
-            get { return _prefixes; }
-        }
+        private INamespaceMapper Prefixes { get; }
 
         /// <summary>
         /// Creates a SPARQL variable
