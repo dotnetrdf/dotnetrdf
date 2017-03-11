@@ -29,7 +29,7 @@ using VDS.RDF.Query.Expressions.Primary;
 namespace VDS.RDF.Query.Builder
 {
     /// <summary>
-    /// Provides methods for creating aggregates expressions but only those supporting DISTINCT
+    /// Provides methods for creating aggregates expressions but only those allowing DISTINCT
     /// </summary>
     public interface IDistinctAggregateBuilder
     {
@@ -108,9 +108,24 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         AggregateExpression GroupConcat(SparqlExpression expression, string separator = " ");
 
+        /// <summary>
+        /// Creates a COUNT(*) aggregate
+        /// </summary>
         AggregateExpression Count();
+
+        /// <summary>
+        /// Creates a COUNT aggregate
+        /// </summary>
         AggregateExpression Count(VariableTerm variable);
+
+        /// <summary>
+        /// Creates a COUNT aggregate
+        /// </summary>
         AggregateExpression Count(string variable);
+
+        /// <summary>
+        /// Creates a COUNT aggregate
+        /// </summary>
         AggregateExpression Count(SparqlExpression expression);
     }
 }

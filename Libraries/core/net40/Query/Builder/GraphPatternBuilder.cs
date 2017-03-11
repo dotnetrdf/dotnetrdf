@@ -203,7 +203,7 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        public IAssignmentVariableNamePart<IGraphPatternBuilder> Bind(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
+        public IAssignmentVariableNamePart<IGraphPatternBuilder> Bind(Func<INonAggregateExpressionBuilder, SparqlExpression> buildAssignmentExpression)
         {
             return new BindAssignmentVariableNamePart(this, buildAssignmentExpression);
         }
@@ -214,7 +214,7 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        public IGraphPatternBuilder Filter(Func<ExpressionBuilder, BooleanExpression> buildExpression)
+        public IGraphPatternBuilder Filter(Func<INonAggregateExpressionBuilder, BooleanExpression> buildExpression)
         {
             _filterBuilders.Add(namespaceMapper =>
                 {

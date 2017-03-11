@@ -32,61 +32,34 @@ using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 
 namespace VDS.RDF.Query.Builder
 {
-    /// <summary>
-    /// Provides methods for creating SPARQL functional forms
-    /// </summary>
-    public partial class ExpressionBuilder
+    internal partial class ExpressionBuilder
     {
-        /// <summary>
-        /// Creates a call to the BOUND function with a variable parameter
-        /// </summary>
-        /// <param name="var">a SPARQL variable</param>
         public BooleanExpression Bound(VariableExpression var)
         {
             return new BooleanExpression(new BoundFunction(var.Expression));
         }
 
-        /// <summary>
-        /// Creates a call to the BOUND function with a variable parameter
-        /// </summary>
-        /// <param name="var">a SPARQL variable name</param>
         public BooleanExpression Bound(string var)
         {
             return Bound(Variable(var));
         }
 
-        /// <summary>
-        /// Creates a call to the IF function with an expression for the first parameter
-        /// </summary>
-        /// <param name="ifExpression">conditional clause expression</param>
         public IfThenPart If(BooleanExpression ifExpression)
         {
             return new IfThenPart(ifExpression.Expression);
         }
 
-        /// <summary>
-        /// Creates a call to the IF function with a variable for the first parameter
-        /// </summary>
-        /// <param name="ifExpression">conditional clause variable expression</param>
         public IfThenPart If(VariableExpression ifExpression)
         {
             return new IfThenPart(ifExpression.Expression);
         }
 
-        /// <summary>
-        /// Creates a call of the COALESCE function with a variable number of expression parameters
-        /// </summary>
-        /// <param name="expressions">SPARQL expressions</param>
         public RdfTermExpression Coalesce(params SparqlExpression[] expressions)
         {
             var coalesce = new CoalesceFunction(expressions.Select(e => e.Expression));
             return new RdfTermExpression(coalesce);
         }
 
-        /// <summary>
-        /// Creates a call of the EXISTS function
-        /// </summary>
-        /// <param name="buildExistsPattern">a function, which will create the graph pattern parameter</param>
         public BooleanExpression Exists(Action<IGraphPatternBuilder> buildExistsPattern)
         {
             GraphPatternBuilder builder = new GraphPatternBuilder();
@@ -95,42 +68,22 @@ namespace VDS.RDF.Query.Builder
             return new BooleanExpression(existsFunction);
         }
 
-        /// <summary>
-        /// Creates a call of the SAMETERM function with two expression parameters
-        /// </summary>
-        /// <param name="left">a SPARQL expression</param>
-        /// <param name="right">a SPARQL expression</param>
         public BooleanExpression SameTerm(SparqlExpression left, SparqlExpression right)
         {
             var sameTerm = new SameTermFunction(left.Expression, right.Expression);
             return new BooleanExpression(sameTerm);
         }
 
-        /// <summary>
-        /// Creates a call of the SAMETERM function with variable and expression parameters
-        /// </summary>
-        /// <param name="left">a variable name</param>
-        /// <param name="right">a SPARQL expression</param>
         public BooleanExpression SameTerm(string left, SparqlExpression right)
         {
             return SameTerm(Variable(left), right);
         }
 
-        /// <summary>
-        /// Creates a call of the SAMETERM function with expression and variable parameters
-        /// </summary>
-        /// <param name="left">a SPARQL expression</param>
-        /// <param name="right">a variable name</param>
         public BooleanExpression SameTerm(SparqlExpression left, string right)
         {
             return SameTerm(left, Variable(right));
         }
 
-        /// <summary>
-        /// Creates a call of the SAMETERM function with two variable parameters
-        /// </summary>
-        /// <param name="left">a variable name</param>
-        /// <param name="right">a variable name</param>
         public BooleanExpression SameTerm(string left, string right)
         {
             return SameTerm(Variable(left), Variable(right));

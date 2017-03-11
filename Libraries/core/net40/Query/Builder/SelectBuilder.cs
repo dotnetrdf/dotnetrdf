@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Adds additional SELECT expression
         /// </summary>
-        public IAssignmentVariableNamePart<ISelectBuilder> And<TExpression>(Func<ExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression)
+        public IAssignmentVariableNamePart<ISelectBuilder> And<TExpression>(Func<IExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression)
         {
             return new SelectAssignmentVariableNamePart<TExpression>(this, buildAssignmentExpression);
         }

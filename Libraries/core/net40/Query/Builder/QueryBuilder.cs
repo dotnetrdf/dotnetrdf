@@ -158,7 +158,7 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Creates a new SELECT query which will return an expression
         /// </summary>
-        public static IAssignmentVariableNamePart<ISelectBuilder> Select<TExpression>(Func<ExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression)
+        public static IAssignmentVariableNamePart<ISelectBuilder> Select<TExpression>(Func<IExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression)
         {
             SelectBuilder selectBuilder = (SelectBuilder)Select(new SparqlVariable[0]);
             return new SelectAssignmentVariableNamePart<TExpression>(selectBuilder, buildAssignmentExpression);
@@ -253,7 +253,7 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        public IQueryBuilder GroupBy(Func<IExpressionBuilder, SparqlExpression> buildGroupingExpression)
+        public IQueryBuilder GroupBy(Func<INonAggregateExpressionBuilder, SparqlExpression> buildGroupingExpression)
         {
             _buildGroups.Add(prefixes =>
             {
@@ -264,7 +264,7 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        public IQueryBuilder Having(Func<ExpressionBuilder, BooleanExpression> buildHavingConstraint)
+        public IQueryBuilder Having(Func<IExpressionBuilder, BooleanExpression> buildHavingConstraint)
         {
             _buildHavings.Add(prefixes => buildHavingConstraint(new ExpressionBuilder(prefixes)).Expression);
             return this;
@@ -399,7 +399,7 @@ namespace VDS.RDF.Query.Builder
             executableQuery.OrderBy = orderings.FirstOrDefault();
         }
 
-        public IAssignmentVariableNamePart<IQueryBuilder> Bind(Func<IExpressionBuilder, SparqlExpression> buildAssignmentExpression)
+        public IAssignmentVariableNamePart<IQueryBuilder> Bind(Func<INonAggregateExpressionBuilder, SparqlExpression> buildAssignmentExpression)
         {
             return new BindAssignmentVariableNamePart(this, buildAssignmentExpression);
         }

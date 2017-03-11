@@ -73,11 +73,11 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Adds a GROUP BY clause to the query.
         /// </summary>
-        IQueryBuilder GroupBy(Func<IExpressionBuilder, SparqlExpression> buildGroupingExpression);
+        IQueryBuilder GroupBy(Func<INonAggregateExpressionBuilder, SparqlExpression> buildGroupingExpression);
         /// <summary>
         /// Adds a HAVING clause to the query.
         /// </summary>
-        IQueryBuilder Having(Func<ExpressionBuilder, BooleanExpression> buildHavingConstraint);
+        IQueryBuilder Having(Func<IExpressionBuilder, BooleanExpression> buildHavingConstraint);
         /// <summary>
         /// Builds and returns a <see cref="SparqlQuery"/>
         /// </summary>
@@ -85,6 +85,6 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Adds a BIND variable assignment to the root graph pattern
         /// </summary>
-        IAssignmentVariableNamePart<IQueryBuilder> Bind(Func<IExpressionBuilder, SparqlExpression> buildAssignmentExpression);
+        IAssignmentVariableNamePart<IQueryBuilder> Bind(Func<INonAggregateExpressionBuilder, SparqlExpression> buildAssignmentExpression);
     }
 }

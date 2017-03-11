@@ -47,7 +47,7 @@ namespace VDS.RDF.Query.Builder
             return describeBuilder.GetQueryBuilder().Optional(buildGraphPattern);
         }
 
-        public static IQueryBuilder Filter(this IQueryWithVariablesBuilder describeBuilder, Func<ExpressionBuilder, BooleanExpression> expr)
+        public static IQueryBuilder Filter(this IQueryWithVariablesBuilder describeBuilder, Func<INonAggregateExpressionBuilder, BooleanExpression> expr)
         {
             return describeBuilder.GetQueryBuilder().Filter(expr);
         }
@@ -77,7 +77,7 @@ namespace VDS.RDF.Query.Builder
             return describeBuilder.GetQueryBuilder().Service(serviceUri, buildGraphPattern);
         }
 
-        public static IAssignmentVariableNamePart<IQueryBuilder> Bind(this IDescribeBuilder describeBuilder, Func<IExpressionBuilder, SparqlExpression> buildAssignmentExpression)
+        public static IAssignmentVariableNamePart<IQueryBuilder> Bind(this IDescribeBuilder describeBuilder, Func<INonAggregateExpressionBuilder, SparqlExpression> buildAssignmentExpression)
         {
             return describeBuilder.GetQueryBuilder().Bind(buildAssignmentExpression);
         }
@@ -155,7 +155,7 @@ namespace VDS.RDF.Query.Builder
             return queryBuilder;
         }
 
-        public static IQueryBuilder Filter(this IQueryBuilder queryBuilder, Func<ExpressionBuilder, BooleanExpression> buildExpression)
+        public static IQueryBuilder Filter(this IQueryBuilder queryBuilder, Func<INonAggregateExpressionBuilder, BooleanExpression> buildExpression)
         {
             ((QueryBuilder)queryBuilder).RootGraphPatternBuilder.Filter(buildExpression);
             return queryBuilder;
