@@ -166,6 +166,7 @@
     <Compile Include="Query\Builder\IDistinctAggregateBuilder.cs" />
     <Compile Include="Query\Builder\IExpressionBuilder.cs" />
     <Compile Include="Query\Builder\IGraphPatternBuilder.cs" />
+    <Compile Include="Query\Builder\INonAggregateExpressionBuilder.cs" />
     <Compile Include="Query\Builder\ISelectBuilder.cs" />
     <Compile Include="Query\Builder\ITriplePatternBuilder.cs" />
     <Compile Include="Query\Builder\IQueryWithVariablesBuilder.cs" />
