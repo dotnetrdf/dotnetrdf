@@ -6,7 +6,7 @@
     <AssemblyTitle>dotNetRDF.Query.FullText</AssemblyTitle>
     <VersionPrefix>1.0.13-pre6</VersionPrefix>
     <Authors>RobVesse;tpluscode;kal_ahmed;ronmichael</Authors>
-    <TargetFrameworks>net40;net40-client;net35;net35-client</TargetFrameworks>
+    <TargetFrameworks>net40</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>dotNetRDF.Query.FullText</AssemblyName>
     <AssemblyOriginatorKeyFile>../../Build/dotNetRDF.snk</AssemblyOriginatorKeyFile>
