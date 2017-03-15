@@ -6,17 +6,20 @@ install:
   - choco install gitversion.portable -pre -y
 
 before_build:
-  - dotnet restore
+  - dotnet restore dotNetRDF.sln
   - ps: gitversion /l console /output buildserver /updateassemblyinfo
-  - ps: Get-ChildItem -Filter project.json -Recurse | % { start-process dotnet -ArgumentList version,$env:GitVersion_LegacySemVer -wo $_.Directory.FullName -NoNewWindow }
 
 configuration: Release
 
 build_script:
-  - dotnet build ./**/project.json 
-  - dotnet pack -c Release -o nugets Libraries/dotNetRDF
-  - dotnet pack -c Release -o nugets Libraries/dotNetRDF.Data.Virtuoso
-  - dotnet pack -c Release -o nugets Libraries/dotNetRDF.Query.FullText
+  - dotnet build Libraries/dotNetRDF
+  - dotnet build Libraries/dotNetRDF.Data.Virtuoso
+  - dotnet build Libraries/dotNetRDF.Query.FullText
+  - dotnet build Libraries/dotNetRDF.Query.Spin
+  - dotnet build Testing/Unittest
+  - dotnet pack -c Release -o nugets Libraries/dotNetRDF /p:Version=%GitVersion_NuGetVersion%
+  - dotnet pack -c Release -o nugets Libraries/dotNetRDF.Data.Virtuoso /p:Version=%GitVersion_NuGetVersion%
+  - dotnet pack -c Release -o nugets Libraries/dotNetRDF.Query.FullText /p:Version=%GitVersion_NuGetVersion%
 
 test_script:
   - dotnet test Testing/Unittest

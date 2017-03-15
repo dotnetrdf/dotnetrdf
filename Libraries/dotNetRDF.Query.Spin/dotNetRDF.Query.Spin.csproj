@@ -4,7 +4,7 @@
     <Description>A library which provides a full SPIN implementation using dotNetRDF's Leviathan SPARQL engine</Description>
     <Copyright>Copyright © dotNetRDF Project 2009-2016</Copyright>
     <AssemblyTitle>dotNetRDF SPIN</AssemblyTitle>
-    <VersionPrefix>1.0.13-pre6</VersionPrefix>
+    <VersionPrefix>$(Version)</VersionPrefix>
     <TargetFramework>net40</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>dotNetRDF.Query.Spin</AssemblyName>
