@@ -14,9 +14,6 @@ before_build:
 configuration: Release
 
 build_script:
-  - dotnet build Libraries/dotNetRDF
-  - dotnet build Libraries/dotNetRDF.Data.Virtuoso
-  - dotnet build Libraries/dotNetRDF.Query.FullText
   - dotnet build Libraries/dotNetRDF.Query.Spin
   - dotnet build Testing/Unittest
   - dotnet pack -c Release -o nugets Libraries/dotNetRDF /p:Version=%GitVersion_NuGetVersion%
