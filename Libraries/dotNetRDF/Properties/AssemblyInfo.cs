@@ -31,11 +31,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("dotNetRDF.Core")]
-[assembly: AssemblyDescription("API for manipulating RDF data (.Net 4.0)")]
+[assembly: AssemblyDescription("API for manipulating RDF data")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Visual Design Studios")]
 [assembly: AssemblyProduct("dotNetRDF.Core")]
-[assembly: AssemblyCopyright("Copyright © dotNetRDF Project 2009-2012")]
+[assembly: AssemblyCopyright("Copyright © dotNetRDF Project 2009-2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
