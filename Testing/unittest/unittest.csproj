@@ -18,12 +18,15 @@
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+    <CodeAnalysisRuleSet>..\..\dotnetrdf.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\dotNetRDF.Query.FullText\dotNetRDF.Query.FullText.csproj" />
     <ProjectReference Include="..\..\Libraries\dotNetRDF.Data.Virtuoso\dotNetRDF.Data.Virtuoso.csproj" />
     <ProjectReference Include="..\..\Libraries\dotNetRDF\dotNetRDF.csproj" />
+    <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -51,10 +54,6 @@
     <None Update="resources\**\*.*;resources\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <DotNetCliToolReference Include="dotnet-version" Version="1.1.0" />
   </ItemGroup>
 
 </Project>

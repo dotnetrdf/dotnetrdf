@@ -4,7 +4,7 @@
     <Description>dotNetRDF is a RDF, SPARQL and Semantic Web API for .Net.  It provides simple but powerfully extensible APIs for this and integrates with a variety of popular triple stores.</Description>
     <Copyright>Copyright © dotNetRDF Project 2009-2017</Copyright>
     <AssemblyTitle>dotNetRDF</AssemblyTitle>
-    <VersionPrefix>1.0.13-pre6</VersionPrefix>
+    <VersionPrefix>$(Version)</VersionPrefix>
     <Authors>RobVesse;tpluscode;kal_ahmed;ronmichael</Authors>
     <TargetFrameworks>netstandard1.4;net40;net40-client</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -28,6 +28,8 @@
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+    <CodeAnalysisRuleSet>..\..\dotnetrdf.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net40-client'">
@@ -38,6 +40,7 @@
   
   <ItemGroup>
     <EmbeddedResource Include="Configuration\configuration.ttl" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+    <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -103,10 +106,6 @@
   
   <ItemGroup Condition=" '$(TargetFramework)' == 'net40-client' ">
     <Compile Remove="Compatibility\Core\*.cs;Compatibility\Portable\**\*.cs" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <DotNetCliToolReference Include="dotnet-version" Version="1.1.0" />
   </ItemGroup>
 
 </Project>
