@@ -23,6 +23,8 @@ build_script:
 
 test_script:
   - dotnet test Testing/Unittest
+
+test: off
   
 on_finish:
   - ps: $wc = New-Object 'System.Net.WebClient'
