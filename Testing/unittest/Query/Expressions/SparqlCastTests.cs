@@ -23,7 +23,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Expressions.Functions.XPath.Cast;
@@ -31,18 +31,17 @@ using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Expressions
 {
-    [TestFixture]
+
     public class SparqlCastTests : BaseTest
     {
         private INodeFactory _graph;
 
-        [SetUp]
-        public void Setup()
+        public SparqlCastTests()
         {
             _graph = new Graph();
         }
 
-        [Test]
+        [Fact]
         public void ShouldSuccesfullyEvaluateDecimalCastRegardlessOfCulture()
         {
             foreach (var ci in TestedCultureInfos)
@@ -56,12 +55,12 @@ namespace VDS.RDF.Query.Expressions
                     IValuedNode valuedNode = cast.Evaluate(new SparqlEvaluationContext(new SparqlQuery(), new InMemoryDataset()), 0);
 
                     // then
-                    Assert.AreEqual(3.4m, valuedNode.AsDecimal());
+                    Assert.Equal(3.4m, valuedNode.AsDecimal());
                 });
             }
         }
 
-        [Test]
+        [Fact]
         public void ShouldSuccesfullyEvaluateDoubleCastRegardlessOfCulture()
         {
             foreach (var ci in TestedCultureInfos)
@@ -75,12 +74,12 @@ namespace VDS.RDF.Query.Expressions
                     IValuedNode valuedNode = cast.Evaluate(new SparqlEvaluationContext(new SparqlQuery(), new InMemoryDataset()), 0);
 
                     // then
-                    Assert.AreEqual(3.4d, valuedNode.AsDouble());
+                    Assert.Equal(3.4d, valuedNode.AsDouble());
                 });
             }
         }
 
-        [Test]
+        [Fact]
         public void ShouldSuccesfullyEvaluateFloatCastRegardlessOfCulture()
         {
             foreach (var ci in TestedCultureInfos)
@@ -94,7 +93,7 @@ namespace VDS.RDF.Query.Expressions
                     IValuedNode valuedNode = cast.Evaluate(new SparqlEvaluationContext(new SparqlQuery(), new InMemoryDataset()), 0);
 
                     // then
-                    Assert.AreEqual(3.4f, valuedNode.AsFloat());
+                    Assert.Equal(3.4f, valuedNode.AsFloat());
                 });
             }
         } 

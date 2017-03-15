@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
@@ -36,14 +36,14 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
-    [TestFixture]
+
     public class WriterTests
         : CompressionTests
     {
 
         private String prefix = "@prefix : <http://example.org>.\n";
         
-        [Test]
+        [Fact]
         public void WritingBlankNodeOutput()
         {
             //Create a Graph and add a couple of Triples which when serialized have
@@ -73,11 +73,11 @@ namespace VDS.RDF.Writing
 
             TestTools.ShowGraph(h);
 
-            Assert.AreEqual(g.Triples.Count, h.Triples.Count, "Expected same number of Triples after serialization and reparsing");
+            Assert.Equal(g.Triples.Count, h.Triples.Count);
 
         }
 
-        [Test]
+        [Fact]
         public void WritingOwlCharEscaping()
         {
             Graph g = new Graph();
@@ -103,11 +103,11 @@ namespace VDS.RDF.Writing
             }
             Console.WriteLine();
 
-            Assert.AreEqual(g, h, "Graphs should have been equal");
+            Assert.Equal(g, h);
         }
 
 #if !NO_HTMLAGILITYPACK
-        [Test]
+        [Fact]
         public void WritingHtmlWriter()
         {
             Graph g = new Graph();
@@ -131,13 +131,13 @@ namespace VDS.RDF.Writing
                 Console.WriteLine(t.ToString());
             }
 
-            Assert.AreEqual(g, h, "Graphs should have been the same");
+            Assert.Equal(g, h);
         }
 #endif
 
 #if !PORTABLE
 
-        [Test]
+        [Fact]
         public void WritingCollections()
         {
             Graph g = new Graph();
@@ -157,7 +157,7 @@ namespace VDS.RDF.Writing
 
 #endif
 
-        [Test]
+        [Fact]
         public void WritingXmlAmpersandEscaping()
         {
             List<String> inputs = new List<string>()
@@ -188,11 +188,11 @@ namespace VDS.RDF.Writing
             for (int i = 0; i < inputs.Count; i++)
             {
                 Console.WriteLine("Input: " + inputs[i] + " - Expected Output: " + outputs[i] + " - Actual Output: " + WriterHelper.EncodeForXml(inputs[i]));
-                Assert.AreEqual(outputs[i], WriterHelper.EncodeForXml(inputs[i]), "Ampersands should have been encoded correctly");
+                Assert.Equal(outputs[i], WriterHelper.EncodeForXml(inputs[i]));
             }
         }
 
-        [Test]
+        [Fact]
         public void WritingUriEscaping()
         {
             Graph g = new Graph();
@@ -240,7 +240,7 @@ namespace VDS.RDF.Writing
                 new TurtleParser()
             };
 
-            Assert.AreEqual(parsers.Count, writers.Count);
+            Assert.Equal(parsers.Count, writers.Count);
 
             Console.WriteLine("Input Data:");
             foreach (Triple t in g.Triples)
@@ -269,19 +269,19 @@ namespace VDS.RDF.Writing
                 }
                 Console.WriteLine();
 
-                Assert.AreEqual(g, h, "Graphs should be equal");
+                Assert.Equal(g, h);
                 if (h.NamespaceMap.HasNamespace("ex"))
                 {
-                    Assert.AreEqual(g.NamespaceMap.GetNamespaceUri("ex"), h.NamespaceMap.GetNamespaceUri("ex"), "Namespaces ex should have equivalent URIs");
+                    Assert.Equal(g.NamespaceMap.GetNamespaceUri("ex"), h.NamespaceMap.GetNamespaceUri("ex"));
                 }
                 if (h.BaseUri != null)
                 {
-                    Assert.AreEqual(g.BaseUri, h.BaseUri, "Base URIs should be equal");
+                    Assert.Equal(g.BaseUri, h.BaseUri);
                 }
             }
         }
 
-        [Test]
+        [Fact]
         public void WritingQNameValidation()
         {
             Graph g = new Graph();

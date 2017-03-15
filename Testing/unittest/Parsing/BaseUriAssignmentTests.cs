@@ -27,13 +27,14 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Parsing
 {
-    [TestFixture]
+
     public class BaseUriAssignmentTests
     {
         private String ShowBaseUri(Uri baseUri)
@@ -48,23 +49,23 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [Test]
+        [Fact]
         public void ParsingBaseUriAssignmentFileLoader()
         {
             Graph g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
             Console.WriteLine("Base URI: " + ShowBaseUri(g.BaseUri));
-            Assert.IsNotNull(g.BaseUri, "Base URI should not be null");
+            Assert.NotNull(g.BaseUri);
         }
 
 #if !PORTABLE
 
-        [Test]
+        [SkippableFact]
         public void ParsingBaseUriAssignmentUriLoader()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
             {
-                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
             }
 
             int defaultTimeout = Options.UriLoaderTimeout;
@@ -75,7 +76,7 @@ namespace VDS.RDF.Parsing
                 Graph g = new Graph();
                 UriLoader.Load(g, new Uri("http://dbpedia.org/resource/Ilkeston"));
                 Console.WriteLine("Base URI: " + ShowBaseUri(g.BaseUri));
-                Assert.IsNotNull(g.BaseUri, "Base URI should not be null");
+                Assert.NotNull(g.BaseUri);
             }
             finally
             {
@@ -86,7 +87,7 @@ namespace VDS.RDF.Parsing
 
 #endif
 
-        [Test]
+        [Fact]
         public void ParsingBaseUriAssignmentRdfXml()
         {
             Graph g = new Graph();
@@ -107,7 +108,7 @@ namespace VDS.RDF.Parsing
             parser.Load(h, new System.IO.StringReader(strWriter.ToString()));
 
             Console.WriteLine("Base URI after round-trip using RdfXmlWriter: " + ShowBaseUri(h.BaseUri));
-            Assert.IsNotNull(h.BaseUri, "Base URI should not be null");
+            Assert.NotNull(h.BaseUri);
         }
     }
 }

@@ -29,16 +29,16 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Configuration
 {
-    [TestFixture]
+
     public class ConfigurationApiTests
     {
-        [Test]
+        [Fact]
         public void ConfigurationCircularReference()
         {
             String graph = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
@@ -54,7 +54,7 @@ _:b a dnr:Graph ;
         }
 
 #if !PORTABLE // No ConfigurationLoader.Load(string) method
-        [Test]
+        [Fact]
         public void ConfigurationImports1()
         {
             //Single Import
@@ -76,13 +76,13 @@ _:a a dnr:Graph ;
             TestTools.ShowGraph(g);
 
             IGraph result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
-            Assert.IsNotNull(result);
-            Assert.AreEqual(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
+            Assert.NotNull(result);
+            Assert.Equal(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
         }
 #endif
 
 #if !PORTABLE // No ConfigurationLoader.Load(string) method
-        [Test]
+        [Fact]
         public void ConfigurationImports2()
         {
             //Chained Import
@@ -112,13 +112,13 @@ _:a a dnr:Graph ;
             TestTools.ShowGraph(g);
 
             IGraph result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
-            Assert.IsNotNull(result);
-            Assert.AreEqual(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
+            Assert.NotNull(result);
+            Assert.Equal(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
         }
 #endif
 
 #if !PORTABLE // No ConfigurationLoader.Load(string) method
-        [Test]
+        [Fact]
         public void ConfigurationImports3()
         {
             //Multiple Imports
@@ -146,13 +146,13 @@ _:a a dnr:Graph ;
             TestTools.ShowGraph(g);
 
             IGraph result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
-            Assert.IsNotNull(result);
-            Assert.AreEqual(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
+            Assert.NotNull(result);
+            Assert.Equal(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
         }
 #endif
 
 #if !PORTABLE // No ConfigurationLoader.Load(string) method
-        [Test]
+        [Fact]
         public void ConfigurationImports4()
         {
             //Repeated Imports
@@ -180,13 +180,13 @@ _:a a dnr:Graph ;
             TestTools.ShowGraph(g);
 
             IGraph result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
-            Assert.IsNotNull(result);
-            Assert.AreEqual(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
+            Assert.NotNull(result);
+            Assert.Equal(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
         }
 #endif
 
 #if !PORTABLE // No ConfigurationLoader.Load(string) method
-        [Test]
+        [Fact]
         public void ConfigurationImportsCircular1()
         {
             String graph1 = @"[] <http://www.dotnetrdf.org/configuration#imports> ""ConfigurationImportsCircular1-b.ttl"" . ";
@@ -196,7 +196,7 @@ _:a a dnr:Graph ;
             File.WriteAllText("ConfigurationImportsCircular1-b.ttl", graph2);
 
             IGraph g = ConfigurationLoader.LoadConfiguration("ConfigurationImportsCircular1-a.ttl");
-            Assert.AreEqual(2, g.Triples.Count);
+            Assert.Equal(2, g.Triples.Count);
         }
 #endif
     }

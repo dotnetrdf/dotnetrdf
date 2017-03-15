@@ -27,22 +27,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Query
 {
 #if !SILVERLIGHT // SERVICE keyword not supported
-    [TestFixture]
+
     public class ServiceTests
     {
-        [Test]
+        [SkippableFact]
         public void SparqlServiceUsingDBPedia()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
             {
-                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
             }
 
             String query = "SELECT * WHERE { SERVICE <http://dbpedia.org/sparql> { ?s a ?type } } LIMIT 10";
@@ -57,16 +58,16 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.Fail("Should have returned a SPARQL Result Set");
+                Assert.True(false, "Should have returned a SPARQL Result Set");
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void SparqlServiceUsingDBPediaAndBindings()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
             {
-                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
             }
 
             String query = "SELECT * WHERE { SERVICE <http://dbpedia.org/sparql> { ?s a ?type } } VALUES ?s { <http://dbpedia.org/resource/Southampton> <http://dbpedia.org/resource/Ilkeston> }";
@@ -81,11 +82,11 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.Fail("Should have returned a SPARQL Result Set");
+                Assert.True(false, "Should have returned a SPARQL Result Set");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlServiceWithNonExistentService()
         {
             String query = "SELECT * WHERE { SERVICE <http://www.dotnetrdf.org/noSuchService> { ?s a ?type } } LIMIT 10";
@@ -96,7 +97,7 @@ namespace VDS.RDF.Query
             try
             {
                 Object results = processor.ProcessQuery(q);
-                Assert.Fail("Should have errored");
+                Assert.True(false, "Should have errored");
             }
             catch (RdfQueryException queryEx)
             {
@@ -105,7 +106,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlServiceWithSilentNonExistentService()
         {
             String query = "SELECT * WHERE { SERVICE SILENT <http://www.dotnetrdf.org/noSuchService> { ?s a ?type } } LIMIT 10";

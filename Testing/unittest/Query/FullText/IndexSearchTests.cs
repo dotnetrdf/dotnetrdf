@@ -29,7 +29,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Query;
 using VDS.RDF.Query.FullText;
 using VDS.RDF.Query.FullText.Indexing;
@@ -40,7 +40,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.FullText
 {
-    [TestFixture]
+
     public class IndexSearchTests
     {
         private IGraph GetTestData()
@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.FullText
             return g;
         }
 
-        [Test]
+        [Fact]
         public void FullTextIndexSearchLuceneObjects()
         {
             IFullTextIndexer indexer = null;
@@ -82,7 +82,7 @@ namespace VDS.RDF.Query.FullText
 
         }
 
-        [Test]
+        [Fact]
         public void FullTextIndexSearchLuceneObjectsWithLimit()
         {
             IFullTextIndexer indexer = null;
@@ -108,7 +108,7 @@ namespace VDS.RDF.Query.FullText
                     i++;
                     Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
                 }
-                Assert.IsTrue(i <= 5, "Should be a max of 5 results");
+                Assert.True(i <= 5, "Should be a max of 5 results");
             }
             finally
             {
@@ -117,7 +117,7 @@ namespace VDS.RDF.Query.FullText
 
         }
 
-        [Test]
+        [Fact]
         public void FullTextIndexSearchLuceneObjectsWithThreshold()
         {
             IFullTextIndexer indexer = null;
@@ -140,7 +140,7 @@ namespace VDS.RDF.Query.FullText
                 foreach (IFullTextSearchResult result in provider.Match("http", 0.75d))
                 {
                     Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
-                    Assert.IsTrue(result.Score >= 0.75d, "Score should be higher than desired threshold");
+                    Assert.True(result.Score >= 0.75d, "Score should be higher than desired threshold");
                 }
             }
             finally
@@ -150,7 +150,7 @@ namespace VDS.RDF.Query.FullText
 
         }
 
-        [Test]
+        [Fact]
         public void FullTextIndexSearchLuceneObjectsWithLimitAndThreshold()
         {
             IFullTextIndexer indexer = null;
@@ -175,9 +175,9 @@ namespace VDS.RDF.Query.FullText
                 {
                     i++;
                     Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
-                    Assert.IsTrue(result.Score >= 1.0d, "Score should be higher than desired threshold");
+                    Assert.True(result.Score >= 1.0d, "Score should be higher than desired threshold");
                 }
-                Assert.IsTrue(i <= 5, "Should be a max of 5 results");
+                Assert.True(i <= 5, "Should be a max of 5 results");
             }
             finally
             {
@@ -186,7 +186,7 @@ namespace VDS.RDF.Query.FullText
 
         }
 
-        [Test]
+        [Fact]
         public void FullTextIndexSearchLuceneSubjects()
         {
             IFullTextIndexer indexer = null;
@@ -218,7 +218,7 @@ namespace VDS.RDF.Query.FullText
 
         }
 
-        [Test]
+        [Fact]
         public void FullTextIndexSearchLuceneSubjectsWithLimit()
         {
             IFullTextIndexer indexer = null;
@@ -244,7 +244,7 @@ namespace VDS.RDF.Query.FullText
                     i++;
                     Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
                 }
-                Assert.IsTrue(i <= 5, "Should be a max of 5 results");
+                Assert.True(i <= 5, "Should be a max of 5 results");
             }
             finally
             {
@@ -253,7 +253,7 @@ namespace VDS.RDF.Query.FullText
 
         }
 
-        [Test]
+        [Fact]
         public void FullTextIndexSearchLuceneSubjectsWithThreshold()
         {
             IFullTextIndexer indexer = null;
@@ -276,7 +276,7 @@ namespace VDS.RDF.Query.FullText
                 foreach (IFullTextSearchResult result in provider.Match("http", 0.75d))
                 {
                     Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
-                    Assert.IsTrue(result.Score >= 0.75d, "Score should be higher than desired threshold");
+                    Assert.True(result.Score >= 0.75d, "Score should be higher than desired threshold");
                 }
             }
             finally
@@ -286,7 +286,7 @@ namespace VDS.RDF.Query.FullText
 
         }
 
-        [Test]
+        [Fact]
         public void FullTextIndexSearchLuceneSubjectsWithLimitAndThreshold()
         {
             IFullTextIndexer indexer = null;
@@ -311,9 +311,9 @@ namespace VDS.RDF.Query.FullText
                 {
                     i++;
                     Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
-                    Assert.IsTrue(result.Score >= 1.0d, "Score should be higher than desired threshold");
+                    Assert.True(result.Score >= 1.0d, "Score should be higher than desired threshold");
                 }
-                Assert.IsTrue(i <= 5, "Should be a max of 5 results");
+                Assert.True(i <= 5, "Should be a max of 5 results");
             }
             finally
             {
@@ -322,7 +322,7 @@ namespace VDS.RDF.Query.FullText
 
         }
 
-        [Test]
+        [Fact]
         public void FullTextIndexSearchLucenePredicates()
         {
             IFullTextIndexer indexer = null;
@@ -354,7 +354,7 @@ namespace VDS.RDF.Query.FullText
 
         }
 
-        [Test]
+        [Fact]
         public void FullTextIndexSearchLucenePredicatesWithLimit()
         {
             IFullTextIndexer indexer = null;
@@ -380,7 +380,7 @@ namespace VDS.RDF.Query.FullText
                     i++;
                     Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
                 }
-                Assert.IsTrue(i <= 5, "Should be a max of 5 results");
+                Assert.True(i <= 5, "Should be a max of 5 results");
             }
             finally
             {
@@ -389,7 +389,7 @@ namespace VDS.RDF.Query.FullText
 
         }
 
-        [Test]
+        [Fact]
         public void FullTextIndexSearchLucenePredicatesWithThreshold()
         {
             IFullTextIndexer indexer = null;
@@ -412,7 +412,7 @@ namespace VDS.RDF.Query.FullText
                 foreach (IFullTextSearchResult result in provider.Match("http", 0.75d))
                 {
                     Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
-                    Assert.IsTrue(result.Score >= 0.75d, "Score should be higher than desired threshold");
+                    Assert.True(result.Score >= 0.75d, "Score should be higher than desired threshold");
                 }
             }
             finally
@@ -422,7 +422,7 @@ namespace VDS.RDF.Query.FullText
 
         }
 
-        [Test]
+        [Fact]
         public void FullTextIndexSearchLucenePredicatesWithLimitAndThreshold()
         {
             IFullTextIndexer indexer = null;
@@ -447,9 +447,9 @@ namespace VDS.RDF.Query.FullText
                 {
                     i++;
                     Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
-                    Assert.IsTrue(result.Score >= 1.0d, "Score should be higher than desired threshold");
+                    Assert.True(result.Score >= 1.0d, "Score should be higher than desired threshold");
                 }
-                Assert.IsTrue(i <= 5, "Should be a max of 5 results");
+                Assert.True(i <= 5, "Should be a max of 5 results");
             }
             finally
             {

@@ -27,14 +27,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 
 namespace VDS.RDF
 {
     /// <summary>
     /// Abstract set of Triple Stores tests which can be used to test any <see cref="ITripleStore"/> implementation
     /// </summary>
-    [TestFixture]
+
     public abstract class AbstractTripleStoreTests
     {
         /// <summary>
@@ -43,24 +43,24 @@ namespace VDS.RDF
         /// <returns></returns>
         protected abstract ITripleStore GetInstance();
 
-        [Test]
+        [Fact]
         public void TripleStoreIsEmpty01()
         {
             ITripleStore store = this.GetInstance();
 
-            Assert.IsTrue(store.IsEmpty);
+            Assert.True(store.IsEmpty);
         }
 
-        [Test]
+        [Fact]
         public void TripleStoreIsEmpty02()
         {
             ITripleStore store = this.GetInstance();
             store.Add(new Graph());
 
-            Assert.IsFalse(store.IsEmpty);
+            Assert.False(store.IsEmpty);
         }
 
-        [Test]
+        [Fact]
         public void TripleStoreAdd01()
         {
             ITripleStore store = this.GetInstance();
@@ -68,11 +68,11 @@ namespace VDS.RDF
             Graph g = new Graph();
             store.Add(g);
 
-            Assert.IsFalse(store.IsEmpty);
-            Assert.IsTrue(store.HasGraph(g.BaseUri));
+            Assert.False(store.IsEmpty);
+            Assert.True(store.HasGraph(g.BaseUri));
         }
 
-        [Test]
+        [Fact]
         public void TripleStoreAdd02()
         {
             ITripleStore store = this.GetInstance();
@@ -81,19 +81,19 @@ namespace VDS.RDF
             g.BaseUri = new Uri("http://example.org/graph");
             store.Add(g);
 
-            Assert.IsFalse(store.IsEmpty);
-            Assert.IsTrue(store.HasGraph(g.BaseUri));
+            Assert.False(store.IsEmpty);
+            Assert.True(store.HasGraph(g.BaseUri));
         }
 
-        [Test]
+        [Fact]
         public void TripleStoreHasGraph01()
         {
             ITripleStore store = this.GetInstance();
 
-            Assert.IsFalse(store.HasGraph(new Uri("http://thereisnosuchdomain.com:1234/graph")));
+            Assert.False(store.HasGraph(new Uri("http://thereisnosuchdomain.com:1234/graph")));
         }
 
-        [Test]
+        [Fact]
         public void TripleStoreHasGraph02()
         {
             ITripleStore store = this.GetInstance();
@@ -101,10 +101,10 @@ namespace VDS.RDF
             IGraph g = new Graph();
             store.Add(g);
 
-            Assert.IsTrue(store.HasGraph(null));
+            Assert.True(store.HasGraph(null));
         }
 
-        [Test]
+        [Fact]
         public void TripleStoreHasGraph03()
         {
             ITripleStore store = this.GetInstance();
@@ -113,11 +113,11 @@ namespace VDS.RDF
             g.BaseUri = new Uri("http://nosuchdomain.com/graph");
             store.Add(g);
 
-            Assert.IsTrue(store.HasGraph(g.BaseUri));
+            Assert.True(store.HasGraph(g.BaseUri));
         }
     }
 
-    [TestFixture]
+
     public class TripleStoreTests
         : AbstractTripleStoreTests
     {
@@ -127,7 +127,7 @@ namespace VDS.RDF
         }
     }
 
-    [TestFixture]
+
     public class ThreadSafeTripleStoreTests
         : AbstractTripleStoreTests
     {
@@ -138,7 +138,7 @@ namespace VDS.RDF
     }
 
 #if !SILVERLIGHT
-    [TestFixture]
+
     public class WebDemandTripleStoreTests
         : AbstractTripleStoreTests
     {
@@ -150,7 +150,7 @@ namespace VDS.RDF
 #endif
 
 #if !NO_FILE
-    [TestFixture]
+
     public class DiskDemandTripleStoreTests
         : AbstractTripleStoreTests
     {

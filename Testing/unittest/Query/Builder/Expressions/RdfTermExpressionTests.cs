@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Set;
@@ -32,7 +32,7 @@ using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Builder.Expressions
 {
-    [TestFixture]
+
     public class SparqlExpressionTests
     {
         private class TestingSparqlExpression : SparqlExpression
@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Builder.Expressions
             }
         }
 
-        [Test]
+        [Fact]
         public void CanCreateInFunction()
         {
             // given
@@ -52,8 +52,8 @@ namespace VDS.RDF.Query.Builder.Expressions
             BooleanExpression expression = rdfTerm.In();
 
             // then
-            Assert.IsTrue(expression.Expression is InFunction);
-            Assert.AreEqual(1, expression.Expression.Arguments.Count());
+            Assert.True(expression.Expression is InFunction);
+            Assert.Equal(1, expression.Expression.Arguments.Count());
         }
     }
 }

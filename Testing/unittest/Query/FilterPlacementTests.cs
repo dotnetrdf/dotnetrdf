@@ -27,16 +27,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class FilterPlacementTests
     {
-        [Test]
+        [Fact]
         public void SparqlFilterOptionalNotBound()
         {
             Graph g = new Graph();
@@ -54,11 +54,11 @@ namespace VDS.RDF.Query
             {
                 TestTools.ShowResults(results);
 
-                Assert.IsTrue(results.All(r => !r.HasValue("range") || r["range"] == null), "There should be no values for ?range returned");
+                Assert.True(results.All(r => !r.HasValue("range") || r["range"] == null), "There should be no values for ?range returned");
             }
             else
             {
-                Assert.Fail("Did not get a SparqlResultSet as expected");
+                Assert.True(false, "Did not get a SparqlResultSet as expected");
             }
         }
     }

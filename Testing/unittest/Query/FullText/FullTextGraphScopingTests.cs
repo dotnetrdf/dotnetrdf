@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Store;
 using LucUtil = Lucene.Net.Util;
@@ -42,7 +42,7 @@ using VDS.RDF.Query.Optimisation;
 
 namespace VDS.RDF.Query.FullText
 {
-    [TestFixture]
+
     public class FullTextGraphScopingTests
     {
         private const String FullTextPrefix = "PREFIX pf: <" + FullTextHelper.FullTextMatchNamespace + ">";
@@ -51,8 +51,7 @@ namespace VDS.RDF.Query.FullText
         private TripleStore _store;
         private Directory _index;
 
-        [SetUp]
-        public void Setup()
+        public FullTextGraphScopingTests()
         {
             String data = @"<http://x> <http://p> ""This is sample text"" <http://g1> .
 <http://y> <http://p> ""This is sample text"" <http://g2> .
@@ -71,43 +70,43 @@ namespace VDS.RDF.Query.FullText
             }
         }
 
-        [Test]
+        [Fact]
         public void FullTextGraphScoping1()
         {
             //With no Graph scope all results should be returned
             using (LuceneSearchProvider searcher = new LuceneSearchProvider(LucUtil.Version.LUCENE_30, this._index, new StandardAnalyzer(LucUtil.Version.LUCENE_30)))
             {
                 IEnumerable<IFullTextSearchResult> results = searcher.Match("sample");
-                Assert.AreEqual(3, results.Count());
+                Assert.Equal(3, results.Count());
             }
         }
 
-        [Test]
+        [Fact]
         public void FullTextGraphScoping2()
         {
             //With Graph scope to g1 only one result should be returned
             using (LuceneSearchProvider searcher = new LuceneSearchProvider(LucUtil.Version.LUCENE_30, this._index, new StandardAnalyzer(LucUtil.Version.LUCENE_30)))
             {
                 IEnumerable<IFullTextSearchResult> results = searcher.Match(new Uri[] { new Uri("http://g1") }, "sample");
-                Assert.AreEqual(1, results.Count());
-                Assert.AreEqual(new Uri("http://x"), ((IUriNode)results.First().Node).Uri);
+                Assert.Equal(1, results.Count());
+                Assert.Equal(new Uri("http://x"), ((IUriNode)results.First().Node).Uri);
             }
         }
 
 
-        [Test]
+        [Fact]
         public void FullTextGraphScoping3()
         {
             //With Graph scope to g2 only two results should be returned
             using (LuceneSearchProvider searcher = new LuceneSearchProvider(LucUtil.Version.LUCENE_30, this._index, new StandardAnalyzer(LucUtil.Version.LUCENE_30)))
             {
                 IEnumerable<IFullTextSearchResult> results = searcher.Match(new Uri[] { new Uri("http://g2") }, "sample");
-                Assert.AreEqual(2, results.Count());
-                Assert.IsTrue(results.All(r => EqualityHelper.AreUrisEqual(new Uri("http://y"), ((IUriNode)r.Node).Uri)));
+                Assert.Equal(2, results.Count());
+                Assert.True(results.All(r => EqualityHelper.AreUrisEqual(new Uri("http://y"), ((IUriNode)r.Node).Uri)));
             }
         }
 
-        [Test]
+        [Fact]
         public void FullTextGraphSparqlScoping1()
         {
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(this._store);
@@ -119,12 +118,12 @@ namespace VDS.RDF.Query.FullText
                 q.AlgebraOptimisers = new IAlgebraOptimiser[] { new FullTextOptimiser(searcher) };
 
                 SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
-                Assert.IsNotNull(results);
-                Assert.AreEqual(0, results.Count);
+                Assert.NotNull(results);
+                Assert.Equal(0, results.Count);
             }
         }
 
-        [Test]
+        [Fact]
         public void FullTextGraphSparqlScoping2()
         {
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(this._store);
@@ -136,12 +135,12 @@ namespace VDS.RDF.Query.FullText
                 q.AlgebraOptimisers = new IAlgebraOptimiser[] { new FullTextOptimiser(searcher) };
 
                 SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
-                Assert.IsNotNull(results);
-                Assert.AreEqual(1, results.Count);
+                Assert.NotNull(results);
+                Assert.Equal(1, results.Count);
             }
         }
 
-        [Test]
+        [Fact]
         public void FullTextGraphSparqlScoping3()
         {
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(this._store);
@@ -153,12 +152,12 @@ namespace VDS.RDF.Query.FullText
                 q.AlgebraOptimisers = new IAlgebraOptimiser[] { new FullTextOptimiser(searcher) };
 
                 SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
-                Assert.IsNotNull(results);
-                Assert.AreEqual(2, results.Count);
+                Assert.NotNull(results);
+                Assert.Equal(2, results.Count);
             }
         }
 
-        [Test]
+        [Fact]
         public void FullTextGraphSparqlScoping4()
         {
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(this._store);
@@ -170,12 +169,12 @@ namespace VDS.RDF.Query.FullText
                 q.AlgebraOptimisers = new IAlgebraOptimiser[] { new FullTextOptimiser(searcher) };
 
                 SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
-                Assert.IsNotNull(results);
-                Assert.AreEqual(3, results.Count);
+                Assert.NotNull(results);
+                Assert.Equal(3, results.Count);
             }
         }
 
-        [Test]
+        [Fact]
         public void FullTextGraphSparqlScoping5()
         {
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(this._store);
@@ -187,13 +186,13 @@ namespace VDS.RDF.Query.FullText
                 q.AlgebraOptimisers = new IAlgebraOptimiser[] { new FullTextOptimiser(searcher) };
 
                 SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
-                Assert.IsNotNull(results);
-                Assert.AreEqual(1, results.Count);
-                Assert.AreEqual(new Uri("http://y"), ((IUriNode)results.First()["s"]).Uri);
+                Assert.NotNull(results);
+                Assert.Equal(1, results.Count);
+                Assert.Equal(new Uri("http://y"), ((IUriNode)results.First()["s"]).Uri);
             }
         }
 
-        [Test]
+        [Fact]
         public void FullTextGraphSparqlScoping6()
         {
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(this._store);
@@ -205,9 +204,9 @@ namespace VDS.RDF.Query.FullText
                 q.AlgebraOptimisers = new IAlgebraOptimiser[] { new FullTextOptimiser(searcher) };
 
                 SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
-                Assert.IsNotNull(results);
-                Assert.AreEqual(2, results.Count);
-                Assert.AreEqual(new Uri("http://y"), ((IUriNode)results.First()["s"]).Uri);
+                Assert.NotNull(results);
+                Assert.Equal(2, results.Count);
+                Assert.Equal(new Uri("http://y"), ((IUriNode)results.First()["s"]).Uri);
             }
         }
     }

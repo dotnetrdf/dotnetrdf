@@ -26,18 +26,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.IO;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Writing
 {
-    [TestFixture]
+
     public class SparqlXmlTests
     {
         private readonly SparqlXmlParser _parser = new SparqlXmlParser();
 
-        [Test]
+        [Fact]
         public void WritingSparqlXmlWithNulls()
         {
             TripleStore store = new TripleStore();
@@ -67,15 +67,15 @@ namespace VDS.RDF.Writing
                 TestTools.ShowResults(rset2);
                 Console.WriteLine();
 
-                Assert.AreEqual(rset, rset2, "Result Sets should be equal");
+                Assert.Equal(rset, rset2);
             }
             else
             {
-                Assert.Fail("Query did not return a Result Set as expected");
+                Assert.True(false, "Query did not return a Result Set as expected");
             }
         }
 
-        [Test]
+        [Fact]
         public void WritingSparqlXmlWithSpecialCharacters()
         {
             TripleStore store = new TripleStore();
@@ -111,15 +111,15 @@ namespace VDS.RDF.Writing
                 TestTools.ShowResults(rset2);
                 Console.WriteLine();
 
-                Assert.AreEqual(rset, rset2, "Result Sets should be equal");
+                Assert.Equal(rset, rset2);
             }
             else
             {
-                Assert.Fail("Query did not return a Result Set as expected");
+                Assert.True(false, "Query did not return a Result Set as expected");
             }
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlXmlCore432_01()
         {
             // Test case based off of CORE-432 - relative URI in XML
@@ -138,7 +138,7 @@ namespace VDS.RDF.Writing
             Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlXmlCore432_02()
         {
             // Test case based off of CORE-432 - relative URI in XML
@@ -157,7 +157,7 @@ namespace VDS.RDF.Writing
             Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlXmlCore432_03()
         {
             // Test case based off of CORE-432 - invalid URI in XML
@@ -176,7 +176,7 @@ namespace VDS.RDF.Writing
             Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlXmlCore432_04()
         {
             // Test case based off of CORE-432 - invalid URI in XML

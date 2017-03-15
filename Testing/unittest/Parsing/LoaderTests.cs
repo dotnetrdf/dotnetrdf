@@ -29,18 +29,19 @@ using System.Linq;
 using System.IO;
 using System.Net;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Parsing
 {
-    [TestFixture]
+
     public class LoaderTests
     {
 
-        [Test]
+        [Fact]
         public void ParsingDataUri1()
         {
             String rdfFragment = "@prefix : <http://example.org/> . :subject :predicate :object .";
@@ -65,7 +66,7 @@ namespace VDS.RDF.Parsing
                 Graph g = new Graph();
                 DataUriLoader.Load(g, u);
 
-                Assert.AreEqual(1, g.Triples.Count, "Expected 1 Triple to be produced");
+                Assert.Equal(1, g.Triples.Count);
 
                 Console.WriteLine("Triples produced:");
                 foreach (Triple t in g.Triples)
@@ -77,7 +78,7 @@ namespace VDS.RDF.Parsing
         }
 
 #if !PORTABLE
-        [Test]
+        [Fact]
         public void ParsingDataUri2()
         {
             String rdfFragment = "@prefix : <http://example.org/> . :subject :predicate :object .";
@@ -102,7 +103,7 @@ namespace VDS.RDF.Parsing
                 Graph g = new Graph();
                 UriLoader.Load(g, u);
 
-                Assert.AreEqual(1, g.Triples.Count, "Expected 1 Triple to be produced");
+                Assert.Equal(1, g.Triples.Count);
 
                 Console.WriteLine("Triples produced:");
                 foreach (Triple t in g.Triples)
@@ -113,12 +114,12 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void ParsingDBPedia()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
             {
-                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
             }
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://dbpedia.org/resource/London");
@@ -144,7 +145,7 @@ namespace VDS.RDF.Parsing
                 Console.WriteLine("ERROR");
                 Console.WriteLine(webEx.Message);
                 Console.WriteLine(webEx.StackTrace);
-                Assert.Fail();
+                Assert.True(false);
             }
 
             request = (HttpWebRequest)WebRequest.Create("http://dbpedia.org/data/London");
@@ -168,7 +169,7 @@ namespace VDS.RDF.Parsing
                 Console.WriteLine("ERROR");
                 Console.WriteLine(webEx.Message);
                 Console.WriteLine(webEx.StackTrace);
-                Assert.Fail();
+                Assert.True(false);
             }
 
             try
@@ -184,7 +185,7 @@ namespace VDS.RDF.Parsing
                 Console.WriteLine("ERROR");
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
-                Assert.Fail();
+                Assert.True(false);
             }
             finally
             {
@@ -203,12 +204,12 @@ namespace VDS.RDF.Parsing
 
 #if !PORTABLE
 
-        [Test]
+        [SkippableFact]
         public void ParsingUriLoaderDBPedia1()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
             {
-                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
             }
 
             int defaultTimeout = Options.UriLoaderTimeout;
@@ -225,7 +226,7 @@ namespace VDS.RDF.Parsing
                 {
                     Console.WriteLine(t.ToString(formatter));
                 }
-                Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
+                Assert.False(g.IsEmpty, "Graph should not be empty");
             }
             finally
             {
@@ -235,12 +236,12 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void ParsingUriLoaderDBPedia2()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
             {
-                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
             }
 
             IGraph g = new Graph();
@@ -255,12 +256,12 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void ParsingUriLoaderDBPedia3()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
             {
-                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
             }
 
             int defaultTimeout = Options.UriLoaderTimeout;
@@ -272,7 +273,7 @@ namespace VDS.RDF.Parsing
 
                 Graph g = new Graph();
                 UriLoader.Load(g, new Uri("http://dbpedia.org/ontology/wikiPageRedirects"), new RdfXmlParser());
-                Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
+                Assert.False(g.IsEmpty, "Graph should not be empty");
                 TestTools.ShowGraph(g);
             }
             finally
@@ -285,7 +286,7 @@ namespace VDS.RDF.Parsing
 
 #endif
 
-        [Test]
+        [Fact]
         public void ParsingEmbeddedResourceInDotNetRdf()
         {
             Graph g = new Graph();
@@ -293,10 +294,10 @@ namespace VDS.RDF.Parsing
 
             TestTools.ShowGraph(g);
 
-            Assert.IsFalse(g.IsEmpty, "Graph should be non-empty");
+            Assert.False(g.IsEmpty, "Graph should be non-empty");
         }
 
-        [Test]
+        [Fact]
         public void ParsingEmbeddedResourceInDotNetRdf2()
         {
             Graph g = new Graph();
@@ -304,10 +305,10 @@ namespace VDS.RDF.Parsing
 
             TestTools.ShowGraph(g);
 
-            Assert.IsFalse(g.IsEmpty, "Graph should be non-empty");
+            Assert.False(g.IsEmpty, "Graph should be non-empty");
         }
 
-        [Test]
+        [Fact]
         public void ParsingEmbeddedResourceInExternalAssembly()
         {
             Graph g = new Graph();
@@ -319,20 +320,20 @@ namespace VDS.RDF.Parsing
 
             TestTools.ShowGraph(g);
 
-            Assert.IsFalse(g.IsEmpty, "Graph should be non-empty");
+            Assert.False(g.IsEmpty, "Graph should be non-empty");
         }
 
-        [Test]
+        [Fact]
         public void ParsingEmbeddedResourceLoaderGraphIntoTripleStore()
         {
             TripleStore store = new TripleStore();
             store.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
 
-            Assert.IsTrue(store.Triples.Count() > 0);
-            Assert.AreEqual(1, store.Graphs.Count);
+            Assert.True(store.Triples.Count() > 0);
+            Assert.Equal(1, store.Graphs.Count);
         }
 
-        [Test]
+        [Fact]
         public void ParsingFileLoaderGraphIntoTripleStore()
         {
             Graph g = new Graph();
@@ -343,8 +344,8 @@ namespace VDS.RDF.Parsing
             
             store.LoadFromFile("fileloader-graph-to-store.ttl");
 
-            Assert.IsTrue(store.Triples.Count() > 0);
-            Assert.AreEqual(1, store.Graphs.Count);
+            Assert.True(store.Triples.Count() > 0);
+            Assert.Equal(1, store.Graphs.Count);
         }
        
     }

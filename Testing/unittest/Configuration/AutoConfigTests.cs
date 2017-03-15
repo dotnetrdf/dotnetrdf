@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Configuration;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Operators;
@@ -35,31 +35,31 @@ using VDS.RDF.Query.Operators.DateTime;
 
 namespace VDS.RDF.Configuration
 {
-    [TestFixture]
+
     public class AutoConfigTests
     {
-        [Test]
+        [Fact]
         public void ConfigurationStaticOptionUri1()
         {
             Uri optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Options#UsePLinqEvaluation");
 
-            Assert.AreEqual("dotnetrdf-configure", optionUri.Scheme);
-            Assert.AreEqual(1, optionUri.Segments.Length);
-            Assert.AreEqual("VDS.RDF.Options", optionUri.Segments[0]);
-            Assert.AreEqual("VDS.RDF.Options", optionUri.AbsolutePath);
-            Assert.AreEqual("UsePLinqEvaluation", optionUri.Fragment.Substring(1));
+            Assert.Equal("dotnetrdf-configure", optionUri.Scheme);
+            Assert.Equal(1, optionUri.Segments.Length);
+            Assert.Equal("VDS.RDF.Options", optionUri.Segments[0]);
+            Assert.Equal("VDS.RDF.Options", optionUri.AbsolutePath);
+            Assert.Equal("UsePLinqEvaluation", optionUri.Fragment.Substring(1));
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationStaticOptionUri2()
         {
             Uri optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Options,SomeAssembly#UsePLinqEvaluation");
 
-            Assert.AreEqual("dotnetrdf-configure", optionUri.Scheme);
-            Assert.AreEqual(1, optionUri.Segments.Length);
-            Assert.AreEqual("VDS.RDF.Options,SomeAssembly", optionUri.Segments[0]);
-            Assert.AreEqual("VDS.RDF.Options,SomeAssembly", optionUri.AbsolutePath);
-            Assert.AreEqual("UsePLinqEvaluation", optionUri.Fragment.Substring(1));
+            Assert.Equal("dotnetrdf-configure", optionUri.Scheme);
+            Assert.Equal(1, optionUri.Segments.Length);
+            Assert.Equal("VDS.RDF.Options,SomeAssembly", optionUri.Segments[0]);
+            Assert.Equal("VDS.RDF.Options,SomeAssembly", optionUri.AbsolutePath);
+            Assert.Equal("UsePLinqEvaluation", optionUri.Fragment.Substring(1));
         }
 
         private void ApplyStaticOptionsConfigure(Uri option, String value)
@@ -82,7 +82,7 @@ namespace VDS.RDF.Configuration
             ConfigurationLoader.AutoConfigureStaticOptions(g);
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationStaticOptionsNoFragment()
         {
             Uri optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Graph");
@@ -90,7 +90,7 @@ namespace VDS.RDF.Configuration
             Assert.Throws<DotNetRdfConfigurationException>(() => this.ApplyStaticOptionsConfigure(optionUri, ""));
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationStaticOptionsBadClass()
         {
             Uri optionUri = new Uri("dotnetrdf-configure:VDS.RDF.NoSuchClass#Property");
@@ -98,7 +98,7 @@ namespace VDS.RDF.Configuration
             Assert.Throws<DotNetRdfConfigurationException>(() => this.ApplyStaticOptionsConfigure(optionUri, ""));
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationStaticOptionsBadProperty()
         {
             Uri optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Graph#NoSuchProperty");
@@ -106,7 +106,7 @@ namespace VDS.RDF.Configuration
             Assert.Throws<DotNetRdfConfigurationException>(() => this.ApplyStaticOptionsConfigure(optionUri, ""));
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationStaticOptionsNonStaticProperty()
         {
             Uri optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Graph#BaseUri");
@@ -114,18 +114,18 @@ namespace VDS.RDF.Configuration
             Assert.Throws<DotNetRdfConfigurationException>(() => this.ApplyStaticOptionsConfigure(optionUri, "http://example.org"));
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationStaticOptionsEnumProperty()
         {
             LiteralEqualityMode current = Options.LiteralEqualityMode;
             try
             {
-                Assert.AreEqual(current, Options.LiteralEqualityMode);
+                Assert.Equal(current, Options.LiteralEqualityMode);
 
                 Uri optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Options#LiteralEqualityMode");
                 this.ApplyStaticOptionsConfigure(optionUri, "Loose");
 
-                Assert.AreEqual(LiteralEqualityMode.Loose, Options.LiteralEqualityMode);
+                Assert.Equal(LiteralEqualityMode.Loose, Options.LiteralEqualityMode);
             }
             finally
             {
@@ -133,19 +133,19 @@ namespace VDS.RDF.Configuration
             }
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationStaticOptionsInt32Property()
         {
             int current = Options.UriLoaderTimeout;
             try
             {
-                Assert.AreEqual(current, Options.UriLoaderTimeout);
+                Assert.Equal(current, Options.UriLoaderTimeout);
 
                 Uri optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Options#UriLoaderTimeout");
                 Graph g = new Graph();
                 this.ApplyStaticOptionsConfigure(g, optionUri, (99).ToLiteral(g));
 
-                Assert.AreEqual(99, Options.UriLoaderTimeout);
+                Assert.Equal(99, Options.UriLoaderTimeout);
             }
             finally
             {
@@ -153,19 +153,19 @@ namespace VDS.RDF.Configuration
             }
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationStaticOptionsInt64Property()
         {
             long current = Options.QueryExecutionTimeout;
             try
             {
-                Assert.AreEqual(current, Options.QueryExecutionTimeout);
+                Assert.Equal(current, Options.QueryExecutionTimeout);
 
                 Uri optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Options#QueryExecutionTimeout");
                 Graph g = new Graph();
                 this.ApplyStaticOptionsConfigure(g, optionUri, (99).ToLiteral(g));
 
-                Assert.AreEqual(99, Options.QueryExecutionTimeout);
+                Assert.Equal(99, Options.QueryExecutionTimeout);
             }
             finally
             {
@@ -174,19 +174,19 @@ namespace VDS.RDF.Configuration
         }
 
 #if NET40 && !SILVERLIGHT
-        [Test]
+        [Fact]
         public void ConfigurationStaticOptionsBooleanProperty()
         {
             bool current = Options.UsePLinqEvaluation;
             try
             {
-                Assert.AreEqual(current, Options.UsePLinqEvaluation);
+                Assert.Equal(current, Options.UsePLinqEvaluation);
 
                 Uri optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Options#UsePLinqEvaluation");
                 Graph g = new Graph();
                 this.ApplyStaticOptionsConfigure(g, optionUri, (false).ToLiteral(g));
 
-                Assert.IsFalse(Options.UsePLinqEvaluation);
+                Assert.False(Options.UsePLinqEvaluation);
             }
             finally
             {
@@ -195,7 +195,7 @@ namespace VDS.RDF.Configuration
         }
 #endif
 
-        [Test]
+        [Fact]
         public void ConfigurationAutoOperators1()
         {
             try
@@ -212,7 +212,7 @@ dnr:type """ + typeof(MockSparqlOperator).AssemblyQualifiedName + @""" .";
                 ISparqlOperator op;
                 SparqlOperators.TryGetOperator(SparqlOperatorType.Add, out op, null);
 
-                Assert.AreEqual(typeof(MockSparqlOperator), op.GetType());
+                Assert.Equal(typeof(MockSparqlOperator), op.GetType());
                 SparqlOperators.RemoveOperator(op);
             }
             finally
@@ -221,7 +221,7 @@ dnr:type """ + typeof(MockSparqlOperator).AssemblyQualifiedName + @""" .";
             }
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationAutoOperators2()
         {
             try
@@ -236,7 +236,7 @@ dnr:enabled false .";
 
                 ConfigurationLoader.AutoConfigureSparqlOperators(g);
 
-                Assert.IsFalse(SparqlOperators.IsRegistered(new DateTimeAddition()));
+                Assert.False(SparqlOperators.IsRegistered(new DateTimeAddition()));
             }
             finally
             {

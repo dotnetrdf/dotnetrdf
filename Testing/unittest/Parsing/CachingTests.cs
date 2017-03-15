@@ -28,19 +28,20 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Parsing
 {
 #if !NO_URICACHE
-    [TestFixture]
+
     public class CachingTests
     {
         private static Uri test = new Uri("http://www.dotnetrdf.org/configuration#");
 
-        [Test]
+        [Fact]
         public void ParsingUriLoaderCache()
         {
             //Load the Graph
@@ -51,10 +52,10 @@ namespace VDS.RDF.Parsing
             Graph h = new Graph();
             UriLoader.Load(h, test);
 
-            Assert.AreEqual(g, h);
+            Assert.Equal(g, h);
         }
 
-        [Test]
+        [Fact]
         public void ParsingUriLoaderCustomCache()
         {
             String original = UriLoader.CacheDirectory;
@@ -70,7 +71,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [Test]
+        [Fact]
         public void ParsingUriLoaderUriSantisation()
         {
             Uri a = new Uri(ConfigurationLoader.ClassTripleStore);
@@ -79,25 +80,25 @@ namespace VDS.RDF.Parsing
             Console.WriteLine("URI A: " + a.AbsoluteUri + " is equivalent to " + Tools.StripUriFragment(a).AbsoluteUri);
             Console.WriteLine("URI B:" + b.AbsoluteUri + " is equivalent to " + Tools.StripUriFragment(b).AbsoluteUri);
 
-            Assert.AreEqual(Tools.StripUriFragment(a).AbsoluteUri, Tools.StripUriFragment(b).AbsoluteUri, "URIs stripped of their Fragment IDs should have been equal");
+            Assert.Equal(Tools.StripUriFragment(a).AbsoluteUri, Tools.StripUriFragment(b).AbsoluteUri);
 
             Graph g = new Graph();
             UriLoader.Load(g, a);
 
-            Assert.IsTrue(UriLoader.IsCached(a), "Content should have been cached as a result of loading from the URI");
+            Assert.True(UriLoader.IsCached(a), "Content should have been cached as a result of loading from the URI");
 
             Graph h = new Graph();
             UriLoader.Load(h, b);
 
-            Assert.AreEqual(g, h, "Two Graphs should be equal since they come from the same URI");
+            Assert.Equal(g, h);
         }
 
-        [Test]
+        [SkippableFact]
         public void ParsingUriLoaderResponseUriCaching()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
             {
-                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
             }
 
             int defaultTimeout = Options.UriLoaderTimeout;
@@ -111,9 +112,9 @@ namespace VDS.RDF.Parsing
                 Graph g = new Graph();
                 UriLoader.Load(g, soton);
 
-                Assert.IsTrue(UriLoader.IsCached(soton), "Resource URI should have been cached");
-                Assert.IsTrue(UriLoader.IsCached(sotonData), "Data URI should have been cached");
-                Assert.IsFalse(UriLoader.IsCached(sotonPage), "Page URI should not have been cached");
+                Assert.True(UriLoader.IsCached(soton), "Resource URI should have been cached");
+                Assert.True(UriLoader.IsCached(sotonData), "Data URI should have been cached");
+                Assert.False(UriLoader.IsCached(sotonPage), "Page URI should not have been cached");
             }
             finally
             {

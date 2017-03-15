@@ -28,15 +28,13 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 
 namespace VDS.RDF
 {
-    [TestFixture]
+
     public abstract class BaseTest
     {
-        protected TestContext testContextInstance;
-
         protected static readonly IEnumerable<CultureInfo> TestedCultureInfos = new[]
             {
                 new CultureInfo("en-US"), 
@@ -45,21 +43,5 @@ namespace VDS.RDF
                 new CultureInfo("ru-RU"), 
                 new CultureInfo("pt-BR")
             };
-
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
-        public TestContext TestContext
-        {
-            get
-            {
-                return testContextInstance;
-            }
-            set
-            {
-                testContextInstance = value;
-            }
-        }
     }
 }

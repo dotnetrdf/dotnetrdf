@@ -29,14 +29,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing
 {
-    [TestFixture, Explicit, NUnit.Framework.Category("parsing speed")]
+    [Trait("Category", "parsing speed")]
     public class SpeedTesting
     {
         private void EnsureTestData(int triples, String file, ITripleFormatter formatter)
@@ -69,7 +69,7 @@ namespace VDS.RDF.Parsing
             Console.WriteLine("Triples/Second = " + tps);
         }
 
-        [Test]
+        [Fact]
         public void ParsingSpeedTurtle10Thousand()
         {
             try
@@ -94,7 +94,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [Test]
+        [Fact]
         public void ParsingSpeedTurtle100Thousand()
         {
             try
@@ -119,7 +119,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [Test]
+        [Fact]
         public void ParsingSpeedTurtle500Thousand()
         {
             try
@@ -144,7 +144,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [Test]
+        [Fact]
         public void ParsingSpeedTurtle10ThousandCountOnly()
         {
             try
@@ -170,7 +170,7 @@ namespace VDS.RDF.Parsing
                 Console.WriteLine(watch.Elapsed.ToString());
                 this.CalculateSpeed(10000, watch);
 
-                Assert.AreEqual(10000, handler.Count);
+                Assert.Equal(10000, handler.Count);
             }
             finally
             {
@@ -178,7 +178,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [Test]
+        [Fact]
         public void ParsingSpeedTurtle100ThousandCountOnly()
         {
             try
@@ -204,7 +204,7 @@ namespace VDS.RDF.Parsing
                 Console.WriteLine(watch.Elapsed.ToString());
                 this.CalculateSpeed(100000, watch);
 
-                Assert.AreEqual(100000, handler.Count);
+                Assert.Equal(100000, handler.Count);
             }
             finally
             {
@@ -212,7 +212,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [Test]
+        [Fact]
         public void ParsingSpeedNTriples10Thousand()
         {
             try
@@ -237,7 +237,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [Test]
+        [Fact]
         public void ParsingSpeedNTriples100Thousand()
         {
             try
@@ -262,7 +262,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [Test]
+        [Fact]
         public void ParsingSpeedNTriples500Thousand()
         {
             try
@@ -287,7 +287,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [Test]
+        [Fact]
         public void ParsingSpeedNTriples1Million()
         {
             try

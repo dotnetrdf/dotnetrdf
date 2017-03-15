@@ -27,7 +27,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
@@ -36,7 +36,7 @@ namespace VDS.RDF
     /// <summary>
     /// Some Tests for Hard Graph Matching based on the types of tests that Jena uses
     /// </summary>
-    [TestFixture]
+
     public class HardGraphMatching
     {
         private const int Runs = 5;
@@ -49,7 +49,7 @@ namespace VDS.RDF
         private NodeFactory _factory = new NodeFactory();
         private INodeFormatter _formatter = new NTriplesFormatter();
 
-        [Test]
+        [Fact]
         public void GraphHardMatch1()
         {
             IGraph g = new Graph();
@@ -74,7 +74,7 @@ namespace VDS.RDF
                     TestTools.ShowGraph(h);
                 }
 
-                Assert.IsTrue(g.Equals(h), "Graphs should be equal");
+                Assert.True(g.Equals(h), "Graphs should be equal");
                 Console.WriteLine("Run #" + (i+1) + " passed OK");
 
                 g = new Graph();
@@ -82,7 +82,7 @@ namespace VDS.RDF
             }
         }
 
-        [Test]
+        [Fact]
         public void GraphHardMatch2()
         {
             IGraph g = new Graph();
@@ -107,7 +107,7 @@ namespace VDS.RDF
                     TestTools.ShowGraph(h);
                 }
 
-                Assert.IsTrue(g.Equals(h), "Graphs should be equal");
+                Assert.True(g.Equals(h), "Graphs should be equal");
                 Console.WriteLine("Run #" + (i + 1) + " passed OK");
 
                 g = new Graph();
@@ -115,7 +115,7 @@ namespace VDS.RDF
             }
         }
 
-        [Test]
+        [Fact]
         public void GraphHardMatchCyclic()
         {
             Random rnd = new Random();
@@ -131,12 +131,12 @@ namespace VDS.RDF
                     TestTools.ShowGraph(h);
                 }
 
-                Assert.AreEqual(g, h, "Graphs should be equal");
+                Assert.Equal(g, h);
                 Console.WriteLine("Run #" + (i + 1) + " Passed");
             }
         }
 
-        [Test]
+        [Fact]
         public void GraphHardMatchCyclic2()
         {
             Random rnd = new Random();
@@ -152,22 +152,22 @@ namespace VDS.RDF
                     TestTools.ShowGraph(h);
                 }
 
-                Assert.AreEqual(g, h, "Graphs should be equal");
+                Assert.Equal(g, h);
                 Console.WriteLine("Run #" + (i + 1) + " Passed");
             }
         }
 
-        [Test]
+        [Fact]
         public void GraphHardMatchCyclic3()
         {
             Console.WriteLine("This test is just to verify that our Cyclic Graph generation is working properly");
             IGraph g = this.GenerateCyclicGraph(CycleNodes, 74, CycleDropNodes);
             IGraph h = this.GenerateCyclicGraph(CycleNodes, 90, CycleDropNodes);
 
-            Assert.AreEqual(g, h, "Graphs should be equal");
+            Assert.Equal(g, h);
         }
 
-        [Test]
+        [Fact]
         public void GraphHardMatchStar()
         {
             for (int i = 0; i < Runs; i++)
@@ -181,14 +181,14 @@ namespace VDS.RDF
                     TestTools.ShowGraph(h);
                 }
 
-                Assert.AreEqual(g, h, "Graphs should have been equal");
+                Assert.Equal(g, h);
 
                 Console.WriteLine("Run #" + (i + 1) + " Passed");
             }
 
         }
 
-        [Test]
+        [Fact]
         public void GraphMatchTrivial1()
         {
             Graph g = new Graph();
@@ -198,10 +198,10 @@ namespace VDS.RDF
 
             GraphDiffReport report = g.Difference(h);
             if (!report.AreEqual) TestTools.ShowDifferences(report);
-            Assert.IsTrue(report.AreEqual);
+            Assert.True(report.AreEqual);
         }
 
-        [Test]
+        [Fact]
         public void GraphMatchTrivial2()
         {
             Graph g = new Graph();
@@ -232,10 +232,10 @@ namespace VDS.RDF
 
             GraphDiffReport report = g.Difference(h);
             if (!report.AreEqual) TestTools.ShowDifferences(report);
-            Assert.IsTrue(report.AreEqual);
+            Assert.True(report.AreEqual);
         }
 
-        [Test]
+        [Fact]
         public void GraphHardTrivial3()
         {
             Graph g = new Graph();
@@ -243,45 +243,45 @@ namespace VDS.RDF
             Graph h = new Graph();
             h.LoadFromFile("..\\resources/turtle11/first.ttl");
 
-            Assert.AreEqual(g, h);
+            Assert.Equal(g, h);
         }
 
-        [Test, Timeout(10000)]
+        [Fact]
         public void GraphMatchSlowOnEqualGraphsCase1()
         {
             const string testGraphName = "case1";
             TestGraphMatch(testGraphName);
         }
 
-        [Test, Timeout(10000)]
+        [Fact]
         public void GraphMatchSlowOnEqualGraphsCase2()
         {
             const string testGraphName = "case2";
             TestGraphMatch(testGraphName);
         }
 
-        [Test, Timeout(10000)]
+        [Fact]
         public void GraphMatchSlowOnEqualGraphsCase3()
         {
             const string testGraphName = "case3";
             TestGraphMatch(testGraphName);
         }
 
-        [Test, Timeout(10000)]
+        [Fact]
         public void GraphMatchSlowOnEqualGraphsCase4()
         {
             const string testGraphName = "case4";
             TestGraphMatch(testGraphName);
         }
 
-        [Test, Timeout(10000)]
+        [Fact]
         public void GraphMatchSlowOnEqualGraphsCase5()
         {
             const string testGraphName = "case5";
             TestGraphMatch(testGraphName);
         }
 
-        [Test, Timeout(10000)]
+        [Fact]
         public void GraphMatchSlowOnEqualGraphsCase6()
         {
             const string testGraphName = "case6";
@@ -295,8 +295,8 @@ namespace VDS.RDF
             Graph b = new Graph();
             b.LoadFromFile(string.Format("resources\\diff_cases\\{0}_b.ttl", testGraphName));
 
-            Assert.IsTrue(a.Equals(b));
-            Assert.IsTrue(b.Equals(a));
+            Assert.True(a.Equals(b));
+            Assert.True(b.Equals(a));
         }
 
         private IGraph GenerateCyclicGraph(int nodes, int seed)
@@ -370,7 +370,7 @@ namespace VDS.RDF
             return g;
         }
 
-        [Test]
+        [Fact]
         public void GraphMatchBruteForce1()
         {
             Dictionary<INode, INode> empty = new Dictionary<INode, INode>();
@@ -384,12 +384,12 @@ namespace VDS.RDF
 
             List<Dictionary<INode, INode>> generated = GraphMatcher.GenerateMappings(empty, possibles).ToList();
             this.PrintMappings(generated);
-            Assert.AreEqual(2, generated.Count);
-            Assert.IsTrue(generated.All(m => m.ContainsKey(a)));
-            Assert.IsFalse(generated.All(m => m[a].Equals(b1)));
+            Assert.Equal(2, generated.Count);
+            Assert.True(generated.All(m => m.ContainsKey(a)));
+            Assert.False(generated.All(m => m[a].Equals(b1)));
         }
 
-        [Test]
+        [Fact]
         public void GraphMatchBruteForce2()
         {
             Dictionary<INode, INode> empty = new Dictionary<INode, INode>();
@@ -405,11 +405,11 @@ namespace VDS.RDF
 
             List<Dictionary<INode, INode>> generated = GraphMatcher.GenerateMappings(empty, possibles).ToList();
             this.PrintMappings(generated);
-            Assert.AreEqual(4, generated.Count);
-            Assert.IsTrue(generated.All(m => m.ContainsKey(a1)));
+            Assert.Equal(4, generated.Count);
+            Assert.True(generated.All(m => m.ContainsKey(a1)));
         }
 
-        [Test]
+        [Fact]
         public void GraphMatchBruteForce3()
         {
             Dictionary<INode, INode> empty = new Dictionary<INode, INode>();
@@ -425,11 +425,11 @@ namespace VDS.RDF
 
             List<Dictionary<INode, INode>> generated = GraphMatcher.GenerateMappings(empty, possibles).ToList();
             this.PrintMappings(generated);
-            Assert.AreEqual(2, generated.Count);
-            Assert.IsTrue(generated.All(m => m.ContainsKey(a1)));
+            Assert.Equal(2, generated.Count);
+            Assert.True(generated.All(m => m.ContainsKey(a1)));
         }
 
-        [Test]
+        [Fact]
         public void GraphMatchBruteForce4()
         {
             Dictionary<INode, INode> baseMapping = new Dictionary<INode, INode>();
@@ -447,8 +447,8 @@ namespace VDS.RDF
 
             List<Dictionary<INode, INode>> generated = GraphMatcher.GenerateMappings(baseMapping, possibles).ToList();
             this.PrintMappings(generated);
-            Assert.AreEqual(2, generated.Count);
-            Assert.IsTrue(generated.All(m => m.ContainsKey(a1)));
+            Assert.Equal(2, generated.Count);
+            Assert.True(generated.All(m => m.ContainsKey(a1)));
         }
 
         private void PrintMappings(List<Dictionary<INode, INode>> mappings)
@@ -464,32 +464,32 @@ namespace VDS.RDF
             }
         }
 
-        [Test]
+        [Fact]
         public void GraphMatchNull1()
         {
             GraphMatcher matcher = new GraphMatcher();
-            Assert.IsTrue(matcher.Equals(null, null));
+            Assert.True(matcher.Equals(null, null));
         }
 
-        [Test]
+        [Fact]
         public void GraphMatchNull2()
         {
             GraphMatcher matcher = new GraphMatcher();
-            Assert.IsFalse(matcher.Equals(new Graph(), null));
+            Assert.False(matcher.Equals(new Graph(), null));
         }
 
-        [Test]
+        [Fact]
         public void GraphMatchNull3()
         {
             GraphMatcher matcher = new GraphMatcher();
-            Assert.IsFalse(matcher.Equals(null, new Graph()));
+            Assert.False(matcher.Equals(null, new Graph()));
         }
 
-        [Test]
+        [Fact]
         public void GraphMatchNull4()
         {
             IGraph g = new Graph();
-            Assert.IsFalse(g.Equals((IGraph)null));
+            Assert.False(g.Equals((IGraph)null));
         }
     }
 }

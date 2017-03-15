@@ -28,17 +28,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
-    [TestFixture]
+
     public class FormattingTests
     {
-        [Test]
+        [Fact]
         public void WritingFormattingTriples()
         {
             try
@@ -136,7 +136,7 @@ namespace VDS.RDF.Writing
             }       
         }
 
-        [Test]
+        [Fact]
         public void WritingFormattingGraphs()
         {
             List<IGraph> graphs = new List<IGraph>();
@@ -192,13 +192,13 @@ namespace VDS.RDF.Writing
                         TestTools.ShowDifferences(diff);
                     }
 
-                    Assert.AreEqual(graph, h, "Graphs should be equal after round tripping");
+                    Assert.Equal(graph, h);
                 }
             }
             Console.WriteLine();
         }
 
-        [Test]
+        [Fact]
         public void WritingFormattingResultSets()
         {
             Graph g = new Graph();
@@ -235,7 +235,7 @@ namespace VDS.RDF.Writing
                 ISparqlResultsReader parser = parsers[i];
                 parser.Load(actual, new StringReader(output.ToString()));
 
-                Assert.AreEqual(expected, actual, "Result Sets should be equal after round tripping");
+                Assert.Equal(expected, actual);
             }
             Console.WriteLine();
         }

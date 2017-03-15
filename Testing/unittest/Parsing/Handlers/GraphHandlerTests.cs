@@ -28,18 +28,18 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Handlers
 {
-    [TestFixture]
+
     public class GraphHandlerTests
     {
 #if !NO_SYNC_HTTP
-        [Test]
+        [Fact]
         public void ParsingGraphHandlerImplicitBaseUriPropogation()
         {
             try
@@ -60,7 +60,7 @@ namespace VDS.RDF.Parsing.Handlers
             }
         }
 
-        [Test]
+        [Fact]
         public void ParsingGraphHandlerImplicitBaseUriPropogation2()
         {
             try
@@ -83,7 +83,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 #endif
 
-        [Test]
+        [Fact]
         public void ParsingGraphHandlerImplicitTurtle()
         {
             Graph g = new Graph();
@@ -95,8 +95,8 @@ namespace VDS.RDF.Parsing.Handlers
                 Console.WriteLine(t.ToString(formatter));
             }
 
-            Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
-            Assert.IsTrue(g.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
+            Assert.False(g.IsEmpty, "Graph should not be empty");
+            Assert.True(g.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
         }
 
         #region Explicit GraphHandler Usage
@@ -124,33 +124,33 @@ namespace VDS.RDF.Parsing.Handlers
                 Console.WriteLine(t.ToString(formatter));
             }
 
-            Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
-            Assert.IsTrue(g.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
-            Assert.IsFalse(h.IsEmpty, "Graph should not be empty");
-            if (nsCheck) Assert.IsTrue(h.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
-            Assert.AreEqual(g, h, "Graphs should be equal");
+            Assert.False(g.IsEmpty, "Graph should not be empty");
+            Assert.True(g.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
+            Assert.False(h.IsEmpty, "Graph should not be empty");
+            if (nsCheck) Assert.True(h.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
+            Assert.Equal(g, h);
         }
 
-        [Test]
+        [Fact]
         public void ParsingGraphHandlerExplicitNTriples()
         {
             this.ParsingUsingGraphHandlerExplicitTest("temp.nt", new NTriplesParser(), false);
         }
 
-        [Test]
+        [Fact]
         public void ParsingGraphHandlerExplicitTurtle()
         {
             this.ParsingUsingGraphHandlerExplicitTest("temp.ttl", new TurtleParser(), true);
         }
 
-        [Test]
+        [Fact]
         public void ParsingGraphHandlerExplicitNotation3()
         {
             this.ParsingUsingGraphHandlerExplicitTest("temp.n3", new Notation3Parser(), true);
         }
 
 #if !NO_XMLENTITIES
-        [Test]
+        [Fact]
         public void ParsingGraphHandlerExplicitRdfXml()
         {
             this.ParsingUsingGraphHandlerExplicitTest("temp.rdf", new RdfXmlParser(), true);
@@ -158,14 +158,14 @@ namespace VDS.RDF.Parsing.Handlers
 #endif
 
 #if !NO_HTMLAGILITYPACK
-        [Test]
+        [Fact]
         public void ParsingGraphHandlerExplicitRdfA()
         {
             this.ParsingUsingGraphHandlerExplicitTest("temp.html", new RdfAParser(), false);
         }
 #endif
 
-        [Test]
+        [Fact]
         public void ParsingGraphHandlerExplicitRdfJson()
         {
             this.ParsingUsingGraphHandlerExplicitTest("temp.json", new RdfJsonParser(), false);
@@ -173,7 +173,7 @@ namespace VDS.RDF.Parsing.Handlers
 
         #endregion
 
-        [Test]
+        [Fact]
         public void ParsingGraphHandlerExplicitMerging()
         {
             Graph g = new Graph();
@@ -186,15 +186,15 @@ namespace VDS.RDF.Parsing.Handlers
             TurtleParser parser = new TurtleParser();
             parser.Load(handler, "temp.ttl");
 
-            Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
-            Assert.IsTrue(g.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
-            Assert.IsFalse(h.IsEmpty, "Graph should not be empty");
-            Assert.IsTrue(h.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
-            Assert.AreEqual(g, h, "Graphs should be equal");
+            Assert.False(g.IsEmpty, "Graph should not be empty");
+            Assert.True(g.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
+            Assert.False(h.IsEmpty, "Graph should not be empty");
+            Assert.True(h.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
+            Assert.Equal(g, h);
 
             parser.Load(handler, "temp.ttl");
-            Assert.AreEqual(g.Triples.Count + 2, h.Triples.Count, "Triples count should now be 2 higher due to the merge which will have replicated the 2 triples containing Blank Nodes");
-            Assert.AreNotEqual(g, h, "Graphs should no longer be equal");
+            Assert.Equal(g.Triples.Count + 2, h.Triples.Count);
+            Assert.Equal(g, h);
 
             NTriplesFormatter formatter = new NTriplesFormatter();
             foreach (Triple t in h.Triples.Where(x => !x.IsGroundTriple))
@@ -203,7 +203,7 @@ namespace VDS.RDF.Parsing.Handlers
             }
         }
 
-        [Test]
+        [Fact]
         public void ParsingGraphHandlerImplicitMerging()
         {
             Graph g = new Graph();
@@ -215,15 +215,15 @@ namespace VDS.RDF.Parsing.Handlers
             TurtleParser parser = new TurtleParser();
             parser.Load(h, "temp.ttl");
 
-            Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
-            Assert.IsTrue(g.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
-            Assert.IsFalse(h.IsEmpty, "Graph should not be empty");
-            Assert.IsTrue(h.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
-            Assert.AreEqual(g, h, "Graphs should be equal");
+            Assert.False(g.IsEmpty, "Graph should not be empty");
+            Assert.True(g.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
+            Assert.False(h.IsEmpty, "Graph should not be empty");
+            Assert.True(h.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
+            Assert.Equal(g, h);
 
             parser.Load(h, "temp.ttl");
-            Assert.AreEqual(g.Triples.Count + 2, h.Triples.Count, "Triples count should now be 2 higher due to the merge which will have replicated the 2 triples containing Blank Nodes");
-            Assert.AreNotEqual(g, h, "Graphs should no longer be equal");
+            Assert.Equal(g.Triples.Count + 2, h.Triples.Count);
+            Assert.Equal(g, h);
 
             NTriplesFormatter formatter = new NTriplesFormatter();
             foreach (Triple t in h.Triples.Where(x => !x.IsGroundTriple))
@@ -232,7 +232,7 @@ namespace VDS.RDF.Parsing.Handlers
             }
         }
 
-        [Test]
+        [Fact]
         public void ParsingGraphHandlerImplicitInitialBaseUri()
         {
             Graph g = new Graph();
@@ -242,11 +242,11 @@ namespace VDS.RDF.Parsing.Handlers
             TurtleParser parser = new TurtleParser();
             parser.Load(g, new StringReader(fragment));
 
-            Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
-            Assert.AreEqual(1, g.Triples.Count, "Expected 1 Triple to be parsed");
+            Assert.False(g.IsEmpty, "Graph should not be empty");
+            Assert.Equal(1, g.Triples.Count);
         }
 
-        [Test]
+        [Fact]
         public void ParsingGraphHandlerExplicitInitialBaseUri()
         {
             Graph g = new Graph();
@@ -257,8 +257,8 @@ namespace VDS.RDF.Parsing.Handlers
             GraphHandler handler = new GraphHandler(g);
             parser.Load(handler, new StringReader(fragment));
 
-            Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
-            Assert.AreEqual(1, g.Triples.Count, "Expected 1 Triple to be parsed");
+            Assert.False(g.IsEmpty, "Graph should not be empty");
+            Assert.Equal(1, g.Triples.Count);
         }
     }
 }

@@ -28,12 +28,12 @@ using System.Text;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Parsing
 {
-     [TestFixture]
+
     public class EmptyFileParsing
     {
          private void TestEmptyParsing(IRdfReader reader)
@@ -47,7 +47,7 @@ namespace VDS.RDF.Parsing
              Graph g = new Graph();
              reader.Load(g, "empty.test");
 
-             Assert.IsTrue(g.IsEmpty, "Graph should be empty");
+             Assert.True(g.IsEmpty, "Graph should be empty");
          }
 
          private void TestEmptyDatasetParsing(IStoreReader reader)
@@ -61,34 +61,34 @@ namespace VDS.RDF.Parsing
              TripleStore store = new TripleStore();
              reader.Load(store, "empty.test");
 
-             Assert.AreEqual(0, store.Graphs.Count, "Store should have no Graphs");
+             Assert.Equal(0, store.Graphs.Count);
          }
          
-         [Test]
+         [Fact]
          public void ParsingEmptyFileNTriples()
          {
              this.TestEmptyParsing(new NTriplesParser());
          }
 
-         [Test]
+         [Fact]
          public void ParsingEmptyFileTurtle()
          {
              this.TestEmptyParsing(new TurtleParser());
          }
 
-         [Test]
+         [Fact]
          public void ParsingEmptyFileNotation3()
          {
              this.TestEmptyParsing(new Notation3Parser());
          }
 
-         [Test]
+         [Fact]
          public void ParsingEmptyFileNQuads()
          {
              this.TestEmptyDatasetParsing(new NQuadsParser());
          }
 
-         [Test]
+         [Fact]
          public void ParsingEmptyFileTriG()
          {
              this.TestEmptyDatasetParsing(new TriGParser());

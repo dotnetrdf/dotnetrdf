@@ -27,12 +27,12 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Web
 {
-    [TestFixture]
+
     public class ConnegTests
     {
         private void TestSparqlWriterConneg(String header, Type expected, String contentType)
@@ -46,30 +46,30 @@ namespace VDS.RDF.Web
             Console.WriteLine("Expected Content Type: " + contentType);
             Console.WriteLine("Actual Content Type: " + ctype);
 
-            Assert.AreEqual(expected, writer.GetType());
-            Assert.AreEqual(contentType, ctype);
+            Assert.Equal(expected, writer.GetType());
+            Assert.Equal(contentType, ctype);
         }
 
-        [Test]
+        [Fact]
         public void WebConnegGetSparqlWriterWithAcceptAll()
         {
             this.TestSparqlWriterConneg("*/*", typeof(SparqlXmlWriter), "application/sparql-results+xml");
         }
 
-        [Test]
+        [Fact]
         public void WebConnegGetSparqlWriterWithAcceptXml()
         {
             this.TestSparqlWriterConneg("application/sparql-results+xml", typeof(SparqlXmlWriter), "application/sparql-results+xml");
         }
 
-        [Test]
+        [Fact]
         public void WebConnegGetSparqlWriterWithAcceptJson()
         {
             this.TestSparqlWriterConneg("application/sparql-results+json", typeof(SparqlJsonWriter), "application/sparql-results+json");
         }
 
 #if !NO_HTMLAGILITYPACK // No support for writing SPARQL HTML results
-        [Test]
+        [Fact]
         public void WebConnegGetSparqlWriterWithAcceptHtml()
         {
             this.TestSparqlWriterConneg("text/html", typeof(SparqlHtmlWriter), "text/html");

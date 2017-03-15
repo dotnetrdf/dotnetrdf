@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Inference;
@@ -36,10 +36,10 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing
 {
-    [TestFixture]
+
     public class VariableNodeTests
     {
-        [Test]
+        [Fact]
         public void ParsingN3Variables()
         {
             String TestFragment = "@prefix rdfs: <" + NamespaceMapper.RDFS + ">. { ?s a ?type } => { ?s rdfs:label \"This has a type\" } .";
@@ -55,7 +55,7 @@ namespace VDS.RDF.Parsing
             StringWriter.Write(g, new Notation3Writer());
         }
 
-        [Test]
+        [Fact]
         public void ParsingN3GraphLiterals()
         {
             String TestFragment = "{ :a :b :c . :d :e :f } a \"Graph Literal\" .";
@@ -63,11 +63,11 @@ namespace VDS.RDF.Parsing
             g.BaseUri = new Uri("http://example.org/n3/graph-literals");
             StringParser.Parse(g, TestFragment, new Notation3Parser());
 
-            Assert.IsTrue(g.Triples.Count == 1, "Should be 1 Triple");
-            Assert.IsTrue(((IGraphLiteralNode)g.Triples.First().Subject).SubGraph.Triples.Count == 2, "Should be 2 Triples in the Graph Literal");
+            Assert.True(g.Triples.Count == 1, "Should be 1 Triple");
+            Assert.True(((IGraphLiteralNode)g.Triples.First().Subject).SubGraph.Triples.Count == 2, "Should be 2 Triples in the Graph Literal");
         }
 
-        [Test]
+        [Fact]
         public void ParsingN3VariableContexts()
         {
             String prefixes = "@prefix rdf: <" + NamespaceMapper.RDF + ">. @prefix rdfs: <" + NamespaceMapper.RDFS + ">.";
@@ -93,7 +93,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [Test]
+        [Fact]
         public void ParsingN3Reasoner()
         {
             String rules = "@prefix rdfs: <" + NamespaceMapper.RDFS + "> . { ?s rdfs:subClassOf ?class } => { ?s a ?class } .";
@@ -122,10 +122,10 @@ namespace VDS.RDF.Parsing
                 Console.WriteLine(t.ToString());
             }
 
-            Assert.IsTrue(data.Triples.Count > origCount, "Number of Triples should have increased after the reasoner was run");
+            Assert.True(data.Triples.Count > origCount, "Number of Triples should have increased after the reasoner was run");
         }
 
-        [Test]
+        [Fact]
         public void ParsingN3ReasonerWithForAll()
         {
             String rules = "@prefix rdfs: <" + NamespaceMapper.RDFS + "> . @forAll :x . { :x rdfs:subClassOf ?class } => { :x a ?class } .";
@@ -155,7 +155,7 @@ namespace VDS.RDF.Parsing
                 Console.WriteLine(t.ToString());
             }
 
-            Assert.IsTrue(data.Triples.Count > origCount, "Number of Triples should have increased after the reasoner was run");
+            Assert.True(data.Triples.Count > origCount, "Number of Triples should have increased after the reasoner was run");
         }
     }
 }

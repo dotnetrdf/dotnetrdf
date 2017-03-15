@@ -30,18 +30,19 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Storage
 {
 #if !NO_SYNC_HTTP // No ReadWriteSparqlConnector
-    [TestFixture]
+
     public class ReadWriteSparqlTests
     {
         private NTriplesFormatter _formatter = new NTriplesFormatter();
@@ -58,7 +59,7 @@ namespace VDS.RDF.Storage
 #endif
         }
 
-        [Test]
+        [Fact]
         public void StorageReadWriteSparqlSaveGraph()
         {
             try
@@ -84,7 +85,7 @@ namespace VDS.RDF.Storage
                     Console.WriteLine(t.ToString(this._formatter));
                 }
 
-                Assert.AreEqual(g, h, "Graphs should be equal");
+                Assert.Equal(g, h);
             }
             finally
             {
@@ -92,7 +93,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [Fact]
         public void StorageReadWriteSparqlSaveDefaultGraph()
         {
             try
@@ -118,8 +119,8 @@ namespace VDS.RDF.Storage
                     Console.WriteLine(t.ToString(this._formatter));
                 }
 
-                Assert.AreEqual(g, h, "Graphs should be equal");
-                Assert.IsNull(h.BaseUri, "Retrieved Graph should have a null Base URI");
+                Assert.Equal(g, h);
+                Assert.Null(h.BaseUri);
             }
             finally
             {
@@ -127,7 +128,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [Fact]
         public void StorageReadWriteSparqlSaveDefaultGraph2()
         {
             try
@@ -153,8 +154,8 @@ namespace VDS.RDF.Storage
                     Console.WriteLine(t.ToString(this._formatter));
                 }
 
-                Assert.AreEqual(g, h, "Graphs should be equal");
-                Assert.IsNull(h.BaseUri, "Retrieved Graph should have a null Base URI");
+                Assert.Equal(g, h);
+                Assert.Null(h.BaseUri);
             }
             finally
             {
@@ -162,7 +163,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [Fact]
         public void StorageReadWriteSparqlLoadGraph()
         {
             try
@@ -188,7 +189,7 @@ namespace VDS.RDF.Storage
                     Console.WriteLine(t.ToString(this._formatter));
                 }
 
-                Assert.AreEqual(g, h, "Graphs should be equal");
+                Assert.Equal(g, h);
             }
             finally
             {
@@ -196,7 +197,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [Fact]
         public void StorageReadWriteSparqlDeleteGraph()
         {
             try
@@ -221,7 +222,7 @@ namespace VDS.RDF.Storage
                 Console.WriteLine();
 
                 //If we do get here without erroring then the Graph should be empty
-                Assert.IsTrue(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
+                Assert.True(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
             }
             finally
             {
@@ -229,7 +230,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [Fact]
         public void StorageReadWriteSparqlDeleteDefaultGraph()
         {
             try
@@ -254,7 +255,7 @@ namespace VDS.RDF.Storage
                 Console.WriteLine();
 
                 //If we do get here without erroring then the Graph should be empty
-                Assert.IsTrue(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
+                Assert.True(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
             }
             finally
             {
@@ -262,7 +263,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [Fact]
         public void StorageReadWriteSparqlDeleteDefaultGraph2()
         {
             try
@@ -287,7 +288,7 @@ namespace VDS.RDF.Storage
                 Console.WriteLine();
 
                 //If we do get here without erroring then the Graph should be empty
-                Assert.IsTrue(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
+                Assert.True(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
             }
             finally
             {
@@ -295,7 +296,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [Fact]
         public void StorageReadWriteSparqlAddTriples()
         {
             try
@@ -312,7 +313,7 @@ namespace VDS.RDF.Storage
                 readWrite.UpdateGraph("http://example.org/readWriteTest", ts, null);
 
                 readWrite.LoadGraph(g, "http://example.org/readWriteTest");
-                Assert.IsTrue(ts.All(t => g.ContainsTriple(t)), "Added Triple should have been in the Graph");
+                Assert.True(ts.All(t => g.ContainsTriple(t)), "Added Triple should have been in the Graph");
             }
             finally
             {
@@ -320,7 +321,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [Fact]
         public void StorageReadWriteSparqlRemoveTriples()
         {
             try
@@ -337,7 +338,7 @@ namespace VDS.RDF.Storage
                 readWrite.UpdateGraph("http://example.org/readWriteTest", null, ts);
 
                 readWrite.LoadGraph(g, "http://example.org/readWriteTest");
-                Assert.IsTrue(ts.All(t => !g.ContainsTriple(t)), "Removed Triple should not have been in the Graph");
+                Assert.True(ts.All(t => !g.ContainsTriple(t)), "Removed Triple should not have been in the Graph");
             }
             finally
             {
@@ -345,7 +346,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [Fact]
         public void StorageReadWriteSparqlQuery()
         {
             ReadWriteSparqlConnector readWrite = ReadWriteSparqlTests.GetConnection();
@@ -357,16 +358,16 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                Assert.Fail("Did not get a SPARQL Result Set as expected");
+                Assert.True(false, "Did not get a SPARQL Result Set as expected");
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageReadWriteSparqlUpdate()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
             {
-                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
             }
 
             try
@@ -382,7 +383,7 @@ namespace VDS.RDF.Storage
                 //Then see if we can retrieve the newly loaded graph
                 IGraph g = new Graph();
                 readWrite.LoadGraph(g, "http://example.org/Ilson");
-                Assert.IsFalse(g.IsEmpty, "Graph should be non-empty");
+                Assert.False(g.IsEmpty, "Graph should be non-empty");
                 foreach (Triple t in g.Triples)
                 {
                     Console.WriteLine(t.ToString(this._formatter));
@@ -395,7 +396,7 @@ namespace VDS.RDF.Storage
 
                 g = new Graph();
                 readWrite.LoadGraph(g, "http://example.org/Ilson");
-                Assert.IsTrue(g.IsEmpty, "Graph should be empty as it should have been DROPped by ReadWriteSparql");
+                Assert.True(g.IsEmpty, "Graph should be empty as it should have been DROPped by ReadWriteSparql");
             }
             finally
             {
@@ -404,7 +405,7 @@ namespace VDS.RDF.Storage
             
         }
 
-        [Test]
+        [Fact]
         public void StorageReadWriteSparqlDescribe()
         {
             try
@@ -420,7 +421,7 @@ namespace VDS.RDF.Storage
                 }
                 else
                 {
-                    Assert.Fail("Did not return a Graph as expected");
+                    Assert.True(false, "Did not return a Graph as expected");
                 }
             }
             finally
@@ -429,7 +430,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [Fact]
         public void StorageReadWriteSparqlConfigSerialization1()
         {
             ReadWriteSparqlConnector connector = ReadWriteSparqlTests.GetConnection();
@@ -442,10 +443,10 @@ namespace VDS.RDF.Storage
             TestTools.ShowGraph(g);
 
             Object temp = ConfigurationLoader.LoadObject(g, n);
-            Assert.IsInstanceOf<ReadWriteSparqlConnector>(temp);
+            Assert.IsType<ReadWriteSparqlConnector>(temp);
             ReadWriteSparqlConnector connector2 = (ReadWriteSparqlConnector)temp;
-            Assert.IsTrue(EqualityHelper.AreUrisEqual(connector.Endpoint.Uri, connector2.Endpoint.Uri));
-            Assert.IsTrue(EqualityHelper.AreUrisEqual(connector.UpdateEndpoint.Uri, connector2.UpdateEndpoint.Uri));
+            Assert.True(EqualityHelper.AreUrisEqual(connector.Endpoint.Uri, connector2.Endpoint.Uri));
+            Assert.True(EqualityHelper.AreUrisEqual(connector.UpdateEndpoint.Uri, connector2.UpdateEndpoint.Uri));
         }
     }
 #endif

@@ -27,16 +27,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 
 namespace VDS.RDF
 {
-    [TestFixture]
+
     public class EventTests
     {
         private bool _graphAdded, _graphRemoved, _graphChanged;
 
-        [Test]
+        [Fact]
         public void GraphEventBubbling()
         {
             try
@@ -54,7 +54,7 @@ namespace VDS.RDF
 
                 //Add the Graph to the Store which should fire the GraphAdded event
                 store.Add(g);
-                Assert.IsTrue(this._graphAdded, "GraphAdded event of the Triple Store should have fired");
+                Assert.True(this._graphAdded, "GraphAdded event of the Triple Store should have fired");
 
                 //Assert a Triple
                 INode s = g.CreateBlankNode();
@@ -62,16 +62,16 @@ namespace VDS.RDF
                 INode o = g.CreateUriNode("rdfs:Class");
                 Triple t = new Triple(s, p, o);
                 g.Assert(t);
-                Assert.IsTrue(this._graphChanged, "GraphChanged event of the Triple Store should have fired");
+                Assert.True(this._graphChanged, "GraphChanged event of the Triple Store should have fired");
 
                 //Retract the Triple
                 this._graphChanged = false;
                 g.Retract(t);
-                Assert.IsTrue(this._graphChanged, "GraphChanged event of the Triple Store should have fired");
+                Assert.True(this._graphChanged, "GraphChanged event of the Triple Store should have fired");
 
                 //Remove the Graph from the Store which should fire the GraphRemoved event
                 store.Remove(g.BaseUri);
-                Assert.IsTrue(this._graphRemoved, "GraphRemoved event of the Triple Store should have fired");
+                Assert.True(this._graphRemoved, "GraphRemoved event of the Triple Store should have fired");
             }
             catch (Exception ex)
             {

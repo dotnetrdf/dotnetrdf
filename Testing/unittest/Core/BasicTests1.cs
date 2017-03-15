@@ -30,17 +30,17 @@ using System.Reflection;
 using System.Text;
 using System.Net;
 using System.Web;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Writing;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
 namespace VDS.RDF
 {
-    [TestFixture]
+
     public class BasicTests1 : BaseTest
     {
-        [Test]
+        [Fact]
         public void NodesDistinct()
         {
             Graph g = new Graph();
@@ -74,24 +74,24 @@ namespace VDS.RDF
             }
         }
 
-        [Test]
+        [Fact]
         public void GraphCreation1()
         {
             //Create a new Empty Graph
             Graph g = new Graph();
-            Assert.IsNotNull(g);
+            Assert.NotNull(g);
 
             //Define Namespaces
             g.NamespaceMap.AddNamespace("vds", new Uri("http://www.vdesign-studios.com/dotNetRDF#"));
             g.NamespaceMap.AddNamespace("ecs", new Uri("http://id.ecs.soton.ac.uk/person/"));
 
             //Check we set the Namespace OK
-            Assert.IsTrue(g.NamespaceMap.HasNamespace("vds"), "Failed to set a Namespace");
+            Assert.True(g.NamespaceMap.HasNamespace("vds"), "Failed to set a Namespace");
 
             //Set Base Uri
             g.BaseUri = g.NamespaceMap.GetNamespaceUri("vds");
-            Assert.IsNotNull(g.BaseUri);
-            Assert.AreEqual(g.NamespaceMap.GetNamespaceUri("vds"), g.BaseUri);
+            Assert.NotNull(g.BaseUri);
+            Assert.Equal(g.NamespaceMap.GetNamespaceUri("vds"), g.BaseUri);
 
             //Create Uri Nodes
             IUriNode rav08r, wh, lac, hcd;
@@ -161,16 +161,16 @@ namespace VDS.RDF
             }
         }
 
-        [Test]
+        [Fact]
         public void GraphCreation2()
         {
             //Create a new Empty Graph
             Graph g = new Graph();
-            Assert.IsNotNull(g);
+            Assert.NotNull(g);
 
             //Define Namespaces
             g.NamespaceMap.AddNamespace("pets", new Uri("http://example.org/pets"));
-            Assert.IsTrue(g.NamespaceMap.HasNamespace("pets"));
+            Assert.True(g.NamespaceMap.HasNamespace("pets"));
 
             //Create Uri Nodes
             IUriNode dog, fido, rob, owner, name, species, breed, lab;
@@ -190,10 +190,10 @@ namespace VDS.RDF
             g.Assert(new Triple(rob, name, g.CreateLiteralNode("Rob")));
             g.Assert(new Triple(fido, breed, lab));
 
-            Assert.IsTrue(g.Triples.Count == 5);
+            Assert.True(g.Triples.Count == 5);
         }
 
-        [Test]
+        [Fact]
         public void UriResolution()
         {
             String[] baseUris = { "http://www.bbc.co.uk",
@@ -244,7 +244,7 @@ namespace VDS.RDF
                         Console.WriteLine("Expected: " + expectedResult);
                         Console.WriteLine("Actual: " + result);
 
-                        Assert.AreEqual(expectedResult, result);
+                        Assert.Equal(expectedResult, result);
                     }
 
                     Console.WriteLine();
@@ -265,7 +265,7 @@ namespace VDS.RDF
             }
         }
 
-        [Test]
+        [Fact]
         public void UriResolutionWithGraphBase()
         {
             IGraph g = new Graph();
@@ -273,10 +273,10 @@ namespace VDS.RDF
 
             Uri expected = new Uri("http://example.org/relative/path");
             IUriNode actual = g.CreateUriNode(new Uri("relative/path", UriKind.Relative));
-            Assert.AreEqual(expected, actual.Uri);
+            Assert.Equal(expected, actual.Uri);
         }
 
-        [Test]
+        [Fact]
         public void UriResolutionUriProvidedToQNameMethod()
         {
             IGraph g = new Graph();
@@ -285,7 +285,7 @@ namespace VDS.RDF
             TestTools.ReportError("Error", ex);
         }
 
-        [Test]
+        [Fact]
         public void UriHashCodes()
         {
             //Quick Test to see if how the Uri classes Hash Codes behave
@@ -298,12 +298,12 @@ namespace VDS.RDF
             Console.WriteLine("URI 2 has Hash Code " + test2.GetHashCode());
             Console.WriteLine("URI 3 has Hash Code " + test3.GetHashCode());
 
-            Assert.AreEqual(test1.GetHashCode(), test2.GetHashCode());
-            Assert.AreEqual(test2.GetHashCode(), test3.GetHashCode());
-            Assert.AreEqual(test1.GetHashCode(), test3.GetHashCode());
+            Assert.Equal(test1.GetHashCode(), test2.GetHashCode());
+            Assert.Equal(test2.GetHashCode(), test3.GetHashCode());
+            Assert.Equal(test1.GetHashCode(), test3.GetHashCode());
         }
 
-        [Test]
+        [Fact]
         public void NodesHashCodes()
         {
             Console.WriteLine("Tests that Literal and URI Nodes produce different Hashes");
@@ -324,8 +324,9 @@ namespace VDS.RDF
             Console.WriteLine("Hash Codes are Equal? " + u.GetHashCode().Equals(l.GetHashCode()));
             Console.WriteLine("Nodes are equal? " + u.Equals(l));
 
-            Assert.AreNotEqual(u.GetHashCode(), l.GetHashCode());
-            Assert.AreNotEqual(u, l);
+            Assert.NotEqual(u.GetHashCode(), l.GetHashCode());
+            Assert.NotSame(u, l);
+            //Assert.NotEqual(u, l);
 
             //Create some plain and typed literals which may have colliding Hash Codes
             ILiteralNode plain = g.CreateLiteralNode("test^^http://example.org/type");
@@ -342,8 +343,8 @@ namespace VDS.RDF
             Console.WriteLine("Hash Codes are Equal? " + plain.GetHashCode().Equals(typed.GetHashCode()));
             Console.WriteLine("Nodes are equal? " + plain.Equals(typed));
 
-            Assert.AreNotEqual(plain.GetHashCode(), typed.GetHashCode());
-            Assert.AreNotEqual(plain, typed);
+            Assert.NotEqual(plain.GetHashCode(), typed.GetHashCode());
+            Assert.NotEqual(plain, typed);
 
             //Create Triples
             IBlankNode b = g.CreateBlankNode();
@@ -363,8 +364,8 @@ namespace VDS.RDF
             Console.WriteLine("Hash Codes are Equal? " + t1.GetHashCode().Equals(t2.GetHashCode()));
             Console.WriteLine("Triples are Equal? " + t1.Equals(t2));
 
-            Assert.AreNotEqual(t1.GetHashCode(), t2.GetHashCode());
-            Assert.AreNotEqual(t1, t2);
+            Assert.NotEqual(t1.GetHashCode(), t2.GetHashCode());
+            Assert.NotEqual(t1, t2);
 
             //Create Triples from the earlier Literal Nodes
             t1 = new Triple(b, type, plain);
@@ -381,12 +382,12 @@ namespace VDS.RDF
             Console.WriteLine("Hash Codes are Equal? " + t1.GetHashCode().Equals(t2.GetHashCode()));
             Console.WriteLine("Triples are Equal? " + t1.Equals(t2));
 
-            Assert.AreNotEqual(t1.GetHashCode(), t2.GetHashCode());
-            Assert.AreNotEqual(t1, t2);
+            Assert.NotEqual(t1.GetHashCode(), t2.GetHashCode());
+            Assert.NotEqual(t1, t2);
 
         }
 
-        [Test]
+        [Fact]
         public void NodesUriNodeEquality()
         {
             //Create the Nodes
@@ -424,7 +425,7 @@ namespace VDS.RDF
             TestTools.CompareNodes(k, l, true);
         }
 
-        [Test]
+        [Fact]
         public void NodesBlankNodeEquality()
         {
             try
@@ -445,26 +446,26 @@ namespace VDS.RDF
                 IBlankNode e = i.CreateBlankNode();
 
                 //Shouldn't be equal
-                Assert.AreNotEqual(b, c, "Two Anonymous Blank Nodes created by a Graph should be non-equal");
-                Assert.AreNotEqual(c, d, "Anonymous Blank Nodes created by different Graphs (even with same ID) should be non-equal");
-                Assert.AreNotEqual(b, d, "Anonymous Blank Nodes created by different Graphs (even with same ID) should be non-equal");
-                Assert.AreNotEqual(d, e, "Anonymous Blank Nodes created by different Graphs (even with same ID) should be non-equal");
+                Assert.Equal(b, c);
+                Assert.Equal(c, d);
+                Assert.Equal(b, d);
+                Assert.Equal(d, e);
 
                 //Should be equal
-                Assert.AreEqual(b, b, "A Blank Node should be equal to itself");
-                Assert.AreEqual(c, c, "A Blank Node should be equal to itself");
-                Assert.AreEqual(d, d, "A Blank Node should be equal to itself");
-                Assert.AreEqual(e, e, "A Blank Node should be equal to itself");
-                Assert.AreNotEqual(b, e, "First Anonymous Blank Nodes generated by two Graphs with same Graph URI should have same ID but are still not equal");
+                Assert.Equal(b, b);
+                Assert.Equal(c, c);
+                Assert.Equal(d, d);
+                Assert.Equal(e, e);
+                Assert.Equal(b, e);
 
                 //Named Nodes
                 IBlankNode one = g.CreateBlankNode("one");
                 IBlankNode two = h.CreateBlankNode("one");
                 IBlankNode three = i.CreateBlankNode("one");
 
-                Assert.AreNotEqual(one, three, "Two User defined Blank Nodes with identical IDs from two Graphs with the same Graph URI should be non-equal");
-                Assert.AreNotEqual(one, two, "Two User defined Blank Nodes with identical IDs from two Graphs with different Graph URIs should be non-equal");
-                Assert.AreNotEqual(two, three, "Two User defined Blank Nodes with identical IDs from two Graphs with different Graph URIs should be non-equal");
+                Assert.Equal(one, three);
+                Assert.Equal(one, two);
+                Assert.Equal(two, three);
             }
             catch (Exception ex)
             {
@@ -472,7 +473,7 @@ namespace VDS.RDF
             }
         }
 
-        [Test]
+        [Fact]
         public void NodesLiteralNodeEquality()
         {
             try
@@ -490,13 +491,13 @@ namespace VDS.RDF
                 helloEnUS = g.CreateLiteralNode("hello", "en-US");
                 helloAgain = g.CreateLiteralNode("hello");
 
-                Assert.AreNotEqual(hello, helloEn, "Identical Literals with differing Language Tags are non-equal");
-                Assert.AreNotEqual(hello, helloEnUS, "Identical Literals with differing Language Tags are non-equal");
-                Assert.AreNotEqual(helloEn, helloEnUS, "Identical Literals with differing Language Tags are non-equal");
-                Assert.AreNotEqual(helloEn, helloAgain, "Identical Literals with differing Language Tags are non-equal");
-                Assert.AreNotEqual(helloEnUS, helloAgain, "Identical Literals with differing Language Tags are non-equal");
+                Assert.Equal(hello, helloEn);
+                Assert.Equal(hello, helloEnUS);
+                Assert.Equal(helloEn, helloEnUS);
+                Assert.Equal(helloEn, helloAgain);
+                Assert.Equal(helloEnUS, helloAgain);
 
-                Assert.AreEqual(hello, helloAgain, "Identical Literals with the same Language Tag are equal");
+                Assert.Equal(hello, helloAgain);
 
                 //Test Plain Literals
                 ILiteralNode plain1, plain2, plain3, plain4;
@@ -505,12 +506,12 @@ namespace VDS.RDF
                 plain3 = g.CreateLiteralNode("Plain Literal");
                 plain4 = g.CreateLiteralNode("plain literal");
 
-                Assert.AreNotEqual(plain1, plain2, "Literals with non-identical lexical values are non-equal");
-                Assert.AreNotEqual(plain1, plain3, "Literals with non-identical lexical values are non-equal even if they differ only in case");
-                Assert.AreEqual(plain1, plain4, "Literals with identical lexical values are equal");
-                Assert.AreNotEqual(plain2, plain3, "Literals with non-identical lexical values are non-equal");
-                Assert.AreNotEqual(plain2, plain4, "Literals with non-identical lexical values are non-equal");
-                Assert.AreNotEqual(plain3, plain4, "Literals with non-identical lexical values are non-equal even if they differ only in case");
+                Assert.Equal(plain1, plain2);
+                Assert.Equal(plain1, plain3);
+                Assert.Equal(plain1, plain4);
+                Assert.Equal(plain2, plain3);
+                Assert.Equal(plain2, plain4);
+                Assert.Equal(plain3, plain4);
 
                 //Typed Literals
                 Uri intType = new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger);
@@ -522,36 +523,36 @@ namespace VDS.RDF
                 one3 = g.CreateLiteralNode("0001", intType);
                 one4 = g.CreateLiteralNode("1", intType);
 
-                Assert.AreNotEqual(one1, one2, "Literals with identical lexical values but non-identical data types are non-equal");
-                Assert.AreNotEqual(one1, one3, "Literals with identical lexical values but non-identical data types are non-equal");
-                Assert.AreNotEqual(one1, one4, "Literals with identical lexical values but non-identical data types are non-equal");
-                Assert.AreNotEqual(one2, one3, "Literals with equivalent values represented as different lexical values are non-equal even when they're data types are equal");
-                Assert.AreEqual(one2, one4, "Literals with identical lexical values and identical data types are equal");
-                Assert.AreNotEqual(one3, one4, "Literals with equivalent values represented as different lexical values are non-equal even when they're data types are equal");
+                Assert.Equal(one1, one2);
+                Assert.Equal(one1, one3);
+                Assert.Equal(one1, one4);
+                Assert.Equal(one2, one3);
+                Assert.Equal(one2, one4);
+                Assert.Equal(one3, one4);
 
-                Assert.AreNotEqual(0, one1.CompareTo(one2), "Using the Comparer for Literal Nodes which is used for sorting Literals with identical lexical values but non-identical data types are still non-equal");
-                Assert.AreEqual(0, one2.CompareTo(one3), "Using the Comparer for Literal Nodes which is used for sorting Literals with equivalent non-identical lexical values are considered equal when their data types are equal");
-                Assert.AreEqual(0, one3.CompareTo(one2), "Using the Comparer for Literal Nodes which is used for sorting Literals with equivalent non-identical lexical values are considered equal when their data types are equal");
-                Assert.AreEqual(0, one3.CompareTo(one4), "Using the Comparer for Literal Nodes which is used for sorting Literals with equivalent non-identical lexical values are considered equal when their data types are equal");
+                Assert.NotEqual(0, one1.CompareTo(one2));
+                Assert.Equal(0, one2.CompareTo(one3));
+                Assert.Equal(0, one3.CompareTo(one2));
+                Assert.Equal(0, one3.CompareTo(one4));
 
                 ILiteralNode t, f, one5;
                 t = g.CreateLiteralNode("true", boolType);
                 f = g.CreateLiteralNode("false", boolType);
                 one5 = g.CreateLiteralNode("1", boolType);
 
-                Assert.AreNotEqual(t, f, "Literals with different lexical values but identical data types are non-equal");
-                Assert.AreEqual(t, t, "Literals with identical lexical values and identical data types are equal");
-                Assert.AreEqual(f, f, "Literals with identical lexical values and identical data types are equal");
+                Assert.Equal(t, f);
+                Assert.Equal(t, t);
+                Assert.Equal(f, f);
 
-                Assert.AreNotEqual(t, one5, "Literals with different data types are non-equal even if their lexical values when cast to that type may be equivalent");
+                Assert.Equal(t, one5);
 
                 //Loose Mode Tests
                 Console.WriteLine("Doing a load of Loose Equality Tests");
                 Options.LiteralEqualityMode = LiteralEqualityMode.Loose;
 
-                Assert.AreEqual(one2, one3, "Literals with equivalent lexical values and identical data types can be considered equal under Loose Equality Mode");
-                Assert.AreEqual(one3, one4, "Literals with equivalent lexical values and identical data types can be considered equal under Loose Equality Mode");
-                Assert.AreNotEqual(t, one5, "Literals with equivalent lexical values (but which are not in the recognized lexical space of the type i.e. require a cast) and identical data types are still non-equal under Loose Equality Mode");
+                Assert.Equal(one2, one3);
+                Assert.Equal(one3, one4);
+                Assert.Equal(t, one5);
 
             }
             catch (Exception ex)
@@ -568,7 +569,7 @@ namespace VDS.RDF
             }
         }
 
-        [Test]
+        [Fact]
         public void NodesSorting()
         {
             //Stream for Output
@@ -661,7 +662,7 @@ namespace VDS.RDF
             }
         }
 
-        [Test]
+        [Fact]
         public void NodesSortingSparqlOrder()
         {
             SparqlOrderingComparer comparer = new SparqlOrderingComparer();
@@ -746,7 +747,7 @@ namespace VDS.RDF
             }
         }
 
-        [Test]
+        [Fact]
         public void NodesNullNodeEquality()
         {
             UriNode nullUri = null;
@@ -758,50 +759,50 @@ namespace VDS.RDF
             ILiteralNode someLiteral = g.CreateLiteralNode("A Literal");
             IBlankNode someBNode = g.CreateBlankNode();
 
-            Assert.AreEqual(nullUri, nullUri, "Null URI Node should be equal to self");
-            Assert.AreEqual(nullUri, null, "Null URI Node should be equal to a null");
-            Assert.AreEqual(null, nullUri, "Null should be equal to a Null URI Node");
-            Assert.IsTrue(nullUri == nullUri, "Null URI Node should be equal to self");
-            Assert.IsTrue(nullUri == null, "Null URI Node should be equal to a null");
-            Assert.IsTrue(null == nullUri, "Null should be equal to a Null URI Node");
-            Assert.IsFalse(nullUri != nullUri, "Null URI Node should be equal to self");
-            Assert.IsFalse(nullUri != null, "Null URI Node should be equal to a null");
-            Assert.IsFalse(null != nullUri, "Null should be equal to a Null URI Node");
-            Assert.AreNotEqual(nullUri, someUri, "Null URI Node should not be equal to an actual URI Node");
-            Assert.AreNotEqual(someUri, nullUri, "Null URI Node should not be equal to an actual URI Node");
-            Assert.IsFalse(nullUri == someUri, "Null URI Node should not be equal to an actual URI Node");
-            Assert.IsFalse(someUri == nullUri, "Null URI Node should not be equal to an actual URI Node");
+            Assert.Equal(nullUri, nullUri);
+            Assert.Equal(nullUri, null);
+            Assert.Equal(null, nullUri);
+            Assert.True(nullUri == nullUri, "Null URI Node should be equal to self");
+            Assert.True(nullUri == null, "Null URI Node should be equal to a null");
+            Assert.True(null == nullUri, "Null should be equal to a Null URI Node");
+            Assert.False(nullUri != nullUri, "Null URI Node should be equal to self");
+            Assert.False(nullUri != null, "Null URI Node should be equal to a null");
+            Assert.False(null != nullUri, "Null should be equal to a Null URI Node");
+            Assert.Equal(nullUri, someUri);
+            Assert.Equal(someUri, nullUri);
+            Assert.False(nullUri == someUri, "Null URI Node should not be equal to an actual URI Node");
+            Assert.False(someUri == nullUri, "Null URI Node should not be equal to an actual URI Node");
 
-            Assert.AreEqual(nullLiteral, nullLiteral, "Null Literal Node should be equal to self");
-            Assert.AreEqual(nullLiteral, null, "Null Literal Node should be equal to a null");
-            Assert.AreEqual(null, nullLiteral, "Null should be equal to a Null Literal Node");
-            Assert.IsTrue(nullLiteral == nullLiteral, "Null Literal Node should be equal to self");
-            Assert.IsTrue(nullLiteral == null, "Null Literal Node should be equal to a null");
-            Assert.IsTrue(null == nullLiteral, "Null should be equal to a Null Literal Node");
-            Assert.IsFalse(nullLiteral != nullLiteral, "Null Literal Node should be equal to self");
-            Assert.IsFalse(nullLiteral != null, "Null Literal Node should be equal to a null");
-            Assert.IsFalse(null != nullLiteral, "Null should be equal to a Null Literal Node");
-            Assert.AreNotEqual(nullLiteral, someLiteral, "Null Literal Node should not be equal to an actual Literal Node");
-            Assert.AreNotEqual(someLiteral, nullLiteral, "Null Literal Node should not be equal to an actual Literal Node");
-            Assert.IsFalse(nullLiteral == someLiteral, "Null Literal Node should not be equal to an actual Literal Node");
-            Assert.IsFalse(someLiteral == nullLiteral, "Null Literal Node should not be equal to an actual Literal Node");
+            Assert.Equal(nullLiteral, nullLiteral);
+            Assert.Equal(nullLiteral, null);
+            Assert.Equal(null, nullLiteral);
+            Assert.True(nullLiteral == nullLiteral, "Null Literal Node should be equal to self");
+            Assert.True(nullLiteral == null, "Null Literal Node should be equal to a null");
+            Assert.True(null == nullLiteral, "Null should be equal to a Null Literal Node");
+            Assert.False(nullLiteral != nullLiteral, "Null Literal Node should be equal to self");
+            Assert.False(nullLiteral != null, "Null Literal Node should be equal to a null");
+            Assert.False(null != nullLiteral, "Null should be equal to a Null Literal Node");
+            Assert.Equal(nullLiteral, someLiteral);
+            Assert.Equal(someLiteral, nullLiteral);
+            Assert.False(nullLiteral == someLiteral, "Null Literal Node should not be equal to an actual Literal Node");
+            Assert.False(someLiteral == nullLiteral, "Null Literal Node should not be equal to an actual Literal Node");
 
-            Assert.AreEqual(nullBNode, nullBNode, "Null BNode Node should be equal to self");
-            Assert.AreEqual(nullBNode, null, "Null BNode Node should be equal to a null");
-            Assert.AreEqual(null, nullBNode, "Null should be equal to a Null BNode Node");
-            Assert.IsTrue(nullBNode == nullBNode, "Null BNode Node should be equal to self");
-            Assert.IsTrue(nullBNode == null, "Null BNode Node should be equal to a null");
-            Assert.IsTrue(null == nullBNode, "Null should be equal to a Null BNode Node");
-            Assert.IsFalse(nullBNode != nullBNode, "Null BNode Node should be equal to self");
-            Assert.IsFalse(nullBNode != null, "Null BNode Node should be equal to a null");
-            Assert.IsFalse(null != nullBNode, "Null should be equal to a Null BNode Node");
-            Assert.AreNotEqual(nullBNode, someBNode, "Null BNode Node should not be equal to an actual BNode Node");
-            Assert.AreNotEqual(someBNode, nullBNode, "Null BNode Node should not be equal to an actual BNode Node");
-            Assert.IsFalse(nullBNode == someBNode, "Null BNode Node should not be equal to an actual BNode Node");
-            Assert.IsFalse(someBNode == nullBNode, "Null BNode Node should not be equal to an actual BNode Node");
+            Assert.Equal(nullBNode, nullBNode);
+            Assert.Equal(nullBNode, null);
+            Assert.Equal(null, nullBNode);
+            Assert.True(nullBNode == nullBNode, "Null BNode Node should be equal to self");
+            Assert.True(nullBNode == null, "Null BNode Node should be equal to a null");
+            Assert.True(null == nullBNode, "Null should be equal to a Null BNode Node");
+            Assert.False(nullBNode != nullBNode, "Null BNode Node should be equal to self");
+            Assert.False(nullBNode != null, "Null BNode Node should be equal to a null");
+            Assert.False(null != nullBNode, "Null should be equal to a Null BNode Node");
+            Assert.Equal(nullBNode, someBNode);
+            Assert.Equal(someBNode, nullBNode);
+            Assert.False(nullBNode == someBNode, "Null BNode Node should not be equal to an actual BNode Node");
+            Assert.False(someBNode == nullBNode, "Null BNode Node should not be equal to an actual BNode Node");
         }
 
-        [Test]
+        [Fact]
         public void GraphMerging()
         {
             try
@@ -810,8 +811,8 @@ namespace VDS.RDF
                 TurtleParser ttlparser = new TurtleParser();
                 Graph g = new Graph();
                 Graph h = new Graph();
-                Assert.IsNotNull(g);
-                Assert.IsNotNull(h);
+                Assert.NotNull(g);
+                Assert.NotNull(h);
                 ttlparser.Load(g, "resources\\MergePart1.ttl");
                 ttlparser.Load(h, "resources\\MergePart2.ttl");
 
@@ -842,7 +843,7 @@ namespace VDS.RDF
                     Console.WriteLine(t.ToString());
                 }
 
-                Assert.AreEqual(8, g.Triples.Count, "Expected 8 Triples after the Merge");
+                Assert.Equal(8, g.Triples.Count);
 
                 //Same merge into an Empty Graph
                 Console.WriteLine();
@@ -863,7 +864,7 @@ namespace VDS.RDF
                     Console.WriteLine(t.ToString());
                 }
 
-                Assert.AreEqual(8, i.Triples.Count, "Expected 8 Triples after the Merge");
+                Assert.Equal(8, i.Triples.Count);
             }
             catch (Exception ex)
             {
@@ -871,7 +872,7 @@ namespace VDS.RDF
             }
         }
 
-        [Test]
+        [Fact]
         public void GraphTripleCreation()
         {
             //Create two Graphs
@@ -883,11 +884,11 @@ namespace VDS.RDF
 
             //Create a Triple in First Graph
             g.Assert(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateUriNode("ex:Triple"));
-            Assert.AreEqual(1, g.Triples.Count, "Should have 1 Triple in the Graph");
+            Assert.Equal(1, g.Triples.Count);
 
             //Create a Triple in Second Graph
             h.Assert(h.CreateBlankNode(), h.CreateUriNode("rdf:type"), h.CreateUriNode("ex:Triple"));
-            Assert.AreEqual(1, h.Triples.Count, "Should have 1 Triple in the Graph");
+            Assert.Equal(1, h.Triples.Count);
         }
 
 #if PORTABLE
@@ -914,7 +915,7 @@ namespace VDS.RDF
         }
 #endif
 
-        [Test]
+        [Fact]
         public void UriPathAndQuery()
         {
             Uri u = new Uri("http://example.org/some/path/with?query=some&param=values");
@@ -925,20 +926,20 @@ namespace VDS.RDF
             Console.WriteLine("PathAndQuery - " + pathAndQuery);
             Console.WriteLine("AbsolutePath + Query - " + absPathPlusQuery);
 
-            Assert.AreEqual(pathAndQuery, absPathPlusQuery);
+            Assert.Equal(pathAndQuery, absPathPlusQuery);
         }
 
-        [Test]
+        [Fact]
         public void UriQuery()
         {
             Uri withQuery = new Uri("http://example.org/with?some=query");
             Uri withoutQuery = new Uri("http://example.org/without");
 
-            Assert.AreNotEqual(String.Empty, withQuery.Query);
-            Assert.AreEqual(String.Empty, withoutQuery.Query);
+            Assert.NotEqual(String.Empty, withQuery.Query);
+            Assert.Equal(String.Empty, withoutQuery.Query);
         }
 
-        //[Test]
+        //[Fact]
         //public void UriTrailingDot()
         //{
         //    Uri u = new Uri("http://example.org/path.");

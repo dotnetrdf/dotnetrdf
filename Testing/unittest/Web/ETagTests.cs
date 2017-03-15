@@ -28,17 +28,17 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Web;
 
 namespace VDS.RDF.Web
 {
 #if !NO_ASP
-    [TestFixture]
+
     public class ETagTests
     {
-        [Test]
+        [Fact]
         public void WebETagComputation()
         {
             try
@@ -54,8 +54,8 @@ namespace VDS.RDF.Web
                 Console.WriteLine("Took " + timer.Elapsed + " to calculate");
                 Console.WriteLine();
 
-                Assert.IsFalse(String.IsNullOrEmpty(etag));
-                Assert.AreEqual(40, etag.Length, "Expected ETag Length was 40 characters");
+                Assert.False(String.IsNullOrEmpty(etag));
+                Assert.Equal(40, etag.Length);
 
                 timer.Reset();
                 timer.Start();
@@ -65,8 +65,8 @@ namespace VDS.RDF.Web
                 Console.WriteLine("Took " + timer.Elapsed + " to calculate");
                 Console.WriteLine();
 
-                Assert.AreEqual(etag, etag2, "ETags should be consistent unless the Graph changes");
-                Assert.AreEqual(40, etag2.Length, "Expected ETag Length was 40 characters");
+                Assert.Equal(etag, etag2);
+                Assert.Equal(40, etag2.Length);
 
                 g.Retract(g.Triples.First());
                 timer.Reset();
@@ -78,9 +78,9 @@ namespace VDS.RDF.Web
                 Console.WriteLine("Took " + timer.Elapsed + " to calculate");
                 Console.WriteLine();
 
-                Assert.AreNotEqual(etag, etag3, "ETags should change if the Graph changes");
-                Assert.AreNotEqual(etag2, etag3, "ETags should change if the Graph changes");
-                Assert.AreEqual(40, etag3.Length, "Expected ETag Length was 40 characters");
+                Assert.NotEqual(etag, etag3);
+                Assert.NotEqual(etag2, etag3);
+                Assert.Equal(40, etag3.Length);
             }
             catch (Exception ex)
             {

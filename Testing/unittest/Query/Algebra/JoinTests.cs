@@ -27,17 +27,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
 {
-    [TestFixture]
+
     public class JoinTests
     {
         private NodeFactory _factory = new NodeFactory();
 
-        [Test]
+        [Fact]
         public void SparqlAlgebraJoinSingleVariable1()
         {
             ISet x = new Set();
@@ -50,10 +50,10 @@ namespace VDS.RDF.Query.Algebra
 
             BaseMultiset joined = lhs.Join(rhs);
 
-            Assert.AreEqual(1, joined.Count);
+            Assert.Equal(1, joined.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlAlgebraJoinSingleVariable2()
         {
             ISet x = new Set();
@@ -71,10 +71,10 @@ namespace VDS.RDF.Query.Algebra
 
             BaseMultiset joined = lhs.Join(rhs);
 
-            Assert.AreEqual(2, joined.Count);
+            Assert.Equal(2, joined.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlAlgebraJoinMultiVariable1()
         {
             ISet x = new Set();
@@ -96,10 +96,10 @@ namespace VDS.RDF.Query.Algebra
 
             BaseMultiset joined = lhs.Join(rhs);
 
-            Assert.AreEqual(2, joined.Count);
+            Assert.Equal(2, joined.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlAlgebraJoinMultiVariable2()
         {
             ISet x1 = new Set();
@@ -125,10 +125,10 @@ namespace VDS.RDF.Query.Algebra
 
             BaseMultiset joined = lhs.Join(rhs);
 
-            Assert.AreEqual(2, joined.Count);
+            Assert.Equal(2, joined.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlAlgebraJoinMultiVariable3()
         {
             ISet x1 = new Set();
@@ -154,10 +154,10 @@ namespace VDS.RDF.Query.Algebra
 
             BaseMultiset joined = lhs.Join(rhs);
 
-            Assert.AreEqual(2, joined.Count);
+            Assert.Equal(2, joined.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlAlgebraJoinMultiVariable4()
         {
             ISet x1 = new Set();
@@ -183,7 +183,7 @@ namespace VDS.RDF.Query.Algebra
 
             BaseMultiset joined = lhs.Join(rhs);
 
-            Assert.AreEqual(0, joined.Count);
+            Assert.Equal(0, joined.Count);
         }
     }
 }

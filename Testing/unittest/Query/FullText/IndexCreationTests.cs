@@ -29,7 +29,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using Lucene.Net.Search;
 using VDS.RDF.Query;
 using VDS.RDF.Query.FullText;
@@ -40,7 +40,7 @@ using VDS.RDF.Query.FullText.Search.Lucene;
 
 namespace VDS.RDF.Query.FullText
 {
-    [TestFixture]
+
     public class IndexCreationTests
     {
         private IGraph GetTestData()
@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.FullText
             return g;
         }
 
-        [Test]
+        [Fact]
         public void FullTextIndexCreationLuceneObjects()
         {
             IFullTextIndexer indexer = null;
@@ -65,7 +65,7 @@ namespace VDS.RDF.Query.FullText
             }
         }
 
-        [Test]
+        [Fact]
         public void FullTextIndexCreationLuceneSubjects()
         {
             IFullTextIndexer indexer = null;
@@ -80,7 +80,7 @@ namespace VDS.RDF.Query.FullText
             }
         }
 
-        [Test]
+        [Fact]
         public void FullTextIndexCreationLucenePredicates()
         {
             IFullTextIndexer indexer = null;
@@ -95,7 +95,7 @@ namespace VDS.RDF.Query.FullText
             }
         }
 
-        [Test]
+        [Fact]
         public void FullTextIndexDestructionLuceneSubjects()
         {
             IFullTextIndexer indexer = null;
@@ -157,7 +157,7 @@ namespace VDS.RDF.Query.FullText
                     if (provider != null) provider.Dispose();
                 }
 
-                Assert.AreEqual(origCount, currCount, "Current Count should match original count");
+                Assert.Equal(origCount, currCount);
             }
             finally
             {
@@ -166,7 +166,7 @@ namespace VDS.RDF.Query.FullText
             }
         }
 
-        [Test]
+        [Fact]
         public void FullTextIndexDestructionLuceneObjects()
         {
             IFullTextIndexer indexer = null;
@@ -228,7 +228,7 @@ namespace VDS.RDF.Query.FullText
                     if (provider != null) provider.Dispose();
                 }
 
-                Assert.AreEqual(origCount, currCount, "Current Count should match original count");
+                Assert.Equal(origCount, currCount);
             }
             finally
             {
@@ -237,7 +237,7 @@ namespace VDS.RDF.Query.FullText
             }
         }
 
-        [Test]
+        [Fact]
         public void FullTextIndexDestructionLucenePredicates()
         {
             IFullTextIndexer indexer = null;
@@ -299,7 +299,7 @@ namespace VDS.RDF.Query.FullText
                     if (provider != null) provider.Dispose();
                 }
 
-                Assert.AreEqual(origCount, currCount, "Current Count should match original count");
+                Assert.Equal(origCount, currCount);
             }
             finally
             {
@@ -308,7 +308,7 @@ namespace VDS.RDF.Query.FullText
             }
         }
 
-        [Test]
+        [Fact]
         public void FullTextIndexMultiOccurrenceRemoval()
         {
             IFullTextIndexer indexer = null;
@@ -326,13 +326,13 @@ namespace VDS.RDF.Query.FullText
                 indexer.Index(g);
 
                 LuceneSearchProvider searcher = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
-                Assert.AreEqual(10, searcher.Match("example").Count(), "Expected 10 Results");
+                Assert.Equal(10, searcher.Match("example").Count());
 
                 for (int i = 9; i >= 0; i--)
                 {
                     indexer.Unindex(g.Triples.First());
                     indexer.Flush();
-                    Assert.AreEqual(i, searcher.Match("example").Count(), "Expected " + i + " Results as only one occurrence should have been unindexed");
+                    Assert.Equal(i, searcher.Match("example").Count());
                 }
             }
             finally

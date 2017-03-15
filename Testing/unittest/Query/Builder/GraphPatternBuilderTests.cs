@@ -25,7 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using Moq;
 using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Expressions;
@@ -35,20 +35,19 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
 {
-    [TestFixture]
+
     public class GraphPatternBuilderTests
     {
         private GraphPatternBuilder _builder;
         private Mock<INamespaceMapper> _namespaceMapper;
 
-        [SetUp]
-        public void Setup()
+        public GraphPatternBuilderTests()
         {
             _namespaceMapper = new Mock<INamespaceMapper>(MockBehavior.Strict);
             _builder = new GraphPatternBuilder();
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowUsingISparqlExpressionForFilter()
         {
             // given
@@ -59,11 +58,11 @@ namespace VDS.RDF.Query.Builder
             GraphPattern graphPattern = _builder.BuildGraphPattern(_namespaceMapper.Object);
 
             // then
-            Assert.IsTrue(graphPattern.IsFiltered);
-            Assert.AreSame(expression, graphPattern.Filter.Expression);
+            Assert.True(graphPattern.IsFiltered);
+            Assert.Same(expression, graphPattern.Filter.Expression);
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowAddingSimpleChildGraphPatterns()
         {
             // given
@@ -75,7 +74,7 @@ namespace VDS.RDF.Query.Builder
             // then
             for (int i = 0; i < 4; i++)
             {
-                Assert.AreEqual(1, graphPattern.ChildGraphPatterns.Count);
+                Assert.Equal(1, graphPattern.ChildGraphPatterns.Count);
                 graphPattern = graphPattern.ChildGraphPatterns.Single();
             }
         }

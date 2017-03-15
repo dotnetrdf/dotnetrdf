@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage;
@@ -37,7 +37,7 @@ namespace VDS.RDF.Parsing.Handlers
     /// <summary>
     /// Summary description for WriteToStoreHandlerTests
     /// </summary>
-    [TestFixture]
+
     public class WriteToStoreHandlerTests
     {
         private readonly Uri TestGraphUri = new Uri("http://example.org/WriteToStoreHandlerTest");
@@ -74,7 +74,7 @@ namespace VDS.RDF.Parsing.Handlers
             try
             {
                 manager.LoadGraph(temp, TestGraphUri);
-                Assert.IsTrue(temp.IsEmpty, "Unable to ensure that Target Graph in Store is empty prior to running Test");
+                Assert.True(temp.IsEmpty, "Unable to ensure that Target Graph in Store is empty prior to running Test");
             }
             catch
             {
@@ -86,12 +86,12 @@ namespace VDS.RDF.Parsing.Handlers
             parser.Load(handler, "temp.ttl");
 
             manager.LoadGraph(temp, TestGraphUri);
-            Assert.IsFalse(temp.IsEmpty, "Graph should not be empty");
+            Assert.False(temp.IsEmpty, "Graph should not be empty");
 
             Graph orig = new Graph();
             orig.LoadFromFile("temp.ttl");
 
-            Assert.AreEqual(orig, temp, "Graphs should be equal");
+            Assert.Equal(orig, temp);
         }
 
         private void TestWriteToStoreDatasetsHandler(IStorageProvider manager)
@@ -136,13 +136,13 @@ namespace VDS.RDF.Parsing.Handlers
             Graph gD = new Graph();
             manager.LoadGraph(gD, graphD);
 
-            Assert.AreEqual(2, def.Triples.Count, "Should be two triples in the default Graph");
-            Assert.IsTrue(def.ContainsTriple(new Triple(a, a, a)), "Default Graph should have the a triple");
-            Assert.AreEqual(1, gB.Triples.Count, "Should be one triple in the b Graph");
-            Assert.IsTrue(gB.ContainsTriple(new Triple(b, b, b)), "b Graph should have the b triple");
-            Assert.IsTrue(def.ContainsTriple(new Triple(c, c, c)), "Default Graph should have the c triple");
-            Assert.AreEqual(1, gD.Triples.Count, "Should be one triple in the d Graph");
-            Assert.IsTrue(gD.ContainsTriple(new Triple(d, d, d)), "d Graph should have the d triple");
+            Assert.Equal(2, def.Triples.Count);
+            Assert.True(def.ContainsTriple(new Triple(a, a, a)), "Default Graph should have the a triple");
+            Assert.Equal(1, gB.Triples.Count);
+            Assert.True(gB.ContainsTriple(new Triple(b, b, b)), "b Graph should have the b triple");
+            Assert.True(def.ContainsTriple(new Triple(c, c, c)), "Default Graph should have the c triple");
+            Assert.Equal(1, gD.Triples.Count);
+            Assert.True(gD.ContainsTriple(new Triple(d, d, d)), "d Graph should have the d triple");
         }
 
         private void TestWriteToStoreHandlerWithBNodes(IStorageProvider manager)
@@ -170,38 +170,38 @@ namespace VDS.RDF.Parsing.Handlers
             Graph g = new Graph();
             manager.LoadGraph(g, TestBNodeUri);
 
-            Assert.AreEqual(3, g.Triples.Count, "Should be 3 Triples");
+            Assert.Equal(3, g.Triples.Count);
             List<IBlankNode> nodes = g.Nodes.BlankNodes().ToList();
             for (int i = 0; i < nodes.Count; i++)
             {
                 for (int j = 0; j < nodes.Count; j++)
                 {
                     if (i == j) continue;
-                    Assert.AreEqual(nodes[i], nodes[j], "All Blank Nodes should be the same");
+                    Assert.Equal(nodes[i], nodes[j]);
                 }
             }
         }
 
-        [Test]
+        [Fact]
         public void ParsingWriteToStoreHandlerBadInstantiation()
         {
             Assert.Throws<ArgumentNullException>(() => new WriteToStoreHandler(null, null));
         }
 
-        [Test]
+        [Fact]
         public void ParsingWriteToStoreHandlerBadInstantiation2()
         {
             Assert.Throws<ArgumentException>(() => new WriteToStoreHandler(new ReadOnlyConnector(new InMemoryManager()), null));
         }
 
-        [Test]
+        [Fact]
         public void ParsingWriteToStoreHandlerBadInstantiation4()
         {
             Assert.Throws<ArgumentException>(() => new WriteToStoreHandler(new InMemoryManager(), null, 0));
         }
 
 #if !PORTABLE // No VirtuosoManager in PCL
-        [Test]
+        [Fact]
         public void ParsingWriteToStoreHandlerVirtuoso()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
@@ -210,7 +210,7 @@ namespace VDS.RDF.Parsing.Handlers
 #endif
 
 #if !NO_SYNC_HTTP // Require Sync interface for test
-        [Test]
+        [Fact]
         public void ParsingWriteToStoreHandlerAllegroGraph()
         {
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
@@ -219,7 +219,7 @@ namespace VDS.RDF.Parsing.Handlers
 #endif
 
 #if !NO_SYNC_HTTP // Test requires synchronous APIs
-        [Test]
+        [Fact]
         public void ParsingWriteToStoreHandlerFuseki()
         {
             try
@@ -239,14 +239,14 @@ namespace VDS.RDF.Parsing.Handlers
         }
 #endif
 
-        [Test]
+        [Fact]
         public void ParsingWriteToStoreHandlerInMemory()
         {
             InMemoryManager mem = new InMemoryManager();
             this.TestWriteToStoreHandler(mem);
         }
 
-        [Test]
+        [Fact]
         public void ParsingWriteToStoreHandlerDatasetsInMemory()
         {
             InMemoryManager manager = new InMemoryManager();
@@ -254,7 +254,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
 #if !PORTABLE // No VirtuousoManager in PCL
-        [Test]
+        [Fact]
         public void ParsingWriteToStoreHandlerDatasetsVirtuoso()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
@@ -263,7 +263,7 @@ namespace VDS.RDF.Parsing.Handlers
 #endif
 
 #if !NO_SYNC_HTTP // Test requires synchronous APIs
-        [Test]
+        [Fact]
         public void ParsingWriteToStoreHandlerBNodesAcrossBatchesAllegroGraph()
         {
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
@@ -272,7 +272,7 @@ namespace VDS.RDF.Parsing.Handlers
 #endif
 
 #if !NO_SYNC_HTTP
-        [Test]
+        [Fact]
         public void ParsingWriteToStoreHandlerBNodesAcrossBatchesFuseki()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
@@ -280,7 +280,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 #endif
 
-        [Test]
+        [Fact]
         public void ParsingWriteToStoreHandlerBNodesAcrossBatchesInMemory()
         {
             InMemoryManager manager = new InMemoryManager();
@@ -288,7 +288,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
 #if !PORTABLE // No VirtuosoManager in PCL
-        [Test]
+        [Fact]
         public void ParsingWriteToStoreHandlerBNodesAcrossBatchesVirtuoso()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();

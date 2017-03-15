@@ -26,14 +26,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.IO;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class DeltaTest
     {
         private readonly TurtleParser _parser = new TurtleParser();
@@ -130,9 +130,9 @@ WHERE
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
             using (SparqlResultSet resultSet = processor.ProcessQuery(q) as SparqlResultSet)
             {
-                Assert.IsNotNull(resultSet);
+                Assert.NotNull(resultSet);
                 TestTools.ShowResults(resultSet);
-                Assert.AreEqual(differences, resultSet.Count);
+                Assert.Equal(differences, resultSet.Count);
             }
             Console.WriteLine();
         }
@@ -152,7 +152,7 @@ WHERE
             this.TestQuery(store, NotExistsQuery, "NotExists", differences);
         }
 
-        [Test]
+        [Fact]
         public void SparqlGraphDeltas1()
         {
             IGraph a = new Graph();
@@ -165,7 +165,7 @@ WHERE
             this.TestDeltas(b, a, 0);
         }
 
-        [Test]
+        [Fact]
         public void SparqlGraphDeltas2()
         {
             IGraph a = new Graph();
@@ -178,7 +178,7 @@ WHERE
             this.TestDeltas(b, a, 1);
         }
 
-        [Test]
+        [Fact]
         public void SparqlGraphDeltas3()
         {
             IGraph a = new Graph();
@@ -193,7 +193,7 @@ WHERE
             // TODO This should pass
         }
 
-        [Test]
+        [Fact]
         public void SparqlGraphDeltas4()
         {
             IGraph a = new Graph();
@@ -205,7 +205,7 @@ WHERE
             this.TestDeltas(b, a, 0);
         }
 
-        [Test]
+        [Fact]
         public void SparqlGraphDeltas5()
         {
             IGraph a = new Graph();
@@ -218,7 +218,7 @@ WHERE
             this.TestDeltas(b, a, 0);
         }
 
-        [Test]
+        [Fact]
         public void SparqlGraphDeltas6()
         {
             IGraph a = new Graph();

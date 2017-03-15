@@ -31,7 +31,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -39,13 +39,14 @@ using VDS.RDF.Query.Datasets;
 using VDS.RDF.Storage;
 using VDS.RDF.Update;
 using VDS.RDF.Writing;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class SparqlTests
     {
-        [Test]
+        [Fact]
         public void SparqlJoinWithoutVars1()
         {
             String data = @"<http://s> <http://p> <http://o> .
@@ -55,12 +56,12 @@ namespace VDS.RDF.Query
             g.LoadFromString(data, new NTriplesParser());
 
             SparqlResultSet results = g.ExecuteQuery("ASK WHERE { <http://s> <http://p> <http://o> . <http://x> <http://y> <http://z> }") as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.AreEqual(SparqlResultsType.Boolean, results.ResultsType);
-            Assert.IsTrue(results.Result);
+            Assert.NotNull(results);
+            Assert.Equal(SparqlResultsType.Boolean, results.ResultsType);
+            Assert.True(results.Result);
         }
 
-        [Test]
+        [Fact]
         public void SparqlJoinWithoutVars2()
         {
             String data = @"<http://s> <http://p> <http://o> .
@@ -71,12 +72,12 @@ namespace VDS.RDF.Query
             g.BaseUri = new Uri("http://example/graph");
 
             SparqlResultSet results = g.ExecuteQuery("ASK WHERE { GRAPH <http://example/graph> { <http://s> <http://p> <http://o> . <http://x> <http://y> <http://z> } }") as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.AreEqual(SparqlResultsType.Boolean, results.ResultsType);
-            Assert.IsTrue(results.Result);
+            Assert.NotNull(results);
+            Assert.Equal(SparqlResultsType.Boolean, results.ResultsType);
+            Assert.True(results.Result);
         }
 
-        [Test]
+        [Fact]
         public void SparqlJoinWithoutVars3()
         {
             String data = @"<http://s> <http://p> <http://o> .
@@ -87,13 +88,13 @@ namespace VDS.RDF.Query
             g.BaseUri = new Uri("http://example/graph");
 
             SparqlResultSet results = g.ExecuteQuery("SELECT * WHERE { GRAPH <http://example/graph> { <http://s> <http://p> <http://o> . <http://x> <http://y> <http://z> } }") as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType);
-            Assert.AreEqual(1, results.Results.Count);
-            Assert.AreEqual(0, results.Variables.Count());
+            Assert.NotNull(results);
+            Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
+            Assert.Equal(1, results.Results.Count);
+            Assert.Equal(0, results.Variables.Count());
         }
 
-        [Test]
+        [Fact]
         public void SparqlParameterizedStringWithNulls()
         {
             SparqlParameterizedString query = new SparqlParameterizedString();
@@ -109,7 +110,7 @@ namespace VDS.RDF.Query
             Console.WriteLine(query.ToString());
         }
 
-        [Test]
+        [Fact]
         public void SparqlParameterizedStringWithNulls2()
         {
             SparqlParameterizedString query = new SparqlParameterizedString();
@@ -128,30 +129,29 @@ namespace VDS.RDF.Query
         // The issue is that %2f is automatically decoded by the Uri class when you get the AbsolutePath property. A possible fix
         // is to use the OriginalString property in the BaseFormatter class instead, but this then breaks several other tests that
         // are testing for standards adherence unless we create a derived formatter specifically for this one use case.
-        [Test]
-        [Ignore("Not supported by the Uri class")]
+        [Fact(Skip = "Not supported by the Uri class")]
         public void SparqlParameterizedStringShouldNotDecodeEncodedCharactersInUri()
         {
             SparqlParameterizedString query = new SparqlParameterizedString("DESCRIBE @uri");
             query.SetUri("uri", new Uri("http://example.com/some%40encoded%2furi"));
-            Assert.AreEqual("DESCRIBE <http://example.com/some%40encoded%2furi>", query.ToString(), "The query should contain the encoded form of the given uri");
+            Assert.Equal("DESCRIBE <http://example.com/some%40encoded%2furi>", query.ToString());
         }
 
-        [Test]
+        [Fact]
         public void SparqlParameterizedStringShouldNotEncodeUri()
         {
             SparqlParameterizedString query = new SparqlParameterizedString("DESCRIBE @uri");
             query.SetUri("uri", new Uri("http://example.com/some@encoded/uri"));
-            Assert.AreEqual("DESCRIBE <http://example.com/some@encoded/uri>", query.ToString(), "The query should contain the encoded form of the given uri");
+            Assert.Equal("DESCRIBE <http://example.com/some@encoded/uri>", query.ToString());
         }
 
 #if !SILVERLIGHT // No SparqlRemoteEndpoint.QueryRaw() 
-        [Test]
+        [SkippableFact]
         public void SparqlDBPedia()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
             {
-                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
             }
 
             try
@@ -186,12 +186,12 @@ namespace VDS.RDF.Query
 #endif
 
 #if !PORTABLE // No VirtuosoManager in PCL
-        [Test]
+        [SkippableFact]
         public void SparqlRemoteVirtuosoWithSponging()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseVirtuoso))
             {
-                Assert.Inconclusive("Test Config marks Virtuoso as unavailable, cannot run test");
+                throw new SkipTestException("Test Config marks Virtuoso as unavailable, cannot run test");
             }
             SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(TestConfigManager.GetSetting(TestConfigManager.VirtuosoEndpoint) + "?should-sponge=soft"));
             endpoint.HttpMode = "POST";
@@ -199,17 +199,17 @@ namespace VDS.RDF.Query
 
             IGraph g = endpoint.QueryWithResultGraph(query);
             TestTools.ShowGraph(g);
-            Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
+            Assert.False(g.IsEmpty, "Graph should not be empty");
         }
 #endif
 
 #if !SILVERLIGHT // No SparqlRemoteEndpoint.QueryRaw()
-        [Test]
+        [SkippableFact]
         public void SparqlDbPediaDotIssue()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
             {
-                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
             }
 
             try
@@ -267,7 +267,7 @@ where {
         }
 #endif
 
-        [Test]
+        [Fact]
         public void SparqlResultSetEquality()
         {
             SparqlXmlParser parser = new SparqlXmlParser();
@@ -280,7 +280,7 @@ where {
 
             a.Trim();
             b.Trim();
-            Assert.IsTrue(a.Equals(b));
+            Assert.True(a.Equals(b));
 
             a = new SparqlResultSet();
             b = new SparqlResultSet();
@@ -289,7 +289,7 @@ where {
 
             a.Trim();
             b.Trim();
-            Assert.IsTrue(a.Equals(b));
+            Assert.True(a.Equals(b));
 
             a = new SparqlResultSet();
             b = new SparqlResultSet();
@@ -298,10 +298,10 @@ where {
 
             a.Trim();
             b.Trim();
-            Assert.IsTrue(a.Equals(b));
+            Assert.True(a.Equals(b));
         }
 
-        [Test]
+        [Fact]
         public void SparqlJsonResultSet()
         {
             Console.WriteLine("Tests that JSON Parser parses language specifiers correctly");
@@ -314,6 +314,7 @@ where {
             store.Add(g);
 
             Object results = store.ExecuteQuery(query);
+            Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
@@ -345,17 +346,13 @@ where {
                 }
                 Console.WriteLine();
 
-                Assert.AreEqual(r1, r2, "Results Sets should be equal");
+                Assert.Equal(r1, r2);
 
                 Console.WriteLine("Result Sets were equal as expected");
             }
-            else
-            {
-                Assert.Fail("Query did not return a Result Set");
-            }
         }
 
-        [Test]
+        [Fact]
         public void SparqlInjection()
         {
             String baseQuery = @"PREFIX ex: <http://example.org/Vehicles/>
@@ -382,11 +379,11 @@ SELECT * WHERE {
                 Console.WriteLine();
 
                 SparqlQuery q = parser.ParseFromString(query.ToString());
-                Assert.AreEqual(1, q.Variables.Count(), "Should only be one variable in the query");
+                Assert.Equal(1, q.Variables.Count());
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlConflictingParamNames()
         {
             String baseQuery = @"SELECT * WHERE {
@@ -408,29 +405,19 @@ SELECT * WHERE {
             Console.WriteLine(query.ToString());
             Console.WriteLine();
 
-            try
+            Assert.Throws<FormatException>(() =>
             {
                 query.SetUri("not valid", new Uri("http://example.org/invalidParam"));
-                Assert.Fail("Should reject bad parameter names");
-            }
-            catch (FormatException ex)
-            {
-                //This is ok
-                Console.WriteLine("Bad Parameter Name was rejected - " + ex.Message);
-            }
+            });
 
-            try
+            Assert.Throws<FormatException>(() =>
             {
                 query.SetUri("is_valid", new Uri("http://example.org/validParam"));
-            }
-            catch (FormatException)
-            {
-                Assert.Fail("Should have been a valid parameter name");
-            }
+            });
 
         }
 
-        [Test]
+        [Fact]
         public void SparqlParameterizedString()
         {
             String test = @"INSERT DATA { GRAPH @graph {
@@ -445,12 +432,12 @@ SELECT * WHERE {
         }
 
 #if !NO_SYNC_HTTP // No SparqlConnector
-        [Test]
+        [SkippableFact]
         public void SparqlEndpointWithExtensions()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteSparql))
             {
-                Assert.Inconclusive("Test Config marks Remote SPARQL as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Remote SPARQL as unavailable, test cannot be run");
             }
 
             SparqlConnector endpoint = new SparqlConnector(new Uri(TestConfigManager.GetSetting(TestConfigManager.RemoteSparqlQuery)));
@@ -462,33 +449,19 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
             Console.WriteLine();
             Console.WriteLine(testQuery);
 
-            try
+            Assert.Throws<RdfException>(() =>
             {
-                Object results = endpoint.Query(testQuery);
-                Assert.Fail("Parser should reject bif:contains QName");
-            }
-            catch (RdfException)
-            {
-                //This is OK
-            }
+                var r = endpoint.Query(testQuery);
+            });
 
             endpoint.SkipLocalParsing = true;
 
-            try
-            {
-                Object results = endpoint.Query(testQuery);
-                TestTools.ShowResults(results);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                Assert.Fail("Query should run fine when local parsing is skipped");
-            }
+            Object results = endpoint.Query(testQuery);
+            TestTools.ShowResults(results);
         }
 #endif
 
-        [Test]
+        [Fact]
         public void SparqlBNodeIDsInResults()
         {
             SparqlXmlParser xmlparser = new SparqlXmlParser();
@@ -496,17 +469,17 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
             xmlparser.Load(results, "resources\\bnodes.srx");
 
             TestTools.ShowResults(results);
-            Assert.AreEqual(results.Results.Distinct().Count(), 1, "All Results should be the same as they should all generate same BNode");
+            Assert.Equal(results.Results.Distinct().Count(), 1);
 
             SparqlJsonParser jsonparser = new SparqlJsonParser();
             results = new SparqlResultSet();
             jsonparser.Load(results, "resources\\bnodes.json");
 
             TestTools.ShowResults(results);
-            Assert.AreEqual(results.Results.Distinct().Count(), 1, "All Results should be the same as they should all generate same BNode");
+            Assert.Equal(results.Results.Distinct().Count(), 1);
         }
 
-        [Test]
+        [Fact]
         public void SparqlAnton()
         {
             Graph g = new Graph();
@@ -516,6 +489,7 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
             SparqlQuery query = parser.ParseFromFile("resources\\anton.rq");
 
             Object results = g.ExecuteQuery(query);
+            Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
@@ -523,16 +497,11 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
                 {
                     Console.WriteLine(r);
                 }
-                Assert.AreEqual(1, rset.Count, "Should be exactly 1 result");
-            }
-            else
-            {
-                Assert.Fail("Query should have returned a Result Set");
+                Assert.Equal(1, rset.Count);
             }
         }
 
-        [Test]
-        [NUnit.Framework.Description("Test that using BIND has the exact same result every time a query is executed, which was not the case with release 0.7.2")]
+        [Fact]
         public void SparqlBindMultiple()
         {
             const string sourceGraphTurtle = @"<urn:cell:cell23>
@@ -581,16 +550,16 @@ WHERE
             for (int i = 0; i < 10; i++)
             {
                 IGraph actualGraph = (IGraph)sourceGraph.ExecuteQuery(query);
-                Assert.IsTrue(expectedGraph.Difference(actualGraph).AreEqual);
+                Assert.True(expectedGraph.Difference(actualGraph).AreEqual);
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void SparqlSimpleQuery1()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
             {
-                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
             }
 
             TripleStore store = new TripleStore();
@@ -623,13 +592,13 @@ WHERE
             {
                 Console.WriteLine("Checking query:\n" + query);
                 SparqlResultSet results = g.ExecuteQuery(query) as SparqlResultSet;
-                Assert.IsNotNull(results);
-                Assert.AreEqual(1, results.Count, "Failed to get a result");
+                Assert.NotNull(results);
+                Assert.Equal(1, results.Count);
                 Console.WriteLine();
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlLanguageSpecifierCase1()
         {
             IGraph g = new Graph();
@@ -641,7 +610,7 @@ WHERE
             TestLanguageSpecifierCase(g);
         }
 
-        [Test]
+        [Fact]
         public void SparqlLanguageSpecifierCase2()
         {
             IGraph g = new Graph();
@@ -653,7 +622,7 @@ WHERE
             TestLanguageSpecifierCase(g);
         }
 
-        [Test]
+        [Fact]
         public void SparqlLanguageSpecifierCase3()
         {
             IGraph g = new Graph();
@@ -665,7 +634,7 @@ WHERE
             TestLanguageSpecifierCase(g);
         }
 
-        [Test]
+        [Fact]
         public void SparqlLanguageSpecifierCase4()
         {
             IGraph g = new Graph();
@@ -677,7 +646,7 @@ WHERE
             TestLanguageSpecifierCase(g);
         }
 
-        [Test]
+        [Fact]
         public void SparqlConstructEmptyWhereCore407()
         {
             const String queryStr = @"CONSTRUCT
@@ -692,12 +661,12 @@ WHERE
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
 
             IGraph g = processor.ProcessQuery(q) as IGraph;
-            Assert.IsNotNull(g);
-            Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
-            Assert.AreEqual(1, g.Triples.Count, "Expected a single triple");
+            Assert.NotNull(g);
+            Assert.False(g.IsEmpty, "Graph should not be empty");
+            Assert.Equal(1, g.Triples.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlConstructFromSubqueryWithLimitCore420()
         {
             const string queryStr = @"CONSTRUCT
@@ -732,8 +701,8 @@ WHERE
             var processor = new LeviathanQueryProcessor(new InMemoryDataset(g));
             var resultGraph = processor.ProcessQuery(q) as IGraph;
 
-            Assert.That(resultGraph, Is.Not.Null);
-            Assert.That(resultGraph.Triples.Count, Is.EqualTo(9)); // Returns 3 rather than 9
+            Assert.NotNull(resultGraph);
+            Assert.Equal(9, resultGraph.Triples.Count); // Returns 3 rather than 9
         }
     }
 }

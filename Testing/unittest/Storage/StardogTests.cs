@@ -28,7 +28,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
@@ -36,18 +36,19 @@ using VDS.RDF.Storage.Management;
 using VDS.RDF.Storage.Management.Provisioning;
 using VDS.RDF.Update;
 using VDS.RDF.Writing.Formatting;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Storage
 {
-    [TestFixture]
+
     public class StardogTests
-        : GenericUpdateProcessorTests
+        : GenericUpdateProcessorTests, IDisposable
     {
         public static StardogConnector GetConnection()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseStardog))
             {
-                Assert.Inconclusive("Test Config marks Stardog as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Stardog as unavailable, test cannot be run");
             }
             return new StardogConnector(TestConfigManager.GetSetting(TestConfigManager.StardogServer),
                 TestConfigManager.GetSetting(TestConfigManager.StardogDatabase),
@@ -59,11 +60,16 @@ namespace VDS.RDF.Storage
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseStardog))
             {
-                Assert.Inconclusive("Test Config marks Stardog as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Stardog as unavailable, test cannot be run");
             }
             return new StardogServer(TestConfigManager.GetSetting(TestConfigManager.StardogServer),
                 TestConfigManager.GetSetting(TestConfigManager.StardogUser),
                 TestConfigManager.GetSetting(TestConfigManager.StardogPassword));
+        }
+
+        public StardogTests()
+        {
+            Options.HttpDebugging = true;
         }
 
         protected override IStorageProvider GetManager()
@@ -71,21 +77,9 @@ namespace VDS.RDF.Storage
             return (IStorageProvider) StardogTests.GetConnection();
         }
 
-        [SetUp]
-        public void Setup()
-        {
-            Options.HttpDebugging = true;
-        }
-
-        [TearDown]
-        public void CleanUp()
-        {
-            Options.HttpDebugging = false;
-        }
-
 #if !NO_SYNC_HTTP
         // Many of these tests require a synchronous API
-        [Test]
+        [SkippableFact]
         public void StorageStardogLoadDefaultGraph()
         {
             StardogConnector stardog = StardogTests.GetConnection();
@@ -103,10 +97,10 @@ namespace VDS.RDF.Storage
                 Console.WriteLine(t.ToString(formatter));
             }
 
-            Assert.IsFalse(h.IsEmpty);
+            Assert.False(h.IsEmpty);
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageStardogLoadNamedGraph()
         {
             StardogConnector stardog = StardogTests.GetConnection();
@@ -127,11 +121,11 @@ namespace VDS.RDF.Storage
                 Console.WriteLine(t.ToString(formatter));
             }
 
-            Assert.IsFalse(h.IsEmpty);
-            Assert.AreEqual(g, h);
+            Assert.False(h.IsEmpty);
+            Assert.Equal(g, h);
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageStardogSaveToDefaultGraph()
         {
             StardogConnector stardog = StardogTests.GetConnection();
@@ -147,15 +141,15 @@ namespace VDS.RDF.Storage
 
             if (g.Triples.Count == h.Triples.Count)
             {
-                Assert.AreEqual(g, h, "Retrieved Graph should be equal to the Saved Graph");
+                Assert.Equal(g, h);
             }
             else
             {
-                Assert.IsTrue(h.HasSubGraph(g), "Retrieved Graph should have the Saved Graph as a subgraph");
+                Assert.True(h.HasSubGraph(g), "Retrieved Graph should have the Saved Graph as a subgraph");
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageStardogSaveToNamedGraph()
         {
             try
@@ -172,7 +166,7 @@ namespace VDS.RDF.Storage
                 Graph h = new Graph();
                 stardog.LoadGraph(h, new Uri("http://example.org/graph"));
 
-                Assert.AreEqual(g, h, "Retrieved Graph should be equal to the Saved Graph");
+                Assert.Equal(g, h);
             }
             finally
             {
@@ -180,7 +174,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageStardogSaveToNamedGraph2()
         {
             try
@@ -198,7 +192,7 @@ namespace VDS.RDF.Storage
                 Graph h = new Graph();
                 stardog.LoadGraph(h, u);
 
-                Assert.AreEqual(g, h, "Retrieved Graph should be equal to the Saved Graph");
+                Assert.Equal(g, h);
             }
             finally
             {
@@ -206,7 +200,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageStardogSaveToNamedGraphOverwrite()
         {
             StardogConnector stardog = StardogTests.GetConnection();
@@ -219,7 +213,7 @@ namespace VDS.RDF.Storage
             Graph h = new Graph();
             stardog.LoadGraph(h, new Uri("http://example.org/namedGraph"));
 
-            Assert.AreEqual(g, h, "Retrieved Graph should be equal to the Saved Graph");
+            Assert.Equal(g, h);
 
             Graph i = new Graph();
             i.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
@@ -229,11 +223,11 @@ namespace VDS.RDF.Storage
             Graph j = new Graph();
             stardog.LoadGraph(j, "http://example.org/namedGraph");
 
-            Assert.AreNotEqual(g, j, "Retrieved Graph should not be equal to overwritten Graph");
-            Assert.AreEqual(i, j, "Retrieved Graph should be equal to Saved Graph");
+            Assert.NotEqual(g, j);
+            Assert.Equal(i, j);
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageStardogUpdateNamedGraphRemoveTriples()
         {
             try
@@ -257,13 +251,13 @@ namespace VDS.RDF.Storage
 
                 if (g.Triples.Count == h.Triples.Count)
                 {
-                    Assert.AreEqual(g, h, "Retrieved Graph should be equal to the Saved Graph");
+                    Assert.Equal(g, h);
                 }
                 else
                 {
-                    Assert.IsTrue(h.HasSubGraph(g), "Retrieved Graph should have the Saved Graph as a subgraph");
+                    Assert.True(h.HasSubGraph(g), "Retrieved Graph should have the Saved Graph as a subgraph");
                 }
-                Assert.IsFalse(h.GetTriplesWithPredicate(rdfType).Any(),
+                Assert.False(h.GetTriplesWithPredicate(rdfType).Any(),
                     "Retrieved Graph should not contain any rdf:type Triples");
             }
             finally
@@ -272,7 +266,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageStardogUpdateNamedGraphAddTriples()
         {
             try
@@ -300,13 +294,13 @@ namespace VDS.RDF.Storage
 
                 if (g.Triples.Count == h.Triples.Count)
                 {
-                    Assert.AreEqual(g, h, "Retrieved Graph should be equal to the Saved Graph");
+                    Assert.Equal(g, h);
                 }
                 else
                 {
-                    Assert.IsTrue(h.HasSubGraph(g), "Retrieved Graph should have the Saved Graph as a subgraph");
+                    Assert.True(h.HasSubGraph(g), "Retrieved Graph should have the Saved Graph as a subgraph");
                 }
-                Assert.IsTrue(h.GetTriplesWithPredicate(rdfType).Any(),
+                Assert.True(h.GetTriplesWithPredicate(rdfType).Any(),
                     "Retrieved Graph should not contain any rdf:type Triples");
             }
             finally
@@ -315,7 +309,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageStardogDeleteNamedGraph()
         {
             try
@@ -334,18 +328,18 @@ namespace VDS.RDF.Storage
 
                 if (g.Triples.Count == h.Triples.Count)
                 {
-                    Assert.AreEqual(g, h, "Retrieved Graph should be equal to the Saved Graph");
+                    Assert.Equal(g, h);
                 }
                 else
                 {
-                    Assert.IsTrue(h.HasSubGraph(g), "Retrieved Graph should have the Saved Graph as a subgraph");
+                    Assert.True(h.HasSubGraph(g), "Retrieved Graph should have the Saved Graph as a subgraph");
                 }
 
                 stardog.DeleteGraph("http://example.org/tempGraph");
                 Graph i = new Graph();
                 stardog.LoadGraph(i, new Uri("http://example.org/tempGraph"));
 
-                Assert.IsTrue(i.IsEmpty, "Retrieved Graph should be empty since it has been deleted");
+                Assert.True(i.IsEmpty, "Retrieved Graph should be empty since it has been deleted");
             }
             finally
             {
@@ -353,13 +347,13 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageStardogReasoningQL()
         {
             StardogConnector stardog = StardogTests.GetConnection();
             if (stardog.Reasoning == StardogReasoningMode.DatabaseControlled)
             {
-                Assert.Inconclusive(
+                throw new SkipTestException(
                     "Version of Stardog being tested does not support configuring reasoning mode at connection level");
             }
 
@@ -374,14 +368,11 @@ namespace VDS.RDF.Storage
             Console.WriteLine();
 
             SparqlResultSet resultsNoReasoning = stardog.Query(query) as SparqlResultSet;
+            Assert.NotNull(resultsNoReasoning);
             if (resultsNoReasoning != null)
             {
                 Console.WriteLine("Results without Reasoning");
                 TestTools.ShowResults(resultsNoReasoning);
-            }
-            else
-            {
-                Assert.Fail("Did not get a SPARQL Result Set as expected");
             }
 
             stardog.Reasoning = StardogReasoningMode.QL;
@@ -393,21 +384,21 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                Assert.Fail("Did not get a SPARQL Result Set as expected");
+                Assert.True(false, "Did not get a SPARQL Result Set as expected");
             }
 
-            Assert.IsTrue(resultsWithReasoning.Count >= resultsNoReasoning.Count,
+            Assert.True(resultsWithReasoning.Count >= resultsNoReasoning.Count,
                 "Reasoning should yield as many if not more results");
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageStardogReasoningMode()
         {
             StardogConnector connector = StardogTests.GetConnection();
 
             if (connector.Reasoning != StardogReasoningMode.DatabaseControlled)
             {
-                Assert.Pass();
+                return;
             }
             else
             {
@@ -417,7 +408,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageStardogTransactionTest()
         {
             StardogConnector stardog = StardogTests.GetConnection();
@@ -427,7 +418,7 @@ namespace VDS.RDF.Storage
             stardog.Dispose();
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageStardogAmpersandsInDataTest()
         {
             StardogConnector stardog = StardogTests.GetConnection();
@@ -450,7 +441,7 @@ namespace VDS.RDF.Storage
             Console.WriteLine("Graph as retrieved from Stardog:");
             TestTools.ShowGraph(h);
 
-            Assert.AreEqual(g, h, "Graphs should be equal");
+            Assert.Equal(g, h);
 
             //Now try to delete the data from this Graph
             GenericUpdateProcessor processor = new GenericUpdateProcessor(stardog);
@@ -464,11 +455,11 @@ namespace VDS.RDF.Storage
             Console.WriteLine("Graph as retrieved after the DELETE WHERE:");
             TestTools.ShowGraph(i);
 
-            Assert.AreNotEqual(g, i, "Graphs should not be equal");
-            Assert.AreNotEqual(h, i, "Graphs should not be equal");
+            Assert.NotEqual(g, i);
+            Assert.NotEqual(h, i);
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageStardogCreateNewStore()
         {
             Guid guid;
@@ -486,7 +477,7 @@ namespace VDS.RDF.Storage
             stardog.Dispose();
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageStardogSparqlUpdate1()
         {
             StardogConnector stardog = StardogTests.GetConnection();
@@ -502,7 +493,7 @@ namespace VDS.RDF.Storage
                 Thread.Sleep(2500);
                 g = new Graph();
                 stardog.LoadGraph(g, "http://example.org/stardog/update/1");
-                Assert.IsTrue(g.IsEmpty, "Graph should be empty after DROP command");
+                Assert.True(g.IsEmpty, "Graph should be empty after DROP command");
             }
 
             Console.WriteLine("Inserting data");
@@ -511,11 +502,11 @@ namespace VDS.RDF.Storage
             Console.WriteLine("Inserted data");
             g = new Graph();
             stardog.LoadGraph(g, "http://example.org/stardog/update/1");
-            Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
-            Assert.AreEqual(1, g.Triples.Count, "Should be 1 triple in the graph");
+            Assert.False(g.IsEmpty, "Graph should not be empty");
+            Assert.Equal(1, g.Triples.Count);
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageStardogSparqlUpdate2()
         {
             StardogConnector stardog = StardogTests.GetConnection();
@@ -527,7 +518,7 @@ namespace VDS.RDF.Storage
             Thread.Sleep(2500);
             g = new Graph();
             stardog.LoadGraph(g, "http://example.org/stardog/update/2");
-            Assert.IsTrue(g.IsEmpty, "Graph should be empty after DROP command");
+            Assert.True(g.IsEmpty, "Graph should be empty after DROP command");
 
             Console.WriteLine("Inserting data");
             stardog.Update(
@@ -535,11 +526,11 @@ namespace VDS.RDF.Storage
             Console.WriteLine("Inserted data");
             g = new Graph();
             stardog.LoadGraph(g, "http://example.org/stardog/update/2");
-            Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
-            Assert.AreEqual(1, g.Triples.Count, "Should be 1 triple in the graph");
+            Assert.False(g.IsEmpty, "Graph should not be empty");
+            Assert.Equal(1, g.Triples.Count);
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageStardogSparqlUpdate3()
         {
             StardogConnector stardog = StardogTests.GetConnection();
@@ -551,7 +542,7 @@ namespace VDS.RDF.Storage
             Thread.Sleep(2500);
             g = new Graph();
             stardog.LoadGraph(g, "http://example.org/stardog/update/3");
-            Assert.IsTrue(g.IsEmpty, "Graph should be empty after DROP command");
+            Assert.True(g.IsEmpty, "Graph should be empty after DROP command");
 
             Console.WriteLine("Inserting data");
             IGraph newData = new Graph();
@@ -562,11 +553,11 @@ namespace VDS.RDF.Storage
             Console.WriteLine("Inserted data");
             g = new Graph();
             stardog.LoadGraph(g, "http://example.org/stardog/update/3");
-            Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
-            Assert.AreEqual(1, g.Triples.Count, "Should be 1 triple in the graph");
+            Assert.False(g.IsEmpty, "Graph should not be empty");
+            Assert.Equal(1, g.Triples.Count);
         }
 
-        [Test, Timeout(30000)]
+        [SkippableFact]
         public void StorageStardogSparqlUpdate4()
         {
             StardogConnector stardog = StardogTests.GetConnection();
@@ -584,13 +575,13 @@ namespace VDS.RDF.Storage
 
             g = new Graph();
             stardog.LoadGraph(g, "http://example.org/stardog/update/4");
-            Assert.IsFalse(g.IsEmpty, "Graph should not be empty after update");
-            Assert.AreEqual(1, g.Triples.Count, "Graph should contain 1 triple");
+            Assert.False(g.IsEmpty, "Graph should not be empty after update");
+            Assert.Equal(1, g.Triples.Count);
 
             stardog.Dispose();
         }
 
-        [Test, Timeout(30000)]
+        [SkippableFact]
         public void StorageStardogSparqlUpdate5()
         {
             StardogConnector stardog = StardogTests.GetConnection();
@@ -608,10 +599,15 @@ namespace VDS.RDF.Storage
 
             g = new Graph();
             stardog.LoadGraph(g, "http://example.org/stardog/update/5");
-            Assert.IsFalse(g.IsEmpty, "Graph should not be empty after update");
-            Assert.AreEqual(1, g.Triples.Count, "Graph should contain 1 triple");
+            Assert.False(g.IsEmpty, "Graph should not be empty after update");
+            Assert.Equal(1, g.Triples.Count);
 
             stardog.Dispose();
+        }
+
+        public void Dispose()
+        {
+            Options.HttpDebugging = false;
         }
 #endif
     }

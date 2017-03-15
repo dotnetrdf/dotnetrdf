@@ -25,13 +25,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Threading;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Writing
 {
-    [TestFixture]
+
     public class StoreWriterTests
     {
         private void TestWriter(IStoreWriter writer, IStoreReader reader, bool useMultiThreaded, int compressionLevel)
@@ -63,15 +63,15 @@ namespace VDS.RDF.Writing
 
             Console.WriteLine(strWriter.ToString());
 
-            Assert.IsFalse(strWriter.ToString().Equals(String.Empty));
+            Assert.False(strWriter.ToString().Equals(String.Empty));
 
             TripleStore store2 = new TripleStore();
             reader.Load(store2, new System.IO.StringReader(strWriter.ToString()));
 
             foreach (IGraph graph in store.Graphs)
             {
-                Assert.IsTrue(store2.HasGraph(graph.BaseUri), "Parsed Stored should have contained serialized graph");
-                Assert.AreEqual(graph, store2[graph.BaseUri], "Parsed Graph should be equal to original graph");
+                Assert.True(store2.HasGraph(graph.BaseUri), "Parsed Stored should have contained serialized graph");
+                Assert.Equal(graph, store2[graph.BaseUri]);
             }
         }
 
@@ -80,13 +80,13 @@ namespace VDS.RDF.Writing
             this.TestWriter(writer, reader, useMultiThreaded, Options.DefaultCompressionLevel);
         }
 
-        [Test]
+        [Fact]
         public void WritingNQuads()
         {
             TestTools.TestInMTAThread(this.WritingNQuadsActual);
         }
 
-        [Test]
+        [Fact]
         public void WritingNQuadsSingleThreaded()
         {
             this.WritingNQuadsActual();
@@ -97,13 +97,13 @@ namespace VDS.RDF.Writing
             this.TestWriter(new NQuadsWriter(NQuadsSyntax.Original), new NQuadsParser(NQuadsSyntax.Original), true);
         }
 
-        [Test]
+        [Fact]
         public void WritingNQuadsMixed()
         {
             TestTools.TestInMTAThread(this.WritingNQuadsMixedActual);
         }
 
-        [Test]
+        [Fact]
         public void WritingNQuadsMixedSingleThreaded()
         {
             this.WritingNQuadsMixedActual();
@@ -114,13 +114,13 @@ namespace VDS.RDF.Writing
             this.TestWriter(new NQuadsWriter(NQuadsSyntax.Original), new NQuadsParser(NQuadsSyntax.Rdf11), true);
         }
 
-        [Test]
+        [Fact]
         public void WritingNQuadsMixedBad()
         {
             Assert.Throws<RdfParseException>(() => TestTools.TestInMTAThread(this.WritingNQuadsMixedBadActual));
         }
 
-        [Test]
+        [Fact]
         public void WritingNQuadsMixedBadSingleThreaded()
         {
             Assert.Throws<RdfParseException>(() => this.WritingNQuadsMixedBadActual());
@@ -131,13 +131,13 @@ namespace VDS.RDF.Writing
             this.TestWriter(new NQuadsWriter(NQuadsSyntax.Rdf11), new NQuadsParser(NQuadsSyntax.Original), true);
         }
 
-        [Test]
+        [Fact]
         public void WritingNQuads11()
         {
             TestTools.TestInMTAThread(this.WritingNQuads11Actual);
         }
 
-        [Test]
+        [Fact]
         public void WritingNQuads11SingleThreaded()
         {
             this.WritingNQuads11Actual();
@@ -148,13 +148,13 @@ namespace VDS.RDF.Writing
             this.TestWriter(new NQuadsWriter(NQuadsSyntax.Rdf11), new NQuadsParser(NQuadsSyntax.Rdf11), true);
         }
 
-        [Test]
+        [Fact]
         public void WritingTriG()
         {
             TestTools.TestInMTAThread(this.WritingTriGActual);
         }
 
-        [Test]
+        [Fact]
         public void WritingTriGSingleThreaded()
         {
             this.WritingTriGActual();
@@ -165,13 +165,13 @@ namespace VDS.RDF.Writing
             this.TestWriter(new TriGWriter(), new TriGParser(), true);
         }
 
-        [Test]
+        [Fact]
         public void WritingTriGUncompressed()
         {
             TestTools.TestInMTAThread(this.WritingTriGUncompressedActual);
         }
 
-        [Test]
+        [Fact]
         public void WritingTriGUncompressedSingleThreaded()
         {
             this.WritingTriGUncompressedActual();
@@ -182,7 +182,7 @@ namespace VDS.RDF.Writing
             this.TestWriter(new TriGWriter(), new TriGParser(), true, WriterCompressionLevel.None);
         }
 
-        [Test]
+        [Fact]
         public void WritingTriX()
         {
             this.TestWriter(new TriXWriter(), new TriXParser(), false);

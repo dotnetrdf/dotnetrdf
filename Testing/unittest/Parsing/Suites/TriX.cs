@@ -28,15 +28,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Parsing.Suites
 {
    
-    [TestFixture]
+
     public class TriX
         : BaseDatasetParserSuite
     {
@@ -55,7 +56,7 @@ namespace VDS.RDF.Parsing.Suites
             };
 #endif
 
-        [Test]
+        [SkippableFact]
         public void ParsingSuiteTriX()
         {
 #if NO_XSL
@@ -68,13 +69,13 @@ namespace VDS.RDF.Parsing.Suites
             this.RunDirectory(f => Path.GetExtension(f).Equals(".xml") && f.Contains("bad"), false);
 #endif
 
-            if (this.Count == 0) Assert.Fail("No tests found");
+            if (this.Count == 0) Assert.True(false, "No tests found");
 
             Console.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed");
             Console.WriteLine((((double)this.Passed / (double)this.Count) * 100) + "% Passed");
 
-            if (this.Failed > 0) Assert.Fail(this.Failed + " Tests failed");
-            if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate");
+            if (this.Failed > 0) Assert.True(false, this.Failed + " Tests failed");
+            if (this.Indeterminate > 0) throw new SkipTestException(this.Indeterminate + " Tests are indeterminate");
         }
     }
 }

@@ -1,11 +1,11 @@
 ﻿using System.IO;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class SparqlReplaceTest
     {
         private const string TestData = @"<http://r> <http://r> ""1"" .";
@@ -49,25 +49,25 @@ GROUP BY ?s
 HAVING (COUNT(?p) = 1)
 ";
 
-        [Test]
+        [Fact]
         public void SparqlFunctionsReplace()
         {
             Test(ReplaceQuery);
         }
 
-        [Test]
+        [Fact]
         public void SparqlFunctionsHaving()
         {
             Test(HavingQuery, "1");
         }
 
-        [Test]
+        [Fact]
         public void SparqlFunctionsReplaceHaving1()
         {
             Test(ReplaceHavingQuery);
         }
 
-        [Test]
+        [Fact]
         public void SparqlFunctionsReplaceHaving2()
         {
             Test(ReplaceHavingWorkaroundQuery);
@@ -91,11 +91,11 @@ HAVING (COUNT(?p) = 1)
             using (SparqlResultSet resultSet = (SparqlResultSet) storage.Query(query))
             {
                 TestTools.ShowResults(resultSet);
-                Assert.AreEqual(1, resultSet.Count);
+                Assert.Equal(1, resultSet.Count);
 
                 SparqlResult result = resultSet[0];
-                Assert.IsTrue(result.HasBoundValue("oo"));
-                Assert.AreEqual(graph.CreateLiteralNode(literal), result["oo"]);
+                Assert.True(result.HasBoundValue("oo"));
+                Assert.Equal(graph.CreateLiteralNode(literal), result["oo"]);
             }
         }
     }

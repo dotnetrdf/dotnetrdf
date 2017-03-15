@@ -27,17 +27,17 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
 {
-    [TestFixture]
+
     public class LiteralNodeTests
     {
-        [Test]
+        [Fact]
         public void NodeToLiteralCultureInvariant1()
         {
             CultureInfo sysCulture = Thread.CurrentThread.CurrentCulture;
@@ -50,9 +50,9 @@ namespace VDS.RDF
                 Thread.CurrentThread.CurrentCulture = new CultureInfo("pl");
 
                 // then
-                Assert.AreEqual("5.5", 5.5.ToLiteral(nodeFactory).Value);
-                Assert.AreEqual("7.5", 7.5f.ToLiteral(nodeFactory).Value);
-                Assert.AreEqual("15.5", 15.5m.ToLiteral(nodeFactory).Value);
+                Assert.Equal("5.5", 5.5.ToLiteral(nodeFactory).Value);
+                Assert.Equal("7.5", 7.5f.ToLiteral(nodeFactory).Value);
+                Assert.Equal("15.5", 15.5m.ToLiteral(nodeFactory).Value);
 
                 // when
                 CultureInfo culture = Thread.CurrentThread.CurrentCulture;
@@ -62,9 +62,9 @@ namespace VDS.RDF
                 Thread.CurrentThread.CurrentCulture = culture;
 
                 // then
-                Assert.AreEqual("-1", (-1).ToLiteral(nodeFactory).Value);
-                Assert.AreEqual("-1", ((short)-1).ToLiteral(nodeFactory).Value);
-                Assert.AreEqual("-1", ((long)-1).ToLiteral(nodeFactory).Value);
+                Assert.Equal("-1", (-1).ToLiteral(nodeFactory).Value);
+                Assert.Equal("-1", ((short)-1).ToLiteral(nodeFactory).Value);
+                Assert.Equal("-1", ((long)-1).ToLiteral(nodeFactory).Value);
             }
             finally
             {
@@ -72,7 +72,7 @@ namespace VDS.RDF
             }
         }
 
-        [Test]
+        [Fact]
         public void NodeToLiteralCultureInvariant2()
         {
             CultureInfo sysCulture = Thread.CurrentThread.CurrentCulture;
@@ -87,9 +87,9 @@ namespace VDS.RDF
 
                 TurtleFormatter formatter = new TurtleFormatter();
                 String fmtStr = formatter.Format((-1).ToLiteral(factory));
-                Assert.AreEqual("-1 ", fmtStr);
+                Assert.Equal("-1 ", fmtStr);
                 fmtStr = formatter.Format((-1.2m).ToLiteral(factory));
-                Assert.AreEqual("-1.2", fmtStr);
+                Assert.Equal("-1.2", fmtStr);
             }
             finally
             {
@@ -97,7 +97,7 @@ namespace VDS.RDF
             }
         }
 
-        [Test]
+        [Fact]
         public void NodeToLiteralDateTimePrecision1()
         {
             DateTimeOffset now = DateTimeOffset.Now;
@@ -115,10 +115,10 @@ namespace VDS.RDF
 
             TimeSpan diff = now - now2;
             Console.WriteLine("Difference: " + diff.ToString());
-            Assert.IsTrue(diff < new TimeSpan(10), "Loss of precision should be at most 1 micro-second");
+            Assert.True(diff < new TimeSpan(10), "Loss of precision should be at most 1 micro-second");
         }
 
-        [Test]
+        [Fact]
         public void NodeToLiteralDateTimePrecision2()
         {
             DateTime now = DateTime.Now;
@@ -136,10 +136,10 @@ namespace VDS.RDF
 
             TimeSpan diff = now - now2;
             Console.WriteLine("Difference: " + diff.ToString());
-            Assert.IsTrue(diff < new TimeSpan(10), "Loss of precision should be at most 1 micro-second");
+            Assert.True(diff < new TimeSpan(10), "Loss of precision should be at most 1 micro-second");
         }
 
-        [Test]
+        [Fact]
         public void NodeToLiteralDateTimePrecision3()
         {
             DateTimeOffset now = DateTimeOffset.Now;
@@ -157,10 +157,10 @@ namespace VDS.RDF
 
             TimeSpan diff = now - now2;
             Console.WriteLine("Difference: " + diff.ToString());
-            Assert.IsTrue(diff < new TimeSpan(0,0,1), "Loss of precision should be at most 1 second");
+            Assert.True(diff < new TimeSpan(0,0,1), "Loss of precision should be at most 1 second");
         }
 
-        [Test]
+        [Fact]
         public void NodeToLiteralDateTimePrecision4()
         {
             DateTime now = DateTime.Now;
@@ -178,30 +178,30 @@ namespace VDS.RDF
 
             TimeSpan diff = now - now2;
             Console.WriteLine("Difference: " + diff.ToString());
-            Assert.IsTrue(diff < new TimeSpan(0,0,1), "Loss of precision should be at most 1 second");
+            Assert.True(diff < new TimeSpan(0,0,1), "Loss of precision should be at most 1 second");
         }
 
-        [Test]
+        [Fact]
         public void NodeLiteralLanguageSpecifierCase1()
         {
             NodeFactory factory = new NodeFactory();
             ILiteralNode lcase = factory.CreateLiteralNode("example", "en-gb");
             ILiteralNode ucase = factory.CreateLiteralNode("example", "en-GB");
 
-            Assert.IsTrue(EqualityHelper.AreLiteralsEqual(lcase, ucase));
+            Assert.True(EqualityHelper.AreLiteralsEqual(lcase, ucase));
         }
 
-        [Test]
+        [Fact]
         public void NodeLiteralLanguageSpecifierCase2()
         {
             NodeFactory factory = new NodeFactory();
             ILiteralNode lcase = factory.CreateLiteralNode("example", "en-gb");
             ILiteralNode ucase = factory.CreateLiteralNode("example", "en-GB");
 
-            Assert.AreEqual(0, ComparisonHelper.CompareLiterals(lcase, ucase));
+            Assert.Equal(0, ComparisonHelper.CompareLiterals(lcase, ucase));
         }
 
-        [Test]
+        [Fact]
         public void NodeLiteralLanguageSpecifierCase3()
         {
             IGraph g = new Graph();
@@ -213,9 +213,9 @@ namespace VDS.RDF
             g.Assert(s, p, lcase);
             g.Assert(s, p, ucase);
 
-            Assert.AreEqual(1, g.Triples.Count, "Triples should be treated as equivalent");
-            Assert.AreEqual(1, g.GetTriplesWithObject(lcase).Count(), "Lower case search failed");
-            Assert.AreEqual(1, g.GetTriplesWithObject(ucase).Count(), "Upper case search failed");
+            Assert.Equal(1, g.Triples.Count);
+            Assert.Equal(1, g.GetTriplesWithObject(lcase).Count());
+            Assert.Equal(1, g.GetTriplesWithObject(ucase).Count());
         }
     }
 }

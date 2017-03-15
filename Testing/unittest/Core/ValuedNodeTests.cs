@@ -29,80 +29,79 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
 {
-    [TestFixture]
+
     public class ValuedNodeTests : BaseTest
     {
         private Graph _graph;
 
-        [SetUp]
-        public void Setup()
+        public ValuedNodeTests()
         {
             _graph = new Graph();
         }
 
-        [Test]
+        [Fact]
         public void NodeAsValuedTimeSpan()
         {
             INode orig = new TimeSpan(1, 0, 0).ToLiteral(_graph);
             IValuedNode valued = orig.AsValuedNode();
 
-            Assert.AreEqual(((ILiteralNode)orig).Value, ((ILiteralNode)valued).Value);
-            Assert.IsTrue(EqualityHelper.AreUrisEqual(((ILiteralNode)orig).DataType, ((ILiteralNode)valued).DataType));
-            Assert.AreEqual(typeof(TimeSpanNode), valued.GetType());
+            Assert.Equal(((ILiteralNode)orig).Value, ((ILiteralNode)valued).Value);
+            Assert.True(EqualityHelper.AreUrisEqual(((ILiteralNode)orig).DataType, ((ILiteralNode)valued).DataType));
+            Assert.Equal(typeof(TimeSpanNode), valued.GetType());
         }
 
-        [Test]
+        [Fact]
         public void NodeAsValuedDateTime1()
         {
             INode orig = DateTime.Now.ToLiteral(_graph);
             IValuedNode valued = orig.AsValuedNode();
 
-            Assert.AreEqual(((ILiteralNode)orig).Value, ((ILiteralNode)valued).Value);
-            Assert.AreEqual(typeof(DateTimeNode), valued.GetType());
+            Assert.Equal(((ILiteralNode)orig).Value, ((ILiteralNode)valued).Value);
+            Assert.Equal(typeof(DateTimeNode), valued.GetType());
         }
 
-        [Test]
+        [Fact]
         public void NodeAsValuedDateTime2()
         {
             INode orig = _graph.CreateLiteralNode("2013-06-19T09:58:00", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
             IValuedNode valued = orig.AsValuedNode();
-            Assert.AreEqual(DateTimeKind.Unspecified, valued.AsDateTime().Kind);
+            Assert.Equal(DateTimeKind.Unspecified, valued.AsDateTime().Kind);
         }
 
-        [Test]
+        [Fact]
         public void NodeAsValuedDateTime3()
         {
             INode orig = _graph.CreateLiteralNode("2013-06-19T09:58:00-07:00", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
             IValuedNode valued = orig.AsValuedNode();
-            Assert.AreEqual(16, valued.AsDateTime().Hour);
-            Assert.AreEqual(DateTimeKind.Utc, valued.AsDateTime().Kind);
+            Assert.Equal(16, valued.AsDateTime().Hour);
+            Assert.Equal(DateTimeKind.Utc, valued.AsDateTime().Kind);
         }
 
-        [Test]
+        [Fact]
         public void NodeDateTimeParsing()
         {
             String input = "2013-06-19T09:58:00";
             DateTime dt = DateTime.Parse(input, null, DateTimeStyles.AdjustToUniversal);
-            Assert.AreEqual(DateTimeKind.Unspecified, dt.Kind);
+            Assert.Equal(DateTimeKind.Unspecified, dt.Kind);
 
             input = "2013-06-19T09:58:00-07:00";
             dt = DateTime.Parse(input, null, DateTimeStyles.AdjustToUniversal);
-            Assert.AreEqual(DateTimeKind.Utc, dt.Kind);
-            Assert.AreEqual(16, dt.Hour);
+            Assert.Equal(DateTimeKind.Utc, dt.Kind);
+            Assert.Equal(16, dt.Hour);
 
             input = "2013-06-19T09:58:00Z";
             dt = DateTime.Parse(input, null, DateTimeStyles.AdjustToUniversal);
-            Assert.AreEqual(DateTimeKind.Utc, dt.Kind);
+            Assert.Equal(DateTimeKind.Utc, dt.Kind);
         }
 
-        [Test]
+        [Fact]
         public void ShouldCorrectlyPerformRoundtripConversionOfDecimalValuedNodesRegardlessOfCulture()
         {
             foreach (var ci in TestedCultureInfos)
@@ -111,7 +110,7 @@ namespace VDS.RDF
             }
         }
 
-        [Test]
+        [Fact]
         public void ShouldCorrectlyPerformRoundtripConversionOfDoubleValuedNodesRegardlessOfCulture()
         {
             foreach (var ci in TestedCultureInfos)
@@ -120,7 +119,7 @@ namespace VDS.RDF
             }
         }
 
-        [Test]
+        [Fact]
         public void ShouldCorrectlyPerformRoundtripConversionOfSingleValuedNodesRegardlessOfCulture()
         {
             foreach (var ci in TestedCultureInfos)
@@ -139,7 +138,7 @@ namespace VDS.RDF
             T convertedBack = convertBack(valuedNode);
 
             // then
-            Assert.AreEqual(value, convertedBack);
+            Assert.Equal(value, convertedBack);
         }
     }
 }

@@ -27,20 +27,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Storage;
 using VDS.RDF.Update;
 using VDS.RDF.Update.Commands;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Update
 {
-    [TestFixture]
+
     public class UpdateTests2
     {
-        [Test]
+        [Fact]
         public void SparqlUpdateCreateDrop()
         {
             TripleStore store = new TripleStore();
@@ -54,14 +55,14 @@ namespace VDS.RDF.Update
             store.ExecuteUpdate(create1);
             store.ExecuteUpdate(create2);
 
-            Assert.AreEqual(3, store.Graphs.Count, "Store should have now had three Graphs");
-            Assert.AreEqual(0, store.Triples.Count(), "Store should have no triples at this point");
+            Assert.Equal(3, store.Graphs.Count);
+            Assert.Equal(0, store.Triples.Count());
 
             //Trying the same Create again should cause an error
             try
             {
                 store.ExecuteUpdate(create1);
-                Assert.Fail("Executing a CREATE command twice without the SILENT modifier should error");
+                Assert.True(false, "Executing a CREATE command twice without the SILENT modifier should error");
             }
             catch (SparqlUpdateException)
             {
@@ -77,17 +78,17 @@ namespace VDS.RDF.Update
             }
             catch (SparqlUpdateException)
             {
-                Assert.Fail("Executing a CREATE for an existing Graph with the SILENT modifier should not error");
+                Assert.True(false, "Executing a CREATE for an existing Graph with the SILENT modifier should not error");
             }
 
             DropCommand drop1 = new DropCommand(new Uri("http://example.org/1"));
             store.ExecuteUpdate(drop1);
-            Assert.AreEqual(2, store.Graphs.Count, "Store should have only 2 Graphs after we executed the DROP command");
+            Assert.Equal(2, store.Graphs.Count);
 
             try
             {
                 store.ExecuteUpdate(drop1);
-                Assert.Fail("Trying to DROP a non-existent Graph should error");
+                Assert.True(false, "Trying to DROP a non-existent Graph should error");
             }
             catch (SparqlUpdateException)
             {
@@ -102,17 +103,17 @@ namespace VDS.RDF.Update
             }
             catch (SparqlUpdateException)
             {
-                Assert.Fail("Trying to DROP a non-existent Graph with the SILENT modifier should suppress the error");
+                Assert.True(false, "Trying to DROP a non-existent Graph with the SILENT modifier should suppress the error");
             }
         }
 
 #if !SILVERLIGHT
-        [Test]
+        [SkippableFact]
         public void SparqlUpdateLoad()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
             {
-                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
             }
 
             TripleStore store = new TripleStore();
@@ -123,8 +124,8 @@ namespace VDS.RDF.Update
             store.ExecuteUpdate(loadLondon);
             store.ExecuteUpdate(loadSouthampton);
 
-            Assert.AreEqual(2, store.Graphs.Count, "Should now be 2 Graphs in the Store");
-            Assert.AreNotEqual(0, store.Triples.Count(), "Should be some Triples in the Store");
+            Assert.Equal(2, store.Graphs.Count);
+            Assert.NotEqual(0, store.Triples.Count());
 
             foreach (IGraph g in store.Graphs)
             {
@@ -144,7 +145,7 @@ namespace VDS.RDF.Update
         }
 #endif
 
-        [Test]
+        [Fact]
         public void SparqlUpdateModify()
         {
             TripleStore store = new TripleStore();
@@ -155,17 +156,17 @@ namespace VDS.RDF.Update
 
             IUriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
 
-            Assert.AreNotEqual(0, store.GetTriplesWithPredicate(rdfType).Count(), "Store should contain some rdf:type Triples");
+            Assert.NotEqual(0, store.GetTriplesWithPredicate(rdfType).Count());
 
             String update = "DELETE {?s a ?type} WHERE {?s a ?type}";
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = parser.ParseFromString(update);
             store.ExecuteUpdate(cmds);
 
-            Assert.AreEqual(0, store.GetTriplesWithPredicate(rdfType).Count(), "Store should contain no rdf:type Triples after DELETE command executes");
+            Assert.Equal(0, store.GetTriplesWithPredicate(rdfType).Count());
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateWithDefaultQueryProcessor()
         {
             Graph g = new Graph();
@@ -182,7 +183,7 @@ namespace VDS.RDF.Update
             processor.ProcessCommandSet(cmds);
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateWithCustomQueryProcessor()
         {
             Graph g = new Graph();
@@ -199,7 +200,7 @@ namespace VDS.RDF.Update
             processor.ProcessCommandSet(cmds);
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateChangesNotReflectedInOriginalGraph1()
         {
             //Test Case originally submitted by Tomasz Pluskiewicz
@@ -234,16 +235,16 @@ WHERE { ?s ?p ?o . }"
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
-            Assert.AreEqual(1, dataset.Graphs.Count(), "Should only be 1 Graph");
+            Assert.Equal(1, dataset.Graphs.Count());
 
             IGraph g = dataset.Graphs.First();
-            Assert.AreEqual(2, g.Triples.Count, "Result Graph should have 2 triples");
-            Assert.IsFalse(ReferenceEquals(g, sourceGraph), "Result Graph should not be the Source Graph");
-            Assert.AreEqual(1, sourceGraph.Triples.Count, "Source Graph should not be modified");
-            Assert.AreNotEqual(expectedGraph, sourceGraph, "Source Graph should not match expected Graph");
+            Assert.Equal(2, g.Triples.Count);
+            Assert.False(ReferenceEquals(g, sourceGraph), "Result Graph should not be the Source Graph");
+            Assert.Equal(1, sourceGraph.Triples.Count);
+            Assert.NotEqual(expectedGraph, sourceGraph);
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateChangesNotReflectedInOriginalGraph2()
         {
             //Test Case originally submitted by Tomasz Pluskiewicz
@@ -273,16 +274,16 @@ WHERE { ?s ?p ?o . }"
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
-            Assert.AreEqual(1, dataset.Graphs.Count(), "Should only be 1 Graph");
+            Assert.Equal(1, dataset.Graphs.Count());
 
             IGraph g = dataset.Graphs.First();
-            Assert.AreEqual(2, g.Triples.Count, "Result Graph should have 2 triples");
-            Assert.IsTrue(ReferenceEquals(g, sourceGraph), "Result Graph should be the Source Graph");
-            Assert.AreEqual(2, sourceGraph.Triples.Count, "Source Graph should have be modified and now contain 2 triples");
-            Assert.AreEqual(expectedGraph, sourceGraph, "Source Graph should match expected Graph");
+            Assert.Equal(2, g.Triples.Count);
+            Assert.True(ReferenceEquals(g, sourceGraph), "Result Graph should be the Source Graph");
+            Assert.Equal(2, sourceGraph.Triples.Count);
+            Assert.Equal(expectedGraph, sourceGraph);
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateInsertDeleteWithBlankNodes()
         {
             //This test adapted from a contribution by Tomasz Pluskiewicz
@@ -344,25 +345,25 @@ _:blank rr:objectMap _:autos2.";
 
             Triple x = graph.GetTriplesWithPredicate(graph.CreateUriNode("rr:predicateObjectMap")).FirstOrDefault();
             INode origBNode = x.Object;
-            Assert.IsTrue(graph.GetTriples(origBNode).Count() > 1, "Should be more than one Triple using the BNode");
+            Assert.True(graph.GetTriples(origBNode).Count() > 1, "Should be more than one Triple using the BNode");
             IEnumerable<Triple> ys = graph.GetTriplesWithSubject(origBNode);
             foreach (Triple y in ys)
             {
-                Assert.AreEqual(origBNode, y.Subject, "Blank Nodes should be equal");
+                Assert.Equal(origBNode, y.Subject);
             }
 
             //Graphs should be equal
             GraphDiffReport diff = graph.Difference(expectedGraph);
             if (!diff.AreEqual) TestTools.ShowDifferences(diff);
-            Assert.AreEqual(expectedGraph, graph, "Graphs should be equal");
+            Assert.Equal(expectedGraph, graph);
 
             //Test the Query
             SparqlResultSet results = graph.ExecuteQuery(query) as SparqlResultSet;
             TestTools.ShowResults(results);
-            Assert.IsFalse(results.IsEmpty, "Should be some results");
+            Assert.False(results.IsEmpty, "Should be some results");
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateInsertBNodesComplex1()
         {
             String update = @"PREFIX : <http://test/>
@@ -372,19 +373,19 @@ INSERT { ?o ?p ?s } WHERE { ?s ?p ?o }";
             TripleStore store = new TripleStore();
             store.ExecuteUpdate(update);
 
-            Assert.AreEqual(1, store.Graphs.Count);
-            Assert.AreEqual(2, store.Triples.Count());
+            Assert.Equal(1, store.Graphs.Count);
+            Assert.Equal(2, store.Triples.Count());
 
             IGraph def = store[null];
             Triple a = def.Triples.Where(t => t.Subject.NodeType == NodeType.Blank).FirstOrDefault();
-            Assert.IsNotNull(a);
+            Assert.NotNull(a);
             Triple b = def.Triples.Where(t => t.Object.NodeType == NodeType.Blank).FirstOrDefault();
-            Assert.IsNotNull(b);
+            Assert.NotNull(b);
 
-            Assert.AreEqual(a.Subject, b.Object);
+            Assert.Equal(a.Subject, b.Object);
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateInsertBNodesComplex2()
         {
             String update = @"PREFIX : <http://test/>
@@ -395,12 +396,12 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
             TripleStore store = new TripleStore();
             store.ExecuteUpdate(update);
 
-            Assert.AreEqual(3, store.Graphs.Count, "Expected 3 Graphs");
-            Assert.AreEqual(2, store[new Uri("http://test/a")].Triples.Count, "Expected 2 Triples");
+            Assert.Equal(3, store.Graphs.Count);
+            Assert.Equal(2, store[new Uri("http://test/a")].Triples.Count);
 
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateInsertBNodesComplex3()
         {
             String update = @"PREFIX : <http://test/>
@@ -410,12 +411,12 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
             TripleStore store = new TripleStore();
             store.ExecuteUpdate(update);
 
-            Assert.AreEqual(3, store.Graphs.Count, "Expected 3 Graphs");
-            Assert.AreEqual(1, store[new Uri("http://test/a")].Triples.Count, "Expected 1 Triple");
+            Assert.Equal(3, store.Graphs.Count);
+            Assert.Equal(1, store[new Uri("http://test/a")].Triples.Count);
 
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateInsertWithGraphClause1()
         {
             Graph g = new Graph();
@@ -429,11 +430,11 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(commands);
 
-            Assert.AreEqual(2, dataset.GraphUris.Count());
-            Assert.IsTrue(dataset.HasGraph(UriFactory.Create("http://subject")));
+            Assert.Equal(2, dataset.GraphUris.Count());
+            Assert.True(dataset.HasGraph(UriFactory.Create("http://subject")));
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateDeleteWithGraphClause1()
         {
             Graph g = new Graph();
@@ -446,7 +447,7 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
             dataset.AddGraph(h);
             dataset.Flush();
 
-            Assert.AreEqual(2, dataset.GraphUris.Count());
+            Assert.Equal(2, dataset.GraphUris.Count());
 
             String updates = "DELETE { GRAPH ?s { ?s ?p ?o } } WHERE { ?s ?p ?o }";
             SparqlUpdateCommandSet commands = new SparqlUpdateParser().ParseFromString(updates);
@@ -454,12 +455,12 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(commands);
 
-            Assert.AreEqual(2, dataset.GraphUris.Count());
-            Assert.IsTrue(dataset.HasGraph(UriFactory.Create("http://subject")));
-            Assert.AreEqual(0, dataset[UriFactory.Create("http://subject")].Triples.Count);
+            Assert.Equal(2, dataset.GraphUris.Count());
+            Assert.True(dataset.HasGraph(UriFactory.Create("http://subject")));
+            Assert.Equal(0, dataset[UriFactory.Create("http://subject")].Triples.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateDeleteWithGraphClause2()
         {
             Graph g = new Graph();
@@ -472,7 +473,7 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
             dataset.AddGraph(h);
             dataset.Flush();
 
-            Assert.AreEqual(2, dataset.GraphUris.Count());
+            Assert.Equal(2, dataset.GraphUris.Count());
 
             String updates = "DELETE { GRAPH ?s { ?s ?p ?o } } INSERT { GRAPH ?o { ?s ?p ?o } } WHERE { ?s ?p ?o }";
             SparqlUpdateCommandSet commands = new SparqlUpdateParser().ParseFromString(updates);
@@ -480,10 +481,10 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(commands);
 
-            Assert.AreEqual(3, dataset.GraphUris.Count());
-            Assert.IsTrue(dataset.HasGraph(UriFactory.Create("http://subject")));
-            Assert.IsTrue(dataset.HasGraph(UriFactory.Create("http://object")));
-            Assert.AreEqual(0, dataset[UriFactory.Create("http://subject")].Triples.Count);
+            Assert.Equal(3, dataset.GraphUris.Count());
+            Assert.True(dataset.HasGraph(UriFactory.Create("http://subject")));
+            Assert.True(dataset.HasGraph(UriFactory.Create("http://object")));
+            Assert.Equal(0, dataset[UriFactory.Create("http://subject")].Triples.Count);
         }
     }
 }

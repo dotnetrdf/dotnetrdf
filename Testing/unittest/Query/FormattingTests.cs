@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -36,12 +36,12 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class FormattingTests
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
 
-        [Test]
+        [Fact]
         public void SparqlFormattingOptionalAtRoot()
         {
             SparqlQuery q = new SparqlQuery { QueryType = SparqlQueryType.Select };
@@ -55,16 +55,16 @@ namespace VDS.RDF.Query
             String toStr = q.ToString();
             Console.WriteLine("ToString() Form:");
             Console.WriteLine(toStr);
-            Assert.AreEqual(2, toStr.ToCharArray().Where(c => c == '{').Count());
-            Assert.AreEqual(2, toStr.ToCharArray().Where(c => c == '}').Count());
+            Assert.Equal(2, toStr.ToCharArray().Where(c => c == '{').Count());
+            Assert.Equal(2, toStr.ToCharArray().Where(c => c == '}').Count());
             Console.WriteLine();
 
             SparqlFormatter formatter = new SparqlFormatter();
             String fmtStr = formatter.Format(q);
             Console.WriteLine("SparqlFormatter Form:");
             Console.WriteLine(fmtStr);
-            Assert.AreEqual(2, fmtStr.ToCharArray().Where(c => c == '{').Count());
-            Assert.AreEqual(2, fmtStr.ToCharArray().Where(c => c == '}').Count());
+            Assert.Equal(2, fmtStr.ToCharArray().Where(c => c == '{').Count());
+            Assert.Equal(2, fmtStr.ToCharArray().Where(c => c == '}').Count());
         }
 
     }

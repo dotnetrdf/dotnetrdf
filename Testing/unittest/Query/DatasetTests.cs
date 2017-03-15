@@ -27,14 +27,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class DatasetTests
     {
         private const String data = @"<ex:default> <ex:default> <ex:default>.
@@ -46,8 +46,7 @@ namespace VDS.RDF.Query
         private SparqlQueryParser _parser = new SparqlQueryParser();
         private ISparqlQueryProcessor _processor;
 
-        [SetUp]
-        public void Setup()
+        public DatasetTests()
         {
             TripleStore store = new TripleStore();
             store.LoadFromString(data);
@@ -63,7 +62,7 @@ namespace VDS.RDF.Query
 
             //Then execute the query
             SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
-            if (results == null) Assert.Fail("Did not get a result set as expected");
+            Assert.NotNull(results);
 
             List<String> found = new List<String>();
             int count = 0;
@@ -80,7 +79,7 @@ namespace VDS.RDF.Query
                 Dump(expectedCount, count, expected, found);
                 dumped = true;
             }
-            Assert.AreEqual(expectedCount, count);
+            Assert.Equal(expectedCount, count);
             foreach (String e in expected)
             {
                 if (!found.Contains(e))
@@ -90,7 +89,7 @@ namespace VDS.RDF.Query
                         Dump(expectedCount, count, expected, found);
                         dumped = true;
                     }
-                    Assert.Fail("Did not find expected result " + e);
+                    Assert.True(false, "Did not find expected result " + e);
                 }
             }
         }
@@ -123,7 +122,7 @@ namespace VDS.RDF.Query
          * This block of tests are for the case where we have all of FROM, FROM NAMED and GRAPH clause present
          */
 
-        [Test]
+        [Fact]
         public void SparqlDatasetResolutionFromAndNamedAndGraphUriExists()
         {
             //FROM
@@ -134,7 +133,7 @@ namespace VDS.RDF.Query
             this.RunTest("SELECT * FROM <ex:from> FROM NAMED <ex:named> { GRAPH <ex:named> { ?s ?p ?o } }", new String[] { "ex:named" }, 1);
         }
 
-        [Test]
+        [Fact]
         public void SparqlDatasetResolutionFromAndNamedAndGraphUriExistsNotInList()
         {
             //FROM
@@ -145,7 +144,7 @@ namespace VDS.RDF.Query
             this.RunTest("SELECT * FROM <ex:from> FROM NAMED <ex:named> { GRAPH <ex:other> { ?s ?p ?o } }", new String[] { }, 0);
         }
 
-        [Test]
+        [Fact]
         public void SparqlDatasetResolutionFromAndNamedAndGraphUriMissing()
         {
             //FROM
@@ -156,7 +155,7 @@ namespace VDS.RDF.Query
             this.RunTest("SELECT * FROM <ex:from> FROM NAMED <ex:named> { GRAPH <ex:missing> { ?s ?p ?o } }", new String[] { }, 0);
         }
 
-        [Test]
+        [Fact]
         public void SparqlDatasetResolutionFromAndNamedAndGraphVar()
         {
             //FROM
@@ -167,7 +166,7 @@ namespace VDS.RDF.Query
             this.RunTest("SELECT * FROM <ex:from> FROM NAMED <ex:named> { GRAPH ?g { ?s ?p ?o } }", new String[] { "ex:named" }, 1);
         }
 
-        [Test]
+        [Fact]
         public void SparqlDatasetResolutionFromAndNamedAndGraphsVar()
         {
             //FROM
@@ -182,7 +181,7 @@ namespace VDS.RDF.Query
          * This block of tests are for the case where we have FROM and a GRAPH clause present
          */
 
-        [Test]
+        [Fact]
         public void SparqlDatasetResolutionFromAndGraphUriExists()
         {
             //FROM
@@ -193,7 +192,7 @@ namespace VDS.RDF.Query
             this.RunTest("SELECT * FROM <ex:from> { GRAPH <ex:named> { ?s ?p ?o } }", new String[] { }, 0);
         }
 
-        [Test]
+        [Fact]
         public void SparqlDatasetResolutionFromAndGraphUriMissing()
         {
             //FROM
@@ -204,7 +203,7 @@ namespace VDS.RDF.Query
             this.RunTest("SELECT * FROM <ex:from> { GRAPH <ex:missing> { ?s ?p ?o } }", new String[] { }, 0);
         }
 
-        [Test]
+        [Fact]
         public void SparqlDatasetResolutionFromAndGraphVar()
         {
             //FROM
@@ -219,7 +218,7 @@ namespace VDS.RDF.Query
          * This block of tests are for the case where we have FROM NAMED and a GRAPH clause
          */
 
-        [Test]
+        [Fact]
         public void SparqlDatasetResolutionNamedGraphVar()
         {
             //No FROM
@@ -230,7 +229,7 @@ namespace VDS.RDF.Query
             this.RunTest("SELECT * FROM NAMED <ex:named> WHERE { GRAPH ?g { ?s ?p ?o } }", new String[] { "ex:named" }, 1);
         }
 
-        [Test]
+        [Fact]
         public void SparqlDatasetResolutionNamedGraphsVar()
         {
             //No FROM
@@ -241,7 +240,7 @@ namespace VDS.RDF.Query
             this.RunTest("SELECT * FROM NAMED <ex:named> FROM NAMED <ex:other> WHERE { GRAPH ?g { ?s ?p ?o } }", new String[] { "ex:named", "ex:other" }, 2);
         }
 
-        [Test]
+        [Fact]
         public void SparqlDatasetResolutionNamedGraphUriExists()
         {
             //No FROM
@@ -252,7 +251,7 @@ namespace VDS.RDF.Query
             this.RunTest("SELECT * FROM NAMED <ex:named> WHERE { GRAPH <ex:named> { ?s ?p ?o } }", new String[] { "ex:named" }, 1);
         }
 
-        [Test]
+        [Fact]
         public void SparqlDatasetResolutionNamedGraphUriMissing()
         {
             //No FROM
@@ -267,7 +266,7 @@ namespace VDS.RDF.Query
          * This block of tests are for the case where we have a FROM only
          */
 
-        [Test]
+        [Fact]
         public void SparqlDatasetResolutionFrom()
         {
             //FROM
@@ -282,7 +281,7 @@ namespace VDS.RDF.Query
          * This block of tests are for the cases where we only have a GRAPH clause
          */
 
-        [Test]
+        [Fact]
         public void SparqlDatasetResolutionGraphVar()
         {
             //No FROM
@@ -293,7 +292,7 @@ namespace VDS.RDF.Query
             this.RunTest("SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }", new String[] { "ex:from", "ex:named", "ex:other" }, 3);
         }
 
-        [Test]
+        [Fact]
         public void SparqlDatasetResolutionGraphUriExists()
         {
             //No FROM
@@ -304,7 +303,7 @@ namespace VDS.RDF.Query
             this.RunTest("SELECT * WHERE { GRAPH <ex:named> { ?s ?p ?o } }", new String[] { "ex:named" }, 1);
         }
 
-        [Test]
+        [Fact]
         public void SparqlDatasetResolutionGraphUriMissing()
         {
             //No FROM
@@ -319,7 +318,7 @@ namespace VDS.RDF.Query
          * Tests where we have no explicit dataset definition of any kind
          */
 
-        [Test]
+        [Fact]
         public void SparqlDatasetResolutionNoDataset()
         {
             //No FROM

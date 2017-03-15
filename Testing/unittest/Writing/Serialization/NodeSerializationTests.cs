@@ -33,14 +33,14 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Writing.Serialization
 {
 #if !SILVERLIGHT
-    [TestFixture]
+
     public class NodeSerializationTests
     {
         #region Methods that perform the actual test logic
@@ -61,11 +61,11 @@ namespace VDS.RDF.Writing.Serialization
 
             if (fullEquality)
             {
-                Assert.AreEqual(n, m, "Nodes should be equal");
+                Assert.Equal(n, m);
             }
             else
             {
-                Assert.AreEqual(n.ToString(), m.ToString(), "String forms should be equal");
+                Assert.Equal(n.ToString(), m.ToString());
             }
         }
 
@@ -95,11 +95,11 @@ namespace VDS.RDF.Writing.Serialization
 
             if (fullEquality)
             {
-                Assert.AreEqual(n, m, "Nodes should be equal");
+                Assert.Equal(n, m);
             }
             else
             {
-                Assert.AreEqual(n.ToString(), m.ToString(), "String forms should be equal");
+                Assert.Equal(n.ToString(), m.ToString());
             }
 
             stream.Dispose();
@@ -129,11 +129,11 @@ namespace VDS.RDF.Writing.Serialization
 
             if (fullEquality)
             {
-                Assert.AreEqual(n, m, "Nodes should be equal");
+                Assert.Equal(n, m);
             }
             else
             {
-                Assert.AreEqual(n.ToString(), m.ToString(), "String forms should be equal");
+                Assert.Equal(n.ToString(), m.ToString());
             }
         }
 
@@ -149,7 +149,7 @@ namespace VDS.RDF.Writing.Serialization
 
         #region Unit Tests for Blank Nodes
 
-        [Test]
+        [Fact]
         public void SerializationXmlBlankNodes()
         {
             Graph g = new Graph();
@@ -157,7 +157,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestSerializationXml(b, typeof(BlankNode), false);
         }
 
-        [Test]
+        [Fact]
         public void SerializationBinaryBlankNodes()
         {
             Graph g = new Graph();
@@ -165,7 +165,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestSerializationBinary(b, false);
         }
 
-        [Test]
+        [Fact]
         public void SerializationDataContractBlankNodes()
         {
             Graph g = new Graph();
@@ -194,19 +194,19 @@ namespace VDS.RDF.Writing.Serialization
             return nodes;
         }
 
-        [Test]
+        [Fact]
         public void SerializationXmlLiteralNodes()
         {
             this.TestSerializationXml(this.GetLiteralNodes(), typeof(LiteralNode), true);
         }
 
-        [Test]
+        [Fact]
         public void SerializationBinaryLiteralNodes()
         {
             this.TestSerializationBinary(this.GetLiteralNodes(), true);
         }
 
-        [Test]
+        [Fact]
         public void SerializationDataContractLiteralNodes()
         {
             this.TestSerializationDataContract(this.GetLiteralNodes(), typeof(LiteralNode), true);
@@ -231,19 +231,19 @@ namespace VDS.RDF.Writing.Serialization
             return nodes;
         }
 
-        [Test]
+        [Fact]
         public void SerializationXmlUriNodes()
         {
             this.TestSerializationXml(this.GetUriNodes(), typeof(UriNode), true);
         }
 
-        [Test]
+        [Fact]
         public void SerializationBinaryUriNodes()
         {
             this.TestSerializationBinary(this.GetUriNodes(), true);
         }
 
-        [Test]
+        [Fact]
         public void SerializationDataContractUriNodes()
         {
             this.TestSerializationDataContract(this.GetUriNodes(), typeof(UriNode), true);
@@ -271,19 +271,19 @@ namespace VDS.RDF.Writing.Serialization
             return nodes;
         }
 
-        [Test]
+        [Fact]
         public void SerializationXmlGraphLiteralNodes()
         {
             this.TestSerializationXml(this.GetGraphLiteralNodes(), typeof(GraphLiteralNode), true);
         }
 
-        [Test]
+        [Fact]
         public void SerializationBinaryGraphLiteralNodes()
         {
             this.TestSerializationBinary(this.GetGraphLiteralNodes(), true);
         }
 
-        [Test]
+        [Fact]
         public void SerializationDataContractGraphLiteralNodes()
         {
             this.TestSerializationDataContract(this.GetGraphLiteralNodes(), typeof(GraphLiteralNode), true);
@@ -308,19 +308,19 @@ namespace VDS.RDF.Writing.Serialization
             return nodes;
         }
 
-        [Test]
+        [Fact]
         public void SerializationXmlVariableNodes()
         {
             this.TestSerializationXml(this.GetVariableNodes(), typeof(VariableNode), true);
         }
 
-        [Test]
+        [Fact]
         public void SerializationBinaryVariableNodes()
         {
             this.TestSerializationBinary(this.GetVariableNodes(), true);
         }
 
-        [Test]
+        [Fact]
         public void SerializationDataContractVariableNodes()
         {
             this.TestSerializationDataContract(this.GetVariableNodes(), typeof(VariableNode), true);

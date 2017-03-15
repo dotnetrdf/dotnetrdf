@@ -27,21 +27,21 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using VDS.RDF.Update;
 
 namespace VDS.RDF.Update
 {
-    [TestFixture]
+
     public abstract class GenericUpdateProcessorTests
     {
         private readonly SparqlUpdateParser _parser = new SparqlUpdateParser();
 
         protected abstract IStorageProvider GetManager();
 
-        [Test]
+        [Fact]
         public void SparqlUpdateGenericCreateAndInsertData()
         {
             IStorageProvider manager = this.GetManager();
@@ -55,11 +55,11 @@ namespace VDS.RDF.Update
 
             TestTools.ShowGraph(g);
 
-            Assert.IsFalse(g.IsEmpty, "[" + manager.ToString() + "] Graph should not be empty");
-            Assert.AreEqual(1, g.Triples.Count, "[" + manager.ToString() + "] Graph should have 1 Triple");
+            Assert.False(g.IsEmpty, "[" + manager.ToString() + "] Graph should not be empty");
+            Assert.Equal(1, g.Triples.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateGenericCreateInsertDeleteData()
         {
             IStorageProvider manager = this.GetManager();
@@ -73,8 +73,8 @@ namespace VDS.RDF.Update
 
             TestTools.ShowGraph(g);
 
-            Assert.IsFalse(g.IsEmpty, "[" + manager.ToString() + "] Graph should not be empty");
-            Assert.AreEqual(1, g.Triples.Count, "[" + manager.ToString() + "] Graph should have 1 Triple");
+            Assert.False(g.IsEmpty, "[" + manager.ToString() + "] Graph should not be empty");
+            Assert.Equal(1, g.Triples.Count);
 
             cmds = this._parser.ParseFromString("DELETE DATA { GRAPH <http://example.org/sparqlUpdate/created> { <http://example.org/s> <http://example.org/p> <http://example.org/o> } }");
             processor.ProcessCommandSet(cmds);
@@ -84,7 +84,7 @@ namespace VDS.RDF.Update
 
             TestTools.ShowGraph(h);
 
-            Assert.IsTrue(h.IsEmpty, "[" + manager.ToString() + "] Graph should be empty");
+            Assert.True(h.IsEmpty, "[" + manager.ToString() + "] Graph should be empty");
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Patterns;
 
@@ -21,7 +21,7 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Tests that the <see cref="ISparqlAlgebra.FixedVariables"/> and <see cref="ISparqlAlgebra.FloatingVariables"/> are implemented correctly
     /// </summary>
-    [TestFixture]
+
     public class VariableClassificationTests
     {
         private readonly INodeFactory _factory = new NodeFactory();
@@ -62,15 +62,15 @@ namespace VDS.RDF.Query.Algebra
             Console.WriteLine();
 
             // Check fixed and floating are correct
-            Assert.AreEqual(expectedFixed, actualFixed);
-            Assert.AreEqual(expectedFloating, actualFloating);
+            Assert.Equal(expectedFixed, actualFixed);
+            Assert.Equal(expectedFloating, actualFloating);
 
             // A variable can't be both fixed and floating
-            Assert.IsTrue(actualFixed.All(v => !actualFloating.Contains(v)));
-            Assert.IsTrue(actualFloating.All(v => !actualFixed.Contains(v)));
+            Assert.True(actualFixed.All(v => !actualFloating.Contains(v)));
+            Assert.True(actualFloating.All(v => !actualFixed.Contains(v)));
         }
 
-        [Test]
+        [Fact]
         public void SparqlAlgebraVariableClassification1()
         {
             TriplePattern tp = MakeTriplePattern(this._s, this._p, this._o);
@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.Algebra
             this.TestClassification(bgp, this._emptyList, this._emptyList);
         }
 
-        [Test]
+        [Fact]
         public void SparqlAlgebraVariableClassification2()
         {
             TriplePattern tp = MakeTriplePattern(this._factory.CreateVariableNode("s"), this._p, this._o);
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Algebra
             this.TestClassification(bgp, new String[] { "s" }, this._emptyList);
         }
 
-        [Test]
+        [Fact]
         public void SparqlAlgebraVariableClassification3()
         {
             TriplePattern tp = MakeTriplePattern(this._factory.CreateVariableNode("s"), this._rdfType, this._factory.CreateVariableNode("type"));
@@ -112,7 +112,7 @@ namespace VDS.RDF.Query.Algebra
             this.TestClassification(union, new String[] { "s"}, new String[] { "p", "o", "type"});
         }
 
-        [Test]
+        [Fact]
         public void SparqlAlgebraVariableClassification4()
         {
             TriplePattern tp = MakeTriplePattern(this._factory.CreateVariableNode("s"), this._rdfType, this._factory.CreateVariableNode("type"));

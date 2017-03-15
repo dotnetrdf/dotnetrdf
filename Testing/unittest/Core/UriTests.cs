@@ -27,25 +27,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 
 namespace VDS.RDF
 {
-    [TestFixture]
+
     public class UriTests
     {
-        [Test]
+        [Fact]
         public void UriAbsoluteUriWithQuerystring()
         {
             Uri u = new Uri("http://example.org/?test");
-            Assert.AreEqual("http://example.org/?test", u.AbsoluteUri);
+            Assert.Equal("http://example.org/?test", u.AbsoluteUri);
         }
 
-        [Test]
+        [Fact]
         public void UriAbsoluteUriWithFragment()
         {
             Uri u = new Uri("http://example.org/#test");
-            Assert.AreEqual("http://example.org/#test", u.AbsoluteUri);
+            Assert.Equal("http://example.org/#test", u.AbsoluteUri);
         }
     }
 }

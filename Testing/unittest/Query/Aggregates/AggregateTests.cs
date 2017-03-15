@@ -26,29 +26,27 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Globalization;
 using System.Threading;
-using NUnit.Framework;
+using Xunit;
 
 namespace VDS.RDF.Query.Aggregates
 {
-    [TestFixture]
-    public class AggregateTests
+
+    public class AggregateTests : IDisposable
     {
         private CultureInfo _previousCulture;
 
-        [SetUp]
-        public void Setup()
+        public AggregateTests()
         {
             _previousCulture = Thread.CurrentThread.CurrentCulture;
             Thread.CurrentThread.CurrentCulture = new CultureInfo("pl-PL");
         }
 
-        [TearDown]
-        public void Teardown()
+        public void Dispose()
         {
             Thread.CurrentThread.CurrentCulture = _previousCulture;
         }
 
-        [Test]
+        [Fact]
         public void SparqlAggregatesMaxBug1()
         {
             TripleStore store = new TripleStore();
@@ -84,16 +82,16 @@ WHERE
     }
     GROUP BY ?MTech
 }") as IGraph;
-            Assert.IsNotNull(graph);
+            Assert.NotNull(graph);
 
             INode zero = (0).ToLiteral(graph);
             foreach (Triple t in graph.Triples)
             {
-                Assert.IsFalse(t.Object.CompareTo(zero) == 0, "Unexpected zero value returned");
+                Assert.False(t.Object.CompareTo(zero) == 0, "Unexpected zero value returned");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlAggregatesMaxBug2()
         {
             TripleStore store = new TripleStore();
@@ -129,16 +127,16 @@ WHERE
     }
     GROUP BY ?MTech
 }") as IGraph;
-            Assert.IsNotNull(graph);
+            Assert.NotNull(graph);
 
             INode zero = (0).ToLiteral(graph);
             foreach (Triple t in graph.Triples)
             {
-                Assert.IsFalse(t.Object.CompareTo(zero) == 0, "Unexpected zero value returned");
+                Assert.False(t.Object.CompareTo(zero) == 0, "Unexpected zero value returned");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlAggregatesMaxBug3()
         {
             try
@@ -148,7 +146,7 @@ WHERE
                 TripleStore store = new TripleStore();
                 Graph g = new Graph();
                 g.LoadFromFile("resources\\LearningStyles.rdf");
-                Assert.IsFalse(g.IsEmpty);
+                Assert.False(g.IsEmpty);
                 g.BaseUri = null;
                 store.Add(g);
 
@@ -182,7 +180,7 @@ WHERE
                        GROUP BY ?MTech
                     }");
 
-                Assert.IsFalse(graph.IsEmpty, "CONSTRUCTed graph should not be empty");
+                Assert.False(graph.IsEmpty, "CONSTRUCTed graph should not be empty");
 
                 // here a graph name is given to the result graph            
                 graph.BaseUri = new Uri("http://semanticsage.home.lc/files/LearningStyles.rdf#maxValues");
@@ -217,8 +215,8 @@ WHERE
                        }
                        FILTER(?Score = ?max)
                     }") as SparqlResultSet;
-                Assert.IsNotNull(actualResults);
-                Assert.IsFalse(actualResults.IsEmpty, "Final results should not be empty");
+                Assert.NotNull(actualResults);
+                Assert.False(actualResults.IsEmpty, "Final results should not be empty");
 
             }
             finally

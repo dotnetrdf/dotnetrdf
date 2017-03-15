@@ -23,22 +23,21 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using NUnit.Framework;
+using Xunit;
 
 namespace VDS.RDF
 {
-    [TestFixture]
+
     public class ComparisonHelperTests : BaseTest
     {
         private Graph _graph;
 
-        [SetUp]
-        public void Setup()
+        public ComparisonHelperTests()
         {
             _graph = new Graph();
         }
 
-        [Test]
+        [Fact]
         public void ShouldSuccesfullyCompareDecimalNodeRegardlessOfCulture()
         {
             foreach (var ci in TestedCultureInfos)
@@ -47,12 +46,12 @@ namespace VDS.RDF
                 {
                     const decimal left = 1.4m;
                     const decimal right = 3.55m;
-                    Assert.AreEqual(-1, ComparisonHelper.CompareLiterals(left.ToLiteral(_graph), right.ToLiteral(_graph)));
+                    Assert.Equal(-1, ComparisonHelper.CompareLiterals(left.ToLiteral(_graph), right.ToLiteral(_graph)));
                 });
             }
         }
 
-        [Test]
+        [Fact]
         public void ShouldSuccesfullyCompareFloatNodeRegardlessOfCulture()
         {
             foreach (var ci in TestedCultureInfos)
@@ -61,12 +60,12 @@ namespace VDS.RDF
                 {
                     const float left = 1.4f;
                     const float right = 3.55f;
-                    Assert.AreEqual(-1, ComparisonHelper.CompareLiterals(left.ToLiteral(_graph), right.ToLiteral(_graph)));
+                    Assert.Equal(-1, ComparisonHelper.CompareLiterals(left.ToLiteral(_graph), right.ToLiteral(_graph)));
                 });
             }
         }
 
-        [Test]
+        [Fact]
         public void ShouldSuccesfullyCompareDoubleNodeRegardlessOfCulture()
         {
             foreach (var ci in TestedCultureInfos)
@@ -75,7 +74,7 @@ namespace VDS.RDF
                 {
                     const double left = 1.4d;
                     const double right = 3.55d;
-                    Assert.AreEqual(-1, ComparisonHelper.CompareLiterals(left.ToLiteral(_graph), right.ToLiteral(_graph)));
+                    Assert.Equal(-1, ComparisonHelper.CompareLiterals(left.ToLiteral(_graph), right.ToLiteral(_graph)));
                 });
             }
         }

@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
@@ -36,7 +36,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class StrictOptimiserTest
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
@@ -59,53 +59,53 @@ namespace VDS.RDF.Query
 
             foreach (String op in expectedOperators)
             {
-                Assert.IsTrue(output.Contains(op), "Should have contained " + op + " Operator");
+                Assert.True(output.Contains(op), "Should have contained " + op + " Operator");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlAlgebraOptimiserStrict1()
         {
             this.TestStrictOptimiser("SELECT * WHERE { ?s ?p ?o }", new String[] { "BGP" });
         }
 
-        [Test]
+        [Fact]
         public void SparqlAlgebraOptimiserStrict2()
         {
             this.TestStrictOptimiser("SELECT * WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) }", new String[] { "BGP", "Filter", "Filter(BGP(" });
         }
 
-        [Test]
+        [Fact]
         public void SparqlAlgebraOptimiserStrict3()
         {
             this.TestStrictOptimiser("SELECT * WHERE { ?s ?p ?o . FILTER(ISURI(?type)) . ?s a ?type }", new String[] { "BGP", "Filter", "Filter(BGP(", "Join" });
         }
 
-        [Test]
+        [Fact]
         public void SparqlAlgebraOptimiserStrict4()
         {
             this.TestStrictOptimiser("SELECT * WHERE { ?s ?p ?o . BIND(ISLITERAL(?o) AS ?hasLiteralObject) }", new String[] { "BGP", "Extend", "Extend(BGP(" });
         }
 
-        [Test]
+        [Fact]
         public void SparqlAlgebraOptimiserStrict5()
         {
             this.TestStrictOptimiser("SELECT * WHERE { ?s ?p ?o . BIND(ISURI(?type) AS ?hasNamedType) . ?s a ?type }", new String[] { "BGP", "Extend", "Extend(BGP(", "Join" });
         }
 
-        [Test]
+        [Fact]
         public void SparqlAlgebraOptimiserStrict6()
         {
             this.TestStrictOptimiser("SELECT * WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) . BIND(ISURI(?s) AS ?Named) }", new String[] { "BGP", "Extend", "Filter", "Filter(BGP(", "Extend(Filter(" });
         }
 
-        [Test]
+        [Fact]
         public void SparqlAlgebraOptimiserStrict7()
         {
             this.TestStrictOptimiser("SELECT * WHERE { ?s ?p ?o . FILTER(ISURI(?type)) . ?s a ?type . BIND(ISURI(?s) AS ?Named) }", new String[] { "BGP", "Extend", "Filter", "Filter(BGP(", "Extend(Filter(" });
         }
 
-        [Test]
+        [Fact]
         public void SparqlAlgebraOptimiserStrict8()
         {
             this.TestStrictOptimiser("SELECT * WHERE { ?s ?p ?o . FILTER(?Named) . ?s a ?type . BIND(ISURI(?s) AS ?Named) }", new String[] { "BGP", "Extend", "Filter", "Extend(BGP(", "Filter(Extend(" });

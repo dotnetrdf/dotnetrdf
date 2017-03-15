@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF
@@ -35,7 +35,7 @@ namespace VDS.RDF
     /// <summary>
     /// Abstract set of tests that can be used to test any <see cref="IGraph" /> implementation
     /// </summary>
-    [TestFixture]
+
     public abstract class AbstractGraphTests
     {
         /// <summary>
@@ -44,23 +44,23 @@ namespace VDS.RDF
         /// <returns></returns>
         protected abstract IGraph GetInstance();
 
-        [Test]
+        [Fact]
         public void GraphIsEmpty01()
         {
             IGraph g = this.GetInstance();
-            Assert.IsTrue(g.IsEmpty);
+            Assert.True(g.IsEmpty);
         }
 
-        [Test]
+        [Fact]
         public void GraphIsEmpty02()
         {
             IGraph g = this.GetInstance();
 
             g.Assert(new Triple(g.CreateBlankNode(), g.CreateBlankNode(), g.CreateBlankNode()));
-            Assert.IsFalse(g.IsEmpty);
+            Assert.False(g.IsEmpty);
         }
 
-        [Test]
+        [Fact]
         public void GraphAssert01()
         {
             IGraph g = this.GetInstance();
@@ -68,11 +68,11 @@ namespace VDS.RDF
 
             Triple t = new Triple(g.CreateUriNode(":s"), g.CreateUriNode(":p"), g.CreateBlankNode(":o"));
             g.Assert(t);
-            Assert.IsFalse(g.IsEmpty);
-            Assert.IsTrue(g.ContainsTriple(t));
+            Assert.False(g.IsEmpty);
+            Assert.True(g.ContainsTriple(t));
         }
 
-        [Test]
+        [Fact]
         public void GraphRetract01()
         {
             IGraph g = this.GetInstance();
@@ -80,32 +80,32 @@ namespace VDS.RDF
 
             Triple t = new Triple(g.CreateUriNode(":s"), g.CreateUriNode(":p"), g.CreateBlankNode(":o"));
             g.Assert(t);
-            Assert.IsFalse(g.IsEmpty);
-            Assert.IsTrue(g.ContainsTriple(t));
+            Assert.False(g.IsEmpty);
+            Assert.True(g.ContainsTriple(t));
 
             g.Retract(t);
-            Assert.IsTrue(g.IsEmpty);
-            Assert.IsFalse(g.ContainsTriple(t));
+            Assert.True(g.IsEmpty);
+            Assert.False(g.ContainsTriple(t));
         }
 
-        [Test]
+        [Fact]
         public void GraphRetract02()
         {
             IGraph g = this.GetInstance();
             g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
 
-            Assert.IsFalse(g.IsEmpty);
+            Assert.False(g.IsEmpty);
 
             INode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            Assert.IsTrue(g.GetTriplesWithPredicate(rdfType).Any());
+            Assert.True(g.GetTriplesWithPredicate(rdfType).Any());
 
             g.Retract(g.GetTriplesWithPredicate(rdfType).ToList());
-            Assert.IsFalse(g.GetTriplesWithPredicate(rdfType).Any());
+            Assert.False(g.GetTriplesWithPredicate(rdfType).Any());
         }
     }
 
 #if !NO_RWLOCK // No ThreadSafeGraph
-    [TestFixture]
+
     public class GraphTests
         : AbstractGraphTests
     {
@@ -115,7 +115,7 @@ namespace VDS.RDF
         }
     }
 
-    [TestFixture]
+
     public class ThreadSafeGraphTests
         : AbstractGraphTests
     {
@@ -125,7 +125,7 @@ namespace VDS.RDF
         }
     }
 
-    [TestFixture]
+
     public class NonIndexedGraphTests
         : AbstractGraphTests
     {

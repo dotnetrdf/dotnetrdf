@@ -27,27 +27,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Parsing
 {
-    [TestFixture]
+
     public class RdfXmlNamespaces
     {
-        [Test]
+        [Fact]
         public void ParsingRdfXmlNamespaces()
         {
             Graph g = new Graph();
             try
             {
                 g.LoadFromFile("resources\\rdfxml-namespaces.rdf");
-                Assert.Fail("Parsing should fail as namespaces are not properly defined in the RDF/XML");
+                Assert.True(false, "Parsing should fail as namespaces are not properly defined in the RDF/XML");
             }
             catch (RdfParseException parseEx)
             {
                 Console.WriteLine("Parser Error thrown as expected");
-                Assert.IsTrue(parseEx.HasPositionInformation, "Should have position information");
+                Assert.True(parseEx.HasPositionInformation, "Should have position information");
                 Console.WriteLine("Line " + parseEx.StartLine + " Column " + parseEx.StartPosition);
 
                 TestTools.ReportError("Parser Error", parseEx);

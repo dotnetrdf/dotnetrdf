@@ -32,16 +32,17 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using NUnit.Framework;
+using Xunit;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Writing.Serialization
 {
 #if !SILVERLIGHT
-    [TestFixture]
+
     public class GraphSerializationTests
     {
         private void TestGraphSerializationXml<T>(T g)
@@ -61,7 +62,7 @@ namespace VDS.RDF.Writing.Serialization
             {
                 TestTools.ShowDifferences(report);
             }
-            Assert.IsTrue(report.AreEqual, "Graphs should be equal");
+            Assert.True(report.AreEqual, "Graphs should be equal");
         }
 
         private void TestGraphSerializationXml(IGraph g)
@@ -99,7 +100,7 @@ namespace VDS.RDF.Writing.Serialization
             {
                 TestTools.ShowDifferences(report);
             }
-            Assert.IsTrue(report.AreEqual, "Graphs should be equal");
+            Assert.True(report.AreEqual, "Graphs should be equal");
 
             stream.Dispose();
         }
@@ -134,7 +135,7 @@ namespace VDS.RDF.Writing.Serialization
             {
                 TestTools.ShowDifferences(report);
             }
-            Assert.IsTrue(report.AreEqual, "Graphs should be equal");
+            Assert.True(report.AreEqual, "Graphs should be equal");
         }
 
         private void TestGraphSerializationDataContract(IGraph g)
@@ -161,7 +162,7 @@ namespace VDS.RDF.Writing.Serialization
             {
                 TestTools.ShowDifferences(report);
             }
-            Assert.IsTrue(report.AreEqual, "Graphs should be equal");
+            Assert.True(report.AreEqual, "Graphs should be equal");
         }
 
         private void TestGraphSerializationJson(IGraph g)
@@ -169,7 +170,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationJson<IGraph>(g);
         }
 
-        [Test]
+        [Fact]
         public void SerializationXmlGraph()
         {
             Graph g = new Graph();
@@ -178,7 +179,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationXml(g);
         }
 
-        [Test]
+        [Fact]
         public void SerializationXmlGraph2()
         {
             Graph g = new Graph();
@@ -187,12 +188,12 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationXml(g);
         }
 
-        [Test]
+        [SkippableFact]
         public void SerializationXmlGraph3()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
             {
-                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
             }
 
             Graph g = new Graph();
@@ -201,7 +202,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationXml(g);
         }
 
-        [Test]
+        [Fact]
         public void SerializationXmlGraph4()
         {
             Graph g = new Graph();
@@ -210,7 +211,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationXml(g);
         }
 
-        [Test]
+        [Fact]
         public void SerializationXmlGraph5()
         {
             Graph g = new Graph();
@@ -219,7 +220,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationXml<MockWrapperGraph>(new MockWrapperGraph(g));
         }
 
-        [Test]
+        [Fact]
         public void SerializationBinaryGraph()
         {
             Graph g = new Graph();
@@ -228,7 +229,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationBinary(g);
         }
 
-        [Test]
+        [Fact]
         public void SerializationBinaryGraph2()
         {
             Graph g = new Graph();
@@ -237,12 +238,12 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationBinary(g);
         }
 
-        [Test]
+        [SkippableFact]
         public void SerializationBinaryGraph3()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
             {
-                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
             }
 
             Graph g = new Graph();
@@ -251,7 +252,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationBinary(g);
         }
 
-        [Test]
+        [Fact]
         public void SerializationBinaryGraph4()
         {
             Graph g = new Graph();
@@ -260,7 +261,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationBinary(g);
         }
 
-        [Test]
+        [Fact]
         public void SerializationBinaryGraph5()
         {
             Graph g = new Graph();
@@ -269,7 +270,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationBinary<MockWrapperGraph>(new MockWrapperGraph(g));
         }
 
-        [Test]
+        [Fact]
         public void SerializationDataContractGraph()
         {
             Graph g = new Graph();
@@ -278,7 +279,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationDataContract(g);
         }
 
-        [Test]
+        [Fact]
         public void SerializationDataContractGraph2()
         {
             Graph g = new Graph();
@@ -287,12 +288,12 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationDataContract(g);
         }
 
-        [Test]
+        [SkippableFact]
         public void SerializationDataContractGraph3()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
             {
-                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
             }
 
             Graph g = new Graph();
@@ -301,7 +302,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationDataContract(g);
         }
 
-        [Test]
+        [Fact]
         public void SerializationDataContractGraph4()
         {
             Graph g = new Graph();
@@ -310,7 +311,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationDataContract(g);
         }
 
-        [Test]
+        [Fact]
         public void SerializationDataContractGraph5()
         {
             Graph g = new Graph();
@@ -319,7 +320,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationDataContract(new MockWrapperGraph(g));
         }
 
-        [Test]
+        [Fact]
         public void SerializationJsonGraph()
         {
             Graph g = new Graph();
@@ -328,7 +329,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationJson(g);
         }
 
-        [Test]
+        [Fact]
         public void SerializationJsonGraph2()
         {
             Graph g = new Graph();
@@ -337,12 +338,12 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationJson(g);
         }
 
-        [Test]
+        [SkippableFact]
         public void SerializationJsonGraph3()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
             {
-                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
             }
 
             Graph g = new Graph();
@@ -351,7 +352,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationJson(g);
         }
 
-        [Test]
+        [Fact]
         public void SerializationJsonGraph4()
         {
             Graph g = new Graph();
@@ -360,7 +361,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationJson(g);
         }
 
-        //[Test]
+        //[Fact]
         //public void SerializationJsonGraph5()
         //{
         //    Graph g = new Graph();

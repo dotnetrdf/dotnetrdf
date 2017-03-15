@@ -25,7 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Threading;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Parsing;
@@ -34,7 +34,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class QueryThreadSafety
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
@@ -46,10 +46,10 @@ namespace VDS.RDF.Query
 
             Console.WriteLine(this._formatter.Format(q));
 
-            Assert.AreEqual(expectThreadSafe, q.UsesDefaultDataset);
+            Assert.Equal(expectThreadSafe, q.UsesDefaultDataset);
         }
 
-        [Test]
+        [Fact]
         public void SparqlQueryThreadSafetyBasic()
         {
             String query = "SELECT * WHERE { }";
@@ -62,7 +62,7 @@ namespace VDS.RDF.Query
             this.CheckThreadSafety(query, false);
         }
 
-        [Test]
+        [Fact]
         public void SparqlQueryThreadSafetyFromClauses()
         {
             String query = "SELECT * FROM <test:test> WHERE { }";
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query
             this.CheckThreadSafety(query, false);
         }
 
-        [Test]
+        [Fact]
         public void SparqlQueryThreadSafetySubqueries()
         {
             String query = "SELECT * WHERE { { SELECT * WHERE { } } }";
@@ -88,7 +88,7 @@ namespace VDS.RDF.Query
             this.CheckThreadSafety(query, false);
         }
 
-        [Test]
+        [Fact]
         public void SparqlQueryThreadSafetySubqueries2()
         {
             String query = "SELECT * WHERE { ?s ?p ?o { SELECT * WHERE { } } }";
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query
             this.CheckThreadSafety(query, false);
         }
 
-        [Test]
+        [Fact]
         public void SparqlQueryThreadSafetyExpressions()
         {
             String query = "SELECT * WHERE { FILTER (EXISTS { GRAPH ?g { ?s ?p ?o } }) }";
@@ -113,13 +113,13 @@ namespace VDS.RDF.Query
 
         }
 
-        [Test]
+        [Fact]
         public void SparqlQueryThreadSafeEvaluation()
         {
             TestTools.TestInMTAThread(this.SparqlQueryThreadSafeEvaluationActual);
         }
 
-        [Test]
+        [Fact]
         public void SparqlQueryAndUpdateThreadSafeEvaluation()
         {
             for (int i = 1; i <= 10; i++)
@@ -137,8 +137,8 @@ namespace VDS.RDF.Query
 
             SparqlQuery q1 = this._parser.ParseFromString(query1);
             SparqlQuery q2 = this._parser.ParseFromString(query2);
-            Assert.IsFalse(q1.UsesDefaultDataset, "Query 1 should not be thread safe");
-            Assert.IsFalse(q2.UsesDefaultDataset, "Query 2 should not be thread safe");
+            Assert.False(q1.UsesDefaultDataset, "Query 1 should not be thread safe");
+            Assert.False(q2.UsesDefaultDataset, "Query 2 should not be thread safe");
 
             InMemoryDataset dataset = new InMemoryDataset();
             Graph g = new Graph();
@@ -159,12 +159,12 @@ namespace VDS.RDF.Query
             WaitHandle.WaitAll(new WaitHandle[] { r1.AsyncWaitHandle, r2.AsyncWaitHandle });
 
             IGraph gQuery = d.EndInvoke(r1);
-            Assert.AreEqual(g, gQuery, "Query 1 Result not as expected");
+            Assert.Equal(g, gQuery);
 
             IGraph hQuery = d.EndInvoke(r2);
-            Assert.AreEqual(h, hQuery, "Query 2 Result not as expected");
+            Assert.Equal(h, hQuery);
 
-            Assert.AreNotEqual(g, h, "Graphs should not be different");
+            Assert.Equal(g, h);
         }
 
         private void SparqlQueryAndUpdateThreadSafeEvaluationActual()
@@ -177,9 +177,9 @@ namespace VDS.RDF.Query
             SparqlQuery q1 = this._parser.ParseFromString(query1);
             SparqlQuery q2 = this._parser.ParseFromString(query2);
             SparqlQuery q3 = this._parser.ParseFromString(query3);
-            Assert.IsFalse(q1.UsesDefaultDataset, "Query 1 should not be thread safe");
-            Assert.IsFalse(q2.UsesDefaultDataset, "Query 2 should not be thread safe");
-            Assert.IsFalse(q3.UsesDefaultDataset, "Query 3 should not be thread safe");
+            Assert.False(q1.UsesDefaultDataset, "Query 1 should not be thread safe");
+            Assert.False(q2.UsesDefaultDataset, "Query 2 should not be thread safe");
+            Assert.False(q3.UsesDefaultDataset, "Query 3 should not be thread safe");
 
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = parser.ParseFromString(update1);
@@ -210,10 +210,10 @@ namespace VDS.RDF.Query
             WaitHandle.WaitAll(new WaitHandle[] { r1.AsyncWaitHandle, r2.AsyncWaitHandle, r3.AsyncWaitHandle, r4.AsyncWaitHandle });
 
             IGraph gQuery = d.EndInvoke(r1);
-            Assert.AreEqual(g, gQuery, "Query 1 Result not as expected");
+            Assert.Equal(g, gQuery);
 
             IGraph hQuery = d.EndInvoke(r2);
-            Assert.AreEqual(h, hQuery, "Query 2 Result not as expected");
+            Assert.Equal(h, hQuery);
 
             IGraph iQuery = d.EndInvoke(r3);
             if (iQuery.IsEmpty)
@@ -226,10 +226,10 @@ namespace VDS.RDF.Query
                 Console.WriteLine("Query 3 executed after the INSERT DATA command");
             }
             //Test iQuery against an empty Graph
-            Assert.IsFalse(iQuery.IsEmpty, "Graph should not be empty as INSERT DATA should have inserted a Triple");
-            Assert.AreNotEqual(new Graph(), iQuery, "Graphs should not be equal");
+            Assert.False(iQuery.IsEmpty, "Graph should not be empty as INSERT DATA should have inserted a Triple");
+            Assert.Equal(new Graph(), iQuery);
 
-            Assert.AreNotEqual(g, h, "Graphs should not be different");
+            Assert.Equal(g, h);
         }
 
         private delegate IGraph QueryWithGraphDelegate(SparqlQuery q, ISparqlQueryProcessor processor);
@@ -243,7 +243,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.Fail("Query did not produce a Graph as expected");
+                Assert.True(false, "Query did not produce a Graph as expected");
             }
             return null;
         }
@@ -266,7 +266,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.Fail("Query did not produce a Result Set as expected");
+                Assert.True(false, "Query did not produce a Result Set as expected");
             }
             return null;
         }

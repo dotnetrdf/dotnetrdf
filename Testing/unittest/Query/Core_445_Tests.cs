@@ -31,7 +31,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -43,7 +43,7 @@ using System.Diagnostics;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class Core_445_Tests
     {
 
@@ -91,7 +91,7 @@ WHERE {
             return sb.ToString();
         }
 
-        [Test]
+        [Fact]
         public void Core445_ParsingTest()
         {
             Random randomizer = new Random();
@@ -104,14 +104,14 @@ WHERE {
             command.SetParameter("en", g.CreateUriNode(UriFactory.Create("urn:some-uri")));
             command.SetParameter("inLiteralParamPattern", g.CreateUriNode(UriFactory.Create("urn:some-uri")));
             String output = command.ToString();
-            Assert.IsTrue(output.Contains("<urn:with@char>"), "In IRI @ characters should not start a parameter capture");
-            Assert.IsTrue(output.Contains("<urn:with?or$char>"), "In IRI ? and $ characters should not start a variable capture");
-            Assert.IsTrue(output.Contains("rdfs:subClassOf ? "), "Property path ? quantifier should not start a variable capture");
-            Assert.IsTrue(output.Contains("@en"), "Language tags should not start a parameter capture");
-            Assert.IsTrue(output.Contains("@inLiteralParamPattern"), "In string literal @ characters should not start a parameter capture");
+            Assert.True(output.Contains("<urn:with@char>"), "In IRI @ characters should not start a parameter capture");
+            Assert.True(output.Contains("<urn:with?or$char>"), "In IRI ? and $ characters should not start a variable capture");
+            Assert.True(output.Contains("rdfs:subClassOf ? "), "Property path ? quantifier should not start a variable capture");
+            Assert.True(output.Contains("@en"), "Language tags should not start a parameter capture");
+            Assert.True(output.Contains("@inLiteralParamPattern"), "In string literal @ characters should not start a parameter capture");
         }
 
-        [Test]
+        [Fact]
         public void Core445_Benchmark()
         {
             Stopwatch timer = new Stopwatch();

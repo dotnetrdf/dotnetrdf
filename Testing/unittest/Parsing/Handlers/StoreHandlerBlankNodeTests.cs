@@ -28,12 +28,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Parsing.Handlers
 {
-    [TestFixture]
+
     public class StoreHandlerBlankNodeTests
     {
         private const String TestFragment = @"@prefix : <http://example.org/bnodes#> .
@@ -66,8 +66,8 @@ namespace VDS.RDF.Parsing.Handlers
                 Console.WriteLine();
             }
 
-            Assert.AreEqual(2, store.Graphs.Count, "Expected 2 Graphs");
-            Assert.AreEqual(8, store.Graphs.Sum(g => g.Triples.Count), "Expected 4 Triples");
+            Assert.Equal(2, store.Graphs.Count);
+            Assert.Equal(8, store.Graphs.Sum(g => g.Triples.Count));
 
             IGraph def = store[null];
             IGraph named = store[new Uri("http://example.org/bnodes#graph")];
@@ -87,10 +87,10 @@ namespace VDS.RDF.Parsing.Handlers
             {
                 Console.WriteLine(subj.ToString() + " from Graph " + (subj.GraphUri != null ? subj.GraphUri.AbsoluteUri : "Default"));
             }
-            Assert.AreEqual(4, subjects.Count, "Expected 4 distinct subjects");
+            Assert.Equal(4, subjects.Count);
         }
 
-        [Test]
+        [Fact]
         public void ParsingStoreHandlerBlankNodesTriG()
         {
             TestTools.TestInMTAThread(this.ParsingStoreHandlerBlankNodesTriGActual);
@@ -107,7 +107,7 @@ namespace VDS.RDF.Parsing.Handlers
             EnsureTestResults(store);
         }
 
-        [Test]
+        [Fact]
         public void ParsingStoreHandlerBlankNodesTriX()
         {
             TestTools.TestInMTAThread(this.ParsingStoreHandlerBlankNodesTriXActual);
@@ -124,7 +124,7 @@ namespace VDS.RDF.Parsing.Handlers
             EnsureTestResults(store);
         }
 
-        [Test]
+        [Fact]
         public void ParsingStoreHandlerBlankNodesNQuads()
         {
             TestTools.TestInMTAThread(this.ParsingStoreHandlerBlankNodesNQuadsActual);

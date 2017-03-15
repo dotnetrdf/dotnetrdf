@@ -27,75 +27,75 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Configuration;
 
 namespace VDS.RDF.Configuration
 {
-    [TestFixture]
+
     public class DefaultTypeTests
     {
         private void TestDefaultType(String typeUri, String expectedType)
         {
             String actualType = ConfigurationLoader.GetDefaultType(typeUri);
-            Assert.AreEqual(expectedType, actualType);
+            Assert.Equal(expectedType, actualType);
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationDefaultTypeGraph()
         {
             this.TestDefaultType(ConfigurationLoader.ClassGraph, ConfigurationLoader.DefaultTypeGraph);
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationDefaultTypeGraphCollection()
         {
             this.TestDefaultType(ConfigurationLoader.ClassGraphCollection, ConfigurationLoader.DefaultTypeGraphCollection);
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationDefaultTypeSparqlHttpProtocolProcessor()
         {
             this.TestDefaultType(ConfigurationLoader.ClassSparqlHttpProtocolProcessor, ConfigurationLoader.DefaultTypeSparqlHttpProtocolProcessor);
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationDefaultTypeSparqlQueryProcessor()
         {
             this.TestDefaultType(ConfigurationLoader.ClassSparqlQueryProcessor, ConfigurationLoader.DefaultTypeSparqlQueryProcessor);
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationDefaultTypeSparqlUpdateProcessor()
         {
             this.TestDefaultType(ConfigurationLoader.ClassSparqlUpdateProcessor, ConfigurationLoader.DefaultTypeSparqlUpdateProcessor);
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationDefaultTypeTripleCollection()
         {
             this.TestDefaultType(ConfigurationLoader.ClassTripleCollection, ConfigurationLoader.DefaultTypeTripleCollection);
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationDefaultTypeTripleStore()
         {
             this.TestDefaultType(ConfigurationLoader.ClassTripleStore, ConfigurationLoader.DefaultTypeTripleStore);
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationDefaultTypeUser()
         {
             this.TestDefaultType(ConfigurationLoader.ClassUser, typeof(System.Net.NetworkCredential).AssemblyQualifiedName);
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationDefaultTypeUserGroup()
         {
             this.TestDefaultType(ConfigurationLoader.ClassUserGroup, ConfigurationLoader.DefaultTypeUserGroup);
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationDefaultTypeProxy()
         {
 #if NO_PROXY

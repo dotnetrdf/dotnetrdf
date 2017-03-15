@@ -25,14 +25,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.IO;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class NegationTests
     {
         private readonly SparqlQueryParser _parser = new SparqlQueryParser();
@@ -47,7 +47,7 @@ namespace VDS.RDF.Query
             return dataset;
         }
 
-        [Test]
+        [Fact]
         public void SparqlNegationMinusSimple()
         {
             SparqlParameterizedString negQuery = new SparqlParameterizedString();
@@ -61,7 +61,7 @@ namespace VDS.RDF.Query
             this.TestNegation(GetTestData(), negQuery, query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlNegationMinusComplex()
         {
             SparqlParameterizedString negQuery = new SparqlParameterizedString();
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query
             this.TestNegation(GetTestData(), negQuery, query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlNegationMinusComplex2()
         {
             SparqlParameterizedString negQuery = new SparqlParameterizedString();
@@ -89,7 +89,7 @@ namespace VDS.RDF.Query
             this.TestNegation(GetTestData(), negQuery, query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlNegationMinusDisjoint()
         {
             String query = "SELECT ?s ?p ?o WHERE { ?s ?p ?o }";
@@ -98,7 +98,7 @@ namespace VDS.RDF.Query
             this.TestNegation(GetTestData(), negQuery, query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlNegationNotExistsDisjoint()
         {
             String negQuery = "SELECT ?s ?p ?o WHERE { ?s ?p ?o FILTER(NOT EXISTS { ?x ?y ?z }) }";
@@ -106,7 +106,7 @@ namespace VDS.RDF.Query
             this.TestNegation(GetTestData(), negQuery);
         }
 
-        [Test]
+        [Fact]
         public void SparqlNegationNotExistsSimple()
         {
             SparqlParameterizedString negQuery = new SparqlParameterizedString();
@@ -120,7 +120,7 @@ namespace VDS.RDF.Query
             this.TestNegation(GetTestData(), negQuery, query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlNegationExistsSimple()
         {
             SparqlParameterizedString negQuery = new SparqlParameterizedString();
@@ -134,7 +134,7 @@ namespace VDS.RDF.Query
             this.TestNegation(GetTestData(), negQuery, query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlNegationFullMinued()
         {
             SparqlQuery lhsQuery = this._parser.ParseFromFile("resources\\full-minuend-lhs.rq");
@@ -155,7 +155,7 @@ namespace VDS.RDF.Query
             Console.WriteLine();
 
             SparqlResultSet actual = processor.ProcessQuery(query) as SparqlResultSet;
-            if (actual == null) Assert.Fail("Null results");
+            if (actual == null) Assert.True(false, "Null results");
             SparqlResultSet expected = new SparqlResultSet();
             SparqlXmlParser parser = new SparqlXmlParser();
             parser.Load(expected, "resources\\full-minuend.srx");
@@ -166,7 +166,7 @@ namespace VDS.RDF.Query
             Console.WriteLine("Expected Results:");
             TestTools.ShowResults(expected);
 
-            Assert.AreEqual(expected, actual, "Result Sets should be equal");
+            Assert.Equal(expected, actual);
         }
 
         private void TestNegation(ISparqlDataset data, SparqlParameterizedString queryWithNegation, SparqlParameterizedString queryWithoutNegation)
@@ -183,8 +183,8 @@ namespace VDS.RDF.Query
             SparqlResultSet negResults = processor.ProcessQuery(negQuery) as SparqlResultSet;
             SparqlResultSet noNegResults = processor.ProcessQuery(noNegQuery) as SparqlResultSet;
 
-            if (negResults == null) Assert.Fail("Did not get a SPARQL Result Set for the Negation Query");
-            if (noNegResults == null) Assert.Fail("Did not get a SPARQL Result Set for the Non-Negation Query");
+            if (negResults == null) Assert.True(false, "Did not get a SPARQL Result Set for the Negation Query");
+            if (noNegResults == null) Assert.True(false, "Did not get a SPARQL Result Set for the Non-Negation Query");
 
             Console.WriteLine("Negation Results");
             TestTools.ShowResults(negResults);
@@ -193,7 +193,7 @@ namespace VDS.RDF.Query
             TestTools.ShowResults(noNegResults);
             Console.WriteLine();
 
-            Assert.AreEqual(noNegResults, negResults, "Result Sets should have been equal");
+            Assert.Equal(noNegResults, negResults);
         }
 
         private void TestNegation(ISparqlDataset data, String queryWithNegation)
@@ -203,13 +203,13 @@ namespace VDS.RDF.Query
 
             SparqlResultSet negResults = processor.ProcessQuery(negQuery) as SparqlResultSet;
 
-            if (negResults == null) Assert.Fail("Did not get a SPARQL Result Set for the Negation Query");
+            if (negResults == null) Assert.True(false, "Did not get a SPARQL Result Set for the Negation Query");
 
             Console.WriteLine("Negation Results");
             TestTools.ShowResults(negResults);
             Console.WriteLine();
 
-            Assert.IsTrue(negResults.IsEmpty, "Result Set should be empty");
+            Assert.True(negResults.IsEmpty, "Result Set should be empty");
         }
 
         private const string TestData = @"<http://r> <http://r> <http://r> .";
@@ -262,25 +262,25 @@ WHERE
 }
 ";
 
-        [Test]
+        [Fact]
         public void SparqlNegationSimpleMinus()
         {
             Test(MinusQuery, false, 0);
         }
 
-        [Test]
+        [Fact]
         public void SparqlNegationSimpleMinusAndUnion()
         {
             Test(UnionQuery, false, 1);
         }
 
-        [Test]
+        [Fact]
         public void SparqlNegationMinusWithNamedGraph()
         {
             Test(MinusNamedGraphQuery, true, 0);
         }
 
-        [Test]
+        [Fact]
         public void SparqlNegationMinusAndUnionWithNamedGraph()
         {
             Test(UnionNamedGraphQuery, true, 1);
@@ -301,7 +301,7 @@ WHERE
 
             using (SparqlResultSet resultSet = (SparqlResultSet)storage.Query(query))
             {
-                Assert.AreEqual(expectedCount, resultSet.Count);
+                Assert.Equal(expectedCount, resultSet.Count);
             }
         }
     }

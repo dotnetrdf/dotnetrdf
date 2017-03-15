@@ -28,29 +28,29 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Parsing.Handlers
 {
-    [TestFixture]
+
     public class UriLoaderHandlerTests
     {
 
 #if !PORTABLE
 
-        [Test]
+        [Fact]
         public void ParsingUriLoaderGraphHandlerImplicit()
         {
             Graph g = new Graph();
             UriLoader.Load(g, new Uri("http://www.dotnetrdf.org/configuration#"));
 
             TestTools.ShowGraph(g);
-            Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
+            Assert.False(g.IsEmpty, "Graph should not be empty");
         }
 
-        [Test]
+        [Fact]
         public void ParsingUriLoaderGraphHandlerExplicit()
         {
             Graph g = new Graph();
@@ -58,12 +58,12 @@ namespace VDS.RDF.Parsing.Handlers
             UriLoader.Load(handler, new Uri("http://www.dotnetrdf.org/configuration#"));
 
             TestTools.ShowGraph(g);
-            Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
+            Assert.False(g.IsEmpty, "Graph should not be empty");
         }
 
 #endif
 
-        [Test]
+        [Fact]
         public void ParsingUriLoaderCountHandler()
         {
             Graph orig = new Graph();
@@ -72,7 +72,7 @@ namespace VDS.RDF.Parsing.Handlers
             CountHandler handler = new CountHandler();
             EmbeddedResourceLoader.Load(handler, "dotNetRDF.Configuration.configuration.ttl");
 
-            Assert.AreEqual(orig.Triples.Count, handler.Count);
+            Assert.Equal(orig.Triples.Count, handler.Count);
         }
     }
 }

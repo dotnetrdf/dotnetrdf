@@ -33,16 +33,16 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using NUnit.Framework;
+using Xunit;
 
 
 namespace VDS.RDF.Writing.Serialization
 {
 #if !SILVERLIGHT
-    [TestFixture]
+
     public class TripleSerializationTests
     {
-        [Test]
+        [Fact]
         public void SerializationXmlTriple()
         {
             System.IO.StringWriter writer = new System.IO.StringWriter();
@@ -61,12 +61,12 @@ namespace VDS.RDF.Writing.Serialization
             Console.WriteLine(writer.ToString());
 
             Triple t2 = serializer.Deserialize(new StringReader(writer.ToString())) as Triple;
-            Assert.IsNotNull(t2, "Triple should not be null");
+            Assert.NotNull(t2);
             Console.WriteLine("Deserialized Form: " + t2.ToString());
-            Assert.AreEqual(t, t2, "Triples should be equal");
+            Assert.Equal(t, t2);
         }
 
-        [Test]
+        [Fact]
         public void SerializationBinaryTriple()
         {
             MemoryStream stream = new MemoryStream();
@@ -91,9 +91,9 @@ namespace VDS.RDF.Writing.Serialization
 
             reader.Close();
 
-            Assert.IsNotNull(t2, "Triple should not be null");
+            Assert.NotNull(t2);
             Console.WriteLine("Deserialized Form: " + t2.ToString());
-            Assert.AreEqual(t, t2, "Triples should be equal");
+            Assert.Equal(t, t2);
 
             stream.Dispose();
         }

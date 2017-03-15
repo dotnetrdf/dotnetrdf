@@ -26,17 +26,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.IO;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Parsing
 {
-    [TestFixture]
+
     public class SparqlJsonTests
     {
         private readonly SparqlJsonParser _parser = new SparqlJsonParser();
 
-        [Test]
+        [Fact]
         public void ParsingSparqlJsonDates1()
         {
             const string data = @"{
@@ -51,10 +51,10 @@ namespace VDS.RDF.Parsing
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
 
-            Assert.AreEqual(1, results.Count);
+            Assert.Equal(1, results.Count);
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlJsonNumerics1()
         {
             const string data = @"{
@@ -69,10 +69,10 @@ namespace VDS.RDF.Parsing
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
 
-            Assert.AreEqual(1, results.Count);
+            Assert.Equal(1, results.Count);
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlJsonNumerics2()
         {
             const string data = @"{
@@ -87,10 +87,10 @@ namespace VDS.RDF.Parsing
             SparqlResultSet results = new SparqlResultSet();
             Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
 
-            Assert.AreEqual(1, results.Count);
+            Assert.Equal(1, results.Count);
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlJsonBoolean1()
         {
             const string data = @"{
@@ -105,10 +105,10 @@ namespace VDS.RDF.Parsing
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
 
-            Assert.AreEqual(1, results.Count);
+            Assert.Equal(1, results.Count);
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlJsonBoolean2()
         {
             const string data = @"{
@@ -123,10 +123,10 @@ namespace VDS.RDF.Parsing
             SparqlResultSet results = new SparqlResultSet();
             Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
 
-            Assert.AreEqual(1, results.Count);
+            Assert.Equal(1, results.Count);
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlJsonGuid1()
         {
             String data = @"{
@@ -141,10 +141,10 @@ namespace VDS.RDF.Parsing
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
 
-            Assert.AreEqual(1, results.Count);
+            Assert.Equal(1, results.Count);
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlJsonCore419_01()
         {
             const String data = @"{
@@ -160,10 +160,10 @@ namespace VDS.RDF.Parsing
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
 
-            Assert.AreEqual(1, results.Count);
+            Assert.Equal(1, results.Count);
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlJsonCore419_02()
         {
             const String data = @"{
@@ -179,10 +179,10 @@ namespace VDS.RDF.Parsing
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
 
-            Assert.AreEqual(1, results.Count);
+            Assert.Equal(1, results.Count);
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlJsonCore419_03()
         {
             const String data = @"{
@@ -198,10 +198,10 @@ namespace VDS.RDF.Parsing
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
 
-            Assert.AreEqual(1, results.Count);
+            Assert.Equal(1, results.Count);
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlJsonCore419_04()
         {
             const String data = @"{
@@ -218,10 +218,10 @@ namespace VDS.RDF.Parsing
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
 
-            Assert.AreEqual(1, results.Count);
+            Assert.Equal(1, results.Count);
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlJsonCore419_05()
         {
             const String data = @"{
@@ -238,10 +238,10 @@ namespace VDS.RDF.Parsing
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
 
-            Assert.AreEqual(1, results.Count);
+            Assert.Equal(1, results.Count);
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlJsonCore419_06()
         {
             const String data = @"{
@@ -258,10 +258,10 @@ namespace VDS.RDF.Parsing
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
 
-            Assert.AreEqual(1, results.Count);
+            Assert.Equal(1, results.Count);
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlJsonCore419_07()
         {
             const String data = @"{
@@ -278,10 +278,10 @@ namespace VDS.RDF.Parsing
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
 
-            Assert.AreEqual(1, results.Count);
+            Assert.Equal(1, results.Count);
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlJsonCore419_08()
         {
             const String data = @"{
@@ -298,10 +298,10 @@ namespace VDS.RDF.Parsing
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
 
-            Assert.AreEqual(1, results.Count);
+            Assert.Equal(1, results.Count);
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlJsonCore419_09()
         {
             const String data = @"{
@@ -320,7 +320,7 @@ namespace VDS.RDF.Parsing
             Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlJsonMalformed()
         {
             const String data = @"{ ""junk"": ]";
@@ -330,29 +330,29 @@ namespace VDS.RDF.Parsing
             Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlJsonCore423_01()
         {
             const String data = @"{""boolean"": false, ""head"": {""link"": []}}";
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
 
-            Assert.AreEqual(SparqlResultsType.Boolean, results.ResultsType);
-            Assert.IsFalse(results.Result);
+            Assert.Equal(SparqlResultsType.Boolean, results.ResultsType);
+            Assert.False(results.Result);
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlJsonCore423_02()
         {
             const String data = @"{""boolean"": true, ""head"": {""link"": []}}";
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
 
-            Assert.AreEqual(SparqlResultsType.Boolean, results.ResultsType);
-            Assert.IsTrue(results.Result);
+            Assert.Equal(SparqlResultsType.Boolean, results.ResultsType);
+            Assert.True(results.Result);
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlJsonCore423_03()
         {
             const String data = @"{ 
@@ -365,12 +365,12 @@ namespace VDS.RDF.Parsing
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
 
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType);
-            Assert.AreEqual(1, results.Count);
-            Assert.AreEqual(1, results.Variables.Count());
+            Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
+            Assert.Equal(1, results.Count);
+            Assert.Equal(1, results.Variables.Count());
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlJsonCore423_04()
         {
             const String data = @"{ 
@@ -383,12 +383,12 @@ namespace VDS.RDF.Parsing
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
 
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType);
-            Assert.AreEqual(1, results.Count);
-            Assert.AreEqual(2, results.Variables.Count());
+            Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
+            Assert.Equal(1, results.Count);
+            Assert.Equal(2, results.Variables.Count());
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlJsonCore423_05()
         {
             const String data = @"{ 
@@ -403,7 +403,7 @@ namespace VDS.RDF.Parsing
             Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlJsonCore432_01()
         {
             // Test case based off of CORE-432 - relative URI in JSON
@@ -420,7 +420,7 @@ namespace VDS.RDF.Parsing
             Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlJsonCore432_02()
         {
             // Test case based off of CORE-432 - relative URI in JSON
@@ -437,7 +437,7 @@ namespace VDS.RDF.Parsing
             Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlJsonCore432_03()
         {
             // Test case based off of CORE-432 - invalid URI in JSON
@@ -454,7 +454,7 @@ namespace VDS.RDF.Parsing
             Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlJsonCore432_04()
         {
             // Test case based off of CORE-432 - invalid URI in JSON

@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
@@ -38,10 +38,10 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class SparqlParsingComplex
     {
-        [Test]
+        [Fact]
         public void SparqlParsingNestedGraphPatternFirstItem()
         {
                 SparqlQueryParser parser = new SparqlQueryParser();
@@ -52,7 +52,7 @@ namespace VDS.RDF.Query
                 Console.WriteLine(q.ToAlgebra().ToString());
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingNestedGraphPatternFirstItem2()
         {
                 SparqlQueryParser parser = new SparqlQueryParser();
@@ -63,7 +63,7 @@ namespace VDS.RDF.Query
                 Console.WriteLine(q.ToAlgebra().ToString());
          }
 
-        [Test]
+        [Fact]
         public void SparqlParsingSubQueryWithLimitAndOrderBy()
         {
             Graph g = new Graph();
@@ -79,15 +79,15 @@ namespace VDS.RDF.Query
                 SparqlResultSet rset = (SparqlResultSet)results;
                 TestTools.ShowResults(rset);
 
-                Assert.IsTrue(rset.All(r => r.HasValue("s") && r.HasValue("p") && r.HasValue("o")), "All Results should have had ?s, ?p and ?o variables");
+                Assert.True(rset.All(r => r.HasValue("s") && r.HasValue("p") && r.HasValue("o")), "All Results should have had ?s, ?p and ?o variables");
             }
             else
             {
-                Assert.Fail("Expected a SPARQL Result Set");
+                Assert.True(false, "Expected a SPARQL Result Set");
             }
         }
 
-        //[Test]
+        //[Fact]
         //public void SparqlNonNormalizedUris()
         //{
         //    try
@@ -133,11 +133,11 @@ namespace VDS.RDF.Query
         //                        }
         //                        Console.WriteLine();
         //                    }
-        //                    Assert.AreEqual(rset, expected, "Result Sets should be equal");
+        //                    Assert.Equal(rset, expected);
         //                }
         //                else
         //                {
-        //                    Assert.Fail("Didn't get a SPARQL Result Set as expected");
+        //                    Assert.True(false, "Didn't get a SPARQL Result Set as expected");
         //                }
         //            }
         //        }
@@ -148,7 +148,7 @@ namespace VDS.RDF.Query
         //    }
         //}
 
-        [Test]
+        [Fact]
         public void SparqlParsingDescribeHangingWhere()
         {
             List<String> valid = new List<string>()
@@ -177,7 +177,7 @@ namespace VDS.RDF.Query
                 try
                 {
                     SparqlQuery q = parser.ParseFromString(iv);
-                    Assert.Fail("Should have thrown a Parsing Error");
+                    Assert.True(false, "Should have thrown a Parsing Error");
                 }
                 catch (RdfParseException parseEx)
                 {
@@ -187,7 +187,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingConstructShortForm()
         {
             List<String> valid = new List<string>()
@@ -222,7 +222,7 @@ namespace VDS.RDF.Query
                 try
                 {
                     SparqlQuery q = parser.ParseFromString(iv);
-                    Assert.Fail("Should have thrown a Parsing Error");
+                    Assert.True(false, "Should have thrown a Parsing Error");
                 }
                 catch (RdfParseException parseEx)
                 {
@@ -233,7 +233,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlEvaluationMultipleOptionals()
         {
             TripleStore store = new TripleStore();
@@ -250,11 +250,11 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.Fail("Expected a SPARQL Result Set");
+                Assert.True(false, "Expected a SPARQL Result Set");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlEvaluationMultipleOptionals2()
         {
             TripleStore store = new TripleStore();
@@ -271,11 +271,11 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.Fail("Expected a SPARQL Result Set");
+                Assert.True(false, "Expected a SPARQL Result Set");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingSubqueries1()
         {
             String query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } . }";
@@ -288,7 +288,7 @@ namespace VDS.RDF.Query
             Console.WriteLine("Parsed reserialized input OK");
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingSubqueries2()
         {
             String query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } }";
@@ -301,7 +301,7 @@ namespace VDS.RDF.Query
             Console.WriteLine("Parsed reserialized input OK");
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingSubqueries3()
         {
             String query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } . }";
@@ -315,7 +315,7 @@ namespace VDS.RDF.Query
             Console.WriteLine("Parsed reserialized input OK");
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingSubqueries4()
         {
             String query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } }";
@@ -329,7 +329,7 @@ namespace VDS.RDF.Query
             Console.WriteLine("Parsed reserialized input OK");
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingUpdateWithDeleteWhereIllegal()
         {
             const string update = "WITH <http://graph> DELETE WHERE { ?s ?p ?o }";
@@ -337,7 +337,7 @@ namespace VDS.RDF.Query
             Assert.Throws<RdfParseException>(() => parser.ParseFromString(update));
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingToStringRoundTripCore458()
         {
             const String query = @"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 

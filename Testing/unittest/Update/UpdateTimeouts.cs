@@ -27,19 +27,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Update;
 
 namespace VDS.RDF.Update
 {
-    [TestFixture]
+
     public class UpdateTimeouts
     {
         private SparqlUpdateParser _parser = new SparqlUpdateParser();
 
 #if !SILVERLIGHT // LOAD not supported
-        [Test]
+        [Fact]
         public void SparqlUpdateTimeout()
         {
             String update = "CREATE GRAPH <http://example.org/1>; LOAD <http://www.dotnetrdf.org/configuration#>; CREATE GRAPH <http://example.org/2>";
@@ -51,7 +51,7 @@ namespace VDS.RDF.Update
             try
             {
                 processor.ProcessCommandSet(cmds);
-                Assert.Fail("Expected a SparqlUpdateTimeoutException");
+                Assert.True(false, "Expected a SparqlUpdateTimeoutException");
             }
             catch (SparqlUpdateTimeoutException timeoutEx)
             {
@@ -59,8 +59,8 @@ namespace VDS.RDF.Update
                 Console.WriteLine();
                 Console.WriteLine("Execution Time: " + cmds.UpdateExecutionTime.Value.ToString());
 
-                Assert.IsFalse(store.HasGraph(new Uri("http://example.org/1")), "Graph 1 should not exist");
-                Assert.IsFalse(store.HasGraph(new Uri("http://example.org/2")), "Graph 2 should not exist");
+                Assert.False(store.HasGraph(new Uri("http://example.org/1")), "Graph 1 should not exist");
+                Assert.False(store.HasGraph(new Uri("http://example.org/2")), "Graph 2 should not exist");
 
             }
         }

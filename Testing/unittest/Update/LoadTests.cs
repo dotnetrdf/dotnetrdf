@@ -3,75 +3,75 @@
 using System;
 using System.IO;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Update
 {
-    [TestFixture]
+
     public class LoadTests
     {
         private readonly SparqlUpdateParser _parser = new SparqlUpdateParser();
 
-        [Test]
+        [Fact]
         public void SparqlUpdateLoadQuads1()
         {
             var tripleStore = new TripleStore();
             SparqlUpdateCommandSet cmds = this._parser.ParseFromFile(@"..\\resources\core-421\test.ru");
 
             tripleStore.ExecuteUpdate(cmds);
-            Assert.That(tripleStore.Triples.ToList(), Has.Count.EqualTo(3));
-            Assert.That(tripleStore.Graphs, Has.Count.EqualTo(3));
+            Assert.Equal(3, tripleStore.Triples.Count());
+            Assert.Equal(3, tripleStore.Graphs.Count);
 
             tripleStore.SaveToFile("core-421.nq", new NQuadsWriter());
 
             var newStore = new TripleStore();
             newStore.LoadFromFile("core-421.nq", new NQuadsParser());
 
-            Assert.That(newStore.Triples.ToList(), Has.Count.EqualTo(3));
-            Assert.That(newStore.Graphs, Has.Count.EqualTo(2));
+            Assert.Equal(3, newStore.Triples.Count());
+            Assert.Equal(2, newStore.Graphs.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateLoadQuads2()
         {
             var tripleStore = new TripleStore();
             SparqlUpdateCommandSet cmds = this._parser.ParseFromFile(@"..\\resources\core-421\test2.ru");
 
             tripleStore.ExecuteUpdate(cmds);
-            Assert.That(tripleStore.Triples.ToList(), Has.Count.EqualTo(3));
-            Assert.That(tripleStore.Graphs, Has.Count.EqualTo(3));
+            Assert.Equal(3, tripleStore.Triples.Count());
+            Assert.Equal(3, tripleStore.Graphs.Count);
 
             tripleStore.SaveToFile("core-421.nq", new NQuadsWriter());
 
             var newStore = new TripleStore();
             newStore.LoadFromFile("core-421.nq", new NQuadsParser());
 
-            Assert.That(newStore.Triples.ToList(), Has.Count.EqualTo(3));
-            Assert.That(newStore.Graphs, Has.Count.EqualTo(2));
+            Assert.Equal(3, newStore.Triples.Count());
+            Assert.Equal(2, newStore.Graphs.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateLoadQuads3()
         {
             var tripleStore = new TripleStore();
             SparqlUpdateCommandSet cmds = this._parser.ParseFromFile(@"..\\resources\core-421\test3.ru");
 
             tripleStore.ExecuteUpdate(cmds);
-            Assert.That(tripleStore.Triples.ToList(), Has.Count.EqualTo(3));
-            Assert.That(tripleStore.Graphs, Has.Count.EqualTo(3));
+            Assert.Equal(3, tripleStore.Triples.Count());
+            Assert.Equal(3, tripleStore.Graphs.Count);
 
             tripleStore.SaveToFile("core-421.nq", new NQuadsWriter());
 
             var newStore = new TripleStore();
             newStore.LoadFromFile("core-421.nq", new NQuadsParser());
 
-            Assert.That(newStore.Triples.ToList(), Has.Count.EqualTo(3));
-            Assert.That(newStore.Graphs, Has.Count.EqualTo(2));
+            Assert.Equal(3, newStore.Triples.Count());
+            Assert.Equal(2, newStore.Graphs.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateLoadQuads4()
         {
             var tripleStore = new TripleStore();
@@ -81,34 +81,34 @@ namespace VDS.RDF.Update
 
             tripleStore.ExecuteUpdate("LOAD <file:///" + g1 + "> into graph <http://test.org/user>");
             tripleStore.ExecuteUpdate("LOAD <file:///" + g2 + "> into graph <http://test.org/prodList/>");
-            Assert.That(tripleStore.Triples.ToList(), Has.Count.EqualTo(3));
-            Assert.That(tripleStore.Graphs, Has.Count.EqualTo(3));
+            Assert.Equal(3, tripleStore.Triples.Count());
+            Assert.Equal(3, tripleStore.Graphs.Count);
 
             tripleStore.SaveToFile("core-421.nq", new NQuadsWriter());
 
             var newStore = new TripleStore();
             newStore.LoadFromFile("core-421.nq", new NQuadsParser());
 
-            Assert.That(newStore.Triples.ToList(), Has.Count.EqualTo(3));
-            Assert.That(newStore.Graphs, Has.Count.EqualTo(2));
+            Assert.Equal(3, newStore.Triples.Count());
+            Assert.Equal(2, newStore.Graphs.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateLoadQuads5()
         {
             var tripleStore = new TripleStore();
 
             tripleStore.LoadFromFile(@"..\\resources\core-421\test.nq");
-            Assert.That(tripleStore.Triples.ToList(), Has.Count.EqualTo(3));
-            Assert.That(tripleStore.Graphs, Has.Count.EqualTo(2));
+            Assert.Equal(3, tripleStore.Triples.Count());
+            Assert.Equal(2, tripleStore.Graphs.Count);
 
             tripleStore.SaveToFile("core-421.nq", new NQuadsWriter());
 
             var newStore = new TripleStore();
             newStore.LoadFromFile("core-421.nq", new NQuadsParser());
 
-            Assert.That(newStore.Triples.ToList(), Has.Count.EqualTo(3));
-            Assert.That(newStore.Graphs, Has.Count.EqualTo(2));
+            Assert.Equal(3, newStore.Triples.Count());
+            Assert.Equal(2, newStore.Graphs.Count);
         }
     }
 }

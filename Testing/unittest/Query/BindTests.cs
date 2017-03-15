@@ -27,15 +27,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class BindTests
     {
-        [Test]
+        [Fact]
         public void SparqlBindExistsAsChildExpression1()
         {
             String query = @"SELECT * WHERE
@@ -53,14 +53,14 @@ namespace VDS.RDF.Query
             g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
 
             SparqlResultSet results = g.ExecuteQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
+            Assert.NotNull(results);
 
             TestTools.ShowResults(results);
 
-            Assert.IsTrue(results.All(r => r.HasBoundValue("hasRange")));
+            Assert.True(results.All(r => r.HasBoundValue("hasRange")));
         }
 
-        [Test]
+        [Fact]
         public void SparqlBindExistsAsChildExpression2()
         {
             String query = @"SELECT * WHERE
@@ -78,14 +78,14 @@ namespace VDS.RDF.Query
             g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
 
             SparqlResultSet results = g.ExecuteQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
+            Assert.NotNull(results);
 
             TestTools.ShowResults(results);
 
-            Assert.IsTrue(results.All(r => r.HasBoundValue("hasRangeAndDomain")));
+            Assert.True(results.All(r => r.HasBoundValue("hasRangeAndDomain")));
         }
 
-        [Test]
+        [Fact]
         public void SparqlBindOverEmptyFilter1()
         {
             String query = "SELECT * WHERE { FILTER(false). BIND('test' AS ?test) }";
@@ -93,13 +93,13 @@ namespace VDS.RDF.Query
 
             IGraph g = new Graph();
             SparqlResultSet results = g.ExecuteQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
+            Assert.NotNull(results);
 
             TestTools.ShowResults(results);
-            Assert.IsTrue(results.IsEmpty);
+            Assert.True(results.IsEmpty);
         }
 
-        [Test]
+        [Fact]
         public void SparqlBindOverEmptyFilter2()
         {
             String query = "SELECT * WHERE { FILTER(true). BIND('test' AS ?test) }";
@@ -107,14 +107,14 @@ namespace VDS.RDF.Query
 
             IGraph g = new Graph();
             SparqlResultSet results = g.ExecuteQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
+            Assert.NotNull(results);
 
             TestTools.ShowResults(results);
-            Assert.IsFalse(results.IsEmpty);
-            Assert.AreEqual(1, results.Count);
+            Assert.False(results.IsEmpty);
+            Assert.Equal(1, results.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlBindEmpty1()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . BIND('test' AS ?test) }";
@@ -122,13 +122,13 @@ namespace VDS.RDF.Query
 
             IGraph g = new Graph();
             SparqlResultSet results = g.ExecuteQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
+            Assert.NotNull(results);
 
             TestTools.ShowResults(results);
-            Assert.IsTrue(results.IsEmpty);
+            Assert.True(results.IsEmpty);
         }
 
-        [Test]
+        [Fact]
         public void SparqlBindEmpty2()
         {
             String query = "SELECT * WHERE { BIND('test' AS ?test) }";
@@ -136,11 +136,11 @@ namespace VDS.RDF.Query
 
             IGraph g = new Graph();
             SparqlResultSet results = g.ExecuteQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
+            Assert.NotNull(results);
 
             TestTools.ShowResults(results);
-            Assert.IsFalse(results.IsEmpty);
-            Assert.AreEqual(1, results.Count);
+            Assert.False(results.IsEmpty);
+            Assert.Equal(1, results.Count);
         }
     }
 }

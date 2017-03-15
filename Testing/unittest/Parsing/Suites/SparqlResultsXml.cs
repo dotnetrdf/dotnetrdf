@@ -26,13 +26,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.IO;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Query;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Parsing.Suites
 {
    
-    [TestFixture]
+
     public class SparqlResultsXml
         : BaseResultsParserSuite
     {
@@ -42,23 +43,23 @@ namespace VDS.RDF.Parsing.Suites
             this.CheckResults = false;
         }
 
-        [Test]
+        [SkippableFact]
         public void ParsingSuiteSparqlResultsXml()
         {
             //Run manifests
             this.RunDirectory(f => Path.GetExtension(f).Equals(".srx") && !f.Contains("bad"), true);
             this.RunDirectory(f => Path.GetExtension(f).Equals(".srx") && f.Contains("bad"), false);
 
-            if (this.Count == 0) Assert.Fail("No tests found");
+            if (this.Count == 0) Assert.True(false, "No tests found");
 
             Console.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed");
             Console.WriteLine((((double)this.Passed / (double)this.Count) * 100) + "% Passed");
 
-            if (this.Failed > 0) Assert.Fail(this.Failed + " Tests failed");
-            if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate");
+            if (this.Failed > 0) Assert.True(false, this.Failed + " Tests failed");
+            if (this.Indeterminate > 0) throw new SkipTestException(this.Indeterminate + " Tests are indeterminate");
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlResultsXmlCustomAttributes()
         {
             // Test case based off of CORE-410
@@ -71,26 +72,26 @@ namespace VDS.RDF.Parsing.Suites
             INode second = results[1]["test"];
             INode third = results[2]["test"];
 
-            Assert.AreEqual(NodeType.Literal, first.NodeType);
+            Assert.Equal(NodeType.Literal, first.NodeType);
             ILiteralNode firstLit = (ILiteralNode) first;
-            Assert.IsNotNull(firstLit.DataType);
-            Assert.AreEqual(XmlSpecsHelper.XmlSchemaDataTypeInteger, firstLit.DataType.AbsoluteUri);
-            Assert.AreEqual("1993", firstLit.Value);
+            Assert.NotNull(firstLit.DataType);
+            Assert.Equal(XmlSpecsHelper.XmlSchemaDataTypeInteger, firstLit.DataType.AbsoluteUri);
+            Assert.Equal("1993", firstLit.Value);
 
-            Assert.AreEqual(NodeType.Literal, second.NodeType);
+            Assert.Equal(NodeType.Literal, second.NodeType);
             ILiteralNode secondLit = (ILiteralNode) second;
-            Assert.AreNotEqual(String.Empty, secondLit.Language);
-            Assert.AreEqual("en", secondLit.Language);
-            Assert.AreEqual("test", secondLit.Value);
+            Assert.NotEqual(String.Empty, secondLit.Language);
+            Assert.Equal("en", secondLit.Language);
+            Assert.Equal("test", secondLit.Value);
 
-            Assert.AreEqual(NodeType.Literal, third.NodeType);
+            Assert.Equal(NodeType.Literal, third.NodeType);
             ILiteralNode thirdLit = (ILiteralNode) third;
-            Assert.AreEqual(String.Empty, thirdLit.Language);
-            Assert.IsNull(thirdLit.DataType);
-            Assert.AreEqual("test plain literal", thirdLit.Value);
+            Assert.Equal(String.Empty, thirdLit.Language);
+            Assert.Null(thirdLit.DataType);
+            Assert.Equal("test plain literal", thirdLit.Value);
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlResultsXmlConflictingAttributes()
         {
             // Test case based off of CORE-410

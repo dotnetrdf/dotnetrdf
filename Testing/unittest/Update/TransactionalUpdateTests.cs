@@ -27,7 +27,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Update;
@@ -40,7 +40,7 @@ namespace VDS.RDF.Update
     /// <remarks>
     /// To run the same tests against an alternative <see cref="ISparqlDataset">ISparqlDataset</see> implementation extend this class, override the <see cref="TransactionalUpdateTests.GetEmptyDataset">GetEmptyDataset()</see> and <see cref="TransactionalUpdateTests.GetNonEmptyDataset()">GetNonEmptyDataset()</see> methods.  The latter should contain a single empty graph with the URI set to the constant <see cref="TransactionalUpdateTests.TestGraphUri">TestGraphUri</see>
     /// </remarks>
-    [TestFixture]
+
     public class TransactionalUpdateTests
     {
         protected readonly Uri TestGraphUri = new Uri("http://example.org/graph");
@@ -75,7 +75,7 @@ namespace VDS.RDF.Update
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
-            Assert.IsTrue(dataset.HasGraph(TestGraphUri), "Graph should exist");
+            Assert.True(dataset.HasGraph(TestGraphUri), "Graph should exist");
         }
 
         private void TestCreateGraphRollback()
@@ -90,14 +90,14 @@ namespace VDS.RDF.Update
             try
             {
                 processor.ProcessCommandSet(cmds);
-                Assert.Fail("Did not thrown a SparqlUpdateException as expected");
+                Assert.True(false, "Did not thrown a SparqlUpdateException as expected");
             }
             catch (SparqlUpdateException upEx)
             {
                 TestTools.ReportError("Update Exception", upEx);
             }
 
-            Assert.IsFalse(dataset.HasGraph(TestGraphUri), "Graph should not exist as the Discard() should cause it to be removed from the Dataset");
+            Assert.False(dataset.HasGraph(TestGraphUri), "Graph should not exist as the Discard() should cause it to be removed from the Dataset");
 
         }
 
@@ -114,20 +114,20 @@ namespace VDS.RDF.Update
             try
             {
                 processor.ProcessCommandSet(cmds);
-                Assert.Fail("Did not throw a SparqlUpdateException as expected");
+                Assert.True(false, "Did not throw a SparqlUpdateException as expected");
             }
             catch (SparqlUpdateException upEx)
             {
                 TestTools.ReportError("Update Exception", upEx);
             }
 
-            Assert.IsTrue(dataset.HasGraph(TestGraphUri), "Graph should exist as the Transaction has not been committed yet as Auto-Commit is off");
+            Assert.True(dataset.HasGraph(TestGraphUri), "Graph should exist as the Transaction has not been committed yet as Auto-Commit is off");
 
             //Try to Flush() which should error
             try
             {
                 processor.Flush();
-                Assert.Fail("Did not throw a SparqlUpdateException as expected on call to Flush()");
+                Assert.True(false, "Did not throw a SparqlUpdateException as expected on call to Flush()");
             }
             catch (SparqlUpdateException upEx)
             {
@@ -137,7 +137,7 @@ namespace VDS.RDF.Update
             
             //Now discard
             processor.Discard();
-            Assert.IsFalse(dataset.HasGraph(TestGraphUri), "Graph should not exist as the Discard() should cause it to be removed from the Dataset");
+            Assert.False(dataset.HasGraph(TestGraphUri), "Graph should not exist as the Discard() should cause it to be removed from the Dataset");
 
         }
 
@@ -153,7 +153,7 @@ namespace VDS.RDF.Update
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
-            Assert.IsFalse(dataset.HasGraph(TestGraphUri), "Graph should not exist");
+            Assert.False(dataset.HasGraph(TestGraphUri), "Graph should not exist");
         }
 
         private void TestDropGraphRollback()
@@ -168,14 +168,14 @@ namespace VDS.RDF.Update
             try
             {
                 processor.ProcessCommandSet(cmds);
-                Assert.Fail("Did not thrown a SparqlUpdateException as expected");
+                Assert.True(false, "Did not thrown a SparqlUpdateException as expected");
             }
             catch (SparqlUpdateException upEx)
             {
                 TestTools.ReportError("Update Exception", upEx);
             }
 
-            Assert.IsTrue(dataset.HasGraph(TestGraphUri), "Graph should exist as the Discard() should ensure it was still in the Dataset");
+            Assert.True(dataset.HasGraph(TestGraphUri), "Graph should exist as the Discard() should ensure it was still in the Dataset");
         }
 
         private void TestLoadCommit()
@@ -189,7 +189,7 @@ namespace VDS.RDF.Update
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
-            Assert.IsTrue(dataset.HasGraph(TestGraphUri), "Graph should exist");
+            Assert.True(dataset.HasGraph(TestGraphUri), "Graph should exist");
         }
 
         private void TestLoadRollback()
@@ -204,14 +204,14 @@ namespace VDS.RDF.Update
             try
             {
                 processor.ProcessCommandSet(cmds);
-                Assert.Fail("Did not thrown a SparqlUpdateException as expected");
+                Assert.True(false, "Did not thrown a SparqlUpdateException as expected");
             }
             catch (SparqlUpdateException upEx)
             {
                 TestTools.ReportError("Update Exception", upEx);
             }
 
-            Assert.IsFalse(dataset.HasGraph(TestGraphUri), "Graph should not exist as the Discard() should cause it to be removed from the Dataset");
+            Assert.False(dataset.HasGraph(TestGraphUri), "Graph should not exist as the Discard() should cause it to be removed from the Dataset");
         }
 
         private void TestCreateDropSequenceCommit()
@@ -225,7 +225,7 @@ namespace VDS.RDF.Update
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
-            Assert.IsTrue(dataset.HasGraph(TestGraphUri), "Graph should exist");
+            Assert.True(dataset.HasGraph(TestGraphUri), "Graph should exist");
         }
 
         private void TestCreateDropSequenceCommit2()
@@ -239,7 +239,7 @@ namespace VDS.RDF.Update
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
-            Assert.IsFalse(dataset.HasGraph(TestGraphUri), "Graph should not exist");
+            Assert.False(dataset.HasGraph(TestGraphUri), "Graph should not exist");
         }
 
         private void TestCreateDropSequenceRollback()
@@ -254,14 +254,14 @@ namespace VDS.RDF.Update
             try
             {
                 processor.ProcessCommandSet(cmds);
-                Assert.Fail("Expected SPARQL Update Exception was not thrown");
+                Assert.True(false, "Expected SPARQL Update Exception was not thrown");
             }
             catch (SparqlUpdateException upEx)
             {
                 TestTools.ReportError("Update Exception", upEx);
             }
 
-            Assert.IsFalse(dataset.HasGraph(TestGraphUri), "Graph should not exist");
+            Assert.False(dataset.HasGraph(TestGraphUri), "Graph should not exist");
 
         }
 
@@ -277,14 +277,14 @@ namespace VDS.RDF.Update
             try
             {
                 processor.ProcessCommandSet(cmds);
-                Assert.Fail("Expected SPARQL Update Exception was not thrown");
+                Assert.True(false, "Expected SPARQL Update Exception was not thrown");
             }
             catch (SparqlUpdateException upEx)
             {
                 TestTools.ReportError("Update Exception", upEx);
             }
 
-            Assert.IsTrue(dataset.HasGraph(TestGraphUri), "Graph should not exist");
+            Assert.True(dataset.HasGraph(TestGraphUri), "Graph should not exist");
         }
 
         private void TestInsertDataThenDropCommit()
@@ -298,7 +298,7 @@ namespace VDS.RDF.Update
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
-            Assert.IsFalse(dataset.HasGraph(TestGraphUri), "Graph should not exist as the Flush() should cause it to be removed from the Dataset");
+            Assert.False(dataset.HasGraph(TestGraphUri), "Graph should not exist as the Flush() should cause it to be removed from the Dataset");
         }
 
         private void TestInsertDataThenDropRollback()
@@ -313,15 +313,15 @@ namespace VDS.RDF.Update
             try
             {
                 processor.ProcessCommandSet(cmds);
-                Assert.Fail("Did not thrown a SparqlUpdateException as expected");
+                Assert.True(false, "Did not thrown a SparqlUpdateException as expected");
             }
             catch (SparqlUpdateException upEx)
             {
                 TestTools.ReportError("Update Exception", upEx);
             }
 
-            Assert.IsTrue(dataset.HasGraph(TestGraphUri), "Graph should exist as the Discard() should cause it to be added back to the Dataset");
-            Assert.IsTrue(dataset[TestGraphUri].IsEmpty, "Graph should be empty as the Discard() should cause the inserted triple to be removed");
+            Assert.True(dataset.HasGraph(TestGraphUri), "Graph should exist as the Discard() should cause it to be added back to the Dataset");
+            Assert.True(dataset[TestGraphUri].IsEmpty, "Graph should be empty as the Discard() should cause the inserted triple to be removed");
         }
 
         private void TestCreateThenInsertDataRollback()
@@ -336,14 +336,14 @@ namespace VDS.RDF.Update
             try
             {
                 processor.ProcessCommandSet(cmds);
-                Assert.Fail("Did not thrown a SparqlUpdateException as expected");
+                Assert.True(false, "Did not thrown a SparqlUpdateException as expected");
             }
             catch (SparqlUpdateException upEx)
             {
                 TestTools.ReportError("Update Exception", upEx);
             }
 
-            Assert.IsFalse(dataset.HasGraph(TestGraphUri), "Graph should not exist as the Discard() should cause it to be removed from the Dataset");
+            Assert.False(dataset.HasGraph(TestGraphUri), "Graph should not exist as the Discard() should cause it to be removed from the Dataset");
         }
 
         private void TestDropThenInsertDataRollback()
@@ -358,15 +358,15 @@ namespace VDS.RDF.Update
             try
             {
                 processor.ProcessCommandSet(cmds);
-                Assert.Fail("Did not thrown a SparqlUpdateException as expected");
+                Assert.True(false, "Did not thrown a SparqlUpdateException as expected");
             }
             catch (SparqlUpdateException upEx)
             {
                 TestTools.ReportError("Update Exception", upEx);
             }
 
-            Assert.IsTrue(dataset.HasGraph(TestGraphUri), "Graph should not exist as the Discard() should cause it to be removed from the Dataset");
-            Assert.IsTrue(dataset[TestGraphUri].IsEmpty, "Graph should be empty as the Discard() should have reversed the INSERT DATA");
+            Assert.True(dataset.HasGraph(TestGraphUri), "Graph should not exist as the Discard() should cause it to be removed from the Dataset");
+            Assert.True(dataset[TestGraphUri].IsEmpty, "Graph should be empty as the Discard() should have reversed the INSERT DATA");
         }
 
         private void TestInsertDataThenDeleteDataCommit()
@@ -380,7 +380,7 @@ namespace VDS.RDF.Update
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
-            Assert.IsTrue(dataset[TestGraphUri].IsEmpty, "Graph should be empty as the Flush() should persist first the insert then the delete");
+            Assert.True(dataset[TestGraphUri].IsEmpty, "Graph should be empty as the Flush() should persist first the insert then the delete");
         }
 
         private void TestInsertDataThenDeleteDataRollback()
@@ -395,14 +395,14 @@ namespace VDS.RDF.Update
             try
             {
                 processor.ProcessCommandSet(cmds);
-                Assert.Fail("Did not thrown a SparqlUpdateException as expected");
+                Assert.True(false, "Did not thrown a SparqlUpdateException as expected");
             }
             catch (SparqlUpdateException upEx)
             {
                 TestTools.ReportError("Update Exception", upEx);
             }
 
-            Assert.IsTrue(dataset[TestGraphUri].IsEmpty, "Graph should be empty as the Discard() should reverse first the delete then the insert");
+            Assert.True(dataset[TestGraphUri].IsEmpty, "Graph should be empty as the Discard() should reverse first the delete then the insert");
         }
 
         private void TestDeleteDataThenInsertDataCommit()
@@ -419,7 +419,7 @@ namespace VDS.RDF.Update
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
-            Assert.IsFalse(dataset[TestGraphUri].IsEmpty, "Graph should not be empty as the Flush() should persist first the delete then the insert so the end results should be the triple still being in the Graph");
+            Assert.False(dataset[TestGraphUri].IsEmpty, "Graph should not be empty as the Flush() should persist first the delete then the insert so the end results should be the triple still being in the Graph");
         }
 
         private void TestDeleteDataThenInsertDataRollback()
@@ -436,14 +436,14 @@ namespace VDS.RDF.Update
             try
             {
                 processor.ProcessCommandSet(cmds);
-                Assert.Fail("Did not thrown a SparqlUpdateException as expected");
+                Assert.True(false, "Did not thrown a SparqlUpdateException as expected");
             }
             catch (SparqlUpdateException upEx)
             {
                 TestTools.ReportError("Update Exception", upEx);
             }
 
-            Assert.IsFalse(dataset[TestGraphUri].IsEmpty, "Graph should not be empty as the Discard() should reverse first the insert then the delete so the end results should be the triple still being in the Graph");
+            Assert.False(dataset[TestGraphUri].IsEmpty, "Graph should not be empty as the Discard() should reverse first the insert then the delete so the end results should be the triple still being in the Graph");
         }
 
         private void TestInsertDataSequenceCommit()
@@ -456,27 +456,27 @@ namespace VDS.RDF.Update
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
-            Assert.IsTrue(dataset.HasGraph(TestGraphUri), "Graph should exist");
-            Assert.AreEqual(1, dataset[TestGraphUri].Triples.Count, "Expected 1 Triple");
+            Assert.True(dataset.HasGraph(TestGraphUri), "Graph should exist");
+            Assert.Equal(1, dataset[TestGraphUri].Triples.Count);
         }
 
         #endregion
 
         #region CREATE GRAPH Tests
 
-        [Test]
+        [Fact]
         public void SparqlUpdateTransactionsCreateGraphCommit()
         {
             TestCreateGraphCommit();
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateTransactionsCreateGraphRollback()
         {
             TestCreateGraphRollback();
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateTransactionsCreateGraphRollbackWithoutAutoCommit()
         {
             TestCreateGraphRollbackWithoutAutoCommit();
@@ -486,13 +486,13 @@ namespace VDS.RDF.Update
 
         #region DROP GRAPH Tests
 
-        [Test]
+        [Fact]
         public void SparqlUpdateTransactionsDropGraphCommit()
         {
             TestDropGraphCommit();
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateTransactionsDropGraphRollback()
         {
             TestDropGraphRollback();
@@ -503,13 +503,13 @@ namespace VDS.RDF.Update
         #region LOAD Tests
 
 #if !SILVERLIGHT // LOAD not supported under SILVERLIGHT
-        [Test]
+        [Fact]
         public void SparqlUpdateTransactionsLoadCommit()
         {
             TestLoadCommit();
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateTransactionsLoadRollback()
         {
             TestLoadRollback();
@@ -520,25 +520,25 @@ namespace VDS.RDF.Update
 
         #region CREATE and DROP GRAPH Tests
 
-        [Test]
+        [Fact]
         public void SparqlUpdateTransactionsCreateDropSequenceCommit()
         {
             TestCreateDropSequenceCommit();
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateTransactionsCreateDropSequenceCommit2()
         {
             TestCreateDropSequenceCommit2();
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateTransactionsCreateDropSequenceRollback()
         {
             TestCreateDropSequenceRollback();
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateTransactionsCreateDropSequenceRollback2()
         {
             TestCreateDropSequenceRollback2();
@@ -548,13 +548,13 @@ namespace VDS.RDF.Update
 
         #region INSERT DATA and DROP GRAPH Tests
 
-        [Test]
+        [Fact]
         public void SparqlUpdateTransactionsInsertDataThenDropCommit()
         {
             this.TestInsertDataThenDropCommit();
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateTransactionsInsertDataThenDropRollback()
         {
             this.TestInsertDataThenDropRollback();
@@ -564,7 +564,7 @@ namespace VDS.RDF.Update
 
         #region CREATE GRAPH and INSERT DATA Tests
 
-        [Test]
+        [Fact]
         public void SparqlUpdateTransactionsCreateThenInsertRollback()
         {
             this.TestCreateThenInsertDataRollback();
@@ -574,7 +574,7 @@ namespace VDS.RDF.Update
 
         #region DROP GRAPH and INSERT DATA Tests
 
-        [Test]
+        [Fact]
         public void SparqlUpdateTransactionsDropThenInsertRollback()
         {
             this.TestDropThenInsertDataRollback();
@@ -589,7 +589,7 @@ namespace VDS.RDF.Update
             this.TestInsertDataThenDeleteDataCommit();
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateTransactionsInsertDataThenDeleteDataRollback()
         {
             this.TestInsertDataThenDeleteDataRollback();
@@ -599,13 +599,13 @@ namespace VDS.RDF.Update
 
         #region DELETE DATA and INSERT DATA Tests
 
-        [Test]
+        [Fact]
         public void SparqlUpdateTransactionsDeleteDataThenInsertDataCommit()
         {
             this.TestDeleteDataThenInsertDataCommit();
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateTransactionsDeleteDataThenInsertDataRollback()
         {
             this.TestDeleteDataThenInsertDataRollback();
@@ -615,7 +615,7 @@ namespace VDS.RDF.Update
 
         #region INSERT DATA and INSERT DATA
 
-        [Test]
+        [Fact]
         public void SparqlUpdateTransactionsInsertDataSequenceCommit()
         {
             this.TestInsertDataSequenceCommit();

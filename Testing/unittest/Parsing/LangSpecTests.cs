@@ -28,14 +28,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Parsing
 {
-    [TestFixture]
+
     public class LangSpecTests
     {
         private const string NTriplesLangSpec = "resources\\langspec.nt";
@@ -61,11 +61,14 @@ namespace VDS.RDF.Parsing
                 this._store.Add(this._original);
             }
 
+            Assert.True(File.Exists(file), "Unable to ensure test data");
             if (!File.Exists(file))
             {
                 MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeTypes(Path.GetExtension(file))).FirstOrDefault();
+                Assert.NotNull(def);
                 if (def != null)
                 {
+                    Assert.True(def.CanWriteRdf || def.CanWriteRdfDatasets, "Unable to ensure test data");
                     if (def.CanWriteRdf)
                     {
                         this._original.SaveToFile(file);
@@ -74,32 +77,22 @@ namespace VDS.RDF.Parsing
                     {
                         this._store.SaveToFile(file);
                     }
-                    else
-                    {
-                        Assert.Fail("Unable to ensure test data");
-                    }
                 }
-                else
-                {
-                    Assert.Fail("Unsupported file type");
-                }
-            }
-            else
-            {
-                Assert.Fail("Unable to ensure test data");
             }
         }
 
-        [TestCase(NTriplesLangSpec)]
-        [TestCase(TurtleLangSpec)]
-        [TestCase(N3LangSpec)]
-        [TestCase(TrigLangSpec)]
-        [TestCase(NQuadsLangSpec)]
+        [Theory]
+        [InlineData(NTriplesLangSpec)]
+        [InlineData(TurtleLangSpec)]
+        [InlineData(N3LangSpec)]
+        [InlineData(TrigLangSpec)]
+        [InlineData(NQuadsLangSpec)]
         public void TestLangSpecParsing(String file)
         {
             this.EnsureTestData(file);
 
             MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeTypes(Path.GetExtension(file))).FirstOrDefault();
+            Assert.NotNull(def);
             if (def != null)
             {
                 if (def.CanParseRdf)
@@ -107,24 +100,19 @@ namespace VDS.RDF.Parsing
                     Graph g = new Graph();
                     g.LoadFromFile(file);
 
-                    Assert.AreEqual(this._original, g);
+                    Assert.Equal(this._original, g);
                 }
                 else if (def.CanParseRdfDatasets)
                 {
                     TripleStore store = new TripleStore();
                     store.LoadFromFile(file);
 
-                    Assert.AreEqual(this._original, store.Graphs.First());
+                    Assert.Equal(this._original, store.Graphs.First());
                 }
-            }
-            else
-            {
-                Assert.Fail("Unsupported file type");
             }
         }
 
-        [TestFixtureSetUp]
-        public void Setup()
+        public LangSpecTests()
         {
             DeleteLangSpec(NTriplesLangSpec);
             DeleteLangSpec(TurtleLangSpec);

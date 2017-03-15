@@ -27,19 +27,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query.Expressions
 {
-    [TestFixture]
+
     public class DateTimeTests
     {
         private readonly SparqlQueryParser _parser = new SparqlQueryParser();
         private readonly SparqlXmlParser _resultsParser = new SparqlXmlParser();
 
-        [TestCase("2013-07-05T12:00:00Z", "2013-07-05T04:00:00-08:00", true)]
-        [TestCase("2013-07-05T12:00:00Z", "2013-07-05T12:00:00+14:00", false)]
+        [Theory]
+        [InlineData("2013-07-05T12:00:00Z", "2013-07-05T04:00:00-08:00", true)]
+        [InlineData("2013-07-05T12:00:00Z", "2013-07-05T12:00:00+14:00", false)]
         public void SparqlDateTimeEquality(String x, String y, bool equals)
         {
             IGraph g = new Graph();
@@ -48,29 +49,30 @@ namespace VDS.RDF.Query.Expressions
 
             if (equals)
             {
-                Assert.IsTrue(SparqlSpecsHelper.DateTimeEquality(dateTime1, dateTime2));
-                Assert.IsTrue(SparqlSpecsHelper.DateTimeEquality(dateTime2, dateTime1));
-                Assert.IsTrue(SparqlSpecsHelper.Equality(dateTime1, dateTime2));
-                Assert.IsTrue(SparqlSpecsHelper.Equality(dateTime2, dateTime1));
-                Assert.IsFalse(SparqlSpecsHelper.Inequality(dateTime1, dateTime2));
-                Assert.IsFalse(SparqlSpecsHelper.Inequality(dateTime2, dateTime1));
+                Assert.True(SparqlSpecsHelper.DateTimeEquality(dateTime1, dateTime2));
+                Assert.True(SparqlSpecsHelper.DateTimeEquality(dateTime2, dateTime1));
+                Assert.True(SparqlSpecsHelper.Equality(dateTime1, dateTime2));
+                Assert.True(SparqlSpecsHelper.Equality(dateTime2, dateTime1));
+                Assert.False(SparqlSpecsHelper.Inequality(dateTime1, dateTime2));
+                Assert.False(SparqlSpecsHelper.Inequality(dateTime2, dateTime1));
             }
             else
             {
-                Assert.IsFalse(SparqlSpecsHelper.DateTimeEquality(dateTime1, dateTime2));
-                Assert.IsFalse(SparqlSpecsHelper.DateTimeEquality(dateTime2, dateTime1));
-                Assert.IsFalse(SparqlSpecsHelper.Equality(dateTime1, dateTime2));
-                Assert.IsFalse(SparqlSpecsHelper.Equality(dateTime2, dateTime1));
-                Assert.IsTrue(SparqlSpecsHelper.Inequality(dateTime1, dateTime2));
-                Assert.IsTrue(SparqlSpecsHelper.Inequality(dateTime2, dateTime1));
+                Assert.False(SparqlSpecsHelper.DateTimeEquality(dateTime1, dateTime2));
+                Assert.False(SparqlSpecsHelper.DateTimeEquality(dateTime2, dateTime1));
+                Assert.False(SparqlSpecsHelper.Equality(dateTime1, dateTime2));
+                Assert.False(SparqlSpecsHelper.Equality(dateTime2, dateTime1));
+                Assert.True(SparqlSpecsHelper.Inequality(dateTime1, dateTime2));
+                Assert.True(SparqlSpecsHelper.Inequality(dateTime2, dateTime1));
             }
         }
 
-        [TestCase("2013-07-05", "2013-07-05", true)]
-        [TestCase("2013-07-05-08:00", "2013-07-05Z", true)]
-        [TestCase("2006-08-23", "2001-01-01", false)]
-        [TestCase("2013-07-05", "2013-07-05Z", true)]
-        [TestCase("2006-08-23", "2001-01-01Z", false)]
+        [Theory]
+        [InlineData("2013-07-05", "2013-07-05", true)]
+        [InlineData("2013-07-05-08:00", "2013-07-05Z", true)]
+        [InlineData("2006-08-23", "2001-01-01", false)]
+        [InlineData("2013-07-05", "2013-07-05Z", true)]
+        [InlineData("2006-08-23", "2001-01-01Z", false)]
         public void SparqlDateEquality(String x, String y, bool equals)
         {
             IGraph g = new Graph();
@@ -79,23 +81,24 @@ namespace VDS.RDF.Query.Expressions
 
             if (equals)
             {
-                Assert.IsTrue(SparqlSpecsHelper.DateEquality(date1, date2));
-                Assert.IsTrue(SparqlSpecsHelper.Equality(date1, date2));
-                Assert.IsTrue(SparqlSpecsHelper.Equality(date2, date1));
-                Assert.IsFalse(SparqlSpecsHelper.Inequality(date1, date2));
-                Assert.IsFalse(SparqlSpecsHelper.Inequality(date2, date1));
+                Assert.True(SparqlSpecsHelper.DateEquality(date1, date2));
+                Assert.True(SparqlSpecsHelper.Equality(date1, date2));
+                Assert.True(SparqlSpecsHelper.Equality(date2, date1));
+                Assert.False(SparqlSpecsHelper.Inequality(date1, date2));
+                Assert.False(SparqlSpecsHelper.Inequality(date2, date1));
             }
             else
             {
-                Assert.IsFalse(SparqlSpecsHelper.DateEquality(date1, date2));
-                Assert.IsFalse(SparqlSpecsHelper.Equality(date1, date2));
-                Assert.IsFalse(SparqlSpecsHelper.Equality(date2, date1));
-                Assert.IsTrue(SparqlSpecsHelper.Inequality(date1, date2));
-                Assert.IsTrue(SparqlSpecsHelper.Inequality(date2, date1));
+                Assert.False(SparqlSpecsHelper.DateEquality(date1, date2));
+                Assert.False(SparqlSpecsHelper.Equality(date1, date2));
+                Assert.False(SparqlSpecsHelper.Equality(date2, date1));
+                Assert.True(SparqlSpecsHelper.Inequality(date1, date2));
+                Assert.True(SparqlSpecsHelper.Inequality(date2, date1));
             }
         }
 
-        [TestCase("2006-08-23T09:00:00+01:00", "2006-08-23Z", false)]
+        [Theory]
+        [InlineData("2006-08-23T09:00:00+01:00", "2006-08-23Z", false)]
         public void SparqlDateTimeMixedEquality(String x, String y, bool equals)
         {
             IGraph g = new Graph();
@@ -104,23 +107,24 @@ namespace VDS.RDF.Query.Expressions
 
             if (equals)
             {
-                Assert.IsTrue(SparqlSpecsHelper.DateTimeEquality(dateTime1, date2));
-                Assert.IsTrue(SparqlSpecsHelper.Equality(dateTime1, date2));
-                Assert.IsTrue(SparqlSpecsHelper.Equality(date2, dateTime1));
-                Assert.IsFalse(SparqlSpecsHelper.Inequality(dateTime1, date2));
-                Assert.IsFalse(SparqlSpecsHelper.Inequality(date2, dateTime1));
+                Assert.True(SparqlSpecsHelper.DateTimeEquality(dateTime1, date2));
+                Assert.True(SparqlSpecsHelper.Equality(dateTime1, date2));
+                Assert.True(SparqlSpecsHelper.Equality(date2, dateTime1));
+                Assert.False(SparqlSpecsHelper.Inequality(dateTime1, date2));
+                Assert.False(SparqlSpecsHelper.Inequality(date2, dateTime1));
             }
             else
             {
-                Assert.IsFalse(SparqlSpecsHelper.DateTimeEquality(dateTime1, date2));
-                Assert.IsFalse(SparqlSpecsHelper.Equality(dateTime1, date2));
-                Assert.IsFalse(SparqlSpecsHelper.Equality(date2, dateTime1));
-                Assert.IsTrue(SparqlSpecsHelper.Inequality(dateTime1, date2));
-                Assert.IsTrue(SparqlSpecsHelper.Inequality(date2, dateTime1));
+                Assert.False(SparqlSpecsHelper.DateTimeEquality(dateTime1, date2));
+                Assert.False(SparqlSpecsHelper.Equality(dateTime1, date2));
+                Assert.False(SparqlSpecsHelper.Equality(date2, dateTime1));
+                Assert.True(SparqlSpecsHelper.Inequality(dateTime1, date2));
+                Assert.True(SparqlSpecsHelper.Inequality(date2, dateTime1));
             }
         }
 
-        [TestCase("2013-07-05T12:00:00", "2013-07-05T12:00:00Z")]
+        [Theory]
+        [InlineData("2013-07-05T12:00:00", "2013-07-05T12:00:00Z")]
         public void SparqlDateTimeIncomparable(String x, String y)
         {
             IGraph g = new Graph();
@@ -130,7 +134,7 @@ namespace VDS.RDF.Query.Expressions
             Assert.Throws<RdfQueryException>(() => SparqlSpecsHelper.DateTimeEquality(dateTime1, dateTime2));
         }
 
-        [Test]
+        [Fact]
         public void SparqlDateIncomparable(String x, String y)
         {
             IGraph g = new Graph();
@@ -140,7 +144,8 @@ namespace VDS.RDF.Query.Expressions
             Assert.Throws<RdfQueryException>(() => SparqlSpecsHelper.DateEquality(dateTime1, dateTime2));
         }
 
-        [TestCase("2006-08-23T09:00:00+01:00", "2006-08-23")]
+        [Theory]
+        [InlineData("2006-08-23T09:00:00+01:00", "2006-08-23")]
         public void SparqlDateTimeMixedIncomparable(String x, String y)
         {
             IGraph g = new Graph();
@@ -150,16 +155,16 @@ namespace VDS.RDF.Query.Expressions
             Assert.Throws<RdfQueryException>(() => SparqlSpecsHelper.DateTimeEquality(dateTime1, date2));
         }
 
-        [Test]
+        [Fact]
         public void SparqlDateTimeInequality()
         {
             IGraph g = new Graph();
             g.LoadFromFile(@"..\\resources\sparql\data-3.ttl");
-            Assert.IsFalse(g.IsEmpty);
+            Assert.False(g.IsEmpty);
 
             SparqlQuery q = this._parser.ParseFromFile(@"..\\resources\sparql\date-2.rq");
             SparqlResultSet actual = g.ExecuteQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(actual);
+            Assert.NotNull(actual);
 
             Console.WriteLine("Actual Results:");
             TestTools.ShowResults(actual);
@@ -170,19 +175,19 @@ namespace VDS.RDF.Query.Expressions
             Console.WriteLine("Expected Results:");
             TestTools.ShowResults(expected);
 
-            Assert.IsTrue(expected.Equals(actual));
+            Assert.True(expected.Equals(actual));
         }
 
-        [Test]
+        [Fact]
         public void SparqlDateTimeGreaterThan()
         {
             IGraph g = new Graph();
             g.LoadFromFile(@"..\\resources\sparql\data-3.ttl");
-            Assert.IsFalse(g.IsEmpty);
+            Assert.False(g.IsEmpty);
 
             SparqlQuery q = this._parser.ParseFromFile(@"..\\resources\sparql\date-3.rq");
             SparqlResultSet actual = g.ExecuteQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(actual);
+            Assert.NotNull(actual);
 
             Console.WriteLine("Actual Results:");
             TestTools.ShowResults(actual);
@@ -193,12 +198,13 @@ namespace VDS.RDF.Query.Expressions
             Console.WriteLine("Expected Results:");
             TestTools.ShowResults(expected);
 
-            Assert.IsTrue(expected.Equals(actual));
+            Assert.True(expected.Equals(actual));
         }
 
-        [TestCase("2013-01-01T03:00:00-08:00", "2013-01-01T12:00:00Z")]
-        [TestCase("2013-01-01T12:00:00", "2013-01-01T12:00:00Z")]
-        [TestCase("2013-01-01T12:00:00", "2013-01-01T12:00:00-08:00")]
+        [Theory]
+        [InlineData("2013-01-01T03:00:00-08:00", "2013-01-01T12:00:00Z")]
+        [InlineData("2013-01-01T12:00:00", "2013-01-01T12:00:00Z")]
+        [InlineData("2013-01-01T12:00:00", "2013-01-01T12:00:00-08:00")]
         public void SparqlDateTimeCompare(String x, String y)
         {
             IGraph g = new Graph();
@@ -208,17 +214,18 @@ namespace VDS.RDF.Query.Expressions
             SparqlOrderingComparer comparer = new SparqlOrderingComparer();
 
             // Expected result is that x < y so return should be -1
-            Assert.AreEqual(-1, comparer.Compare(dateTime1, dateTime2));
+            Assert.Equal(-1, comparer.Compare(dateTime1, dateTime2));
             // Thus inverse should give 1
-            Assert.AreEqual(1, comparer.Compare(dateTime2, dateTime1));
+            Assert.Equal(1, comparer.Compare(dateTime2, dateTime1));
 
             // Also both should compare equal to self
-            Assert.AreEqual(0, comparer.Compare(dateTime1, dateTime1));
-            Assert.AreEqual(0, comparer.Compare(dateTime2, dateTime2));
+            Assert.Equal(0, comparer.Compare(dateTime1, dateTime1));
+            Assert.Equal(0, comparer.Compare(dateTime2, dateTime2));
         }
 
-        [TestCase(new String[] { "2013-01-01T12:00:00Z", "2013-01-01T03:00:00-08:00" }, new String[] { "2013-01-01T03:00:00-08:00", "2013-01-01T12:00:00Z" })]
-        [TestCase(new String[] { "2013-01-01T12:00:00Z", "2013-01-01T12:00:00-08:00" }, new String[] { "2013-01-01T12:00:00Z", "2013-01-01T12:00:00-08:00" })]
+        [Theory]
+        [InlineData(new String[] { "2013-01-01T12:00:00Z", "2013-01-01T03:00:00-08:00" }, new String[] { "2013-01-01T03:00:00-08:00", "2013-01-01T12:00:00Z" })]
+        [InlineData(new String[] { "2013-01-01T12:00:00Z", "2013-01-01T12:00:00-08:00" }, new String[] { "2013-01-01T12:00:00Z", "2013-01-01T12:00:00-08:00" })]
         public void SparqlDateTimeSorting(String[] input, String[] output)
         {
             IGraph g = new Graph();
@@ -233,11 +240,11 @@ namespace VDS.RDF.Query.Expressions
                       .OfType<INode>()
                       .ToList();
 
-            Assert.AreEqual(expected.Count, sorted.Count);
+            Assert.Equal(expected.Count, sorted.Count);
 
             for (int i = 0; i < expected.Count; i++)
             {
-                Assert.AreEqual(expected[i], sorted[i], "Incorrect value at index " + i);
+                Assert.Equal(expected[i], sorted[i]);
             }
         }
     }

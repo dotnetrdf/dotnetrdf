@@ -29,20 +29,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Writing;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Writing
 {
-    [TestFixture]
+
     public class GraphVizTests
     {
-        [Test]
+        [SkippableFact]
         public void WritingGraphViz1()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseGraphViz))
             {
-                Assert.Inconclusive("Test Config marks GraphViz as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks GraphViz as unavailable, test cannot be run");
             }
 
             Graph g = new Graph();
@@ -53,12 +54,12 @@ namespace VDS.RDF.Writing
         }
 
 #if !NO_PROCESS
-        [Test]
+        [SkippableFact]
         public void WritingGraphViz2()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseGraphViz))
             {
-                Assert.Inconclusive("Test Config marks GraphViz as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks GraphViz as unavailable, test cannot be run");
             }
 
             Graph g = new Graph();
@@ -68,12 +69,12 @@ namespace VDS.RDF.Writing
             generator.Generate(g, "WritingGraphViz2.svg", false);
         }
 
-        [Test]
+        [SkippableFact]
         public void WritingGraphViz3()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseGraphViz))
             {
-                Assert.Inconclusive("Test Config marks GraphViz as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks GraphViz as unavailable, test cannot be run");
             }
 
             Graph g = new Graph();

@@ -29,16 +29,16 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Writing
 {
-    [TestFixture]
+
     public class SchemaWriter
     {
-        [Test]
+        [Fact]
         public void WritingHtmlSchemaWriter()
         {
             //Load the Graph from within the Assembly
@@ -51,7 +51,7 @@ namespace VDS.RDF.Writing
             writer.Save(g, "configSchema.html");
         }
 
-        [Test]
+        [Fact]
         public void WritingHtmlSchemaWriterAnonClasses()
         {
             //Create an example Graph
@@ -66,10 +66,10 @@ namespace VDS.RDF.Writing
 
             Console.WriteLine(strWriter.ToString());
 
-            Assert.IsFalse(strWriter.ToString().Contains("type"), "Should not have documented any classes");
+            Assert.False(strWriter.ToString().Contains("type"), "Should not have documented any classes");
         }
 
-        [Test]
+        [Fact]
         public void WritingHtmlSchemaWriterUnionOfRanges()
         {
             //Create an example Graph
@@ -97,8 +97,8 @@ namespace VDS.RDF.Writing
 
             Console.WriteLine(strWriter.ToString());
 
-            Assert.IsTrue(strWriter.ToString().Contains("ex:one"), "Should have documented ex:one as a range");
-            Assert.IsTrue(strWriter.ToString().Contains("ex:two"), "Should have documented ex:two as a range");
+            Assert.True(strWriter.ToString().Contains("ex:one"), "Should have documented ex:one as a range");
+            Assert.True(strWriter.ToString().Contains("ex:two"), "Should have documented ex:two as a range");
         }
     }
 }

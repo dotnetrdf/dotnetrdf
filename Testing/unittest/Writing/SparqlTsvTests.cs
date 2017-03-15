@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
@@ -36,7 +36,7 @@ using VDS.RDF.Writing;
 
 namespace VDS.RDF.Writing
 {
-    [TestFixture]
+
     public class SparqlTsvTests
     {
         private InMemoryDataset _dataset;
@@ -60,12 +60,13 @@ namespace VDS.RDF.Writing
             }
         }
 
-        [TestCase("SELECT * WHERE { ?s a ?type }")]
-        [TestCase("SELECT * WHERE { ?s a ?type . ?s ex:Speed ?speed }")]
-        [TestCase("SELECT * WHERE { ?s a ?type . OPTIONAL { ?s ex:Speed ?speed } }")]
-        [TestCase("SELECT * WHERE { ?s <http://example.org/noSuchThing> ?o }")]
-        [TestCase("SELECT * WHERE { ?s a ?type . OPTIONAL { ?s ex:Speed ?speed } ?s ?p ?o }")]
-        [TestCase("SELECT ?s (ISLITERAL(?o) AS ?LiteralObject) WHERE { ?s ?p ?o }")]
+        [Theory]
+        [InlineData("SELECT * WHERE { ?s a ?type }")]
+        [InlineData("SELECT * WHERE { ?s a ?type . ?s ex:Speed ?speed }")]
+        [InlineData("SELECT * WHERE { ?s a ?type . OPTIONAL { ?s ex:Speed ?speed } }")]
+        [InlineData("SELECT * WHERE { ?s <http://example.org/noSuchThing> ?o }")]
+        [InlineData("SELECT * WHERE { ?s a ?type . OPTIONAL { ?s ex:Speed ?speed } ?s ?p ?o }")]
+        [InlineData("SELECT ?s (ISLITERAL(?o) AS ?LiteralObject) WHERE { ?s ?p ?o }")]
         public void TestTsvRoundTrip(String query)
         {
             this.EnsureTestData();
@@ -75,7 +76,7 @@ namespace VDS.RDF.Writing
             SparqlQuery q = this._parser.ParseFromString(queryString);
 
             SparqlResultSet original = this._processor.ProcessQuery(q) as SparqlResultSet;
-            if (original == null) Assert.Fail("Did not get a SPARQL Result Set as expected");
+            Assert.NotNull(original);
 
             Console.WriteLine("Original Results:");
             TestTools.ShowResults(original);
@@ -91,7 +92,7 @@ namespace VDS.RDF.Writing
             Console.WriteLine("Parsed Results:");
             TestTools.ShowResults(results);
 
-            Assert.AreEqual(original, results, "Result Sets should be equal");
+            Assert.Equal(original, results);
             
         }
     }

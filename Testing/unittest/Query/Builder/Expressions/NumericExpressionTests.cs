@@ -23,7 +23,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Arithmetic;
@@ -32,17 +32,16 @@ using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Builder.Expressions
 {
-    [TestFixture]
+
     public class NumericExpressionTests : SparqlExpressionTestsBase
     {
-        [SetUp]
-        public void Setup()
+        public NumericExpressionTests()
         {
             Left = 10.ToConstantTerm();
             Right = 15.ToConstantTerm();
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowComparingGenericAndNongenericNumericExpressions()
         {
             var left = new NumericExpression(Left);
@@ -57,7 +56,7 @@ namespace VDS.RDF.Query.Builder.Expressions
             AssertExpressionTypeAndCorrectArguments<NotEqualsExpression>(left != right);
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowComparingGenericAndNongenericNumericExpressionsReversed()
         {
             var right = new NumericExpression(Right);
@@ -72,7 +71,7 @@ namespace VDS.RDF.Query.Builder.Expressions
             AssertExpressionTypeAndCorrectArguments<NotEqualsExpression>(left != right);
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowArithmeticOperatorsWithGenericAndNongenericNumericExpressions()
         {
             NumericExpression left = new NumericExpression(Left);
@@ -85,7 +84,7 @@ namespace VDS.RDF.Query.Builder.Expressions
             AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - right);
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowArithmeticOperatorsWithGenericAndNongenericNumericExpressionsReversed()
         {
             NumericExpression left = new NumericExpression(Left);
@@ -98,7 +97,7 @@ namespace VDS.RDF.Query.Builder.Expressions
             AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - right);
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndVariableExpression()
         {
             // given
@@ -113,7 +112,7 @@ namespace VDS.RDF.Query.Builder.Expressions
             AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - right);
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndNumericExpression()
         {
             // given
@@ -128,7 +127,7 @@ namespace VDS.RDF.Query.Builder.Expressions
             AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - right);
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndInteger()
         {
             // given
@@ -146,7 +145,7 @@ namespace VDS.RDF.Query.Builder.Expressions
                 assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowUsingArithmeticOperatorsWithIntegerAndNumericExpression()
         {
             // given
@@ -164,7 +163,7 @@ namespace VDS.RDF.Query.Builder.Expressions
                 assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndLongInteger()
         {
             // given
@@ -182,7 +181,7 @@ namespace VDS.RDF.Query.Builder.Expressions
                 assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowUsingArithmeticOperatorsWithLongIntegerAndNumericExpression()
         {
             // given
@@ -200,7 +199,7 @@ namespace VDS.RDF.Query.Builder.Expressions
                 assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndShortInteger()
         {
             // given
@@ -218,7 +217,7 @@ namespace VDS.RDF.Query.Builder.Expressions
                 assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowUsingArithmeticOperatorsWithShortIntegerAndNumericExpression()
         {
             // given
@@ -236,7 +235,7 @@ namespace VDS.RDF.Query.Builder.Expressions
                 assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndDecimal()
         {
             // given
@@ -254,7 +253,7 @@ namespace VDS.RDF.Query.Builder.Expressions
                 assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowUsingArithmeticOperatorsWithDecimalAndNumericExpression()
         {
             // given
@@ -272,7 +271,7 @@ namespace VDS.RDF.Query.Builder.Expressions
                 assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndDouble()
         {
             // given
@@ -290,7 +289,7 @@ namespace VDS.RDF.Query.Builder.Expressions
                 assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowUsingArithmeticOperatorsWithDoubleAndNumericExpression()
         {
             // given
@@ -308,7 +307,7 @@ namespace VDS.RDF.Query.Builder.Expressions
                 assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndFloat()
         {
             // given
@@ -326,7 +325,7 @@ namespace VDS.RDF.Query.Builder.Expressions
                 assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowUsingArithmeticOperatorsWithFloatAndNumericExpression()
         {
             // given
@@ -344,7 +343,7 @@ namespace VDS.RDF.Query.Builder.Expressions
                 assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndByte()
         {
             // given
@@ -362,7 +361,7 @@ namespace VDS.RDF.Query.Builder.Expressions
                 assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowUsingArithmeticOperatorsWithByteAndNumericExpression()
         {
             // given
@@ -380,7 +379,7 @@ namespace VDS.RDF.Query.Builder.Expressions
                 assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndSignedByte()
         {
             // given
@@ -398,7 +397,7 @@ namespace VDS.RDF.Query.Builder.Expressions
                 assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowUsingArithmeticOperatorsWithSignedByteAndNumericExpression()
         {
             // given

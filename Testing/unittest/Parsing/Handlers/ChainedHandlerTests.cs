@@ -27,14 +27,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Handlers
 {
-    [TestFixture]
+
     public class ChainedHandlerTests
     {
         private void EnsureTestData()
@@ -47,26 +47,26 @@ namespace VDS.RDF.Parsing.Handlers
             }
         }
         
-        [Test]
+        [Fact]
         public void ParsingChainedHandlerBadInstantiation()
         {
             Assert.Throws<ArgumentException>(() => new ChainedHandler(Enumerable.Empty<IRdfHandler>()));
         }
 
-        [Test]
+        [Fact]
         public void ParsingChainedHandlerBadInstantiation2()
         {
             Assert.Throws<ArgumentNullException>(() => new ChainedHandler(null));
         }
 
-        [Test]
+        [Fact]
         public void ParsingChainedHandlerBadInstantiation3()
         {
             GraphHandler h = new GraphHandler(new Graph());
             Assert.Throws<ArgumentException>(() => new ChainedHandler(new IRdfHandler[] { h, h }));
         }
 
-        [Test]
+        [Fact]
         public void ParsingChainedHandlerTwoGraphs()
         {
             EnsureTestData();
@@ -82,11 +82,11 @@ namespace VDS.RDF.Parsing.Handlers
             TurtleParser parser = new TurtleParser();
             parser.Load(handler, "temp.ttl");
 
-            Assert.AreEqual(g.Triples.Count, h.Triples.Count, "Expected same number of Triples");
-            Assert.AreEqual(g, h, "Expected Graphs to be equal");
+            Assert.Equal(g.Triples.Count, h.Triples.Count);
+            Assert.Equal(g, h);
         }
 
-        [Test]
+        [Fact]
         public void ParsingChainedHandlerGraphAndPaging()
         {
             EnsureTestData();
@@ -102,13 +102,13 @@ namespace VDS.RDF.Parsing.Handlers
             TurtleParser parser = new TurtleParser();
             parser.Load(handler, "temp.ttl");
 
-            Assert.AreEqual(101, g.Triples.Count, "Triples should have been limited to 101 (1st Graph)");
-            Assert.AreEqual(100, h.Triples.Count, "Triples should have been limited to 100 (2nd Graph)");
-            Assert.AreNotEqual(g.Triples.Count, h.Triples.Count, "Expected different number of Triples");
-            Assert.AreNotEqual(g, h, "Expected Graphs to not be equal");
+            Assert.Equal(101, g.Triples.Count);
+            Assert.Equal(100, h.Triples.Count);
+            Assert.Equal(g.Triples.Count, h.Triples.Count);
+            Assert.Equal(g, h);
         }
 
-        [Test]
+        [Fact]
         public void ParsingChainedHandlerGraphAndPaging2()
         {
             EnsureTestData();
@@ -124,13 +124,13 @@ namespace VDS.RDF.Parsing.Handlers
             TurtleParser parser = new TurtleParser();
             parser.Load(handler, "temp.ttl");
 
-            Assert.AreEqual(100, g.Triples.Count, "Triples should have been limited to 100 (1st Graph)");
-            Assert.AreEqual(100, h.Triples.Count, "Triples should have been limited to 100 (2nd Graph)");
-            Assert.AreEqual(g.Triples.Count, h.Triples.Count, "Expected same number of Triples");
-            Assert.AreEqual(g, h, "Expected Graphs to be equal");
+            Assert.Equal(100, g.Triples.Count);
+            Assert.Equal(100, h.Triples.Count);
+            Assert.Equal(g.Triples.Count, h.Triples.Count);
+            Assert.Equal(g, h);
         }
         
-        [Test]
+        [Fact]
         public void ParsingChainedHandlerGraphAndCount()
         {
             EnsureTestData();
@@ -145,11 +145,11 @@ namespace VDS.RDF.Parsing.Handlers
             TurtleParser parser = new TurtleParser();
             parser.Load(handler, "temp.ttl");
 
-            Assert.AreEqual(g.Triples.Count, handler2.Count, "Expected Counts to be the same");
+            Assert.Equal(g.Triples.Count, handler2.Count);
  
         }
 
-        [Test]
+        [Fact]
         public void ParsingChainedHandlerGraphAndNull()
         {
             EnsureTestData();

@@ -29,13 +29,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
-    [TestFixture]
+
     public class NTriplesTests
     {
         private void Test(String literal, IRdfWriter writer, IRdfReader parser)
@@ -52,10 +52,10 @@ namespace VDS.RDF.Writing
             IGraph h = new Graph();
             parser.Load(h, new StringReader(strWriter.ToString()));
 
-            Assert.AreEqual(g, h);
+            Assert.Equal(g, h);
         }
 
-        [Test]
+        [Fact]
         public void WritingNTriplesAsciiChars1()
         {
             StringBuilder builder = new StringBuilder();
@@ -67,7 +67,7 @@ namespace VDS.RDF.Writing
             this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Original), new NTriplesParser(NTriplesSyntax.Original));
         }
 
-        [Test]
+        [Fact]
         public void WritingNTriplesAsciiChars2()
         {
             StringBuilder builder = new StringBuilder();
@@ -79,7 +79,7 @@ namespace VDS.RDF.Writing
             this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Rdf11), new NTriplesParser(NTriplesSyntax.Original));
         }
 
-        [Test]
+        [Fact]
         public void WritingNTriplesAsciiChars3()
         {
             StringBuilder builder = new StringBuilder();
@@ -91,7 +91,7 @@ namespace VDS.RDF.Writing
             this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Original), new NTriplesParser(NTriplesSyntax.Rdf11));
         }
 
-        [Test]
+        [Fact]
         public void WritingNTriplesAsciiChars4()
         {
             StringBuilder builder = new StringBuilder();
@@ -103,7 +103,7 @@ namespace VDS.RDF.Writing
             this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Rdf11), new NTriplesParser(NTriplesSyntax.Rdf11));
         }
 
-        [Test]
+        [Fact]
         public void WritingNTriplesNonAsciiChars1()
         {
             StringBuilder builder = new StringBuilder();
@@ -115,7 +115,7 @@ namespace VDS.RDF.Writing
            this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Original), new NTriplesParser(NTriplesSyntax.Original));
         }
 
-        [Test]
+        [Fact]
         public void WritingNTriplesNonAsciiChars2()
         {
             StringBuilder builder = new StringBuilder();
@@ -129,7 +129,7 @@ namespace VDS.RDF.Writing
             );
         }
 
-        [Test]
+        [Fact]
         public void WritingNTriplesNonAsciiChars3()
         {
             StringBuilder builder = new StringBuilder();
@@ -141,7 +141,7 @@ namespace VDS.RDF.Writing
             this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Original), new NTriplesParser(NTriplesSyntax.Rdf11));
         }
 
-        [Test]
+        [Fact]
         public void WritingNTriplesNonAsciiChars4()
         {
             StringBuilder builder = new StringBuilder();
@@ -153,7 +153,7 @@ namespace VDS.RDF.Writing
             this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Rdf11), new NTriplesParser(NTriplesSyntax.Rdf11));
         }
 
-        [Test]
+        [Fact]
         public void WritingNTriplesMixedChars1()
         {
             StringBuilder builder = new StringBuilder();
@@ -166,7 +166,7 @@ namespace VDS.RDF.Writing
             this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Original), new NTriplesParser(NTriplesSyntax.Original));
         }
 
-        [Test]
+        [Fact]
         public void WritingNTriplesMixedChars2()
         {
             StringBuilder builder = new StringBuilder();
@@ -190,7 +190,7 @@ namespace VDS.RDF.Writing
             this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Original), new NTriplesParser(NTriplesSyntax.Original));
         }
 
-        [Test]
+        [Fact]
         public void WritingNTriplesMixedChars3()
         {
             StringBuilder builder = new StringBuilder();
@@ -205,7 +205,7 @@ namespace VDS.RDF.Writing
             );
         }
 
-        [Test]
+        [Fact]
         public void WritingNTriplesMixedChars4()
         {
             StringBuilder builder = new StringBuilder();
@@ -231,7 +231,7 @@ namespace VDS.RDF.Writing
             );
         }
 
-        [Test]
+        [Fact]
         public void WritingNTriplesMixedChars5()
         {
             StringBuilder builder = new StringBuilder();
@@ -244,7 +244,7 @@ namespace VDS.RDF.Writing
             this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Original), new NTriplesParser(NTriplesSyntax.Rdf11));
         }
 
-        [Test]
+        [Fact]
         public void WritingNTriplesMixedChars6()
         {
             StringBuilder builder = new StringBuilder();
@@ -268,7 +268,7 @@ namespace VDS.RDF.Writing
             this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Original), new NTriplesParser(NTriplesSyntax.Rdf11));
         }
 
-        [Test]
+        [Fact]
         public void WritingNTriplesMixedChars7()
         {
             StringBuilder builder = new StringBuilder();
@@ -281,7 +281,7 @@ namespace VDS.RDF.Writing
             this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Rdf11), new NTriplesParser(NTriplesSyntax.Rdf11));
         }
 
-        [Test]
+        [Fact]
         public void WritingNTriplesMixedChars8()
         {
             StringBuilder builder = new StringBuilder();
@@ -305,7 +305,7 @@ namespace VDS.RDF.Writing
             this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Rdf11), new NTriplesParser(NTriplesSyntax.Rdf11));
         }
 
-        [Test]
+        [Fact]
         public void WritingNTriplesVsTurtleNonAsciiCharsSpeed()
         {
             StringBuilder builder = new StringBuilder();
@@ -359,16 +359,16 @@ namespace VDS.RDF.Writing
             TimeSpan turtleTime = timer.Elapsed;
 
             // Compare Speed
-            Assert.IsTrue(turtleTime.CompareTo(ntriplesTime) == -1);
+            Assert.True(turtleTime.CompareTo(ntriplesTime) == -1);
         }
 
         private void TestBNodeFormatting(IBlankNode b, INodeFormatter formatter, String expected)
         {
             String actual = formatter.Format(b);
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [Test]
+        [Fact]
         public void WritingNTriplesBlankNodeIDs1()
         {
             NTriplesFormatter formatter = new NTriplesFormatter(NTriplesSyntax.Original);
@@ -394,7 +394,7 @@ namespace VDS.RDF.Writing
             this.TestBNodeFormatting(b, formatter, "_:autos5");
         }
 
-        [Test]
+        [Fact]
         public void WritingNTriplesBlankNodeIDs2()
         {
             NTriplesFormatter formatter = new NTriplesFormatter(NTriplesSyntax.Rdf11);

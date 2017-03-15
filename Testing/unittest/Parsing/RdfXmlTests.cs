@@ -26,17 +26,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing
 {
-    [TestFixture]
+
 	public class RdfXmlTests
 	{
-        [Test]
+        [Fact]
         public void ParsingRdfXmlAmpersands()
         {
             List<IRdfWriter> writers = new List<IRdfWriter>()
@@ -58,13 +58,13 @@ namespace VDS.RDF.Parsing
                     Console.WriteLine(temp);
                     Graph h = new Graph();
                     StringParser.Parse(h, temp);
-                    Assert.AreEqual(g, h, "Graphs should be equal");
+                    Assert.Equal(g, h);
                     Console.WriteLine();
             }
         }
 
 #if !NO_XMLDOM
-        [Test]
+        [Fact]
         public void ParsingRdfXmlEmptyStrings()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
@@ -91,7 +91,7 @@ namespace VDS.RDF.Parsing
                 Console.WriteLine(t.ToString(formatter));
             }
 
-            Assert.AreEqual(g, h, "Graphs should be equal");
+            Assert.Equal(g, h);
         }
 #endif
 
@@ -108,10 +108,11 @@ namespace VDS.RDF.Parsing
         }
 
 #if !NO_XMLDOM
-        [TestCase(RdfXmlParserMode.DOM, "resources\\sequence.rdf")]
-        [TestCase(RdfXmlParserMode.Streaming, "resources\\sequence.rdf")]
-        [TestCase(RdfXmlParserMode.DOM, "resources\\sequence2.rdf")]
-        [TestCase(RdfXmlParserMode.Streaming, "resources\\sequence2.rdf")]
+        [Theory]
+        [InlineData(RdfXmlParserMode.DOM, "resources\\sequence.rdf")]
+        [InlineData(RdfXmlParserMode.Streaming, "resources\\sequence.rdf")]
+        [InlineData(RdfXmlParserMode.DOM, "resources\\sequence2.rdf")]
+        [InlineData(RdfXmlParserMode.Streaming, "resources\\sequence2.rdf")]
         public void ParsingRdfXml(RdfXmlParserMode parsingMode, string path)
         {
             RdfXmlParser parser = new RdfXmlParser(parsingMode);
@@ -120,7 +121,7 @@ namespace VDS.RDF.Parsing
 #endif
 
 #if !NO_XMLDOM
-        [Test]
+        [Fact]
         public void ParsingRdfXmlWithUrlEscapedNodes()
         {
             //Originally submitted by Rob Styles as part of CORE-251, modified somewhat during debugging process
@@ -137,21 +138,21 @@ namespace VDS.RDF.Parsing
             Uri encoded = new Uri("http://example.com/some%40encoded%2FUri");
             Uri unencoded = new Uri("http://example.com/some@encoded/Uri");
 
-            Assert.IsFalse(EqualityHelper.AreUrisEqual(encoded, unencoded), "URIs should not be equivalent because %40 encodes a reserved character and per RFC 3986 decoding this can change the meaning of the URI");
+            Assert.False(EqualityHelper.AreUrisEqual(encoded, unencoded), "URIs should not be equivalent because %40 encodes a reserved character and per RFC 3986 decoding this can change the meaning of the URI");
 
             IUriNode encodedNode = g.GetUriNode(encoded);
-            Assert.IsNotNull(encodedNode, "The encoded node should be returned by its encoded URI");
+            Assert.NotNull(encodedNode);
             IUriNode unencodedNode = g.GetUriNode(unencoded);
-            Assert.IsNotNull(unencodedNode, "The unencoded node should be returned by its unencoded URI");
+            Assert.NotNull(unencodedNode);
 
             IUriNode pred = g.CreateUriNode(new Uri("http://example.org/schema/encoded"));
-            Assert.IsTrue(g.ContainsTriple(new Triple(encodedNode, pred, g.CreateLiteralNode("true"))), "The encoded node should have the property 'true' from the file");
-            Assert.IsTrue(g.ContainsTriple(new Triple(unencodedNode, pred, g.CreateLiteralNode("false"))), "The unencoded node should have the property 'false' from the file");
+            Assert.True(g.ContainsTriple(new Triple(encodedNode, pred, g.CreateLiteralNode("true"))), "The encoded node should have the property 'true' from the file");
+            Assert.True(g.ContainsTriple(new Triple(unencodedNode, pred, g.CreateLiteralNode("false"))), "The unencoded node should have the property 'false' from the file");
         }
 #endif
 
 #if !NO_XMLDOM
-        [Test]
+        [Fact]
         public void ParsingRdfXmlWithUrlEscapedNodes2()
         {
             //Originally submitted by Rob Styles as part of CORE-251, modified somewhat during debugging process
@@ -168,21 +169,21 @@ namespace VDS.RDF.Parsing
             Uri encoded = new Uri("http://example.com/some%20encoded%2FUri");
             Uri unencoded = new Uri("http://example.com/some encoded/Uri");
 
-            Assert.IsTrue(EqualityHelper.AreUrisEqual(encoded, unencoded), "URIs should be equivalent");
+            Assert.True(EqualityHelper.AreUrisEqual(encoded, unencoded), "URIs should be equivalent");
 
             IUriNode encodedNode = g.GetUriNode(encoded);
-            Assert.IsNotNull(encodedNode, "The encoded node should be returned by its encoded URI");
+            Assert.NotNull(encodedNode);
             IUriNode unencodedNode = g.GetUriNode(unencoded);
-            Assert.IsNotNull(unencodedNode, "The unencoded node should be returned by its unencoded URI");
+            Assert.NotNull(unencodedNode);
 
             IUriNode pred = g.CreateUriNode(new Uri("http://example.org/schema/encoded"));
-            Assert.IsTrue(g.ContainsTriple(new Triple(encodedNode, pred, g.CreateLiteralNode("true"))), "The encoded node should have the property 'true' from the file");
-            Assert.IsTrue(g.ContainsTriple(new Triple(unencodedNode, pred, g.CreateLiteralNode("false"))), "The unencoded node should have the property 'false' from the file");
+            Assert.True(g.ContainsTriple(new Triple(encodedNode, pred, g.CreateLiteralNode("true"))), "The encoded node should have the property 'true' from the file");
+            Assert.True(g.ContainsTriple(new Triple(unencodedNode, pred, g.CreateLiteralNode("false"))), "The unencoded node should have the property 'false' from the file");
 
         }
 #endif
 
-        [Test]
+        [Fact]
         public void ParsingRdfXmlPropertyInDefaultNamespaceBad()
         {
             Graph g = new Graph();
@@ -191,64 +192,64 @@ namespace VDS.RDF.Parsing
             Assert.Throws<RdfParseException>(() => g.LoadFromFile("resources\\rdfxml-bad-property.rdf", parser));
         }
 
-        [Test]
+        [Fact]
         public void ParsingRdfXmlPropertyInDefaultNamespaceGood()
         {
             Graph g = new Graph();
             RdfXmlParser parser = new RdfXmlParser();
             g.LoadFromFile("resources\\rdfxml-good-property.rdf", parser);
 
-            Assert.IsFalse(g.IsEmpty);
-            Assert.AreEqual(1, g.Triples.Count);
+            Assert.False(g.IsEmpty);
+            Assert.Equal(1, g.Triples.Count);
 
             IUriNode property = g.Triples.First().Predicate as IUriNode;
-            Assert.AreEqual("default", property.Uri.Host);
-            Assert.AreEqual("good", property.Uri.Segments[1]);
+            Assert.Equal("default", property.Uri.Host);
+            Assert.Equal("good", property.Uri.Segments[1]);
         }
 
 #if !NO_XMLDOM
-        [Test]
+        [Fact]
         public void ParsingRdfXmlElementUsesXmlNamespaceDom()
         {
             Graph g = new Graph();
             g.LoadFromFile("resources\\xml-prop.rdf", new RdfXmlParser(RdfXmlParserMode.DOM));
-            Assert.IsFalse(g.IsEmpty);
-            Assert.AreEqual(1, g.Triples.Count);
+            Assert.False(g.IsEmpty);
+            Assert.Equal(1, g.Triples.Count);
         }
 #endif
 
-        [Test]
+        [Fact]
         public void ParsingRdfXmlElementUsesXmlNamespaceStreaming()
         {
             Graph g = new Graph();
             g.LoadFromFile("resources\\xml-prop.rdf", new RdfXmlParser(RdfXmlParserMode.Streaming));
-            Assert.IsFalse(g.IsEmpty);
-            Assert.AreEqual(1, g.Triples.Count);
+            Assert.False(g.IsEmpty);
+            Assert.Equal(1, g.Triples.Count);
         }
 
 #if !NO_XMLDOM
-        [Test]
+        [Fact]
         public void ParsingRdfXmlElementUsesUndeclaredNamespaceDom()
         {
             Graph g = new Graph();
             g.LoadFromFile(@"..\\resources\missing-namespace-declarations.rdf", new RdfXmlParser(RdfXmlParserMode.DOM));
-            Assert.IsFalse(g.IsEmpty);
-            Assert.AreEqual(9, g.Triples.Count);
+            Assert.False(g.IsEmpty);
+            Assert.Equal(9, g.Triples.Count);
         }
 #endif
 
-        [Test]
+        [Fact]
         public void ParsingRdfXmlElementUsesUndeclaredNamespaceStreaming()
         {
             Graph g = new Graph();
             g.LoadFromFile(@"..\\resources\missing-namespace-declarations.rdf", new RdfXmlParser(RdfXmlParserMode.Streaming));
-            Assert.IsFalse(g.IsEmpty);
-            Assert.AreEqual(9, g.Triples.Count);
+            Assert.False(g.IsEmpty);
+            Assert.Equal(9, g.Triples.Count);
         }
 
 #if !NO_COMPRESSION
 
-        [Test]
+        [Fact]
         public void ParsingRdfXmlStreamingDoesNotExhaustMemory()
         {
             IGraph g = new Graph();
@@ -260,44 +261,44 @@ namespace VDS.RDF.Parsing
             GZippedRdfXmlParser parser = new GZippedRdfXmlParser(RdfXmlParserMode.Streaming);
             parser.Load(handler, @"..\\resources\oom.rdf.gz");
 
-            Assert.IsFalse(g.IsEmpty);
-            Assert.AreEqual(1000, counter.Count);
+            Assert.False(g.IsEmpty);
+            Assert.Equal(1000, counter.Count);
             // Note that the source produces some duplicate triples so triples in the graph will be at most 1000
-            Assert.IsTrue(g.Triples.Count <= 1000);
+            Assert.True(g.Triples.Count <= 1000);
         }
 
 #endif
 
-        [Test]
+        [Fact]
         public void ParsingRdfXmlStackOverflow1()
         {
             IGraph g = new Graph();
             RdfXmlParser parser = new RdfXmlParser();
             parser.Load(g, @"..\\resources\cogapp.rdf");
 
-            Assert.IsFalse(g.IsEmpty);
-            Assert.AreEqual(9358, g.Triples.Count);
+            Assert.False(g.IsEmpty);
+            Assert.Equal(9358, g.Triples.Count);
         }
 
-        [Test]
+        [Fact]
         public void ParsingRdfXmlStackOverflow2()
         {
             TestTools.RunAtDepth(100, this.ParsingRdfXmlStackOverflow1);
         }
 
-        [Test]
+        [Fact]
         public void ParsingRdfXmlStackOverflow3()
         {
             TestTools.RunAtDepth(1000, this.ParsingRdfXmlStackOverflow1);
         }
 
-        [Test,Ignore("potentially risky test")]
+        [Fact(Skip="potentially risky test")]
         public void ParsingRdfXmlStackOverflow4()
         {
             TestTools.RunAtDepth(5000, this.ParsingRdfXmlStackOverflow1);
         }
 
-        [Test]
+        [Fact]
         public void ParsingRdfXmlResetDefaultNamespace()
         {
             IGraph g = new Graph();
@@ -308,11 +309,11 @@ namespace VDS.RDF.Parsing
             var p2Node = g.CreateUriNode(UriFactory.Create("http://example.org/ns/a#p2"));
             var triples = g.GetTriplesWithSubject(resourceNode).ToList();
 
-            Assert.IsFalse(g.IsEmpty);
-            Assert.AreEqual(3, triples.Count);
-            Assert.IsNotNull(p2Node);
-            Assert.AreEqual(1, g.GetTriplesWithSubjectPredicate(resourceNode, p1Node).Count());
-            Assert.AreEqual(1, g.GetTriplesWithSubjectPredicate(resourceNode, p2Node).Count());
+            Assert.False(g.IsEmpty);
+            Assert.Equal(3, triples.Count);
+            Assert.NotNull(p2Node);
+            Assert.Equal(1, g.GetTriplesWithSubjectPredicate(resourceNode, p1Node).Count());
+            Assert.Equal(1, g.GetTriplesWithSubjectPredicate(resourceNode, p2Node).Count());
         }
 	}
 }

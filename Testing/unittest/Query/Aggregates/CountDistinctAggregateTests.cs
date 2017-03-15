@@ -24,16 +24,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Query.Aggregates.Sparql;
 using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Aggregates
 {
-    [TestFixture]
+
     public class CountDistinctAggregateTests
     {
-        [Test]
+        [Fact]
         public void SparqlCountDistinctWhenToStringCalled()
         {
             // given
@@ -43,10 +43,10 @@ namespace VDS.RDF.Query.Aggregates
             string aggregateString = aggregate.ToString();
 
             // then
-            Assert.AreEqual("COUNT(DISTINCT ?var)", aggregateString);
+            Assert.Equal("COUNT(DISTINCT ?var)", aggregateString);
         }
 
-        [Test]
+        [Fact]
         public void SparqlCountDistinctHasDistinctModifier()
         {
             // given
@@ -57,9 +57,9 @@ namespace VDS.RDF.Query.Aggregates
             var arguments = aggregate.Arguments.ToArray();
 
             // then
-            Assert.AreEqual(2, arguments.Length);
-            Assert.IsTrue(arguments[0] is DistinctModifier);
-            Assert.AreSame(term, arguments[1]);
+            Assert.Equal(2, arguments.Length);
+            Assert.True(arguments[0] is DistinctModifier);
+            Assert.Same(term, arguments[1]);
         }
     }
 }
