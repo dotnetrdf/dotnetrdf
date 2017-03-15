@@ -2,6 +2,8 @@ branches:
   only:
     - netcore-reorg
 
+image: Visual Studio 2017
+
 install:
   - choco install gitversion.portable -pre -y
 
