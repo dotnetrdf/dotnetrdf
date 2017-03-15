@@ -97,6 +97,10 @@
     <Compile Remove="Compatibility\**\*.cs" />
   </ItemGroup>
 
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net40-client' ">
+    <DefineConstants>$(DefineConstants);NET40;NO_WEB</DefineConstants>
+  </PropertyGroup>
+  
   <ItemGroup Condition=" '$(TargetFramework)' == 'net40-client' ">
     <Compile Remove="Compatibility\Core\*.cs;Compatibility\Portable\**\*.cs" />
   </ItemGroup>
