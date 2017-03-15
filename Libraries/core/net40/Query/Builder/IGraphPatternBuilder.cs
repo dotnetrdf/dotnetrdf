@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Adds a FILTER to the SPARQL query or graph pattern
         /// </summary>
-        IGraphPatternBuilder Filter(Func<ExpressionBuilder, BooleanExpression> expr);
+        IGraphPatternBuilder Filter(Func<INonAggregateExpressionBuilder, BooleanExpression> expr);
         /// <summary>
         /// Adds a FILTER expression to the SPARQL query or graph pattern
         /// </summary>
@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Adds a BIND variable assignment to the graph pattern
         /// </summary>
-        IAssignmentVariableNamePart<IGraphPatternBuilder> Bind(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression);
+        IAssignmentVariableNamePart<IGraphPatternBuilder> Bind(Func<INonAggregateExpressionBuilder, SparqlExpression> buildAssignmentExpression);
         /// <summary>
         /// Addsa "normal" child graph pattern
         /// </summary>

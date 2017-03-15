@@ -3,7 +3,7 @@ dotNetRDF is free and open source software licensed under the MIT License
 
 -----------------------------------------------------------------------------
 
-Copyright (c) 2009-2013 dotNetRDF Project (dotnetrdf-developer@lists.sf.net)
+Copyright (c) 2009-2017 dotNetRDF Project
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,21 +31,19 @@ using VDS.RDF.Query.Expressions.Functions.Sparql.Set;
 namespace VDS.RDF.Query.Builder.Expressions
 {
     /// <summary>
-    /// Represents a SPARQL expression (variable, function, operator or term)
+    /// Represents a SPARQL expression which is not an aggregate
     /// </summary>
-#pragma warning disable 660,661
-    public abstract class SparqlExpression
+#pragma warning disable 660, 661
+    public abstract class SparqlExpression : PrimaryExpression<ISparqlExpression>
 #pragma warning restore 660,661
     {
-        internal SparqlExpression(ISparqlExpression expression)
-        {
-            Expression = expression;
-        }
-
         /// <summary>
-        /// The undelrying expression
+        /// Initializes a new instance of the <see cref="SparqlExpression"/> class.
         /// </summary>
-        public ISparqlExpression Expression { get; set; }
+        /// <param name="expression">The expression.</param>
+        protected SparqlExpression(ISparqlExpression expression) : base(expression)
+        {
+        }
 
         /// <summary>
         /// Creates a call to the IN function
