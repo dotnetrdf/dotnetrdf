@@ -258,7 +258,7 @@ namespace VDS.RDF.Nodes
             }
             else
             {
-                //Create the offset
+                // Create the offset
                 DateTimeOffset offset;
                 this._offsetValue = DateTimeOffset.TryParse(this.Value, null, DateTimeStyles.AssumeUniversal, out offset)
                                         ? offset

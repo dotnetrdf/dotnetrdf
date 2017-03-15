@@ -51,7 +51,7 @@ namespace VDS.RDF.Web.Configuration.Resource
             INode datasetNode = ConfigurationLoader.GetConfigurationNode(config, objNode, config.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingDataset)));
             if (datasetNode == null) throw new DotNetRdfConfigurationException("Unable to load Dataset Handler Configuration as there is no value given for the required dnr:usingDataset property");
 
-            //Load the Dataset
+            // Load the Dataset
             Object temp = ConfigurationLoader.LoadObject(config, datasetNode);
             if (temp is ISparqlDataset)
             {

@@ -66,7 +66,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                     SparqlResultSet results = new SparqlResultSet();
                     parser.Load(results, new StreamReader(response.GetResponseStream()));
 
-                    //Expect a boolean result set
+                    // Expect a boolean result set
                     return results.Result;
                 }
             }
@@ -107,7 +107,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                                 SparqlResultSet results = new SparqlResultSet();
                                 parser.Load(results, new StreamReader(response.GetResponseStream()));
 
-                                //Expect a boolean result set
+                                // Expect a boolean result set
                                 callback(results.Result, state);
                             }
                         }

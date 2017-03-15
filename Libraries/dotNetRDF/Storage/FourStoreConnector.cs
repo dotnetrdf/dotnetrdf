@@ -75,7 +75,7 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public FourStoreConnector(String baseUri)
         {
-            //Determine the appropriate actual Base Uri
+            // Determine the appropriate actual Base Uri
             if (baseUri.EndsWith("sparql/"))
             {
                 this._baseUri = baseUri.Substring(0, baseUri.IndexOf("sparql/"));
@@ -285,7 +285,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                //Set up the Request
+                // Set up the Request
                 HttpWebRequest request;
                 if (g.BaseUri != null)
                 {
@@ -299,17 +299,17 @@ namespace VDS.RDF.Storage
                 request.ContentType = MimeTypesHelper.Turtle[0];
                 request = base.ApplyRequestOptions(request);
 
-                //Write the Graph as Turtle to the Request Stream
+                // Write the Graph as Turtle to the Request Stream
                 CompressingTurtleWriter writer = new CompressingTurtleWriter(WriterCompressionLevel.High);
                 writer.Save(g, new StreamWriter(request.GetRequestStream()));
 
                 Tools.HttpDebugRequest(request);
 
-                //Make the Request
+                // Make the Request
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
-                    //If we get here then it was OK
+                    // If we get here then it was OK
                     response.Close();
                 }
 
@@ -370,7 +370,7 @@ namespace VDS.RDF.Storage
                     {
                         if (removals.Any())
                         {
-                            //Build up the DELETE command and execute
+                            // Build up the DELETE command and execute
                             delete.AppendLine("DELETE DATA");
                             delete.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
                             foreach (Triple t in removals)
@@ -386,7 +386,7 @@ namespace VDS.RDF.Storage
                     {
                         if (additions.Any())
                         {
-                            //Build up the INSERT command and execute
+                            // Build up the INSERT command and execute
                             insert.AppendLine("INSERT DATA");
                             insert.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
                             foreach (Triple t in additions)
@@ -397,7 +397,7 @@ namespace VDS.RDF.Storage
                         }
                     }
 
-                    //Use Update() method to send the updates
+                    // Use Update() method to send the updates
                     if (delete.Length > 0)
                     {
                         if (insert.Length > 0)
@@ -456,7 +456,7 @@ namespace VDS.RDF.Storage
             try
             {
 #if !NO_PROXY
-                //Ensure Proxy Settings have been taken from the class
+                // Ensure Proxy Settings have been taken from the class
                 this._endpoint.Proxy = this.Proxy;
                 this._endpoint.UseCredentialsForProxy = false;
 #endif
@@ -465,16 +465,16 @@ namespace VDS.RDF.Storage
                 StreamReader data = new StreamReader(response.GetResponseStream());
                 try
                 {
-                    //Is the Content Type referring to a Sparql Result Set format?
+                    // Is the Content Type referring to a Sparql Result Set format?
                     ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(response.ContentType);
                     resreader.Load(resultsHandler, data);
                     response.Close();
                 }
                 catch (RdfParserSelectionException)
                 {
-                    //If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
+                    // If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
 
-                    //Is the Content Type referring to a RDF format?
+                    // Is the Content Type referring to a RDF format?
                     IRdfReader rdfreader = MimeTypesHelper.GetParser(response.ContentType);
                     rdfreader.Load(rdfHandler, data);
                     response.Close();
@@ -510,7 +510,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                //Set up the Request
+                // Set up the Request
                 HttpWebRequest request;
                 if (!graphUri.Equals(String.Empty))
                 {
@@ -525,7 +525,7 @@ namespace VDS.RDF.Storage
 
                 Tools.HttpDebugRequest(request);
 
-                //Make the Request
+                // Make the Request
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
 
@@ -533,7 +533,7 @@ namespace VDS.RDF.Storage
                     response.Close();
                 }
 
-                //If we get here then it's OK
+                // If we get here then it's OK
             }
             catch (WebException webEx)
             {
@@ -598,7 +598,7 @@ namespace VDS.RDF.Storage
                 /// <param name="state">State to pass to the callback</param>
         public override void SaveGraph(IGraph g, AsyncStorageCallback callback, object state)
         {
-            //Set up the Request
+            // Set up the Request
             HttpWebRequest request;
             if (g.BaseUri != null)
             {
@@ -612,7 +612,7 @@ namespace VDS.RDF.Storage
             request.ContentType = MimeTypesHelper.Turtle[0];
             request = base.ApplyRequestOptions(request);
 
-            //Write the Graph as Turtle to the Request Stream
+            // Write the Graph as Turtle to the Request Stream
             CompressingTurtleWriter writer = new CompressingTurtleWriter(WriterCompressionLevel.High);
             this.SaveGraphAsync(request, writer, g, callback, state);
         }
@@ -666,7 +666,7 @@ namespace VDS.RDF.Storage
                     {
                         if (removals.Any())
                         {
-                            //Build up the DELETE command and execute
+                            // Build up the DELETE command and execute
                             delete.AppendLine("DELETE DATA");
                             delete.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
                             foreach (Triple t in removals)
@@ -682,7 +682,7 @@ namespace VDS.RDF.Storage
                     {
                         if (additions.Any())
                         {
-                            //Build up the INSERT command and execute
+                            // Build up the INSERT command and execute
                             insert.AppendLine("INSERT DATA");
                             insert.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
                             foreach (Triple t in additions)
@@ -693,7 +693,7 @@ namespace VDS.RDF.Storage
                         }
                     }
 
-                    //Use Update() method to send the updates
+                    // Use Update() method to send the updates
                     if (delete.Length > 0)
                     {
                         if (insert.Length > 0)
@@ -720,7 +720,7 @@ namespace VDS.RDF.Storage
                     }
                     else
                     {
-                        //Nothing to do
+                        // Nothing to do
                         callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri()), state);
                     }
                 }
@@ -739,7 +739,7 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback</param>
         public override void DeleteGraph(string graphUri, AsyncStorageCallback callback, object state)
         {
-            //Set up the Request
+            // Set up the Request
             HttpWebRequest request;
             if (!graphUri.Equals(String.Empty))
             {
@@ -810,7 +810,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                //First off parse the Query to see what kind of query it is
+                // First off parse the Query to see what kind of query it is
                 SparqlQuery q;
                 try
                 {
@@ -827,10 +827,10 @@ namespace VDS.RDF.Storage
                     return;
                 }
 
-                //Now select the Accept Header based on the query type
+                // Now select the Accept Header based on the query type
                 String accept = (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask) ? MimeTypesHelper.HttpSparqlAcceptHeader : MimeTypesHelper.HttpAcceptHeader;
 
-                //Create the Request, for simplicity async requests are always POST
+                // Create the Request, for simplicity async requests are always POST
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._endpoint.Uri);
                 request.Accept = accept;
                 request.Method = "POST";
@@ -853,7 +853,7 @@ namespace VDS.RDF.Storage
 
                         request.BeginGetResponse(r2 =>
                         {
-                            //Get the Response and process based on the Content Type
+                            // Get the Response and process based on the Content Type
                             try
                             {
                                 HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
@@ -862,14 +862,14 @@ namespace VDS.RDF.Storage
                                 String ctype = response.ContentType;
                                 if (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask)
                                 {
-                                    //ASK/SELECT should return SPARQL Results
+                                    // ASK/SELECT should return SPARQL Results
                                     ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, q.QueryType == SparqlQueryType.Ask);
                                     resreader.Load(resultsHandler, data);
                                     response.Close();
                                 }
                                 else
                                 {
-                                    //CONSTRUCT/DESCRIBE should return a Graph
+                                    // CONSTRUCT/DESCRIBE should return a Graph
                                     IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
                                     rdfreader.Load(rdfHandler, data);
                                     response.Close();
@@ -911,7 +911,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         public override void Dispose()
         {
-            //No Dispose actions needed
+            // No Dispose actions needed
         }
 
         /// <summary>

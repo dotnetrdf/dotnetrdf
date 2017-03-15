@@ -94,24 +94,24 @@ namespace VDS.RDF.Query
                 {
                     if (Options.QueryExecutionTimeout == 0 || (this._query.Timeout <= Options.QueryExecutionTimeout && Options.QueryExecutionTimeout > 0))
                     {
-                        //Query Timeout is used provided it is less than global timeout unless global timeout is zero
+                        // Query Timeout is used provided it is less than global timeout unless global timeout is zero
                         this._timeout = this._query.Timeout;
                     }
                     else
                     {
-                        //Query Timeout cannot be set higher than global timeout
+                        // Query Timeout cannot be set higher than global timeout
                         this._timeout = Options.QueryExecutionTimeout;
                     }
                 }
                 else
                 {
-                    //If Query Timeout set to zero (i.e. no timeout) then global timeout is used
+                    // If Query Timeout set to zero (i.e. no timeout) then global timeout is used
                     this._timeout = Options.QueryExecutionTimeout;
                 }
             }
             else
             {
-                //If no query then global timeout is used
+                // If no query then global timeout is used
                 this._timeout = Options.QueryExecutionTimeout;
             }
         }
@@ -212,8 +212,8 @@ namespace VDS.RDF.Query
         ///// <summary>
         ///// Gets/Sets whether additional checks should be made during evaluation
         ///// </summary>
-        //public bool RigorousEvaluation
-        //{
+        // public bool RigorousEvaluation
+        // {
         //    get
         //    {
         //        return this._rigorous;
@@ -222,7 +222,7 @@ namespace VDS.RDF.Query
         //    {
         //        this._rigorous = value;
         //    }
-        //}
+        // }
 
         /// <summary>
         /// Starts the Execution Timer

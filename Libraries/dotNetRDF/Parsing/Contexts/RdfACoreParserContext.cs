@@ -73,7 +73,7 @@ namespace VDS.RDF.Parsing.Contexts
             this._traceParsing = traceParsing;
             this._language = language;
 
-            //Set up the Event Queue
+            // Set up the Event Queue
             IEventGenerator<IRdfAEvent> generator = this._language.GetEventGenerator(reader);
             if (generator is IJitEventGenerator<IRdfAEvent>)
             {
@@ -86,7 +86,7 @@ namespace VDS.RDF.Parsing.Contexts
             }
             this._events = new DualEventQueue<IRdfAEvent>(this._events);
 
-            //Setup final things
+            // Setup final things
             this._baseUri = new NestedReference<Uri>((this._language.InitialBaseUri != null ? this._language.InitialBaseUri : this._handler.GetBaseUri()));
             this._defaultVocabUri = new NestedReference<Uri>(this._language.DefaultVocabularyUri);
         }

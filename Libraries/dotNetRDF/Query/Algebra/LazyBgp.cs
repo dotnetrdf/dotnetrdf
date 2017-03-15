@@ -110,14 +110,14 @@ namespace VDS.RDF.Query.Algebra
             BaseMultiset results = null;
             int origRequired = this._requiredResults;
 
-            //May need to detect the actual amount of required results if not specified at instantation
+            // May need to detect the actual amount of required results if not specified at instantation
             if (this._requiredResults < 0)
             {
                 if (context.Query != null)
                 {
                     if (context.Query.HasDistinctModifier || (context.Query.OrderBy != null && !context.Query.IsOptimisableOrderBy) || context.Query.GroupBy != null || context.Query.Having != null || context.Query.Bindings != null)
                     {
-                        //If there's an DISTINCT/ORDER BY/GROUP BY/HAVING/BINDINGS present then can't do Lazy evaluation
+                        // If there's an DISTINCT/ORDER BY/GROUP BY/HAVING/BINDINGS present then can't do Lazy evaluation
                         this._requiredResults = -1;
                     }
                     else
@@ -126,17 +126,17 @@ namespace VDS.RDF.Query.Algebra
                         int offset = context.Query.Offset;
                         if (limit >= 0 && offset >= 0)
                         {
-                            //If there is a Limit and Offset specified then the required results is the LIMIT+OFFSET
+                            // If there is a Limit and Offset specified then the required results is the LIMIT+OFFSET
                             this._requiredResults = limit + offset;
                         }
                         else if (limit >= 0)
                         {
-                            //If there is just a Limit specified then the required results is the LIMIT
+                            // If there is just a Limit specified then the required results is the LIMIT
                             this._requiredResults = limit;
                         }
                         else
                         {
-                            //In any other case required results is everything i.e. -1
+                            // In any other case required results is everything i.e. -1
                             this._requiredResults = -1;
                         }
                     }
@@ -172,12 +172,12 @@ namespace VDS.RDF.Query.Algebra
 
         private BaseMultiset StreamingEvaluate(SparqlEvaluationContext context, int pattern, out bool halt)
         {
-            //Remember to check for Timeouts during Lazy Evaluation
+            // Remember to check for Timeouts during Lazy Evaluation
             context.CheckTimeout();
 
             halt = false;
 
-            //Handle Empty BGPs
+            // Handle Empty BGPs
             if (pattern == 0 && this._triplePatterns.Count == 0)
             {
                 context.OutputMultiset = new IdentityMultiset();
@@ -186,31 +186,31 @@ namespace VDS.RDF.Query.Algebra
 
             BaseMultiset initialInput, localOutput, results = null;
 
-            //Determine whether the Pattern modifies the existing Input rather than joining to it
+            // Determine whether the Pattern modifies the existing Input rather than joining to it
             bool modifies = (this._triplePatterns[pattern].PatternType == TriplePatternType.Filter);
             bool extended = (pattern > 0 && this._triplePatterns[pattern - 1].PatternType == TriplePatternType.BindAssignment);
             bool modified = (pattern > 0 && this._triplePatterns[pattern - 1].PatternType == TriplePatternType.Filter);
 
-            //Set up the Input and Output Multiset appropriately
+            // Set up the Input and Output Multiset appropriately
             switch (pattern)
             {
                 case 0:
-                    //Input is as given and Output is new empty multiset
+                    // Input is as given and Output is new empty multiset
                     if (!modifies)
                     {
                         initialInput = context.InputMultiset;
                     }
                     else
                     {
-                        //If the Pattern will modify the Input and is the first thing in the BGP then it actually modifies a new empty input
-                        //This takes care of FILTERs being out of scope
+                        // If the Pattern will modify the Input and is the first thing in the BGP then it actually modifies a new empty input
+                        // This takes care of FILTERs being out of scope
                         initialInput = new Multiset();
                     }
                     localOutput = new Multiset();
                     break;
 
                 case 1:
-                    //Input becomes current Output and Output is new empty multiset
+                    // Input becomes current Output and Output is new empty multiset
                     initialInput = context.OutputMultiset;
                     localOutput = new Multiset();
                     break;
@@ -218,15 +218,15 @@ namespace VDS.RDF.Query.Algebra
                 default:
                     if (!extended && !modified)
                     {
-                        //Input is join of previous input and output and Output is new empty multiset
+                        // Input is join of previous input and output and Output is new empty multiset
                         if (context.InputMultiset.IsDisjointWith(context.OutputMultiset))
                         {
-                            //Disjoint so do a Product
+                            // Disjoint so do a Product
                             initialInput = context.InputMultiset.ProductWithTimeout(context.OutputMultiset, context.RemainingTimeout);
                         }
                         else
                         {
-                            //Normal Join
+                            // Normal Join
                             initialInput = context.InputMultiset.Join(context.OutputMultiset);
                         }
                     }
@@ -240,20 +240,20 @@ namespace VDS.RDF.Query.Algebra
             context.InputMultiset = initialInput;
             context.OutputMultiset = localOutput;
 
-            //Get the Triple Pattern we're evaluating
+            // Get the Triple Pattern we're evaluating
             ITriplePattern temp = this._triplePatterns[pattern];
             int resultsFound = 0;
             int prevResults = -1;
 
             if (temp.PatternType == TriplePatternType.Match)
             {
-                //Find the first Triple which matches the Pattern
+                // Find the first Triple which matches the Pattern
                 IMatchTriplePattern tp = (IMatchTriplePattern) temp;
                 IEnumerable<Triple> ts = tp.GetTriples(context);
 
-                //In the case that we're lazily evaluating an optimisable ORDER BY then
-                //we need to apply OrderBy()'s to our enumeration
-                //This only applies to the 1st pattern
+                // In the case that we're lazily evaluating an optimisable ORDER BY then
+                // we need to apply OrderBy()'s to our enumeration
+                // This only applies to the 1st pattern
                 if (pattern == 0)
                 {
                     if (context.Query != null)
@@ -267,7 +267,7 @@ namespace VDS.RDF.Query.Algebra
                             }
                             else
                             {
-                                //Can't get a comparer so can't optimise
+                                // Can't get a comparer so can't optimise
                                 // Thus required results is everything so just use normal evaluation as otherwise 
                                 // lazy evaluation will significantly impact performance and lead to an apparent infinite loop
                                 return base.Evaluate(context);
@@ -292,12 +292,12 @@ namespace VDS.RDF.Query.Algebra
                         }
                     }
                 }
-                //Recurse unless we're the last pattern
+                // Recurse unless we're the last pattern
                 if (pattern < this._triplePatterns.Count - 1)
                 {
                     results = this.StreamingEvaluate(context, pattern + 1, out halt);
 
-                    //If recursion leads to a halt then we halt and return immediately
+                    // If recursion leads to a halt then we halt and return immediately
                     if (halt && results.Count >= this._requiredResults && this._requiredResults != -1)
                     {
                         return results;
@@ -306,8 +306,8 @@ namespace VDS.RDF.Query.Algebra
                     {
                         if (results.Count == 0)
                         {
-                            //If recursing leads to no results then eliminate all outputs
-                            //Also reset to prevResults to -1
+                            // If recursing leads to no results then eliminate all outputs
+                            // Also reset to prevResults to -1
                             resultsFound = 0;
                             localOutput = new Multiset();
                             prevResults = -1;
@@ -316,22 +316,22 @@ namespace VDS.RDF.Query.Algebra
                         {
                             if (results.Count == prevResults)
                             {
-                                //If the amount of results found hasn't increased then this match does not
-                                //generate any further solutions further down the recursion so we can eliminate
-                                //this from the results
+                                // If the amount of results found hasn't increased then this match does not
+                                // generate any further solutions further down the recursion so we can eliminate
+                                // this from the results
                                 localOutput.Remove(localOutput.SetIDs.Max());
                             }
                         }
                         prevResults = results.Count;
 
-                        //If we're supposed to halt but not reached the number of required results then continue
+                        // If we're supposed to halt but not reached the number of required results then continue
                         context.InputMultiset = initialInput;
                         context.OutputMultiset = localOutput;
                     }
                     else
                     {
-                        //Otherwise we need to keep going here
-                        //So must reset our input and outputs before continuing
+                        // Otherwise we need to keep going here
+                        // So must reset our input and outputs before continuing
                         context.InputMultiset = initialInput;
                         context.OutputMultiset = new Multiset();
                         resultsFound--;
@@ -339,23 +339,23 @@ namespace VDS.RDF.Query.Algebra
                 }
                 else
                 {
-                    //If we're at the last pattern and we've found a match then we can halt
+                    // If we're at the last pattern and we've found a match then we can halt
                     halt = true;
 
-                    //Generate the final output and return it
+                    // Generate the final output and return it
                     if (context.InputMultiset.IsDisjointWith(context.OutputMultiset))
                     {
-                        //Disjoint so do a Product
+                        // Disjoint so do a Product
                         results = context.InputMultiset.ProductWithTimeout(context.OutputMultiset,
                             context.RemainingTimeout);
                     }
                     else
                     {
-                        //Normal Join
+                        // Normal Join
                         results = context.InputMultiset.Join(context.OutputMultiset);
                     }
 
-                    //If not reached required number of results continue
+                    // If not reached required number of results continue
                     if (results.Count >= this._requiredResults && this._requiredResults != -1)
                     {
                         context.OutputMultiset = results;
@@ -371,40 +371,40 @@ namespace VDS.RDF.Query.Algebra
 
                 if (filter.Variables.IsDisjoint(context.InputMultiset.Variables))
                 {
-                    //Filter is Disjoint so determine whether it has any affect or not
+                    // Filter is Disjoint so determine whether it has any affect or not
                     if (filter.Variables.Any())
                     {
-                        //Has Variables but disjoint from input => not in scope so gets ignored
+                        // Has Variables but disjoint from input => not in scope so gets ignored
 
-                        //Do we recurse or not?
+                        // Do we recurse or not?
                         if (pattern < this._triplePatterns.Count - 1)
                         {
-                            //Recurse and return
+                            // Recurse and return
                             results = this.StreamingEvaluate(context, pattern + 1, out halt);
                             return results;
                         }
                         else
                         {
-                            //We don't affect the input in any way so just return it
+                            // We don't affect the input in any way so just return it
                             return context.InputMultiset;
                         }
                     }
                     else
                     {
-                        //No Variables so have to evaluate it to see if it gives true otherwise
+                        // No Variables so have to evaluate it to see if it gives true otherwise
                         try
                         {
                             if (filterExpr.Evaluate(context, 0).AsSafeBoolean())
                             {
                                 if (pattern < this._triplePatterns.Count - 1)
                                 {
-                                    //Recurse and return
+                                    // Recurse and return
                                     results = this.StreamingEvaluate(context, pattern + 1, out halt);
                                     return results;
                                 }
                                 else
                                 {
-                                    //Last Pattern and we evaluate to true so can return the input as-is
+                                    // Last Pattern and we evaluate to true so can return the input as-is
                                     halt = true;
                                     return context.InputMultiset;
                                 }
@@ -412,40 +412,40 @@ namespace VDS.RDF.Query.Algebra
                         }
                         catch (RdfQueryException)
                         {
-                            //Evaluates to false so eliminates all solutions (use an empty Multiset)
+                            // Evaluates to false so eliminates all solutions (use an empty Multiset)
                             return new Multiset();
                         }
                     }
                 }
                 else
                 {
-                    //Test each solution found so far against the Filter and eliminate those that evalute to false/error
+                    // Test each solution found so far against the Filter and eliminate those that evalute to false/error
                     foreach (int id in context.InputMultiset.SetIDs.ToList())
                     {
                         try
                         {
                             if (filterExpr.Evaluate(context, id).AsSafeBoolean())
                             {
-                                //If evaluates to true then add to output
+                                // If evaluates to true then add to output
                                 context.OutputMultiset.Add(context.InputMultiset[id].Copy());
                             }
                         }
                         catch (RdfQueryException)
                         {
-                            //Error means we ignore the solution
+                            // Error means we ignore the solution
                         }
                     }
 
-                    //Remember to check for Timeouts during Lazy Evaluation
+                    // Remember to check for Timeouts during Lazy Evaluation
                     context.CheckTimeout();
 
-                    //Decide whether to recurse or not
+                    // Decide whether to recurse or not
                     resultsFound = context.OutputMultiset.Count;
                     if (pattern < this._triplePatterns.Count - 1)
                     {
-                        //Recurse then return
-                        //We can never decide whether to recurse again at this point as we are not capable of deciding
-                        //which solutions should be dumped (that is the job of an earlier pattern in the BGP)
+                        // Recurse then return
+                        // We can never decide whether to recurse again at this point as we are not capable of deciding
+                        // which solutions should be dumped (that is the job of an earlier pattern in the BGP)
                         results = this.StreamingEvaluate(context, pattern + 1, out halt);
 
                         return results;
@@ -454,8 +454,8 @@ namespace VDS.RDF.Query.Algebra
                     {
                         halt = true;
 
-                        //However many results we need we'll halt - previous patterns can call us again if they find more potential solutions
-                        //for us to filter
+                        // However many results we need we'll halt - previous patterns can call us again if they find more potential solutions
+                        // for us to filter
                         return context.OutputMultiset;
                     }
                 }
@@ -473,7 +473,7 @@ namespace VDS.RDF.Query.Algebra
                 }
                 else
                 {
-                    //Compute the Binding for every value
+                    // Compute the Binding for every value
                     context.OutputMultiset.AddVariable(bindVar);
                     foreach (ISet s in context.InputMultiset.Sets)
                     {
@@ -485,19 +485,19 @@ namespace VDS.RDF.Query.Algebra
                         }
                         catch (RdfQueryException)
                         {
-                            //Equivalent to no assignment but the solution is preserved
+                            // Equivalent to no assignment but the solution is preserved
                         }
                         context.OutputMultiset.Add(x.Copy());
                     }
 
-                    //Remember to check for Timeouts during Lazy Evaluation
+                    // Remember to check for Timeouts during Lazy Evaluation
                     context.CheckTimeout();
 
-                    //Decide whether to recurse or not
+                    // Decide whether to recurse or not
                     resultsFound = context.OutputMultiset.Count;
                     if (pattern < this._triplePatterns.Count - 1)
                     {
-                        //Recurse then return
+                        // Recurse then return
                         results = this.StreamingEvaluate(context, pattern + 1, out halt);
                         return results;
                     }
@@ -505,8 +505,8 @@ namespace VDS.RDF.Query.Algebra
                     {
                         halt = true;
 
-                        //However many results we need we'll halt - previous patterns can call us again if they find more potential solutions
-                        //for us to extend
+                        // However many results we need we'll halt - previous patterns can call us again if they find more potential solutions
+                        // for us to extend
                         return context.OutputMultiset;
                     }
                 }
@@ -517,27 +517,27 @@ namespace VDS.RDF.Query.Algebra
                                             " which is not a lazily evaluable Pattern");
             }
 
-            //If we found no possibles we return the null multiset
+            // If we found no possibles we return the null multiset
             if (resultsFound == 0)
             {
                 return new NullMultiset();
             }
             else
             {
-                //Remember to check for Timeouts during Lazy Evaluation
+                // Remember to check for Timeouts during Lazy Evaluation
                 context.CheckTimeout();
 
-                //Generate the final output and return it
+                // Generate the final output and return it
                 if (!modifies)
                 {
                     if (context.InputMultiset.IsDisjointWith(context.OutputMultiset))
                     {
-                        //Disjoint so do a Product
+                        // Disjoint so do a Product
                         results = context.InputMultiset.ProductWithTimeout(context.OutputMultiset, context.RemainingTimeout);
                     }
                     else
                     {
-                        //Normal Join
+                        // Normal Join
                         results = context.InputMultiset.Join(context.OutputMultiset);
                     }
                     context.OutputMultiset = results;
@@ -608,7 +608,7 @@ namespace VDS.RDF.Query.Algebra
 
             if (lhsResult.Count >= this._requiredResults || this._requiredResults == -1)
             {
-                //Only evaluate the RHS if the LHS didn't yield sufficient results
+                // Only evaluate the RHS if the LHS didn't yield sufficient results
                 context.InputMultiset = initialInput;
                 BaseMultiset rhsResult = context.Evaluate(this._rhs); //this._rhs.Evaluate(context);
                 context.CheckTimeout();

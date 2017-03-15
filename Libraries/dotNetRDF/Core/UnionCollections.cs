@@ -180,7 +180,7 @@ namespace VDS.RDF
         /// </remarks>
         public override void Dispose()
         {
-            //Do Nothing
+            // Do Nothing
         }
 
         /// <summary>

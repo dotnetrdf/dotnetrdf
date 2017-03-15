@@ -87,7 +87,7 @@ namespace VDS.RDF.Query.Inference
                         {
                             if (this._conceptMappings[concept] != null)
                             {
-                                //Assert additional information
+                                // Assert additional information
                                 inferences.Add(new Triple(t.Subject.CopyNode(output), t.Predicate.CopyNode(output), this._conceptMappings[concept].CopyNode(output)));
                                 concept = this._conceptMappings[concept];
                             }
@@ -121,7 +121,7 @@ namespace VDS.RDF.Query.Inference
                 {
                     if (t.Predicate.Equals(this._rdfType) && t.Object.Equals(this._skosConcept))
                     {
-                        //Defines a SKOS Concept
+                        // Defines a SKOS Concept
                         if (!this._conceptMappings.ContainsKey(t.Subject))
                         {
                             this._conceptMappings.Add(t.Subject, null);
@@ -129,7 +129,7 @@ namespace VDS.RDF.Query.Inference
                     }
                     else if (t.Predicate.Equals(this._skosNarrower))
                     {
-                        //Links a SKOS Concept to a child concept
+                        // Links a SKOS Concept to a child concept
                         if (!this._conceptMappings.ContainsKey(t.Object))
                         {
                             this._conceptMappings.Add(t.Object, t.Subject);
@@ -141,7 +141,7 @@ namespace VDS.RDF.Query.Inference
                     }
                     else if (t.Predicate.Equals(this._skosBroader))
                     {
-                        //Links a SKOS Concept to a parent concept
+                        // Links a SKOS Concept to a parent concept
                         if (!this._conceptMappings.ContainsKey(t.Subject))
                         {
                             this._conceptMappings.Add(t.Subject, t.Object);
@@ -168,10 +168,10 @@ namespace VDS.RDF.Query.Inference
         /// <param name="output">Graph inferred information is output to</param>
         public override void Apply(IGraph input, IGraph output)
         {
-            //Use this Graph to further initialise the Reasoner
+            // Use this Graph to further initialise the Reasoner
             this.Initialise(input);
 
-            //Use Base Reasoner to do the Inference
+            // Use Base Reasoner to do the Inference
             base.Apply(input, output);
         }
     }

@@ -80,7 +80,7 @@ namespace VDS.RDF.Writing
 
             try
             {
-                //Setup the XML document
+                // Setup the XML document
                 XmlWriter writer = XmlWriter.Create(output, this.GetSettings());
                 writer.WriteStartDocument();
                 writer.WriteStartElement("TriX", TriXParser.TriXNamespaceURI);
@@ -88,13 +88,13 @@ namespace VDS.RDF.Writing
                 writer.WriteRaw(TriXParser.TriXNamespaceURI);
                 writer.WriteEndAttribute();
 
-                //Output Graphs as XML <graph> elements
+                // Output Graphs as XML <graph> elements
                 foreach (IGraph g in store.Graphs)
                 {
                     this.GraphToTriX(g, writer);
                 }
 
-                //Save the XML to disk
+                // Save the XML to disk
                 writer.WriteEndDocument();
                 writer.Flush();
                 writer.Close();
@@ -108,7 +108,7 @@ namespace VDS.RDF.Writing
                 }
                 catch
                 {
-                    //Just cleaning up
+                    // Just cleaning up
                 }
                 throw;
             }
@@ -116,10 +116,10 @@ namespace VDS.RDF.Writing
 
         private void GraphToTriX(IGraph g, XmlWriter writer)
         {
-            //Create the <graph> element
+            // Create the <graph> element
             writer.WriteStartElement("graph");
 
-            //Is the Graph Named?
+            // Is the Graph Named?
             if (g.BaseUri != null)
             {
                 if (!g.BaseUri.AbsoluteUri.StartsWith("trix:local:"))
@@ -136,7 +136,7 @@ namespace VDS.RDF.Writing
                 }
             }
 
-            //Output the Triples
+            // Output the Triples
             foreach (Triple t in g.Triples)
             {
                 writer.WriteStartElement("triple");
@@ -145,11 +145,11 @@ namespace VDS.RDF.Writing
                 this.NodeToTriX(t.Predicate, writer);
                 this.NodeToTriX(t.Object, writer);
 
-                //</triple>
+                // </triple>
                 writer.WriteEndElement();
             }
 
-            //</graph>
+            // </graph>
             writer.WriteEndElement();
         }
 
@@ -216,7 +216,7 @@ namespace VDS.RDF.Writing
         {
             if (this.Warning == null)
             {
-                //Do Nothing
+                // Do Nothing
             }
             else
             {

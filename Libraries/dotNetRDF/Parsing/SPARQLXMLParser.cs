@@ -89,7 +89,7 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                //Parse the XML
+                // Parse the XML
                 XmlReader reader = XmlReader.Create(input, this.GetSettings());
                 this.Parse(new SparqlXmlParserContext(reader, handler));
             }
@@ -105,7 +105,7 @@ namespace VDS.RDF.Parsing
                 }
                 catch
                 {
-                    //No catch actions - this is a cleanup attempt only
+                    // No catch actions - this is a cleanup attempt only
                 }
             }
         }
@@ -165,7 +165,7 @@ namespace VDS.RDF.Parsing
             {
                 context.Handler.StartResults();
 
-                //Get the Document Element and check it's a Sparql element
+                // Get the Document Element and check it's a Sparql element
                 if (!context.Input.Read()) throw new RdfParseException("Unable to Parse a SPARQL Result Set as it was not possible to read a document element from the input");
                 while (context.Input.NodeType != XmlNodeType.Element)
                 {
@@ -176,7 +176,7 @@ namespace VDS.RDF.Parsing
                     throw new RdfParseException("Unable to Parse a SPARQL Result Set from the provided XML since the Document Element is not a <sparql> element!");
                 }
 
-                //Go through it's attributes and check the Namespace is specified
+                // Go through it's attributes and check the Namespace is specified
                 bool nsfound = false;
                 if (context.Input.HasAttributes)
                 {
@@ -201,32 +201,32 @@ namespace VDS.RDF.Parsing
                     throw new RdfParseException("Unable to Parse a SPARQL Result Set since the <sparql> element fails to specify the SPARQL Namespace!");
                 }
 
-                //Get the Variables from the Header
+                // Get the Variables from the Header
                 if (!context.Input.Read()) throw new RdfParseException("Unable to Parse a SPARQL Result Set as could not read a <head> element from the input");
                 if (!context.Input.Name.Equals("head"))
                 {
                     throw new RdfParseException("Unable to Parse a SPARQL Result Set since the first Child Node of the <sparql> element is not the required <head> element!");
                 }
 
-                //Only parser <variable> and <link> elements if not an empty <head /> element
+                // Only parser <variable> and <link> elements if not an empty <head /> element
                 if (!context.Input.IsEmptyElement)
                 {
                     while (context.Input.Read())
                     {
-                        //Stop reading when we hit the </head>
+                        // Stop reading when we hit the </head>
                         if (context.Input.NodeType == XmlNodeType.EndElement && context.Input.Name.Equals("head")) break;
 
-                        //Looking for <variable> elements
+                        // Looking for <variable> elements
                         if (context.Input.Name.Equals("variable"))
                         {
-                            //Should only have 1 attribute
+                            // Should only have 1 attribute
                             if (context.Input.AttributeCount != 1)
                             {
                                 throw new RdfParseException("Unable to Parse a SPARQL Result Set since a <variable> element has too few/many attributes, only a 'name' attribute should be present!");
                             }
                             else
                             {
-                                //Add the Variable to the list
+                                // Add the Variable to the list
                                 context.Input.MoveToNextAttribute();
                                 if (!context.Handler.HandleVariable(context.Input.Value)) ParserHelper.Stop();
                                 context.Variables.Add(context.Input.Value);
@@ -234,11 +234,11 @@ namespace VDS.RDF.Parsing
                         }
                         else if (context.Input.Name.Equals("link"))
                         {
-                            //Not bothered about <link> elements
+                            // Not bothered about <link> elements
                         }
                         else
                         {
-                            //Some unexpected element
+                            // Some unexpected element
                             throw new RdfParseException("Unable to Parse a SPARQL Result Set since the <head> contains an unexpected element <" + context.Input.Name + ">!");
                         }
                     }
@@ -249,69 +249,69 @@ namespace VDS.RDF.Parsing
                     throw new RdfParseException("Unable to Parse a SPARQL Result Set as reached the end of the input before the closing </head> element was found");
                 }
 
-                //Look at the <results> or <boolean> element
+                // Look at the <results> or <boolean> element
                 if (!context.Input.Read()) throw new RdfParseException("Unable to Parse a SPARQL Result Set as could not read a <results> element from the input");
                 if (context.Input.Name.Equals("results"))
                 {
-                    //Only parser <result> elements if it's not an empty <results /> element
+                    // Only parser <result> elements if it's not an empty <results /> element
                     if (!context.Input.IsEmptyElement)
                     {
                         while (context.Input.Read())
                         {
-                            //Stop reading when we hit the </results>
+                            // Stop reading when we hit the </results>
                             if (context.Input.NodeType == XmlNodeType.EndElement && context.Input.Name.Equals("results")) break;
 
-                            //Must be a <result> element
+                            // Must be a <result> element
                             if (!context.Input.Name.Equals("result"))
                             {
                                 throw new RdfParseException("Unable to Parse a SPARQL Result Set since the <results> element contains an unexpected element <" + context.Input.Name + ">!");
                             }
 
-                            //Empty Elements generate an Empty Result
+                            // Empty Elements generate an Empty Result
                             if (context.Input.IsEmptyElement)
                             {
                                 if (!context.Handler.HandleResult(new SparqlResult())) ParserHelper.Stop();
                                 continue;
                             }
 
-                            //Get the values of each Binding
+                            // Get the values of each Binding
                             String var;
                             INode value;
                             SparqlResult result = new SparqlResult();
                             while (context.Input.Read())
                             {
-                                //Stop reading when we hit the </binding>
+                                // Stop reading when we hit the </binding>
                                 if (context.Input.NodeType == XmlNodeType.EndElement && context.Input.Name.Equals("result")) break;
 
-                                //Must be a <binding> element
+                                // Must be a <binding> element
                                 if (!context.Input.Name.Equals("binding"))
                                 {
                                     throw new RdfParseException("Unable to Parse a SPARQL Result Set since a <result> element contains an unexpected element <" + context.Input.Name + ">!");
                                 }
 
-                                //Must have only 1 attribute
+                                // Must have only 1 attribute
                                 if (context.Input.AttributeCount != 1)
                                 {
                                     throw new RdfParseException("Unable to Parse a SPARQL Result Set since a <binding> element has too few/many attributes, only a 'name' attribute should be present!");
                                 }
 
-                                //Get the Variable this is a binding for and its Value
+                                // Get the Variable this is a binding for and its Value
                                 context.Input.MoveToNextAttribute();
                                 var = context.Input.Value;
                                 if (!context.Input.Read()) throw new RdfParseException("Unable to Parse a SPARQL Result Set as reached the end of input when the contents of a <binding> element was expected");
                                 value = this.ParseValue(context);
 
-                                //Check that the Variable was defined in the Header
+                                // Check that the Variable was defined in the Header
                                 if (!context.Variables.Contains(var))
                                 {
                                     throw new RdfParseException("Unable to Parse a SPARQL Result Set since a <binding> element attempts to bind a value to the variable '" + var + "' which is not defined in the <head> by a <variable> element!");
                                 }
 
-                                //Set the Variable to the Value
+                                // Set the Variable to the Value
                                 result.SetValue(var, value);
                             }
 
-                            //Check that all Variables are bound for a given result binding nulls where appropriate
+                            // Check that all Variables are bound for a given result binding nulls where appropriate
                             foreach (String v in context.Variables)
                             {
                                 if (!result.HasValue(v))
@@ -325,7 +325,7 @@ namespace VDS.RDF.Parsing
                                 throw new RdfParseException("Unable to Parse a SPARQL Result Set as reached the end of the input before a closing </result> element was found");
                             }
 
-                            //Add to results set
+                            // Add to results set
                             result.SetVariableOrdering(context.Variables);
                             if (!context.Handler.HandleResult(result)) ParserHelper.Stop();
                         }
@@ -338,7 +338,7 @@ namespace VDS.RDF.Parsing
                 }
                 else if (context.Input.Name.Equals("boolean"))
                 {
-                    //Can't be any <variable> elements
+                    // Can't be any <variable> elements
                     if (context.Variables.Count > 0)
                     {
                         throw new RdfParseException("Unable to Parse a SPARQL Result Set since the <boolean> element is specified but the <head> contained one/more <variable> elements which is not permitted!");
@@ -346,7 +346,7 @@ namespace VDS.RDF.Parsing
 
                     try
                     {
-                        //Get the value of the <boolean> element as a Boolean
+                        // Get the value of the <boolean> element as a Boolean
                         Boolean b = Boolean.Parse(context.Input.ReadInnerXml());
                         context.Handler.HandleBooleanResult(b);
                     }
@@ -368,7 +368,7 @@ namespace VDS.RDF.Parsing
             }
             catch
             {
-                //Some other Error
+                // Some other Error
                 context.Handler.EndResults(false);
                 throw;
             }
@@ -389,7 +389,7 @@ namespace VDS.RDF.Parsing
             {
                 if (context.Input.AttributeCount == 0)
                 {
-                    //Literal with no Data Type/Language Specifier
+                    // Literal with no Data Type/Language Specifier
                     return context.Handler.CreateLiteralNode(HttpUtility.HtmlDecode(context.Input.ReadInnerXml()));
                 }
                 else if (context.Input.AttributeCount >= 1)
@@ -400,12 +400,12 @@ namespace VDS.RDF.Parsing
                     {
                         if (context.Input.Name.Equals("xml:lang"))
                         {
-                            //Language is specified
+                            // Language is specified
                             lang = context.Input.Value;
                         }
                         else if (context.Input.Name.Equals("datatype"))
                         {
-                            //Data Type is specified
+                            // Data Type is specified
                             dt = ((IUriNode) ParserHelper.TryResolveUri(context, context.Input.Value)).Uri;
                         }
                         else
@@ -458,7 +458,7 @@ namespace VDS.RDF.Parsing
             }
             else if (context.Input.Name.Equals("unbound"))
             {
-                //HACK: This is a really ancient feature of the SPARQL Results XML format (from Working Draft in 2005) which we support to ensure compatability with old pre-standardisation SPARQL endpoints (like 3store based ones)
+                // HACK: This is a really ancient feature of the SPARQL Results XML format (from Working Draft in 2005) which we support to ensure compatability with old pre-standardisation SPARQL endpoints (like 3store based ones)
                 context.Input.ReadInnerXml();
                 return null;
             }

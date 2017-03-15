@@ -64,7 +64,7 @@ namespace VDS.RDF
         {
             this._g = new Graph();
 
-            //Create Event Handlers and attach to relevant events so the wrapper propogates events upwards
+            // Create Event Handlers and attach to relevant events so the wrapper propogates events upwards
             this.TripleAssertedHandler = new TripleEventHandler(this.OnTripleAsserted);
             this.TripleRetractedHandler = new TripleEventHandler(this.OnTripleRetracted);
             this.GraphChangedHandler = new GraphEventHandler(this.OnChanged);
@@ -949,7 +949,7 @@ namespace VDS.RDF
         /// </summary>
         protected void AttachEventHandlers()
         {
-            //Wire up handlers for all the Graph level events
+            // Wire up handlers for all the Graph level events
             this._g.Cleared += this.GraphClearedHandler;
             this._g.Changed += this.GraphChangedHandler;
             this._g.Merged += this.GraphMergedHandler;

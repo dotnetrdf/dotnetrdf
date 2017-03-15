@@ -38,14 +38,14 @@ namespace VDS.RDF
     public class TreeIndexedTripleCollection
         : BaseTripleCollection
     {
-        //Main Storage
+        // Main Storage
         private MultiDictionary<Triple, Object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastVirtualNodeComparer()));
-        //Simple Indexes
+        // Simple Indexes
         private MultiDictionary<INode, List<Triple>> _s, _p, _o;
-        //Compound Indexes
+        // Compound Indexes
         private MultiDictionary<Triple, List<Triple>> _sp, _so, _po;
 
-        //Placeholder Variables for compound lookups
+        // Placeholder Variables for compound lookups
         private VariableNode _subjVar = new VariableNode(null, "s"),
                              _predVar = new VariableNode(null, "p"),
                              _objVar = new VariableNode(null, "o");
@@ -235,7 +235,7 @@ namespace VDS.RDF
         {
             get 
             {
-                //Note we maintain the count manually as traversing the entire tree every time we want to count would get very expensive
+                // Note we maintain the count manually as traversing the entire tree every time we want to count would get very expensive
                 return this._count;
             }
         }
@@ -249,7 +249,7 @@ namespace VDS.RDF
         {
             if (this._triples.Remove(t))
             {
-                //If removed then unindex
+                // If removed then unindex
                 this.Unindex(t);
                 this.RaiseTripleRemoved(t);
                 this._count--;

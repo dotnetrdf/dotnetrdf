@@ -310,7 +310,7 @@ namespace VDS.RDF.Query
                 {
                     StringBuilder output = new StringBuilder();
 
-                    //Print what will happen
+                    // Print what will happen
                     if (ps[i].PatternType == TriplePatternType.Filter)
                     {
                         output.Append("Apply ");
@@ -332,7 +332,7 @@ namespace VDS.RDF.Query
                         output.Append("Property Function ");
                     }
 
-                    //Print the type of Join to be performed
+                    // Print the type of Join to be performed
                     if (i > 0 && (ps[i].PatternType == TriplePatternType.Match || ps[i].PatternType == TriplePatternType.SubQuery || ps[i].PatternType == TriplePatternType.Path))
                     {
                         if (vars.IsDisjoint<String>(ps[i].Variables))
@@ -349,10 +349,10 @@ namespace VDS.RDF.Query
                         }
                     }
 
-                    //Print the actual Triple Pattern
+                    // Print the actual Triple Pattern
                     output.Append(this._formatter.Format(ps[i]));
 
-                    //Update variables seen so far unless a FILTER which cannot introduce new variables
+                    // Update variables seen so far unless a FILTER which cannot introduce new variables
                     if (ps[i].PatternType != TriplePatternType.Filter)
                     {
                         foreach (String var in ps[i].Variables)
@@ -425,11 +425,11 @@ namespace VDS.RDF.Query
                     List<String> activeGraphs = new List<string>();
                     String gvar = graph.GraphSpecifier.Value.Substring(1);
 
-                    //Watch out for the case in which the Graph Variable is not bound for all Sets in which case
-                    //we still need to operate over all Graphs
+                    // Watch out for the case in which the Graph Variable is not bound for all Sets in which case
+                    // we still need to operate over all Graphs
                     if (context.InputMultiset.ContainsVariable(gvar) && context.InputMultiset.Sets.All(s => s[gvar] != null))
                     {
-                        //If there are already values bound to the Graph variable for all Input Solutions then we limit the Query to those Graphs
+                        // If there are already values bound to the Graph variable for all Input Solutions then we limit the Query to those Graphs
                         List<Uri> graphUris = new List<Uri>();
                         foreach (ISet s in context.InputMultiset.Sets)
                         {
@@ -448,28 +448,28 @@ namespace VDS.RDF.Query
                             this.PrintExplanations("Graph clause uses variable ?" + gvar + " to specify named graphs, this variable is only partially bound at this point in the query so can't be use to restrict list of named graphs to access");
                         }
 
-                        //Nothing yet bound to the Graph Variable so the Query is over all the named Graphs
+                        // Nothing yet bound to the Graph Variable so the Query is over all the named Graphs
                         if (context.Query != null && context.Query.NamedGraphs.Any())
                         {
-                            //Query specifies one/more named Graphs
+                            // Query specifies one/more named Graphs
                             this.PrintExplanations("Graph clause uses variable ?" + gvar + " which is restricted to graphs specified by the queries FROM NAMED clause(s)");
                             activeGraphs.AddRange(context.Query.NamedGraphs.Select(u => u.AbsoluteUri));
                         }
                         else if (context.Query != null && context.Query.DefaultGraphs.Any() && !context.Query.NamedGraphs.Any())
                         {
-                            //Gives null since the query dataset does not include any named graphs
+                            // Gives null since the query dataset does not include any named graphs
                             this.PrintExplanations("Graph clause uses variable ?" + gvar + " which will match no graphs because the queries dataset description does not include any named graphs i.e. there where FROM clauses but no FROM NAMED clauses");
                             return;
                         }
                         else
                         {
-                            //Query is over entire dataset/default Graph since no named Graphs are explicitly specified
+                            // Query is over entire dataset/default Graph since no named Graphs are explicitly specified
                             this.PrintExplanations("Graph clause uses variable ?" + gvar + " which accesses all named graphs provided by the dataset");
                             activeGraphs.AddRange(context.Data.GraphUris.Select(u => u.ToSafeString()));
                         }
                     }
 
-                    //Remove all duplicates from Active Graphs to avoid duplicate results
+                    // Remove all duplicates from Active Graphs to avoid duplicate results
                     activeGraphs = activeGraphs.Distinct().ToList();
                     activeGraphs.RemoveAll(x => x == null);
                     this.PrintExplanations("Graph clause will access the following " + activeGraphs.Count + " graphs:");
@@ -599,19 +599,19 @@ namespace VDS.RDF.Query
         private BaseMultiset ExplainAndEvaluate<T>(T algebra, SparqlEvaluationContext context, Func<T, SparqlEvaluationContext, BaseMultiset> evaluator)
             where T : ISparqlAlgebra
         {
-            //If explanation is disabled just evaluate and return
+            // If explanation is disabled just evaluate and return
             if (this._level == ExplanationLevel.None) return evaluator(algebra, context);
 
-            //Print the basic evaluation start information
+            // Print the basic evaluation start information
             this.ExplainEvaluationStart(algebra, context);
 
-            //Print analysis (if enabled)
+            // Print analysis (if enabled)
             this.PrintAnalysis(algebra, context);
 
-            //Start Timing (if enabled)
+            // Start Timing (if enabled)
             if (this.HasFlag(ExplanationLevel.ShowTimings)) this._startTimes.Value.Push(DateTime.Now);
 
-            //Do the actual Evaluation
+            // Do the actual Evaluation
             BaseMultiset results; // = evaluator(algebra, context);
             if (this.HasFlag(ExplanationLevel.Simulate))
             {
@@ -622,15 +622,15 @@ namespace VDS.RDF.Query
                 results = evaluator(algebra, context);
             }
 
-            //End Timing and Print (if enabled)
+            // End Timing and Print (if enabled)
             if (this.HasFlag(ExplanationLevel.ShowTimings))
             {
                 DateTime start = this._startTimes.Value.Pop();
                 TimeSpan elapsed = DateTime.Now - start;
-                //this.PrintExplanations("Took " + elapsed.ToString());
+                // this.PrintExplanations("Took " + elapsed.ToString());
                 this.ExplainEvaluationAction(algebra, context, "Took " + elapsed.ToString());
             }
-            //Show Intermediate Result Count (if enabled)
+            // Show Intermediate Result Count (if enabled)
             if (this.HasFlag(ExplanationLevel.ShowIntermediateResultCount))
             {
                 String result;
@@ -649,10 +649,10 @@ namespace VDS.RDF.Query
                 this.ExplainEvaluationAction(algebra, context, result);
             }
 
-            //Print the basic evaluation end information
+            // Print the basic evaluation end information
             this.ExplainEvaluationEnd(algebra, context);
 
-            //Result the results
+            // Result the results
             return results;
         }
 

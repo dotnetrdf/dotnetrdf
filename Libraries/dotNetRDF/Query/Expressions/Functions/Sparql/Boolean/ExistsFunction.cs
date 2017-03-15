@@ -72,28 +72,28 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
 
             if (this._mustExist)
             {
-                //If an EXISTS then Null/Empty Other results in false
+                // If an EXISTS then Null/Empty Other results in false
                 if (this._result is NullMultiset) return new BooleanNode(null, false);
                 if (this._result.IsEmpty) return new BooleanNode(null, false);
             }
             else
             {
-                //If a NOT EXISTS then Null/Empty results in true
+                // If a NOT EXISTS then Null/Empty results in true
                 if (this._result is NullMultiset) return new BooleanNode(null, true);
                 if (this._result.IsEmpty) return new BooleanNode(null, true);
             }
 
             if (this._joinVars.Count == 0)
             {
-                //If Disjoint then all solutions are compatible
+                // If Disjoint then all solutions are compatible
                 if (this._mustExist)
                 {
-                    //If Disjoint and must exist then true since
+                    // If Disjoint and must exist then true since
                     return new BooleanNode(null, true);
                 }
                 else
                 {
-                    //If Disjoint and must not exist then false
+                    // If Disjoint and must not exist then false
                     return new BooleanNode(null, false);
                 }
             }
@@ -103,12 +103,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             bool exists = this._exists.Contains(x.ID);
             if (this._mustExist)
             {
-                //If an EXISTS then return the value of exists i.e. are there any compatible solutions
+                // If an EXISTS then return the value of exists i.e. are there any compatible solutions
                 return new BooleanNode(null, exists);
             }
             else
             {
-                //If a NOT EXISTS then return the negation of exists i.e. if compatible solutions exist then we must return false, if none we return true
+                // If a NOT EXISTS then return the negation of exists i.e. if compatible solutions exist then we must return false, if none we return true
                 return new BooleanNode(null, !exists);
             }
         }
@@ -124,19 +124,19 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         {
             this._result = null;
 
-            //We must take a copy of the original context as otherwise we can have strange results
+            // We must take a copy of the original context as otherwise we can have strange results
             SparqlEvaluationContext context = new SparqlEvaluationContext(origContext.Query, origContext.Data);
             context.InputMultiset = origContext.InputMultiset;
             context.OutputMultiset = new Multiset();
             this._lastInput = context.InputMultiset.GetHashCode();
             this._lastCount = context.InputMultiset.Count;
 
-            //REQ: Optimise the algebra here
+            // REQ: Optimise the algebra here
             ISparqlAlgebra existsClause = this._pattern.ToAlgebra();
             this._result = context.Evaluate(existsClause);
 
-            //This is the new algorithm which is also correct but is O(3n) so much faster and scalable
-            //Downside is that it does require more memory than the old algorithm
+            // This is the new algorithm which is also correct but is O(3n) so much faster and scalable
+            // Downside is that it does require more memory than the old algorithm
             this._joinVars = origContext.InputMultiset.Variables.Where(v => this._result.Variables.Contains(v)).ToList();
             if (this._joinVars.Count == 0) return;
 
@@ -148,7 +148,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                 nulls.Add(new List<int>());
             }
 
-            //First do a pass over the LHS Result to find all possible values for joined variables
+            // First do a pass over the LHS Result to find all possible values for joined variables
             foreach (ISet x in origContext.InputMultiset.Sets)
             {
                 int i = 0;
@@ -175,7 +175,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                 }
             }
 
-            //Then do a pass over the RHS and work out the intersections
+            // Then do a pass over the RHS and work out the intersections
             this._exists = new HashSet<int>();
             foreach (ISet y in this._result.Sets)
             {
@@ -198,15 +198,15 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                     }
                     else
                     {
-                        //Don't forget that a null will be potentially compatible with everything
+                        // Don't forget that a null will be potentially compatible with everything
                         possMatches = (possMatches == null ? origContext.InputMultiset.SetIDs : possMatches.Intersect(origContext.InputMultiset.SetIDs));
                     }
                     i++;
                 }
                 if (possMatches == null) continue;
 
-                //Look at possible matches, if is a valid match then mark the set as having an existing match
-                //Don't reconsider sets which have already been marked as having an existing match
+                // Look at possible matches, if is a valid match then mark the set as having an existing match
+                // Don't reconsider sets which have already been marked as having an existing match
                 foreach (int poss in possMatches)
                 {
                     if (this._exists.Contains(poss)) continue;

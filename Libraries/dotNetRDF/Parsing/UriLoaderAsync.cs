@@ -69,7 +69,7 @@ namespace VDS.RDF.Parsing
                     throw new PlatformNotSupportedException("FileLoader is not supported by the Portable Class Library build");
 #else
 
-                //Invoke FileLoader instead
+                // Invoke FileLoader instead
                 UriLoader.RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                 if (Path.DirectorySeparatorChar == '/')
                 {
@@ -79,22 +79,22 @@ namespace VDS.RDF.Parsing
                 {
                     FileLoader.Load(g, u.AbsoluteUri.Substring(8), parser);
                 }
-                //FileLoader.Load() will run synchronously so once this completes we can invoke the callback
+                // FileLoader.Load() will run synchronously so once this completes we can invoke the callback
                 callback(g, state);
                 return;
 #endif
             }
             if (u.Scheme.Equals("data"))
             {
-                //Invoke DataUriLoader instead
+                // Invoke DataUriLoader instead
                 RaiseWarning("This is a data: URI so invoking the DataUriLoader instead");
                 DataUriLoader.Load(g, u);
-                //After DataUriLoader.Load() has run (which happens synchronously) can invoke the callback
+                // After DataUriLoader.Load() has run (which happens synchronously) can invoke the callback
                 callback(g, state);
                 return;
             }
 
-            //Set Base URI if necessary
+            // Set Base URI if necessary
             if (g.BaseUri == null && g.IsEmpty) g.BaseUri = u;
 
             UriLoader.Load(new GraphHandler(g), u, parser, (_, s) => callback(g, s), state);
@@ -163,7 +163,7 @@ namespace VDS.RDF.Parsing
 #if PORTABLE
                     throw new PlatformNotSupportedException("FileLoader is not supported by the Portable Class Library build");
 #else
-                    //Invoke FileLoader instead
+                    // Invoke FileLoader instead
                     RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                     if (Path.DirectorySeparatorChar == '/')
                     {
@@ -173,33 +173,33 @@ namespace VDS.RDF.Parsing
                     {
                         FileLoader.Load(handler, u.AbsoluteUri.Substring(8), parser);
                     }
-                    //FileLoader.Load() will run synchronously so once this completes we can invoke the callback
+                    // FileLoader.Load() will run synchronously so once this completes we can invoke the callback
                     callback(handler, state);
                     return;
 #endif
                 }
                 if (u.Scheme.Equals("data"))
                 {
-                    //Invoke DataUriLoader instead
+                    // Invoke DataUriLoader instead
                     RaiseWarning("This is a data: URI so invoking the DataUriLoader instead");
                     DataUriLoader.Load(handler, u);
-                    //After DataUriLoader.Load() has run (which happens synchronously) can invoke the callback
+                    // After DataUriLoader.Load() has run (which happens synchronously) can invoke the callback
                     callback(handler, state);
                     return;
                 }
 
-                //Sanitise the URI to remove any Fragment ID
+                // Sanitise the URI to remove any Fragment ID
                 u = Tools.StripUriFragment(u);
 
-                //TODO: Add use of Cache into here, this is tricky because this code is primarily intended for Silverlight where we disable the cache purposefully
+                // TODO: Add use of Cache into here, this is tricky because this code is primarily intended for Silverlight where we disable the cache purposefully
 
-                //Setup the Request
+                // Setup the Request
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(u);
 
-                //Want to ask for RDF formats
+                // Want to ask for RDF formats
                 if (parser != null)
                 {
-                    //If a non-null parser set up a HTTP Header that is just for the given parser
+                    // If a non-null parser set up a HTTP Header that is just for the given parser
                     request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(parser);
                 }
                 else
@@ -207,7 +207,7 @@ namespace VDS.RDF.Parsing
                     request.Accept = MimeTypesHelper.HttpAcceptHeader;
                 }
 
-                //Use HTTP GET
+                // Use HTTP GET
                 request.Method = "GET";
 #if !(SILVERLIGHT||NETCORE)
                 request.Timeout = Options.UriLoaderTimeout;
@@ -233,17 +233,17 @@ namespace VDS.RDF.Parsing
                                 {
                                     Tools.HttpDebugResponse(response);
 
-                                    //Get a Parser and load the RDF
+                                    // Get a Parser and load the RDF
                                     if (parser == null)
                                     {
-                                        //Only need to auto-detect the parser if a specific one wasn't specified
+                                        // Only need to auto-detect the parser if a specific one wasn't specified
                                         parser = MimeTypesHelper.GetParser(response.ContentType);
                                     }
                                     parser.Warning += RaiseWarning;
 
                                     parser.Load(handler, new StreamReader(response.GetResponseStream()));
 
-                                    //Finally can invoke the callback
+                                    // Finally can invoke the callback
                                     callback(handler, state);
                                 }
                             }
@@ -274,7 +274,7 @@ namespace VDS.RDF.Parsing
             catch (UriFormatException uriEx)
 #endif
             {
-                //URI Format Invalid
+                // URI Format Invalid
                 throw new RdfParseException("Unable to load from the given URI '" + u.AbsoluteUri + "' since it's format was invalid, see inner exception for details", uriEx);
             }
         }
@@ -380,7 +380,7 @@ namespace VDS.RDF.Parsing
 #if PORTABLE
                     throw new PlatformNotSupportedException("FileLoader is not supported by the Portable Class Library build");
 #else
-                    //Invoke FileLoader instead
+                    // Invoke FileLoader instead
                     RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                     if (Path.DirectorySeparatorChar == '/')
                     {
@@ -390,31 +390,31 @@ namespace VDS.RDF.Parsing
                     {
                         FileLoader.Load(handler, u.AbsoluteUri.Substring(8), parser);
                     }
-                    //FileLoader.Load() will run synchronously so once this completes we can invoke the callback
+                    // FileLoader.Load() will run synchronously so once this completes we can invoke the callback
                     callback(handler, state);
                     return;
 #endif
                 }
                 if (u.Scheme.Equals("data"))
                 {
-                    //Invoke DataUriLoader instead
+                    // Invoke DataUriLoader instead
                     RaiseWarning("This is a data: URI so invoking the DataUriLoader instead");
                     DataUriLoader.Load(handler, u);
-                    //After DataUriLoader.Load() has run (which happens synchronously) can invoke the callback
+                    // After DataUriLoader.Load() has run (which happens synchronously) can invoke the callback
                     callback(handler, state);
                     return;
                 }
 
-                //Sanitise the URI to remove any Fragment ID
+                // Sanitise the URI to remove any Fragment ID
                 u = Tools.StripUriFragment(u);
 
-                //Setup the Request
+                // Setup the Request
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(u);
 
-                //Want to ask for RDF dataset formats
+                // Want to ask for RDF dataset formats
                 if (parser != null)
                 {
-                    //If a non-null parser set up a HTTP Header that is just for the given parser
+                    // If a non-null parser set up a HTTP Header that is just for the given parser
                     request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(parser);
                 }
                 else
@@ -422,7 +422,7 @@ namespace VDS.RDF.Parsing
                     request.Accept = MimeTypesHelper.HttpAcceptHeader;
                 }
 
-                //Use HTTP GET
+                // Use HTTP GET
                 request.Method = "GET";
 #if !(SILVERLIGHT||NETCORE)
                 request.Timeout = Options.UriLoaderTimeout;
@@ -448,12 +448,12 @@ namespace VDS.RDF.Parsing
                                 {
                                     Tools.HttpDebugResponse(response);
 
-                                    //Get a Parser and load the RDF
+                                    // Get a Parser and load the RDF
                                     if (parser == null)
                                     {
                                         try
                                         {
-                                            //Only need to auto-detect the parser if a specific one wasn't specified
+                                            // Only need to auto-detect the parser if a specific one wasn't specified
                                             parser = MimeTypesHelper.GetStoreParser(response.ContentType);
                                             parser.Warning += RaiseWarning;
                                             parser.Load(handler, new StreamReader(response.GetResponseStream()));
@@ -464,7 +464,7 @@ namespace VDS.RDF.Parsing
 
                                             try
                                             {
-                                                //If not a RDF Dataset format see if it is a Graph
+                                                // If not a RDF Dataset format see if it is a Graph
                                                 IRdfReader rdfParser = MimeTypesHelper.GetParser(response.ContentType);
                                                 rdfParser.Load(handler, new StreamReader(response.GetResponseStream()));
                                             }
@@ -483,7 +483,7 @@ namespace VDS.RDF.Parsing
                                         parser.Load(handler, new StreamReader(response.GetResponseStream()));
                                     }
 
-                                    //Finally can invoke the callback
+                                    // Finally can invoke the callback
                                     callback(handler, state);
                                 }
                             }
@@ -514,7 +514,7 @@ namespace VDS.RDF.Parsing
             catch (UriFormatException uriEx)
 #endif
             {
-                //Uri Format Invalid
+                // Uri Format Invalid
                 throw new RdfException("Unable to load from the given URI '" + u.AbsoluteUri + "' since it's format was invalid, see inner exception for details", uriEx);
             }
         }

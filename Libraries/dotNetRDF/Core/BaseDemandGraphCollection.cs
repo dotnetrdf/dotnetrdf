@@ -62,11 +62,11 @@ namespace VDS.RDF
                 }
                 else
                 {
-                    //Try to do on-demand loading
+                    // Try to do on-demand loading
                     IGraph g = this.LoadOnDemand(graphUri);
 
-                    //Remember to set the Graph URI to the URI being asked for prior to adding it to the underlying collection
-                    //in case the loading process sets it otherwise
+                    // Remember to set the Graph URI to the URI being asked for prior to adding it to the underlying collection
+                    // in case the loading process sets it otherwise
                     g.BaseUri = graphUri;
                     base.Add(g, false);
                     return true;
@@ -74,7 +74,7 @@ namespace VDS.RDF
             }
             catch
             {
-                //Any errors in checking if the Graph already exists or loading it on-demand leads to a return of false
+                // Any errors in checking if the Graph already exists or loading it on-demand leads to a return of false
                 return false;
             }
         }

@@ -43,7 +43,7 @@ namespace VDS.RDF.Parsing.Events.RdfA
 
         public override void InitTermMappings(RdfACoreParserContext context)
         {
-            //TODO: Load the RDFa default terms
+            // TODO: Load the RDFa default terms
         }
 
         public override void ParsePrefixMappings(RdfACoreParserContext context, IRdfAEvent evt)
@@ -72,7 +72,7 @@ namespace VDS.RDF.Parsing.Events.RdfA
                 }
                 catch
                 {
-                    //If URI resolution fails then cannot change the Base URI
+                    // If URI resolution fails then cannot change the Base URI
                 }
             }
         }

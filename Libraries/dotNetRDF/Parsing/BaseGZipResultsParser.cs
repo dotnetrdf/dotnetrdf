@@ -106,7 +106,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                //Force the inner stream to be GZipped
+                // Force the inner stream to be GZipped
                 input = new StreamReader(new GZipStream(input.BaseStream, CompressionMode.Decompress));
                 this._parser.Load(handler, input);
             }

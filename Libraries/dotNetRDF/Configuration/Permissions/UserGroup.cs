@@ -152,11 +152,11 @@ namespace VDS.RDF.Configuration.Permissions
             bool ok;
             if (this._mode == PermissionModel.AllowDeny)
             {
-                //Is is allowed?
+                // Is is allowed?
                 ok = this._allowedActions.Any(p => p.IsPermissionFor(action));
                 if (ok)
                 {
-                    //If it is also denied then Deny takes precedence
+                    // If it is also denied then Deny takes precedence
                     ok = !this._deniedActions.Any(p => p.IsPermissionFor(action));
                     return ok;
                 }
@@ -164,11 +164,11 @@ namespace VDS.RDF.Configuration.Permissions
             }
             else
             {
-                //Is it denied?
+                // Is it denied?
                 ok = !this._deniedActions.Any(p => p.IsPermissionFor(action));
                 if (!ok)
                 {
-                    //If it is also allowed then Allow takes precedence
+                    // If it is also allowed then Allow takes precedence
                     ok = this._allowedActions.Any(p => p.IsPermissionFor(action));
                     return ok;
                 }

@@ -74,7 +74,7 @@ namespace VDS.RDF.Writing.Formatting
             this._delimEscapes.Add(new String[] { new String(new char[] { '\r' }), new String(new char[] { this._escapeChar, 'r' }) });
             this._delimEscapes.Add(new String[] { new String(new char[] { '\t' }), new String(new char[] { this._escapeChar, 't' }) });
 
-            //TODO: Need to handle difference between standard and long literals better
+            // TODO: Need to handle difference between standard and long literals better
             if (this._literalWrapperChar.HasValue)
             {
                 this._delimEscapes.Add(new String[] { new String(new char[] { this._literalWrapperChar.Value }), new String(new char[] { this._escapeChar, this._literalWrapperChar.Value }) });
@@ -144,17 +144,17 @@ namespace VDS.RDF.Writing.Formatting
                 {
                     value = this.Escape(value, this._delimEscapes);
 
-                    //If there are no wrapper characters then we must escape the deliminator
+                    // If there are no wrapper characters then we must escape the deliminator
                     if (value.Contains(this._deliminatorChar))
                     {
                         if (this._literalWrapperChar == null && this._longLiteralWrapperChar == null)
                         {
-                            //Replace the deliminator
+                            // Replace the deliminator
                             value = value.Replace(new String(new char[] { this._deliminatorChar }), new String(new char[] { this._escapeChar, this._deliminatorChar }));
                         }
                     }
 
-                    //Apply appropriate wrapper characters
+                    // Apply appropriate wrapper characters
                     if (this._longLiteralWrapperChar != null)
                     {
                         output.Append(this._longLiteralWrapperChar + value + this._longLiteralWrapperChar);
@@ -170,10 +170,10 @@ namespace VDS.RDF.Writing.Formatting
                 }
                 else
                 {
-                    //Replace the deliminator
+                    // Replace the deliminator
                     value = this.Escape(value, this._delimEscapes);
 
-                    //Apply appropriate wrapper characters
+                    // Apply appropriate wrapper characters
                     if (this._literalWrapperChar != null)
                     {
                         output.Append(this._literalWrapperChar + value + this._literalWrapperChar);

@@ -145,7 +145,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         {
             if (this._stop) return null;
 
-            //If the Root Element is filled then return it
+            // If the Root Element is filled then return it
             if (this._rootEl != null)
             {
                 IRdfXmlEvent temp = this._rootEl;
@@ -153,7 +153,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                 return temp;
             }
 
-            //If Literal Parsing flag is set then we've just read an element which had rdf:parseType="Literal"
+            // If Literal Parsing flag is set then we've just read an element which had rdf:parseType="Literal"
             if (this._parseLiteral)
             {
                 this._requireEndElement = true;
@@ -164,7 +164,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                 return new TypedLiteralEvent(data, RdfSpecsHelper.RdfXmlLiteral, data, this.GetPosition());
             }
 
-            //If we need to return an end element then do so
+            // If we need to return an end element then do so
             if (this._requireEndElement)
             {
                 this._requireEndElement = false;
@@ -172,10 +172,10 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                 return new EndElementEvent(this.GetPosition());
             }
 
-            //If at EOF throw an error
+            // If at EOF throw an error
             if (this._reader.EOF) throw new RdfParseException("Unable to read further events as the end of the stream has already been reached");
 
-            //Otherwise attempt to read the next node
+            // Otherwise attempt to read the next node
             bool read = true;
             if (!this._noRead)
             {
@@ -187,11 +187,11 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             }
             if (read)
             {
-                //Return the appropriate event for the Node Type
+                // Return the appropriate event for the Node Type
                 switch (this._reader.NodeType)
                 {
                     case XmlNodeType.Element:
-                        //Element
+                        // Element
                         if (this._first)
                         {
                             this._first = false;
@@ -221,7 +221,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                         }
 
                     case XmlNodeType.EndElement:
-                        //End of an Element
+                        // End of an Element
                         this._currentBaseUri = this._baseUris.Pop();
                         if (this.IsName("RDF", NamespaceMapper.RDF))
                         {
@@ -230,7 +230,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                         return new EndElementEvent(this.GetPosition());
 
                     case XmlNodeType.Attribute:
-                        //Attribute
+                        // Attribute
                         throw new RdfParseException("Unexpected Attribute Node encountered");
 
                     case XmlNodeType.Text:
@@ -246,7 +246,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                     case XmlNodeType.ProcessingInstruction:
                     case XmlNodeType.Notation:
                     case XmlNodeType.Whitespace:
-                        //Node Types that don't generate events and just indicate to continue reading
+                        // Node Types that don't generate events and just indicate to continue reading
                         return this.GetNextEvent();
 
                     default:
@@ -277,17 +277,17 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             this._reader.MoveToNextAttribute();
             if (this.IsName("lang", XmlSpecsHelper.NamespaceXml))
             {
-                //Generate an event for xml:lang
+                // Generate an event for xml:lang
                 return new LanguageAttributeEvent(this._reader.Value, this._reader.Value, this.GetPosition());
             }
             else if (this.IsName("base", XmlSpecsHelper.NamespaceXml))
             {
-                //Generate an event for xml:base
+                // Generate an event for xml:base
                 return new XmlBaseAttributeEvent(this._reader.Value, this._reader.Value, this.GetPosition());
             }
             else if (this.IsInNamespace(XmlSpecsHelper.NamespaceXmlNamespaces))
             {
-                //Return a Namespace Attribute Event
+                // Return a Namespace Attribute Event
                 if (this._reader.LocalName.Equals("xmlns"))
                 {
                     return new NamespaceAttributeEvent(String.Empty, this._reader.Value, this._reader.Value, this.GetPosition());
@@ -299,12 +299,12 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             }
             else if (this.IsInNamespace(XmlSpecsHelper.NamespaceXml) || (this._reader.NamespaceURI.Equals(String.Empty) && this._reader.Name.StartsWith("xml")))
             {
-                //Ignore other XML reserved names
+                // Ignore other XML reserved names
                 return null;
             }
             else if (this.IsName("parseType", NamespaceMapper.RDF))
             {
-                //Support Parse Type by returning an appropriate event
+                // Support Parse Type by returning an appropriate event
                 switch (this._reader.Value)
                 {
                     case "Resource":
@@ -319,18 +319,18 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             }
             else
             {
-                //Normal attribute
+                // Normal attribute
                 return new AttributeEvent(this._reader.Name, this._reader.Value, this._reader.Value, this.GetPosition());
             }
         }
 
         private IRdfXmlEvent GetElement()
         {
-            //Generate Element Event
+            // Generate Element Event
             ElementEvent el = new ElementEvent(this._reader.Name, this.GetBaseUri(), this._reader.Value, this.GetPosition());
             this._requireEndElement = this._reader.IsEmptyElement;
 
-            //Read Attribute Events
+            // Read Attribute Events
             if (this._reader.HasAttributes)
             {
                 for (int i = 0; i < this._reader.AttributeCount; i++)
@@ -361,20 +361,20 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                 }
             }
 
-            //Validate generated Attributes for Namespace Confusion and URIRef encoding
+            // Validate generated Attributes for Namespace Confusion and URIRef encoding
             foreach (AttributeEvent a in el.Attributes)
             {
-                //Namespace Confusion should only apply to Attributes without a Namespace specified
+                // Namespace Confusion should only apply to Attributes without a Namespace specified
                 if (a.Namespace.Equals(String.Empty))
                 {
                     if (RdfXmlSpecsHelper.IsAmbigiousAttributeName(a.LocalName))
                     {
-                        //Can't use any of the RDF terms that mandate the rdf: prefix without it
+                        // Can't use any of the RDF terms that mandate the rdf: prefix without it
                         throw new RdfParseException("An Attribute with an ambigious name '" + a.LocalName + "' was encountered.  The following attribute names MUST have the rdf: prefix - about, aboutEach, ID, bagID, type, resource, parseType");
                     }
                 }
 
-                //URIRef encoding check
+                // URIRef encoding check
                 if (!RdfXmlSpecsHelper.IsValidUriRefEncoding(a.Value))
                 {
                     throw new RdfParseException("An Attribute with an incorrectly encoded URIRef was encountered, URIRef's must be encoded in Unicode Normal Form C");

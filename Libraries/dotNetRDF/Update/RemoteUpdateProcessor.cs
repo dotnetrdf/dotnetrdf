@@ -65,7 +65,7 @@ namespace VDS.RDF.Update
         /// </summary>
         public void Discard()
         {
-            //No discard actions required
+            // No discard actions required
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace VDS.RDF.Update
         /// </summary>
         public void Flush()
         {
-            //No flush actions requied
+            // No flush actions requied
         }
 
         /// <summary>

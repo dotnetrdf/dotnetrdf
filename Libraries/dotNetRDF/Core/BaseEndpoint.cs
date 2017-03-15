@@ -91,7 +91,7 @@ namespace VDS.RDF
             }
             set
             {
-                //Can only use GET/POST
+                // Can only use GET/POST
                 if (value.Equals("GET", StringComparison.OrdinalIgnoreCase) || value.Equals("POST", StringComparison.OrdinalIgnoreCase))
                 {
                     this._httpMode = value.ToUpper();
@@ -385,12 +385,12 @@ namespace VDS.RDF
             if (this.Timeout > 0) httpRequest.Timeout = this.Timeout;
 #endif
 
-            //Apply Credentials to request if necessary
+            // Apply Credentials to request if necessary
             if (this.Credentials != null)
             {
                 if (Options.ForceHttpBasicAuth)
                 {
-                    //Forcibly include a HTTP basic authentication header
+                    // Forcibly include a HTTP basic authentication header
 #if !(SILVERLIGHT||NETCORE)
                     string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(this.Credentials.UserName + ":" + this.Credentials.Password));
                     httpRequest.Headers.Add("Authorization", "Basic " + credentials);
@@ -401,7 +401,7 @@ namespace VDS.RDF
                 }
                 else
                 {
-                    //Leave .Net to handle the HTTP auth challenge response itself
+                    // Leave .Net to handle the HTTP auth challenge response itself
                     httpRequest.Credentials = this.Credentials;
 #if !(SILVERLIGHT||NETCORE)
                     httpRequest.PreAuthenticate = true;
@@ -410,7 +410,7 @@ namespace VDS.RDF
             }
 
 #if !NO_PROXY
-            //Use a Proxy if required
+            // Use a Proxy if required
             if (this.Proxy == null) return;
             httpRequest.Proxy = this.Proxy;
             if (this.UseCredentialsForProxy)

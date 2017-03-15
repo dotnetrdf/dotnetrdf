@@ -355,12 +355,12 @@ namespace VDS.RDF.Writing
         {
             if (id == null) 
             {
-                //Can't be null
+                // Can't be null
                 return false;
             }
             else if (id.Equals(String.Empty))
             {
-                //Can't be empty
+                // Can't be empty
                 return false;
             }
             else
@@ -368,12 +368,12 @@ namespace VDS.RDF.Writing
                 char[] cs = id.ToCharArray();
                 if (Char.IsDigit(cs[0]) || cs[0] == '-' || cs[0] == '_')
                 {
-                    //Can't start with a Digit, Hyphen or Underscore
+                    // Can't start with a Digit, Hyphen or Underscore
                     return false;
                 }
                 else
                 {
-                    //Otherwise OK
+                    // Otherwise OK
                     return true;
                 }
             }
@@ -389,17 +389,17 @@ namespace VDS.RDF.Writing
         {
             if (id == null)
             {
-                //Can't be null
+                // Can't be null
                 return false;
             }
             else if (id.Equals(String.Empty))
             {
-                //Can't be empty
+                // Can't be empty
                 return false;
             }
             else
             {
-                //All characters must be alphanumeric and not start with a digit in NTriples
+                // All characters must be alphanumeric and not start with a digit in NTriples
                 char[] cs = id.ToCharArray();
                 return Char.IsLetter(cs[0]) && cs.All(c => Char.IsLetterOrDigit(c) && c <= 127);
             }
@@ -434,47 +434,47 @@ namespace VDS.RDF.Writing
         /// <param name="mode">Collection Search Mode</param>
         public static void FindCollections(ICollectionCompressingWriterContext context, CollectionSearchMode mode)
         {
-            //Prepare the RDF Nodes we need
+            // Prepare the RDF Nodes we need
             INode first, rest, nil;
             first = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst));
             rest = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest));
             nil = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
 
-            //First we're going to look for implicit collections we can represent using the 
-            //brackets syntax of (a b c)
+            // First we're going to look for implicit collections we can represent using the 
+            // brackets syntax of (a b c)
 
             if (mode == CollectionSearchMode.All || mode == CollectionSearchMode.ImplicitOnly)
             {
-                //Find all rdf:rest rdf:nil Triples
+                // Find all rdf:rest rdf:nil Triples
                 foreach (Triple t in context.Graph.GetTriplesWithPredicateObject(rest, nil))
                 {
-                    //If has named list node cannot compress
+                    // If has named list node cannot compress
                     if (t.Subject.NodeType != NodeType.Blank) break;
 
-                    //Build the collection recursively
+                    // Build the collection recursively
                     OutputRdfCollection c = new OutputRdfCollection(false);
 
-                    //Get the thing that is the rdf:first related to this rdf:rest
+                    // Get the thing that is the rdf:first related to this rdf:rest
                     IEnumerable<Triple> firsts = context.Graph.GetTriplesWithSubjectPredicate(t.Subject, first);//context.Graph.GetTriples(relfirstsel).Distinct();
                     Triple temp;
                     if (firsts.Count() > 1)
                     {
-                        //Strange error
+                        // Strange error
                         throw new RdfOutputException(WriterErrorMessages.MalformedCollectionWithMultipleFirsts);
                     }
                     else
                     {
-                        //Stick this item onto the Stack
+                        // Stick this item onto the Stack
                         temp = firsts.First();
                         c.Triples.Add(temp);
                     }
 
-                    //See if this thing is the rdf:rest of anything else
+                    // See if this thing is the rdf:rest of anything else
                     do
                     {
                         IEnumerable<Triple> ts = context.Graph.GetTriplesWithPredicateObject(rest, firsts.First().Subject);
 
-                        //Stop when there isn't a rdf:rest
+                        // Stop when there isn't a rdf:rest
                         if (ts.Count() == 0)
                         {
                             break;
@@ -486,21 +486,21 @@ namespace VDS.RDF.Writing
 
                             if (firsts.Count() > 1)
                             {
-                                //Strange error
+                                // Strange error
                                 throw new RdfOutputException(WriterErrorMessages.MalformedCollectionWithMultipleFirsts);
                             }
                             else
                             {
-                                //Stick this item onto the Stack
+                                // Stick this item onto the Stack
                                 temp = firsts.First();
-                                //If Item is a named list node cannot compress
+                                // If Item is a named list node cannot compress
                                 if (temp.Subject.NodeType != NodeType.Blank) break;
                                 c.Triples.Add(temp);
                             }
                         }
                     } while (true);
 
-                    //Can only compress if every List Node has a Blank Node Subject
+                    // Can only compress if every List Node has a Blank Node Subject
                     if (c.Triples.All(x => x.Subject.NodeType == NodeType.Blank))
                     {
                         context.Collections.Add(firsts.First().Subject, c);
@@ -508,8 +508,8 @@ namespace VDS.RDF.Writing
                 }
             }
 
-            //Now we want to look for explicit collections which are representable
-            //using Blank Node syntax [p1 o1; p2 o2; p3 o3]
+            // Now we want to look for explicit collections which are representable
+            // using Blank Node syntax [p1 o1; p2 o2; p3 o3]
             if (mode == CollectionSearchMode.All || mode == CollectionSearchMode.ExplicitOnly)
             {
                 List<IBlankNode> bnodes = context.Graph.Nodes.BlankNodes().ToList();
@@ -523,8 +523,8 @@ namespace VDS.RDF.Writing
 
                     if (ts.Count <= 1)
                     {
-                        //This Blank Node is only used once
-                        //Add an empty explicit collection - we'll interpret this as [] later
+                        // This Blank Node is only used once
+                        // Add an empty explicit collection - we'll interpret this as [] later
                         context.Collections.Add(b, new OutputRdfCollection(true));
                     }
                     else
@@ -540,35 +540,35 @@ namespace VDS.RDF.Writing
                 }
             }
 
-            //If no collections found then no further processing
+            // If no collections found then no further processing
             if (context.Collections.Count == 0) return;
 
-            //Once we've found all the Collections we need to check which are actually eligible for compression
+            // Once we've found all the Collections we need to check which are actually eligible for compression
             List<KeyValuePair<INode, OutputRdfCollection>> cs = context.Collections.ToList();
 
-            //1 - If all the Triples pertaining to a particular Node are in the Collection then a collection is not eligible
+            // 1 - If all the Triples pertaining to a particular Node are in the Collection then a collection is not eligible
             foreach (KeyValuePair<INode, OutputRdfCollection> kvp in cs)
             {
                 OutputRdfCollection c = kvp.Value;
                 if (c.IsExplicit)
                 {
-                    //For explicit collections if all Triples mentioning the Target Blank Node are in the Collection then can't compress
-                    //If there are no Triples in the Collection then this is a single use Blank Node so can always compress
+                    // For explicit collections if all Triples mentioning the Target Blank Node are in the Collection then can't compress
+                    // If there are no Triples in the Collection then this is a single use Blank Node so can always compress
                     if (c.Triples.Count > 0 && c.Triples.Count == context.Graph.GetTriples(kvp.Key).Count())
                     {
-                        //TODO: This doesn't work because it can conflict
-                        //In this case we can remove a single Triple from the Collection and hope this allows us to compress
-                        //context.Collections[kvp.Key].Triples.RemoveAt(0);
+                        // TODO: This doesn't work because it can conflict
+                        // In this case we can remove a single Triple from the Collection and hope this allows us to compress
+                        // context.Collections[kvp.Key].Triples.RemoveAt(0);
 
                         context.Collections.Remove(kvp.Key);
                     }
                 }
                 else
                 {
-                    //For implicit collections if the number of Triples in the Collection is exactly ((t*3) - 1) those in the Graph then
-                    //can't compress i.e. the collection is not linked to anything else
-                    //Or if the number of mentions compared to the expected mentions differs by more than 1 then
-                    //can't compress i.e. the collection is linked to more than one thing
+                    // For implicit collections if the number of Triples in the Collection is exactly ((t*3) - 1) those in the Graph then
+                    // can't compress i.e. the collection is not linked to anything else
+                    // Or if the number of mentions compared to the expected mentions differs by more than 1 then
+                    // can't compress i.e. the collection is linked to more than one thing
                     int mentions = context.Graph.GetTriples(kvp.Key).Count();
                     int expectedMentions = ((c.Triples.Count * 3) - 1);
                     if (expectedMentions == mentions || mentions-expectedMentions != 1)
@@ -579,23 +579,23 @@ namespace VDS.RDF.Writing
             }
             if (context.Collections.Count == 0) return;
 
-            //2 - Look for cyclic collection dependencies
+            // 2 - Look for cyclic collection dependencies
             cs = context.Collections.OrderByDescending(kvp => kvp.Value.Triples.Count).ToList();
 
-            //First build up a dependencies table
+            // First build up a dependencies table
             Dictionary<INode,List<INode>> dependencies = new Dictionary<INode, List<INode>>();
             foreach (KeyValuePair<INode, OutputRdfCollection> kvp in cs)
             {
                 OutputRdfCollection c = kvp.Value;
 
-                //Empty Blank Node Collections cannot be cyclic i.e. []
+                // Empty Blank Node Collections cannot be cyclic i.e. []
                 if (c.Triples.Count == 0) continue;
 
-                //Otherwise check each Object of the Triples for other Blank Nodes
+                // Otherwise check each Object of the Triples for other Blank Nodes
                 List<INode> ds = new List<INode>();
                 foreach (Triple t in c.Triples)
                 {
-                    //Only care about Blank Nodes which aren't the collection root but are the root for another collection
+                    // Only care about Blank Nodes which aren't the collection root but are the root for another collection
                     if (t.Object.NodeType == NodeType.Blank && !t.Object.Equals(kvp.Key) && context.Collections.ContainsKey(t.Object))
                     {
                         ds.Add(t.Object);
@@ -607,7 +607,7 @@ namespace VDS.RDF.Writing
                 }
             }
 
-            //Now go back through that table looking for cycles
+            // Now go back through that table looking for cycles
             foreach (INode n in dependencies.Keys)
             {
                 List<INode> ds = dependencies[n];
@@ -621,7 +621,7 @@ namespace VDS.RDF.Writing
                     }
                 }
 
-                //We can tell if there is a cycle since ds will now contain n
+                // We can tell if there is a cycle since ds will now contain n
                 if (ds.Contains(n))
                 {
                     context.Collections.Remove(n);
@@ -629,7 +629,7 @@ namespace VDS.RDF.Writing
             }
             if (context.Collections.Count == 0) return;
 
-            //Finally fill out the TriplesDone for each Collection
+            // Finally fill out the TriplesDone for each Collection
             foreach (KeyValuePair<INode, OutputRdfCollection> kvp in context.Collections)
             {
                 OutputRdfCollection c = kvp.Value;
@@ -658,7 +658,7 @@ namespace VDS.RDF.Writing
                 }
             }
 
-            //As a final sanity check look for any Explicit Collection Key which is used more than once
+            // As a final sanity check look for any Explicit Collection Key which is used more than once
             cs = context.Collections.ToList();
             foreach (KeyValuePair<INode, OutputRdfCollection> kvp in cs)
             {

@@ -59,9 +59,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                 throw new RdfQueryException("Cannot cast a Null to a xsd:decimal");
             }
 
-            //New method should be much faster
-            //if (n is DecimalNode) return n;
-            //return new DecimalNode(null, n.AsDecimal());
+            // New method should be much faster
+            // if (n is DecimalNode) return n;
+            // return new DecimalNode(null, n.AsDecimal());
 
             switch (n.NodeType)
             {
@@ -72,18 +72,18 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
 
                 case NodeType.Literal:
                     if (n is DecimalNode) return n;
-                    //See if the value can be cast
+                    // See if the value can be cast
                     ILiteralNode lit = (ILiteralNode)n;
                     if (lit.DataType != null)
                     {
                         string dt = lit.DataType.ToString();
                         if (SparqlSpecsHelper.IntegerDataTypes.Contains(dt))
                         {
-                            //Already an integer type so valid as a xsd:decimal
+                            // Already an integer type so valid as a xsd:decimal
                             decimal d;
                             if (Decimal.TryParse(lit.Value, NumberStyles.Any ^ NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out d))
                             {
-                                //Parsed OK
+                                // Parsed OK
                                 return new DecimalNode(lit.Graph, d);
                             }
                             else
@@ -93,7 +93,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         }
                         else if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
                         {
-                            //DateTime cast forbidden
+                            // DateTime cast forbidden
                             throw new RdfQueryException("Cannot cast a xsd:dateTime to a xsd:decimal");
                         }
                         else
@@ -101,7 +101,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             decimal d;
                             if (Decimal.TryParse(lit.Value, NumberStyles.Any ^ NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out d))
                             {
-                                //Parsed OK
+                                // Parsed OK
                                 return new DecimalNode(lit.Graph, d);
                             }
                             else
@@ -115,7 +115,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         decimal d;
                         if (Decimal.TryParse(lit.Value, NumberStyles.Any ^ NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out d))
                         {
-                            //Parsed OK
+                            // Parsed OK
                             return new DecimalNode(lit.Graph, d);
                         }
                         else

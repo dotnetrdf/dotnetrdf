@@ -170,23 +170,23 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static bool IsName(String name)
         {
-            //Get the Characters
+            // Get the Characters
             char[] cs = name.ToCharArray();
 
             if (cs.Length == 0) return false;
 
-            //Check first Character is a valid NameStartChar
+            // Check first Character is a valid NameStartChar
             if (!IsNameStartChar(cs[0]))
             {
                 return false;
             }
 
-            //Check rest of Characters
+            // Check rest of Characters
             if (cs.Length > 1)
             {
                 for (int i = 1; i < cs.Length; i++)
                 {
-                    //Must be a valid NCNameChar
+                    // Must be a valid NCNameChar
                     if (!IsNameChar(cs[i]))
                     {
                         return false;
@@ -194,7 +194,7 @@ namespace VDS.RDF.Parsing
                 }
             }
 
-            //If we get here the String is OK
+            // If we get here the String is OK
             return true;
         }
 
@@ -219,36 +219,36 @@ namespace VDS.RDF.Parsing
         {
             if (IsNameStartChar(c))
             {
-                //NameStartChar's allowed
+                // NameStartChar's allowed
                 return true;
             }
             else if (Char.IsDigit(c))
             {
-                //Digits allowed
+                // Digits allowed
                 return true;
             }
             else if (c == '.' || c == '-')
             {
-                //Period and Hyphen allowed
+                // Period and Hyphen allowed
                 return true;
             }
             else if (c == 0xB7) {
-                //This Hex Character allowed
+                // This Hex Character allowed
                 return true;
             }
             else if (c >= 0x0300 && c <= 0x036F)
             {
-                //This Hex Range allowed
+                // This Hex Range allowed
                 return true;
             }
             else if (c >= 0x203F && c <= 0x2040)
             {
-                //This Hex Range allowed
+                // This Hex Range allowed
                 return true;
             }
             else
             {
-                //Anything else forbidden
+                // Anything else forbidden
                 return false;
             }
         }
@@ -263,7 +263,7 @@ namespace VDS.RDF.Parsing
         {
             if (c == '_' || c == ':')
             {
-                //Underscore and Colon Allowed
+                // Underscore and Colon Allowed
                 return true;
             }
             else if (c >= 'a' && c <= 'z')
@@ -286,19 +286,19 @@ namespace VDS.RDF.Parsing
                        (c >= 0xF900 && c <= 0xFDCF) ||
                        (c >= 0xFDF0 && c <= 0xFFFD))
             {
-                //Whole load of Hex Ranges are allowed
+                // Whole load of Hex Ranges are allowed
                 return true;
             }
             else
             {
-                //Have to cast to an Integer because the next Hex Range is out of the range of Character
+                // Have to cast to an Integer because the next Hex Range is out of the range of Character
                 int i = (int)c;
                 if (i >= 0x10000 && i <= 0xEFFFF)
                 {
-                    //This Hex Range is also allowed
+                    // This Hex Range is also allowed
                     return true;
                 }
-                //Anything else is forbidden
+                // Anything else is forbidden
                 return false;
             }
         }
@@ -454,7 +454,7 @@ namespace VDS.RDF.Parsing
             {
                 switch (type1)
                 {
-                    //TODO: Implement type compatability detection for numeric types
+                    // TODO: Implement type compatability detection for numeric types
 
                     case XmlSchemaDataTypeDate:
                         if (type2.Equals(XmlSchemaDataTypeDateTime))

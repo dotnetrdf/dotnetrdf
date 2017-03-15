@@ -94,7 +94,7 @@ namespace VDS.RDF.Writing
                 }
                 catch
                 {
-                    //No Catch Actions
+                    // No Catch Actions
                 }
                 throw;
             }
@@ -110,7 +110,7 @@ namespace VDS.RDF.Writing
             HtmlTextWriter writer = new HtmlTextWriter(output);
             QNameOutputMapper qnameMapper = new QNameOutputMapper(this._namespaces != null ? this._namespaces : new NamespaceMapper(true));
 
-            //Page Header
+            // Page Header
             writer.Write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
             writer.RenderBeginTag(HtmlTextWriterTag.Html);
             writer.RenderBeginTag(HtmlTextWriterTag.Head);
@@ -125,19 +125,19 @@ namespace VDS.RDF.Writing
                 writer.RenderBeginTag(HtmlTextWriterTag.Link);
                 writer.RenderEndTag();
             }
-            //TODO: Add <meta> for charset?
+            // TODO: Add <meta> for charset?
             writer.RenderEndTag();
 
-            //Start Body
+            // Start Body
             writer.RenderBeginTag(HtmlTextWriterTag.Body);
 
             if (results.ResultsType == SparqlResultsType.VariableBindings)
             {
-                //Create a Table for the results
+                // Create a Table for the results
                 writer.AddAttribute(HtmlTextWriterAttribute.Width, "100%");
                 writer.RenderBeginTag(HtmlTextWriterTag.Table);
 
-                //Create a Table Header with the Variable Names
+                // Create a Table Header with the Variable Names
                 writer.RenderBeginTag(HtmlTextWriterTag.Thead);
                 writer.RenderBeginTag(HtmlTextWriterTag.Tr);
 
@@ -154,18 +154,18 @@ namespace VDS.RDF.Writing
                 writer.WriteLine();
 #endif
 
-                //Create a Table Body for the Results
+                // Create a Table Body for the Results
                 writer.RenderBeginTag(HtmlTextWriterTag.Tbody);
 
-                //Create a Column for each Binding
+                // Create a Column for each Binding
                 foreach (SparqlResult result in results)
                 {
-                    //Start Row
+                    // Start Row
                     writer.RenderBeginTag(HtmlTextWriterTag.Tr);
 
                     foreach (String var in results.Variables)
                     {
-                        //Start Column
+                        // Start Column
                         writer.RenderBeginTag(HtmlTextWriterTag.Td);
 
                         if (result.HasValue(var))
@@ -218,7 +218,7 @@ namespace VDS.RDF.Writing
                                         break;
 
                                     case NodeType.GraphLiteral:
-                                        //Error
+                                        // Error
                                         throw new RdfOutputException("Result Sets which contain Graph Literal Nodes cannot be serialized in the HTML Format");
 
                                     case NodeType.Uri:
@@ -252,26 +252,26 @@ namespace VDS.RDF.Writing
                             writer.WriteEncodedText(" ");
                         }
 
-                        //End Column
+                        // End Column
                         writer.RenderEndTag();
                     }
 
-                    //End Row
+                    // End Row
                     writer.RenderEndTag();
 #if !NO_WEB
                     writer.WriteLine();
 #endif
                 }
 
-                //End Table Body
+                // End Table Body
                 writer.RenderEndTag();
 
-                //End Table
+                // End Table
                 writer.RenderEndTag();
             }
             else
             {
-                //Show a Header and a Boolean value
+                // Show a Header and a Boolean value
                 writer.RenderBeginTag(HtmlTextWriterTag.H3);
                 writer.WriteEncodedText("ASK Query Result");
                 writer.RenderEndTag();
@@ -280,7 +280,7 @@ namespace VDS.RDF.Writing
                 writer.RenderEndTag();
             }
 
-            //End of Page
+            // End of Page
             writer.RenderEndTag(); //End Body
             writer.RenderEndTag(); //End Html
         }

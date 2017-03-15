@@ -66,13 +66,13 @@ namespace VDS.RDF.Update.Protocol
             Uri graphUri = this.ResolveGraphUri(context);
             try
             {
-                //Send the Graph to the user
+                // Send the Graph to the user
                 IGraph g = this.GetGraph(graphUri);
                 this.SendResultsToClient(context, g);
             }
             catch
             {
-                //If there is an error then we assume the Graph does not exist
+                // If there is an error then we assume the Graph does not exist
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 return;
             }
@@ -92,7 +92,7 @@ namespace VDS.RDF.Update.Protocol
         /// </remarks>
         public override void ProcessPost(IHttpContext context)
         {
-            //If the Manager is read-only then a 403 Forbidden will be returned
+            // If the Manager is read-only then a 403 Forbidden will be returned
             if (this._manager.IsReadOnly)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
@@ -110,8 +110,8 @@ namespace VDS.RDF.Update.Protocol
             }
             else
             {
-                //If the Manager does not support update we attempt to get around this by loading the Graph
-                //appending the additions to it (via merging) and then saving it back to the Store
+                // If the Manager does not support update we attempt to get around this by loading the Graph
+                // appending the additions to it (via merging) and then saving it back to the Store
                 Graph current = new Graph();
                 this._manager.LoadGraph(current, graphUri);
                 current.Merge(g);
@@ -130,7 +130,7 @@ namespace VDS.RDF.Update.Protocol
         /// </remarks>
         public override void ProcessPostCreate(IHttpContext context)
         {
-            //If the Manager is read-only then a 403 Forbidden will be returned
+            // If the Manager is read-only then a 403 Forbidden will be returned
             if (this._manager.IsReadOnly)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
@@ -143,10 +143,10 @@ namespace VDS.RDF.Update.Protocol
             Uri graphUri = this.MintGraphUri(context, g);
             g.BaseUri = graphUri;
 
-            //Save the Payload under the newly Minted Graph URI
+            // Save the Payload under the newly Minted Graph URI
             this._manager.SaveGraph(g);
 
-            //Finally return a 201 Created and a Location header with the new Graph URI
+            // Finally return a 201 Created and a Location header with the new Graph URI
             context.Response.StatusCode = (int)HttpStatusCode.Created;
             try
             {
@@ -172,7 +172,7 @@ namespace VDS.RDF.Update.Protocol
         /// </remarks>
         public override void ProcessPut(IHttpContext context)
         {
-            //If the Manager is read-only then a 403 Forbidden will be returned
+            // If the Manager is read-only then a 403 Forbidden will be returned
             if (this._manager.IsReadOnly)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
@@ -201,7 +201,7 @@ namespace VDS.RDF.Update.Protocol
         /// </remarks>
         public override void ProcessDelete(IHttpContext context)
         {
-            //If the Manager is read-only then a 403 Forbidden will be returned
+            // If the Manager is read-only then a 403 Forbidden will be returned
             if (this._manager.IsReadOnly)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
@@ -218,7 +218,7 @@ namespace VDS.RDF.Update.Protocol
                 }
                 else
                 {
-                    //Have to simulate deletion by replacing with an empty graph
+                    // Have to simulate deletion by replacing with an empty graph
                     IGraph g = new Graph();
                     g.BaseUri = graphUri;
 
@@ -227,7 +227,7 @@ namespace VDS.RDF.Update.Protocol
             }
             else
             {
-                //If no Graph MUST respond 404
+                // If no Graph MUST respond 404
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
             }
         }
@@ -238,7 +238,7 @@ namespace VDS.RDF.Update.Protocol
         /// <param name="context">HTTP Context</param>
         public override void ProcessHead(IHttpContext context)
         {
-            //Work out the Graph URI we want to get
+            // Work out the Graph URI we want to get
             Uri graphUri = this.ResolveGraphUri(context);
 
             try
@@ -246,7 +246,7 @@ namespace VDS.RDF.Update.Protocol
                 bool exists = this.HasGraph(graphUri);
                 if (exists)
                 {
-                    //Send the Content Type we'd select based on the Accept header to the user
+                    // Send the Content Type we'd select based on the Accept header to the user
                     String ctype;
                     IRdfWriter writer = MimeTypesHelper.GetWriter(HandlerHelper.GetAcceptTypes(context), out ctype);
                     context.Response.ContentType = ctype;
@@ -258,8 +258,8 @@ namespace VDS.RDF.Update.Protocol
             }
             catch (RdfQueryException)
             {
-                //If the GetGraph() method errors this implies that the Store does not contain the Graph
-                //In such a case we should return a 404
+                // If the GetGraph() method errors this implies that the Store does not contain the Graph
+                // In such a case we should return a 404
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 return;
             }
@@ -271,16 +271,16 @@ namespace VDS.RDF.Update.Protocol
         /// <param name="context">HTTP Context</param>
         public override void ProcessPatch(IHttpContext context)
         {
-            //Work out the Graph URI we want to patch
+            // Work out the Graph URI we want to patch
             Uri graphUri = this.ResolveGraphUri(context);
 
-            //If the Request has the SPARQL Update MIME Type then we can process it
+            // If the Request has the SPARQL Update MIME Type then we can process it
             if (context.Request.ContentLength > 0)
             {
                 if (context.Request.ContentType.Equals("application/sparql-update"))
                 {
-                    //Try and parse the SPARQL Update
-                    //No error handling here as we assume the calling IHttpHandler does that
+                    // Try and parse the SPARQL Update
+                    // No error handling here as we assume the calling IHttpHandler does that
                     String patchData;
                     using (StreamReader reader = new StreamReader(context.Request.InputStream))
                     {
@@ -290,8 +290,8 @@ namespace VDS.RDF.Update.Protocol
                     SparqlUpdateParser parser = new SparqlUpdateParser();
                     SparqlUpdateCommandSet cmds = parser.ParseFromString(patchData);
 
-                    //Assuming that we've got here i.e. the SPARQL Updates are parseable then
-                    //we need to check that they actually affect the relevant Graph
+                    // Assuming that we've got here i.e. the SPARQL Updates are parseable then
+                    // we need to check that they actually affect the relevant Graph
                     if (cmds.Commands.All(c => c.AffectsSingleGraph && c.AffectsGraph(graphUri)))
                     {
                         GenericUpdateProcessor processor = new GenericUpdateProcessor(this._manager);
@@ -300,22 +300,22 @@ namespace VDS.RDF.Update.Protocol
                     }
                     else
                     {
-                        //One/More commands either do no affect a Single Graph or don't affect the Graph
-                        //implied by the HTTP Request so give a 422 response
+                        // One/More commands either do no affect a Single Graph or don't affect the Graph
+                        // implied by the HTTP Request so give a 422 response
                         context.Response.StatusCode = 422;
                         return;
                     }
                 }
                 else
                 {
-                    //Don't understand other forms of PATCH requests
+                    // Don't understand other forms of PATCH requests
                     context.Response.StatusCode = (int)HttpStatusCode.UnsupportedMediaType;
                     return;
                 }
             }
             else
             {
-                //Empty Request is a Bad Request
+                // Empty Request is a Bad Request
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return;
             }
@@ -342,7 +342,7 @@ namespace VDS.RDF.Update.Protocol
         {
             if (this._manager is IQueryableStorage)
             {
-                //Generate an ASK query based on this
+                // Generate an ASK query based on this
                 SparqlParameterizedString ask = new SparqlParameterizedString();
                 if (graphUri != null)
                 {

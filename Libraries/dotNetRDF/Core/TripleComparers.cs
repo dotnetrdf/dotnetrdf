@@ -71,12 +71,12 @@ namespace VDS.RDF
 
             if (x.NodeType == NodeType.Literal && y.NodeType == NodeType.Literal)
             {
-                //Use faster comparison for literals - standard comparison is valued based 
-                //and so gets slower as amount of nodes to compare gets larger
+                // Use faster comparison for literals - standard comparison is valued based 
+                // and so gets slower as amount of nodes to compare gets larger
 
-                //Sort order for literals is as follows
-                //plain literals < language spec'd literals < typed literals
-                //Within a category ordering is lexical on modifier, then lexical on lexical value
+                // Sort order for literals is as follows
+                // plain literals < language spec'd literals < typed literals
+                // Within a category ordering is lexical on modifier, then lexical on lexical value
                 ILiteralNode a = (ILiteralNode)x;
                 ILiteralNode b = (ILiteralNode)y;
 
@@ -84,19 +84,19 @@ namespace VDS.RDF
                 {
                     if (b.DataType != null)
                     {
-                        //Compare datatypes
+                        // Compare datatypes
                         int c = ComparisonHelper.CompareUris(a.DataType, b.DataType);
                         if (c == 0)
                         {
-                            //Same datatype so compare lexical values
+                            // Same datatype so compare lexical values
                             return a.Value.CompareTo(b.Value);
                         }
-                        //Different datatypes
+                        // Different datatypes
                         return c;
                     }
                     else
                     {
-                        //y is untyped literal so x is greater than y
+                        // y is untyped literal so x is greater than y
                         return 1;
                     }
                 }
@@ -104,31 +104,31 @@ namespace VDS.RDF
                 {
                     if (!b.Language.Equals(String.Empty))
                     {
-                        //Compare language specifiers
+                        // Compare language specifiers
                         int c = a.Language.CompareTo(b.Language);
                         if (c == 0)
                         {
-                            //Same language so compare lexical values
+                            // Same language so compare lexical values
                             return a.Value.CompareTo(b.Value);
                         }
-                        //Different language specifiers
+                        // Different language specifiers
                         return c;
                     }
                     else
                     {
-                        //y in plain literal so x is greater then y
+                        // y in plain literal so x is greater then y
                         return 1;
                     }
                 }
                 else
                 {
-                    //Plain literals so just compare lexical value
+                    // Plain literals so just compare lexical value
                     return a.Value.CompareTo(b.Value);
                 }
             }
             else
             {
-                //Non-literal nodes use their normal IComparable implementations
+                // Non-literal nodes use their normal IComparable implementations
                 return x.CompareTo(y);
             }
         }
@@ -178,12 +178,12 @@ namespace VDS.RDF
 
             if (x.NodeType == NodeType.Literal && y.NodeType == NodeType.Literal)
             {
-                //Use faster comparison for literals - standard comparison is valued based 
-                //and so gets slower as amount of nodes to compare gets larger
+                // Use faster comparison for literals - standard comparison is valued based 
+                // and so gets slower as amount of nodes to compare gets larger
 
-                //Sort order for literals is as follows
-                //plain literals < language spec'd literals < typed literals
-                //Within a category ordering is lexical on modifier, then lexical on lexical value
+                // Sort order for literals is as follows
+                // plain literals < language spec'd literals < typed literals
+                // Within a category ordering is lexical on modifier, then lexical on lexical value
                 ILiteralNode a = (ILiteralNode)x;
                 ILiteralNode b = (ILiteralNode)y;
 
@@ -191,19 +191,19 @@ namespace VDS.RDF
                 {
                     if (b.DataType != null)
                     {
-                        //Compare datatypes
+                        // Compare datatypes
                         int c = ComparisonHelper.CompareUris(a.DataType, b.DataType);
                         if (c == 0)
                         {
-                            //Same datatype so compare lexical values
+                            // Same datatype so compare lexical values
                             return a.Value.CompareTo(b.Value);
                         }
-                        //Different datatypes
+                        // Different datatypes
                         return c;
                     }
                     else
                     {
-                        //y is untyped literal so x is greater than y
+                        // y is untyped literal so x is greater than y
                         return 1;
                     }
                 }
@@ -211,31 +211,31 @@ namespace VDS.RDF
                 {
                     if (!b.Language.Equals(String.Empty))
                     {
-                        //Compare language specifiers
+                        // Compare language specifiers
                         int c = a.Language.CompareTo(b.Language);
                         if (c == 0)
                         {
-                            //Same language so compare lexical values
+                            // Same language so compare lexical values
                             return a.Value.CompareTo(b.Value);
                         }
-                        //Different language specifiers
+                        // Different language specifiers
                         return c;
                     }
                     else
                     {
-                        //y in plain literal so x is greater then y
+                        // y in plain literal so x is greater then y
                         return 1;
                     }
                 }
                 else
                 {
-                    //Plain literals so just compare lexical value
+                    // Plain literals so just compare lexical value
                     return a.Value.CompareTo(b.Value);
                 }
             }
             else
             {
-                //Non-literal nodes use their normal IComparable implementations
+                // Non-literal nodes use their normal IComparable implementations
                 return x.CompareTo(y);
             }
         }

@@ -317,7 +317,7 @@ namespace VDS.RDF.Query
             {
                 if (this._specialType == SparqlSpecialQueryType.Unknown)
                 {
-                    //Try and detect if Special Optimisations are possible
+                    // Try and detect if Special Optimisations are possible
                     if (this._rootGraphPattern != null)
                     {
                         if (this._type == SparqlQueryType.Ask)
@@ -986,7 +986,7 @@ namespace VDS.RDF.Query
             StringBuilder output = new StringBuilder();
             StringBuilder from = new StringBuilder();
 
-            //Output the Base and Prefix Directives if not a sub-query
+            // Output the Base and Prefix Directives if not a sub-query
             if (!this._subquery)
             {
                 if (this._baseUri != null)
@@ -1002,7 +1002,7 @@ namespace VDS.RDF.Query
                     output.AppendLine();
                 }
 
-                //Build the String for the FROM clause
+                // Build the String for the FROM clause
                 if (this._defaultGraphs.Count > 0 || this._namedGraphs.Count > 0) from.Append(' ');
                 foreach (Uri u in this._defaultGraphs.Where(u => u != null))
                 {
@@ -1197,20 +1197,20 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public ISparqlAlgebra ToAlgebra()
         {
-            //Depending on how the query gets built we may not have had graph pattern optimization applied
-            //which we should do here if query optimization is enabled
+            // Depending on how the query gets built we may not have had graph pattern optimization applied
+            // which we should do here if query optimization is enabled
             if (!this.IsOptimised && Options.QueryOptimisation)
             {
                 this.Optimise();
             }
 
-            //Firstly Transform the Root Graph Pattern to SPARQL Algebra
+            // Firstly Transform the Root Graph Pattern to SPARQL Algebra
             ISparqlAlgebra algebra;
             if (this._rootGraphPattern != null)
             {
                 if (Options.AlgebraOptimisation)
                 {
-                    //If using Algebra Optimisation may use a special algebra in some cases
+                    // If using Algebra Optimisation may use a special algebra in some cases
                     switch (this.SpecialType)
                     {
                         case SparqlSpecialQueryType.DistinctGraphs:
@@ -1221,34 +1221,34 @@ namespace VDS.RDF.Query
                             break;
                         case SparqlSpecialQueryType.NotApplicable:
                         default:
-                            //If not just use the standard transform
+                            // If not just use the standard transform
                             algebra = this._rootGraphPattern.ToAlgebra();
                             break;
                     }
                 }
                 else
                 {
-                    //If not using Algebra Optimisation just use the standard transform
+                    // If not using Algebra Optimisation just use the standard transform
                     algebra = this._rootGraphPattern.ToAlgebra();
                 }
             }
             else
             {
-                //No root graph pattern means empty BGP
+                // No root graph pattern means empty BGP
                 algebra = new Bgp();
             }
 
-            //If we have a top level VALUES clause then we'll add it into the algebra here
+            // If we have a top level VALUES clause then we'll add it into the algebra here
             if (this._bindings != null)
             {
                 algebra = Join.CreateJoin(algebra, new Bindings(this._bindings));
             }
 
-            //Then we apply any optimisers followed by relevant solution modifiers
+            // Then we apply any optimisers followed by relevant solution modifiers
             switch (this._type)
             {
                 case SparqlQueryType.Ask:
-                    //Apply Algebra Optimisation is enabled
+                    // Apply Algebra Optimisation is enabled
                     if (Options.AlgebraOptimisation)
                     {
                         algebra = this.ApplyAlgebraOptimisations(algebra);
@@ -1264,19 +1264,19 @@ namespace VDS.RDF.Query
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:                   
-                    //GROUP BY is the first thing applied
-                    //This applies if there is a GROUP BY or if there are aggregates
-                    //With no GROUP BY it produces a single group of all results
+                    // GROUP BY is the first thing applied
+                    // This applies if there is a GROUP BY or if there are aggregates
+                    // With no GROUP BY it produces a single group of all results
                     if (this._groupBy != null || this._vars.Any(v => v.IsAggregate))
                     {
                         algebra = new GroupBy(algebra, this._groupBy, this._vars.Where(v => v.IsAggregate));
                     }
 
-                    //Add HAVING clause immediately after the grouping
+                    // Add HAVING clause immediately after the grouping
                     if (this._having != null) algebra = new Having(algebra, this._having);
 
-                    //After grouping we do projection
-                    //We introduce an Extend for each Project Expression
+                    // After grouping we do projection
+                    // We introduce an Extend for each Project Expression
                     foreach (SparqlVariable var in this._vars)
                     {
                         if (var.IsProjection)
@@ -1285,16 +1285,16 @@ namespace VDS.RDF.Query
                         }
                     }
 
-                    //We can then Order our results
-                    //We do ordering before we do Select but after Project so we can order by any of
-                    //the project expressions/aggregates and any variable in the results even if
-                    //it won't be output as a result variable
+                    // We can then Order our results
+                    // We do ordering before we do Select but after Project so we can order by any of
+                    // the project expressions/aggregates and any variable in the results even if
+                    // it won't be output as a result variable
                     if (this._orderBy != null) algebra = new OrderBy(algebra, this._orderBy);
 
-                    //After Ordering we apply Select
-                    //Select effectively trims the results so only result variables are left
-                    //This doesn't apply to CONSTRUCT since any variable may be used in the Construct Template
-                    //so we don't want to eliminate anything
+                    // After Ordering we apply Select
+                    // Select effectively trims the results so only result variables are left
+                    // This doesn't apply to CONSTRUCT since any variable may be used in the Construct Template
+                    // so we don't want to eliminate anything
                     if (this._type != SparqlQueryType.Construct)
                     {
                         switch (this._type)
@@ -1311,7 +1311,7 @@ namespace VDS.RDF.Query
                         }
                     }
 
-                    //If we have a Distinct/Reduced then we'll apply those after Selection
+                    // If we have a Distinct/Reduced then we'll apply those after Selection
                     if (this._type == SparqlQueryType.SelectAllDistinct || this._type == SparqlQueryType.SelectDistinct)
                     {
                         algebra = new Distinct(algebra);
@@ -1321,13 +1321,13 @@ namespace VDS.RDF.Query
                         algebra = new Reduced(algebra);
                     }
 
-                    //Finally we can apply any limit and/or offset
+                    // Finally we can apply any limit and/or offset
                     if (this._limit >= 0 || this._offset > 0)
                     {
                         algebra = new Slice(algebra, this._limit, this._offset);
                     }
 
-                    //Apply Algebra Optimisation if enabled
+                    // Apply Algebra Optimisation if enabled
                     if (Options.AlgebraOptimisation)
                     {
                         algebra = this.ApplyAlgebraOptimisations(algebra);
@@ -1349,7 +1349,7 @@ namespace VDS.RDF.Query
         {
             try
             {
-                //Apply Local Optimisers
+                // Apply Local Optimisers
                 foreach (IAlgebraOptimiser opt in this._optimisers.Where(o => o.IsApplicable(this)))
                 {
                     try
@@ -1358,10 +1358,10 @@ namespace VDS.RDF.Query
                     }
                     catch
                     {
-                        //Ignore errors - if an optimiser errors then we leave the algebra unchanged
+                        // Ignore errors - if an optimiser errors then we leave the algebra unchanged
                     }
                 }
-                //Apply Global Optimisers
+                // Apply Global Optimisers
                 foreach (IAlgebraOptimiser opt in SparqlOptimiser.AlgebraOptimisers.Where(o => o.IsApplicable(this)))
                 {
                     try
@@ -1370,7 +1370,7 @@ namespace VDS.RDF.Query
                     }
                     catch
                     {
-                        //Ignore errors - if an optimiser errors then we leave the algebra unchanged
+                        // Ignore errors - if an optimiser errors then we leave the algebra unchanged
                     }
                 }
                 return algebra;
@@ -1392,48 +1392,48 @@ namespace VDS.RDF.Query
                 {
                     if (this._orderBy == null)
                     {
-                        //If there's no ordering then of course it's optimisable
+                        // If there's no ordering then of course it's optimisable
                         return true;
                     }
                     else
                     {
                         if (this._orderBy.IsSimple)
                         {
-                            //Is the first pattern a TriplePattern
-                            //Do all the Variables occur in the first pattern
+                            // Is the first pattern a TriplePattern
+                            // Do all the Variables occur in the first pattern
                             if (this._rootGraphPattern != null)
                             {
                                 if (this._rootGraphPattern.TriplePatterns.Count > 0)
                                 {
                                     if (this._rootGraphPattern.TriplePatterns[0].PatternType == TriplePatternType.Match)
                                     {
-                                        //If all the Ordering variables occur in the 1st Triple Pattern then we can optimise
+                                        // If all the Ordering variables occur in the 1st Triple Pattern then we can optimise
                                         this._optimisableOrdering = this._orderBy.Variables.All(v => this._rootGraphPattern.TriplePatterns[0].Variables.Contains(v));
                                     }
                                     else
                                     {
-                                        //Not a Triple Pattern as the first pattern in Root Graph Pattern then can't optimise
+                                        // Not a Triple Pattern as the first pattern in Root Graph Pattern then can't optimise
                                         this._optimisableOrdering = false;
                                     }
                                 }
                                 else
                                 {
-                                    //Empty Root Graph Pattern => Optimisable
-                                    //Like the No Root Graph Pattern case this is somewhat defunct
+                                    // Empty Root Graph Pattern => Optimisable
+                                    // Like the No Root Graph Pattern case this is somewhat defunct
                                     this._optimisableOrdering = true;
                                 }
                             }
                             else
                             {
-                                //No Root Graph Pattern => Optimisable
-                                //Though this is somewhat defunct as Queries without a Root Graph Pattern should
-                                //never result in a call to this property
+                                // No Root Graph Pattern => Optimisable
+                                // Though this is somewhat defunct as Queries without a Root Graph Pattern should
+                                // never result in a call to this property
                                 this._optimisableOrdering = true;
                             }
                         }
                         else
                         {
-                            //If the ordering is not simple then it's not optimisable
+                            // If the ordering is not simple then it's not optimisable
                             this._optimisableOrdering = false;
                         }
                     }

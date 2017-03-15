@@ -65,7 +65,7 @@ namespace VDS.RDF.Query.Operators.Numeric
                 {
                     case SparqlNumericType.Integer:
                     case SparqlNumericType.Decimal:
-                        //For Division Integers are treated as decimals
+                        // For Division Integers are treated as decimals
                         decimal d = this.Divide(ns.Select(n => n.AsDecimal()));
                         if (Decimal.Floor(d).Equals(d) && d >= Int64.MinValue && d <= Int64.MaxValue)
                         {

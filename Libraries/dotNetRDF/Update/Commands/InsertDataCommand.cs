@@ -62,17 +62,17 @@ namespace VDS.RDF.Update.Commands
         {
             if (p.IsGraph)
             {
-                //If a GRAPH clause then all triple patterns must be constructable and have no Child Graph Patterns
+                // If a GRAPH clause then all triple patterns must be constructable and have no Child Graph Patterns
                 return !p.HasChildGraphPatterns && p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoExplicitVariables);
             }
             if (p.IsExists || p.IsMinus || p.IsNotExists || p.IsOptional || p.IsService || p.IsSubQuery || p.IsUnion)
             {
-                //EXISTS/MINUS/NOT EXISTS/OPTIONAL/SERVICE/Sub queries/UNIONs are not permitted
+                // EXISTS/MINUS/NOT EXISTS/OPTIONAL/SERVICE/Sub queries/UNIONs are not permitted
                 return false;
             }
-            //For other patterns all Triple patterns must be constructable with no explicit variables
-            //If top level then any Child Graph Patterns must be valid
-            //Otherwise must have no Child Graph Patterns
+            // For other patterns all Triple patterns must be constructable with no explicit variables
+            // If top level then any Child Graph Patterns must be valid
+            // Otherwise must have no Child Graph Patterns
             return p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoExplicitVariables) && ((top && p.ChildGraphPatterns.All(gp => IsValidDataPattern(gp, false))) || !p.HasChildGraphPatterns);
         }
 
@@ -134,7 +134,7 @@ namespace VDS.RDF.Update.Commands
         /// <param name="context">Evaluation Context</param>
         public override void Evaluate(SparqlUpdateEvaluationContext context)
         {
-            //Split the Pattern into the set of Graph Patterns
+            // Split the Pattern into the set of Graph Patterns
             List<GraphPattern> patterns = new List<GraphPattern>();
             if (this._pattern.IsGraph)
             {
@@ -151,7 +151,7 @@ namespace VDS.RDF.Update.Commands
             }
             else
             {
-                //If no Triple Patterns and No Child Graph Patterns nothing to do
+                // If no Triple Patterns and No Child Graph Patterns nothing to do
                 return;
             }
 
@@ -160,7 +160,7 @@ namespace VDS.RDF.Update.Commands
             {
                 if (!this.IsValidDataPattern(pattern, false)) throw new SparqlUpdateException("Cannot evaluate a INSERT DATA command where any of the Triple Patterns are not concrete triples (variables are not permitted) or any of the GRAPH clauses have nested Graph Patterns");
 
-                //Get the Target Graph
+                // Get the Target Graph
                 IGraph target;
                 Uri graphUri;
                 if (pattern.IsGraph)
@@ -186,13 +186,13 @@ namespace VDS.RDF.Update.Commands
                 }
                 else
                 {
-                    //If the Graph does not exist then it must be created
+                    // If the Graph does not exist then it must be created
                     target = new Graph();
                     target.BaseUri = graphUri;
                     context.Data.AddGraph(target);
                 }
 
-                //Insert the actual Triples
+                // Insert the actual Triples
                 foreach (IConstructTriplePattern p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
                 {
                     INode subj = p.Subject.Construct(constructContext);

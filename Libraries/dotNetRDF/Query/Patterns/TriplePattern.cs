@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Patterns
             this._pred = pred;
             this._obj = obj;
 
-            //Decide on the Index Type
+            // Decide on the Index Type
             if (this._subj is NodeMatchPattern)
             {
                 if (Options.FullTripleIndexing)
@@ -104,7 +104,7 @@ namespace VDS.RDF.Query.Patterns
                 this._indexType = TripleIndexType.Object;
             }
 
-            //Determine variables used
+            // Determine variables used
             if (this._subj.VariableName != null) this._vars.Add(this._subj.VariableName);
             if (this._pred.VariableName != null)
             {
@@ -250,7 +250,7 @@ namespace VDS.RDF.Query.Patterns
         {
             if (this._indexType == TripleIndexType.NoVariables)
             {
-                //If there are no variables then at least one Triple must match or we abort
+                // If there are no variables then at least one Triple must match or we abort
                 INode s = ((NodeMatchPattern)this._subj).Node;
                 INode p = ((NodeMatchPattern)this._pred).Node;
                 INode o = ((NodeMatchPattern)this._obj).Node;
@@ -278,7 +278,7 @@ namespace VDS.RDF.Query.Patterns
         {
             INode subj, pred, obj;
 
-            //Stuff for more precise indexing
+            // Stuff for more precise indexing
             IEnumerable<INode> values = null;
             IEnumerable<ISet> valuePairs = null;
             String subjVar = this._subj.VariableName;
@@ -462,7 +462,7 @@ namespace VDS.RDF.Query.Patterns
                     }
 
                 case TripleIndexType.NoVariables:
-                    //If there are no variables then at least one Triple must match or we abort
+                    // If there are no variables then at least one Triple must match or we abort
                     INode s, p, o;
                     s = ((NodeMatchPattern)this._subj).Node;
                     p = ((NodeMatchPattern)this._pred).Node;
@@ -477,9 +477,9 @@ namespace VDS.RDF.Query.Patterns
                     }
 
                 case TripleIndexType.None:
-                    //This means we got a pattern like ?s ?p ?o so we want to use whatever bound variables 
-                    //we have to reduce the triples we return as far as possible
-                    //TODO: Add handling for all the cases here
+                    // This means we got a pattern like ?s ?p ?o so we want to use whatever bound variables 
+                    // we have to reduce the triples we return as far as possible
+                    // TODO: Add handling for all the cases here
                     if (boundSubj)
                     {
                         if (boundPred)

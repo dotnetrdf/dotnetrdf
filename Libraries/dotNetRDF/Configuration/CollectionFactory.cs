@@ -58,7 +58,7 @@ namespace VDS.RDF.Configuration
                 wrapsNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingTripleCollection)));
                 if (wrapsNode == null)
                 {
-                    //Simple Triple Collection creation
+                    // Simple Triple Collection creation
                     try
                     {
                         obj = (BaseTripleCollection)Activator.CreateInstance(targetType);
@@ -70,7 +70,7 @@ namespace VDS.RDF.Configuration
                 }
                 else 
                 {
-                    //Wrapped Triple Collection creation
+                    // Wrapped Triple Collection creation
                     wrappedCollection = ConfigurationLoader.LoadObject(g, wrapsNode) as BaseTripleCollection;
                     if (wrappedCollection == null) throw new DotNetRdfConfigurationException("Unable to load the Triple Collection identified by the Node '" + objNode.ToString() + "' as the dnr:usingTripleCollection points to an object which cannot be loaded as an instance of the required type BaseTripleCollection for this collection to wrap");
                     try
@@ -88,7 +88,7 @@ namespace VDS.RDF.Configuration
                 wrapsNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingGraphCollection)));
                 if (wrapsNode == null)
                 {
-                    //Simple Graph Collection creation
+                    // Simple Graph Collection creation
                     try
                     {
                         obj = (BaseGraphCollection)Activator.CreateInstance(targetType);
@@ -100,7 +100,7 @@ namespace VDS.RDF.Configuration
                 }
                 else
                 {
-                    //Wrapped Graph Collection creation
+                    // Wrapped Graph Collection creation
                     wrappedCollection = ConfigurationLoader.LoadObject(g, wrapsNode) as BaseGraphCollection;
                     if (wrappedCollection == null) throw new DotNetRdfConfigurationException("Unable to load the Graph Collection identified by the Node '" + objNode.ToString() + "' as the dnr:usingGraphCollection points to an object which cannot be loaded as an instance of the required type BaseGraphCollection for this collection to wrap");
                     try

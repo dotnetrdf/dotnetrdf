@@ -189,12 +189,12 @@ namespace VDS.RDF.Writing
             {
                 try
                 {
-                    //Close the Output Stream
+                    // Close the Output Stream
                     output.Close();
                 }
                 catch
                 {
-                    //No Catch actions here
+                    // No Catch actions here
                 }
                 throw;
             }
@@ -207,11 +207,11 @@ namespace VDS.RDF.Writing
         /// <param name="output">Stream to save to</param>
         private void GenerateOutput(IGraph g, TextWriter output)
         {
-            //Always force RDF Namespace to be correctly defined
+            // Always force RDF Namespace to be correctly defined
             g.NamespaceMap.Import(this._defaultNamespaces);
             g.NamespaceMap.AddNamespace("rdf", UriFactory.Create(NamespaceMapper.RDF));
 
-            //Create our Writer Context and start the XML Document
+            // Create our Writer Context and start the XML Document
             RdfXmlWriterContext context = new RdfXmlWriterContext(g, output);
             context.CompressionLevel = this._compressionLevel;
             context.UseDtd = this._useDTD;
@@ -219,7 +219,7 @@ namespace VDS.RDF.Writing
 
             if (context.UseDtd)
             {
-                //Create the DOCTYPE declaration
+                // Create the DOCTYPE declaration
                 StringBuilder entities = new StringBuilder();
                 String uri;
                 entities.Append('\n');
@@ -239,7 +239,7 @@ namespace VDS.RDF.Writing
                 if (context.UseDtd) context.Writer.WriteDocType("rdf:RDF", null, null, entities.ToString());
             }
 
-            //Create the rdf:RDF element
+            // Create the rdf:RDF element
             context.Writer.WriteStartElement("rdf", "RDF", NamespaceMapper.RDF);
             if (context.Graph.BaseUri != null)
             {
@@ -253,9 +253,9 @@ namespace VDS.RDF.Writing
                 if (!prefix.Equals(String.Empty))
                 {
                     context.Writer.WriteStartAttribute("xmlns", prefix, null);
-                    //String nsRef = "&" + prefix + ";";
-                    //context.Writer.WriteRaw(nsRef);
-                    //context.Writer.WriteEntityRef(prefix);
+                    // String nsRef = "&" + prefix + ";";
+                    // context.Writer.WriteRaw(nsRef);
+                    // context.Writer.WriteEntityRef(prefix);
                     context.Writer.WriteRaw(WriterHelper.EncodeForXml(context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri));//Uri.EscapeUriString(WriterHelper.EncodeForXml(context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri)));
                     context.Writer.WriteEndAttribute();
                 }
@@ -267,19 +267,19 @@ namespace VDS.RDF.Writing
                 }
             }
 
-            //Find the Collections and Type References
+            // Find the Collections and Type References
             if (context.CompressionLevel >= WriterCompressionLevel.More)
             {
                 WriterHelper.FindCollections(context, CollectionSearchMode.ImplicitOnly);
-                //WriterHelper.FindCollections(context, CollectionSearchMode.All);
+                // WriterHelper.FindCollections(context, CollectionSearchMode.All);
             }
             Dictionary<INode, String> typerefs = this.FindTypeReferences(context);
 
-            //Get the Triples as a Sorted List
+            // Get the Triples as a Sorted List
             List<Triple> ts = context.Graph.Triples.Where(t => !context.TriplesDone.Contains(t)).ToList();
             ts.Sort(new RdfXmlTripleComparer());
 
-            //Variables we need to track our writing
+            // Variables we need to track our writing
             INode lastSubj, lastPred, lastObj;
             lastSubj = lastPred = lastObj = null;
 
@@ -290,7 +290,7 @@ namespace VDS.RDF.Writing
 
                 if (lastSubj == null || !t.Subject.Equals(lastSubj))
                 {
-                    //Start a new set of Triples
+                    // Start a new set of Triples
                     if (lastSubj != null)
                     {
                         context.NamespaceMap.DecrementNesting();
@@ -302,9 +302,9 @@ namespace VDS.RDF.Writing
                         context.Writer.WriteEndElement();
                     }
 
-                    //Write out the Subject
-                    //Validate Subject
-                    //Use a Type Reference if applicable
+                    // Write out the Subject
+                    // Validate Subject
+                    // Use a Type Reference if applicable
                     context.NamespaceMap.IncrementNesting();
                     if (typerefs.ContainsKey(t.Subject))
                     {
@@ -328,7 +328,7 @@ namespace VDS.RDF.Writing
                     }
                     lastSubj = t.Subject;
 
-                    //Apply appropriate attributes
+                    // Apply appropriate attributes
                     switch (t.Subject.NodeType)
                     {
                         case NodeType.GraphLiteral:
@@ -352,7 +352,7 @@ namespace VDS.RDF.Writing
                             throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("RDF/XML"));
                     }
 
-                    //Write the Predicate
+                    // Write the Predicate
                     context.NamespaceMap.IncrementNesting();
                     this.GeneratePredicateNode(context, t.Predicate);
                     lastPred = t.Predicate;
@@ -366,38 +366,38 @@ namespace VDS.RDF.Writing
                         context.Writer.WriteEndElement();
                     }
 
-                    //Write the Predicate
+                    // Write the Predicate
                     context.NamespaceMap.IncrementNesting();
                     this.GeneratePredicateNode(context, t.Predicate);
                     lastPred = t.Predicate;
                     lastObj = null;
                 }
 
-                //Write the Object
+                // Write the Object
                 if (lastObj != null)
                 {
-                    //Terminate the previous Predicate Node
+                    // Terminate the previous Predicate Node
                     context.NamespaceMap.DecrementNesting();
                     context.Writer.WriteEndElement();
 
-                    //Start a new Predicate Node
+                    // Start a new Predicate Node
                     context.NamespaceMap.DecrementNesting();
                     context.Writer.WriteEndElement();
                     context.NamespaceMap.IncrementNesting();
                     this.GeneratePredicateNode(context, t.Predicate);
                 }
-                //Create an Object for the Object
+                // Create an Object for the Object
                 switch (t.Object.NodeType)
                 {
                     case NodeType.Blank:
                         if (context.Collections.ContainsKey(t.Object))
                         {
-                            //Output a Collection
+                            // Output a Collection
                             this.GenerateCollectionOutput(context, t.Object);
                         }
                         else
                         {
-                            //Terminate the Blank Node triple by adding a rdf:nodeID attribute
+                            // Terminate the Blank Node triple by adding a rdf:nodeID attribute
                             context.Writer.WriteAttributeString("rdf", "nodeID", null, context.BlankNodeMapper.GetOutputID(((IBlankNode)t.Object).InternalID));
                         }
 
@@ -419,7 +419,7 @@ namespace VDS.RDF.Writing
                 }
                 lastObj = t.Object;
 
-                //Force a new Predicate Node
+                // Force a new Predicate Node
                 context.NamespaceMap.DecrementNesting();
                 context.Writer.WriteEndElement();
                 lastPred = null;
@@ -427,7 +427,7 @@ namespace VDS.RDF.Writing
                 context.TriplesDone.Add(t);
             }
 
-            //Check we haven't failed to output any collections
+            // Check we haven't failed to output any collections
             foreach (KeyValuePair<INode, OutputRdfCollection> pair in context.Collections)
             {
                 if (pair.Value.Triples.Count > 0)
@@ -459,7 +459,7 @@ namespace VDS.RDF.Writing
                         context.Writer.WriteAttributeString("rdf", "nodeID", NamespaceMapper.RDF, context.BlankNodeMapper.GetOutputID(((IBlankNode)pair.Key).InternalID));
                         this.GenerateCollectionOutput(context, pair.Key);
                         context.Writer.WriteEndElement();
-                        //throw new RdfOutputException("Failed to output a Collection due to an unknown error");
+                        // throw new RdfOutputException("Failed to output a Collection due to an unknown error");
                     }
                 }
             }
@@ -467,7 +467,7 @@ namespace VDS.RDF.Writing
             context.NamespaceMap.DecrementNesting();
             context.Writer.WriteEndDocument();
 
-            //Save to the Output Stream
+            // Save to the Output Stream
             context.Writer.Flush();
             context.Writer.Close();
         }
@@ -479,20 +479,20 @@ namespace VDS.RDF.Writing
             {
                 if (context.NamespaceMap.NestingLevel > 2)
                 {
-                    //Need to set the Predicate to have a rdf:parseType of Resource
+                    // Need to set the Predicate to have a rdf:parseType of Resource
                     context.Writer.WriteAttributeString("rdf", "parseType", NamespaceMapper.RDF, "Resource");
                 }
 
                 int length = c.Triples.Count;
                 while (c.Triples.Count > 0)
                 {
-                    //Get the Next Item and generate the rdf:first element
+                    // Get the Next Item and generate the rdf:first element
                     INode next = c.Triples.First().Object;
                     c.Triples.RemoveAt(0);
                     context.NamespaceMap.IncrementNesting();
                     context.Writer.WriteStartElement("rdf", "first", NamespaceMapper.RDF);
 
-                    //Set the value of the rdf:first Item
+                    // Set the value of the rdf:first Item
                     switch (next.NodeType)
                     {
                         case NodeType.Blank:
@@ -510,7 +510,7 @@ namespace VDS.RDF.Writing
                             throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("RDF/XML"));
                     }
 
-                    //Now generate the rdf:rest element
+                    // Now generate the rdf:rest element
                     context.NamespaceMap.DecrementNesting();
                     context.Writer.WriteEndElement();
                     context.NamespaceMap.IncrementNesting();
@@ -518,12 +518,12 @@ namespace VDS.RDF.Writing
 
                     if (c.Triples.Count >= 1)
                     {
-                        //Set Parse Type to resource
+                        // Set Parse Type to resource
                         context.Writer.WriteAttributeString("rdf", "parseType", NamespaceMapper.RDF, "Resource");
                     }
                     else
                     {
-                        //Terminate list with an rdf:nil
+                        // Terminate list with an rdf:nil
                         context.Writer.WriteStartAttribute("rdf", "resource", NamespaceMapper.RDF);
                         if (context.UseDtd)
                         {
@@ -546,19 +546,19 @@ namespace VDS.RDF.Writing
             {
                 if (c.Triples.Count == 0)
                 {
-                    //Terminate the Blank Node triple by adding a rdf:nodeID attribute
+                    // Terminate the Blank Node triple by adding a rdf:nodeID attribute
                     context.Writer.WriteAttributeString("rdf", "nodeID", NamespaceMapper.RDF, context.BlankNodeMapper.GetOutputID(((IBlankNode)key).InternalID));
                 }
                 else
                 {
-                    //Need to set the Predicate to have a rdf:parseType of Resource
+                    // Need to set the Predicate to have a rdf:parseType of Resource
                     if (context.NamespaceMap.NestingLevel > 2)
                     {
-                        //Need to set the Predicate to have a rdf:parseType of Resource
+                        // Need to set the Predicate to have a rdf:parseType of Resource
                         context.Writer.WriteAttributeString("rdf", "parseType", NamespaceMapper.RDF, "Resource");
                     }
 
-                    //Output the Predicate Object list
+                    // Output the Predicate Object list
                     while (c.Triples.Count > 0)
                     {
                         Triple t = c.Triples[0];
@@ -566,16 +566,16 @@ namespace VDS.RDF.Writing
                         INode nextPred = t.Predicate;
                         INode nextObj = t.Object;
 
-                        //Generate the predicate
+                        // Generate the predicate
                         this.GeneratePredicateNode(context, nextPred);
 
-                        //Output the Object
+                        // Output the Object
                         switch (nextObj.NodeType)
                         {
                             case NodeType.Blank:
                                 if (context.Collections.ContainsKey(nextObj))
                                 {
-                                    //Output a Collection
+                                    // Output a Collection
                                     this.GenerateCollectionOutput(context, nextObj);
                                 }
                                 else
@@ -612,7 +612,7 @@ namespace VDS.RDF.Writing
                 case NodeType.Literal:
                     throw new RdfOutputException(WriterErrorMessages.LiteralPredicatesUnserializable("RDF/XML"));
                 case NodeType.Uri:
-                    //OK
+                    // OK
                     UriRefType rtype;
                     String predRef = this.GenerateUriRef(context, ((IUriNode)p).Uri, UriRefType.QName, out rtype);
                     String prefix, uri;
@@ -630,21 +630,21 @@ namespace VDS.RDF.Writing
 
                     this.GenerateElement(context, predRef);
 
-                    //Add Temporary Namespace to current XML Element
+                    // Add Temporary Namespace to current XML Element
                     // CORE-431: This is unecessary and causes malformed XML under monotouch
-                    //if (prefix != null && uri != null)
-                    //{
+                    // if (prefix != null && uri != null)
+                    // {
                     //    context.Writer.WriteStartAttribute("xmlns", prefix, null);
                     //    context.Writer.WriteRaw(Uri.EscapeUriString(WriterHelper.EncodeForXml(uri)));
                     //    context.Writer.WriteEndAttribute();
-                    //}
+                    // }
 
                     break;
                 default:
                     throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("RDF/XML"));
             }
 
-            //Write the Predicate
+            // Write the Predicate
         }
 
         private void GenerateLiteralOutput(RdfXmlWriterContext context, ILiteralNode lit)
@@ -680,14 +680,14 @@ namespace VDS.RDF.Writing
             }
             else
             {
-                //context.Writer.WriteRaw(WriterHelper.EncodeForXml(lit.Value));
+                // context.Writer.WriteRaw(WriterHelper.EncodeForXml(lit.Value));
                 context.Writer.WriteString(lit.Value);
             }
         }
 
         private void GenerateUriOutput(RdfXmlWriterContext context, IUriNode u, String attribute)
         {
-            //Get a Uri Reference if the Uri can be reduced
+            // Get a Uri Reference if the Uri can be reduced
             UriRefType rtype;
             String uriref = this.GenerateUriRef(context, u.Uri, UriRefType.UriRef, out rtype);
             
@@ -725,18 +725,18 @@ namespace VDS.RDF.Writing
 
             if (context.NamespaceMap.ReduceToQName(u.AbsoluteUri, out qname) && (type != UriRefType.QName || RdfXmlSpecsHelper.IsValidQName(qname)))
             {
-                //Reduced to QName OK
+                // Reduced to QName OK
                 uriref = qname;
                 outType = UriRefType.QName;
             }
             else
             {
-                //Just use the Uri
+                // Just use the Uri
                 uriref = u.AbsoluteUri;
                 outType = UriRefType.Uri;
             }
 
-            //Convert to a Uri Ref from a QName if required
+            // Convert to a Uri Ref from a QName if required
             if (outType == UriRefType.QName && type == UriRefType.UriRef)
             {
                 if (uriref.Contains(':') && !uriref.StartsWith(":"))
@@ -744,8 +744,8 @@ namespace VDS.RDF.Writing
                     String prefix = uriref.Substring(0, uriref.IndexOf(':'));
                     if (context.UseDtd && context.NamespaceMap.GetNestingLevel(prefix) == 0)
                     {
-                        //Must have Use DTD enabled
-                        //Can only use entities for non-temporary Namespaces as Temporary Namespaces won't have Entities defined
+                        // Must have Use DTD enabled
+                        // Can only use entities for non-temporary Namespaces as Temporary Namespaces won't have Entities defined
                         uriref = "&" + uriref.Replace(':', ';');
                         outType = UriRefType.UriRef;
                     }
@@ -781,17 +781,17 @@ namespace VDS.RDF.Writing
             String nsUri;
             if (uri.Contains("#"))
             {
-                //Create a Hash Namespace Uri
+                // Create a Hash Namespace Uri
                 nsUri = uri.Substring(0, uri.LastIndexOf("#") + 1);
             }
             else
             {
-                //Create a Slash Namespace Uri
+                // Create a Slash Namespace Uri
                 nsUri = uri.Substring(0, uri.LastIndexOf("/") + 1);
             }
 
-            //Create a Temporary Namespace ID
-            //Can't use an ID if already in the Namespace Map either at top level (nesting == 0) or at the current nesting
+            // Create a Temporary Namespace ID
+            // Can't use an ID if already in the Namespace Map either at top level (nesting == 0) or at the current nesting
             while (context.NamespaceMap.HasNamespace("ns" + context.NextNamespaceID) && (context.NamespaceMap.GetNestingLevel("ns" + context.NextNamespaceID) == 0 || context.NamespaceMap.GetNestingLevel("ns" + context.NextNamespaceID) == context.NamespaceMap.NestingLevel))
             {
                 context.NextNamespaceID++;
@@ -829,7 +829,7 @@ namespace VDS.RDF.Writing
 
         private Dictionary<INode, String> FindTypeReferences(RdfXmlWriterContext context)
         {
-            //LINQ query to find all Triples which define the rdf:type of a Uri/BNode as a Uri
+            // LINQ query to find all Triples which define the rdf:type of a Uri/BNode as a Uri
             IUriNode rdfType = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "type"));
             IEnumerable<Triple> ts = from t in context.Graph.Triples
                                      where (t.Subject.NodeType == NodeType.Blank || t.Subject.NodeType == NodeType.Uri)
@@ -847,11 +847,11 @@ namespace VDS.RDF.Writing
                     typeref = this.GenerateUriRef(context, ((IUriNode)t.Object).Uri, UriRefType.QName, out rtype);
                     if (rtype != UriRefType.QName)
                     {
-                        //Generate a Temporary Namespace for the QName Type Reference
+                        // Generate a Temporary Namespace for the QName Type Reference
                         String prefix, uri;
                         this.GenerateTemporaryNamespace(context, (IUriNode)t.Object, out prefix, out uri);
 
-                        //Add to current XML Element
+                        // Add to current XML Element
                         context.Writer.WriteStartAttribute("xmlns", prefix, null);
                         context.Writer.WriteRaw(Uri.EscapeUriString(WriterHelper.EncodeForXml(uri)));
                         context.Writer.WriteEndAttribute();
@@ -859,7 +859,7 @@ namespace VDS.RDF.Writing
                         typeref = this.GenerateUriRef(context, ((IUriNode)t.Object).Uri, UriRefType.QName, out rtype);
                         if (rtype == UriRefType.QName)
                         {
-                            //Got a QName Type Reference in the Temporary Namespace OK
+                            // Got a QName Type Reference in the Temporary Namespace OK
                             typerefs.Add(t.Subject, typeref);
                             if (context.Graph.Triples.WithSubject(t.Subject).Count() > 1)
                             {
@@ -869,7 +869,7 @@ namespace VDS.RDF.Writing
                     }
                     else
                     {
-                        //Got a QName Type Reference OK
+                        // Got a QName Type Reference OK
                         typerefs.Add(t.Subject, typeref);
                         if (context.Graph.Triples.WithSubject(t.Subject).Count() > 1)
                         {
@@ -940,28 +940,28 @@ namespace VDS.RDF.Writing
                 switch (x.NodeType)
                 {
                     case NodeType.Uri:
-                        //URIs are less than everything
+                        // URIs are less than everything
                         return -1;
                     case NodeType.Blank:
                         if (y.NodeType == NodeType.Uri)
                         {
-                            //Blanks and greater than URIs
+                            // Blanks and greater than URIs
                             return 1;
                         }
                         else
                         {
-                            //Blanks are less than everything else
+                            // Blanks are less than everything else
                             return -1;
                         }
                     case NodeType.Literal:
                         if (y.NodeType == NodeType.Uri || y.NodeType == NodeType.Blank)
                         {
-                            //Literals are greater than Blanks and URIs
+                            // Literals are greater than Blanks and URIs
                             return 1;
                         }
                         else
                         {
-                            //Literals are less than than everything else
+                            // Literals are less than than everything else
                             return -1;
                         }
                     default:

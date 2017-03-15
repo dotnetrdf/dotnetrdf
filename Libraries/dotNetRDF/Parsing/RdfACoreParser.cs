@@ -98,21 +98,21 @@ namespace VDS.RDF.Parsing
             {
                 RdfACoreParserContext context = this.GetParserContext(handler, input);
 
-                //Before we start parsing check if a Version has been specified
+                // Before we start parsing check if a Version has been specified
                 if (context.HostLanguage.Version != null)
                 {
                     switch (context.HostLanguage.Version)
                     {
                         case RdfAParser.XHtmlPlusRdfA10Version:
                         case RdfAParser.HtmlPlusRdfA10Version:
-                            //If using RDFa 1.0 then should use the old parser instead
+                            // If using RDFa 1.0 then should use the old parser instead
                             RdfAParser parser = new RdfAParser();
                             parser.Load(context.Handler, input);
                             return;
                     }
                 }
 
-                //For any other RDFa Version use this parser
+                // For any other RDFa Version use this parser
                 this.Parse(context);
             }
             catch
@@ -123,7 +123,7 @@ namespace VDS.RDF.Parsing
                 }
                 catch
                 {
-                    //No catch actions just trying to clean up
+                    // No catch actions just trying to clean up
                 }
                 throw;
             }
@@ -149,7 +149,7 @@ namespace VDS.RDF.Parsing
             {
                 context.Handler.StartRdf();
 
-                //Initialise Term Mappings
+                // Initialise Term Mappings
                 context.HostLanguage.InitTermMappings(context);
 
                 IRdfAEvent current;
@@ -162,7 +162,7 @@ namespace VDS.RDF.Parsing
                 {
                     localIncompletes.Clear();
 
-                    //Dequeue the next event and increment/decrement nesting as appropriate
+                    // Dequeue the next event and increment/decrement nesting as appropriate
                     current = context.Events.Dequeue();
                     switch (current.EventType)
                     {
@@ -175,67 +175,67 @@ namespace VDS.RDF.Parsing
                             nesting--;
                             continue;
                         default:
-                            //Otherwise skip the event and continue
+                            // Otherwise skip the event and continue
                             continue;
-                            //throw new RdfParseException("Encountered an unexpected event of type '" + current.GetType().ToString() + "' when an Element/End Element event was expected", current.Position);
+                            // throw new RdfParseException("Encountered an unexpected event of type '" + current.GetType().ToString() + "' when an Element/End Element event was expected", current.Position);
                     }
-                    //Stop when nesting level returns to 0
+                    // Stop when nesting level returns to 0
                     if (nesting == 0) break;
 
-                    //Step 1 - Initialisation
+                    // Step 1 - Initialisation
                     bool skip = false;
                     INode newSubj = null, currObjResource = null, currObjLiteral = null;
 
-                    //Before carrying out further steps allow host specific special actions
+                    // Before carrying out further steps allow host specific special actions
                     context.HostLanguage.ParseExtensions(context, current);
 
-                    //Step 2 - @profile parsing
+                    // Step 2 - @profile parsing
                     if (current.HasAttribute("profile"))
                     {
                         if (!this.ParseProfileAttribute(context, current))
                         {
-                            //If an @profile attribute fails to parse then must ignore the current subtree
+                            // If an @profile attribute fails to parse then must ignore the current subtree
                             int i = 0;
                             IRdfAEvent next;
                             do
                             {
                                 next = context.Events.Dequeue();
-                                //Keep track of nesting in the subtree
+                                // Keep track of nesting in the subtree
                                 if (next.EventType == Event.Element) i++;
                                 if (next.EventType == Event.EndElement) i--;
                             } while (i > 0 && next.EventType != Event.EndElement && context.Events.Count > 0);
 
-                            //If couldn't ignore a valid subtree then error
+                            // If couldn't ignore a valid subtree then error
                             if (context.Events.Count == 0) throw new RdfParseException("Encountered an @profile attribute which pointed to a malformed profile which meant the relevant subtree of the document should be ignored but the document does not contain a well formed subtree");
 
-                            //If a bad @profile then continue after we've ignored the subtree
+                            // If a bad @profile then continue after we've ignored the subtree
                             continue;
                         }
                     }
 
-                    //Step 3 - @vocab parsing
+                    // Step 3 - @vocab parsing
                     if (current.HasAttribute("vocab")) this.ParseVocabAttribute(context, current);
 
-                    //Step 4 - @prefix parsing (plus any other mechanisms defined by the host language)
+                    // Step 4 - @prefix parsing (plus any other mechanisms defined by the host language)
                     if (current.HasAttribute("prefix")) this.ParsePrefixAttribute(context, current);
                     context.HostLanguage.ParsePrefixMappings(context, current);
 
-                    //Step 5 - Language parsing
+                    // Step 5 - Language parsing
                     context.HostLanguage.ParseLiteralLanguage(context, current);
 
                     if (!current.HasAttribute("rel") && !current.HasAttribute("rev"))
                     {
-                        //Step 6 - If no @rel or @rev establish a subject
+                        // Step 6 - If no @rel or @rev establish a subject
                         newSubj = this.ParseSubject(context, current, nesting == 1, out skip);
                     }
                     else
                     {
-                        //Step 7 - Use @rel or @rev to establish a subject and an object resource
+                        // Step 7 - Use @rel or @rev to establish a subject and an object resource
                         newSubj = this.ParseRelOrRevSubject(context, current, nesting == 1);
                         currObjResource = this.ParseObjectResource(context, current);
                     }
 
-                    //Step 8 - If there is a non-null subject process @typeof
+                    // Step 8 - If there is a non-null subject process @typeof
                     if (newSubj != null)
                     {
                         if (current.HasAttribute("typeof"))
@@ -249,7 +249,7 @@ namespace VDS.RDF.Parsing
 
                     if (currObjResource != null)
                     {
-                        //Step 9 - If there is a non-null object resource generate triples
+                        // Step 9 - If there is a non-null object resource generate triples
                         if (current.HasAttribute("rel"))
                         {
                             foreach (INode n in this.ParseRelAttribute(context, current))
@@ -267,7 +267,7 @@ namespace VDS.RDF.Parsing
                     }
                     else if (newSubj != null)
                     {
-                        //Step 10 - If there is no object resource but there are predicates generate incomplete triples
+                        // Step 10 - If there is no object resource but there are predicates generate incomplete triples
                         currObjResource = context.Handler.CreateBlankNode();
                         if (current.HasAttribute("rel"))
                         {
@@ -285,10 +285,10 @@ namespace VDS.RDF.Parsing
                         }
                     }
 
-                    //Step 11 - Establish the current object literal
+                    // Step 11 - Establish the current object literal
                     if (newSubj != null && current.HasAttribute("property"))
                     {
-                        //Must be an @property attribute in order for any triples to be generated
+                        // Must be an @property attribute in order for any triples to be generated
                         List<INode> ps = this.ParsePropertyAttribute(context, current).ToList();
 
                         if (ps.Count > 0)
@@ -296,49 +296,49 @@ namespace VDS.RDF.Parsing
                             Uri dtUri;
                             if (current.HasAttribute("content"))
                             {
-                                //If @content is present then either a plain/typed literal
+                                // If @content is present then either a plain/typed literal
                                 if (current.HasAttribute("datatype"))
                                 {
-                                    //@datatype is present so typed literal
+                                    // @datatype is present so typed literal
                                     dtUri = this.ParseUri(context, current["datatype"], RdfACurieMode.TermOrCurieOrAbsUri);
                                     currObjLiteral = context.Handler.CreateLiteralNode(current["content"], dtUri);
                                 }
                                 else
                                 {
-                                    //Plain literal
+                                    // Plain literal
                                     currObjLiteral = context.Handler.CreateLiteralNode(current["content"], context.Language);
                                 }
                             }
                             else if (current.HasAttribute("datatype"))
                             {
-                                //Typed literal
+                                // Typed literal
                                 dtUri = this.ParseUri(context, current["datatype"], RdfACurieMode.TermOrCurieOrAbsUri);
                                 if (dtUri != null)
                                 {
                                     if (dtUri.ToString().Equals(RdfSpecsHelper.RdfXmlLiteral))
                                     {
-                                        //XML Literal using element content
+                                        // XML Literal using element content
                                         currObjLiteral = context.Handler.CreateLiteralNode(this.ParseXmlContent(context), dtUri);
                                     }
                                     else
                                     {
-                                        //Typed Literal using element content
+                                        // Typed Literal using element content
                                         currObjLiteral = context.Handler.CreateLiteralNode(this.ParseTextContent(context), dtUri);
                                     }
                                 }
                                 else
                                 {
-                                    //If datatype does not resolve fall back to plain literal using element content
+                                    // If datatype does not resolve fall back to plain literal using element content
                                     currObjLiteral = context.Handler.CreateLiteralNode(this.ParseTextContent(context), context.Language);
                                 }
                             }
                             else
                             {
-                                //Plain Literal using element content
+                                // Plain Literal using element content
                                 currObjLiteral = context.Handler.CreateLiteralNode(this.ParseTextContent(context), context.Language);
                             }
 
-                            //Generate the relevant triples
+                            // Generate the relevant triples
                             foreach (INode p in ps)
                             {
                                 if (!context.Handler.HandleTriple(new Triple(newSubj, p, currObjLiteral))) ParserHelper.Stop();
@@ -346,7 +346,7 @@ namespace VDS.RDF.Parsing
                         }
                     }
 
-                    //Step 12 - Complete any existing incomplete triples
+                    // Step 12 - Complete any existing incomplete triples
                     if (!skip && newSubj != null)
                     {
                         foreach (IncompleteTriple t in context.IncompleteTriples)
@@ -363,8 +363,8 @@ namespace VDS.RDF.Parsing
                         context.IncompleteTriples.Clear();
                     }
 
-                    //Step 13 - Set up for processing child elements if necessary
-                    //Can skip this if the next event is an end element
+                    // Step 13 - Set up for processing child elements if necessary
+                    // Can skip this if the next event is an end element
                     if (context.Events.Peek().EventType != Event.EndElement)
                     {
                         context.ParentSubject = newSubj;
@@ -415,7 +415,7 @@ namespace VDS.RDF.Parsing
                     String prefixQuery = "PREFIX rdfa: <" + RdfAParser.RdfANamespace + "> SELECT SAMPLE(?prefix) AS ?NamespacePrefix SAMPLE(?uri) AS ?NamespaceURI WHERE { ?s rdfa:prefix ?prefix ; rdfa:uri ?uri } GROUP BY ?s HAVING (COUNT(?prefix) = 1 && COUNT(?uri) = 1)";
                     String termQuery = "PREFIX rdfa: <" + RdfAParser.RdfANamespace + "> SELECT SAMPLE(?term) AS ?Term SAMPLE(?uri) AS ?URI WHERE {?s rdfa:term ?term ; rdfa:uri ?uri } GROUP BY ?s HAVING (COUNT(?term) = 1 && COUNT(?uri) = 1)";
 
-                    //Namespace Mappings
+                    // Namespace Mappings
                     Object results = g.ExecuteQuery(prefixQuery);
                     if (results is SparqlResultSet)
                     {
@@ -433,7 +433,7 @@ namespace VDS.RDF.Parsing
                         }
                     }
 
-                    //Term Mappings
+                    // Term Mappings
                     results = g.ExecuteQuery(termQuery);
                     if (results is SparqlResultSet)
                     {
@@ -454,7 +454,7 @@ namespace VDS.RDF.Parsing
                         }
                     }
 
-                    //Vocabulary Setting
+                    // Vocabulary Setting
                     INode vocabNode = g.GetTriplesWithPredicate(g.CreateUriNode(new Uri(RdfAParser.RdfANamespace + "vocabulary"))).Select(t => t.Object).FirstOrDefault();
                     if (vocabNode != null)
                     {
@@ -728,27 +728,27 @@ namespace VDS.RDF.Parsing
             switch (mode)
             {
                 case RdfACurieMode.Uri:
-                    //Resolve as a URI which may be relative
+                    // Resolve as a URI which may be relative
                     return this.ResolveUri(context, value);
 
                 case RdfACurieMode.SafeCurieOrCurieOrUri:
                     if (this.IsSafeCurie(value))
                     {
-                        //If a Safe CURIE must resolve as a CURIE ignoring if not resolvable
+                        // If a Safe CURIE must resolve as a CURIE ignoring if not resolvable
                         return this.ResolveSafeCurie(context, value);
                     }
                     else
                     {
-                        //Otherwise try resolving as a CURIE and if not resolvable try as a URI
+                        // Otherwise try resolving as a CURIE and if not resolvable try as a URI
                         Uri u = this.ResolveCurie(context, value);
                         if (u == null)
                         {
-                            //Try resolving as a URI
+                            // Try resolving as a URI
                             return this.ResolveUri(context, value);
                         }
                         else
                         {
-                            //Resolved as a CURIE
+                            // Resolved as a CURIE
                             return u;
                         }
                     }
@@ -756,27 +756,27 @@ namespace VDS.RDF.Parsing
                 case RdfACurieMode.TermOrCurieOrAbsUri:
                     if (XmlSpecsHelper.IsNCName(value))
                     {
-                        //If a Term try resolving as a term and ignore if not resolvable
+                        // If a Term try resolving as a term and ignore if not resolvable
                         return this.ResolveTerm(context, value);
                     }
                     else if (this.IsCurie(value))
                     {
-                        //If a CURIE try resolving as a CURIE first
+                        // If a CURIE try resolving as a CURIE first
                         Uri u = this.ResolveCurie(context, value);
                         if (u == null)
                         {
-                            //If not resolvable as a CURIE try as an absolute URI
+                            // If not resolvable as a CURIE try as an absolute URI
                             return this.ResolveAbsoluteUri(value);
                         }
                         else
                         {
-                            //Resolved as a CURIE
+                            // Resolved as a CURIE
                             return u;
                         }
                     }
                     else
                     {
-                        //Try resolving as an absolute URI
+                        // Try resolving as an absolute URI
                         return this.ResolveAbsoluteUri(value);
                     }
 
@@ -826,7 +826,7 @@ namespace VDS.RDF.Parsing
                 {
                     if (reference.Equals(String.Empty))
                     {
-                        //Q: Should this throw an error?
+                        // Q: Should this throw an error?
                         if (context.SpecialBNodeSeen) return null;
                         context.SpecialBNodeSeen = true;
                     }

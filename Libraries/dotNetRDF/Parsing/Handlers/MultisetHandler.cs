@@ -56,7 +56,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="result">Boolean Result</param>
         protected override void HandleBooleanResultInternal(bool result)
         {
-            //Does Nothing
+            // Does Nothing
         }
 
         /// <summary>

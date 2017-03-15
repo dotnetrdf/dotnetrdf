@@ -83,24 +83,24 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                 if (s < 1) s = 1;
                 if (l < 1)
                 {
-                    //If no/negative characters are being selected the empty string is returned
+                    // If no/negative characters are being selected the empty string is returned
                     return new StringNode(null, string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                 }
                 else if ((s - 1) > input.Value.Length)
                 {
-                    //If the start is after the end of the string the empty string is returned
+                    // If the start is after the end of the string the empty string is returned
                     return new StringNode(null, string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                 }
                 else
                 {
                     if (((s - 1) + l) > input.Value.Length)
                     {
-                        //If the start plus the length is greater than the length of the string the string from the starts onwards is returned
+                        // If the start plus the length is greater than the length of the string the string from the starts onwards is returned
                         return new StringNode(null, input.Value.Substring(s - 1), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                     }
                     else
                     {
-                        //Otherwise do normal substring
+                        // Otherwise do normal substring
                         return new StringNode(null, input.Value.Substring(s - 1, l), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                     }
                 }
@@ -133,7 +133,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                     {
                         if (argumentTypeValidator(lit.DataType))
                         {
-                            //Appropriately typed literals are fine
+                            // Appropriately typed literals are fine
                             return temp;
                         }
                         else
@@ -143,7 +143,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                     }
                     else if (argumentTypeValidator(UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString)))
                     {
-                        //Untyped Literals are treated as Strings and may be returned when the argument allows strings
+                        // Untyped Literals are treated as Strings and may be returned when the argument allows strings
                         return temp;
                     }
                     else

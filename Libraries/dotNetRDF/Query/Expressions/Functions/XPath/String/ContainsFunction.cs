@@ -51,17 +51,17 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             if (stringLit.Value.Equals(string.Empty))
             {
-                //Empty string cannot contain anything
+                // Empty string cannot contain anything
                 return new BooleanNode(null, false);
             }
             else if (arg.Value.Equals(string.Empty))
             {
-                //Any non-empty string contains the empty string
+                // Any non-empty string contains the empty string
                 return new BooleanNode(null, true);
             }
             else
             {
-                //Evalute the Contains
+                // Evalute the Contains
                 return new BooleanNode(null, stringLit.Value.Contains(arg.Value));
             }
         }

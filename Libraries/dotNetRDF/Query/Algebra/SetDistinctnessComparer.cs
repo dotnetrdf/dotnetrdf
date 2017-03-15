@@ -61,20 +61,20 @@ namespace VDS.RDF.Query.Algebra
         /// <returns>True if sets are equal, false otherwise</returns>
         public bool Equals(ISet x, ISet y)
         {
-            //Both null considered equal
+            // Both null considered equal
             if (x == null && y == null) return true;
-            //Only one null considered non-equal
+            // Only one null considered non-equal
             if (x == null || y == null) return false;
 
             if (this._vars.Count == 0)
             {
-                //If no specific variables then use standard ISet implementation of equality
-                //i.e. compare for equality across all variables in the sets
+                // If no specific variables then use standard ISet implementation of equality
+                // i.e. compare for equality across all variables in the sets
                 return x.Equals(y);
             }
             else
             {
-                //Otherwise compare for equality on specified variables
+                // Otherwise compare for equality on specified variables
                 return this._vars.All(v => (x[v] == null && y[v] == null) || (x[v] != null && x[v].Equals(y[v])));
             }
         }

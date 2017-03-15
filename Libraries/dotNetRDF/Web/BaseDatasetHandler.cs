@@ -66,15 +66,15 @@ namespace VDS.RDF.Web
         {
             this._config = this.LoadConfig(context);
 
-            //Add our Standard Headers
+            // Add our Standard Headers
             HandlerHelper.AddStandardHeaders(new WebContext(context), this._config);
 
-            //Check whether we need to use authentication
-            //If there are no user groups then no authentication is in use so we default to authenticated with no per-action authentication needed
+            // Check whether we need to use authentication
+            // If there are no user groups then no authentication is in use so we default to authenticated with no per-action authentication needed
             bool isAuth = true;
             if (this._config.UserGroups.Any())
             {
-                //If we have user
+                // If we have user
                 isAuth = HandlerHelper.IsAuthenticated(new WebContext(context), this._config.UserGroups);
             }
             if (!isAuth) return;

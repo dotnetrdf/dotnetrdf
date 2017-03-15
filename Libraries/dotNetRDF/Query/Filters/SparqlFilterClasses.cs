@@ -112,13 +112,13 @@ namespace VDS.RDF.Query.Filters
             if (context.InputMultiset is NullMultiset) return;
             if (context.InputMultiset is IdentityMultiset)
             {
-                //If the Input is the Identity Multiset then nothing is Bound so return the Null Multiset
+                // If the Input is the Identity Multiset then nothing is Bound so return the Null Multiset
                 context.InputMultiset = new NullMultiset();
                 return;
             }
 
 #if NET40 && !SILVERLIGHT
-            //BOUND is always safe to parallelise
+            // BOUND is always safe to parallelise
             if (Options.UsePLinqEvaluation)
             {
                 context.InputMultiset.SetIDs.ToList().AsParallel().ForAll(i => EvalFilter(context, i));
@@ -184,8 +184,8 @@ namespace VDS.RDF.Query.Filters
             {
                 if (!this.Variables.Any())
                 {
-                    //If the Filter has no variables and is applied to an Identity Multiset then if the
-                    //Filter Expression evaluates to False then the Null Multiset is returned
+                    // If the Filter has no variables and is applied to an Identity Multiset then if the
+                    // Filter Expression evaluates to False then the Null Multiset is returned
                     try
                     {
                         if (!this._arg.Evaluate(context, 0).AsSafeBoolean())
@@ -195,20 +195,20 @@ namespace VDS.RDF.Query.Filters
                     }
                     catch
                     {
-                        //Error is treated as false for Filters so Null Multiset is returned
+                        // Error is treated as false for Filters so Null Multiset is returned
                         context.InputMultiset = new NullMultiset();
                     }
                 }
                 else
                 {
-                    //As no variables are in scope the effect is that the Null Multiset is returned
+                    // As no variables are in scope the effect is that the Null Multiset is returned
                     context.InputMultiset = new NullMultiset();
                 }
             }
             else
             {
 #if NET40 && !SILVERLIGHT
-                //Remember that not all expressions are safe to parallelise
+                // Remember that not all expressions are safe to parallelise
                 if (Options.UsePLinqEvaluation && this._arg.CanParallelise)
                 {
                     context.InputMultiset.SetIDs.ToList().AsParallel().ForAll(i => EvalFilter(context, i));

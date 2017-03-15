@@ -252,7 +252,7 @@ namespace VDS.RDF.Update
         {
             try
             {
-                //Apply Local Optimisers
+                // Apply Local Optimisers
                 foreach (IAlgebraOptimiser opt in this._optimisers.Where(o => o.IsApplicable(this)))
                 {
                     try
@@ -261,10 +261,10 @@ namespace VDS.RDF.Update
                     }
                     catch
                     {
-                        //Ignore errors - if an optimiser errors then we leave the algebra unchanged
+                        // Ignore errors - if an optimiser errors then we leave the algebra unchanged
                     }
                 }
-                //Apply Global Optimisers
+                // Apply Global Optimisers
                 foreach (IAlgebraOptimiser opt in SparqlOptimiser.AlgebraOptimisers.Where(o => o.IsApplicable(this)))
                 {
                     try
@@ -273,7 +273,7 @@ namespace VDS.RDF.Update
                     }
                     catch
                     {
-                        //Ignore errors - if an optimiser errors then we leave the algebra unchanged
+                        // Ignore errors - if an optimiser errors then we leave the algebra unchanged
                     }
                 }
                 return algebra;

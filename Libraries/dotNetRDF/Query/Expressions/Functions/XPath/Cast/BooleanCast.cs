@@ -53,14 +53,14 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         {
             IValuedNode n = this._expr.Evaluate(context, bindingID);//.CoerceToBoolean();
 
-            //if (n == null)
-            //{
+            // if (n == null)
+            // {
             //    throw new RdfQueryException("Cannot cast a Null to a xsd:boolean");
-            //}
+            // }
 
             ////New method should be much faster
-            //if (n is BooleanNode) return n;
-            //return new BooleanNode(null, n.AsBoolean());
+            // if (n is BooleanNode) return n;
+            // return new BooleanNode(null, n.AsBoolean());
 
             switch (n.NodeType)
             {
@@ -70,7 +70,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                     throw new RdfQueryException("Cannot cast a Blank/URI/Graph Literal Node to a xsd:boolean");
 
                 case NodeType.Literal:
-                    //See if the value can be cast
+                    // See if the value can be cast
                     if (n is BooleanNode) return n;
                     ILiteralNode lit = (ILiteralNode)n;
                     if (lit.DataType != null)
@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
 
                         if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
                         {
-                            //Already a Boolean
+                            // Already a Boolean
                             bool b;
                             if (Boolean.TryParse(lit.Value, out b))
                             {
@@ -91,7 +91,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             }
                         }
 
-                        //Cast based on Numeric Type
+                        // Cast based on Numeric Type
                         SparqlNumericType type = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(dt);
 
                         switch (type)
@@ -153,7 +153,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             case SparqlNumericType.NaN:
                                 if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
                                 {
-                                    //DateTime cast forbidden
+                                    // DateTime cast forbidden
                                     throw new RdfQueryException("Cannot cast a xsd:dateTime to a xsd:boolean");
                                 }
                                 else

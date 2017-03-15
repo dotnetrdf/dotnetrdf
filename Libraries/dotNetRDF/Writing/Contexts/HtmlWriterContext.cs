@@ -48,7 +48,7 @@ namespace VDS.RDF.Writing.Contexts
             : base(g, writer) 
         {
             this._writer = new HtmlTextWriter(writer);
-            //Have to remove the Empty Prefix since this is reserved in (X)HTML+RDFa for the (X)HTML namespace
+            // Have to remove the Empty Prefix since this is reserved in (X)HTML+RDFa for the (X)HTML namespace
             this._qnameMapper.RemoveNamespace(String.Empty);
 
             this._uriFormatter = new HtmlFormatter();

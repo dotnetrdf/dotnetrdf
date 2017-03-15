@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Algebra
         /// </returns>
         public override BaseMultiset Join(BaseMultiset other)
         {
-            //Left Join results in Null Multiset
+            // Left Join results in Null Multiset
             return this;
         }
 
@@ -59,7 +59,7 @@ namespace VDS.RDF.Query.Algebra
         /// </returns>
         public override BaseMultiset LeftJoin(BaseMultiset other, ISparqlExpression expr)
         {
-            //Left Outer Join results in Null Multiset
+            // Left Outer Join results in Null Multiset
             return this;
         }
 
@@ -95,7 +95,7 @@ namespace VDS.RDF.Query.Algebra
         /// </returns>
         public override BaseMultiset Product(BaseMultiset other)
         {
-            //Join results in Other Multiset
+            // Join results in Other Multiset
             return other;
         }
 
@@ -108,7 +108,7 @@ namespace VDS.RDF.Query.Algebra
         /// </returns>
         public override BaseMultiset Union(BaseMultiset other)
         {
-            //Union results in Other Multiset
+            // Union results in Other Multiset
             return other;
         }
 

@@ -71,11 +71,11 @@ namespace VDS.RDF.Parsing
 
                 if (resource.Contains(','))
                 {
-                    //Resource is an external assembly
+                    // Resource is an external assembly
                     String assemblyName = resource.Substring(resource.IndexOf(',') + 1).TrimStart();
                     resourceName = resourceName.Substring(0, resource.IndexOf(',')).TrimEnd();
 
-                    //Try to load this assembly
+                    // Try to load this assembly
 #if NETCORE
                     Assembly asm = assemblyName.Equals(_currAsmName)
                         ? typeof(EmbeddedResourceLoader).GetTypeInfo().Assembly
@@ -85,7 +85,7 @@ namespace VDS.RDF.Parsing
 #endif
                     if (asm != null)
                     {
-                        //Resource is in the loaded assembly
+                        // Resource is in the loaded assembly
                         LoadGraphInternal(handler, asm, resourceName, parser);
                     }
                     else
@@ -95,7 +95,7 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    //Resource is in dotNetRDF
+                    // Resource is in dotNetRDF
 #if NETCORE
                     LoadGraphInternal(handler, typeof(EmbeddedResourceLoader).GetTypeInfo().Assembly, resourceName, parser);
 #else
@@ -145,38 +145,38 @@ namespace VDS.RDF.Parsing
         /// <param name="parser">Parser to use (if null then will be auto-selected)</param>
         private static void LoadGraphInternal(IRdfHandler handler, Assembly asm, String resource, IRdfReader parser)
         {
-            //Resource is in the given assembly
+            // Resource is in the given assembly
             using (Stream s = asm.GetManifestResourceStream(resource))
             {
                 if (s == null)
                 {
-                    //Resource did not exist in this assembly
+                    // Resource did not exist in this assembly
                     throw new RdfParseException("The Embedded Resource '" + resource + "' does not exist inside of " + GetAssemblyName(asm));
                 }
                 else
                 {
-                    //Resource exists
+                    // Resource exists
 
-                    //Did we get a defined parser to use?
+                    // Did we get a defined parser to use?
                     if (parser != null)
                     {
                         parser.Load(handler, new StreamReader(s));
                     }
                     else
                     {
-                        //Need to select a Parser or use StringParser
+                        // Need to select a Parser or use StringParser
                         String ext = MimeTypesHelper.GetTrueResourceExtension(resource);
                         MimeTypeDefinition def = MimeTypesHelper.GetDefinitionsByFileExtension(ext).FirstOrDefault(d => d.CanParseRdf);
                         if (def != null)
                         {
-                            //Resource has an appropriate file extension and we've found a candidate parser for it
+                            // Resource has an appropriate file extension and we've found a candidate parser for it
                             parser = def.GetRdfParser();
                             parser.Load(handler, new StreamReader(s));
                         }
                         else
                         {
-                            //Resource did not have a file extension or we didn't have a parser associated with the extension
-                            //Try using StringParser instead
+                            // Resource did not have a file extension or we didn't have a parser associated with the extension
+                            // Try using StringParser instead
                             String data;
                             using (StreamReader reader = new StreamReader(s))
                             {
@@ -235,11 +235,11 @@ namespace VDS.RDF.Parsing
 
                 if (resource.Contains(','))
                 {
-                    //Resource is an external assembly
+                    // Resource is an external assembly
                     String assemblyName = resource.Substring(resource.IndexOf(',') + 1).TrimStart();
                     resourceName = resourceName.Substring(0, resource.IndexOf(',')).TrimEnd();
 
-                    //Try to load this assembly
+                    // Try to load this assembly
 #if NETCORE
                     Assembly asm = assemblyName.Equals(_currAsmName)
                         ? typeof(EmbeddedResourceLoader).GetTypeInfo().Assembly
@@ -249,7 +249,7 @@ namespace VDS.RDF.Parsing
 #endif
                     if (asm != null)
                     {
-                        //Resource is in the loaded assembly
+                        // Resource is in the loaded assembly
                         LoadDatasetInternal(handler, asm, resourceName, parser);
                     }
                     else
@@ -259,7 +259,7 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    //Resource is in dotNetRDF
+                    // Resource is in dotNetRDF
 #if NETCORE
                     LoadDatasetInternal(handler,
                         typeof(EmbeddedResourceLoader).GetTypeInfo().Assembly, resourceName, parser);
@@ -297,36 +297,36 @@ namespace VDS.RDF.Parsing
         /// <param name="parser">Parser to use (if null will be auto-selected)</param>
         private static void LoadDatasetInternal(IRdfHandler handler, Assembly asm, String resource, IStoreReader parser)
         {
-            //Resource is in the given assembly
+            // Resource is in the given assembly
             using (Stream s = asm.GetManifestResourceStream(resource))
             {
                 if (s == null)
                 {
-                    //Resource did not exist in this assembly
+                    // Resource did not exist in this assembly
                     throw new RdfParseException("The Embedded Resource '" + resource + "' does not exist inside of " + GetAssemblyName(asm));
                 }
                 else
                 {
-                    //Resource exists
-                    //Do we have a predefined Parser?
+                    // Resource exists
+                    // Do we have a predefined Parser?
                     if (parser != null)
                     {
                         parser.Load(handler, new StreamReader(s));
                     }
                     else
                     {
-                        //Need to select a Parser or use StringParser
+                        // Need to select a Parser or use StringParser
                         String ext =  MimeTypesHelper.GetTrueResourceExtension(resource);
                         MimeTypeDefinition def = MimeTypesHelper.GetDefinitionsByFileExtension(ext).FirstOrDefault(d => d.CanParseRdfDatasets);
                         if (def != null)
                         {
-                            //Resource has an appropriate file extension and we've found a candidate parser for it
+                            // Resource has an appropriate file extension and we've found a candidate parser for it
                             parser = def.GetRdfDatasetParser();
                             parser.Load(handler, new StreamReader(s));
                         }
                         else
                         {
-                            //See if the format was actually an RDF graph instead
+                            // See if the format was actually an RDF graph instead
                             def = MimeTypesHelper.GetDefinitionsByFileExtension(ext).FirstOrDefault(d => d.CanParseRdf);
                             if (def != null)
                             {
@@ -335,8 +335,8 @@ namespace VDS.RDF.Parsing
                             }
                             else
                             {
-                                //Resource did not have a file extension or we didn't have a parser associated with the extension
-                                //Try using StringParser instead
+                                // Resource did not have a file extension or we didn't have a parser associated with the extension
+                                // Try using StringParser instead
                                 String data;
                                 using (StreamReader reader = new StreamReader(s))
                                 {

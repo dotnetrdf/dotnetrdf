@@ -65,7 +65,7 @@ namespace VDS.RDF.Query.Algebra
             BaseMultiset results = context.Evaluate(this._pattern);
             context.InputMultiset = results;
 
-            //Identity/Null yields an empty multiset
+            // Identity/Null yields an empty multiset
             if (context.InputMultiset is IdentityMultiset || context.InputMultiset is NullMultiset)
             {
                 results = new Multiset();
@@ -73,7 +73,7 @@ namespace VDS.RDF.Query.Algebra
             GroupMultiset groupSet = new GroupMultiset(results);
             List<BindingGroup> groups;
 
-            //Calculate Groups
+            // Calculate Groups
             if (context.Query.GroupBy != null)
             {
                 groups = context.Query.GroupBy.Apply(context);
@@ -87,7 +87,7 @@ namespace VDS.RDF.Query.Algebra
                 groups = new List<BindingGroup>() { new BindingGroup(results.SetIDs) };
             }
 
-            //Add Groups to the GroupMultiset
+            // Add Groups to the GroupMultiset
             HashSet<String> vars = new HashSet<String>();
             foreach (BindingGroup group in groups)
             {
@@ -100,11 +100,11 @@ namespace VDS.RDF.Query.Algebra
                 }
                 groupSet.AddGroup(group);
             }
-            //If grouping produced no groups and there are aggregates present
-            //then an implicit group is created
+            // If grouping produced no groups and there are aggregates present
+            // then an implicit group is created
             if (groups.Count == 0 && this._aggregates.Count > 0) groupSet.AddGroup(new BindingGroup());
 
-            //Apply the aggregates
+            // Apply the aggregates
             context.InputMultiset = groupSet;
             context.Binder.SetGroupContext(true);
             foreach (SparqlVariable var in this._aggregates)

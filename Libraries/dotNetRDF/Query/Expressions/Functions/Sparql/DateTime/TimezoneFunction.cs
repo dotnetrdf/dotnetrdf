@@ -52,12 +52,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
 
             if (temp == null)
             {
-                //Unlike base function must error if no timezone component
+                // Unlike base function must error if no timezone component
                 throw new RdfQueryException("Cannot get the Timezone from a Date Time that does not have a timezone component");
             }
             else
             {
-                //Otherwise the base value is fine
+                // Otherwise the base value is fine
                 return temp;
             }
         }

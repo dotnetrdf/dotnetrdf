@@ -89,7 +89,7 @@ namespace VDS.RDF.Query
 
                 if (type == SparqlQueryType.Ask)
                 {
-                    //ASK Query so get the handler to handle an appropriate boolean result
+                    // ASK Query so get the handler to handle an appropriate boolean result
                     if (context.OutputMultiset is IdentityMultiset)
                     {
                         handler.HandleBooleanResult(true);
@@ -105,7 +105,7 @@ namespace VDS.RDF.Query
                 }
                 else
                 {
-                    //SELECT Query so get the handler to handle variables and then handle results
+                    // SELECT Query so get the handler to handle variables and then handle results
                     foreach (String var in context.OutputMultiset.Variables)
                     {
                         if (!handler.HandleVariable(var)) ParserHelper.Stop();

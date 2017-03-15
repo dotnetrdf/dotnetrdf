@@ -136,21 +136,21 @@ namespace VDS.RDF.Query.Inference.Pellet
         {
             try
             {
-                //Make the request to the Server Root URL to get the JSON description of the server
+                // Make the request to the Server Root URL to get the JSON description of the server
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._serverUri);
                 request.Method = "GET";
                 request.Accept = ServerDescriptionFormat;
 
                 Tools.HttpDebugRequest(request);
 
-                //Get the response and parse the JSON
+                // Get the response and parse the JSON
                 String jsonText;
                 JObject json;
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
                     
-                    //Get and parse the JSON
+                    // Get and parse the JSON
                     jsonText = new StreamReader(response.GetResponseStream()).ReadToEnd();
                     json = JObject.Parse(jsonText);
 
@@ -183,14 +183,14 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// <param name="state"></param>
         private void Discover(PelletServerReadyCallback callback, Object state)
         {
-            //Make the request to the Server Root URL to get the JSON description of the server
+            // Make the request to the Server Root URL to get the JSON description of the server
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._serverUri);
             request.Method = "GET";
             request.Accept = ServerDescriptionFormat;
 
             Tools.HttpDebugRequest(request);
 
-            //Get the response and parse the JSON
+            // Get the response and parse the JSON
             String jsonText;
             JObject json;
             request.BeginGetResponse(result =>
@@ -199,7 +199,7 @@ namespace VDS.RDF.Query.Inference.Pellet
                     
                     Tools.HttpDebugResponse(response);
                     
-                    //Get and parse the JSON
+                    // Get and parse the JSON
                     jsonText = new StreamReader(response.GetResponseStream()).ReadToEnd();
                     json = JObject.Parse(jsonText);
 

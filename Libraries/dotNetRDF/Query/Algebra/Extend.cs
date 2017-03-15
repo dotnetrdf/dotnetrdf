@@ -117,7 +117,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            //First evaluate the inner algebra
+            // First evaluate the inner algebra
             BaseMultiset results = context.Evaluate(this._inner);
             context.OutputMultiset = new Multiset();
 
@@ -136,7 +136,7 @@ namespace VDS.RDF.Query.Algebra
                 }
                 catch
                 {
-                    //No assignment if there's an error
+                    // No assignment if there's an error
                     s.Add(this._var, null);
                 }
                 context.OutputMultiset.Add(s.Copy());
@@ -175,13 +175,13 @@ namespace VDS.RDF.Query.Algebra
             ISet s = results[id].Copy();
             try
             {
-                //Make a new assignment
+                // Make a new assignment
                 INode temp = this._expr.Evaluate(context, id);
                 s.Add(this._var, temp);
             }
             catch
             {
-                //No assignment if there's an error but the solution is preserved
+                // No assignment if there's an error but the solution is preserved
             }
             context.OutputMultiset.Add(s);
         }

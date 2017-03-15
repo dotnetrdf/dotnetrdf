@@ -127,7 +127,7 @@ namespace VDS.RDF.Writing.Formatting
                 this._tempBaseUri = query.BaseUri;
                 StringBuilder output = new StringBuilder();
 
-                //Base and Prefix Declarations if not a sub-query
+                // Base and Prefix Declarations if not a sub-query
                 if (!query.IsSubQuery)
                 {
                     if (query.BaseUri != null)
@@ -139,14 +139,14 @@ namespace VDS.RDF.Writing.Formatting
                         output.AppendLine("PREFIX " + prefix + ": <" + this.FormatUri(this._qnameMapper.GetNamespaceUri(prefix).AbsoluteUri) + ">");
                     }
 
-                    //Use a Blank Line to separate Prologue from Query where necessary
+                    // Use a Blank Line to separate Prologue from Query where necessary
                     if (query.BaseUri != null || this._qnameMapper.Prefixes.Any())
                     {
                         output.AppendLine();
                     }
                 }
 
-                //Next up is the Query Verb
+                // Next up is the Query Verb
                 switch (query.QueryType)
                 {
                     case SparqlQueryType.Ask:
@@ -155,7 +155,7 @@ namespace VDS.RDF.Writing.Formatting
 
                     case SparqlQueryType.Construct:
                         output.AppendLine("CONSTRUCT");
-                        //Add in the Construct Pattern
+                        // Add in the Construct Pattern
                         output.AppendLine(this.Format(query.ConstructTemplate));
                         break;
 
@@ -199,7 +199,7 @@ namespace VDS.RDF.Writing.Formatting
                         throw new RdfOutputException("Cannot Format an Unknown Query Type");
                 }
 
-                //Then add in FROM and FROM NAMED if not a sub-query
+                // Then add in FROM and FROM NAMED if not a sub-query
                 if (!query.IsSubQuery)
                 {
                     foreach (Uri u in query.DefaultGraphs)
@@ -212,7 +212,7 @@ namespace VDS.RDF.Writing.Formatting
                     }
                 }
 
-                //Then the WHERE clause (unless there isn't one)
+                // Then the WHERE clause (unless there isn't one)
                 if (query.RootGraphPattern == null)
                 {
                     if (query.QueryType != SparqlQueryType.Describe) throw new RdfOutputException("Cannot Format a SPARQL Query as it has no Graph Pattern for the WHERE clause and is not a DESCRIBE query");
@@ -238,14 +238,14 @@ namespace VDS.RDF.Writing.Formatting
                     }
                 }
 
-                //Then a GROUP BY
+                // Then a GROUP BY
                 if (query.GroupBy != null)
                 {
                     output.Append("GROUP BY ");
                     output.AppendLine(this.FormatGroupBy(query.GroupBy));
                 }
 
-                //Then a HAVING
+                // Then a HAVING
                 if (query.Having != null)
                 {
                     output.Append("HAVING ");
@@ -254,18 +254,18 @@ namespace VDS.RDF.Writing.Formatting
                     output.AppendLine(")");
                 }
 
-                //Then ORDER BY
+                // Then ORDER BY
                 if (query.OrderBy != null)
                 {
                     output.Append("ORDER BY ");
                     output.AppendLine(this.FormatOrderBy(query.OrderBy));
                 }
 
-                //Then LIMIT and OFFSET
+                // Then LIMIT and OFFSET
                 if (query.Limit >= 0) output.AppendLine("LIMIT " + query.Limit);
                 if (query.Offset > 0) output.AppendLine("OFFSET " + query.Offset);
 
-                //Finally BINDINGS
+                // Finally BINDINGS
                 if (query.Bindings != null)
                 {
                     output.AppendLine(this.FormatInlineData(query.Bindings));
@@ -339,13 +339,13 @@ namespace VDS.RDF.Writing.Formatting
                         try
                         {
                             String uri = Tools.ResolveQName(gp.GraphSpecifier.Value, this._qnameMapper, this._tempBaseUri);
-                            //If the QName resolves OK in the context of the Namespace Map we're using to format this then we
-                            //can print the QName as-is
+                            // If the QName resolves OK in the context of the Namespace Map we're using to format this then we
+                            // can print the QName as-is
                             output.Append(gp.GraphSpecifier.Value);
                         }
                         catch
                         {
-                            //If the QName fails to resolve then can't format in the context
+                            // If the QName fails to resolve then can't format in the context
                             throw new RdfOutputException("Cannot format the Graph/Service Specifier QName " + gp.GraphSpecifier.Value + " as the Namespace Mapper in use for this Formatter cannot resolve the QName");
                         }
                         break;
@@ -635,7 +635,7 @@ namespace VDS.RDF.Writing.Formatting
                     output.Append(v.ToString());
                 }
 
-                //Maximum of 6 things per line (aggregates worth 2 and expression worth 3)
+                // Maximum of 6 things per line (aggregates worth 2 and expression worth 3)
                 if (onLine >= 6 && i < varList.Count - 1)
                 {
                     output.AppendLine();
@@ -678,8 +678,8 @@ namespace VDS.RDF.Writing.Formatting
                         onLine += 3;
                         break;
                     case Token.QNAME:
-                        //If the QName has the same Namespace URI in this Formatter as in the Query then format
-                        //as a QName otherwise expand to a full URI
+                        // If the QName has the same Namespace URI in this Formatter as in the Query then format
+                        // as a QName otherwise expand to a full URI
                         String prefix = t.Value.Substring(0, t.Value.IndexOf(':'));
                         if (this._qnameMapper.HasNamespace(prefix) && q.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri.Equals(this._qnameMapper.GetNamespaceUri(prefix).AbsoluteUri))
                         {
@@ -701,7 +701,7 @@ namespace VDS.RDF.Writing.Formatting
                         break;
                 }
 
-                //Maximum of 6 things per line (URIs worth 3 and QNames worth 2)
+                // Maximum of 6 things per line (URIs worth 3 and QNames worth 2)
                 if (onLine >= 6 && i < tokenList.Count - 1)
                 {
                     output.AppendLine();
@@ -744,8 +744,8 @@ namespace VDS.RDF.Writing.Formatting
                         ISparqlExpression lhs = expr.Arguments.First();
                         ISparqlExpression rhs = expr.Arguments.Skip(1).First();
 
-                        //Format the Expression wrapping the LHS and/or RHS in brackets if required
-                        //to ensure that ordering of operators is preserved
+                        // Format the Expression wrapping the LHS and/or RHS in brackets if required
+                        // to ensure that ordering of operators is preserved
                         if (lhs.Type == SparqlExpressionType.BinaryOperator)
                         {
                             output.Append('(');
@@ -772,7 +772,7 @@ namespace VDS.RDF.Writing.Formatting
                         break;
 
                     case SparqlExpressionType.Function:
-                        //Show either a Keyword/URI/QName as appropriate
+                        // Show either a Keyword/URI/QName as appropriate
                         if (SparqlSpecsHelper.IsFunctionKeyword(expr.Functor))
                         {
                             output.Append(expr.Functor);
@@ -792,7 +792,7 @@ namespace VDS.RDF.Writing.Formatting
                             }
                         }
 
-                        //Add Arguments list
+                        // Add Arguments list
                         output.Append('(');
                         List<ISparqlExpression> args = expr.Arguments.ToList();
                         for (int i = 0; i < args.Count; i++)
@@ -823,7 +823,7 @@ namespace VDS.RDF.Writing.Formatting
                         break;
 
                     case SparqlExpressionType.Primary:
-                        //If Node/Numeric Term then use Node Formatting otherwise use ToString() on the expression
+                        // If Node/Numeric Term then use Node Formatting otherwise use ToString() on the expression
                         if (expr is ConstantTerm)
                         {
                             ConstantTerm nodeTerm = (ConstantTerm)expr;
@@ -841,12 +841,12 @@ namespace VDS.RDF.Writing.Formatting
                         break;
 
                     case SparqlExpressionType.SetOperator:
-                        //Add First Argument and Set Operator
+                        // Add First Argument and Set Operator
                         output.Append(this.FormatExpression(expr.Arguments.First()));
                         output.Append(' ');
                         output.Append(expr.Functor);
 
-                        //Add Set
+                        // Add Set
                         output.Append(" (");
                         List<ISparqlExpression> set = expr.Arguments.Skip(1).ToList();
                         for (int i = 0; i < set.Count; i++)
@@ -861,7 +861,7 @@ namespace VDS.RDF.Writing.Formatting
                         break;
 
                     case SparqlExpressionType.UnaryOperator:
-                        //Just Functor then Expression
+                        // Just Functor then Expression
                         output.Append(expr.Functor);
                         output.Append(this.FormatExpression(expr.Arguments.First()));
                         break;

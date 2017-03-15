@@ -384,8 +384,8 @@ namespace VDS.RDF.Query.Grouping
                 }
             }
 
-            //Build the List of Groups
-            //Null and Error Group are included if required
+            // Build the List of Groups
+            // Null and Error Group are included if required
             List<BindingGroup> parentGroups = (from g in groups.Values select g).ToList();
             if (error.BindingIDs.Any())
             {
@@ -454,8 +454,8 @@ namespace VDS.RDF.Query.Grouping
                     }
                 }
 
-                //Build the List of Groups
-                //Null and Error Group are included if required
+                // Build the List of Groups
+                // Null and Error Group are included if required
                 foreach (BindingGroup g in subgroups.Values)
                 {
                     outgroups.Add(g);

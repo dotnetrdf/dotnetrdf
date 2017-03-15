@@ -82,13 +82,13 @@ namespace VDS.RDF.Writing
         /// <returns></returns>
         public IGraph GenerateOutput(SparqlResultSet results)
         {
-            //Create the Graph for the Output
+            // Create the Graph for the Output
             IGraph g = new Graph();
 
-            //Add the relevant namespaces
+            // Add the relevant namespaces
             g.NamespaceMap.AddNamespace("rs", UriFactory.Create(SparqlSpecsHelper.SparqlRdfResultsNamespace));
 
-            //Create relevant Nodes
+            // Create relevant Nodes
             IUriNode rdfType = g.CreateUriNode("rdf:type");
             IUriNode resultSetClass = g.CreateUriNode("rs:ResultSet");
             IUriNode resultVariable = g.CreateUriNode("rs:resultVariable");
@@ -98,19 +98,19 @@ namespace VDS.RDF.Writing
             IUriNode variable = g.CreateUriNode("rs:variable");
             IUriNode boolean = g.CreateUriNode("rs:boolean");
 
-            //First we declare a Result Set
+            // First we declare a Result Set
             IBlankNode rset = g.CreateBlankNode();
             g.Assert(new Triple(rset, rdfType, resultSetClass));
 
             if (results.ResultsType == SparqlResultsType.VariableBindings)
             {
-                //Assert a Triple for each Result Variable
+                // Assert a Triple for each Result Variable
                 foreach (String v in results.Variables)
                 {
                     g.Assert(new Triple(rset, resultVariable, g.CreateLiteralNode(v)));
                 }
 
-                //Then we're going to define a solution for each result
+                // Then we're going to define a solution for each result
                 foreach (SparqlResult r in results)
                 {
                     IBlankNode sln = g.CreateBlankNode();
@@ -118,7 +118,7 @@ namespace VDS.RDF.Writing
 
                     foreach (String v in results.Variables)
                     {
-                        //Only define Bindings if there is a value and it is non-null
+                        // Only define Bindings if there is a value and it is non-null
                         if (r.HasValue(v) && r[v] != null)
                         {
                             IBlankNode bnd = g.CreateBlankNode();
@@ -154,7 +154,7 @@ namespace VDS.RDF.Writing
             }
             else
             {
-                //A Boolean Result Set
+                // A Boolean Result Set
                 g.Assert(new Triple(rset, boolean, g.CreateLiteralNode(results.Result.ToString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean))));
             }
 

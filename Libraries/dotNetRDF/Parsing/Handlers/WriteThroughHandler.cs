@@ -112,7 +112,7 @@ namespace VDS.RDF.Parsing.Handlers
                 this._formatter = null;
                 this._formattingMapper = new QNameOutputMapper();
 
-                //Instantiate a new Formatter
+                // Instantiate a new Formatter
                 ConstructorInfo[] cs = this._formatterType.GetConstructors();
                 Type qnameMapperType = typeof(QNameOutputMapper);
                 Type nsMapperType = typeof(INamespaceMapper);
@@ -141,11 +141,11 @@ namespace VDS.RDF.Parsing.Handlers
                     }
                     catch
                     {
-                        //Suppress errors since we'll throw later if necessary
+                        // Suppress errors since we'll throw later if necessary
                     }
                 }
 
-                //If we get out here and the formatter is null then we throw an error
+                // If we get out here and the formatter is null then we throw an error
                 if (this._formatter == null) throw new RdfParseException("Unable to instantiate a ITripleFormatter from the given Formatter Type " + this._formatterType.FullName);
             }
 
@@ -320,7 +320,7 @@ namespace VDS.RDF.Parsing.Handlers
                 this._formatter = null;
                 this._formattingMapper = new QNameOutputMapper();
 
-                //Instantiate a new Formatter
+                // Instantiate a new Formatter
                 ConstructorInfo[] cs = this._formatterType.GetConstructors();
                 Type qnameMapperType = typeof(QNameOutputMapper);
                 Type nsMapperType = typeof(INamespaceMapper);
@@ -349,11 +349,11 @@ namespace VDS.RDF.Parsing.Handlers
                     }
                     catch
                     {
-                        //Suppress errors since we'll throw later if necessary
+                        // Suppress errors since we'll throw later if necessary
                     }
                 }
 
-                //If we get out here and the formatter is null then we throw an error
+                // If we get out here and the formatter is null then we throw an error
                 if (this._formatter == null) throw new RdfParseException("Unable to instantiate a IResultFormatter from the given Formatter Type " + this._formatterType.FullName);
             }
         }

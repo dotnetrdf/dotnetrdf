@@ -36,7 +36,7 @@ using VDS.RDF.Writing.Formatting;
 using System.Web.UI;
 #endif
 
-//TODO: Embed RDFa in the HTML Output
+// TODO: Embed RDFa in the HTML Output
 
 namespace VDS.RDF.Writing
 {
@@ -81,7 +81,7 @@ namespace VDS.RDF.Writing
                 }
                 catch
                 {
-                    //No Catch Actions
+                    // No Catch Actions
                 }
                 throw;
             }
@@ -95,7 +95,7 @@ namespace VDS.RDF.Writing
         {
             Object results;
 
-            //Add the Namespaces we want to use later on
+            // Add the Namespaces we want to use later on
             context.QNameMapper.AddNamespace("owl", UriFactory.Create(NamespaceMapper.OWL));
             context.QNameMapper.AddNamespace("rdf", UriFactory.Create(NamespaceMapper.RDF));
             context.QNameMapper.AddNamespace("rdfs", UriFactory.Create(NamespaceMapper.RDFS));
@@ -104,20 +104,20 @@ namespace VDS.RDF.Writing
             context.QNameMapper.AddNamespace("vann", UriFactory.Create("http://purl.org/vocab/vann/"));
             context.QNameMapper.AddNamespace("vs", UriFactory.Create("http://www.w3.org/2003/06/sw-vocab-status/ns#"));
 
-            //Find the Node that represents the Schema Ontology
-            //Assumes there is exactly one thing given rdf:type owl:Ontology
+            // Find the Node that represents the Schema Ontology
+            // Assumes there is exactly one thing given rdf:type owl:Ontology
             IUriNode ontology = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.OWL + "Ontology"));
             IUriNode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
             IUriNode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
             INode ontoNode = context.Graph.GetTriplesWithPredicateObject(rdfType, ontology).Select(t => t.Subject).FirstOrDefault();
             INode ontoLabel = (ontoNode != null) ? context.Graph.GetTriplesWithSubjectPredicate(ontoNode, rdfsLabel).Select(t => t.Object).FirstOrDefault() : null;
 
-            //Stuff for formatting
-            //We'll use the Turtle Formatter to get nice QNames wherever possible
+            // Stuff for formatting
+            // We'll use the Turtle Formatter to get nice QNames wherever possible
             context.NodeFormatter = new TurtleFormatter(context.QNameMapper);
             context.UriFormatter = (IUriFormatter)context.NodeFormatter;
 
-            //Page Header
+            // Page Header
             context.HtmlWriter.Write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML+RDFa 1.0//EN\" \"http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd\">");
             context.HtmlWriter.WriteLine();
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Html);
@@ -146,10 +146,10 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.WriteLine();
 #endif
 
-            //Start Body
+            // Start Body
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Body);
 
-            //Title
+            // Title
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H2);
             context.HtmlWriter.WriteEncodedText("Schema");
             if (ontoNode != null && ontoLabel != null)
@@ -165,7 +165,7 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.WriteLine();
 #endif
 
-            //Show the Description of the Schema (if any)
+            // Show the Description of the Schema (if any)
             if (ontoNode != null)
             {
                 SparqlParameterizedString getOntoDescrip = new SparqlParameterizedString();
@@ -182,7 +182,7 @@ namespace VDS.RDF.Writing
                         {
                             SparqlResult ontoInfo = ((SparqlResultSet)results)[0];
 
-                            //Show rdfs:comment on the Ontology
+                            // Show rdfs:comment on the Ontology
                             if (ontoInfo.HasValue("description"))
                             {
                                 INode descrip = ontoInfo["description"];
@@ -197,7 +197,7 @@ namespace VDS.RDF.Writing
                                 }
                             }
 
-                            //Show Author Information
+                            // Show Author Information
                             if (ontoInfo.HasValue("creator"))
                             {
                                 INode author = ontoInfo["creator"];
@@ -231,12 +231,12 @@ namespace VDS.RDF.Writing
 #endif
                             }
 
-                            //Show the Namespace information for the Schema
+                            // Show the Namespace information for the Schema
                             if (ontoInfo.HasValue("nsPrefix"))
                             {
                                 if (ontoInfo["nsPrefix"].NodeType == NodeType.Literal && ontoInfo["nsUri"].NodeType == NodeType.Uri)
                                 {
-                                    //Add this QName to the QName Mapper so we can get nice QNames later on
+                                    // Add this QName to the QName Mapper so we can get nice QNames later on
                                     String prefix = ((ILiteralNode)ontoInfo["nsPrefix"]).Value;
                                     context.QNameMapper.AddNamespace(prefix, ((IUriNode)ontoInfo["nsUri"]).Uri);
 
@@ -248,7 +248,7 @@ namespace VDS.RDF.Writing
                                     context.HtmlWriter.WriteLine();
 #endif
 
-                                    //Show human readable description of preferred Namespace Settings
+                                    // Show human readable description of preferred Namespace Settings
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
                                     context.HtmlWriter.WriteEncodedText("Preferred Namespace Prefix is ");
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Strong);
@@ -262,7 +262,7 @@ namespace VDS.RDF.Writing
                                     context.HtmlWriter.RenderEndTag();
                                     context.HtmlWriter.RenderEndTag();
 
-                                    //RDF/XML Syntax
+                                    // RDF/XML Syntax
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H5);
                                     context.HtmlWriter.WriteEncodedText("RDF/XML Syntax");
                                     context.HtmlWriter.RenderEndTag();
@@ -286,7 +286,7 @@ namespace VDS.RDF.Writing
                                     context.HtmlWriter.WriteLine();
 #endif
 
-                                    //Turtle/N3 Syntax
+                                    // Turtle/N3 Syntax
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H5);
                                     context.HtmlWriter.WriteEncodedText("Turtle/N3 Syntax");
                                     context.HtmlWriter.RenderEndTag();
@@ -304,7 +304,7 @@ namespace VDS.RDF.Writing
                                     context.HtmlWriter.WriteLine();
 #endif
 
-                                    //SPARQL Syntax
+                                    // SPARQL Syntax
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H5);
                                     context.HtmlWriter.WriteEncodedText("SPARQL Syntax");
                                     context.HtmlWriter.RenderEndTag();
@@ -344,7 +344,7 @@ namespace VDS.RDF.Writing
             getPropertyDomains.Namespaces = getPropertyRanges.Namespaces;
             getPropertyDomains.CommandText = "SELECT ?domain WHERE { { @property rdfs:domain ?domain . FILTER(ISURI(?domain)) } UNION { @property rdfs:domain ?union . ?union owl:unionOf ?domains . { ?domains rdf:first ?domain } UNION { ?domains rdf:rest+/rdf:first ?domain } } }";
 
-            //Show lists of all Classes and Properties in the Schema
+            // Show lists of all Classes and Properties in the Schema
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H4);
             context.HtmlWriter.WriteEncodedText("Class and Property Summary");
             context.HtmlWriter.RenderEndTag();
@@ -362,7 +362,7 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassBox);
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
 
-            //Get the Classes and Display
+            // Get the Classes and Display
             SparqlParameterizedString getClasses = new SparqlParameterizedString();
             getClasses.Namespaces = context.QNameMapper;
             getClasses.CommandText = "SELECT DISTINCT ?class WHERE { { ?class a rdfs:Class } UNION { ?class a owl:Class } FILTER(ISURI(?class)) } ORDER BY ?class";
@@ -376,8 +376,8 @@ namespace VDS.RDF.Writing
                     {
                         SparqlResult r = rs[i];
 
-                        //Get the QName and output a Link to an anchor that we'll generate later to let
-                        //users jump to a Class/Property definition
+                        // Get the QName and output a Link to an anchor that we'll generate later to let
+                        // users jump to a Class/Property definition
                         String qname = context.NodeFormatter.Format(r["class"]);
                         context.HtmlWriter.AddAttribute("href", "#" + qname);
                         context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassUri);
@@ -416,7 +416,7 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassBox);
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
 
-            //Get the Properties and Display
+            // Get the Properties and Display
             SparqlParameterizedString getProperties = new SparqlParameterizedString();
             getProperties.Namespaces = context.QNameMapper;
             getProperties.CommandText = "SELECT DISTINCT ?property WHERE { { ?property a rdf:Property } UNION { ?property a owl:DatatypeProperty } UNION { ?property a owl:ObjectProperty } FILTER(ISURI(?property)) } ORDER BY ?property";
@@ -430,8 +430,8 @@ namespace VDS.RDF.Writing
                     {
                         SparqlResult r = rs[i];
 
-                        //Get the QName and output a Link to an anchor that we'll generate later to let
-                        //users jump to a Class/Property definition
+                        // Get the QName and output a Link to an anchor that we'll generate later to let
+                        // users jump to a Class/Property definition
                         String qname = context.NodeFormatter.Format(r["property"]);
                         context.HtmlWriter.AddAttribute("href", "#" + qname);
                         context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassUri);
@@ -460,7 +460,7 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.WriteLine();
 #endif
 
-            //Show details for each class
+            // Show details for each class
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H3);
             context.HtmlWriter.WriteEncodedText("Classes");
             context.HtmlWriter.RenderEndTag();
@@ -468,7 +468,7 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.WriteLine();
 #endif
 
-            //Now create the URI Nodes we need for the next stage of Output
+            // Now create the URI Nodes we need for the next stage of Output
             IUriNode rdfsDomain = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "domain"));
             IUriNode rdfsRange = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "range"));
             IUriNode rdfsSubClassOf = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "subClassOf"));
@@ -478,7 +478,7 @@ namespace VDS.RDF.Writing
             IUriNode owlEquivalentProperty = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.OWL + "equivalentProperty"));
             IUriNode owlInverseProperty = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.OWL + "inverseOf"));
 
-            //Alter our previous getClasses query to get additional details
+            // Alter our previous getClasses query to get additional details
             getClasses.CommandText = "SELECT ?class (SAMPLE(?label) AS ?classLabel) (SAMPLE(?description) AS ?classDescription) WHERE { { ?class a rdfs:Class } UNION { ?class a owl:Class } FILTER(ISURI(?class)) OPTIONAL { ?class rdfs:label ?label } OPTIONAL { ?class rdfs:comment ?description } } GROUP BY ?class ORDER BY ?class";
             try
             {
@@ -490,21 +490,21 @@ namespace VDS.RDF.Writing
                         if (!r.HasValue("class")) continue;
                         String qname = context.NodeFormatter.Format(r["class"]);
 
-                        //Use a <div> for each Class
+                        // Use a <div> for each Class
                         context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassBox);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Div);
 
-                        //Add the Anchor to which earlier Class summary links to
+                        // Add the Anchor to which earlier Class summary links to
                         context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Name, qname);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
                         context.HtmlWriter.RenderEndTag();
 
-                        //Show Basic Class Information
+                        // Show Basic Class Information
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H4);
                         context.HtmlWriter.WriteEncodedText("Class: " + qname);
                         context.HtmlWriter.RenderEndTag();
 
-                        //Show "Local Name - Label"
+                        // Show "Local Name - Label"
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Em);
                         if (TurtleSpecsHelper.IsValidQName(qname))
                         {
@@ -540,27 +540,27 @@ namespace VDS.RDF.Writing
 #if !NO_WEB
                         context.HtmlWriter.WriteLine();
 #endif
-                        //Output further information about the class
+                        // Output further information about the class
                         IEnumerable<Triple> ts;
 
-                        //Output any Subclasses
+                        // Output any Subclasses
                         ts = context.Graph.GetTriplesWithSubjectPredicate(rdfsSubClassOf, r["class"]);
                         this.GenerateCaptionedInformation(context, "Has Sub Classes", ts, t => t.Object);
 
-                        //Output Properties which have this as domain/range
+                        // Output Properties which have this as domain/range
                         ts = context.Graph.GetTriplesWithPredicateObject(rdfsDomain, r["class"]);
                         this.GenerateCaptionedInformation(context, "Properties Include", ts, t => t.Subject);
                         ts = context.Graph.GetTriplesWithPredicateObject(rdfsRange, r["class"]);
                         this.GenerateCaptionedInformation(context, "Used With", ts, t => t.Subject);
 
-                        //Output any Equivalent Classes
+                        // Output any Equivalent Classes
                         ts = context.Graph.GetTriplesWithSubjectPredicate(r["class"], owlEquivalentClass).Concat(context.Graph.GetTriplesWithPredicateObject(owlEquivalentClass, r["class"]));
                         this.GenerateCaptionedInformation(context, "Equivalent Classes", ts, t => t.Subject.Equals(r["class"]) ? t.Object : t.Subject);
-                        //Output any Disjoint Classes
+                        // Output any Disjoint Classes
                         ts = context.Graph.GetTriplesWithSubjectPredicate(r["class"], owlDisjointClass).Concat(context.Graph.GetTriplesWithPredicateObject(owlDisjointClass, r["class"]));
                         this.GenerateCaptionedInformation(context, "Disjoint Classes", ts, t => t.Subject.Equals(r["class"]) ? t.Object : t.Subject);
 
-                        //Show the Class Description
+                        // Show the Class Description
                         if (r.HasValue("classDescription"))
                         {
                             if (r["classDescription"] != null && r["classDescription"].NodeType == NodeType.Literal)
@@ -571,7 +571,7 @@ namespace VDS.RDF.Writing
                             }
                         }
 
-                        //End the </div> for the Class
+                        // End the </div> for the Class
                         context.HtmlWriter.RenderEndTag();
 #if !NO_WEB
                         context.HtmlWriter.WriteLine();
@@ -588,7 +588,7 @@ namespace VDS.RDF.Writing
                 throw new RdfOutputException("Tried to make a SPARQL Query to get Class Information from the Schema but a Query Error occurred", queryEx);
             }
 
-            //Show details for each property
+            // Show details for each property
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H3);
             context.HtmlWriter.WriteEncodedText("Properties");
             context.HtmlWriter.RenderEndTag();
@@ -596,7 +596,7 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.WriteLine();
 #endif
 
-            //Alter our previous getProperties query to get additional details
+            // Alter our previous getProperties query to get additional details
             getProperties.CommandText = "SELECT ?property (SAMPLE(?label) AS ?propertyLabel) (SAMPLE(?description) AS ?propertyDescription) WHERE { { ?property a rdf:Property } UNION { ?property a owl:ObjectProperty } UNION { ?property a owl:DatatypeProperty } FILTER(ISURI(?property)) OPTIONAL { ?property rdfs:label ?label } OPTIONAL { ?property rdfs:comment ?description } } GROUP BY ?property ORDER BY ?property";
             try
             {
@@ -608,21 +608,21 @@ namespace VDS.RDF.Writing
                         if (!r.HasValue("property")) continue;
                         String qname = context.NodeFormatter.Format(r["property"]);
 
-                        //Use a <div> for each Property
+                        // Use a <div> for each Property
                         context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassBox);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Div);
 
-                        //Add the Anchor to which earlier Property summary links to
+                        // Add the Anchor to which earlier Property summary links to
                         context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Name, qname);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
                         context.HtmlWriter.RenderEndTag();
 
-                        //Show Basic Property Information
+                        // Show Basic Property Information
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H4);
                         context.HtmlWriter.WriteEncodedText("Property: " + qname);
                         context.HtmlWriter.RenderEndTag();
 
-                        //Show "Local Name - Label"
+                        // Show "Local Name - Label"
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Em);
                         if (TurtleSpecsHelper.IsValidQName(qname))
                         {
@@ -658,31 +658,31 @@ namespace VDS.RDF.Writing
 #if !NO_WEB
                         context.HtmlWriter.WriteLine();
 #endif
-                        //Output further information about the property
+                        // Output further information about the property
                         IEnumerable<Triple> ts;
 
-                        //Output any Subproperties
+                        // Output any Subproperties
                         ts = context.Graph.GetTriplesWithSubjectPredicate(rdfsSubPropertyOf, r["property"]);
                         this.GenerateCaptionedInformation(context, "Has Sub Properties", ts, t => t.Object);
 
-                        //Output Domain and Range
-                        //ts = context.Graph.GetTriplesWithSubjectPredicate(r["property"], rdfsDomain);
-                        //this.GenerateCaptionedInformation(context, "Has Domain", ts, t => t.Object);
-                        //ts = context.Graph.GetTriplesWithSubjectPredicate(r["property"], rdfsRange);
-                        //this.GenerateCaptionedInformation(context, "Has Range", ts, t => t.Object);
+                        // Output Domain and Range
+                        // ts = context.Graph.GetTriplesWithSubjectPredicate(r["property"], rdfsDomain);
+                        // this.GenerateCaptionedInformation(context, "Has Domain", ts, t => t.Object);
+                        // ts = context.Graph.GetTriplesWithSubjectPredicate(r["property"], rdfsRange);
+                        // this.GenerateCaptionedInformation(context, "Has Range", ts, t => t.Object);
                         getPropertyDomains.SetParameter("property", r["property"]);
                         this.GenerateCaptionedInformation(context, "Has Domain", context.Graph.ExecuteQuery(getPropertyDomains) as SparqlResultSet, "domain");
                         getPropertyRanges.SetParameter("property", r["property"]);
                         this.GenerateCaptionedInformation(context, "Has Range", context.Graph.ExecuteQuery(getPropertyRanges) as SparqlResultSet, "range");
 
-                        //Output any Equivalent Properties
+                        // Output any Equivalent Properties
                         ts = context.Graph.GetTriplesWithSubjectPredicate(r["property"], owlEquivalentProperty).Concat(context.Graph.GetTriplesWithPredicateObject(owlEquivalentProperty, r["property"]));
                         this.GenerateCaptionedInformation(context, "Equivalent Properties", ts, t => t.Subject.Equals(r["property"]) ? t.Object : t.Subject);
-                        //Output any Disjoint Classes
+                        // Output any Disjoint Classes
                         ts = context.Graph.GetTriplesWithSubjectPredicate(r["property"], owlInverseProperty).Concat(context.Graph.GetTriplesWithPredicateObject(owlInverseProperty, r["property"]));
                         this.GenerateCaptionedInformation(context, "Inverse Property", ts, t => t.Subject.Equals(r["property"]) ? t.Object : t.Subject);
 
-                        //Show the Property Description
+                        // Show the Property Description
                         if (r.HasValue("propertyDescription"))
                         {
                             if (r["propertyDescription"] != null && r["propertyDescription"].NodeType == NodeType.Literal)
@@ -693,7 +693,7 @@ namespace VDS.RDF.Writing
                             }
                         }
 
-                        //End the </div> for the Property
+                        // End the </div> for the Property
                         context.HtmlWriter.RenderEndTag();
 #if !NO_WEB
                         context.HtmlWriter.WriteLine();
@@ -711,7 +711,7 @@ namespace VDS.RDF.Writing
             }
 
 
-            //End of Page
+            // End of Page
             context.HtmlWriter.RenderEndTag(); //End Body
             context.HtmlWriter.RenderEndTag(); //End Html
         }

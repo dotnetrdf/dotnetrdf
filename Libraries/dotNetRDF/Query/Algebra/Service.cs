@@ -84,17 +84,17 @@ namespace VDS.RDF.Query.Algebra
                 pattern = pattern.Substring(pattern.IndexOf('{'));
                 sparqlQuery.CommandText += pattern;
 
-                //Pass through LIMIT and OFFSET to the remote service
+                // Pass through LIMIT and OFFSET to the remote service
                 if (context.Query.Limit >= 0)
                 {
-                    //Calculate a LIMIT which is the LIMIT plus the OFFSET
-                    //We'll apply OFFSET locally so don't pass that through explicitly
+                    // Calculate a LIMIT which is the LIMIT plus the OFFSET
+                    // We'll apply OFFSET locally so don't pass that through explicitly
                     int limit = context.Query.Limit;
                     if (context.Query.Offset > 0) limit += context.Query.Offset;
                     sparqlQuery.CommandText += " LIMIT " + limit;
                 }
 
-                //Select which service to use
+                // Select which service to use
                 if (this._endpointSpecifier.TokenType == Token.URI)
                 {
                     endpointUri = UriFactory.Create(Tools.ResolveUri(this._endpointSpecifier.Value, baseUri));
@@ -102,7 +102,7 @@ namespace VDS.RDF.Query.Algebra
                 }
                 else if (this._endpointSpecifier.TokenType == Token.VARIABLE)
                 {
-                    //Get all the URIs that are bound to this Variable in the Input
+                    // Get all the URIs that are bound to this Variable in the Input
                     String var = this._endpointSpecifier.Value.Substring(1);
                     if (!context.InputMultiset.ContainsVariable(var)) throw new RdfQueryException("Cannot evaluate a SERVICE clause which uses a Variable as the Service specifier when the Variable is unbound");
                     List<IUriNode> services = new List<IUriNode>();
@@ -118,20 +118,20 @@ namespace VDS.RDF.Query.Algebra
                     }
                     services = services.Distinct().ToList();
 
-                    //Now generate a Federated Remote Endpoint
+                    // Now generate a Federated Remote Endpoint
                     List<SparqlRemoteEndpoint> serviceEndpoints = new List<SparqlRemoteEndpoint>();
                     services.ForEach(u => serviceEndpoints.Add(new SparqlRemoteEndpoint(u.Uri)));
                     endpoint = new FederatedSparqlRemoteEndpoint(serviceEndpoints);
                 }
                 else
                 {
-                    //Note that we must bypass the SILENT operator in this case as this is not an evaluation failure
-                    //but a query syntax error
+                    // Note that we must bypass the SILENT operator in this case as this is not an evaluation failure
+                    // but a query syntax error
                     bypassSilent = true;
                     throw new RdfQueryException("SERVICE Specifier must be a URI/Variable Token but a " + this._endpointSpecifier.GetType().ToString() + " Token was provided");
                 }
 
-                //Where possible do substitution and execution to get accurate and correct SERVICE results
+                // Where possible do substitution and execution to get accurate and correct SERVICE results
                 context.OutputMultiset = new Multiset();
                 List<String> existingVars = (from v in this._pattern.Variables
                                              where context.InputMultiset.ContainsVariable(v)
@@ -139,14 +139,14 @@ namespace VDS.RDF.Query.Algebra
 
                 if (existingVars.Any() || context.Query.Bindings != null)
                 {
-                    //Pre-bound variables/BINDINGS clause so do substitution and execution
+                    // Pre-bound variables/BINDINGS clause so do substitution and execution
 
-                    //Build the set of possible bindings
+                    // Build the set of possible bindings
                     HashSet<ISet> bindings = new HashSet<ISet>();
                     if (context.Query.Bindings != null && !this._pattern.Variables.IsDisjoint(context.Query.Bindings.Variables))
                     {
-                        //Possible Bindings comes from BINDINGS clause
-                        //In this case each possibility is a distinct binding tuple defined in the BINDINGS clause
+                        // Possible Bindings comes from BINDINGS clause
+                        // In this case each possibility is a distinct binding tuple defined in the BINDINGS clause
                         foreach (BindingTuple tuple in context.Query.Bindings.Tuples)
                         {
                             bindings.Add(new Set(tuple));
@@ -154,8 +154,8 @@ namespace VDS.RDF.Query.Algebra
                     }
                     else
                     {
-                        //Possible Bindings get built from current input (if there was a BINDINGS clause the variables it defines are not in this SERVICE clause)
-                        //In this case each possibility only contains Variables bound so far
+                        // Possible Bindings get built from current input (if there was a BINDINGS clause the variables it defines are not in this SERVICE clause)
+                        // In this case each possibility only contains Variables bound so far
                         foreach (ISet s in context.InputMultiset.Sets)
                         {
                             Set t = new Set();
@@ -167,10 +167,10 @@ namespace VDS.RDF.Query.Algebra
                         }
                     }
 
-                    //Execute the Query for every possible Binding and build up our Output Multiset from all the results
+                    // Execute the Query for every possible Binding and build up our Output Multiset from all the results
                     foreach (ISet s in bindings)
                     {
-                        //Q: Should we continue processing here if and when we hit an error?
+                        // Q: Should we continue processing here if and when we hit an error?
 
                         foreach (String var in s.Variables)
                         {
@@ -194,12 +194,12 @@ namespace VDS.RDF.Query.Algebra
                 }
                 else
                 {
-                    //No pre-bound variables/BINDINGS clause so just execute the query
+                    // No pre-bound variables/BINDINGS clause so just execute the query
 
-                    //Try and get a Result Set from the Service
+                    // Try and get a Result Set from the Service
                     SparqlResultSet results = endpoint.QueryWithResultSet(sparqlQuery.ToString());
 
-                    //Transform this Result Set back into a Multiset
+                    // Transform this Result Set back into a Multiset
                     foreach (SparqlResult r in results.Results)
                     {
                         context.OutputMultiset.Add(new Set(r));
@@ -214,8 +214,8 @@ namespace VDS.RDF.Query.Algebra
                 if (this._silent && !bypassSilent)
                 {
 
-                    //If Evaluation Errors are SILENT is specified then a Multiset containing a single set with all values unbound is returned
-                    //Unless some of the SPARQL queries did return results in which we just return the results we did obtain
+                    // If Evaluation Errors are SILENT is specified then a Multiset containing a single set with all values unbound is returned
+                    // Unless some of the SPARQL queries did return results in which we just return the results we did obtain
                     if (context.OutputMultiset.IsEmpty)
                     {
                         Set s = new Set();

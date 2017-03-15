@@ -65,12 +65,12 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
                 throw new RdfQueryException("Cannot apply multiplication to the given inputs");
             }
 
-            //if (a == null || b == null) throw new RdfQueryException("Cannot apply multiplication when one/both arguments are null");
+            // if (a == null || b == null) throw new RdfQueryException("Cannot apply multiplication when one/both arguments are null");
 
-            //SparqlNumericType type = (SparqlNumericType)Math.Max((int)a.NumericType, (int)b.NumericType);
+            // SparqlNumericType type = (SparqlNumericType)Math.Max((int)a.NumericType, (int)b.NumericType);
 
-            //switch (type)
-            //{
+            // switch (type)
+            // {
             //    case SparqlNumericType.Integer:
             //        return new LongNode(null, a.AsInteger() * b.AsInteger());
             //    case SparqlNumericType.Decimal:
@@ -81,7 +81,7 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
             //        return new DoubleNode(null, a.AsDouble() * b.AsDouble());
             //    default:
             //        throw new RdfQueryException("Cannot evalute an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
-            //}
+            // }
         }
 
         /// <summary>

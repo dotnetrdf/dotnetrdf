@@ -76,17 +76,17 @@ namespace VDS.RDF.Parsing.Handlers
                 handler.StartRdf();
                 if (g != null)
                 {
-                    //Handle the Base URI if present
+                    // Handle the Base URI if present
                     if (g.BaseUri != null)
                     {
                         if (!handler.HandleBaseUri(g.BaseUri)) ParserHelper.Stop();
                     }
-                    //Handle any namespaces
+                    // Handle any namespaces
                     foreach (String prefix in g.NamespaceMap.Prefixes)
                     {
                         if (!handler.HandleNamespace(prefix, g.NamespaceMap.GetNamespaceUri(prefix))) ParserHelper.Stop();
                     }
-                    //Finally handle triples
+                    // Finally handle triples
                     foreach (Triple t in g.Triples)
                     {
                         if (!handler.HandleTriple(t)) ParserHelper.Stop();
@@ -160,7 +160,7 @@ namespace VDS.RDF.Parsing.Handlers
                         }
                         break;
                     default:
-                        //Does nothing     
+                        // Does nothing     
                         break;
                 }
 

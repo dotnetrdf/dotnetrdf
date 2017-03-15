@@ -57,7 +57,7 @@ namespace VDS.RDF.Nodes
                     return new GraphLiteralNode(n.Graph, glit.SubGraph);
                 case NodeType.Literal:
                     ILiteralNode lit = (ILiteralNode)n;
-                    //Decide what kind of valued node to produce based on node datatype
+                    // Decide what kind of valued node to produce based on node datatype
                     if (lit.DataType != null)
                     {
                         String dt = lit.DataType.AbsoluteUri;
@@ -74,7 +74,7 @@ namespace VDS.RDF.Nodes
                                     return new StringNode(n.Graph, lit.Value, lit.DataType);
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeByte:
-                                //xsd:byte actually maps to SignedByte in .Net
+                                // xsd:byte actually maps to SignedByte in .Net
                                 sbyte sbVal;
                                 if (sbyte.TryParse(lit.Value, out sbVal))
                                 {
@@ -161,7 +161,7 @@ namespace VDS.RDF.Nodes
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeNegativeInteger:
                             case XmlSpecsHelper.XmlSchemaDataTypeNonPositiveInteger:
-                                //Must be below zero
+                                // Must be below zero
                                 long neglng;
                                 if (Int64.TryParse(lit.Value, out neglng) && neglng < 0)
                                 {
@@ -173,7 +173,7 @@ namespace VDS.RDF.Nodes
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeNonNegativeInteger:
                             case XmlSpecsHelper.XmlSchemaDataTypePositiveInteger:
-                                //Must be above zero
+                                // Must be above zero
                                 long poslng;
                                 if (Int64.TryParse(lit.Value, out poslng) && poslng >= 0)
                                 {
@@ -184,7 +184,7 @@ namespace VDS.RDF.Nodes
                                     return new StringNode(n.Graph, lit.Value, lit.DataType);
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte:
-                                //xsd:unsignedByte actually maps to Byte in .Net
+                                // xsd:unsignedByte actually maps to Byte in .Net
                                 byte byVal;
                                 if (byte.TryParse(lit.Value, out byVal))
                                 {
@@ -197,7 +197,7 @@ namespace VDS.RDF.Nodes
                             case XmlSpecsHelper.XmlSchemaDataTypeUnsignedInt:
                             case XmlSpecsHelper.XmlSchemaDataTypeUnsignedLong:
                             case XmlSpecsHelper.XmlSchemaDataTypeUnsignedShort:
-                                //Must be unsigned
+                                // Must be unsigned
                                 ulong ulng;
                                 if (UInt64.TryParse(lit.Value, out ulng))
                                 {

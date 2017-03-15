@@ -344,7 +344,7 @@ namespace VDS.RDF.Storage
         {
             if (base.ListGraphsSupported)
             {
-                //Use the base classes ListGraphs method if it provides one
+                // Use the base classes ListGraphs method if it provides one
                 return base.ListGraphs();
             }
             else

@@ -118,7 +118,7 @@ namespace VDS.RDF
         [Obsolete("This helper pertains to obsoleted code and will be removed in future releases", true)]
         public static IEnumerable<T> SearchIndex<T>(this List<T> index, IComparer<T> comparer, T search)
         {
-            //If Index is empty then there are no results
+            // If Index is empty then there are no results
             if (index.Count == 0) return Enumerable.Empty<T>();
 
             int lower = 0;
@@ -126,7 +126,7 @@ namespace VDS.RDF
             int middle, c;
             int start = upper + 1, end = upper;
 
-            //Find the First point at which the Search Triple occurs
+            // Find the First point at which the Search Triple occurs
             do
             {
                 if (lower > upper) return Enumerable.Empty<T>();
@@ -135,15 +135,15 @@ namespace VDS.RDF
                 c = comparer.Compare(index[middle], search);
                 if (c < 0)
                 {
-                    //Increment lower bound
+                    // Increment lower bound
                     lower = middle + 1;
                 }
                 else
                 {
-                    //If equal record possible start point
+                    // If equal record possible start point
                     if (c == 0) start = middle;
 
-                    //Decrement upper bound and end
+                    // Decrement upper bound and end
                     upper = middle - 1;
                     if (c != 0) end = middle;
                 }
@@ -151,7 +151,7 @@ namespace VDS.RDF
 
             if (start >= index.Count) return Enumerable.Empty<T>();
 
-            //Find the Last point at which the Search Triple occurs
+            // Find the Last point at which the Search Triple occurs
             lower = start;
             upper = end;
             do
@@ -162,15 +162,15 @@ namespace VDS.RDF
                 c = comparer.Compare(index[middle], search);
                 if (c > 0)
                 {
-                    //Decrement upper bound
+                    // Decrement upper bound
                     upper = middle - 1;
                 }
                 else
                 {
-                    //If equal record possible end point
+                    // If equal record possible end point
                     if (c == 0) end = middle;
 
-                    //Increment lower bound
+                    // Increment lower bound
                     lower = middle + 1;
                 }
             } while (true);

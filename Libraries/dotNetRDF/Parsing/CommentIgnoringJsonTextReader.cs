@@ -46,24 +46,24 @@ namespace VDS.RDF.Parsing
         /// <returns>True if a Token was read, False otherwise</returns>
         public override bool Read()
         {
-            //Read next token
+            // Read next token
             bool result = base.Read();
 
             if (result)
             {
-                //Keep reading next Token while Token is a Comment
+                // Keep reading next Token while Token is a Comment
                 while (base.TokenType == JsonToken.Comment)
                 {
                     result = base.Read();
 
-                    //If we hit end of stream return false
+                    // If we hit end of stream return false
                     if (!result) return false;
                 }
 
-                //If we get here we've read a Token which isn't a comment
+                // If we get here we've read a Token which isn't a comment
                 return true;
             }
-            //Couldn't read to start with as already at end of stream
+            // Couldn't read to start with as already at end of stream
             return false;
         }
     }

@@ -83,7 +83,7 @@ namespace VDS.RDF
             }
             this._datatype = null;
 
-            //Compute Hash Code
+            // Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString() + PlainLiteralHashCodeSalt).GetHashCode();
         }
 
@@ -121,10 +121,10 @@ namespace VDS.RDF
             this._language = langspec != null ? langspec.ToLowerInvariant() : String.Empty;
             this._datatype = null;
 
-            //Compute Hash Code
+            // Compute Hash Code
             if (this._language.Equals(String.Empty))
             {
-                //Empty Language Specifier equivalent to a Plain Literal
+                // Empty Language Specifier equivalent to a Plain Literal
                 this._hashcode = (this._nodetype + this.ToString() + PlainLiteralHashCodeSalt).GetHashCode();
             }
             else
@@ -166,7 +166,7 @@ namespace VDS.RDF
             }
             this._datatype = datatype;
 
-            //Compute Hash Code
+            // Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString() + DataTypedLiteralHashCodeSalt).GetHashCode();
         }
 
@@ -190,16 +190,16 @@ namespace VDS.RDF
             switch (mode)
             {
                 case 0:
-                    //Nothing more to do - plain literal
+                    // Nothing more to do - plain literal
                     this._hashcode = (this._nodetype + this.ToString() + PlainLiteralHashCodeSalt).GetHashCode();
                     break;
                 case 1:
-                    //Get the Language
+                    // Get the Language
                     this._language = info.GetString("lang");
                     this._hashcode = (this._nodetype + this.ToString() + LangSpecLiteralHashCodeSalt).GetHashCode();
                     break;
                 case 2:
-                    //Get the Datatype
+                    // Get the Datatype
                     this._datatype = UriFactory.Create(info.GetString("datatype"));
                     this._hashcode = (this._nodetype + this.ToString() + DataTypedLiteralHashCodeSalt).GetHashCode();
                     break;
@@ -269,7 +269,7 @@ namespace VDS.RDF
             }
             else
             {
-                //Can only be equal to other Nodes
+                // Can only be equal to other Nodes
                 return false;
             }
         }
@@ -300,7 +300,7 @@ namespace VDS.RDF
             }
             else
             {
-                //Can only be equal to a LiteralNode
+                // Can only be equal to a LiteralNode
                 return false;
             }
         }
@@ -411,14 +411,14 @@ namespace VDS.RDF
 
             if (other == null)
             {
-                //Everything is greater than a null
-                //Return a 1 to indicate this
+                // Everything is greater than a null
+                // Return a 1 to indicate this
                 return 1;
             }
             else if (other.NodeType == NodeType.Blank || other.NodeType == NodeType.Variable || other.NodeType == NodeType.Uri)
             {
-                //Literal Nodes are greater than Blank, Variable and Uri Nodes
-                //Return a 1 to indicate this
+                // Literal Nodes are greater than Blank, Variable and Uri Nodes
+                // Return a 1 to indicate this
                 return 1;
             }
             else if (other.NodeType == NodeType.Literal)
@@ -427,8 +427,8 @@ namespace VDS.RDF
             }
             else
             {
-                //Anything else is considered greater than a Literal Node
-                //Return -1 to indicate this
+                // Anything else is considered greater than a Literal Node
+                // Return -1 to indicate this
                 return -1;
             }
         }
@@ -441,7 +441,7 @@ namespace VDS.RDF
         public override int CompareTo(IBlankNode other)
         {
             if (ReferenceEquals(this, other)) return 0;
-            //We are always greater than nulls/Blank Nodes
+            // We are always greater than nulls/Blank Nodes
             return 1;
         }
 
@@ -466,12 +466,12 @@ namespace VDS.RDF
             if (ReferenceEquals(this, other)) return 0;
             if (other == null)
             {
-                //We are always greater than nulls
+                // We are always greater than nulls
                 return 1;
             }
             else
             {
-                //Graph Literals are always greater than us
+                // Graph Literals are always greater than us
                 return -1;
             }
         }
@@ -484,7 +484,7 @@ namespace VDS.RDF
         public override int CompareTo(IUriNode other)
         {
             if (ReferenceEquals(this, other)) return 0;
-            //We are always greater than nulls/URI Nodes
+            // We are always greater than nulls/URI Nodes
             return 1;
         }
 
@@ -496,7 +496,7 @@ namespace VDS.RDF
         public override int CompareTo(IVariableNode other)
         {
             if (ReferenceEquals(this, other)) return 0;
-            //We are always greater than nulls/Variable Nodes
+            // We are always greater than nulls/Variable Nodes
             return 1;
         }
 
@@ -571,17 +571,17 @@ namespace VDS.RDF
 
             if (this._datatype != null)
             {            
-                //Compute Hash Code
+                // Compute Hash Code
                 this._hashcode = (this._nodetype + this.ToString() + DataTypedLiteralHashCodeSalt).GetHashCode();
             }
             else if (!this._language.Equals(String.Empty))
             {
-                //Compute Hash Code
+                // Compute Hash Code
                 this._hashcode = (this._nodetype + this.ToString() + LangSpecLiteralHashCodeSalt).GetHashCode();
             }
             else
             {
-                //Compute Hash Code
+                // Compute Hash Code
                 this._hashcode = (this._nodetype + this.ToString() + PlainLiteralHashCodeSalt).GetHashCode();
             }
         }

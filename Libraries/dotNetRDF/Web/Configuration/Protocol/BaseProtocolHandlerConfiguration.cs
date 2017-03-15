@@ -55,7 +55,7 @@ namespace VDS.RDF.Web.Configuration.Protocol
         public BaseProtocolHandlerConfiguration(IHttpContext context, IGraph g, INode objNode)
             : base(context, g, objNode)
         {
-            //Then get the Protocol Processor to be used
+            // Then get the Protocol Processor to be used
             ISparqlHttpProtocolProcessor processor;
             INode procNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyProtocolProcessor)));
             if (procNode == null) throw new DotNetRdfConfigurationException("Unable to load Protocol Handler Configuration as the RDF configuration file does not specify a dnr:protocolProcessor property for the Handler");
@@ -70,7 +70,7 @@ namespace VDS.RDF.Web.Configuration.Protocol
             }
             this._processor = processor;
 
-            //Get the Service Description Graph
+            // Get the Service Description Graph
             INode descripNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServiceDescription)));
             if (descripNode != null)
             {

@@ -49,7 +49,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         public BaseStardogTemplate(String id, String name, String descrip, String dbtype)
             : base(id, name, descrip)
         {
-            //Index Options
+            // Index Options
             this.DatabaseType = dbtype;
             this.MinDifferentialIndexLimit = BaseStardogServer.DatabaseOptions.DefaultMinDifferentialIndexLimit;
             this.MaxDifferentialIndexLimit = BaseStardogServer.DatabaseOptions.DefaultMaxDifferentialIndexLimit;
@@ -59,42 +59,42 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
             this.PersistIndexesSynchronously = BaseStardogServer.DatabaseOptions.DefaultPersistIndexSync;
             this.AutoUpdateStatistics = BaseStardogServer.DatabaseOptions.DefaultAutoUpdateStats;
 
-            //Integrity Constraint Validation
+            // Integrity Constraint Validation
             this.IcvActiveGraphs = new List<string>();
             this.IcvEnabled = BaseStardogServer.DatabaseOptions.DefaultIcvEnabled;
             this.IcvReasoningMode = BaseStardogServer.DatabaseOptions.DefaultIcvReasoningMode;
 
-            //Reasoning
+            // Reasoning
             this.ConsistencyChecking = BaseStardogServer.DatabaseOptions.DefaultConsistencyChecking;
             this.EnablePunning = BaseStardogServer.DatabaseOptions.DefaultPunning;
             this.SchemaGraphs = new List<string>();
 
-            //Search
+            // Search
             this.FullTextSearch = BaseStardogServer.DatabaseOptions.DefaultFullTextSearch;
             this.SearchReindexMode = BaseStardogServer.DatabaseOptions.SearchReIndexModeAsync;
 
-            //Transactions
+            // Transactions
             this.DurableTransactions = BaseStardogServer.DatabaseOptions.DefaultDurableTransactions;
         }
 
         #region Index Options
 
-        //index.differential.enable.limit
-        //Sets the minimum size of the Stardog database before differential indexes are used.
-        //index.differential.merge.limit
-        //Sets the size in number of RDF triples before the differential indexes are merged to the main indexes.
-        //index.literals.canonical
-        //Enables RDF literal canonicalization. See literal canonicalization for details.
-        //index.named.graphs
-        //Enables optimized index support for named graphs; speeds SPARQL query evaluation with named graphs at the cost of some overhead for database loading and index maintenance.
-        //index.persist
-        //Enables persistent indexes.
-        //index.persist.sync
-        //Enables whether memory indexes are synchronously or asynchronously persisted to disk with respect to a transaction.
-        //index.statistics.update.automatic
-        //Sets whether statistics are maintained automatically.
-        //index.type
-        //Sets the index type (memory or disk).
+        // index.differential.enable.limit
+        // Sets the minimum size of the Stardog database before differential indexes are used.
+        // index.differential.merge.limit
+        // Sets the size in number of RDF triples before the differential indexes are merged to the main indexes.
+        // index.literals.canonical
+        // Enables RDF literal canonicalization. See literal canonicalization for details.
+        // index.named.graphs
+        // Enables optimized index support for named graphs; speeds SPARQL query evaluation with named graphs at the cost of some overhead for database loading and index maintenance.
+        // index.persist
+        // Enables persistent indexes.
+        // index.persist.sync
+        // Enables whether memory indexes are synchronously or asynchronously persisted to disk with respect to a transaction.
+        // index.statistics.update.automatic
+        // Sets whether statistics are maintained automatically.
+        // index.type
+        // Sets the index type (memory or disk).
 
         /// <summary>
         /// Gets the Database Type
@@ -251,12 +251,12 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
 
         #region Integrity Constraint Validation Options
 
-        //icv.active.graphs
-        //Specifies which part of the database, in terms of named graphs, is checked with IC validation. to validate all the named graphs in the database.
-        //icv.enabled
-        //Determines whether ICV is active for the database; if true, all database mutations are subject to IC validation (i.e., "guard mode").
-        //icv.reasoning-type
-        //Determines what "reasoning level" is used during IC validation.
+        // icv.active.graphs
+        // Specifies which part of the database, in terms of named graphs, is checked with IC validation. to validate all the named graphs in the database.
+        // icv.enabled
+        // Determines whether ICV is active for the database; if true, all database mutations are subject to IC validation (i.e., "guard mode").
+        // icv.reasoning-type
+        // Determines what "reasoning level" is used during IC validation.
 
         /// <summary>
         /// Gets/Sets the active graphs for ICV
@@ -318,12 +318,12 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         #endregion
 
         #region Reasoning Options
-        //reasoning.consistency.automatic
-        //Enables automatic consistency checking with respect to a transaction.
-        //reasoning.punning.enabled
-        //Enables punning.
-        //reasoning.schema.graphs
-        //Determines which, if any, named graph or graphs contains the "tbox", i.e., the schema part of the data.
+        // reasoning.consistency.automatic
+        // Enables automatic consistency checking with respect to a transaction.
+        // reasoning.punning.enabled
+        // Enables punning.
+        // reasoning.schema.graphs
+        // Determines which, if any, named graph or graphs contains the "tbox", i.e., the schema part of the data.
 
         /// <summary>
         /// Gets/Sets whether to perform automatic consistency checking on transactions
@@ -386,10 +386,10 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
 
         #region Search Options
 
-        //search.enabled
-        //Enables semantic search on the database.
-        //search.reindex.mode
-        //Sets how search indexes are maintained.
+        // search.enabled
+        // Enables semantic search on the database.
+        // search.reindex.mode
+        // Sets how search indexes are maintained.
 
         /// <summary>
         /// Enables/Disables Full Text search
@@ -432,8 +432,8 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         #endregion
 
         #region Transaction Options
-        //transactions.durable
-        //Enables durable transactions.
+        // transactions.durable
+        // Enables durable transactions.
 
         /// <summary>
         /// Gets/Sets whether to use durable transactions
@@ -505,15 +505,15 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// <returns></returns>
         public JObject GetTemplateJson()
         {
-            //Set up the basic template
+            // Set up the basic template
             JObject template = new JObject();
             template.Add("dbname", new JValue(this.ID));
 
-            //Build up the options object
-            //Don't bother included non-required options if the user hasn't adjusted them from their defaults
+            // Build up the options object
+            // Don't bother included non-required options if the user hasn't adjusted them from their defaults
             JObject options = new JObject();
 
-            //Index Options
+            // Index Options
             options.Add(BaseStardogServer.DatabaseOptions.IndexType, new JValue(this.DatabaseType.ToLower()));
             if (this.MinDifferentialIndexLimit != BaseStardogServer.DatabaseOptions.DefaultMinDifferentialIndexLimit) options.Add(BaseStardogServer.DatabaseOptions.IndexDifferentialEnableLimit, new JValue(this.MinDifferentialIndexLimit));
             if (this.MaxDifferentialIndexLimit != BaseStardogServer.DatabaseOptions.DefaultMaxDifferentialIndexLimit) options.Add(BaseStardogServer.DatabaseOptions.IndexDifferentialMergeLimit, new JValue(this.MaxDifferentialIndexLimit));
@@ -523,27 +523,27 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
             if (this.PersistIndexesSynchronously != BaseStardogServer.DatabaseOptions.DefaultPersistIndexSync) options.Add(BaseStardogServer.DatabaseOptions.IndexPersistSync, new JValue(this.PersistIndexesSynchronously));
             if (this.AutoUpdateStatistics != BaseStardogServer.DatabaseOptions.DefaultAutoUpdateStats) options.Add(BaseStardogServer.DatabaseOptions.IndexStatisticsAutoUpdate, new JValue(this.AutoUpdateStatistics));
 
-            //ICV Options
+            // ICV Options
             if (this.IcvActiveGraphs.Count > 0) options.Add(BaseStardogServer.DatabaseOptions.IcvActiveGraphs, new JValue(String.Join(",", this.IcvActiveGraphs.ToArray())));
             if (this.IcvEnabled != BaseStardogServer.DatabaseOptions.DefaultIcvEnabled) options.Add(BaseStardogServer.DatabaseOptions.IcvEnabled, new JValue(this.IcvEnabled));
             if (this.IcvReasoningMode != BaseStardogServer.DatabaseOptions.DefaultIcvReasoningMode) options.Add(BaseStardogServer.DatabaseOptions.IcvReasoningType, new JValue(this.IcvReasoningMode.ToString()));
             
-            //Reasoning
+            // Reasoning
             if (this.ConsistencyChecking != BaseStardogServer.DatabaseOptions.DefaultConsistencyChecking) options.Add(BaseStardogServer.DatabaseOptions.ReasoningAutoConsistency, new JValue(this.ConsistencyChecking));
             if (this.EnablePunning != BaseStardogServer.DatabaseOptions.DefaultPunning) options.Add(BaseStardogServer.DatabaseOptions.ReasoningPunning, new JValue(this.EnablePunning));
             if (this.SchemaGraphs.Count > 0) options.Add(BaseStardogServer.DatabaseOptions.ReasoningSchemaGraphs, new JValue(String.Join(",", this.SchemaGraphs.ToArray())));
 
-            //Search
+            // Search
             if (this.FullTextSearch != BaseStardogServer.DatabaseOptions.DefaultFullTextSearch) options.Add(BaseStardogServer.DatabaseOptions.SearchEnabled, new JValue(this.FullTextSearch));
             if (this.SearchReindexMode.ToLower() != BaseStardogServer.DatabaseOptions.SearchReIndexModeAsync) options.Add(BaseStardogServer.DatabaseOptions.SearchReIndexMode, new JValue(this.SearchReindexMode.ToLower()));
 
-            //Transactions
+            // Transactions
             if (this.DurableTransactions != BaseStardogServer.DatabaseOptions.DefaultDurableTransactions) options.Add(BaseStardogServer.DatabaseOptions.TransactionsDurable, new JValue(this.DurableTransactions));
 
-            //Add options to the Template
+            // Add options to the Template
             template.Add("options", options);
 
-            //Add empty files list
+            // Add empty files list
             template.Add("files", new JArray());
 
             return template;

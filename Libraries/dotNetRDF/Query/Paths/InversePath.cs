@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
-            //Swap the Subject and Object over
+            // Swap the Subject and Object over
             PatternItem tempObj = context.Object;
             PatternItem tempSubj = context.Subject;
             PatternItem tempEnd = context.End;
@@ -64,10 +64,10 @@ namespace VDS.RDF.Query.Paths
             context.Subject = tempObj;
             context.End = tempSubj;
 
-            //Then transform the path
+            // Then transform the path
             context.AddTriplePattern(context.GetTriplePattern(context.Subject, this._path, context.Object));
 
-            //Then swap the Subject and Object back
+            // Then swap the Subject and Object back
             context.Subject = tempSubj;
             context.Object = tempObj;
             context.End = tempEnd;

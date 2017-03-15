@@ -55,7 +55,7 @@ namespace VDS.RDF
         {
             this._uri = uri;
 
-            //Compute Hash Code
+            // Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 
@@ -86,7 +86,7 @@ namespace VDS.RDF
                 throw new RdfException("Cannot create a URI Node since the QName '" + qname + "' appears to be invalid");
             }
 
-            //Compute Hash Code
+            // Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 
@@ -115,7 +115,7 @@ namespace VDS.RDF
         {
             this._uri = UriFactory.Create(info.GetString("uri"));
 
-            //Compute Hash Code
+            // Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 
@@ -152,7 +152,7 @@ namespace VDS.RDF
             }
             else
             {
-                //Can only be equal to other Nodes
+                // Can only be equal to other Nodes
                 return false;
             }
         }
@@ -179,7 +179,7 @@ namespace VDS.RDF
             }
             else
             {
-                //Can only be equal to UriNodes
+                // Can only be equal to UriNodes
                 return false;
             }
         }
@@ -277,26 +277,26 @@ namespace VDS.RDF
 
             if (other == null)
             {
-                //Everything is greater than a null
-                //Return a 1 to indicate this
+                // Everything is greater than a null
+                // Return a 1 to indicate this
                 return 1;
             }
             else if (other.NodeType == NodeType.Blank || other.NodeType == NodeType.Variable)
             {
-                //Uri Nodes are greater than Blank and Variable Nodes
-                //Return a 1 to indicate this
+                // Uri Nodes are greater than Blank and Variable Nodes
+                // Return a 1 to indicate this
                 return 1;
             }
             else if (other.NodeType == NodeType.Uri)
             {
-                //Return the result of CompareTo using the IUriNode comparison method
+                // Return the result of CompareTo using the IUriNode comparison method
 
                 return this.CompareTo((IUriNode)other);
             }
             else
             {
-                //Anything else is considered greater than a Uri Node
-                //Return -1 to indicate this
+                // Anything else is considered greater than a Uri Node
+                // Return -1 to indicate this
                 return -1;
             }
         }
@@ -310,7 +310,7 @@ namespace VDS.RDF
         {
             if (ReferenceEquals(this, other)) return 0;
 
-            //URI Nodes are greater than nulls and Blank Nodes
+            // URI Nodes are greater than nulls and Blank Nodes
             return 1;
         }
 
@@ -325,13 +325,13 @@ namespace VDS.RDF
 
             if (other == null)
             {
-                //Everything is greater than a null
-                //Return a 1 to indicate this
+                // Everything is greater than a null
+                // Return a 1 to indicate this
                 return 1;
             }
             else
             {
-                //URI Nodes are less than Graph Literal Nodes
+                // URI Nodes are less than Graph Literal Nodes
                 return -1;
             }
         }
@@ -347,13 +347,13 @@ namespace VDS.RDF
 
             if (other == null)
             {
-                //Everything is greater than a null
-                //Return a 1 to indicate this
+                // Everything is greater than a null
+                // Return a 1 to indicate this
                 return 1;
             }
             else
             {
-                //URI Nodes are less than Literal Nodes
+                // URI Nodes are less than Literal Nodes
                 return -1;
             }
         }
@@ -367,7 +367,7 @@ namespace VDS.RDF
         {
             if (ReferenceEquals(this, other)) return 0;
 
-            //URI Nodes are greater than nulls and Variable Nodes
+            // URI Nodes are greater than nulls and Variable Nodes
             return 1;
         }
 
@@ -418,7 +418,7 @@ namespace VDS.RDF
         public sealed override void ReadXml(XmlReader reader)
         {
             this._uri = UriFactory.Create(reader.ReadElementContentAsString());
-            //Compute Hash Code
+            // Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 

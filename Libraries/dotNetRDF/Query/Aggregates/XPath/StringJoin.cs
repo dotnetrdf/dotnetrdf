@@ -84,7 +84,7 @@ namespace VDS.RDF.Query.Aggregates.XPath
                 {
                     String temp = this.ValueInternal(context, ids[i]);
 
-                    //Apply DISTINCT modifer if required
+                    // Apply DISTINCT modifer if required
                     if (this._distinct)
                     {
                         if (values.Contains(temp))
@@ -103,7 +103,7 @@ namespace VDS.RDF.Query.Aggregates.XPath
                     output.Append(String.Empty);
                 }
 
-                //Append Separator if required
+                // Append Separator if required
                 if (i < ids.Count - 1)
                 {
                     String sep = this.GetSeparator(context, ids[i]);

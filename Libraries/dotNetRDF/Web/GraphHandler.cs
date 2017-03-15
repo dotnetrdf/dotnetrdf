@@ -68,7 +68,7 @@ namespace VDS.RDF.Web
         /// <returns></returns>
         protected override BaseGraphHandlerConfiguration LoadConfig(HttpContext context)
         {
-            //Is our Configuration already cached?
+            // Is our Configuration already cached?
             Object temp = context.Cache[context.Request.Path];
             if (temp != null)
             {
@@ -82,18 +82,18 @@ namespace VDS.RDF.Web
                 }
             }
 
-            //Check the Configuration File is specified
+            // Check the Configuration File is specified
             String configFile = context.Server.MapPath(ConfigurationManager.AppSettings["dotNetRDFConfig"]);
             if (configFile == null) throw new DotNetRdfConfigurationException("Unable to load Graph Handler Configuration as the Web.Config file does not specify a 'dotNetRDFConfig' AppSetting to specify the RDF configuration file to use");
             IGraph g = WebConfigurationLoader.LoadConfigurationGraph(context, configFile);
 
-            //Then check there is configuration associated with the expected URI
+            // Then check there is configuration associated with the expected URI
             String objUri = "dotnetrdf:" + context.Request.Path;
             INode objNode = g.GetUriNode(UriFactory.Create(objUri));
             if (objNode == null) throw new DotNetRdfConfigurationException("Unable to load Graph Handler Configuration as the RDF configuration file does not have any configuration associated with the URI <dotnetrdf:" + context.Request.Path + "> as required");
             GraphHandlerConfiguration config = new GraphHandlerConfiguration(new WebContext(context), g, objNode);
 
-            //Finally cache the Configuration before returning it
+            // Finally cache the Configuration before returning it
             if (config.CacheSliding)
             {
                 context.Cache.Add(context.Request.Path, config, new System.Web.Caching.CacheDependency(configFile), System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, config.CacheDuration, 0), System.Web.Caching.CacheItemPriority.Normal, null);

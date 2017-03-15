@@ -57,8 +57,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
             {
                 if (this._expressions.Count == 0) return new BooleanNode(null, false);
 
-                //Have to use SPARQL Value Equality here
-                //If any expressions error and nothing in the set matches then an error is thrown
+                // Have to use SPARQL Value Equality here
+                // If any expressions error and nothing in the set matches then an error is thrown
                 bool errors = false;
                 foreach (ISparqlExpression expr in this._expressions)
                 {

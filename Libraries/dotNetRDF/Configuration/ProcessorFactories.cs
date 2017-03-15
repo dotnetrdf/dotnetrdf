@@ -113,7 +113,7 @@ namespace VDS.RDF.Configuration
                     }
                     else
                     {
-                        //If no dnr:usingDataset try dnr:usingStore instead
+                        // If no dnr:usingDataset try dnr:usingStore instead
                         storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingStore)));
                         if (storeObj == null) return false;
                         temp = ConfigurationLoader.LoadObject(g, storeObj);

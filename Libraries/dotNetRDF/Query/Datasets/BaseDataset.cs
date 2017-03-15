@@ -184,8 +184,8 @@ namespace VDS.RDF.Query.Datasets
             }
             else
             {
-                //Multiple Graph URIs
-                //Build a merged Graph of all the Graph URIs
+                // Multiple Graph URIs
+                // Build a merged Graph of all the Graph URIs
                 Graph g = new Graph();
                 foreach (Uri u in graphUris)
                 {
@@ -220,8 +220,8 @@ namespace VDS.RDF.Query.Datasets
         {
             if (graphUri == null)
             {
-                //Change the Active Graph so that the query operates over the default graph
-                //If the default graph is null then it operates over the entire dataset
+                // Change the Active Graph so that the query operates over the default graph
+                // If the default graph is null then it operates over the entire dataset
                 this._activeGraphs.Value.Push(this._activeGraph.Value);
                 this._activeGraph.Value = this._defaultGraph.Value;
                 this._activeGraphUris.Value.Push(this._defaultGraphUris.Value.Count > 0 ? this._defaultGraphUris.Value.Peek() : Enumerable.Empty<Uri>());
@@ -233,7 +233,7 @@ namespace VDS.RDF.Query.Datasets
             }
             else
             {
-                //Active Graph is an empty Graph in the case where the Graph is not present in the Dataset
+                // Active Graph is an empty Graph in the case where the Graph is not present in the Dataset
                 this.SetActiveGraphInternal(new Graph());
                 this._activeGraphUris.Value.Push(Enumerable.Empty<Uri>());
             }
@@ -252,13 +252,13 @@ namespace VDS.RDF.Query.Datasets
             }
             else if (graphUris.Count() == 1)
             {
-                //If only 1 Graph Uri call the simpler SetActiveGraph method which will be quicker
+                // If only 1 Graph Uri call the simpler SetActiveGraph method which will be quicker
                 this.SetActiveGraph(graphUris.First());
             }
             else
             {
-                //Multiple Graph URIs
-                //Build a merged Graph of all the Graph URIs
+                // Multiple Graph URIs
+                // Build a merged Graph of all the Graph URIs
                 Graph g = new Graph();
                 foreach (Uri u in graphUris)
                 {
@@ -543,18 +543,18 @@ namespace VDS.RDF.Query.Datasets
                 {
                     if (this._defaultGraph.Value == null)
                     {
-                        //No specific Active Graph which implies that the Default Graph is the entire Triple Store
+                        // No specific Active Graph which implies that the Default Graph is the entire Triple Store
                         return this.GetAllTriples();
                     }
                     else
                     {
-                        //Specific Default Graph so return that
+                        // Specific Default Graph so return that
                         return this._defaultGraph.Value.Triples;
                     }
                 }
                 else
                 {
-                    //Active Graph is used (which may happen to be the Default Graph)
+                    // Active Graph is used (which may happen to be the Default Graph)
                     return this._activeGraph.Value.Triples;
                 }
             }
@@ -809,7 +809,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         public sealed override void Flush()
         {
-            //Does Nothing
+            // Does Nothing
         }
 
         /// <summary>
@@ -817,7 +817,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         public sealed override void Discard()
         {
-            //Does Nothing
+            // Does Nothing
         }
     }
 
@@ -992,22 +992,22 @@ namespace VDS.RDF.Query.Datasets
                 switch (action.Action)
                 {
                     case GraphPersistenceActionType.Added:
-                        //If Graph was added ensure any changes were flushed
+                        // If Graph was added ensure any changes were flushed
                         action.Graph.Flush();
                         break;
                     case GraphPersistenceActionType.Deleted:
-                        //If Graph was deleted can discard any changes
+                        // If Graph was deleted can discard any changes
                         action.Graph.Discard();
                         break;
                     case GraphPersistenceActionType.Modified:
-                        //If Graph was modified ensure any changes were flushed
+                        // If Graph was modified ensure any changes were flushed
                         action.Graph.Flush();
                         break;
                 }
                 i++;
             }
             this._actions.Clear();
-            //Ensure any Modifiable Graphs we've looked at have been Flushed()
+            // Ensure any Modifiable Graphs we've looked at have been Flushed()
             foreach (ITransactionalGraph g in this._modifiableGraphs.Graphs.OfType<ITransactionalGraph>())
             {
                 g.Flush();
@@ -1033,21 +1033,21 @@ namespace VDS.RDF.Query.Datasets
                 switch (action.Action)
                 {
                     case GraphPersistenceActionType.Added:
-                        //If a Graph was added we must now remove it
+                        // If a Graph was added we must now remove it
                         if (this.HasGraphInternal(action.Graph.BaseUri))
                         {
                             this.RemoveGraphInternal(action.Graph.BaseUri);
                         }
                         break;
                     case GraphPersistenceActionType.Deleted:
-                        //If a Graph was deleted we must now add it back again
-                        //Don't add the full Graph only an empty Graph with the given URI
+                        // If a Graph was deleted we must now add it back again
+                        // Don't add the full Graph only an empty Graph with the given URI
                         Graph g = new Graph();
                         g.BaseUri = action.Graph.BaseUri;
                         this.AddGraphInternal(g);
                         break;
                     case GraphPersistenceActionType.Modified:
-                        //If a Graph was modified we must discard the changes
+                        // If a Graph was modified we must discard the changes
                         action.Graph.Discard();
                         break;
                 }
@@ -1061,7 +1061,7 @@ namespace VDS.RDF.Query.Datasets
             {
                 this._actions.RemoveRange(0, total);
             }
-            //Ensure any modifiable Graphs we've looked at have been Discarded
+            // Ensure any modifiable Graphs we've looked at have been Discarded
             foreach (ITransactionalGraph g in this._modifiableGraphs.Graphs.OfType<ITransactionalGraph>())
             {
                 g.Discard();
@@ -1076,7 +1076,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         protected virtual void FlushInternal()
         {
-            //No actions by default
+            // No actions by default
         }
 
         /// <summary>
@@ -1084,7 +1084,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         protected virtual void DiscardInternal()
         {
-            //No actions by default
+            // No actions by default
         }
     }
 }

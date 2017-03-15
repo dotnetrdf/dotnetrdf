@@ -92,8 +92,8 @@ namespace VDS.RDF.Query.Optimisation
                     {
                         if (ps[i].PatternType == TriplePatternType.Filter || ps[i].PatternType == TriplePatternType.BindAssignment || ps[i].PatternType == TriplePatternType.LetAssignment)
                         {
-                            //First ensure that if we've found any other Triple Patterns up to this point
-                            //we dump this into a BGP and join with the result so far
+                            // First ensure that if we've found any other Triple Patterns up to this point
+                            // we dump this into a BGP and join with the result so far
                             if (patterns.Count > 0)
                             {
                                 result = Join.CreateJoin(result, new Bgp(patterns));
@@ -111,7 +111,7 @@ namespace VDS.RDF.Query.Optimisation
                         }
                         else if (ps[i].PatternType == TriplePatternType.Match)
                         {
-                            //Convert Terms in the Pattern into Virtual Nodes
+                            // Convert Terms in the Pattern into Virtual Nodes
                             IMatchTriplePattern tp = (IMatchTriplePattern)ps[i];
                             PatternItem subj, pred, obj;
                             if (tp.Subject is NodeMatchPattern)
@@ -169,7 +169,7 @@ namespace VDS.RDF.Query.Optimisation
                         }
                         else
                         {
-                            //Can't optimize if other pattern types involved
+                            // Can't optimize if other pattern types involved
                             return current;
                         }
                     }
@@ -180,7 +180,7 @@ namespace VDS.RDF.Query.Optimisation
                     }
                     else if (patterns.Count > 0)
                     {
-                        //If any patterns left at end join as a BGP with result so far
+                        // If any patterns left at end join as a BGP with result so far
                         result = Join.CreateJoin(result, new Bgp(patterns));
                         return result;
                     }

@@ -76,7 +76,7 @@ namespace VDS.RDF.Query.Optimisation
 
                             if (ok)
                             {
-                                //Safe to apply the optimization
+                                // Safe to apply the optimization
                                 Select newSelect = new Select(orderBy.InnerAlgebra, false, select.SparqlVariables);
                                 Distinct newDistinct = new Distinct(newSelect);
                                 return new OrderBy(newDistinct, orderBy.Ordering);
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Optimisation
                     }
                 }
 
-                //If we reach here than optimization is not applicable
+                // If we reach here than optimization is not applicable
                 return ((Distinct)algebra).Transform(this);
             }
             else if (algebra is Reduced)
@@ -113,7 +113,7 @@ namespace VDS.RDF.Query.Optimisation
 
                             if (ok)
                             {
-                                //Safe to apply the optimization
+                                // Safe to apply the optimization
                                 Select newSelect = new Select(orderBy.InnerAlgebra, false, select.SparqlVariables);
                                 Reduced newReduced = new Reduced(newSelect);
                                 return new OrderBy(newReduced, orderBy.Ordering);
@@ -123,7 +123,7 @@ namespace VDS.RDF.Query.Optimisation
                     }
                 }
 
-                //If we reach here than optimization is not applicable
+                // If we reach here than optimization is not applicable
                 return ((Reduced)algebra).Transform(this);
             }
             else if (algebra is ITerminalOperator)

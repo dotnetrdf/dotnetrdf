@@ -546,7 +546,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         public virtual void Flush()
         {
-            //Nothing to do
+            // Nothing to do
         }
 
         /// <summary>
@@ -554,7 +554,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         public virtual void Discard()
         {
-            //Nothing to do
+            // Nothing to do
         }
     }
 
@@ -688,7 +688,7 @@ namespace VDS.RDF.Query.Datasets
                     {
                         if (this.IsDefaultGraph(u))
                         {
-                            //Default Graph gets cleared
+                            // Default Graph gets cleared
                             GraphPersistenceWrapper wrapper = new GraphPersistenceWrapper(this[u]);
                             wrapper.Clear();
                             this._actions.Add(new GraphPersistenceAction(wrapper, GraphPersistenceActionType.Modified));
@@ -696,7 +696,7 @@ namespace VDS.RDF.Query.Datasets
                         }
                         else
                         {
-                            //Other Graphs get actually deleted
+                            // Other Graphs get actually deleted
                             this._actions.Add(new GraphPersistenceAction(this[u], GraphPersistenceActionType.Deleted));
                             return true;
                         }
@@ -809,22 +809,22 @@ namespace VDS.RDF.Query.Datasets
                 switch (action.Action)
                 {
                     case GraphPersistenceActionType.Added:
-                        //If Graph was added ensure any changes were flushed
+                        // If Graph was added ensure any changes were flushed
                         action.Graph.Flush();
                         break;
                     case GraphPersistenceActionType.Deleted:
-                        //If Graph was deleted can discard any changes
+                        // If Graph was deleted can discard any changes
                         action.Graph.Discard();
                         break;
                     case GraphPersistenceActionType.Modified:
-                        //If Graph was modified ensure any changes were flushed
+                        // If Graph was modified ensure any changes were flushed
                         action.Graph.Flush();
                         break;
                 }
                 i++;
             }
             this._actions.Clear();
-            //Ensure any Modifiable Graphs we've looked at have been Flushed()
+            // Ensure any Modifiable Graphs we've looked at have been Flushed()
             foreach (ITransactionalGraph g in this._modifiableGraphs.Graphs.OfType<ITransactionalGraph>())
             {
                 g.Flush();
@@ -850,21 +850,21 @@ namespace VDS.RDF.Query.Datasets
                 switch (action.Action)
                 {
                     case GraphPersistenceActionType.Added:
-                        //If a Graph was added we must now remove it
+                        // If a Graph was added we must now remove it
                         if (this.HasGraphInternal(action.Graph.BaseUri))
                         {
                             this.RemoveGraphInternal(action.Graph.BaseUri);
                         }
                         break;
                     case GraphPersistenceActionType.Deleted:
-                        //If a Graph was deleted we must now add it back again
-                        //Don't add the full Graph only an empty Graph with the given URI
+                        // If a Graph was deleted we must now add it back again
+                        // Don't add the full Graph only an empty Graph with the given URI
                         Graph g = new Graph();
                         g.BaseUri = action.Graph.BaseUri;
                         this.AddGraphInternal(g);
                         break;
                     case GraphPersistenceActionType.Modified:
-                        //If a Graph was modified we must discard the changes
+                        // If a Graph was modified we must discard the changes
                         action.Graph.Discard();
                         break;
                 }
@@ -878,7 +878,7 @@ namespace VDS.RDF.Query.Datasets
             {
                 this._actions.RemoveRange(0, total);
             }
-            //Ensure any modifiable Graphs we've looked at have been Discarded
+            // Ensure any modifiable Graphs we've looked at have been Discarded
             foreach (ITransactionalGraph g in this._modifiableGraphs.Graphs.OfType<ITransactionalGraph>())
             {
                 g.Discard();
@@ -893,7 +893,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         protected virtual void FlushInternal()
         {
-            //No actions by default
+            // No actions by default
         }
 
         /// <summary>
@@ -901,7 +901,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         protected virtual void DiscardInternal()
         {
-            //No actions by default
+            // No actions by default
         }
     }
 }

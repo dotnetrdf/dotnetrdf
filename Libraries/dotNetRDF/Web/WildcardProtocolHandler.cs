@@ -70,17 +70,17 @@ namespace VDS.RDF.Web
         /// <returns></returns>
         protected override BaseProtocolHandlerConfiguration LoadConfig(HttpContext context, out String basePath)
         {
-            //Check the Configuration File is specified
+            // Check the Configuration File is specified
             String configFile = context.Server.MapPath(ConfigurationManager.AppSettings["dotNetRDFConfig"]);
             if (configFile == null) throw new DotNetRdfConfigurationException("Unable to load Wildcard Protocol Handler Configuration as the Web.Config file does not specify a 'dotNetRDFConfig' AppSetting to specify the RDF configuration file to use");
             IGraph g = WebConfigurationLoader.LoadConfigurationGraph(context, configFile);
 
-            //Then check there is configuration associated with the expected URI
+            // Then check there is configuration associated with the expected URI
             INode objNode = WebConfigurationLoader.FindObject(g, context.Request.Url, out basePath);
             if (objNode == null) throw new DotNetRdfConfigurationException("Unable to load Wildcard Protocol Handler Configuration as the RDF configuration file does not have any configuration associated with an appropriate wildcard URI");
             this._basePath = basePath;
 
-            //Is our Configuration already cached?
+            // Is our Configuration already cached?
             Object temp = context.Cache[this._basePath];
             if (temp != null)
             {
@@ -96,7 +96,7 @@ namespace VDS.RDF.Web
 
             ProtocolHandlerConfiguration config = new ProtocolHandlerConfiguration(new WebContext(context), g, objNode);
 
-            //Finally cache the Configuration before returning it
+            // Finally cache the Configuration before returning it
             if (config.CacheSliding)
             {
                 context.Cache.Add(this._basePath, config, new System.Web.Caching.CacheDependency(configFile), System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, config.CacheDuration, 0), System.Web.Caching.CacheItemPriority.Normal, null);

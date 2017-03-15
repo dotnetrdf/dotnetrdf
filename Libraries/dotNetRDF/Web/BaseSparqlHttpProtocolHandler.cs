@@ -79,23 +79,23 @@ namespace VDS.RDF.Web
             this._config = this.LoadConfig(context, out this._basePath);
             WebContext webContext = new WebContext(context);
 
-            //Add our Standard Headers
+            // Add our Standard Headers
             HandlerHelper.AddStandardHeaders(webContext, this._config);
 
             if (context.Request.HttpMethod.Equals("OPTIONS"))
             {
-                //OPTIONS requests always result in the Service Description document
+                // OPTIONS requests always result in the Service Description document
                 IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(this._config, new Uri(UriFactory.Create(context.Request.Url.AbsoluteUri), this._basePath));
                 HandlerHelper.SendToClient(webContext, svcDescrip, this._config);
                 return;
             }
 
-            //Check whether we need to use authentication
+            // Check whether we need to use authentication
             if (!HandlerHelper.IsAuthenticated(webContext, this._config.UserGroups, context.Request.HttpMethod)) return;
 
             try
             {
-                //Invoke the appropriate method on our protocol processor
+                // Invoke the appropriate method on our protocol processor
                 switch (context.Request.HttpMethod)
                 {
                     case "GET":
@@ -108,8 +108,8 @@ namespace VDS.RDF.Web
                         Uri serviceUri = new Uri(UriFactory.Create(context.Request.Url.AbsoluteUri), this._basePath);
                         if (context.Request.Url.AbsoluteUri.Equals(serviceUri.AbsoluteUri))
                         {
-                            //If there is a ?graph parameter or ?default parameter then this is a normal Post
-                            //Otherwise it is a PostCreate
+                            // If there is a ?graph parameter or ?default parameter then this is a normal Post
+                            // Otherwise it is a PostCreate
                             if (context.Request.QueryString["graph"] != null)
                             {
                                 this._config.Processor.ProcessPost(webContext);
@@ -138,52 +138,52 @@ namespace VDS.RDF.Web
                         this._config.Processor.ProcessPatch(webContext);
                         break;
                     default:
-                        //For any other HTTP Verb we send a 405 Method Not Allowed
+                        // For any other HTTP Verb we send a 405 Method Not Allowed
                         context.Response.StatusCode = (int)HttpStatusCode.MethodNotAllowed;
                         break;
                 }
 
-                //Update the Cache as the request may have changed the endpoint
+                // Update the Cache as the request may have changed the endpoint
                 this.UpdateConfig(context);
             }
             catch (SparqlHttpProtocolUriResolutionException)
             {
-                //If URI Resolution fails we send a 400 Bad Request
+                // If URI Resolution fails we send a 400 Bad Request
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             }
             catch (SparqlHttpProtocolUriInvalidException)
             {
-                //If URI is invalid we send a 400 Bad Request
+                // If URI is invalid we send a 400 Bad Request
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             }
             catch (NotSupportedException)
             {
-                //If Not Supported we send a 405 Method Not Allowed
+                // If Not Supported we send a 405 Method Not Allowed
                 context.Response.StatusCode = (int)HttpStatusCode.MethodNotAllowed;
             }
             catch (NotImplementedException)
             {
-                //If Not Implemented we send a 501 Not Implemented
+                // If Not Implemented we send a 501 Not Implemented
                 context.Response.StatusCode = (int)HttpStatusCode.NotImplemented;
             }
             catch (RdfWriterSelectionException)
             {
-                //If we can't select a valid Writer when returning content we send a 406 Not Acceptable
+                // If we can't select a valid Writer when returning content we send a 406 Not Acceptable
                 context.Response.StatusCode = (int)HttpStatusCode.NotAcceptable;
             }
             catch (RdfParserSelectionException)
             {
-                //If we can't select a valid Parser when receiving content we send a 415 Unsupported Media Type
+                // If we can't select a valid Parser when receiving content we send a 415 Unsupported Media Type
                 context.Response.StatusCode = (int)HttpStatusCode.UnsupportedMediaType;
             }
             catch (RdfParseException)
             {
-                //If we can't parse the received content successfully we send a 400 Bad Request
+                // If we can't parse the received content successfully we send a 400 Bad Request
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             }
             catch (Exception)
             {
-                //For any other error we'll send a 500 Internal Server Error
+                // For any other error we'll send a 500 Internal Server Error
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             }
         }

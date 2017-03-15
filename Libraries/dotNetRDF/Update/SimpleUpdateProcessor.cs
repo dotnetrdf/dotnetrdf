@@ -49,7 +49,7 @@ namespace VDS.RDF.Update
         /// </summary>
         public virtual void Discard()
         {
-            //Has no effect
+            // Has no effect
         }
 
         /// <summary>

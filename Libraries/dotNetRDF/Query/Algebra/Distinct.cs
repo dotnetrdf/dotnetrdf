@@ -76,11 +76,11 @@ namespace VDS.RDF.Query.Algebra
             }
             if (this._trimTemporaryVariables)
             {
-                //Trim temporary variables
+                // Trim temporary variables
                 context.InputMultiset.Trim();
             }
 
-            //Apply distinctness
+            // Apply distinctness
             context.OutputMultiset = new Multiset(context.InputMultiset.Variables);
             IEnumerable<ISet> sets = context.InputMultiset.Sets.Distinct();
             foreach (ISet s in sets)

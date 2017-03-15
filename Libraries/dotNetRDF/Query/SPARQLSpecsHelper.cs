@@ -618,23 +618,23 @@ namespace VDS.RDF.Query
         {
             if (!value.Contains(':')) 
             {
-                //Must have a Colon in a QName
+                // Must have a Colon in a QName
                 return false;
             } 
             else
             {
-                //Split into Prefix and Local Name
+                // Split into Prefix and Local Name
                 String[] parts = value.Split(':');
 
-                //If SPARQL 1.0 then can only have two sections
+                // If SPARQL 1.0 then can only have two sections
                 if (syntax == SparqlQuerySyntax.Sparql_1_0 && parts.Length > 2) return false;
 
-                //All sections ending in a colon (i.e. all but the last) must match PN_PREFIX production
+                // All sections ending in a colon (i.e. all but the last) must match PN_PREFIX production
                 for (int i = 0; i < parts.Length - 1; i++)
                 {
                     if (!IsPNPrefix(parts[i].ToCharArray())) return false;
                 }
-                //Final section must match PN_LOCAL
+                // Final section must match PN_LOCAL
                 return IsPNLocal(parts[parts.Length - 1].ToCharArray(), syntax);
             }
         }
@@ -648,13 +648,13 @@ namespace VDS.RDF.Query
         {
             char[] cs = value.ToCharArray(1,value.Length-1);
 
-            //Variable Names can't be empty
+            // Variable Names can't be empty
             if (cs.Length == 0)
             {
                 return false;
             }
 
-            //First Character must be from PN_CHARS_U or a digit
+            // First Character must be from PN_CHARS_U or a digit
             char first = cs[0];
             if (Char.IsDigit(first) || IsPNCharsU(first))
             {
@@ -664,7 +664,7 @@ namespace VDS.RDF.Query
                     {
                         if (i < cs.Length - 1)
                         {
-                            //Subsequent Chars must be from PN_CHARS (except -) or a '.'
+                            // Subsequent Chars must be from PN_CHARS (except -) or a '.'
                             if (cs[i] == '.' || cs[i] == '-') return false;
                             if (!IsPNChars(cs[i])) return false;
                         }
@@ -689,14 +689,14 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public static bool IsValidPrefix(String value)
         {
-            //Empty string is not a valid prefix
+            // Empty string is not a valid prefix
             if (value.Length == 0) return false;
-            //Prefix must end with a colon
+            // Prefix must end with a colon
             if (!value.EndsWith(":")) return false;
-            //Empty prefix is valid
+            // Empty prefix is valid
             if (value.Length == 1) return true;
-            //Otherwise must match IsPNPrefix() production
-            //Remember to remove the terminating : which we have already validated
+            // Otherwise must match IsPNPrefix() production
+            // Remember to remove the terminating : which we have already validated
             return IsPNPrefix(value.Substring(0, value.Length - 1).ToCharArray());
         }
 
@@ -707,34 +707,34 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public static bool IsValidBNode(String value)
         {
-            //Must be at least 3 characters
+            // Must be at least 3 characters
             if (value.Length < 3) return false;
-            //Must start with _:
+            // Must start with _:
             if (!value.StartsWith("_:")) return false;
 
             char[] cs = value.Substring(2).ToCharArray();
 
-            //First character must be PN_CHARS_U or digit
+            // First character must be PN_CHARS_U or digit
             if (!Char.IsDigit(cs[0]) && !IsPNCharsU(cs[0])) return false;
 
-            //If only one character it's a valid identifier since we've validated the first character
+            // If only one character it's a valid identifier since we've validated the first character
             if (cs.Length == 1) return true;
 
-            //Otherwise we need to validate the rest of the identifier
+            // Otherwise we need to validate the rest of the identifier
             for (int i = 1; i < cs.Length; i++)
             {
                 if (i < cs.Length - 1)
                 {
-                    //Middle characters may be PN_CHARS or a .
+                    // Middle characters may be PN_CHARS or a .
                     if (cs[i] != '.' && !IsPNChars(cs[i])) return false;
                 }
                 else
                 {
-                    //Final character must be in PN_CHARS
+                    // Final character must be in PN_CHARS
                     return IsPNChars(cs[i]);
                 }
             }
-            //Should be impossible to get here but must keep the compiler happy
+            // Should be impossible to get here but must keep the compiler happy
             return false;            
         }
 
@@ -824,11 +824,11 @@ namespace VDS.RDF.Query
         {
             if (cs.Length == 0)
             {
-                //Empty Local Names are valid
+                // Empty Local Names are valid
                 return true;
             }
 
-            //First character must be a digit or from PN_CHARS_U
+            // First character must be a digit or from PN_CHARS_U
             char first = cs[0];
             int start = 0;
             if (Char.IsDigit(first) || IsPNCharsU(first) ||
@@ -836,25 +836,25 @@ namespace VDS.RDF.Query
             {
                 if (start > 0)
                 {
-                    //Means the first thing was a PLX
-                    //If the only thing in the local name was a PLX this is valid
+                    // Means the first thing was a PLX
+                    // If the only thing in the local name was a PLX this is valid
                     if (start == cs.Length - 1) return true;
-                    //If there are further characters we'll start 
+                    // If there are further characters we'll start 
                 }
                 else
                 {
-                    //Otherwise we need to check the rest of the characters
+                    // Otherwise we need to check the rest of the characters
                     start = 1;
                 }
 
-                //Check the rest of the characters
+                // Check the rest of the characters
                 if (cs.Length > start)
                 {
                     for (int i = start; i < cs.Length; i++)
                     {
                         if (i < cs.Length - 1)
                         {
-                            //Middle characters may be from PN_CHARS or '.'
+                            // Middle characters may be from PN_CHARS or '.'
                             int j = i;
                             if (!(cs[i] == '.' || IsPNChars(cs[i]) || 
                                   (syntax != SparqlQuerySyntax.Sparql_1_0 && IsPLX(cs, i, out j))
@@ -864,21 +864,21 @@ namespace VDS.RDF.Query
                             }
                             if (i != j)
                             {
-                                //This means we just saw a PLX
-                                //Last thing being a PLX is valid
+                                // This means we just saw a PLX
+                                // Last thing being a PLX is valid
                                 if (j == cs.Length - 1) return true;
-                                //Otherwise adjust the index appropriately and continue checking further characters
+                                // Otherwise adjust the index appropriately and continue checking further characters
                                 i = j;
                             }
                         }
                         else
                         {
-                            //Last Character must be from PN_CHARS if it wasn't a PLX which is handled elsewhere
+                            // Last Character must be from PN_CHARS if it wasn't a PLX which is handled elsewhere
                             return IsPNChars(cs[i]);
                         }
                     }
 
-                    //Should never get here but have to add this to keep compiler happy
+                    // Should never get here but have to add this to keep compiler happy
                     throw new RdfParseException("Local Name validation error in SparqlSpecsHelper.IsPNLocal(char[] cs)");
                 }
                 else
@@ -899,10 +899,10 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public static bool IsPNPrefix(char[] cs)
         {
-            //Empty Prefixes are valid
+            // Empty Prefixes are valid
             if (cs.Length == 0) return true;
 
-            //First character must be from PN_CHARS_BASE
+            // First character must be from PN_CHARS_BASE
             char first = cs[0];
             if (IsPNCharsBase(first))
             {
@@ -912,7 +912,7 @@ namespace VDS.RDF.Query
                     {
                         if (i < cs.Length - 1)
                         {
-                            //Middle characters may be from PN_CHARS or '.'
+                            // Middle characters may be from PN_CHARS or '.'
                             if (!(cs[i] == '.' || IsPNChars(cs[i])))
                             {
                                 return false;
@@ -920,12 +920,12 @@ namespace VDS.RDF.Query
                         }
                         else
                         {
-                            //Last Character must be from PN_CHARS
+                            // Last Character must be from PN_CHARS
                             return IsPNChars(cs[i]);
                         }
                     }
 
-                    //Should never get here but have to add this to keep compiler happy
+                    // Should never get here but have to add this to keep compiler happy
                     throw new RdfParseException("Namespace Prefix validation error in SparqlSpecsHelper.IsPNPrefix(char[] cs)");
                 }
                 else
@@ -953,7 +953,7 @@ namespace VDS.RDF.Query
             {
                 if (startIndex >= cs.Length - 2)
                 {
-                    //If we saw a base % but there are not two subsequent characters not a valid PLX escape
+                    // If we saw a base % but there are not two subsequent characters not a valid PLX escape
                     return false;
                 }
                 else
@@ -962,7 +962,7 @@ namespace VDS.RDF.Query
                     char b = cs[startIndex + 2];
                     if (IsHex(a) && IsHex(b))
                     {
-                        //Valid % encoding
+                        // Valid % encoding
                         endIndex = startIndex + 2;
                         return true;
                     }
@@ -976,7 +976,7 @@ namespace VDS.RDF.Query
             {
                 if (startIndex >= cs.Length - 1)
                 {
-                    //If we saw a backslash but no subsequent character not a valid PLX escape
+                    // If we saw a backslash but no subsequent character not a valid PLX escape
                     return false;
                 }
                 else
@@ -1004,7 +1004,7 @@ namespace VDS.RDF.Query
                         case '#':
                         case '@':
                         case '%':
-                            //Valid Escape
+                            // Valid Escape
                             endIndex = startIndex + 1;
                             return true;
                         default:
@@ -1100,8 +1100,8 @@ namespace VDS.RDF.Query
                     }
                     else if (cs[i] == '%')
                     {
-                        //Remember that we are supposed to preserve precent encoded characters as-is
-                        //Simply need to validate that they are valid encoding
+                        // Remember that we are supposed to preserve precent encoded characters as-is
+                        // Simply need to validate that they are valid encoding
                         if (i > cs.Length - 2)
                         {
                             throw new RdfParseException("Invalid % to start a percent encoded character in a Local Name, two hex digits are required after a %, use \\% to denote a percent character directly");
@@ -1240,7 +1240,7 @@ namespace VDS.RDF.Query
         {
             if (n == null)
             {
-                //Nulls give Type Error
+                // Nulls give Type Error
                 throw new RdfQueryException("Cannot calculate the Effective Boolean Value of a null value");
             }
             else
@@ -1253,128 +1253,128 @@ namespace VDS.RDF.Query
                     {
                         if (lit.Value == String.Empty)
                         {
-                            //Empty String Literals have EBV of False
+                            // Empty String Literals have EBV of False
                             return false;
                         }
                         else
                         {
-                            //Non-Empty String Literals have EBV of True
+                            // Non-Empty String Literals have EBV of True
                             return true;
                         }
                     }
                     else
                     {
-                        //EBV is dependent on the Data Type for Typed Literals
+                        // EBV is dependent on the Data Type for Typed Literals
                         String dt = lit.DataType.ToString();
 
                         if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
                         {
-                            //Boolean Typed Literal
+                            // Boolean Typed Literal
                             bool b = false;
                             if (Boolean.TryParse(lit.Value, out b))
                             {
-                                //Valid Booleans have EBV of their value
+                                // Valid Booleans have EBV of their value
                                 return b;
                             }
                             else
                             {
-                                //Invalid Booleans have EBV of false
+                                // Invalid Booleans have EBV of false
                                 return false;
                             }
                         }
                         else if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
                         {
-                            //String Typed Literal
+                            // String Typed Literal
                             if (lit.Value == String.Empty)
                             {
-                                //Empty String Literals have EBV of False
+                                // Empty String Literals have EBV of False
                                 return false;
                             }
                             else
                             {
-                                //Non-Empty String Literals have EBV of True
+                                // Non-Empty String Literals have EBV of True
                                 return true;
                             }
                         }
                         else
                         {
-                            //Is it a Number?
+                            // Is it a Number?
                             SparqlNumericType numType = GetNumericTypeFromDataTypeUri(dt);
                             switch (numType)
                             {
                                 case SparqlNumericType.Decimal:
-                                    //Should be a decimal
+                                    // Should be a decimal
                                     Decimal dec;
                                     if (Decimal.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dec))
                                     {
                                         if (dec == Decimal.Zero)
                                         {
-                                            //Zero gives EBV of false
+                                            // Zero gives EBV of false
                                             return false;
                                         }
                                         else
                                         {
-                                            //Non-Zero gives EBV of true
+                                            // Non-Zero gives EBV of true
                                             return true;
                                         }
                                     }
                                     else
                                     {
-                                        //Invalid Numerics have EBV of false
+                                        // Invalid Numerics have EBV of false
                                         return false;
                                     }
 
                                 case SparqlNumericType.Float:
                                 case SparqlNumericType.Double:
-                                    //Should be a double
+                                    // Should be a double
                                     Double dbl;
                                     if (Double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
                                     {
                                         if (dbl == 0.0d || double.IsNaN(dbl))
                                         {
-                                            //Zero/NaN gives EBV of false
+                                            // Zero/NaN gives EBV of false
                                             return false;
                                         }
                                         else
                                         {
-                                            //Non-Zero gives EBV of true
+                                            // Non-Zero gives EBV of true
                                             return true;
                                         }
                                     }
                                     else
                                     {
-                                        //Invalid Numerics have EBV of false
+                                        // Invalid Numerics have EBV of false
                                         return false;
                                     }
 
                                 case SparqlNumericType.Integer:
-                                    //Should be an Integer
+                                    // Should be an Integer
                                     long l;
                                     if (Int64.TryParse(lit.Value, out l))
                                     {
                                         if (l == 0)
                                         {
-                                            //Zero gives EBV of false
+                                            // Zero gives EBV of false
                                             return false;
                                         }
                                         else
                                         {
-                                            //Non-Zero gives EBV of true
+                                            // Non-Zero gives EBV of true
                                             return true;
                                         }
                                     }
                                     else
                                     {
-                                        //Invalid Numerics have EBV of false
+                                        // Invalid Numerics have EBV of false
                                         return false;
                                     }
 
                                 case SparqlNumericType.NaN:
-                                    //If not a Numeric Type then Type error
+                                    // If not a Numeric Type then Type error
                                     throw new RdfQueryException("Unable to compute an Effective Boolean Value for a Literal Typed <" + dt + ">");
 
                                 default:
-                                    //Shouldn't hit this case but included to keep compiler happy
+                                    // Shouldn't hit this case but included to keep compiler happy
                                     throw new RdfQueryException("Unable to compute an Effective Boolean Value for a Literal Typed <" + dt + ">");
                             }
                         }
@@ -1382,7 +1382,7 @@ namespace VDS.RDF.Query
                 }
                 else
                 {
-                    //Non-Literal Nodes give type error
+                    // Non-Literal Nodes give type error
                     throw new RdfQueryException("Cannot calculate the Effective Boolean Value of a non-literal RDF Term");
                 }
             }
@@ -1421,17 +1421,17 @@ namespace VDS.RDF.Query
         {
             if (x == null || y == null)
             {
-                //Nulls can't be equal to each other
+                // Nulls can't be equal to each other
                 throw new RdfQueryException("Cannot evaluate equality when one/both arguments are null");
             }
             else if (x.NodeType != y.NodeType)
             {
-                //Different Type Nodes are never equal to each other
+                // Different Type Nodes are never equal to each other
                 return false;
             }
             else if (x.NodeType == NodeType.Literal)
             {
-                //Do they have supported Data Types?
+                // Do they have supported Data Types?
                 String xtype, ytype;
                 try 
                 {
@@ -1440,31 +1440,31 @@ namespace VDS.RDF.Query
                 } 
                 catch (RdfException) 
                 {
-                    //Can't determine a Data Type for one/both of the Nodes so use RDF Term equality instead
+                    // Can't determine a Data Type for one/both of the Nodes so use RDF Term equality instead
                     return x.Equals(y);
                 }
 
                 if (xtype.Equals(String.Empty) || ytype.Equals(String.Empty))
                 {
-                    //One/both has an unknown type
+                    // One/both has an unknown type
                     if (x.Equals(y))
                     {
-                        //If RDF Term equality returns true then we return true;
+                        // If RDF Term equality returns true then we return true;
                         return true;
                     }
                     else
                     {
-                        //If RDF Term equality returns false then we error
+                        // If RDF Term equality returns false then we error
                         throw new RdfQueryException("Unable to determine equality since one/both arguments has an Unknown Type");
                     }
                 }
                 else
                 {
-                    //Both have known types
+                    // Both have known types
                     SparqlNumericType numtype = (SparqlNumericType)Math.Max((int)GetNumericTypeFromDataTypeUri(xtype), (int)GetNumericTypeFromDataTypeUri(ytype));
                     if (numtype != SparqlNumericType.NaN)
                     {
-                        //Both are Numeric so use Numeric equality
+                        // Both are Numeric so use Numeric equality
                         try
                         {
                             return NumericEquality(x, y, numtype);
@@ -1475,7 +1475,7 @@ namespace VDS.RDF.Query
                         }
                         catch (RdfQueryException)
                         {
-                            //If this errors try RDF Term equality since 
+                            // If this errors try RDF Term equality since 
                             return x.Equals(y);
                         }
                     }
@@ -1490,10 +1490,10 @@ namespace VDS.RDF.Query
                             case XmlSpecsHelper.XmlSchemaDataTypeDuration:
                                 return TimeSpanEquality(x, y);
                             case XmlSpecsHelper.XmlSchemaDataTypeString:
-                                //Both Strings so use Lexical string equality
+                                // Both Strings so use Lexical string equality
                                 return ((ILiteralNode)x).Value.Equals(((ILiteralNode)y).Value);
                             default:
-                                //Use value equality
+                                // Use value equality
                                 return (x.CompareTo(y) == 0);
                         }
                     }
@@ -1519,7 +1519,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                //For any other Node types equality is RDF Term equality
+                // For any other Node types equality is RDF Term equality
                 return x.Equals(y);
             }
         }
@@ -1534,17 +1534,17 @@ namespace VDS.RDF.Query
         {
             if (x == null || y == null)
             {
-                //Nulls can't be equal to each other
+                // Nulls can't be equal to each other
                 throw new RdfQueryException("Cannot evaluate inequality when one/both arguments are null");
             }
             else if (x.NodeType != y.NodeType)
             {
-                //Different Type Nodes are never equal to each other
+                // Different Type Nodes are never equal to each other
                 return true;
             }
             else if (x.NodeType == NodeType.Literal)
             {
-                //Do they have supported Data Types?
+                // Do they have supported Data Types?
                 String xtype, ytype;
                 try
                 {
@@ -1553,27 +1553,27 @@ namespace VDS.RDF.Query
                 }
                 catch (RdfException)
                 {
-                    //Can't determine a Data Type for one/both of the Nodes so use RDF Term equality instead
+                    // Can't determine a Data Type for one/both of the Nodes so use RDF Term equality instead
                     return !x.Equals(y);
                 }
 
                 if (xtype.Equals(String.Empty) || ytype.Equals(String.Empty))
                 {
-                    //One/both has an unknown type
+                    // One/both has an unknown type
                     if (x.Equals(y))
                     {
-                        //If RDF Term equality returns true then we return false
+                        // If RDF Term equality returns true then we return false
                         return false;
                     }
                     else
                     {
-                        //If RDF Term equality returns false then we error
+                        // If RDF Term equality returns false then we error
                         throw new RdfQueryException("Unable to determine inequality since one/both arguments has an Unknown Type");
                     }
                 }
                 else
                 {
-                    //Both have known types
+                    // Both have known types
                     SparqlNumericType xnumtype = GetNumericTypeFromDataTypeUri(xtype);
                     SparqlNumericType ynumtype = GetNumericTypeFromDataTypeUri(ytype);
                     SparqlNumericType numtype = (SparqlNumericType)Math.Max((int)xnumtype, (int)ynumtype);
@@ -1581,11 +1581,11 @@ namespace VDS.RDF.Query
                     {
                         if (xnumtype == SparqlNumericType.NaN || ynumtype == SparqlNumericType.NaN)
                         {
-                            //If one is non-numeric then we can't assume non-equality
+                            // If one is non-numeric then we can't assume non-equality
                             return false;
                         }
 
-                        //Both are Numeric so use Numeric equality
+                        // Both are Numeric so use Numeric equality
                         try
                         {
                             return !NumericEquality(x, y, numtype);
@@ -1597,7 +1597,7 @@ namespace VDS.RDF.Query
                         }
                         catch (RdfQueryException)
                         {
-                            //If this errors try RDF Term equality since 
+                            // If this errors try RDF Term equality since 
                             return !x.Equals(y);
                         }
                     }
@@ -1633,10 +1633,10 @@ namespace VDS.RDF.Query
                                     return true;
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeString:
-                                //Both Strings so use Lexical string equality
+                                // Both Strings so use Lexical string equality
                                 return !((ILiteralNode)x).Value.Equals(((ILiteralNode)y).Value);
                             default:
-                                //Use value equality
+                                // Use value equality
                                 return (x.CompareTo(y) != 0);
                         }
                     }
@@ -1678,7 +1678,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                //For any other Node types equality is RDF Term equality
+                // For any other Node types equality is RDF Term equality
                 return !x.Equals(y);
             }
         }

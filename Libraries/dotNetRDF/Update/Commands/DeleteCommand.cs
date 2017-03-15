@@ -192,16 +192,16 @@ namespace VDS.RDF.Update.Commands
 
             try
             {
-                //First evaluate the WHERE pattern to get the affected bindings
+                // First evaluate the WHERE pattern to get the affected bindings
                 ISparqlAlgebra where = this._wherePattern.ToAlgebra();
                 if (context.Commands != null)
                 {
                     where = context.Commands.ApplyAlgebraOptimisers(where);
                 }
 
-                //Set Active Graph for the WHERE based upon the WITH clause
-                //Don't bother if there are USING URIs as these would override any Active Graph we set here
-                //so we can save ourselves the effort of doing this
+                // Set Active Graph for the WHERE based upon the WITH clause
+                // Don't bother if there are USING URIs as these would override any Active Graph we set here
+                // so we can save ourselves the effort of doing this
                 if (!this.UsingUris.Any())
                 {
                     if (this._graphUri != null)
@@ -216,10 +216,10 @@ namespace VDS.RDF.Update.Commands
                     }
                 }
 
-                //We need to make a dummy SparqlQuery object since if the Command has used any 
-                //USING/USING NAMEDs along with GRAPH clauses then the algebra needs to have the
-                //URIs available to it which it gets from the Query property of the Context
-                //object
+                // We need to make a dummy SparqlQuery object since if the Command has used any 
+                // USING/USING NAMEDs along with GRAPH clauses then the algebra needs to have the
+                // URIs available to it which it gets from the Query property of the Context
+                // object
                 SparqlQuery query = new SparqlQuery();
                 foreach (Uri u in this.UsingUris)
                 {
@@ -232,7 +232,7 @@ namespace VDS.RDF.Update.Commands
                 SparqlEvaluationContext queryContext = new SparqlEvaluationContext(query, context.Data, context.QueryProcessor);
                 if (this.UsingUris.Any())
                 {
-                    //If there are USING URIs set the Active Graph to be formed of the Graphs with those URIs
+                    // If there are USING URIs set the Active Graph to be formed of the Graphs with those URIs
                     context.Data.SetActiveGraph(this._usingUris);
                     datasetOk = true;
                 }
@@ -240,30 +240,30 @@ namespace VDS.RDF.Update.Commands
                 if (results is IdentityMultiset) results = new SingletonMultiset(results.Variables);
                 if (this.UsingUris.Any())
                 {
-                    //If there are USING URIs reset the Active Graph afterwards
-                    //Also flag the dataset as no longer being OK as this flag is used in the finally 
-                    //block to determine whether the Active Graph needs resetting which it may do if the
-                    //evaluation of the 
+                    // If there are USING URIs reset the Active Graph afterwards
+                    // Also flag the dataset as no longer being OK as this flag is used in the finally 
+                    // block to determine whether the Active Graph needs resetting which it may do if the
+                    // evaluation of the 
                     context.Data.ResetActiveGraph();
                     datasetOk = false;
                 }
 
-                //Reset Active Graph for the WHERE
+                // Reset Active Graph for the WHERE
                 if (defGraphOk)
                 {
                     context.Data.ResetActiveGraph();
                     defGraphOk = false;
                 }
 
-                //Get the Graph from which we are deleting
+                // Get the Graph from which we are deleting
                 IGraph g = context.Data.GetModifiableGraph(this._graphUri);
 
-                //Delete the Triples for each Solution
+                // Delete the Triples for each Solution
                 foreach (ISet s in results.Sets)
                 {
                     List<Triple> deletedTriples = new List<Triple>();
 
-                    //Triples from raw Triple Patterns
+                    // Triples from raw Triple Patterns
                     try
                     {
                         ConstructContext constructContext = new ConstructContext(g, s, true);
@@ -275,19 +275,19 @@ namespace VDS.RDF.Update.Commands
                             }
                             catch (RdfQueryException)
                             {
-                                //If we get an error here then we couldn't construct a specific Triple
-                                //so we continue anyway
+                                // If we get an error here then we couldn't construct a specific Triple
+                                // so we continue anyway
                             }
                         }
                         g.Retract(deletedTriples);
                     }
                     catch (RdfQueryException)
                     {
-                        //If we throw an error this means we couldn't construct for this solution so the
-                        //solution is ignored this graph
+                        // If we throw an error this means we couldn't construct for this solution so the
+                        // solution is ignored this graph
                     }
 
-                    //Triples from GRAPH clauses
+                    // Triples from GRAPH clauses
                     foreach (GraphPattern gp in this._deletePattern.ChildGraphPatterns)
                     {
                         deletedTriples.Clear();
@@ -306,7 +306,7 @@ namespace VDS.RDF.Update.Commands
                                         INode temp = s[graphVar];
                                         if (temp == null)
                                         {
-                                            //If the Variable is not bound then skip
+                                            // If the Variable is not bound then skip
                                             continue;
                                         }
                                         else if (temp.NodeType == NodeType.Uri)
@@ -315,25 +315,25 @@ namespace VDS.RDF.Update.Commands
                                         }
                                         else
                                         {
-                                            //If the Variable is not bound to a URI then skip
+                                            // If the Variable is not bound to a URI then skip
                                             continue;
                                         }
                                     }
                                     else
                                     {
-                                        //If the Variable is not bound for this solution then skip
+                                        // If the Variable is not bound for this solution then skip
                                         continue;
                                     }
                                     break;
                                 default:
-                                    //Any other Graph Specifier we have to ignore this solution
+                                    // Any other Graph Specifier we have to ignore this solution
                                     continue;
                             }
                             
-                            //If the Dataset doesn't contain the Graph then no need to do the Deletions
+                            // If the Dataset doesn't contain the Graph then no need to do the Deletions
                             if (!context.Data.HasGraph(UriFactory.Create(graphUri))) continue;
 
-                            //Do the actual Deletions
+                            // Do the actual Deletions
                             IGraph h = context.Data.GetModifiableGraph(UriFactory.Create(graphUri));
                             ConstructContext constructContext = new ConstructContext(h, s, true);
                             foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
@@ -344,24 +344,24 @@ namespace VDS.RDF.Update.Commands
                                 }
                                 catch (RdfQueryException)
                                 {
-                                    //If we get an error here then we couldn't construct a specific
-                                    //triple so we continue anyway
+                                    // If we get an error here then we couldn't construct a specific
+                                    // triple so we continue anyway
                                 }
                             }
                             h.Retract(deletedTriples);
                         }
                         catch (RdfQueryException)
                         {
-                            //If we get an error here this means we couldn't construct for this solution so the
-                            //solution is ignored for this graph
+                            // If we get an error here this means we couldn't construct for this solution so the
+                            // solution is ignored for this graph
                         }
                     }
                 }
             }
             finally
             {
-                //If the Dataset was set and an error occurred in doing the WHERE clause then
-                //we'll need to Reset the Active Graph
+                // If the Dataset was set and an error occurred in doing the WHERE clause then
+                // we'll need to Reset the Active Graph
                 if (datasetOk) context.Data.ResetActiveGraph();
                 if (defGraphOk) context.Data.ResetActiveGraph();
             }

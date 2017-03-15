@@ -224,7 +224,7 @@ namespace VDS.RDF.Query.Algebra
         public override ISet Join(ISet other)
         {
             return new Set(this, other);
-            //return new JoinedSet(other, this);
+            // return new JoinedSet(other, this);
         }
 
         /// <summary>
@@ -234,7 +234,7 @@ namespace VDS.RDF.Query.Algebra
         public override ISet Copy()
         {
             return new Set(this);
-            //return new JoinedSet(this);
+            // return new JoinedSet(this);
         }
 
         /// <summary>
@@ -249,7 +249,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
 #if PORTABLE
-        //TODO: CORE-303 clean up - why is this necessary?
+        // TODO: CORE-303 clean up - why is this necessary?
 
         public int CompareTo(Set other)
         {

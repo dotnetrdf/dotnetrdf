@@ -71,15 +71,15 @@ namespace VDS.RDF.Query.Algebra
             }
             else if (this._lhs.Variables.IsDisjoint(this._rhs.Variables))
             {
-                //If the RHS is disjoint then there is no need to evaluate the RHS
+                // If the RHS is disjoint then there is no need to evaluate the RHS
                 context.OutputMultiset = lhsResult;
             }
             else
             {
-                //If we get here then the RHS is not disjoint so it does affect the ouput
+                // If we get here then the RHS is not disjoint so it does affect the ouput
 
-                //Only execute the RHS if the LHS had results
-                //context.InputMultiset = lhsResult;
+                // Only execute the RHS if the LHS had results
+                // context.InputMultiset = lhsResult;
                 context.InputMultiset = initialInput;
                 BaseMultiset rhsResult = context.Evaluate(this._rhs);//this._rhs.Evaluate(context);
                 context.CheckTimeout();

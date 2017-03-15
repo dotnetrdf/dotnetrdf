@@ -82,7 +82,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                 response.Close();
             }
 
-            //Parse the Response into Search Results
+            // Parse the Response into Search Results
             try
             {
                 List<SearchServiceResult> results = new List<SearchServiceResult>();
@@ -155,7 +155,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
                                 response.Close();
 
-                                //Parse the Response into Search Results
+                                // Parse the Response into Search Results
 
                                 List<SearchServiceResult> results = new List<SearchServiceResult>();
 

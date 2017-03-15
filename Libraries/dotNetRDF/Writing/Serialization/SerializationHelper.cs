@@ -63,7 +63,7 @@ namespace VDS.RDF.Writing.Serialization
         internal static void SerializeNode(this INode n, XmlWriter writer)
         {
             Type t = n.GetType();
-            //Get the Serializer if necessary
+            // Get the Serializer if necessary
             if (!_nodeSerializers.ContainsKey(t))
             {
                 _nodeSerializers.Add(t, new XmlSerializer(t));
@@ -74,20 +74,20 @@ namespace VDS.RDF.Writing.Serialization
                     _nodeDeserializers.Add(el, _nodeSerializers[t]);
                 }
             }
-            //Do the serialization
+            // Do the serialization
             _nodeSerializers[t].Serialize(writer, n);
         }
 
         internal static INode DeserializeNode(this XmlReader reader)
         {
             String el = reader.Name;
-            //Get the deserializer if necessary
+            // Get the deserializer if necessary
             if (!_nodeDeserializers.ContainsKey(el))
             {
                 if (!_init) Init();
             }
             if (!_nodeDeserializers.ContainsKey(el)) throw new RdfParseException("No deserializer is known for elements named '" + el + "'");
-            //Do the deserialization
+            // Do the deserialization
             Object temp = _nodeDeserializers[el].Deserialize(reader);
             if (temp is INode)
             {

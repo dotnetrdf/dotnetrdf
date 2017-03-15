@@ -96,7 +96,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                         normalized = normalized.Normalize(NormalizationForm.FormKD);
                         break;
                     case "":
-                        //No Normalization
+                        // No Normalization
                         break;
                     default:
                         throw new RdfQueryException("'" + arg.Value + "' is not a valid Normalization Form as defined by the XPath specification");

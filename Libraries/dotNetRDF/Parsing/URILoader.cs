@@ -137,7 +137,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        //#if !SILVERLIGHT
+        // #if !SILVERLIGHT
 #if !NO_SYNC_HTTP
 
         /// <summary>
@@ -194,7 +194,7 @@ namespace VDS.RDF.Parsing
 #if NO_FILE
                 throw new RdfParseException("Loading from a file:// URL requires the synchronous file loader which is not currently supported on your system");
 #else
-                //Invoke FileLoader instead
+                // Invoke FileLoader instead
                 RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                 if (Path.DirectorySeparatorChar == '/')
                 {
@@ -209,13 +209,13 @@ namespace VDS.RDF.Parsing
             }
             if (u.Scheme.Equals("data"))
             {
-                //Invoke DataUriLoader instead
+                // Invoke DataUriLoader instead
                 RaiseWarning("This is a data: URI so invoking the DataUriLoader instead");
                 DataUriLoader.Load(g, u);
                 return;
             }
 
-            //Set Base Uri if necessary
+            // Set Base Uri if necessary
             if (g.BaseUri == null && g.IsEmpty) g.BaseUri = u;
 
             UriLoader.Load(new GraphHandler(g), u, parser);
@@ -274,7 +274,7 @@ namespace VDS.RDF.Parsing
 #if NO_FILE
                     throw new RdfParseException("Loading from a file:// URL requires the synchronous file loader which is not currently supported on your system");
 #else
-                    //Invoke FileLoader instead
+                    // Invoke FileLoader instead
                     RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                     if (Path.DirectorySeparatorChar == '/')
                     {
@@ -289,29 +289,29 @@ namespace VDS.RDF.Parsing
                 }
                 if (u.Scheme.Equals("data"))
                 {
-                    //Invoke DataUriLoader instead
+                    // Invoke DataUriLoader instead
                     RaiseWarning("This is a data: URI so invoking the DataUriLoader instead");
                     DataUriLoader.Load(handler, u);
                     return;
                 }
 
-                //Sanitise the URI to remove any Fragment ID
+                // Sanitise the URI to remove any Fragment ID
                 u = Tools.StripUriFragment(u);
 
 #if !NO_URICACHE
-                //Use Cache if possible
+                // Use Cache if possible
                 String etag = String.Empty;
                 String local = null;
                 if (Options.UriLoaderCaching)
                 {
                     if (_cache.HasETag(u))
                     {
-                        //Get the ETag and then we'll include an If-None-Match header in our request
+                        // Get the ETag and then we'll include an If-None-Match header in our request
                         etag = _cache.GetETag(u);
                     }
                     else if (_cache.HasLocalCopy(u, true))
                     {
-                        //Just try loading from the local copy
+                        // Just try loading from the local copy
                         local = _cache.GetLocalCopy(u);
                         if (local != null)
                         {
@@ -321,7 +321,7 @@ namespace VDS.RDF.Parsing
                             }
                             catch
                             {
-                                //If we get an Exception we failed to access the file successfully
+                                // If we get an Exception we failed to access the file successfully
                                 _cache.RemoveETag(u);
                                 _cache.RemoveLocalCopy(u);
                                 UriLoader.Load(handler, u, parser);
@@ -332,14 +332,14 @@ namespace VDS.RDF.Parsing
                 }
 #endif
 
-                //Set-up the Request
+                // Set-up the Request
                 HttpWebRequest httpRequest;
                 httpRequest = (HttpWebRequest)WebRequest.Create(u);
 
-                //Want to ask for RDF formats
+                // Want to ask for RDF formats
                 if (parser != null)
                 {
-                    //If a non-null parser set up a HTTP Header that is just for the given parser
+                    // If a non-null parser set up a HTTP Header that is just for the given parser
                     httpRequest.Accept = MimeTypesHelper.CustomHttpAcceptHeader(parser);
                 }
                 else
@@ -357,7 +357,7 @@ namespace VDS.RDF.Parsing
                 }
 #endif
 
-                //Use HTTP GET
+                // Use HTTP GET
                 httpRequest.Method = "GET";
 #if !(SILVERLIGHT||NETCORE)
                 httpRequest.Timeout = Options.UriLoaderTimeout;
@@ -380,13 +380,13 @@ namespace VDS.RDF.Parsing
 #if !NO_URICACHE
                     if (Options.UriLoaderCaching)
                     {
-                        //Are we using ETag based caching?
+                        // Are we using ETag based caching?
                         if (!etag.Equals(String.Empty))
                         {
-                            //Did we get a Not-Modified response?
+                            // Did we get a Not-Modified response?
                             if (httpResponse.StatusCode == HttpStatusCode.NotModified)
                             {
-                                //If so then we need to load the Local Copy assuming it exists?
+                                // If so then we need to load the Local Copy assuming it exists?
                                 if (_cache.HasLocalCopy(u, false))
                                 {
                                     local = _cache.GetLocalCopy(u);
@@ -396,7 +396,7 @@ namespace VDS.RDF.Parsing
                                     }
                                     catch
                                     {
-                                        //If we get an Exception we failed to access the file successfully
+                                        // If we get an Exception we failed to access the file successfully
                                         _cache.RemoveETag(u);
                                         _cache.RemoveLocalCopy(u);
                                         UriLoader.Load(handler, u, parser);
@@ -405,34 +405,34 @@ namespace VDS.RDF.Parsing
                                 }
                                 else
                                 {
-                                    //If the local copy didn't exist then we need to redo the response without
-                                    //the ETag as we've lost the cached copy somehow
+                                    // If the local copy didn't exist then we need to redo the response without
+                                    // the ETag as we've lost the cached copy somehow
                                     _cache.RemoveETag(u);
                                     UriLoader.Load(handler, u, parser);
                                     return;
                                 }
                             }
-                            //If we didn't get a Not-Modified response then we'll continue and parse the new response
+                            // If we didn't get a Not-Modified response then we'll continue and parse the new response
                         }
                     }
 #endif
 
-                    //Get a Parser and Load the RDF
+                    // Get a Parser and Load the RDF
                     if (parser == null)
                     {
-                        //Only need to auto-detect the parser if a specific one wasn't specified
+                        // Only need to auto-detect the parser if a specific one wasn't specified
                         parser = MimeTypesHelper.GetParser(httpResponse.ContentType);
                     }
                     parser.Warning += RaiseWarning;
 #if !NO_URICACHE
-                    //To do caching we ask the cache to give us a handler and then we tie it to
+                    // To do caching we ask the cache to give us a handler and then we tie it to
                     if (Options.UriLoaderCaching)
                     {
                         IRdfHandler cacheHandler = _cache.ToCache(u, Tools.StripUriFragment(httpResponse.ResponseUri), httpResponse.Headers["ETag"]);
                         if (cacheHandler != null)
                         {
-                            //Note: We can ONLY use caching when we know that the Handler will accept all the data returned
-                            //i.e. if the Handler may trim the data in some way then we shouldn't cache the data returned
+                            // Note: We can ONLY use caching when we know that the Handler will accept all the data returned
+                            // i.e. if the Handler may trim the data in some way then we shouldn't cache the data returned
                             if (handler.AcceptsAll)
                             {
                                 handler = new MultiHandler(new IRdfHandler[] {handler, cacheHandler});
@@ -452,7 +452,7 @@ namespace VDS.RDF.Parsing
                     }
                     catch
                     {
-                        //If we were trying to cache the response and something went wrong discard the cached copy
+                        // If we were trying to cache the response and something went wrong discard the cached copy
                         if (Options.UriLoaderCaching)
                         {
                             _cache.RemoveETag(u);
@@ -467,7 +467,7 @@ namespace VDS.RDF.Parsing
             }
             catch (UriFormatException uriEx)
             {
-                //Uri Format Invalid
+                // Uri Format Invalid
                 throw new RdfParseException("Unable to load from the given URI '" + u.AbsoluteUri + "' since it's format was invalid", uriEx);
             }
             catch (WebException webEx)
@@ -484,7 +484,7 @@ namespace VDS.RDF.Parsing
                     {
                         if (((HttpWebResponse) webEx.Response).StatusCode == HttpStatusCode.NotModified)
                         {
-                            //If so then we need to load the Local Copy assuming it exists?
+                            // If so then we need to load the Local Copy assuming it exists?
                             if (_cache.HasLocalCopy(u, false))
                             {
                                 String local = _cache.GetLocalCopy(u);
@@ -494,7 +494,7 @@ namespace VDS.RDF.Parsing
                                 }
                                 catch
                                 {
-                                    //If we get an Exception we failed to access the file successfully
+                                    // If we get an Exception we failed to access the file successfully
                                     _cache.RemoveETag(u);
                                     _cache.RemoveLocalCopy(u);
                                     UriLoader.Load(handler, u, parser);
@@ -503,8 +503,8 @@ namespace VDS.RDF.Parsing
                             }
                             else
                             {
-                                //If the local copy didn't exist then we need to redo the response without
-                                //the ETag as we've lost the cached copy somehow
+                                // If the local copy didn't exist then we need to redo the response without
+                                // the ETag as we've lost the cached copy somehow
                                 _cache.RemoveETag(u);
                                 UriLoader.Load(handler, u, parser);
                                 return;
@@ -514,7 +514,7 @@ namespace VDS.RDF.Parsing
                 }
 #endif
 
-                //Some sort of HTTP Error occurred
+                // Some sort of HTTP Error occurred
                 throw new WebException("A HTTP Error occurred resolving the URI '" + u.AbsoluteUri + "'", webEx);
             }
         }
@@ -586,7 +586,7 @@ namespace VDS.RDF.Parsing
 #if NO_FILE
                     throw new RdfParseException("Loading from a file:// URL requires the synchronous file loader which is not currently supported on your system");
 #else
-                    //Invoke FileLoader instead
+                    // Invoke FileLoader instead
                     RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                     if (Path.DirectorySeparatorChar == '/')
                     {
@@ -600,17 +600,17 @@ namespace VDS.RDF.Parsing
 #endif
                 }
 
-                //Sanitise the URI to remove any Fragment ID
+                // Sanitise the URI to remove any Fragment ID
                 u = Tools.StripUriFragment(u);
 
-                //Set-up the Request
+                // Set-up the Request
                 HttpWebRequest httpRequest;
                 httpRequest = (HttpWebRequest)WebRequest.Create(u);
 
-                //Want to ask for TriG, NQuads or TriX
+                // Want to ask for TriG, NQuads or TriX
                 if (parser != null)
                 {
-                    //If a non-null parser set up a HTTP Header that is just for the given parser
+                    // If a non-null parser set up a HTTP Header that is just for the given parser
                     httpRequest.Accept = MimeTypesHelper.CustomHttpAcceptHeader(parser);
                 }
                 else
@@ -618,7 +618,7 @@ namespace VDS.RDF.Parsing
                     httpRequest.Accept = MimeTypesHelper.HttpRdfDatasetAcceptHeader;
                 }
 
-                //Use HTTP GET
+                // Use HTTP GET
                 httpRequest.Method = "GET";
 #if !(SILVERLIGHT||NETCORE)
                 httpRequest.Timeout = Options.UriLoaderTimeout;
@@ -632,14 +632,14 @@ namespace VDS.RDF.Parsing
 #endif
                 }
 
-                //HTTP Debugging
+                // HTTP Debugging
                 Tools.HttpDebugRequest(httpRequest);
 
                 using (HttpWebResponse httpResponse = (HttpWebResponse)httpRequest.GetResponse())
                 {
                     Tools.HttpDebugResponse(httpResponse);
 
-                    //Get a Parser and Load the RDF
+                    // Get a Parser and Load the RDF
                     if (parser == null)
                     {
                         try
@@ -654,13 +654,13 @@ namespace VDS.RDF.Parsing
 
                             try
                             {
-                                //If not a RDF Dataset format see if it is a Graph
+                                // If not a RDF Dataset format see if it is a Graph
                                 IRdfReader rdfParser = MimeTypesHelper.GetParser(httpResponse.ContentType);
                                 rdfParser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
                             }
                             catch (RdfParserSelectionException)
                             {
-                                //Finally fall back to assuming a dataset and trying format guessing
+                                // Finally fall back to assuming a dataset and trying format guessing
                                 String data = new StreamReader(httpResponse.GetResponseStream()).ReadToEnd();
                                 parser = StringParser.GetDatasetParser(data);
                                 parser.Warning += RaiseStoreWarning;
@@ -677,14 +677,14 @@ namespace VDS.RDF.Parsing
             }
             catch (UriFormatException uriEx)
             {
-                //Uri Format Invalid
+                // Uri Format Invalid
                 throw new RdfException("Unable to load from the given URI '" + u.AbsoluteUri + "' since it's format was invalid, see inner exception for details", uriEx);
             }
             catch (WebException webEx)
             {
                 if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
 
-                //Some sort of HTTP Error occurred
+                // Some sort of HTTP Error occurred
                 throw new WebException("A HTTP Error occurred resolving the URI '" + u.AbsoluteUri + "', see innner exception for details", webEx);
             }
         }

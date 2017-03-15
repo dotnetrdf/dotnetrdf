@@ -71,7 +71,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            //Detect the Offset and Limit from the Query if required
+            // Detect the Offset and Limit from the Query if required
             int limit = this._limit, offset = this._offset;
             if (this._detectSettings)
             {
@@ -82,8 +82,8 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
 
-            //First check what variables are present, we need this if we have to create
-            //a new multiset
+            // First check what variables are present, we need this if we have to create
+            // a new multiset
             IEnumerable<String> vars;
             if (context.InputMultiset is IdentityMultiset || context.InputMultiset is NullMultiset)
             {
@@ -96,42 +96,42 @@ namespace VDS.RDF.Query.Algebra
 
             if (limit == 0)
             {
-                //If Limit is Zero we can skip evaluation
+                // If Limit is Zero we can skip evaluation
                 context.OutputMultiset = new Multiset(vars);
                 return context.OutputMultiset;
             }
             else
             {
-                //Otherwise we have a limit/offset to apply
+                // Otherwise we have a limit/offset to apply
 
-                //Firstly evaluate the inner algebra
+                // Firstly evaluate the inner algebra
                 context.InputMultiset = context.Evaluate(this._pattern);
                 context.InputMultiset.VirtualCount = context.InputMultiset.Count;
-                //Then apply the offset
+                // Then apply the offset
                 if (offset > 0)
                 {
                     if (offset > context.InputMultiset.Count)
                     {
-                        //If the Offset is greater than the count return nothing
+                        // If the Offset is greater than the count return nothing
                         context.OutputMultiset = new Multiset(vars);
                         return context.OutputMultiset;
                     }
                     else
                     {
-                        //Otherwise discard the relevant number of Bindings
+                        // Otherwise discard the relevant number of Bindings
                         foreach (int id in context.InputMultiset.SetIDs.Take(offset).ToList())
                         {
                             context.InputMultiset.Remove(id);
                         }
                     }
                 }
-                //Finally apply the limit
+                // Finally apply the limit
                 if (limit > 0)
                 {
                     if (context.InputMultiset.Count > limit)
                     {
-                        //If the number of results is greater than the limit remove the extraneous
-                        //results
+                        // If the number of results is greater than the limit remove the extraneous
+                        // results
                         foreach (int id in context.InputMultiset.SetIDs.Skip(limit).ToList())
                         {
                             context.InputMultiset.Remove(id);
@@ -139,7 +139,7 @@ namespace VDS.RDF.Query.Algebra
                     }
                 }
 
-                //Then return the result
+                // Then return the result
                 context.OutputMultiset = context.InputMultiset;
                 return context.OutputMultiset;
             }

@@ -83,11 +83,11 @@ namespace VDS.RDF.Query.Inference
         /// <param name="output">Graph inferred information is output to</param>
         public virtual void Apply(IGraph input, IGraph output)
         {
-            //Infer information
+            // Infer information
             List<Triple> inferences = new List<Triple>();
             foreach (Triple t in input.Triples)
             {
-                //Apply class/property hierarchy inferencing
+                // Apply class/property hierarchy inferencing
                 if (t.Predicate.Equals(this._rdfType))
                 {
                     if (!t.Object.Equals(this._rdfsClass) && !t.Object.Equals(this._rdfProperty))
@@ -97,24 +97,24 @@ namespace VDS.RDF.Query.Inference
                 }
                 else if (t.Predicate.Equals(this._rdfsSubClass))
                 {
-                    //Assert that this thing is a Class
+                    // Assert that this thing is a Class
                     inferences.Add(new Triple(t.Subject.CopyNode(output), this._rdfType.CopyNode(output), this._rdfsClass.CopyNode(output)));
                 }
                 else if (t.Predicate.Equals(this._rdfsSubProperty))
                 {
-                    //Assert that this thing is a Property
+                    // Assert that this thing is a Property
                     inferences.Add(new Triple(t.Subject.CopyNode(output), this._rdfType.CopyNode(output), this._rdfProperty.CopyNode(output)));
                 }
                 else if (this._propertyMappings.ContainsKey(t.Predicate))
                 {
                     INode property = t.Predicate;
 
-                    //Navigate up the property hierarchy asserting additional properties if able
+                    // Navigate up the property hierarchy asserting additional properties if able
                     while (this._propertyMappings.ContainsKey(property))
                     {
                         if (this._propertyMappings[property] != null)
                         {
-                            //Assert additional properties
+                            // Assert additional properties
                             inferences.Add(new Triple(t.Subject.CopyNode(output), this._propertyMappings[property].CopyNode(output), t.Object.CopyNode(output)));
                             property = this._propertyMappings[property];
                         }
@@ -125,32 +125,32 @@ namespace VDS.RDF.Query.Inference
                     }
                 }
 
-                //Apply Domain and Range inferencing on Predicates
+                // Apply Domain and Range inferencing on Predicates
                 if (this._rangeMappings.ContainsKey(t.Predicate))
                 {
-                    //Assert additional type information
+                    // Assert additional type information
                     foreach (INode n in this._rangeMappings[t.Predicate])
                     {
                         inferences.Add(new Triple(t.Object.CopyNode(output), this._rdfType.CopyNode(output), n.CopyNode(output)));
                     }
 
-                    //Call InferClasses to get extra type information
+                    // Call InferClasses to get extra type information
                     this.InferClasses(inferences[inferences.Count - 1], input, output, inferences);
                 }
                 if (this._domainMappings.ContainsKey(t.Predicate))
                 {
-                    //Assert additional type information
+                    // Assert additional type information
                     foreach (INode n in this._domainMappings[t.Predicate])
                     {
                         inferences.Add(new Triple(t.Subject.CopyNode(output), this._rdfType.CopyNode(output), n.CopyNode(output)));
                     }
                     
-                    //Call InferClasses to get extra type information
+                    // Call InferClasses to get extra type information
                     this.InferClasses(inferences[inferences.Count - 1], input, output, inferences);
                 }
             }
 
-            //Assert the inferred information
+            // Assert the inferred information
             inferences.RemoveAll(t => t.Subject.NodeType == NodeType.Literal);
             if (inferences.Count > 0)
             {
@@ -173,7 +173,7 @@ namespace VDS.RDF.Query.Inference
                 {
                     if (t.Object.Equals(this._rdfsClass))
                     {
-                        //The Triple defines a Class
+                        // The Triple defines a Class
                         if (!this._classMappings.ContainsKey(t.Subject))
                         {
                             this._classMappings.Add(t.Subject, null);
@@ -181,7 +181,7 @@ namespace VDS.RDF.Query.Inference
                     } 
                     else if (t.Object.Equals(this._rdfProperty)) 
                     {
-                        //The Triple defines a Property
+                        // The Triple defines a Property
                         if (!this._propertyMappings.ContainsKey(t.Subject)) 
                         {
                             this._propertyMappings.Add(t.Subject, null);
@@ -190,7 +190,7 @@ namespace VDS.RDF.Query.Inference
                 }
                 else if (t.Predicate.Equals(this._rdfsSubClass))
                 {
-                    //The Triple defines a Sub Class
+                    // The Triple defines a Sub Class
                     if (!this._classMappings.ContainsKey(t.Subject))
                     {
                         this._classMappings.Add(t.Subject, t.Object);
@@ -202,7 +202,7 @@ namespace VDS.RDF.Query.Inference
                 }
                 else if (t.Predicate.Equals(this._rdfsSubProperty))
                 {
-                    //The Triple defines a Sub property
+                    // The Triple defines a Sub property
                     if (!this._propertyMappings.ContainsKey(t.Subject))
                     {
                         this._propertyMappings.Add(t.Subject, t.Object);
@@ -214,7 +214,7 @@ namespace VDS.RDF.Query.Inference
                 }
                 else if (t.Predicate.Equals(this._rdfsRange))
                 {
-                    //This Triple defines a Range
+                    // This Triple defines a Range
                     if (!this._propertyMappings.ContainsKey(t.Subject))
                     {
                         this._propertyMappings.Add(t.Subject, null);
@@ -230,7 +230,7 @@ namespace VDS.RDF.Query.Inference
                 }
                 else if (t.Predicate.Equals(this._rdfsDomain))
                 {
-                    //This Triple defines a Domain
+                    // This Triple defines a Domain
                     if (!this._propertyMappings.ContainsKey(t.Subject))
                     {
                         this._propertyMappings.Add(t.Subject, null);
@@ -246,7 +246,7 @@ namespace VDS.RDF.Query.Inference
                 }
                 else
                 {
-                    //Just add the property as a predicate
+                    // Just add the property as a predicate
                     if (!this._propertyMappings.ContainsKey(t.Predicate))
                     {
                         this._propertyMappings.Add(t.Predicate, null);
@@ -266,12 +266,12 @@ namespace VDS.RDF.Query.Inference
         {
             INode type = t.Object;
 
-            //Navigate up the class hierarchy asserting additional types if able
+            // Navigate up the class hierarchy asserting additional types if able
             while (this._classMappings.ContainsKey(type))
             {
                 if (this._classMappings[type] != null)
                 {
-                    //Assert additional type information
+                    // Assert additional type information
                     inferences.Add(new Triple(t.Subject.CopyNode(output), t.Predicate.CopyNode(output), this._classMappings[type].CopyNode(output)));
                     type = this._classMappings[type];
                 }
@@ -299,10 +299,10 @@ namespace VDS.RDF.Query.Inference
         /// <param name="output">Graph inferred information is output to</param>
         public override void Apply(IGraph input, IGraph output)
         {
-            //Use this Graph to further initialise the Reasoner
+            // Use this Graph to further initialise the Reasoner
             this.Initialise(input);
 
-            //Use the Base Reasoner to do the inference
+            // Use the Base Reasoner to do the inference
             base.Apply(input, output);
         }
     }

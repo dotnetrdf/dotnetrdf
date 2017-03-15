@@ -77,12 +77,12 @@ namespace VDS.RDF.Ontology
         /// </summary>
         private void Initialise()
         {
-            //Apply the reasoners
+            // Apply the reasoners
             foreach (IInferenceEngine reasoner in this._reasoners)
             {
                 reasoner.Apply(this._baseGraph, this);
             }
-            //Set the Triple and Node Collections to be Union Collections
+            // Set the Triple and Node Collections to be Union Collections
             this._triples = new UnionTripleCollection(this._triples, this._baseGraph.Triples);
         }
 

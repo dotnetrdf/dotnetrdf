@@ -94,7 +94,7 @@ namespace VDS.RDF
             if (g == null) throw new ArgumentNullException("graph", "Wrapped Graph cannot be null");
             this._g = g;
 
-            //Create Event Handlers and attach to the Triple Collection
+            // Create Event Handlers and attach to the Triple Collection
             this.TripleAddedHandler = new TripleEventHandler(this.OnTripleAsserted);
             this.TripleRemovedHandler = new TripleEventHandler(this.OnTripleRetracted);
             this.AttachEventHandlers(this._g.Triples);
@@ -606,12 +606,12 @@ namespace VDS.RDF
         /// </remarks>
         public virtual void Merge(IGraph g, bool keepOriginalGraphUri)
         {
-            //First copy and Prefixes across which aren't defined in this Graph
+            // First copy and Prefixes across which aren't defined in this Graph
             this._g.NamespaceMap.Import(g.NamespaceMap);
 
             if (this.IsEmpty)
             {
-                //Empty Graph so do a quick copy
+                // Empty Graph so do a quick copy
                 foreach (Triple t in g.Triples)
                 {
                     this.Assert(new Triple(Tools.CopyNode(t.Subject, this._g, keepOriginalGraphUri), Tools.CopyNode(t.Predicate, this._g, keepOriginalGraphUri), Tools.CopyNode(t.Object, this._g, keepOriginalGraphUri)));
@@ -1089,7 +1089,7 @@ namespace VDS.RDF
                         action = this._actions[i];
                         if (action.IsDelete != isDelete)
                         {
-                            //Action switches to/from delete so process the current batch then continue
+                            // Action switches to/from delete so process the current batch then continue
                             if (isDelete)
                             {
                                 this.PersistDeletedTriples(ts);
@@ -1105,7 +1105,7 @@ namespace VDS.RDF
                         i++;
                     }
 
-                    //Most likely will be left with a batch to process at the end
+                    // Most likely will be left with a batch to process at the end
                     if (ts.Count > 0)
                     {
                         if (isDelete)
@@ -1179,7 +1179,7 @@ namespace VDS.RDF
         /// <param name="ts">Triples</param>
         protected virtual void PersistInsertedTriples(IEnumerable<Triple> ts)
         {
-            //Does Nothing
+            // Does Nothing
         }
 
         /// <summary>
@@ -1188,7 +1188,7 @@ namespace VDS.RDF
         /// <param name="ts"></param>
         protected virtual void PersistDeletedTriples(IEnumerable<Triple> ts)
         {
-            //Does Nothing
+            // Does Nothing
         }
 
         /// <summary>
@@ -1196,7 +1196,7 @@ namespace VDS.RDF
         /// </summary>
         protected virtual void PersistGraph()
         {
-            //Does Nothing
+            // Does Nothing
         }
 
         #endregion
@@ -1380,7 +1380,7 @@ namespace VDS.RDF
 
             if (!writeOnly)
             {
-                //Load in the existing data
+                // Load in the existing data
                 this._manager.LoadGraph(this._g, graphUri);
             }
         }

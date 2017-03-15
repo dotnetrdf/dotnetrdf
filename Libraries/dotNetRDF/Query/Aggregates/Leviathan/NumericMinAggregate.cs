@@ -87,14 +87,14 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         {
             if (this._varname != null)
             {
-                //Ensured the MINed variable is in the Variables of the Results
+                // Ensured the MINed variable is in the Variables of the Results
                 if (!context.Binder.Variables.Contains(this._varname))
                 {
                     throw new RdfQueryException("Cannot use the Variable " + this._expr.ToString() + " in a NMIN Aggregate since the Variable does not occur in a Graph Pattern");
                 }
             }
 
-            //Prep Variables
+            // Prep Variables
             long lngmin = 0;
             decimal decmin = 0.0m;
             float fltmin = 0.0f;
@@ -116,15 +116,15 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
                     continue;
                 }
 
-                //Skip if Not a Number
+                // Skip if Not a Number
                 if (numtype == SparqlNumericType.NaN) continue;
 
-                //Track the Numeric Type
+                // Track the Numeric Type
                 if ((int)numtype > (int)mintype)
                 {
                     if (mintype == SparqlNumericType.NaN)
                     {
-                        //Initialise Minimums
+                        // Initialise Minimums
                         switch (numtype)
                         {
                             case SparqlNumericType.Integer:
@@ -202,27 +202,27 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
                 }
             }
 
-            //Return the Min
+            // Return the Min
             switch (mintype)
             {
                 case SparqlNumericType.NaN:
-                    //No Numeric Values
+                    // No Numeric Values
                     return null;
 
                 case SparqlNumericType.Integer:
-                    //Integer Values
+                    // Integer Values
                     return new LongNode(null, lngmin);
 
                 case SparqlNumericType.Decimal:
-                    //Decimal Values
+                    // Decimal Values
                     return new DecimalNode(null, decmin);
 
                 case SparqlNumericType.Float:
-                    //Float Values
+                    // Float Values
                     return new FloatNode(null, fltmin);
 
                 case SparqlNumericType.Double:
-                    //Double Values
+                    // Double Values
                     return new DoubleNode(null, dblmin);
 
                 default:

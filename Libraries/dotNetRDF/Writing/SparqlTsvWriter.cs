@@ -65,7 +65,7 @@ namespace VDS.RDF.Writing
             {
                 if (results.ResultsType == SparqlResultsType.VariableBindings)
                 {
-                    //Output Variables first
+                    // Output Variables first
                     String[] vars = results.Variables.ToArray();
                     for (int i = 0; i < vars.Length; i++)
                     {
@@ -117,7 +117,7 @@ namespace VDS.RDF.Writing
                 }
                 catch
                 {
-                    //No error handling, just trying to clean up
+                    // No error handling, just trying to clean up
                 }
                 throw;
             }

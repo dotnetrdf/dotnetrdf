@@ -64,7 +64,7 @@ namespace VDS.RDF.Parsing.Handlers
             this._defaultGraphUri = defaultGraphUri;
             this._batchSize = batchSize;
 
-            //Make the Actions Queue one larger than the Batch Size
+            // Make the Actions Queue one larger than the Batch Size
             this._actions = new List<Triple>(this._batchSize + 1);
             this._bnodeActions = new List<Triple>(this._batchSize + 1);
             this._bnodeUris = new HashSet<string>();
@@ -110,12 +110,12 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="ok">Indicates whether parsing completed without error</param>
         protected override void EndRdfInternal(bool ok)
         {
-            //First process the last batch of ground triples (if any)
+            // First process the last batch of ground triples (if any)
             if (this._actions.Count > 0)
             {
                 this.ProcessBatch();
             }
-            //Then process each batch of non-ground triples
+            // Then process each batch of non-ground triples
             List<Uri> uris = (from u in this._bnodeUris
                               select (u.Equals(String.Empty) ? null : UriFactory.Create(u))).ToList();
             foreach (Uri u in uris)
@@ -150,25 +150,25 @@ namespace VDS.RDF.Parsing.Handlers
         {
             if (t.IsGroundTriple)
             {
-                //Ground Triples are processed in Batches as we handle the Triples
+                // Ground Triples are processed in Batches as we handle the Triples
                 if (t.GraphUri != null && !EqualityHelper.AreUrisEqual(t.GraphUri, this._currGraphUri))
                 {
-                    //The Triple has a Graph URI and it is not the same as the Current Graph URI
-                    //so we process the existing Batch and then set the Current Graph URI to the new Graph URI
+                    // The Triple has a Graph URI and it is not the same as the Current Graph URI
+                    // so we process the existing Batch and then set the Current Graph URI to the new Graph URI
                     this.ProcessBatch();
                     this._currGraphUri = t.GraphUri;
                 }
                 else if (t.GraphUri == null && !EqualityHelper.AreUrisEqual(this._currGraphUri, this._defaultGraphUri))
                 {
-                    //The Triple has no Graph URI and the Current Graph URI is not the Default Graph URI so
-                    //we process the existing Batch and reset the Current Graph URI to the Default Graph URI
+                    // The Triple has no Graph URI and the Current Graph URI is not the Default Graph URI so
+                    // we process the existing Batch and reset the Current Graph URI to the Default Graph URI
                     this.ProcessBatch();
                     this._currGraphUri = this._defaultGraphUri;
                 }
 
                 this._actions.Add(t);
 
-                //Whenever we hit the Batch Size process it
+                // Whenever we hit the Batch Size process it
                 if (this._actions.Count >= this._batchSize)
                 {
                     this.ProcessBatch();
@@ -176,8 +176,8 @@ namespace VDS.RDF.Parsing.Handlers
             }
             else
             {
-                //Non-Ground Triples (i.e. those with Blank Nodes) are saved up until the end to ensure that Blank
-                //Node are persisted properly
+                // Non-Ground Triples (i.e. those with Blank Nodes) are saved up until the end to ensure that Blank
+                // Node are persisted properly
                 this._bnodeActions.Add(t);
                 this._bnodeUris.Add(t.GraphUri.ToSafeString());
             }

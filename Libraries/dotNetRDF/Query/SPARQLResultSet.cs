@@ -98,7 +98,7 @@ namespace VDS.RDF.Query
         /// <remarks>Useful where you need a possible guarentee of returning an result set even if it proves to be empty and also necessary for the implementation of Result Set Parsers.</remarks>
         public SparqlResultSet()
         {
-            //No actions needed
+            // No actions needed
         }
 
         /// <summary>
@@ -194,15 +194,15 @@ namespace VDS.RDF.Query
         {
             get
             {
-                //If No Variables then must have been an ASK Query with an empty <head>
+                // If No Variables then must have been an ASK Query with an empty <head>
                 if (this._variables.Count == 0)
                 {
-                    //In this case the _result field contains the boolean result
+                    // In this case the _result field contains the boolean result
                     return this._result;
                 }
                 else
                 {
-                    //In any other case then it will contain true even if the result set was empty
+                    // In any other case then it will contain true even if the result set was empty
                     return true;
                 }
             }
@@ -371,21 +371,21 @@ namespace VDS.RDF.Query
             {
                 SparqlResultSet results = (SparqlResultSet)obj;
 
-                //Must contain same number of Results to be equal
+                // Must contain same number of Results to be equal
                 if (this.Count != results.Count) return false;
 
-                //Must have same Boolean result to be equal
+                // Must have same Boolean result to be equal
                 if (this.Result != results.Result) return false;
 
-                //Must contain the same set of variables
+                // Must contain the same set of variables
                 if (this.Variables.Count() != results.Variables.Count()) return false;
                 if (!this.Variables.All(v => results.Variables.Contains(v))) return false;
                 if (results.Variables.Any(v => !this._variables.Contains(v))) return false;
 
-                //If both have no results then they are equal
+                // If both have no results then they are equal
                 if (this.Count == 0 && results.Count == 0) return true;
 
-                //All Ground Results from the Result Set must appear in the Other Result Set
+                // All Ground Results from the Result Set must appear in the Other Result Set
                 List<SparqlResult> otherResults = results.OrderByDescending(r => r.Variables.Count()).ToList();
                 List<SparqlResult> localResults = new List<SparqlResult>();
                 int grCount = 0;
@@ -393,7 +393,7 @@ namespace VDS.RDF.Query
                 {
                     if (result.IsGroundResult)
                     {
-                        //If a Ground Result in this Result Set is not in the other Result Set we're not equal
+                        // If a Ground Result in this Result Set is not in the other Result Set we're not equal
                         if (!otherResults.Remove(result)) return false;
                         grCount++;
                     }
@@ -403,14 +403,14 @@ namespace VDS.RDF.Query
                     }
                 }
 
-                //If all the Results were ground results and we've emptied all the Results from the other Result Set
-                //then we were equal
+                // If all the Results were ground results and we've emptied all the Results from the other Result Set
+                // then we were equal
                 if (this.Count == grCount && otherResults.Count == 0) return true;
 
-                //If the Other Results still contains Ground Results we're not equal
+                // If the Other Results still contains Ground Results we're not equal
                 if (otherResults.Any(r => r.IsGroundResult)) return false;
 
-                //Create Graphs of the two sets of non-Ground Results
+                // Create Graphs of the two sets of non-Ground Results
                 SparqlResultSet local = new SparqlResultSet();
                 SparqlResultSet other = new SparqlResultSet();
                 foreach (String var in this._variables)
@@ -427,7 +427,7 @@ namespace VDS.RDF.Query
                     other.AddResult(r);
                 }
 
-                //Compare the two Graphs for equality
+                // Compare the two Graphs for equality
                 SparqlRdfWriter writer = new SparqlRdfWriter();
                 IGraph g = writer.GenerateOutput(local);
                 IGraph h = writer.GenerateOutput(other);
@@ -469,13 +469,13 @@ namespace VDS.RDF.Query
 
             foreach (SparqlResult r in this.Results)
             {
-                //Must have values available for all three variables
+                // Must have values available for all three variables
                 if (r.HasValue(subjVar) && r.HasValue(predVar) && r.HasValue(objVar))
                 {
-                    //None of the values is allowed to be unbound (i.e. null)
+                    // None of the values is allowed to be unbound (i.e. null)
                     if (r[subjVar] == null || r[predVar] == null || r[objVar] == null) continue;
 
-                    //If this is all OK we can generate a Triple
+                    // If this is all OK we can generate a Triple
                     tripleCollection.Add(new Triple(r[subjVar].CopyNode(g), r[predVar].CopyNode(g), r[objVar].CopyNode(g)));
                 }
             }

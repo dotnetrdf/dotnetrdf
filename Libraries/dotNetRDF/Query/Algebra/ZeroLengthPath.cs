@@ -68,19 +68,19 @@ namespace VDS.RDF.Query.Algebra
             String objVar = this.PathEnd.VariableName;
             context.OutputMultiset = new Multiset();
 
-            //Determine the Triples to which this applies
+            // Determine the Triples to which this applies
             if (subjVar != null)
             {
-                //Subject is a Variable
+                // Subject is a Variable
                 if (context.InputMultiset.ContainsVariable(subjVar))
                 {
-                    //Subject is Bound
+                    // Subject is Bound
                     if (objVar != null)
                     {
-                        //Object is a Variable
+                        // Object is a Variable
                         if (context.InputMultiset.ContainsVariable(objVar))
                         {
-                            //Both Subject and Object are Bound
+                            // Both Subject and Object are Bound
                             foreach (ISet s in context.InputMultiset.Sets.Where(x => x[subjVar] != null && x[objVar] != null && this.PathStart.Accepts(context, x[subjVar]) && this.PathEnd.Accepts(context, x[objVar])))
                             {
                                 ISet x = new Set();
@@ -93,7 +93,7 @@ namespace VDS.RDF.Query.Algebra
                         }
                         else
                         {
-                            //Subject is bound but Object is Unbound
+                            // Subject is bound but Object is Unbound
                             foreach (ISet s in context.InputMultiset.Sets.Where(x => x[subjVar] != null && this.PathStart.Accepts(context, x[subjVar])))
                             {
                                 ISet x = s.Copy();
@@ -104,8 +104,8 @@ namespace VDS.RDF.Query.Algebra
                     }
                     else
                     {
-                        //Object is a Term
-                        //Preseve sets where the Object Term is equal to the currently bound Subject
+                        // Object is a Term
+                        // Preseve sets where the Object Term is equal to the currently bound Subject
                         INode objTerm = ((NodeMatchPattern)this.PathEnd).Node;
                         foreach (ISet s in context.InputMultiset.Sets)
                         {
@@ -119,13 +119,13 @@ namespace VDS.RDF.Query.Algebra
                 }
                 else
                 {
-                    //Subject is Unbound
+                    // Subject is Unbound
                     if (objVar != null)
                     {
-                        //Object is a Variable
+                        // Object is a Variable
                         if (context.InputMultiset.ContainsVariable(objVar))
                         {
-                            //Object is Bound but Subject is unbound
+                            // Object is Bound but Subject is unbound
                             foreach (ISet s in context.InputMultiset.Sets.Where(x => x[objVar] != null && this.PathEnd.Accepts(context, x[objVar])))
                             {
                                 ISet x = s.Copy();
@@ -135,7 +135,7 @@ namespace VDS.RDF.Query.Algebra
                         }
                         else
                         {
-                            //Subject and Object are Unbound
+                            // Subject and Object are Unbound
                             HashSet<INode> nodes = new HashSet<INode>();
                             foreach (Triple t in context.Data.Triples)
                             {
@@ -153,8 +153,8 @@ namespace VDS.RDF.Query.Algebra
                     }
                     else
                     {
-                        //Object is a Term
-                        //Create a single set with the Variable bound to the Object Term
+                        // Object is a Term
+                        // Create a single set with the Variable bound to the Object Term
                         Set s = new Set();
                         s.Add(subjVar, ((NodeMatchPattern)this.PathEnd).Node);
                         context.OutputMultiset.Add(s);
@@ -163,11 +163,11 @@ namespace VDS.RDF.Query.Algebra
             }
             else if (objVar != null)
             {
-                //Subject is a Term but Object is a Variable
+                // Subject is a Term but Object is a Variable
                 if (context.InputMultiset.ContainsVariable(objVar))
                 {
-                    //Object is Bound
-                    //Preseve sets where the Subject Term is equal to the currently bound Object
+                    // Object is Bound
+                    // Preseve sets where the Subject Term is equal to the currently bound Object
                     INode subjTerm = ((NodeMatchPattern)this.PathStart).Node;
                     foreach (ISet s in context.InputMultiset.Sets)
                     {
@@ -180,8 +180,8 @@ namespace VDS.RDF.Query.Algebra
                 }
                 else
                 {
-                    //Object is Unbound
-                    //Create a single set with the Variable bound to the Suject Term
+                    // Object is Unbound
+                    // Create a single set with the Variable bound to the Suject Term
                     Set s = new Set();
                     s.Add(objVar, ((NodeMatchPattern)this.PathStart).Node);
                     context.OutputMultiset.Add(s);
@@ -189,7 +189,7 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                //Should already have dealt with this earlier (the AreBothTerms() and AreSameTerms() branch)
+                // Should already have dealt with this earlier (the AreBothTerms() and AreSameTerms() branch)
                 throw new RdfQueryException("Reached unexpected point of ZeroLengthPath evaluation");
             }
 

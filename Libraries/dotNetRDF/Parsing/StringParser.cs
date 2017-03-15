@@ -51,7 +51,7 @@ namespace VDS.RDF.Parsing
 
             if (reader == null)
             {
-                //If no parser supplied then should auto-detect syntax
+                // If no parser supplied then should auto-detect syntax
                 Parse(g, data);
             }
             else
@@ -101,36 +101,36 @@ namespace VDS.RDF.Parsing
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
             if (data == null) return;
 
-            //Try to guess the format
+            // Try to guess the format
             String format = "Unknown";
             try
             {
                 if (data.Contains("<?xml") && data.Contains("<rdf:RDF"))
                 {
-                    //Probably RDF/XML
+                    // Probably RDF/XML
                     format = "RDF/XML";
                     Parse(g, data, new RdfXmlParser());
                 }
 #if !NO_HTMLAGILITYPACK
                 else if (data.Contains("<html"))
                 {
-                    //HTML (possibly containing RDFa)
+                    // HTML (possibly containing RDFa)
                     format = "HTML+RDFa";
                     Parse(g, data, new RdfAParser());
                 }
 #endif
                 else if (data.Contains("@prefix") || data.Contains("@base"))
                 {
-                    //Turtle/Notation 3
+                    // Turtle/Notation 3
                     if (data.Contains("@keywords") || data.Contains("@forall") || data.Contains("@forsome"))
                     {
-                        //Notation 3
+                        // Notation 3
                         format = "Notation 3";
                         Parse(g, data, new Notation3Parser());
                     }
                     else
                     {
-                        //Probably Turtle
+                        // Probably Turtle
                         format = "Turtle";
                         Parse(g, data, new TurtleParser());
                     }
@@ -142,21 +142,21 @@ namespace VDS.RDF.Parsing
                            data.Contains("[") &&
                            data.Contains("]"))
                 {
-                    //If we have all those things then it's very likely RDF/Json
+                    // If we have all those things then it's very likely RDF/Json
                     format = "RDF/JSON";
                     Parse(g, data, new RdfJsonParser());
                 }
                 else
                 {
-                    //Take a stab at it being NTriples
-                    //No real way to test as there's nothing particularly distinctive in NTriples
+                    // Take a stab at it being NTriples
+                    // No real way to test as there's nothing particularly distinctive in NTriples
                     format = "NTriples";
                     Parse(g, data, new NTriplesParser());
                 }
             }
             catch (RdfParseException parseEx)
             {
-                //Wrap the exception in an informational exception about what we guessed
+                // Wrap the exception in an informational exception about what we guessed
                 throw new RdfParseException("StringParser failed to parse the RDF string correctly, StringParser auto-detection guessed '" + format + "' but this failed to parse.  RDF string may be malformed or StringParser may have guessed incorrectly", parseEx);
             }
         }
@@ -174,7 +174,7 @@ namespace VDS.RDF.Parsing
 
             if (reader == null)
             {
-                //If no parser supplied then should auto-detect syntax
+                // If no parser supplied then should auto-detect syntax
                 ParseDataset(store, data);
             }
             else
@@ -205,33 +205,33 @@ namespace VDS.RDF.Parsing
             if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Graph");
             if (data == null) return;
 
-            //Try to guess the format
+            // Try to guess the format
             String format = "Unknown";
             try
             {
                 if (data.Contains("<?xml") && data.Contains("<TriX"))
                 {
-                    //Probably TriX
+                    // Probably TriX
                     format = "TriX";
                     ParseDataset(store, data, new TriXParser());
                 }
                 else if (data.Contains("@prefix") || data.Contains("@base"))
                 {
-                    //Probably TriG
+                    // Probably TriG
                     format = "TriG";
                     ParseDataset(store, data, new TriGParser());
                 }
                 else
                 {
-                    //Take a stab at it being NQuads
-                    //No real way to test as there's nothing particularly distinctive in NQuads
+                    // Take a stab at it being NQuads
+                    // No real way to test as there's nothing particularly distinctive in NQuads
                     format = "NQuads";
                     ParseDataset(store, data, new NQuadsParser());
                 }
             }
             catch (RdfParseException parseEx)
             {
-                //Wrap the exception in an informational exception about what we guessed
+                // Wrap the exception in an informational exception about what we guessed
                 throw new RdfParseException("StringParser failed to parse the RDF Dataset string correctly, StringParser auto-detection guessed '" + format + "' but this failed to parse.  RDF Dataset string may be malformed or StringParser may have guessed incorrectly", parseEx);
             }
         }
@@ -251,13 +251,13 @@ namespace VDS.RDF.Parsing
             if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
             if (data == null) return;
 
-            //Try to guess the format
+            // Try to guess the format
             String format = "Unknown";
             try
             {
                 if (data.Contains("<?xml") || data.Contains("<sparql"))
                 {
-                    //Probably XML
+                    // Probably XML
                     format = "SPARQL Results XML";
                     ParseResultSet(results, data, new SparqlXmlParser());
                 }
@@ -268,7 +268,7 @@ namespace VDS.RDF.Parsing
                            data.Contains("[") &&
                            data.Contains("]"))
                 {
-                    //If we have all those things then it's very likely RDF/Json
+                    // If we have all those things then it's very likely RDF/Json
                     format = "SPARQL Results JSON";
                     ParseResultSet(results, data, new SparqlJsonParser());
                 }
@@ -279,7 +279,7 @@ namespace VDS.RDF.Parsing
             }
             catch (RdfParseException parseEx)
             {
-                //Wrap the exception in an informational exception about what we guessed
+                // Wrap the exception in an informational exception about what we guessed
                 throw new RdfParserSelectionException("StringParser failed to parse the SPARQL Results string correctly, StringParser auto-detection guessed '" + format + "' but this failed to parse.  SPARQL Results string may be malformed or StringParser may have guessed incorrectly", parseEx);
             }
         }
@@ -297,7 +297,7 @@ namespace VDS.RDF.Parsing
 
             if (reader == null)
             {
-                //If no parser specified then auto-detect syntax
+                // If no parser specified then auto-detect syntax
                 ParseResultSet(results, data);
             }
             else
@@ -329,27 +329,27 @@ namespace VDS.RDF.Parsing
 
             if (data.Contains("<?xml") && data.Contains("<rdf:RDF"))
             {
-                //Probably RDF/XML
+                // Probably RDF/XML
                 return new RdfXmlParser();
             }
 #if !NO_HTMLAGILITYPACK
             else if (data.Contains("<html"))
             {
-                //HTML (possibly containing RDFa)
+                // HTML (possibly containing RDFa)
                 return new RdfAParser();
             }
 #endif
             else if (data.Contains("@prefix") || data.Contains("@base"))
             {
-                //Turtle/Notation 3
+                // Turtle/Notation 3
                 if (data.Contains("@keywords") || data.Contains("@forall") || data.Contains("@forsome"))
                 {
-                    //Notation 3
+                    // Notation 3
                     return new Notation3Parser();
                 }
                 else
                 {
-                    //Probably Turtle
+                    // Probably Turtle
                     return new TurtleParser();
                 }
             }
@@ -360,13 +360,13 @@ namespace VDS.RDF.Parsing
                        data.Contains("[") &&
                        data.Contains("]"))
             {
-                //If we have all those things then it's very likely RDF/Json
+                // If we have all those things then it's very likely RDF/Json
                 return new RdfJsonParser();
             }
             else
             {
-                //Take a stab at it being NTriples
-                //No real way to test as there's nothing particularly distinctive in NTriples
+                // Take a stab at it being NTriples
+                // No real way to test as there's nothing particularly distinctive in NTriples
                 return new NTriplesParser();
             }
         }
@@ -382,18 +382,18 @@ namespace VDS.RDF.Parsing
 
             if (data.Contains("<?xml") && data.Contains("<TriX"))
             {
-                //Probably TriX
+                // Probably TriX
                 return new TriXParser();
             }
             else if (data.Contains("@prefix") || data.Contains("{") || data.Contains("}"))
             {
-                //Probably TriG
+                // Probably TriG
                 return new TriGParser();
             }
             else
             {
-                //Take a stab at it being NQuads
-                //No real way to test as there's nothing particularly distinctive in NQuads
+                // Take a stab at it being NQuads
+                // No real way to test as there's nothing particularly distinctive in NQuads
                 return new NQuadsParser();
             }
         }
@@ -409,7 +409,7 @@ namespace VDS.RDF.Parsing
 
             if ((data.Contains("<?xml") && !data.Contains("rdf:RDF")) || data.Contains("<sparql"))
             {
-                //Probably XML
+                // Probably XML
                 return new SparqlXmlParser();
             }
             else if (data.Contains("\"head\"") &&
@@ -419,7 +419,7 @@ namespace VDS.RDF.Parsing
                data.Contains("[") &&
                data.Contains("]"))
             {
-                //If we have all those things then it's very likely JSON
+                // If we have all those things then it's very likely JSON
                 return new SparqlJsonParser();
             }
             else

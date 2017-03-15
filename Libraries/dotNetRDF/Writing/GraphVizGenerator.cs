@@ -94,7 +94,7 @@ namespace VDS.RDF.Writing
         /// <param name="open">Whether you want to open the Output in the default application (according to OS settings) for the filetype after it is Created</param>
         public void Generate(IGraph g, String filename, bool open)
         {
-            //Prepare the Process
+            // Prepare the Process
             ProcessStartInfo start = new ProcessStartInfo();
             if (!_graphvizdir.Equals(String.Empty)) {
                 start.FileName = this._graphvizdir + "dot.exe";
@@ -106,19 +106,19 @@ namespace VDS.RDF.Writing
             start.RedirectStandardInput = true;
             start.RedirectStandardOutput = true;
 
-            //Prepare the GraphVizWriter and Streams
+            // Prepare the GraphVizWriter and Streams
             GraphVizWriter gvzwriter = new GraphVizWriter();
             using (BinaryWriter writer = new BinaryWriter(new FileStream(filename, FileMode.Create)))
             {
-                //Start the Process
+                // Start the Process
                 Process gvz = new Process();
                 gvz.StartInfo = start;
                 gvz.Start();
 
-                //Write to the Standard Input
+                // Write to the Standard Input
                 gvzwriter.Save(g, gvz.StandardInput);
 
-                //Read the Standard Output
+                // Read the Standard Output
                 byte[] buffer = new byte[4096];
                 using (BinaryReader reader = new BinaryReader(gvz.StandardOutput.BaseStream))
                 {
@@ -134,7 +134,7 @@ namespace VDS.RDF.Writing
                 gvz.Close();
             }
 
-            //Open if requested
+            // Open if requested
             if (open)
             {
                 Process.Start(filename);

@@ -84,7 +84,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
                         }
 
                     case NodeType.Uri:
-                        //Already a URI so nothing to do
+                        // Already a URI so nothing to do
                         return result;
                     default:
                         throw new RdfQueryException("Cannot create an IRI from a non-URI/String literal");

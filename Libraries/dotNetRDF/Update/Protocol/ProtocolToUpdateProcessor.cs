@@ -67,19 +67,19 @@ namespace VDS.RDF.Update.Protocol
         /// <param name="context">HTTP Context</param>
         public override void ProcessGet(IHttpContext context)
         {
-            //Work out the Graph URI we want to get
+            // Work out the Graph URI we want to get
             Uri graphUri = this.ResolveGraphUri(context);
 
             try
             {
-                //Send the Graph to the user
+                // Send the Graph to the user
                 IGraph g = this.GetGraph(graphUri);
                 this.SendResultsToClient(context, g);
             }
             catch (RdfQueryException)
             {
-                //If the GetGraph() method errors this implies that the Store does not contain the Graph
-                //In such a case we should return a 404
+                // If the GetGraph() method errors this implies that the Store does not contain the Graph
+                // In such a case we should return a 404
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 return;
             }
@@ -91,21 +91,21 @@ namespace VDS.RDF.Update.Protocol
         /// <param name="context">HTTP Context</param>
         public override void ProcessPost(IHttpContext context)
         {
-            //Get the payload assuming there is one
+            // Get the payload assuming there is one
             IGraph g = this.ParsePayload(context);
 
             if (g == null)
             {
-                //Q: What should the behaviour be when the payload is null for a POST?  Assuming a 200 OK response
+                // Q: What should the behaviour be when the payload is null for a POST?  Assuming a 200 OK response
                 return;
             }
 
-            //Get the Graph URI of the Graph to be added
+            // Get the Graph URI of the Graph to be added
             Uri graphUri = this.ResolveGraphUri(context, g);
 
-            //First we need a 
+            // First we need a 
 
-            //Generate an INSERT DATA command for the POST
+            // Generate an INSERT DATA command for the POST
             StringBuilder insert = new StringBuilder();
             if (graphUri != null)
             {
@@ -131,7 +131,7 @@ namespace VDS.RDF.Update.Protocol
                 insert.AppendLine("}");
             }
 
-            //Parse and evaluate the command
+            // Parse and evaluate the command
             SparqlParameterizedString insertCmd = new SparqlParameterizedString(insert.ToString());
             insertCmd.Namespaces = g.NamespaceMap;
             if (graphUri != null) insertCmd.SetUri("graph", graphUri);
@@ -151,20 +151,20 @@ namespace VDS.RDF.Update.Protocol
         /// </remarks>
         public override void ProcessPostCreate(IHttpContext context)
         {
-            //Get the payload assuming there is one
+            // Get the payload assuming there is one
             IGraph g = this.ParsePayload(context);
 
-            //Mint a URI for the Graph
+            // Mint a URI for the Graph
             Uri graphUri = this.MintGraphUri(context, g);
 
-            //First generate a CREATE to ensure that the Graph exists
-            //We don't do a CREATE SILENT as this operation is supposed to generate a new Graph URI
-            //so if MintGraphUri() fails to deliver a unused Graph URI then the operation should fail
+            // First generate a CREATE to ensure that the Graph exists
+            // We don't do a CREATE SILENT as this operation is supposed to generate a new Graph URI
+            // so if MintGraphUri() fails to deliver a unused Graph URI then the operation should fail
             StringBuilder insert = new StringBuilder();
             insert.AppendLine("CREATE GRAPH @graph ;");
 
-            //Then Generate an INSERT DATA command for the actual POST
-            //Note that if the payload is empty this still has the effect of creating a Graph
+            // Then Generate an INSERT DATA command for the actual POST
+            // Note that if the payload is empty this still has the effect of creating a Graph
             if (g != null)
             {
                 insert.AppendLine("INSERT DATA { GRAPH @graph {");
@@ -176,7 +176,7 @@ namespace VDS.RDF.Update.Protocol
                 insert.AppendLine("} }");
             }
 
-            //Parse and evaluate the command
+            // Parse and evaluate the command
             SparqlParameterizedString insertCmd = new SparqlParameterizedString(insert.ToString());
             insertCmd.Namespaces = g.NamespaceMap;
             insertCmd.SetUri("graph", graphUri);
@@ -184,7 +184,7 @@ namespace VDS.RDF.Update.Protocol
             this._updateProcessor.ProcessCommandSet(cmds);
             this._updateProcessor.Flush();
 
-            //Finally return a 201 Created and a Location header with the new Graph URI
+            // Finally return a 201 Created and a Location header with the new Graph URI
             context.Response.StatusCode = (int)HttpStatusCode.Created;
             try
             {
@@ -202,13 +202,13 @@ namespace VDS.RDF.Update.Protocol
         /// <param name="context">HTTP Context</param>
         public override void ProcessPut(IHttpContext context)
         {
-            //Get the payload assuming there is one
+            // Get the payload assuming there is one
             IGraph g = this.ParsePayload(context);
 
-            //Get the Graph URI of the Graph to be added
+            // Get the Graph URI of the Graph to be added
             Uri graphUri = this.ResolveGraphUri(context, g);
 
-            //Determine whether the Graph already exists or not, if it doesn't then we have to send a 201 Response
+            // Determine whether the Graph already exists or not, if it doesn't then we have to send a 201 Response
             bool created = false;
             try
             {
@@ -225,11 +225,11 @@ namespace VDS.RDF.Update.Protocol
             }
             catch
             {
-                //If any error occurs assume the Graph doesn't exist and so we'll return a 201 created
+                // If any error occurs assume the Graph doesn't exist and so we'll return a 201 created
                 created = true;
             }            
 
-            //Generate a set of commands based upon this
+            // Generate a set of commands based upon this
             StringBuilder cmdSequence = new StringBuilder();
             if (graphUri != null)
             {
@@ -275,7 +275,7 @@ namespace VDS.RDF.Update.Protocol
             this._updateProcessor.ProcessCommandSet(putCmds);
             this._updateProcessor.Flush();
 
-            //Return a 201 if required, otherwise the default behaviour of returning a 200 will occur automatically
+            // Return a 201 if required, otherwise the default behaviour of returning a 200 will occur automatically
             if (created)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Created;
@@ -288,17 +288,17 @@ namespace VDS.RDF.Update.Protocol
         /// <param name="context">HTTP Context</param>
         public override void ProcessDelete(IHttpContext context)
         {
-            //Get the Graph URI of the Graph to delete
+            // Get the Graph URI of the Graph to delete
             Uri graphUri = this.ResolveGraphUri(context);
 
-            //Must return a 404 if the Graph doesn't exist
+            // Must return a 404 if the Graph doesn't exist
             if (!this.HasGraph(graphUri))
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 return;
             }
 
-            //Generate a DROP GRAPH command based on this
+            // Generate a DROP GRAPH command based on this
             SparqlParameterizedString drop = new SparqlParameterizedString("DROP ");
             if (graphUri != null)
             {
@@ -320,7 +320,7 @@ namespace VDS.RDF.Update.Protocol
         /// <param name="context">HTTP Context</param>
         public override void ProcessHead(IHttpContext context)
         {
-            //Work out the Graph URI we want to get
+            // Work out the Graph URI we want to get
             Uri graphUri = this.ResolveGraphUri(context);
 
             try
@@ -328,7 +328,7 @@ namespace VDS.RDF.Update.Protocol
                 bool exists = this.HasGraph(graphUri);
                 if (exists)
                 {
-                    //Send the Content Type we'd select based on the Accept header to the user
+                    // Send the Content Type we'd select based on the Accept header to the user
                     String ctype;
                     IRdfWriter writer = MimeTypesHelper.GetWriter(HandlerHelper.GetAcceptTypes(context), out ctype);
                     context.Response.ContentType = ctype;
@@ -340,8 +340,8 @@ namespace VDS.RDF.Update.Protocol
             }
             catch (RdfQueryException)
             {
-                //If the GetGraph() method errors this implies that the Store does not contain the Graph
-                //In such a case we should return a 404
+                // If the GetGraph() method errors this implies that the Store does not contain the Graph
+                // In such a case we should return a 404
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 return;
             }
@@ -353,16 +353,16 @@ namespace VDS.RDF.Update.Protocol
         /// <param name="context">HTTP Context</param>
         public override void ProcessPatch(IHttpContext context)
         {
-            //Work out the Graph URI we want to patch
+            // Work out the Graph URI we want to patch
             Uri graphUri = this.ResolveGraphUri(context);
 
-            //If the Request has the SPARQL Update MIME Type then we can process it
+            // If the Request has the SPARQL Update MIME Type then we can process it
             if (context.Request.ContentLength > 0)
             {
                 if (context.Request.ContentType.Equals("application/sparql-update"))
                 {
-                    //Try and parse the SPARQL Update
-                    //No error handling here as we assume the calling IHttpHandler does that
+                    // Try and parse the SPARQL Update
+                    // No error handling here as we assume the calling IHttpHandler does that
                     String patchData;
                     using (StreamReader reader = new StreamReader(context.Request.InputStream))
                     {
@@ -371,8 +371,8 @@ namespace VDS.RDF.Update.Protocol
                     }
                     SparqlUpdateCommandSet cmds = this._parser.ParseFromString(patchData);
 
-                    //Assuming that we've got here i.e. the SPARQL Updates are parseable then
-                    //we need to check that they actually affect the relevant Graph
+                    // Assuming that we've got here i.e. the SPARQL Updates are parseable then
+                    // we need to check that they actually affect the relevant Graph
                     if (cmds.Commands.All(c => c.AffectsSingleGraph && c.AffectsGraph(graphUri)))
                     {
                         this._updateProcessor.ProcessCommandSet(cmds);
@@ -380,22 +380,22 @@ namespace VDS.RDF.Update.Protocol
                     }
                     else
                     {
-                        //One/More commands either do no affect a Single Graph or don't affect the Graph
-                        //implied by the HTTP Request so give a 422 response
+                        // One/More commands either do no affect a Single Graph or don't affect the Graph
+                        // implied by the HTTP Request so give a 422 response
                         context.Response.StatusCode = 422;
                         return;
                     }
                 }
                 else
                 {
-                    //Don't understand other forms of PATCH requests
+                    // Don't understand other forms of PATCH requests
                     context.Response.StatusCode = (int)HttpStatusCode.UnsupportedMediaType;
                     return;
                 }
             }
             else
             {
-                //Empty Request is a Bad Request
+                // Empty Request is a Bad Request
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return;
             }
@@ -408,7 +408,7 @@ namespace VDS.RDF.Update.Protocol
         /// <returns></returns>
         protected override IGraph GetGraph(Uri graphUri)
         {
-            //Generate a CONSTRUCT query based on the Graph URI
+            // Generate a CONSTRUCT query based on the Graph URI
             SparqlParameterizedString construct = new SparqlParameterizedString();
             if (graphUri != null)
             {
@@ -440,7 +440,7 @@ namespace VDS.RDF.Update.Protocol
         /// <returns></returns>
         protected override bool HasGraph(Uri graphUri)
         {
-            //Generate an ASK query based on the Graph URI
+            // Generate an ASK query based on the Graph URI
             SparqlParameterizedString ask = new SparqlParameterizedString();
             if (graphUri != null)
             {

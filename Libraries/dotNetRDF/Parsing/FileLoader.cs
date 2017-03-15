@@ -78,7 +78,7 @@ namespace VDS.RDF.Parsing
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
             
-            //Unescape the filename in case it originated from a File URI
+            // Unescape the filename in case it originated from a File URI
             filename = Uri.UnescapeDataString(filename);
 
             if (!File.Exists(filename))
@@ -90,10 +90,10 @@ namespace VDS.RDF.Parsing
 #endif
             }
 
-            //Assign a File Uri to the Graph if the Graph is Empty
-            //It's possible that when we parse in the RDF this may be changed but it ensures the Graph 
-            //has a Base Uri even if the RDF doesn't specify one
-            //Ensure that the Uri is an absolute file Uri
+            // Assign a File Uri to the Graph if the Graph is Empty
+            // It's possible that when we parse in the RDF this may be changed but it ensures the Graph 
+            // has a Base Uri even if the RDF doesn't specify one
+            // Ensure that the Uri is an absolute file Uri
             if (g.IsEmpty && g.BaseUri == null)
             {
                 RaiseWarning("Assigned a file: URI as the Base URI for the input Graph");
@@ -147,7 +147,7 @@ namespace VDS.RDF.Parsing
             if (handler == null) throw new RdfParseException("Cannot read RDF using a null RDF Handler");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
 
-            //Try to get a Parser from the File Extension if one isn't explicitly specified
+            // Try to get a Parser from the File Extension if one isn't explicitly specified
             if (parser == null)
             {
                 try
@@ -157,15 +157,15 @@ namespace VDS.RDF.Parsing
                 }
                 catch (RdfParserSelectionException)
                 {
-                    //If error then we couldn't determine MIME Type from the File Extension
+                    // If error then we couldn't determine MIME Type from the File Extension
                     RaiseWarning("Unable to select a parser by determining MIME Type from the File Extension");
                 }
             }
 
             if (parser == null)
             {
-                //Unable to determine format from File Extension
-                //Read file in locally and use the StringParser to select a parser
+                // Unable to determine format from File Extension
+                // Read file in locally and use the StringParser to select a parser
                 RaiseWarning("Attempting to select parser based on analysis of the data file, this requires loading the file into memory");
                 StreamReader reader = new StreamReader(File.OpenRead(filename));
                 String data = reader.ReadToEnd();
@@ -177,7 +177,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                //Parser was selected based on File Extension or one was explicitly specified
+                // Parser was selected based on File Extension or one was explicitly specified
                 parser.Warning += RaiseWarning;
                 parser.Load(handler, filename);
             }
@@ -249,10 +249,10 @@ namespace VDS.RDF.Parsing
                 }
                 catch (RdfParserSelectionException)
                 {
-                    //If error then we couldn't determine MIME Type from the File Extension
+                    // If error then we couldn't determine MIME Type from the File Extension
                     RaiseWarning("Unable to select a dataset parser by determining MIME Type from the File Extension");
 
-                    //Try selecting a RDF parser instead
+                    // Try selecting a RDF parser instead
                     try
                     {
                         IRdfReader rdfParser = MimeTypesHelper.GetParserByFileExtension(ext);
@@ -262,14 +262,14 @@ namespace VDS.RDF.Parsing
                     }
                     catch (RdfParserSelectionException)
                     {
-                        //Ignore this, will try and use format guessing and assume is a dataset format
+                        // Ignore this, will try and use format guessing and assume is a dataset format
                     }
                 }
             }
             if (parser == null)
             {
-                //Unable to determine format from File Extension
-                //Read file in locally and use the StringParser to select a parser
+                // Unable to determine format from File Extension
+                // Read file in locally and use the StringParser to select a parser
                 StreamReader reader = new StreamReader(File.OpenRead(filename));
                 String data = reader.ReadToEnd();
                 reader.Close();

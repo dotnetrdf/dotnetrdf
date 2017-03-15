@@ -57,10 +57,10 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                 throw new RdfQueryException("Cannot cast a Null to a xsd:dateTime");
             }
 
-            //New method should be much faster
-            //if (n is DateTimeNode) return n;
-            //if (n is DateNode) return new DateTimeNode(n.Graph, n.AsDateTime());
-            //return new DateTimeNode(null, n.AsDateTime());
+            // New method should be much faster
+            // if (n is DateTimeNode) return n;
+            // if (n is DateNode) return new DateTimeNode(n.Graph, n.AsDateTime());
+            // return new DateTimeNode(null, n.AsDateTime());
 
             switch (n.NodeType)
             {
@@ -72,18 +72,18 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                 case NodeType.Literal:
                     if (n is DateTimeNode) return n;
                     if (n is DateNode) return new DateTimeNode(n.Graph, n.AsDateTime());
-                    //See if the value can be cast
+                    // See if the value can be cast
                     ILiteralNode lit = (ILiteralNode)n;
                     if (lit.DataType != null)
                     {
                         string dt = lit.DataType.ToString();
                         if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
                         {
-                            //Already a xsd:dateTime
+                            // Already a xsd:dateTime
                             DateTimeOffset d;
                             if (DateTimeOffset.TryParse(lit.Value, out d))
                             {
-                                //Parsed OK
+                                // Parsed OK
                                 return new DateTimeNode(lit.Graph, d);
                             }
                             else
@@ -97,7 +97,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             DateTimeOffset d;
                             if (DateTimeOffset.TryParse(lit.Value, out d))
                             {
-                                //Parsed OK
+                                // Parsed OK
                                 return new DateTimeNode(lit.Graph, d);
                             }
                             else
@@ -115,7 +115,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         DateTimeOffset d;
                         if (DateTimeOffset.TryParse(lit.Value, out d))
                         {
-                            //Parsed OK
+                            // Parsed OK
                             return new DateTimeNode(lit.Graph, d);
                         }
                         else

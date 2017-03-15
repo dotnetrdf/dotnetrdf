@@ -50,23 +50,23 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         /// <returns></returns>
         public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
         {
-            //Try the expression with each member of the Group until we find a non-null
+            // Try the expression with each member of the Group until we find a non-null
             foreach (int id in bindingIDs)
             {
                 try
                 {
 
-                    //First non-null result we find is returned
+                    // First non-null result we find is returned
                     IValuedNode temp = this._expr.Evaluate(context, id);
                     if (temp != null) return temp;
                 }
                 catch (RdfQueryException)
                 {
-                    //Ignore errors - we'll loop round and try the next
+                    // Ignore errors - we'll loop round and try the next
                 }
             }
 
-            //If the Group is Empty of the Expression fails to evaluate for the entire Group then the result is null
+            // If the Group is Empty of the Expression fails to evaluate for the entire Group then the result is null
             return null;
         }
 

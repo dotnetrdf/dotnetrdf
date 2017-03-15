@@ -86,7 +86,7 @@ namespace VDS.RDF.Parsing
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
 
-            //Issue a Warning if the Encoding of the Stream is not UTF-8
+            // Issue a Warning if the Encoding of the Stream is not UTF-8
             if (!input.CurrentEncoding.Equals(Encoding.UTF8))
             {
 #if !SILVERLIGHT
@@ -125,8 +125,8 @@ namespace VDS.RDF.Parsing
                 }
                 catch
                 {
-                    //Catch is just here in case something goes wrong with closing the stream
-                    //This error can be ignored
+                    // Catch is just here in case something goes wrong with closing the stream
+                    // This error can be ignored
                 }
             }
         }
@@ -163,7 +163,7 @@ namespace VDS.RDF.Parsing
             catch (RdfParsingTerminatedException)
             {
                 context.Handler.EndRdf(true);
-                //Discard this - it justs means the Handler told us to stop
+                // Discard this - it justs means the Handler told us to stop
             }
             catch
             {
@@ -178,7 +178,7 @@ namespace VDS.RDF.Parsing
         /// <param name="context">Parser Context</param>
         private void ParseGraphObject(JsonParserContext context)
         {
-            //Can we read the overall Graph Object
+            // Can we read the overall Graph Object
             PositionInfo startPos = context.CurrentPosition;
             if (context.Input.Read())
             {
@@ -186,8 +186,8 @@ namespace VDS.RDF.Parsing
                 {
                     this.ParseTriples(context);
 
-                    //When we get control back we should have already read the last token which should be an End Object
-                    //We ignore any content which is beyond the end of the initial object
+                    // When we get control back we should have already read the last token which should be an End Object
+                    // We ignore any content which is beyond the end of the initial object
                     if (context.Input.TokenType != JsonToken.EndObject)
                     {
                         throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, end of the JSON Graph Object was expected", startPos);
@@ -215,7 +215,7 @@ namespace VDS.RDF.Parsing
             {
                 while (context.Input.TokenType != JsonToken.EndObject)
                 {
-                    //Expect Property Names for Subjects
+                    // Expect Property Names for Subjects
                     if (context.Input.TokenType == JsonToken.PropertyName)
                     {
                         String subjValue = context.Input.Value.ToString();
@@ -260,7 +260,7 @@ namespace VDS.RDF.Parsing
                     context.Input.Read();
                     while (context.Input.TokenType != JsonToken.EndObject)
                     {
-                        //Expect Property Names for Predicates
+                        // Expect Property Names for Predicates
                         if (context.Input.TokenType == JsonToken.PropertyName)
                         {
                             String predValue = context.Input.Value.ToString();
@@ -299,12 +299,12 @@ namespace VDS.RDF.Parsing
 
             if (context.Input.Read())
             {
-                //Expect an Array for the Object List
+                // Expect an Array for the Object List
                 if (context.Input.TokenType == JsonToken.StartArray)
                 {
                     while (context.Input.TokenType != JsonToken.EndArray)
                     {
-                        //Try to parse an 'Object' Object!!
+                        // Try to parse an 'Object' Object!!
                         this.ParseObject(context, subj, pred);
                     }
                 }
@@ -343,14 +343,14 @@ namespace VDS.RDF.Parsing
                         {
                             token = context.Input.Value.ToString().ToLower();
 
-                            //Check that we get a Property Value as a String
+                            // Check that we get a Property Value as a String
                             context.Input.Read();
                             if (context.Input.TokenType != JsonToken.String)
                             {
                                 throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected a Property Value describing one of the properties of an Object Node", startPos);
                             }
 
-                            //Extract the Information from the Object
+                            // Extract the Information from the Object
                             if (token.Equals("value"))
                             {
                                 nodeValue = context.Input.Value.ToString();
@@ -394,7 +394,7 @@ namespace VDS.RDF.Parsing
                         context.Input.Read();
                     }
 
-                    //Validate the Information
+                    // Validate the Information
                     if (nodeType == null)
                     {
                         throw Error(context, "Cannot parse an Object Node from the JSON where no 'type' property was specified in the JSON Object representing the Node", startPos);
@@ -404,7 +404,7 @@ namespace VDS.RDF.Parsing
                         throw Error(context, "Cannot parse an Object Node from the JSON where no 'value' property was specified in the JSON Object representing the Node", startPos);
                     }
 
-                    //Turn this information into a Node
+                    // Turn this information into a Node
                     INode obj;
                     if (nodeType.Equals("uri"))
                     {
@@ -434,7 +434,7 @@ namespace VDS.RDF.Parsing
                         throw Error(context, "Cannot parse an Object Node from the JSON where the 'type' property is not set to one of the permitted values 'uri', 'bnode' or 'literal' in the JSON Object representing the Node", startPos);
                     }
 
-                    //Assert as a Triple
+                    // Assert as a Triple
                     if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
                 }
             }

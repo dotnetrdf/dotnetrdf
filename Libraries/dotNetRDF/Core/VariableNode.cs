@@ -113,7 +113,7 @@ namespace VDS.RDF
             }
             else
             {
-                //Can only be equal to other Variables
+                // Can only be equal to other Variables
                 return false;
             }
         }
@@ -203,7 +203,7 @@ namespace VDS.RDF
             }
             else
             {
-                //Can only be equal to other Nodes
+                // Can only be equal to other Nodes
                 return false;
             }
         }
@@ -228,7 +228,7 @@ namespace VDS.RDF
 
             if (other == null)
             {
-                //Variables are considered greater than null
+                // Variables are considered greater than null
                 return 1;
             }
             else if (other.NodeType == NodeType.Variable)
@@ -237,7 +237,7 @@ namespace VDS.RDF
             }
             else
             {
-                //Variable Nodes are less than everything else
+                // Variable Nodes are less than everything else
                 return -1;
             }
         }
@@ -253,12 +253,12 @@ namespace VDS.RDF
 
             if (other == null)
             {
-                //Variables are considered greater than null
+                // Variables are considered greater than null
                 return 1;
             }
             else
             {
-                //Variable Nodes are less than everything else
+                // Variable Nodes are less than everything else
                 return -1;
             }
         }
@@ -274,12 +274,12 @@ namespace VDS.RDF
 
             if (other == null)
             {
-                //Variables are considered greater than null
+                // Variables are considered greater than null
                 return 1;
             }
             else
             {
-                //Variable Nodes are less than everything else
+                // Variable Nodes are less than everything else
                 return -1;
             }
         }
@@ -295,12 +295,12 @@ namespace VDS.RDF
 
             if (other == null)
             {
-                //Variables are considered greater than null
+                // Variables are considered greater than null
                 return 1;
             }
             else
             {
-                //Variable Nodes are less than everything else
+                // Variable Nodes are less than everything else
                 return -1;
             }
         }
@@ -316,12 +316,12 @@ namespace VDS.RDF
 
             if (other == null)
             {
-                //Variables are considered greater than null
+                // Variables are considered greater than null
                 return 1;
             }
             else
             {
-                //Variable Nodes are less than everything else
+                // Variable Nodes are less than everything else
                 return -1;
             }
         }
@@ -337,7 +337,7 @@ namespace VDS.RDF
 
             if (other == null)
             {
-                //Variables are considered greater than null
+                // Variables are considered greater than null
                 return 1;
             }
             else

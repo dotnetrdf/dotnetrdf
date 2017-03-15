@@ -231,7 +231,7 @@ namespace VDS.RDF.Update.Protocol
             IRdfWriter writer;
             String ctype;
 
-            //Look up the MIME Type Definition - if none use GetWriter instead
+            // Look up the MIME Type Definition - if none use GetWriter instead
             MimeTypeDefinition definition = MimeTypesHelper.GetDefinitions(HandlerHelper.GetAcceptTypes(context)).FirstOrDefault(d => d.CanWriteRdf);
             if (definition != null)
             {
@@ -243,13 +243,13 @@ namespace VDS.RDF.Update.Protocol
                 writer = MimeTypesHelper.GetWriter(HandlerHelper.GetAcceptTypes(context), out ctype);
             }
 
-            //Set up the Writer
+            // Set up the Writer
             if (writer is ICompressingWriter)
             {
                 ((ICompressingWriter)writer).CompressionLevel = Options.DefaultCompressionLevel;
             }
 
-            //Send Content to Client
+            // Send Content to Client
             context.Response.ContentType = ctype;
             if (definition != null)
             {

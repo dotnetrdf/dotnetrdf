@@ -30,7 +30,7 @@ using VDS.RDF.Query.Inference.Pellet.Services;
 
 namespace VDS.RDF
 {
-    //Callback Delegates for Async operations
+    // Callback Delegates for Async operations
 
     /// <summary>
     /// Callback for methods that return a <see cref="SparqlResultSet">SparqlResultSet</see> asynchronously

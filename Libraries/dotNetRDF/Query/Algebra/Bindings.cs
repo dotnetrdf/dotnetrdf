@@ -127,9 +127,9 @@ namespace VDS.RDF.Query.Algebra
         ///// </summary>
         ///// <param name="optimiser">Optimiser</param>
         ///// <returns></returns>
-        //public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
-        //{
+        // public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
+        // {
         //    return this;
-        //}
+        // }
     }
 }

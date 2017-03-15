@@ -97,7 +97,7 @@ namespace VDS.RDF
         /// <param name="t">The Triple to add to the Graph</param>
         public override bool Assert(Triple t)
         {
-            //Add to Triples Collection
+            // Add to Triples Collection
             if (this._triples.Add(t))
             {
                 this.RaiseTripleAsserted(t);

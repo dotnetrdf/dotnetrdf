@@ -101,7 +101,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             if (ok)
             {
-                //If the Target Graph was different from the Destination Graph then do a Merge
+                // If the Target Graph was different from the Destination Graph then do a Merge
                 if (!ReferenceEquals(this._g, this._target))
                 {
                     this._g.Merge(this._target);
@@ -110,14 +110,14 @@ namespace VDS.RDF.Parsing.Handlers
                 }
                 else
                 {
-                    //The Target was the Graph so we want to set our reference to it to be null so we don't
-                    //clear it in the remainder of our clean up step
+                    // The Target was the Graph so we want to set our reference to it to be null so we don't
+                    // clear it in the remainder of our clean up step
                     this._target = null;
                 }
             }
             else
             {
-                //Discard the Parsed Triples if parsing failed
+                // Discard the Parsed Triples if parsing failed
                 if (ReferenceEquals(this._g, this._target))
                 {
                     this._g.Clear();
@@ -125,7 +125,7 @@ namespace VDS.RDF.Parsing.Handlers
                 }
             }
 
-            //Always throw away the target afterwards if not already done so
+            // Always throw away the target afterwards if not already done so
             if (this._target != null)
             {
                 this._target.Clear();

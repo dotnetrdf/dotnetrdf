@@ -58,7 +58,7 @@ namespace VDS.RDF.Configuration
             }
             catch
             {
-                //Any error means this loader can't load this type
+                // Any error means this loader can't load this type
                 return false;
             }
 
@@ -75,7 +75,7 @@ namespace VDS.RDF.Configuration
         {
             Type iobjloader = typeof(IObjectFactory);
 
-            //We can load any object which implements IObjectLoader and has a public unparameterized constructor
+            // We can load any object which implements IObjectLoader and has a public unparameterized constructor
             if (t.GetInterfaces().Any(i => i.Equals(iobjloader)))
             {
                 ConstructorInfo c = t.GetConstructor(new Type[0]);

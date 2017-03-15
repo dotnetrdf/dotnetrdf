@@ -70,7 +70,7 @@ namespace VDS.RDF.Ontology
             this._resource = resource;
             this._graph = graph;
 
-            //Find the relevant Properties and populate them
+            // Find the relevant Properties and populate them
             this.IntialiseProperty(OntologyHelper.PropertyComment, true);
             this.IntialiseProperty(OntologyHelper.PropertyLabel, true);
             this.IntialiseProperty(OntologyHelper.PropertySameAs, false);

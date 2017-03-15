@@ -88,19 +88,19 @@ namespace VDS.RDF.Query.Inference
                 store.Add(output, true);
             }
 
-            //Apply each rule in turn
+            // Apply each rule in turn
             foreach (String[] rule in this._rules)
             {
-                //Build the final version of the rule text for the given input and output
+                // Build the final version of the rule text for the given input and output
                 StringBuilder ruleText = new StringBuilder();
 
-                //If there's a Base URI on the Output Graph need a WITH clause
+                // If there's a Base URI on the Output Graph need a WITH clause
                 if (output.BaseUri != null)
                 {
                     ruleText.AppendLine("WITH <" + this._formatter.FormatUri(output.BaseUri) + ">");
                 }
                 ruleText.AppendLine(rule[0]);
-                //If there's a Base URI on the Input Graph need a USING clause
+                // If there's a Base URI on the Input Graph need a USING clause
                 if (input.BaseUri != null)
                 {
                     ruleText.AppendLine("USING <" + this._formatter.FormatUri(input.BaseUri) + ">");
@@ -146,7 +146,7 @@ namespace VDS.RDF.Query.Inference
 
             StringBuilder output = new StringBuilder();
 
-            //Generate the INSERT part of the Command
+            // Generate the INSERT part of the Command
             output.AppendLine("INSERT");
             output.AppendLine("{");
             foreach (Triple x in ((IGraphLiteralNode)t.Object).SubGraph.Triples)
@@ -204,7 +204,7 @@ namespace VDS.RDF.Query.Inference
             output.AppendLine("}");
             rule[0] = output.ToString();
 
-            //Generate the WHERE part of the Command
+            // Generate the WHERE part of the Command
             output = new StringBuilder();
             output.AppendLine("WHERE");
             output.AppendLine("{");

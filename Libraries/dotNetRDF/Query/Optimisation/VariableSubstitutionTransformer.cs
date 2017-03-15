@@ -108,9 +108,9 @@ namespace VDS.RDF.Query.Optimisation
         /// <returns></returns>
         public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
         {
-            //By default we are only safe to replace objects in a scope if we are replacing with a constant
-            //Note that if we also make a replace in a subject/predicate position for a variable replace then
-            //that makes object replacement safe for that scope only
+            // By default we are only safe to replace objects in a scope if we are replacing with a constant
+            // Note that if we also make a replace in a subject/predicate position for a variable replace then
+            // that makes object replacement safe for that scope only
             bool canReplaceObjects = (this._canReplaceCustom ? this._canReplaceObjects : this._replaceItem is NodeMatchPattern);
 
             if (algebra is IBgp)
@@ -118,7 +118,7 @@ namespace VDS.RDF.Query.Optimisation
                 IBgp bgp = (IBgp)algebra;
                 if (bgp.PatternCount == 0) return bgp;
 
-                //Do variable substitution on the patterns
+                // Do variable substitution on the patterns
                 List<ITriplePattern> ps = new List<ITriplePattern>();
                 foreach (ITriplePattern p in bgp.TriplePatterns)
                 {

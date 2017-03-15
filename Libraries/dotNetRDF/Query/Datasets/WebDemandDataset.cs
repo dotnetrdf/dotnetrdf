@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Datasets
             }
             catch
             {
-                //Any error means we couldn't load on demand
+                // Any error means we couldn't load on demand
                 g = null;
                 return false;
             }

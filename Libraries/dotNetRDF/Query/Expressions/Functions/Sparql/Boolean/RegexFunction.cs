@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         private string _pattern = null;
         private RegexOptions _options = RegexOptions.None;
         private bool _fixedPattern = false, _fixedOptions = false;
-        //private bool _useInStr = false;
+        // private bool _useInStr = false;
         private Regex _regex;
         private ISparqlExpression _textExpr = null;
         private ISparqlExpression _patternExpr = null;
@@ -65,32 +65,32 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             this._textExpr = text;
             this._patternExpr = pattern;
 
-            //Get the Pattern
+            // Get the Pattern
             if (pattern is ConstantTerm)
             {
-                //If the Pattern is a Node Expression Term then it is a fixed Pattern
+                // If the Pattern is a Node Expression Term then it is a fixed Pattern
                 INode n = pattern.Evaluate(null, 0);
                 if (n.NodeType == NodeType.Literal)
                 {
-                    //Try to parse as a Regular Expression
+                    // Try to parse as a Regular Expression
                     try
                     {
                         string p = ((ILiteralNode)n).Value;
                         Regex temp = new Regex(p);
 
-                        //It's a Valid Pattern
+                        // It's a Valid Pattern
                         this._fixedPattern = true;
-                        //this._useInStr = p.ToCharArray().All(c => Char.IsLetterOrDigit(c) || Char.IsWhiteSpace(c));
+                        // this._useInStr = p.ToCharArray().All(c => Char.IsLetterOrDigit(c) || Char.IsWhiteSpace(c));
                         this._pattern = p;
                     }
                     catch
                     {
-                        //No catch actions
+                        // No catch actions
                     }
                 }
             }
 
-            //Get the Options
+            // Get the Options
             if (options != null)
             {
                 this._optionExpr = options;
@@ -114,7 +114,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <param name="throwErrors">Whether errors should be thrown or suppressed</param>
         private void ConfigureOptions(INode n, bool throwErrors)
         {
-            //Start by resetting to no options
+            // Start by resetting to no options
             this._options = RegexOptions.None;
 
             if (n == null)
@@ -172,16 +172,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            //Configure Options
+            // Configure Options
             if (this._optionExpr != null && !this._fixedOptions)
             {
                 this.ConfigureOptions(this._optionExpr.Evaluate(context, bindingID), true);
             }
 
-            //Compile the Regex if necessary
+            // Compile the Regex if necessary
             if (!this._fixedPattern)
             {
-                //Regex is not pre-compiled
+                // Regex is not pre-compiled
                 if (this._patternExpr != null)
                 {
                     IValuedNode p = this._patternExpr.Evaluate(context, bindingID);
@@ -207,7 +207,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                 }
             }
 
-            //Execute the Regular Expression
+            // Execute the Regular Expression
             IValuedNode textNode = this._textExpr.Evaluate(context, bindingID);
             if (textNode == null)
             {
@@ -215,7 +215,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             }
             if (textNode.NodeType == NodeType.Literal)
             {
-                //Execute
+                // Execute
                 string text = textNode.AsString();
                 if (this._regex != null)
                 {

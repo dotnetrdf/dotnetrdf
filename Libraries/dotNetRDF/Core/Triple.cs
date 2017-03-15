@@ -67,22 +67,22 @@ namespace VDS.RDF
         /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory</exception>
         public Triple(INode subj, INode pred, INode obj)
         {
-            //Require that all Nodes belong to the same Graph
+            // Require that all Nodes belong to the same Graph
             if (!ReferenceEquals(subj.Graph, pred.Graph) || !ReferenceEquals(pred.Graph, obj.Graph))
             {
                 throw new RdfException("Subject, Predicate and Object Nodes must all come from the same Graph/Node Factory - use Tools.CopyNode() to transfer nodes between Graphs");
             }
             else
             {
-                //Set the Graph property from the Subject
+                // Set the Graph property from the Subject
                 this._g = subj.Graph;
 
-                //Store the Three Nodes of the Triple
+                // Store the Three Nodes of the Triple
                 this._subject = subj;
                 this._predicate = pred;
                 this._object = obj;
 
-                //Compute Hash Code
+                // Compute Hash Code
                 this._hashcode = (this._subject.GetHashCode().ToString() + this._predicate.GetHashCode().ToString() + this._object.GetHashCode().ToString()).GetHashCode();
             }
         }
@@ -158,7 +158,7 @@ namespace VDS.RDF
             this._predicate = (INode)info.GetValue("p", typeof(INode));
             this._object = (INode)info.GetValue("o", typeof(INode));
 
-            //Compute Hash Code
+            // Compute Hash Code
             this._hashcode = (this._subject.GetHashCode().ToString() + this._predicate.GetHashCode().ToString() + this._object.GetHashCode().ToString()).GetHashCode();
         }
 #endif
@@ -298,13 +298,13 @@ namespace VDS.RDF
         {
             IUriNode temp = new UriNode(null, uri);
 
-            //Does the Subject involve this Uri?
+            // Does the Subject involve this Uri?
             if (this._subject.Equals(temp)) return true;
-            //Does the Predicate involve this Uri?
+            // Does the Predicate involve this Uri?
             if (this._predicate.Equals(temp)) return true;
-            //Does the Object involve this Uri?
+            // Does the Object involve this Uri?
             if (this._object.Equals(temp)) return true;
-            //Not Involved!
+            // Not Involved!
             return false;
         }
 
@@ -315,7 +315,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool HasSubject(INode n)
         {
-            //return this._subject.GetHashCode().Equals(n.GetHashCode());
+            // return this._subject.GetHashCode().Equals(n.GetHashCode());
             return this._subject.Equals(n);
         }
 
@@ -326,7 +326,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool HasPredicate(INode n)
         {
-            //return this._predicate.GetHashCode().Equals(n.GetHashCode());
+            // return this._predicate.GetHashCode().Equals(n.GetHashCode());
             return this._predicate.Equals(n);
         }
 
@@ -337,7 +337,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool HasObject(INode n)
         {
-            //return this._object.GetHashCode().Equals(n.GetHashCode());
+            // return this._object.GetHashCode().Equals(n.GetHashCode());
             return this._object.Equals(n);
         }
 
@@ -359,9 +359,9 @@ namespace VDS.RDF
             {
                 Triple temp = (Triple)obj;
 
-                //Subject, Predicate and Object must all be equal
-                //Either the Nodes must be directly equal or they must both be Blank Nodes with identical Node IDs
-                //Use lazy evaluation as far as possible
+                // Subject, Predicate and Object must all be equal
+                // Either the Nodes must be directly equal or they must both be Blank Nodes with identical Node IDs
+                // Use lazy evaluation as far as possible
                 return (this._subject.Equals(temp.Subject) || (this._subject.NodeType == NodeType.Blank && temp.Subject.NodeType == NodeType.Blank && this._subject.ToString().Equals(temp.Subject.ToString())))
                        && (this._predicate.Equals(temp.Predicate) || (this._predicate.NodeType == NodeType.Blank && temp.Predicate.NodeType == NodeType.Blank && this._predicate.ToString().Equals(temp.Predicate.ToString())))
                        && (this._object.Equals(temp.Object) || (this._object.NodeType == NodeType.Blank && temp.Object.NodeType == NodeType.Blank && this._object.ToString().Equals(temp.Object.ToString())));
@@ -369,7 +369,7 @@ namespace VDS.RDF
              }
             else
             {
-                //Can only be equal to other Triples
+                // Can only be equal to other Triples
                 return false;
             }
         }
@@ -445,23 +445,23 @@ namespace VDS.RDF
         {
             if (other == null)
             {
-                //Everything is greater than a null
-                //Return a 1 to indicate this
+                // Everything is greater than a null
+                // Return a 1 to indicate this
                 return 1;
             }
             else
             {
                 int s, p;
 
-                //Compare Subjects
+                // Compare Subjects
                 s = this.Subject.CompareTo(other.Subject);
                 if (s == 0)
                 {
-                    //Compare Predicates
+                    // Compare Predicates
                     p = this.Predicate.CompareTo(other.Predicate);
                     if (p == 0)
                     {
-                        //Compare Objects
+                        // Compare Objects
                         return this.Object.CompareTo(other.Object);
                     }
                     else
@@ -516,7 +516,7 @@ namespace VDS.RDF
             this._predicate = reader.DeserializeNode();
             this._object = reader.DeserializeNode();
 
-            //Compute Hash Code
+            // Compute Hash Code
             this._hashcode = (this._subject.GetHashCode().ToString() + this._predicate.GetHashCode().ToString() + this._object.GetHashCode().ToString()).GetHashCode();
         }
 

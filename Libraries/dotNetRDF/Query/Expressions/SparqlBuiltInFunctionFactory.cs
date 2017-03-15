@@ -69,13 +69,13 @@ namespace VDS.RDF.Query.Expressions
                 func = func.Substring(SparqlBuiltInFunctionFactory.SparqlFunctionsNamespace.Length);
                 func = func.ToUpper();
 
-                //If any Scalar Arguments are present then can't be a SPARQL Function UNLESS it is
-                //a GROUP_CONCAT function and it has the SEPARATOR argument
+                // If any Scalar Arguments are present then can't be a SPARQL Function UNLESS it is
+                // a GROUP_CONCAT function and it has the SEPARATOR argument
                 if (scalarArguments.Count > 0)
                 {
                     if (func.Equals(SparqlSpecsHelper.SparqlKeywordGroupConcat) && scalarArguments.Count == 1 && scalarArguments.ContainsKey(SparqlSpecsHelper.SparqlKeywordSeparator))
                     {
-                        //OK
+                        // OK
                     }
                     else
                     {
@@ -84,7 +84,7 @@ namespace VDS.RDF.Query.Expressions
                     }
                 }
 
-                //Q: Will there be special URIs for the DISTINCT modified forms of aggregates?
+                // Q: Will there be special URIs for the DISTINCT modified forms of aggregates?
 
                 ISparqlExpression sparqlFunc = null;
                 switch (func)
@@ -167,7 +167,7 @@ namespace VDS.RDF.Query.Expressions
                         }
                         break;
                     case SparqlSpecsHelper.SparqlKeywordCount:
-                        //Q: What will the URIs be for the special forms of COUNT?
+                        // Q: What will the URIs be for the special forms of COUNT?
                         if (args.Count == 1)
                         {
                             sparqlFunc = new AggregateTerm(new CountAggregate(args.First()));

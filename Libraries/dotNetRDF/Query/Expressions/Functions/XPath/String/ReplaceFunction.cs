@@ -68,35 +68,35 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             this._textExpr = text;
 
-            //Get the Pattern
+            // Get the Pattern
             if (find is ConstantTerm)
             {
-                //If the Pattern is a Node Expression Term then it is a fixed Pattern
+                // If the Pattern is a Node Expression Term then it is a fixed Pattern
                 IValuedNode n = find.Evaluate(null, 0);
                 if (n.NodeType == NodeType.Literal)
                 {
-                    //Try to parse as a Regular Expression
+                    // Try to parse as a Regular Expression
                     try
                     {
                         string p = n.AsString();
                         Regex temp = new Regex(p);
 
-                        //It's a Valid Pattern
+                        // It's a Valid Pattern
                         this._fixedPattern = true;
                         this._find = p;
                     }
                     catch
                     {
-                        //No catch actions
+                        // No catch actions
                     }
                 }
             }
             this._findExpr = find;
 
-            //Get the Replace
+            // Get the Replace
             if (replace is ConstantTerm)
             {
-                //If the Replace is a Node Expresison Term then it is a fixed Pattern
+                // If the Replace is a Node Expresison Term then it is a fixed Pattern
                 IValuedNode n = replace.Evaluate(null, 0);
                 if (n.NodeType == NodeType.Literal)
                 {
@@ -106,7 +106,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             }
             this._replaceExpr = replace;
 
-            //Get the Options
+            // Get the Options
             if (options != null)
             {
                 if (options is ConstantTerm)
@@ -124,7 +124,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="throwErrors">Whether errors should be thrown or suppressed</param>
         private void ConfigureOptions(IValuedNode n, bool throwErrors)
         {
-            //Start by resetting to no options
+            // Start by resetting to no options
             this._options = RegexOptions.None;
 
             if (n == null)
@@ -182,16 +182,16 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            //Configure Options
+            // Configure Options
             if (this._optionExpr != null)
             {
                 this.ConfigureOptions(this._optionExpr.Evaluate(context, bindingID), true);
             }
 
-            //Compile the Regex if necessary
+            // Compile the Regex if necessary
             if (!this._fixedPattern)
             {
-                //Regex is not pre-compiled
+                // Regex is not pre-compiled
                 if (this._findExpr != null)
                 {
                     IValuedNode p = this._findExpr.Evaluate(context, bindingID);
@@ -216,7 +216,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                     throw new RdfQueryException("Not a valid Pattern Expression or the fixed Pattern String was invalid");
                 }
             }
-            //Compute the Replace if necessary
+            // Compute the Replace if necessary
             if (!this._fixedReplace)
             {
                 if (this._replaceExpr != null)
@@ -244,7 +244,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                 }
             }
 
-            //Execute the Regular Expression
+            // Execute the Regular Expression
             IValuedNode textNode = this._textExpr.Evaluate(context, bindingID);
             if (textNode == null)
             {
@@ -252,7 +252,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             }
             if (textNode.NodeType == NodeType.Literal)
             {
-                //Execute
+                // Execute
                 string text = textNode.AsString();
                 string output = Regex.Replace(text, this._find, this._replace, this._options);
                 return new StringNode(null, output, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));

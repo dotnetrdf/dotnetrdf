@@ -114,7 +114,7 @@ namespace VDS.RDF.Configuration
                 case UserGroup:
                     result = new UserGroup();
 
-                    //Get the members of the Group
+                    // Get the members of the Group
                     IEnumerable<INode> members = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyMember)));
                     foreach (INode member in members)
                     {
@@ -130,7 +130,7 @@ namespace VDS.RDF.Configuration
                         }
                     }
 
-                    //Get the allow list for the Group
+                    // Get the allow list for the Group
                     IEnumerable<INode> allowed = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyAllow)));
                     foreach (INode allow in allowed)
                     {
@@ -145,7 +145,7 @@ namespace VDS.RDF.Configuration
                         }
                     }
 
-                    //Get the deny list for the Group
+                    // Get the deny list for the Group
                     IEnumerable<INode> denied = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDeny)));
                     foreach (INode deny in denied)
                     {
@@ -160,10 +160,10 @@ namespace VDS.RDF.Configuration
                         }
                     }
 
-                    //Does the User Group require authentication?
+                    // Does the User Group require authentication?
                     result.AllowGuests = !ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyRequiresAuthentication)), true);
 
-                    //Is there a permission model specified?
+                    // Is there a permission model specified?
                     String mode = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPermissionModel)));
                     if (mode != null)
                     {

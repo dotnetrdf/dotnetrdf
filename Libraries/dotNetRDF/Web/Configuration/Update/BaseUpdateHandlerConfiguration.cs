@@ -65,7 +65,7 @@ namespace VDS.RDF.Web.Configuration.Update
         public BaseUpdateHandlerConfiguration(IHttpContext context, IGraph g, INode objNode)
             : base(context, g, objNode)
         {
-            //Then get the Update Processor to be used
+            // Then get the Update Processor to be used
             ISparqlUpdateProcessor processor;
             INode procNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateProcessor)));
             if (procNode == null) throw new DotNetRdfConfigurationException("Unable to load Update Handler Configuration as the RDF configuration file does not specify a dnr:updateProcessor property for the Handler");
@@ -80,7 +80,7 @@ namespace VDS.RDF.Web.Configuration.Update
             }
             this._processor = processor;
 
-            //Handler Settings
+            // Handler Settings
             this._showUpdateForm = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyShowUpdateForm)), this._showUpdateForm);
             String defUpdateFile = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultUpdateFile)));
             if (defUpdateFile != null)
@@ -96,7 +96,7 @@ namespace VDS.RDF.Web.Configuration.Update
                 }
             }
 
-            //Get the Service Description Graph
+            // Get the Service Description Graph
             INode descripNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServiceDescription)));
             if (descripNode != null)
             {
@@ -163,7 +163,7 @@ namespace VDS.RDF.Web.Configuration.Update
         /// <param name="descripNode">Description Node for the Service</param>
         public virtual void AddFeatureDescription(IGraph g, INode descripNode)
         {
-            //Add Local Extension Function definitions
+            // Add Local Extension Function definitions
             IUriNode extensionFunction = g.CreateUriNode("sd:" + SparqlServiceDescriber.PropertyExtensionFunction);
             IUriNode extensionAggregate = g.CreateUriNode("sd:" + SparqlServiceDescriber.PropertyExtensionAggregate);
             foreach (ISparqlCustomExpressionFactory factory in this._expressionFactories)

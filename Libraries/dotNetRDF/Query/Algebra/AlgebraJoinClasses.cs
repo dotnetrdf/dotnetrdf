@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                //Only execute the RHS if the LHS had results
+                // Only execute the RHS if the LHS had results
                 context.InputMultiset = lhsResult;
                 BaseMultiset rhsResult = context.Evaluate(this._rhs);//this._rhs.Evaluate(context);
                 context.CheckTimeout();
@@ -585,7 +585,7 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                //Only Execute the RHS if the LHS has some results
+                // Only Execute the RHS if the LHS has some results
                 context.InputMultiset = lhsResult;
                 BaseMultiset rhsResult = context.Evaluate(this._rhs);
                 context.CheckTimeout();

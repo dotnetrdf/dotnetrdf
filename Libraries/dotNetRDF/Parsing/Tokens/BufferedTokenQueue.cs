@@ -109,12 +109,12 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         public override void InitialiseBuffer()
         {
-            //Queue until we get the EOF Token
+            // Queue until we get the EOF Token
             IToken t;
             do
             {
                 t = this._tokeniser.GetNextToken();
-                //We discard comments at this stage
+                // We discard comments at this stage
                 if (t.TokenType != Token.COMMENT)
                 {
                     this._tokens.Enqueue(t);
@@ -133,7 +133,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="amount">Amount of Tokens to Buffer</param>
         public override void InitialiseBuffer(int amount)
         {
-            //This Queue doesn't care about the Buffer amount
+            // This Queue doesn't care about the Buffer amount
             this.InitialiseBuffer();
         }
 
@@ -181,7 +181,7 @@ namespace VDS.RDF.Parsing.Tokens
         public override IToken Dequeue()
         {
             IToken temp;
-            //Discard Comments
+            // Discard Comments
             do
             {
                 temp = this._tokens.Dequeue();
@@ -198,7 +198,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <returns>First Token in the Queue</returns>
         public override IToken Peek()
         {
-            //Discard Comments
+            // Discard Comments
             while (this._tokens.Peek().TokenType == Token.COMMENT)
             {
                 this._tokens.Dequeue();
@@ -212,7 +212,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         public override void InitialiseBuffer()
         {
-            //Does nothing for this Token Queue as this Queue is designed to be populated explicitly
+            // Does nothing for this Token Queue as this Queue is designed to be populated explicitly
             return;
         }
     }
@@ -249,18 +249,18 @@ namespace VDS.RDF.Parsing.Tokens
         /// <returns>Token at the front of the Queue</returns>
         public override IToken Dequeue()
         {
-            //Is there anything already buffered?
+            // Is there anything already buffered?
             if (this._tokens.Count > 0)
             {
-                //Return first thing in the Buffer
+                // Return first thing in the Buffer
                 return base.Dequeue();
             }
             else
             {
-                //Buffer something from the Tokeniser
+                // Buffer something from the Tokeniser
                 this.BufferInternal();
 
-                //Return first thing in the Buffer
+                // Return first thing in the Buffer
                 return base.Dequeue();
             }
         }
@@ -271,18 +271,18 @@ namespace VDS.RDF.Parsing.Tokens
         /// <returns>Token at the front of the Queue</returns>
         public override IToken Peek()
         {
-            //Is there anything already buffered?
+            // Is there anything already buffered?
             if (this._tokens.Count > 0)
             {
-                //Return first thing in the Buffer
+                // Return first thing in the Buffer
                 return this._tokens.Peek();
             }
             else
             {
-                //Buffer something from the Tokeniser
+                // Buffer something from the Tokeniser
                 this.BufferInternal();
 
-                //Return first thing in the Buffer
+                // Return first thing in the Buffer
                 return this._tokens.Peek();
             }
         }
@@ -292,7 +292,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         public override void InitialiseBuffer()
         {
-            //Buffer by the Default Amount
+            // Buffer by the Default Amount
             this.BufferInternal();
         }
 
@@ -315,13 +315,13 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         protected virtual void BufferInternal()
         {
-            //Buffer up to the amount
+            // Buffer up to the amount
             IToken t;
             int i = 0;
             do
             {
                 t = this._tokeniser.GetNextToken();
-                //Ensure that we discard Comments
+                // Ensure that we discard Comments
                 if (t.TokenType != Token.COMMENT)
                 {
                     this._tokens.Enqueue(t);
@@ -390,7 +390,7 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 if (!this._finished)
                 {
-                    //Wait for something to be Tokenised
+                    // Wait for something to be Tokenised
                     while (this._tokens.Count == 0)
                     {
                         Thread.Sleep(50);
@@ -430,7 +430,7 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 if (!this._finished)
                 {
-                    //Wait for something to be Tokenised
+                    // Wait for something to be Tokenised
                     while (this._tokens.Count == 0)
                     {
                         Thread.Sleep(50);
@@ -467,7 +467,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         private void BufferBackground()
         {
-            //Buffer until we get the EOF Token
+            // Buffer until we get the EOF Token
             IToken t;
             int i = 0;
             do

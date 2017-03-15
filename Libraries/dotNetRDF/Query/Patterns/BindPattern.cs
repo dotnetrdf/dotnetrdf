@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Patterns
                 }
                 catch
                 {
-                    //No assignment if there's an error
+                    // No assignment if there's an error
                     s.Add(this._var, null);
                 }
                 context.OutputMultiset.Add(s);
@@ -93,13 +93,13 @@ namespace VDS.RDF.Query.Patterns
                     ISet s = context.InputMultiset[id].Copy();
                     try
                     {
-                        //Make a new assignment
+                        // Make a new assignment
                         INode temp = this._expr.Evaluate(context, id);
                         s.Add(this._var, temp);
                     }
                     catch
                     {
-                        //No assignment if there's an error but the solution is preserved
+                        // No assignment if there's an error but the solution is preserved
                     }
                     context.OutputMultiset.Add(s);
                 }

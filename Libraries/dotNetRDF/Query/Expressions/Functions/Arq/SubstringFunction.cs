@@ -85,24 +85,24 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
                     if (s < 0) s = 0;
                     if (e < s)
                     {
-                        //If no/negative characters are being selected the empty string is returned
+                        // If no/negative characters are being selected the empty string is returned
                         return new StringNode(null, String.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                     }
                     else if (s > input.Value.Length)
                     {
-                        //If the start is after the end of the string the empty string is returned
+                        // If the start is after the end of the string the empty string is returned
                         return new StringNode(null, String.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                     }
                     else
                     {
                         if (e > input.Value.Length)
                         {
-                            //If the end is greater than the length of the string the string from the starts onwards is returned
+                            // If the end is greater than the length of the string the string from the starts onwards is returned
                             return new StringNode(null, input.Value.Substring(s), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                         }
                         else
                         {
-                            //Otherwise do normal substring
+                            // Otherwise do normal substring
                             return new StringNode(null, input.Value.Substring(s, e - s), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                         }
                     }
@@ -147,7 +147,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
                     {
                         if (argumentTypeValidator(lit.DataType))
                         {
-                            //Appropriately typed literals are fine
+                            // Appropriately typed literals are fine
                             return temp;
                         }
                         else
@@ -157,7 +157,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
                     }
                     else if (argumentTypeValidator(UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString)))
                     {
-                        //Untyped Literals are treated as Strings and may be returned when the argument allows strings
+                        // Untyped Literals are treated as Strings and may be returned when the argument allows strings
                         return temp;
                     }
                     else

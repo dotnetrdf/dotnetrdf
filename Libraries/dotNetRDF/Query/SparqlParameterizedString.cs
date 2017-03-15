@@ -295,13 +295,13 @@ namespace VDS.RDF.Query
                 UnsetParameter(name);
                 return;
             }
-            //Only allow the setting of valid parameter names
+            // Only allow the setting of valid parameter names
             if (!ValidParameterNamePattern.IsMatch(name)) throw new FormatException("The parameter name '" + name + "' is not a valid parameter name, parameter names must consist only of alphanumeric characters and hypens/underscores");
 
-            //OPT: Could ensure that the parameter name actually appears in the command?
+            // OPT: Could ensure that the parameter name actually appears in the command?
             name = !Char.IsLetterOrDigit(name[0]) ? name.Substring(1) : name;
 
-            //Finally can set/update parameter value
+            // Finally can set/update parameter value
             this._parameters[name] = value;
         }
 
@@ -345,10 +345,10 @@ namespace VDS.RDF.Query
                 UnsetVariable(name);
                 return;
             }
-            //Only allow the setting of valid variable names
+            // Only allow the setting of valid variable names
             if (!ValidVariableNamePattern.IsMatch(name)) throw new FormatException("The variable name '" + name + "' is not a valid variable name, variable names must consist only of alphanumeric characters and hyphens/underscores");
 
-            //OPT: Could ensure that the variable name actually appears in the command?
+            // OPT: Could ensure that the variable name actually appears in the command?
             name = !Char.IsLetterOrDigit(name[0]) ? name.Substring(1) : name;
             this._variables[name] = value;
         }
@@ -599,7 +599,7 @@ namespace VDS.RDF.Query
         /// </summary>
         private void ResetText()
         {
-            //this._placeHolders.Clear();
+            // this._placeHolders.Clear();
             this._commandText.Clear();
         }
 
@@ -712,7 +712,7 @@ namespace VDS.RDF.Query
                                 {
                                     char idc = value[idCharIndex];
                                     i = idCharIndex;
-                                    //check that the character is in valid identifier range
+                                    // check that the character is in valid identifier range
                                     if (Char.IsLetterOrDigit(idc) || idc == '-' || idc == '_')
                                     {
                                         currentSegment.Append(idc);
@@ -776,7 +776,7 @@ namespace VDS.RDF.Query
                 output.AppendLine("PREFIX " + prefix + ": <" + this._formatter.FormatUri(this._nsmap.GetNamespaceUri(prefix)) + ">");
             }
 
-            //Then append the text with variable and parameters replaced by their values if set
+            // Then append the text with variable and parameters replaced by their values if set
             INode value = null;
             for (int i = 0, l = _commandText.Count; i < l; i++)
             {

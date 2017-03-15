@@ -91,7 +91,7 @@ namespace VDS.RDF.Query.Algebra
                 {
                     if (i == 0)
                     {
-                        //If the 1st thing in a BGP is a BIND/LET/FILTER the Input becomes the Identity Multiset
+                        // If the 1st thing in a BGP is a BIND/LET/FILTER the Input becomes the Identity Multiset
                         if (this._triplePatterns[i].PatternType == TriplePatternType.Filter || this._triplePatterns[i].PatternType == TriplePatternType.BindAssignment || this._triplePatterns[i].PatternType == TriplePatternType.LetAssignment)
                         {
                             if (this._triplePatterns[i].PatternType == TriplePatternType.BindAssignment)
@@ -105,53 +105,53 @@ namespace VDS.RDF.Query.Algebra
                         }
                     }
 
-                    //Create a new Output Multiset
+                    // Create a new Output Multiset
                     context.OutputMultiset = new Multiset();
 
                     this._triplePatterns[i].Evaluate(context);
 
-                    //If at any point we've got an Empty Multiset as our Output then we terminate BGP execution
+                    // If at any point we've got an Empty Multiset as our Output then we terminate BGP execution
                     if (context.OutputMultiset.IsEmpty) break;
 
-                    //Check for Timeout before attempting the Join
+                    // Check for Timeout before attempting the Join
                     context.CheckTimeout();
 
-                    //If this isn't the first Pattern we do Join/Product the Output to the Input
+                    // If this isn't the first Pattern we do Join/Product the Output to the Input
                     if (i > 0)
                     {
                         if (context.InputMultiset.IsDisjointWith(context.OutputMultiset))
                         {
-                            //Disjoint so do a Product
+                            // Disjoint so do a Product
                             context.OutputMultiset = context.InputMultiset.ProductWithTimeout(context.OutputMultiset, context.RemainingTimeout);
                         }
                         else
                         {
-                            //Normal Join
+                            // Normal Join
                             context.OutputMultiset = context.InputMultiset.Join(context.OutputMultiset);
                         }
                     }
 
-                    //Then the Input for the next Pattern is the Output from the previous Pattern
+                    // Then the Input for the next Pattern is the Output from the previous Pattern
                     context.InputMultiset = context.OutputMultiset;
                 }
 
                 if (context.TrimTemporaryVariables)
                 {
-                    //Trim the Multiset - this eliminates any temporary variables
+                    // Trim the Multiset - this eliminates any temporary variables
                     context.OutputMultiset.Trim();
                 }
             }
             else
             {
-                //For an Empty BGP we just return the Identity Multiset
+                // For an Empty BGP we just return the Identity Multiset
                 context.OutputMultiset = new IdentityMultiset();
             }
 
-            //If we've ended with an Empty Multiset then we turn it into the Null Multiset
-            //to indicate that this BGP did not match anything
+            // If we've ended with an Empty Multiset then we turn it into the Null Multiset
+            // to indicate that this BGP did not match anything
             if (context.OutputMultiset is Multiset && context.OutputMultiset.IsEmpty) context.OutputMultiset = new NullMultiset();
 
-            //Return the Output Multiset
+            // Return the Output Multiset
             return context.OutputMultiset;
         }
 

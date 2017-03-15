@@ -73,17 +73,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
                 {
                     try
                     {
-                        //Try to create the function and cache it - remember to respect the queries Expression Factories if present
+                        // Try to create the function and cache it - remember to respect the queries Expression Factories if present
                         func = SparqlExpressionFactory.CreateExpression(funcUri, this._args.Skip(1).ToList(), (context.Query != null ? context.Query.ExpressionFactories : Enumerable.Empty<ISparqlCustomExpressionFactory>()));
                         this._functionCache.Add(funcUri.AbsoluteUri, func);
                     }
                     catch
                     {
-                        //If something goes wrong creating the function cache a null so we ignore this function URI for later calls
+                        // If something goes wrong creating the function cache a null so we ignore this function URI for later calls
                         this._functionCache.Add(funcUri.AbsoluteUri, null);
                     }
                 }
-                //Now invoke the function
+                // Now invoke the function
                 return func.Evaluate(context, bindingID);
             }
             else

@@ -162,21 +162,21 @@ namespace VDS.RDF.Writing
 
             TriGWriterContext context = new TriGWriterContext(store, writer, this._prettyprint, this._allowHiSpeed, this._compressionLevel, this._n3compat);
 
-            //Check there's something to do
+            // Check there's something to do
             if (context.Store.Graphs.Count == 0)
             {
                 context.Output.Close();
                 return;
             }
 
-            //Write the Header of the File
+            // Write the Header of the File
             foreach (IGraph g in context.Store.Graphs)
             {
                 context.NamespaceMap.Import(g.NamespaceMap);
             }
             if (context.CompressionLevel > WriterCompressionLevel.None)
             {
-                //Only add @prefix declarations if compression is enabled
+                // Only add @prefix declarations if compression is enabled
                 context.QNameMapper = new ThreadSafeQNameOutputMapper(context.NamespaceMap);
                 foreach (String prefix in context.NamespaceMap.Prefixes)
                 {
@@ -194,15 +194,15 @@ namespace VDS.RDF.Writing
 
             if (this._useMultiThreading)
             {
-                //Standard Multi-Threaded Writing
+                // Standard Multi-Threaded Writing
 
-                //Queue the Graphs to be written
+                // Queue the Graphs to be written
                 foreach (IGraph g in context.Store.Graphs)
                 {
                     context.Add(g.BaseUri);
                 }
 
-                //Start making the async calls
+                // Start making the async calls
                 List<IAsyncResult> results = new List<IAsyncResult>();
                 SaveGraphsDelegate d = new SaveGraphsDelegate(this.SaveGraphs);
                 for (int i = 0; i < this._threads; i++)
@@ -210,7 +210,7 @@ namespace VDS.RDF.Writing
                     results.Add(d.BeginInvoke(context, null, null));
                 }
 
-                //Wait for all the async calls to complete
+                // Wait for all the async calls to complete
                 WaitHandle.WaitAll(results.Select(r => r.AsyncWaitHandle).ToArray());
                 RdfThreadedOutputException outputEx = new RdfThreadedOutputException(WriterErrorMessages.ThreadedOutputFailure("TriG"));
                 foreach (IAsyncResult result in results)
@@ -224,17 +224,17 @@ namespace VDS.RDF.Writing
                         outputEx.AddException(ex);
                     }
                 }
-                //Make sure to close the output
+                // Make sure to close the output
                 context.Output.Close();
 
-                //If there were any errors we'll throw an RdfThreadedOutputException now
+                // If there were any errors we'll throw an RdfThreadedOutputException now
                 if (outputEx.InnerExceptions.Any()) throw outputEx;
             }
             else
             {
                 try
                 {
-                    //Optional Single Threaded Writing
+                    // Optional Single Threaded Writing
                     foreach (IGraph g in store.Graphs)
                     {
                         TurtleWriterContext graphContext = new TurtleWriterContext(g, new System.IO.StringWriter(), context.PrettyPrint, context.HighSpeedModePermitted);
@@ -249,19 +249,19 @@ namespace VDS.RDF.Writing
                         context.Output.WriteLine(this.GenerateGraphOutput(context, graphContext));
                     }
 
-                    //Make sure to close the output
+                    // Make sure to close the output
                     context.Output.Close();
                 }
                 catch
                 {
                     try
                     {
-                        //Close the output
+                        // Close the output
                         context.Output.Close();
                     }
                     catch
                     {
-                        //No catch actions, just cleaning up the output stream
+                        // No catch actions, just cleaning up the output stream
                     }
                     throw;
                 }
@@ -278,7 +278,7 @@ namespace VDS.RDF.Writing
         {
             if (context.Graph.BaseUri != null)
             {
-                //Named Graph
+                // Named Graph
                 String gname;
                 String sep = (globalContext.N3CompatabilityMode) ? " = " : " ";
                 if (globalContext.CompressionLevel > WriterCompressionLevel.None && globalContext.QNameMapper.ReduceToQName(context.Graph.BaseUri.AbsoluteUri, out gname))
@@ -302,10 +302,10 @@ namespace VDS.RDF.Writing
                 context.Output.WriteLine("{");
             }
 
-            //Generate Triples
+            // Generate Triples
             this.GenerateTripleOutput(globalContext, context);
 
-            //Close the Graph
+            // Close the Graph
             context.Output.WriteLine("}");
 
             return context.Output.ToString();
@@ -318,7 +318,7 @@ namespace VDS.RDF.Writing
         /// <param name="context">Context for writing the Graph</param>
         private void GenerateTripleOutput(TriGWriterContext globalContext, TurtleWriterContext context)
         {
-            //Decide which write mode to use
+            // Decide which write mode to use
             bool hiSpeed = false;
             double subjNodes = context.Graph.Triples.SubjectNodes.Count();
             double triples = context.Graph.Triples.Count;
@@ -326,7 +326,7 @@ namespace VDS.RDF.Writing
 
             if (globalContext.CompressionLevel == WriterCompressionLevel.None || hiSpeed && context.HighSpeedModePermitted)
             {
-                //Use High Speed Write Mode
+                // Use High Speed Write Mode
                 String indentation = new String(' ', 4);
                 context.Output.Write(indentation);
                 if (globalContext.CompressionLevel > WriterCompressionLevel.None) context.Output.WriteLine("# Written using High Speed Mode");
@@ -343,11 +343,11 @@ namespace VDS.RDF.Writing
             }
             else
             {
-                //Get the Triples as a Sorted List
+                // Get the Triples as a Sorted List
                 List<Triple> ts = context.Graph.Triples.ToList();
                 ts.Sort();
 
-                //Variables we need to track our writing
+                // Variables we need to track our writing
                 INode lastSubj, lastPred;
                 lastSubj = lastPred = null;
                 int subjIndent = 0, predIndent = 0;
@@ -359,19 +359,19 @@ namespace VDS.RDF.Writing
                     Triple t = ts[i];
                     if (lastSubj == null || !t.Subject.Equals(lastSubj))
                     {
-                        //Terminate previous Triples
+                        // Terminate previous Triples
                         if (lastSubj != null) context.Output.WriteLine(".");
 
                         if (context.PrettyPrint) context.Output.Write(new String(' ', baseIndent));
 
-                        //Start a new set of Triples
+                        // Start a new set of Triples
                         temp = this.GenerateNodeOutput(globalContext, context, t.Subject, TripleSegment.Subject);
                         context.Output.Write(temp);
                         context.Output.Write(" ");
                         subjIndent = baseIndent + temp.Length + 1;
                         lastSubj = t.Subject;
 
-                        //Write the first Predicate
+                        // Write the first Predicate
                         temp = this.GenerateNodeOutput(globalContext, context, t.Predicate, TripleSegment.Predicate);
                         context.Output.Write(temp);
                         context.Output.Write(" ");
@@ -380,12 +380,12 @@ namespace VDS.RDF.Writing
                     }
                     else if (lastPred == null || !t.Predicate.Equals(lastPred))
                     {
-                        //Terminate previous Predicate Object list
+                        // Terminate previous Predicate Object list
                         context.Output.WriteLine(";");
 
                         if (context.PrettyPrint) context.Output.Write(new String(' ', subjIndent));
 
-                        //Write the next Predicate
+                        // Write the next Predicate
                         temp = this.GenerateNodeOutput(globalContext, context, t.Predicate, TripleSegment.Predicate);
                         context.Output.Write(temp);
                         context.Output.Write(" ");
@@ -394,17 +394,17 @@ namespace VDS.RDF.Writing
                     }
                     else
                     {
-                        //Continue Object List
+                        // Continue Object List
                         context.Output.WriteLine(",");
 
                         if (context.PrettyPrint) context.Output.Write(new String(' ', subjIndent + predIndent));
                     }
 
-                    //Write the Object
+                    // Write the Object
                     context.Output.Write(this.GenerateNodeOutput(globalContext, context, t.Object, TripleSegment.Object));
                 }
 
-                //Terminate Triples
+                // Terminate Triples
                 if (ts.Count > 0) context.Output.WriteLine(".");               
             }
         }
@@ -460,10 +460,10 @@ namespace VDS.RDF.Writing
                 Uri u = null;
                 while (globalContext.TryGetNextUri(out u))
                 {
-                    //Get the Graph from the Store
+                    // Get the Graph from the Store
                     IGraph g = globalContext.Store.Graphs[u];
 
-                    //Generate the Graph Output and add to Stream
+                    // Generate the Graph Output and add to Stream
                     TurtleWriterContext context = new TurtleWriterContext(g, new System.IO.StringWriter(), globalContext.PrettyPrint, globalContext.HighSpeedModePermitted);
                     if (globalContext.CompressionLevel > WriterCompressionLevel.None)
                     {
@@ -493,7 +493,7 @@ namespace VDS.RDF.Writing
 #if !(PORTABLE||NETCORE)  // PCL has no Thread.Abort() method or ThreadAbortException
             catch (ThreadAbortException)
             {
-                //We've been terminated, don't do anything
+                // We've been terminated, don't do anything
 #if !SILVERLIGHT
                 Thread.ResetAbort();
 #endif

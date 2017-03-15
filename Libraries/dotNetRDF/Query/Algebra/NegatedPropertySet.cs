@@ -150,7 +150,7 @@ namespace VDS.RDF.Query.Algebra
 
             context.OutputMultiset = new Multiset();
 
-            //Q: Should this not go at the start of evaluation?
+            // Q: Should this not go at the start of evaluation?
             if (this._inverse)
             {
                 String temp = objVar;

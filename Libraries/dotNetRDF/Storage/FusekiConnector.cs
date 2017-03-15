@@ -229,7 +229,7 @@ namespace VDS.RDF.Storage
 
                 if (update.Length > 0)
                 {
-                    //Make the SPARQL Update Request
+                    // Make the SPARQL Update Request
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._updateUri);
                     request.Method = "POST";
                     request.ContentType = "application/sparql-update";
@@ -245,7 +245,7 @@ namespace VDS.RDF.Storage
                     {
                         Tools.HttpDebugResponse(response);
 
-                        //If we get here without erroring then the request was OK
+                        // If we get here without erroring then the request was OK
                         response.Close();
                     }
                 }
@@ -301,7 +301,7 @@ namespace VDS.RDF.Storage
             {
                 HttpWebRequest request;
 
-                //Create the Request
+                // Create the Request
                 String queryUri = this._queryUri;
                 if (sparqlQuery.Length < 2048)
                 {
@@ -318,7 +318,7 @@ namespace VDS.RDF.Storage
                     request.Accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
                     request = base.ApplyRequestOptions(request);
 
-                    //Build the Post Data and add to the Request Body
+                    // Build the Post Data and add to the Request Body
                     request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
                     StringBuilder postData = new StringBuilder();
                     postData.Append("query=");
@@ -332,7 +332,7 @@ namespace VDS.RDF.Storage
 
                 Tools.HttpDebugRequest(request);
 
-                //Get the Response and process based on the Content Type
+                // Get the Response and process based on the Content Type
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
@@ -341,16 +341,16 @@ namespace VDS.RDF.Storage
                     String ctype = response.ContentType;
                     try
                     {
-                        //Is the Content Type referring to a RDF format?
+                        // Is the Content Type referring to a RDF format?
                         IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
                         rdfreader.Load(rdfHandler, data);
                         response.Close();
                     }
                     catch (RdfParserSelectionException)
                     {
-                        //If we get a Parser selection exception then the Content Type isn't valid for a RDF Graph
+                        // If we get a Parser selection exception then the Content Type isn't valid for a RDF Graph
 
-                        //Is the Content Type referring to a Sparql Result Set format?
+                        // Is the Content Type referring to a Sparql Result Set format?
                         ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, true);
                         resreader.Load(resultsHandler, data);
                         response.Close();
@@ -371,7 +371,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                //Make the SPARQL Update Request
+                // Make the SPARQL Update Request
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._updateUri);
                 request.Method = "POST";
                 request.ContentType = "application/sparql-update";
@@ -386,7 +386,7 @@ namespace VDS.RDF.Storage
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
-                    //If we get here without erroring then the request was OK
+                    // If we get here without erroring then the request was OK
                     response.Close();
                 }
             }
@@ -436,7 +436,7 @@ namespace VDS.RDF.Storage
             {
                 HttpWebRequest request;
 
-                //Create the Request, always use POST for async for simplicity
+                // Create the Request, always use POST for async for simplicity
                 String queryUri = this._queryUri;
 
                 request = (HttpWebRequest)WebRequest.Create(queryUri);
@@ -444,7 +444,7 @@ namespace VDS.RDF.Storage
                 request.Accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
                 request = base.ApplyRequestOptions(request);
 
-                //Build the Post Data and add to the Request Body
+                // Build the Post Data and add to the Request Body
                 request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
                 StringBuilder postData = new StringBuilder();
                 postData.Append("query=");
@@ -463,7 +463,7 @@ namespace VDS.RDF.Storage
 
                             Tools.HttpDebugRequest(request);
 
-                            //Get the Response and process based on the Content Type
+                            // Get the Response and process based on the Content Type
                             request.BeginGetResponse(r2 =>
                             {
                                 try
@@ -475,16 +475,16 @@ namespace VDS.RDF.Storage
                                     String ctype = response.ContentType;
                                     try
                                     {
-                                        //Is the Content Type referring to a Sparql Result Set format?
+                                        // Is the Content Type referring to a Sparql Result Set format?
                                         ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, true);
                                         resreader.Load(resultsHandler, data);
                                         response.Close();
                                     }
                                     catch (RdfParserSelectionException)
                                     {
-                                        //If we get a Parse exception then the Content Type isn't valid for a Sparql Result Set
+                                        // If we get a Parse exception then the Content Type isn't valid for a Sparql Result Set
 
-                                        //Is the Content Type referring to a RDF format?
+                                        // Is the Content Type referring to a RDF format?
                                         IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
                                         rdfreader.Load(rdfHandler, data);
                                         response.Close();
@@ -531,7 +531,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                //Make the SPARQL Update Request
+                // Make the SPARQL Update Request
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._updateUri);
                 request.Method = "POST";
                 request.ContentType = "application/sparql-update";
@@ -554,7 +554,7 @@ namespace VDS.RDF.Storage
                                     {
                                         HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
                                         Tools.HttpDebugResponse(response);
-                                        //If we get here without erroring then the request was OK
+                                        // If we get here without erroring then the request was OK
                                         response.Close();
                                         callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate), state);
                                     }
@@ -595,7 +595,7 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback</param>
         public override void ListGraphs(AsyncStorageCallback callback, object state)
         {
-            //Use ListUrisHandler and make an async query to list the graphs, when that returns we invoke the correct callback
+            // Use ListUrisHandler and make an async query to list the graphs, when that returns we invoke the correct callback
             ListUrisHandler handler = new ListUrisHandler("g");
             ((IAsyncQueryableStorage)this).Query(null, handler, "SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }", (sender, args, st) =>
             {

@@ -60,7 +60,7 @@ namespace VDS.RDF.Configuration
             }
             catch
             {
-                //Any error means this loader can't load this type
+                // Any error means this loader can't load this type
                 return false;
             }
         }
@@ -72,7 +72,7 @@ namespace VDS.RDF.Configuration
         /// <returns></returns>
         public bool CanLoadObject(Type t)
         {
-            //We can load any object which implements any parser interface and has a public unparameterized constructor
+            // We can load any object which implements any parser interface and has a public unparameterized constructor
             if (t.GetInterfaces().Any(i => this._parserTypes.Contains(i)))
             {
                 ConstructorInfo c = t.GetConstructor(new Type[0]);
@@ -119,7 +119,7 @@ namespace VDS.RDF.Configuration
             }
             catch
             {
-                //Any error means this loader can't load this type
+                // Any error means this loader can't load this type
                 return false;
             }
         }
@@ -131,7 +131,7 @@ namespace VDS.RDF.Configuration
         /// <returns></returns>
         public bool CanLoadObject(Type t)
         {
-            //We can load any object which implements any writer interface and has a public unparameterized constructor
+            // We can load any object which implements any writer interface and has a public unparameterized constructor
             if (t.GetInterfaces().Any(i => this._writerTypes.Contains(i)))
             {
                 ConstructorInfo c = t.GetConstructor(new Type[0]);

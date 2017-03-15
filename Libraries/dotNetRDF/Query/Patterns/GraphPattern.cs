@@ -86,9 +86,9 @@ namespace VDS.RDF.Query.Patterns
             this._isSilent = gp._isSilent;
             this._isUnion = gp._isUnion;
 
-            //Copy Triple Patterns across
-            //Assignments and Filters are copied into the unplaced lists so the new pattern can be reoptimised if it gets modified since
-            //reoptimising a pattern with already placed filters and assignments can lead to strange results
+            // Copy Triple Patterns across
+            // Assignments and Filters are copied into the unplaced lists so the new pattern can be reoptimised if it gets modified since
+            // reoptimising a pattern with already placed filters and assignments can lead to strange results
             this._triplePatterns.AddRange(gp._triplePatterns.Where(tp => tp.PatternType != TriplePatternType.BindAssignment && tp.PatternType != TriplePatternType.LetAssignment && tp.PatternType != TriplePatternType.Filter));
             this._unplacedAssignments.AddRange(gp._unplacedAssignments);
             this._unplacedAssignments.AddRange(gp._triplePatterns.Where(tp => tp.PatternType == TriplePatternType.BindAssignment || tp.PatternType == TriplePatternType.LetAssignment).OfType<IAssignmentPattern>());
@@ -135,9 +135,9 @@ namespace VDS.RDF.Query.Patterns
                 }
                 else
                 {
-                    //GraphPattern breakPattern = new GraphPattern();
-                    //breakPattern.AddAssignment(p);
-                    //this._graphPatterns.Add(breakPattern);
+                    // GraphPattern breakPattern = new GraphPattern();
+                    // breakPattern.AddAssignment(p);
+                    // this._graphPatterns.Add(breakPattern);
                     this._unplacedAssignments.Add(p);
                 }
             }
@@ -445,17 +445,17 @@ namespace VDS.RDF.Query.Patterns
             {
                 if (this._filter == null)
                 {
-                    //Set the Filter
+                    // Set the Filter
                     this._filter = value;
                 }
                 else if (this._filter is ChainFilter)
                 {
-                    //Add to the Filter Chain
+                    // Add to the Filter Chain
                     ((ChainFilter) this._filter).Add(value);
                 }
                 else
                 {
-                    //Create a Filter Chain
+                    // Create a Filter Chain
                     this._filter = new ChainFilter(this._filter, value);
                 }
             }
@@ -533,9 +533,9 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                //SERVICE patterns are irrelevant as their dataset is irrelevant to whether the query uses the default dataset
+                // SERVICE patterns are irrelevant as their dataset is irrelevant to whether the query uses the default dataset
                 if (this._isService) return true;
-                //Otherwise a pattern must not be a GRAPH pattern, all its triple patterns and child graph patterns must use the default dataset and any filters/assignments must use the default dataset
+                // Otherwise a pattern must not be a GRAPH pattern, all its triple patterns and child graph patterns must use the default dataset and any filters/assignments must use the default dataset
                 return !this._isGraph && this._triplePatterns.All(tp => tp.UsesDefaultDataset) && this._graphPatterns.All(gp => gp.UsesDefaultDataset) && (this._filter == null || this._filter.Expression.UsesDefaultDataset()) && this._unplacedAssignments.All(ap => ap.AssignExpression.UsesDefaultDataset()) && this._unplacedFilters.All(f => f.Expression.UsesDefaultDataset());
             }
         }
@@ -727,7 +727,7 @@ namespace VDS.RDF.Query.Patterns
                 output.AppendLine();
                 indent = new String(' ', 2);
             }
-            //Triple Patterns
+            // Triple Patterns
             foreach (ITriplePattern tp in this._triplePatterns)
             {
                 String temp = tp.ToString();
@@ -751,13 +751,13 @@ namespace VDS.RDF.Query.Patterns
                     if (linebreaks) output.AppendLine();
                 }
             }
-            //Unplaced Assignments
+            // Unplaced Assignments
             foreach (IAssignmentPattern ap in this._unplacedAssignments)
             {
                 output.Append(ap.ToString());
                 if (linebreaks) output.AppendLine();
             }
-            //Inline Data
+            // Inline Data
             if (this.HasInlineData)
             {
                 output.Append(indent);
@@ -778,7 +778,7 @@ namespace VDS.RDF.Query.Patterns
                 }
                 if (linebreaks) output.AppendLine();
             }
-            //Graph Patterns
+            // Graph Patterns
             foreach (GraphPattern gp in this._graphPatterns)
             {
                 output.Append(indent);
@@ -799,7 +799,7 @@ namespace VDS.RDF.Query.Patterns
                 }
                 if (linebreaks) output.AppendLine();
             }
-            //Filters
+            // Filters
             if (this._filter != null)
             {
                 output.Append(indent);
@@ -825,7 +825,7 @@ namespace VDS.RDF.Query.Patterns
         {
             if (this._isUnion)
             {
-                //If this Graph Pattern represents a UNION of Graph Patterns turn into a series of UNIONs
+                // If this Graph Pattern represents a UNION of Graph Patterns turn into a series of UNIONs
                 ISparqlAlgebra union = new Union(this._graphPatterns[0].ToAlgebra(), this._graphPatterns[1].ToAlgebra());
                 if (this._graphPatterns.Count > 2)
                 {
@@ -834,9 +834,9 @@ namespace VDS.RDF.Query.Patterns
                         union = new Union(union, this._graphPatterns[i].ToAlgebra());
                     }
                 }
-                //Apply Inline Data
+                // Apply Inline Data
                 if (this.HasInlineData) union = Join.CreateJoin(union, new Bindings(this._data));
-                //If there's a FILTER apply it over the Union
+                // If there's a FILTER apply it over the Union
                 if (this._isFiltered && (this._filter != null || this._unplacedFilters.Count > 0))
                 {
                     return new Filter(union, this.Filter);
@@ -847,11 +847,11 @@ namespace VDS.RDF.Query.Patterns
             // Terminal graph pattern
             if (this._graphPatterns.Count == 0)
             {
-                //If there are no Child Graph Patterns then this is a BGP
+                // If there are no Child Graph Patterns then this is a BGP
                 ISparqlAlgebra bgp = new Bgp(this._triplePatterns);
                 if (this._unplacedAssignments.Count > 0)
                 {
-                    //If we have any unplaced LETs these get Extended onto the BGP
+                    // If we have any unplaced LETs these get Extended onto the BGP
                     foreach (IAssignmentPattern p in this._unplacedAssignments)
                     {
                         bgp = new Extend(bgp, p.AssignExpression, p.VariableName);
@@ -866,43 +866,43 @@ namespace VDS.RDF.Query.Patterns
                     bgp = new Service(this.GraphSpecifier, this, this.IsSilent);
                 }
 
-                //Apply Inline Data
+                // Apply Inline Data
                 if (this.HasInlineData) bgp = Join.CreateJoin(bgp, new Bindings(this._data));
                 if (this._isFiltered && (this._filter != null || this._unplacedFilters.Count > 0))
                 {
                     if (this._isOptional && !(this._isExists || this._isNotExists))
                     {
-                        //If we contain an unplaced FILTER and we're an OPTIONAL then the FILTER
-                        //applies over the LEFT JOIN and will have been added elsewhere in the Algebra transform
+                        // If we contain an unplaced FILTER and we're an OPTIONAL then the FILTER
+                        // applies over the LEFT JOIN and will have been added elsewhere in the Algebra transform
                         return bgp;
                     }
 
-                    //If we contain an unplaced FILTER and we're not an OPTIONAL the FILTER
-                    //applies here
+                    // If we contain an unplaced FILTER and we're not an OPTIONAL the FILTER
+                    // applies here
                     return new Filter(bgp, this.Filter);
                 }
-                //We're not filtered (or all FILTERs were placed in the BGP) so we're just a BGP
+                // We're not filtered (or all FILTERs were placed in the BGP) so we're just a BGP
                 return bgp;
             }
 
-            //Create a basic BGP to start with
+            // Create a basic BGP to start with
             ISparqlAlgebra complex = new Bgp();
             if (this._triplePatterns.Count > 0)
             {
                 complex = new Bgp(this._triplePatterns);
             }
 
-            //Apply Inline Data
-            //If this Graph Pattern had child patterns before this Graph Pattern then we would
-            //have broken the BGP and not added the Inline Data here so it's always safe to apply this here
+            // Apply Inline Data
+            // If this Graph Pattern had child patterns before this Graph Pattern then we would
+            // have broken the BGP and not added the Inline Data here so it's always safe to apply this here
             if (this.HasInlineData) complex = Join.CreateJoin(complex, new Bindings(this._data));
 
-            //Then Join each of the Graph Patterns as appropriate
+            // Then Join each of the Graph Patterns as appropriate
             foreach (GraphPattern gp in this._graphPatterns)
             {
                 if (gp.IsGraph)
                 {
-                    //A GRAPH clause means a Join of the current pattern to a Graph clause
+                    // A GRAPH clause means a Join of the current pattern to a Graph clause
                     ISparqlAlgebra gpAlgebra = gp.ToAlgebra();
                     complex = Join.CreateJoin(complex, Algebra.Graph.ApplyGraph(gpAlgebra, gp.GraphSpecifier));
                 }
@@ -910,16 +910,16 @@ namespace VDS.RDF.Query.Patterns
                 {
                     if (gp.IsExists || gp.IsNotExists)
                     {
-                        //An EXISTS/NOT EXISTS means an Exists Join of the current pattern to the EXISTS/NOT EXISTS clause
+                        // An EXISTS/NOT EXISTS means an Exists Join of the current pattern to the EXISTS/NOT EXISTS clause
                         complex = new ExistsJoin(complex, gp.ToAlgebra(), gp.IsExists);
                     }
                     else
                     {
-                        //An OPTIONAL means a Left Join of the current pattern to the OPTIONAL clause
-                        //with a possible FILTER applied over the LeftJoin
+                        // An OPTIONAL means a Left Join of the current pattern to the OPTIONAL clause
+                        // with a possible FILTER applied over the LeftJoin
                         if (gp.IsFiltered && gp.Filter != null)
                         {
-                            //If the OPTIONAL clause has an unplaced FILTER it applies over the Left Join
+                            // If the OPTIONAL clause has an unplaced FILTER it applies over the Left Join
                             complex = new LeftJoin(complex, gp.ToAlgebra(), gp.Filter);
                         }
                         else
@@ -930,8 +930,8 @@ namespace VDS.RDF.Query.Patterns
                 }
                 else if (gp.IsMinus)
                 {
-                    //Always introduce a Minus here even if the Minus is disjoint since during evaluation we'll choose
-                    //not to execute it if it's disjoint
+                    // Always introduce a Minus here even if the Minus is disjoint since during evaluation we'll choose
+                    // not to execute it if it's disjoint
                     complex = new Minus(complex, gp.ToAlgebra());
                 }
                 else if (gp.IsService)
@@ -940,14 +940,14 @@ namespace VDS.RDF.Query.Patterns
                 }
                 else
                 {
-                    //Otherwise we just join the pattern to the existing pattern
+                    // Otherwise we just join the pattern to the existing pattern
                     complex = Join.CreateJoin(complex, gp.ToAlgebra());
                 }
             }
             if (this._unplacedAssignments.Count > 0)
             {
-                //Unplaced assignments get Extended over the algebra so far here
-                //complex = Join.CreateJoin(complex, new Bgp(this._unplacedAssignments.OfType<ITriplePattern>()));
+                // Unplaced assignments get Extended over the algebra so far here
+                // complex = Join.CreateJoin(complex, new Bgp(this._unplacedAssignments.OfType<ITriplePattern>()));
                 foreach (IAssignmentPattern p in this._unplacedAssignments)
                 {
                     complex = new Extend(complex, p.AssignExpression, p.VariableName);
@@ -961,16 +961,16 @@ namespace VDS.RDF.Query.Patterns
             {
                 if (this._isOptional && !(this._isExists || this._isNotExists))
                 {
-                    //If there's an unplaced FILTER and we're an OPTIONAL then the FILTER will
-                    //apply over the LeftJoin and is applied elsewhere in the Algebra transform
+                    // If there's an unplaced FILTER and we're an OPTIONAL then the FILTER will
+                    // apply over the LeftJoin and is applied elsewhere in the Algebra transform
                     return complex;
                 }
                 else
                 {
                     if (this._filter != null || this._unplacedFilters.Count > 0)
                     {
-                        //If there's an unplaced FILTER and we're not an OPTIONAL pattern we apply
-                        //the FILTER here
+                        // If there's an unplaced FILTER and we're not an OPTIONAL pattern we apply
+                        // the FILTER here
                         return new Filter(complex, this.Filter);
                     }
                     else
@@ -981,7 +981,7 @@ namespace VDS.RDF.Query.Patterns
             }
             else
             {
-                //If no FILTER just return the transform
+                // If no FILTER just return the transform
                 return complex;
             }
 

@@ -40,9 +40,9 @@ namespace VDS.RDF.Query.Optimisation
         /// <returns></returns>
         protected override IComparer<ITriplePattern> GetRankingComparer()
         {
-            //Triple Patterns have a CompareTo defined that orders them based on what is considered to be 
-            //an optimal order
-            //This order is only an approximation and may not be effective depending on the underlying dataset
+            // Triple Patterns have a CompareTo defined that orders them based on what is considered to be 
+            // an optimal order
+            // This order is only an approximation and may not be effective depending on the underlying dataset
             return Comparer<ITriplePattern>.Default;
         }
     }

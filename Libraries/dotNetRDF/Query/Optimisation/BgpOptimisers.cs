@@ -51,9 +51,9 @@ namespace VDS.RDF.Query.Optimisation
             {
                 ISparqlAlgebra temp;
 
-                //Note this first test is specifically for the default BGP implementation since other optimisers
-                //may run before us and replace with other BGP implementations which we don't want to replace hence
-                //why we don't check for IBgp here
+                // Note this first test is specifically for the default BGP implementation since other optimisers
+                // may run before us and replace with other BGP implementations which we don't want to replace hence
+                // why we don't check for IBgp here
                 if (algebra is Bgp)
                 {
                     temp = new LazyBgp(((Bgp)algebra).TriplePatterns);
@@ -68,14 +68,14 @@ namespace VDS.RDF.Query.Optimisation
                     IJoin join = (IJoin)algebra;
                     if (join.Lhs.Variables.IsDisjoint(join.Rhs.Variables))
                     {
-                        //If the sides of the Join are disjoint then can fully transform the join since we only need to find the requisite number of
-                        //solutions on either side to guarantee a product which meets/exceeds the required results
+                        // If the sides of the Join are disjoint then can fully transform the join since we only need to find the requisite number of
+                        // solutions on either side to guarantee a product which meets/exceeds the required results
                         temp = join.Transform(this);
                     }
                     else
                     {
-                        //If the sides are not disjoint then the LHS must be fully evaluated but the RHS need only produce enough
-                        //solutions that match
+                        // If the sides are not disjoint then the LHS must be fully evaluated but the RHS need only produce enough
+                        // solutions that match
                         temp = join.TransformRhs(this);
                     }
                 }
@@ -92,7 +92,7 @@ namespace VDS.RDF.Query.Optimisation
             }
             catch
             {
-                //If the Optimise fails return the current algebra
+                // If the Optimise fails return the current algebra
                 return algebra;
             }
         }
@@ -147,16 +147,16 @@ namespace VDS.RDF.Query.Optimisation
                 ISparqlAlgebra temp;
                 if (algebra is Bgp)
                 {
-                    //Bgp is transformed into AskBgp
-                    //This tries to find 1 possible solution
+                    // Bgp is transformed into AskBgp
+                    // This tries to find 1 possible solution
                     temp = new AskBgp(((Bgp)algebra).TriplePatterns);
                 }
                 else if (algebra is ILeftJoin)
                 {
-                    //LeftJoin is transformed to just be the LHS as the RHS is irrelevant for ASK queries
-                    //UNLESS the LeftJoin occurs inside a Filter/Minus BUT we should never get called to transform a 
-                    //LeftJoin() for those branches of the algebra as the Optimiseer does not transform 
-                    //Filter()/Minus() operators
+                    // LeftJoin is transformed to just be the LHS as the RHS is irrelevant for ASK queries
+                    // UNLESS the LeftJoin occurs inside a Filter/Minus BUT we should never get called to transform a 
+                    // LeftJoin() for those branches of the algebra as the Optimiseer does not transform 
+                    // Filter()/Minus() operators
                     temp = this.OptimiseInternal(((ILeftJoin)algebra).Lhs, depth + 1);
                 }
                 else if (algebra is IUnion)
@@ -169,23 +169,23 @@ namespace VDS.RDF.Query.Optimisation
                     IJoin join = (IJoin)algebra;
                     if (join.Lhs.Variables.IsDisjoint(join.Rhs.Variables))
                     {
-                        //If the sides of the Join are disjoint then can fully transform the join since we only need to find at least
-                        //one solution on either side in order for the query to match
-                        //temp = new Join(this.OptimiseInternal(join.Lhs, depth + 1), this.OptimiseInternal(join.Rhs, depth + 1));
+                        // If the sides of the Join are disjoint then can fully transform the join since we only need to find at least
+                        // one solution on either side in order for the query to match
+                        // temp = new Join(this.OptimiseInternal(join.Lhs, depth + 1), this.OptimiseInternal(join.Rhs, depth + 1));
                         temp = join.Transform(this);
                     } 
                     else 
                     {
-                        //If the sides are not disjoint then the LHS must be fully evaluated but the RHS need only produce at least
-                        //one solution based on the full input from the LHS for the query to match
-                        //temp = new Join(join.Lhs, this.OptimiseInternal(join.Rhs, depth + 1));
+                        // If the sides are not disjoint then the LHS must be fully evaluated but the RHS need only produce at least
+                        // one solution based on the full input from the LHS for the query to match
+                        // temp = new Join(join.Lhs, this.OptimiseInternal(join.Rhs, depth + 1));
                         temp = join.TransformRhs(this);
                     }
                 }
                 else if (algebra is Algebra.Graph)
                 {
-                    //Algebra.Graph g = (Algebra.Graph)algebra;
-                    //temp = new Algebra.Graph(this.OptimiseInternal(g.InnerAlgebra, depth + 1), g.GraphSpecifier);
+                    // Algebra.Graph g = (Algebra.Graph)algebra;
+                    // temp = new Algebra.Graph(this.OptimiseInternal(g.InnerAlgebra, depth + 1), g.GraphSpecifier);
                     IUnaryOperator op = (IUnaryOperator)algebra;
                     temp = op.Transform(this);
                 }
@@ -197,7 +197,7 @@ namespace VDS.RDF.Query.Optimisation
             }
             catch
             {
-                //If the Optimise fails return the current algebra
+                // If the Optimise fails return the current algebra
                 return algebra;
             }
         }

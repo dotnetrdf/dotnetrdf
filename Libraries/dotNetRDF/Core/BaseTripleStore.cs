@@ -61,7 +61,7 @@ namespace VDS.RDF
             this.GraphMergedHandler = new GraphEventHandler(this.OnGraphMerged);
             this.GraphClearedHandler = new GraphEventHandler(this.OnGraphCleared);
 
-            //Attach Handlers to the Graph Collection
+            // Attach Handlers to the Graph Collection
             this._graphs.GraphAdded += this.GraphAddedHandler;
             this._graphs.GraphRemoved += this.GraphRemovedHandler;
         }
@@ -75,7 +75,7 @@ namespace VDS.RDF
         {
             get
             {
-                //Empty if there are no Graphs in the Store
+                // Empty if there are no Graphs in the Store
                 return (this._graphs.Count == 0);
             }
         }

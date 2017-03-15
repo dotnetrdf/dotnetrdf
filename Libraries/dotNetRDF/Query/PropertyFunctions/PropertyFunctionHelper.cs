@@ -53,7 +53,7 @@ namespace VDS.RDF.Query.PropertyFunctions
         /// <returns></returns>
         public static List<IPropertyFunctionPattern> ExtractPatterns(IEnumerable<ITriplePattern> patterns, IEnumerable<IPropertyFunctionFactory> localFactories)
         {
-            //Do a first pass which simply looks to find any 'magic' properties
+            // Do a first pass which simply looks to find any 'magic' properties
             Dictionary<PatternItem, PropertyFunctionInfo> funcInfo = new Dictionary<PatternItem, PropertyFunctionInfo>();
             List<IMatchTriplePattern> ps = patterns.OfType<IMatchTriplePattern>().ToList();
             if (ps.Count == 0) return new List<IPropertyFunctionPattern>();
@@ -70,7 +70,7 @@ namespace VDS.RDF.Query.PropertyFunctions
                     funcInfo.Add(tp.Subject, info);
                 }
             }
-            //Remove any Patterns we found from the original patterns
+            // Remove any Patterns we found from the original patterns
             foreach (PropertyFunctionInfo info in funcInfo.Values)
             {
                 info.Patterns.ForEach(tp => ps.Remove(tp));
@@ -78,46 +78,46 @@ namespace VDS.RDF.Query.PropertyFunctions
 
             if (funcInfo.Count == 0) return new List<IPropertyFunctionPattern>();
 
-            //Now for each 'magic' property we found do a further search to see if we are using
-            //the collection forms to provide extended arguments
+            // Now for each 'magic' property we found do a further search to see if we are using
+            // the collection forms to provide extended arguments
             foreach (PatternItem key in funcInfo.Keys)
             {
                 if (key.VariableName != null && key.VariableName.StartsWith("_:"))
                 {
-                    //If LHS is a blank node may be collection form
+                    // If LHS is a blank node may be collection form
                     int count = funcInfo[key].Patterns.Count;
                     ExtractRelatedPatterns(key, key, ps, funcInfo, funcInfo[key].SubjectArgs);
                     if (funcInfo[key].Patterns.Count == count)
                     {
-                        //If no further patterns found just single LHS argument
+                        // If no further patterns found just single LHS argument
                         funcInfo[key].SubjectArgs.Add(key);
                     }
                 }
                 else
                 {
-                    //Otherwise key is the only LHS argument
+                    // Otherwise key is the only LHS argument
                     funcInfo[key].SubjectArgs.Add(key);
                 }
                 PatternItem searchKey = funcInfo[key].Patterns.First().Object;
                 if (searchKey.VariableName != null && searchKey.VariableName.StartsWith("_:"))
                 {
-                    //If RHS is a blank node may be collection form
+                    // If RHS is a blank node may be collection form
                     int count = funcInfo[key].Patterns.Count;
                     ExtractRelatedPatterns(key, searchKey, ps, funcInfo, funcInfo[key].ObjectArgs);
                     if (funcInfo[key].Patterns.Count == count)
                     {
-                        //If no further patterns found just single RHS argument
+                        // If no further patterns found just single RHS argument
                         funcInfo[key].ObjectArgs.Add(searchKey);
                     }
                 }
                 else
                 {
-                    //Otherwise single RHS argument
+                    // Otherwise single RHS argument
                     funcInfo[key].ObjectArgs.Add(searchKey);
                 }
             }
 
-            //Now try to create actual property functions
+            // Now try to create actual property functions
             List<IPropertyFunctionPattern> propFunctions = new List<IPropertyFunctionPattern>();
             foreach (PatternItem key in funcInfo.Keys)
             {

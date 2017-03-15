@@ -341,11 +341,11 @@ namespace VDS.RDF
         [Obsolete("This method of making queries is often error prone due to misconceptions about what data is being queries and we recommend using an ISparqlQueryProcessor instead, see remarks for more discussion")]
         public virtual Object ExecuteQuery(String query)
         {
-            //Parse the Query
+            // Parse the Query
             SparqlQueryParser sparqlparser = new SparqlQueryParser();
             SparqlQuery q = sparqlparser.ParseFromString(query);
 
-            //Invoke other execute method
+            // Invoke other execute method
             return this.ExecuteQuery(q);
         }
 
@@ -386,11 +386,11 @@ namespace VDS.RDF
         [Obsolete("This method of making queries is often error prone due to misconceptions about what data is being queries and we recommend using an ISparqlQueryProcessor instead, see remarks for more discussion")]
         public virtual void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String query)
         {
-            //Parse the Query
+            // Parse the Query
             SparqlQueryParser sparqlparser = new SparqlQueryParser();
             SparqlQuery q = sparqlparser.ParseFromString(query);
 
-            //Invoke other execute method
+            // Invoke other execute method
             this.ExecuteQuery(rdfHandler, resultsHandler, q);
         }
 
@@ -427,10 +427,10 @@ namespace VDS.RDF
         /// <param name="g">Graph to apply inference to</param>
         public void ApplyInference(IGraph g)
         {
-            //Apply Inference if we have any Inference Engines defined
+            // Apply Inference if we have any Inference Engines defined
             if (this._reasoners.Count > 0)
             {
-                //Set up Inference Graph if needed
+                // Set up Inference Graph if needed
                 if (this._storeInferencesExternally)
                 {
                     if (!this._graphs.Contains(this._inferenceGraphUri))
@@ -445,7 +445,7 @@ namespace VDS.RDF
                     }
                 }
 
-                //Apply inference
+                // Apply inference
                 foreach (IInferenceEngine reasoner in this._reasoners)
                 {
                     if (this._storeInferencesExternally)
@@ -468,13 +468,13 @@ namespace VDS.RDF
         {
             this._reasoners.Add(reasoner);
 
-            //Apply Inference to all existing Graphs
+            // Apply Inference to all existing Graphs
             if (this._graphs.Count > 0)
             {
                 lock (this._graphs)
                 {
-                    //Have to do a ToList() in case someone else inserts a Graph
-                    //Which ApplyInference may do if the Inference information is stored in a special Graph
+                    // Have to do a ToList() in case someone else inserts a Graph
+                    // Which ApplyInference may do if the Inference information is stored in a special Graph
                     foreach (IGraph g in this._graphs.ToList())
                     {
                         this.ApplyInference(g);

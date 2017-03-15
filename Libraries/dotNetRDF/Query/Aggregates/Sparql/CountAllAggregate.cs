@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         /// <returns></returns>
         public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
         {
-            //Just Count the number of results
+            // Just Count the number of results
             return new LongNode(null, bindingIDs.Count());
         }
 

@@ -90,29 +90,29 @@ namespace VDS.RDF
         {
             get
             {
-                //Check if the Property exists
+                // Check if the Property exists
                 if (this._properties.ContainsKey(name))
                 {
-                    //Return the Property
+                    // Return the Property
                     return this._properties[name];
                 }
                 else
                 {
-                    //Return a Null when the Property doesn't exist
+                    // Return a Null when the Property doesn't exist
                     return null;
                 }
             }
             set
             {
-                //Check if the Property exists
+                // Check if the Property exists
                 if (this._properties.ContainsKey(name))
                 {
-                    //Update the Property
+                    // Update the Property
                     this._properties[name] = value;
                 }
                 else
                 {
-                    //Define a new Property
+                    // Define a new Property
                     this._properties.Add(name, value);
                 }
             }

@@ -134,7 +134,7 @@ namespace VDS.RDF.Storage
             this._pwd = password;
             this._hasCredentials = (!String.IsNullOrEmpty(username) && !String.IsNullOrEmpty(password));
 
-            //Setup server
+            // Setup server
             this._server = new SesameServer(this._baseUri);
         }
 
@@ -300,7 +300,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                //Pre-parse the query to determine what the Query Type is
+                // Pre-parse the query to determine what the Query Type is
                 bool isAsk = false;
                 SparqlQuery q = null;
                 try
@@ -310,11 +310,11 @@ namespace VDS.RDF.Storage
                 }
                 catch
                 {
-                    //If parsing error fallback to naive detection
+                    // If parsing error fallback to naive detection
                     isAsk = Regex.IsMatch(sparqlQuery, "ASK", RegexOptions.IgnoreCase);
                 }
 
-                //Select Accept Header
+                // Select Accept Header
                 String accept;
                 if (q != null)
                 {
@@ -345,7 +345,7 @@ namespace VDS.RDF.Storage
 
                 Tools.HttpDebugRequest(request);
 
-                //Get the Response and process based on the Content Type
+                // Get the Response and process based on the Content Type
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
@@ -354,15 +354,15 @@ namespace VDS.RDF.Storage
                     String ctype = response.ContentType;
                     try
                     {
-                        //Is the Content Type referring to a Sparql Result Set format?
+                        // Is the Content Type referring to a Sparql Result Set format?
                         ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, isAsk);
                         resreader.Load(resultsHandler, data);
                         response.Close();
                     }
                     catch (RdfParserSelectionException)
                     {
-                        //If we get a Parser Selection exception then the Content Type isn't valid for a SPARQL Result Set
-                        //HACK: As this is Sesame this may be it being buggy and sending application/xml instead of application/sparql-results+xml
+                        // If we get a Parser Selection exception then the Content Type isn't valid for a SPARQL Result Set
+                        // HACK: As this is Sesame this may be it being buggy and sending application/xml instead of application/sparql-results+xml
                         if (ctype.StartsWith("application/xml"))
                         {
                             try
@@ -374,11 +374,11 @@ namespace VDS.RDF.Storage
                             }
                             catch (RdfParserSelectionException)
                             {
-                                //Ignore this and fall back to trying as an RDF format instead
+                                // Ignore this and fall back to trying as an RDF format instead
                             }
                         }
 
-                        //Is the Content Type referring to a RDF format?
+                        // Is the Content Type referring to a RDF format?
                         IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
                         if (q != null && (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask))
                         {
@@ -565,7 +565,7 @@ namespace VDS.RDF.Storage
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
-                    //If we get then it was OK
+                    // If we get then it was OK
                     response.Close();
                 }
             }
@@ -618,7 +618,7 @@ namespace VDS.RDF.Storage
                         serviceParams.Add("pred", null);
                         serviceParams.Add("obj", null);
 
-                        //Have to do a DELETE for each individual Triple
+                        // Have to do a DELETE for each individual Triple
                         foreach (Triple t in removals.Distinct())
                         {
                             serviceParams["subj"] = this._formatter.Format(t.Subject);
@@ -631,7 +631,7 @@ namespace VDS.RDF.Storage
                             using (response = (HttpWebResponse)request.GetResponse())
                             {
                                 Tools.HttpDebugResponse(response);
-                                //If we get here then the Delete worked OK
+                                // If we get here then the Delete worked OK
                                 response.Close();
                             }
                         }
@@ -645,7 +645,7 @@ namespace VDS.RDF.Storage
                 {
                     if (additions.Any())
                     {
-                        //Add the new Triples
+                        // Add the new Triples
                         request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "POST", serviceParams);
                         Graph h = new Graph();
                         h.Assert(additions);
@@ -657,7 +657,7 @@ namespace VDS.RDF.Storage
                         using (response = (HttpWebResponse)request.GetResponse())
                         {
                             Tools.HttpDebugResponse(response);
-                            //If we get then it was OK
+                            // If we get then it was OK
                             response.Close();
                         }
                     }
@@ -704,7 +704,7 @@ namespace VDS.RDF.Storage
                 using (response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
-                    //If we get here then the Delete worked OK
+                    // If we get here then the Delete worked OK
                     response.Close();
                 }
             }
@@ -837,13 +837,13 @@ namespace VDS.RDF.Storage
             {
                 if (removals.Any())
                 {
-                    //For Async deletes we need to build up a sequence of requests to send
+                    // For Async deletes we need to build up a sequence of requests to send
                     Queue<HttpWebRequest> requests = new Queue<HttpWebRequest>();
 
-                    //Have to do a DELETE for each individual Triple
+                    // Have to do a DELETE for each individual Triple
                     foreach (Triple t in removals.Distinct())
                     {
-                        //Prep Service Params
+                        // Prep Service Params
                         serviceParams = new Dictionary<String, String>();
                         if (!graphUri.Equals(String.Empty))
                         {
@@ -861,24 +861,24 @@ namespace VDS.RDF.Storage
                         requests.Enqueue(request);
                     }
 
-                    //Run all the requests, if any error make an error callback and abort, if it succeeds then do any adds
+                    // Run all the requests, if any error make an error callback and abort, if it succeeds then do any adds
                     this.MakeRequestSequence(requests, (sender, args, st) =>
                         {
                             if (!args.WasSuccessful)
                             {
-                                //Deletes failed
-                                //Invoke callback and bail out
+                                // Deletes failed
+                                // Invoke callback and bail out
                                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), new RdfStorageException("An error occurred while trying to asyncrhonously delete triples from the Store, see inner exception for details", args.Error)), state);
                                 return;
                             }
                             else
                             {
-                                //Deletes suceeded, perform any adds
+                                // Deletes suceeded, perform any adds
                                 if (additions != null)
                                 {
                                     if (additions.Any())
                                     {
-                                        //Prep Service Params
+                                        // Prep Service Params
                                         serviceParams = new Dictionary<string, string>();
                                         if (!graphUri.Equals(String.Empty))
                                         {
@@ -889,28 +889,28 @@ namespace VDS.RDF.Storage
                                             serviceParams.Add("context", "null");
                                         }
 
-                                        //Add the new Triples
+                                        // Add the new Triples
                                         request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "POST", serviceParams);
                                         Graph h = new Graph();
                                         h.Assert(additions);
                                         request.ContentType = GetSaveContentType();
 
-                                        //Thankfully Sesame lets us do additions in one request so we don't end up with horrible code like for the removals above
+                                        // Thankfully Sesame lets us do additions in one request so we don't end up with horrible code like for the removals above
                                         this.UpdateGraphAsync(request, rdfWriter, graphUri.ToSafeUri(), additions, callback, state);
 
-                                        //Don't want to make the callback until the adds have finished
-                                        //So we must return here as otherwise we will make the callback prematurely
+                                        // Don't want to make the callback until the adds have finished
+                                        // So we must return here as otherwise we will make the callback prematurely
                                         return;
                                     }
                                 }
 
-                                //If there were no adds we should make the callback now
+                                // If there were no adds we should make the callback now
                                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri()), state);
                             }
                         }, state);
 
-                    //Don't want to make the callback until deletes have finished and we've processed any subsequent adds
-                    //So we must return here as otherwise we will make the callback prematurely
+                    // Don't want to make the callback until deletes have finished and we've processed any subsequent adds
+                    // So we must return here as otherwise we will make the callback prematurely
                     return;
                 }
             }
@@ -918,7 +918,7 @@ namespace VDS.RDF.Storage
             {
                 if (additions.Any())
                 {
-                    //Prep Service Params
+                    // Prep Service Params
                     serviceParams = new Dictionary<string, string>();
                     if (!graphUri.Equals(String.Empty))
                     {
@@ -929,22 +929,22 @@ namespace VDS.RDF.Storage
                         serviceParams.Add("context", "null");
                     }
 
-                    //Add the new Triples
+                    // Add the new Triples
                     request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "POST", serviceParams);
                     Graph h = new Graph();
                     h.Assert(additions);
                     request.ContentType = GetSaveContentType();
 
-                    //Thankfully Sesame lets us do additions in one request so we don't end up with horrible code like for the removals above
+                    // Thankfully Sesame lets us do additions in one request so we don't end up with horrible code like for the removals above
                     this.UpdateGraphAsync(request, rdfWriter, graphUri.ToSafeUri(), additions, callback, state);
 
-                    //Don't want to make the callback until the adds have finished
-                    //So we must return here as otherwise we will make the callback prematurely
+                    // Don't want to make the callback until the adds have finished
+                    // So we must return here as otherwise we will make the callback prematurely
                     return;
                 }
             }
 
-            //If we get here then we had nothing to do
+            // If we get here then we had nothing to do
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri()), state);
         }
 
@@ -1008,7 +1008,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                //Pre-parse the query to determine what the Query Type is
+                // Pre-parse the query to determine what the Query Type is
                 bool isAsk = false;
                 SparqlQuery q = null;
                 try
@@ -1018,11 +1018,11 @@ namespace VDS.RDF.Storage
                 }
                 catch
                 {
-                    //If parsing error fallback to naive detection
+                    // If parsing error fallback to naive detection
                     isAsk = Regex.IsMatch(sparqlQuery, "ASK", RegexOptions.IgnoreCase);
                 }
 
-                //Select Accept Header
+                // Select Accept Header
                 String accept;
                 if (q != null)
                 {
@@ -1035,15 +1035,15 @@ namespace VDS.RDF.Storage
 
                 HttpWebRequest request;
 
-                //Create the Request, for simplicity async requests are always POST
+                // Create the Request, for simplicity async requests are always POST
                 Dictionary<String, String> queryParams = new Dictionary<string, string>();
                 request = this.CreateRequest(this._repositoriesPrefix + this._store + this._queryPath, accept, "POST", queryParams);
 
-                //Build the Post Data and add to the Request Body
+                // Build the Post Data and add to the Request Body
                 request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
 
                 Tools.HttpDebugRequest(request);
-                //POST the response which in async requires extra pain
+                // POST the response which in async requires extra pain
                 request.BeginGetRequestStream(r =>
                     {
                         try
@@ -1069,7 +1069,7 @@ namespace VDS.RDF.Storage
                                         String ctype = response.ContentType;
                                         try
                                         {
-                                            //Is the Content Type referring to a Sparql Result Set format?
+                                            // Is the Content Type referring to a Sparql Result Set format?
                                             ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, isAsk);
                                             resreader.Load(resultsHandler, data);
                                             response.Close();
@@ -1077,8 +1077,8 @@ namespace VDS.RDF.Storage
                                         }
                                         catch (RdfParserSelectionException)
                                         {
-                                            //If we get a Parser Selection exception then the Content Type isn't valid for a SPARQL Result Set
-                                            //HACK: As this is Sesame this may be it being buggy and sending application/xml instead of application/sparql-results+xml
+                                            // If we get a Parser Selection exception then the Content Type isn't valid for a SPARQL Result Set
+                                            // HACK: As this is Sesame this may be it being buggy and sending application/xml instead of application/sparql-results+xml
                                             if (ctype.StartsWith("application/xml"))
                                             {
                                                 try
@@ -1091,11 +1091,11 @@ namespace VDS.RDF.Storage
                                                 }
                                                 catch (RdfParserSelectionException)
                                                 {
-                                                    //Ignore this and fall back to trying as an RDF format instead
+                                                    // Ignore this and fall back to trying as an RDF format instead
                                                 }
                                             }
 
-                                            //Is the Content Type referring to a RDF format?
+                                            // Is the Content Type referring to a RDF format?
                                             IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
                                             if (q != null && (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask))
                                             {
@@ -1154,7 +1154,7 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         protected virtual HttpWebRequest CreateRequest(String servicePath, String accept, String method, Dictionary<String, String> queryParams)
         {
-            //Build the Request Uri
+            // Build the Request Uri
             String requestUri = this._baseUri + servicePath;
             if (queryParams != null)
             {
@@ -1169,17 +1169,17 @@ namespace VDS.RDF.Storage
                 }
             }
 
-            //Create our Request
+            // Create our Request
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
             request.Accept = accept;
             request.Method = method;
 
-            //Add Credentials if needed
+            // Add Credentials if needed
             if (this._hasCredentials)
             {
                 if (Options.ForceHttpBasicAuth)
                 {
-                    //Forcibly include a HTTP basic authentication header
+                    // Forcibly include a HTTP basic authentication header
 #if !(SILVERLIGHT||NETCORE)
                     string credentials = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(this._username + ":" + this._pwd));
                     request.Headers.Add("Authorization", "Basic " + credentials);
@@ -1190,7 +1190,7 @@ namespace VDS.RDF.Storage
                 }
                 else
                 {
-                    //Leave .Net to cope with HTTP auth challenge response
+                    // Leave .Net to cope with HTTP auth challenge response
                     NetworkCredential credentials = new NetworkCredential(this._username, this._pwd);
                     request.Credentials = credentials;
 #if !(SILVERLIGHT||NETCORE)
@@ -1207,7 +1207,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         public override void Dispose()
         {
-            //No Dispose actions
+            // No Dispose actions
         }
 
         /// <summary>
@@ -1416,10 +1416,10 @@ namespace VDS.RDF.Storage
             {
                 HttpWebRequest request;
 
-                //Create the Request
+                // Create the Request
                 request = this.CreateRequest(this._repositoriesPrefix + this._store + this._updatePath, MimeTypesHelper.Any, "POST", new Dictionary<String, String>());
 
-                //Build the Post Data and add to the Request Body
+                // Build the Post Data and add to the Request Body
                 request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
                 StringBuilder postData = new StringBuilder();
                 postData.Append("update=");
@@ -1432,11 +1432,11 @@ namespace VDS.RDF.Storage
 
                 Tools.HttpDebugRequest(request);
 
-                //Get the Response and process based on the Content Type
+                // Get the Response and process based on the Content Type
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
-                    //If we get here it completed OK
+                    // If we get here it completed OK
                     response.Close();
                 }
             }
@@ -1460,10 +1460,10 @@ namespace VDS.RDF.Storage
             {
                 HttpWebRequest request;
 
-                //Create the Request
+                // Create the Request
                 request = this.CreateRequest(this._repositoriesPrefix + this._store + this._updatePath, MimeTypesHelper.Any, "POST", new Dictionary<String, String>());
 
-                //Build the Post Data and add to the Request Body
+                // Build the Post Data and add to the Request Body
                 request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
                 StringBuilder postData = new StringBuilder();
                 postData.Append("update=");
@@ -1482,14 +1482,14 @@ namespace VDS.RDF.Storage
 
                             Tools.HttpDebugRequest(request);
 
-                            //Get the Response and process based on the Content Type
+                            // Get the Response and process based on the Content Type
                             request.BeginGetResponse(r2 =>
                                  {
                                      try
                                      {
                                          HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
                                          Tools.HttpDebugResponse(response);
-                                         //If we get here it completed OK
+                                         // If we get here it completed OK
                                          response.Close();
                                          callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate), state);
                                      }

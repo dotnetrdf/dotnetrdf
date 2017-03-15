@@ -29,8 +29,8 @@ using System.Collections.Generic;
 namespace VDS.RDF.Parsing.Tokens
 {
 
-//Definitions for lots and lots of different Tokens
-//Not all of these are necessary used but it's useful to have them defined
+// Definitions for lots and lots of different Tokens
+// Not all of these are necessary used but it's useful to have them defined
 
 #region Punctuation Tokens
 

@@ -234,13 +234,13 @@ namespace VDS.RDF.Query
         /// <param name="variables"></param>
         protected internal void SetVariableOrdering(IEnumerable<String> variables)
         {
-            //Validate that the ordering is applicable
+            // Validate that the ordering is applicable
             if (variables.Count() < this._variables.Count) throw new RdfQueryException("Cannot set a variable ordering that contains less variables then are currently specified");
             foreach (String var in this._variables)
             {
                 if (!variables.Contains(var)) throw new RdfQueryException("Cannot set a variable ordering that omits the variable ?" + var + " currently present in this result");
             }
-            //Apply ordering
+            // Apply ordering
             this._variables = new List<string>(variables);
         }
 
@@ -390,12 +390,12 @@ namespace VDS.RDF.Query
             {
                 SparqlResult other = (SparqlResult)obj;
 
-                //Empty Results are only equal to Empty Results
+                // Empty Results are only equal to Empty Results
                 if (this._resultValues.Count == 0 && other._resultValues.Count == 0) return true;
                 if (this._resultValues.Count == 0 || other._resultValues.Count == 0) return false;
 
-                //For differing numbers of values we must contain all the same values for variables
-                //bound in both or the variable missing from us must be bound to null in the other
+                // For differing numbers of values we must contain all the same values for variables
+                // bound in both or the variable missing from us must be bound to null in the other
                 foreach (String v in other.Variables)
                 {
                     if (this._resultValues.ContainsKey(v))
@@ -508,7 +508,7 @@ namespace VDS.RDF.Query
         /// <param name="writer">XML Writer</param>
         public void WriteXml(XmlWriter writer)
         {
-            //writer.WriteStartElement("bindings");
+            // writer.WriteStartElement("bindings");
             foreach (KeyValuePair<String, INode> binding in this._resultValues)
             {
                 writer.WriteStartElement("binding");
@@ -516,7 +516,7 @@ namespace VDS.RDF.Query
                 binding.Value.SerializeNode(writer);
                 writer.WriteEndElement();
             }
-            //writer.WriteEndElement();
+            // writer.WriteEndElement();
         }
 
         /// <summary>
@@ -525,31 +525,31 @@ namespace VDS.RDF.Query
         /// <param name="reader">XML Reader</param>
         public void ReadXml(XmlReader reader)
         {
-            //<result> may be empty
+            // <result> may be empty
             if (reader.IsEmptyElement) return;
 
-            //Otherwise expect some values
+            // Otherwise expect some values
             reader.Read();
             while (reader.Name.Equals("binding"))
             {
-                //Get the attribute name
+                // Get the attribute name
                 reader.MoveToAttribute("name");
                 String var = reader.Value;
                 reader.MoveToElement();
 
                 if (reader.IsEmptyElement)
                 {
-                    //May be empty indicating a null
+                    // May be empty indicating a null
                     this._resultValues.Add(var, null);
                 }
                 else
                 {
-                    //Otherwise expect a deserializable node
+                    // Otherwise expect a deserializable node
                     reader.Read();
                     INode value = reader.DeserializeNode();
                     this._resultValues.Add(var, value);
                 }
-                //Read to the next binding
+                // Read to the next binding
                 reader.Read();
             }
             reader.Read();

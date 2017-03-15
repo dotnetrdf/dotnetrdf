@@ -195,7 +195,7 @@ namespace VDS.RDF.Writing
         {
             try
             {
-                //Create the Writing Context
+                // Create the Writing Context
                 g.NamespaceMap.Import(this._defaultNamespaces);
                 CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, output, this._compressionLevel, this._prettyprint, this._allowHiSpeed, this._syntax);
                 this.GenerateOutput(context);
@@ -208,7 +208,7 @@ namespace VDS.RDF.Writing
                 }
                 catch
                 {
-                    //No Catch actions - just trying to clean up
+                    // No Catch actions - just trying to clean up
                 }
             }
         }
@@ -218,14 +218,14 @@ namespace VDS.RDF.Writing
         /// </summary>
         private void GenerateOutput(CompressingTurtleWriterContext context)
         {
-            //Create the Header
-            //Base Directive
+            // Create the Header
+            // Base Directive
             if (context.Graph.BaseUri != null)
             {
                 context.Output.WriteLine("@base <" + context.UriFormatter.FormatUri(context.Graph.BaseUri) + ">.");
                 context.Output.WriteLine();
             }
-            //Prefix Directives
+            // Prefix Directives
             foreach (String prefix in context.Graph.NamespaceMap.Prefixes)
             {
                 if (TurtleSpecsHelper.IsValidQName(prefix + ":"))
@@ -242,7 +242,7 @@ namespace VDS.RDF.Writing
             }
             context.Output.WriteLine();
 
-            //Decide on the Write Mode to use
+            // Decide on the Write Mode to use
             bool hiSpeed = false;
             double subjNodes = context.Graph.Triples.SubjectNodes.Count();
             double triples = context.Graph.Triples.Count;
@@ -266,11 +266,11 @@ namespace VDS.RDF.Writing
                     WriterHelper.FindCollections(context);
                 }
 
-                //Get the Triples as a Sorted List
+                // Get the Triples as a Sorted List
                 List<Triple> ts = context.Graph.Triples.Where(t => !context.TriplesDone.Contains(t)).ToList();
                 ts.Sort(new FullTripleComparer(new FastNodeComparer()));
 
-                //Variables we need to track our writing
+                // Variables we need to track our writing
                 INode lastSubj, lastPred;
                 lastSubj = lastPred = null;
                 int subjIndent = 0, predIndent = 0;
@@ -282,10 +282,10 @@ namespace VDS.RDF.Writing
 
                     if (lastSubj == null || !t.Subject.Equals(lastSubj))
                     {
-                        //Terminate previous Triples
+                        // Terminate previous Triples
                         if (lastSubj != null) context.Output.WriteLine(".");
 
-                        //Start a new set of Triples
+                        // Start a new set of Triples
                         temp = this.GenerateNodeOutput(context, t.Subject, TripleSegment.Subject, 0);
                         context.Output.Write(temp);
                         context.Output.Write(" ");
@@ -299,7 +299,7 @@ namespace VDS.RDF.Writing
                         }
                         lastSubj = t.Subject;
 
-                        //Write the first Predicate
+                        // Write the first Predicate
                         temp = this.GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate, subjIndent);
                         context.Output.Write(temp);
                         context.Output.Write(" ");
@@ -308,12 +308,12 @@ namespace VDS.RDF.Writing
                     }
                     else if (lastPred == null || !t.Predicate.Equals(lastPred))
                     {
-                        //Terminate previous Predicate Object list
+                        // Terminate previous Predicate Object list
                         context.Output.WriteLine(";");
 
                         if (context.PrettyPrint) context.Output.Write(new String(' ', subjIndent));
 
-                        //Write the next Predicate
+                        // Write the next Predicate
                         temp = this.GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate, subjIndent);
                         context.Output.Write(temp);
                         context.Output.Write(" ");
@@ -322,17 +322,17 @@ namespace VDS.RDF.Writing
                     }
                     else
                     {
-                        //Continue Object List
+                        // Continue Object List
                         context.Output.WriteLine(",");
 
                         if (context.PrettyPrint) context.Output.Write(new String(' ', subjIndent + predIndent));
                     }
 
-                    //Write the Object
+                    // Write the Object
                     context.Output.Write(this.GenerateNodeOutput(context, t.Object, TripleSegment.Object, subjIndent + predIndent));
                 }
 
-                //Terminate Triples
+                // Terminate Triples
                 if (ts.Count > 0) context.Output.WriteLine(".");
 
                 return;
@@ -439,8 +439,8 @@ namespace VDS.RDF.Writing
             {
                 if (c.Triples.Count == 0)
                 {
-                    //Empty Collection
-                    //Can represent as a single Blank Node []
+                    // Empty Collection
+                    // Can represent as a single Blank Node []
                     output.Append("[]");
                 }
                 else

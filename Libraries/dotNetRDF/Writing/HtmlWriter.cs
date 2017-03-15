@@ -103,7 +103,7 @@ namespace VDS.RDF.Writing
                 }
                 catch
                 {
-                    //No Catch Actions
+                    // No Catch Actions
                 }
                 throw;
             }
@@ -115,7 +115,7 @@ namespace VDS.RDF.Writing
         /// <param name="context">Writer Context</param>
         private void GenerateOutput(HtmlWriterContext context)
         {
-            //Page Header
+            // Page Header
             context.HtmlWriter.Write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML+RDFa 1.0//EN\" \"http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd\">");
             context.HtmlWriter.WriteLine();
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Html);
@@ -135,16 +135,16 @@ namespace VDS.RDF.Writing
                 context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Link);
                 context.HtmlWriter.RenderEndTag();
             }
-            //TODO: Add <meta> for charset?
+            // TODO: Add <meta> for charset?
             context.HtmlWriter.RenderEndTag();
 #if !NO_WEB
             context.HtmlWriter.WriteLine();
 #endif
 
-            //Start Body
+            // Start Body
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Body);
 
-            //Title
+            // Title
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H3);
             context.HtmlWriter.WriteEncodedText("RDF Graph");
             if (context.Graph.BaseUri != null)
@@ -156,11 +156,11 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.WriteLine();
 #endif
 
-            //Create a Table for the Graph
+            // Create a Table for the Graph
             context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Width, "100%");
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Table);
 
-            //Create a Table Header
+            // Create a Table Header
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Thead);
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Tr);
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Th);
@@ -178,7 +178,7 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.WriteLine();
 #endif
 
-            //Create a Table Body for the Triple
+            // Create a Table Body for the Triple
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Tbody);
 
             TripleCollection triplesDone = new TripleCollection();
@@ -186,18 +186,18 @@ namespace VDS.RDF.Writing
             {
                 IEnumerable<Triple> ts = context.Graph.GetTriplesWithSubject(subj);
 
-                //Start a Row
+                // Start a Row
                 context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Valign, "top");
                 context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Tr);
 
-                //Then a Column for the Subject which spans the correct number of Rows
+                // Then a Column for the Subject which spans the correct number of Rows
                 context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Rowspan, ts.Count().ToString());
 
                 context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Td);
 #if !NO_WEB
                 context.HtmlWriter.WriteLine();
 #endif
-                //For each Subject add an anchor if it can be reduced to a QName
+                // For each Subject add an anchor if it can be reduced to a QName
                 if (subj.NodeType == NodeType.Uri)
                 {
                     String qname;
@@ -228,12 +228,12 @@ namespace VDS.RDF.Writing
                     if (triplesDone.Contains(t)) continue;
                     if (!firstPred)
                     {
-                        //If not the first Triple start a new row
+                        // If not the first Triple start a new row
                         context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Valign, "top");
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Tr);
                     }
 
-                    //Then a Column for the Predicate
+                    // Then a Column for the Predicate
                     IEnumerable<Triple> predTriples = context.Graph.GetTriplesWithSubjectPredicate(t.Subject, t.Predicate);
                     context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Rowspan, predTriples.Count().ToString());
                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Td);
@@ -249,19 +249,19 @@ namespace VDS.RDF.Writing
                     context.HtmlWriter.WriteLine();
 #endif
 
-                    //Then we write out all the Objects
+                    // Then we write out all the Objects
                     bool firstObj = true;
                     foreach (Triple predTriple in predTriples)
                     {
                         if (triplesDone.Contains(predTriple)) continue;
                         if (!firstObj)
                         {
-                            //If not the first Triple start a new row
+                            // If not the first Triple start a new row
                             context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Valign, "top");
                             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Tr);
                         }
 
-                        //Object Column
+                        // Object Column
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Td);
 #if !NO_WEB
                         context.HtmlWriter.WriteLine();
@@ -275,7 +275,7 @@ namespace VDS.RDF.Writing
                         context.HtmlWriter.WriteLine();
 #endif
 
-                        //End of Row
+                        // End of Row
                         context.HtmlWriter.RenderEndTag();
 #if !NO_WEB
                         context.HtmlWriter.WriteLine();
@@ -289,13 +289,13 @@ namespace VDS.RDF.Writing
             }
 
 
-            //End Table Body
+            // End Table Body
             context.HtmlWriter.RenderEndTag();
 
-            //End Table
+            // End Table
             context.HtmlWriter.RenderEndTag();
 
-            //End of Page
+            // End of Page
             context.HtmlWriter.RenderEndTag(); //End Body
             context.HtmlWriter.RenderEndTag(); //End Html
         }
@@ -318,13 +318,13 @@ namespace VDS.RDF.Writing
         /// <param name="t">Triple being written</param>
         private void GenerateNodeOutput(HtmlWriterContext context, INode n, Triple t)
         {                
-            //Embed RDFa on the Node Output
+            // Embed RDFa on the Node Output
             bool rdfASerializable = false;
             if (t != null)
             {
                 if (t.Predicate.NodeType == NodeType.Uri)
                 {
-                    //Use @about to specify the Subject
+                    // Use @about to specify the Subject
                     if (t.Subject.NodeType == NodeType.Uri)
                     {
                         rdfASerializable = true;
@@ -340,15 +340,15 @@ namespace VDS.RDF.Writing
                         this.RaiseWarning("Cannot serialize a Triple since the Subject is not a URI/Blank Node: " + t.Subject.ToString());
                     }
 
-                    //Then if we can serialize this Triple we serialize the Predicate
+                    // Then if we can serialize this Triple we serialize the Predicate
                     if (rdfASerializable)
                     {
-                        //Get the CURIE for the Predicate
+                        // Get the CURIE for the Predicate
                         String curie;
                         String tempNamespace;
                         if (context.QNameMapper.ReduceToQName(t.Predicate.ToString(), out curie, out tempNamespace))
                         {
-                            //Extract the Namespace and make sure it's registered on this Attribute
+                            // Extract the Namespace and make sure it's registered on this Attribute
                             String ns = curie.Substring(0, curie.IndexOf(':'));
                             context.HtmlWriter.AddAttribute("xmlns:" + ns, context.UriFormatter.FormatUri(context.QNameMapper.GetNamespaceUri(ns)));
                         }
@@ -364,12 +364,12 @@ namespace VDS.RDF.Writing
                             {
                                 case NodeType.Blank:
                                 case NodeType.Uri:
-                                    //If the Object is a URI or a Blank then we specify the predicate with @rel
+                                    // If the Object is a URI or a Blank then we specify the predicate with @rel
                                     context.HtmlWriter.AddAttribute("rel", curie);
                                     break;
 
                                 case NodeType.Literal:
-                                    //If the Object is a Literal we specify the predicate with @property
+                                    // If the Object is a Literal we specify the predicate with @property
                                     context.HtmlWriter.AddAttribute("property", curie);
                                     break;
                                 default:
@@ -392,7 +392,7 @@ namespace VDS.RDF.Writing
                 case NodeType.Blank:
                     if (rdfASerializable)
                     {
-                        //Need to embed the CURIE for the BNode in the @resource attribute
+                        // Need to embed the CURIE for the BNode in the @resource attribute
                         context.HtmlWriter.AddAttribute("resource", "[" + n.ToString() + "]");
                     }
 
@@ -408,11 +408,11 @@ namespace VDS.RDF.Writing
                     {
                         if (rdfASerializable)
                         {
-                            //Need to embed the datatype in the @datatype attribute
+                            // Need to embed the datatype in the @datatype attribute
                             String dtcurie, dtnamespace;
                             if (context.QNameMapper.ReduceToQName(lit.DataType.AbsoluteUri, out dtcurie, out dtnamespace))
                             {
-                                //Extract the Namespace and make sure it's registered on this Attribute
+                                // Extract the Namespace and make sure it's registered on this Attribute
                                 String ns = dtcurie.Substring(0, dtcurie.IndexOf(':'));
                                 context.HtmlWriter.AddAttribute("xmlns:" + ns, context.UriFormatter.FormatUri(context.QNameMapper.GetNamespaceUri(ns)));
                                 context.HtmlWriter.AddAttribute("datatype", dtcurie);
@@ -431,7 +431,7 @@ namespace VDS.RDF.Writing
                         }
                         context.HtmlWriter.RenderEndTag();
 
-                        //Output the Datatype
+                        // Output the Datatype
                         context.HtmlWriter.WriteEncodedText("^^");
                         context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, lit.DataType.AbsoluteUri);
                         context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassDatatype);
@@ -452,7 +452,7 @@ namespace VDS.RDF.Writing
                         {
                             if (!lit.Language.Equals(String.Empty))
                             {
-                                //Need to add the language as an xml:lang attribute
+                                // Need to add the language as an xml:lang attribute
                                 context.HtmlWriter.AddAttribute("xml:lang", lit.Language);
                             }
                         }
@@ -472,14 +472,14 @@ namespace VDS.RDF.Writing
                     break;
 
                 case NodeType.GraphLiteral:
-                    //Error
+                    // Error
                     throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("HTML"));
 
                 case NodeType.Uri:
                     if (rdfASerializable && !this.UriPrefix.Equals(String.Empty))
                     {
-                        //If the URIs are being prefixed with something then we need to set the original
-                        //URI in the resource attribute to generate the correct triple
+                        // If the URIs are being prefixed with something then we need to set the original
+                        // URI in the resource attribute to generate the correct triple
                         context.HtmlWriter.AddAttribute("resource", n.ToString());
                     }
 

@@ -220,7 +220,7 @@ namespace VDS.RDF.Writing.Contexts
             }
             set
             {
-                //Do Nothing
+                // Do Nothing
             }
         }
 

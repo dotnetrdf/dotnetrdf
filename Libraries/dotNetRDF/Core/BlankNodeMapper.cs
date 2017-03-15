@@ -64,13 +64,13 @@ namespace VDS.RDF
         {
             String id = this._prefix + Interlocked.Increment(ref _nextid);
 
-            //Check it's not in use
+            // Check it's not in use
             while (this._idmap.ContainsKey(id))
             {
                 id = this._prefix + Interlocked.Increment(ref _nextid);
             }
 
-            //Add to ID Map
+            // Add to ID Map
             this._idmap.Add(id, new BlankNodeIDAssigment(id, true));
 
             return id;
@@ -87,7 +87,7 @@ namespace VDS.RDF
         {
             if (this._remappings.ContainsKey(id))
             {
-                //Is remapped to something else
+                // Is remapped to something else
                 id = this._remappings[id];
             } 
             else if (this._idmap.ContainsKey(id))
@@ -95,23 +95,23 @@ namespace VDS.RDF
                 BlankNodeIDAssigment idinfo = this._idmap[id];
                 if (idinfo.AutoAssigned)
                 {
-                    //This ID has been auto-assigned so remap to something else
+                    // This ID has been auto-assigned so remap to something else
                     String newid = "remapped" + Interlocked.Increment(ref _nextremap);
                     while (this._idmap.ContainsKey(newid))
                     {
                         newid = "remapped" + Interlocked.Increment(ref _nextremap);
                     }
 
-                    //Add to ID Map
+                    // Add to ID Map
                     this._idmap.Add(newid, new BlankNodeIDAssigment(newid, false));
                     this._remappings.Add(id, newid);
                     id = newid;
                 }
-                //Otherwise this ID can be used fine
+                // Otherwise this ID can be used fine
             }
             else
             {
-                //Register the ID
+                // Register the ID
                 this._idmap.Add(id, new BlankNodeIDAssigment(id, false));
             }
         }
@@ -147,19 +147,19 @@ namespace VDS.RDF
         {
             if (this._validator(id))
             {
-                //A Valid ID for outputting
+                // A Valid ID for outputting
                 if (!this._remappings.ContainsKey(id))
                 {
-                    //Check that our Value hasn't been used as the remapping of an invalid ID
+                    // Check that our Value hasn't been used as the remapping of an invalid ID
                     if (!this._remappings.ContainsValue(new BlankNodeIDAssigment(id, true)))
                     {
-                        //We're OK
+                        // We're OK
                         this._remappings.Add(id, new BlankNodeIDAssigment(id, false));
                         return id;
                     }
                     else
                     {
-                        //Our ID has already been remapped from another ID so we need to remap ourselves
+                        // Our ID has already been remapped from another ID so we need to remap ourselves
                         String remappedID = this.GetNextID();
                         this._remappings.Add(id, new BlankNodeIDAssigment(remappedID, false));
                         return remappedID;
@@ -173,12 +173,12 @@ namespace VDS.RDF
             }
             else if (this._remappings.ContainsKey(id))
             {
-                //Already validated/remapped
+                // Already validated/remapped
                 return this._remappings[id].ID;
             } 
             else
             {
-                //Not valid for outputting so need to remap
+                // Not valid for outputting so need to remap
                 String remappedID = this.GetNextID();
                 this._remappings.Add(id, new BlankNodeIDAssigment(remappedID, true));
                 return remappedID;

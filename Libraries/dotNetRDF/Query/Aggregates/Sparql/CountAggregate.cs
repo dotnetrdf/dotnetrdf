@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             int c = 0;
             if (this._varname != null)
             {
-                //Just Count the number of results where the variable is bound
+                // Just Count the number of results where the variable is bound
                 VariableTerm varExpr = (VariableTerm)this._expr;
                 foreach (int id in bindingIDs)
                 {
@@ -77,7 +77,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             }
             else
             {
-                //Count the number of results where the result in not null/error
+                // Count the number of results where the result in not null/error
                 foreach (int id in bindingIDs)
                 {
                     try
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
                     }
                     catch
                     {
-                        //Ignore errors
+                        // Ignore errors
                     }
                 }
             }

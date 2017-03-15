@@ -887,7 +887,7 @@ namespace VDS.RDF
         {
             List<MimeTypeSelector> selectors = new List<MimeTypeSelector>();
 
-            //Convert types into selectors
+            // Convert types into selectors
             if (ctypes != null)
             {
                 int order = 1;
@@ -898,15 +898,15 @@ namespace VDS.RDF
                 }
             }
 
-            //Adjust resulting selectors appropriately
+            // Adjust resulting selectors appropriately
             if (selectors.Count == 0)
             {
-                //If no MIME types treat as if a single any selector
+                // If no MIME types treat as if a single any selector
                 selectors.Add(new MimeTypeSelector(MimeTypesHelper.Any, null, 1.0d, 1));
             }
             else
             {
-                //Sort the selectors
+                // Sort the selectors
                 selectors.Sort();
             }
             return selectors;
@@ -927,36 +927,36 @@ namespace VDS.RDF
             this._quality = quality;
             this._order = order;
 
-            //Validate parameters
+            // Validate parameters
             if (this._quality < 0) this._quality = 0;
             if (this._quality > 1) this._quality = 1;
             if (this._order < 1) this._order = 1;
 
-            //Check what type of selector this is
+            // Check what type of selector this is
             if (!MimeTypesHelper.IsValidMimeType(this._type))
             {
-                //Invalid
+                // Invalid
                 this._isInvalid = true;
             }
             else if (this._type.Equals(MimeTypesHelper.Any))
             {
-                //Is a */* any
+                // Is a */* any
                 this._isAny = true;
             }
             else if (this._type.EndsWith("/*"))
             {
-                //Is a blah/* range
+                // Is a blah/* range
                 this._isRange = true;
                 this._rangeType = this._type.Substring(0, this._type.Length - 1);
             }
             else if (this._type.Contains('*'))
             {
-                //If it contains a * and is not */* or blah/* it is invalid
+                // If it contains a * and is not */* or blah/* it is invalid
                 this._isInvalid = true;
             }
             else
             {
-                //Must be a specific type
+                // Must be a specific type
                 this._isSpecific = true;
             }
         }
@@ -1071,7 +1071,7 @@ namespace VDS.RDF
         {
             if (other == null)
             {
-                //We're always greater than a null
+                // We're always greater than a null
                 return -1;
             }
 
@@ -1079,18 +1079,18 @@ namespace VDS.RDF
             {
                 if (other.IsInvalid)
                 {
-                    //If both invalid use order
+                    // If both invalid use order
                     return this.Order.CompareTo(other.Order);
                 }
                 else
                 {
-                    //Invalid types are less than valid types
+                    // Invalid types are less than valid types
                     return 1;
                 }
             }
             else if (other.IsInvalid)
             {
-                //Valid types are greater than invalid types
+                // Valid types are greater than invalid types
                 return -1;
             }
 
@@ -1098,18 +1098,18 @@ namespace VDS.RDF
             {
                 if (other.IsAny)
                 {
-                    //If both Any use quality
+                    // If both Any use quality
                     int c = -1 * this.Quality.CompareTo(other.Quality);
                     if (c == 0)
                     {
-                        //If same quality use order
+                        // If same quality use order
                         c = this.Order.CompareTo(other.Order);
                     }
                     return c;
                 }
                 else
                 {
-                    //Any is less than range/specific type
+                    // Any is less than range/specific type
                     return 1;
                 }
             }
@@ -1117,23 +1117,23 @@ namespace VDS.RDF
             {
                 if (other.IsAny)
                 {
-                    //Range types are greater than Any
+                    // Range types are greater than Any
                     return -1;
                 }
                 else if (other.IsRange)
                 {
-                    //If both Range use quality
+                    // If both Range use quality
                     int c = -1 * this.Quality.CompareTo(other.Quality);
                     if (c == 0)
                     {
-                        //If same quality use order
+                        // If same quality use order
                         c = this.Order.CompareTo(other.Order);
                     }
                     return c;
                 }
                 else
                 {
-                    //Range is less that specific type
+                    // Range is less that specific type
                     return 1;
                 }
             }
@@ -1141,16 +1141,16 @@ namespace VDS.RDF
             {
                 if (other.IsAny || other.IsRange)
                 {
-                    //Specific types are greater than Any/Range
+                    // Specific types are greater than Any/Range
                     return -1;
                 }
                 else
                 {
-                    //Both specific so use quality
+                    // Both specific so use quality
                     int c = -1 * this.Quality.CompareTo(other.Quality);
                     if (c == 0)
                     {
-                        //If same quality use order
+                        // If same quality use order
                         c = this.Order.CompareTo(other.Order);
                     }
                     return c;

@@ -205,11 +205,11 @@ namespace VDS.RDF.Query.Algebra
         {
             INode term = this._term.Evaluate(null, 0);
 
-            //First take appropriate pre-filtering actions
+            // First take appropriate pre-filtering actions
             if (context.InputMultiset is IdentityMultiset)
             {
-                //If the Input is Identity switch the input to be a Multiset containing a single Set
-                //where the variable is bound to the term
+                // If the Input is Identity switch the input to be a Multiset containing a single Set
+                // where the variable is bound to the term
                 context.InputMultiset = new Multiset();
                 Set s = new Set();
                 s.Add(this.RestrictionVariable, term);
@@ -217,7 +217,7 @@ namespace VDS.RDF.Query.Algebra
             }
             else if (context.InputMultiset is NullMultiset)
             {
-                //If Input is Null then output is Null
+                // If Input is Null then output is Null
                 context.OutputMultiset = context.InputMultiset;
                 return context.OutputMultiset;
             }
@@ -225,7 +225,7 @@ namespace VDS.RDF.Query.Algebra
             {
                 if (context.InputMultiset.ContainsVariable(this.RestrictionVariable))
                 {
-                    //If the Input Multiset contains the variable then pre-filter
+                    // If the Input Multiset contains the variable then pre-filter
                     foreach (int id in context.InputMultiset.SetIDs.ToList())
                     {
                         ISet x = context.InputMultiset[id];
@@ -233,12 +233,12 @@ namespace VDS.RDF.Query.Algebra
                         {
                             if (x.ContainsVariable(this.RestrictionVariable))
                             {
-                                //If does exist check it has appropriate value and if not remove it
+                                // If does exist check it has appropriate value and if not remove it
                                 if (!term.Equals(x[this.RestrictionVariable])) context.InputMultiset.Remove(id);
                             }
                             else
                             {
-                                //If doesn't exist for this set then bind it to the term
+                                // If doesn't exist for this set then bind it to the term
                                 x.Add(this.RestrictionVariable, term);
                             }
                         }
@@ -250,7 +250,7 @@ namespace VDS.RDF.Query.Algebra
                 }
                 else
                 {
-                    //If it doesn't contain the variable then bind for each existing set
+                    // If it doesn't contain the variable then bind for each existing set
                     foreach (ISet x in context.InputMultiset.Sets)
                     {
                         x.Add(this.RestrictionVariable, term);
@@ -258,11 +258,11 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
 
-            //Then evaluate the inner algebra
+            // Then evaluate the inner algebra
             BaseMultiset results = context.Evaluate(this.InnerAlgebra);
             if (results is NullMultiset || results is IdentityMultiset) return results;
 
-            //Filter the results to ensure that the variable is indeed bound to the term
+            // Filter the results to ensure that the variable is indeed bound to the term
             foreach (int id in results.SetIDs.ToList())
             {
                 ISet x = results[id];

@@ -134,7 +134,7 @@ namespace VDS.RDF.Storage.Management
         /// <returns></returns>
         public virtual IEnumerable<string> ListStores()
         {
-            //GET /admin/databases - application/json
+            // GET /admin/databases - application/json
             HttpWebRequest request = this.CreateAdminRequest("databases", "application/json", "GET", new Dictionary<string, string>());
             Tools.HttpDebugRequest(request);
 
@@ -197,7 +197,7 @@ namespace VDS.RDF.Storage.Management
                 }
                 catch
                 {
-                    //Ignore and continue
+                    // Ignore and continue
                 }
             }
             return templates;
@@ -220,25 +220,25 @@ namespace VDS.RDF.Storage.Management
         {
             if (template is BaseStardogTemplate)
             {
-                //POST /admin/databases
-                //Creates a new database; expects a multipart request with a JSON specifying database name, options and filenames followed by (optional) file contents as a multipart POST request.
+                // POST /admin/databases
+                // Creates a new database; expects a multipart request with a JSON specifying database name, options and filenames followed by (optional) file contents as a multipart POST request.
                 try
                 {
-                    //Get the Template
+                    // Get the Template
                     BaseStardogTemplate stardogTemplate = (BaseStardogTemplate) template;
                     IEnumerable<String> errors = stardogTemplate.Validate();
                     if (errors.Any()) throw new RdfStorageException("Template is not valid, call Validate() on the template to see the list of errors");
                     JObject jsonTemplate = stardogTemplate.GetTemplateJson();
                     Console.WriteLine(jsonTemplate.ToString());
 
-                    //Create the request and write the JSON
+                    // Create the request and write the JSON
                     HttpWebRequest request = this.CreateAdminRequest("databases", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
                     String boundary = StorageHelper.HttpMultipartBoundary;
 #if !SILVERLIGHT
                     byte[] boundaryBytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
                     byte[] terminatorBytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
 #else
-    //Should be safe to do this for Silverlight as everything here would be in the ASCII range anyway
+    // Should be safe to do this for Silverlight as everything here would be in the ASCII range anyway
                     byte[] boundaryBytes = System.Text.Encoding.UTF8.GetBytes("\r\n--" + boundary + "\r\n");
                     byte[] terminatorBytes = System.Text.Encoding.UTF8.GetBytes("\r\n--" + boundary + "--\r\n");
 #endif
@@ -246,25 +246,25 @@ namespace VDS.RDF.Storage.Management
 
                     using (Stream stream = request.GetRequestStream())
                     {
-                        //Boundary
+                        // Boundary
                         stream.Write(boundaryBytes, 0, boundaryBytes.Length);
-                        //Then the root Item
+                        // Then the root Item
                         String templateItem = String.Format(StorageHelper.HttpMultipartContentTemplate, "root", jsonTemplate.ToString());
                         byte[] itemBytes = System.Text.Encoding.UTF8.GetBytes(templateItem);
                         stream.Write(itemBytes, 0, itemBytes.Length);
-                        //Then terminating boundary
+                        // Then terminating boundary
                         stream.Write(terminatorBytes, 0, terminatorBytes.Length);
                         stream.Close();
                     }
 
                     Tools.HttpDebugRequest(request);
 
-                    //Make the request
+                    // Make the request
                     using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
                     {
                         Tools.HttpDebugResponse(response);
 
-                        //If we get here it completed OK
+                        // If we get here it completed OK
                         response.Close();
                     }
                     return true;
@@ -286,7 +286,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="storeID">Store ID</param>
         public virtual void DeleteStore(string storeID)
         {
-            //DELETE /admin/databases/{db}
+            // DELETE /admin/databases/{db}
             HttpWebRequest request = this.CreateAdminRequest("databases/" + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
 
             Tools.HttpDebugRequest(request);
@@ -297,7 +297,7 @@ namespace VDS.RDF.Storage.Management
                 {
                     Tools.HttpDebugResponse(response);
 
-                    //If we get here then it completed OK
+                    // If we get here then it completed OK
                     response.Close();
                 }
             }
@@ -327,7 +327,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="state">State to pass to the callback</param>
         public virtual void ListStores(AsyncStorageCallback callback, object state)
         {
-            //GET /admin/databases - application/json
+            // GET /admin/databases - application/json
             HttpWebRequest request = this.CreateAdminRequest("databases", "application/json", "GET", new Dictionary<string, string>());
 
             Tools.HttpDebugRequest(request);
@@ -412,7 +412,7 @@ namespace VDS.RDF.Storage.Management
                 }
                 catch
                 {
-                    //Ignore and continue
+                    // Ignore and continue
                 }
             }
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.AvailableTemplates, id, templates), state);
@@ -433,25 +433,25 @@ namespace VDS.RDF.Storage.Management
         {
             if (template is BaseStardogTemplate)
             {
-                //POST /admin/databases
-                //Creates a new database; expects a multipart request with a JSON specifying database name, options and filenames followed by (optional) file contents as a multipart POST request.
+                // POST /admin/databases
+                // Creates a new database; expects a multipart request with a JSON specifying database name, options and filenames followed by (optional) file contents as a multipart POST request.
                 try
                 {
-                    //Get the Template
+                    // Get the Template
                     BaseStardogTemplate stardogTemplate = (BaseStardogTemplate) template;
                     IEnumerable<String> errors = stardogTemplate.Validate();
                     if (errors.Any()) throw new RdfStorageException("Template is not valid, call Validate() on the template to see the list of errors");
                     JObject jsonTemplate = stardogTemplate.GetTemplateJson();
                     Console.WriteLine(jsonTemplate.ToString());
 
-                    //Create the request and write the JSON
+                    // Create the request and write the JSON
                     HttpWebRequest request = this.CreateAdminRequest("databases", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
                     String boundary = StorageHelper.HttpMultipartBoundary;
 #if !SILVERLIGHT
                     byte[] boundaryBytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
                     byte[] terminatorBytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
 #else
-    //Should be safe to do this for Silverlight as everything here would be in the ASCII range anyway
+    // Should be safe to do this for Silverlight as everything here would be in the ASCII range anyway
                     byte[] boundaryBytes = System.Text.Encoding.UTF8.GetBytes("\r\n--" + boundary + "\r\n");
                     byte[] terminatorBytes = System.Text.Encoding.UTF8.GetBytes("\r\n--" + boundary + "--\r\n");
 #endif
@@ -463,20 +463,20 @@ namespace VDS.RDF.Storage.Management
                             {
                                 using (Stream stream = request.EndGetRequestStream(r))
                                 {
-                                    //Boundary
+                                    // Boundary
                                     stream.Write(boundaryBytes, 0, boundaryBytes.Length);
-                                    //Then the root Item
+                                    // Then the root Item
                                     String templateItem = String.Format(StorageHelper.HttpMultipartContentTemplate, "root", jsonTemplate.ToString());
                                     byte[] itemBytes = System.Text.Encoding.UTF8.GetBytes(templateItem);
                                     stream.Write(itemBytes, 0, itemBytes.Length);
-                                    //Then terminating boundary
+                                    // Then terminating boundary
                                     stream.Write(terminatorBytes, 0, terminatorBytes.Length);
                                     stream.Close();
                                 }
 
                                 Tools.HttpDebugRequest(request);
 
-                                //Make the request
+                                // Make the request
                                 request.BeginGetResponse(r2 =>
                                     {
                                         try
@@ -485,7 +485,7 @@ namespace VDS.RDF.Storage.Management
                                             {
                                                 Tools.HttpDebugResponse(response);
 
-                                                //If we get here it completed OK
+                                                // If we get here it completed OK
                                                 response.Close();
                                             }
                                             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID), state);
@@ -533,7 +533,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="state">State to pass to the callback</param>
         public virtual void DeleteStore(string storeID, AsyncStorageCallback callback, object state)
         {
-            //DELETE /admin/databases/{db}
+            // DELETE /admin/databases/{db}
             HttpWebRequest request = this.CreateAdminRequest("databases/" + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
 
             Tools.HttpDebugRequest(request);
@@ -548,7 +548,7 @@ namespace VDS.RDF.Storage.Management
 
                             Tools.HttpDebugResponse(response);
 
-                            //If we get here then it completed OK
+                            // If we get here then it completed OK
                             response.Close();
                             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID), state);
                         }
@@ -584,7 +584,7 @@ namespace VDS.RDF.Storage.Management
 
         protected virtual HttpWebRequest CreateAdminRequest(String servicePath, String accept, String method, Dictionary<String, String> requestParams)
         {
-            //Build the Request Uri
+            // Build the Request Uri
             String requestUri = this._adminUri + servicePath;
             if (requestParams.Count > 0)
             {
@@ -596,25 +596,25 @@ namespace VDS.RDF.Storage.Management
                 requestUri = requestUri.Substring(0, requestUri.Length - 1);
             }
 
-            //Create our Request
+            // Create our Request
             HttpWebRequest request = (HttpWebRequest) WebRequest.Create(requestUri);
             request.Accept = accept;
             request.Method = method;
             request = base.ApplyRequestOptions(request);
 
-            //Add the special Stardog Headers
+            // Add the special Stardog Headers
 #if !(SILVERLIGHT||NETCORE)
             request.Headers.Add("SD-Protocol", "1.0");
 #else
             request.Headers["SD-Protocol"] = "1.0";
 #endif
 
-            //Add Credentials if needed
+            // Add Credentials if needed
             if (this._hasCredentials)
             {
                 if (Options.ForceHttpBasicAuth)
                 {
-                    //Forcibly include a HTTP basic authentication header
+                    // Forcibly include a HTTP basic authentication header
 #if !(SILVERLIGHT||NETCORE)
                     string credentials = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(this._username + ":" + this._pwd));
                     request.Headers.Add("Authorization", "Basic " + credentials);
@@ -625,7 +625,7 @@ namespace VDS.RDF.Storage.Management
                 }
                 else
                 {
-                    //Leave .Net to cope with HTTP auth challenge response
+                    // Leave .Net to cope with HTTP auth challenge response
                     NetworkCredential credentials = new NetworkCredential(this._username, this._pwd);
                     request.Credentials = credentials;
 #if !(SILVERLIGHT||NETCORE)
@@ -642,7 +642,7 @@ namespace VDS.RDF.Storage.Management
         /// </summary>
         public virtual void Dispose()
         {
-            //Nothing to do
+            // Nothing to do
         }
 
         /// <summary>
@@ -823,39 +823,39 @@ namespace VDS.RDF.Storage.Management
                 }
             }
 
-            //The legal value of icv.active.graphs is a list of named graph identifiers. See reasoning.schema.graphs below for syntactic sugar URIs for default graph and all named graphs.
+            // The legal value of icv.active.graphs is a list of named graph identifiers. See reasoning.schema.graphs below for syntactic sugar URIs for default graph and all named graphs.
 
-            //The legal value of icv.reasoning.type is one of the reasoning levels (i.e, one of the following strings): NONE, RDFS, QL, RL, EL, DL.
+            // The legal value of icv.reasoning.type is one of the reasoning levels (i.e, one of the following strings): NONE, RDFS, QL, RL, EL, DL.
 
-            //The legal value of index.differential.* is an integer.
+            // The legal value of index.differential.* is an integer.
 
-            //The legal value of index.type is the string "disk" or "memory" (case-insensitive).
+            // The legal value of index.type is the string "disk" or "memory" (case-insensitive).
 
-            //The legal value of reasoning.schema.graphs is a list of named graph identifiers, including (optionally) the special names, tag:stardog:api:context:default and tag:stardog:api:context:all, which represent the default graph and the union of all named graphs and the default graph, respectively. In the context of database configurations only, Stardog will recognize default and * as shorter forms of those URIs, respectively.
+            // The legal value of reasoning.schema.graphs is a list of named graph identifiers, including (optionally) the special names, tag:stardog:api:context:default and tag:stardog:api:context:all, which represent the default graph and the union of all named graphs and the default graph, respectively. In the context of database configurations only, Stardog will recognize default and * as shorter forms of those URIs, respectively.
 
-            //The legal value of search.reindex.mode is one of the strings sync or async (case insensitive) or a legal Quartz cron expression
+            // The legal value of search.reindex.mode is one of the strings sync or async (case insensitive) or a legal Quartz cron expression
 
-            //Config Option	Mutability	Default	API
-            //Config Option	Mutability	Default	API
-            //database.name	false	{NO DEFAULT}	DatabaseOptions.NAME
-            //database.online	false6	true	DatabaseOptions.ONLINE
-            //icv.active.graphs	false	default	DatabaseOptions.ICV_ACTIVE_GRAPHS
-            //icv.enabled	true	false	DatabaseOptions.ICV_ENABLED
-            //icv.reasoning.type	true	NONE	DatabaseOptions.ICV_REASONING_TYPE
-            //index.differential.enable.limit	true	1000000	IndexOptions.DIFF_INDEX_MIN_LIMIT
-            //index.differential.merge.limit	true	10000	IndexOptions.DIFF_INDEX_MAX_LIMIT
-            //index.literals.canonical	false	true	IndexOptions.CANONICAL_LITERALS
-            //index.named.graphs	false	true	IndexOptions.INDEX_NAMED_GRAPHS
-            //index.persist	true	false	IndexOptions.PERSIST
-            //index.persist.sync	true	true	IndexOptions.SYNC
-            //index.statistics.update.automatic	true	true	IndexOptions.AUTO_STATS_UPDATE
-            //index.type	false	Disk	IndexOptions.INDEX_TYPE
-            //reasoning.consistency.automatic	true	false	DatabaseOptions.CONSISTENCY_AUTOMATIC
-            //reasoning.punning.enabled	false	false	DatabaseOptions.PUNNING_ENABLED
-            //reasoning.schema.graphs	true	default	DatabaseOptions.SCHEMA_GRAPHS
-            //search.enabled	false	false	DatabaseOptions.SEARCHABLE
-            //search.reindex.mode	false	wait	DatabaseOptions.SEARCH_REINDEX_MODE
-            //transactions.durable	true	false	DatabaseOptions.TRANSACTIONS_DURABLE
+            // Config Option	Mutability	Default	API
+            // Config Option	Mutability	Default	API
+            // database.name	false	{NO DEFAULT}	DatabaseOptions.NAME
+            // database.online	false6	true	DatabaseOptions.ONLINE
+            // icv.active.graphs	false	default	DatabaseOptions.ICV_ACTIVE_GRAPHS
+            // icv.enabled	true	false	DatabaseOptions.ICV_ENABLED
+            // icv.reasoning.type	true	NONE	DatabaseOptions.ICV_REASONING_TYPE
+            // index.differential.enable.limit	true	1000000	IndexOptions.DIFF_INDEX_MIN_LIMIT
+            // index.differential.merge.limit	true	10000	IndexOptions.DIFF_INDEX_MAX_LIMIT
+            // index.literals.canonical	false	true	IndexOptions.CANONICAL_LITERALS
+            // index.named.graphs	false	true	IndexOptions.INDEX_NAMED_GRAPHS
+            // index.persist	true	false	IndexOptions.PERSIST
+            // index.persist.sync	true	true	IndexOptions.SYNC
+            // index.statistics.update.automatic	true	true	IndexOptions.AUTO_STATS_UPDATE
+            // index.type	false	Disk	IndexOptions.INDEX_TYPE
+            // reasoning.consistency.automatic	true	false	DatabaseOptions.CONSISTENCY_AUTOMATIC
+            // reasoning.punning.enabled	false	false	DatabaseOptions.PUNNING_ENABLED
+            // reasoning.schema.graphs	true	default	DatabaseOptions.SCHEMA_GRAPHS
+            // search.enabled	false	false	DatabaseOptions.SEARCHABLE
+            // search.reindex.mode	false	wait	DatabaseOptions.SEARCH_REINDEX_MODE
+            // transactions.durable	true	false	DatabaseOptions.TRANSACTIONS_DURABLE
         }
     }
 

@@ -61,19 +61,19 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            //Apply the Pattern first
+            // Apply the Pattern first
             context.InputMultiset = context.Evaluate(this._pattern);
 
             if (context.InputMultiset is NullMultiset)
             {
-                //If we get a NullMultiset then the FILTER has no effect since there are already no results
+                // If we get a NullMultiset then the FILTER has no effect since there are already no results
             }
             else if (context.InputMultiset is IdentityMultiset)
             {
                 if (this._filter.Variables.Any())
                 {
-                    //If we get an IdentityMultiset then the FILTER only has an effect if there are no
-                    //variables - otherwise it is not in scope and causes the Output to become Null
+                    // If we get an IdentityMultiset then the FILTER only has an effect if there are no
+                    // variables - otherwise it is not in scope and causes the Output to become Null
                     context.InputMultiset = new NullMultiset();
                 }
                 else

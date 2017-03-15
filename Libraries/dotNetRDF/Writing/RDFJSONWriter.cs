@@ -84,7 +84,7 @@ namespace VDS.RDF.Writing
         {
             try
             {
-                //Always issue a Warning
+                // Always issue a Warning
                 this.RaiseWarning("RDF/JSON does not contain any Namespace information.  If you read this serialized data back in at a later date you may not be able to reserialize it to Namespace reliant formats (like RDF/XML)");
 
                 this.GenerateOutput(g, output);
@@ -94,12 +94,12 @@ namespace VDS.RDF.Writing
             {
                 try
                 {
-                    //Close the Output Stream
+                    // Close the Output Stream
                     output.Close();
                 }
                 catch
                 {
-                    //No Catch actions here
+                    // No Catch actions here
                 }
                 throw;
             }
@@ -112,10 +112,10 @@ namespace VDS.RDF.Writing
         /// <param name="output">Stream to save to</param>
         private void GenerateOutput(IGraph g, TextWriter output)
         {
-            //Get a Blank Node Output Mapper
+            // Get a Blank Node Output Mapper
             BlankNodeOutputMapper bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidBlankNodeID);
 
-            //Get the Writer and Configure Options
+            // Get the Writer and Configure Options
             JsonTextWriter writer = new JsonTextWriter(output);
             if (this._prettyprint)
             {
@@ -126,14 +126,14 @@ namespace VDS.RDF.Writing
                 writer.Formatting = Newtonsoft.Json.Formatting.None;
             }
 
-            //Start the overall Object which represents the Graph
+            // Start the overall Object which represents the Graph
             writer.WriteStartObject();
 
-            //Get the Triples as a Sorted List
+            // Get the Triples as a Sorted List
             List<Triple> ts = g.Triples.ToList();
             ts.Sort(new FullTripleComparer(new FastNodeComparer()));
 
-            //Variables we need to track our writing
+            // Variables we need to track our writing
             INode lastSubj, lastPred;
             lastSubj = lastPred = null;
 
@@ -142,15 +142,15 @@ namespace VDS.RDF.Writing
                 Triple t = ts[i];
                 if (lastSubj == null || !t.Subject.Equals(lastSubj))
                 {
-                    //Terminate previous Triples
+                    // Terminate previous Triples
                     if (lastSubj != null)
                     {
                         writer.WriteEndArray();
                         writer.WriteEndObject();
                     }
 
-                    //Start a new set of Triples
-                    //Validate Subject
+                    // Start a new set of Triples
+                    // Validate Subject
                     switch (t.Subject.NodeType)
                     {
                         case NodeType.GraphLiteral:
@@ -160,30 +160,30 @@ namespace VDS.RDF.Writing
                         case NodeType.Blank:
                             break;
                         case NodeType.Uri:
-                            //OK
+                            // OK
                             break;
                         default:
                             throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("RDF/JSON"));
                     }
 
-                    //Write out the Subject
+                    // Write out the Subject
                     if (t.Subject.NodeType != NodeType.Blank)
                     {
                         writer.WritePropertyName(t.Subject.ToString());
                     }
                     else
                     {
-                        //Remap Blank Node IDs as appropriate
+                        // Remap Blank Node IDs as appropriate
                         writer.WritePropertyName("_:" + bnodeMapper.GetOutputID(((IBlankNode)t.Subject).InternalID));
                     }
 
-                    //Start an Object for the Subject
+                    // Start an Object for the Subject
                     writer.WriteStartObject();
 
                     lastSubj = t.Subject;
 
-                    //Write the first Predicate
-                    //Validate Predicate
+                    // Write the first Predicate
+                    // Validate Predicate
                     switch (t.Predicate.NodeType)
                     {
                         case NodeType.GraphLiteral:
@@ -193,27 +193,27 @@ namespace VDS.RDF.Writing
                         case NodeType.Literal:
                             throw new RdfOutputException(WriterErrorMessages.LiteralPredicatesUnserializable("RDF/JSON"));
                         case NodeType.Uri:
-                            //OK
+                            // OK
                             break;
                         default:
                             throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("RDF/JSON"));
                     }
 
-                    //Write the Predicate
+                    // Write the Predicate
                     writer.WritePropertyName(t.Predicate.ToString());
 
-                    //Create an Array for the Objects
+                    // Create an Array for the Objects
                     writer.WriteStartArray();
 
                     lastPred = t.Predicate;
                 }
                 else if (lastPred == null || !t.Predicate.Equals(lastPred))
                 {
-                    //Terminate previous Predicate Object list
+                    // Terminate previous Predicate Object list
                     writer.WriteEndArray();
 
-                    //Write the next Predicate
-                    //Validate Predicate
+                    // Write the next Predicate
+                    // Validate Predicate
                     switch (t.Predicate.NodeType)
                     {
                         case NodeType.GraphLiteral:
@@ -223,30 +223,30 @@ namespace VDS.RDF.Writing
                         case NodeType.Literal:
                             throw new RdfOutputException(WriterErrorMessages.LiteralPredicatesUnserializable("RDF/JSON"));
                         case NodeType.Uri:
-                            //OK
+                            // OK
                             break;
                         default:
                             throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("RDF/JSON"));
                     }
 
-                    //Write the Predicate
+                    // Write the Predicate
                     writer.WritePropertyName(t.Predicate.ToString());
 
-                    //Create an Array for the Objects
+                    // Create an Array for the Objects
                     writer.WriteStartArray();
 
                     lastPred = t.Predicate;
                 }
 
-                //Write the Object
-                //Create an Object for the Object
+                // Write the Object
+                // Create an Object for the Object
                 INode obj = t.Object;
                 writer.WriteStartObject();
                 writer.WritePropertyName("value");
                 switch (obj.NodeType)
                 {
                     case NodeType.Blank:
-                        //Remap Blank Node IDs as appropriate
+                        // Remap Blank Node IDs as appropriate
                         writer.WriteValue("_:" + bnodeMapper.GetOutputID(((IBlankNode)obj).InternalID));
                         writer.WritePropertyName("type");
                         writer.WriteValue("bnode");
@@ -283,7 +283,7 @@ namespace VDS.RDF.Writing
                 writer.WriteEndObject();
             }
 
-            //Terminate the Object which represents the Graph
+            // Terminate the Object which represents the Graph
             writer.WriteEndObject();
         }
 

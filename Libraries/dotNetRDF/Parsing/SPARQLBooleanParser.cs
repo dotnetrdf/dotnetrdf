@@ -98,7 +98,7 @@ namespace VDS.RDF.Parsing
                 }
                 catch
                 {
-                    //No Catch just cleaning up
+                    // No Catch just cleaning up
                 }
             }
         }

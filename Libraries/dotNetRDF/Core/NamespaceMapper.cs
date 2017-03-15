@@ -87,7 +87,7 @@ namespace VDS.RDF
 
             if (!empty)
             {
-                //Add Standard Namespaces
+                // Add Standard Namespaces
                 this.AddNamespace("rdf", UriFactory.Create(RDF));
                 this.AddNamespace("rdfs", UriFactory.Create(RDFS));
                 this.AddNamespace("xsd", UriFactory.Create(XMLSCHEMA));
@@ -150,35 +150,35 @@ namespace VDS.RDF
             int hash = uri.GetEnhancedHashCode();
             if (!this._uris.ContainsKey(prefix))
             {
-                //Add a New Prefix
+                // Add a New Prefix
                 this._uris.Add(prefix, uri);
 
                 if (!this._prefixes.ContainsKey(hash))
                 {
-                    //Add a New Uri
+                    // Add a New Uri
                     this._prefixes.Add(hash, prefix);
                     this.OnNamespaceAdded(prefix, uri);
                 }
                 else
                 {
-                    //Check whether the Namespace Uri is actually being changed
-                    //If the existing Uri is the same as the old one then we change the prefix
-                    //but we don't raise the OnNamespaceModified event
+                    // Check whether the Namespace Uri is actually being changed
+                    // If the existing Uri is the same as the old one then we change the prefix
+                    // but we don't raise the OnNamespaceModified event
                     this._prefixes[hash] = prefix;
                     if (!this._uris[prefix].AbsoluteUri.Equals(uri.AbsoluteUri, StringComparison.Ordinal))
                     {
-                        //Raise modified event
+                        // Raise modified event
                         this.OnNamespaceModified(prefix, uri);
                     }
                 }
             }
             else
             {
-                //Check whether the Namespace is actually being changed
-                //If the existing Uri is the same as the old one no change is needed
+                // Check whether the Namespace is actually being changed
+                // If the existing Uri is the same as the old one no change is needed
                 if (!this._uris[prefix].AbsoluteUri.Equals(uri.AbsoluteUri, StringComparison.Ordinal))
                 {
-                    //Update the existing Prefix
+                    // Update the existing Prefix
                     this._uris[prefix] = uri;
                     this._prefixes[hash] = prefix;
                     this.OnNamespaceModified(prefix, uri);
@@ -192,22 +192,22 @@ namespace VDS.RDF
         /// <param name="prefix">Namespace Prefix of the Namespace to remove</param>
         public virtual void RemoveNamespace(String prefix)
         {
-            //Check the Namespace is defined
+            // Check the Namespace is defined
             if (this._uris.ContainsKey(prefix))
             {
                 Uri u = this._uris[prefix];
 
-                //Remove the Prefix to Uri Mapping
+                // Remove the Prefix to Uri Mapping
                 this._uris.Remove(prefix);
 
-                //Remove the corresponding Uri to Prefix Mapping
+                // Remove the corresponding Uri to Prefix Mapping
                 int hash = u.GetEnhancedHashCode();
                 if (this._prefixes.ContainsKey(hash))
                 {
                     this._prefixes.Remove(hash);
                 }
 
-                //Raise the Event
+                // Raise the Event
                 this.OnNamespaceRemoved(prefix, u);
             }
         }
@@ -255,12 +255,12 @@ namespace VDS.RDF
             {
                 String baseuri = u.AbsoluteUri;
 
-                //Does the Uri start with the Base Uri
+                // Does the Uri start with the Base Uri
                 if (uri.StartsWith(baseuri))
                 {
-                    //Remove the Base Uri from the front of the Uri
+                    // Remove the Base Uri from the front of the Uri
                     qname = uri.Substring(baseuri.Length);
-                    //Add the Prefix back onto the front plus the colon to give a QName
+                    // Add the Prefix back onto the front plus the colon to give a QName
                     qname = this._prefixes[u.GetEnhancedHashCode()] + ":" + qname;
                     if (qname.Equals(":")) continue;
                     if (qname.Contains("/") || qname.Contains("#")) continue;
@@ -268,7 +268,7 @@ namespace VDS.RDF
                 }
             }
 
-            //Failed to find a Reduction
+            // Failed to find a Reduction
             qname = String.Empty;
             return false;
         }
@@ -288,13 +288,13 @@ namespace VDS.RDF
             {
                 if (!this._uris.ContainsKey(prefix))
                 {
-                    //Non-colliding Namespaces get copied across
+                    // Non-colliding Namespaces get copied across
                     this.AddNamespace(prefix, nsmap.GetNamespaceUri(prefix));
                 }
                 else
                 {
-                    //Colliding Namespaces get remapped to new prefixes
-                    //Assuming the prefixes aren't already used for the same Uri
+                    // Colliding Namespaces get remapped to new prefixes
+                    // Assuming the prefixes aren't already used for the same Uri
                     if (!this._uris[prefix].AbsoluteUri.Equals(nsmap.GetNamespaceUri(prefix).AbsoluteUri, StringComparison.Ordinal))
                     {
                         while (this._uris.ContainsKey(tempPrefix))
@@ -419,7 +419,7 @@ namespace VDS.RDF
         /// <remarks>This function will return a Boolean indicated whether it succeeded in reducing the Uri to a QName.  If it did then the out parameter qname will contain the reduction, otherwise it will be the empty string.</remarks>
         public override bool ReduceToQName(string uri, out string qname)
         {
-            //See if we've cached this mapping
+            // See if we've cached this mapping
             QNameMapping mapping;
             if (this._mapping.TryGetValue(uri, out mapping))
             {
@@ -432,18 +432,18 @@ namespace VDS.RDF
             {
                 String baseuri = u.AbsoluteUri;
 
-                //Does the Uri start with the Base Uri
+                // Does the Uri start with the Base Uri
                 if (uri.StartsWith(baseuri))
                 {
-                    //Remove the Base Uri from the front of the Uri
+                    // Remove the Base Uri from the front of the Uri
                     qname = uri.Substring(baseuri.Length);
-                    //Add the Prefix back onto the front plus the colon to give a QName
+                    // Add the Prefix back onto the front plus the colon to give a QName
                     if (this._prefixes.ContainsKey(u.GetEnhancedHashCode()))
                     {
                         qname = this._prefixes[u.GetEnhancedHashCode()] + ":" + qname;
                         if (qname.Equals(":")) continue;
                         if (qname.Contains("/") || qname.Contains("#")) continue;
-                        //Cache the Mapping
+                        // Cache the Mapping
                         mapping.QName = qname;
                         this.AddToCache(uri, mapping);
                         return true;
@@ -451,7 +451,7 @@ namespace VDS.RDF
                 }
             }
 
-            //Failed to find a Reduction
+            // Failed to find a Reduction
             qname = String.Empty;
             return false;
         }
@@ -475,7 +475,7 @@ namespace VDS.RDF
         {
             tempNamespace = String.Empty;
 
-            //See if we've cached this mapping
+            // See if we've cached this mapping
             QNameMapping mapping;
             if (this._mapping.TryGetValue(uri, out mapping))
             {
@@ -484,23 +484,23 @@ namespace VDS.RDF
             }
             mapping = new QNameMapping(uri);
 
-            //Try and find a Namespace URI that is the prefix of the URI
+            // Try and find a Namespace URI that is the prefix of the URI
             foreach (Uri u in this._uris.Values)
             {
                 String baseuri = u.AbsoluteUri;
 
-                //Does the Uri start with the Base Uri
+                // Does the Uri start with the Base Uri
                 if (uri.StartsWith(baseuri))
                 {
-                    //Remove the Base Uri from the front of the Uri
+                    // Remove the Base Uri from the front of the Uri
                     qname = uri.Substring(baseuri.Length);
-                    //Add the Prefix back onto the front plus the colon to give a QName
+                    // Add the Prefix back onto the front plus the colon to give a QName
                     if (this._prefixes.ContainsKey(u.GetEnhancedHashCode()))
                     {
                         qname = this._prefixes[u.GetEnhancedHashCode()] + ":" + qname;
                         if (qname.Equals(":")) continue;
                         if (qname.Contains("/") || qname.Contains("#")) continue;
-                        //Cache the Mapping
+                        // Cache the Mapping
                         mapping.QName = qname;
                         this.AddToCache(uri, mapping);
                         return true;
@@ -508,7 +508,7 @@ namespace VDS.RDF
                 }
             }
 
-            //Try and issue a Temporary Namespace
+            // Try and issue a Temporary Namespace
             String nsUri, nsPrefix;
             if (uri.Contains('#'))
             {
@@ -522,15 +522,15 @@ namespace VDS.RDF
             }
             else
             {
-                //Failed to find a Reduction and unable to issue a Temporary Namespace
+                // Failed to find a Reduction and unable to issue a Temporary Namespace
                 qname = String.Empty;
                 return false;
             }
 
-            //Add to Namespace Map
+            // Add to Namespace Map
             this.AddNamespace(nsPrefix, UriFactory.Create(nsUri));
 
-            //Cache mapping and return
+            // Cache mapping and return
             mapping.QName = nsPrefix + ":" + uri.Replace(nsUri, String.Empty);
             this.AddToCache(uri, mapping);
             qname = mapping.QName;

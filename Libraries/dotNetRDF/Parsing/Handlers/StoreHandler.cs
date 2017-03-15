@@ -104,7 +104,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="ok">Whether parsing completed successfully</param>
         protected override void EndRdfInternal(bool ok)
         {
-            //Propogate discovered namespaces to all graphs
+            // Propogate discovered namespaces to all graphs
             foreach (IGraph g in this._store.Graphs)
             {
                 g.NamespaceMap.Import(this._nsmap);

@@ -63,8 +63,8 @@ namespace VDS.RDF.Query.Algebra
 
             if (subjVar == null || (context.InputMultiset.ContainsVariable(subjVar)))
             {
-                //Work Forwards from the Starting Term or Bound Variable
-                //OR if there is no Ending Term or Bound Variable work forwards regardless
+                // Work Forwards from the Starting Term or Bound Variable
+                // OR if there is no Ending Term or Bound Variable work forwards regardless
                 if (subjVar == null)
                 {
                     paths.Add(((NodeMatchPattern)this.PathStart).Node.AsEnumerable().ToList());
@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.Algebra
             }
             else if (objVar == null || (context.InputMultiset.ContainsVariable(objVar)))
             {
-                //Work Backwards from Ending Term or Bound Variable
+                // Work Backwards from Ending Term or Bound Variable
                 if (objVar == null)
                 {
                     paths.Add(((NodeMatchPattern)this.PathEnd).Node.AsEnumerable().ToList());
@@ -97,7 +97,7 @@ namespace VDS.RDF.Query.Algebra
                 this.GetPathStarts(context, paths, reverse);
             }
 
-            //Traverse the Paths
+            // Traverse the Paths
             do
             {
                 prevCount = paths.Count;
@@ -111,14 +111,14 @@ namespace VDS.RDF.Query.Algebra
                     }
                 }
 
-                //Update Counts
-                //skipCount is used to indicate the paths which we will ignore for the purposes of
-                //trying to further extend since we've already done them once
+                // Update Counts
+                // skipCount is used to indicate the paths which we will ignore for the purposes of
+                // trying to further extend since we've already done them once
                 step++;
                 if (paths.Count == 0) break;
                 skipCount = prevCount;
 
-                //Can short circuit evaluation here if both are terms and any path is acceptable
+                // Can short circuit evaluation here if both are terms and any path is acceptable
                 if (bothTerms)
                 {
                     bool exit = false;
@@ -147,14 +147,14 @@ namespace VDS.RDF.Query.Algebra
 
             if (paths.Count == 0)
             {
-                //If all path starts lead nowhere then we get the Null Multiset as a result
+                // If all path starts lead nowhere then we get the Null Multiset as a result
                 context.OutputMultiset = new NullMultiset();
             }
             else
             {
                 context.OutputMultiset = new Multiset();
 
-                //Evaluate the Paths to check that are acceptable
+                // Evaluate the Paths to check that are acceptable
                 HashSet<ISet> returnedPaths = new HashSet<ISet>();
                 foreach (List<INode> path in paths)
                 {
@@ -168,13 +168,13 @@ namespace VDS.RDF.Query.Algebra
                                 if (subjVar != null) s.Add(subjVar, path[path.Count - 1]);
                                 if (objVar != null) s.Add(objVar, path[0]);
                             }
-                            //Make sure to check for uniqueness
+                            // Make sure to check for uniqueness
                             if (returnedPaths.Contains(s)) continue;
                             context.OutputMultiset.Add(s);
                             returnedPaths.Add(s);
 
-                            //If both are terms can short circuit evaluation here
-                            //It is sufficient just to determine that there is one path possible
+                            // If both are terms can short circuit evaluation here
+                            // It is sufficient just to determine that there is one path possible
                             if (bothTerms) break;
                         }
                     }
@@ -188,19 +188,19 @@ namespace VDS.RDF.Query.Algebra
                                 if (subjVar != null) s.Add(subjVar, path[0]);
                                 if (objVar != null) s.Add(objVar, path[path.Count - 1]);
                             }
-                            //Make sure to check for uniqueness
+                            // Make sure to check for uniqueness
                             if (returnedPaths.Contains(s)) continue;
                             context.OutputMultiset.Add(s);
                             returnedPaths.Add(s);
 
-                            //If both are terms can short circuit evaluation here
-                            //It is sufficient just to determine that there is one path possible
+                            // If both are terms can short circuit evaluation here
+                            // It is sufficient just to determine that there is one path possible
                             if (bothTerms) break;
                         }
                     }
                 }
 
-                //Now add the zero length paths into
+                // Now add the zero length paths into
                 IEnumerable<INode> nodes;
                 if (subjVar != null)
                 {
@@ -232,7 +232,7 @@ namespace VDS.RDF.Query.Algebra
 
                 if (bothTerms)
                 {
-                    //If both were terms transform to an Identity/Null Multiset as appropriate
+                    // If both were terms transform to an Identity/Null Multiset as appropriate
                     if (context.OutputMultiset.IsEmpty)
                     {
                         context.OutputMultiset = new NullMultiset();
@@ -243,7 +243,7 @@ namespace VDS.RDF.Query.Algebra
                     }
                 }
 
-                //Then union in the zero length paths
+                // Then union in the zero length paths
                 context.InputMultiset = initialInput;
                 ZeroLengthPath zeroPath = new ZeroLengthPath(this.PathStart, this.PathEnd, this.Path);
                 BaseMultiset currResults = context.OutputMultiset;

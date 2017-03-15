@@ -176,7 +176,7 @@ namespace VDS.RDF.Writing.Formatting
             {
                 if (TurtleSpecsHelper.IsValidDecimal(l.Value) && l.Value.EndsWith("."))
                 {
-                    //Ensure we strip the trailing dot of any xsd:decimal and add a datatype definition
+                    // Ensure we strip the trailing dot of any xsd:decimal and add a datatype definition
                     output.Append('"');
                     output.Append(l.Value.Substring(0, l.Value.Length - 1));
                     output.Append("\"^^<");
@@ -185,10 +185,10 @@ namespace VDS.RDF.Writing.Formatting
                 }
                 else
                 {
-                    //Otherwise just write out the value
+                    // Otherwise just write out the value
                     output.Append(l.Value);
                 }
-                //For integers ensure we insert a space after the literal to ensure it can't ever be confused with a decimal
+                // For integers ensure we insert a space after the literal to ensure it can't ever be confused with a decimal
                 if (TurtleSpecsHelper.IsValidInteger(l.Value))
                 {
                     output.Append(' ');

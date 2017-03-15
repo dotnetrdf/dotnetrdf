@@ -49,13 +49,13 @@ namespace VDS.RDF.Query.Describe
         /// <param name="nodes">Nodes to be described</param>
         protected override void DescribeInternal(IRdfHandler handler, SparqlEvaluationContext context, IEnumerable<INode> nodes)
         {
-            //Rewrite Blank Node IDs for DESCRIBE Results
+            // Rewrite Blank Node IDs for DESCRIBE Results
             Dictionary<String, INode> bnodeMapping = new Dictionary<string, INode>();
 
-            //Get Triples for this Subject
+            // Get Triples for this Subject
             foreach (INode subj in nodes)
             {
-                //Get Triples where the Node is the Subject
+                // Get Triples where the Node is the Subject
                 foreach (Triple t in context.Data.GetTriplesWithSubject(subj).ToList())
                 {
                     if (!handler.HandleTriple((this.RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();

@@ -49,7 +49,7 @@ namespace VDS.RDF.Query
             this._name = name;
             this._isResultVar = isResultVar;
 
-            //Strip leading ?/$ if present
+            // Strip leading ?/$ if present
             if (this._name.StartsWith("?") || this._name.StartsWith("$"))
             {
                 this._name = this._name.Substring(1);

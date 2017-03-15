@@ -86,20 +86,20 @@ namespace VDS.RDF.Configuration
                     break;
 
                 default:
-                    //Try and create an Algebra Optimiser
+                    // Try and create an Algebra Optimiser
                     try
                     {
                         obj = (IAlgebraOptimiser)Activator.CreateInstance(targetType);
                     }
                     catch
                     {
-                        //Any error means this loader can't load this type
+                        // Any error means this loader can't load this type
                         return false;
                     }
                     break;
             }
 
-            //Return true only if we've loaded something into the output object
+            // Return true only if we've loaded something into the output object
             if (obj != null)
             {
                 return true;

@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Builder
         /// <returns>the parent query or graph pattern builder</returns>
         T As(string variableName);
 
-        //{
+        // {
         //    var expressionBuilder = new ExpressionBuilder(_prefixes);
         //    var assignment = _buildAssignmentExpression(expressionBuilder);
         //    var bindPattern = new BindPattern(variableName, assignment.Expression);
@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Builder
 
         //    // todo: refactor as lookup table
         //    throw new InvalidOperationException(string.Format("Invalid type of T for creating assignment: {0}", typeof(T)));
-        //}
+        // }
     }
 
     internal abstract class AssignmentVariableNamePart

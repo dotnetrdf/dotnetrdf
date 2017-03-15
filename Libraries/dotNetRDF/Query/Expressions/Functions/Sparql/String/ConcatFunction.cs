@@ -69,8 +69,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                 switch (temp.NodeType)
                 {
                     case NodeType.Literal:
-                        //Check whether the Language Tags and Types are the same
-                        //We need to do this so that we can produce the appropriate output
+                        // Check whether the Language Tags and Types are the same
+                        // We need to do this so that we can produce the appropriate output
                         ILiteralNode lit = (ILiteralNode)temp;
                         if (langTag == null)
                         {
@@ -81,7 +81,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                             allSameTag = allSameTag && (langTag.Equals(lit.Language));
                         }
 
-                        //Have to ensure that if Typed is an xsd:string
+                        // Have to ensure that if Typed is an xsd:string
                         if (lit.DataType != null && !lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) throw new RdfQueryException("Cannot evaluate the SPARQL CONCAT() function when an argument is a Typed Literal which is not an xsd:string");
                         allString = allString && lit.DataType != null;
 
@@ -93,7 +93,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                 }
             }
 
-            //Produce the appropriate literal form depending on our inputs
+            // Produce the appropriate literal form depending on our inputs
             if (allString)
             {
                 return new StringNode(null, output.ToString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));

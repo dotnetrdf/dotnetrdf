@@ -69,72 +69,72 @@ namespace VDS.RDF.Query.Inference.Pellet
             switch (serviceName)
             {
                 case PelletHelper.ServiceClassify:
-                    //Classify Service
+                    // Classify Service
                     return new ClassifyService(serviceName, obj);
 
                 case PelletHelper.ServiceCluster:
-                    //Clustering Service
+                    // Clustering Service
                     return new ClusterService(serviceName, obj);
 
                 case PelletHelper.ServiceConsistency:
-                    //Consistency Service
+                    // Consistency Service
                     return new ConsistencyService(serviceName, obj);
 
                 case PelletHelper.ServiceExplain:
-                    //Explain Service
+                    // Explain Service
                     return new ExplainService(serviceName, obj);
 
                 case PelletHelper.ServiceExplainInconsistent:
-                    //Explain Inconstistent Service
+                    // Explain Inconstistent Service
                     return new ExplainInconsistentService(serviceName, obj);
 
                 case PelletHelper.ServiceExplainInstance:
-                    //Explain Instance Service
+                    // Explain Instance Service
                     return new ExplainInstanceService(serviceName, obj);
 
                 case PelletHelper.ServiceExplainProperty:
-                    //Explain Property Service
+                    // Explain Property Service
                     return new ExplainPropertyService(serviceName, obj);
 
                 case PelletHelper.ServiceExplainSubclass:
-                    //Explain Subclass Service
+                    // Explain Subclass Service
                     return new ExplainSubclassService(serviceName, obj);
 
                 case PelletHelper.ServiceExplainUnsat:
-                    //Explain Unsat Service
+                    // Explain Unsat Service
                     return new ExplainUnsatService(serviceName, obj);
 
                 case PelletHelper.ServiceIntegrityConstraintValidation:
-                    //ICV Service
+                    // ICV Service
                     return new IntegrityConstraintValidationService(serviceName, obj);
 
                 case PelletHelper.ServicePredict:
-                    //Prediction Service
+                    // Prediction Service
                     return new PredictService(serviceName, obj);
 
                 case PelletHelper.ServiceQuery:
-                    //SPARQL Query Service
+                    // SPARQL Query Service
                     return new QueryService(serviceName, obj);
 
                 case PelletHelper.ServiceRealize:
-                    //Knowledge Base Realization Service
+                    // Knowledge Base Realization Service
                     return new RealizeService(serviceName, obj);
 
                 case PelletHelper.ServiceSearch:
-                    //Search Service
+                    // Search Service
                     return new SearchService(serviceName, obj);
 
                 case PelletHelper.ServiceSimilarity:
-                    //Similarity Service
+                    // Similarity Service
                     return new SimilarityService(serviceName, obj);
 
                 case PelletHelper.ServiceNamespaces:
-                    //Namespace Service
+                    // Namespace Service
                     return new NamespaceService(serviceName, obj);
 
                 case PelletHelper.ServiceKBDescription:
                 case PelletHelper.ServiceServerDescription:
-                    //Description Services don't have concrete implementations and are ignored
+                    // Description Services don't have concrete implementations and are ignored
                     return null;
                 default:
                     return new UnsupportedService(serviceName, obj);

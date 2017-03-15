@@ -66,24 +66,24 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public virtual BaseMultiset Join(BaseMultiset other)
         {
-            //If the Other is the Identity Multiset the result is this Multiset
+            // If the Other is the Identity Multiset the result is this Multiset
             if (other is IdentityMultiset) return this;
-            //If the Other is the Null Multiset the result is the Null Multiset
+            // If the Other is the Null Multiset the result is the Null Multiset
             if (other is NullMultiset) return other;
-            //If the Other is Empty then the result is the Null Multiset
+            // If the Other is Empty then the result is the Null Multiset
             if (other.IsEmpty) return new NullMultiset();
 
-            //Find the First Variable from this Multiset which is in both Multisets
-            //If there is no Variable from this Multiset in the other Multiset then this
-            //should be a Product operation instead of a Join
+            // Find the First Variable from this Multiset which is in both Multisets
+            // If there is no Variable from this Multiset in the other Multiset then this
+            // should be a Product operation instead of a Join
             List<String> joinVars = this.Variables.Where(v => other.Variables.Contains(v)).ToList();
             if (joinVars.Count == 0) return this.Product(other);
 
-            //Start building the Joined Set
+            // Start building the Joined Set
             Multiset joinedSet = new Multiset();
 
-            //This is the new Join algorithm which is O(2n) so much faster and scalable
-            //Downside is that it does require more memory than the old algorithm
+            // This is the new Join algorithm which is O(2n) so much faster and scalable
+            // Downside is that it does require more memory than the old algorithm
             List<MultiDictionary<INode, List<int>>> values = new List<MultiDictionary<INode, List<int>>>();
             List<List<int>> nulls = new List<List<int>>();
             foreach (String var in joinVars)
@@ -93,7 +93,7 @@ namespace VDS.RDF.Query.Algebra
                 nulls.Add(new List<int>());
             }
 
-            //First do a pass over the LHS Result to find all possible values for joined variables
+            // First do a pass over the LHS Result to find all possible values for joined variables
             foreach (ISet x in this.Sets)
             {
                 int i = 0;
@@ -123,14 +123,14 @@ namespace VDS.RDF.Query.Algebra
 #if NET40 && !SILVERLIGHT
             if (Options.UsePLinqEvaluation)
             {
-                //Use a paralllel join
+                // Use a paralllel join
                 other.Sets.AsParallel().ForAll(y => EvalJoin(y, joinVars, values, nulls, joinedSet));
             }
             else
             {
 #endif
-                //Use a serial join
-                //Then do a pass over the RHS and work out the intersections
+                // Use a serial join
+                // Then do a pass over the RHS and work out the intersections
                 foreach (ISet y in other.Sets)
                 {
                     this.EvalJoin(y, joinVars, values, nulls, joinedSet);
@@ -163,14 +163,14 @@ namespace VDS.RDF.Query.Algebra
                 }
                 else
                 {
-                    //Don't forget that a null will be potentially compatible with everything
+                    // Don't forget that a null will be potentially compatible with everything
                     possMatches = (possMatches == null ? this.SetIDs : possMatches.Intersect(this.SetIDs));
                 }
                 i++;
             }
             if (possMatches == null) return;
 
-            //Now do the actual joins for the current set
+            // Now do the actual joins for the current set
             foreach (int poss in possMatches)
             {
                 if (this[poss].IsCompatibleWith(y, joinVars))
@@ -188,7 +188,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public virtual BaseMultiset LeftJoin(BaseMultiset other, ISparqlExpression expr)
         {
-            //If the Other is the Identity/Null Multiset the result is this Multiset
+            // If the Other is the Identity/Null Multiset the result is this Multiset
             if (other is IdentityMultiset) return this;
             if (other is NullMultiset) return this;
             if (other.IsEmpty) return this;
@@ -197,9 +197,9 @@ namespace VDS.RDF.Query.Algebra
             LeviathanLeftJoinBinder binder = new LeviathanLeftJoinBinder(joinedSet);
             SparqlEvaluationContext subcontext = new SparqlEvaluationContext(binder);
 
-            //Find the First Variable from this Multiset which is in both Multisets
-            //If there is no Variable from this Multiset in the other Multiset then this
-            //should be a Join operation instead of a LeftJoin
+            // Find the First Variable from this Multiset which is in both Multisets
+            // If there is no Variable from this Multiset in the other Multiset then this
+            // should be a Join operation instead of a LeftJoin
             List<String> joinVars = this.Variables.Where(v => other.Variables.Contains(v)).ToList();
             if (joinVars.Count == 0)
             {
@@ -211,9 +211,9 @@ namespace VDS.RDF.Query.Algebra
                     return partitionedSet;
                 }
 #endif
-                //Do a serial Left Join Product
+                // Do a serial Left Join Product
 
-                //Calculate a Product filtering as we go
+                // Calculate a Product filtering as we go
                 foreach (ISet x in this.Sets)
                 {
                     bool standalone = false;
@@ -247,8 +247,8 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                //This is the new Join algorithm which is also correct but is O(2n) so much faster and scalable
-                //Downside is that it does require more memory than the old algorithm
+                // This is the new Join algorithm which is also correct but is O(2n) so much faster and scalable
+                // Downside is that it does require more memory than the old algorithm
                 List<MultiDictionary<INode, List<int>>> values = new List<MultiDictionary<INode, List<int>>>();
                 List<List<int>> nulls = new List<List<int>>();
                 foreach (String var in joinVars)
@@ -258,7 +258,7 @@ namespace VDS.RDF.Query.Algebra
                     nulls.Add(new List<int>());
                 }
 
-                //First do a pass over the RHS Result to find all possible values for joined variables
+                // First do a pass over the RHS Result to find all possible values for joined variables
                 foreach (ISet y in other.Sets)
                 {
                     int i = 0;
@@ -285,7 +285,7 @@ namespace VDS.RDF.Query.Algebra
                     }
                 }
 
-                //Then do a pass over the LHS and work out the intersections
+                // Then do a pass over the LHS and work out the intersections
 #if NET40 && !SILVERLIGHT
                 if (Options.UsePLinqEvaluation && expr.CanParallelise)
                 {
@@ -294,7 +294,7 @@ namespace VDS.RDF.Query.Algebra
                 else
                 {
 #endif
-                    //Use a Serial Left Join
+                    // Use a Serial Left Join
                     foreach (ISet x in this.Sets)
                     {
                         this.EvalLeftJoin(x, other, joinVars, values, nulls, joinedSet, subcontext, expr);
@@ -370,20 +370,20 @@ namespace VDS.RDF.Query.Algebra
                 }
                 else
                 {
-                    //Don't forget that a null will be potentially compatible with everything
+                    // Don't forget that a null will be potentially compatible with everything
                     possMatches = (possMatches == null ? this.SetIDs : possMatches.Intersect(this.SetIDs));
                 }
                 i++;
             }
 
-            //If no possible matches just copy LHS across
+            // If no possible matches just copy LHS across
             if (possMatches == null)
             {
                 joinedSet.Add(x.Copy());
                 return;
             }
 
-            //Now do the actual joins for the current set
+            // Now do the actual joins for the current set
             bool standalone = false;
             bool matched = false;
             foreach (int poss in possMatches)
@@ -422,43 +422,43 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public virtual BaseMultiset ExistsJoin(BaseMultiset other, bool mustExist)
         {
-            //For EXISTS and NOT EXISTS if the other is the Identity then it has no effect
+            // For EXISTS and NOT EXISTS if the other is the Identity then it has no effect
             if (other is IdentityMultiset) return this;
             if (mustExist)
             {
-                //If an EXISTS then Null/Empty Other results in Null
+                // If an EXISTS then Null/Empty Other results in Null
                 if (other is NullMultiset) return other;
                 if (other.IsEmpty) return new NullMultiset();
             }
             else
             {
-                //If a NOT EXISTS then Null/Empty results in this
+                // If a NOT EXISTS then Null/Empty results in this
                 if (other is NullMultiset) return this;
                 if (other.IsEmpty) return this;
             }
 
-            //Find the Variables that are to be used for Joining
+            // Find the Variables that are to be used for Joining
             List<String> joinVars = this.Variables.Where(v => other.Variables.Contains(v)).ToList();
             if (joinVars.Count == 0)
             {
-                //All Disjoint Solutions are compatible
+                // All Disjoint Solutions are compatible
                 if (mustExist)
                 {
-                    //If an EXISTS and disjoint then result is this
+                    // If an EXISTS and disjoint then result is this
                     return this;
                 }
                 else
                 {
-                    //If a NOT EXISTS and disjoint then result is null
+                    // If a NOT EXISTS and disjoint then result is null
                     return new NullMultiset();
                 }
             }
 
-            //Start building the Joined Set
+            // Start building the Joined Set
             Multiset joinedSet = new Multiset();
 
-            //This is the new algorithm which is also correct but is O(3n) so much faster and scalable
-            //Downside is that it does require more memory than the old algorithm
+            // This is the new algorithm which is also correct but is O(3n) so much faster and scalable
+            // Downside is that it does require more memory than the old algorithm
             List<MultiDictionary<INode, List<int>>> values = new List<MultiDictionary<INode, List<int>>>();
             List<List<int>> nulls = new List<List<int>>();
             foreach (String var in joinVars)
@@ -468,7 +468,7 @@ namespace VDS.RDF.Query.Algebra
                 nulls.Add(new List<int>());
             }
 
-            //First do a pass over the LHS Result to find all possible values for joined variables
+            // First do a pass over the LHS Result to find all possible values for joined variables
             foreach (ISet x in this.Sets)
             {
                 int i = 0;
@@ -495,7 +495,7 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
 
-            //Then do a pass over the RHS and work out the intersections
+            // Then do a pass over the RHS and work out the intersections
             HashSet<int> exists = new HashSet<int>();
             foreach (ISet y in other.Sets)
             {
@@ -518,15 +518,15 @@ namespace VDS.RDF.Query.Algebra
                     }
                     else
                     {
-                        //Don't forget that a null will be potentially compatible with everything
+                        // Don't forget that a null will be potentially compatible with everything
                         possMatches = (possMatches == null ? this.SetIDs : possMatches.Intersect(this.SetIDs));
                     }
                     i++;
                 }
                 if (possMatches == null) continue;
 
-                //Look at possible matches, if is a valid match then mark the set as having an existing match
-                //Don't reconsider sets which have already been marked as having an existing match
+                // Look at possible matches, if is a valid match then mark the set as having an existing match
+                // Don't reconsider sets which have already been marked as having an existing match
                 foreach (int poss in possMatches)
                 {
                     if (exists.Contains(poss)) continue;
@@ -537,10 +537,10 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
 
-            //Apply the actual exists
+            // Apply the actual exists
             if (exists.Count == this.Count)
             {
-                //If number of sets that have a match is equal to number of sets then we're either returning everything or nothing
+                // If number of sets that have a match is equal to number of sets then we're either returning everything or nothing
                 if (mustExist)
                 {
                     return this;
@@ -552,7 +552,7 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                //Otherwise iterate
+                // Otherwise iterate
                 foreach (ISet x in this.Sets)
                 {
                     if (mustExist)
@@ -582,21 +582,21 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public virtual BaseMultiset MinusJoin(BaseMultiset other)
         {
-            //If the other Multiset is the Identity/Null Multiset then minus-ing it doesn't alter this set
+            // If the other Multiset is the Identity/Null Multiset then minus-ing it doesn't alter this set
             if (other is IdentityMultiset) return this;
             if (other is NullMultiset) return this;
-            //If the other Multiset is disjoint then minus-ing it also doesn't alter this set
+            // If the other Multiset is disjoint then minus-ing it also doesn't alter this set
             if (this.IsDisjointWith(other)) return this;
 
-            //Find the Variables that are to be used for Joining
+            // Find the Variables that are to be used for Joining
             List<String> joinVars = this.Variables.Where(v => other.Variables.Contains(v)).ToList();
             if (joinVars.Count == 0) return this.Product(other);
 
-            //Start building the Joined Set
+            // Start building the Joined Set
             Multiset joinedSet = new Multiset();
 
-            //This is the new algorithm which is also correct but is O(3n) so much faster and scalable
-            //Downside is that it does require more memory than the old algorithm
+            // This is the new algorithm which is also correct but is O(3n) so much faster and scalable
+            // Downside is that it does require more memory than the old algorithm
             List<MultiDictionary<INode, List<int>>> values = new List<MultiDictionary<INode, List<int>>>();
             List<List<int>> nulls = new List<List<int>>();
             foreach (String var in joinVars)
@@ -605,7 +605,7 @@ namespace VDS.RDF.Query.Algebra
                 nulls.Add(new List<int>());
             }
 
-            //First do a pass over the LHS Result to find all possible values for joined variables
+            // First do a pass over the LHS Result to find all possible values for joined variables
             foreach (ISet x in this.Sets)
             {
                 int i = 0;
@@ -632,7 +632,7 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
 
-            //Then do a pass over the RHS and work out the intersections
+            // Then do a pass over the RHS and work out the intersections
             HashSet<int> toMinus = new HashSet<int>();
             foreach (ISet y in other.Sets)
             {
@@ -655,15 +655,15 @@ namespace VDS.RDF.Query.Algebra
                     }
                     else
                     {
-                        //Don't forget that a null will be potentially compatible with everything
+                        // Don't forget that a null will be potentially compatible with everything
                         possMatches = (possMatches == null ? this.SetIDs : possMatches.Intersect(this.SetIDs));
                     }
                     i++;
                 }
                 if (possMatches == null) continue;
 
-                //Look at possible matches, if is a valid match then mark the matched set for minus'ing
-                //Don't reconsider sets which have already been marked for minusing
+                // Look at possible matches, if is a valid match then mark the matched set for minus'ing
+                // Don't reconsider sets which have already been marked for minusing
                 foreach (int poss in possMatches)
                 {
                     if (toMinus.Contains(poss)) continue;
@@ -674,15 +674,15 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
 
-            //Apply the actual minus
+            // Apply the actual minus
             if (toMinus.Count == this.Count)
             {
-                //If number of sets to minus is equal to number of sets then we're minusing everything
+                // If number of sets to minus is equal to number of sets then we're minusing everything
                 return new NullMultiset();
             }
             else
             {
-                //Otherwise iterate
+                // Otherwise iterate
                 foreach (ISet x in this.Sets)
                 {
                     if (!toMinus.Contains(x.ID))
@@ -709,8 +709,8 @@ namespace VDS.RDF.Query.Algebra
 #if NET40 && !SILVERLIGHT
             if (Options.UsePLinqEvaluation)
             {
-                //Determine partition sizes so we can do a parallel product
-                //Want to parallelize over whichever side is larger
+                // Determine partition sizes so we can do a parallel product
+                // Want to parallelize over whichever side is larger
                 PartitionedMultiset partitionedSet;
                 if (this.Count >= other.Count)
                 {
@@ -727,7 +727,7 @@ namespace VDS.RDF.Query.Algebra
             else
             {
 #endif
-                //Use serial calculation which is likely to really suck for big products
+                // Use serial calculation which is likely to really suck for big products
                 Multiset productSet = new Multiset();
                 foreach (ISet x in this.Sets)
                 {
@@ -863,7 +863,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public virtual void Trim()
         {
-            //Does nothing by default
+            // Does nothing by default
         }
 
         /// <summary>

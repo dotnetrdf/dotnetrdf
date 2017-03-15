@@ -74,7 +74,7 @@ namespace VDS.RDF.Query
             {
                 if (!this._dataset.HasGraph(null))
                 {
-                    //Create the Default unnamed Graph if it doesn't exist and then Flush() the change
+                    // Create the Default unnamed Graph if it doesn't exist and then Flush() the change
                     this._dataset.AddGraph(new Graph());
                     this._dataset.Flush();
                 }
@@ -119,30 +119,30 @@ namespace VDS.RDF.Query
         /// <param name="query">SPARQL Query</param>
         public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
-            //Do Handler null checks before evaluating the query
+            // Do Handler null checks before evaluating the query
             if (query == null) throw new ArgumentNullException("query", "Cannot evaluate a null query");
             if (rdfHandler == null && (query.QueryType == SparqlQueryType.Construct || query.QueryType == SparqlQueryType.Describe || query.QueryType == SparqlQueryType.DescribeAll)) throw new ArgumentNullException("rdfHandler", "Cannot use a null RDF Handler when the Query is a CONSTRUCT/DESCRIBE");
             if (resultsHandler == null && (query.QueryType == SparqlQueryType.Ask || SparqlSpecsHelper.IsSelectQuery(query.QueryType))) throw new ArgumentNullException("resultsHandler", "Cannot use a null resultsHandler when the Query is an ASK/SELECT");
 
-            //Handle the Thread Safety of the Query Evaluation
+            // Handle the Thread Safety of the Query Evaluation
 #if !NO_RWLOCK
             ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
             try
             {
                 currLock.EnterReadLock();
 #endif
-                //Reset Query Timers
+                // Reset Query Timers
                 query.QueryExecutionTime = null;
 
                 bool datasetOk = false, defGraphOk = false;
 
                 try
                 {
-                    //Set up the Default and Active Graphs
+                    // Set up the Default and Active Graphs
                     if (query.DefaultGraphs.Any())
                     {
-                        //Call HasGraph() on each Default Graph but ignore the results, we just do this
-                        //in case a dataset has any kind of load on demand behaviour
+                        // Call HasGraph() on each Default Graph but ignore the results, we just do this
+                        // in case a dataset has any kind of load on demand behaviour
                         foreach (Uri defGraphUri in query.DefaultGraphs)
                         {
                             this._dataset.HasGraph(defGraphUri);
@@ -152,13 +152,13 @@ namespace VDS.RDF.Query
                     }
                     else if (query.NamedGraphs.Any())
                     {
-                        //No FROM Clauses but one/more FROM NAMED means the Default Graph is the empty graph
+                        // No FROM Clauses but one/more FROM NAMED means the Default Graph is the empty graph
                         this._dataset.SetDefaultGraph(Enumerable.Empty<Uri>());
                     }
                     this._dataset.SetActiveGraph(this._dataset.DefaultGraphUris);
                     datasetOk = true;
 
-                    //Convert to Algebra and execute the Query
+                    // Convert to Algebra and execute the Query
                     SparqlEvaluationContext context = this.GetContext(query);
                     BaseMultiset result;
                     try
@@ -183,7 +183,7 @@ namespace VDS.RDF.Query
                         throw;
                     }
 
-                    //Return the Results
+                    // Return the Results
                     switch (query.QueryType)
                     {
                         case SparqlQueryType.Ask:
@@ -193,13 +193,13 @@ namespace VDS.RDF.Query
                         case SparqlQueryType.SelectAllReduced:
                         case SparqlQueryType.SelectDistinct:
                         case SparqlQueryType.SelectReduced:
-                            //For SELECT and ASK can populate a Result Set directly from the Evaluation Context
-                            //return new SparqlResultSet(context);
+                            // For SELECT and ASK can populate a Result Set directly from the Evaluation Context
+                            // return new SparqlResultSet(context);
                             resultsHandler.Apply(context);
                             break;
 
                         case SparqlQueryType.Construct:
-                            //Create a new Empty Graph for the Results
+                            // Create a new Empty Graph for the Results
                             try
                             {
                                 rdfHandler.StartRdf();
@@ -209,11 +209,11 @@ namespace VDS.RDF.Query
                                     if (!rdfHandler.HandleNamespace(prefix, query.NamespaceMap.GetNamespaceUri(prefix))) ParserHelper.Stop();
                                 }
 
-                                //Construct the Triples for each Solution
+                                // Construct the Triples for each Solution
                                 if (context.OutputMultiset is IdentityMultiset) context.OutputMultiset = new SingletonMultiset();
                                 foreach (ISet s in context.OutputMultiset.Sets)
                                 {
-                                    //List<Triple> constructedTriples = new List<Triple>();
+                                    // List<Triple> constructedTriples = new List<Triple>();
                                     try
                                     {
                                         ConstructContext constructContext = new ConstructContext(rdfHandler, s, false);
@@ -223,22 +223,22 @@ namespace VDS.RDF.Query
 
                                             {
                                                 if (!rdfHandler.HandleTriple(p.Construct(constructContext))) ParserHelper.Stop();
-                                                //constructedTriples.Add(((IConstructTriplePattern)p).Construct(constructContext));
+                                                // constructedTriples.Add(((IConstructTriplePattern)p).Construct(constructContext));
                                             }
                                             catch (RdfQueryException)
                                             {
-                                                //If we get an error here then we could not construct a specific triple
-                                                //so we continue anyway
+                                                // If we get an error here then we could not construct a specific triple
+                                                // so we continue anyway
                                             }
                                         }
                                     }
                                     catch (RdfQueryException)
                                     {
-                                        //If we get an error here this means we couldn't construct for this solution so the
-                                        //entire solution is discarded
+                                        // If we get an error here this means we couldn't construct for this solution so the
+                                        // entire solution is discarded
                                         continue;
                                     }
-                                    //h.Assert(constructedTriples);
+                                    // h.Assert(constructedTriples);
                                 }
                                 rdfHandler.EndRdf(true);
                             }
@@ -255,7 +255,7 @@ namespace VDS.RDF.Query
 
                         case SparqlQueryType.Describe:
                         case SparqlQueryType.DescribeAll:
-                            //For DESCRIBE we retrieve the Describe algorithm and apply it
+                            // For DESCRIBE we retrieve the Describe algorithm and apply it
                             ISparqlDescribe describer = query.Describer;
                             describer.Describe(rdfHandler, context);
                             break;
@@ -515,7 +515,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                //Unknown Algebra
+                // Unknown Algebra
                 return this.ProcessUnknownOperator(algebra, context);
             }
         }

@@ -23,10 +23,10 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-//Uncomment when working on this code, don't forget to comment out afterwards
-//#define WINDOWS_PHONE
+// Uncomment when working on this code, don't forget to comment out afterwards
+// #define WINDOWS_PHONE
 
-//This code originally contributed by Peter Kahle as part of his Windows Phone 7 porting efforts
+// This code originally contributed by Peter Kahle as part of his Windows Phone 7 porting efforts
 
 #if WINDOWS_PHONE
 using System.Collections;

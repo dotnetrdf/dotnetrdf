@@ -52,7 +52,7 @@ namespace VDS.RDF.Parsing.Handlers
 
             this._handlers.AddRange(handlers);
 
-            //Check there are no identical handlers in the List
+            // Check there are no identical handlers in the List
             for (int i = 0; i < this._handlers.Count; i++)
             {
                 for (int j = i + 1; j < this._handlers.Count; j++)

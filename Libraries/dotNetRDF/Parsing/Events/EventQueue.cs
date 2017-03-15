@@ -63,8 +63,8 @@ namespace VDS.RDF.Parsing.Events
         public override T Dequeue()
         {
             this._lasteventtype = this._events.Peek().EventType;
-            //REQ: Add proper tracing support to this
-            //if (this._tracing) this.PrintTrace(this._events.Peek());
+            // REQ: Add proper tracing support to this
+            // if (this._tracing) this.PrintTrace(this._events.Peek());
             return this._events.Dequeue();
         }
 

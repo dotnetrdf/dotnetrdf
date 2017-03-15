@@ -108,7 +108,7 @@ namespace VDS.RDF.Query.Datasets
 
         public override void Dispose()
         {
-            //No dispose actions needed
+            // No dispose actions needed
         }
 
         public override IEnumerator<Triple> GetEnumerator()

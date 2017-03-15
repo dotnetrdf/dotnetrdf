@@ -62,14 +62,14 @@ namespace VDS.RDF.Query.Patterns
         {
             if (context.InputMultiset is NullMultiset)
             {
-                //If we get a NullMultiset then the FILTER has no effect since there are already no results
+                // If we get a NullMultiset then the FILTER has no effect since there are already no results
             }
             else if (context.InputMultiset is IdentityMultiset)
             {
                 if (!this._filter.Variables.Any())
                 {
-                    //If we get an IdentityMultiset then the FILTER only has an effect if there are no
-                    //variables - otherwise it is not in scope and is ignored
+                    // If we get an IdentityMultiset then the FILTER only has an effect if there are no
+                    // variables - otherwise it is not in scope and is ignored
 
                     try
                     {

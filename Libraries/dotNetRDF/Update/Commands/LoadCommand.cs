@@ -138,20 +138,20 @@ namespace VDS.RDF.Update.Commands
         /// <param name="context">Evaluation Context</param>
         public override void Evaluate(SparqlUpdateEvaluationContext context)
         {
-            //Q: Does LOAD into a named Graph require that Graph to be pre-existing?
-            //if (this._graphUri != null)
-            //{
+            // Q: Does LOAD into a named Graph require that Graph to be pre-existing?
+            // if (this._graphUri != null)
+            // {
             //    //When adding to specific Graph need to ensure that Graph exists
             //    //In the case when we're adding to the default graph we'll create it if it doesn't exist
             //    if (!context.Data.HasGraph(this._graphUri))
             //    {
             //        throw new RdfUpdateException("Cannot LOAD into a Graph that does not exist in the Store");
             //    }
-            //}
+            // }
 
             try
             {
-                //Load from the URI
+                // Load from the URI
                 Graph g = new Graph();
 #if SILVERLIGHT
                 throw new PlatformNotSupportedException("The SPARQL LOAD command is not currently supported under Silverlight/Windows Phone 7");
@@ -161,12 +161,12 @@ namespace VDS.RDF.Update.Commands
 
                 if (context.Data.HasGraph(this._graphUri))
                 {
-                    //Merge the Data into the existing Graph
+                    // Merge the Data into the existing Graph
                     context.Data.GetModifiableGraph(this._graphUri).Merge(g);
                 }
                 else
                 {
-                    //Add New Graph to the Dataset
+                    // Add New Graph to the Dataset
                     g.BaseUri = this._graphUri;
                     context.Data.AddGraph(g);
                 }

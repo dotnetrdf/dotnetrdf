@@ -78,7 +78,7 @@ namespace VDS.RDF.Parsing
 
             if (!u.Scheme.Equals("data"))
             {
-                //Invoke the normal URI Loader if not a data: URI
+                // Invoke the normal URI Loader if not a data: URI
 #if !SILVERLIGHT
                 UriLoader.Load(handler, u);
 #else
@@ -94,10 +94,10 @@ namespace VDS.RDF.Parsing
             String metadata = uri[0];
             String data = uri[1];
 
-            //Process the metadata
+            // Process the metadata
             if (metadata.Equals(String.Empty))
             {
-                //Nothing to do
+                // Nothing to do
             }
             else if (metadata.Contains(';'))
             {
@@ -107,8 +107,8 @@ namespace VDS.RDF.Parsing
                 {
                     if (meta[i].StartsWith("charset="))
                     {
-                        //OPT: Do we need to process the charset parameter here at all?
-                        //String charset = meta[i].Substring(meta[i].IndexOf('=') + 1);
+                        // OPT: Do we need to process the charset parameter here at all?
+                        // String charset = meta[i].Substring(meta[i].IndexOf('=') + 1);
                     }
                     else if (meta[i].Equals("base64"))
                     {
@@ -133,7 +133,7 @@ namespace VDS.RDF.Parsing
             {
                 if (metadata.StartsWith("charset="))
                 {
-                    //OPT: Do we need to process the charset parameter here at all?
+                    // OPT: Do we need to process the charset parameter here at all?
                 }
                 else if (metadata.Equals(";base64"))
                 {
@@ -154,7 +154,7 @@ namespace VDS.RDF.Parsing
                 }
             }
 
-            //Process the data
+            // Process the data
             if (base64)
             {
                 StringWriter temp = new StringWriter();
@@ -169,25 +169,25 @@ namespace VDS.RDF.Parsing
                 data = Uri.UnescapeDataString(data);
             }
 
-            //Now either select a parser based on the MIME type or let StringParser guess the format
+            // Now either select a parser based on the MIME type or let StringParser guess the format
             try
             {
                 if (mimeSet)
                 {
-                    //If the MIME Type was explicitly set then we'll try and get a parser and use it
+                    // If the MIME Type was explicitly set then we'll try and get a parser and use it
                     IRdfReader reader = MimeTypesHelper.GetParser(mimetype);
                     reader.Load(handler, new StringReader(data));
                 }
                 else
                 {
-                    //If the MIME Type was not explicitly set we'll let the StringParser guess the format
+                    // If the MIME Type was not explicitly set we'll let the StringParser guess the format
                     IRdfReader reader = StringParser.GetParser(data);
                     reader.Load(handler, new StringReader(data));
                 }
             }
             catch (RdfParserSelectionException)
             {
-                //If we fail to get a parser then we'll let the StringParser guess the format
+                // If we fail to get a parser then we'll let the StringParser guess the format
                 IRdfReader reader = StringParser.GetParser(data);
                 reader.Load(handler, new StringReader(data));
             }

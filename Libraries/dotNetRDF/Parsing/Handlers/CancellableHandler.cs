@@ -62,9 +62,9 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         protected override void StartRdfInternal()
         {
-            //Note - We don't reset the cancelled flag here as it is possible that in an async environment that
-            //Cancel() may get called before handling properly starts at which case we still need to cancel.
-            //The cancelled flag only resets when handling ends
+            // Note - We don't reset the cancelled flag here as it is possible that in an async environment that
+            // Cancel() may get called before handling properly starts at which case we still need to cancel.
+            // The cancelled flag only resets when handling ends
             this._handler.StartRdf();
         }
 

@@ -187,12 +187,12 @@ namespace VDS.RDF.Storage.Management
                 {
                     if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                     
-                    //Got a Response so we can analyse the Response Code
+                    // Got a Response so we can analyse the Response Code
                     response = (HttpWebResponse)webEx.Response;
                     int code = (int)response.StatusCode;
                     if (code == 400)
                     {
-                        //OK - Just means the Store already exists
+                        // OK - Just means the Store already exists
                         return true;
                     }
                     else
@@ -277,7 +277,7 @@ namespace VDS.RDF.Storage.Management
         /// </remarks>
         public override IStorageProvider GetStore(String storeID)
         {
-            //Otherwise return a new instance
+            // Otherwise return a new instance
             return new AllegroGraphConnector(this._agraphBase, this._catalog, storeID, this._username, this._pwd
 #if !NO_PROXY
                 , this.Proxy
@@ -396,12 +396,12 @@ namespace VDS.RDF.Storage.Management
                         {
                             if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                             
-                            //Got a Response so we can analyse the Response Code
+                            // Got a Response so we can analyse the Response Code
                             HttpWebResponse response = (HttpWebResponse)webEx.Response;
                             int code = (int)response.StatusCode;
                             if (code == 400)
                             {
-                                //400 just means the store already exists so this is OK
+                                // 400 just means the store already exists so this is OK
                                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template), state);
                             }
                             else
@@ -426,12 +426,12 @@ namespace VDS.RDF.Storage.Management
                 {
                     if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                     
-                    //Got a Response so we can analyse the Response Code
+                    // Got a Response so we can analyse the Response Code
                     HttpWebResponse response = (HttpWebResponse)webEx.Response;
                     int code = (int)response.StatusCode;
                     if (code == 400)
                     {
-                        //400 just means the store already exists so this is OK
+                        // 400 just means the store already exists so this is OK
                         callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID), state);
                     }
                     else
@@ -471,7 +471,7 @@ namespace VDS.RDF.Storage.Management
                         HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
                         Tools.HttpDebugResponse(response);
                         
-                        //If we get here then the operation completed OK
+                        // If we get here then the operation completed OK
                         response.Close();
                         callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID), state);
                     }
@@ -524,8 +524,8 @@ namespace VDS.RDF.Storage.Management
         /// <returns></returns>
         protected override HttpWebRequest CreateRequest(string servicePath, string accept, string method, Dictionary<string, string> queryParams)
         {
-            //Remove JSON Mime Types from supported Accept types
-            //This is a compatability issue with Allegro having a weird custom JSON serialisation
+            // Remove JSON Mime Types from supported Accept types
+            // This is a compatability issue with Allegro having a weird custom JSON serialisation
             if (accept.Contains("application/json"))
             {
                 accept = accept.Replace("application/json,", String.Empty);

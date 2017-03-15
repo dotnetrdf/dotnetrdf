@@ -53,23 +53,23 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             {
                 if (arg.Value.Equals(string.Empty))
                 {
-                    //The Empty String starts with the Empty String
+                    // The Empty String starts with the Empty String
                     return new BooleanNode(null, true);
                 }
                 else
                 {
-                    //Empty String doesn't start with a non-empty string
+                    // Empty String doesn't start with a non-empty string
                     return new BooleanNode(null, false);
                 }
             }
             else if (arg.Value.Equals(string.Empty))
             {
-                //Any non-empty string starts with the empty string
+                // Any non-empty string starts with the empty string
                 return new BooleanNode(null, true);
             }
             else
             {
-                //Otherwise evalute the StartsWith
+                // Otherwise evalute the StartsWith
                 return new BooleanNode(null, stringLit.Value.StartsWith(arg.Value));
             }
         }

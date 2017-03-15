@@ -45,7 +45,7 @@ namespace VDS.RDF.Web
         /// </summary>
         public void Dispose()
         {
-            //clean-up code here.
+            // clean-up code here.
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace VDS.RDF.Web
                 String actualPath = context.Request.MapPath(context.Request.Path);
                 if (!File.Exists(actualPath))
                 {
-                    //Get the File Extension and see if it is for an RDF format
+                    // Get the File Extension and see if it is for an RDF format
                     String ext = context.Request.Url.AbsolutePath.Substring(context.Request.Url.AbsolutePath.LastIndexOf("."));
                     switch (ext)
                     {
@@ -82,8 +82,8 @@ namespace VDS.RDF.Web
                         case ".asmx":
                         case ".ashx":
                         case ".axd":
-                            //The above file extensions are special to ASP.Net and so may not actually exist as files
-                            //so we need to ignore them for the purposes of negotiating by file extension
+                            // The above file extensions are special to ASP.Net and so may not actually exist as files
+                            // so we need to ignore them for the purposes of negotiating by file extension
                             return;
                     }
 
@@ -104,7 +104,7 @@ namespace VDS.RDF.Web
                     }
                     catch (RdfParserSelectionException)
                     {
-                        //If we get a RdfParserSelectionException we shouldn't do anything, this fixes bug CORE-94
+                        // If we get a RdfParserSelectionException we shouldn't do anything, this fixes bug CORE-94
                     }
                 }
             }

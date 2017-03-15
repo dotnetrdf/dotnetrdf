@@ -195,7 +195,7 @@ namespace VDS.RDF.Parsing
             {
                 case NTriplesSyntax.Original:
 #if !SILVERLIGHT
-                    //Issue a Warning if the Encoding of the Stream is not ASCII
+                    // Issue a Warning if the Encoding of the Stream is not ASCII
                     if (!input.CurrentEncoding.Equals(Encoding.ASCII))
                     {
                         this.RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
@@ -244,8 +244,8 @@ namespace VDS.RDF.Parsing
                 }
                 catch
                 {
-                    //Catch is just here in case something goes wrong with closing the stream
-                    //This error can be ignored
+                    // Catch is just here in case something goes wrong with closing the stream
+                    // This error can be ignored
                 }
             }
         }
@@ -270,21 +270,21 @@ namespace VDS.RDF.Parsing
             {
                 context.Handler.StartRdf();
 
-                //Initialise the Buffer
+                // Initialise the Buffer
                 context.Tokens.InitialiseBuffer(10);
 
-                //Expect a BOF
+                // Expect a BOF
                 IToken start = context.Tokens.Dequeue();
                 if (start.TokenType != Token.BOF)
                 {
                     throw Error("Unexpected Token '" + start.GetType().ToString() + "' encountered, expected a Beginning of File Token", start);
                 }
 
-                //Expect Triples
+                // Expect Triples
                 IToken next = context.Tokens.Peek();
                 while (next.TokenType != Token.EOF)
                 {
-                    //Discard Comments
+                    // Discard Comments
                     while (next.TokenType == Token.COMMENT)
                     {
                         context.Tokens.Dequeue();
@@ -302,11 +302,11 @@ namespace VDS.RDF.Parsing
             catch (RdfParsingTerminatedException)
             {
                 context.Handler.EndRdf(true);
-                //Discard this - it justs means the Handler told us to stop
+                // Discard this - it justs means the Handler told us to stop
             }
             catch (RdfParseException)
             {
-                //We hit some Parsing error
+                // We hit some Parsing error
                 context.Handler.EndRdf(false);
                 throw;
             }
@@ -314,15 +314,15 @@ namespace VDS.RDF.Parsing
 
         private void TryParseTriple(TokenisingParserContext context)
         {
-            //Get the Subject, Predicate and Object
+            // Get the Subject, Predicate and Object
             INode subj = this.TryParseSubject(context);
             INode pred = this.TryParsePredicate(context);
             INode obj = this.TryParseObject(context);
 
-            //Ensure we're terminated by a DOT
+            // Ensure we're terminated by a DOT
             TryParseLineTerminator(context);
 
-            //Assert the Triple
+            // Assert the Triple
             if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
         }
 
@@ -330,7 +330,7 @@ namespace VDS.RDF.Parsing
         {
             IToken subjToken = context.Tokens.Dequeue();
 
-            //Discard Comments
+            // Discard Comments
             while (subjToken.TokenType == Token.COMMENT)
             {
                 subjToken = context.Tokens.Dequeue();
@@ -357,7 +357,7 @@ namespace VDS.RDF.Parsing
         {
             IToken predToken = context.Tokens.Dequeue();
 
-            //Discard Comments
+            // Discard Comments
             while (predToken.TokenType == Token.COMMENT)
             {
                 predToken = context.Tokens.Dequeue();
@@ -383,7 +383,7 @@ namespace VDS.RDF.Parsing
         {
             IToken objToken = context.Tokens.Dequeue();
 
-            //Discard Comments
+            // Discard Comments
             while (objToken.TokenType == Token.COMMENT)
             {
                 objToken = context.Tokens.Dequeue();
@@ -405,7 +405,7 @@ namespace VDS.RDF.Parsing
                     return context.Handler.CreateLiteralNode(objToken.Value, ((LiteralWithLanguageSpecifierToken) objToken).Language);
                 case Token.LITERAL:
                     IToken next = context.Tokens.Peek();
-                    //Is there a Language Specifier or Data Type?
+                    // Is there a Language Specifier or Data Type?
                     switch (next.TokenType)
                     {
                         case Token.LANGSPEC:
@@ -427,13 +427,13 @@ namespace VDS.RDF.Parsing
         {
             IToken next = context.Tokens.Dequeue();
 
-            //Discard Comments
+            // Discard Comments
             while (next.TokenType == Token.COMMENT)
             {
                 next = context.Tokens.Dequeue();
             }
 
-            //Ensure we finish with a Dot terminator
+            // Ensure we finish with a Dot terminator
             if (next.TokenType != Token.DOT)
             {
                 throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Dot Line Terminator to terminate a Triple", next);
@@ -498,7 +498,7 @@ namespace VDS.RDF.Parsing
         {
             if (this.Warning != null)
             {
-                //Raise Event
+                // Raise Event
                 this.Warning(message);
             }
         }

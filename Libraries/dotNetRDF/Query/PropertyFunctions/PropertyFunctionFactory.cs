@@ -140,12 +140,12 @@ namespace VDS.RDF.Query.PropertyFunctions
         public static bool TryCreatePropertyFunction(PropertyFunctionInfo info, IEnumerable<IPropertyFunctionFactory> localFactories, out IPropertyFunctionPattern function)
         {
             function = null;
-            //First try locally scoped factories
+            // First try locally scoped factories
             foreach (IPropertyFunctionFactory factory in localFactories)
             {
                 if (factory.TryCreatePropertyFunction(info, out function)) return true;
             }
-            //Then try global factories
+            // Then try global factories
             foreach (IPropertyFunctionFactory factory in _factories)
             {
                 if (factory.TryCreatePropertyFunction(info, out function)) return true;

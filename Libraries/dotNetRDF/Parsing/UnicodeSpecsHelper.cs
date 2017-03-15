@@ -172,7 +172,7 @@ namespace VDS.RDF.Parsing
         public static int ConvertToUtf32(char highSurrogate, char lowSurrogate)
         {
 #if SILVERLIGHT
-            //TODO: Should we use the algorithm from http://www.unicode.org/faq/utf_bom.html#utf16-2 instead?
+            // TODO: Should we use the algorithm from http://www.unicode.org/faq/utf_bom.html#utf16-2 instead?
             if (!IsHighSurrogate(highSurrogate))
                 throw new ArgumentOutOfRangeException("highSurrogate");
             if (!IsLowSurrogate(lowSurrogate))
@@ -194,11 +194,11 @@ namespace VDS.RDF.Parsing
             if (hex.Length != 4) throw new RdfParseException("Unable to convert the String + '" + hex + "' into a Unicode Character, 4 characters were expected but received " + hex.Length + " characters");
             try
             {
-                //Convert to an Integer
+                // Convert to an Integer
                 int i = Convert.ToInt32(hex, 16);
-                //Try to cast to a Char
+                // Try to cast to a Char
                 char c = (char)i;
-                //Append to Output
+                // Append to Output
                 return c;
             }
             catch (Exception ex)
@@ -217,27 +217,27 @@ namespace VDS.RDF.Parsing
             if (hex.Length != 8) throw new RdfParseException("Unable to convert the String + '" + hex + "' into a Unicode Character, 8 characters were expected but received " + hex.Length + " characters");
             try
             {
-                //Convert to an Integer
+                // Convert to an Integer
                 int i = Convert.ToInt32(hex, 16);
                 if (i > Char.MaxValue)
                 {
-                    //UTF-32 character so down-convert to UTF-16
+                    // UTF-32 character so down-convert to UTF-16
 #if SILVERLIGHT
-                    //Use the algorithm from http://www.unicode.org/faq/utf_bom.html#utf16-2
+                    // Use the algorithm from http://www.unicode.org/faq/utf_bom.html#utf16-2
 
-                    //UTF16 X = (UTF16) C;
-                    //UTF32 U = (C >> 16) & ((1 << 5) - 1);
-                    //UTF16 W = (UTF16) U - 1;
-                    //UTF16 HiSurrogate = HI_SURROGATE_START | (W << 6) | X >> 10;
-                    //where X, U and W correspond to the labels used in Table 3-5 UTF-16 Bit Distribution. 
+                    // UTF16 X = (UTF16) C;
+                    // UTF32 U = (C >> 16) & ((1 << 5) - 1);
+                    // UTF16 W = (UTF16) U - 1;
+                    // UTF16 HiSurrogate = HI_SURROGATE_START | (W << 6) | X >> 10;
+                    // where X, U and W correspond to the labels used in Table 3-5 UTF-16 Bit Distribution. 
                     int u = (i >> 16) & ((1 << 5) - 1);
                     var x = (ushort) i;
                     int w = u - 1;
                     int high = HighSurrogateStart | (w << 6) | (x >> 10);
 
-                    //The next snippet does the same for the low surrogate.
-                    //UTF16 X = (UTF16) C;
-                    //UTF16 LoSurrogate = (UTF16) (LO_SURROGATE_START | X & ((1 << 10) - 1));
+                    // The next snippet does the same for the low surrogate.
+                    // UTF16 X = (UTF16) C;
+                    // UTF16 LoSurrogate = (UTF16) (LO_SURROGATE_START | X & ((1 << 10) - 1));
                     int low = LowSurrogateStart | x & ((1 << 10) - 1);
                     return new char[] { (char)high, (char)low };
 #else
@@ -246,7 +246,7 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    //Within single character range
+                    // Within single character range
                     return new char[] { (char)i };
                 }
             }

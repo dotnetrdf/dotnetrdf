@@ -85,11 +85,11 @@ namespace VDS.RDF.Query.Algebra
             }
             catch (RdfQueryTimeoutException)
             {
-                //If not partial results throw the error
+                // If not partial results throw the error
                 if (context.Query == null || !context.Query.PartialResultsOnTimeout) throw;
             }
 
-            //Ensure expected variables are present
+            // Ensure expected variables are present
             HashSet<SparqlVariable> vars = new HashSet<SparqlVariable>(this._variables);
             if (context.InputMultiset is NullMultiset)
             {
@@ -108,20 +108,20 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
 
-            //Trim Variables that aren't being SELECTed
+            // Trim Variables that aren't being SELECTed
             if (!this.IsSelectAll)
             {
                 foreach (String var in context.InputMultiset.Variables.ToList())
                 {
                     if (!vars.Any(v => v.Name.Equals(var) && v.IsResultVariable))
                     {
-                        //If not a Result variable then trim from results
+                        // If not a Result variable then trim from results
                         context.InputMultiset.Trim(var);
                     }
                 }
             }
 
-            //Ensure all SELECTed variables are present
+            // Ensure all SELECTed variables are present
             foreach (SparqlVariable var in vars)
             {
                 if (!context.InputMultiset.ContainsVariable(var.Name))
@@ -132,7 +132,7 @@ namespace VDS.RDF.Query.Algebra
 
             context.OutputMultiset = context.InputMultiset;
 
-            //Apply variable ordering if applicable
+            // Apply variable ordering if applicable
             if (!this.IsSelectAll && (context.Query == null || SparqlSpecsHelper.IsSelectQuery(context.Query.QueryType)))
             {
                 context.OutputMultiset.SetVariableOrder(context.Query.Variables.Where(v => v.IsResultVariable).Select(v => v.Name));

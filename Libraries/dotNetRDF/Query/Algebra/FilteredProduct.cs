@@ -126,7 +126,7 @@ namespace VDS.RDF.Query.Algebra
 
             if (lhsResults is NullMultiset || lhsResults.IsEmpty)
             {
-                //If LHS Results are Null/Empty then end result will always be null so short circuit
+                // If LHS Results are Null/Empty then end result will always be null so short circuit
                 context.OutputMultiset = new NullMultiset();
             }
             else
@@ -136,12 +136,12 @@ namespace VDS.RDF.Query.Algebra
                 BaseMultiset rhsResults = context.Evaluate(this._rhs);
                 if (rhsResults is NullMultiset || rhsResults.IsEmpty)
                 {
-                    //If RHS Results are Null/Empty then end results will always be null so short circuit
+                    // If RHS Results are Null/Empty then end results will always be null so short circuit
                     context.OutputMultiset = new NullMultiset();
                 }
                 else if (rhsResults is IdentityMultiset)
                 {
-                    //Apply Filter over LHS Results only - defer evaluation to filter implementation
+                    // Apply Filter over LHS Results only - defer evaluation to filter implementation
                     context.InputMultiset = lhsResults;
                     UnaryExpressionFilter filter = new UnaryExpressionFilter(this._expr);
                     filter.Evaluate(context);
@@ -149,7 +149,7 @@ namespace VDS.RDF.Query.Algebra
                 }
                 else
                 {
-                    //Calculate the product applying the filter as we go
+                    // Calculate the product applying the filter as we go
 #if NET40 && !SILVERLIGHT
                     if (Options.UsePLinqEvaluation && this._expr.CanParallelise)
                     {
@@ -187,17 +187,17 @@ namespace VDS.RDF.Query.Algebra
                                 {
                                     if (!this._expr.Evaluate(context, z.ID).AsSafeBoolean())
                                     {
-                                        //Means the expression evaluates to false so we discard the solution
+                                        // Means the expression evaluates to false so we discard the solution
                                         productSet.Remove(z.ID);
                                     }
                                 }
                                 catch
                                 {
-                                    //Means this solution does not meet the FILTER and can be discarded
+                                    // Means this solution does not meet the FILTER and can be discarded
                                     productSet.Remove(z.ID);
                                 }
                             }
-                            //Remember to check for timeouts occassionaly
+                            // Remember to check for timeouts occassionaly
                             context.CheckTimeout();
                         }
                         context.Binder = binder;
@@ -225,17 +225,17 @@ namespace VDS.RDF.Query.Algebra
                 {
                     if (!this._expr.Evaluate(context, z.ID).AsSafeBoolean())
                     {
-                        //Means the expression evaluates to false so we discard the solution
+                        // Means the expression evaluates to false so we discard the solution
                         partitionedSet.Remove(z.ID);
                     }
                 }
                 catch
                 {
-                    //Means the solution does not meet the FILTER and can be discarded
+                    // Means the solution does not meet the FILTER and can be discarded
                     partitionedSet.Remove(z.ID);
                 }
             }
-            //Remember to check for timeouts occassionally
+            // Remember to check for timeouts occassionally
             context.CheckTimeout();
         }
 

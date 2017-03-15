@@ -49,7 +49,7 @@ namespace VDS.RDF.Query.Datasets
         {
             if (!this._dataset.HasGraph(graphUri))
             {
-                //If the underlying dataset doesn't have the Graph can we load it on demand
+                // If the underlying dataset doesn't have the Graph can we load it on demand
                 IGraph g;
                 if (this.TryLoadGraph(graphUri, out g))
                 {

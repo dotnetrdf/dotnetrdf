@@ -187,10 +187,10 @@ namespace VDS.RDF.Storage
             {
                 HttpWebRequest request;
 
-                //Create the Request
+                // Create the Request
                 request = this.CreateRequest(this._repositoriesPrefix + this._store + this._updatePath, MimeTypesHelper.Any, "POST", new Dictionary<String, String>());
 
-                //Build the Post Data and add to the Request Body
+                // Build the Post Data and add to the Request Body
                 request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
                 StringBuilder postData = new StringBuilder();
                 postData.Append("query=");
@@ -203,11 +203,11 @@ namespace VDS.RDF.Storage
 
                 Tools.HttpDebugRequest(request);
 
-                //Get the Response and process based on the Content Type
+                // Get the Response and process based on the Content Type
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
-                    //If we get here it completed OK
+                    // If we get here it completed OK
                     response.Close();
                 }
             }
@@ -231,10 +231,10 @@ namespace VDS.RDF.Storage
             {
                 HttpWebRequest request;
 
-                //Create the Request
+                // Create the Request
                 request = this.CreateRequest(this._repositoriesPrefix + this._store + this._updatePath, MimeTypesHelper.Any, "POST", new Dictionary<String, String>());
 
-                //Build the Post Data and add to the Request Body
+                // Build the Post Data and add to the Request Body
                 request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
                 StringBuilder postData = new StringBuilder();
                 postData.Append("query=");
@@ -253,14 +253,14 @@ namespace VDS.RDF.Storage
 
                         Tools.HttpDebugRequest(request);
 
-                        //Get the Response and process based on the Content Type
+                        // Get the Response and process based on the Content Type
                         request.BeginGetResponse(r2 =>
                         {
                             try
                             {
                                 HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
                                 Tools.HttpDebugResponse(response);
-                                //If we get here it completed OK
+                                // If we get here it completed OK
                                 response.Close();
                                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate), state);
                             }
@@ -314,8 +314,8 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         protected override HttpWebRequest CreateRequest(string servicePath, string accept, string method, Dictionary<string, string> queryParams)
         {
-            //Remove JSON Mime Types from supported Accept types
-            //This is a compatability issue with Allegro having a weird custom JSON serialisation
+            // Remove JSON Mime Types from supported Accept types
+            // This is a compatability issue with Allegro having a weird custom JSON serialisation
             if (accept.Contains("application/json"))
             {
                 accept = accept.Replace("application/json,", String.Empty);

@@ -48,7 +48,7 @@ namespace VDS.RDF.Parsing
         {
             if (input == null) throw new RdfParseException("Cannot parse SPARQL Results from a null input stream");
             
-            //Check Encoding
+            // Check Encoding
             if (input.CurrentEncoding != Encoding.UTF8)
             {
 #if !SILVERLIGHT
@@ -96,7 +96,7 @@ namespace VDS.RDF.Parsing
         {
             if (input == null) throw new RdfParseException("Cannot parser SPARQL Results from a null input stream");
 
-            //Check Encoding
+            // Check Encoding
             if (input.CurrentEncoding != Encoding.UTF8)
             {
 #if !SILVERLIGHT
@@ -146,7 +146,7 @@ namespace VDS.RDF.Parsing
                 }
                 catch
                 {
-                    //No catch actions just trying to clean up
+                    // No catch actions just trying to clean up
                 }
                 throw;
             }
@@ -159,13 +159,13 @@ namespace VDS.RDF.Parsing
                 context.Handler.StartResults();
                 context.Tokens.InitialiseBuffer();
 
-                //Thrown away the BOF if present
+                // Thrown away the BOF if present
                 if (context.Tokens.Peek().TokenType == Token.BOF) context.Tokens.Dequeue();
 
-                //Firstly parse the Header Row
+                // Firstly parse the Header Row
                 this.TryParseHeaderRow(context);
 
-                //Then while not EOF try parse result rows
+                // Then while not EOF try parse result rows
                 IToken next = context.Tokens.Peek();
                 while (next.TokenType != Token.EOF)
                 {
@@ -181,7 +181,7 @@ namespace VDS.RDF.Parsing
             }
             catch
             {
-                //Some Other Error
+                // Some Other Error
                 context.Handler.EndResults(false);
                 throw;
             }
@@ -227,7 +227,7 @@ namespace VDS.RDF.Parsing
                         throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered", next);
                 }
 
-                //Stop when we've hit the End of the Line/File
+                // Stop when we've hit the End of the Line/File
                 if (next.TokenType == Token.EOL || next.TokenType == Token.EOF) break;
             }
         }
@@ -290,7 +290,7 @@ namespace VDS.RDF.Parsing
                         {
                             if (v == context.Variables.Count - 1)
                             {
-                                //If this is the last expected term then this must be an empty term
+                                // If this is the last expected term then this must be an empty term
                                 v++;
                                 break;
                             }
@@ -300,7 +300,7 @@ namespace VDS.RDF.Parsing
                     case Token.TAB:
                         if (!expectTab)
                         {
-                            //This is an empty field
+                            // This is an empty field
                             if (v >= context.Variables.Count) throw ParserHelper.Error("Too many RDF Terms, only expecting " + context.Variables.Count + " terms", next);
                             v++;
                         }
@@ -316,7 +316,7 @@ namespace VDS.RDF.Parsing
                         throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered", next);
                  }
 
-                //Stop when we've hit the End of the Line/File
+                // Stop when we've hit the End of the Line/File
                 if (next.TokenType == Token.EOL || next.TokenType == Token.EOF) break;
             }
 
@@ -351,7 +351,7 @@ namespace VDS.RDF.Parsing
                 }
             }
 
-            //Check for DataType/Language Specifier
+            // Check for DataType/Language Specifier
             IToken next = context.Tokens.Peek();
             if (next.TokenType == Token.DATATYPE)
             {

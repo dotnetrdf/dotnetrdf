@@ -81,7 +81,7 @@ namespace VDS.RDF.Query.Datasets
             }
             else
             {
-                //Safe to add a new Graph
+                // Safe to add a new Graph
                 if (this._dataset.AddGraph(g))
                 {
                     this._dataset.Flush();

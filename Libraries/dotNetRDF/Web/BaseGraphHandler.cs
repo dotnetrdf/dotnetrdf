@@ -70,20 +70,20 @@ namespace VDS.RDF.Web
             this._config = this.LoadConfig(context);
             WebContext webContext = new WebContext(context);
 
-            //Add our Standard Headers
+            // Add our Standard Headers
             HandlerHelper.AddStandardHeaders(webContext, this._config);
 
-            //Check whether we need to use authentication
-            //If there are no user groups then no authentication is in use so we default to authenticated with no per-action authentication needed
+            // Check whether we need to use authentication
+            // If there are no user groups then no authentication is in use so we default to authenticated with no per-action authentication needed
             bool isAuth = true;
             if (this._config.UserGroups.Any())
             {
-                //If we have user
+                // If we have user
                 isAuth = HandlerHelper.IsAuthenticated(webContext, this._config.UserGroups);
             }
             if (!isAuth) return;
 
-            //Check whether we can just send a 304 Not Modified
+            // Check whether we can just send a 304 Not Modified
             if (HandlerHelper.CheckCachingHeaders(webContext, this._config.ETag, null))
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NotModified;
@@ -95,7 +95,7 @@ namespace VDS.RDF.Web
             {
                 String[] acceptTypes = HandlerHelper.GetAcceptTypes(webContext);
 
-                //Retrieve an appropriate MIME Type Definition which can be used to get a Writer
+                // Retrieve an appropriate MIME Type Definition which can be used to get a Writer
                 MimeTypeDefinition definition = MimeTypesHelper.GetDefinitions(acceptTypes).FirstOrDefault(d => d.CanWriteRdf);
                 if (definition == null) throw new RdfWriterSelectionException("No MIME Type Definitions have a registered RDF Writer for the MIME Types specified in the HTTP Accept Header");
                 IRdfWriter writer = this.SelectWriter(definition);
@@ -107,7 +107,7 @@ namespace VDS.RDF.Web
                     this._config.ETag = this.ComputeETag(g);
                 }
 
-                //Serve the Graph to the User
+                // Serve the Graph to the User
                 context.Response.ContentType = definition.CanonicalMimeType;
                 HandlerHelper.AddCachingHeaders(webContext, this._config.ETag, null);
                 if (writer is IHtmlWriter)

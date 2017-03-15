@@ -61,7 +61,7 @@ namespace VDS.RDF.Configuration
                     String queryEndpointUri = ConfigurationLoader.GetConfigurationValue(g, objNode, new INode[] { g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)) });
                     if (queryEndpointUri == null) return false;
 
-                    //Get Default/Named Graphs if specified
+                    // Get Default/Named Graphs if specified
                     IEnumerable<String> defaultGraphs = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri)))
                                                         select n.ToString();
                     IEnumerable<String> namedGraphs = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri)))
@@ -105,7 +105,7 @@ namespace VDS.RDF.Configuration
 
             if (endpoint != null)
             {
-                //Are there any credentials specified?
+                // Are there any credentials specified?
                 String user, pwd;
                 ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
                 if (user != null && pwd != null)
@@ -114,7 +114,7 @@ namespace VDS.RDF.Configuration
                 }
 
 #if !NO_PROXY
-                //Is there a Proxy Server specified
+                // Is there a Proxy Server specified
                 INode proxyNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyProxy)));
                 if (proxyNode != null)
                 {
@@ -123,7 +123,7 @@ namespace VDS.RDF.Configuration
                     {
                         endpoint.Proxy = (WebProxy)proxy;
 
-                        //Are we supposed to use the same credentials for the proxy as for the endpoint?
+                        // Are we supposed to use the same credentials for the proxy as for the endpoint?
                         bool useCredentialsForProxy = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUseCredentialsForProxy)), false);
                         if (useCredentialsForProxy)
                         {

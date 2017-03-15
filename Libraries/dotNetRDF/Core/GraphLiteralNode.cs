@@ -59,7 +59,7 @@ namespace VDS.RDF
         {
             this._subgraph = subgraph;
 
-            //Compute Hash Code
+            // Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 
@@ -72,7 +72,7 @@ namespace VDS.RDF
         {
             this._subgraph = new Graph();
 
-            //Compute Hash Code
+            // Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 
@@ -86,7 +86,7 @@ namespace VDS.RDF
             : base(null, NodeType.GraphLiteral)
         {
             this._subgraph = (IGraph)info.GetValue("subgraph", typeof(Graph));
-            //Compute Hash Code
+            // Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 #endif
@@ -125,7 +125,7 @@ namespace VDS.RDF
             }
             else
             {
-                //Can only be equal to other Nodes
+                // Can only be equal to other Nodes
                 return false;
             }
         }
@@ -147,7 +147,7 @@ namespace VDS.RDF
             }
             else
             {
-                //Can only be equal to a Graph Literal Node
+                // Can only be equal to a Graph Literal Node
                 return false;
             }
         }
@@ -225,10 +225,10 @@ namespace VDS.RDF
         {
             StringBuilder output = new StringBuilder();
 
-            //Use N3 Style notation for Graph Literal string representation
+            // Use N3 Style notation for Graph Literal string representation
             output.Append("{");
 
-            //Add all the Triples in the Subgraph
+            // Add all the Triples in the Subgraph
             foreach (Triple t in this._subgraph.Triples)
             {
                 output.Append(t.ToString());
@@ -252,14 +252,14 @@ namespace VDS.RDF
 
             if (other == null)
             {
-                //Everything is greater than a null
-                //Return a 1 to indicate this
+                // Everything is greater than a null
+                // Return a 1 to indicate this
                 return 1;
             }
             else if (other.NodeType != NodeType.GraphLiteral)
             {
-                //Graph Literal Nodes are greater than Blank, Variable, Uri and Literal Nodes
-                //Return a 1 to indicate this
+                // Graph Literal Nodes are greater than Blank, Variable, Uri and Literal Nodes
+                // Return a 1 to indicate this
                 return 1;
             }
             else if (other.NodeType == NodeType.GraphLiteral)
@@ -268,7 +268,7 @@ namespace VDS.RDF
             }
             else
             {
-                //Anything else is Greater Than us
+                // Anything else is Greater Than us
                 return -1;
             }
         }
@@ -282,7 +282,7 @@ namespace VDS.RDF
         {
             if (ReferenceEquals(this, other)) return 0;
 
-            //We are always greater than everything
+            // We are always greater than everything
             return 1;
         }
 
@@ -305,7 +305,7 @@ namespace VDS.RDF
         {
             if (ReferenceEquals(this, other)) return 0;
 
-            //We are always greater than everything
+            // We are always greater than everything
             return 1;
         }
 
@@ -318,7 +318,7 @@ namespace VDS.RDF
         {
             if (ReferenceEquals(this, other)) return 0;
 
-            //We are always greater than everything
+            // We are always greater than everything
             return 1;
         }
 
@@ -331,7 +331,7 @@ namespace VDS.RDF
         {
             if (ReferenceEquals(this, other)) return 0;
 
-            //We are always greater than everything
+            // We are always greater than everything
             return 1;
         }
 
@@ -366,7 +366,7 @@ namespace VDS.RDF
         {
             reader.Read();
             this._subgraph = reader.DeserializeGraph();
-            //Compute Hash Code
+            // Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 

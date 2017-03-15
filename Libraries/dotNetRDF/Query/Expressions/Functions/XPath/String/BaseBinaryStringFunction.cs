@@ -94,14 +94,14 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                     throw new RdfQueryException("Unable to evaluate an XPath String function on a non-Literal input");
                 }
 
-                //Once we've got to here we've established that the First argument is an appropriately typed/untyped Literal
+                // Once we've got to here we've established that the First argument is an appropriately typed/untyped Literal
                 if (this._arg == null)
                 {
                     return this.ValueInternal((ILiteralNode)temp);
                 }
                 else
                 {
-                    //Need to validate the argument
+                    // Need to validate the argument
                     INode tempArg = this._arg.Evaluate(context, bindingID);
                     if (tempArg != null)
                     {
@@ -124,7 +124,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                     }
                     else if (this._allowNullArgument)
                     {
-                        //Null argument permitted so just invoke the non-argument version of the function
+                        // Null argument permitted so just invoke the non-argument version of the function
                         return this.ValueInternal((ILiteralNode)temp);
                     }
                     else

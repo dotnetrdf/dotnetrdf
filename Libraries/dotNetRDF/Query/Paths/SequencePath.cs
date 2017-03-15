@@ -63,18 +63,18 @@ namespace VDS.RDF.Query.Paths
         {
             bool top = context.Top;
 
-            //The Object becomes a temporary variable then we transform the LHS of the path
+            // The Object becomes a temporary variable then we transform the LHS of the path
             context.Object = context.GetNextTemporaryVariable();
             context.Top = false;
             context.AddTriplePattern(context.GetTriplePattern(context.Subject, this._lhs, context.Object));
 
-            //The Subject is then the Object that results from the LHS transform since the
-            //Transform may adjust the Object
+            // The Subject is then the Object that results from the LHS transform since the
+            // Transform may adjust the Object
             context.Subject = context.Object;
 
-            //We then reset the Object to be the target Object so that if the RHS is the last part
-            //of the Path then it will complete the path transformation
-            //If it isn't the last part of the path it will be set to a new temporary variable
+            // We then reset the Object to be the target Object so that if the RHS is the last part
+            // of the Path then it will complete the path transformation
+            // If it isn't the last part of the path it will be set to a new temporary variable
             context.Top = top;
             if (context.Top)
             {

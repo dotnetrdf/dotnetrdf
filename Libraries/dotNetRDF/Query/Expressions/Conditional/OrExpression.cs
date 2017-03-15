@@ -50,25 +50,25 @@ namespace VDS.RDF.Query.Expressions.Conditional
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            //Lazy Evaluation for efficiency
+            // Lazy Evaluation for efficiency
             try
             {
                 bool leftResult = this._leftExpr.Evaluate(context, bindingID).AsBoolean();
                 if (leftResult)
                 {
-                    //If the LHS is true it doesn't matter about any subsequent results
+                    // If the LHS is true it doesn't matter about any subsequent results
                     return new BooleanNode(null, true);
                 }
                 else
                 {
-                    //If the LHS is false then we have to evaluate the RHS
+                    // If the LHS is false then we have to evaluate the RHS
                     return new BooleanNode(null, this._rightExpr.Evaluate(context, bindingID).AsBoolean());
                 }
             }
             catch (Exception ex)
             {
-                //If there's an Error on the LHS we return true only if the RHS evaluates to true
-                //Otherwise we throw the Error
+                // If there's an Error on the LHS we return true only if the RHS evaluates to true
+                // Otherwise we throw the Error
                 bool rightResult = this._rightExpr.Evaluate(context, bindingID).AsSafeBoolean();
                 if (rightResult)
                 {
@@ -76,7 +76,7 @@ namespace VDS.RDF.Query.Expressions.Conditional
                 }
                 else
                 {
-                    //Ensure the error we throw is a RdfQueryException so as not to cause issues higher up
+                    // Ensure the error we throw is a RdfQueryException so as not to cause issues higher up
                     if (ex is RdfQueryException)
                     {
                         throw;

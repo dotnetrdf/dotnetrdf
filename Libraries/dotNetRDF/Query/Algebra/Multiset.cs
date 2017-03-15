@@ -109,7 +109,7 @@ namespace VDS.RDF.Query.Algebra
         {
             if (this._variables.Contains(var))
             {
-                //Create the Cache if necessary and reset it when necessary
+                // Create the Cache if necessary and reset it when necessary
                 if (this._containsCache == null || this._cacheInvalid)
                 {
                     this._containsCache = new Dictionary<string, HashSet<INode>>();
@@ -119,7 +119,7 @@ namespace VDS.RDF.Query.Algebra
                 {
                     this._containsCache.Add(var, new HashSet<INode>(this._sets.Values.Select(s => s[var])));
                 }
-                //return this._sets.Values.Any(s => n.Equals(s[var]));
+                // return this._sets.Values.Any(s => n.Equals(s[var]));
                 return this._containsCache[var].Contains(n);
             }
             else
@@ -208,13 +208,13 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="variables">Variable Ordering</param>
         public override void SetVariableOrder(IEnumerable<string> variables)
         {
-            //Validate that the ordering is applicable
+            // Validate that the ordering is applicable
             if (variables.Count() < this._variables.Count) throw new RdfQueryException("Cannot set a variable ordering that contains less variables then are currently specified");
             foreach (String var in this._variables)
             {
                 if (!variables.Contains(var)) throw new RdfQueryException("Cannot set a variable ordering that omits the variable ?" + var + " currently present in the multiset, use Trim(\"" + var + "\") first to remove this variable");
             }
-            //Apply ordering
+            // Apply ordering
             this._variables = new List<string>(variables);
         }
 

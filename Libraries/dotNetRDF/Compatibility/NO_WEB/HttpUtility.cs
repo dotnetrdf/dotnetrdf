@@ -100,30 +100,30 @@ namespace VDS.RDF
                                 e = value[i + 2];
                                 if (IriSpecsHelper.IsHexDigit(d) && IriSpecsHelper.IsHexDigit(e))
                                 {
-                                    //Has valid hex digits after it so continue encoding normally
+                                    // Has valid hex digits after it so continue encoding normally
                                     output.Append(c);
                                 }
                                 else
                                 {
-                                    //Need to encode a bare percent character
+                                    // Need to encode a bare percent character
                                     output.Append(PercentEncode(c));
                                 }
                             }
                             else
                             {
-                                //Not enough characters after a % to use as a valid escape so encode the percent
+                                // Not enough characters after a % to use as a valid escape so encode the percent
                                 output.Append(PercentEncode(c));
                             }
                         }
                         else
                         {
-                            //Contains an unsafe character so percent encode
+                            // Contains an unsafe character so percent encode
                             output.Append(PercentEncode(c));
                         }
                     }
                     else
                     {
-                        //No need to encode safe characters
+                        // No need to encode safe characters
                         output.Append(c);
                     }
                 }
@@ -163,25 +163,25 @@ namespace VDS.RDF
                             }
                             else
                             {
-                                //Expected two hex digits after a % as an escape
+                                // Expected two hex digits after a % as an escape
                                 return true;
                             }
                         }
                         else
                         {
-                            //Not enough characters after a % to use as a valid escape
+                            // Not enough characters after a % to use as a valid escape
                             return true;
                         }
                     }
                     else
                     {
-                        //Contains an unsafe character
+                        // Contains an unsafe character
                         return true;
                     }
                 }
             }
 
-            //All Characters OK
+            // All Characters OK
             return false;
         }
 
@@ -204,7 +204,7 @@ namespace VDS.RDF
         {
             if (c <= 255)
             {
-                //Can be encoded in a single percent encode
+                // Can be encoded in a single percent encode
                 if (c <= 127)
                 {
                     return "%" + ((int)c).ToString("X2");
@@ -223,7 +223,7 @@ namespace VDS.RDF
             }
             else
             {
-                //Unicode character so requires more than one percent encode
+                // Unicode character so requires more than one percent encode
                 byte[] codepoints = Encoding.UTF8.GetBytes(new char[] { c });
                 StringBuilder output = new StringBuilder();
                 foreach (byte b in codepoints)

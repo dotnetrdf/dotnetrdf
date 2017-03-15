@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Patterns
             this._subj.RigorousEvaluation = true;
             this._obj.RigorousEvaluation = true;
 
-            //Build our list of Variables
+            // Build our list of Variables
             if (this._subj.VariableName != null)
             {
                 this._vars.Add(this._subj.VariableName);
@@ -127,9 +127,9 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="context">Evaluation Context</param>
         public override void Evaluate(SparqlEvaluationContext context)
         {
-            //Try and generate an Algebra expression
-            //Make sure we don't generate clashing temporary variable IDs over the life of the
-            //Evaluation
+            // Try and generate an Algebra expression
+            // Make sure we don't generate clashing temporary variable IDs over the life of the
+            // Evaluation
             PathTransformContext transformContext = new PathTransformContext(this._subj, this._obj);
             if (context["PathTransformID"] != null)
             {
@@ -138,25 +138,25 @@ namespace VDS.RDF.Query.Patterns
             ISparqlAlgebra algebra = this._path.ToAlgebra(transformContext);
             context["PathTransformID"] = transformContext.NextID + 1;
 
-            //Now we can evaluate the resulting algebra
+            // Now we can evaluate the resulting algebra
             BaseMultiset initialInput = context.InputMultiset;
             bool trimMode = context.TrimTemporaryVariables;
             bool rigMode = Options.RigorousEvaluation;
             try
             {
-                //Must enable rigorous evaluation or we get incorrect interactions between property and non-property path patterns
+                // Must enable rigorous evaluation or we get incorrect interactions between property and non-property path patterns
                 Options.RigorousEvaluation = true;
 
-                //Note: We may need to preserve Blank Node variables across evaluations
-                //which we usually don't do BUT because of the way we translate only part of the path
-                //into an algebra at a time and may need to do further nested translate calls we do
-                //need to do this here
+                // Note: We may need to preserve Blank Node variables across evaluations
+                // which we usually don't do BUT because of the way we translate only part of the path
+                // into an algebra at a time and may need to do further nested translate calls we do
+                // need to do this here
                 context.TrimTemporaryVariables = false;
                 BaseMultiset result = context.Evaluate(algebra);//algebra.Evaluate(context);
-                //Also note that we don't trim temporary variables here even if we've set the setting back
-                //to enabled since a Trim will be done at the end of whatever BGP we are being evaluated in
+                // Also note that we don't trim temporary variables here even if we've set the setting back
+                // to enabled since a Trim will be done at the end of whatever BGP we are being evaluated in
 
-                //Once we have our results can join then into our input
+                // Once we have our results can join then into our input
                 if (result is NullMultiset)
                 {
                     context.OutputMultiset = new NullMultiset();
@@ -166,7 +166,7 @@ namespace VDS.RDF.Query.Patterns
                     context.OutputMultiset = initialInput.Join(result);
                 }
 
-                //If we reach here we've successfully evaluated the simple pattern and can return
+                // If we reach here we've successfully evaluated the simple pattern and can return
                 return;
             }
             finally

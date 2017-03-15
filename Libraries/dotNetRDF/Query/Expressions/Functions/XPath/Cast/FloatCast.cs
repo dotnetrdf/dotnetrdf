@@ -58,9 +58,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                 throw new RdfQueryException("Cannot cast a Null to a xsd:float");
             }
 
-            //New method should be much faster
-            //if (n is FloatNode) return n;
-            //return new FloatNode(null, n.AsFloat());
+            // New method should be much faster
+            // if (n is FloatNode) return n;
+            // return new FloatNode(null, n.AsFloat());
 
             switch (n.NodeType)
             {
@@ -71,7 +71,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
 
                 case NodeType.Literal:
                     if (n is FloatNode) return n;
-                    //See if the value can be cast
+                    // See if the value can be cast
                     ILiteralNode lit = (ILiteralNode)n;
                     if (lit.DataType != null)
                     {
@@ -80,7 +80,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             float f;
                             if (Single.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out f))
                             {
-                                //Parsed OK
+                                // Parsed OK
                                 return new FloatNode(lit.Graph, f);
                             }
                             else
@@ -90,7 +90,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         }
                         else if (lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
                         {
-                            //DateTime cast forbidden
+                            // DateTime cast forbidden
                             throw new RdfQueryException("Cannot cast a xsd:dateTime to a xsd:float");
                         }
                         else
@@ -98,7 +98,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             float f;
                             if (Single.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out f))
                             {
-                                //Parsed OK
+                                // Parsed OK
                                 return new FloatNode(lit.Graph, f);
                             }
                             else
@@ -112,7 +112,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         float f;
                         if (Single.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out f))
                         {
-                            //Parsed OK
+                            // Parsed OK
                             return new FloatNode(lit.Graph, f);
                         }
                         else

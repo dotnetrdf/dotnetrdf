@@ -87,14 +87,14 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         {
             if (this._varname != null)
             {
-                //Ensured the MAXed variable is in the Variables of the Results
+                // Ensured the MAXed variable is in the Variables of the Results
                 if (!context.Binder.Variables.Contains(this._varname))
                 {
                     throw new RdfQueryException("Cannot use the Variable " + this._expr.ToString() + " in a NMAX Aggregate since the Variable does not occur in a Graph Pattern");
                 }
             }
 
-            //Prep Variables
+            // Prep Variables
             long lngmax = 0;
             decimal decmax = 0.0m;
             float fltmax = 0.0f;
@@ -116,15 +116,15 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
                     continue;
                 }
 
-                //Skip if Not a Number
+                // Skip if Not a Number
                 if (numtype == SparqlNumericType.NaN) continue;
 
-                //Track the Numeric Type
+                // Track the Numeric Type
                 if ((int)numtype > (int)maxtype)
                 {
                     if (maxtype == SparqlNumericType.NaN)
                     {
-                        //Initialise Maximums
+                        // Initialise Maximums
                         switch (numtype)
                         {
                             case SparqlNumericType.Integer:
@@ -202,27 +202,27 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
                 }
             }
 
-            //Return the Max
+            // Return the Max
             switch (maxtype)
             {
                 case SparqlNumericType.NaN:
-                    //No Numeric Values
+                    // No Numeric Values
                     return null;
 
                 case SparqlNumericType.Integer:
-                    //Integer Values
+                    // Integer Values
                     return new LongNode(null, lngmax);
 
                 case SparqlNumericType.Decimal:
-                    //Decimal Values
+                    // Decimal Values
                     return new DecimalNode(null, decmax);
 
                 case SparqlNumericType.Float:
-                    //Float values
+                    // Float values
                     return new FloatNode(null, fltmax);
 
                 case SparqlNumericType.Double:
-                    //Double Values
+                    // Double Values
                     return new DoubleNode(null, dblmax);
 
                 default:

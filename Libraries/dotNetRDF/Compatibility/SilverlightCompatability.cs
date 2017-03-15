@@ -60,8 +60,8 @@ namespace VDS.RDF
             }
             ret.Add(start < value.Length ? value.Substring(start) : String.Empty);
             return ret.ToArray();
-            //String[] items = value.Split(chars);
-            //return items.Length > count ? items.Take(count-1).Concat(String.Join(new String(chars), items, count, items.Length-(count-1)).AsEnumerable()).ToArray() : items;
+            // String[] items = value.Split(chars);
+            // return items.Length > count ? items.Take(count-1).Concat(String.Join(new String(chars), items, count, items.Length-(count-1)).AsEnumerable()).ToArray() : items;
         }
 
         /// <summary>

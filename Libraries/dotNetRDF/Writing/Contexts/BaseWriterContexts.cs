@@ -302,7 +302,7 @@ namespace VDS.RDF.Writing.Contexts
             {
                 if (this._uriFormatter == null)
                 {
-                    //If no URI Formatter set but the Node Formatter used is also a URI Formatter return that instead
+                    // If no URI Formatter set but the Node Formatter used is also a URI Formatter return that instead
                     if (this._formatter is IUriFormatter)
                     {
                         return (IUriFormatter)this._formatter;

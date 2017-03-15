@@ -159,24 +159,24 @@ namespace VDS.RDF.Update
                 {
                     if (Options.UpdateExecutionTimeout == 0 || (this._commands.Timeout <= Options.UpdateExecutionTimeout && Options.UpdateExecutionTimeout > 0))
                     {
-                        //Update Timeout is used provided it is less than global timeout unless global timeout is zero
+                        // Update Timeout is used provided it is less than global timeout unless global timeout is zero
                         this._timeout = this._commands.Timeout;
                     }
                     else
                     {
-                        //Update Timeout cannot be set higher than global timeout
+                        // Update Timeout cannot be set higher than global timeout
                         this._timeout = Options.UpdateExecutionTimeout;
                     }
                 }
                 else
                 {
-                    //If Update Timeout set to zero (i.e. no timeout) then global timeout is used
+                    // If Update Timeout set to zero (i.e. no timeout) then global timeout is used
                     this._timeout = Options.UpdateExecutionTimeout;
                 }
             }
             else
             {
-                //If no updates then global timeout is used
+                // If no updates then global timeout is used
                 this._timeout = Options.UpdateExecutionTimeout;
             }
         }

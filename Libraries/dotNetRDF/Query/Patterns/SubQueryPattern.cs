@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.Patterns
         {
             this._subquery = subquery;
             
-            //Get the Variables this query projects out
+            // Get the Variables this query projects out
             foreach (SparqlVariable var in this._subquery.Variables)
             {
                 if (var.IsResultVariable)
@@ -95,7 +95,7 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="context">Evaluation Context</param>
         public override void Evaluate(SparqlEvaluationContext context)
         {
-            //Use the same algebra optimisers as the parent query (if any)
+            // Use the same algebra optimisers as the parent query (if any)
             if (context.Query != null)
             {
                 this._subquery.AlgebraOptimisers = context.Query.AlgebraOptimisers;
@@ -114,7 +114,7 @@ namespace VDS.RDF.Query.Patterns
                 SparqlEvaluationContext subcontext = new SparqlEvaluationContext(this._subquery, context.Data, context.Processor);
                 subcontext.InputMultiset = context.InputMultiset;
 
-                //Add any Named Graphs to the subquery
+                // Add any Named Graphs to the subquery
                 if (context.Query != null)
                 {
                     foreach (Uri u in context.Query.NamedGraphs)
@@ -126,16 +126,16 @@ namespace VDS.RDF.Query.Patterns
                 ISparqlAlgebra query = this._subquery.ToAlgebra();
                 try
                 {
-                    //Evaluate the Subquery
+                    // Evaluate the Subquery
                     context.OutputMultiset = subcontext.Evaluate(query);
 
-                    //If the Subquery contains a GROUP BY it may return a Group Multiset in which case we must flatten this to a Multiset
+                    // If the Subquery contains a GROUP BY it may return a Group Multiset in which case we must flatten this to a Multiset
                     if (context.OutputMultiset is GroupMultiset)
                     {
                         context.OutputMultiset = new Multiset((GroupMultiset)context.OutputMultiset);
                     }
 
-                    //Strip out any Named Graphs from the subquery
+                    // Strip out any Named Graphs from the subquery
                     if (this._subquery.NamedGraphs.Any())
                     {
                         this._subquery.ClearNamedGraphs();

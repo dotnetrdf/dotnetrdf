@@ -139,7 +139,7 @@ namespace VDS.RDF.Update.Commands
                         return this._graphUri.AbsoluteUri.Equals(graphUri.ToSafeString());
                     }
                 default:
-                    //No Other Clear Modes but have to keep the compiler happy
+                    // No Other Clear Modes but have to keep the compiler happy
                     return true;
             }
         }

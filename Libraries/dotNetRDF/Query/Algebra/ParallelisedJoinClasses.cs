@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            //Create a copy of the evaluation context for the RHS
+            // Create a copy of the evaluation context for the RHS
             SparqlEvaluationContext context2 = new SparqlEvaluationContext(context.Query, context.Data, context.Processor);
             if (!(context.InputMultiset is IdentityMultiset))
             {
@@ -96,14 +96,14 @@ namespace VDS.RDF.Query.Algebra
             {
                 if (!rhsOk)
                 {
-                    //Clean up the RHS evaluation call if the LHS has errored
+                    // Clean up the RHS evaluation call if the LHS has errored
                     try
                     {
                         d.EndInvoke(rhs);
                     }
                     catch
                     {
-                        //Ignore this error as we're already going to throw the other error
+                        // Ignore this error as we're already going to throw the other error
                     }
                 }
                 throw;
@@ -117,20 +117,20 @@ namespace VDS.RDF.Query.Algebra
             bool activeGraphOk = false, defaultGraphOk = false;
             try
             {
-                //Set the Active Graph
+                // Set the Active Graph
                 if (activeGraphs.Any())
                 {
                     context.Data.SetActiveGraph(activeGraphs);
                     activeGraphOk = true;
                 }
-                //Set the Default Graph
+                // Set the Default Graph
                 if (defGraphs.Any())
                 {
                     context.Data.SetDefaultGraph(defGraphs);
                     defaultGraphOk = true;
                 }
 
-                //Evaluate the algebra and return the result
+                // Evaluate the algebra and return the result
                 return context.Evaluate(algebra);
             }
             catch
@@ -147,7 +147,7 @@ namespace VDS.RDF.Query.Algebra
                     }
                     catch
                     {
-                        //Ignore reset exceptions
+                        // Ignore reset exceptions
                     }
                 }
                 if (activeGraphOk)
@@ -158,7 +158,7 @@ namespace VDS.RDF.Query.Algebra
                     }
                     catch
                     {
-                        //Ignore reset exceptions
+                        // Ignore reset exceptions
                     }
                 }
             }
@@ -317,7 +317,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            //Create a copy of the evaluation context for the RHS
+            // Create a copy of the evaluation context for the RHS
             SparqlEvaluationContext context2 = new SparqlEvaluationContext(context.Query, context.Data, context.Processor);
             if (!(context.InputMultiset is IdentityMultiset))
             {
@@ -331,11 +331,11 @@ namespace VDS.RDF.Query.Algebra
             List<Uri> activeGraphs = context.Data.ActiveGraphUris.ToList();
             List<Uri> defaultGraphs = context.Data.DefaultGraphUris.ToList();
 
-            //Start both executing asynchronously
+            // Start both executing asynchronously
             IAsyncResult lhs = this._d.BeginInvoke(this._lhs, context, activeGraphs, defaultGraphs, null, null);
             IAsyncResult rhs = this._d.BeginInvoke(this._rhs, context2, activeGraphs, defaultGraphs, new AsyncCallback(this.RhsCallback), null);
 
-            //Wait on the LHS
+            // Wait on the LHS
             if (context.RemainingTimeout > 0)
             {
                 lhs.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, (int)context.RemainingTimeout));
@@ -346,7 +346,7 @@ namespace VDS.RDF.Query.Algebra
             }
             context.CheckTimeout();
 
-            //Get the LHS result
+            // Get the LHS result
             BaseMultiset lhsResult;
             try
             {
@@ -357,7 +357,7 @@ namespace VDS.RDF.Query.Algebra
                 throw;
             }
 
-            //If LHS came back as null/empty no need to wait for RHS to complete
+            // If LHS came back as null/empty no need to wait for RHS to complete
             if (lhsResult is NullMultiset)
             {
                 context.OutputMultiset = lhsResult;
@@ -368,7 +368,7 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                //Wait for RHS to complete
+                // Wait for RHS to complete
                 if (!rhs.IsCompleted)
                 {
                     if (context.RemainingTimeout > 0)
@@ -391,7 +391,7 @@ namespace VDS.RDF.Query.Algebra
                 }
                 if (this._rhsResult == null) throw new RdfQueryException("Unknown error in parallel join evaluation, RHS is reported completed without errors but no result is available");
 
-                //Compute the product of the two sides
+                // Compute the product of the two sides
                 context.OutputMultiset = lhsResult.Product(this._rhsResult);
             }
             return context.OutputMultiset;
@@ -404,20 +404,20 @@ namespace VDS.RDF.Query.Algebra
             bool activeGraphOk = false, defaultGraphOk = false;
             try
             {
-                //Set the Active Graph
+                // Set the Active Graph
                 if (activeGraphs.Any())
                 {
                     context.Data.SetActiveGraph(activeGraphs);
                     activeGraphOk = true;
                 }
-                //Set the Default Graph
+                // Set the Default Graph
                 if (defGraphs.Any())
                 {
                     context.Data.SetDefaultGraph(defGraphs);
                     defaultGraphOk = true;
                 }
 
-                //Evaluate the algebra and return the result
+                // Evaluate the algebra and return the result
                 return context.Evaluate(algebra);
             }
             catch
@@ -434,7 +434,7 @@ namespace VDS.RDF.Query.Algebra
                     }
                     catch
                     {
-                        //Ignore reset exceptions
+                        // Ignore reset exceptions
                     }
                 }
                 if (activeGraphOk)
@@ -445,7 +445,7 @@ namespace VDS.RDF.Query.Algebra
                     }
                     catch
                     {
-                        //Ignore reset exceptions
+                        // Ignore reset exceptions
                     }
                 }
             }

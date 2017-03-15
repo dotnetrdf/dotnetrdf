@@ -363,11 +363,11 @@ namespace VDS.RDF.Storage
                 {
                     HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
                     Tools.HttpDebugResponse(response);
-                    //Parse the retrieved RDF
+                    // Parse the retrieved RDF
                     IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
                     parser.Load(handler, new StreamReader(response.GetResponseStream()));
 
-                    //If we get here then it was OK
+                    // If we get here then it was OK
                     response.Close();
 
                     callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadWithHandler, handler), state);
@@ -425,7 +425,7 @@ namespace VDS.RDF.Storage
                         {
                             HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
                             Tools.HttpDebugResponse(response);
-                            //If we get here then it was OK
+                            // If we get here then it was OK
                             response.Close();
                             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph, g), state);
                         }
@@ -502,7 +502,7 @@ namespace VDS.RDF.Storage
                         {
                             HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
                             Tools.HttpDebugResponse(response);
-                            //If we get here then it was OK
+                            // If we get here then it was OK
                             response.Close();
                             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri), state);
                         }
@@ -563,21 +563,21 @@ namespace VDS.RDF.Storage
                     {
                         HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
 
-                        //Assume if returns to here we deleted the Graph OK
+                        // Assume if returns to here we deleted the Graph OK
                         response.Close();
                         callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteGraph, graphUri.ToSafeUri()), state);
                     }
                     catch (WebException webEx)
                     {
                         if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                        //Don't throw the error if we get a 404 - this means we couldn't do a delete as the graph didn't exist to start with
+                        // Don't throw the error if we get a 404 - this means we couldn't do a delete as the graph didn't exist to start with
                         if (webEx.Response == null || (webEx.Response != null && (!allow404 || ((HttpWebResponse)webEx.Response).StatusCode != HttpStatusCode.NotFound)))
                         {
                             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteGraph, graphUri.ToSafeUri(), new RdfStorageException("A HTTP Error occurred while trying to delete a Graph from the Store asynchronously", webEx)), state);
                         }
                         else
                         {
-                            //Consider a 404 as a success in some cases
+                            // Consider a 404 as a success in some cases
                             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteGraph, graphUri.ToSafeUri()), state);
                         }
                     }
@@ -597,7 +597,7 @@ namespace VDS.RDF.Storage
         {
             if (this is IAsyncQueryableStorage)
             {
-                //Use ListUrisHandler and make an async query to list the graphs, when that returns we invoke the correct callback
+                // Use ListUrisHandler and make an async query to list the graphs, when that returns we invoke the correct callback
                 ListUrisHandler handler = new ListUrisHandler("g");
                 ((IAsyncQueryableStorage)this).Query(null, handler, "SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }", (sender, args, st) =>
                 {
@@ -687,7 +687,7 @@ namespace VDS.RDF.Storage
             try
             {
                 this._d.EndInvoke(r);
-                //callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.Unknown), null);
+                // callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.Unknown), null);
             }
             catch (Exception ex)
             {
@@ -713,7 +713,7 @@ namespace VDS.RDF.Storage
                     {
                         HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
 
-                        //This request worked OK, close the response and carry on
+                        // This request worked OK, close the response and carry on
                         response.Close();
                         signal.Set();
                     }

@@ -71,7 +71,7 @@ namespace VDS.RDF.Configuration
                             PropertyPassword = ConfigurationNamespace + "password",
                             PropertyCredentials = ConfigurationNamespace + "credentials",
                             PropertyUseCredentialsForProxy = ConfigurationNamespace + "useCredentialsForProxy",
-                            //Manager connection properties
+                            // Manager connection properties
                             PropertyServer = ConfigurationNamespace + "server",
                             PropertyPort = ConfigurationNamespace + "port",
                             PropertyDatabase = ConfigurationNamespace + "database",
@@ -79,27 +79,27 @@ namespace VDS.RDF.Configuration
                             PropertyStore = ConfigurationNamespace + "storeID",
                             PropertyQueryPath = ConfigurationNamespace + "queryPath",
                             PropertyUpdatePath = ConfigurationNamespace + "updatePath",
-                            //Manager connection options
+                            // Manager connection options
                             PropertyReadOnly = ConfigurationNamespace + "readOnly",
                             PropertyEnableUpdates = ConfigurationNamespace + "enableUpdates",
                             PropertyAsync = ConfigurationNamespace + "async",
                             PropertyLoadMode = ConfigurationNamespace + "loadMode",
                             PropertyEncryptConnection = ConfigurationNamespace + "encryptConnection",
                             PropertySkipParsing = ConfigurationNamespace + "skipParsing",
-                            //Properties for associating Managers with other things
+                            // Properties for associating Managers with other things
                             PropertyStorageProvider = ConfigurationNamespace + "storageProvider",
-                            //Properties for associating Processors with other things
+                            // Properties for associating Processors with other things
                             PropertyQueryProcessor = ConfigurationNamespace + "queryProcessor",
                             PropertyUpdateProcessor = ConfigurationNamespace + "updateProcessor",
                             PropertyProtocolProcessor = ConfigurationNamespace + "protocolProcessor",
                             PropertyUsingDataset = ConfigurationNamespace + "usingDataset",
-                            //Properties for associating Stores and Graphs with other things
+                            // Properties for associating Stores and Graphs with other things
                             PropertyUsingStore = ConfigurationNamespace + "usingStore",
                             PropertyUsingGraph = ConfigurationNamespace + "usingGraph",
-                            //Properties for setting low level storage for Triple Stores and Graphs
+                            // Properties for setting low level storage for Triple Stores and Graphs
                             PropertyUsingTripleCollection = ConfigurationNamespace + "usingTripleCollection",
                             PropertyUsingGraphCollection = ConfigurationNamespace + "usingGraphCollection",
-                            //Properties for defining where data comes from
+                            // Properties for defining where data comes from
                             PropertyFromFile = ConfigurationNamespace + "fromFile",
                             PropertyFromEmbedded = ConfigurationNamespace + "fromEmbedded",
                             PropertyFromUri = ConfigurationNamespace + "fromUri",
@@ -109,7 +109,7 @@ namespace VDS.RDF.Configuration
                             PropertyFromGraph = ConfigurationNamespace + "fromGraph",
                             PropertyWithUri = ConfigurationNamespace + "withUri",
                             PropertyAssignUri = ConfigurationNamespace + "assignUri",
-                            //Properties for Endpoints
+                            // Properties for Endpoints
                             PropertyEndpoint = ConfigurationNamespace + "endpoint",
                             PropertyEndpointUri = ConfigurationNamespace + "endpointUri",
                             PropertyQueryEndpointUri = ConfigurationNamespace + "queryEndpointUri",
@@ -120,10 +120,10 @@ namespace VDS.RDF.Configuration
                             PropertyNamedGraphUri = ConfigurationNamespace + "namedGraphUri",
                             PropertyUnionDefaultGraph = ConfigurationNamespace + "unionDefaultGraph",
                             PropertyProxy = ConfigurationNamespace + "proxy",
-                            //Properties for reasoners
+                            // Properties for reasoners
                             PropertyReasoner = ConfigurationNamespace + "reasoner",
                             PropertyOwlReasoner = ConfigurationNamespace + "owlReasoner",
-                            //Properties for permissions
+                            // Properties for permissions
                             PropertyUserGroup = ConfigurationNamespace + "userGroup",
                             PropertyMember = ConfigurationNamespace + "member",
                             PropertyRequiresAuthentication = ConfigurationNamespace + "requiresAuthentication",
@@ -131,7 +131,7 @@ namespace VDS.RDF.Configuration
                             PropertyAllow = ConfigurationNamespace + "allow",
                             PropertyDeny = ConfigurationNamespace + "deny",
                             PropertyAction = ConfigurationNamespace + "action",
-                            //Properties for HTTP Handler configuration primarily around SPARQL endpoint configuration
+                            // Properties for HTTP Handler configuration primarily around SPARQL endpoint configuration
                             PropertyEnableCors = ConfigurationNamespace + "enableCors",
                             PropertySyntax = ConfigurationNamespace + "syntax",
                             PropertyTimeout = ConfigurationNamespace + "timeout",
@@ -152,7 +152,7 @@ namespace VDS.RDF.Configuration
                             PropertyServiceDescription = ConfigurationNamespace + "serviceDescription",
                             PropertyQueryOptimiser = ConfigurationNamespace + "queryOptimiser",
                             PropertyAlgebraOptimiser = ConfigurationNamespace + "algebraOptimiser",
-                            //Properties for writers
+                            // Properties for writers
                             PropertyCompressionLevel = ConfigurationNamespace + "compressionLevel",
                             PropertyPrettyPrinting = ConfigurationNamespace + "prettyPrinting",
                             PropertyHighSpeedWriting = ConfigurationNamespace + "highSpeedWriting",
@@ -166,17 +166,17 @@ namespace VDS.RDF.Configuration
         /// URI Constants for configuration classes
         /// </summary>
         public const String ClassObjectFactory = ConfigurationNamespace + "ObjectFactory",
-                            //Classes for Triple Stores and Graphs and their associated low level storage
+                            // Classes for Triple Stores and Graphs and their associated low level storage
                             ClassTripleStore = ConfigurationNamespace + "TripleStore",
                             ClassGraphCollection = ConfigurationNamespace + "GraphCollection",
                             ClassGraph = ConfigurationNamespace + "Graph",
                             ClassTripleCollection = ConfigurationNamespace + "TripleCollection",
-                            //Classes for Storage Providers and Servers
+                            // Classes for Storage Providers and Servers
                             ClassStorageServer = ConfigurationNamespace + "StorageServer",
                             ClassStorageProvider = ConfigurationNamespace + "StorageProvider",
-                            //Classes for ASP.Net integration
+                            // Classes for ASP.Net integration
                             ClassHttpHandler = ConfigurationNamespace + "HttpHandler",
-                            //Classes for SPARQL features
+                            // Classes for SPARQL features
                             ClassSparqlEndpoint = ConfigurationNamespace + "SparqlEndpoint",
                             ClassSparqlQueryEndpoint = ConfigurationNamespace + "SparqlQueryEndpoint",
                             ClassSparqlUpdateEndpoint = ConfigurationNamespace + "SparqlUpdateEndpoint",
@@ -189,15 +189,15 @@ namespace VDS.RDF.Configuration
                             ClassQueryOptimiser = ConfigurationNamespace + "QueryOptimiser",
                             ClassAlgebraOptimiser = ConfigurationNamespace + "AlgebraOptimiser",
                             ClassSparqlOperator = ConfigurationNamespace + "SparqlOperator",
-                            //Classes for reasoners
+                            // Classes for reasoners
                             ClassReasoner = ConfigurationNamespace + "Reasoner",
                             ClassOwlReasoner = ConfigurationNamespace + "OwlReasoner",
                             ClassProxy = ConfigurationNamespace + "Proxy",
-                            //Classes for Users and permissions
+                            // Classes for Users and permissions
                             ClassUserGroup = ConfigurationNamespace + "UserGroup",
                             ClassUser = ConfigurationNamespace + "User",
                             ClassPermission = ConfigurationNamespace + "Permission",
-                            //Classes for Parsers and Serializers
+                            // Classes for Parsers and Serializers
                             ClassRdfParser = ConfigurationNamespace + "RdfParser",
                             ClassDatasetParser = ConfigurationNamespace + "DatasetParser",
                             ClassSparqlResultsParser = ConfigurationNamespace + "SparqlResultsParser",
@@ -231,37 +231,37 @@ namespace VDS.RDF.Configuration
         /// </summary>
         private static List<IObjectFactory> _factories = new List<IObjectFactory>()
         {
-            //Default Data Factories
+            // Default Data Factories
             new GraphFactory(),
             new StoreFactory(),
             new CollectionFactory(),
-            //Default Manager Factories
+            // Default Manager Factories
             new StorageFactory(),
             new DatasetFactory(),
-            //Endpoint Factories
+            // Endpoint Factories
             new SparqlEndpointFactory(),
-            //Processor Factories
+            // Processor Factories
             new QueryProcessorFactory(),
             new UpdateProcessorFactory(),
 #if !NO_WEB && !NO_ASP
             new ProtocolProcessorFactory(),
 #endif
-            //User and Permission related Factories
+            // User and Permission related Factories
             new UserGroupFactory(),
             new PermissionFactory(),
             new CredentialsFactory(),
 #if !NO_PROXY
             new ProxyFactory(),
 #endif
-            //SPARQL Extension related Factories
+            // SPARQL Extension related Factories
             new OptimiserFactory(),
             new ReasonerFactory(),
             new ExpressionFactoryFactory(),
             new PropertyFunctionFactoryFactory(),
             new OperatorFactory(),
-            //ObjectFactory Factory
+            // ObjectFactory Factory
             new ObjectFactoryFactory(),
-            //Parser and Writer Factories
+            // Parser and Writer Factories
             new ParserFactory(),
             new WriterFactory()
         };
@@ -385,14 +385,14 @@ namespace VDS.RDF.Configuration
         /// <returns></returns>
         private static IGraph LoadCommon(IGraph g, IEnumerable<INode> sources, bool autoConfigure)
         {
-            //Add initial sources to already imported list
+            // Add initial sources to already imported list
             HashSet<INode> imported = new HashSet<INode>();
             foreach (INode source in sources)
             {
                 imported.Add(source);
             }
 
-            //Find initial imports
+            // Find initial imports
             INode imports = g.CreateUriNode(UriFactory.Create(PropertyImports));
             Queue<INode> importQueue = new Queue<INode>();
             foreach (INode importData in g.GetTriplesWithPredicate(imports).Select(t => t.Object))
@@ -402,7 +402,7 @@ namespace VDS.RDF.Configuration
 
             while (importQueue.Count > 0)
             {
-                //Load data from imported configuration graph
+                // Load data from imported configuration graph
                 INode importData = importQueue.Dequeue();
                 Graph data = new Graph();
                 switch (importData.NodeType)
@@ -430,16 +430,16 @@ namespace VDS.RDF.Configuration
                         throw new DotNetRdfConfigurationException("Invalid dnr:imports target " + importData.ToString() + ", dnr:imports may only be used to point to an object which is a URI/Literal.  If sing Silverlight only Literals are currently permitted.");
                 }
 
-                //Scan for nested imports
+                // Scan for nested imports
                 foreach (INode nestedImport in data.GetTriplesWithPredicate(imports).Select(t => t.Object))
                 {
                     if (!imported.Contains(nestedImport)) importQueue.Enqueue(nestedImport);
                 }
-                //Merge into final graph
+                // Merge into final graph
                 g.Merge(data);
             }
 
-            //Apply auto-configuration if requested
+            // Apply auto-configuration if requested
             if (autoConfigure) ConfigurationLoader.AutoConfigure(g);
 
             return g;
@@ -506,19 +506,19 @@ namespace VDS.RDF.Configuration
                     Uri propertyUri = ((IUriNode)t.Subject).Uri;
                     if (propertyUri.Scheme.Equals(UriSchemeConfigureOptions))
                     {
-                        //Parse the Class and Property out of the URI
+                        // Parse the Class and Property out of the URI
                         String className = propertyUri.AbsolutePath;
                         if (propertyUri.Fragment.Length <= 1) throw new DotNetRdfConfigurationException("Malformed Configure Options URI used as subject for a dnr:configure triple, <" + propertyUri.AbsoluteUri + "> is missing the fragment identifier to specify the property name");
                         String propName = propertyUri.Fragment.Substring(1);
 
-                        //Get the Value we are setting to this property
+                        // Get the Value we are setting to this property
                         INode value = t.Object;
 
-                        //Get the type whose static option we are attempting to change
+                        // Get the type whose static option we are attempting to change
                         Type type = Type.GetType(className);
                         if (type == null) throw new DotNetRdfConfigurationException("Malformed Configure Options URI used as a subject for a dnr:configure triple, <" + propertyUri.AbsoluteUri + "> specifies a class '" + className + "' which could not be loaded.  Please ensure the type name is fully qualified");
 
-                        //Get the property in question
+                        // Get the property in question
                         PropertyInfo property = type.GetProperty(propName);
                         if (property == null) throw new DotNetRdfConfigurationException("Malformed Configure Options URI used as a subject for a dnr:configure triple, <" + propertyUri.AbsoluteUri + "> specifies a property '" + propName + "' which does not exist or is not static");
                         if (!property.GetSetMethod().IsStatic) throw new DotNetRdfConfigurationException("Malformed Configure Options URI used as a subject for a dnr:configure triple, <" + propertyUri.AbsoluteUri + "> specifies a property '" + propName + "' which is not static");
@@ -567,12 +567,12 @@ namespace VDS.RDF.Configuration
                         }
                         catch (DotNetRdfConfigurationException)
                         {
-                            //Don't rewrap
+                            // Don't rewrap
                             throw;
                         }
                         catch (Exception ex)
                         {
-                            //Rewrap as Configuration error
+                            // Rewrap as Configuration error
                             throw new DotNetRdfConfigurationException("Unexpected error trying to set the static property identified by the Configure Options URI <" + propertyUri.AbsoluteUri + ">, please ensure that the lexical form of the value being set is valid for the property you are trying to set", ex);
                         }
                     }
@@ -593,18 +593,18 @@ namespace VDS.RDF.Configuration
             Object temp;
             String[] mimeTypes, extensions;
 
-            //Load RDF Parsers
+            // Load RDF Parsers
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
             {
                 temp = LoadObject(g, objNode);
                 if (temp is IRdfReader)
                 {
-                    //Get the formats to associate this with
+                    // Get the formats to associate this with
                     mimeTypes = ConfigurationLoader.GetConfigurationArray(g, objNode, formatMimeType);
                     if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-configuration of Readers and Writers failed as the Parser specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
                     extensions = ConfigurationLoader.GetConfigurationArray(g, objNode, formatExtension);
 
-                    //Register
+                    // Register
                     MimeTypesHelper.RegisterParser((IRdfReader)temp, mimeTypes, extensions);
                 }
                 else
@@ -613,19 +613,19 @@ namespace VDS.RDF.Configuration
                 }
             }
 
-            //Load Dataset parsers
+            // Load Dataset parsers
             desiredType = g.CreateUriNode(UriFactory.Create(ClassDatasetParser));
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
             {
                 temp = LoadObject(g, objNode);
                 if (temp is IStoreReader)
                 {
-                    //Get the formats to associate this with
+                    // Get the formats to associate this with
                     mimeTypes = ConfigurationLoader.GetConfigurationArray(g, objNode, formatMimeType);
                     if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-configuration of Readers and Writers failed as the Parser specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
                     extensions = ConfigurationLoader.GetConfigurationArray(g, objNode, formatExtension);
 
-                    //Register
+                    // Register
                     MimeTypesHelper.RegisterParser((IStoreReader)temp, mimeTypes, extensions);
                 }
                 else
@@ -634,19 +634,19 @@ namespace VDS.RDF.Configuration
                 }
             }
 
-            //Load SPARQL Result parsers
+            // Load SPARQL Result parsers
             desiredType = g.CreateUriNode(UriFactory.Create(ClassSparqlResultsParser));
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
             {
                 temp = LoadObject(g, objNode);
                 if (temp is ISparqlResultsReader)
                 {
-                    //Get the formats to associate this with
+                    // Get the formats to associate this with
                     mimeTypes = ConfigurationLoader.GetConfigurationArray(g, objNode, formatMimeType);
                     if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-configuration of Readers and Writers failed as the Parser specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
                     extensions = ConfigurationLoader.GetConfigurationArray(g, objNode, formatExtension);
 
-                    //Register
+                    // Register
                     MimeTypesHelper.RegisterParser((ISparqlResultsReader)temp, mimeTypes, extensions);
                 }
                 else
@@ -655,19 +655,19 @@ namespace VDS.RDF.Configuration
                 }
             }
 
-            //Load RDF Writers
+            // Load RDF Writers
             desiredType = g.CreateUriNode(UriFactory.Create(ClassRdfWriter));
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
             {
                 temp = LoadObject(g, objNode);
                 if (temp is IRdfWriter)
                 {
-                    //Get the formats to associate this with
+                    // Get the formats to associate this with
                     mimeTypes = ConfigurationLoader.GetConfigurationArray(g, objNode, formatMimeType);
                     if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-configuration of Readers and Writers failed as the Writer specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
                     extensions = ConfigurationLoader.GetConfigurationArray(g, objNode, formatExtension);
 
-                    //Register
+                    // Register
                     MimeTypesHelper.RegisterWriter((IRdfWriter)temp, mimeTypes, extensions);
                 }
                 else
@@ -676,19 +676,19 @@ namespace VDS.RDF.Configuration
                 }
             }
 
-            //Load Dataset Writers
+            // Load Dataset Writers
             desiredType = g.CreateUriNode(UriFactory.Create(ClassDatasetWriter));
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
             {
                 temp = LoadObject(g, objNode);
                 if (temp is IStoreWriter)
                 {
-                    //Get the formats to associate this with
+                    // Get the formats to associate this with
                     mimeTypes = ConfigurationLoader.GetConfigurationArray(g, objNode, formatMimeType);
                     if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-configuration of Readers and Writers failed as the Writer specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
                     extensions = ConfigurationLoader.GetConfigurationArray(g, objNode, formatExtension);
 
-                    //Register
+                    // Register
                     MimeTypesHelper.RegisterWriter((IStoreWriter)temp, mimeTypes, extensions);
                 }
                 else
@@ -697,19 +697,19 @@ namespace VDS.RDF.Configuration
                 }
             }
 
-            //Load SPARQL Result Writers
+            // Load SPARQL Result Writers
             desiredType = g.CreateUriNode(UriFactory.Create(ClassDatasetWriter));
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
             {
                 temp = LoadObject(g, objNode);
                 if (temp is ISparqlResultsWriter)
                 {
-                    //Get the formats to associate this with
+                    // Get the formats to associate this with
                     mimeTypes = ConfigurationLoader.GetConfigurationArray(g, objNode, formatMimeType);
                     if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-configuration of Readers and Writers failed as the Writer specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
                     extensions = ConfigurationLoader.GetConfigurationArray(g, objNode, formatExtension);
 
-                    //Register
+                    // Register
                     MimeTypesHelper.RegisterWriter((ISparqlResultsWriter)temp, mimeTypes, extensions);
                 }
                 else
@@ -990,7 +990,7 @@ namespace VDS.RDF.Configuration
             INode n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
             if (n == null) return defValue;
 
-            //Resolve AppSettings
+            // Resolve AppSettings
             if (n.NodeType != NodeType.Literal)
             {
                 n = ResolveAppSetting(g, n);
@@ -1032,7 +1032,7 @@ namespace VDS.RDF.Configuration
                 INode n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
                 if (n == null) continue;
 
-                //Resolve AppSettings
+                // Resolve AppSettings
                 if (n.NodeType != NodeType.Literal)
                 {
                     n = ResolveAppSetting(g, n);
@@ -1066,7 +1066,7 @@ namespace VDS.RDF.Configuration
             INode n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
             if (n == null) return defValue;
 
-            //Resolve AppSettings
+            // Resolve AppSettings
             if (n.NodeType != NodeType.Literal)
             {
                 n = ResolveAppSetting(g, n);
@@ -1108,7 +1108,7 @@ namespace VDS.RDF.Configuration
                 INode n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
                 if (n == null) continue;
 
-                //Resolve AppSettings
+                // Resolve AppSettings
                 if (n.NodeType != NodeType.Literal)
                 {
                     n = ResolveAppSetting(g, n);
@@ -1142,7 +1142,7 @@ namespace VDS.RDF.Configuration
             INode n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
             if (n == null) return defValue;
 
-            //Resolve AppSettings
+            // Resolve AppSettings
             if (n.NodeType != NodeType.Literal)
             {
                 n = ResolveAppSetting(g, n);
@@ -1184,7 +1184,7 @@ namespace VDS.RDF.Configuration
                 INode n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
                 if (n == null) continue;
 
-                //Resolve AppSettings
+                // Resolve AppSettings
                 if (n.NodeType != NodeType.Literal)
                 {
                     n = ResolveAppSetting(g, n);
@@ -1223,7 +1223,7 @@ namespace VDS.RDF.Configuration
             pwd = ConfigurationLoader.GetConfigurationString(g, objNode, propPwd);
             if ((user == null || pwd == null) && allowCredentials)
             {
-                //Have they been specified as credentials instead?
+                // Have they been specified as credentials instead?
                 INode propCredentials = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyCredentials));
                 INode credObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propCredentials);
                 if (credObj != null)
@@ -1275,25 +1275,25 @@ namespace VDS.RDF.Configuration
                 throw new DotNetRdfConfigurationException("Unable to load an Object as the Object Node was not a URI/Blank Node as required");
             }
 
-            //Use an Object caching mechanism to avoid instantiating the same thing multiple times since this could be VERY costly
+            // Use an Object caching mechanism to avoid instantiating the same thing multiple times since this could be VERY costly
             CachedObjectKey key = new CachedObjectKey(objNode, g);
             if (_cache.ContainsKey(key))
             {
                 if (_cache[key] == null)
                 {
-                    //This means we've begun trying to cache the Object but haven't loaded it yet
-                    //i.e. we've encountered an indirect circular reference or the caller failed to check
-                    //for direct circular references with the CheckCircularReference() method
+                    // This means we've begun trying to cache the Object but haven't loaded it yet
+                    // i.e. we've encountered an indirect circular reference or the caller failed to check
+                    // for direct circular references with the CheckCircularReference() method
                     throw new DotNetRdfConfigurationException("Unable to load the Object identified by the Node '" + objNode.ToString() + "' as we have already started trying to load this Object which indicates that your Configuration Graph contains a circular reference");
                 }
                 else if (_cache[key] is UnloadableObject)
                 {
-                    //We don't retry loading if we fail
+                    // We don't retry loading if we fail
                     throw new DotNetRdfConfigurationException("Unable to load the Object identified by the Node '" + objNode.ToString() + "' as previous attempt(s) to load the Object failed.  Call ClearCache() before attempting loading if you wish to retry loading");
                 }
                 else
                 {
-                    //Return from Cache
+                    // Return from Cache
                     return _cache[key];
                 }
             }
@@ -1304,7 +1304,7 @@ namespace VDS.RDF.Configuration
 
             Object temp = null;
 
-            //Try and find an Object Loader that can load this object
+            // Try and find an Object Loader that can load this object
             try
             {
                 foreach (IObjectFactory loader in _factories)
@@ -1326,7 +1326,7 @@ namespace VDS.RDF.Configuration
                 throw new DotNetRdfConfigurationException("Unable to load the Object identified by the Node '" + objNode.ToString() + "' as an error occurred in the Object Loader which attempted to load it", ex);
             }
 
-            //Error or return
+            // Error or return
             if (temp == null) throw new DotNetRdfConfigurationException("Unable to load the Object identified by the Node '" + objNode.ToString() + "' as an instance of type '" + targetType.ToString() + "' since no Object Loaders are able to load this type");
             _cache[key] = temp;
             return temp;

@@ -23,8 +23,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-//Defining this to disable XML DOM usage for this file to use the faster streaming XmlWriter variant since should offer better memory usage and 
-//performance and haven't decided whether to completely remove the XML DOM based code yet
+// Defining this to disable XML DOM usage for this file to use the faster streaming XmlWriter variant since should offer better memory usage and 
+// performance and haven't decided whether to completely remove the XML DOM based code yet
 #define NO_XMLDOM
 
 using System;
@@ -80,7 +80,7 @@ namespace VDS.RDF.Writing
                 }
                 catch
                 {
-                    //No Catch Actions
+                    // No Catch Actions
                 }
                 throw;
             }
@@ -94,27 +94,27 @@ namespace VDS.RDF.Writing
         {
             XmlDocument xmlDoc = new XmlDocument();
 
-            //XML Declaration
+            // XML Declaration
             XmlDeclaration xmlDec = xmlDoc.CreateXmlDeclaration("1.0", "UTF-8", String.Empty);
             xmlDoc.AppendChild(xmlDec);
 
-            //<sparql> element
+            // <sparql> element
             XmlElement sparql = xmlDoc.CreateElement("sparql");
             XmlAttribute sparqlns = xmlDoc.CreateAttribute("xmlns");
             sparqlns.Value = SparqlSpecsHelper.SparqlNamespace;
             sparql.Attributes.Append(sparqlns);
             xmlDoc.AppendChild(sparql);
 
-            //<head> element
+            // <head> element
             XmlElement head = xmlDoc.CreateElement("head");
             sparql.AppendChild(head);
 
-            //Variables in the Header?
+            // Variables in the Header?
             if (resultSet.ResultsType == SparqlResultsType.VariableBindings)
             {
                 foreach (String var in resultSet.Variables)
                 {
-                    //<variable> element
+                    // <variable> element
                     XmlElement varEl = xmlDoc.CreateElement("variable");
                     XmlAttribute varAttr = xmlDoc.CreateAttribute("name");
                     varAttr.Value = var;
@@ -122,13 +122,13 @@ namespace VDS.RDF.Writing
                     head.AppendChild(varEl);
                 }
 
-                //<results> Element
+                // <results> Element
                 XmlElement results = xmlDoc.CreateElement("results");
                 sparql.AppendChild(results);
 
                 foreach (SparqlResult r in resultSet.Results)
                 {
-                    //<result> Element
+                    // <result> Element
                     XmlElement result = xmlDoc.CreateElement("result");
                     results.AppendChild(result);
 
@@ -136,7 +136,7 @@ namespace VDS.RDF.Writing
                     {
                         if (r.HasValue(var))
                         {
-                            //<binding> Element
+                            // <binding> Element
                             XmlElement binding = xmlDoc.CreateElement("binding");
                             XmlAttribute name = xmlDoc.CreateAttribute("name");
                             name.Value = var;
@@ -147,18 +147,18 @@ namespace VDS.RDF.Writing
                             switch (n.NodeType)
                             {
                                 case NodeType.Blank:
-                                    //<bnode> element
+                                    // <bnode> element
                                     XmlElement bnode = xmlDoc.CreateElement("bnode");
                                     bnode.InnerText = ((IBlankNode)n).InternalID;
                                     binding.AppendChild(bnode);
                                     break;
 
                                 case NodeType.GraphLiteral:
-                                    //Error!
+                                    // Error!
                                     throw new RdfOutputException("Result Sets which contain Graph Literal Nodes cannot be serialized in the SPARQL Query Results XML Format");
 
                                 case NodeType.Literal:
-                                    //<literal> element
+                                    // <literal> element
                                     XmlElement lit = xmlDoc.CreateElement("literal");
                                     ILiteralNode l = (ILiteralNode)n;
                                     lit.InnerText = l.Value;
@@ -180,7 +180,7 @@ namespace VDS.RDF.Writing
                                     break;
 
                                 case NodeType.Uri:
-                                    //<uri> element
+                                    // <uri> element
                                     XmlElement uri = xmlDoc.CreateElement("uri");
                                     uri.InnerText = WriterHelper.EncodeForXml(((IUriNode)n).StringUri);
                                     binding.AppendChild(uri);
@@ -243,7 +243,7 @@ namespace VDS.RDF.Writing
                 }
                 catch
                 {
-                    //No Catch Actions
+                    // No Catch Actions
                 }
                 throw;
             }
@@ -255,35 +255,35 @@ namespace VDS.RDF.Writing
         /// <returns></returns>
         protected void GenerateOutput(SparqlResultSet resultSet, XmlWriter writer)
         {
-            //XML Declaration
+            // XML Declaration
             writer.WriteStartDocument();
 
-            //<sparql> element
+            // <sparql> element
             writer.WriteStartElement("sparql", SparqlSpecsHelper.SparqlNamespace);
 
-            //<head> element
+            // <head> element
             writer.WriteStartElement("head");
 
-            //Variables in the Header?
+            // Variables in the Header?
             if (resultSet.ResultsType == SparqlResultsType.VariableBindings)
             {
                 foreach (String var in resultSet.Variables)
                 {
-                    //<variable> element
+                    // <variable> element
                     writer.WriteStartElement("variable");
                     writer.WriteAttributeString("name", var);
                     writer.WriteEndElement();
                 }
 
-                //</head> Element
+                // </head> Element
                 writer.WriteEndElement();
 
-                //<results> Element
+                // <results> Element
                 writer.WriteStartElement("results");
 
                 foreach (SparqlResult r in resultSet.Results)
                 {
-                    //<result> Element
+                    // <result> Element
                     writer.WriteStartElement("result");
 
                     foreach (String var in resultSet.Variables)
@@ -293,25 +293,25 @@ namespace VDS.RDF.Writing
                             INode n = r.Value(var);
                             if (n == null) continue; //NULLs don't get serialized in the XML Format
 
-                            //<binding> Element
+                            // <binding> Element
                             writer.WriteStartElement("binding");
                             writer.WriteAttributeString("name", var);
 
                             switch (n.NodeType)
                             {
                                 case NodeType.Blank:
-                                    //<bnode> element
+                                    // <bnode> element
                                     writer.WriteStartElement("bnode");
                                     writer.WriteRaw(((IBlankNode)n).InternalID);
                                     writer.WriteEndElement();
                                     break;
 
                                 case NodeType.GraphLiteral:
-                                    //Error!
+                                    // Error!
                                     throw new RdfOutputException("Result Sets which contain Graph Literal Nodes cannot be serialized in the SPARQL Query Results XML Format");
 
                                 case NodeType.Literal:
-                                    //<literal> element
+                                    // <literal> element
                                     writer.WriteStartElement("literal");
                                     ILiteralNode l = (ILiteralNode)n;
 
@@ -328,13 +328,13 @@ namespace VDS.RDF.Writing
                                         writer.WriteEndAttribute();
                                     }
 
-                                    //Write the Value and the </literal>
+                                    // Write the Value and the </literal>
                                     writer.WriteRaw(WriterHelper.EncodeForXml(l.Value));
                                     writer.WriteEndElement();
                                     break;
 
                                 case NodeType.Uri:
-                                    //<uri> element
+                                    // <uri> element
                                     writer.WriteStartElement("uri");
                                     writer.WriteRaw(WriterHelper.EncodeForXml(((IUriNode)n).Uri.AbsoluteUri));
                                     writer.WriteEndElement();
@@ -344,33 +344,33 @@ namespace VDS.RDF.Writing
                                     throw new RdfOutputException("Result Sets which contain Nodes of unknown Type cannot be serialized in the SPARQL Query Results XML Format");
                             }
 
-                            //</binding> element
+                            // </binding> element
                             writer.WriteEndElement();
                         }
                     }
 
-                    //</result> element
+                    // </result> element
                     writer.WriteEndElement();
                 }
 
-                //</results>
+                // </results>
                 writer.WriteEndElement();
             }
             else
             {
-                //</head>
+                // </head>
                 writer.WriteEndElement();
 
-                //<boolean> element
+                // <boolean> element
                 writer.WriteStartElement("boolean");
                 writer.WriteRaw(resultSet.Result.ToString().ToLower());
                 writer.WriteEndElement();
             }
 
-            //</sparql> element
+            // </sparql> element
             writer.WriteEndElement();
 
-            //End Document
+            // End Document
             writer.WriteEndDocument();
             writer.Flush();
             writer.Close();

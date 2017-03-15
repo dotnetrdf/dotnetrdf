@@ -53,7 +53,7 @@ namespace VDS.RDF
         {
             if (!empty)
             {
-                //Add Standard Namespaces
+                // Add Standard Namespaces
                 this.AddNamespace("rdf", UriFactory.Create(NamespaceMapper.RDF));
                 this.AddNamespace("rdfs", UriFactory.Create(NamespaceMapper.RDFS));
                 this.AddNamespace("xsd", UriFactory.Create(NamespaceMapper.XMLSCHEMA));
@@ -73,10 +73,10 @@ namespace VDS.RDF
 
             if (this._uris.ContainsKey(prefix))
             {
-                //Is it defined on the current nesting level?
+                // Is it defined on the current nesting level?
                 if (this._uris[prefix].Any(m => m.Level == this._level))
                 {
-                    //If it is then we override it
+                    // If it is then we override it
                     this._uris[prefix].RemoveAll(m => m.Level == this._level);
                     this._prefixes[uri.GetEnhancedHashCode()].RemoveAll(m => m.Level == this._level);
 
@@ -86,7 +86,7 @@ namespace VDS.RDF
                 }
                 else
                 {
-                    //If not we simply add it
+                    // If not we simply add it
                     this._uris[prefix].Add(mapping);
                     this._prefixes[uri.GetEnhancedHashCode()].Add(mapping);
                     this.RaiseNamespaceAdded(prefix, uri);
@@ -94,7 +94,7 @@ namespace VDS.RDF
             }
             else
             {
-                //Not yet defined so add it
+                // Not yet defined so add it
                 this._uris.Add(prefix, new List<NestedMapping>());
                 this._uris[prefix].Add(mapping);
                 this._prefixes[uri.GetEnhancedHashCode()].Add(mapping);
@@ -185,13 +185,13 @@ namespace VDS.RDF
             {
                 if (!this._uris.ContainsKey(prefix))
                 {
-                    //Non-colliding Namespaces get copied across
+                    // Non-colliding Namespaces get copied across
                     this.AddNamespace(prefix, nsmap.GetNamespaceUri(prefix));
                 }
                 else
                 {
-                    //Colliding Namespaces get remapped to new prefixes
-                    //Assuming the prefixes aren't already used for the same Uri
+                    // Colliding Namespaces get remapped to new prefixes
+                    // Assuming the prefixes aren't already used for the same Uri
                     if (!this.GetNamespaceUri(prefix).AbsoluteUri.Equals(nsmap.GetNamespaceUri(prefix).AbsoluteUri, StringComparison.Ordinal))
                     {
                         while (this._uris.ContainsKey(tempPrefix))
@@ -334,12 +334,12 @@ namespace VDS.RDF
             {
                 String baseuri = u.AbsoluteUri;
 
-                //Does the Uri start with the Base Uri
+                // Does the Uri start with the Base Uri
                 if (uri.StartsWith(baseuri))
                 {
-                    //Remove the Base Uri from the front of the Uri
+                    // Remove the Base Uri from the front of the Uri
                     qname = uri.Substring(baseuri.Length);
-                    //Add the Prefix back onto the front plus the colon to give a QName
+                    // Add the Prefix back onto the front plus the colon to give a QName
                     qname = this.GetPrefix(u) + ":" + qname;
                     if (qname.Equals(":")) continue;
                     if (qname.Contains("/") || qname.Contains("#")) continue;
@@ -347,7 +347,7 @@ namespace VDS.RDF
                 }
             }
 
-            //Failed to find a Reduction
+            // Failed to find a Reduction
             qname = String.Empty;
             return false;
         }
@@ -362,7 +362,7 @@ namespace VDS.RDF
             {
                 if (this.GetNestingLevel(prefix) == this._level)
                 {
-                    //If it's registered on this nesting level will be the last thing registered
+                    // If it's registered on this nesting level will be the last thing registered
                     this._uris[prefix].RemoveAt(this._uris[prefix].Count - 1);
                     if (this._uris[prefix].Count == 0) this._uris.Remove(prefix);
                     Uri nsUri = this.GetNamespaceUri(prefix);

@@ -72,7 +72,7 @@ namespace VDS.RDF.Writing
                 }
                 catch
                 {
-                    //No Catch Actions
+                    // No Catch Actions
                 }
                 throw;
             }
@@ -88,18 +88,18 @@ namespace VDS.RDF.Writing
             JsonTextWriter writer = new JsonTextWriter(output);
             writer.Formatting = Newtonsoft.Json.Formatting.Indented;
 
-            //Start a Json Object for the Result Set
+            // Start a Json Object for the Result Set
             writer.WriteStartObject();
 
-            //Create the Head Object
+            // Create the Head Object
             writer.WritePropertyName("head");
             writer.WriteStartObject();
 
             if (results.ResultsType == SparqlResultsType.VariableBindings)
             {
-                //SELECT query results
+                // SELECT query results
 
-                //Create the Variables Object
+                // Create the Variables Object
                 writer.WritePropertyName("vars");
                 writer.WriteStartArray();
                 foreach (String var in results.Variables)
@@ -108,10 +108,10 @@ namespace VDS.RDF.Writing
                 }
                 writer.WriteEndArray();
 
-                //End Head Object
+                // End Head Object
                 writer.WriteEndObject();
 
-                //Create the Result Object
+                // Create the Result Object
                 writer.WritePropertyName("results");
                 writer.WriteStartObject();
                 writer.WritePropertyName("bindings");
@@ -119,7 +119,7 @@ namespace VDS.RDF.Writing
 
                 foreach (SparqlResult result in results)
                 {
-                    //Create a Binding Object
+                    // Create a Binding Object
                     writer.WriteStartObject();
                     foreach (String var in results.Variables)
                     {
@@ -128,7 +128,7 @@ namespace VDS.RDF.Writing
                         INode value = result.Value(var);
                         if (value == null) continue;
 
-                        //Create an Object for the Variable
+                        // Create an Object for the Variable
                         writer.WritePropertyName(var);
                         writer.WriteStartObject();
                         writer.WritePropertyName("type");
@@ -136,7 +136,7 @@ namespace VDS.RDF.Writing
                         switch (value.NodeType)
                         {
                             case NodeType.Blank:
-                                //Blank Node
+                                // Blank Node
                                 writer.WriteValue("bnode");
                                 writer.WritePropertyName("value");
                                 String id = ((IBlankNode)value).InternalID;
@@ -145,11 +145,11 @@ namespace VDS.RDF.Writing
                                 break;
 
                             case NodeType.GraphLiteral:
-                                //Error
+                                // Error
                                 throw new RdfOutputException("Result Sets which contain Graph Literal Nodes cannot be serialized in the SPARQL Query Results JSON Format");
 
                             case NodeType.Literal:
-                                //Literal
+                                // Literal
                                 ILiteralNode lit = (ILiteralNode)value;
                                 if (lit.DataType != null)
                                 {
@@ -175,7 +175,7 @@ namespace VDS.RDF.Writing
                                 break;
 
                             case NodeType.Uri:
-                                //Uri
+                                // Uri
                                 writer.WriteValue("uri");
                                 writer.WritePropertyName("value");
                                 writer.WriteValue(value.ToString());
@@ -185,30 +185,30 @@ namespace VDS.RDF.Writing
                                 throw new RdfOutputException("Result Sets which contain Nodes of unknown Type cannot be serialized in the SPARQL Query Results JSON Format");
                         }
 
-                        //End the Variable Object
+                        // End the Variable Object
                         writer.WriteEndObject();
                     }
-                    //End the Binding Object
+                    // End the Binding Object
                     writer.WriteEndObject();
                 }
 
-                //End Result Object
+                // End Result Object
                 writer.WriteEndArray();
                 writer.WriteEndObject();
             }
             else
             {
-                //ASK query result
+                // ASK query result
 
-                //Set an empty Json Object in the Head
+                // Set an empty Json Object in the Head
                 writer.WriteEndObject();
 
-                //Create a Boolean Property
+                // Create a Boolean Property
                 writer.WritePropertyName("boolean");
                 writer.WriteValue(results.Result);
             }
 
-            //End the Json Object for the Result Set
+            // End the Json Object for the Result Set
             writer.WriteEndObject();
 
         }

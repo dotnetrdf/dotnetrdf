@@ -52,9 +52,9 @@ namespace VDS.RDF.Ontology
         public OntologyProperty(INode resource, IGraph graph)
             : base(resource, graph) 
         {
-            //Q: Assert that this resource is a property?
-            //UriNode rdfType = graph.CreateUriNode(new Uri(OntologyHelper.PropertyType));
-            //graph.Assert(new Triple(resource, rdfType, graph.CreateUriNode(new Uri(OntologyHelper.RdfProperty))));
+            // Q: Assert that this resource is a property?
+            // UriNode rdfType = graph.CreateUriNode(new Uri(OntologyHelper.PropertyType));
+            // graph.Assert(new Triple(resource, rdfType, graph.CreateUriNode(new Uri(OntologyHelper.RdfProperty))));
 
             this.IntialiseProperty(OntologyHelper.PropertyDomain, false);
             this.IntialiseProperty(OntologyHelper.PropertyRange, false);
@@ -62,7 +62,7 @@ namespace VDS.RDF.Ontology
             this.IntialiseProperty(OntologyHelper.PropertySubPropertyOf, false);
             this.IntialiseProperty(OntologyHelper.PropertyInverseOf, false);
 
-            //Find derived properties
+            // Find derived properties
             IUriNode subPropertyOf = this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySubPropertyOf));
             this._resourceProperties.Add(PropertyDerivedProperty, new List<INode>());
             this._resourceProperties.Add(PropertyDirectSubProperty, new List<INode>());
@@ -84,7 +84,7 @@ namespace VDS.RDF.Ontology
                 }
             } while (c < this._resourceProperties[PropertyDerivedProperty].Count);
 
-            //Find additional super properties
+            // Find additional super properties
             this._resourceProperties.Add(PropertyDirectSuperProperty, new List<INode>());
             if (this._resourceProperties.ContainsKey(OntologyHelper.PropertySubPropertyOf))
             {
@@ -103,7 +103,7 @@ namespace VDS.RDF.Ontology
                 } while (c < this._resourceProperties[OntologyHelper.PropertySubPropertyOf].Count);
             }
 
-            //Find additional inverses
+            // Find additional inverses
             if (!this._resourceProperties.ContainsKey(OntologyHelper.PropertyInverseOf)) this._resourceProperties.Add(OntologyHelper.PropertyInverseOf, new List<INode>());
             foreach (Triple t in this._graph.GetTriplesWithPredicateObject(graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyInverseOf)), this._resource))
             {

@@ -51,7 +51,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         protected override void StartResultsInternal()
         {
-            //Ensure Empty Result Set
+            // Ensure Empty Result Set
             if (!this._results.IsEmpty || this._results.ResultsType != SparqlResultsType.Unknown)
             {
                 throw new RdfParseException("Cannot start Results Handling into a non-empty Result Set");
@@ -108,7 +108,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         protected override void StartResultsInternal()
         {
-            //Don't do an empty check
+            // Don't do an empty check
         }
     }
 }

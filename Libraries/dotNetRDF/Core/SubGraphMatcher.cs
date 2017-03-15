@@ -33,7 +33,7 @@ namespace VDS.RDF
     /// </summary>
     class SubGraphMatcher 
     {
-        //The Unbound and Bound lists refers to the Nodes of the Target Graph
+        // The Unbound and Bound lists refers to the Nodes of the Target Graph
         private List<INode> _unbound;
         private List<INode> _bound;
         private Dictionary<INode, INode> _mapping;
@@ -48,14 +48,14 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool IsSubGraph(IGraph subgraph, IGraph parent)
         {
-            //Graphs can't be equal to null
+            // Graphs can't be equal to null
             if (subgraph == null) return false;
             if (parent == null) return false;
 
-            //If we're the same Graph (by reference) then we're trivially sub-graphs since we're equal
+            // If we're the same Graph (by reference) then we're trivially sub-graphs since we're equal
             if (ReferenceEquals(subgraph, parent)) return true;
 
-            //If sub-graph has more Triples can't be a sub-graph
+            // If sub-graph has more Triples can't be a sub-graph
             if (subgraph.Triples.Count > parent.Triples.Count) return false;
 
             int gtCount = 0;
@@ -66,15 +66,15 @@ namespace VDS.RDF
             {
                 if (t.IsGroundTriple)
                 {
-                    //If the other Graph doesn't contain the Ground Triple can't be a sub-graph
-                    //We make the contains call first as that is typically O(1) while the Remove call may be O(n)
+                    // If the other Graph doesn't contain the Ground Triple can't be a sub-graph
+                    // We make the contains call first as that is typically O(1) while the Remove call may be O(n)
                     if (!parent.Triples.Contains(t)) return false;
                     if (!this._parentTriples.Remove(t)) return false;
                     gtCount++;
                 }
                 else
                 {
-                    //If not a Ground Triple remember which Blank Nodes we need to map
+                    // If not a Ground Triple remember which Blank Nodes we need to map
                     if (t.Subject.NodeType == NodeType.Blank)
                     {
                         if (!subNodes.ContainsKey(t.Subject))
@@ -111,7 +111,7 @@ namespace VDS.RDF
                 }
             }
 
-            //Eliminate any remaining Ground Triples from the parent Graph since these aren't relavant to whether we're a sub-graph
+            // Eliminate any remaining Ground Triples from the parent Graph since these aren't relavant to whether we're a sub-graph
 #if SILVERLIGHT
             for (int i = 0; i < this._parentTriples.Count; i++)
             {
@@ -125,10 +125,10 @@ namespace VDS.RDF
             this._parentTriples.RemoveAll(t => t.IsGroundTriple);
 #endif
 
-            //If there are no Triples left in the parent Graph, all our Triples were Ground Triples and there are no Blank Nodes to map then we're a sub-graph
+            // If there are no Triples left in the parent Graph, all our Triples were Ground Triples and there are no Blank Nodes to map then we're a sub-graph
             if (this._parentTriples.Count == 0 && gtCount == subgraph.Triples.Count && subNodes.Count == 0) return true;
 
-            //Now classify the remaining Triples from the parent Graph
+            // Now classify the remaining Triples from the parent Graph
             foreach (Triple t in this._parentTriples)
             {
                 if (t.Subject.NodeType == NodeType.Blank)
@@ -166,10 +166,10 @@ namespace VDS.RDF
                 }
             }
 
-            //First off we must have the no more Blank Nodes in the sub-graph than in the parent graph
+            // First off we must have the no more Blank Nodes in the sub-graph than in the parent graph
             if (subNodes.Count > parentNodes.Count) return false;
 
-            //Then we sub-classify by the number of Blank Nodes with each degree classification
+            // Then we sub-classify by the number of Blank Nodes with each degree classification
             Dictionary<int, int> subDegrees = new Dictionary<int, int>();
             Dictionary<int, int> parentDegrees = new Dictionary<int, int>();
             foreach (int degree in subNodes.Values)
@@ -195,15 +195,15 @@ namespace VDS.RDF
                 }
             }
 
-            //Then we must have no more Degrees in the sub-graph than in the parent graph
+            // Then we must have no more Degrees in the sub-graph than in the parent graph
             if (subDegrees.Count > parentDegrees.Count) return false;
 
-            //While we'll use the degree classifications in the next step we can't do an explicit check of the
-            //two things like we do for the GraphMatcher as the degrees of BNodes may be very different in the
-            //sub-graph than the parent graph depending on the section of the graph it represents (assuming it
-            //is a sub-graph at all!)
+            // While we'll use the degree classifications in the next step we can't do an explicit check of the
+            // two things like we do for the GraphMatcher as the degrees of BNodes may be very different in the
+            // sub-graph than the parent graph depending on the section of the graph it represents (assuming it
+            // is a sub-graph at all!)
 
-            //Try to do a Rules Based Mapping
+            // Try to do a Rules Based Mapping
             return this.TryRulesBasedMapping(subgraph, parent, subNodes, parentNodes, subDegrees, parentDegrees);
         }
 
@@ -219,18 +219,18 @@ namespace VDS.RDF
         /// <returns></returns>
         private bool TryRulesBasedMapping(IGraph subgraph, IGraph parent, Dictionary<INode, int> subNodes, Dictionary<INode, int> parentNodes, Dictionary<int, int> subDegrees, Dictionary<int, int> parentDegrees)
         {
-            //Start with new lists and dictionaries each time in case we get reused
+            // Start with new lists and dictionaries each time in case we get reused
             this._unbound = new List<INode>();
             this._bound = new List<INode>();
             this._mapping = new Dictionary<INode, INode>();
             this._subTriples = new List<Triple>();
 
-            //Initialise the Source Triples list
+            // Initialise the Source Triples list
             this._subTriples.AddRange(from t in subgraph.Triples
                                          where !t.IsGroundTriple
                                          select t);
 
-            //First thing consider the trivial mapping
+            // First thing consider the trivial mapping
             Dictionary<INode, INode> trivialMapping = new Dictionary<INode, INode>();
             foreach (INode n in subNodes.Keys)
             {
@@ -243,21 +243,21 @@ namespace VDS.RDF
                 return true;
             }
 
-            //Initialise the Unbound list
+            // Initialise the Unbound list
             this._unbound = (from n in parentNodes.Keys
                              select n).ToList();
 
-            //Map single use Nodes first to reduce the size of the overall mapping
+            // Map single use Nodes first to reduce the size of the overall mapping
             foreach (KeyValuePair<INode, int> pair in subNodes.Where(p => p.Value == 1))
             {
-                //Find the Triple we need to map
+                // Find the Triple we need to map
                 Triple toMap = (from t in this._subTriples
                                 where t.Involves(pair.Key)
                                 select t).First();
 
                 foreach (INode n in this._unbound.Where(n => parentNodes[n] == pair.Value))
                 {
-                    //See if this Mapping works
+                    // See if this Mapping works
                     this._mapping.Add(pair.Key, n);
                     if (this._parentTriples.Remove(toMap.MapTriple(parent, this._mapping)))
                     {
@@ -268,46 +268,46 @@ namespace VDS.RDF
                     this._mapping.Remove(pair.Key);
                 }
 
-                //If we couldn't map a single use Node then it's not a sub-graph
+                // If we couldn't map a single use Node then it's not a sub-graph
                 if (!this._mapping.ContainsKey(pair.Key))
                 {
                     return false;
                 }
                 else
                 {
-                    //Otherwise we can mark that Node as Bound
+                    // Otherwise we can mark that Node as Bound
                     this._unbound.Remove(this._mapping[pair.Key]);
                 }
             }
 
-            //If all the Nodes were used only once and we mapped them all then it's a sub-graph
+            // If all the Nodes were used only once and we mapped them all then it's a sub-graph
             if (this._parentTriples.Count == 0) return true;
 
-            //Map any Nodes of unique degree next
+            // Map any Nodes of unique degree next
             foreach (KeyValuePair<int, int> degreeClass in subDegrees)
             {
                 if (degreeClass.Key > 1 && degreeClass.Value == 1)
                 {
-                    //There is a Node of degree greater than 1 than has a unique degree
-                    //i.e. there is only one Node with this degree so there can only ever be one
-                    //possible mapping for this Node
+                    // There is a Node of degree greater than 1 than has a unique degree
+                    // i.e. there is only one Node with this degree so there can only ever be one
+                    // possible mapping for this Node
                     INode x = subNodes.FirstOrDefault(p => p.Value == degreeClass.Key).Key;
                     INode y = parentNodes.FirstOrDefault(p => p.Value == degreeClass.Key).Key;
 
-                    //If either of these return null then the Graphs can't be equal
+                    // If either of these return null then the Graphs can't be equal
                     if (x == null || y == null) return false;
 
-                    //Add the Mapping
+                    // Add the Mapping
                     this._mapping.Add(x, y);
                     this._bound.Add(y);
                     this._unbound.Remove(y);
                 }
             }
 
-            //Work out which Nodes are paired up 
-            //By this we mean any Nodes which appear with other Nodes in a Triple
-            //If multiple nodes appear together we can use this information to restrict
-            //the possible mappings we generate
+            // Work out which Nodes are paired up 
+            // By this we mean any Nodes which appear with other Nodes in a Triple
+            // If multiple nodes appear together we can use this information to restrict
+            // the possible mappings we generate
             List<MappingPair> subDependencies = new List<MappingPair>();
             foreach (Triple t in this._subTriples)
             {
@@ -351,7 +351,7 @@ namespace VDS.RDF
             }
             parentDependencies = parentDependencies.Distinct().ToList();
 
-            //Once we know of dependencies we can then map independent nodes
+            // Once we know of dependencies we can then map independent nodes
             List<INode> subIndependents = (from n in subNodes.Keys
                                               where !subDependencies.Any(p => p.Contains(n))
                                               select n).ToList();
@@ -359,13 +359,13 @@ namespace VDS.RDF
                                               where !parentDependencies.Any(p => p.Contains(n))
                                               select n).ToList();
 
-            //If the number of independent nodes in the sub-graph is greater than it cannot be a sub-graph
+            // If the number of independent nodes in the sub-graph is greater than it cannot be a sub-graph
             if (subIndependents.Count > parentIndependents.Count) return false;
 
-            //Try to map the independent nodes
+            // Try to map the independent nodes
             foreach (INode x in subIndependents)
             {
-                //They may already be mapped as they may be single use Triples
+                // They may already be mapped as they may be single use Triples
                 if (this._mapping.ContainsKey(x)) continue;
 
                 List<Triple> xs = this._subTriples.Where(t => t.Involves(x)).ToList();
@@ -375,11 +375,11 @@ namespace VDS.RDF
 
                     this._mapping.Add(x, y);
 
-                    //Test the mapping
+                    // Test the mapping
                     List<Triple> ys = this._parentTriples.Where(t => t.Involves(y)).ToList();
                     if (xs.All(t => ys.Remove(t.MapTriple(parent, this._mapping))))
                     {
-                        //This is a valid mapping
+                        // This is a valid mapping
                         xs.ForEach(t => this._parentTriples.Remove(t.MapTriple(parent, this._mapping)));
                         xs.ForEach(t => this._subTriples.Remove(t));
                         break;
@@ -387,21 +387,21 @@ namespace VDS.RDF
                     this._mapping.Remove(x);
                 }
 
-                //If we couldn't map an independent Node then we fail
+                // If we couldn't map an independent Node then we fail
                 if (!this._mapping.ContainsKey(x)) return false;
             }
 
-            //Want to save our mapping so far here as if the mapping we produce using the dependency information
-            //is flawed then we'll have to attempt brute force
+            // Want to save our mapping so far here as if the mapping we produce using the dependency information
+            // is flawed then we'll have to attempt brute force
             Dictionary<INode, INode> baseMapping = new Dictionary<INode, INode>(this._mapping);
 
-            //Now we use the dependency information to try and find mappings
+            // Now we use the dependency information to try and find mappings
             foreach (MappingPair dependency in subDependencies)
             {
-                //If both dependent Nodes are already mapped we don't need to try mapping them again
+                // If both dependent Nodes are already mapped we don't need to try mapping them again
                 if (this._mapping.ContainsKey(dependency.X) && this._mapping.ContainsKey(dependency.Y)) continue;
 
-                //Get all the Triples with this Pair in them
+                // Get all the Triples with this Pair in them
                 List<Triple> xs;
                 bool canonical = false;
                 switch (dependency.Type)
@@ -440,20 +440,20 @@ namespace VDS.RDF
                         }
                         break;
                     default:
-                        //This means we've gone wrong somehow
+                        // This means we've gone wrong somehow
                         throw new RdfException("Unknown exception occurred while trying to generate a Mapping between the two Graphs");
                 }
 
                 bool xbound = this._mapping.ContainsKey(dependency.X);
                 bool ybound = this._mapping.ContainsKey(dependency.Y);
 
-                //Look at all the possible Target Dependencies we could map to
+                // Look at all the possible Target Dependencies we could map to
                 foreach (MappingPair target in parentDependencies)
                 {
                     if (target.Type != dependency.Type) continue;
 
-                    //If one of the Nodes we're trying to map was already mapped then we can further restrict
-                    //candidate mappings
+                    // If one of the Nodes we're trying to map was already mapped then we can further restrict
+                    // candidate mappings
                     if (xbound)
                     {
                         if (!target.X.Equals(this._mapping[dependency.X])) continue;
@@ -463,11 +463,11 @@ namespace VDS.RDF
                         if (!target.Y.Equals(this._mapping[dependency.Y])) continue;
                     }
 
-                    //If the Nodes in the Target have already been used then we can discard this possible mapping
+                    // If the Nodes in the Target have already been used then we can discard this possible mapping
                     if (!xbound && this._mapping.ContainsValue(target.X)) continue;
                     if (!ybound && this._mapping.ContainsValue(target.Y)) continue;
 
-                    //Get the Triples with the Target Pair in them
+                    // Get the Triples with the Target Pair in them
                     List<Triple> ys;
                     switch (target.Type)
                     {
@@ -487,23 +487,23 @@ namespace VDS.RDF
                                   select t).ToList();
                             break;
                         default:
-                            //This means we've gone wrong somehow
+                            // This means we've gone wrong somehow
                             throw new RdfException("Unknown exception occurred while trying to generate a Mapping between the two Graphs");
                     }
 
-                    //If the pairs are involved in a greater number of Triples in the sub-graph it cannot be a valid mapping
+                    // If the pairs are involved in a greater number of Triples in the sub-graph it cannot be a valid mapping
                     if (xs.Count > ys.Count) continue;
 
-                    //If all the Triples in xs can be removed from ys then this is a valid mapping
+                    // If all the Triples in xs can be removed from ys then this is a valid mapping
                     if (!xbound) this._mapping.Add(dependency.X, target.X);
                     if (!ybound) this._mapping.Add(dependency.Y, target.Y);
                     if (xs.All(t => ys.Remove(t.MapTriple(parent, this._mapping))))
                     {
                         if (canonical)
                         {
-                            //If this was the only possible mapping for this Pair then this is a canonical mapping
-                            //and can go in the base mapping so if we have to brute force we have fewer possibles
-                            //to try
+                            // If this was the only possible mapping for this Pair then this is a canonical mapping
+                            // and can go in the base mapping so if we have to brute force we have fewer possibles
+                            // to try
                             if (!baseMapping.ContainsKey(dependency.X)) baseMapping.Add(dependency.X, target.X);
                             if (!baseMapping.ContainsKey(dependency.Y)) baseMapping.Add(dependency.Y, target.Y);
                         }
@@ -521,10 +521,10 @@ namespace VDS.RDF
                 }
             }
 
-            //If we've filled in the Mapping fully then the Graph is hopefully a sub-graph of the parent graph
+            // If we've filled in the Mapping fully then the Graph is hopefully a sub-graph of the parent graph
             if (this._mapping.Count == subNodes.Count)
             {
-                //Need to check we found a valid mapping
+                // Need to check we found a valid mapping
                 List<Triple> ys = new List<Triple>(this._parentTriples);
                 if (this._subTriples.All(t => ys.Remove(t.MapTriple(parent, this._mapping))))
                 {
@@ -556,13 +556,13 @@ namespace VDS.RDF
         {
             Dictionary<INode, List<INode>> possibleMappings = new Dictionary<INode, List<INode>>();
 
-            //Populate existing Mappings
+            // Populate existing Mappings
             foreach (KeyValuePair<INode,INode> fixedMapping in this._mapping) 
             {
                 possibleMappings.Add(fixedMapping.Key, new List<INode>(fixedMapping.Value.AsEnumerable<INode>()));
             }
 
-            //Populate possibilities for each Node
+            // Populate possibilities for each Node
             foreach (KeyValuePair<INode, int> gPair in subNodes)
             {
                 if (!this._mapping.ContainsKey(gPair.Key))
@@ -573,12 +573,12 @@ namespace VDS.RDF
                         possibleMappings[gPair.Key].Add(hPair.Key);
                     }
 
-                    //If there's no possible matches for the Node we fail
+                    // If there's no possible matches for the Node we fail
                     if (possibleMappings[gPair.Key].Count == 0) return false;
                 }
             }
 
-            //Now start testing the possiblities
+            // Now start testing the possiblities
             List<Dictionary<INode, INode>> possibles = this.GenerateMappings(possibleMappings, subDependencies, parentDependencies, parent);
 
             foreach (Dictionary<INode, INode> mapping in possibles)
@@ -610,16 +610,16 @@ namespace VDS.RDF
             {
                 if (possibleMappings[x].Count == 1)
                 {
-                    //Only one possible for this Node
-                    //This means we can just add this to the dictionaries and continue
+                    // Only one possible for this Node
+                    // This means we can just add this to the dictionaries and continue
                     mappings.ForEach(m => m.Add(x, possibleMappings[x].First()));
                 }
                 else
                 {
-                    //Multiple possibilities each of which generates a potential mapping
+                    // Multiple possibilities each of which generates a potential mapping
                     List<Dictionary<INode, INode>> temp = new List<Dictionary<INode, INode>>();
 
-                    //Need to know whether there are any dependencies we can use to limit possible mappings
+                    // Need to know whether there are any dependencies we can use to limit possible mappings
                     bool dependent = subDependencies.Any(p => p.Contains(x));
 
                     foreach (INode y in possibleMappings[x])
@@ -651,7 +651,7 @@ namespace VDS.RDF
                     mappings = temp;
                 }
 
-                //List of Triples for doing partial mapping Tests
+                // List of Triples for doing partial mapping Tests
                 foreach (INode test in possibleMappings.Keys)
                 {
                     List<Triple> xs = (from t in this._subTriples
@@ -660,10 +660,10 @@ namespace VDS.RDF
 
                     foreach (Dictionary<INode, INode> m in mappings)
                     {
-                        //Are all the Blank Nodes involved in these Triples mapped at this stage?
+                        // Are all the Blank Nodes involved in these Triples mapped at this stage?
                         if (xs.All(t => t.Nodes.All(node => node.NodeType != NodeType.Blank || m.ContainsKey(node))))
                         {
-                            //Then we can do a partial mapping test
+                            // Then we can do a partial mapping test
                             IEnumerable<Triple> ys = (from t in xs
                                                       where this._parentTriples.Contains(t.MapTriple(target, m))
                                                       select t);

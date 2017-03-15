@@ -60,10 +60,10 @@ namespace VDS.RDF.Update.Commands
             {
                 if (context.Data.HasGraph(this._sourceUri))
                 {
-                    //Get the Source Graph
+                    // Get the Source Graph
                     IGraph source = context.Data.GetModifiableGraph(this._sourceUri);
 
-                    //Get the Destination Graph
+                    // Get the Destination Graph
                     IGraph dest;
                     if (!context.Data.HasGraph(this._destUri))
                     {
@@ -73,12 +73,12 @@ namespace VDS.RDF.Update.Commands
                     }
                     dest = context.Data.GetModifiableGraph(this._destUri);
 
-                    //Move data from the Source into the Destination
+                    // Move data from the Source into the Destination
                     dest.Merge(source);
                 }
                 else
                 {
-                    //Only show error if not Silent
+                    // Only show error if not Silent
                     if (!this._silent)
                     {
                         if (this._sourceUri != null)
@@ -87,7 +87,7 @@ namespace VDS.RDF.Update.Commands
                         }
                         else
                         {
-                            //This would imply a more fundamental issue with the Dataset not understanding that null means default graph
+                            // This would imply a more fundamental issue with the Dataset not understanding that null means default graph
                             throw new SparqlUpdateException("Cannot ADD from the Default Graph as it does not exist");
                         }
                     }
@@ -95,7 +95,7 @@ namespace VDS.RDF.Update.Commands
             }
             catch
             {
-                //If not silent throw the exception upwards
+                // If not silent throw the exception upwards
                 if (!this._silent) throw;
             }
         }

@@ -65,7 +65,7 @@ namespace VDS.RDF.Parsing.Events.RdfA
 
         public override void InitTermMappings(RdfACoreParserContext context)
         {
-            //TODO: Load RDFa default profile and HTML+RDFa profile
+            // TODO: Load RDFa default profile and HTML+RDFa profile
         }
 
         public override IEventGenerator<IRdfAEvent> GetEventGenerator(TextReader reader)

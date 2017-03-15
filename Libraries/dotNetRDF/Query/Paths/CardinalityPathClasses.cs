@@ -107,7 +107,7 @@ namespace VDS.RDF.Query.Paths
         {
             if (this._n > 0)
             {
-                //Generate a Triple Pattern for each step in the cardinality
+                // Generate a Triple Pattern for each step in the cardinality
                 for (int i = 0; i < this._n; i++)
                 {
                     context.Object = context.GetNextTemporaryVariable();

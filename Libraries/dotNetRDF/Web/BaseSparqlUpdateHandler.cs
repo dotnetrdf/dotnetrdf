@@ -72,10 +72,10 @@ namespace VDS.RDF.Web
             this._config = this.LoadConfig(context);
             WebContext webContext = new WebContext(context);
 
-            //Add our Standard Headers
+            // Add our Standard Headers
             HandlerHelper.AddStandardHeaders(webContext, this._config);
 
-            //Options we need to determine based on the HTTP Method used
+            // Options we need to determine based on the HTTP Method used
             String[] updates;
             String updateText = null;
             List<String> userDefaultGraphs = new List<String>();
@@ -83,39 +83,39 @@ namespace VDS.RDF.Web
 
             try
             {
-                //Decide what to do based on the HTTP Method
+                // Decide what to do based on the HTTP Method
                 switch (context.Request.HttpMethod.ToUpper())
                 {
                     case "OPTIONS":
-                        //OPTIONS requests always result in the Service Description document
+                        // OPTIONS requests always result in the Service Description document
                         IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(this._config, UriFactory.Create(context.Request.Url.AbsoluteUri));
                         HandlerHelper.SendToClient(webContext, svcDescrip, this._config);
                         return;
 
                     case "HEAD":
-                        //Just return from a HEAD request
+                        // Just return from a HEAD request
                         return;
 
                     case "GET":
-                        //A GET with an update parameter is a Bad Request
+                        // A GET with an update parameter is a Bad Request
                         updates = context.Request.QueryString.GetValues("update");
                         if (updates != null && updates.Length > 0) throw new ArgumentException("Updates cannot be submitted as GET requests");
 
-                        //Otherwise GET either results in the Service Description if appropriately conneg'd or
-                        //the update form if enabled
+                        // Otherwise GET either results in the Service Description if appropriately conneg'd or
+                        // the update form if enabled
 
                         try
                         {
-                            //If we might show the Update Form only show the Description if the selected writer is
-                            //not a HTML writer
+                            // If we might show the Update Form only show the Description if the selected writer is
+                            // not a HTML writer
                             MimeTypeDefinition definition = MimeTypesHelper.GetDefinitions(HandlerHelper.GetAcceptTypes(webContext)).FirstOrDefault(d => d.CanWriteRdf);
                             if (definition != null)
                             {
                                 IRdfWriter writer = definition.GetRdfWriter();
                                 if (!(writer is IHtmlWriter))
                                 {
-                                    //If not a HTML Writer selected then show the Service Description Graph
-                                    //unless an error occurs creating it
+                                    // If not a HTML Writer selected then show the Service Description Graph
+                                    // unless an error occurs creating it
                                     IGraph serviceDescrip = SparqlServiceDescriber.GetServiceDescription(this._config, UriFactory.Create(context.Request.Url.AbsoluteUri));
                                     context.Response.ContentType = definition.CanonicalMimeType;
                                     context.Response.ContentEncoding = definition.Encoding;
@@ -126,10 +126,10 @@ namespace VDS.RDF.Web
                         }
                         catch
                         {
-                            //Ignore Exceptions - we'll just show the Query Form or return a 400 Bad Request instead
+                            // Ignore Exceptions - we'll just show the Query Form or return a 400 Bad Request instead
                         }
 
-                        //If a Writer can't be selected then we'll either show the Update Form or return a 400 Bad Request
+                        // If a Writer can't be selected then we'll either show the Update Form or return a 400 Bad Request
                         if (this._config.ShowUpdateForm)
                         {
                             this.ShowUpdateForm(context);
@@ -147,20 +147,20 @@ namespace VDS.RDF.Web
                             MimeTypeSelector contentType = MimeTypeSelector.Create(context.Request.ContentType, 0);
                             if (contentType.Type.Equals(MimeTypesHelper.WWWFormURLEncoded))
                             {
-                                //Form URL Encoded was declared type so expect an update parameter in the Form parameters
+                                // Form URL Encoded was declared type so expect an update parameter in the Form parameters
                                 updates = context.Request.Form.GetValues("update");
                                 if (updates == null) throw new ArgumentException("Required update parameter in POST body was missing");
                                 if (updates.Length == 0) throw new ArgumentException("Required update parameter in POST body was missing");
                                 if (updates.Length > 1) throw new ArgumentException("The update parameter was specified multiple times in the POST body");
                                 updateText = updates[0];
 
-                                //For Form URL Encoded the Using/Using Named Graphs may be specified by Form parameters
-                                //Get the USING URIs (if any)
+                                // For Form URL Encoded the Using/Using Named Graphs may be specified by Form parameters
+                                // Get the USING URIs (if any)
                                 if (context.Request.Form["using-graph-uri"] != null)
                                 {
                                     userDefaultGraphs.AddRange(context.Request.Form.GetValues("using-graph-uri"));
                                 }
-                                //Get the USING NAMED URIs (if any)
+                                // Get the USING NAMED URIs (if any)
                                 if (context.Request.Form["using-named-graph-uri"] != null)
                                 {
                                     userNamedGraphs.AddRange(context.Request.Form.GetValues("using-named-graph-uri"));
@@ -170,7 +170,7 @@ namespace VDS.RDF.Web
                             }
                             else if (contentType.Type.Equals(MimeTypesHelper.SparqlUpdate))
                             {
-                                //application/sparql-update was declared type so expect utf-8 charset (if present)
+                                // application/sparql-update was declared type so expect utf-8 charset (if present)
                                 if (contentType.Charset != null && !contentType.Charset.ToLower().Equals(MimeTypesHelper.CharsetUtf8)) throw new ArgumentException("HTTP POST request was received with a " + MimeTypesHelper.SparqlUpdate + " Content-Type but a non UTF-8 charset parameter");
 
                                 using (StreamReader reader = new StreamReader(context.Request.InputStream))
@@ -179,13 +179,13 @@ namespace VDS.RDF.Web
                                     reader.Close();
                                 }
 
-                                //For application/sparql-update the Using/Using Named Graphs may be specified by querystring parameters
-                                //Get the USING URIs (if any)
+                                // For application/sparql-update the Using/Using Named Graphs may be specified by querystring parameters
+                                // Get the USING URIs (if any)
                                 if (context.Request.QueryString["using-graph-uri"] != null)
                                 {
                                     userDefaultGraphs.AddRange(context.Request.QueryString.GetValues("using-graph-uri"));
                                 }
-                                //Get the USING NAMED URIs (if any)
+                                // Get the USING NAMED URIs (if any)
                                 if (context.Request.QueryString["using-named-graph-uri"] != null)
                                 {
                                     userNamedGraphs.AddRange(context.Request.QueryString.GetValues("using-named-graph-uri"));
@@ -204,31 +204,31 @@ namespace VDS.RDF.Web
                         throw new NotSupportedException("HTTP " + context.Request.HttpMethod.ToUpper() + " is not supported by a SPARQL Update endpoint");
                 }
 
-                //Clean up protocol provided dataset
+                // Clean up protocol provided dataset
                 userDefaultGraphs.RemoveAll(g => String.IsNullOrEmpty(g));
                 userNamedGraphs.RemoveAll(g => String.IsNullOrEmpty(g));
                 
-                //Now we're going to parse the Updates
+                // Now we're going to parse the Updates
                 SparqlUpdateParser parser = new SparqlUpdateParser();
                 parser.DefaultBaseUri = context.Request.Url;
                 parser.ExpressionFactories = this._config.ExpressionFactories;
                 SparqlUpdateCommandSet commands = parser.ParseFromString(updateText);
 
-                //Check whether we need to use authentication
-                //If there are no user groups then no authentication is in use so we default to authenticated with no per-action authentication needed
+                // Check whether we need to use authentication
+                // If there are no user groups then no authentication is in use so we default to authenticated with no per-action authentication needed
                 bool isAuth = true, requireActionAuth = false;
                 if (this._config.UserGroups.Any())
                 {
-                    //If we have user
+                    // If we have user
                     isAuth = HandlerHelper.IsAuthenticated(webContext, this._config.UserGroups);
                     requireActionAuth = true;
                 }
                 if (!isAuth) return;
 
-                //First check actions to see whether they are all permissible and apply USING/USING NAMED parameters
+                // First check actions to see whether they are all permissible and apply USING/USING NAMED parameters
                 foreach (SparqlUpdateCommand cmd in commands.Commands)
                 {
-                    //Authenticate each action
+                    // Authenticate each action
                     bool actionAuth = true;
                     if (requireActionAuth) actionAuth = HandlerHelper.IsAuthenticated(webContext, this._config.UserGroups, this.GetPermissionAction(cmd));
                     if (!actionAuth)
@@ -236,7 +236,7 @@ namespace VDS.RDF.Web
                         throw new SparqlUpdatePermissionException("You are not authorised to perform the " + this.GetPermissionAction(cmd) + " action");
                     }
 
-                    //Check whether we need to (and are permitted to) apply USING/USING NAMED parameters
+                    // Check whether we need to (and are permitted to) apply USING/USING NAMED parameters
                     if (userDefaultGraphs.Count > 0 || userNamedGraphs.Count > 0)
                     {
                         BaseModificationCommand modify = cmd as BaseModificationCommand;
@@ -244,12 +244,12 @@ namespace VDS.RDF.Web
                         {
                             if (modify.GraphUri != null || modify.UsingUris.Any() || modify.UsingNamedUris.Any())
                             {
-                                //Invalid if a command already has a WITH/USING/USING NAMED
+                                // Invalid if a command already has a WITH/USING/USING NAMED
                                 throw new SparqlUpdateMalformedException("A command in your update request contains a WITH/USING/USING NAMED clause but you have also specified one/both of the using-graph-uri or using-named-graph-uri parameters which is not permitted by the SPARQL Protocol");
                             }
                             else
                             {
-                                //Otherwise go ahead and apply
+                                // Otherwise go ahead and apply
                                 userDefaultGraphs.ForEach(u => modify.AddUsingUri(UriFactory.Create(u)));
                                 userNamedGraphs.ForEach(u => modify.AddUsingNamedUri(UriFactory.Create(u)));
                             }
@@ -257,13 +257,13 @@ namespace VDS.RDF.Web
                     }
                 }
 
-                //Then assuming we got here this means all our actions are permitted so now we can process the updates
+                // Then assuming we got here this means all our actions are permitted so now we can process the updates
                 this.ProcessUpdates(commands);
 
-                //Flush outstanding changes
+                // Flush outstanding changes
                 this._config.Processor.Flush();
 
-                //Update the Cache as the request may have changed the endpoint
+                // Update the Cache as the request may have changed the endpoint
                 this.UpdateConfig(context);
             }
             catch (RdfParseException parseEx)
@@ -336,21 +336,21 @@ namespace VDS.RDF.Web
         /// <param name="context">HTTP Context</param>
         protected virtual void ShowUpdateForm(HttpContext context)
         {
-            //Set Content Type
+            // Set Content Type
             context.Response.Clear();
             context.Response.ContentType = "text/html";
 
-            //Get a HTML Text Writer
+            // Get a HTML Text Writer
             HtmlTextWriter output = new HtmlTextWriter(new StreamWriter(context.Response.OutputStream));
 
-            //Page Header
+            // Page Header
             output.Write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
             output.RenderBeginTag(HtmlTextWriterTag.Html);
             output.RenderBeginTag(HtmlTextWriterTag.Head);
             output.RenderBeginTag(HtmlTextWriterTag.Title);
             output.WriteEncodedText("SPARQL Update Interface");
             output.RenderEndTag();
-            //Add Stylesheet
+            // Add Stylesheet
             if (!this._config.Stylesheet.Equals(String.Empty))
             {
                 output.AddAttribute(HtmlTextWriterAttribute.Href, this._config.Stylesheet);
@@ -362,13 +362,13 @@ namespace VDS.RDF.Web
             output.RenderEndTag();
 
 
-            //Header Text
+            // Header Text
             output.RenderBeginTag(HtmlTextWriterTag.Body);
             output.RenderBeginTag(HtmlTextWriterTag.H3);
             output.WriteEncodedText("SPARQL Update Interface");
             output.RenderEndTag();
 
-            //Query Form
+            // Query Form
             output.AddAttribute(HtmlTextWriterAttribute.Name, "sparqlUpdate");
             output.AddAttribute("method", "post");
             output.AddAttribute("action", context.Request.Path);
@@ -395,7 +395,7 @@ namespace VDS.RDF.Web
             output.AddAttribute(HtmlTextWriterAttribute.Name, "using-graph-uri");
             output.AddAttribute(HtmlTextWriterAttribute.Type, "text");
             output.AddAttribute(HtmlTextWriterAttribute.Size, "100");
-            //output.AddAttribute(HtmlTextWriterAttribute.Value, this._config.DefaultGraphURI);
+            // output.AddAttribute(HtmlTextWriterAttribute.Value, this._config.DefaultGraphURI);
             output.RenderBeginTag(HtmlTextWriterTag.Input);
             output.RenderEndTag();
             output.WriteBreak();
@@ -407,7 +407,7 @@ namespace VDS.RDF.Web
 
             output.RenderEndTag(); //End Form
 
-            //End of Page
+            // End of Page
             output.RenderEndTag(); //End Body
             output.RenderEndTag(); //End Html
 

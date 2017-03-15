@@ -44,10 +44,10 @@ namespace VDS.RDF.Query.Describe
         /// <param name="nodes">Nodes to be described</param>
         protected override void DescribeInternal(IRdfHandler handler, SparqlEvaluationContext context, IEnumerable<INode> nodes)
         {
-            //Rewrite Blank Node IDs for DESCRIBE Results
+            // Rewrite Blank Node IDs for DESCRIBE Results
             Dictionary<String, INode> bnodeMapping = new Dictionary<string, INode>();
 
-            //Get Triples for this Subject
+            // Get Triples for this Subject
             Queue<INode> bnodes = new Queue<INode>();
             HashSet<INode> expandedBNodes = new HashSet<INode>();
             foreach (INode n in nodes)
@@ -85,7 +85,7 @@ namespace VDS.RDF.Query.Describe
                 }
             }
 
-            //Expand BNodes
+            // Expand BNodes
             while (bnodes.Count > 0)
             {
                 INode n = bnodes.Dequeue();

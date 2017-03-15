@@ -82,14 +82,14 @@ namespace VDS.RDF.Configuration
                     break;
 
                 default:
-                    //Otherwise we'll just attempt to load this as an instance of an IInferenceEngine
+                    // Otherwise we'll just attempt to load this as an instance of an IInferenceEngine
                     try
                     {
                         output = (IInferenceEngine)Activator.CreateInstance(targetType);
                     }
                     catch
                     {
-                        //Any error means this loader can't load this type
+                        // Any error means this loader can't load this type
                         return false;
                     }
                     break;
@@ -99,7 +99,7 @@ namespace VDS.RDF.Configuration
             {
                 if (output is IInferenceEngine)
                 {
-                    //Now initialise with any specified Graphs
+                    // Now initialise with any specified Graphs
                     IEnumerable<INode> rulesGraphs = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingGraph)));
                     foreach (INode rulesGraph in rulesGraphs)
                     {
@@ -129,7 +129,7 @@ namespace VDS.RDF.Configuration
         {
             Type ireasoner = typeof(IInferenceEngine);
 
-            //We can load any object which implements IInferenceEngine and has a public unparameterized constructor
+            // We can load any object which implements IInferenceEngine and has a public unparameterized constructor
             if (t.GetInterfaces().Any(i => i.Equals(ireasoner)))
             {
                 ConstructorInfo c = t.GetConstructor(new Type[0]);
@@ -139,7 +139,7 @@ namespace VDS.RDF.Configuration
                 }
             }
 
-            //We can also load some other types of reasoner
+            // We can also load some other types of reasoner
             switch (t.FullName)
             {
                 case OwlReasonerWrapperType:

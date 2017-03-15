@@ -84,7 +84,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="result">Result</param>
         protected override void HandleBooleanResultInternal(bool result)
         {
-            //Nothing to do
+            // Nothing to do
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleVariableInternal(string var)
         {
-            //Nothing to do
+            // Nothing to do
             return true;
         }
 
@@ -175,7 +175,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="result">Result</param>
         protected override void HandleBooleanResultInternal(bool result)
         {
-            //Nothing to do
+            // Nothing to do
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleVariableInternal(string var)
         {
-            //Nothing to do
+            // Nothing to do
             return true;
         }
 

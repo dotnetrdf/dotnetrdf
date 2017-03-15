@@ -99,7 +99,7 @@ namespace VDS.RDF.Writing
                 }
                 catch
                 {
-                    //No error handling, just trying to clean up
+                    // No error handling, just trying to clean up
                 }
                 throw;
             }
@@ -200,20 +200,20 @@ namespace VDS.RDF.Writing
 
             ThreadedStoreWriterContext context = new ThreadedStoreWriterContext(store, writer);
 
-            //Check there's something to do
+            // Check there's something to do
             if (context.Store.Graphs.Count == 0)
             {
                 context.Output.Close();
                 return;
             }
 
-            //Queue the Graphs to be written
+            // Queue the Graphs to be written
             foreach (IGraph g in context.Store.Graphs)
             {
                 context.Add(g.BaseUri);
             }
 
-            //Start making the async calls
+            // Start making the async calls
             List<IAsyncResult> results = new List<IAsyncResult>();
             SaveGraphsDeletegate d = new SaveGraphsDeletegate(this.SaveGraphs);
             for (int i = 0; i < this._threads; i++)
@@ -221,7 +221,7 @@ namespace VDS.RDF.Writing
                 results.Add(d.BeginInvoke(context, null, null));
             }
 
-            //Wait for all the async calls to complete
+            // Wait for all the async calls to complete
             WaitHandle.WaitAll(results.Select(r => r.AsyncWaitHandle).ToArray());
             RdfThreadedOutputException outputEx = new RdfThreadedOutputException(WriterErrorMessages.ThreadedOutputFailure("CSV"));
             foreach (IAsyncResult result in results)
@@ -237,7 +237,7 @@ namespace VDS.RDF.Writing
             }
             context.Output.Close();
 
-            //If there were any errors we'll throw an RdfThreadedOutputException now
+            // If there were any errors we'll throw an RdfThreadedOutputException now
             if (outputEx.InnerExceptions.Any()) throw outputEx;
         }
 
@@ -258,10 +258,10 @@ namespace VDS.RDF.Writing
                 Uri u = null;
                 while (globalContext.TryGetNextUri(out u))
                 {
-                    //Get the Graph from the Store
+                    // Get the Graph from the Store
                     IGraph g = globalContext.Store.Graphs[u];
 
-                    //Generate the Graph Output and add to Stream
+                    // Generate the Graph Output and add to Stream
                     BaseWriterContext context = new BaseWriterContext(g, new System.IO.StringWriter());
                     String graphContent = this.GenerateGraphOutput(globalContext, context);
                     try
@@ -283,7 +283,7 @@ namespace VDS.RDF.Writing
 #if !(PORTABLE||NETCORE)
             catch (ThreadAbortException)
             {
-                //We've been terminated, don't do anything
+                // We've been terminated, don't do anything
 #if !SILVERLIGHT
                 Thread.ResetAbort();
 #endif
@@ -305,7 +305,7 @@ namespace VDS.RDF.Writing
         {
             if (context.Graph.BaseUri != null)
             {
-                //Named Graphs have a fourth context field added
+                // Named Graphs have a fourth context field added
                 foreach (Triple t in context.Graph.Triples)
                 {
                     this.GenerateNodeOutput(context, t.Subject, TripleSegment.Subject);
@@ -320,7 +320,7 @@ namespace VDS.RDF.Writing
             }
             else
             {
-                //Default Graph has an empty field added
+                // Default Graph has an empty field added
                 foreach (Triple t in context.Graph.Triples)
                 {
                     this.GenerateNodeOutput(context, t.Subject, TripleSegment.Subject);

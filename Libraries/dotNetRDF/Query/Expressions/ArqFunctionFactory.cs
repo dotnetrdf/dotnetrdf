@@ -102,7 +102,7 @@ namespace VDS.RDF.Query.Expressions
         /// <returns>Whether an expression was successfully generated</returns>
         public bool TryCreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<String,ISparqlExpression> scalarArgs, out ISparqlExpression expr)
         {
-            //If any Scalar Arguments are present then can't possibly be an ARQ Function
+            // If any Scalar Arguments are present then can't possibly be an ARQ Function
             if (scalarArgs.Count > 0)
             {
                 expr = null;

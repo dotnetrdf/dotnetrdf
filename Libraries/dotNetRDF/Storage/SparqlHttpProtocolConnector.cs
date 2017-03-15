@@ -234,18 +234,18 @@ namespace VDS.RDF.Storage
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
-                    //Parse the retrieved RDF
+                    // Parse the retrieved RDF
                     IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
                     parser.Load(handler, new StreamReader(response.GetResponseStream()));
 
-                    //If we get here then it was OK
+                    // If we get here then it was OK
                     response.Close();
                 }
             }
             catch (WebException webEx)
             {
-                //If the error is a 404 then return
-                //Any other error caused the function to throw an error
+                // If the error is a 404 then return
+                // Any other error caused the function to throw an error
                 if (webEx.Response != null)
                 {
                     Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
@@ -290,15 +290,15 @@ namespace VDS.RDF.Storage
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
-                    //If we get here then it was OK
+                    // If we get here then it was OK
                     response.Close();
                     return true;
                 }
             }
             catch (WebException webEx)
             {
-                //If the error is a 404 then return false
-                //Any other error caused the function to throw an error
+                // If the error is a 404 then return false
+                // Any other error caused the function to throw an error
                 if (webEx.Response != null)
                 {
                     Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
@@ -341,7 +341,7 @@ namespace VDS.RDF.Storage
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
-                    //If we get here then it was OK
+                    // If we get here then it was OK
                     response.Close();
                 }
             }
@@ -407,7 +407,7 @@ namespace VDS.RDF.Storage
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
-                    //If we get here then it was OK
+                    // If we get here then it was OK
                     response.Close();
                 }
             }
@@ -453,13 +453,13 @@ namespace VDS.RDF.Storage
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
-                    //If we get here then it was OK
+                    // If we get here then it was OK
                     response.Close();
                 }
             }
             catch (WebException webEx)
             {
-                //Don't throw the error if we get a 404 - this means we couldn't do a delete as the graph didn't exist to start with
+                // Don't throw the error if we get a 404 - this means we couldn't do a delete as the graph didn't exist to start with
                 if (webEx.Response == null || (webEx.Response != null && ((HttpWebResponse)webEx.Response).StatusCode != HttpStatusCode.NotFound))
                 {
                     throw StorageHelper.HandleHttpError(webEx, "deleting a Graph from");
@@ -633,7 +633,7 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
-                //Don't throw the error if we get a 404 - this means we couldn't do a delete as the graph didn't exist to start with
+                // Don't throw the error if we get a 404 - this means we couldn't do a delete as the graph didn't exist to start with
                 if (webEx.Response == null || (webEx.Response != null && ((HttpWebResponse)webEx.Response).StatusCode != HttpStatusCode.NotFound))
                 {
                     callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteGraph, graphUri.ToSafeUri(), StorageHelper.HandleHttpError(webEx, "deleting a Graph from")), state);
@@ -650,7 +650,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         public override void Dispose()
         {
-            //Nothing to dispose of
+            // Nothing to dispose of
         }
 
         /// <summary>

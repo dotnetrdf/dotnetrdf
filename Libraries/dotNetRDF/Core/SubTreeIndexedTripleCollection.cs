@@ -41,24 +41,24 @@ namespace VDS.RDF
     public class SubTreeIndexedTripleCollection
         : BaseTripleCollection
     {
-        //Main Storage
+        // Main Storage
         private MultiDictionary<Triple, Object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastVirtualNodeComparer()));
-        //Indexes
+        // Indexes
         private MultiDictionary<INode, MultiDictionary<Triple, List<Triple>>> _s = new MultiDictionary<INode,MultiDictionary<Triple,List<Triple>>>(new FastVirtualNodeComparer()),
                                                                               _p = new MultiDictionary<INode,MultiDictionary<Triple,List<Triple>>>(new FastVirtualNodeComparer()),
                                                                               _o = new MultiDictionary<INode,MultiDictionary<Triple,List<Triple>>>(new FastVirtualNodeComparer());
 
-        //Placeholder Variables for compound lookups
+        // Placeholder Variables for compound lookups
         private VariableNode _subjVar = new VariableNode(null, "s"),
                              _predVar = new VariableNode(null, "p"),
                              _objVar = new VariableNode(null, "o");
 
-        //Hash Functions
+        // Hash Functions
         private Func<Triple, int> _sHash = (t => Tools.CombineHashCodes(t.Subject, t.Predicate)),
                                   _pHash = (t => Tools.CombineHashCodes(t.Predicate, t.Object)),
                                   _oHash = (t => Tools.CombineHashCodes(t.Object, t.Subject));
 
-        //Comparers
+        // Comparers
         private IComparer<Triple> _sComparer = new SubjectPredicateComparer(new FastVirtualNodeComparer()),
                                   _pComparer = new PredicateObjectComparer(new FastVirtualNodeComparer()),
                                   _oComparer = new ObjectSubjectComparer(new FastVirtualNodeComparer());
@@ -185,7 +185,7 @@ namespace VDS.RDF
         {
             get 
             {
-                //Note we maintain the count manually as traversing the entire tree every time we want to count would get very expensive
+                // Note we maintain the count manually as traversing the entire tree every time we want to count would get very expensive
                 return this._count;
             }
         }
@@ -199,7 +199,7 @@ namespace VDS.RDF
         {
             if (this._triples.Remove(t))
             {
-                //If removed then unindex
+                // If removed then unindex
                 this.Unindex(t);
                 this.RaiseTripleRemoved(t);
                 this._count--;

@@ -84,7 +84,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            //Validate that all expressions are numeric expression
+            // Validate that all expressions are numeric expression
             if (this._3d)
             {
                 return this.CartesianDistance3D(context, bindingID);

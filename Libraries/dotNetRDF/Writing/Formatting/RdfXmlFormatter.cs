@@ -126,7 +126,7 @@ namespace VDS.RDF.Writing.Formatting
         {
             if (this._mapper != null && this._mapper.ReduceToQName(u.AbsoluteUri, out qname) && RdfXmlSpecsHelper.IsValidQName(qname))
             {
-                //Succesfully reduced to a QName using the known namespaces
+                // Succesfully reduced to a QName using the known namespaces
                 ns = String.Empty;
                 return;
             }

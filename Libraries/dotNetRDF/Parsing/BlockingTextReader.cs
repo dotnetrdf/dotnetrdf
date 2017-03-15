@@ -244,7 +244,7 @@ namespace VDS.RDF.Parsing
             this._pos = Math.Max(0, this._pos);
             if (count <= this._bufferAmount - this._pos)
             {
-                //If we have sufficient things buffered to fufill the request just copy the relevant stuff across
+                // If we have sufficient things buffered to fufill the request just copy the relevant stuff across
                 Array.Copy(this._buffer, this._pos, buffer, index, count);
                 this._pos += count;
                 return count;
@@ -257,7 +257,7 @@ namespace VDS.RDF.Parsing
                     int available = this._bufferAmount - this._pos;
                     if (count < copied + available)
                     {
-                        //We can finish fufilling this request this round
+                        // We can finish fufilling this request this round
                         int toCopy = Math.Min(available, count - copied);
                         Array.Copy(this._buffer, this._pos, buffer, index + copied, toCopy);
                         copied += toCopy;
@@ -266,21 +266,21 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        //Copy everything we currently have available
+                        // Copy everything we currently have available
                         Array.Copy(this._buffer, this._pos, buffer, index + copied, available);
                         copied += available;
                         this._pos = this._bufferAmount;
 
                         if (!this._finished)
                         {
-                            //If we haven't reached the end of the input refill our buffer and continue
+                            // If we haven't reached the end of the input refill our buffer and continue
                             this.FillBuffer();
                             if (this.EndOfStream) return copied;
                             this._pos = 0;
                         }
                         else
                         {
-                            //Otherwise we have reached the end of the input so just return what we've managed to copy
+                            // Otherwise we have reached the end of the input so just return what we've managed to copy
                             return copied;
                         }
                     }

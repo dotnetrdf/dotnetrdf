@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.Patterns
         {
             this._varname = name;
 
-            //Strip leading ?/$ if present
+            // Strip leading ?/$ if present
             if (this._varname.StartsWith("?") || this._varname.StartsWith("$"))
             {
                 this._varname = this._varname.Substring(1);
@@ -106,7 +106,7 @@ namespace VDS.RDF.Query.Patterns
                 case NodeType.Blank:
                     if (!context.PreserveBlankNodes && value.GraphUri != null)
                     {
-                        //Rename Blank Node based on the Graph Uri Hash Code
+                        // Rename Blank Node based on the Graph Uri Hash Code
                         int hash = value.GraphUri.GetEnhancedHashCode();
                         if (hash >= 0)
                         {

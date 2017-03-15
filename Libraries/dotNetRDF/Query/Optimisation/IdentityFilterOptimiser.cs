@@ -61,14 +61,14 @@ namespace VDS.RDF.Query.Optimisation
                     {
                         try
                         {
-                            //Try to use the extend style optimization
+                            // Try to use the extend style optimization
                             VariableSubstitutionTransformer transformer = new VariableSubstitutionTransformer(var, term);
                             ISparqlAlgebra extAlgebra = transformer.Optimise(f.InnerAlgebra);
                             return new Extend(extAlgebra, new ConstantTerm(term), var);
                         }
                         catch
                         {
-                            //Fall back to simpler Identity Filter
+                            // Fall back to simpler Identity Filter
                             if (equals)
                             {
                                 return new IdentityFilter(this.Optimise(f.InnerAlgebra), var, new ConstantTerm(term));

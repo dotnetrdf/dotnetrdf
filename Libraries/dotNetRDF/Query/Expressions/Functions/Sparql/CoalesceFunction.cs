@@ -59,22 +59,22 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
             {
                 try
                 {
-                    //Test the expression
+                    // Test the expression
                     IValuedNode temp = expr.Evaluate(context, bindingID);
 
-                    //Don't return nulls
+                    // Don't return nulls
                     if (temp == null) continue;
 
-                    //Otherwise return
+                    // Otherwise return
                     return temp;
                 }
                 catch (RdfQueryException)
                 {
-                    //Ignore the error and try the next expression (if any)
+                    // Ignore the error and try the next expression (if any)
                 }
             }
 
-            //Return error if all expressions are null/error
+            // Return error if all expressions are null/error
             throw new RdfQueryException("None of the arguments to the COALESCE function could be evaluated to give non-null/error responses for the given Binding");
         }
 

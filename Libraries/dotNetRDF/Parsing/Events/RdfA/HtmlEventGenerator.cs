@@ -75,7 +75,7 @@ namespace VDS.RDF.Parsing.Events.RdfA
                     switch (child.NodeType)
                     {
                         case HtmlNodeType.Element:
-                            //Watch out for setting the Base URI and the Version
+                            // Watch out for setting the Base URI and the Version
                             if (node.Name.Equals("base"))
                             {
                                 if (node.Attributes["href"] != null)
@@ -86,7 +86,7 @@ namespace VDS.RDF.Parsing.Events.RdfA
                                     }
                                     catch
                                     {
-                                        //Ignore errors in setting the Base URI using the <base> element
+                                        // Ignore errors in setting the Base URI using the <base> element
                                     }
                                 }
                             }
@@ -95,7 +95,7 @@ namespace VDS.RDF.Parsing.Events.RdfA
                                 this._host.Version = (node.Attributes["version"] != null ? node.Attributes["version"].Value : null);
                             }
 
-                            //Recurse to generate further events
+                            // Recurse to generate further events
                             this.GenerateEvents(context, child);
                             break;
                         case HtmlNodeType.Text:

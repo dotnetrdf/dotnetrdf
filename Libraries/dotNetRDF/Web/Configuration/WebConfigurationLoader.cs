@@ -55,10 +55,10 @@ namespace VDS.RDF.Web.Configuration
         /// <returns></returns>
         public static IGraph LoadConfigurationGraph(HttpContext context, String configFile)
         {
-            //Whenever the Configuration Graph is loaded set the Path Resolver to be the WebConfigurationPathResolver
+            // Whenever the Configuration Graph is loaded set the Path Resolver to be the WebConfigurationPathResolver
             ConfigurationLoader.PathResolver = new WebConfigurationPathResolver(context.Server);
 
-            //Use a caching mechanism for Config Graphs
+            // Use a caching mechanism for Config Graphs
             if (context.Cache[WebConfigGraphCacheKey + Path.GetFileName(configFile)] == null)
             {
                 IGraph g = ConfigurationLoader.LoadConfiguration(configFile);
@@ -71,8 +71,8 @@ namespace VDS.RDF.Web.Configuration
                 Object temp = context.Cache[WebConfigGraphCacheKey + Path.GetFileName(configFile)];
                 if (temp is IGraph)
                 {
-                    //Q: Do we need to call the AutoDetectX() methods again here or not?
-                    //ConfigurationLoader.AutoConfigure((IGraph)temp);
+                    // Q: Do we need to call the AutoDetectX() methods again here or not?
+                    // ConfigurationLoader.AutoConfigure((IGraph)temp);
                     return (IGraph)temp;
                 }
                 else

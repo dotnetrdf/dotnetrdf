@@ -85,7 +85,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
             switch (a.NumericType)
             {
                 case SparqlNumericType.Integer:
-                    //Rounding an Integer has no effect
+                    // Rounding an Integer has no effect
                     return a;
 
                 case SparqlNumericType.Decimal:

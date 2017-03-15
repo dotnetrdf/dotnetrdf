@@ -67,14 +67,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
             }
             else if (this._funcContext.CurrentInput != context.InputMultiset.GetHashCode())
             {
-                //Clear the Context
+                // Clear the Context
                 this._funcContext.BlankNodes.Clear();
                 context[SparqlSpecsHelper.SparqlKeywordBNode] = this._funcContext;
             }
 
             if (this._expr == null)
             {
-                //If no argument then always a fresh BNode
+                // If no argument then always a fresh BNode
                 return this._funcContext.Graph.CreateBlankNode().AsValuedNode();
             }
             else

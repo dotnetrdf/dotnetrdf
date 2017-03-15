@@ -101,7 +101,7 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             if (this._value == null)
             {
-                //Materialise the value
+                // Materialise the value
                 this._value = this._provider.GetValue(this._g, this._id);
                 if (this._value.NodeType != this._type) throw new RdfException("The Virtual RDF Provider materialised a Node of the wrong type! Expected " + this._type.ToString() + " but got " + this._value.NodeType.ToString());
                 this.OnMaterialise();
@@ -286,80 +286,80 @@ namespace VDS.RDF.Storage.Virtualisation
                 case NodeType.Blank:
                     if (other.NodeType == NodeType.Variable)
                     {
-                        //Blank Nodes are greater than variables
+                        // Blank Nodes are greater than variables
                         return 1;
                     }
                     else if (other.NodeType == NodeType.Blank)
                     {
-                        //Compare Blank Node appropriately
+                        // Compare Blank Node appropriately
                         return ComparisonHelper.CompareBlankNodes((IBlankNode)this, (IBlankNode)other);
                     }
                     else
                     {
-                        //Blank Nodes are less than everything else
+                        // Blank Nodes are less than everything else
                         return -1;
                     }
 
                 case NodeType.GraphLiteral:
                     if (other.NodeType == NodeType.GraphLiteral)
                     {
-                        //Compare Graph Literals appropriately
+                        // Compare Graph Literals appropriately
                         return ComparisonHelper.CompareGraphLiterals((IGraphLiteralNode)this, (IGraphLiteralNode)other);
                     }
                     else
                     {
-                        //Graph Literals are greater than everything else
+                        // Graph Literals are greater than everything else
                         return 1;
                     }
 
                 case NodeType.Literal:
                     if (other.NodeType == NodeType.GraphLiteral)
                     {
-                        //Literals are less than Graph Literals
+                        // Literals are less than Graph Literals
                         return -1;
                     }
                     else if (other.NodeType == NodeType.Literal)
                     {
-                        //Compare Literals appropriately
+                        // Compare Literals appropriately
                         return ComparisonHelper.CompareLiterals((ILiteralNode)this, (ILiteralNode)other);
                     }
                     else
                     {
-                        //Literals are greater than anything else (i.e. Blanks, Variables and URIs)
+                        // Literals are greater than anything else (i.e. Blanks, Variables and URIs)
                         return 1;
                     }
 
                 case NodeType.Uri:
                     if (other.NodeType == NodeType.GraphLiteral || other.NodeType == NodeType.Literal)
                     {
-                        //URIs are less than Literals and Graph Literals
+                        // URIs are less than Literals and Graph Literals
                         return -1;
                     }
                     else if (other.NodeType == NodeType.Uri)
                     {
-                        //Compare URIs appropriately
+                        // Compare URIs appropriately
                         return ComparisonHelper.CompareUris((IUriNode)this, (IUriNode)other);
                     }
                     else
                     {
-                        //URIs are greater than anything else (i.e. Blanks and Variables)
+                        // URIs are greater than anything else (i.e. Blanks and Variables)
                         return 1;
                     }
 
                 case NodeType.Variable:
                     if (other.NodeType == NodeType.Variable)
                     {
-                        //Compare Variables accordingly
+                        // Compare Variables accordingly
                         return ComparisonHelper.CompareVariables((IVariableNode)this, (IVariableNode)other);
                     }
                     else
                     {
-                        //Variables are less than anything else
+                        // Variables are less than anything else
                         return -1;
                     }
 
                 default:
-                    //Things are always greater than unknown node types
+                    // Things are always greater than unknown node types
                     return 1;
             }
         }
@@ -501,18 +501,18 @@ namespace VDS.RDF.Storage.Virtualisation
             bool areEqual;
             if (this._type != other.NodeType)
             {
-                //Non-equal node types cannot be equal
+                // Non-equal node types cannot be equal
                 return false;
             }
             else if (this.TryVirtualEquality(other, out areEqual))
             {
-                //If Virtual Nodes originate from same virtual RDF provider can compare based on their virtual Node IDs
+                // If Virtual Nodes originate from same virtual RDF provider can compare based on their virtual Node IDs
                 return areEqual;
             }
             else
             {
-                //If not both virtual and are of the same type the only way to determine equality is to
-                //materialise the value of this node and then check that against the other node
+                // If not both virtual and are of the same type the only way to determine equality is to
+                // materialise the value of this node and then check that against the other node
                 if (this._value == null) this.MaterialiseValue();
                 return this._value.Equals(other);
             }

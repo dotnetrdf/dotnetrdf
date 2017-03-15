@@ -111,20 +111,20 @@ namespace VDS.RDF.Parsing.Handlers
         /// </remarks>
         protected override bool HandleTripleInternal(Triple t)
         {
-            //If the Limit is zero stop parsing immediately
+            // If the Limit is zero stop parsing immediately
             if (this._limit == 0) return false;
 
             this._counter++;
             if (this._limit > 0)
             {
-                //Limit greater than zero means get a maximum of limit triples after the offset
+                // Limit greater than zero means get a maximum of limit triples after the offset
                 if (this._counter > this._offset && this._counter <= this._limit + this._offset)
                 {
                     return this._handler.HandleTriple(t);
                 }
                 else if (this._counter > this._limit + this._offset)
                 {
-                    //Stop parsing when we've reached the limit
+                    // Stop parsing when we've reached the limit
                     return false;
                 }
                 else
@@ -134,7 +134,7 @@ namespace VDS.RDF.Parsing.Handlers
             }
             else
             {
-                //Limit less than zero means get all triples after the offset
+                // Limit less than zero means get all triples after the offset
                 if (this._counter > this._offset)
                 {
                     return this._handler.HandleTriple(t);

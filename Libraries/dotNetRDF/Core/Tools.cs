@@ -63,9 +63,9 @@ namespace VDS.RDF
         {
             if (uriref.StartsWith("file:/"))
             {
-                //HACK: This is something of a Hack as a workaround to the issue that some systems may generate RDF which have technically malformed file:// scheme URIs in it
-                //This is because *nix style filesystems use paths of the form /path/to/somewhere and some serializers will serialize such
-                //a file path by just prepending file: when they should be prepending file://
+                // HACK: This is something of a Hack as a workaround to the issue that some systems may generate RDF which have technically malformed file:// scheme URIs in it
+                // This is because *nix style filesystems use paths of the form /path/to/somewhere and some serializers will serialize such
+                // a file path by just prepending file: when they should be prepending file://
                 if (uriref.Length > 6)
                 {
                     if (uriref[6] != '/')
@@ -114,25 +114,25 @@ namespace VDS.RDF
             {
                 if (uriref.Equals(String.Empty))
                 {
-                    //Empty Uri reference refers to the Base Uri
+                    // Empty Uri reference refers to the Base Uri
                     return UriFactory.Create(Tools.FixMalformedUriStrings(baseUri)).AbsoluteUri;
                 }
                 else
                 {
-                    //Resolve the Uri by combining the Absolute/Relative Uri with the in-scope Base Uri
+                    // Resolve the Uri by combining the Absolute/Relative Uri with the in-scope Base Uri
                     Uri u = new Uri(Tools.FixMalformedUriStrings(uriref), UriKind.RelativeOrAbsolute);
                     if (u.IsAbsoluteUri) 
                     {
-                        //Uri Reference is an Absolute Uri so no need to resolve against Base Uri
+                        // Uri Reference is an Absolute Uri so no need to resolve against Base Uri
                         return u.AbsoluteUri;
                     } 
                     else 
                     {
                         Uri b = UriFactory.Create(Tools.FixMalformedUriStrings(baseUri));
 
-                        //Check that the Base Uri is valid for resolving Relative URIs
-                        //If the Uri Reference is a Fragment ID then Base Uri validity is irrelevant
-                        //We have to use ToString() here because this is a Relative URI so AbsoluteUri would be invalid here
+                        // Check that the Base Uri is valid for resolving Relative URIs
+                        // If the Uri Reference is a Fragment ID then Base Uri validity is irrelevant
+                        // We have to use ToString() here because this is a Relative URI so AbsoluteUri would be invalid here
                         if (u.ToString().StartsWith("#"))
                         {
                             return Tools.ResolveUri(u, b).AbsoluteUri;
@@ -209,17 +209,17 @@ namespace VDS.RDF
 
             if (qname.StartsWith(":"))
             {
-                //QName in Default Namespace
+                // QName in Default Namespace
                 if (nsmap.HasNamespace(String.Empty))
                 {
-                    //Default Namespace Defined
+                    // Default Namespace Defined
                     output = nsmap.GetNamespaceUri(String.Empty).AbsoluteUri + qname.Substring(1);
                 }
                 else if (allowDefaultPrefixFallback)
                 {
-                    //No Default Namespace so use Base Uri
-                    //These type of QNames are scoped to the local Uri regardless of the type of the Base Uri
-                    //i.e. these always result in Hash URIs
+                    // No Default Namespace so use Base Uri
+                    // These type of QNames are scoped to the local Uri regardless of the type of the Base Uri
+                    // i.e. these always result in Hash URIs
                     if (baseUri != null)
                     {
                         output = baseUri.AbsoluteUri;
@@ -244,7 +244,7 @@ namespace VDS.RDF
             }
             else
             {
-                //QName in some other Namespace
+                // QName in some other Namespace
                 String[] parts = qname.Split(new char[] { ':' }, 2);
                 if (parts.Length == 1)
                 {
@@ -317,7 +317,7 @@ namespace VDS.RDF
         /// </remarks>
         public static INode CopyNode(INode original, IGraph target)
         {
-            //No need to copy if it's already in the relevant Graph
+            // No need to copy if it's already in the relevant Graph
             if (ReferenceEquals(original.Graph, target)) return original;
 
             // if a node can copy itself then let it do it
@@ -438,16 +438,16 @@ namespace VDS.RDF
         /// <returns></returns>
         public static Triple CopyTriple(Triple t, IGraph target, bool keepOriginalGraphUri)
         {
-            //No need to copy if Triple already comes from the Target Graph
+            // No need to copy if Triple already comes from the Target Graph
             if (ReferenceEquals(t.Graph, target)) return t;
 
-            //Copy the Nodes
+            // Copy the Nodes
             INode subj, pred, obj;
             subj = CopyNode(t.Subject, target, keepOriginalGraphUri);
             pred = CopyNode(t.Predicate, target, keepOriginalGraphUri);
             obj = CopyNode(t.Object, target, keepOriginalGraphUri);
 
-            //Return a new Triple
+            // Return a new Triple
             return new Triple(subj, pred, obj, t.Context);
         }
 
@@ -475,7 +475,7 @@ namespace VDS.RDF
             if (!Options.HttpDebugging && !Options.HttpFullDebugging)
                 return;
 
-            //Output the Request Headers
+            // Output the Request Headers
             Console.Error.WriteLine("# HTTP DEBUGGING #");
             Console.Error.WriteLine("HTTP Request to " + httpRequest.RequestUri.AbsoluteUri);
             Console.Error.WriteLine();
@@ -497,7 +497,7 @@ namespace VDS.RDF
             if (!Options.HttpDebugging && !Options.HttpFullDebugging)
                 return;
 
-            //Output the Response Uri and Headers
+            // Output the Response Uri and Headers
             Console.Error.WriteLine();
             Console.Error.WriteLine("HTTP Response from " + httpResponse.ResponseUri.AbsoluteUri);
 #if (SILVERLIGHT||NETCORE)
@@ -514,7 +514,7 @@ namespace VDS.RDF
 
             if (Options.HttpFullDebugging)
             {
-                //Output the actual Response
+                // Output the actual Response
                 Stream data = httpResponse.GetResponseStream();
                 if (data != null)
                 {

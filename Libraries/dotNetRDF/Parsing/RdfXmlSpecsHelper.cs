@@ -48,7 +48,7 @@ namespace VDS.RDF.Parsing
             return _isabsoluteuri.IsMatch(uriref);
         }
 
-        //The following set of Grammar Productions encode Tests as to the validity of Node URIs
+        // The following set of Grammar Productions encode Tests as to the validity of Node URIs
         #region Uri Validity Test Grammar Productions
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace VDS.RDF.Parsing
         /// <returns>True if the QName is a Core Syntax Term</returns>
         public static bool IsCoreSyntaxTerm(String qname)
         {
-            //Does the QName occur in the array of Core Syntax Terms?
+            // Does the QName occur in the array of Core Syntax Terms?
             return coreSyntaxTerms.Contains(qname);
         }
 
@@ -86,7 +86,7 @@ namespace VDS.RDF.Parsing
         /// <returns>True if the QName is a Syntax Term</returns>
         public static bool IsSyntaxTerm(String qname)
         {
-            //Does the QName occur as a Core Syntax Term or in the Array of Syntax Terms?
+            // Does the QName occur as a Core Syntax Term or in the Array of Syntax Terms?
             return (IsCoreSyntaxTerm(qname) || syntaxTerms.Contains(qname));
         }
 
@@ -97,7 +97,7 @@ namespace VDS.RDF.Parsing
         /// <returns>True if the QName is a Old Syntax Term</returns>
         public static bool IsOldTerm(String qname)
         {
-            //Does the QName occur in the array of Old Syntax Terms?
+            // Does the QName occur in the array of Old Syntax Terms?
             return oldTerms.Contains(qname);
         }
 
@@ -108,14 +108,14 @@ namespace VDS.RDF.Parsing
         /// <returns>True if the QName is valid</returns>
         public static bool IsNodeElementUri(String qname)
         {
-            //Not allowed to be a Core Syntax Term, rdf:li or an Old Syntax Term
+            // Not allowed to be a Core Syntax Term, rdf:li or an Old Syntax Term
             if (IsCoreSyntaxTerm(qname) || qname.Equals("rdf:li") || IsOldTerm(qname))
             {
                 return false;
             }
             else
             {
-                //Any other URIs are allowed
+                // Any other URIs are allowed
                 return true;
             }
         }
@@ -127,14 +127,14 @@ namespace VDS.RDF.Parsing
         /// <returns>True if the QName is valid</returns>
         public static bool IsPropertyElementURI(String qname)
         {
-            //Not allowed to be a Core Syntax Term, rdf:Description or an Old Syntax Term
+            // Not allowed to be a Core Syntax Term, rdf:Description or an Old Syntax Term
             if (IsCoreSyntaxTerm(qname) || qname.Equals("rdf:Description") || IsOldTerm(qname))
             {
                 return false;
             }
             else
             {
-                //Any other URIs are allowed
+                // Any other URIs are allowed
                 return true;
             }
         }
@@ -146,14 +146,14 @@ namespace VDS.RDF.Parsing
         /// <returns>True if the QName is valid</returns>
         public static bool IsPropertyAttributeURI(String qname)
         {
-            //Not allowed to be a Core Syntax Term, rdf:li, rdf:Description or an Old Syntax Term
+            // Not allowed to be a Core Syntax Term, rdf:li, rdf:Description or an Old Syntax Term
             if (IsCoreSyntaxTerm(qname) || qname.Equals("rdf:li") || qname.Equals("rdf:Description") || IsOldTerm(qname))
             {
                 return false;
             }
             else
             {
-                //Any other URIs are allowed
+                // Any other URIs are allowed
                 return true;
             }
         }
@@ -212,7 +212,7 @@ namespace VDS.RDF.Parsing
                 String[] parts = qname.Split(':');
                 if (parts[0].Length == 0)
                 {
-                    //Empty Prefix is permitted
+                    // Empty Prefix is permitted
                     return XmlSpecsHelper.IsNCName(parts[1]);
                 }
                 else
@@ -228,7 +228,7 @@ namespace VDS.RDF.Parsing
 
         #endregion
 
-        //The following set of Grammar Productions encode Tests pertaining to the Types of Attributes
+        // The following set of Grammar Productions encode Tests pertaining to the Types of Attributes
         #region Attribute Type Test Grammar Productions
 
         /// <summary>
@@ -239,18 +239,18 @@ namespace VDS.RDF.Parsing
         /// <remarks>Does some validation on ID value but other validation occurs at other points in the Parsing</remarks>
         public static bool IsIDAttribute(AttributeEvent attr)
         {
-            //QName must be rdf:id
+            // QName must be rdf:id
             if (attr.QName.Equals("rdf:ID"))
             {
-                //Must be a valid RDF ID
+                // Must be a valid RDF ID
                 if (IsRdfID(attr.Value))
                 {
-                    //OK
+                    // OK
                     return true;
                 }
                 else
                 {
-                    //Invalid RDF ID so Error
+                    // Invalid RDF ID so Error
                     throw ParserHelper.Error("The value '" + attr.Value + "' for rdf:ID is not valid, RDF IDs can only be valid NCNames as defined by the W3C XML Namespaces specification", attr);
                 }
             }
@@ -268,18 +268,18 @@ namespace VDS.RDF.Parsing
         /// <remarks>Does some validation on ID value but other validation occurs at other points in the Parsing</remarks>
         public static bool IsNodeIDAttribute(AttributeEvent attr)
         {
-            //QName must be rdf:nodeID
+            // QName must be rdf:nodeID
             if (attr.QName.Equals("rdf:nodeID"))
             {
-                //Must be a valid RDF ID
+                // Must be a valid RDF ID
                 if (IsRdfID(attr.Value))
                 {
-                    //OK
+                    // OK
                     return true;
                 }
                 else
                 {
-                    //Invalid RDF ID so Error
+                    // Invalid RDF ID so Error
                     throw ParserHelper.Error("The value '" + attr.Value + "' for rdf:id is not valid, RDF IDs can only be valid NCNames as defined by the W3C XML Namespaces specification", attr);
                 }
             }
@@ -296,10 +296,10 @@ namespace VDS.RDF.Parsing
         /// <returns>True if is an rdf:about attribute</returns>
         public static bool IsAboutAttribute(AttributeEvent attr)
         {
-            //QName must be rdf:id
+            // QName must be rdf:id
             if (attr.QName.Equals("rdf:about"))
             {
-                //Must be a valid RDF Uri Reference
+                // Must be a valid RDF Uri Reference
                 return IsRdfUriReference(attr.Value);
             }
             else
@@ -315,8 +315,8 @@ namespace VDS.RDF.Parsing
         /// <returns>True if is an property attribute</returns>
         public static bool IsPropertyAttribute(AttributeEvent attr)
         {
-            //QName must be a valid Property Attribute Uri
-            //Any string value allowed so if Uri test is true then we're a property Attribute
+            // QName must be a valid Property Attribute Uri
+            // Any string value allowed so if Uri test is true then we're a property Attribute
             return IsPropertyAttributeURI(attr.QName);
         }
 
@@ -327,10 +327,10 @@ namespace VDS.RDF.Parsing
         /// <returns>True if is an rdf:resource attribute</returns>
         public static bool IsResourceAttribute(AttributeEvent attr)
         {
-            //QName must be rdf:resource
+            // QName must be rdf:resource
             if (attr.QName.Equals("rdf:resource"))
             {
-                //Must be a valid RDF Uri Reference
+                // Must be a valid RDF Uri Reference
                 return IsRdfUriReference(attr.Value);
             }
             else
@@ -346,10 +346,10 @@ namespace VDS.RDF.Parsing
         /// <returns>True if is an rdf:datatype attribute</returns>
         public static bool IsDataTypeAttribute(AttributeEvent attr)
         {
-            //QName must be rdf:datatype
+            // QName must be rdf:datatype
             if (attr.QName.Equals("rdf:datatype"))
             {
-                //Must be a valid RDF Uri Reference
+                // Must be a valid RDF Uri Reference
                 return IsRdfUriReference(attr.Value);
             }
             else
@@ -365,8 +365,8 @@ namespace VDS.RDF.Parsing
         /// <returns>True if the ID is valid</returns>
         public static bool IsRdfID(String value)
         {
-            //Must be a valid NCName as defined in the XML Namespace Specification
-            //Which is itself defined in terms of the XML Specification
+            // Must be a valid NCName as defined in the XML Namespace Specification
+            // Which is itself defined in terms of the XML Specification
             return XmlSpecsHelper.IsNCName(value);
         }
 
@@ -380,13 +380,13 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static bool IsRdfUriReference(String value)
         {
-            //OPT: Add Some more validation of Uri References here?
+            // OPT: Add Some more validation of Uri References here?
             char[] cs = value.ToCharArray();
             foreach (char c in cs)
             {
                 if ((c >= 0x00 && c <= 0x1f) || (c >= 0x7f && c <= 0x9f))
                 {
-                    //Throw an error if we find a Control Character which are not permitted
+                    // Throw an error if we find a Control Character which are not permitted
                     throw new RdfParseException("An Invalid RDF URI Reference was encountered, the URI Reference '" + value + "' is not valid since it contains Unicode Control Characters!");
                 }
             }

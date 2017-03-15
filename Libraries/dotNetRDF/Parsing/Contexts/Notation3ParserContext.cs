@@ -130,7 +130,7 @@ namespace VDS.RDF.Parsing.Contexts
             }
             set
             {
-                //Can only turn Keywords Mode on, once on it cannot be turned off for the current input
+                // Can only turn Keywords Mode on, once on it cannot be turned off for the current input
                 if (!this._keywordsMode)
                 {
                     this._keywordsMode = value;

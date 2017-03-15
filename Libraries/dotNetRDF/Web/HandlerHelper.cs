@@ -84,12 +84,12 @@ namespace VDS.RDF.Web
             {
                 if (user != null && groups.Any(g => g.HasMember(user)))
                 {
-                    //A Group has the given Member so is authenticated
+                    // A Group has the given Member so is authenticated
                     return true;
                 }
                 else if (!groups.Any(g => g.AllowGuests))
                 {
-                    //No Groups allow guests so we require authentication
+                    // No Groups allow guests so we require authentication
                     context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                     return false;
                 }
@@ -108,7 +108,7 @@ namespace VDS.RDF.Web
         {
             if (groups.Any())
             {
-                //Does any Group have this Member and allow this action?
+                // Does any Group have this Member and allow this action?
                 String user = HandlerHelper.GetUsername(context);
                 if (user != null && !groups.Any(g => g.HasMember(user) && g.IsActionPermitted(context.Request.HttpMethod)))
                 {
@@ -117,16 +117,16 @@ namespace VDS.RDF.Web
                 }
                 else if (!groups.Any(g => g.AllowGuests))
                 {
-                    //No Groups allow guests so we require authentication
+                    // No Groups allow guests so we require authentication
                     context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                     return false;
                 }
                 else
                 {
-                    //No Authorization so does a Group that allows guests allow this action?
+                    // No Authorization so does a Group that allows guests allow this action?
                     if (!groups.Any(g => g.AllowGuests && g.IsActionPermitted(context.Request.HttpMethod)))
                     {
-                        //There are no Groups that allow guests and allow this action so this is forbidden
+                        // There are no Groups that allow guests and allow this action so this is forbidden
                         context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                         return false;
                     }
@@ -154,8 +154,8 @@ namespace VDS.RDF.Web
             String accept = context.Request.Headers["Accept"];
             if (accept != null && !accept.Equals(String.Empty))
             {
-                //If Accept Header is not null or empty then check to see if it matches up with the AcceptTypes
-                //array
+                // If Accept Header is not null or empty then check to see if it matches up with the AcceptTypes
+                // array
                 String[] acceptTypes = accept.Split(',');
                 if (Array.Equals(acceptTypes, context.Request.AcceptTypes))
                 {
@@ -168,7 +168,7 @@ namespace VDS.RDF.Web
             }
             else
             {
-                //Otherwise use full accept header
+                // Otherwise use full accept header
                 return context.Request.AcceptTypes;
             }
         }
@@ -195,37 +195,37 @@ namespace VDS.RDF.Web
             String ctype = "text/plain";
             String[] acceptTypes = HandlerHelper.GetAcceptTypes(context);
 
-            //Return the Results
+            // Return the Results
             if (result is SparqlResultSet)
             {
                 ISparqlResultsWriter sparqlWriter = null;      
        
-                //Try and get a MIME Type Definition using the HTTP Requests Accept Header
+                // Try and get a MIME Type Definition using the HTTP Requests Accept Header
                 if (acceptTypes != null)
                 {
                     definition = MimeTypesHelper.GetDefinitions(acceptTypes).FirstOrDefault(d => d.CanWriteSparqlResults);
                 } 
-                //Try and get the registered Definition for SPARQL Results XML
+                // Try and get the registered Definition for SPARQL Results XML
                 if (definition == null)
                 {
                     definition = MimeTypesHelper.GetDefinitions(MimeTypesHelper.SparqlResultsXml[0]).FirstOrDefault();
                 }
-                //If Definition is still null create a temporary definition
+                // If Definition is still null create a temporary definition
                 if (definition == null)
                 {
                     definition = new MimeTypeDefinition("SPARQL Results XML", MimeTypesHelper.SparqlResultsXml, Enumerable.Empty<String>());
                     definition.SparqlResultsWriterType = typeof(VDS.RDF.Writing.SparqlXmlWriter);
                 }
                 
-                //Set up the Writer appropriately
+                // Set up the Writer appropriately
                 sparqlWriter = definition.GetSparqlResultsWriter();
                 context.Response.ContentType = definition.CanonicalMimeType;
                 HandlerHelper.ApplyWriterOptions(sparqlWriter, config);
 
-                //Clear any existing Response
+                // Clear any existing Response
                 context.Response.Clear();
 
-                //Send Result Set to Client
+                // Send Result Set to Client
                 context.Response.ContentEncoding = definition.Encoding;
                 sparqlWriter.Save((SparqlResultSet)result, new StreamWriter(context.Response.OutputStream, definition.Encoding));
             }
@@ -233,14 +233,14 @@ namespace VDS.RDF.Web
             {
                 IRdfWriter rdfWriter = null;
 
-                //Try and get a MIME Type Definition using the HTTP Requests Accept Header
+                // Try and get a MIME Type Definition using the HTTP Requests Accept Header
                 if (acceptTypes != null)
                 {
                     definition = MimeTypesHelper.GetDefinitions(acceptTypes).FirstOrDefault(d => d.CanWriteRdf);
                 }
                 if (definition == null)
                 {
-                    //If no appropriate definition then use the GetWriter method instead
+                    // If no appropriate definition then use the GetWriter method instead
                     rdfWriter = MimeTypesHelper.GetWriter(acceptTypes, out ctype);
                 }
                 else
@@ -248,15 +248,15 @@ namespace VDS.RDF.Web
                     rdfWriter = definition.GetRdfWriter();
                 }
 
-                //Setup the writer
+                // Setup the writer
                 if (definition != null) ctype = definition.CanonicalMimeType;
                 context.Response.ContentType = ctype;
                 HandlerHelper.ApplyWriterOptions(rdfWriter, config);
 
-                //Clear any existing Response
+                // Clear any existing Response
                 context.Response.Clear();
 
-                //Send Graph to Client
+                // Send Graph to Client
                 if (definition != null)
                 {
                     context.Response.ContentEncoding = definition.Encoding;
@@ -271,14 +271,14 @@ namespace VDS.RDF.Web
             {
                 IStoreWriter storeWriter = null;
 
-                //Try and get a MIME Type Definition using the HTTP Requests Accept Header
+                // Try and get a MIME Type Definition using the HTTP Requests Accept Header
                 if (acceptTypes != null)
                 {
                     definition = MimeTypesHelper.GetDefinitions(acceptTypes).FirstOrDefault(d => d.CanWriteRdfDatasets);
                 }
                 if (definition == null)
                 {
-                    //If no appropriate definition then use the GetStoreWriter method instead
+                    // If no appropriate definition then use the GetStoreWriter method instead
                     storeWriter = MimeTypesHelper.GetStoreWriter(acceptTypes, out ctype);
                 }
                 else
@@ -286,15 +286,15 @@ namespace VDS.RDF.Web
                     storeWriter = definition.GetRdfDatasetWriter();
                 }
 
-                //Setup the writer
+                // Setup the writer
                 if (definition != null) ctype = definition.CanonicalMimeType;
                 context.Response.ContentType = ctype;
                 HandlerHelper.ApplyWriterOptions(storeWriter, config);
 
-                //Clear any existing Response
+                // Clear any existing Response
                 context.Response.Clear();
 
-                //Send Triple Store to Client
+                // Send Triple Store to Client
                 if (definition != null) 
                 {
                     context.Response.ContentEncoding = definition.Encoding;
@@ -307,7 +307,7 @@ namespace VDS.RDF.Web
             }
             else if (result is ISparqlDataset)
             {
-                //Wrap in a Triple Store and then call self so the Triple Store writing branch of this if gets called instead
+                // Wrap in a Triple Store and then call self so the Triple Store writing branch of this if gets called instead
                 TripleStore store = new TripleStore(new DatasetGraphCollection((ISparqlDataset)result));
                 HandlerHelper.SendToClient(context, store, config);
             }
@@ -326,13 +326,13 @@ namespace VDS.RDF.Web
         {
             if (config != null)
             {
-                //Apply Stylesheet to HTML writers
+                // Apply Stylesheet to HTML writers
                 if (writer is IHtmlWriter)
                 {
                     ((IHtmlWriter)writer).Stylesheet = config.Stylesheet;
                 }
 
-                //Apply Compression Options
+                // Apply Compression Options
                 if (writer is ICompressingWriter)
                 {
                     ((ICompressingWriter)writer).CompressionLevel = config.WriterCompressionLevel;
@@ -388,25 +388,25 @@ namespace VDS.RDF.Web
         /// <param name="statusCode">HTTP Status Code to return</param>
         public static void HandleQueryErrors(IHttpContext context, BaseHandlerConfiguration config, String title, String query, Exception ex, int statusCode)
         {
-            //Clear any existing Response and set our HTTP Status Code
+            // Clear any existing Response and set our HTTP Status Code
             context.Response.Clear();
             context.Response.StatusCode = statusCode;
 
             if (config != null)
             {
-                //If not showing errors then we won't return our custom error description
+                // If not showing errors then we won't return our custom error description
                 if (!config.ShowErrors) return;
             }
 
-            //Set to Plain Text output and report the error
+            // Set to Plain Text output and report the error
             context.Response.ContentEncoding = System.Text.Encoding.UTF8;
             context.Response.ContentType = "text/plain";
 
-            //Error Title
+            // Error Title
             context.Response.Write(title + "\n");
             context.Response.Write(new String('-', title.Length) + "\n\n");
 
-            //Output Query with Line Numbers
+            // Output Query with Line Numbers
             if (!String.IsNullOrEmpty(query))
             {
                 String[] lines = query.Split('\n');
@@ -417,11 +417,11 @@ namespace VDS.RDF.Web
                 context.Response.Write("\n\n");
             }
 
-            //Error Message
+            // Error Message
             context.Response.Write(ex.Message + "\n");
 
 #if DEBUG
-            //Stack Trace only when Debug build
+            // Stack Trace only when Debug build
             context.Response.Write(ex.StackTrace + "\n\n");
             while (ex.InnerException != null)
             {
@@ -456,25 +456,25 @@ namespace VDS.RDF.Web
         /// <param name="statusCode">HTTP Status Code to return</param>
         public static void HandleUpdateErrors(IHttpContext context, BaseHandlerConfiguration config, String title, String update, Exception ex, int statusCode)
         {
-            //Clear any existing Response
+            // Clear any existing Response
             context.Response.Clear();
             context.Response.StatusCode = statusCode;
 
             if (config != null)
             {
-                //If not showing errors then we won't return our custom error description
+                // If not showing errors then we won't return our custom error description
                 if (!config.ShowErrors) return;
             }
 
-            //Set to Plain Text output and report the error
+            // Set to Plain Text output and report the error
             context.Response.ContentEncoding = System.Text.Encoding.UTF8;
             context.Response.ContentType = "text/plain";
 
-            //Error Title
+            // Error Title
             context.Response.Write(title + "\n");
             context.Response.Write(new String('-', title.Length) + "\n\n");
 
-            //Output Query with Line Numbers
+            // Output Query with Line Numbers
             if (update != null && !update.Equals(String.Empty))
             {
                 String[] lines = update.Split('\n');
@@ -485,11 +485,11 @@ namespace VDS.RDF.Web
                 context.Response.Write("\n\n");
             }
 
-            //Error Message
+            // Error Message
             context.Response.Write(ex.Message + "\n");
 
 #if DEBUG
-            //Stack Trace only when Debug build
+            // Stack Trace only when Debug build
             context.Response.Write(ex.StackTrace + "\n\n");
             while (ex.InnerException != null)
             {
@@ -547,7 +547,7 @@ namespace VDS.RDF.Web
             {
                 if (etag != null)
                 {
-                    //If ETags match then can send a 304 Not Modified
+                    // If ETags match then can send a 304 Not Modified
                     if (etag.Equals(context.Request.Headers["If-None-Match"])) return true;
                 }
 
@@ -557,14 +557,14 @@ namespace VDS.RDF.Web
                     if (requestLastModifed != null)
                     {
                         DateTime test = DateTime.Parse(requestLastModifed);
-                        //If the resource has not been modified after the date the request gave then can send a 304 Not Modified
+                        // If the resource has not been modified after the date the request gave then can send a 304 Not Modified
                         if (lastModified < test) return true;
                     }
                 }
              }
             catch
             {
-                //In the event of an error continue processing the request normally
+                // In the event of an error continue processing the request normally
                 return false;
             }
             return false;
@@ -609,7 +609,7 @@ namespace VDS.RDF.Web
             }
             catch
             {
-                //In the event of an error then the Headers won't get attached
+                // In the event of an error then the Headers won't get attached
             }
         }
 

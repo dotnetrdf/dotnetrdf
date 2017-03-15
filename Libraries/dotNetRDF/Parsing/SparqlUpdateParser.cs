@@ -50,7 +50,7 @@ namespace VDS.RDF.Parsing
         private Uri _baseUri;
         private IQueryOptimiser _optimiser;
 
-        //OPT: Add support to the SPARQL Update Parser for selectable syntax in the future
+        // OPT: Add support to the SPARQL Update Parser for selectable syntax in the future
 
         /// <summary>
         /// Gets/Sets whether Tokeniser Tracing is used
@@ -153,7 +153,7 @@ namespace VDS.RDF.Parsing
         {
             if (input == null) throw new RdfParseException("Cannot parse SPARQL Update Commands from a null Stream");
 
-            //Issue a Warning if the Encoding of the Stream is not UTF-8
+            // Issue a Warning if the Encoding of the Stream is not UTF-8
             if (!input.CurrentEncoding.Equals(Encoding.UTF8))
             {
 #if !SILVERLIGHT
@@ -176,7 +176,7 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                //Start the actual parsing
+                // Start the actual parsing
                 SparqlUpdateParserContext context = new SparqlUpdateParserContext(new SparqlTokeniser(input, SparqlQuerySyntax.Sparql_1_1));
                 return this.ParseInternal(context);
             }
@@ -192,7 +192,7 @@ namespace VDS.RDF.Parsing
                 }
                 catch
                 {
-                    //No catch actions just trying to clean up the stream
+                    // No catch actions just trying to clean up the stream
                 }
             }
         }
@@ -238,7 +238,7 @@ namespace VDS.RDF.Parsing
 
         private SparqlUpdateCommandSet ParseInternal(SparqlUpdateParserContext context)
         {
-            //Set up the Context appropriately
+            // Set up the Context appropriately
             context.BaseUri = this.DefaultBaseUri;
             context.QueryParser.ExpressionFactories = context.ExpressionFactories;
             context.QueryParser.DefaultBaseUri = this.DefaultBaseUri;
@@ -257,7 +257,7 @@ namespace VDS.RDF.Parsing
                 {
                     case Token.BOF:
                     case Token.COMMENT:
-                        //Discardable Tokens
+                        // Discardable Tokens
                         break;
                     case Token.EOF:
                         if (next.StartLine == 1 && next.StartPosition == 1)
@@ -329,7 +329,7 @@ namespace VDS.RDF.Parsing
 
                 if (commandParsed)
                 {
-                    //After a Command we expect to see either a separator or EOF
+                    // After a Command we expect to see either a separator or EOF
                     next = context.Tokens.Dequeue();
                     if (next.TokenType != Token.SEMICOLON && next.TokenType != Token.EOF)
                     {
@@ -341,14 +341,14 @@ namespace VDS.RDF.Parsing
 
             } while (next.TokenType != Token.EOF);
 
-            //Optimise the Command Set before returning it
+            // Optimise the Command Set before returning it
             if (Options.QueryOptimisation) context.CommandSet.Optimise();
             return context.CommandSet;
         }
 
         private void TryParseBaseDeclaration(SparqlUpdateParserContext context)
         {
-            //Get the next Token which should be a Uri Token
+            // Get the next Token which should be a Uri Token
             IToken next = context.Tokens.Dequeue();
             if (next.TokenType == Token.URI)
             {
@@ -365,7 +365,7 @@ namespace VDS.RDF.Parsing
 
         private void TryParsePrefixDeclaration(SparqlUpdateParserContext context)
         {
-            //Get the next Two Tokens which should be a Prefix and a Uri
+            // Get the next Two Tokens which should be a Prefix and a Uri
             IToken prefix = context.Tokens.Dequeue();
             IToken uri = context.Tokens.Dequeue();
 
@@ -377,13 +377,13 @@ namespace VDS.RDF.Parsing
                     Uri u = UriFactory.Create(Tools.ResolveUri(uri.Value, baseUri));
                     if (prefix.Value.Length == 1)
                     {
-                        //Defining prefix for Default Namespace
+                        // Defining prefix for Default Namespace
                         context.NamespaceMap.AddNamespace(String.Empty, u);
                         context.CommandSet.NamespaceMap.AddNamespace(String.Empty, u);
                     }
                     else
                     {
-                        //Defining prefix for some other Namespace
+                        // Defining prefix for some other Namespace
                         context.NamespaceMap.AddNamespace(prefix.Value.Substring(0, prefix.Value.Length - 1), u);
                         context.CommandSet.NamespaceMap.AddNamespace(prefix.Value.Substring(0, prefix.Value.Length - 1), u);
                     }
@@ -401,7 +401,7 @@ namespace VDS.RDF.Parsing
 
         private void TryParseAddCommand(SparqlUpdateParserContext context)
         {
-            //First an Optional SILENT keyword
+            // First an Optional SILENT keyword
             bool silent = false;
             IToken next = context.Tokens.Peek();
             if (next.TokenType == Token.SILENT)
@@ -410,7 +410,7 @@ namespace VDS.RDF.Parsing
                 silent = true;
             }
 
-            //Then get the Source and Destination URIs
+            // Then get the Source and Destination URIs
             Uri sourceUri, destUri;
             this.TryParseTransferUris(context, out sourceUri, out destUri);
 
@@ -421,7 +421,7 @@ namespace VDS.RDF.Parsing
         {
             bool silent = false;
 
-            //May possibly have a SILENT Keyword
+            // May possibly have a SILENT Keyword
             IToken next = context.Tokens.Dequeue();
             if (next.TokenType == Token.SILENT)
             {
@@ -429,7 +429,7 @@ namespace VDS.RDF.Parsing
                 next = context.Tokens.Dequeue();
             }
 
-            //Then expect a GRAPH followed by a URI or one of the DEFAULT/NAMED/ALL keywords
+            // Then expect a GRAPH followed by a URI or one of the DEFAULT/NAMED/ALL keywords
             if (next.TokenType == Token.GRAPH)
             {
                 Uri u = this.TryParseGraphRef(context);
@@ -456,7 +456,7 @@ namespace VDS.RDF.Parsing
 
         private void TryParseCopyCommand(SparqlUpdateParserContext context)
         {
-            //First an Optional SILENT keyword
+            // First an Optional SILENT keyword
             bool silent = false;
             IToken next = context.Tokens.Peek();
             if (next.TokenType == Token.SILENT)
@@ -465,7 +465,7 @@ namespace VDS.RDF.Parsing
                 silent = true;
             }
 
-            //Then get the Source and Destination URIs
+            // Then get the Source and Destination URIs
             Uri sourceUri, destUri;
             this.TryParseTransferUris(context, out sourceUri, out destUri);
 
@@ -476,7 +476,7 @@ namespace VDS.RDF.Parsing
         {
             bool silent = false;
 
-            //May possibly have a SILENT Keyword
+            // May possibly have a SILENT Keyword
             IToken next = context.Tokens.Dequeue();
             if (next.TokenType == Token.SILENT)
             {
@@ -484,13 +484,13 @@ namespace VDS.RDF.Parsing
                 next = context.Tokens.Dequeue();
             }
 
-            //Followed by a mandatory GRAPH Keyword
+            // Followed by a mandatory GRAPH Keyword
             if (next.TokenType != Token.GRAPH)
             {
                 throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH Keyword as part of the CREATE command", next);
             }
 
-            //Then MUST have a URI
+            // Then MUST have a URI
             Uri u = this.TryParseGraphRef(context);
             CreateCommand cmd = new CreateCommand(u, silent);
             context.CommandSet.AddCommand(cmd);
@@ -503,7 +503,7 @@ namespace VDS.RDF.Parsing
             List<Uri> usingNamed = new List<Uri>();
             if (allowData)
             {
-                //We are allowed to have an DELETE DATA command here so check for it
+                // We are allowed to have an DELETE DATA command here so check for it
                 if (next.TokenType == Token.DATA) return this.TryParseDeleteDataCommand(context);
             }
             else
@@ -513,17 +513,17 @@ namespace VDS.RDF.Parsing
 
             if (next.TokenType == Token.WHERE)
             {
-                //Parse the WHERE pattern which serves as both the selection and deletion pattern in this case
+                // Parse the WHERE pattern which serves as both the selection and deletion pattern in this case
                 context.Tokens.Dequeue();
                 GraphPattern where = this.TryParseModifyTemplate(context);
 
-                //Then return the command
+                // Then return the command
                 return new DeleteCommand(where, where);
             }
-            //Get the Modification Template
+            // Get the Modification Template
             GraphPattern deletions = this.TryParseModifyTemplate(context);
 
-            //Then we expect a WHERE keyword
+            // Then we expect a WHERE keyword
             next = context.Tokens.Dequeue();
             if (next.TokenType == Token.USING)
             {
@@ -542,7 +542,7 @@ namespace VDS.RDF.Parsing
             }
             if (next.TokenType == Token.WHERE)
             {
-                //Now parse the WHERE pattern
+                // Now parse the WHERE pattern
                 SparqlQueryParserContext subContext = new SparqlQueryParserContext(context.Tokens);
                 subContext.Query.BaseUri = context.BaseUri;
                 subContext.Query.NamespaceMap = context.NamespaceMap;
@@ -552,7 +552,7 @@ namespace VDS.RDF.Parsing
                 subContext.ExpressionParser.QueryParser = context.QueryParser;
                 GraphPattern where = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
 
-                //And finally return the command
+                // And finally return the command
                 DeleteCommand cmd = new DeleteCommand(deletions, @where);
                 usings.ForEach(u => cmd.AddUsingUri(u));
                 usingNamed.ForEach(u => cmd.AddUsingNamedUri(u));
@@ -583,8 +583,8 @@ namespace VDS.RDF.Parsing
             subContext.CheckBlankNodeScope = false;
             GraphPattern gp = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
 
-            //Validate that the Graph Pattern is simple
-            //Check it doesn't contain anything other than Triple Patterns or if it does it just contains a single GRAPH Pattern
+            // Validate that the Graph Pattern is simple
+            // Check it doesn't contain anything other than Triple Patterns or if it does it just contains a single GRAPH Pattern
             if (gp.IsFiltered)
             {
                 throw new RdfParseException("A FILTER Clause cannot occur in a DELETE DATA Command");
@@ -622,7 +622,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                //OK
+                // OK
                 cmd = new DeleteDataCommand(gp);
             }
 
@@ -633,7 +633,7 @@ namespace VDS.RDF.Parsing
         {
             bool silent = false;
 
-            //May possibly have a SILENT Keyword
+            // May possibly have a SILENT Keyword
             IToken next = context.Tokens.Dequeue();
             if (next.TokenType == Token.SILENT)
             {
@@ -641,7 +641,7 @@ namespace VDS.RDF.Parsing
                 next = context.Tokens.Dequeue();
             }
 
-            //Then expect a GRAPH followed by a URI or one of the DEFAULT/NAMED/ALL keywords
+            // Then expect a GRAPH followed by a URI or one of the DEFAULT/NAMED/ALL keywords
             if (next.TokenType == Token.GRAPH)
             {
                 Uri u = this.TryParseGraphRef(context);
@@ -673,7 +673,7 @@ namespace VDS.RDF.Parsing
             IToken next = context.Tokens.Dequeue();
             if (allowData)
             {
-                //We are allowed to have an INSERT DATA command here so check for it
+                // We are allowed to have an INSERT DATA command here so check for it
                 if (next.TokenType == Token.DATA) return this.TryParseInsertDataCommand(context);
             }
             else
@@ -681,10 +681,10 @@ namespace VDS.RDF.Parsing
                 if (next.TokenType == Token.DATA) throw ParserHelper.Error("The DATA keyword is not permitted here as this INSERT command forms part of a modification command", next);
             }
 
-            //Get the Modification Template
+            // Get the Modification Template
             GraphPattern insertions = this.TryParseModifyTemplate(context);
 
-            //Then we expect a WHERE keyword
+            // Then we expect a WHERE keyword
             next = context.Tokens.Dequeue();
             if (next.TokenType == Token.USING)
             {
@@ -703,7 +703,7 @@ namespace VDS.RDF.Parsing
             }
             if (next.TokenType != Token.WHERE) throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a WHERE keyword as part of a INSERT command", next);
             
-            //Now parse the WHERE pattern
+            // Now parse the WHERE pattern
             SparqlQueryParserContext subContext = new SparqlQueryParserContext(context.Tokens);
             subContext.Query.BaseUri = context.BaseUri;
             subContext.Query.NamespaceMap = context.NamespaceMap;
@@ -713,7 +713,7 @@ namespace VDS.RDF.Parsing
             subContext.ExpressionParser.QueryParser = context.QueryParser;
             GraphPattern where = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
 
-            //And finally return the command
+            // And finally return the command
             InsertCommand cmd = new InsertCommand(insertions, where);
             usings.ForEach(u => cmd.AddUsingUri(u));
             usingNamed.ForEach(u => cmd.AddUsingNamedUri(u));
@@ -734,12 +734,12 @@ namespace VDS.RDF.Parsing
             subContext.CheckBlankNodeScope = false;
             GraphPattern gp = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
 
-            //Validate use of Blank Nodes in INSERT DATA, same BNode MAY be used within different graph patterns in a single command
-            //though each represents a fresh blank node
-            //The same BNode MAY NOT be used across separate commands
+            // Validate use of Blank Nodes in INSERT DATA, same BNode MAY be used within different graph patterns in a single command
+            // though each represents a fresh blank node
+            // The same BNode MAY NOT be used across separate commands
             if (context.DataBNodes.Count == 0)
             {
-                //First INSERT DATA so simply register all the BNodes
+                // First INSERT DATA so simply register all the BNodes
                 foreach (String var in gp.Variables.Where(v => v.StartsWith("_:")))
                 {
                     context.DataBNodes.Add(var);
@@ -747,7 +747,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                //Some INSERT DATA commands have already occurred, validate that newly introduced variables are not already present
+                // Some INSERT DATA commands have already occurred, validate that newly introduced variables are not already present
                 foreach (String var in gp.Variables.Where(v => v.StartsWith("_:")).Distinct())
                 {
                     if (context.DataBNodes.Contains(var))
@@ -761,8 +761,8 @@ namespace VDS.RDF.Parsing
                 }
             }
 
-            //Validate that the Graph Pattern is simple
-            //Check it doesn't contain anything other than Triple Patterns or if it does it just contains a single GRAPH Pattern
+            // Validate that the Graph Pattern is simple
+            // Check it doesn't contain anything other than Triple Patterns or if it does it just contains a single GRAPH Pattern
             if (gp.IsFiltered)
             {
                 throw new RdfParseException("A FILTER Clause cannot occur in a INSERT DATA Command");
@@ -800,7 +800,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                //OK
+                // OK
                 cmd = new InsertDataCommand(gp);
             }
 
@@ -812,7 +812,7 @@ namespace VDS.RDF.Parsing
             LoadCommand cmd;
             String baseUri = context.BaseUri.ToSafeString();
 
-            //May optionally have a SILENT keyword
+            // May optionally have a SILENT keyword
             bool silent = false;
             if (context.Tokens.Peek().TokenType == Token.SILENT)
             {
@@ -820,10 +820,10 @@ namespace VDS.RDF.Parsing
                 context.Tokens.Dequeue();
             }
 
-            //Expect a URI which is the Source URI
+            // Expect a URI which is the Source URI
             Uri sourceUri = this.TryParseIriRef(context, "to LOAD data from");
 
-            //Then optionally an INTO GRAPH followed by a Graph URI to assign
+            // Then optionally an INTO GRAPH followed by a Graph URI to assign
             if (context.Tokens.Count > 0)
             {
                 IToken next = context.Tokens.Peek();
@@ -855,10 +855,10 @@ namespace VDS.RDF.Parsing
 
         private void TryParseModifyCommand(SparqlUpdateParserContext context)
         {
-            //Firstly we expect the URI that the modifications apply to
+            // Firstly we expect the URI that the modifications apply to
             Uri u = this.TryParseIriRef(context, "after a WITH keyword");
 
-            //Now parse the INSERT/DELETE as appropriate
+            // Now parse the INSERT/DELETE as appropriate
             IToken next = context.Tokens.Dequeue();
             if (next.TokenType == Token.INSERT)
             {
@@ -905,8 +905,8 @@ namespace VDS.RDF.Parsing
             subContext.ExpressionParser.QueryParser = context.QueryParser;
             GraphPattern gp = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
 
-            //Validate that the Graph Pattern is simple
-            //Check it doesn't contain anything other than Triple Patterns or if it does it just contains a single GRAPH Pattern
+            // Validate that the Graph Pattern is simple
+            // Check it doesn't contain anything other than Triple Patterns or if it does it just contains a single GRAPH Pattern
             if (gp.IsFiltered)
             {
                 throw new RdfParseException("A FILTER Clause cannot occur in a Modify Template");
@@ -939,7 +939,7 @@ namespace VDS.RDF.Parsing
 
         private void TryParseMoveCommand(SparqlUpdateParserContext context)
         {
-            //First an Optional SILENT keyword
+            // First an Optional SILENT keyword
             bool silent = false;
             IToken next = context.Tokens.Peek();
             if (next.TokenType == Token.SILENT)
@@ -948,7 +948,7 @@ namespace VDS.RDF.Parsing
                 silent = true;
             }
 
-            //Then get the Source and Destination URIs
+            // Then get the Source and Destination URIs
             Uri sourceUri, destUri;
             this.TryParseTransferUris(context, out sourceUri, out destUri);
 
@@ -959,7 +959,7 @@ namespace VDS.RDF.Parsing
         {
             foreach (KeyValuePair<Uri,bool> u in this.TryParseUsingStatements(context))
             {
-                //If the Boolean flag is true then this was a USING NAMED as opposed to a USING
+                // If the Boolean flag is true then this was a USING NAMED as opposed to a USING
                 if (u.Value)
                 {
                     cmd.AddUsingNamedUri(u.Key);
@@ -979,7 +979,7 @@ namespace VDS.RDF.Parsing
                 IToken next = context.Tokens.Peek();
                 bool named = false;
 
-                //While we can see USINGs we'll keep returning USING URIs
+                // While we can see USINGs we'll keep returning USING URIs
                 do
                 {
                     if (context.Tokens.LastTokenType != Token.USING) context.Tokens.Dequeue();
@@ -993,7 +993,7 @@ namespace VDS.RDF.Parsing
                     }
                     if (next.TokenType == Token.URI || next.TokenType == Token.QNAME)
                     {
-                        //Yield the URI
+                        // Yield the URI
                         Uri u = this.TryParseIriRef(context, " as part of a USING clause");
                         yield return new KeyValuePair<Uri, bool>(u, named);
                     }
@@ -1002,7 +1002,7 @@ namespace VDS.RDF.Parsing
                         throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI as part of a USING statement", next);
                     }
 
-                    //Peek at the next thing in case it's a further USING
+                    // Peek at the next thing in case it's a further USING
                     next = context.Tokens.Peek();
                 } while (next.TokenType == Token.USING);
             }
@@ -1017,7 +1017,7 @@ namespace VDS.RDF.Parsing
             IToken next = context.Tokens.Peek();
             sourceUri = destUri = null;
 
-            //Parse the Source Graph URI
+            // Parse the Source Graph URI
             if (next.TokenType == Token.GRAPH)
             {
                 context.Tokens.Dequeue();
@@ -1033,7 +1033,7 @@ namespace VDS.RDF.Parsing
             }
             else if (next.TokenType == Token.URI || next.TokenType == Token.QNAME)
             {
-                //May have a URI/QName for a Graph without a GRAPH keyword
+                // May have a URI/QName for a Graph without a GRAPH keyword
                 sourceUri = this.TryParseIriRef(context, " to indicate the Source Graph for a Transfer (ADD/COPY/MOVE) command");
             }
             else if (next.TokenType == Token.DEFAULT)
@@ -1046,13 +1046,13 @@ namespace VDS.RDF.Parsing
                 throw ParserHelper.Error("Unexpected Token '" + next.GetType().Name + "' encountered, expected a GRAPH/DEFAULT keyword to indicate the Source Graph for a Transfer (ADD/COPY/MOVE) Command", next);
             }
 
-            //Then get the TO keyword
+            // Then get the TO keyword
             next = context.Tokens.Dequeue();
             if (next.TokenType != Token.TO) throw ParserHelper.Error("Unexpected Token '" + next.GetType().Name + "' encountered, expected a TO Keyword after the Source Graph specifier", next);
 
             next = context.Tokens.Peek();
 
-            //Parse the Destination Graph URI
+            // Parse the Destination Graph URI
             if (next.TokenType == Token.GRAPH)
             {
                 context.Tokens.Dequeue();
@@ -1068,7 +1068,7 @@ namespace VDS.RDF.Parsing
             }
             else if (next.TokenType == Token.URI || next.TokenType == Token.QNAME)
             {
-                //May have a URI/QName for a Graph without a GRAPH keyword
+                // May have a URI/QName for a Graph without a GRAPH keyword
                 destUri = this.TryParseIriRef(context, " to indicate the Destination Graph for a Transfer (ADD/COPY/MOVE) command");
             }
             else if (next.TokenType == Token.DEFAULT)

@@ -155,7 +155,7 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                //Create the Parser Context and Invoke the Parser
+                // Create the Parser Context and Invoke the Parser
                 TriGParserContext context = new TriGParserContext(handler, new TriGTokeniser(input, this._syntax), this._queueMode, false, this._tracetokeniser);
                 context.Syntax = this._syntax;
                 this.Parse(context);
@@ -172,7 +172,7 @@ namespace VDS.RDF.Parsing
                 }
                 catch
                 {
-                    //No catch actions just cleaning up
+                    // No catch actions just cleaning up
                 }
             }
         }
@@ -183,14 +183,14 @@ namespace VDS.RDF.Parsing
             {
                 context.Handler.StartRdf();
 
-                //Expect a BOF Token
+                // Expect a BOF Token
                 IToken first = context.Tokens.Dequeue();
                 if (first.TokenType != Token.BOF)
                 {
                     throw ParserHelper.Error("Unexpected Token '" + first.GetType().ToString() + "' encountered, expected a BOF Token", first);
                 }
 
-                //Expect either a Directive or a Graph
+                // Expect either a Directive or a Graph
                 IToken next;
                 do
                 {
@@ -198,35 +198,35 @@ namespace VDS.RDF.Parsing
                     switch (next.TokenType)
                     {
                         case Token.COMMENT:
-                            //Discard
+                            // Discard
                             context.Tokens.Dequeue();
                             break;
                         case Token.EOF:
-                            //End of File
+                            // End of File
                             context.Tokens.Dequeue();
                             break;
 
                         case Token.BASEDIRECTIVE:
                         case Token.PREFIXDIRECTIVE:
-                            //Parse a Directive
+                            // Parse a Directive
                             this.TryParseDirective(context);
                             break;
 
                         case Token.QNAME:
                         case Token.URI:
                         case Token.LEFTCURLYBRACKET:
-                            //Parse a Graph
+                            // Parse a Graph
 
                             if (context.Syntax != TriGSyntax.Original)
                             {
-                                //We must take care here because @prefix and @base directives may be Graph scoped so anything visible currently
-                                //remains visible and must be restored afterwards but anything inside the Graph is not visible outside of it
+                                // We must take care here because @prefix and @base directives may be Graph scoped so anything visible currently
+                                // remains visible and must be restored afterwards but anything inside the Graph is not visible outside of it
                                 Uri extBase = context.BaseUri;
                                 INamespaceMapper nsmap = new NamespaceMapper(context.Namespaces);
 
                                 this.TryParseGraph(context);
 
-                                //After we parse the Graph restore the state
+                                // After we parse the Graph restore the state
                                 if (!context.Handler.HandleBaseUri(extBase)) ParserHelper.Stop();
                                 context.BaseUri = extBase;
                                 context.Namespaces.Clear();
@@ -238,7 +238,7 @@ namespace VDS.RDF.Parsing
                             }
                             else
                             {
-                                //With the old syntax declarations are file scoped so no need to worry about graph scoping
+                                // With the old syntax declarations are file scoped so no need to worry about graph scoping
                                 this.TryParseGraph(context);
                             }
                             break;
@@ -253,7 +253,7 @@ namespace VDS.RDF.Parsing
             catch (RdfParsingTerminatedException)
             {
                 context.Handler.EndRdf(true);
-                //Discard this - it justs means the Handler told us to stop
+                // Discard this - it justs means the Handler told us to stop
             }
             catch
             {
@@ -282,7 +282,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         private void TryParseDirective(TriGParserContext context, IToken directive)
         {
-            //See what type of directive it is
+            // See what type of directive it is
             if (directive.TokenType == Token.BASEDIRECTIVE)
             {
                 IToken baseUri = context.Tokens.Dequeue();
@@ -311,14 +311,14 @@ namespace VDS.RDF.Parsing
             }
             else if (directive.TokenType == Token.PREFIXDIRECTIVE)
             {
-                //Prefix Directive
+                // Prefix Directive
                 IToken prefix = context.Tokens.Dequeue();
                 if (prefix.TokenType == Token.PREFIX)
                 {
                     IToken uri = context.Tokens.Dequeue();
                     if (uri.TokenType == Token.URI)
                     {
-                        //Ensure the Uri is absolute
+                        // Ensure the Uri is absolute
                         try
                         {
                             Uri u = new Uri(Tools.ResolveUri(uri.Value, context.BaseUri.ToSafeString()));
@@ -350,7 +350,7 @@ namespace VDS.RDF.Parsing
                 throw ParserHelper.Error("Unexpected Token '" + directive.GetType().ToString() + "' encountered, expected a Base/Prefix Directive Token", directive);
             }
 
-            //Expect a DOT to Terminate
+            // Expect a DOT to Terminate
             IToken dot = context.Tokens.Dequeue();
             if (dot.TokenType != Token.DOT)
             {
@@ -360,22 +360,22 @@ namespace VDS.RDF.Parsing
 
         private void TryParseGraph(TriGParserContext context)
         {
-            //Is there a name for the Graph?
+            // Is there a name for the Graph?
             IToken next = context.Tokens.Dequeue();
             Uri graphUri;
             if (next.TokenType == Token.QNAME)
             {
-                //Try to resolve the QName
+                // Try to resolve the QName
                 graphUri = UriFactory.Create(Tools.ResolveQName(next.Value, context.Namespaces, null));
 
-                //Get the Next Token
+                // Get the Next Token
                 next = context.Tokens.Dequeue();
             }
             else if (next.TokenType == Token.URI)
             {
                 try
                 {
-                    //Ensure an absolute Uri
+                    // Ensure an absolute Uri
                     graphUri = new Uri(next.Value, UriKind.Absolute);
                 }
 #if PORTABLE
@@ -387,12 +387,12 @@ namespace VDS.RDF.Parsing
                     throw ParserHelper.Error("The URI '" + next.Value + "' given as a Graph Name is not a valid Absolute URI", next);
                 }
 
-                //Get the Next Token
+                // Get the Next Token
                 next = context.Tokens.Dequeue();
             }
             else
             {
-                //No Name so is a Default Graph
+                // No Name so is a Default Graph
                 if (!context.DefaultGraphExists)
                 {
                     graphUri = null;
@@ -403,25 +403,25 @@ namespace VDS.RDF.Parsing
                 }
             }
 
-            //Is there a discardable Equals token?
+            // Is there a discardable Equals token?
             if (next.TokenType == Token.EQUALS)
             {
                 next = context.Tokens.Dequeue();
             }
 
-            //Should the see a Left Curly Bracket
+            // Should the see a Left Curly Bracket
             if (next.TokenType == Token.LEFTCURLYBRACKET)
             {
-                //Check that the Graph isn't empty i.e. the next token is not a } to close the Graph
+                // Check that the Graph isn't empty i.e. the next token is not a } to close the Graph
                 next = context.Tokens.Peek();
                 if (next.TokenType == Token.RIGHTCURLYBRACKET)
                 {
-                    //Empty Graph so just discard the }
+                    // Empty Graph so just discard the }
                     context.Tokens.Dequeue();
                 }
                 else
                 {
-                    //Parse Graph Contents
+                    // Parse Graph Contents
                     this.TryParseTriples(context, graphUri);
                 }
             }
@@ -430,11 +430,11 @@ namespace VDS.RDF.Parsing
                 throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Left Curly Bracket to start a Graph", next);
             }
 
-            //May optionally end with a Dot Token
+            // May optionally end with a Dot Token
             next = context.Tokens.Peek();
             if (next.TokenType == Token.DOT)
             {
-                //Discard
+                // Discard
                 context.Tokens.Dequeue();
             }
         }
@@ -443,15 +443,15 @@ namespace VDS.RDF.Parsing
         {
             do
             {
-                //Try to get the Subject
+                // Try to get the Subject
                 IToken subj = context.Tokens.Dequeue();
                 INode subjNode;
 
-                //Turn the Subject Token into a Node
+                // Turn the Subject Token into a Node
                 switch (subj.TokenType)
                 {
                     case Token.COMMENT:
-                        //Discard and continue
+                        // Discard and continue
                         continue;
 
                     case Token.QNAME:
@@ -460,43 +460,43 @@ namespace VDS.RDF.Parsing
                         break;
 
                     case Token.BLANKNODEWITHID:
-                        //Blank Node with ID
+                        // Blank Node with ID
                         subjNode = context.Handler.CreateBlankNode(subj.Value.Substring(2));
                         break;
 
                     case Token.LEFTSQBRACKET:
-                        //Blank Node
+                        // Blank Node
                         IToken next = context.Tokens.Peek();
                         if (next.TokenType == Token.RIGHTSQBRACKET)
                         {
-                            //Anonymous Blank Node
+                            // Anonymous Blank Node
                             context.Tokens.Dequeue();
                             subjNode = context.Handler.CreateBlankNode();
                         }
                         else
                         {
-                            //Blank Node Collection
+                            // Blank Node Collection
                             subjNode = context.Handler.CreateBlankNode();
 
-                            //Do an extra call to TryParsePredicateObjectList to parse the Blank Node Collection
+                            // Do an extra call to TryParsePredicateObjectList to parse the Blank Node Collection
                             this.TryParsePredicateObjectList(context, graphUri, subjNode);
                         }
                         break;
 
                     case Token.LEFTBRACKET:
-                        //Collection
+                        // Collection
 
-                        //Check whether an Empty Collection
+                        // Check whether an Empty Collection
                         next = context.Tokens.Peek();
                         if (next.TokenType == Token.RIGHTBRACKET)
                         {
-                            //Empty Collection
+                            // Empty Collection
                             context.Tokens.Dequeue();
                             subjNode = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
                         }
                         else
                         {
-                            //Collection
+                            // Collection
                             subjNode = context.Handler.CreateBlankNode();
                             this.TryParseCollection(context, graphUri, subjNode);
                         }
@@ -506,7 +506,7 @@ namespace VDS.RDF.Parsing
                     case Token.BASEDIRECTIVE:
                         if (context.Syntax == TriGSyntax.Original) throw ParserHelper.Error("@base/@prefix directives are not permitted to occur inside a Graph in this version of TriG, later versions of TriG support this feature and may be enabled by changing your syntax setting when you create a TriG Parser", subj);
 
-                        //Parse the directive then continue
+                        // Parse the directive then continue
                         this.TryParseDirective(context, subj);
                         continue;
 
@@ -514,17 +514,17 @@ namespace VDS.RDF.Parsing
                         throw ParserHelper.Error("Unexpected End of File while trying to parse Triples", subj);
 
                     default:
-                        //Unexpected Token
+                        // Unexpected Token
                         throw ParserHelper.Error("Unexpected Token '" + subj.GetType().ToString() + "' encountered, expected a URI/QName/Blank Node as the Subject of a Triple", subj);
                 }
 
-                //Parse the Predicate Object List
+                // Parse the Predicate Object List
                 this.TryParsePredicateObjectList(context, graphUri, subjNode);
 
-                //Expect a Dot to Terminate
+                // Expect a Dot to Terminate
                 if (context.Tokens.LastTokenType != Token.DOT && context.Tokens.LastTokenType != Token.RIGHTCURLYBRACKET)
                 {
-                    //We only do this if we haven't returned because we already hit the Dot Token/Right Curly Bracket
+                    // We only do this if we haven't returned because we already hit the Dot Token/Right Curly Bracket
                     IToken dot = context.Tokens.Dequeue();
                     if (dot.TokenType != Token.DOT && dot.TokenType != Token.RIGHTCURLYBRACKET)
                     {
@@ -532,12 +532,12 @@ namespace VDS.RDF.Parsing
                     }
                 }
 
-                //If we already hit the Right Curly Bracket return
+                // If we already hit the Right Curly Bracket return
                 if (context.Tokens.LastTokenType == Token.RIGHTCURLYBRACKET) return;
 
             } while (context.Tokens.Peek().TokenType != Token.RIGHTCURLYBRACKET);
 
-            //Discard the ending Right Curly Bracket
+            // Discard the ending Right Curly Bracket
             context.Tokens.Dequeue();
         }
 
@@ -546,28 +546,28 @@ namespace VDS.RDF.Parsing
             bool ok = false;
             do
             {
-                //After our first run through we'll need to discard semicolons here
+                // After our first run through we'll need to discard semicolons here
                 if (ok)
                 {
                     context.Tokens.Dequeue();
 
-                    //Watch out for Trailing Semicolons
+                    // Watch out for Trailing Semicolons
                     if (context.Tokens.Peek().TokenType == Token.RIGHTSQBRACKET)
                     {
-                        //Allow trailing semicolons to terminate Blank Node Collections
+                        // Allow trailing semicolons to terminate Blank Node Collections
                         context.Tokens.Dequeue();
                         return;
                     }
                 }
 
-                //Try to get the Predicate
+                // Try to get the Predicate
                 IToken pred = context.Tokens.Dequeue();
                 INode predNode;
 
                 switch (pred.TokenType)
                 {
                     case Token.COMMENT:
-                        //Discard and continue
+                        // Discard and continue
                         ok = false;
                         continue;
 
@@ -577,7 +577,7 @@ namespace VDS.RDF.Parsing
                         break;
 
                     case Token.KEYWORDA:
-                        //'a' Keyword
+                        // 'a' Keyword
                         predNode = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
                         break;
 
@@ -600,16 +600,16 @@ namespace VDS.RDF.Parsing
                         return;
 
                     default:
-                        //Unexpected Token
+                        // Unexpected Token
                         throw ParserHelper.Error("Unexpected Token '" + pred.GetType().ToString() + "' encountered, expected a URI/QName as the Predicate of a Triple", pred);
                 }
 
                 ok = true;
 
-                //Parse the Object List
+                // Parse the Object List
                 this.TryParseObjectList(context, graphUri, subj, predNode);
 
-                //Return if we hit the Dot Token/Right Curly Bracket/Right Square Bracket
+                // Return if we hit the Dot Token/Right Curly Bracket/Right Square Bracket
                 if (context.Tokens.LastTokenType == Token.DOT ||
                     context.Tokens.LastTokenType == Token.RIGHTCURLYBRACKET ||
                     context.Tokens.LastTokenType == Token.RIGHTSQBRACKET)
@@ -617,7 +617,7 @@ namespace VDS.RDF.Parsing
                     return;
                 }
 
-                //Check for End of Blank Node Collections
+                // Check for End of Blank Node Collections
                 if (context.Tokens.Peek().TokenType == Token.RIGHTSQBRACKET)
                 {
                     context.Tokens.Dequeue();
@@ -633,13 +633,13 @@ namespace VDS.RDF.Parsing
 
             do
             {
-                //After the first run through we'll need to discard commas here
+                // After the first run through we'll need to discard commas here
                 if (ok)
                 {
                     context.Tokens.Dequeue();
                 }
 
-                //Try to get the Object
+                // Try to get the Object
                 IToken obj = context.Tokens.Dequeue();
                 IToken next;
                 INode objNode;
@@ -647,7 +647,7 @@ namespace VDS.RDF.Parsing
                 switch (obj.TokenType)
                 {
                     case Token.COMMENT:
-                        //Discard and Continue
+                        // Discard and Continue
                         ok = false;
                         continue;
 
@@ -658,21 +658,21 @@ namespace VDS.RDF.Parsing
 
                     case Token.LITERAL:
                     case Token.LONGLITERAL:
-                        //Literals
+                        // Literals
 
-                        //See whether we get a Language Specifier/Data Type next
+                        // See whether we get a Language Specifier/Data Type next
                         next = context.Tokens.Peek();
                         if (next.TokenType == Token.LANGSPEC)
                         {
-                            //Literal with Language Specifier
+                            // Literal with Language Specifier
                             context.Tokens.Dequeue();
                             objNode = context.Handler.CreateLiteralNode(obj.Value, next.Value);
                         }
                         else if (next.TokenType == Token.HATHAT)
                         {
-                            //Literal with DataType
+                            // Literal with DataType
                             context.Tokens.Dequeue();
-                            //Now expect a QName/Uri Token
+                            // Now expect a QName/Uri Token
                             next = context.Tokens.Dequeue();
                             if (next.TokenType == Token.QNAME || next.TokenType == Token.URI)
                             {
@@ -686,43 +686,43 @@ namespace VDS.RDF.Parsing
                         }
                         else
                         {
-                            //Just a string literal
+                            // Just a string literal
                             objNode = context.Handler.CreateLiteralNode(obj.Value);
                         }
                         break;
 
                     case Token.PLAINLITERAL:
-                        //Plain Literals
+                        // Plain Literals
                         Uri plt = TurtleSpecsHelper.InferPlainLiteralType((PlainLiteralToken)obj, TurtleSyntax.Original);
                         objNode = context.Handler.CreateLiteralNode(obj.Value, plt);
                         break;
 
                     case Token.BLANKNODEWITHID:
-                        //Blank Node with ID
+                        // Blank Node with ID
                         objNode = context.Handler.CreateBlankNode(obj.Value.Substring(2));
                         break;
 
                     case Token.LEFTSQBRACKET:
-                        //Blank Node
+                        // Blank Node
                         next = context.Tokens.Peek();
                         if (next.TokenType == Token.RIGHTSQBRACKET)
                         {
-                            //Anonymous Blank Node
+                            // Anonymous Blank Node
                             context.Tokens.Dequeue();
                             objNode = context.Handler.CreateBlankNode();
                         }
                         else
                         {
-                            //Blank Node Collection
+                            // Blank Node Collection
                             objNode = context.Handler.CreateBlankNode();
 
-                            //Do an extra call to TryParsePredicateObjectList to parse the Blank Node Collection
+                            // Do an extra call to TryParsePredicateObjectList to parse the Blank Node Collection
                             this.TryParsePredicateObjectList(context, graphUri, objNode);
                         }
                         break;
 
                     case Token.RIGHTSQBRACKET:
-                        //End of Blank Node Collection
+                        // End of Blank Node Collection
                         if (!ok)
                         {
                             throw ParserHelper.Error("Unexpected Token '" + obj.GetType().ToString() + "' encountered before an Object list of a Blank Node Collection was parsed", obj);
@@ -730,19 +730,19 @@ namespace VDS.RDF.Parsing
                         return;
 
                     case Token.LEFTBRACKET:
-                        //Collection
+                        // Collection
 
-                        //Check whether an Empty Collection
+                        // Check whether an Empty Collection
                         next = context.Tokens.Peek();
                         if (next.TokenType == Token.RIGHTBRACKET)
                         {
-                            //Empty Collection
+                            // Empty Collection
                             context.Tokens.Dequeue();
                             objNode = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
                         }
                         else
                         {
-                            //Collection
+                            // Collection
                             objNode = context.Handler.CreateBlankNode();
                             this.TryParseCollection(context, graphUri, objNode);
                         }
@@ -761,7 +761,7 @@ namespace VDS.RDF.Parsing
                         return;
 
                     default:
-                        //Unexpected Token
+                        // Unexpected Token
                         throw ParserHelper.Error("Unexpected Token '" + obj.GetType().ToString() + "' encountered, expected a URI/QName/Blank Node as the Object of a Triple", obj);
                 }
 
@@ -774,7 +774,7 @@ namespace VDS.RDF.Parsing
 
         private void TryParseCollection(TriGParserContext context, Uri graphUri, INode subj)
         {
-            //Create the Nodes we need
+            // Create the Nodes we need
             IUriNode rdfFirst, rdfRest, rdfNil;
             rdfFirst = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst));
             rdfRest = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest));
@@ -787,11 +787,11 @@ namespace VDS.RDF.Parsing
             {
                 next = context.Tokens.Dequeue();
 
-                //Create a Node for this Token
+                // Create a Node for this Token
                 switch (next.TokenType)
                 {
                     case Token.COMMENT:
-                        //Discard and continue;
+                        // Discard and continue;
                         continue;
 
                     case Token.QNAME:
@@ -833,34 +833,34 @@ namespace VDS.RDF.Parsing
                         break;
 
                     case Token.LEFTSQBRACKET:
-                        //Check whether an anonymous Blank Node or a Blank Node Collection
+                        // Check whether an anonymous Blank Node or a Blank Node Collection
                         item = context.Handler.CreateBlankNode();
 
                         next = context.Tokens.Peek();
                         if (next.TokenType == Token.RIGHTSQBRACKET)
                         {
-                            //Anonymous Blank Node
+                            // Anonymous Blank Node
                             context.Tokens.Dequeue();
                         }
                         else
                         {
-                            //Blank Node Collection
+                            // Blank Node Collection
                             this.TryParsePredicateObjectList(context, graphUri, item);
                         }
                         break;
 
                     case Token.LEFTBRACKET:
-                        //Check whether an Empty Collection
+                        // Check whether an Empty Collection
                         next = context.Tokens.Peek();
                         if (next.TokenType == Token.RIGHTBRACKET)
                         {
-                            //Empty Collection
+                            // Empty Collection
                             context.Tokens.Dequeue();
                             item = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
                         }
                         else
                         {
-                            //Collection
+                            // Collection
                             item = context.Handler.CreateBlankNode();
                             this.TryParseCollection(context, graphUri, item);
                         }
@@ -874,24 +874,24 @@ namespace VDS.RDF.Parsing
                         throw ParserHelper.Error("Unexpected End of File while trying to parse a Collection", next);
 
                     default:
-                        //Unexpected Token
+                        // Unexpected Token
                         throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI/QName/Literal/Blank Node as an item in a Collection", next);
                 }
 
-                //Create the subj rdf:first item Triple
+                // Create the subj rdf:first item Triple
                 if (!context.Handler.HandleTriple((new Triple(subj, rdfFirst, item, graphUri)))) ParserHelper.Stop();
 
-                //Create the rdf:rest Triple
+                // Create the rdf:rest Triple
                 if (context.Tokens.Peek().TokenType == Token.RIGHTBRACKET)
                 {
-                    //End of Collection
+                    // End of Collection
                     context.Tokens.Dequeue();
                     if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, rdfNil, graphUri))) ParserHelper.Stop();
                     return;
                 }
                 else
                 {
-                    //Continuing Collection
+                    // Continuing Collection
                     temp = context.Handler.CreateBlankNode();
                     if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, temp, graphUri))) ParserHelper.Stop();
                     subj = temp;

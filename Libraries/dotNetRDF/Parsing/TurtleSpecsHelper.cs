@@ -82,8 +82,8 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public const String ValidDecimalPattern = "^(\\+|-)?(\\d+\\.\\d*|\\.\\d+|\\d+)$";
 
-        //DOUBLE	::=	[+-]? ([0-9]+ '.' [0-9]* EXPONENT | '.' [0-9]+ EXPONENT | [0-9]+ EXPONENT)
-        //EXPONENT  ::= [eE] [+-]? [0-9]+
+        // DOUBLE	::=	[+-]? ([0-9]+ '.' [0-9]* EXPONENT | '.' [0-9]+ EXPONENT | [0-9]+ EXPONENT)
+        // EXPONENT  ::= [eE] [+-]? [0-9]+
 
         /// <summary>
         /// Pattern for Valid Doubles in Turtle
@@ -179,13 +179,13 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static bool IsValidDouble(String value)
         {
-            //W3C:
-            //DOUBLE	::=	[+-]? ([0-9]+ '.' [0-9]* EXPONENT | '.' [0-9]+ EXPONENT | [0-9]+ EXPONENT)
-            //EXPONENT  ::= [eE] [+-]? [0-9]+
+            // W3C:
+            // DOUBLE	::=	[+-]? ([0-9]+ '.' [0-9]* EXPONENT | '.' [0-9]+ EXPONENT | [0-9]+ EXPONENT)
+            // EXPONENT  ::= [eE] [+-]? [0-9]+
             //
-            //Original:
-            //double    ::= ('-' | '+') ? ( [0-9]+ '.' [0-9]* exponent | '.' ([0-9])+ exponent | ([0-9])+ exponent )
-            //exponent  ::= [eE] ('-' | '+')? [0-9]+
+            // Original:
+            // double    ::= ('-' | '+') ? ( [0-9]+ '.' [0-9]* exponent | '.' ([0-9])+ exponent | ([0-9])+ exponent )
+            // exponent  ::= [eE] ('-' | '+')? [0-9]+
             return _validDouble.IsMatch(value);
         }
 
@@ -207,18 +207,18 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static bool IsValidPrefix(String value, TurtleSyntax syntax)
         {
-            //W3C Standard Turtle
-            //PNAME_NS	::=	PN_PREFIX? ':'
+            // W3C Standard Turtle
+            // PNAME_NS	::=	PN_PREFIX? ':'
 
-            //Original Member Submission Turtle
-            //qname	::=	prefixName? ':' name?
+            // Original Member Submission Turtle
+            // qname	::=	prefixName? ':' name?
 
-            //The productions are identical for our purposes
+            // The productions are identical for our purposes
             if (value.Equals(String.Empty)) return false;
             if (!value.EndsWith(":")) return false;
             if (value.Equals(":")) return true;
 
-            //IsPNPrefix() implements the appropriate productions for the different syntaxes
+            // IsPNPrefix() implements the appropriate productions for the different syntaxes
             return IsPNPrefix(value.Substring(0, value.Length - 1), syntax);
         }
 
@@ -235,14 +235,14 @@ namespace VDS.RDF.Parsing
             switch (syntax)
             {
                 case TurtleSyntax.W3C:
-                    //PN_PREFIX	::=	PN_CHARS_BASE ((PN_CHARS | '.')* PN_CHARS)?
+                    // PN_PREFIX	::=	PN_CHARS_BASE ((PN_CHARS | '.')* PN_CHARS)?
 
                     if (cs.Length == 0) return true;
 
-                    //First character must be in PN_CHARS_BASE
+                    // First character must be in PN_CHARS_BASE
                     if (!IsPNCharsBase(cs[0])) 
                     {
-                        //Handle surrogate pairs for UTF-32 characters
+                        // Handle surrogate pairs for UTF-32 characters
                         if (UnicodeSpecsHelper.IsHighSurrogate(cs[0]) && cs.Length > 1)
                         {
                             if (!IsPNCharsBase(cs[0], cs[1])) return false;
@@ -255,12 +255,12 @@ namespace VDS.RDF.Parsing
                     }
                     if (cs.Length == start) return true;
 
-                    //Intermediate characters must be a '.' or in PN_CHARS
+                    // Intermediate characters must be a '.' or in PN_CHARS
                     for (int i = start; i < cs.Length - 1; i++)
                     {
                         if (cs[i] != '.' && !IsPNChars(cs[i]))
                         {
-                            //Handle surrogate pairs for UTF-32 characters
+                            // Handle surrogate pairs for UTF-32 characters
                             if (UnicodeSpecsHelper.IsHighSurrogate(cs[i]) && i < cs.Length - 2)
                             {
                                 if (!IsPNChars(cs[i], cs[i + 1])) return false;
@@ -268,7 +268,7 @@ namespace VDS.RDF.Parsing
                             }
                             else if (UnicodeSpecsHelper.IsHighSurrogate(cs[i]) && i == cs.Length - 2)
                             {
-                                //This case handles the case where the final character is a UTF-32 character representing by a surrogate pair
+                                // This case handles the case where the final character is a UTF-32 character representing by a surrogate pair
                                 return IsPNChars(cs[i], cs[i + 1]);
                             }
                             else
@@ -278,18 +278,18 @@ namespace VDS.RDF.Parsing
                         }
                     }
 
-                    //Final character must be in PN_CHARS
+                    // Final character must be in PN_CHARS
                     return IsPNChars(cs[cs.Length - 1]);
 
                 default:
-                    //prefixName	::=	( nameStartChar - '_' ) nameChar*
+                    // prefixName	::=	( nameStartChar - '_' ) nameChar*
 
                     if (cs.Length == 0) return true;
 
-                    //First character must be a name start char and not a _
+                    // First character must be a name start char and not a _
                     if (!IsNameStartChar(cs[0]) || cs[0] == '_')
                     {
-                        //Handle surrogate pairs for UTF-32
+                        // Handle surrogate pairs for UTF-32
                         if (UnicodeSpecsHelper.IsHighSurrogate(cs[0]) && cs.Length > 1)
                         {
                             if (!IsNameStartChar(cs[0], cs[1])) return false;
@@ -302,12 +302,12 @@ namespace VDS.RDF.Parsing
                     }
                     if (cs.Length == start) return true;
 
-                    //Subsequent characters must be in nameChar
+                    // Subsequent characters must be in nameChar
                     for (int i = start; i < cs.Length; i++)
                     {
                         if (!IsNameChar(cs[i]))
                         {
-                            //Handle surrogate pairs for UTF-32
+                            // Handle surrogate pairs for UTF-32
                             if (UnicodeSpecsHelper.IsHighSurrogate(cs[i]) && i < cs.Length - 1)
                             {
                                 if (!IsNameChar(cs[i], cs[i + 1])) return false;
@@ -333,30 +333,30 @@ namespace VDS.RDF.Parsing
         {
             char[] cs = value.ToCharArray();
 
-            //Empty local names are valid
+            // Empty local names are valid
             if (cs.Length == 0) return true;
 
             switch (syntax)
             {
                 case TurtleSyntax.W3C:
-                    //PNAME_LN	::=	PNAME_NS PN_LOCAL
-                    //PNAME_NS	::=	PN_PREFIX? ':'
+                    // PNAME_LN	::=	PNAME_NS PN_LOCAL
+                    // PNAME_NS	::=	PN_PREFIX? ':'
 
-                    //Local name is a syntax of namespace segments
+                    // Local name is a syntax of namespace segments
                     String[] portions = value.Split(':');
 
-                    //Each non-final portion conforms to the PNAME_NS production
-                    //This is a PN_PREFIX followed by a ':' so we can call IsPNPrefix() directly
-                    //However we have to be careful because the final portion can contain bare : which we already split on
+                    // Each non-final portion conforms to the PNAME_NS production
+                    // This is a PN_PREFIX followed by a ':' so we can call IsPNPrefix() directly
+                    // However we have to be careful because the final portion can contain bare : which we already split on
                     int p;
                     for (p = 0; p < portions.Length - 1; p++)
                     {
                         if (portions[p].Length == 0) continue;
 
-                        //If we see any of the escape sequence starters or a leading digit then this must be the start of the local name
+                        // If we see any of the escape sequence starters or a leading digit then this must be the start of the local name
                         if (portions[p].Contains("%") || portions[p].Contains("\\") || Char.IsDigit(portions[p][0])) break;
 
-                        //Otherwise must be a valid prefix
+                        // Otherwise must be a valid prefix
                         if (!IsPNPrefix(portions[p], syntax)) return false;
                     }
 
@@ -366,18 +366,18 @@ namespace VDS.RDF.Parsing
                         final = String.Join(":", portions, p, portions.Length - p);
                     }
 
-                    //Final portion may be empty which is valid because a portion may consist solely of a : which would result in this scenario
+                    // Final portion may be empty which is valid because a portion may consist solely of a : which would result in this scenario
                     if (final.Length == 0) return true;
 
-                    //Final portion conforms to PN_LOCAL
+                    // Final portion conforms to PN_LOCAL
                     return IsPNLocal(final);
 
                 default:
-                    //name	::=	nameStartChar nameChar*
+                    // name	::=	nameStartChar nameChar*
 
                     int start = 1;
 
-                    //Validate first character is a nameStartChar
+                    // Validate first character is a nameStartChar
                     if (!IsNameStartChar(cs[0]))
                     {
                         if (UnicodeSpecsHelper.IsHighSurrogate(cs[0]) && cs.Length > 1)
@@ -393,7 +393,7 @@ namespace VDS.RDF.Parsing
 
                     if (cs.Length == start) return true;
 
-                    //Further characters must be nameChar
+                    // Further characters must be nameChar
                     for (int i = start; i < cs.Length; i++)
                     {
                         if (!IsNameChar(cs[i]))
@@ -420,15 +420,15 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static bool IsPNLocal(String value)
         {
-            //PN_LOCAL	::=	(PN_CHARS_U | ':' | [0-9] | PLX) ((PN_CHARS | '.' | ':' | PLX)* (PN_CHARS | ':' | PLX))?
+            // PN_LOCAL	::=	(PN_CHARS_U | ':' | [0-9] | PLX) ((PN_CHARS | '.' | ':' | PLX)* (PN_CHARS | ':' | PLX))?
 
             char[] cs = value.ToCharArray();
             int start = 1, temp = 0;
 
-            //Validate first character
+            // Validate first character
             if (cs[0] != ':' && !Char.IsDigit(cs[0]) && !IsPLX(cs, 0, out temp) && !IsPNCharsU(cs[0]))
             {
-                //Handle surrogate pairs for UTF-32 characters
+                // Handle surrogate pairs for UTF-32 characters
                 if (UnicodeSpecsHelper.IsHighSurrogate(cs[0]) && cs.Length > 1)
                 {
                     if (!IsPNCharsU(cs[0], cs[1])) return false;
@@ -439,18 +439,18 @@ namespace VDS.RDF.Parsing
                     return false;
                 }
             }
-            //We may have seen a PLX as the first thing so need to correct start appropriately
+            // We may have seen a PLX as the first thing so need to correct start appropriately
             if (temp > 0) start = temp + 1;
 
             if (start >= cs.Length) return true;
 
-            //Intermediate characters can be PN_CHARS, a '.', a ':' or a PLX
+            // Intermediate characters can be PN_CHARS, a '.', a ':' or a PLX
             for (int i = start; i < cs.Length - 1; i++)
             {
                 int j = i;
                 if (cs[i] != '.' && cs[i] != ':' && !IsPNChars(cs[i]) && !IsPLX(cs, i, out j))
                 {
-                    //Handle surrogate pairs for UTF-32 characters
+                    // Handle surrogate pairs for UTF-32 characters
                     if (UnicodeSpecsHelper.IsHighSurrogate(cs[i]) && i < cs.Length - 2)
                     {
                         if (!IsPNChars(cs[i], cs[i + 1])) return false;
@@ -459,7 +459,7 @@ namespace VDS.RDF.Parsing
                     }
                     else if (UnicodeSpecsHelper.IsHighSurrogate(cs[i]) && i == cs.Length - 2)
                     {
-                        //This case handles the case where the final character is a UTF-32 character representing by a surrogate pair
+                        // This case handles the case where the final character is a UTF-32 character representing by a surrogate pair
                         return IsPNChars(cs[i], cs[i + 1]);
                     }
                     else
@@ -469,15 +469,15 @@ namespace VDS.RDF.Parsing
                 }
                 if (i != j)
                 {
-                    //This means we just saw a PLX
-                    //Last thing being a PLX is valid
+                    // This means we just saw a PLX
+                    // Last thing being a PLX is valid
                     if (j == cs.Length - 1) return true;
-                    //Otherwise adjust the index appropriately and continue checking further characters
+                    // Otherwise adjust the index appropriately and continue checking further characters
                     i = j;
                 }
             }
 
-            //Final character is a ':' or a PN_CHARS
+            // Final character is a ':' or a PN_CHARS
             return cs[cs.Length - 1] == ':' || IsPNChars(cs[cs.Length - 1]);
         }
 
@@ -495,7 +495,7 @@ namespace VDS.RDF.Parsing
             {
                 if (startIndex >= cs.Length - 2)
                 {
-                    //If we saw a base % but there are not two subsequent characters not a valid PLX escape
+                    // If we saw a base % but there are not two subsequent characters not a valid PLX escape
                     return false;
                 }
                 else
@@ -504,7 +504,7 @@ namespace VDS.RDF.Parsing
                     char b = cs[startIndex + 2];
                     if (IsHex(a) && IsHex(b))
                     {
-                        //Valid % encoding
+                        // Valid % encoding
                         endIndex = startIndex + 2;
                         return true;
                     }
@@ -518,7 +518,7 @@ namespace VDS.RDF.Parsing
             {
                 if (startIndex >= cs.Length - 1)
                 {
-                    //If we saw a backslash but no subsequent character not a valid PLX escape
+                    // If we saw a backslash but no subsequent character not a valid PLX escape
                     return false;
                 }
                 else
@@ -546,7 +546,7 @@ namespace VDS.RDF.Parsing
                         case '#':
                         case '@':
                         case '%':
-                            //Valid Escape
+                            // Valid Escape
                             endIndex = startIndex + 1;
                             return true;
                         default:
@@ -640,22 +640,22 @@ namespace VDS.RDF.Parsing
 
             if (value.Equals("true", comparison) || value.Equals("false", comparison))
             {
-                //Is a Boolean
+                // Is a Boolean
                 return UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean);
             }
             else if (_validInteger.IsMatch(value)) 
             {
-                //Is an Integer
+                // Is an Integer
                 return UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger);
             }
             else if (_validDecimal.IsMatch(value))
             {
-                //Is a Decimal
+                // Is a Decimal
                 return UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDecimal);
             }
             else if (_validDouble.IsMatch(value))
             {
-                //Is a Double
+                // Is a Double
                 return UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble);
             }
             else
@@ -727,7 +727,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static bool IsPNChars(char c)
         {
-            //PN_CHARS	::=	PN_CHARS_U | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
+            // PN_CHARS	::=	PN_CHARS_U | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
             if (c == '-')
             {
                 return true;
@@ -766,7 +766,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static bool IsPNChars(char c, char d)
         {
-            //PN_CHARS	::=	PN_CHARS_U | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
+            // PN_CHARS	::=	PN_CHARS_U | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
             return IsPNCharsU(c, d);
         }
 
@@ -777,7 +777,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static bool IsPNCharsU(char c)
         {
-            //PN_CHARS_U	::=	PN_CHARS_BASE | '_'
+            // PN_CHARS_U	::=	PN_CHARS_BASE | '_'
             return c == '_' || IsPNCharsBase(c);
         }
 
@@ -789,7 +789,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static bool IsPNCharsU(char c, char d)
         {
-            //PN_CHARS_U	::=	PN_CHARS_BASE | '_'
+            // PN_CHARS_U	::=	PN_CHARS_BASE | '_'
             return IsPNCharsBase(c, d);
         }
 
@@ -804,7 +804,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static bool IsNameStartChar(char c)
         {
-            //[30]	nameStartChar	::=	[A-Z] | "_" | [a-z] | [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x02FF] | [#x0370-#x037D] | [#x037F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+            // [30]	nameStartChar	::=	[A-Z] | "_" | [a-z] | [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x02FF] | [#x0370-#x037D] | [#x037F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
             if (c >= 'A' && c <= 'Z')
             {
                 return true;
@@ -863,7 +863,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static bool IsNameChar(char c)
         {
-            //[31]	nameChar	::=	nameStartChar | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
+            // [31]	nameChar	::=	nameStartChar | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
             if (c == '-')
             {
                 return true;

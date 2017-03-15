@@ -61,7 +61,7 @@ namespace VDS.RDF.Query.Describe
             {
                 handler.StartRdf();
 
-                //Apply Base URI and Namespaces to the Handler
+                // Apply Base URI and Namespaces to the Handler
                 if (context.Query != null)
                 {
                     if (context.Query.BaseUri != null)
@@ -74,11 +74,11 @@ namespace VDS.RDF.Query.Describe
                     }
                 }
 
-                //Get the Nodes needing describing
+                // Get the Nodes needing describing
                 List<INode> nodes = this.GetNodes(handler, context);
                 if (nodes.Count > 0)
                 {
-                    //If there is at least 1 Node then start describing
+                    // If there is at least 1 Node then start describing
                     this.DescribeInternal(handler, context, nodes);
                 }
 
@@ -114,7 +114,7 @@ namespace VDS.RDF.Query.Describe
             INamespaceMapper nsmap = (context.Query != null ? context.Query.NamespaceMap : new NamespaceMapper(true));
             Uri baseUri = (context.Query != null ? context.Query.BaseUri : null);
 
-            //Build a list of INodes to describe
+            // Build a list of INodes to describe
             List<INode> nodes = new List<INode>();
             foreach (IToken t in context.Query.DescribeVariables)
             {
@@ -122,12 +122,12 @@ namespace VDS.RDF.Query.Describe
                 {
                     case Token.QNAME:
                     case Token.URI:
-                        //Resolve Uri/QName
+                        // Resolve Uri/QName
                         nodes.Add(factory.CreateUriNode(UriFactory.Create(Tools.ResolveUriOrQName(t, nsmap, baseUri))));
                         break;
 
                     case Token.VARIABLE:
-                        //Get Variable Values
+                        // Get Variable Values
                         String var = t.Value.Substring(1);
                         if (context.OutputMultiset.ContainsVariable(var))
                         {
@@ -146,7 +146,7 @@ namespace VDS.RDF.Query.Describe
             return nodes;
         }
 
-        //OPT: Replace with usage of MapTriple instead?
+        // OPT: Replace with usage of MapTriple instead?
 
         /// <summary>
         /// Helper method which rewrites Blank Node IDs for Describe Queries

@@ -131,14 +131,14 @@ namespace VDS.RDF.Writing
             }
             catch
             {
-                //Try and ensure the Stream gets closed
+                // Try and ensure the Stream gets closed
                 try
                 {
                     output.Close();
                 }
                 catch
                 {
-                    //No Catch actions
+                    // No Catch actions
                 }
                 throw;
             }

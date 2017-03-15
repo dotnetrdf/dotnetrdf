@@ -76,22 +76,22 @@ namespace VDS.RDF
         {
             if (this._graphs.ContainsKey(g.BaseUri))
             {
-                //Already exists in the Graph Collection
+                // Already exists in the Graph Collection
                 if (mergeIfExists)
                 {
-                    //Merge into the existing Graph
+                    // Merge into the existing Graph
                     this._graphs[g.BaseUri].Merge(g);
                     return true;
                 }
                 else
                 {
-                    //Not allowed
+                    // Not allowed
                     throw new RdfException("The Graph you tried to add already exists in the Graph Collection and the mergeIfExists parameter was set to false");
                 }
             }
             else
             {
-                //Safe to add a new Graph
+                // Safe to add a new Graph
                 this._graphs.Add(g.BaseUri, g);
                 this.RaiseGraphAdded(g);
                 return true;

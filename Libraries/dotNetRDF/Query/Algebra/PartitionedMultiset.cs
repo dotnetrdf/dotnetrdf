@@ -71,7 +71,7 @@ namespace VDS.RDF.Query.Algebra
             lock (this._partitions)
             {
                 this._partitions.Add(new Dictionary<int, ISet>());
-                //We don't always need to create a new variable partition as in some cases there may be one already (if AddVariable() got called first)
+                // We don't always need to create a new variable partition as in some cases there may be one already (if AddVariable() got called first)
                 if (this._variables.Count < this._partitions.Count) this._variables.Add(new HashSet<string>());
                 this._counter += this._partitionSize;
                 baseID = this._counter;
@@ -112,7 +112,7 @@ namespace VDS.RDF.Query.Algebra
         {
             if (this.ContainsVariable(var))
             {
-                //Create the Cache if necessary and reset it when necessary
+                // Create the Cache if necessary and reset it when necessary
                 if (this._containsCache == null || this._cacheInvalid)
                 {
                     this._containsCache = new Dictionary<string, HashSet<INode>>();
@@ -161,7 +161,7 @@ namespace VDS.RDF.Query.Algebra
         /// </remarks>
         public override void Add(ISet s)
         {
-            //Compute which partition based on the ID
+            // Compute which partition based on the ID
             int p = s.ID / this._partitionSize;
             this._partitions[p].Add(s.ID, s);
             this._cacheInvalid = true;
@@ -190,7 +190,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="variables">Variable Ordering</param>
         public override void SetVariableOrder(IEnumerable<string> variables)
         {
-            //Validate that the ordering is applicable
+            // Validate that the ordering is applicable
             HashSet<String> vars = new HashSet<string>();
             foreach (HashSet<String> varList in this._variables)
             {
@@ -205,7 +205,7 @@ namespace VDS.RDF.Query.Algebra
                 if (!variables.Contains(var)) throw new RdfQueryException("Cannot set a variable ordering that omits the variable ?" + var + " currently present in the multiset, use Trim(\"" + var + "\") first to remove this variable");
             }
 
-            //Apply ordering
+            // Apply ordering
             this._orderedVariables = new List<string>(vars);
         }
 

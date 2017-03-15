@@ -108,7 +108,7 @@ namespace VDS.RDF.Parsing
                 {
                     this._cacheDir = value;
 
-                    //Reinitialise to set up the Graphs as required
+                    // Reinitialise to set up the Graphs as required
                     this._canCacheETag = false;
                     this._canCacheGraphs = false;
                     this.Initialise();
@@ -131,7 +131,7 @@ namespace VDS.RDF.Parsing
                 }
                 catch
                 {
-                    //If can't create directory we can't cache Graphs
+                    // If can't create directory we can't cache Graphs
                 }
             }
             else
@@ -144,7 +144,7 @@ namespace VDS.RDF.Parsing
             {
                 try
                 {
-                    //Read in the existing ETags
+                    // Read in the existing ETags
                     using (StreamReader reader = new StreamReader(this._etagFile, Encoding.UTF8))
                     {
                         while (!reader.EndOfStream)
@@ -163,7 +163,7 @@ namespace VDS.RDF.Parsing
                             }
                             catch
                             {
-                                //Ignore this line and continue if we can
+                                // Ignore this line and continue if we can
                             }
                         }
                     }
@@ -171,12 +171,12 @@ namespace VDS.RDF.Parsing
                 }
                 catch
                 {
-                    //If error then we can't cache ETags
+                    // If error then we can't cache ETags
                 }
             }
             else
             {
-                //Try and create ETags Cache File
+                // Try and create ETags Cache File
                 try
                 {
                     File.Create(this._etagFile);
@@ -184,7 +184,7 @@ namespace VDS.RDF.Parsing
                 }
                 catch
                 {
-                    //If can't create file we can't cache ETags
+                    // If can't create file we can't cache ETags
                 }
             }
         }
@@ -194,14 +194,14 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public void Clear()
         {
-            //Clear the ETag Cache
+            // Clear the ETag Cache
             this._etags.Clear();
             if (this._canCacheETag && File.Exists(this._etagFile))
             {
                 File.WriteAllText(this._etagFile, String.Empty, Encoding.UTF8);
             }
 
-            //Clear the Graphs Cache
+            // Clear the Graphs Cache
             if (this._canCacheGraphs && Directory.Exists(this._graphDir))
             {
                 foreach (String file in Directory.GetFiles(this._graphDir))
@@ -269,7 +269,7 @@ namespace VDS.RDF.Parsing
                     if (this._etags.ContainsKey(u.GetEnhancedHashCode()))
                     {
                         this._etags.Remove(u.GetEnhancedHashCode());
-                        //If we did remove an ETag then we need to rewrite our ETag cache file
+                        // If we did remove an ETag then we need to rewrite our ETag cache file
                         using (StreamWriter writer = new StreamWriter(this._etagFile, false, Encoding.UTF8))
                         {
                             foreach (KeyValuePair<int, String> etag in this._etags)
@@ -283,7 +283,7 @@ namespace VDS.RDF.Parsing
             }
             catch (IOException)
             {
-                //If an IO Exception occurs ignore it, something went wrong with cache alteration
+                // If an IO Exception occurs ignore it, something went wrong with cache alteration
             }
         }
 
@@ -305,7 +305,7 @@ namespace VDS.RDF.Parsing
             }
             catch
             {
-                //If error add to the list of uncachable URIs
+                // If error add to the list of uncachable URIs
                 this._nocache.Add(u.GetSha256Hash());
             }
         }
@@ -329,12 +329,12 @@ namespace VDS.RDF.Parsing
                     {
                         if (requireFreshness)
                         {
-                            //Check the freshness of the local copy
+                            // Check the freshness of the local copy
                             DateTime created = File.GetCreationTime(graph);
                             TimeSpan freshness = DateTime.Now - created;
                             if (freshness > this._cacheDuration)
                             {
-                                //Local copy has expired
+                                // Local copy has expired
                                 File.Delete(graph);
                                 return false;
                             }
@@ -360,7 +360,7 @@ namespace VDS.RDF.Parsing
             }
             catch
             {
-                //If we get an error trying to detect if a URI is cached then it can't be in the cache
+                // If we get an error trying to detect if a URI is cached then it can't be in the cache
                 return false;
             }
         }
@@ -402,7 +402,7 @@ namespace VDS.RDF.Parsing
             {
                 bool cacheTwice = !requestUri.AbsoluteUri.Equals(responseUri.AbsoluteUri, StringComparison.OrdinalIgnoreCase);
 
-                //Cache the ETag if present
+                // Cache the ETag if present
                 if (this._canCacheETag && etag != null && !etag.Equals(String.Empty))
                 {
                     int id = requestUri.GetEnhancedHashCode();
@@ -411,7 +411,7 @@ namespace VDS.RDF.Parsing
                     {
                         if (!this._etags[id].Equals(etag))
                         {
-                            //If the ETag has changed remove it and then re-add it
+                            // If the ETag has changed remove it and then re-add it
                             this.RemoveETag(requestUri);
                             requireAdd = true;
                         }
@@ -423,7 +423,7 @@ namespace VDS.RDF.Parsing
 
                     if (requireAdd)
                     {
-                        //Add a New ETag
+                        // Add a New ETag
                         this._etags.Add(id, etag);
                         using (StreamWriter writer = new StreamWriter(this._etagFile, true, Encoding.UTF8))
                         {
@@ -432,7 +432,7 @@ namespace VDS.RDF.Parsing
                         }
                     }
 
-                    //Cache under the Response URI as well if applicable
+                    // Cache under the Response URI as well if applicable
                     if (cacheTwice)
                     {
                         id = responseUri.GetEnhancedHashCode();
@@ -441,7 +441,7 @@ namespace VDS.RDF.Parsing
                         {
                             if (!this._etags[id].Equals(etag))
                             {
-                                //If the ETag has changed remove it and then re-add it
+                                // If the ETag has changed remove it and then re-add it
                                 this.RemoveETag(responseUri);
                                 requireAdd = true;
                             }
@@ -462,7 +462,7 @@ namespace VDS.RDF.Parsing
                     }
                 }
 
-                //Then if we are caching Graphs return WriteThroughHandlers to do the caching for us
+                // Then if we are caching Graphs return WriteThroughHandlers to do the caching for us
                 if (this._canCacheGraphs)
                 {
                     String graph = Path.Combine(this._graphDir, requestUri.GetSha256Hash());
@@ -477,11 +477,11 @@ namespace VDS.RDF.Parsing
             }
             catch (IOException)
             {
-                //Ignore - if we get an IO Exception we failed to cache somehow
+                // Ignore - if we get an IO Exception we failed to cache somehow
             }
             catch (RdfOutputException)
             {
-                //Ignore - if we get an RDF Output Exception then we failed to cache
+                // Ignore - if we get an RDF Output Exception then we failed to cache
             }
             return handler;
         }

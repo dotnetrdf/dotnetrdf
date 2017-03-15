@@ -81,7 +81,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         /// <returns></returns>
         public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
         {
-            //Prep Variables
+            // Prep Variables
             long lngtotal = 0;
             decimal dectotal = 0.0m;
             float flttotal = 0.0f;
@@ -116,16 +116,16 @@ namespace VDS.RDF.Query.Aggregates.Sparql
                     continue;
                 }
 
-                //Skip if Not a Number
+                // Skip if Not a Number
                 if (numtype == SparqlNumericType.NaN) continue;
 
-                //Track the Numeric Type
+                // Track the Numeric Type
                 if ((int)numtype > (int)maxtype)
                 {
                     maxtype = numtype;
                 }
 
-                //Increment the Totals based on the current Numeric Type
+                // Increment the Totals based on the current Numeric Type
                 switch (maxtype)
                 {
                     case SparqlNumericType.Integer:
@@ -149,27 +149,27 @@ namespace VDS.RDF.Query.Aggregates.Sparql
                 }
             }
 
-            //Return the Sum
+            // Return the Sum
             switch (maxtype)
             {
                 case SparqlNumericType.NaN:
-                    //No Numeric Values
+                    // No Numeric Values
                     return new LongNode(null, 0);
 
                 case SparqlNumericType.Integer:
-                    //Integer Values
+                    // Integer Values
                     return new LongNode(null, lngtotal);
 
                 case SparqlNumericType.Decimal:
-                    //Decimal Values
+                    // Decimal Values
                     return new DecimalNode(null, dectotal);
 
                 case SparqlNumericType.Float:
-                    //Float Values
+                    // Float Values
                     return new FloatNode(null, flttotal);
 
                 case SparqlNumericType.Double:
-                    //Double Values
+                    // Double Values
                     return new DoubleNode(null, dbltotal);
 
                 default:

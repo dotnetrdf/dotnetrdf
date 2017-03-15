@@ -49,7 +49,7 @@ namespace VDS.RDF.Query
             {
                 KnowledgeBase kb = server.GetKnowledgeBase(kbName);
 
-                //Check SPARQL Query is supported
+                // Check SPARQL Query is supported
                 if (kb.SupportsService(this._svcType))
                 {
                     this._svc = (QueryService)kb.GetService(this._svcType);

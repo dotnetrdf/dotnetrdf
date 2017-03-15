@@ -49,13 +49,13 @@ namespace VDS.RDF.Query.Algebra
             if (other is NullMultiset) return other;
             if (other.IsEmpty) return new NullMultiset();
 
-            //If no timeout use default implementation
+            // If no timeout use default implementation
             if (timeout <= 0)
             {
                 return multiset.Product(other);
             }
 
-            //Otherwise Invoke using an Async call
+            // Otherwise Invoke using an Async call
             BaseMultiset productSet;
 #if NET40 && !SILVERLIGHT
             if (Options.UsePLinqEvaluation)
@@ -90,7 +90,7 @@ namespace VDS.RDF.Query.Algebra
 #else
             GenerateProductDelegate d = new GenerateProductDelegate(GenerateProduct);
             IAsyncResult r = d.BeginInvoke(multiset, other, productSet, stop, null, null);
-            //Wait
+            // Wait
             r.AsyncWaitHandle.WaitOne(t);
             if (!r.IsCompleted)
             {
@@ -122,8 +122,8 @@ namespace VDS.RDF.Query.Algebra
 #if NET40 && !SILVERLIGHT
             if (Options.UsePLinqEvaluation)
             {
-                //Determine partition sizes so we can do a parallel product
-                //Want to parallelize over whichever side is larger
+                // Determine partition sizes so we can do a parallel product
+                // Want to parallelize over whichever side is larger
                 if (multiset.Count >= other.Count)
                 {
                     multiset.Sets.AsParallel().ForAll(x => EvalProduct(x, other, target as PartitionedMultiset, stop));
@@ -141,7 +141,7 @@ namespace VDS.RDF.Query.Algebra
                     foreach (ISet y in other.Sets)
                     {
                         target.Add(x.Join(y));
-                        //if (stop.ShouldStop) break;
+                        // if (stop.ShouldStop) break;
                     }
                     if (stop.ShouldStop) break;
                 }

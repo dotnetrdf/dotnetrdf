@@ -91,7 +91,7 @@ namespace VDS.RDF
             this._bnodemapper = new BlankNodeMapper();
             this._nsmapper = new NamespaceMapper();
 
-            //Create Event Handlers and attach to the Triple Collection
+            // Create Event Handlers and attach to the Triple Collection
             this.TripleAddedHandler = new TripleEventHandler(this.OnTripleAsserted);
             this.TripleRemovedHandler = new TripleEventHandler(this.OnTripleRetracted);
             this.AttachEventHandlers(this._triples);
@@ -257,16 +257,16 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IBlankNode CreateBlankNode(String nodeId)
         {
-            //try
-            //{
+            // try
+            // {
             //    Monitor.Enter(this._bnodemapper);
                 this._bnodemapper.CheckID(ref nodeId);
                 return new BlankNode(this, nodeId);
-            //}
-            //finally
-            //{
+            // }
+            // finally
+            // {
             //    Monitor.Exit(this._bnodemapper);
-            //}
+            // }
         }
 
         /// <summary>
@@ -538,15 +538,15 @@ namespace VDS.RDF
         {
             if (ReferenceEquals(this, g)) throw new RdfException("You cannot Merge an RDF Graph with itself");
 
-            //Check that the merge can go ahead
+            // Check that the merge can go ahead
             if (!this.RaiseMergeRequested()) return;
 
-            //First copy and Prefixes across which aren't defined in this Graph
+            // First copy and Prefixes across which aren't defined in this Graph
             this._nsmapper.Import(g.NamespaceMap);
 
             if (this.IsEmpty)
             {
-                //Empty Graph so do a quick copy
+                // Empty Graph so do a quick copy
                 foreach (Triple t in g.Triples)
                 {
                     this.Assert(new Triple(Tools.CopyNode(t.Subject, this, keepOriginalGraphUri), Tools.CopyNode(t.Predicate, this, keepOriginalGraphUri), Tools.CopyNode(t.Object, this, keepOriginalGraphUri), t.Context));
@@ -554,7 +554,7 @@ namespace VDS.RDF
             }
             else
             {   
-                //Prepare a mapping of Blank Nodes to Blank Nodes
+                // Prepare a mapping of Blank Nodes to Blank Nodes
                 Dictionary<INode, IBlankNode> mapping = new Dictionary<INode, IBlankNode>();
 
                 foreach (Triple t in g.Triples)
@@ -631,7 +631,7 @@ namespace VDS.RDF
         /// </remarks>
         public override bool Equals(object obj)
         {
-            //Graphs can't be equal to null
+            // Graphs can't be equal to null
             if (obj == null) return false;
 
             if (obj is IGraph)
@@ -643,7 +643,7 @@ namespace VDS.RDF
             }
             else
             {
-                //Graphs can only be equal to other Graphs
+                // Graphs can only be equal to other Graphs
                 return false;
             }
         }
@@ -659,7 +659,7 @@ namespace VDS.RDF
         /// </remarks>
         public virtual bool Equals(IGraph g, out Dictionary<INode, INode> mapping)
         {
-            //Set the mapping to be null
+            // Set the mapping to be null
             mapping = null;
 
             GraphMatcher matcher = new GraphMatcher();
@@ -697,7 +697,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool IsSubGraphOf(IGraph g, out Dictionary<INode, INode> mapping)
         {
-            //Set the mapping to be null
+            // Set the mapping to be null
             mapping = null;
 
             SubGraphMatcher matcher = new SubGraphMatcher();
@@ -773,15 +773,15 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual String GetNextBlankNodeID()
         {
-            //try
-            //{
+            // try
+            // {
             //    Monitor.Enter(this._bnodemapper);
                 return this._bnodemapper.GetNextID();
-            //}
-            //finally
-            //{
+            // }
+            // finally
+            // {
             //    Monitor.Exit(this._bnodemapper);
-            //}
+            // }
         }
 
         #endregion
@@ -1181,13 +1181,13 @@ namespace VDS.RDF
         {
             XmlSerializer tripleSerializer = new XmlSerializer(typeof(Triple));
 
-            //Serialize Base Uri
+            // Serialize Base Uri
             if (this.BaseUri != null)
             {
                 writer.WriteAttributeString("base", this.BaseUri.AbsoluteUri);
             }
 
-            //Serialize Namespace Map
+            // Serialize Namespace Map
             writer.WriteStartElement("namespaces");
             foreach (String prefix in this.NamespaceMap.Prefixes)
             {
@@ -1198,7 +1198,7 @@ namespace VDS.RDF
             }
             writer.WriteEndElement();
 
-            //Serialize Triples
+            // Serialize Triples
             writer.WriteStartElement("triples");
             foreach (Triple t in this.Triples)
             {

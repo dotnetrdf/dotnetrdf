@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Patterns
                 }
                 catch
                 {
-                    //No assignment if there's an error
+                    // No assignment if there's an error
                 }
             }
             else
@@ -87,18 +87,18 @@ namespace VDS.RDF.Query.Patterns
                     {
                         try
                         {
-                            //A value already exists so see if the two values match
+                            // A value already exists so see if the two values match
                             INode current = s[this._var];
                             INode temp = this._expr.Evaluate(context, id);
                             if (current != temp)
                             {
-                                //Where the values aren't equal the solution is eliminated
+                                // Where the values aren't equal the solution is eliminated
                                 context.InputMultiset.Remove(id);
                             }
                         }
                         catch
                         {
-                            //If an error occurs the solution is eliminated
+                            // If an error occurs the solution is eliminated
                             context.InputMultiset.Remove(id);
                         }
                     }
@@ -107,13 +107,13 @@ namespace VDS.RDF.Query.Patterns
                         context.InputMultiset.AddVariable(this._var);
                         try
                         {
-                            //Make a new assignment
+                            // Make a new assignment
                             INode temp = this._expr.Evaluate(context, id);
                             s.Add(this._var, temp);
                         }
                         catch
                         {
-                            //If an error occurs no assignment happens
+                            // If an error occurs no assignment happens
                         }
                     }
                 }

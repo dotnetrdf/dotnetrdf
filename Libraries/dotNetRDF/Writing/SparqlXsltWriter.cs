@@ -56,7 +56,7 @@ namespace VDS.RDF.Writing
         /// <param name="stylesheetUri">Stylesheet URI</param>
         public SparqlXsltWriter(String stylesheetUri)
         {
-            //Load the Transform
+            // Load the Transform
             this._transform = new XslCompiledTransform();
             XsltSettings settings = new XsltSettings();
             this._transform.Load(stylesheetUri, settings, null);
@@ -81,11 +81,11 @@ namespace VDS.RDF.Writing
         {
             try
             {
-                //XmlDocument doc = this.GenerateOutput(results);
+                // XmlDocument doc = this.GenerateOutput(results);
                 StringBuilder temp = new StringBuilder();
                 System.IO.StringWriter writer = new System.IO.StringWriter(temp);
                 base.Save(results, writer);
-                //this._transform.Transform(doc, null, XmlWriter.Create(output));
+                // this._transform.Transform(doc, null, XmlWriter.Create(output));
                 this._transform.Transform(XmlReader.Create(new StringReader(temp.ToString())), null, XmlWriter.Create(output));
 
                 output.Close();
@@ -98,7 +98,7 @@ namespace VDS.RDF.Writing
                 }
                 catch
                 {
-                    //No catch - just trying to clean up
+                    // No catch - just trying to clean up
                 }
                 throw;
             }

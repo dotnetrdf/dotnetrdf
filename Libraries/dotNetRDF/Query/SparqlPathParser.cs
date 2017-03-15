@@ -39,14 +39,14 @@ namespace VDS.RDF.Parsing
     {
         public ISparqlPath Parse(SparqlQueryParserContext context, IToken first)
         {
-            //Need to gather up all the Tokens which make up the path
+            // Need to gather up all the Tokens which make up the path
             int openBrackets = 0;
             Queue<IToken> tokens = new Queue<IToken>();
             IToken next;
             LastPathItemType lastItem = LastPathItemType.None;
             int lastSequencer = -1;
 
-            //Add the first token and set the initial last item type
+            // Add the first token and set the initial last item type
             tokens.Enqueue(first);
             switch (first.TokenType)
             {
@@ -81,7 +81,7 @@ namespace VDS.RDF.Parsing
                     if (next.TokenType == Token.RIGHTBRACKET)
                     {
                         openBrackets--;
-                        //Groups are considered predicates for purposes of last item
+                        // Groups are considered predicates for purposes of last item
                         lastItem = LastPathItemType.Predicate;
                     }
                     else if (next.TokenType == Token.LEFTBRACKET)
@@ -94,17 +94,17 @@ namespace VDS.RDF.Parsing
                     switch (next.TokenType)
                     {
                         case Token.LEFTBRACKET:
-                            //Path Group
+                            // Path Group
 
                             if (lastItem == LastPathItemType.Predicate || lastItem == LastPathItemType.Modifier)
                             {
-                                //If it follows a Predicate/Modifier then this is likely a collection as the object of a 
-                                //Triple pattern so we stop
+                                // If it follows a Predicate/Modifier then this is likely a collection as the object of a 
+                                // Triple pattern so we stop
                                 lastItem = LastPathItemType.End;
                             }
                             else if (lastItem == LastPathItemType.Sequencer || lastItem == LastPathItemType.Negation)
                             {
-                                //This is a new Path Group if it follows a sequencer/negation
+                                // This is a new Path Group if it follows a sequencer/negation
                                 openBrackets++;
                                 context.Tokens.Dequeue();
                                 tokens.Enqueue(next);
@@ -117,7 +117,7 @@ namespace VDS.RDF.Parsing
                                 break;
 
                         case Token.LEFTCURLYBRACKET:
-                            //Explicit cardinality modifiers
+                            // Explicit cardinality modifiers
 
                             if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_1) throw new RdfParseException("The {} forms for property paths are not supported in SPARQL 1.1", next);
                             if (lastItem != LastPathItemType.Predicate)
@@ -125,15 +125,15 @@ namespace VDS.RDF.Parsing
                                 throw new RdfParseException("Cardinality Modifiers can only follow Predicates/Path Groups", next);
                             }
 
-                            //Add the opening { to the tokens
+                            // Add the opening { to the tokens
                             context.Tokens.Dequeue();
                             tokens.Enqueue(next);
                             next = context.Tokens.Peek();
 
-                            //Grab everything up to the next }
+                            // Grab everything up to the next }
                             while (next.TokenType != Token.RIGHTCURLYBRACKET)
                             {
-                                //If we see another { this is an error
+                                // If we see another { this is an error
                                 if (next.TokenType == Token.LEFTCURLYBRACKET)
                                 {
                                     throw new RdfParseException("Nested Cardinality Modifiers for Paths are not permitted", next);
@@ -143,7 +143,7 @@ namespace VDS.RDF.Parsing
                                 tokens.Enqueue(next);
                                 next = context.Tokens.Peek();
                             }
-                            //Add the trailing } to the tokens
+                            // Add the trailing } to the tokens
                             context.Tokens.Dequeue();
                             tokens.Enqueue(next);
                             lastItem = LastPathItemType.Modifier;
@@ -152,7 +152,7 @@ namespace VDS.RDF.Parsing
                         case Token.PLUS:
                         case Token.QUESTION:
                         case Token.MULTIPLY:
-                            //Other Cardinality modifiers are permitted
+                            // Other Cardinality modifiers are permitted
 
                             if (lastItem != LastPathItemType.Predicate)
                             {
@@ -167,7 +167,7 @@ namespace VDS.RDF.Parsing
                         case Token.BITWISEOR:
                         case Token.DIVIDE:
                         case Token.HAT:
-                            //Path sequencing
+                            // Path sequencing
 
                             if (lastItem != LastPathItemType.Predicate && lastItem != LastPathItemType.Modifier)
                             {
@@ -190,12 +190,12 @@ namespace VDS.RDF.Parsing
                         case Token.QNAME:
                         case Token.URI:
                         case Token.KEYWORDA:
-                            //Predicates
+                            // Predicates
 
                             if (lastItem != LastPathItemType.None && lastItem != LastPathItemType.Sequencer && lastItem != LastPathItemType.Negation)
                             {
-                                //This appears to be the end of the path since we've encountered something that could be 
-                                //an Object
+                                // This appears to be the end of the path since we've encountered something that could be 
+                                // an Object
                                 lastItem = LastPathItemType.End;
                             }
                             else
@@ -222,8 +222,8 @@ namespace VDS.RDF.Parsing
                         default:
                             if (lastItem != LastPathItemType.None && lastItem != LastPathItemType.Sequencer)
                             {
-                                //Appears to be the end of the path since we've encountered an unexpected token after seeing
-                                //a Predicate
+                                // Appears to be the end of the path since we've encountered an unexpected token after seeing
+                                // a Predicate
                                 lastItem = LastPathItemType.End;
                             }
                             else
@@ -353,7 +353,7 @@ namespace VDS.RDF.Parsing
                     throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI/QName, the 'a' keyword or the start of a group path expression", next);
             }
 
-            //See if there's a Path Modifier
+            // See if there's a Path Modifier
             if (tokens.Count > 0)
             {
                 next = tokens.Peek();
@@ -517,7 +517,7 @@ namespace VDS.RDF.Parsing
                     next = tokens.Peek();
                     while (next.TokenType != Token.RIGHTBRACKET)
                     {
-                        //Parse the next item in the set
+                        // Parse the next item in the set
                         p = this.TryParsePathOneInPropertySet(context, tokens, out inverse);
                         if (inverse)
                         {
@@ -528,13 +528,13 @@ namespace VDS.RDF.Parsing
                             ps.Add(p);
                         }
 
-                        //Then there may be an optional | which we should discard
+                        // Then there may be an optional | which we should discard
                         next = tokens.Peek();
                         if (next.TokenType == Token.BITWISEOR)
                         {
                             tokens.Dequeue();
                             next = tokens.Peek();
-                            //If we see this we can't then see a ) immediately
+                            // If we see this we can't then see a ) immediately
                             if (next.TokenType == Token.RIGHTBRACKET) throw new RdfParseException("Unexpected ) to end a negated property set encountered immediately after a | which should indicate that further items are in the set", next);
                         }
                     }

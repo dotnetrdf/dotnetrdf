@@ -68,7 +68,7 @@ namespace VDS.RDF.Update
             this._dataset = data;
             if (!this._dataset.HasGraph(null))
             {
-                //Create the Default unnamed Graph if it doesn't exist and then Flush() the change
+                // Create the Default unnamed Graph if it doesn't exist and then Flush() the change
                 this._dataset.AddGraph(new Graph());
                 this._dataset.Flush();
             }
@@ -233,10 +233,10 @@ namespace VDS.RDF.Update
         /// </remarks>
         private void ProcessCommandInternal(SparqlUpdateCommand cmd, SparqlUpdateEvaluationContext context)
         {
-            //If auto-committing then Flush() any existing Transaction first
+            // If auto-committing then Flush() any existing Transaction first
             if (this._autoCommit) this.Flush();
 
-            //Then if possible attempt to get the lock and determine whether it needs releasing
+            // Then if possible attempt to get the lock and determine whether it needs releasing
 #if !NO_RWLOCK
             ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
 #endif
@@ -250,12 +250,12 @@ namespace VDS.RDF.Update
                     mustRelease = true;
                 }
 #else
-                //If ReaderWriteLockSlim is not available use a Monitor instead
+                // If ReaderWriteLockSlim is not available use a Monitor instead
                 Monitor.Enter(this._dataset);
                 mustRelease = true;
 #endif
 
-                //Then based on the command type call the appropriate protected method
+                // Then based on the command type call the appropriate protected method
                 switch (cmd.CommandType)
                 {
                     case SparqlUpdateCommandType.Add:
@@ -298,12 +298,12 @@ namespace VDS.RDF.Update
                         throw new SparqlUpdateException("Unknown Update Commands cannot be processed by the Leviathan Update Processor");
                 }
 
-                //If auto-committing flush after every command
+                // If auto-committing flush after every command
                 if (this._autoCommit) this.Flush();
             }
             catch
             {
-                //If auto-committing discard if an error occurs, if not then mark the transaction as uncomittable
+                // If auto-committing discard if an error occurs, if not then mark the transaction as uncomittable
                 if (this._autoCommit)
                 {
                     this.Discard();
@@ -316,7 +316,7 @@ namespace VDS.RDF.Update
             }
             finally
             {
-                //Release locks if necessary
+                // Release locks if necessary
                 if (mustRelease)
                 {
 #if !NO_RWLOCK
@@ -339,14 +339,14 @@ namespace VDS.RDF.Update
         {
             commands.UpdateExecutionTime = null;
 
-            //Firstly check what Transaction mode we are running in
+            // Firstly check what Transaction mode we are running in
             bool autoCommit = this._autoCommit;
 
-            //Then create an Evaluation Context
+            // Then create an Evaluation Context
             SparqlUpdateEvaluationContext context = this.GetContext(commands);
 
-            //Remember to handle the Thread Safety
-            //If the Dataset is Thread Safe use its own lock otherwise use our local lock
+            // Remember to handle the Thread Safety
+            // If the Dataset is Thread Safe use its own lock otherwise use our local lock
 #if !NO_RWLOCK
             ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
 #endif
@@ -355,39 +355,39 @@ namespace VDS.RDF.Update
 #if !NO_RWLOCK
                 currLock.EnterWriteLock();
 #else
-                //Have to make do with a Monitor if ReaderWriterLockSlim is not available
+                // Have to make do with a Monitor if ReaderWriterLockSlim is not available
                 Monitor.Enter(this._dataset);
 #endif
 
-                //Regardless of the Transaction Mode we turn auto-commit off for a command set so that individual commands
-                //don't try and commit after each one is applied i.e. either we are in auto-commit mode and all the
-                //commands must be evaluated before flushing/discarding the changes OR we are not in auto-commit mode
-                //so turning it off doesn't matter as it is already turned off
+                // Regardless of the Transaction Mode we turn auto-commit off for a command set so that individual commands
+                // don't try and commit after each one is applied i.e. either we are in auto-commit mode and all the
+                // commands must be evaluated before flushing/discarding the changes OR we are not in auto-commit mode
+                // so turning it off doesn't matter as it is already turned off
                 this._autoCommit = false;
 
                 if (autoCommit)
                 {
-                    //Do a Flush() before we start to ensure changes from any previous commands are persisted
+                    // Do a Flush() before we start to ensure changes from any previous commands are persisted
                     this._dataset.Flush();
                 }
 
-                //Start the operation
+                // Start the operation
                 context.StartExecution();
                 for (int i = 0; i < commands.CommandCount; i++)
                 {
                     this.ProcessCommandInternal(commands[i], context);
 
-                    //Check for Timeout
+                    // Check for Timeout
                     context.CheckTimeout();
                 }
 
                 if (autoCommit)
                 {
-                    //Do a Flush() when command set completed successfully to persist the changes
+                    // Do a Flush() when command set completed successfully to persist the changes
                     this._dataset.Flush();
                 }
 
-                //Set Update Times
+                // Set Update Times
                 context.EndExecution();
                 commands.UpdateExecutionTime = new TimeSpan(context.UpdateTimeTicks);
             }
@@ -395,7 +395,7 @@ namespace VDS.RDF.Update
             {
                 if (autoCommit)
                 {
-                    //Do a Discard() when a command set fails to discard the changes
+                    // Do a Discard() when a command set fails to discard the changes
                     this._dataset.Discard();
                 }
                 else
@@ -403,14 +403,14 @@ namespace VDS.RDF.Update
                     this._canCommit = false;
                 }
 
-                //Set Update Times
+                // Set Update Times
                 context.EndExecution();
                 commands.UpdateExecutionTime = new TimeSpan(context.UpdateTimeTicks);
                 throw;
             }
             finally
             {
-                //Reset auto-commit setting and release our write lock
+                // Reset auto-commit setting and release our write lock
                 this._autoCommit = autoCommit;
 #if !NO_RWLOCK
                 currLock.ExitWriteLock();

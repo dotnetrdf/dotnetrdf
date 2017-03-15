@@ -58,9 +58,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                 throw new RdfQueryException("Cannot cast a Null to a xsd:double");
             }
 
-            //New method should be much faster
-            //if (n is DoubleNode) return n;
-            //return new DoubleNode(null, n.AsDouble());
+            // New method should be much faster
+            // if (n is DoubleNode) return n;
+            // return new DoubleNode(null, n.AsDouble());
 
             switch (n.NodeType)
             {
@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                 case NodeType.Literal:
                     if (n is DoubleNode) return n;
                     if (n is FloatNode) return new DoubleNode(n.Graph, n.AsDouble());
-                    //See if the value can be cast
+                    // See if the value can be cast
                     ILiteralNode lit = (ILiteralNode)n;
                     if (lit.DataType != null)
                     {
@@ -82,7 +82,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             double d;
                             if (Double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out d))
                             {
-                                //Parsed OK
+                                // Parsed OK
                                 return new DoubleNode(lit.Graph, d);
                             }
                             else
@@ -92,7 +92,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         }
                         else if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
                         {
-                            //DateTime cast forbidden
+                            // DateTime cast forbidden
                             throw new RdfQueryException("Cannot cast a xsd:dateTime to a xsd:double");
                         }
                         else
@@ -100,7 +100,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             double d;
                             if (Double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out d))
                             {
-                                //Parsed OK
+                                // Parsed OK
                                 return new DoubleNode(lit.Graph, d);
                             }
                             else
@@ -114,7 +114,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         double d;
                         if (Double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out d))
                         {
-                            //Parsed OK
+                            // Parsed OK
                             return new DoubleNode(lit.Graph, d);
                         }
                         else

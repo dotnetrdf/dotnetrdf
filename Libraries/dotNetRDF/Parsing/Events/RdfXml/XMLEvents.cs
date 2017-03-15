@@ -178,15 +178,15 @@ namespace VDS.RDF.Parsing.Events.RdfXml
 
             if (qname.Contains(':'))
             {
-                //Has a Namespace
-                //Split the QName into Namespace and Local Name
+                // Has a Namespace
+                // Split the QName into Namespace and Local Name
                 String[] parts = qname.Split(':');
                 this._namespace = parts[0];
                 this._localname = parts[1];
             }
             else
             {
-                //Is in the Default Namespace
+                // Is in the Default Namespace
                 this._namespace = String.Empty;
                 this._localname = qname;
             }
@@ -399,7 +399,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         {
             if (this.QName.Equals("rdf:li"))
             {
-                //Split the QName into Namespace and Local Name
+                // Split the QName into Namespace and Local Name
                 String qname = u.Identifier;
                 String[] parts = qname.Split(':');
                 this._namespace = parts[0];
@@ -461,15 +461,15 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             this._value = value;
             if (qname.Contains(':'))
             {
-                //Has a Namespace
-                //Split the QName into Namespace and Local Name
+                // Has a Namespace
+                // Split the QName into Namespace and Local Name
                 String[] parts = qname.Split(':');
                 this._namespace = parts[0];
                 this._localname = parts[1];
             }
             else
             {
-                //Is in the Default Namespace
+                // Is in the Default Namespace
                 this._namespace = String.Empty;
                 this._localname = qname;
             }

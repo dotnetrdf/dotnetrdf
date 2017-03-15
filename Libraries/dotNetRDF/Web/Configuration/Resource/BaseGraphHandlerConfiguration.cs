@@ -50,7 +50,7 @@ namespace VDS.RDF.Web.Configuration.Resource
             INode graphNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingGraph)));
             if (graphNode == null) throw new DotNetRdfConfigurationException("Unable to load Graph Handler Configuration as the required dnr:usingGraph property does not exist");
 
-            //Load the Graph
+            // Load the Graph
             Object temp = ConfigurationLoader.LoadObject(g, graphNode);
             if (temp is IGraph)
             {

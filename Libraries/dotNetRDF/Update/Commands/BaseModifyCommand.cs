@@ -137,19 +137,19 @@ namespace VDS.RDF.Update.Commands
         {
             if (p.IsGraph)
             {
-                //If a GRAPH clause then all triple patterns must be constructable and have no Child Graph Patterns
+                // If a GRAPH clause then all triple patterns must be constructable and have no Child Graph Patterns
                 return !p.HasChildGraphPatterns && p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoBlankVariables);
             }
             else if (p.IsExists || p.IsMinus || p.IsNotExists || p.IsOptional || p.IsService || p.IsSubQuery || p.IsUnion)
             {
-                //EXISTS/MINUS/NOT EXISTS/OPTIONAL/SERVICE/Sub queries/UNIONs are not permitted
+                // EXISTS/MINUS/NOT EXISTS/OPTIONAL/SERVICE/Sub queries/UNIONs are not permitted
                 return false;
             }
             else
             {
-                //For other patterns all Triple patterns must be constructable with no blank variables
-                //If top level then any Child Graph Patterns must be valid
-                //Otherwise must have no Child Graph Patterns
+                // For other patterns all Triple patterns must be constructable with no blank variables
+                // If top level then any Child Graph Patterns must be valid
+                // Otherwise must have no Child Graph Patterns
                 return p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoBlankVariables) && ((top && p.ChildGraphPatterns.All(gp => IsValidDeletePattern(gp, false))) || !p.HasChildGraphPatterns);
             }
         }

@@ -50,9 +50,9 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            //Try and generate an Algebra expression
-            //Make sure we don't generate clashing temporary variable IDs over the life of the
-            //Evaluation
+            // Try and generate an Algebra expression
+            // Make sure we don't generate clashing temporary variable IDs over the life of the
+            // Evaluation
             PathTransformContext transformContext = new PathTransformContext(this.PathStart, this.PathEnd);
             if (context["PathTransformID"] != null)
             {
@@ -61,26 +61,26 @@ namespace VDS.RDF.Query.Algebra
             ISparqlAlgebra algebra = this.Path.ToAlgebra(transformContext);
             context["PathTransformID"] = transformContext.NextID;
 
-            //Now we can evaluate the resulting algebra
+            // Now we can evaluate the resulting algebra
             BaseMultiset initialInput = context.InputMultiset;
             bool trimMode = context.TrimTemporaryVariables;
             bool rigMode = Options.RigorousEvaluation;
             try
             {
-                //Must enable rigorous evaluation or we get incorrect interactions between property and non-property path patterns
+                // Must enable rigorous evaluation or we get incorrect interactions between property and non-property path patterns
                 Options.RigorousEvaluation = true;
 
-                //Note: We may need to preserve Blank Node variables across evaluations
-                //which we usually don't do BUT because of the way we translate only part of the path
-                //into an algebra at a time and may need to do further nested translate calls we do
-                //need to do this here
+                // Note: We may need to preserve Blank Node variables across evaluations
+                // which we usually don't do BUT because of the way we translate only part of the path
+                // into an algebra at a time and may need to do further nested translate calls we do
+                // need to do this here
                 context.TrimTemporaryVariables = false;
                 BaseMultiset result = context.Evaluate(algebra);
 
-                //Also note that we don't trim temporary variables here even if we've set the setting back
-                //to enabled since a Trim will be done at the end of whatever BGP we are being evaluated in
+                // Also note that we don't trim temporary variables here even if we've set the setting back
+                // to enabled since a Trim will be done at the end of whatever BGP we are being evaluated in
 
-                //Once we have our results can join then into our input
+                // Once we have our results can join then into our input
                 context.OutputMultiset = initialInput.Join(result);
             }
             finally

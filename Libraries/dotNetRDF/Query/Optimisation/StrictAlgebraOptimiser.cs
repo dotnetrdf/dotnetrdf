@@ -54,7 +54,7 @@ namespace VDS.RDF.Query.Optimisation
             }
             else if (algebra is IBgp)
             {
-                //Don't integerfer with other optimisers which have added custom BGP implementations
+                // Don't integerfer with other optimisers which have added custom BGP implementations
                 if (!(algebra is Bgp)) return algebra;
 
                 IBgp current = (IBgp)algebra;
@@ -69,20 +69,20 @@ namespace VDS.RDF.Query.Optimisation
                     List<ITriplePattern> ps = new List<ITriplePattern>(current.TriplePatterns.ToList());
                     for (int i = 0; i < current.PatternCount; i++)
                     {
-                        //Can't split the BGP if there are Blank Nodes present
+                        // Can't split the BGP if there are Blank Nodes present
                         if (!ps[i].HasNoBlankVariables) return current;
 
                         if (ps[i].PatternType != TriplePatternType.Match)
                         {
-                            //First ensure that if we've found any other Triple Patterns up to this point
-                            //we dump this into a BGP and join with the result so far
+                            // First ensure that if we've found any other Triple Patterns up to this point
+                            // we dump this into a BGP and join with the result so far
                             if (patterns.Count > 0)
                             {
                                 result = Join.CreateJoin(result, new Bgp(patterns));
                                 patterns.Clear();
                             }
 
-                            //Then generate the appropriate strict algebra operator
+                            // Then generate the appropriate strict algebra operator
                             switch (ps[i].PatternType)
                             {
                                 case TriplePatternType.Filter:
@@ -117,13 +117,13 @@ namespace VDS.RDF.Query.Optimisation
 
                     if (patterns.Count == current.PatternCount)
                     {
-                        //If count of remaining patterns same as original pattern count there was no optimisation
-                        //to do so return as is
+                        // If count of remaining patterns same as original pattern count there was no optimisation
+                        // to do so return as is
                         return current;
                     }
                     else if (patterns.Count > 0)
                     {
-                        //If any patterns left at end join as a BGP with result so far
+                        // If any patterns left at end join as a BGP with result so far
                         result = Join.CreateJoin(result, new Bgp(patterns));
                         return result;
                     }

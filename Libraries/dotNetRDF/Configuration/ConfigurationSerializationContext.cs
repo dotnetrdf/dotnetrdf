@@ -84,12 +84,12 @@ namespace VDS.RDF.Configuration
                 INode temp = this._nextSubj;
                 if (temp == null)
                 {
-                    //When not set generate a new blank node
+                    // When not set generate a new blank node
                     temp = this._g.CreateBlankNode();
                 }
                 else
                 {
-                    //When retrieving a set subject null it so it isn't reused
+                    // When retrieving a set subject null it so it isn't reused
                     this._nextSubj = null;
                 }
                 return temp;

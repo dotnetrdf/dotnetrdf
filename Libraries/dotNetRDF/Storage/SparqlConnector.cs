@@ -215,9 +215,9 @@ namespace VDS.RDF.Storage
         {
             if (!this._skipLocalParsing)
             {
-                //Parse the query locally to validate it and so we can decide what to do
-                //when we receive the Response more easily as we'll know the query type
-                //This also saves us wasting a HttpWebRequest on a malformed query
+                // Parse the query locally to validate it and so we can decide what to do
+                // when we receive the Response more easily as we'll know the query type
+                // This also saves us wasting a HttpWebRequest on a malformed query
                 SparqlQueryParser qparser = new SparqlQueryParser();
                 SparqlQuery q = qparser.ParseFromString(sparqlQuery);
 
@@ -230,40 +230,40 @@ namespace VDS.RDF.Storage
                     case SparqlQueryType.SelectAllReduced:
                     case SparqlQueryType.SelectDistinct:
                     case SparqlQueryType.SelectReduced:
-                        //Some kind of Sparql Result Set
+                        // Some kind of Sparql Result Set
                         this._endpoint.QueryWithResultSet(resultsHandler, sparqlQuery);
                         break;
 
                     case SparqlQueryType.Construct:
                     case SparqlQueryType.Describe:
                     case SparqlQueryType.DescribeAll:
-                        //Some kind of Graph
+                        // Some kind of Graph
                         this._endpoint.QueryWithResultGraph(rdfHandler, sparqlQuery);
                         break;
 
                     case SparqlQueryType.Unknown:
                     default:
-                        //Error
+                        // Error
                         throw new RdfQueryException("Unknown Query Type was used, unable to determine how to process the response");
                 }
             }
             else
             {
-                //If we're skipping local parsing then we'll need to just make a raw query and process the response
+                // If we're skipping local parsing then we'll need to just make a raw query and process the response
                 using (HttpWebResponse response = this._endpoint.QueryRaw(sparqlQuery))
                 {
                     try
                     {
-                        //Is the Content Type referring to a Sparql Result Set format?
+                        // Is the Content Type referring to a Sparql Result Set format?
                         ISparqlResultsReader sparqlParser = MimeTypesHelper.GetSparqlParser(response.ContentType);
                         sparqlParser.Load(resultsHandler, new StreamReader(response.GetResponseStream()));
                         response.Close();
                     }
                     catch (RdfParserSelectionException)
                     {
-                        //If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
+                        // If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
 
-                        //Is the Content Type referring to a RDF format?
+                        // Is the Content Type referring to a RDF format?
                         IRdfReader rdfParser = MimeTypesHelper.GetParser(response.ContentType);
                         rdfParser.Load(rdfHandler, new StreamReader(response.GetResponseStream()));
                         response.Close();
@@ -437,8 +437,8 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                //Technically the ?s ?p ?o is unecessary here but we may not get the right results if we don't include this because some stores
-                //won't interpret GRAPH ?g { } correctly
+                // Technically the ?s ?p ?o is unecessary here but we may not get the right results if we don't include this because some stores
+                // won't interpret GRAPH ?g { } correctly
                 Object results = this.Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
                 if (results is SparqlResultSet)
                 {
@@ -505,7 +505,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         public void Dispose()
         {
-            //Nothing to do
+            // Nothing to do
         }
 
         /// <summary>
@@ -531,32 +531,32 @@ namespace VDS.RDF.Storage
             INode loadMode = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyLoadMode));
             INode skipParsing = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertySkipParsing));
 
-            //Basic information
+            // Basic information
             context.Graph.Assert(new Triple(manager, rdfType, genericManager));
             context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString())));
             context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
 
-            //Serialize Load Mode
+            // Serialize Load Mode
             context.Graph.Assert(new Triple(manager, loadMode, context.Graph.CreateLiteralNode(this._mode.ToString())));
             context.Graph.Assert(new Triple(manager, skipParsing, this._skipLocalParsing.ToLiteral(context.Graph)));
 
-            //Query Endpoint
+            // Query Endpoint
             if (this._endpoint is IConfigurationSerializable)
             {
-                //Use the indirect serialization method
+                // Use the indirect serialization method
 
-                //Serialize the Endpoints Configuration
+                // Serialize the Endpoints Configuration
                 INode endpoint = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint));
                 INode endpointObj = context.Graph.CreateBlankNode();
                 context.NextSubject = endpointObj;
                 ((IConfigurationSerializable)this._endpoint).SerializeConfiguration(context);
 
-                //Link that serialization to our serialization
+                // Link that serialization to our serialization
                 context.Graph.Assert(new Triple(manager, endpoint, endpointObj));
             }
             else
             {
-                //Use the direct serialization method
+                // Use the direct serialization method
                 INode endpointUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri));
                 INode defGraphUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri));
                 INode namedGraphUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri));
@@ -735,7 +735,7 @@ namespace VDS.RDF.Storage
         {
             StringBuilder updates = new StringBuilder();
 
-            //Saving a Graph ovewrites a previous graph so start with a CLEAR SILENT GRAPH
+            // Saving a Graph ovewrites a previous graph so start with a CLEAR SILENT GRAPH
             if (g.BaseUri == null)
             {
                 updates.AppendLine("CLEAR SILENT DEFAULT;");
@@ -745,8 +745,8 @@ namespace VDS.RDF.Storage
                 updates.AppendLine("CLEAR SILENT GRAPH <" + this._formatter.FormatUri(g.BaseUri) + ">;");
             }
 
-            //Insert preamble
-            //Note that we use INSERT { } WHERE { } rather than INSERT DATA { } so we can insert blank nodes
+            // Insert preamble
+            // Note that we use INSERT { } WHERE { } rather than INSERT DATA { } so we can insert blank nodes
             if (g.BaseUri != null)
             {
                 updates.AppendLine("WITH <" + this._formatter.FormatUri(g.BaseUri) + ">");
@@ -754,16 +754,16 @@ namespace VDS.RDF.Storage
             updates.AppendLine("INSERT");
             updates.AppendLine("{");
 
-            //Serialize triples
+            // Serialize triples
             foreach (Triple t in g.Triples)
             {
                 updates.AppendLine(" " + this._formatter.Format(t));
             }
 
-            //End
+            // End
             updates.AppendLine("} WHERE { }");
 
-            //Save the graph
+            // Save the graph
             this.Update(updates.ToString());
         }
 
@@ -792,8 +792,8 @@ namespace VDS.RDF.Storage
             {
                 if (additions.Any())
                 {
-                    //Insert preamble
-                    //Note that we use INSERT { } WHERE { } rather than INSERT DATA { } so we can insert blank nodes
+                    // Insert preamble
+                    // Note that we use INSERT { } WHERE { } rather than INSERT DATA { } so we can insert blank nodes
                     if (graphUri != null)
                     {
                         updates.AppendLine("WITH <" + this._formatter.FormatUri(graphUri) + ">");
@@ -801,13 +801,13 @@ namespace VDS.RDF.Storage
                     updates.AppendLine("INSERT");
                     updates.AppendLine("{");
 
-                    //Serialize triples
+                    // Serialize triples
                     foreach (Triple t in additions)
                     {
                         updates.AppendLine(" " + this._formatter.Format(t));
                     }
 
-                    //End
+                    // End
                     updates.AppendLine("} WHERE { }");
                     if (removals != null && removals.Any()) updates.AppendLine(";");
                 }
@@ -816,8 +816,8 @@ namespace VDS.RDF.Storage
             {
                 if (removals.Any())
                 {
-                    //Insert preamble
-                    //Note that we use DELETE DATA { } for deletes so we don't support deleting blank nodes
+                    // Insert preamble
+                    // Note that we use DELETE DATA { } for deletes so we don't support deleting blank nodes
                     updates.AppendLine("DELETE DATA");
                     updates.AppendLine("{");
 
@@ -826,20 +826,20 @@ namespace VDS.RDF.Storage
                         updates.AppendLine("GRAPH <" + this._formatter.FormatUri(graphUri) + "> {");
                     }
 
-                    //Serialize triples
+                    // Serialize triples
                     foreach (Triple t in removals)
                     {
                         if (!t.IsGroundTriple) throw new RdfStorageException("The ReadWriteSparqlConnector does not support the deletion of blank node containing triples");
                         updates.AppendLine("  " + this._formatter.Format(t));
                     }
 
-                    //End
+                    // End
                     if (graphUri != null) updates.AppendLine(" }");
                     updates.AppendLine("}");
                 }
             }
 
-            //Make an update if necessary
+            // Make an update if necessary
             if (updates.Length > 0)
             {
                 this.Update(updates.ToString());
@@ -854,8 +854,8 @@ namespace VDS.RDF.Storage
         {
             if (!this._skipLocalParsing)
             {
-                //Parse the update locally to validate it
-                //This also saves us wasting a HttpWebRequest on a malformed update
+                // Parse the update locally to validate it
+                // This also saves us wasting a HttpWebRequest on a malformed update
                 SparqlUpdateParser uparser = new SparqlUpdateParser();
                 uparser.ParseFromString(sparqlUpdate);
 
@@ -863,7 +863,7 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                //If we're skipping local parsing then we'll need to just make a raw update
+                // If we're skipping local parsing then we'll need to just make a raw update
                 this._updateEndpoint.Update(sparqlUpdate);
             }
         }
@@ -883,7 +883,7 @@ namespace VDS.RDF.Storage
         /// <param name="context">Configuration Serialization Context</param>
         public override void SerializeConfiguration(ConfigurationSerializationContext context)
         {
-            //Call base SerializeConfiguration() first
+            // Call base SerializeConfiguration() first
             INode manager = context.NextSubject;
             context.NextSubject = manager;
             base.SerializeConfiguration(context);
@@ -891,20 +891,20 @@ namespace VDS.RDF.Storage
 
             if (this._updateEndpoint is IConfigurationSerializable)
             {
-                //Use the indirect serialization method
+                // Use the indirect serialization method
 
-                //Serialize the Endpoints Configuration
+                // Serialize the Endpoints Configuration
                 INode endpoint = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpoint));
                 INode endpointObj = context.Graph.CreateBlankNode();
                 context.NextSubject = endpointObj;
                 ((IConfigurationSerializable)this._updateEndpoint).SerializeConfiguration(context);
 
-                //Link that serialization to our serialization
+                // Link that serialization to our serialization
                 context.Graph.Assert(new Triple(manager, endpoint, endpointObj));
             }
             else
             {
-                //Use the direct serialization method
+                // Use the direct serialization method
                 INode endpointUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri));
 
                 context.Graph.Assert(new Triple(manager, endpointUri, context.Graph.CreateLiteralNode(this._endpoint.Uri.AbsoluteUri)));

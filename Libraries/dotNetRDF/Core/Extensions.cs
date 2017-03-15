@@ -198,7 +198,7 @@ namespace VDS.RDF
         {
             if (u == null) throw new ArgumentNullException("u");
 
-            //Only instantiate the SHA256 class when we first use it
+            // Only instantiate the SHA256 class when we first use it
             if (_sha256 == null) _sha256 = SHA256.Create();
 
             Byte[] input = Encoding.UTF8.GetBytes(u.AbsoluteUri);
@@ -223,7 +223,7 @@ namespace VDS.RDF
         {
             if (s == null) throw new ArgumentNullException("s");
 
-            //Only instantiate the SHA256 class when we first use it
+            // Only instantiate the SHA256 class when we first use it
             if (_sha256 == null) _sha256 = SHA256.Create();
 
             Byte[] input = Encoding.UTF8.GetBytes(s);
@@ -249,7 +249,7 @@ namespace VDS.RDF
         {
             if (u == null) throw new ArgumentNullException("u");
 
-            //Only instantiate the SHA256 class when we first use it
+            // Only instantiate the SHA256 class when we first use it
             if (_sha256 == null) _sha256 = new SHA256Managed();
 
             Byte[] input = Encoding.UTF8.GetBytes(u.AbsoluteUri);
@@ -274,7 +274,7 @@ namespace VDS.RDF
         {
             if (s == null) throw new ArgumentNullException("s");
 
-            //Only instantiate the SHA256 class when we first use it
+            // Only instantiate the SHA256 class when we first use it
             if (_sha256 == null) _sha256 = new SHA256Managed();
 
             Byte[] input = Encoding.UTF8.GetBytes(s);
@@ -363,7 +363,7 @@ namespace VDS.RDF
             INode rdfRest = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest));
             INode listCurrent = listRoot;
 
-            //Then we can assert the collection
+            // Then we can assert the collection
             List<INode> nodes = objects.Select(x => mapFunc(x)).ToList();
             for (int i = 0; i < nodes.Count; i++)
             {
@@ -516,23 +516,23 @@ namespace VDS.RDF
         /// <param name="mapFunc">Mapping from Object Type to <see cref="INode">INode</see></param>
         public static void AddToList<T>(this IGraph g, INode listRoot, IEnumerable<T> objects, Func<T, INode> mapFunc)
         {
-            //If no objects to add then nothing to do
+            // If no objects to add then nothing to do
             if (!objects.Any()) return;
 
-            //Get the List Tail
+            // Get the List Tail
             INode listTail = GetListTail(g, listRoot);
 
-            //Remove the rdf:rest rdf:nil triple
+            // Remove the rdf:rest rdf:nil triple
             INode rdfRest = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest));
             INode rdfNil = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
             g.Retract(new Triple(listTail, rdfRest, rdfNil));
 
-            //Create a new tail for the list that will act as the root of the extended list
+            // Create a new tail for the list that will act as the root of the extended list
             INode newRoot = g.CreateBlankNode();
             INode rdfFirst = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst));
             g.Assert(new Triple(listTail, rdfRest, newRoot));
 
-            //Then assert the new list
+            // Then assert the new list
             AssertList<T>(g, newRoot, objects, mapFunc);
         }
 
@@ -557,10 +557,10 @@ namespace VDS.RDF
         /// <param name="mapFunc">Mapping from Object Type to <see cref="INode">INode</see></param>
         public static void RemoveFromList<T>(this IGraph g, INode listRoot, IEnumerable<T> objects, Func<T, INode> mapFunc)
         {
-            //If no objects to remove then nothing to do
+            // If no objects to remove then nothing to do
             if (!objects.Any()) return;
 
-            //Figure out which items need removing
+            // Figure out which items need removing
             List<INode> currObjects = GetListItems(g, listRoot).ToList();
             int initialCount = currObjects.Count;
             foreach (INode obj in objects.Select(x => mapFunc(x)))
@@ -569,8 +569,8 @@ namespace VDS.RDF
             }
             if (initialCount != currObjects.Count)
             {
-                //We are removing one/more items
-                //Easiest way to do this is simply to retract the entire list and then add the new list
+                // We are removing one/more items
+                // Easiest way to do this is simply to retract the entire list and then add the new list
                 RetractList(g, listRoot);
                 AssertList(g, listRoot, currObjects);
             }
@@ -791,24 +791,24 @@ namespace VDS.RDF
                     {
                         if (i < value.Length - 1)
                         {
-                            //Not at end of the input so check whether the next character is a valid escape
+                            // Not at end of the input so check whether the next character is a valid escape
                             char next = value[i + 1];
                             if (cs.Contains(next))
                             {
-                                //Valid Escape
+                                // Valid Escape
                                 output.Append(value[i]);
                                 output.Append(next);
                                 i++;
                             }
                             else
                             {
-                                //Not a Valid Escape so escape the backslash
+                                // Not a Valid Escape so escape the backslash
                                 output.Append(@"\\");
                             }
                         }
                         else
                         {
-                            //At the end of the input and found a trailing backslash
+                            // At the end of the input and found a trailing backslash
                             output.Append(@"\\");
                             break;
                         }
@@ -851,7 +851,7 @@ namespace VDS.RDF
             }
             else
             {
-                //Work through the characters in pairs
+                // Work through the characters in pairs
                 for (int i = 0; i < value.Length; i += 2)
                 {
                     char c = value[i];
@@ -860,30 +860,30 @@ namespace VDS.RDF
                         char d = value[i + 1];
                         if (c == '\\')
                         {
-                            //Only fully escaped if followed by an escape character
+                            // Only fully escaped if followed by an escape character
                             if (!cs.Contains(d)) return false;
                         }
                         else if (ds.Contains(c))
                         {
-                            //If c is a character that must be escaped then not fully escaped
+                            // If c is a character that must be escaped then not fully escaped
                             return false;
                         }
                         else if (d == '\\')
                         {
-                            //If d is a backslash shift the index back by 1 so that this will be the first
-                            //character of the next character pair we assess
+                            // If d is a backslash shift the index back by 1 so that this will be the first
+                            // character of the next character pair we assess
                             i--;
                         }
                         else if (ds.Contains(d))
                         {
-                            //If d is a character that must be escaped we know that the preceding character
-                            //was not a backslash so the string is not fully escaped
+                            // If d is a character that must be escaped we know that the preceding character
+                            // was not a backslash so the string is not fully escaped
                             return false;
                         }
                     }
                     else
                     {
-                        //If trailing character is a backslash or a character that must be escaped then not fully escaped
+                        // If trailing character is a backslash or a character that must be escaped then not fully escaped
                         if (c == '\\' || ds.Contains(c)) return false;
                     }
                 }
@@ -927,7 +927,7 @@ namespace VDS.RDF
             }
             else
             {
-                //Work through the characters in pairs
+                // Work through the characters in pairs
                 StringBuilder output = new StringBuilder();
                 for (int i = 0; i < value.Length; i += 2)
                 {
@@ -937,32 +937,32 @@ namespace VDS.RDF
                         char d = value[i + 1];
                         if (c == toEscape)
                         {
-                            //Must escape this
+                            // Must escape this
                             output.Append('\\');
                             output.Append(escapeAs);
-                            //Reduce index by 1 as next character is now start of next pair
+                            // Reduce index by 1 as next character is now start of next pair
                             i--;
                         }
                         else if (c == '\\')
                         {
-                            //Regardless of the next character we append this to the output since it is an escape
-                            //of some kind - whether it relates to the character we want to escape or not is
-                            //irrelevant in this case
+                            // Regardless of the next character we append this to the output since it is an escape
+                            // of some kind - whether it relates to the character we want to escape or not is
+                            // irrelevant in this case
                             output.Append(c);
                             output.Append(d);
                         }
                         else if (d == toEscape)
                         {
-                            //If d is the character to be escaped and we get to this case then it isn't escaped
-                            //currently so we must escape it
+                            // If d is the character to be escaped and we get to this case then it isn't escaped
+                            // currently so we must escape it
                             output.Append(c);
                             output.Append('\\');
                             output.Append(escapeAs);
                         }
                         else if (d == '\\')
                         {
-                            //If d is a backslash shift the index back by 1 so that this will be the first
-                            //character of the next character pair we assess
+                            // If d is a backslash shift the index back by 1 so that this will be the first
+                            // character of the next character pair we assess
                             output.Append(c);
                             i--;
                         }
@@ -974,7 +974,7 @@ namespace VDS.RDF
                     }
                     else
                     {
-                        //If trailing character is character to escape then do so
+                        // If trailing character is character to escape then do so
                         if (c == toEscape)
                         {
                             output.Append('\\');
@@ -1015,7 +1015,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public static Object ExecuteQuery(this IGraph g, String sparqlQuery)
         {
-            //Due to change in default graph behaviour ensure that we associate this graph as the default graph of the dataset
+            // Due to change in default graph behaviour ensure that we associate this graph as the default graph of the dataset
             InMemoryDataset ds = new InMemoryDataset(g);
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(ds);
             SparqlQueryParser parser = new SparqlQueryParser();
@@ -1175,7 +1175,7 @@ namespace VDS.RDF
 
 #endif
 
-        //REQ: Add LoadFromUri extensions that do the loading asychronously for use on Silverlight/Windows Phone 7
+        // REQ: Add LoadFromUri extensions that do the loading asychronously for use on Silverlight/Windows Phone 7
 
         /// <summary>
         /// Loads RDF data from a String into a Graph
@@ -1461,8 +1461,8 @@ namespace VDS.RDF
 
             if (b > 128)
             {
-                //If value is > 128 must use unsigned byte as the type as xsd:byte has range -127 to 128 
-                //while .Net byte has range 0-255
+                // If value is > 128 must use unsigned byte as the type as xsd:byte has range -127 to 128 
+                // while .Net byte has range 0-255
                 return factory.CreateLiteralNode(XmlConvert.ToString(b), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte));
             }
             else

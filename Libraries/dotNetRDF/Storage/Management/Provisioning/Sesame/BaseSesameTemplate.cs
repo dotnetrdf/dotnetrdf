@@ -86,7 +86,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         {
             IGraph g = new Graph();
 
-            //Add relevant namespaces
+            // Add relevant namespaces
             g.NamespaceMap.AddNamespace("rep", UriFactory.Create(RepositoryNamespace));
             g.NamespaceMap.AddNamespace("sr", UriFactory.Create(RepositorySailNamespace));
             g.NamespaceMap.AddNamespace("hr", UriFactory.Create(RepositoryHttpNamespace));
@@ -94,7 +94,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
             g.NamespaceMap.AddNamespace("ms", UriFactory.Create(SailMemoryNamespace));
             g.NamespaceMap.AddNamespace("ns", UriFactory.Create(SailNativeNamespace));
 
-            //Create a unique blank node to represent the Repository Context
+            // Create a unique blank node to represent the Repository Context
             Guid uuid = Guid.NewGuid();
             while (uuid.Equals(Guid.Empty))
             {
@@ -102,7 +102,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
             }
             this.ContextNode = g.CreateBlankNode(uuid.ToString().Replace("-", ""));
 
-            //Assert basic triples
+            // Assert basic triples
             g.Assert(this.ContextNode, g.CreateUriNode("rdf:type"), g.CreateUriNode("rep:Repository"));
             g.Assert(this.ContextNode, g.CreateUriNode("rep:repositoryID"), g.CreateLiteralNode(this.ID));
             g.Assert(this.ContextNode, g.CreateUriNode("rdfs:label"), g.CreateLiteralNode(this.Label.ToSafeString()));

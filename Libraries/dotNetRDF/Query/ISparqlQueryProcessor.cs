@@ -302,8 +302,8 @@ namespace VDS.RDF.Query
         TResult ProcessZeroOrMorePath(ZeroOrMorePath path, TContext context);
     }
 
-    //public interface ISparqlPatternProcessor<TResult, TContext> : ISparqlQueryAlgebraProcessor<TResult, TContext>
-    //{
+    // public interface ISparqlPatternProcessor<TResult, TContext> : ISparqlQueryAlgebraProcessor<TResult, TContext>
+    // {
     //    void ProcessPattern(ITriplePattern
-    //}
+    // }
 }

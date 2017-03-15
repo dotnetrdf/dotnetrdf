@@ -137,7 +137,7 @@ namespace VDS.RDF.Update
         /// </summary>
         public virtual void Optimise(IQueryOptimiser optimiser)
         {
-            //Does Nothing by Default
+            // Does Nothing by Default
         }
 
         /// <summary>

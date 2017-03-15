@@ -56,7 +56,7 @@ namespace VDS.RDF.Configuration
             }
             catch
             {
-                //Any error means this loader can't load this type
+                // Any error means this loader can't load this type
                 return false;
             }
 
@@ -71,7 +71,7 @@ namespace VDS.RDF.Configuration
         /// <returns></returns>
         public bool CanLoadObject(Type t)
         {
-            //We can load any object which implements IPropertyFunctionFactory and has a public unparameterized constructor
+            // We can load any object which implements IPropertyFunctionFactory and has a public unparameterized constructor
             return t.GetInterfaces().Contains(this._factoryType) && t.GetConstructors().Any(c => c.GetParameters().Length == 0 && c.IsPublic);
         }
     }

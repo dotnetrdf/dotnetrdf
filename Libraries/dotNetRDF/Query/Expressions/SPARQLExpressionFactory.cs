@@ -106,13 +106,13 @@ namespace VDS.RDF.Query.Expressions
         {
             if (SparqlSpecsHelper.SupportedCastFunctions.Contains(u.AbsoluteUri))
             {
-                //Should only have 1 argument
+                // Should only have 1 argument
                 if (args.Count != 1)
                 {
                     throw new RdfParseException("Too few/many arguments for a XPath Cast function, expected a single Expression as an argument");
                 }
 
-                //One of the Supported XPath Cast functions
+                // One of the Supported XPath Cast functions
                 ISparqlExpression arg = args[0];
                 String cast = u.AbsoluteUri;
                 if (cast.Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
@@ -150,28 +150,28 @@ namespace VDS.RDF.Query.Expressions
             }
             else
             {
-                //Try to use the Global Custom Factories to generate the Expression
+                // Try to use the Global Custom Factories to generate the Expression
                 ISparqlExpression expr = null;
                 foreach (ISparqlCustomExpressionFactory customFactory in _customFactories)
                 {
                     if (customFactory.TryCreateExpression(u, args, scalarArgs, out expr))
                     {
-                        //If the Factory succesfully creates an expression we'll return it
+                        // If the Factory succesfully creates an expression we'll return it
                         return expr;
                     }
                 }
 
-                //If we have any locally scoped factories then we can now use these to try and generate the Expression
+                // If we have any locally scoped factories then we can now use these to try and generate the Expression
                 foreach (ISparqlCustomExpressionFactory customFactory in factories)
                 {
                     if (customFactory.TryCreateExpression(u, args, scalarArgs, out expr)) 
                     {
-                        //If the Factory creates an expression we'll return it
+                        // If the Factory creates an expression we'll return it
                         return expr;
                     }
                 }
 
-                //If we're allowing Unknown functions return an UnknownFunction
+                // If we're allowing Unknown functions return an UnknownFunction
                 if (Options.QueryAllowUnknownFunctions)
                 {
                     if (args.Count == 0)
@@ -184,7 +184,7 @@ namespace VDS.RDF.Query.Expressions
                     }
                 }
 
-                //If we get here we haven't been able to create an expression so we error
+                // If we get here we haven't been able to create an expression so we error
                 throw new RdfParseException("Unable to parse a SPARQL Extension Function with IRI <" + u.AbsoluteUri + ">, it is not a supported Casting function and no Custom Expression Factories are able to generate an Expression from this IRI");
             }
         }
@@ -195,7 +195,7 @@ namespace VDS.RDF.Query.Expressions
         /// <param name="factory">A Custom Expression Factory</param>
         public static void AddCustomFactory(ISparqlCustomExpressionFactory factory)
         {
-            //Only register the factory if it is not already registered
+            // Only register the factory if it is not already registered
             if (!_customFactories.Any(f => f.GetType().Equals(factory.GetType())))
             {
                 _customFactories.Add(factory);

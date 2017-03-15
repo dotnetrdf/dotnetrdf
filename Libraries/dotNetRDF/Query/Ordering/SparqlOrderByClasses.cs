@@ -248,13 +248,13 @@ namespace VDS.RDF.Query.Ordering
             {
                 if (this._child != null)
                 {
-                    //An ordering on a Variable is always simple so whether the Ordering is simple
-                    //depends on whether the Child Ordering is simple
+                    // An ordering on a Variable is always simple so whether the Ordering is simple
+                    // depends on whether the Child Ordering is simple
                     return this._child.IsSimple;
                 }
                 else
                 {
-                    //An ordering on a Variable is always simple
+                    // An ordering on a Variable is always simple
                     return true;
                 }
             }
@@ -369,11 +369,11 @@ namespace VDS.RDF.Query.Ordering
                     }
                     catch
                     {
-                        //If evaluating b errors consider this a NULL and rank a > b
+                        // If evaluating b errors consider this a NULL and rank a > b
                         return this._modifier * 1;
                     }
 
-                    //If both give a value then compare
+                    // If both give a value then compare
                     if (a != null)
                     {
                         int c = this._comparer.Compare(a, b);
@@ -388,7 +388,7 @@ namespace VDS.RDF.Query.Ordering
                     }
                     else
                     {
-                        //a is NULL so a < b
+                        // a is NULL so a < b
                         return this._modifier * -1;
                     }
                 }
@@ -398,12 +398,12 @@ namespace VDS.RDF.Query.Ordering
                     {
                         b = this._expr.Evaluate(this._context, y.ID);
 
-                        //If evaluating a errors but b evaluates correctly consider a to be NULL and rank a < b
+                        // If evaluating a errors but b evaluates correctly consider a to be NULL and rank a < b
                         return this._modifier * -1;
                     }
                     catch
                     {
-                        //If both error then use child if any to evaluate, otherwise consider a = b
+                        // If both error then use child if any to evaluate, otherwise consider a = b
                         if (this._child != null)
                         {
                             return this._child.Compare(x, y);
@@ -461,8 +461,8 @@ namespace VDS.RDF.Query.Ordering
             {
                 if (this._expr is VariableTerm)
                 {
-                    //An Expression Ordering can be simple if that expression is a Variable Term
-                    //and the Child Ordering (if any) is simple
+                    // An Expression Ordering can be simple if that expression is a Variable Term
+                    // and the Child Ordering (if any) is simple
                     if (this._child != null)
                     {
                         return this._child.IsSimple;

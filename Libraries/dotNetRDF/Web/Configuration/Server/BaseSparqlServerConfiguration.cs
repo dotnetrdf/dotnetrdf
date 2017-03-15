@@ -324,7 +324,7 @@ namespace VDS.RDF.Web.Configuration.Server
         public BaseSparqlServerConfiguration(IHttpContext context, IGraph g, INode objNode)
             : base(context, g, objNode)
         {
-            //Get the Query Processor to be used
+            // Get the Query Processor to be used
             INode procNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryProcessor)));
             if (procNode != null)
             {
@@ -339,12 +339,12 @@ namespace VDS.RDF.Web.Configuration.Server
                 }
             }
 
-            //SPARQL Query Default Config
+            // SPARQL Query Default Config
             this._defaultGraph = ConfigurationLoader.GetConfigurationValue(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri))).ToSafeString();
             this._defaultTimeout = ConfigurationLoader.GetConfigurationInt64(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyTimeout)), this._defaultTimeout);
             this._defaultPartialResults = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPartialResults)), this._defaultPartialResults);
 
-            //Handler Configuration
+            // Handler Configuration
             this._showQueryForm = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyShowQueryForm)), this._showQueryForm);
             String defQueryFile = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultQueryFile)));
             if (defQueryFile != null)
@@ -360,7 +360,7 @@ namespace VDS.RDF.Web.Configuration.Server
                 }
             }
 
-            //Get Query Syntax to use
+            // Get Query Syntax to use
             try
             {
                 String syntaxSetting = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertySyntax)));
@@ -374,7 +374,7 @@ namespace VDS.RDF.Web.Configuration.Server
                 throw new DotNetRdfConfigurationException("Unable to set the Syntax for the HTTP Handler identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:syntax property was not a valid value from the enum VDS.RDF.Parsing.SparqlQuerySyntax", ex);
             }
 
-            //Get the SPARQL Describe Algorithm
+            // Get the SPARQL Describe Algorithm
             INode describeNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDescribeAlgorithm)));
             if (describeNode != null)
             {
@@ -404,7 +404,7 @@ namespace VDS.RDF.Web.Configuration.Server
                 }
             }
 
-            //Get the Query Optimiser
+            // Get the Query Optimiser
             INode queryOptNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryOptimiser)));
             if (queryOptNode != null)
             {
@@ -419,7 +419,7 @@ namespace VDS.RDF.Web.Configuration.Server
                 }
             }
 
-            //Get the Algebra Optimisers
+            // Get the Algebra Optimisers
             foreach (INode algOptNode in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyAlgebraOptimiser))))
             {
                 Object algOpt = ConfigurationLoader.LoadObject(g, algOptNode);
@@ -433,7 +433,7 @@ namespace VDS.RDF.Web.Configuration.Server
                 }
             }
 
-            //Then get the Update Processor to be used
+            // Then get the Update Processor to be used
             procNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateProcessor)));
             if (procNode != null)
             {
@@ -448,7 +448,7 @@ namespace VDS.RDF.Web.Configuration.Server
                 }
             }
 
-            //Handler Settings
+            // Handler Settings
             this._showUpdateForm = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyShowUpdateForm)), this._showUpdateForm);
             String defUpdateFile = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultUpdateFile)));
             if (defUpdateFile != null)
@@ -464,7 +464,7 @@ namespace VDS.RDF.Web.Configuration.Server
                 }
             }
 
-            //Then get the Protocol Processor to be used
+            // Then get the Protocol Processor to be used
             procNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyProtocolProcessor)));
             if (procNode != null)
             {
@@ -484,7 +484,7 @@ namespace VDS.RDF.Web.Configuration.Server
                 throw new DotNetRdfConfigurationException("Unable to load SPARQL Server Configuration as the RDF configuration file does not specify at least one of a Query/Update/Protocol processor for the server using the dnr:queryProcessor/dnr:updateProcessor/dnr:protocolProcessor properties");
             }
 
-            //Get the Service Description Graph
+            // Get the Service Description Graph
             INode descripNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServiceDescription)));
             if (descripNode != null)
             {
@@ -555,7 +555,7 @@ namespace VDS.RDF.Web.Configuration.Server
 
             if (queryNode != null)
             {
-                //Add Local Extension Function definitions
+                // Add Local Extension Function definitions
                 foreach (ISparqlCustomExpressionFactory factory in this._expressionFactories)
                 {
                     foreach (Uri u in factory.AvailableExtensionFunctions)
@@ -571,7 +571,7 @@ namespace VDS.RDF.Web.Configuration.Server
 
             if (updateNode != null)
             {
-                //Add Local Extension Function definitions
+                // Add Local Extension Function definitions
                 foreach (ISparqlCustomExpressionFactory factory in this._expressionFactories)
                 {
                     foreach (Uri u in factory.AvailableExtensionFunctions)

@@ -49,16 +49,16 @@ namespace VDS.RDF.Query.Describe
         /// <param name="nodes">Nodes to be described</param>
         protected override void DescribeInternal(IRdfHandler handler, SparqlEvaluationContext context, IEnumerable<INode> nodes)
         {
-            //Rewrite Blank Node IDs for DESCRIBE Results
+            // Rewrite Blank Node IDs for DESCRIBE Results
             Dictionary<String, INode> bnodeMapping = new Dictionary<string, INode>();
 
-            //Get Triples for this Subject
+            // Get Triples for this Subject
             Queue<INode> bnodes = new Queue<INode>();
             HashSet<INode> expandedBNodes = new HashSet<INode>();
             INode rdfsLabel = handler.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
             foreach (INode n in nodes)
             {
-                //Get Triples where the Node is the Subject
+                // Get Triples where the Node is the Subject
                 foreach (Triple t in context.Data.GetTriplesWithSubject(n).ToList())
                 {
                     if (t.Object.NodeType == NodeType.Blank)
@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Describe
                     if (!handler.HandleTriple((this.RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
                 }
 
-                //Compute the Blank Node Closure for this Subject
+                // Compute the Blank Node Closure for this Subject
                 while (bnodes.Count > 0)
                 {
                     INode bsubj = bnodes.Dequeue();

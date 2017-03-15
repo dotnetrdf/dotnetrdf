@@ -63,22 +63,22 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
             if (temp != null)
             {
                 DateTimeOffset dt = temp.AsDateTimeOffset();
-                //Regex based check to see if the value has a Timezone component
-                //If not then the result is a null
+                // Regex based check to see if the value has a Timezone component
+                // If not then the result is a null
                 if (!Regex.IsMatch(temp.AsString(), "(Z|[+-]\\d{2}:\\d{2})$")) return null;
 
-                //Now we have a DateTime we can try and return the Timezone
+                // Now we have a DateTime we can try and return the Timezone
                 if (dt.Offset.Equals(TimeSpan.Zero))
                 {
-                    //If Zero it was specified as Z (which means UTC so zero offset)
+                    // If Zero it was specified as Z (which means UTC so zero offset)
                     return new StringNode(null, "PT0S", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration));
                 }
                 else
                 {
-                    //If the Offset is outside the range -14 to 14 this is considered invalid
+                    // If the Offset is outside the range -14 to 14 this is considered invalid
                     if (dt.Offset.Hours < -14 || dt.Offset.Hours > 14) return null;
 
-                    //Otherwise it has an offset which is a given number of hours and minutse
+                    // Otherwise it has an offset which is a given number of hours and minutse
                     string offset = "PT" + Math.Abs(dt.Offset.Hours) + "H";
                     if (dt.Offset.Hours < 0) offset = "-" + offset;
                     if (dt.Offset.Minutes != 0) offset = offset + Math.Abs(dt.Offset.Minutes) + "M";

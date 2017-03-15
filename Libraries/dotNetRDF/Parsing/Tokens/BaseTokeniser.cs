@@ -116,10 +116,10 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         protected void StartNewToken()
         {
-            //New Output Buffer
+            // New Output Buffer
             this._output = new StringBuilder();
 
-            //Reset Start and End Position Counters
+            // Reset Start and End Position Counters
             this._startline = this._currline;
             this._endline = this._startline;
             this._startpos = this._currpos;
@@ -347,14 +347,14 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 case '\n':
 
-                    //Discard the White Space
+                    // Discard the White Space
                     this._reader.Read();
                     this._currpos = 1;
                     this._currline++;
                     this._endpos = this._currpos;
                     this._endline++;
 
-                    //See if there's a \r to discard as well
+                    // See if there's a \r to discard as well
                     next = this.Peek();
                     if (next == '\r')
                     {
@@ -370,14 +370,14 @@ namespace VDS.RDF.Parsing.Tokens
 
                 case '\r':
 
-                    //Discard the White Space
+                    // Discard the White Space
                     this._reader.Read();
                     this._currpos = 1;
                     this._currline++;
                     this._endpos = this._currpos;
                     this._endline++;
 
-                    //See if there's a \n to discard as well
+                    // See if there's a \n to discard as well
                     next = this.Peek();
                     if (next == '\n')
                     {
@@ -441,13 +441,13 @@ namespace VDS.RDF.Parsing.Tokens
                         break;
 
                     default:
-                        //Discard and Increment Position Counters
+                        // Discard and Increment Position Counters
                         this.SkipCharacter();
                         this._startpos++;
                         break;
                 }
 
-                //Get the Next Character
+                // Get the Next Character
                 next = this.Peek();
             }
 
@@ -459,12 +459,12 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         protected void HandleEscapes(TokeniserEscapeMode mode)
         {
-            //Grab the first character which must be a \
+            // Grab the first character which must be a \
             char next = this.SkipCharacter();
 
             if (next != '\\') throw Error("HandleEscapes() was called but the first character was not a \\ as expected");
 
-            //Stuff for Unicode escapes
+            // Stuff for Unicode escapes
             StringBuilder localOutput;
 
             bool isLiteral = (mode == TokeniserEscapeMode.QuotedLiterals || mode == TokeniserEscapeMode.QuotedLiteralsAlternate || mode == TokeniserEscapeMode.QuotedLiteralsBoth);
@@ -473,47 +473,47 @@ namespace VDS.RDF.Parsing.Tokens
             switch (next)
             {
                 case '\\':
-                    //Backslash escape
+                    // Backslash escape
                     if (isLiteral || mode == TokeniserEscapeMode.PermissiveUri)
                     {
-                        //Consume this one Backslash
+                        // Consume this one Backslash
                         this.ConsumeCharacter();
                         return;
                     }
                     goto default;
                 case '"':
-                    //Quote escape (only valid in Quoted Literals)
+                    // Quote escape (only valid in Quoted Literals)
                     if (mode == TokeniserEscapeMode.QuotedLiterals || mode == TokeniserEscapeMode.QuotedLiteralsBoth)
                     {
-                        //Consume and return
+                        // Consume and return
                         this.ConsumeCharacter();
                         return;
                     }
                     goto default;
                 case '\'':
-                    //Single Quote Escape (only valid in Alternate Quoted Literals)
+                    // Single Quote Escape (only valid in Alternate Quoted Literals)
                     if (mode == TokeniserEscapeMode.QuotedLiteralsAlternate || mode == TokeniserEscapeMode.QuotedLiteralsBoth)
                     {
-                        //Consume and return
+                        // Consume and return
                         this.ConsumeCharacter();
                         return;
                     }
                     goto default;
                 case '>':
-                    //End Uri Escape (only valid in URIs)
+                    // End Uri Escape (only valid in URIs)
                     if (mode == TokeniserEscapeMode.Uri)
                     {
-                        //Consume and return
+                        // Consume and return
                         this.ConsumeCharacter();
                         return;
                     }
                     goto default;
 
                 case 'n':
-                    //New Line Escape
+                    // New Line Escape
                     if (isLiteral || mode == TokeniserEscapeMode.PermissiveUri)
                     {
-                        //Discard and append a real New Line to the output
+                        // Discard and append a real New Line to the output
                         this.SkipCharacter();
                         this._output.Append('\n');
                         return;
@@ -521,10 +521,10 @@ namespace VDS.RDF.Parsing.Tokens
                     goto default;
 
                 case 'r':
-                    //New Line Escape
+                    // New Line Escape
                     if (isLiteral || mode == TokeniserEscapeMode.PermissiveUri)
                     {
-                        //Discard and append a real New Line to the output
+                        // Discard and append a real New Line to the output
                         this.SkipCharacter();
                         this._output.Append('\r');
                         return;
@@ -532,10 +532,10 @@ namespace VDS.RDF.Parsing.Tokens
                     goto default;
 
                 case 't':
-                    //Tab Escape
+                    // Tab Escape
                     if (isLiteral || mode == TokeniserEscapeMode.PermissiveUri)
                     {
-                        //Discard and append a real Tab to the output
+                        // Discard and append a real Tab to the output
                         this.SkipCharacter();
                         this._output.Append('\t');
                         return;
@@ -543,10 +543,10 @@ namespace VDS.RDF.Parsing.Tokens
                     goto default;
 
                 case 'b':
-                    //Backspace Escape
+                    // Backspace Escape
                     if (isLiteral)
                     {
-                        //Discard and append a real backspace to the output
+                        // Discard and append a real backspace to the output
                         this.SkipCharacter();
                         this._output.Append('\b');
                         return;
@@ -554,10 +554,10 @@ namespace VDS.RDF.Parsing.Tokens
                     goto default;
 
                 case 'f':
-                    //Form Feed Escape
+                    // Form Feed Escape
                     if (isLiteral)
                     {
-                        //Discard and append a real form feed to the output
+                        // Discard and append a real form feed to the output
                         this.SkipCharacter();
                         this._output.Append('\f');
                         return;
@@ -565,13 +565,13 @@ namespace VDS.RDF.Parsing.Tokens
                     goto default;
 
                 case 'u':
-                    //Need to consume the u first
+                    // Need to consume the u first
                     localOutput = new StringBuilder();
                     this.SkipCharacter();
 
                     next = this.Peek();
 
-                    //Try to get Four Hex Digits
+                    // Try to get Four Hex Digits
                     while (localOutput.Length < 4 && this.IsHexDigit(next))
                     {
                         localOutput.Append(next);
@@ -579,7 +579,7 @@ namespace VDS.RDF.Parsing.Tokens
                         next = this.Peek();
                     }
 
-                    //Did we get four Hex Digits
+                    // Did we get four Hex Digits
                     if (localOutput.Length != 4)
                     {
                         throw Error("Unexpected Character (Code " + (int)next + "): " + next + " encountered while trying to parse Unicode Escape from Content:\n" + this._output.ToString() + "\nThe \\u Escape must be followed by four Hex Digits");
@@ -588,13 +588,13 @@ namespace VDS.RDF.Parsing.Tokens
                     return;
 
                 case 'U':
-                    //Need to consume the U first
+                    // Need to consume the U first
                     localOutput = new StringBuilder();
                     this.SkipCharacter();
 
                     next = this.Peek();
 
-                    //Try to get Eight Hex Digits
+                    // Try to get Eight Hex Digits
                     while (localOutput.Length < 8 && this.IsHexDigit(next))
                     {
                         localOutput.Append(next);
@@ -602,7 +602,7 @@ namespace VDS.RDF.Parsing.Tokens
                         next = this.Peek();
                     }
 
-                    //Did we get eight Hex Digits
+                    // Did we get eight Hex Digits
                     if (localOutput.Length != 8)
                     {
                         throw Error("Unexpected Character (Code " + (int)next + "): " + next + " encountered while trying to parse Unicode Escape from Content:\n" + this._output.ToString() + "\nThe \\U Escape must be followed by eight Hex Digits");
@@ -611,7 +611,7 @@ namespace VDS.RDF.Parsing.Tokens
                     return;
 
                 default:
-                    //Not an escape character
+                    // Not an escape character
                     throw Error("Invalid escape sequence encountered, \\" + next + " is not a valid escape sequence in the current token");
 
             }
@@ -625,14 +625,14 @@ namespace VDS.RDF.Parsing.Tokens
         /// </remarks>
         protected void HandleComplexLocalNameEscapes()
         {
-            //Grab the first character which must be a \ or %
+            // Grab the first character which must be a \ or %
             char next = this.SkipCharacter();
 
-            //Stuff for Unicode/Hex escapes
+            // Stuff for Unicode/Hex escapes
 
             if (next == '\\')
             {
-                //Backslash based escape
+                // Backslash based escape
                 next = this.Peek();
                 switch (next)
                 {
@@ -656,7 +656,7 @@ namespace VDS.RDF.Parsing.Tokens
                     case '#':
                     case '@':
                     case '%':
-                        //Escapable Characters
+                        // Escapable Characters
                         this._output.Append('\\');
                         this.ConsumeCharacter();
                         return;
@@ -684,7 +684,7 @@ namespace VDS.RDF.Parsing.Tokens
                 next = this.Peek();
             }
 
-            //Did we get % followed by two hex digits
+            // Did we get % followed by two hex digits
             if (localOutput.Length != 3)
             {
                 throw Error("Encountered a % character in a Local Name but the required two hex digits were not present after it, please use \\% if you wish to represent the percent character itself");

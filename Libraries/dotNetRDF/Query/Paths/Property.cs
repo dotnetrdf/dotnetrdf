@@ -69,17 +69,17 @@ namespace VDS.RDF.Query.Paths
 
             if (context.IsFirst)
             {
-                //First thing firsts we'll set that the path is no longer at the first thing since we're the first thing!
+                // First thing firsts we'll set that the path is no longer at the first thing since we're the first thing!
                 context.IsFirst = false;
 
-                //We're the start of a Path
+                // We're the start of a Path
                 if (context.PathStart.VariableName != null)
                 {
-                    //Path starts from a Variable
+                    // Path starts from a Variable
                     String var = context.PathStart.VariableName;
                     if (context.SparqlContext.InputMultiset.ContainsVariable(var))
                     {
-                        //Path starts from a Variable for which we have existing values
+                        // Path starts from a Variable for which we have existing values
                         IEnumerable<INode> values = (from s in context.SparqlContext.InputMultiset.Sets
                                                      where s.ContainsVariable(var)
                                                      select s[var]).Distinct();
@@ -87,16 +87,16 @@ namespace VDS.RDF.Query.Paths
                         {
                             if (context.IsReversed)
                             {
-                                //If the Path is currently reversed then we'll look at triples with the given Predicate-Object pair
+                                // If the Path is currently reversed then we'll look at triples with the given Predicate-Object pair
                                 ts = context.SparqlContext.Data.GetTriplesWithPredicateObject(this._predicate, n);
                             }
                             else
                             {
-                                //For normal forward paths we'll look at triples with the given Subject-Predicate pair
+                                // For normal forward paths we'll look at triples with the given Subject-Predicate pair
                                 ts = context.SparqlContext.Data.GetTriplesWithSubjectPredicate(n, this._predicate);
                             }
 
-                            //Bind path as appropriate
+                            // Bind path as appropriate
                             foreach (Triple t in ts)
                             {
                                 PotentialPath p;
@@ -114,10 +114,10 @@ namespace VDS.RDF.Query.Paths
                     }
                     else
                     {
-                        //Path starts from an as yet unbound Variable
+                        // Path starts from an as yet unbound Variable
                         ts = context.SparqlContext.Data.GetTriplesWithPredicate(this._predicate);
 
-                        //Bind paths as appropriate
+                        // Bind paths as appropriate
                         foreach (Triple t in ts)
                         {
                             PotentialPath p;
@@ -135,20 +135,20 @@ namespace VDS.RDF.Query.Paths
                 }
                 else
                 {
-                    //Path starts from a fixed value
+                    // Path starts from a fixed value
                     INode fixedSubj = ((NodeMatchPattern)context.PathStart).Node;
                     if (context.IsReversed)
                     {
-                        //If the Path is currently reversed then we'll look at triples with the given Predicate-Object pair
+                        // If the Path is currently reversed then we'll look at triples with the given Predicate-Object pair
                         ts = context.SparqlContext.Data.GetTriplesWithPredicateObject(this._predicate, fixedSubj);
                     }
                     else
                     {
-                        //For normal forward paths we'll look at triples with the given Subject-Predicate pair
+                        // For normal forward paths we'll look at triples with the given Subject-Predicate pair
                         ts = context.SparqlContext.Data.GetTriplesWithSubjectPredicate(fixedSubj, this._predicate);
                     }
 
-                    //Map each Triple as a Path
+                    // Map each Triple as a Path
                     foreach (Triple t in ts)
                     {
                         PotentialPath p;
@@ -166,13 +166,13 @@ namespace VDS.RDF.Query.Paths
             }
             else
             {
-                //We're not the start of a Path so we're continuing from a previous path
-                //This means all paths must continue from the Current position of an incomplete path
+                // We're not the start of a Path so we're continuing from a previous path
+                // This means all paths must continue from the Current position of an incomplete path
 
-                //If we are permitted to introduce new paths we can go ahead and do that here
+                // If we are permitted to introduce new paths we can go ahead and do that here
                 if (context.PermitsNewPaths)
                 {
-                    //Introduce new paths based on the predicate at this stage
+                    // Introduce new paths based on the predicate at this stage
                     ts = context.SparqlContext.Data.GetTriplesWithPredicate(this._predicate);
                     foreach (Triple t in ts)
                     {
@@ -192,14 +192,14 @@ namespace VDS.RDF.Query.Paths
                     context.PermitsNewPaths = false;
                 }
                 
-                //If there are no incomplete paths we abort
+                // If there are no incomplete paths we abort
                 if (context.Paths.Count == 0) return;
 
-                //For each incomplete path we attempt to extend the Path
+                // For each incomplete path we attempt to extend the Path
                 HashSet<PotentialPath> incomplete = new HashSet<PotentialPath>();
                 foreach (PotentialPath p in context.Paths)
                 {
-                    //Ignore dead-end paths
+                    // Ignore dead-end paths
                     if (p.IsDeadEnd) continue;
 
                     if (context.IsReversed)
@@ -211,7 +211,7 @@ namespace VDS.RDF.Query.Paths
                         ts = context.SparqlContext.Data.GetTriplesWithSubjectPredicate(p.Current, this._predicate);
                     }
 
-                    //int c = 0;
+                    // int c = 0;
                     foreach (Triple t in ts)
                     {
                         PotentialPath p2; ;
@@ -229,14 +229,14 @@ namespace VDS.RDF.Query.Paths
                     }
                 }
 
-                //Add the newly found paths to the set of incomplete paths
+                // Add the newly found paths to the set of incomplete paths
                 foreach (PotentialPath p in incomplete)
                 {
                     context.AddPath(p);
                 }
             }
 
-            //If we're the Last thing in the Path we can now mark any completed paths
+            // If we're the Last thing in the Path we can now mark any completed paths
             if (context.IsLast)
             {
                 bool objVar = (context.PathEnd.VariableName != null);
@@ -249,7 +249,7 @@ namespace VDS.RDF.Query.Paths
                         {
                             if (objVarBound)
                             {
-                                //If the end of the Path is a previously bound variable then we do an accepts check
+                                // If the end of the Path is a previously bound variable then we do an accepts check
                                 if (context.PathEnd.Accepts(context.SparqlContext, p.Current))
                                 {
                                     p.IsComplete = true;
@@ -257,14 +257,14 @@ namespace VDS.RDF.Query.Paths
                                 }
                                 else
                                 {
-                                    //We can mark this path as partial (I think) since it itself can't be completed
-                                    //but there's a possibility that it might lead to a completable path at a later point
+                                    // We can mark this path as partial (I think) since it itself can't be completed
+                                    // but there's a possibility that it might lead to a completable path at a later point
                                     p.IsPartial = true;
                                 }
                             }
                             else
                             {
-                                //If the end of the Path is an as yet unbound variable then any value is acceptable
+                                // If the end of the Path is an as yet unbound variable then any value is acceptable
                                 p.IsComplete = true;
                                 context.AddCompletePath(p);
                             }
@@ -273,14 +273,14 @@ namespace VDS.RDF.Query.Paths
                         {
                             if (context.PathEnd.Accepts(context.SparqlContext, p.Current))
                             {
-                                //If the Path End accepts the current path end we can complete it
+                                // If the Path End accepts the current path end we can complete it
                                 p.IsComplete = true;
                                 context.AddCompletePath(p);
                             }
                             else
                             {
-                                //We can mark this path as partial (I think) since it itself can't be completed
-                                //but there's a possibility that it might lead to a completable path at a later point
+                                // We can mark this path as partial (I think) since it itself can't be completed
+                                // but there's a possibility that it might lead to a completable path at a later point
                                 p.IsPartial = true;
                             }
                         }

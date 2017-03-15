@@ -81,10 +81,10 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         /// <returns></returns>
         public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
         {
-            //Prep Variables
+            // Prep Variables
             HashSet<IValuedNode> values = new HashSet<IValuedNode>();
             int count = 0;
-            //long lngtotal = 0;
+            // long lngtotal = 0;
             decimal dectotal = 0.0m;
             float flttotal = 0.0f;
             double dbltotal = 0.0d;
@@ -98,7 +98,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
                 {
                     temp = this._expr.Evaluate(context, id);
                     if (temp == null) return null;
-                    //Apply DISTINCT modifier if required
+                    // Apply DISTINCT modifier if required
                     if (this._distinct)
                     {
                         if (values.Contains(temp))
@@ -114,24 +114,24 @@ namespace VDS.RDF.Query.Aggregates.Sparql
                 }
                 catch
                 {
-                    //SPARQL Working Group changed spec so this should now return no binding
+                    // SPARQL Working Group changed spec so this should now return no binding
                     return null;
                 }
 
-                //No result if anything resolves to non-numeric
+                // No result if anything resolves to non-numeric
                 if (numtype == SparqlNumericType.NaN) return null;
 
-                //Track the Numeric Type
+                // Track the Numeric Type
                 if ((int)numtype > (int)maxtype)
                 {
                     maxtype = numtype;
                 }
 
-                //Increment the Totals based on the current Numeric Type
+                // Increment the Totals based on the current Numeric Type
                 switch (maxtype)
                 {
                     case SparqlNumericType.Integer:
-                        //lngtotal += numExpr.IntegerValue(context, id);
+                        // lngtotal += numExpr.IntegerValue(context, id);
                         dectotal += temp.AsDecimal();
                         flttotal += temp.AsFloat();
                         dbltotal += temp.AsDouble();
@@ -153,14 +153,14 @@ namespace VDS.RDF.Query.Aggregates.Sparql
                 count++;
             }
 
-            //Calculate the Average
+            // Calculate the Average
             if (count == 0)
             {
                 return new LongNode(null, 0);
             }
             else
             {
-                //long lngavg;
+                // long lngavg;
                 decimal decavg;
                 float fltavg;
                 double dblavg;
@@ -169,21 +169,21 @@ namespace VDS.RDF.Query.Aggregates.Sparql
                 {
                     case SparqlNumericType.Integer:
                     ////Integer Values
-                    //lngavg = lngtotal / (long)count;
-                    //return new LiteralNode(null, lngavg.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
+                    // lngavg = lngtotal / (long)count;
+                    // return new LiteralNode(null, lngavg.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
 
                     case SparqlNumericType.Decimal:
-                        //Decimal Values
+                        // Decimal Values
                         decavg = dectotal / (decimal)count;
                         return new DecimalNode(null, decavg);
 
                     case SparqlNumericType.Float:
-                        //Float values
+                        // Float values
                         fltavg = flttotal / (float)count;
                         return new FloatNode(null, fltavg);
 
                     case SparqlNumericType.Double:
-                        //Double Values
+                        // Double Values
                         dblavg = dbltotal / (double)count;
                         return new DoubleNode(null, dblavg);
 

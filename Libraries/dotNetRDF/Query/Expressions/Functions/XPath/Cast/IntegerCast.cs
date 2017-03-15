@@ -59,8 +59,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
             }
 
             ////New method should be much faster
-            //if (n is LongNode) return n;
-            //return new LongNode(null, n.AsInteger());
+            // if (n is LongNode) return n;
+            // return new LongNode(null, n.AsInteger());
 
             switch (n.NodeType)
             {
@@ -70,7 +70,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                     throw new RdfQueryException("Cannot cast a Blank/URI/Graph Literal Node to a xsd:integer");
 
                 case NodeType.Literal:
-                    //See if the value can be cast
+                    // See if the value can be cast
                     if (n is LongNode) return n;
                     ILiteralNode lit = (ILiteralNode)n;
                     if (lit.DataType != null)
@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         string dt = lit.DataType.AbsoluteUri;
                         if (SparqlSpecsHelper.IntegerDataTypes.Contains(dt))
                         {
-                            //Already a integer type so valid as a xsd:integer
+                            // Already a integer type so valid as a xsd:integer
                             long i;
                             if (Int64.TryParse(lit.Value, out i))
                             {
@@ -91,7 +91,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         }
                         else if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
                         {
-                            //DateTime cast forbidden
+                            // DateTime cast forbidden
                             throw new RdfQueryException("Cannot cast a xsd:dateTime to a xsd:integer");
                         }
                         else
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             Int64 i;
                             if (Int64.TryParse(lit.Value, out i))
                             {
-                                //Parsed OK
+                                // Parsed OK
                                 return new LongNode(lit.Graph, i);
                             }
                             else
@@ -113,7 +113,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         Int64 i;
                         if (Int64.TryParse(lit.Value, out i))
                         {
-                            //Parsed OK
+                            // Parsed OK
                             return new LongNode(lit.Graph, i);
                         }
                         else

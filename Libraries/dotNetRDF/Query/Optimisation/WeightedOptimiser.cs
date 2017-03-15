@@ -311,7 +311,7 @@ namespace VDS.RDF.Query.Optimisation
             int c = xSel.CompareTo(ySel);
             if (c == 0)
             {
-                //Fall back to standard ordering if selectivities are equal
+                // Fall back to standard ordering if selectivities are equal
                 c = x.CompareTo(y);
             }
             return c;
@@ -361,7 +361,7 @@ namespace VDS.RDF.Query.Optimisation
                             obj = this._weights.DefaultVariableWeighting;
                             break;
                         default:
-                            //Shouldn't see an unknown index type but have to keep the compiler happy
+                            // Shouldn't see an unknown index type but have to keep the compiler happy
                             subj = 1d;
                             pred = 1d;
                             obj = 1d;
@@ -369,7 +369,7 @@ namespace VDS.RDF.Query.Optimisation
                     }
                     break;
                 default:
-                    //Otherwise all are considered to have equivalent selectivity
+                    // Otherwise all are considered to have equivalent selectivity
                     subj = 1d;
                     pred = 1d;
                     obj = 1d;

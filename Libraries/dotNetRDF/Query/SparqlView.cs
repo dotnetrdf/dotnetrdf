@@ -106,7 +106,7 @@ namespace VDS.RDF.Query
                 throw new RdfQueryException("Cannot create a SPARQL View based on an ASK Query");
             }
 
-            //Does this Query operate over specific Graphs?
+            // Does this Query operate over specific Graphs?
             if (this._q.DefaultGraphs.Any() || this._q.NamedGraphs.Any())
             {
                 this._graphs = new HashSet<string>();
@@ -120,13 +120,13 @@ namespace VDS.RDF.Query
                 }
             }
 
-            //Attach a Handler to the Store's Graph Added, Removed and Changed events
+            // Attach a Handler to the Store's Graph Added, Removed and Changed events
             this._store.GraphChanged += this.OnGraphChanged;
             this._store.GraphAdded += this.OnGraphAdded;
             this._store.GraphRemoved += this.OnGraphRemoved;
             this._store.GraphMerged += this.OnGraphMerged;
 
-            //Fill the Graph with the results of the Query
+            // Fill the Graph with the results of the Query
             this.UpdateViewInternal();
         }
 
@@ -148,7 +148,7 @@ namespace VDS.RDF.Query
             {
                 this._async.EndInvoke(result);
 
-                //If we've been further invalidated then need to re-query
+                // If we've been further invalidated then need to re-query
                 if (this._requiresInvalidate)
                 {
                     this.InvalidateView();
@@ -157,7 +157,7 @@ namespace VDS.RDF.Query
             }
             catch (Exception ex)
             {
-                //Ignore errors
+                // Ignore errors
                 this.LastError = new RdfQueryException("Unable to complete update of SPARQL View, see inner exception for details", ex);
             }
         }
@@ -203,17 +203,17 @@ namespace VDS.RDF.Query
                 IGraph g = args.GraphEvent.Graph;
                 if (g != null)
                 {
-                    //Ignore Changes to self
+                    // Ignore Changes to self
                     if (ReferenceEquals(g, this)) return;
 
                     if (this._graphs == null)
                     {
-                        //No specific Graphs so any change causes an invalidation
+                        // No specific Graphs so any change causes an invalidation
                         this.InvalidateView();
                     }
                     else
                     {
-                        //If specific Graphs only invalidate when those Graphs change
+                        // If specific Graphs only invalidate when those Graphs change
                         if (this._graphs.Contains(g.BaseUri.ToSafeString()))
                         {
                             this.InvalidateView();
@@ -230,17 +230,17 @@ namespace VDS.RDF.Query
                 IGraph g = args.GraphEvent.Graph;
                 if (g != null)
                 {
-                    //Ignore merges to self
+                    // Ignore merges to self
                     if (ReferenceEquals(g, this)) return;
 
                     if (this._graphs == null)
                     {
-                        //No specific Graphs so any change causes an invalidation
+                        // No specific Graphs so any change causes an invalidation
                         this.InvalidateView();
                     }
                     else
                     {
-                        //If specific Graphs only invalidate when those Graphs change
+                        // If specific Graphs only invalidate when those Graphs change
                         if (this._graphs.Contains(g.BaseUri.ToSafeString()))
                         {
                             this.InvalidateView();
@@ -257,17 +257,17 @@ namespace VDS.RDF.Query
                 IGraph g = args.GraphEvent.Graph;
                 if (g != null)
                 {
-                    //Ignore Changes to self
+                    // Ignore Changes to self
                     if (ReferenceEquals(g, this)) return;
 
                     if (this._graphs == null)
                     {
-                        //No specific Graphs so any change causes an invalidation
+                        // No specific Graphs so any change causes an invalidation
                         this.InvalidateView();
                     }
                     else
                     {
-                        //If specific Graphs only invalidate when those Graphs change
+                        // If specific Graphs only invalidate when those Graphs change
                         if (this._graphs.Contains(g.BaseUri.ToSafeString()))
                         {
                             this.InvalidateView();
@@ -284,17 +284,17 @@ namespace VDS.RDF.Query
                 IGraph g = args.GraphEvent.Graph;
                 if (g != null)
                 {
-                    //Ignore Changes to self
+                    // Ignore Changes to self
                     if (ReferenceEquals(g, this)) return;
 
                     if (this._graphs == null)
                     {
-                        //No specific Graphs so any change causes an invalidation
+                        // No specific Graphs so any change causes an invalidation
                         this.InvalidateView();
                     }
                     else
                     {
-                        //If specific Graphs only invalidate when those Graphs change
+                        // If specific Graphs only invalidate when those Graphs change
                         if (this._graphs.Contains(g.BaseUri.ToSafeString()))
                         {
                             this.InvalidateView();
@@ -346,8 +346,8 @@ namespace VDS.RDF.Query
                 Object results = ((IInMemoryQueryableStore)this._store).ExecuteQuery(this._q);
                 if (results is IGraph)
                 {
-                    //Note that we replace the existing triple collection with an entirely new one as otherwise nasty race conditions can happen
-                    //This does mean that while the update is occurring the user may be viewing a stale graph
+                    // Note that we replace the existing triple collection with an entirely new one as otherwise nasty race conditions can happen
+                    // This does mean that while the update is occurring the user may be viewing a stale graph
                     this.DetachEventHandlers(this._triples);
                     IGraph g = (IGraph)results;
                     TreeIndexedTripleCollection triples = new TreeIndexedTripleCollection();
@@ -360,8 +360,8 @@ namespace VDS.RDF.Query
                 }
                 else
                 {
-                    //Note that we replace the existing triple collection with an entirely new one as otherwise nasty race conditions can happen
-                    //This does mean that while the update is occurring the user may be viewing a stale graph
+                    // Note that we replace the existing triple collection with an entirely new one as otherwise nasty race conditions can happen
+                    // This does mean that while the update is occurring the user may be viewing a stale graph
                     this.DetachEventHandlers(this._triples);
                     this._triples = ((SparqlResultSet)results).ToTripleCollection(this);
                     this.AttachEventHandlers(this._triples);

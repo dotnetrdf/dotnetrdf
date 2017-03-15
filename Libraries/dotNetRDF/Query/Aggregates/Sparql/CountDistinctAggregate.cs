@@ -72,13 +72,13 @@ namespace VDS.RDF.Query.Aggregates.Sparql
 
             if (this._varname != null)
             {
-                //Ensure the COUNTed variable is in the Variables of the Results
+                // Ensure the COUNTed variable is in the Variables of the Results
                 if (!context.Binder.Variables.Contains(this._varname))
                 {
                     throw new RdfQueryException("Cannot use the Variable " + this._expr.ToString() + " in a COUNT Aggregate since the Variable does not occur in a Graph Pattern");
                 }
 
-                //Just Count the number of results where the variable is bound
+                // Just Count the number of results where the variable is bound
                 VariableTerm varExpr = (VariableTerm)this._expr;
 
                 foreach (int id in bindingIDs)
@@ -93,7 +93,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             }
             else
             {
-                //Count the distinct non-null results
+                // Count the distinct non-null results
                 foreach (int id in bindingIDs)
                 {
                     try
@@ -106,7 +106,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
                     }
                     catch
                     {
-                        //Ignore errors
+                        // Ignore errors
                     }
                 }
                 c = values.Count;

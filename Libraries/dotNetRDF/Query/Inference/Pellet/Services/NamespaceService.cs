@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                     response.Close();
                 }
 
-                //Parse the Response into a NamespaceMapper
+                // Parse the Response into a NamespaceMapper
                 NamespaceMapper nsmap = new NamespaceMapper(true);
                 foreach (JProperty nsDef in json.Properties())
                 {
@@ -130,7 +130,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                                 response.Close();
                             }
 
-                            //Parse the Response into a NamespaceMapper
+                            // Parse the Response into a NamespaceMapper
                             NamespaceMapper nsmap = new NamespaceMapper(true);
                             foreach (JProperty nsDef in json.Properties())
                             {

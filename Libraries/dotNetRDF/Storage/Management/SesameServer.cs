@@ -179,7 +179,7 @@ namespace VDS.RDF.Storage.Management
                 }
                 catch
                 {
-                    //Ignore and continue
+                    // Ignore and continue
                 }
             }
             return templates;
@@ -206,7 +206,7 @@ namespace VDS.RDF.Storage.Management
                     if (template.Validate().Any()) throw new RdfStorageException("Template is not valid, call Validate() on the template to see the list of errors");
                     IGraph g = sesameTemplate.GetTemplateGraph();
 
-                    //Firstly we need to save the Repository Template as a new Context to Sesame
+                    // Firstly we need to save the Repository Template as a new Context to Sesame
                     createParams.Add("context", sesameTemplate.ContextNode.ToString());
                     HttpWebRequest request = this.CreateRequest(this._repositoriesPrefix + SesameServer.SystemRepositoryID + "/statements", "*/*", "POST", createParams);
 
@@ -219,11 +219,11 @@ namespace VDS.RDF.Storage.Management
                     using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                     {
                         Tools.HttpDebugResponse(response);
-                        //If we get then it was OK
+                        // If we get then it was OK
                         response.Close();
                     }
 
-                    //Then we need to declare that said Context is of type rep:RepositoryContext
+                    // Then we need to declare that said Context is of type rep:RepositoryContext
                     Triple repoType = new Triple(sesameTemplate.ContextNode, g.CreateUriNode("rdf:type"), g.CreateUriNode("rep:RepositoryContext"));
                     this.EnsureSystemConnection();
                     this._sysConnection.UpdateGraph(String.Empty, repoType.AsEnumerable(), null);
@@ -276,7 +276,7 @@ namespace VDS.RDF.Storage.Management
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
-                    //If we get here it completed OK
+                    // If we get here it completed OK
                     response.Close();
                 }
             }
@@ -346,7 +346,7 @@ namespace VDS.RDF.Storage.Management
                 }
                 catch
                 {
-                    //Ignore and continue
+                    // Ignore and continue
                 }
             }
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.AvailableTemplates, id, templates), state);
@@ -367,7 +367,7 @@ namespace VDS.RDF.Storage.Management
         {
             if (template is BaseSesameTemplate)
             {
-                //First we need to store the template as a new context in the SYSTEM repository
+                // First we need to store the template as a new context in the SYSTEM repository
                 Dictionary<String, String> createParams = new Dictionary<string, string>();
                 BaseSesameTemplate sesameTemplate = (BaseSesameTemplate)template;
 
@@ -389,7 +389,7 @@ namespace VDS.RDF.Storage.Management
                 {
                     if (args.WasSuccessful)
                     {
-                        //Then we need to declare that said Context is of type rep:RepositoryContext
+                        // Then we need to declare that said Context is of type rep:RepositoryContext
                         Triple repoType = new Triple(sesameTemplate.ContextNode, g.CreateUriNode("rdf:type"), g.CreateUriNode("rep:RepositoryContext"));
                         this._sysConnection.UpdateGraph(String.Empty, repoType.AsEnumerable(), null, (sender2, args2, st2) =>
                         {
@@ -461,7 +461,7 @@ namespace VDS.RDF.Storage.Management
                     {
                         HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
                         Tools.HttpDebugResponse(response);
-                        //If we get here it completed OK
+                        // If we get here it completed OK
                         response.Close();
                     }
                     catch (WebException webEx)
@@ -535,7 +535,7 @@ namespace VDS.RDF.Storage.Management
         /// <returns></returns>
         protected virtual HttpWebRequest CreateRequest(String servicePath, String accept, String method, Dictionary<String, String> queryParams)
         {
-            //Build the Request Uri
+            // Build the Request Uri
             String requestUri = this._baseUri + servicePath;
             if (queryParams != null)
             {
@@ -550,17 +550,17 @@ namespace VDS.RDF.Storage.Management
                 }
             }
 
-            //Create our Request
+            // Create our Request
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
             request.Accept = accept;
             request.Method = method;
 
-            //Add Credentials if needed
+            // Add Credentials if needed
             if (this._hasCredentials)
             {
                 if (Options.ForceHttpBasicAuth)
                 {
-                    //Forcibly include a HTTP basic authentication header
+                    // Forcibly include a HTTP basic authentication header
 #if !(SILVERLIGHT||NETCORE)
                     string credentials = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(this._username + ":" + this._pwd));
                     request.Headers.Add("Authorization", "Basic " + credentials);
@@ -571,7 +571,7 @@ namespace VDS.RDF.Storage.Management
                 }
                 else
                 {
-                    //Leave .Net to cope with HTTP auth challenge response
+                    // Leave .Net to cope with HTTP auth challenge response
                     NetworkCredential credentials = new NetworkCredential(this._username, this._pwd);
                     request.Credentials = credentials;
 #if !(SILVERLIGHT||NETCORE)

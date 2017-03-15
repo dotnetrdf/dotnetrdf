@@ -55,7 +55,7 @@ namespace VDS.RDF
             this._id = this._graph.GetNextBlankNodeID();
             this._autoassigned = true;
 
-            //Compute Hash Code
+            // Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 
@@ -70,7 +70,7 @@ namespace VDS.RDF
             if (nodeId.Equals(String.Empty)) throw new RdfException("Cannot create a Blank Node with an empty ID");
             this._id = nodeId;
 
-            //Compute Hash Code
+            // Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 
@@ -84,7 +84,7 @@ namespace VDS.RDF
             this._id = factory.GetNextBlankNodeID();
             this._autoassigned = true;
 
-            //Compute Hash Code
+            // Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 
@@ -107,7 +107,7 @@ namespace VDS.RDF
         {
             this._id = info.GetString("id");
 
-            //Compute Hash Code
+            // Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 
@@ -158,7 +158,7 @@ namespace VDS.RDF
             }
             else
             {
-                //Can only be equal to things which are Nodes
+                // Can only be equal to things which are Nodes
                 return false;
             }
         }
@@ -185,7 +185,7 @@ namespace VDS.RDF
             }
             else
             {
-                //Can only be equal to Blank Nodes
+                // Can only be equal to Blank Nodes
                 return false;
             }
         }
@@ -265,24 +265,24 @@ namespace VDS.RDF
 
             if (other == null)
             {
-                //Blank Nodes are considered greater than nulls
-                //So we return a 1 to indicate we're greater than it
+                // Blank Nodes are considered greater than nulls
+                // So we return a 1 to indicate we're greater than it
                 return 1;
             }
             else if (other.NodeType == NodeType.Variable)
             {
-                //Blank Nodes are considered greater than Variables
+                // Blank Nodes are considered greater than Variables
                 return 1;
             }
             else if (other.NodeType == NodeType.Blank)
             {
-                //Order Blank Nodes lexically by their ID
+                // Order Blank Nodes lexically by their ID
                 return ComparisonHelper.CompareBlankNodes(this, (IBlankNode)other);
             }
             else
             {
-                //Anything else is greater than a Blank Node
-                //So we return a -1 to indicate we are less than the other Node
+                // Anything else is greater than a Blank Node
+                // So we return a -1 to indicate we are less than the other Node
                 return -1;
             }
         }
@@ -297,12 +297,12 @@ namespace VDS.RDF
             if (ReferenceEquals(this, other)) return 0;
             if (other == null)
             {
-                //We are always greater than nulls
+                // We are always greater than nulls
                 return 1;
             }
             else
             {
-                //Order lexically on ID
+                // Order lexically on ID
                 return ComparisonHelper.CompareBlankNodes(this, other);
             }
         }
@@ -317,12 +317,12 @@ namespace VDS.RDF
             if (ReferenceEquals(this, other)) return 0;
             if (other == null)
             {
-                //We are always greater than nulls
+                // We are always greater than nulls
                 return 1;
             }
             else
             {
-                //We are less than Graph Literal Nodes
+                // We are less than Graph Literal Nodes
                 return -1;
             }
         }
@@ -337,12 +337,12 @@ namespace VDS.RDF
             if (ReferenceEquals(this, other)) return 0;
             if (other == null)
             {
-                //We are always greater than nulls
+                // We are always greater than nulls
                 return 1;
             }
             else
             {
-                //We are less than Literal Nodes
+                // We are less than Literal Nodes
                 return -1;
             }
         }
@@ -357,12 +357,12 @@ namespace VDS.RDF
             if (ReferenceEquals(this, other)) return 0;
             if (other == null)
             {
-                //We are always greater than nulls
+                // We are always greater than nulls
                 return 1;
             }
             else
             {
-                //We are less than URI Nodes
+                // We are less than URI Nodes
                 return -1;
             }
         }
@@ -375,7 +375,7 @@ namespace VDS.RDF
         public override int CompareTo(IVariableNode other)
         {
             if (ReferenceEquals(this, other)) return 0;
-            //We are always greater than Nulls/Variable Nodes
+            // We are always greater than Nulls/Variable Nodes
             return 1;
         }
 
@@ -423,7 +423,7 @@ namespace VDS.RDF
         public sealed override void ReadXml(XmlReader reader)
         {
             this._id = reader.ReadElementContentAsString();
-            //Compute Hash Code
+            // Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 

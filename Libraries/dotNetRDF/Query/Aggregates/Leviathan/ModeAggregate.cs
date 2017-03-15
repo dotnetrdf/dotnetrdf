@@ -83,7 +83,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         {
             if (this._varname != null)
             {
-                //Ensured the MODEd variable is in the Variables of the Results
+                // Ensured the MODEd variable is in the Variables of the Results
                 if (!context.Binder.Variables.Contains(this._varname))
                 {
                     throw new RdfQueryException("Cannot use the Variable " + this._expr.ToString() + " in a MODE Aggregate since the Variable does not occur in a Graph Pattern");
@@ -115,7 +115,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
                 }
                 catch
                 {
-                    //Errors count as nulls
+                    // Errors count as nulls
                     nullCount++;
                 }
             }
@@ -127,7 +127,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
             }
             else
             {
-                //Null is the most popular item
+                // Null is the most popular item
                 return null;
             }
         }

@@ -58,9 +58,9 @@ namespace VDS.RDF
                 return false;
             }
 
-            //URIs are equal if the Scheme, Host and Post are equivalent (case insensitive)
-            //and the User Info (if any) is equivalent (case sensitive)
-            //and the Path, Query and Fragment are equivalent (case sensitive)
+            // URIs are equal if the Scheme, Host and Post are equivalent (case insensitive)
+            // and the User Info (if any) is equivalent (case sensitive)
+            // and the Path, Query and Fragment are equivalent (case sensitive)
             return a.Scheme.Equals(b.Scheme, StringComparison.OrdinalIgnoreCase)
                    && a.Host.Equals(b.Host, StringComparison.OrdinalIgnoreCase)
                    && a.Port.Equals(b.Port)
@@ -114,51 +114,51 @@ namespace VDS.RDF
                 return false;
             }
 
-            //Language Tags must be equal (if present)
-            //If they don't have language tags then they'll both be set to String.Empty which will give true
+            // Language Tags must be equal (if present)
+            // If they don't have language tags then they'll both be set to String.Empty which will give true
             if (a.Language.Equals(b.Language, StringComparison.OrdinalIgnoreCase))
             {
-                //Datatypes must be equal (if present)
-                //If they don't have Data Types then they'll both be null
-                //Otherwise the URIs must be equal
+                // Datatypes must be equal (if present)
+                // If they don't have Data Types then they'll both be null
+                // Otherwise the URIs must be equal
                 if (a.DataType == null && b.DataType == null)
                 {
-                    //Use String equality to get the result
+                    // Use String equality to get the result
                     return a.Value.Equals(b.Value, StringComparison.Ordinal);
                 }
                 else if (a.DataType == null)
                 {
-                    //We have a Null DataType but the other Node doesn't so can't be equal
+                    // We have a Null DataType but the other Node doesn't so can't be equal
                     return false;
                 }
                 else if (b.DataType == null)
                 {
-                    //The other Node has a Null DataType but we don't so can't be equal
+                    // The other Node has a Null DataType but we don't so can't be equal
                     return false;
                 }
                 else if (EqualityHelper.AreUrisEqual(a.DataType, b.DataType))
                 {
-                    //We have equal DataTypes so use String Equality to evaluate
+                    // We have equal DataTypes so use String Equality to evaluate
                     if (Options.LiteralEqualityMode == LiteralEqualityMode.Strict)
                     {
-                        //Strict Equality Mode uses Ordinal Lexical Comparison for Equality as per W3C RDF Spec
+                        // Strict Equality Mode uses Ordinal Lexical Comparison for Equality as per W3C RDF Spec
                         return a.Value.Equals(b.Value, StringComparison.Ordinal);
                     }
                     else
                     {
-                        //Loose Equality Mode uses Value Based Comparison for Equality of Typed Nodes
+                        // Loose Equality Mode uses Value Based Comparison for Equality of Typed Nodes
                         return (a.CompareTo(b) == 0);
                     }
                 }
                 else
                 {
-                    //Data Types didn't match
+                    // Data Types didn't match
                     return false;
                 }
             }
             else
             {
-                //Language Tags didn't match
+                // Language Tags didn't match
                 return false;
             }
         }
@@ -254,9 +254,9 @@ namespace VDS.RDF
                 return 1;
             }
 
-            //Comparisons are based on URI elements in the following order:
-            //Scheme, UserInfo, Host the Port (all case insensitive except UserInfo)
-            //Path, Query and Fragment (all case sensitive)
+            // Comparisons are based on URI elements in the following order:
+            // Scheme, UserInfo, Host the Port (all case insensitive except UserInfo)
+            // Path, Query and Fragment (all case sensitive)
 
             int c = String.Compare(a.Scheme, b.Scheme, StringComparison.OrdinalIgnoreCase);
             if (c == 0)
@@ -344,17 +344,17 @@ namespace VDS.RDF
             if (culture == null) culture = Options.DefaultCulture;
             if (comparisonOptions == CompareOptions.None) comparisonOptions = Options.DefaultComparisonOptions;
 
-            //Literal Nodes are ordered based on Type and lexical form
+            // Literal Nodes are ordered based on Type and lexical form
             if (a.DataType == null && b.DataType != null)
             {
-                //Untyped Literals are less than Typed Literals
-                //Return a -1 to indicate this
+                // Untyped Literals are less than Typed Literals
+                // Return a -1 to indicate this
                 return -1;
             }
             else if (a.DataType != null && b.DataType == null)
             {
-                //Typed Literals are greater than Untyped Literals
-                //Return a 1 to indicate this
+                // Typed Literals are greater than Untyped Literals
+                // Return a 1 to indicate this
                 return 1;
             }
             else if (a.DataType == null && b.DataType == null)
@@ -363,11 +363,11 @@ namespace VDS.RDF
             }
             else if (EqualityHelper.AreUrisEqual(a.DataType, b.DataType))
             {
-                //Are we using a known and orderable DataType?
+                // Are we using a known and orderable DataType?
                 String type = a.DataType.AbsoluteUri;
                 if (!XmlSpecsHelper.IsSupportedType(type))
                 {
-                    //Don't know how to order so use specified order on the value
+                    // Don't know how to order so use specified order on the value
                     return culture.CompareInfo.Compare(a.Value, b.Value, comparisonOptions);
                 }
                 else
@@ -377,7 +377,7 @@ namespace VDS.RDF
                         switch (type)
                         {
                             case XmlSpecsHelper.XmlSchemaDataTypeBoolean:
-                                //Can use Lexical ordering for this so use specified order on the value
+                                // Can use Lexical ordering for this so use specified order on the value
                                 bool aBool, bBool;
                                 if (Boolean.TryParse(a.Value, out aBool))
                                 {
@@ -400,8 +400,8 @@ namespace VDS.RDF
                                 }
 
                             case XmlSpecsHelper.XmlSchemaDataTypeByte:
-                                //Remember that xsd:byte is actually equivalent to SByte in .Net
-                                //Extract the Byte Values and compare
+                                // Remember that xsd:byte is actually equivalent to SByte in .Net
+                                // Extract the Byte Values and compare
                                 sbyte aSByte, bSByte;
                                 if (SByte.TryParse(a.Value, out aSByte))
                                 {
@@ -424,8 +424,8 @@ namespace VDS.RDF
                                 }
 
                             case XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte:
-                                //Remember that xsd:unsignedByte is equivalent to Byte in .Net
-                                //Extract the Byte Values and compare
+                                // Remember that xsd:unsignedByte is equivalent to Byte in .Net
+                                // Extract the Byte Values and compare
                                 byte aByte, bByte;
                                 if (Byte.TryParse(a.Value, out aByte))
                                 {
@@ -454,7 +454,7 @@ namespace VDS.RDF
                             case XmlSpecsHelper.XmlSchemaDataTypeInteger:
                             case XmlSpecsHelper.XmlSchemaDataTypeLong:
                             case XmlSpecsHelper.XmlSchemaDataTypeShort:
-                                //Extract the Integer Values and compare
+                                // Extract the Integer Values and compare
                                 long aInt64, bInt64;
                                 if (Int64.TryParse(a.Value, out aInt64))
                                 {
@@ -481,7 +481,7 @@ namespace VDS.RDF
 
                             case XmlSpecsHelper.XmlSchemaDataTypeNegativeInteger:
                             case XmlSpecsHelper.XmlSchemaDataTypeNonPositiveInteger:
-                                //Extract the Integer Values, ensure negative and compare
+                                // Extract the Integer Values, ensure negative and compare
                                 long aNegInt, bNegInt;
                                 if (Int64.TryParse(a.Value, out aNegInt))
                                 {
@@ -540,10 +540,10 @@ namespace VDS.RDF
                             case XmlSpecsHelper.XmlSchemaDataTypeUnsignedShort:
                             case XmlSpecsHelper.XmlSchemaDataTypeNonNegativeInteger:
                             case XmlSpecsHelper.XmlSchemaDataTypePositiveInteger:
-                                //Unsigned Integers
-                                //Note that for NonNegativeInteger and PositiveInteger we don't need to do the
-                                //same checking we have to do for their inverse types since parsing into an 
-                                //Unsigned Long ensures that they must be positive
+                                // Unsigned Integers
+                                // Note that for NonNegativeInteger and PositiveInteger we don't need to do the
+                                // same checking we have to do for their inverse types since parsing into an 
+                                // Unsigned Long ensures that they must be positive
                                 ulong aUInt64, bUInt64;
                                 if (UInt64.TryParse(a.Value, out aUInt64))
                                 {
@@ -569,7 +569,7 @@ namespace VDS.RDF
                                 }
 
                             case XmlSpecsHelper.XmlSchemaDataTypeDouble:
-                                //Extract the Double Values and compare
+                                // Extract the Double Values and compare
                                 double aDouble, bDouble;
                                 if (Double.TryParse(a.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out aDouble))
                                 {
@@ -595,7 +595,7 @@ namespace VDS.RDF
                                 }
 
                             case XmlSpecsHelper.XmlSchemaDataTypeDecimal:
-                                //Extract the Decimal Values and compare
+                                // Extract the Decimal Values and compare
                                 decimal aDecimal, bDecimal;
                                 if (decimal.TryParse(a.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out aDecimal))
                                 {
@@ -621,7 +621,7 @@ namespace VDS.RDF
                                 }
 
                             case XmlSpecsHelper.XmlSchemaDataTypeFloat:
-                                //Extract the Float Values and compare
+                                // Extract the Float Values and compare
                                 float aFloat, bFloat;
                                 if (Single.TryParse(a.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out aFloat))
                                 {
@@ -647,7 +647,7 @@ namespace VDS.RDF
                                 }
 
                             case XmlSpecsHelper.XmlSchemaDataTypeHexBinary:
-                                //Extract the numeric value of the Hex encoded Binary and compare
+                                // Extract the numeric value of the Hex encoded Binary and compare
                                 long aHex, bHex;
                                 if (Int64.TryParse(a.Value, System.Globalization.NumberStyles.HexNumber, null, out aHex))
                                 {
@@ -673,7 +673,7 @@ namespace VDS.RDF
                                 }
 
                             case XmlSpecsHelper.XmlSchemaDataTypeBase64Binary:
-                                //Extract the numeric value of the Base 64 encoded Binary and compare
+                                // Extract the numeric value of the Base 64 encoded Binary and compare
                                 byte[] aBin, bBin;
                                 try
                                 {
@@ -721,12 +721,12 @@ namespace VDS.RDF
                                 }
 
                             case XmlSpecsHelper.XmlSchemaDataTypeString:
-                                //String Type
-                            //Can use Lexical Ordering for thisgoto default;
+                                // String Type
+                            // Can use Lexical Ordering for thisgoto default;
 
                             case XmlSpecsHelper.XmlSchemaDataTypeAnyUri:
-                                //Uri Type
-                                //Try and convert to a URI and use lexical ordering
+                                // Uri Type
+                                // Try and convert to a URI and use lexical ordering
                                 Uri aUri, bUri;
                                 try
                                 {
@@ -756,7 +756,7 @@ namespace VDS.RDF
 
                             case XmlSpecsHelper.XmlSchemaDataTypeDate:
                             case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
-                                //Extract the Date Times and compare
+                                // Extract the Date Times and compare
                                 DateTimeOffset aDateTimeOffset, bDateTimeOffset;
                                 if (DateTimeOffset.TryParse(a.Value, out aDateTimeOffset))
                                 {
@@ -783,7 +783,7 @@ namespace VDS.RDF
 
                             case XmlSpecsHelper.XmlSchemaDataTypeDuration:
                             case XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration:
-                                //Extract the TimeSpan's and compare
+                                // Extract the TimeSpan's and compare
                                 TimeSpan aTimeSpan, bTimeSpan;
                                 try
                                 {
@@ -812,26 +812,26 @@ namespace VDS.RDF
                                 }
 
                             default:
-                                //Don't know how to order so use lexical ordering on the value
-                                //return String.Compare(a.Value, b.Value, culture, comparisonOptions);
+                                // Don't know how to order so use lexical ordering on the value
+                                // return String.Compare(a.Value, b.Value, culture, comparisonOptions);
                                 return culture.CompareInfo.Compare(a.Value, b.Value, comparisonOptions);
                         }
                     }
                     catch
                     {
-                        //There was some error suggesting a non-valid value for a type
-                        //e.g. "example"^^xsd:integer
-                        //In this case just use lexical ordering on the value
-                        //return String.Compare(a.Value, b.Value, culture, comparisonOptions);
+                        // There was some error suggesting a non-valid value for a type
+                        // e.g. "example"^^xsd:integer
+                        // In this case just use lexical ordering on the value
+                        // return String.Compare(a.Value, b.Value, culture, comparisonOptions);
                         return culture.CompareInfo.Compare(a.Value, b.Value, comparisonOptions);
                     }
                 }
             }
             else
             {
-                //No way of ordering by value if the Data Types are different
-                //Order by Data Type Uri
-                //This is required or the Value ordering between types won't occur correctly
+                // No way of ordering by value if the Data Types are different
+                // Order by Data Type Uri
+                // This is required or the Value ordering between types won't occur correctly
                 return ComparisonHelper.CompareUris(a.DataType, b.DataType);
             }
         }

@@ -45,10 +45,10 @@ namespace VDS.RDF.Writing
         /// <param name="filename">File to save to</param>
         public void Save(IGraph g, string filename)
         {
-            //Open the Stream for the File
+            // Open the Stream for the File
             StreamWriter output = new StreamWriter(File.OpenWrite(filename));
 
-            //Call the other version of Save to do the actual work
+            // Call the other version of Save to do the actual work
             this.Save(g, output);
         }
 #endif
@@ -60,18 +60,18 @@ namespace VDS.RDF.Writing
         /// <param name="output">Stream to save to</param>
         public void Save(IGraph g, TextWriter output)
         {
-            //Start the Graph
+            // Start the Graph
             output.WriteLine("digraph G {");
 
             BaseWriterContext context = new BaseWriterContext(g, output);
 
-            //Write all the Triples to the Graph
+            // Write all the Triples to the Graph
             foreach (Triple t in g.Triples)
             {
                 output.WriteLine(this.TripleToDot(t, context));
             }
 
-            //End the Graph
+            // End the Graph
             output.WriteLine("}");
 
             output.Close();
@@ -87,9 +87,9 @@ namespace VDS.RDF.Writing
         {
             StringBuilder output = new StringBuilder();
 
-            //Output Node lines for Literal Node so we show them as Boxes
-            //This is in keeping with Standard Graph representation of RDF
-            //Literals are shown in Boxes, Uri Nodes in ellipses (GraphViz's default shape)
+            // Output Node lines for Literal Node so we show them as Boxes
+            // This is in keeping with Standard Graph representation of RDF
+            // Literals are shown in Boxes, Uri Nodes in ellipses (GraphViz's default shape)
             if (t.Subject.NodeType == NodeType.Literal)
             {
                 output.Append(this.NodeToDot(t.Subject, context));
@@ -101,8 +101,8 @@ namespace VDS.RDF.Writing
                 output.Append(" [shape=box];\n");
             }
 
-            //Output the actual lines that state the relationship between the Nodes
-            //We use the Predicate as the Label on the relationship
+            // Output the actual lines that state the relationship between the Nodes
+            // We use the Predicate as the Label on the relationship
             output.Append(this.NodeToDot(t.Subject, context));
             output.Append(" -> ");
             output.Append(this.NodeToDot(t.Object, context));
@@ -155,16 +155,16 @@ namespace VDS.RDF.Writing
             StringBuilder output = new StringBuilder();
             output.Append("\"");
 
-            //Try QName reduction
+            // Try QName reduction
             String qname;
             if (context.QNameMapper.ReduceToQName(u.Uri.AbsoluteUri, out qname))
             {
-                //Use the QName
+                // Use the QName
                 output.Append(qname);
             }
             else
             {
-                //Use the full Uri
+                // Use the full Uri
                 output.Append(u.Uri);
             }
 
@@ -180,7 +180,7 @@ namespace VDS.RDF.Writing
         /// <returns></returns>
         private String BlankNodeToDot(IBlankNode b)
         {
-            //Generate a _: QName
+            // Generate a _: QName
             StringBuilder output = new StringBuilder();
             output.Append("\"_:");
             output.Append(b.InternalID);
@@ -199,7 +199,7 @@ namespace VDS.RDF.Writing
             StringBuilder output = new StringBuilder();
             output.Append("\"");
 
-            //Escape any quotes and newlines in the value
+            // Escape any quotes and newlines in the value
             String value = l.Value.Replace("\"", "\\\"");
             value = value.Replace("\n", "\\n");
 

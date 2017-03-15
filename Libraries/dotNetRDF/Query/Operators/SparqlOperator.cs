@@ -41,7 +41,7 @@ namespace VDS.RDF.Query.Operators
         private static bool _init = false;
 
 #if SILVERLIGHT
-        //Required under Silverlight as we can't just iterate over the enumeration values with Enum.GetValues()
+        // Required under Silverlight as we can't just iterate over the enumeration values with Enum.GetValues()
         private static SparqlOperatorType[] _operatorTypes = new[]
                                                                  {
                                                                      SparqlOperatorType.Add, SparqlOperatorType.Subtract,
@@ -59,7 +59,7 @@ namespace VDS.RDF.Query.Operators
                 if (_init) return;
 
 #if !SILVERLIGHT
-                //Set up empty registry for each operator type
+                // Set up empty registry for each operator type
                 foreach (SparqlOperatorType type in Enum.GetValues(typeof(SparqlOperatorType)).OfType<SparqlOperatorType>())
                 {
                     _operators.Add(type, new List<ISparqlOperator>());
@@ -70,16 +70,16 @@ namespace VDS.RDF.Query.Operators
                     _operators.Add(type, new List<ISparqlOperator>());
                 }
 #endif
-                //Register default operators
-                //Numerics
+                // Register default operators
+                // Numerics
                 _operators[SparqlOperatorType.Add].Add(new AdditionOperator());
                 _operators[SparqlOperatorType.Subtract].Add(new SubtractionOperator());
                 _operators[SparqlOperatorType.Divide].Add(new DivisionOperator());
                 _operators[SparqlOperatorType.Multiply].Add(new MultiplicationOperator());
-                //Date Time
+                // Date Time
                 _operators[SparqlOperatorType.Add].Add(new DateTimeAddition());
                 _operators[SparqlOperatorType.Subtract].Add(new DateTimeSubtraction());
-                //Time Span
+                // Time Span
                 _operators[SparqlOperatorType.Add].Add(new TimeSpanAddition());
                 _operators[SparqlOperatorType.Subtract].Add(new TimeSpanSubtraction());
 

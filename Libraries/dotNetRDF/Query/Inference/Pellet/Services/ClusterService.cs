@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         {
             IGraph g = this.ClusterRaw(number); 
 
-            //Build the List of Lists
+            // Build the List of Lists
             List<List<INode>> clusters = new List<List<INode>>();
             foreach (INode clusterNode in g.Triples.SubjectNodes.Distinct())
             {
@@ -88,7 +88,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         {
             IGraph g = this.ClusterRaw(number, type);
 
-            //Build the List of Lists
+            // Build the List of Lists
             List<List<INode>> clusters = new List<List<INode>>();
             foreach (INode clusterNode in g.Triples.SubjectNodes.Distinct())
             {
@@ -191,7 +191,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                     }
                     else
                     {
-                        //Build the List of Lists
+                        // Build the List of Lists
                         List<List<INode>> clusters = new List<List<INode>>();
                         foreach (INode clusterNode in g.Triples.SubjectNodes.Distinct())
                         {
@@ -229,7 +229,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                     }
                     else
                     {
-                        //Build the List of Lists
+                        // Build the List of Lists
                         List<List<INode>> clusters = new List<List<INode>>();
                         foreach (INode clusterNode in g.Triples.SubjectNodes.Distinct())
                         {

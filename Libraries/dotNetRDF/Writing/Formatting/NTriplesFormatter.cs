@@ -167,10 +167,10 @@ namespace VDS.RDF.Writing.Formatting
             if (this.Syntax != NTriplesSyntax.Original) return base.FormatChar(c);
             if (c <= 127)
             {
-                //ASCII
+                // ASCII
                 return c.ToString();
             }
-            //Small Unicode Escape required
+            // Small Unicode Escape required
             return "\\u" + ((int)c).ToString("X4");
         }
 

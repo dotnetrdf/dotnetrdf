@@ -68,17 +68,17 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
                 {
                     if (this._expr.Evaluate(context, id).AsSafeBoolean())
                     {
-                        //As soon as we see a true we can return false
+                        // As soon as we see a true we can return false
                         return new BooleanNode(null, false);
                     }
                 }
                 catch (RdfQueryException)
                 {
-                    //An error is a failure so we keep going
+                    // An error is a failure so we keep going
                 }
             }
 
-            //If everything is false then we return true;
+            // If everything is false then we return true;
             return new BooleanNode(null, true);
         }
 

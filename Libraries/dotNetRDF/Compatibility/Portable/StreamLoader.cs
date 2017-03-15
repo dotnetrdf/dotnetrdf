@@ -72,7 +72,7 @@ namespace VDS.RDF.Parsing
                     }
                     catch (RdfParserSelectionException)
                     {
-                        //If error then we couldn't determine MIME Type from the File Extension
+                        // If error then we couldn't determine MIME Type from the File Extension
                         RaiseWarning("Unable to select a parser by determining MIME Type from the File Extension");
                     }
                 }
@@ -80,8 +80,8 @@ namespace VDS.RDF.Parsing
 
             if (parser == null)
             {
-                //Unable to determine format from File Extension
-                //Read file in locally and use the StringParser to select a parser
+                // Unable to determine format from File Extension
+                // Read file in locally and use the StringParser to select a parser
                 RaiseWarning("Attempting to select parser based on analysis of the data file, this requires loading the file into memory");
                 StreamReader reader = new StreamReader(inputStream);
                 String data = reader.ReadToEnd();
@@ -93,7 +93,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                //Parser was selected based on File Extension or one was explicitly specified
+                // Parser was selected based on File Extension or one was explicitly specified
                 parser.Warning += RaiseWarning;
                 parser.Load(handler, new StreamReader(inputStream));
             }

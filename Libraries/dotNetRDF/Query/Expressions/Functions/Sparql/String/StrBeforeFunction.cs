@@ -119,7 +119,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                     {
                         if (argumentTypeValidator(lit.DataType))
                         {
-                            //Appropriately typed literals are fine
+                            // Appropriately typed literals are fine
                             return lit;
                         }
                         else
@@ -129,7 +129,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                     }
                     else if (argumentTypeValidator(UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString)))
                     {
-                        //Untyped Literals are treated as Strings and may be returned when the argument allows strings
+                        // Untyped Literals are treated as Strings and may be returned when the argument allows strings
                         return lit;
                     }
                     else
@@ -158,24 +158,24 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         {
             if (stringLit.DataType != null)
             {
-                //If 1st argument has a DataType must be an xsd:string or not valid
+                // If 1st argument has a DataType must be an xsd:string or not valid
                 if (!stringLit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) return false;
 
                 if (argLit.DataType != null)
                 {
-                    //If 2nd argument also has a DataType must also be an xsd:string or not valid
+                    // If 2nd argument also has a DataType must also be an xsd:string or not valid
                     if (!argLit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) return false;
                     return true;
                 }
                 else if (argLit.Language.Equals(string.Empty))
                 {
-                    //If 2nd argument does not have a DataType but 1st does then 2nd argument must have no
-                    //Language Tag
+                    // If 2nd argument does not have a DataType but 1st does then 2nd argument must have no
+                    // Language Tag
                     return true;
                 }
                 else
                 {
-                    //2nd argument does not have a DataType but 1st does BUT 2nd has a Language Tag so invalid
+                    // 2nd argument does not have a DataType but 1st does BUT 2nd has a Language Tag so invalid
                     return false;
                 }
             }
@@ -183,19 +183,19 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
                 if (argLit.DataType != null)
                 {
-                    //If 1st argument has a Language Tag and 2nd Argument is typed then must be xsd:string
-                    //to be valid
+                    // If 1st argument has a Language Tag and 2nd Argument is typed then must be xsd:string
+                    // to be valid
                     return argLit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString);
                 }
                 else if (argLit.Language.Equals(string.Empty) || stringLit.Language.Equals(argLit.Language))
                 {
-                    //If 1st argument has a Language Tag then 2nd Argument must have same Language Tag 
-                    //or no Language Tag in order to be valid
+                    // If 1st argument has a Language Tag then 2nd Argument must have same Language Tag 
+                    // or no Language Tag in order to be valid
                     return true;
                 }
                 else
                 {
-                    //Otherwise Invalid
+                    // Otherwise Invalid
                     return false;
                 }
             }
@@ -203,17 +203,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
                 if (argLit.DataType != null)
                 {
-                    //If 1st argument is plain literal then 2nd argument must be xsd:string if typed
+                    // If 1st argument is plain literal then 2nd argument must be xsd:string if typed
                     return argLit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString);
                 }
                 else if (argLit.Language.Equals(string.Empty))
                 {
-                    //If 1st argument is plain literal then 2nd literal cannot have a language tag to be valid
+                    // If 1st argument is plain literal then 2nd literal cannot have a language tag to be valid
                     return true;
                 }
                 else
                 {
-                    //If 1st argument is plain literal and 2nd has language tag then invalid
+                    // If 1st argument is plain literal and 2nd has language tag then invalid
                     return false;
                 }
             }

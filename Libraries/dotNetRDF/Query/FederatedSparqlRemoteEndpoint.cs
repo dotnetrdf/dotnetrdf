@@ -170,10 +170,10 @@ namespace VDS.RDF.Query
         /// <exception cref="NotSupportedException">Thrown if more than one endpoint is in use since for any federated endpoint which used more than one endpoint there is no logical/sensible way to combine the result streams</exception>
         public override HttpWebResponse QueryRaw(string sparqlQuery)
         {
-            //If we only have a single endpoint then we can still return a raw response
+            // If we only have a single endpoint then we can still return a raw response
             if (this._endpoints.Count == 1) return this._endpoints[0].QueryRaw(sparqlQuery);
 
-            //If we have any other number of endpoints we either have no responses or no way of logically/sensibly combining responses
+            // If we have any other number of endpoints we either have no responses or no way of logically/sensibly combining responses
             throw new NotSupportedException("Raw Query is not supported by the Federated Remote Endpoint");
         }
 
@@ -186,10 +186,10 @@ namespace VDS.RDF.Query
         /// <exception cref="NotSupportedException">Thrown if more than one endpoint is in use since for any federated endpoint which used more than one endpoint there is no logical/sensible way to combine the result streams</exception>
         public override HttpWebResponse QueryRaw(string sparqlQuery, string[] mimeTypes)
         {
-            //If we only have a single endpoint then we can still return a raw response
+            // If we only have a single endpoint then we can still return a raw response
             if (this._endpoints.Count == 1) return this._endpoints[0].QueryRaw(sparqlQuery, mimeTypes);
 
-            //If we have any other number of endpoints we either have no responses or no way of logically/sensibly combining responses
+            // If we have any other number of endpoints we either have no responses or no way of logically/sensibly combining responses
             throw new NotSupportedException("Raw Query is not supported by the Federated Remote Endpoint");
         }
 
@@ -210,7 +210,7 @@ namespace VDS.RDF.Query
         /// <exception cref="RdfQueryTimeoutException">Thrown if not all the requests complete within the set timeout</exception>
         public override IGraph QueryWithResultGraph(string sparqlQuery)
         {
-            //If no endpoints return an Empty Graph
+            // If no endpoints return an Empty Graph
             if (this._endpoints.Count == 0) return new Graph();
 
             Graph g = new Graph();
@@ -225,42 +225,42 @@ namespace VDS.RDF.Query
         /// <param name="sparqlQuery">SPARQL Query</param>
         public override void QueryWithResultGraph(IRdfHandler handler, string sparqlQuery)
         {
-            //If no endpoints do nothing
+            // If no endpoints do nothing
             if (this._endpoints.Count == 0) return;
 
-            //Fire off all the Asychronous Requests
+            // Fire off all the Asychronous Requests
             List<AsyncQueryWithResultGraph> asyncCalls = new List<AsyncQueryWithResultGraph>();
             List<IAsyncResult> asyncResults = new List<IAsyncResult>();
             int count = 0;
             foreach (SparqlRemoteEndpoint endpoint in this._endpoints)
             {
-                //Limit the number of simultaneous requests we make to the user defined level (default 4)
-                //We do this limiting check before trying to issue a request so that when the last request
-                //is issued we'll always drop out of the loop and move onto our WaitAll()
+                // Limit the number of simultaneous requests we make to the user defined level (default 4)
+                // We do this limiting check before trying to issue a request so that when the last request
+                // is issued we'll always drop out of the loop and move onto our WaitAll()
                 while (count >= this._maxSimultaneousRequests)
                 {
-                    //First check that the count of active requests is accurate
+                    // First check that the count of active requests is accurate
                     int active = asyncResults.Count(r => !r.IsCompleted);
                     if (active < count)
                     {
-                        //Some of the requests have already completed so we don't need to wait
+                        // Some of the requests have already completed so we don't need to wait
                         count = active;
                         break;
                     }
                     else if (active > count)
                     {
-                        //There are more active requests then we thought
+                        // There are more active requests then we thought
                         count = active;
                     }
 
-                    //While the number of requests is at/above the maximum we'll wait for any of the requests to finish
-                    //Then we can decrement the count and if this drops back below our maximum then we'll go back into the
-                    //main loop and fire off our next request
+                    // While the number of requests is at/above the maximum we'll wait for any of the requests to finish
+                    // Then we can decrement the count and if this drops back below our maximum then we'll go back into the
+                    // main loop and fire off our next request
                     WaitHandle.WaitAny(asyncResults.Select(r => r.AsyncWaitHandle).ToArray());
                     count--;
                 }
 
-                //Make an asynchronous query to the next endpoint
+                // Make an asynchronous query to the next endpoint
                 AsyncQueryWithResultGraph d = new AsyncQueryWithResultGraph(endpoint.QueryWithResultGraph);
                 asyncCalls.Add(d);
                 IAsyncResult asyncResult = d.BeginInvoke(sparqlQuery, null, null);
@@ -268,11 +268,11 @@ namespace VDS.RDF.Query
                 count++;
             }
 
-            //Wait for all our requests to finish
+            // Wait for all our requests to finish
             int waitTimeout = (base.Timeout > 0) ? base.Timeout : System.Threading.Timeout.Infinite;
             WaitHandle.WaitAll(asyncResults.Select(r => r.AsyncWaitHandle).ToArray(), waitTimeout);
 
-            //Check for and handle timeouts
+            // Check for and handle timeouts
             if (!this._ignoreFailedRequests && !asyncResults.All(r => r.IsCompleted))
             {
                 for (int i = 0; i < asyncCalls.Count; i++)
@@ -283,18 +283,18 @@ namespace VDS.RDF.Query
                     }
                     catch
                     {
-                        //Exceptions don't matter as we're just ensuring all the EndInvoke() calls are made
+                        // Exceptions don't matter as we're just ensuring all the EndInvoke() calls are made
                     }
                 }
                 throw new RdfQueryTimeoutException("Federated Querying failed due to one/more endpoints failing to return results within the Timeout specified which is currently " + (base.Timeout / 1000) + " seconds");
             }
 
-            //Now merge all the results together
+            // Now merge all the results together
             HashSet<String> varsSeen = new HashSet<string>();
             bool cont = true;
             for (int i = 0; i < asyncCalls.Count; i++)
             {
-                //Retrieve the result for this call
+                // Retrieve the result for this call
                 AsyncQueryWithResultGraph call = asyncCalls[i];
                 IGraph g;
                 try
@@ -305,7 +305,7 @@ namespace VDS.RDF.Query
                 {
                     if (!this._ignoreFailedRequests)
                     {
-                        //Clean up in the event of an error
+                        // Clean up in the event of an error
                         for (int j = i + 1; j < asyncCalls.Count; j++)
                         {
                             try
@@ -314,29 +314,29 @@ namespace VDS.RDF.Query
                             }
                             catch
                             {
-                                //Exceptions don't matter as we're just ensuring all the EndInvoke() calls are made
+                                // Exceptions don't matter as we're just ensuring all the EndInvoke() calls are made
                             }
                         }
 
-                        //If a single request fails then the entire query fails
+                        // If a single request fails then the entire query fails
                         throw new RdfQueryException("Federated Querying failed due to the query against the endpoint '" + this._endpoints[i] + "' failing", ex);
                     }
                     else
                     {
-                        //If we're ignoring failed requests we continue here
+                        // If we're ignoring failed requests we continue here
                         continue;
                     }
                 }
 
-                //Merge the result into the final results
-                //If the handler has previously told us to stop we skip this step
+                // Merge the result into the final results
+                // If the handler has previously told us to stop we skip this step
                 if (cont)
                 {
                     handler.StartRdf();
                     foreach (Triple t in g.Triples)
                     {
                         cont = handler.HandleTriple(t);
-                        //Stop if the Handler tells us to
+                        // Stop if the Handler tells us to
                         if (!cont) break;
                     }
                     handler.EndRdf(true);
@@ -361,10 +361,10 @@ namespace VDS.RDF.Query
         /// <exception cref="RdfQueryTimeoutException">Thrown if not all the requests complete within the set timeout</exception>
         public override SparqlResultSet QueryWithResultSet(string sparqlQuery)
         {
-            //If no endpoints return an empty Result Set
+            // If no endpoints return an empty Result Set
             if (this._endpoints.Count == 0) return new SparqlResultSet();
 
-            //Declare a result set and invoke the other overload
+            // Declare a result set and invoke the other overload
             SparqlResultSet results = new SparqlResultSet();
             this.QueryWithResultSet(new MergingResultSetHandler(results), sparqlQuery);
             return results;
@@ -379,42 +379,42 @@ namespace VDS.RDF.Query
         /// <exception cref="RdfQueryTimeoutException">Thrown if not all the requests complete within the set timeout</exception>
         public override void QueryWithResultSet(ISparqlResultsHandler handler, string sparqlQuery)
         {
-            //If no endpoints do nothing
+            // If no endpoints do nothing
             if (this._endpoints.Count == 0) return;
 
-            //Fire off all the Asychronous Requests
+            // Fire off all the Asychronous Requests
             List<AsyncQueryWithResultSet> asyncCalls = new List<AsyncQueryWithResultSet>();
             List<IAsyncResult> asyncResults = new List<IAsyncResult>();
             int count = 0;
             foreach (SparqlRemoteEndpoint endpoint in this._endpoints)
             {
-                //Limit the number of simultaneous requests we make to the user defined level (default 4)
-                //We do this limiting check before trying to issue a request so that when the last request
-                //is issued we'll always drop out of the loop and move onto our WaitAll()
+                // Limit the number of simultaneous requests we make to the user defined level (default 4)
+                // We do this limiting check before trying to issue a request so that when the last request
+                // is issued we'll always drop out of the loop and move onto our WaitAll()
                 while (count >= this._maxSimultaneousRequests)
                 {
-                    //First check that the count of active requests is accurate
+                    // First check that the count of active requests is accurate
                     int active = asyncResults.Count(r => !r.IsCompleted);
                     if (active < count)
                     {
-                        //Some of the requests have already completed so we don't need to wait
+                        // Some of the requests have already completed so we don't need to wait
                         count = active;
                         break;
                     }
                     else if (active > count)
                     {
-                        //There are more active requests then we thought
+                        // There are more active requests then we thought
                         count = active;
                     }
 
-                    //While the number of requests is at/above the maximum we'll wait for any of the requests to finish
-                    //Then we can decrement the count and if this drops back below our maximum then we'll go back into the
-                    //main loop and fire off our next request
+                    // While the number of requests is at/above the maximum we'll wait for any of the requests to finish
+                    // Then we can decrement the count and if this drops back below our maximum then we'll go back into the
+                    // main loop and fire off our next request
                     WaitHandle.WaitAny(asyncResults.Select(r => r.AsyncWaitHandle).ToArray());
                     count--;
                 }
 
-                //Make an asynchronous query to the next endpoint
+                // Make an asynchronous query to the next endpoint
                 AsyncQueryWithResultSet d = new AsyncQueryWithResultSet(endpoint.QueryWithResultSet);
                 asyncCalls.Add(d);
                 IAsyncResult asyncResult = d.BeginInvoke(sparqlQuery, null, null);
@@ -422,11 +422,11 @@ namespace VDS.RDF.Query
                 count++;
             }
 
-            //Wait for all our requests to finish
+            // Wait for all our requests to finish
             int waitTimeout = (base.Timeout > 0) ? base.Timeout : System.Threading.Timeout.Infinite;
             WaitHandle.WaitAll(asyncResults.Select(r => r.AsyncWaitHandle).ToArray(), waitTimeout);
 
-            //Check for and handle timeouts
+            // Check for and handle timeouts
             if (!this._ignoreFailedRequests && !asyncResults.All(r => r.IsCompleted))
             {
                 for (int i = 0; i < asyncCalls.Count; i++)
@@ -437,18 +437,18 @@ namespace VDS.RDF.Query
                     }
                     catch
                     {
-                        //Exceptions don't matter as we're just ensuring all the EndInvoke() calls are made
+                        // Exceptions don't matter as we're just ensuring all the EndInvoke() calls are made
                     }
                 }
                 throw new RdfQueryTimeoutException("Federated Querying failed due to one/more endpoints failing to return results within the Timeout specified which is currently " + (base.Timeout / 1000) + " seconds");
             }
 
-            //Now merge all the results together
+            // Now merge all the results together
             HashSet<String> varsSeen = new HashSet<string>();
             bool cont = true;
             for (int i = 0; i < asyncCalls.Count; i++)
             {
-                //Retrieve the result for this call
+                // Retrieve the result for this call
                 AsyncQueryWithResultSet call = asyncCalls[i];
                 SparqlResultSet partialResult;
                 try
@@ -459,7 +459,7 @@ namespace VDS.RDF.Query
                 {
                     if (!this._ignoreFailedRequests)
                     {
-                        //Clean up in the event of an error
+                        // Clean up in the event of an error
                         for (int j = i + 1; j < asyncCalls.Count; j++)
                         {
                             try
@@ -468,28 +468,28 @@ namespace VDS.RDF.Query
                             }
                             catch
                             {
-                                //Exceptions don't matter as we're just ensuring all the EndInvoke() calls are made
+                                // Exceptions don't matter as we're just ensuring all the EndInvoke() calls are made
                             }
                         }
 
-                        //If a single request fails then the entire query fails
+                        // If a single request fails then the entire query fails
                         throw new RdfQueryException("Federated Querying failed due to the query against the endpoint '" + this._endpoints[i].Uri.AbsoluteUri + "' failing", ex);
                     }
                     else
                     {
-                        //If we're ignoring failed requests we continue here
+                        // If we're ignoring failed requests we continue here
                         continue;
                     }
                 }
 
-                //Merge the result into the final results
-                //If the handler has previously told us to stop we skip this step
+                // Merge the result into the final results
+                // If the handler has previously told us to stop we skip this step
                 if (cont)
                 {
                     foreach (String variable in partialResult.Variables)
                     {
                         cont = handler.HandleVariable(variable);
-                        //Stop if handler tells us to
+                        // Stop if handler tells us to
                         if (!cont) break;
                     }
 
@@ -498,7 +498,7 @@ namespace VDS.RDF.Query
                         foreach (SparqlResult result in partialResult.Results)
                         {
                             cont = handler.HandleResult(result);
-                            //Stop if handler tells us to
+                            // Stop if handler tells us to
                             if (!cont) break;
                         }
                     }
@@ -522,12 +522,12 @@ namespace VDS.RDF.Query
             context.Graph.Assert(new Triple(endpointObj, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
             foreach (SparqlRemoteEndpoint ep in this._endpoints)
             {
-                //Serialize the child endpoint configuration
+                // Serialize the child endpoint configuration
                 INode epObj = context.Graph.CreateBlankNode();
                 context.NextSubject = epObj;
                 ep.SerializeConfiguration(context);
 
-                //Link that serialization to this serialization
+                // Link that serialization to this serialization
                 context.Graph.Assert(new Triple(endpointObj, endpoint, epObj));
             }
         }

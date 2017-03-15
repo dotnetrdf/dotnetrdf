@@ -61,8 +61,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         {
             IValuedNode result = this._condition.Evaluate(context, bindingID);
 
-            //Condition evaluated without error so we go to the appropriate branch of the IF ELSE
-            //depending on whether it evaluated to true or false
+            // Condition evaluated without error so we go to the appropriate branch of the IF ELSE
+            // depending on whether it evaluated to true or false
             if (result.AsSafeBoolean())
             {
                 return this._ifBranch.Evaluate(context, bindingID);

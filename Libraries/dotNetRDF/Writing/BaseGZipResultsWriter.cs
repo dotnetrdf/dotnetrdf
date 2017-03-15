@@ -78,7 +78,7 @@ namespace VDS.RDF.Writing
 
             if (output is StreamWriter)
             {
-                //Check for inner GZipStream and re-wrap if required
+                // Check for inner GZipStream and re-wrap if required
                 StreamWriter streamOutput = (StreamWriter)output;
                 if (streamOutput.BaseStream is GZipStream)
                 {

@@ -203,7 +203,7 @@ namespace VDS.RDF.Parsing
                 {
                     case NQuadsSyntax.Original:
 #if !SILVERLIGHT
-                        //Issue a Warning if the Encoding of the Stream is not ASCII
+                        // Issue a Warning if the Encoding of the Stream is not ASCII
                         if (!((StreamReader) input).CurrentEncoding.Equals(Encoding.ASCII))
                         {
                             this.RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " + ((StreamReader) input).CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
@@ -225,7 +225,7 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                //Setup Token Queue and Tokeniser
+                // Setup Token Queue and Tokeniser
                 NTriplesTokeniser tokeniser = new NTriplesTokeniser(input, AsNTriplesSyntax(this.Syntax));
                 tokeniser.NQuadsMode = true;
                 ITokenQueue tokens;
@@ -245,7 +245,7 @@ namespace VDS.RDF.Parsing
                 tokens.Tracing = this.TraceTokeniser;
                 tokens.InitialiseBuffer();
 
-                //Invoke the Parser
+                // Invoke the Parser
                 this.Parse(handler, tokens);
             }
             catch
@@ -260,7 +260,7 @@ namespace VDS.RDF.Parsing
                 }
                 catch
                 {
-                    //No catch actions - just cleaning up
+                    // No catch actions - just cleaning up
                 }
             }
         }
@@ -290,7 +290,7 @@ namespace VDS.RDF.Parsing
             {
                 handler.StartRdf();
 
-                //Expect a BOF token at start
+                // Expect a BOF token at start
                 next = tokens.Dequeue();
                 if (next.TokenType != Token.BOF)
                 {
@@ -317,7 +317,7 @@ namespace VDS.RDF.Parsing
             catch (RdfParsingTerminatedException)
             {
                 handler.EndRdf(true);
-                //Discard this - it justs means the Handler told us to stop
+                // Discard this - it justs means the Handler told us to stop
             }
             catch
             {
@@ -333,7 +333,7 @@ namespace VDS.RDF.Parsing
             {
                 case Token.BLANKNODEWITHID:
                 case Token.URI:
-                    //OK
+                    // OK
                     return next;
 
                 default:
@@ -347,7 +347,7 @@ namespace VDS.RDF.Parsing
             switch (next.TokenType)
             {
                 case Token.URI:
-                    //OK
+                    // OK
                     return next;
                 default:
                     throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI as the Predicate of a Triple", next);
@@ -363,11 +363,11 @@ namespace VDS.RDF.Parsing
                 case Token.LITERALWITHDT:
                 case Token.LITERALWITHLANG:
                 case Token.URI:
-                    //OK
+                    // OK
                     return next;
 
                 case Token.LITERAL:
-                    //Check for Datatype/Language
+                    // Check for Datatype/Language
                     IToken temp = tokens.Peek();
                     if (temp.TokenType == Token.DATATYPE)
                     {
@@ -407,7 +407,7 @@ namespace VDS.RDF.Parsing
                 case Token.LITERAL:
                     if (this.Syntax != NQuadsSyntax.Original) throw new RdfParseException("Only a Blank Node/URI may be used as the graph name in RDF NQuads 1.1");
 
-                    //Check for Datatype/Language
+                    // Check for Datatype/Language
                     IToken temp = tokens.Peek();
                     switch (temp.TokenType)
                     {
@@ -428,14 +428,14 @@ namespace VDS.RDF.Parsing
                     throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Blank Node/Literal/URI as the Context of the Triple", next);
             }
 
-            //Ensure we then see a . to terminate the Quad
+            // Ensure we then see a . to terminate the Quad
             next = tokens.Dequeue();
             if (next.TokenType != Token.DOT)
             {
                 throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Dot Token (Line Terminator) to terminate a Triple", next);
             }
 
-            //Finally return the Context URI
+            // Finally return the Context URI
             if (context.NodeType == NodeType.Uri)
             {
                 return ((IUriNode) context).Uri;

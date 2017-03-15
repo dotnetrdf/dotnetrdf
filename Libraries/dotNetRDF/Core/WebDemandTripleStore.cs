@@ -46,7 +46,7 @@ namespace VDS.RDF
         public WebDemandTripleStore(Uri defaultGraphUri)
             : this()
         {
-            //Call Contains() which will try to load the Graph if it exists in the Store
+            // Call Contains() which will try to load the Graph if it exists in the Store
             if (!this._graphs.Contains(defaultGraphUri))
             {
                 throw new RdfException("Cannot load the requested Default Graph since a valid Graph with that URI could not be retrieved from the Web");

@@ -278,7 +278,7 @@ namespace VDS.RDF.Query
         /// <returns>A SPARQL Result Set</returns>
         public virtual SparqlResultSet QueryWithResultSet(String sparqlQuery)
         {
-            //Ready a ResultSet then invoke the other overload
+            // Ready a ResultSet then invoke the other overload
             SparqlResultSet results = new SparqlResultSet();
             this.QueryWithResultSet(new ResultSetHandler(results), sparqlQuery);
             return results;
@@ -293,10 +293,10 @@ namespace VDS.RDF.Query
         {
             try
             {
-                //Make the Query
+                // Make the Query
                 HttpWebResponse httpResponse = this.QueryInternal(sparqlQuery, this.ResultsAcceptHeader);
 
-                //Parse into a ResultSet based on Content Type
+                // Parse into a ResultSet based on Content Type
                 String ctype = httpResponse.ContentType;
 
                 if (ctype.Contains(";"))
@@ -312,12 +312,12 @@ namespace VDS.RDF.Query
             {
                 if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                 
-                //Some sort of HTTP Error occurred
+                // Some sort of HTTP Error occurred
                 throw new RdfQueryException("A HTTP Error occurred while trying to make the SPARQL Query, see inner exception for details", webEx);
             }
             catch (RdfException)
             {
-                //Some problem with the RDF or Parsing thereof
+                // Some problem with the RDF or Parsing thereof
                 throw;
             }
         }
@@ -329,7 +329,7 @@ namespace VDS.RDF.Query
         /// <returns>RDF Graph</returns>
         public virtual IGraph QueryWithResultGraph(String sparqlQuery)
         {
-            //Set up an Empty Graph then invoke the other overload
+            // Set up an Empty Graph then invoke the other overload
             Graph g = new Graph();
             g.BaseUri = this.Uri;
             this.QueryWithResultGraph(new GraphHandler(g), sparqlQuery);
@@ -345,10 +345,10 @@ namespace VDS.RDF.Query
         {
             try
             {
-                //Make the Query
+                // Make the Query
                 using (HttpWebResponse httpResponse = this.QueryInternal(sparqlQuery, this.RdfAcceptHeader))
                 {
-                    //Parse into a Graph based on Content Type
+                    // Parse into a Graph based on Content Type
                     String ctype = httpResponse.ContentType;
                     IRdfReader parser = MimeTypesHelper.GetParser(ctype);
                     parser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
@@ -358,12 +358,12 @@ namespace VDS.RDF.Query
             catch (WebException webEx)
             {
                 if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                //Some sort of HTTP Error occurred
+                // Some sort of HTTP Error occurred
                 throw new RdfQueryException("A HTTP Error occurred when trying to make the SPARQL Query, see inner exception for details", webEx);
             }
             catch (RdfException)
             {
-                //Some problem with the RDF or Parsing thereof
+                // Some problem with the RDF or Parsing thereof
                 throw;
             }
         }
@@ -377,14 +377,14 @@ namespace VDS.RDF.Query
         {
             try
             {
-                //Make the Query
-                //HACK: Changed to an accept all for the time being to ensure works OK with DBPedia and Virtuoso
+                // Make the Query
+                // HACK: Changed to an accept all for the time being to ensure works OK with DBPedia and Virtuoso
                 return this.QueryInternal(sparqlQuery, MimeTypesHelper.Any);
             }
             catch (WebException webEx)
             {
                 if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                //Some sort of HTTP Error occurred
+                // Some sort of HTTP Error occurred
                 throw new RdfQueryException("A HTTP Error occurred while trying to make the SPARQL Query", webEx);
             }
         }
@@ -399,14 +399,14 @@ namespace VDS.RDF.Query
         {
             try
             {
-                //Make the Query
+                // Make the Query
                 return this.QueryInternal(sparqlQuery, MimeTypesHelper.CustomHttpAcceptHeader(mimeTypes));
             }
             catch (WebException webEx)
             {
                 if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                 
-                //Some sort of HTTP Error occurred
+                // Some sort of HTTP Error occurred
                 throw new RdfQueryException("A HTTP Error occurred while trying to make the SPARQL Query", webEx);
             }
         }
@@ -444,10 +444,10 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         private HttpWebResponse QueryInternal(String sparqlQuery, String acceptHeader)
         {
-            //Patched by Alexander Zapirov to handle situations where the SPARQL Query is very long
-            //i.e. would exceed the length limit of the Uri class
+            // Patched by Alexander Zapirov to handle situations where the SPARQL Query is very long
+            // i.e. would exceed the length limit of the Uri class
 
-            //Build the Query Uri
+            // Build the Query Uri
             StringBuilder queryUri = new StringBuilder();
             queryUri.Append(this.Uri.AbsoluteUri);
             bool longQuery = true;
@@ -459,14 +459,14 @@ namespace VDS.RDF.Query
                     queryUri.Append(!this.Uri.Query.Equals(String.Empty) ? "&query=" : "?query=");
                     queryUri.Append(HttpUtility.UrlEncode(sparqlQuery));
 
-                    //Add the Default Graph URIs
+                    // Add the Default Graph URIs
                     foreach (String defaultGraph in this._defaultGraphUris)
                     {
                         if (defaultGraph.Equals(String.Empty)) continue;
                         queryUri.Append("&default-graph-uri=");
                         queryUri.Append(HttpUtility.UrlEncode(defaultGraph));
                     }
-                    //Add the Named Graph URIs
+                    // Add the Named Graph URIs
                     foreach (String namedGraph in this._namedGraphUris)
                     {
                         if (namedGraph.Equals(String.Empty)) continue;
@@ -480,23 +480,23 @@ namespace VDS.RDF.Query
                 }
             }
 
-            //Make the Query via HTTP
+            // Make the Query via HTTP
             HttpWebResponse httpResponse;
             if (longQuery || queryUri.Length > 2048 || this.HttpMode == "POST")
             {
-                //Long Uri/HTTP POST Mode so use POST
+                // Long Uri/HTTP POST Mode so use POST
                 StringBuilder postData = new StringBuilder();
                 postData.Append("query=");
                 postData.Append(HttpUtility.UrlEncode(sparqlQuery));
 
-                //Add the Default Graph URI(s)
+                // Add the Default Graph URI(s)
                 foreach (String defaultGraph in this._defaultGraphUris)
                 {
                     if (defaultGraph.Equals(String.Empty)) continue;
                     postData.Append("&default-graph-uri=");
                     postData.Append(HttpUtility.UrlEncode(defaultGraph));
                 }
-                //Add the Named Graph URI(s)
+                // Add the Named Graph URI(s)
                 foreach (String namedGraph in this._namedGraphUris)
                 {
                     if (namedGraph.Equals(String.Empty)) continue;
@@ -508,7 +508,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                //Make the query normally via GET
+                // Make the query normally via GET
                 httpResponse = this.ExecuteQuery(UriFactory.Create(queryUri.ToString()), String.Empty, acceptHeader);
             }
 
@@ -524,12 +524,12 @@ namespace VDS.RDF.Query
         /// <returns>HTTP Response</returns>
         private HttpWebResponse ExecuteQuery(Uri target, String postData, String accept)
         {
-            //Expect errors in this function to be handled by the calling function
+            // Expect errors in this function to be handled by the calling function
 
-            //Set-up the Request
+            // Set-up the Request
             HttpWebRequest httpRequest = (HttpWebRequest)WebRequest.Create(target);
 
-            //Use HTTP GET/POST according to user set preference
+            // Use HTTP GET/POST according to user set preference
             httpRequest.Accept = accept;
             if (!postData.Equals(String.Empty))
             {

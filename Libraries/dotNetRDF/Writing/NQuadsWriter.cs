@@ -121,7 +121,7 @@ namespace VDS.RDF.Writing
             if (writer == null) throw new RdfOutputException("Cannot output to a null writer");
 
             ThreadedStoreWriterContext context = new ThreadedStoreWriterContext(store, writer, this.PrettyPrintMode, false);
-            //Check there's something to do
+            // Check there's something to do
             if (context.Store.Graphs.Count == 0)
             {
                 context.Output.Close();
@@ -132,13 +132,13 @@ namespace VDS.RDF.Writing
             {
                 if (this.UseMultiThreadedWriting)
                 {
-                    //Queue the Graphs to be written
+                    // Queue the Graphs to be written
                     foreach (IGraph g in context.Store.Graphs)
                     {
                         context.Add(g.BaseUri);
                     }
 
-                    //Start making the async calls
+                    // Start making the async calls
                     List<IAsyncResult> results = new List<IAsyncResult>();
                     SaveGraphsDelegate d = new SaveGraphsDelegate(this.SaveGraphs);
                     for (int i = 0; i < this._threads; i++)
@@ -146,7 +146,7 @@ namespace VDS.RDF.Writing
                         results.Add(d.BeginInvoke(context, null, null));
                     }
 
-                    //Wait for all the async calls to complete
+                    // Wait for all the async calls to complete
                     WaitHandle.WaitAll(results.Select(r => r.AsyncWaitHandle).ToArray());
                     RdfThreadedOutputException outputEx = new RdfThreadedOutputException(WriterErrorMessages.ThreadedOutputFailure("TSV"));
                     foreach (IAsyncResult result in results)
@@ -162,7 +162,7 @@ namespace VDS.RDF.Writing
                     }
                     context.Output.Close();
 
-                    //If there were any errors we'll throw an RdfThreadedOutputException now
+                    // If there were any errors we'll throw an RdfThreadedOutputException now
                     if (outputEx.InnerExceptions.Any()) throw outputEx;
                 }
                 else
@@ -186,7 +186,7 @@ namespace VDS.RDF.Writing
                 }
                 catch
                 {
-                    //Just cleaning up
+                    // Just cleaning up
                 }
                 throw;
             }
@@ -281,10 +281,10 @@ namespace VDS.RDF.Writing
                 Uri u = null;
                 while (globalContext.TryGetNextUri(out u))
                 {
-                    //Get the Graph from the Store
+                    // Get the Graph from the Store
                     IGraph g = globalContext.Store.Graphs[u];
 
-                    //Generate the Graph Output and add to Stream
+                    // Generate the Graph Output and add to Stream
                     NTriplesWriterContext context = new NTriplesWriterContext(g, new System.IO.StringWriter(), NQuadsParser.AsNTriplesSyntax(this.Syntax), globalContext.PrettyPrint, globalContext.HighSpeedModePermitted);
                     String graphContent = this.GraphToNQuads(globalContext, context);
                     if (!graphContent.Equals(String.Empty))
@@ -309,7 +309,7 @@ namespace VDS.RDF.Writing
 #if !(PORTABLE||NETCORE) // PCL doesn't provide Thread.Abort() or ThreadAbortException
             catch (ThreadAbortException)
             {
-                //We've been terminated, don't do anything
+                // We've been terminated, don't do anything
 #if !SILVERLIGHT
                 Thread.ResetAbort();
 #endif

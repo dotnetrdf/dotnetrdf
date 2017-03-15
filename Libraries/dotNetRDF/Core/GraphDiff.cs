@@ -74,14 +74,14 @@ namespace VDS.RDF
             {
                 if (b == null)
                 {
-                    //Both Graphs are null so considered equal with no differences
+                    // Both Graphs are null so considered equal with no differences
                     report.AreEqual = true;
                     report.AreDifferentSizes = false;
                     return report;
                 }
                 else
                 {
-                    //A is null and B is non-null so considered non-equal with everything from B listed as added
+                    // A is null and B is non-null so considered non-equal with everything from B listed as added
                     report.AreEqual = false;
                     report.AreDifferentSizes = true;
                     foreach (Triple t in b.Triples)
@@ -105,7 +105,7 @@ namespace VDS.RDF
             }
             else if (b == null)
             {
-                //A is non-null and B is null so considered non-equal with everything from A listed as removed
+                // A is non-null and B is null so considered non-equal with everything from A listed as removed
                 report.AreEqual = false;
                 report.AreDifferentSizes = true;
                 foreach (Triple t in a.Triples)
@@ -127,11 +127,11 @@ namespace VDS.RDF
                 return report;
             }
 
-            //Firstly check for Graph Equality
+            // Firstly check for Graph Equality
             Dictionary<INode,INode> equalityMapping = new Dictionary<INode,INode>();
             if (a.Equals(b, out equalityMapping))
             {
-                //If Graphs are equal set AreEqual to true, assign the mapping and return
+                // If Graphs are equal set AreEqual to true, assign the mapping and return
                 report.AreEqual = true;
                 if (equalityMapping != null) report.Mapping = equalityMapping;
                 return report;
@@ -140,8 +140,8 @@ namespace VDS.RDF
 
             report.AreDifferentSizes = (a.Triples.Count != b.Triples.Count);
 
-            //Next check for changes in Ground Triples
-            //Iterate over the Ground Triples in the 1st Graph to find those that have been removed in the 2nd
+            // Next check for changes in Ground Triples
+            // Iterate over the Ground Triples in the 1st Graph to find those that have been removed in the 2nd
             foreach (Triple t in a.Triples.Where(t => t.IsGroundTriple))
             {
                 if (!b.Triples.Contains(t))
@@ -149,7 +149,7 @@ namespace VDS.RDF
                     report.AddRemovedTriple(t);
                 }
             }
-            //Iterate over the Ground Triples in the 2nd Graph to find those that have been added in the 2nd
+            // Iterate over the Ground Triples in the 2nd Graph to find those that have been added in the 2nd
             foreach (Triple t in b.Triples.Where(t => t.IsGroundTriple))
             {
                 if (!a.Triples.Contains(t))
@@ -158,13 +158,13 @@ namespace VDS.RDF
                 }
             }
 
-            //Do we need to compute MSGs?
-            //If all Triples are Ground Triples then this step gets skipped which saves on computation
+            // Do we need to compute MSGs?
+            // If all Triples are Ground Triples then this step gets skipped which saves on computation
             if (a.Triples.Any(t => !t.IsGroundTriple) || b.Triples.Any(t => !t.IsGroundTriple))
             {
-                //Some non-ground Triples so start computing MSGs
+                // Some non-ground Triples so start computing MSGs
 
-                //First build 2 HashSets of the non-ground Triples from the Graphs
+                // First build 2 HashSets of the non-ground Triples from the Graphs
                 foreach (Triple t in a.Triples.Where(t => !t.IsGroundTriple))
                 {
                     this._lhsUnassigned.Add(t);
@@ -174,38 +174,38 @@ namespace VDS.RDF
                     this._rhsUnassigned.Add(t);
                 }
 
-                //Then compute all the MSGs
+                // Then compute all the MSGs
                 GraphDiff.ComputeMSGs(a, this._lhsUnassigned, this._lhsMSGs);
                 GraphDiff.ComputeMSGs(b, this._rhsUnassigned, this._rhsMSGs);
 
-                //Sort MSGs by size - this is just so we start checking MSG equality from smallest MSGs first for efficiency
+                // Sort MSGs by size - this is just so we start checking MSG equality from smallest MSGs first for efficiency
                 GraphSizeComparer comparer = new GraphSizeComparer();
                 this._lhsMSGs.Sort(comparer);
                 this._rhsMSGs.Sort(comparer);
 
-                //Now start trying to match MSG
+                // Now start trying to match MSG
                 foreach (IGraph msg in this._lhsMSGs)
                 {
-                    //Get Candidate MSGs from RHS i.e. those of equal size
+                    // Get Candidate MSGs from RHS i.e. those of equal size
                     List<IGraph> candidates = (from g in this._rhsMSGs
                                                where g.Triples.Count == msg.Triples.Count
                                                select g).ToList();
 
                     if (candidates.Count == 0)
                     {
-                        //No Candidate Matches so this MSG is not present in the 2nd Graph so add to report as a Removed MSG
+                        // No Candidate Matches so this MSG is not present in the 2nd Graph so add to report as a Removed MSG
                         report.AddRemovedMSG(msg);
                     }
                     else
                     {
-                        //Do any of the candidates match?
+                        // Do any of the candidates match?
                         bool hasMatch = false;
                         foreach (IGraph candidate in candidates)
                         {
                             Dictionary<INode, INode> tempMapping = new Dictionary<INode, INode>();
                             if (msg.Equals(candidate, out tempMapping))
                             {
-                                //This MSG has a Match in the 2nd Graph so add the Mapping information
+                                // This MSG has a Match in the 2nd Graph so add the Mapping information
                                 hasMatch = true;
                                 try
                                 {
@@ -213,23 +213,23 @@ namespace VDS.RDF
                                 }
                                 catch (RdfException)
                                 {
-                                    //If the Mapping cannot be merged it is a bad mapping and we try other candidates
+                                    // If the Mapping cannot be merged it is a bad mapping and we try other candidates
                                     hasMatch = false;
                                     continue;
                                 }
 
-                                //Remove the matched MSG from the RHS MSGs so we cannot match another LHS MSG to it later
-                                //We use ReferenceEquals for this remove to avoid potentially costly Graph Equality calculations
+                                // Remove the matched MSG from the RHS MSGs so we cannot match another LHS MSG to it later
+                                // We use ReferenceEquals for this remove to avoid potentially costly Graph Equality calculations
                                 this._rhsMSGs.RemoveAll(g => ReferenceEquals(g, candidate));
                             }
                         }
 
-                        //No match was found so the MSG is removed from the 2nd Graph
+                        // No match was found so the MSG is removed from the 2nd Graph
                         if (!hasMatch) report.AddRemovedMSG(msg);   
                     }
                 }
 
-                //If we are left with any MSGs in the RHS then these are added MSG
+                // If we are left with any MSGs in the RHS then these are added MSG
                 foreach (IGraph msg in this._rhsMSGs)
                 {
                     report.AddAddedMSG(msg);
@@ -246,32 +246,32 @@ namespace VDS.RDF
         /// <param name="msgs">MSGs list to populate</param>
         public static void ComputeMSGs(IGraph g, HashSet<Triple> unassigned, List<IGraph> msgs)
         {
-            //While we have unassigned Triples build MSGs
+            // While we have unassigned Triples build MSGs
             while (unassigned.Count > 0)
             {
                 HashSet<INode> processed = new HashSet<INode>();
                 Queue<INode> unprocessed = new Queue<INode>();
 
-                //Get next Triple from unassigned
+                // Get next Triple from unassigned
                 Triple first = unassigned.First();
                 unassigned.Remove(first);
 
-                //Get the BNodes from it that need to be processed
+                // Get the BNodes from it that need to be processed
                 GraphDiff.GetNodesForProcessing(first, unprocessed);
 
-                //Start building an MSG starting from the Triple
+                // Start building an MSG starting from the Triple
                 Graph msg = new Graph();
                 msg.Assert(first);
                 while (unprocessed.Count > 0)
                 {
                     INode next = unprocessed.Dequeue();
-                    //Can safely skip Nodes we've already processed
+                    // Can safely skip Nodes we've already processed
                     if (processed.Contains(next)) continue;
 
-                    //Get all the Triples that use the given Node and find any additional Blank Nodes for processing
+                    // Get all the Triples that use the given Node and find any additional Blank Nodes for processing
                     foreach (Triple t in g.GetTriples(next))
                     {
-                        //When a Triple is added to an MSG it is removed from the unassigned list
+                        // When a Triple is added to an MSG it is removed from the unassigned list
                         unassigned.Remove(t);
                         msg.Assert(t);
                         GraphDiff.GetNodesForProcessing(t, unprocessed);
@@ -293,7 +293,7 @@ namespace VDS.RDF
 
         private void MergeMapping(GraphDiffReport report, Dictionary<INode, INode> mapping)
         {
-            //This first run through ensures the mappings don't conflict in which case it is an invalid mapping
+            // This first run through ensures the mappings don't conflict in which case it is an invalid mapping
             foreach (KeyValuePair<INode, INode> kvp in mapping)
             {
                 if (report.Mapping.ContainsKey(kvp.Key))
@@ -301,7 +301,7 @@ namespace VDS.RDF
                     if (!report.Mapping[kvp.Key].Equals(kvp.Value)) throw new RdfException("Error in GraphDiff - " + kvp.Key.ToString() + " is already mapped to " + report.Mapping[kvp.Key].ToString() + " so cannot be remapped to " + kvp.Value.ToString());
                 }
             }
-            //The second run through does the actual merge
+            // The second run through does the actual merge
             foreach (KeyValuePair<INode, INode> kvp in mapping)
             {
                 report.Mapping.Add(kvp.Key, kvp.Value);

@@ -96,7 +96,7 @@ namespace VDS.RDF.Update
         {
             try
             {
-                //Build the Request URI and POST Data
+                // Build the Request URI and POST Data
                 StringBuilder requestUri = new StringBuilder();
                 requestUri.Append(this.Uri.AbsoluteUri);
                 StringBuilder postData = new StringBuilder();
@@ -120,7 +120,7 @@ namespace VDS.RDF.Update
                     postData.Append(HttpUtility.UrlEncode(sparqlUpdate));
                 }
 
-                //Make the request
+                // Make the request
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri.ToString());
                 this.ApplyRequestOptions(request);
                 Tools.HttpDebugRequest(request);
@@ -142,7 +142,7 @@ namespace VDS.RDF.Update
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
-                    //If we don't get an error then we should be fine
+                    // If we don't get an error then we should be fine
                     response.Close();
                 }
 
@@ -150,7 +150,7 @@ namespace VDS.RDF.Update
             catch (WebException webEx)
             {
                 if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                //Some sort of HTTP Error occurred
+                // Some sort of HTTP Error occurred
                 throw new SparqlUpdateException("A HTTP Error occurred when trying to make the SPARQL Update", webEx);
             }
         }

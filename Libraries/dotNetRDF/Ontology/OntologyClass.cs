@@ -52,15 +52,15 @@ namespace VDS.RDF.Ontology
         public OntologyClass(INode resource, IGraph graph)
             : base(resource, graph)
         {
-            //Q: Assert that this resource is a Class?
-            //UriNode rdfType = graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyType));
-            //graph.Assert(new Triple(resource, rdfType, graph.CreateUriNode(new Uri(OntologyHelper.RdfsClass))));
+            // Q: Assert that this resource is a Class?
+            // UriNode rdfType = graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyType));
+            // graph.Assert(new Triple(resource, rdfType, graph.CreateUriNode(new Uri(OntologyHelper.RdfsClass))));
 
             this.IntialiseProperty(OntologyHelper.PropertySubClassOf, false);
             this.IntialiseProperty(OntologyHelper.PropertyEquivalentClass, false);
             this.IntialiseProperty(OntologyHelper.PropertyDisjointWith, false);
 
-            //Find derived classes
+            // Find derived classes
             IUriNode subClassOf = this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySubClassOf));
             this._resourceProperties.Add(PropertyDerivedClass, new List<INode>());
             this._resourceProperties.Add(PropertyDirectSubClass, new List<INode>());
@@ -82,7 +82,7 @@ namespace VDS.RDF.Ontology
                 }
             } while (c < this._resourceProperties[PropertyDerivedClass].Count);
 
-            //Find additional super classes
+            // Find additional super classes
             this._resourceProperties.Add(PropertyDirectSuperClass, new List<INode>());
             if (this._resourceProperties.ContainsKey(OntologyHelper.PropertySubClassOf))
             {

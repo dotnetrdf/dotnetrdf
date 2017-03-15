@@ -169,7 +169,7 @@ namespace VDS.RDF.Storage
             this._kb = kbID;
             this._reasoning = reasoning;
 
-            //Prep the writer
+            // Prep the writer
             this._writer.HighSpeedModePermitted = true;
             this._writer.CompressionLevel = WriterCompressionLevel.None;
             this._writer.UseMultiThreadedWriting = false;
@@ -178,7 +178,7 @@ namespace VDS.RDF.Storage
             this._pwd = password;
             this._hasCredentials = (!String.IsNullOrEmpty(username) && !String.IsNullOrEmpty(password));
 
-            //Server reference
+            // Server reference
             this._server = new StardogV1Server(this._baseUri, this._username, this._pwd);
         }
 
@@ -350,13 +350,13 @@ namespace VDS.RDF.Storage
 
                 String tID = (this._activeTrans == null) ? String.Empty : "/" + this._activeTrans;
 
-                //String accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
+                // String accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
                 String accept =
                     MimeTypesHelper.CustomHttpAcceptHeader(
                         MimeTypesHelper.SparqlResultsXml.Concat(
                             MimeTypesHelper.Definitions.Where(d => d.CanParseRdf).SelectMany(d => d.MimeTypes)));
 
-                //Create the Request
+                // Create the Request
                 Dictionary<String, String> queryParams = new Dictionary<string, string>();
                 if (sparqlQuery.Length < 2048)
                 {
@@ -368,7 +368,7 @@ namespace VDS.RDF.Storage
                 {
                     request = this.CreateRequest(this._kb + tID + "/query", accept, "POST", queryParams);
 
-                    //Build the Post Data and add to the Request Body
+                    // Build the Post Data and add to the Request Body
                     request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
                     StringBuilder postData = new StringBuilder();
                     postData.Append("query=");
@@ -382,7 +382,7 @@ namespace VDS.RDF.Storage
 
                 Tools.HttpDebugRequest(request);
 
-                //Get the Response and process based on the Content Type
+                // Get the Response and process based on the Content Type
                 using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
@@ -391,7 +391,7 @@ namespace VDS.RDF.Storage
                     String ctype = response.ContentType;
                     try
                     {
-                        //Is the Content Type referring to a Sparql Result Set format?
+                        // Is the Content Type referring to a Sparql Result Set format?
                         ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype,
                             Regex.IsMatch(sparqlQuery, "ASK", RegexOptions.IgnoreCase));
                         resreader.Load(resultsHandler, data);
@@ -399,9 +399,9 @@ namespace VDS.RDF.Storage
                     }
                     catch (RdfParserSelectionException)
                     {
-                        //If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
+                        // If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
 
-                        //Is the Content Type referring to a RDF format?
+                        // Is the Content Type referring to a RDF format?
                         IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
                         rdfreader.Load(rdfHandler, data);
                         response.Close();
@@ -519,7 +519,7 @@ namespace VDS.RDF.Storage
             String tID = null;
             try
             {
-                //Have to do the delete first as that requires a separate transaction
+                // Have to do the delete first as that requires a separate transaction
                 if (g.BaseUri != null)
                 {
                     try
@@ -534,14 +534,14 @@ namespace VDS.RDF.Storage
                     }
                 }
 
-                //Get a Transaction ID, if there is no active Transaction then this operation will be auto-committed
+                // Get a Transaction ID, if there is no active Transaction then this operation will be auto-committed
                 tID = this._activeTrans ?? this.BeginTransaction();
 
                 HttpWebRequest request = this.CreateRequest(this._kb + "/" + tID + "/add", MimeTypesHelper.Any, "POST",
                     new Dictionary<string, string>());
                 request.ContentType = MimeTypesHelper.TriG[0];
 
-                //Save the Data as TriG to the Request Stream
+                // Save the Data as TriG to the Request Stream
                 TripleStore store = new TripleStore();
                 store.Add(g);
                 this._writer.Save(store, new StreamWriter(request.GetRequestStream()));
@@ -551,11 +551,11 @@ namespace VDS.RDF.Storage
                 using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
-                    //If we get here then it was OK
+                    // If we get here then it was OK
                     response.Close();
                 }
 
-                //Commit Transaction only if in auto-commit mode (active transaction will be null)
+                // Commit Transaction only if in auto-commit mode (active transaction will be null)
                 if (this._activeTrans != null) return;
                 try
                 {
@@ -568,8 +568,8 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
-                //Rollback Transaction only if got as far as creating a Transaction
-                //and in auto-commit mode
+                // Rollback Transaction only if got as far as creating a Transaction
+                // and in auto-commit mode
                 if (tID != null)
                 {
                     if (this._activeTrans == null)
@@ -601,17 +601,17 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public virtual void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            //If there are no adds or deletes, just return and avoid creating empty transaction
+            // If there are no adds or deletes, just return and avoid creating empty transaction
             bool anyData = (removals != null && removals.Any()) || (additions != null && additions.Any());
             if (!anyData) return;
 
             String tID = null;
             try
             {
-                //Get a Transaction ID, if there is no active Transaction then this operation will be auto-committed
+                // Get a Transaction ID, if there is no active Transaction then this operation will be auto-committed
                 tID = this._activeTrans ?? this.BeginTransaction();
 
-                //First do the Removals
+                // First do the Removals
                 if (removals != null)
                 {
                     if (removals.Any())
@@ -620,7 +620,7 @@ namespace VDS.RDF.Storage
                             MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
                         request.ContentType = MimeTypesHelper.TriG[0];
 
-                        //Save the Data to be removed as TriG to the Request Stream
+                        // Save the Data to be removed as TriG to the Request Stream
                         TripleStore store = new TripleStore();
                         Graph g = new Graph();
                         g.Assert(removals);
@@ -635,7 +635,7 @@ namespace VDS.RDF.Storage
                     }
                 }
 
-                //Then do the Additions
+                // Then do the Additions
                 if (additions != null)
                 {
                     if (additions.Any())
@@ -644,7 +644,7 @@ namespace VDS.RDF.Storage
                             "POST", new Dictionary<string, string>());
                         request.ContentType = MimeTypesHelper.TriG[0];
 
-                        //Save the Data to be removed as TriG to the Request Stream
+                        // Save the Data to be removed as TriG to the Request Stream
                         TripleStore store = new TripleStore();
                         Graph g = new Graph();
                         g.Assert(additions);
@@ -659,7 +659,7 @@ namespace VDS.RDF.Storage
                     }
                 }
 
-                //Commit Transaction only if in auto-commit mode (active transaction will be null)
+                // Commit Transaction only if in auto-commit mode (active transaction will be null)
                 if (this._activeTrans != null) return;
                 try
                 {
@@ -672,8 +672,8 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
-                //Rollback Transaction only if got as far as creating a Transaction
-                //and in auto-commit mode
+                // Rollback Transaction only if got as far as creating a Transaction
+                // and in auto-commit mode
                 if (tID != null)
                 {
                     if (this._activeTrans == null)
@@ -730,7 +730,7 @@ namespace VDS.RDF.Storage
             String tID = null;
             try
             {
-                //Get a Transaction ID, if there is no active Transaction then this operation will be auto-committed
+                // Get a Transaction ID, if there is no active Transaction then this operation will be auto-committed
                 tID = this._activeTrans ?? this.BeginTransaction();
 
                 HttpWebRequest request = this.CreateRequest(
@@ -750,11 +750,11 @@ namespace VDS.RDF.Storage
                 using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
-                    //If we get here then the Delete worked OK
+                    // If we get here then the Delete worked OK
                     response.Close();
                 }
 
-                //Commit Transaction only if in auto-commit mode (active transaction will be null)
+                // Commit Transaction only if in auto-commit mode (active transaction will be null)
                 if (this._activeTrans != null) return;
                 try
                 {
@@ -767,8 +767,8 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
-                //Rollback Transaction only if got as far as creating a Transaction
-                //and in auto-commit mode
+                // Rollback Transaction only if got as far as creating a Transaction
+                // and in auto-commit mode
                 if (tID != null)
                 {
                     if (this._activeTrans == null)
@@ -848,7 +848,7 @@ namespace VDS.RDF.Storage
 
         protected virtual void SaveGraphAsync(IGraph g, AsyncStorageCallback callback, Object state)
         {
-            //Get a Transaction ID, if there is no active Transaction then this operation will start a new transaction and be auto-committed
+            // Get a Transaction ID, if there is no active Transaction then this operation will start a new transaction and be auto-committed
             if (this._activeTrans != null)
             {
                 this.SaveGraphAsync(this._activeTrans, false, g, callback, state);
@@ -859,7 +859,7 @@ namespace VDS.RDF.Storage
                 {
                     if (args.WasSuccessful)
                     {
-                        //Have to do the delete first as that requires a separate transaction
+                        // Have to do the delete first as that requires a separate transaction
                         if (g.BaseUri != null)
                         {
                             this.DeleteGraph(g.BaseUri, (_1, delArgs, _2) =>
@@ -905,7 +905,7 @@ namespace VDS.RDF.Storage
                 {
                     try
                     {
-                        //Save the Data as TriG to the Request Stream
+                        // Save the Data as TriG to the Request Stream
                         Stream stream = request.EndGetRequestStream(r);
                         TripleStore store = new TripleStore();
                         store.Add(g);
@@ -919,10 +919,10 @@ namespace VDS.RDF.Storage
                                 HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(r2);
                                 Tools.HttpDebugResponse(response);
 
-                                //If we get here then it was OK
+                                // If we get here then it was OK
                                 response.Close();
 
-                                //Commit Transaction only if in auto-commit mode (active transaction will be null)
+                                // Commit Transaction only if in auto-commit mode (active transaction will be null)
                                 if (autoCommit)
                                 {
                                     this.Commit((sender, args, st) =>
@@ -950,7 +950,7 @@ namespace VDS.RDF.Storage
                             {
                                 if (autoCommit)
                                 {
-                                    //If something went wrong try to rollback, don't care what the rollback response is
+                                    // If something went wrong try to rollback, don't care what the rollback response is
                                     this.Rollback((sender, args, st) => { }, state);
                                 }
                                 callback(this,
@@ -961,7 +961,7 @@ namespace VDS.RDF.Storage
                             {
                                 if (autoCommit)
                                 {
-                                    //If something went wrong try to rollback, don't care what the rollback response is
+                                    // If something went wrong try to rollback, don't care what the rollback response is
                                     this.Rollback((sender, args, st) => { }, state);
                                 }
                                 callback(this,
@@ -974,7 +974,7 @@ namespace VDS.RDF.Storage
                     {
                         if (autoCommit)
                         {
-                            //If something went wrong try to rollback, don't care what the rollback response is
+                            // If something went wrong try to rollback, don't care what the rollback response is
                             this.Rollback((sender, args, st) => { }, state);
                         }
                         callback(this,
@@ -985,7 +985,7 @@ namespace VDS.RDF.Storage
                     {
                         if (autoCommit)
                         {
-                            //If something went wrong try to rollback, don't care what the rollback response is
+                            // If something went wrong try to rollback, don't care what the rollback response is
                             this.Rollback((sender, args, st) => { }, state);
                         }
                         callback(this,
@@ -998,7 +998,7 @@ namespace VDS.RDF.Storage
             {
                 if (autoCommit)
                 {
-                    //If something went wrong try to rollback, don't care what the rollback response is
+                    // If something went wrong try to rollback, don't care what the rollback response is
                     this.Rollback((sender, args, st) => { }, state);
                 }
                 callback(this,
@@ -1009,7 +1009,7 @@ namespace VDS.RDF.Storage
             {
                 if (autoCommit)
                 {
-                    //If something went wrong try to rollback, don't care what the rollback response is
+                    // If something went wrong try to rollback, don't care what the rollback response is
                     this.Rollback((sender, args, st) => { }, state);
                 }
                 callback(this,
@@ -1103,7 +1103,7 @@ namespace VDS.RDF.Storage
         public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals,
             AsyncStorageCallback callback, object state)
         {
-            //If there are no adds or deletes, just callback and avoid creating empty transaction
+            // If there are no adds or deletes, just callback and avoid creating empty transaction
             bool anyData = false;
             if (removals != null && removals.Any()) anyData = true;
             if (additions != null && additions.Any()) anyData = true;
@@ -1121,7 +1121,7 @@ namespace VDS.RDF.Storage
         protected virtual void UpdateGraphAsync(string graphUri, IEnumerable<Triple> additions,
             IEnumerable<Triple> removals, AsyncStorageCallback callback, Object state)
         {
-            //Get a Transaction ID, if there is no active Transaction then this operation will start a new transaction and be auto-committed
+            // Get a Transaction ID, if there is no active Transaction then this operation will start a new transaction and be auto-committed
             if (this._activeTrans != null)
             {
                 this.UpdateGraphAsync(this._activeTrans, false, graphUri, additions, removals, callback, state);
@@ -1159,7 +1159,7 @@ namespace VDS.RDF.Storage
                     {
                         try
                         {
-                            //Save the Data as TriG to the Request Stream
+                            // Save the Data as TriG to the Request Stream
                             Stream stream = request.EndGetRequestStream(r);
                             TripleStore store = new TripleStore();
                             Graph g = new Graph();
@@ -1176,12 +1176,12 @@ namespace VDS.RDF.Storage
                                     HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(r2);
                                     Tools.HttpDebugResponse(response);
 
-                                    //If we get here then it was OK
+                                    // If we get here then it was OK
                                     response.Close();
 
                                     if (additions != null && additions.Any())
                                     {
-                                        //Now we need to do additions
+                                        // Now we need to do additions
                                         request = this.CreateRequest(this._kb + "/" + tID + "/add", MimeTypesHelper.Any,
                                             "POST", new Dictionary<string, string>());
                                         request.ContentType = MimeTypesHelper.TriG[0];
@@ -1190,7 +1190,7 @@ namespace VDS.RDF.Storage
                                         {
                                             try
                                             {
-                                                //Save the Data as TriG to the Request Stream
+                                                // Save the Data as TriG to the Request Stream
                                                 stream = request.EndGetRequestStream(r3);
                                                 store = new TripleStore();
                                                 g = new Graph();
@@ -1208,10 +1208,10 @@ namespace VDS.RDF.Storage
                                                         response = (HttpWebResponse) request.EndGetResponse(r4);
                                                         Tools.HttpDebugResponse(response);
 
-                                                        //If we get here then it was OK
+                                                        // If we get here then it was OK
                                                         response.Close();
 
-                                                        //Commit Transaction only if in auto-commit mode (active transaction will be null)
+                                                        // Commit Transaction only if in auto-commit mode (active transaction will be null)
                                                         if (autoCommit)
                                                         {
                                                             this.Commit((sender, args, st) =>
@@ -1244,7 +1244,7 @@ namespace VDS.RDF.Storage
                                                     {
                                                         if (autoCommit)
                                                         {
-                                                            //If something went wrong try to rollback, don't care what the rollback response is
+                                                            // If something went wrong try to rollback, don't care what the rollback response is
                                                             this.Rollback((sender, args, st) => { }, state);
                                                         }
                                                         callback(this,
@@ -1257,7 +1257,7 @@ namespace VDS.RDF.Storage
                                                     {
                                                         if (autoCommit)
                                                         {
-                                                            //If something went wrong try to rollback, don't care what the rollback response is
+                                                            // If something went wrong try to rollback, don't care what the rollback response is
                                                             this.Rollback((sender, args, st) => { }, state);
                                                         }
                                                         callback(this,
@@ -1272,7 +1272,7 @@ namespace VDS.RDF.Storage
                                             {
                                                 if (autoCommit)
                                                 {
-                                                    //If something went wrong try to rollback, don't care what the rollback response is
+                                                    // If something went wrong try to rollback, don't care what the rollback response is
                                                     this.Rollback((sender, args, st) => { }, state);
                                                 }
                                                 callback(this,
@@ -1284,7 +1284,7 @@ namespace VDS.RDF.Storage
                                             {
                                                 if (autoCommit)
                                                 {
-                                                    //If something went wrong try to rollback, don't care what the rollback response is
+                                                    // If something went wrong try to rollback, don't care what the rollback response is
                                                     this.Rollback((sender, args, st) => { }, state);
                                                 }
                                                 callback(this,
@@ -1296,8 +1296,8 @@ namespace VDS.RDF.Storage
                                     }
                                     else
                                     {
-                                        //No additions to do
-                                        //Commit Transaction only if in auto-commit mode (active transaction will be null)
+                                        // No additions to do
+                                        // Commit Transaction only if in auto-commit mode (active transaction will be null)
                                         if (autoCommit)
                                         {
                                             this.Commit((sender, args, st) =>
@@ -1328,7 +1328,7 @@ namespace VDS.RDF.Storage
                                 {
                                     if (autoCommit)
                                     {
-                                        //If something went wrong try to rollback, don't care what the rollback response is
+                                        // If something went wrong try to rollback, don't care what the rollback response is
                                         this.Rollback((sender, args, st) => { }, state);
                                     }
                                     callback(this,
@@ -1340,7 +1340,7 @@ namespace VDS.RDF.Storage
                                 {
                                     if (autoCommit)
                                     {
-                                        //If something went wrong try to rollback, don't care what the rollback response is
+                                        // If something went wrong try to rollback, don't care what the rollback response is
                                         this.Rollback((sender, args, st) => { }, state);
                                     }
                                     callback(this,
@@ -1353,7 +1353,7 @@ namespace VDS.RDF.Storage
                         {
                             if (autoCommit)
                             {
-                                //If something went wrong try to rollback, don't care what the rollback response is
+                                // If something went wrong try to rollback, don't care what the rollback response is
                                 this.Rollback((sender, args, st) => { }, state);
                             }
                             callback(this,
@@ -1364,7 +1364,7 @@ namespace VDS.RDF.Storage
                         {
                             if (autoCommit)
                             {
-                                //If something went wrong try to rollback, don't care what the rollback response is
+                                // If something went wrong try to rollback, don't care what the rollback response is
                                 this.Rollback((sender, args, st) => { }, state);
                             }
                             callback(this,
@@ -1383,7 +1383,7 @@ namespace VDS.RDF.Storage
                     {
                         try
                         {
-                            //Save the Data as TriG to the Request Stream
+                            // Save the Data as TriG to the Request Stream
                             Stream stream = request.EndGetRequestStream(r);
                             TripleStore store = new TripleStore();
                             Graph g = new Graph();
@@ -1401,10 +1401,10 @@ namespace VDS.RDF.Storage
                                     HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(r2);
                                     Tools.HttpDebugResponse(response);
 
-                                    //If we get here then it was OK
+                                    // If we get here then it was OK
                                     response.Close();
 
-                                    //Commit Transaction only if in auto-commit mode (active transaction will be null)
+                                    // Commit Transaction only if in auto-commit mode (active transaction will be null)
                                     if (autoCommit)
                                     {
                                         this.Commit((sender, args, st) =>
@@ -1434,7 +1434,7 @@ namespace VDS.RDF.Storage
                                 {
                                     if (autoCommit)
                                     {
-                                        //If something went wrong try to rollback, don't care what the rollback response is
+                                        // If something went wrong try to rollback, don't care what the rollback response is
                                         this.Rollback((sender, args, st) => { }, state);
                                     }
                                     callback(this,
@@ -1446,7 +1446,7 @@ namespace VDS.RDF.Storage
                                 {
                                     if (autoCommit)
                                     {
-                                        //If something went wrong try to rollback, don't care what the rollback response is
+                                        // If something went wrong try to rollback, don't care what the rollback response is
                                         this.Rollback((sender, args, st) => { }, state);
                                     }
                                     callback(this,
@@ -1459,7 +1459,7 @@ namespace VDS.RDF.Storage
                         {
                             if (autoCommit)
                             {
-                                //If something went wrong try to rollback, don't care what the rollback response is
+                                // If something went wrong try to rollback, don't care what the rollback response is
                                 this.Rollback((sender, args, st) => { }, state);
                             }
                             callback(this,
@@ -1470,7 +1470,7 @@ namespace VDS.RDF.Storage
                         {
                             if (autoCommit)
                             {
-                                //If something went wrong try to rollback, don't care what the rollback response is
+                                // If something went wrong try to rollback, don't care what the rollback response is
                                 this.Rollback((sender, args, st) => { }, state);
                             }
                             callback(this,
@@ -1481,7 +1481,7 @@ namespace VDS.RDF.Storage
                 }
                 else
                 {
-                    //Nothing to do, just invoke callback
+                    // Nothing to do, just invoke callback
                     callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri()),
                         state);
                 }
@@ -1490,7 +1490,7 @@ namespace VDS.RDF.Storage
             {
                 if (autoCommit)
                 {
-                    //If something went wrong try to rollback, don't care what the rollback response is
+                    // If something went wrong try to rollback, don't care what the rollback response is
                     this.Rollback((sender, args, st) => { }, state);
                 }
                 callback(this,
@@ -1501,7 +1501,7 @@ namespace VDS.RDF.Storage
             {
                 if (autoCommit)
                 {
-                    //If something went wrong try to rollback, don't care what the rollback response is
+                    // If something went wrong try to rollback, don't care what the rollback response is
                     this.Rollback((sender, args, st) => { }, state);
                 }
                 callback(this,
@@ -1518,7 +1518,7 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback</param>
         public override void DeleteGraph(string graphUri, AsyncStorageCallback callback, object state)
         {
-            //Get a Transaction ID, if there is no active Transaction then this operation will start a new transaction and be auto-committed
+            // Get a Transaction ID, if there is no active Transaction then this operation will start a new transaction and be auto-committed
             if (this._activeTrans != null)
             {
                 this.DeleteGraphAsync(this._activeTrans, false, graphUri, callback, state);
@@ -1566,10 +1566,10 @@ namespace VDS.RDF.Storage
                         HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(r);
 
                         Tools.HttpDebugResponse(response);
-                        //If we get here then the Delete worked OK
+                        // If we get here then the Delete worked OK
                         response.Close();
 
-                        //Commit Transaction only if in auto-commit mode (active transaction will be null)
+                        // Commit Transaction only if in auto-commit mode (active transaction will be null)
                         if (autoCommit)
                         {
                             this.Commit((sender, args, st) =>
@@ -1599,7 +1599,7 @@ namespace VDS.RDF.Storage
                     {
                         if (autoCommit)
                         {
-                            //If something went wrong try to rollback, don't care what the rollback response is
+                            // If something went wrong try to rollback, don't care what the rollback response is
                             this.Rollback((sender, args, st) => { }, state);
                         }
                         callback(this,
@@ -1610,7 +1610,7 @@ namespace VDS.RDF.Storage
                     {
                         if (autoCommit)
                         {
-                            //If something went wrong try to rollback, don't care what the rollback response is
+                            // If something went wrong try to rollback, don't care what the rollback response is
                             this.Rollback((sender, args, st) => { }, state);
                         }
                         callback(this,
@@ -1623,7 +1623,7 @@ namespace VDS.RDF.Storage
             {
                 if (autoCommit)
                 {
-                    //If something went wrong try to rollback, don't care what the rollback response is
+                    // If something went wrong try to rollback, don't care what the rollback response is
                     this.Rollback((sender, args, st) => { }, state);
                 }
                 callback(this,
@@ -1634,7 +1634,7 @@ namespace VDS.RDF.Storage
             {
                 if (autoCommit)
                 {
-                    //If something went wrong try to rollback, don't care what the rollback response is
+                    // If something went wrong try to rollback, don't care what the rollback response is
                     this.Rollback((sender, args, st) => { }, state);
                 }
                 callback(this,
@@ -1686,17 +1686,17 @@ namespace VDS.RDF.Storage
 
                 String tID = (this._activeTrans == null) ? String.Empty : "/" + this._activeTrans;
 
-                //String accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
+                // String accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
                 String accept =
                     MimeTypesHelper.CustomHttpAcceptHeader(
                         MimeTypesHelper.SparqlResultsXml.Concat(
                             MimeTypesHelper.Definitions.Where(d => d.CanParseRdf).SelectMany(d => d.MimeTypes)));
 
-                //Create the Request, for simplicity async requests are always POST
+                // Create the Request, for simplicity async requests are always POST
                 Dictionary<String, String> queryParams = new Dictionary<string, string>();
                 request = this.CreateRequest(this._kb + tID + "/query", accept, "POST", queryParams);
 
-                //Build the Post Data and add to the Request Body
+                // Build the Post Data and add to the Request Body
                 request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
 
                 request.BeginGetRequestStream(r =>
@@ -1713,7 +1713,7 @@ namespace VDS.RDF.Storage
 
                         Tools.HttpDebugRequest(request);
 
-                        //Get the Response and process based on the Content Type
+                        // Get the Response and process based on the Content Type
                         request.BeginGetResponse(r2 =>
                         {
                             try
@@ -1725,7 +1725,7 @@ namespace VDS.RDF.Storage
                                 String ctype = response.ContentType;
                                 try
                                 {
-                                    //Is the Content Type referring to a Sparql Result Set format?
+                                    // Is the Content Type referring to a Sparql Result Set format?
                                     ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype,
                                         Regex.IsMatch(query, "ASK", RegexOptions.IgnoreCase));
                                     resreader.Load(resultsHandler, data);
@@ -1733,9 +1733,9 @@ namespace VDS.RDF.Storage
                                 }
                                 catch (RdfParserSelectionException)
                                 {
-                                    //If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
+                                    // If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
 
-                                    //Is the Content Type referring to a RDF format?
+                                    // Is the Content Type referring to a RDF format?
                                     IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
                                     rdfreader.Load(rdfHandler, data);
                                     response.Close();
@@ -1799,7 +1799,7 @@ namespace VDS.RDF.Storage
         protected virtual HttpWebRequest CreateRequest(String servicePath, String accept, String method,
             Dictionary<String, String> requestParams)
         {
-            //Build the Request Uri
+            // Build the Request Uri
             String requestUri = this._baseUri + servicePath + "?";
 
             if (!ReferenceEquals(requestParams, null) && requestParams.Count > 0)
@@ -1812,21 +1812,21 @@ namespace VDS.RDF.Storage
 
             requestUri += this.GetReasoningParameter();
 
-            //Create our Request
+            // Create our Request
             HttpWebRequest request = (HttpWebRequest) WebRequest.Create(requestUri);
             request.Accept = accept;
             request.Method = method;
             request = ApplyRequestOptions(request);
 
-            //Add the special Stardog Headers
+            // Add the special Stardog Headers
             this.AddStardogHeaders(request);
 
-            //Add Credentials if needed
+            // Add Credentials if needed
             if (this._hasCredentials)
             {
                 if (Options.ForceHttpBasicAuth)
                 {
-                    //Forcibly include a HTTP basic authentication header
+                    // Forcibly include a HTTP basic authentication header
 #if !(SILVERLIGHT||NETCORE)
                     string credentials =
                         Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(this._username + ":" + this._pwd));
@@ -1838,7 +1838,7 @@ namespace VDS.RDF.Storage
                 }
                 else
                 {
-                    //Leave .Net to cope with HTTP auth challenge response
+                    // Leave .Net to cope with HTTP auth challenge response
                     NetworkCredential credentials = new NetworkCredential(this._username, this._pwd);
                     request.Credentials = credentials;
 #if !(SILVERLIGHT||NETCORE)
@@ -1943,7 +1943,7 @@ namespace VDS.RDF.Storage
                 response.Close();
             }
 
-            //Reset the Active Transaction on this Thread if the IDs match up
+            // Reset the Active Transaction on this Thread if the IDs match up
             if (this._activeTrans != null && this._activeTrans.Equals(tID))
             {
                 this._activeTrans = null;
@@ -1960,7 +1960,7 @@ namespace VDS.RDF.Storage
                 response.Close();
             }
 
-            //Reset the Active Transaction on this Thread if the IDs match up
+            // Reset the Active Transaction on this Thread if the IDs match up
             if (this._activeTrans != null && this._activeTrans.Equals(tID))
             {
                 this._activeTrans = null;
@@ -2298,7 +2298,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         public override void Dispose()
         {
-            //No Dispose actions
+            // No Dispose actions
         }
 
         /// <summary>
@@ -2348,19 +2348,19 @@ namespace VDS.RDF.Storage
             INode store = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStore));
             INode loadMode = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyLoadMode));
 
-            //Add Core config
+            // Add Core config
             context.Graph.Assert(new Triple(manager, rdfType, genericManager));
             context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString())));
             context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
             context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._baseUri)));
             context.Graph.Assert(new Triple(manager, store, context.Graph.CreateLiteralNode(this._kb)));
 
-            //Add reasoning mode
+            // Add reasoning mode
             if (this._reasoning != StardogReasoningMode.None)
                 context.Graph.Assert(new Triple(manager, loadMode,
                     context.Graph.CreateLiteralNode(this._reasoning.ToString())));
 
-            //Add User Credentials
+            // Add User Credentials
             if (this._username != null && this._pwd != null)
             {
                 INode username = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUser));
@@ -2648,10 +2648,10 @@ namespace VDS.RDF.Storage
             {
                 // NB - Updates don't run inside a transaction rather they use their own self-contained transaction
 
-                //Create the Request
+                // Create the Request
                 HttpWebRequest request = this.CreateRequest(this._kb + "/update", MimeTypesHelper.Any, "POST", null);
 
-                //Build the Post Data and add to the Request Body
+                // Build the Post Data and add to the Request Body
                 request.ContentType = MimeTypesHelper.SparqlUpdate;
                 using (StreamWriter writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding()))
                 {
@@ -2666,7 +2666,7 @@ namespace VDS.RDF.Storage
                 {
                     Tools.HttpDebugResponse(response);
 
-                    //If we got here then the update succeeded
+                    // If we got here then the update succeeded
                     response.Close();
                 }
             }
@@ -2693,10 +2693,10 @@ namespace VDS.RDF.Storage
             {
                 // NB - Updates don't run inside a transaction rather they use their own self-contained transaction
 
-                //Create the Request, for simplicity async requests are always POST
+                // Create the Request, for simplicity async requests are always POST
                 HttpWebRequest request = this.CreateRequest(this._kb + "/update", MimeTypesHelper.Any, "POST", null);
 
-                //Create the request body
+                // Create the request body
                 request.ContentType = MimeTypesHelper.SparqlUpdate;
 
                 request.BeginGetRequestStream(r =>
@@ -2712,7 +2712,7 @@ namespace VDS.RDF.Storage
 
                         Tools.HttpDebugRequest(request);
 
-                        //Get the Response and process based on the Content Type
+                        // Get the Response and process based on the Content Type
                         request.BeginGetResponse(r2 =>
                         {
                             try
