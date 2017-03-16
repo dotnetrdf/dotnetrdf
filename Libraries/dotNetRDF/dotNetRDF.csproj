@@ -30,6 +30,7 @@
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
     <CodeAnalysisRuleSet>..\..\dotnetrdf.ruleset</CodeAnalysisRuleSet>
+    <RootNamespace>VDS.RDF</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net40-client'">
@@ -39,7 +40,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <EmbeddedResource Include="Configuration\configuration.ttl" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+    <EmbeddedResource Include="Configuration\configuration.ttl;Query\Optimisation\OptimiserStats.ttl" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
 
