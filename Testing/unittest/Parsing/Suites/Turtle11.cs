@@ -393,8 +393,6 @@ namespace VDS.RDF.Parsing.Suites
             const String graph = "@prefix pre:pre: <http://example.org> .";
             Graph g = new Graph();
             Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
-
-            Assert.Equal(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("pre"));
         }
 
         [Fact]

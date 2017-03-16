@@ -88,8 +88,6 @@ namespace VDS.RDF.Parsing.Suites
             String graph = "BASE <http://example.org/> .";
             Graph g = new Graph();
             Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
-
-            Assert.Equal(new Uri("http://example.org"), g.BaseUri);
         }
 
         [Fact]
@@ -99,8 +97,6 @@ namespace VDS.RDF.Parsing.Suites
             String graph = "BASE <http://example.org/>";
             Graph g = new Graph();
             Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
-
-            Assert.Equal(new Uri("http://example.org"), g.BaseUri);
         }
 
         [Fact]
@@ -109,8 +105,7 @@ namespace VDS.RDF.Parsing.Suites
             //Dot required
             String graph = "@prefix ex: <http://example.org/> .";
             Graph g = new Graph();
-            Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
-
+            this.Parser.Load(g, new StringReader(graph));
             Assert.Equal(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
 
@@ -132,8 +127,6 @@ namespace VDS.RDF.Parsing.Suites
             String graph = "PREFIX ex: <http://example.org/> .";
             Graph g = new Graph();
             Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
-
-            Assert.Equal(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
 
         [Fact]
@@ -143,8 +136,6 @@ namespace VDS.RDF.Parsing.Suites
             String graph = "PREFIX ex: <http://example.org/>";
             Graph g = new Graph();
             Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
-
-            Assert.Equal(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
 
         [Fact]
