@@ -55,7 +55,7 @@ namespace VDS.RDF.Parsing
         {
             Type target = typeof(SparqlQueryParser);
             MimeTypeDefinition def = MimeTypesHelper.Definitions.FirstOrDefault(d => d.CanParseObject<SparqlQuery>());
-            Assert.Equal(null, def);
+            Assert.NotNull(def);
             Assert.Equal(target, def.GetObjectParserType<SparqlQuery>());
         }
 
@@ -64,7 +64,7 @@ namespace VDS.RDF.Parsing
         {
             Type target = typeof(SparqlUpdateParser);
             MimeTypeDefinition def = MimeTypesHelper.Definitions.FirstOrDefault(d => d.CanParseObject<SparqlUpdateCommandSet>());
-            Assert.Equal(null, def);
+            Assert.NotNull(def);
             Assert.Equal(target, def.GetObjectParserType<SparqlUpdateCommandSet>());
         }
 
@@ -73,7 +73,7 @@ namespace VDS.RDF.Parsing
         {
             Type target = typeof(SparqlQueryParser);
             MimeTypeDefinition def = MimeTypesHelper.Definitions.FirstOrDefault(d => d.CanParseObject<SparqlQuery>());
-            Assert.Equal(null, def);
+            Assert.NotNull(def);
             Assert.Equal(target, def.GetObjectParserType<SparqlQuery>());
 
             IObjectParser<SparqlQuery> parser = def.GetObjectParser<SparqlQuery>();
@@ -86,7 +86,7 @@ namespace VDS.RDF.Parsing
         {
             Type target = typeof(SparqlUpdateParser);
             MimeTypeDefinition def = MimeTypesHelper.Definitions.FirstOrDefault(d => d.CanParseObject<SparqlUpdateCommandSet>());
-            Assert.Equal(null, def);
+            Assert.NotNull(def);
             Assert.Equal(target, def.GetObjectParserType<SparqlUpdateCommandSet>());
 
             IObjectParser<SparqlUpdateCommandSet> parser = def.GetObjectParser<SparqlUpdateCommandSet>();
