@@ -288,9 +288,7 @@ namespace VDS.RDF.Query
             store.Add(g);
 
             SparqlQueryParser parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromString(query);
-            // NOTE: Original code was unclear about whether this should throw an RdfParseException or an RdfQueryException. This may be the wrong choice!
-            Assert.Throws<RdfQueryException>(() => { store.ExecuteQuery(q); });
+            Assert.Throws<RdfParseException>(() => { SparqlQuery q = parser.ParseFromString(query); });
         }
 
         [Fact]
@@ -308,17 +306,7 @@ namespace VDS.RDF.Query
                 store.Add(g);
 
                 SparqlQueryParser parser = new SparqlQueryParser();
-                SparqlQuery q = parser.ParseFromString(query);
-
-                Console.WriteLine(q.ToAlgebra().ToString());
-                Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-                Console.WriteLine();
-
-                // NOTE: Original code was unclear about whether this should throw an RdfQueryException or an RdfParseException - this may be the wrong choice!
-                Assert.Throws<RdfQueryException>(() =>
-                {
-                    store.ExecuteQuery(q);
-                });
+                Assert.Throws<RdfParseException>(() => { SparqlQuery q = parser.ParseFromString(query); });
             }
             finally
             {
