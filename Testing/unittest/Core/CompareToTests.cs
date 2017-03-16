@@ -917,7 +917,7 @@ namespace VDS.RDF
                 alternate                
             };
 
-            Assert.Equal(canonical, alternate);
+            Assert.NotEqual(canonical, alternate);
             Assert.Equal(0, canonical.CompareTo(alternate));
 
             this.ShowOrdering(ns);
@@ -939,7 +939,7 @@ namespace VDS.RDF
                 alternate                
             };
 
-            Assert.Equal(canonical, alternate);
+            Assert.NotEqual(canonical, alternate);
             Assert.Equal(0, canonical.CompareTo(alternate));
 
             this.ShowOrdering(ns);
@@ -961,7 +961,7 @@ namespace VDS.RDF
                 alternate                
             };
 
-            Assert.Equal(canonical, alternate);
+            Assert.NotEqual(canonical, alternate);
             Assert.Equal(0, canonical.CompareTo(alternate));
 
             this.ShowOrdering(ns);

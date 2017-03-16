@@ -428,49 +428,42 @@ namespace VDS.RDF
         [Fact]
         public void NodesBlankNodeEquality()
         {
-            try
-            {
-                Graph g = new Graph();
-                g.BaseUri = new Uri("http://example.org/BlankNodeEquality");
-                Graph h = new Graph();
-                h.BaseUri = new Uri("http://example.org/BlankNodeEqualityTwo");
-                Graph i = new Graph();
-                i.BaseUri = new Uri("http://example.org/BlankNodeEquality");
+            Graph g = new Graph();
+            g.BaseUri = new Uri("http://example.org/BlankNodeEquality");
+            Graph h = new Graph();
+            h.BaseUri = new Uri("http://example.org/BlankNodeEqualityTwo");
+            Graph i = new Graph();
+            i.BaseUri = new Uri("http://example.org/BlankNodeEquality");
 
-                Console.WriteLine("Doing some Blank Node Equality Testing");
-                Console.WriteLine("Blank Nodes are equal if they have the same ID and come from the same Graph which is established by Reference Equality between the two Graphs");
+            Console.WriteLine("Doing some Blank Node Equality Testing");
+            Console.WriteLine("Blank Nodes are equal if they have the same ID and come from the same Graph which is established by Reference Equality between the two Graphs");
 
-                IBlankNode b = g.CreateBlankNode();
-                IBlankNode c = g.CreateBlankNode();
-                IBlankNode d = h.CreateBlankNode();
-                IBlankNode e = i.CreateBlankNode();
+            IBlankNode b = g.CreateBlankNode();
+            IBlankNode c = g.CreateBlankNode();
+            IBlankNode d = h.CreateBlankNode();
+            IBlankNode e = i.CreateBlankNode();
 
-                //Shouldn't be equal
-                Assert.Equal(b, c);
-                Assert.Equal(c, d);
-                Assert.Equal(b, d);
-                Assert.Equal(d, e);
+            //Shouldn't be equal
+            Assert.NotEqual(b, c);
+            Assert.NotEqual(c, d);
+            Assert.NotEqual(b, d);
+            Assert.NotEqual(d, e);
+            Assert.NotEqual(b, e);
 
-                //Should be equal
-                Assert.Equal(b, b);
-                Assert.Equal(c, c);
-                Assert.Equal(d, d);
-                Assert.Equal(e, e);
-                Assert.Equal(b, e);
+            //Should be equal
+            Assert.Equal(b, b);
+            Assert.Equal(c, c);
+            Assert.Equal(d, d);
+            Assert.Equal(e, e);
 
-                //Named Nodes
-                IBlankNode one = g.CreateBlankNode("one");
-                IBlankNode two = h.CreateBlankNode("one");
-                IBlankNode three = i.CreateBlankNode("one");
+            //Named Nodes
+            IBlankNode one = g.CreateBlankNode("one");
+            IBlankNode two = h.CreateBlankNode("one");
+            IBlankNode three = i.CreateBlankNode("one");
 
-                Assert.Equal(one, three);
-                Assert.Equal(one, two);
-                Assert.Equal(two, three);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            Assert.NotEqual(one, three);
+            Assert.NotEqual(one, two);
+            Assert.NotEqual(two, three);
         }
 
         [Fact]
@@ -491,11 +484,11 @@ namespace VDS.RDF
                 helloEnUS = g.CreateLiteralNode("hello", "en-US");
                 helloAgain = g.CreateLiteralNode("hello");
 
-                Assert.Equal(hello, helloEn);
-                Assert.Equal(hello, helloEnUS);
-                Assert.Equal(helloEn, helloEnUS);
-                Assert.Equal(helloEn, helloAgain);
-                Assert.Equal(helloEnUS, helloAgain);
+                Assert.NotEqual(hello, helloEn);
+                Assert.NotEqual(hello, helloEnUS);
+                Assert.NotEqual(helloEn, helloEnUS);
+                Assert.NotEqual(helloEn, helloAgain);
+                Assert.NotEqual(helloEnUS, helloAgain);
 
                 Assert.Equal(hello, helloAgain);
 
@@ -506,12 +499,12 @@ namespace VDS.RDF
                 plain3 = g.CreateLiteralNode("Plain Literal");
                 plain4 = g.CreateLiteralNode("plain literal");
 
-                Assert.Equal(plain1, plain2);
-                Assert.Equal(plain1, plain3);
+                Assert.NotEqual(plain1, plain2);
+                Assert.NotEqual(plain1, plain3);
                 Assert.Equal(plain1, plain4);
-                Assert.Equal(plain2, plain3);
-                Assert.Equal(plain2, plain4);
-                Assert.Equal(plain3, plain4);
+                Assert.NotEqual(plain2, plain3);
+                Assert.NotEqual(plain2, plain4);
+                Assert.NotEqual(plain3, plain4);
 
                 //Typed Literals
                 Uri intType = new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger);
@@ -523,12 +516,12 @@ namespace VDS.RDF
                 one3 = g.CreateLiteralNode("0001", intType);
                 one4 = g.CreateLiteralNode("1", intType);
 
-                Assert.Equal(one1, one2);
-                Assert.Equal(one1, one3);
-                Assert.Equal(one1, one4);
-                Assert.Equal(one2, one3);
+                Assert.NotEqual(one1, one2);
+                Assert.NotEqual(one1, one3);
+                Assert.NotEqual(one1, one4);
+                Assert.NotEqual(one2, one3);
                 Assert.Equal(one2, one4);
-                Assert.Equal(one3, one4);
+                Assert.NotEqual(one3, one4);
 
                 Assert.NotEqual(0, one1.CompareTo(one2));
                 Assert.Equal(0, one2.CompareTo(one3));
@@ -540,11 +533,11 @@ namespace VDS.RDF
                 f = g.CreateLiteralNode("false", boolType);
                 one5 = g.CreateLiteralNode("1", boolType);
 
-                Assert.Equal(t, f);
+                Assert.NotEqual(t, f);
                 Assert.Equal(t, t);
                 Assert.Equal(f, f);
 
-                Assert.Equal(t, one5);
+                Assert.NotEqual(t, one5);
 
                 //Loose Mode Tests
                 Console.WriteLine("Doing a load of Loose Equality Tests");
@@ -552,7 +545,7 @@ namespace VDS.RDF
 
                 Assert.Equal(one2, one3);
                 Assert.Equal(one3, one4);
-                Assert.Equal(t, one5);
+                Assert.NotEqual(t, one5);
 
             }
             catch (Exception ex)
@@ -768,8 +761,8 @@ namespace VDS.RDF
             Assert.False(nullUri != nullUri, "Null URI Node should be equal to self");
             Assert.False(nullUri != null, "Null URI Node should be equal to a null");
             Assert.False(null != nullUri, "Null should be equal to a Null URI Node");
-            Assert.Equal(nullUri, someUri);
-            Assert.Equal(someUri, nullUri);
+            Assert.NotEqual(nullUri, someUri);
+            Assert.NotEqual(someUri, nullUri);
             Assert.False(nullUri == someUri, "Null URI Node should not be equal to an actual URI Node");
             Assert.False(someUri == nullUri, "Null URI Node should not be equal to an actual URI Node");
 
@@ -782,8 +775,8 @@ namespace VDS.RDF
             Assert.False(nullLiteral != nullLiteral, "Null Literal Node should be equal to self");
             Assert.False(nullLiteral != null, "Null Literal Node should be equal to a null");
             Assert.False(null != nullLiteral, "Null should be equal to a Null Literal Node");
-            Assert.Equal(nullLiteral, someLiteral);
-            Assert.Equal(someLiteral, nullLiteral);
+            Assert.NotEqual(nullLiteral, someLiteral);
+            Assert.NotEqual(someLiteral, nullLiteral);
             Assert.False(nullLiteral == someLiteral, "Null Literal Node should not be equal to an actual Literal Node");
             Assert.False(someLiteral == nullLiteral, "Null Literal Node should not be equal to an actual Literal Node");
 
@@ -796,8 +789,8 @@ namespace VDS.RDF
             Assert.False(nullBNode != nullBNode, "Null BNode Node should be equal to self");
             Assert.False(nullBNode != null, "Null BNode Node should be equal to a null");
             Assert.False(null != nullBNode, "Null should be equal to a Null BNode Node");
-            Assert.Equal(nullBNode, someBNode);
-            Assert.Equal(someBNode, nullBNode);
+            Assert.NotEqual(nullBNode, someBNode);
+            Assert.NotEqual(someBNode, nullBNode);
             Assert.False(nullBNode == someBNode, "Null BNode Node should not be equal to an actual BNode Node");
             Assert.False(someBNode == nullBNode, "Null BNode Node should not be equal to an actual BNode Node");
         }
