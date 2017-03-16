@@ -49,7 +49,7 @@ namespace VDS.RDF.Storage
         private void EnsureTestDataset(IStorageProvider manager)
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.BaseUri = new Uri(TestGraphUri1);
             g.Retract(g.Triples.Where(t => !t.IsGroundTriple).ToList());
             manager.SaveGraph(g);
@@ -149,7 +149,7 @@ namespace VDS.RDF.Storage
             try
             {
                 Graph aExpected = new Graph();
-                aExpected.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+                aExpected.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 aExpected.Retract(aExpected.Triples.Where(t => !t.IsGroundTriple).ToList());
                 aExpected.BaseUri = new Uri(TestGraphUri1);
                 IGraph aActual = store[aExpected.BaseUri];

@@ -46,7 +46,7 @@ namespace VDS.RDF.Query
         public ResultAccessTests()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             TripleStore store = new TripleStore();
             store.Add(g);
             this._dataset = new InMemoryDataset(store);

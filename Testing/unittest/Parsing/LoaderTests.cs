@@ -290,7 +290,7 @@ namespace VDS.RDF.Parsing
         public void ParsingEmbeddedResourceInDotNetRdf()
         {
             Graph g = new Graph();
-            EmbeddedResourceLoader.Load(g, "dotNetRDF.Configuration.configuration.ttl");
+            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
 
             TestTools.ShowGraph(g);
 
@@ -301,7 +301,7 @@ namespace VDS.RDF.Parsing
         public void ParsingEmbeddedResourceInDotNetRdf2()
         {
             Graph g = new Graph();
-            EmbeddedResourceLoader.Load(g, "dotNetRDF.Configuration.configuration.ttl, dotNetRDF");
+            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl, dotNetRDF");
 
             TestTools.ShowGraph(g);
 
@@ -313,9 +313,9 @@ namespace VDS.RDF.Parsing
         {
             Graph g = new Graph();
 #if PORTABLE
-            EmbeddedResourceLoader.Load(g, "VDS.RDF.embedded.ttl, dotNetRDF.Portable.Test");
+            EmbeddedResourceLoader.Load(g, "dotNetRDF.Test.embedded.ttl, dotNetRDF.Portable.Test");
 #else
-            EmbeddedResourceLoader.Load(g, "VDS.RDF.embedded.ttl, dotNetRDF.Test");
+            EmbeddedResourceLoader.Load(g, "dotNetRDF.Test.embedded.ttl, dotNetRDF.Test");
 #endif
 
             TestTools.ShowGraph(g);
@@ -327,7 +327,7 @@ namespace VDS.RDF.Parsing
         public void ParsingEmbeddedResourceLoaderGraphIntoTripleStore()
         {
             TripleStore store = new TripleStore();
-            store.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            store.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             Assert.True(store.Triples.Count() > 0);
             Assert.Equal(1, store.Graphs.Count);
@@ -337,7 +337,7 @@ namespace VDS.RDF.Parsing
         public void ParsingFileLoaderGraphIntoTripleStore()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.SaveToFile("fileloader-graph-to-store.ttl");
 
             TripleStore store = new TripleStore();

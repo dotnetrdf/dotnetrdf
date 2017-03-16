@@ -41,7 +41,7 @@ namespace VDS.RDF.Query
         public void SparqlExistsSimple1()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             String query = @"SELECT *
 WHERE
@@ -61,7 +61,7 @@ WHERE
         public void SparqlExistsSimple2()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             int expected = g.GetTriplesWithObject(g.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassHttpHandler))).Count();
 
             String query = @"SELECT *

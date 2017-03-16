@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.FullText
 
             //Test Graph
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             dataset.AddGraph(g);
             Assert.True(dataset.HasGraph(g.BaseUri), "Graph should exist in dataset");
@@ -110,7 +110,7 @@ namespace VDS.RDF.Query.FullText
 
             //Test Graph
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             dataset.AddGraph(g);
             Assert.True(dataset.HasGraph(g.BaseUri), "Graph should exist in dataset");

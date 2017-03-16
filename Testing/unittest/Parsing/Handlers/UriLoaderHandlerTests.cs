@@ -67,10 +67,10 @@ namespace VDS.RDF.Parsing.Handlers
         public void ParsingUriLoaderCountHandler()
         {
             Graph orig = new Graph();
-            orig.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            orig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             CountHandler handler = new CountHandler();
-            EmbeddedResourceLoader.Load(handler, "dotNetRDF.Configuration.configuration.ttl");
+            EmbeddedResourceLoader.Load(handler, "VDS.RDF.Configuration.configuration.ttl");
 
             Assert.Equal(orig.Triples.Count, handler.Count);
         }

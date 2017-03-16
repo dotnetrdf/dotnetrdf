@@ -41,7 +41,7 @@ namespace VDS.RDF.Parsing.Handlers
             }
             
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.SaveToFile(TestDataFile);
         }
 
@@ -81,7 +81,7 @@ namespace VDS.RDF.Parsing.Handlers
         public void ParsingFileLoaderCountHandlerTurtle()
         {
             Graph orig = new Graph();
-            orig.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            orig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             CountHandler handler = new CountHandler();
 #if PORTABLE
             using (var input = File.OpenRead(TestDataFile))

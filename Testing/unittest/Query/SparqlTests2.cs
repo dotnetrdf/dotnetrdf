@@ -1476,7 +1476,7 @@ WHERE
         public void SparqlSubQueryOrderByLimitInteractionCore437()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             InMemoryDataset dataset = new InMemoryDataset(g);
 
             SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"..\\resources\core-437.rq");

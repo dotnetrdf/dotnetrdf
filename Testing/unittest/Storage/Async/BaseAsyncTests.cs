@@ -481,7 +481,7 @@ namespace VDS.RDF.Storage
         public void StorageAsyncSaveLoad()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             this.TestAsyncSaveLoad(g);
         }
 
@@ -489,7 +489,7 @@ namespace VDS.RDF.Storage
         public void StorageAsyncDeleteGraph()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             this.TestAsyncDelete(g);
         }
         
@@ -497,7 +497,7 @@ namespace VDS.RDF.Storage
         public void StorageAsyncRemoveTriples()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             this.TestAsyncDeleteTriples(g);
         }
 
@@ -505,7 +505,7 @@ namespace VDS.RDF.Storage
         public void StorageAsyncAddTriples()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             this.TestAsyncAddTriples(g);
         }
 
@@ -519,7 +519,7 @@ namespace VDS.RDF.Storage
         public void StorageAsyncQuery()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             this.TestAsyncQuery(g);
         }
     }

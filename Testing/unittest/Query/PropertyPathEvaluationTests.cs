@@ -106,7 +106,7 @@ namespace VDS.RDF.Query
             {
                 TripleStore store = new TripleStore();
                 Graph g = new Graph();
-                g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 store.Add(g);
                 this._data = new InMemoryDataset(store, g.BaseUri);
             }
