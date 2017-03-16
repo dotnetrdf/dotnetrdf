@@ -40,7 +40,7 @@ namespace VDS.RDF.Parsing.Handlers
 
 #if !PORTABLE
 
-        [Fact]
+        [Fact(Skip = "Remote configuration is not currently available")]
         public void ParsingUriLoaderGraphHandlerImplicit()
         {
             Graph g = new Graph();
@@ -50,7 +50,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.False(g.IsEmpty, "Graph should not be empty");
         }
 
-        [Fact]
+        [Fact(Skip="Remote configuration is not currently available")]
         public void ParsingUriLoaderGraphHandlerExplicit()
         {
             Graph g = new Graph();
