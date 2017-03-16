@@ -40,7 +40,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.BaseUri = new Uri("http://graphs/1");
             store.Add(g);
             Graph h = new Graph();
