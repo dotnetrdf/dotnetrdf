@@ -78,7 +78,7 @@ namespace VDS.RDF.Query
             SparqlQuery q = this.GetQuery();
             q.Describer = (ISparqlDescribe) Activator.CreateInstance(describerType);
             Object results = this._processor.ProcessQuery(q);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            Assert.IsAssignableFrom<Graph>(results);
             if (results is Graph)
             {
                 TestTools.ShowResults(results);
