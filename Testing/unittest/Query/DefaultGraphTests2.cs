@@ -175,7 +175,7 @@ namespace VDS.RDF.Query
                 IGraph r = (IGraph)results;
                 Assert.Equal(g.Triples.Count, r.Triples.Count);
                 Assert.Equal(g, r);
-                Assert.Equal(h, r);
+                Assert.NotEqual(h, r);
             }
             else
             {
@@ -206,7 +206,7 @@ namespace VDS.RDF.Query
             {
                 IGraph r = (IGraph)results;
                 Assert.Equal(h.Triples.Count, r.Triples.Count);
-                Assert.Equal(g, r);
+                Assert.NotEqual(g, r);
                 Assert.Equal(h, r);
             }
             else
@@ -238,7 +238,7 @@ namespace VDS.RDF.Query
             {
                 IGraph r = (IGraph)results;
                 Assert.Equal(h.Triples.Count, r.Triples.Count);
-                Assert.Equal(g, r);
+                Assert.NotEqual(g, r);
                 Assert.Equal(h, r);
             }
             else
@@ -271,7 +271,7 @@ namespace VDS.RDF.Query
                 IGraph r = (IGraph)results;
                 Assert.Equal(g.Triples.Count, r.Triples.Count);
                 Assert.Equal(g, r);
-                Assert.Equal(h, r);
+                Assert.NotEqual(h, r);
             }
             else
             {

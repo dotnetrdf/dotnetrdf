@@ -18,7 +18,7 @@ namespace VDS.RDF.Query.Algebra
             Assert.IsType(typeof(Graph), algebra);
 
             Graph g = (Graph) algebra;
-            Assert.IsType(typeof(IBgp), g.InnerAlgebra);
+            Assert.IsAssignableFrom(typeof(IBgp), g.InnerAlgebra);
         }
 
         [Fact]
@@ -42,9 +42,9 @@ namespace VDS.RDF.Query.Algebra
             Assert.IsType(typeof(Graph), u.Lhs);
 
             Graph g = (Graph)u.Lhs;
-            Assert.IsType(typeof(IBgp), g.InnerAlgebra);
+            Assert.IsAssignableFrom(typeof(IBgp), g.InnerAlgebra);
 
-            Assert.IsType(typeof(IBgp), u.Rhs);
+            Assert.IsAssignableFrom(typeof(IBgp), u.Rhs);
         }
 
         [Fact]
@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.Algebra
 
             Assert.IsType(typeof(Service), u.Lhs);
 
-            Assert.IsType(typeof(IBgp), u.Rhs);
+            Assert.IsAssignableFrom(typeof(IBgp), u.Rhs);
         }
 
         [Fact]
@@ -90,15 +90,15 @@ namespace VDS.RDF.Query.Algebra
             gp.AddInlineData(new BindingsPattern());
 
             ISparqlAlgebra algebra = gp.ToAlgebra();
-            Assert.IsType(typeof(IJoin), algebra);
+            Assert.IsAssignableFrom(typeof(IJoin), algebra);
 
             IJoin join = (IJoin) algebra;
 
             Assert.IsType(typeof(Graph), join.Lhs);
             Graph g = (Graph)join.Lhs;
-            Assert.IsType(typeof(IBgp), g.InnerAlgebra);
+            Assert.IsAssignableFrom(typeof(IBgp), g.InnerAlgebra);
 
-            Assert.IsType(typeof(Bindings), join.Rhs);
+            Assert.IsAssignableFrom(typeof(Bindings), join.Rhs);
         }
 
         [Fact]
@@ -110,7 +110,7 @@ namespace VDS.RDF.Query.Algebra
             gp.AddInlineData(new BindingsPattern());
 
             ISparqlAlgebra algebra = gp.ToAlgebra();
-            Assert.IsType(typeof(IJoin), algebra);
+            Assert.IsAssignableFrom(typeof(IJoin), algebra);
 
             IJoin join = (IJoin)algebra;
             Assert.IsType(typeof(Service), join.Lhs);
@@ -128,7 +128,7 @@ namespace VDS.RDF.Query.Algebra
             Assert.IsType(typeof(Graph), algebra);
 
             Graph g = (Graph)algebra;
-            Assert.IsType(typeof(IBgp), g.InnerAlgebra);
+            Assert.IsAssignableFrom(typeof(IBgp), g.InnerAlgebra);
 
             // Nest in another graph pattern with same specifier
             GraphPattern parent = new GraphPattern();
@@ -141,7 +141,7 @@ namespace VDS.RDF.Query.Algebra
             Assert.IsType(typeof(Graph), algebra);
 
             g = (Graph)algebra;
-            Assert.IsType(typeof(IBgp), g.InnerAlgebra);
+            Assert.IsAssignableFrom(typeof(IBgp), g.InnerAlgebra);
         }
 
         [Fact]
@@ -155,7 +155,7 @@ namespace VDS.RDF.Query.Algebra
             Assert.IsType(typeof(Graph), algebra);
 
             Graph g = (Graph)algebra;
-            Assert.IsType(typeof(IBgp), g.InnerAlgebra);
+            Assert.IsAssignableFrom(typeof(IBgp), g.InnerAlgebra);
 
             // Nest in another graph pattern with different specifier
             GraphPattern parent = new GraphPattern();
@@ -173,7 +173,7 @@ namespace VDS.RDF.Query.Algebra
 
             g = (Graph) g.InnerAlgebra;
             Assert.Equal(gp.GraphSpecifier.Value, g.GraphSpecifier.Value);
-            Assert.IsType(typeof(IBgp), g.InnerAlgebra);
+            Assert.IsAssignableFrom(typeof(IBgp), g.InnerAlgebra);
         }
 
         [Fact]
@@ -187,7 +187,7 @@ namespace VDS.RDF.Query.Algebra
             Assert.IsType(typeof(Graph), algebra);
 
             Graph g = (Graph)algebra;
-            Assert.IsType(typeof(IBgp), g.InnerAlgebra);
+            Assert.IsAssignableFrom(typeof(IBgp), g.InnerAlgebra);
 
             // Nest in another graph pattern with same specifier but also with another BGP
             GraphPattern parent = new GraphPattern();
@@ -209,7 +209,7 @@ namespace VDS.RDF.Query.Algebra
             Assert.IsType(typeof(Graph), join.Lhs);
 
             g = (Graph)join.Lhs;
-            Assert.IsType(typeof(IBgp), g.InnerAlgebra);
+            Assert.IsAssignableFrom(typeof(IBgp), g.InnerAlgebra);
         }
     }
 }
