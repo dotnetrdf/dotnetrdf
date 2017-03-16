@@ -503,13 +503,13 @@ namespace VDS.RDF.Update
         #region LOAD Tests
 
 #if !SILVERLIGHT // LOAD not supported under SILVERLIGHT
-        [Fact]
+        [Fact(Skip="Remote configuration not currently available")]
         public void SparqlUpdateTransactionsLoadCommit()
         {
             TestLoadCommit();
         }
 
-        [Fact]
+        [Fact(Skip = "Remote configuration not currently available")]
         public void SparqlUpdateTransactionsLoadRollback()
         {
             TestLoadRollback();
