@@ -20,7 +20,7 @@
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
     <CodeAnalysisRuleSet>..\..\dotnetrdf.ruleset</CodeAnalysisRuleSet>
-    <RootNamespace>dotNetRDF.Test</RootNamespace>
+    <RootNamespace>VDS.RDF</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
