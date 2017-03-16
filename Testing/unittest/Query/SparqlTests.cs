@@ -410,11 +410,7 @@ SELECT * WHERE {
                 query.SetUri("not valid", new Uri("http://example.org/invalidParam"));
             });
 
-            Assert.Throws<FormatException>(() =>
-            {
-                query.SetUri("is_valid", new Uri("http://example.org/validParam"));
-            });
-
+            query.SetUri("is_valid", new Uri("http://example.org/validParam"));
         }
 
         [Fact]
