@@ -134,7 +134,8 @@ namespace VDS.RDF.Query.Expressions
             Assert.Throws<RdfQueryException>(() => SparqlSpecsHelper.DateTimeEquality(dateTime1, dateTime2));
         }
 
-        [Fact]
+        [Theory]
+        [InlineData("2013-07-05", "2013-07-05")]
         public void SparqlDateIncomparable(String x, String y)
         {
             IGraph g = new Graph();
