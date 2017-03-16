@@ -140,7 +140,7 @@ namespace VDS.RDF.Query
         }
 
 #if !SILVERLIGHT
-        [Fact]
+        [Fact(Skip="Remote configuration is not currently available")]
         public void SparqlDatasetDefaultGraphManagementWithUpdate()
         {
             TripleStore store = new TripleStore();
@@ -163,7 +163,7 @@ namespace VDS.RDF.Query
 #endif
 
 #if !SILVERLIGHT
-        [Fact]
+        [Fact(Skip = "Remote configuration is not currently available")]
         public void SparqlDatasetDefaultGraphManagementWithUpdate2()
         {
             TripleStore store = new TripleStore();
@@ -187,7 +187,7 @@ namespace VDS.RDF.Query
 #endif
 
 #if !SILVERLIGHT
-        [Fact]
+        [Fact(Skip = "Remote configuration is not currently available")]
         public void SparqlDatasetDefaultGraphManagementWithUpdate3()
         {
             TripleStore store = new TripleStore();
@@ -212,7 +212,7 @@ namespace VDS.RDF.Query
 #endif
 
 #if !SILVERLIGHT
-        [Fact]
+        [Fact(Skip = "Remote configuration is not currently available")]
         public void SparqlDatasetDefaultGraphManagementWithUpdate4()
         {
             TripleStore store = new TripleStore();
@@ -237,7 +237,7 @@ namespace VDS.RDF.Query
 #endif
 
 #if !SILVERLIGHT
-        [Fact]
+        [Fact(Skip = "Remote configuration is not currently available")]
         public void SparqlDatasetDefaultGraphManagementWithUpdate5()
         {
             TripleStore store = new TripleStore();
