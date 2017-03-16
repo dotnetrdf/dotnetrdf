@@ -39,7 +39,7 @@ namespace VDS.RDF.Update
         private SparqlUpdateParser _parser = new SparqlUpdateParser();
 
 #if !SILVERLIGHT // LOAD not supported
-        [Fact]
+        [Fact(Skip="Remote configuration not currently available")]
         public void SparqlUpdateTimeout()
         {
             String update = "CREATE GRAPH <http://example.org/1>; LOAD <http://www.dotnetrdf.org/configuration#>; CREATE GRAPH <http://example.org/2>";
