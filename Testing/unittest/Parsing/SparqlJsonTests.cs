@@ -86,8 +86,6 @@ namespace VDS.RDF.Parsing
 
             SparqlResultSet results = new SparqlResultSet();
             Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
-
-            Assert.Equal(1, results.Count);
         }
 
         [Fact]
@@ -122,8 +120,6 @@ namespace VDS.RDF.Parsing
 
             SparqlResultSet results = new SparqlResultSet();
             Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
-
-            Assert.Equal(1, results.Count);
         }
 
         [Fact]
