@@ -47,7 +47,7 @@ namespace VDS.RDF.Writing
             }
 
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             GraphVizWriter writer = new GraphVizWriter();
             writer.Save(g, "WritingGraphViz1.dot");
@@ -63,7 +63,7 @@ namespace VDS.RDF.Writing
             }
 
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             GraphVizGenerator generator = new GraphVizGenerator("svg");
             generator.Generate(g, "WritingGraphViz2.svg", false);
@@ -78,7 +78,7 @@ namespace VDS.RDF.Writing
             }
 
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             GraphVizGenerator generator = new GraphVizGenerator("png");
             generator.Generate(g, "WritingGraphViz3.png", false);

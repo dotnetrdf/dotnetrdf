@@ -38,7 +38,7 @@ namespace VDS.RDF.Writing
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.BaseUri = null;
             store.Add(g);
             g = new Graph();
@@ -46,7 +46,7 @@ namespace VDS.RDF.Writing
             g.BaseUri = new Uri("http://example.org/graph");
             store.Add(g);
             g = new Graph();
-            g.LoadFromFile(@"..\\resources\cyrillic.rdf");
+            g.LoadFromFile(@"resources\cyrillic.rdf");
             g.BaseUri = new Uri("http://example.org/cyrillic");
             store.Add(g);
 

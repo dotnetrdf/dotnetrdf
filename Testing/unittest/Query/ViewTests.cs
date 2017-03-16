@@ -33,6 +33,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Inference;
 using VDS.RDF.Storage;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Query
 {
@@ -199,7 +200,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [Fact]
+        [SkippableFact]
         public void SparqlViewNativeAllegroGraph()
         {
                 AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();

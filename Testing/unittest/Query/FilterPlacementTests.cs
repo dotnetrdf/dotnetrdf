@@ -40,7 +40,7 @@ namespace VDS.RDF.Query
         public void SparqlFilterOptionalNotBound()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             SparqlParameterizedString query = new SparqlParameterizedString();
             query.Namespaces.AddNamespace("rdf", new Uri(NamespaceMapper.RDF));

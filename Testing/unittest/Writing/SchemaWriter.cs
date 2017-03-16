@@ -44,7 +44,7 @@ namespace VDS.RDF.Writing
             //Load the Graph from within the Assembly
             Graph g = new Graph();
             TurtleParser parser = new TurtleParser();
-            parser.Load(g, new StreamReader(Assembly.GetAssembly(typeof(IGraph)).GetManifestResourceStream("dotNetRDF.Configuration.configuration.ttl"), Encoding.UTF8));
+            parser.Load(g, new StreamReader(Assembly.GetAssembly(typeof(IGraph)).GetManifestResourceStream("VDS.RDF.Configuration.configuration.ttl"), Encoding.UTF8));
 
             //Now generate the HTML file
             HtmlSchemaWriter writer = new HtmlSchemaWriter();

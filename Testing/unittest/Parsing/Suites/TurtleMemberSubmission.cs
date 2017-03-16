@@ -47,8 +47,8 @@ namespace VDS.RDF.Parsing.Suites
         public void ParsingSuiteTurtleOriginal()
         {
             //Run manifests
-            this.RunManifest("..\\resources/turtle/manifest.ttl", true);
-            this.RunManifest("..\\resources/turtle/manifest-bad.ttl", false);
+            this.RunManifest("resources/turtle/manifest.ttl", true);
+            this.RunManifest("resources/turtle/manifest-bad.ttl", false);
 
             if (this.Count == 0) Assert.True(false, "No tests found");
 
@@ -156,7 +156,7 @@ namespace VDS.RDF.Parsing.Suites
         [Fact]
         public void ParsingTurtleOriginalPrefixedNames2()
         {
-            this.Parser.Load(new Graph(), @"..\\resources\turtle\test-14.ttl");
+            this.Parser.Load(new Graph(), @"resources\turtle\test-14.ttl");
         }
     }
 }

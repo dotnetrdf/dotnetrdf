@@ -42,7 +42,7 @@ namespace VDS.RDF.Parsing.Handlers
             if (!System.IO.File.Exists("temp.ttl"))
             {
                 Graph g = new Graph();
-                EmbeddedResourceLoader.Load(g, "dotNetRDF.Configuration.configuration.ttl");
+                EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
                 g.SaveToFile("temp.ttl");
             }
         }

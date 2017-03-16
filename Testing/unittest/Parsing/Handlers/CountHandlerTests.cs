@@ -40,7 +40,7 @@ namespace VDS.RDF.Parsing.Handlers
         private void ParsingUsingCountHandler(String tempFile, IRdfReader parser)
         {
             Graph g = new Graph();
-            EmbeddedResourceLoader.Load(g, "dotNetRDF.Configuration.configuration.ttl");
+            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
             g.SaveToFile(tempFile);
 
             CountHandler handler = new CountHandler();

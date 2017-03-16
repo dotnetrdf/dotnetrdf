@@ -59,7 +59,7 @@ namespace VDS.RDF.Query.FullText
 
             //Test Graph
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             
             //Try indexing in 100 Triple chunks
             Random rnd = new Random();
@@ -105,7 +105,7 @@ namespace VDS.RDF.Query.FullText
 
             //Test Graph
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             //Try indexing in 100 Triple chunks
             Random rnd = new Random();

@@ -71,7 +71,7 @@ namespace VDS.RDF.Parsing.Handlers
 
             Assert.True(store.HasGraph(new Uri("http://graphs/1")), "Configuration Vocab Graph should have been parsed from Dataset");
             Graph configOrig = new Graph();
-            configOrig.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             IGraph config = store[new Uri("http://graphs/1")];
             Assert.Equal(configOrig, config);
 
@@ -95,7 +95,7 @@ namespace VDS.RDF.Parsing.Handlers
 
             Assert.True(store.HasGraph(new Uri("http://graphs/1")), "Configuration Vocab Graph should have been parsed from Dataset");
             Graph configOrig = new Graph();
-            configOrig.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             IGraph config = store[new Uri("http://graphs/1")];
             Assert.Equal(configOrig, config);
 
@@ -117,7 +117,7 @@ namespace VDS.RDF.Parsing.Handlers
             parser.Load(counter, "test.nq");
 
             Graph configOrig = new Graph();
-            configOrig.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             Graph lvnOrig = new Graph();
             lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
 
@@ -135,7 +135,7 @@ namespace VDS.RDF.Parsing.Handlers
             FileLoader.LoadDataset(counter, "test.nq");
 
             Graph configOrig = new Graph();
-            configOrig.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             Graph lvnOrig = new Graph();
             lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
 
@@ -155,7 +155,7 @@ namespace VDS.RDF.Parsing.Handlers
 
             Assert.True(store.HasGraph(new Uri("http://graphs/1")), "Configuration Vocab Graph should have been parsed from Dataset");
             Graph configOrig = new Graph();
-            configOrig.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             IGraph config = store[new Uri("http://graphs/1")];
             Assert.Equal(configOrig, config);
 
@@ -183,7 +183,7 @@ namespace VDS.RDF.Parsing.Handlers
 
             Assert.True(store.HasGraph(new Uri("http://graphs/1")), "Configuration Vocab Graph should have been parsed from Dataset");
             Graph configOrig = new Graph();
-            configOrig.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             IGraph config = store[new Uri("http://graphs/1")];
             Assert.Equal(configOrig, config);
 
@@ -207,7 +207,7 @@ namespace VDS.RDF.Parsing.Handlers
 
             Assert.True(store.HasGraph(new Uri("http://graphs/1")), "Configuration Vocab Graph should have been parsed from Dataset");
             Graph configOrig = new Graph();
-            configOrig.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             IGraph config = store[new Uri("http://graphs/1")];
             Assert.Equal(configOrig, config);
 
@@ -229,7 +229,7 @@ namespace VDS.RDF.Parsing.Handlers
             parser.Load(counter, "test.trig");
 
             Graph configOrig = new Graph();
-            configOrig.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             Graph lvnOrig = new Graph();
             lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
 
@@ -253,7 +253,7 @@ namespace VDS.RDF.Parsing.Handlers
 
             Assert.True(store.HasGraph(new Uri("http://graphs/1")), "Configuration Vocab Graph should have been parsed from Dataset");
             Graph configOrig = new Graph();
-            configOrig.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             IGraph config = store[new Uri("http://graphs/1")];
             Assert.Equal(configOrig, config);
 
@@ -277,7 +277,7 @@ namespace VDS.RDF.Parsing.Handlers
 
             Assert.True(store.HasGraph(new Uri("http://graphs/1")), "Configuration Vocab Graph should have been parsed from Dataset");
             Graph configOrig = new Graph();
-            configOrig.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             IGraph config = store[new Uri("http://graphs/1")];
             Assert.Equal(configOrig, config);
 
@@ -299,7 +299,7 @@ namespace VDS.RDF.Parsing.Handlers
             parser.Load(counter, "test.xml");
 
             Graph configOrig = new Graph();
-            configOrig.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             Graph lvnOrig = new Graph();
             lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
 

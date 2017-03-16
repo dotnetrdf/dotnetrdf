@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.Aggregates
         public void SparqlAggregatesMaxBug1()
         {
             TripleStore store = new TripleStore();
-            store.LoadFromFile(@"..\\resources\LearningStyles.rdf");
+            store.LoadFromFile(@"resources\LearningStyles.rdf");
 
             IGraph graph = store.ExecuteQuery(@"prefix sage:
 <http://www.semanticsage.home.lc/LearningStyles.owl#>

@@ -58,7 +58,7 @@ namespace VDS.RDF.Query
             {
                 this._dataset = new InMemoryDataset();
                 Graph g = new Graph();
-                g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.Retract(g.Triples.Where(t => !t.IsGroundTriple).ToList());
                 if (g.Triples.Count > TripleLimit) g.Retract(g.Triples.Skip(TripleLimit).ToList());
                 this._dataset.AddGraph(g);

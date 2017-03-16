@@ -159,7 +159,7 @@ namespace VDS.RDF.Storage
 
                 //Load in our Test Graph
                 Graph g = new Graph();
-                g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.BaseUri = new Uri("http://example.org/storage/virtuoso/save");
 
                 Console.WriteLine();
@@ -811,7 +811,7 @@ namespace VDS.RDF.Storage
             {
                 //Load in our Test Graph
                 Graph g = new Graph();
-                g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.BaseUri = new Uri("/storage/virtuoso/relative", UriKind.Relative);
 
                 virtuoso.SaveGraph(g);

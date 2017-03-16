@@ -170,7 +170,7 @@ namespace VDS.RDF.Update
         public void SparqlUpdateWithDefaultQueryProcessor()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.BaseUri = null;
             TripleStore store = new TripleStore();
             store.Add(g);
@@ -187,7 +187,7 @@ namespace VDS.RDF.Update
         public void SparqlUpdateWithCustomQueryProcessor()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.BaseUri = null;
             TripleStore store = new TripleStore();
             store.Add(g);

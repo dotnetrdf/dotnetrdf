@@ -40,7 +40,7 @@ namespace VDS.RDF.Parsing.Handlers
         public void ParsingUsingPagingHandler(String tempFile, IRdfReader parser)
         {
             Graph g = new Graph();
-            EmbeddedResourceLoader.Load(g, "dotNetRDF.Configuration.configuration.ttl");
+            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
             g.SaveToFile(tempFile);
 
             Graph h = new Graph();
@@ -81,7 +81,7 @@ namespace VDS.RDF.Parsing.Handlers
         public void ParsingUsingPagingHandler2(String tempFile, IRdfReader parser)
         {
             Graph g = new Graph();
-            EmbeddedResourceLoader.Load(g, "dotNetRDF.Configuration.configuration.ttl");
+            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
             g.SaveToFile(tempFile);
 
             Graph h = new Graph();
@@ -95,7 +95,7 @@ namespace VDS.RDF.Parsing.Handlers
         public void ParsingUsingPagingHandler3(String tempFile, IRdfReader parser)
         {
             Graph g = new Graph();
-            EmbeddedResourceLoader.Load(g, "dotNetRDF.Configuration.configuration.ttl");
+            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
             g.SaveToFile(tempFile);
 
             Graph h = new Graph();

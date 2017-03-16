@@ -51,7 +51,7 @@ namespace VDS.RDF
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             store.Add(g);
 
             Assert.True(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");

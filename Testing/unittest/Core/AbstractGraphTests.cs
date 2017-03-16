@@ -92,7 +92,7 @@ namespace VDS.RDF
         public void GraphRetract02()
         {
             IGraph g = this.GetInstance();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             Assert.False(g.IsEmpty);
 

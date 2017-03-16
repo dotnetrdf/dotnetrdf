@@ -32,6 +32,7 @@ using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Storage
 {
@@ -477,49 +478,49 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Fact]
+        [SkippableFact]
         public void StorageAsyncSaveLoad()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             this.TestAsyncSaveLoad(g);
         }
 
-        [Fact]
+        [SkippableFact]
         public void StorageAsyncDeleteGraph()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             this.TestAsyncDelete(g);
         }
         
-        [Fact]
+        [SkippableFact]
         public void StorageAsyncRemoveTriples()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             this.TestAsyncDeleteTriples(g);
         }
 
-        [Fact]
+        [SkippableFact]
         public void StorageAsyncAddTriples()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             this.TestAsyncAddTriples(g);
         }
 
-        [Fact]
+        [SkippableFact]
         public void StorageAsyncListGraphs()
         {
             this.TestAsyncListGraphs();
         }
 
-        [Fact]
+        [SkippableFact]
         public void StorageAsyncQuery()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             this.TestAsyncQuery(g);
         }
     }

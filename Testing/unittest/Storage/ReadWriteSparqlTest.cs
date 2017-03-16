@@ -59,7 +59,7 @@ namespace VDS.RDF.Storage
 #endif
         }
 
-        [Fact]
+        [SkippableFact]
         public void StorageReadWriteSparqlSaveGraph()
         {
             try
@@ -93,7 +93,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Fact]
+        [SkippableFact]
         public void StorageReadWriteSparqlSaveDefaultGraph()
         {
             try
@@ -128,7 +128,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Fact]
+        [SkippableFact]
         public void StorageReadWriteSparqlSaveDefaultGraph2()
         {
             try
@@ -163,7 +163,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Fact]
+        [SkippableFact]
         public void StorageReadWriteSparqlLoadGraph()
         {
             try
@@ -197,7 +197,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Fact]
+        [SkippableFact]
         public void StorageReadWriteSparqlDeleteGraph()
         {
             try
@@ -230,7 +230,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Fact]
+        [SkippableFact]
         public void StorageReadWriteSparqlDeleteDefaultGraph()
         {
             try
@@ -263,7 +263,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Fact]
+        [SkippableFact]
         public void StorageReadWriteSparqlDeleteDefaultGraph2()
         {
             try
@@ -296,7 +296,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Fact]
+        [SkippableFact]
         public void StorageReadWriteSparqlAddTriples()
         {
             try
@@ -321,7 +321,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Fact]
+        [SkippableFact]
         public void StorageReadWriteSparqlRemoveTriples()
         {
             try
@@ -346,7 +346,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Fact]
+        [SkippableFact]
         public void StorageReadWriteSparqlQuery()
         {
             ReadWriteSparqlConnector readWrite = ReadWriteSparqlTests.GetConnection();
@@ -405,7 +405,7 @@ namespace VDS.RDF.Storage
             
         }
 
-        [Fact]
+        [SkippableFact]
         public void StorageReadWriteSparqlDescribe()
         {
             try
@@ -430,7 +430,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Fact]
+        [SkippableFact]
         public void StorageReadWriteSparqlConfigSerialization1()
         {
             ReadWriteSparqlConnector connector = ReadWriteSparqlTests.GetConnection();

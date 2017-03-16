@@ -232,7 +232,7 @@ namespace VDS.RDF.Parsing
         public void ParsingRdfXmlElementUsesUndeclaredNamespaceDom()
         {
             Graph g = new Graph();
-            g.LoadFromFile(@"..\\resources\missing-namespace-declarations.rdf", new RdfXmlParser(RdfXmlParserMode.DOM));
+            g.LoadFromFile(@"resources\missing-namespace-declarations.rdf", new RdfXmlParser(RdfXmlParserMode.DOM));
             Assert.False(g.IsEmpty);
             Assert.Equal(9, g.Triples.Count);
         }
@@ -242,7 +242,7 @@ namespace VDS.RDF.Parsing
         public void ParsingRdfXmlElementUsesUndeclaredNamespaceStreaming()
         {
             Graph g = new Graph();
-            g.LoadFromFile(@"..\\resources\missing-namespace-declarations.rdf", new RdfXmlParser(RdfXmlParserMode.Streaming));
+            g.LoadFromFile(@"resources\missing-namespace-declarations.rdf", new RdfXmlParser(RdfXmlParserMode.Streaming));
             Assert.False(g.IsEmpty);
             Assert.Equal(9, g.Triples.Count);
         }
@@ -259,7 +259,7 @@ namespace VDS.RDF.Parsing
             ChainedHandler handler = new ChainedHandler(new IRdfHandler[] { paging, counter });
 
             GZippedRdfXmlParser parser = new GZippedRdfXmlParser(RdfXmlParserMode.Streaming);
-            parser.Load(handler, @"..\\resources\oom.rdf.gz");
+            parser.Load(handler, @"resources\oom.rdf.gz");
 
             Assert.False(g.IsEmpty);
             Assert.Equal(1000, counter.Count);
@@ -274,7 +274,7 @@ namespace VDS.RDF.Parsing
         {
             IGraph g = new Graph();
             RdfXmlParser parser = new RdfXmlParser();
-            parser.Load(g, @"..\\resources\cogapp.rdf");
+            parser.Load(g, @"resources\cogapp.rdf");
 
             Assert.False(g.IsEmpty);
             Assert.Equal(9358, g.Triples.Count);
@@ -303,7 +303,7 @@ namespace VDS.RDF.Parsing
         {
             IGraph g = new Graph();
             var parser = new RdfXmlParser(RdfXmlParserMode.Streaming);
-            parser.Load(g, @"..\\resources\rdfxml-defaultns-scope.xml");
+            parser.Load(g, @"resources\rdfxml-defaultns-scope.xml");
             var resourceNode = g.CreateUriNode(UriFactory.Create("http://example.org/thing/1"));
             var p1Node = g.CreateUriNode(UriFactory.Create("http://example.org/ns/b#p1"));
             var p2Node = g.CreateUriNode(UriFactory.Create("http://example.org/ns/a#p2"));

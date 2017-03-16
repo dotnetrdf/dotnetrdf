@@ -161,7 +161,7 @@ namespace VDS.RDF.Query
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             store.Add(g);
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
             Assert.Throws<RdfQueryTimeoutException>(() =>
@@ -178,7 +178,7 @@ namespace VDS.RDF.Query
         public void SparqlQueryTimeoutDuringProduct()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             String query = "SELECT * WHERE { ?s ?p ?o . ?x ?y ?z }";
             this.TestProductTimeout(g, query, false, g.Triples.Count * g.Triples.Count);
@@ -188,7 +188,7 @@ namespace VDS.RDF.Query
         public void SparqlQueryTimeoutDuringProduct2()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             String query = "SELECT * WHERE { ?s ?p ?o . ?x ?y ?z . ?a ?b ?c }";
             this.TestProductTimeout(g, query, false, g.Triples.Count * g.Triples.Count * g.Triples.Count);
@@ -198,7 +198,7 @@ namespace VDS.RDF.Query
         public void SparqlQueryTimeoutGlobalDuringProduct()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             String query = "SELECT * WHERE { ?s ?p ?o . ?x ?y ?z }";
             this.TestProductTimeout(g, query, true, g.Triples.Count * g.Triples.Count);
@@ -208,7 +208,7 @@ namespace VDS.RDF.Query
         public void SparqlQueryTimeoutGlobalDuringProduct2()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             String query = "SELECT * WHERE { ?s ?p ?o . ?x ?y ?z . ?a ?b ?c }";
             this.TestProductTimeout(g, query, true, g.Triples.Count * g.Triples.Count * g.Triples.Count);
@@ -218,7 +218,7 @@ namespace VDS.RDF.Query
         public void SparqlQueryTimeoutDuringProductOverriddenByGlobal()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             String query = "SELECT * WHERE { ?s ?p ?o . ?x ?y ?z }";
             this.TestProductTimeoutGlobalOverride(g, query, 1000, g.Triples.Count * g.Triples.Count);
@@ -228,7 +228,7 @@ namespace VDS.RDF.Query
         public void SparqlQueryTimeoutDuringProductOverriddenByGlobal2()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             String query = "SELECT * WHERE { ?s ?p ?o . ?x ?y ?z . ?a ?b ?c }";
             this.TestProductTimeoutGlobalOverride(g, query, 1000, g.Triples.Count * g.Triples.Count * g.Triples.Count);
@@ -238,7 +238,7 @@ namespace VDS.RDF.Query
         public void SparqlQueryTimeoutDuringProductNotOverriddenByGlobal()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             String query = "SELECT * WHERE { ?s ?p ?o . ?x ?y ?z }";
             this.TestProductTimeoutGlobalOverride(g, query, 0, g.Triples.Count * g.Triples.Count);
@@ -248,7 +248,7 @@ namespace VDS.RDF.Query
         public void SparqlQueryTimeoutDuringProductNotOverriddenByGlobal2()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             String query = "SELECT * WHERE { ?s ?p ?o . ?x ?y ?z . ?a ?b ?c }";
             this.TestProductTimeoutGlobalOverride(g, query, 0, g.Triples.Count * g.Triples.Count * g.Triples.Count);
@@ -263,7 +263,7 @@ namespace VDS.RDF.Query
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             store.Add(g);
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
             Assert.Throws<RdfQueryTimeoutException>(() =>
@@ -282,7 +282,7 @@ namespace VDS.RDF.Query
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             store.Add(g);
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
             Assert.Throws<RdfQueryTimeoutException>(() =>
@@ -299,7 +299,7 @@ namespace VDS.RDF.Query
         public void SparqlQueryTimeoutNone()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             String query = "SELECT * WHERE { ?s ?p ?o . ?x ?y ?z }";
 
@@ -332,7 +332,7 @@ namespace VDS.RDF.Query
         public void SparqlQueryTimeoutMinimal()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             String query = "SELECT * WHERE { ?s ?p ?o . ?x ?y ?z }";
 

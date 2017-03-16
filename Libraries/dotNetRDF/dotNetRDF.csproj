@@ -38,10 +38,20 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>client</TargetFrameworkProfile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Query\Expressions\LeviathanFunctionLibrary.ttl" />
+    <None Remove="Query\Optimisation\OptimiserStats.ttl" />
+  </ItemGroup>
   
   <ItemGroup>
     <EmbeddedResource Include="Configuration\configuration.ttl;Query\Optimisation\OptimiserStats.ttl" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
     <AdditionalFiles Include="..\..\stylecop.json" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Include="Query\Expressions\LeviathanFunctionLibrary.ttl" />
+    <EmbeddedResource Include="Query\Optimisation\OptimiserStats.ttl" />
   </ItemGroup>
 
   <ItemGroup>
