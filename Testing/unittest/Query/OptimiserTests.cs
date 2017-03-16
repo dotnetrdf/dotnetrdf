@@ -48,6 +48,10 @@ namespace VDS.RDF.Query
         private SparqlQueryParser _parser = new SparqlQueryParser();
         private SparqlFormatter _formatter = new SparqlFormatter();
 
+        public OptimiserTests()
+        {
+            VDS.RDF.Options.AlgebraOptimisation = true;
+        }
         [Fact]
         public void SparqlOptimiserQuerySimple()
         {
