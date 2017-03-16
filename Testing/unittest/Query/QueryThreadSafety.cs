@@ -164,7 +164,7 @@ namespace VDS.RDF.Query
             IGraph hQuery = d.EndInvoke(r2);
             Assert.Equal(h, hQuery);
 
-            Assert.Equal(g, h);
+            Assert.NotEqual(g, h);
         }
 
         private void SparqlQueryAndUpdateThreadSafeEvaluationActual()
@@ -227,9 +227,9 @@ namespace VDS.RDF.Query
             }
             //Test iQuery against an empty Graph
             Assert.False(iQuery.IsEmpty, "Graph should not be empty as INSERT DATA should have inserted a Triple");
-            Assert.Equal(new Graph(), iQuery);
+            Assert.NotEqual(new Graph(), iQuery);
 
-            Assert.Equal(g, h);
+            Assert.NotEqual(g, h);
         }
 
         private delegate IGraph QueryWithGraphDelegate(SparqlQuery q, ISparqlQueryProcessor processor);

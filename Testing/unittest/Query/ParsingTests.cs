@@ -391,7 +391,7 @@ WHERE { GRAPH <htp://source> { ?s ?p ?o } . FILTER (NOT EXISTS { ?s a <http://re
             Assert.NotNull(constant);
 
             IValuedNode n = constant.Node;
-            Assert.IsType(typeof(ILiteralNode), n);
+            Assert.IsAssignableFrom(typeof(ILiteralNode), n);
             ILiteralNode lit = (ILiteralNode) n;
             Assert.Equal(String.Empty, lit.Language);
             Assert.True(EqualityHelper.AreUrisEqual(lit.DataType, new Uri("http://example/type")));

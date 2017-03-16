@@ -280,12 +280,7 @@ namespace VDS.RDF.Query
         {
             String query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } . }";
             SparqlQueryParser parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromString(query);
-            Console.WriteLine("Parsed original input OK");
-
-            String query2 = q.ToString();
-            Assert.Throws<RdfParseException>(() => parser.ParseFromString(query2));
-            Console.WriteLine("Parsed reserialized input OK");
+            Assert.Throws<RdfParseException>(() => parser.ParseFromString(query));
         }
 
         [Fact]
@@ -306,13 +301,7 @@ namespace VDS.RDF.Query
         {
             String query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } . }";
             SparqlQueryParser parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromString(query);
-            Console.WriteLine("Parsed original input OK");
-
-            SparqlFormatter formatter = new SparqlFormatter();
-            String query2 = formatter.Format(q);
-            Assert.Throws<RdfParseException>(() => parser.ParseFromString(query2));
-            Console.WriteLine("Parsed reserialized input OK");
+            Assert.Throws<RdfParseException>(() => { SparqlQuery q = parser.ParseFromString(query); });
         }
 
         [Fact]
