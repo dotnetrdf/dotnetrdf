@@ -61,7 +61,6 @@ namespace VDS.RDF.Parsing
                 this._store.Add(this._original);
             }
 
-            Assert.True(File.Exists(file), "Unable to ensure test data");
             if (!File.Exists(file))
             {
                 MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeTypes(Path.GetExtension(file))).FirstOrDefault();
@@ -79,6 +78,7 @@ namespace VDS.RDF.Parsing
                     }
                 }
             }
+            Assert.True(File.Exists(file), "Unable to ensure test data:" + Path.GetFullPath(file));
         }
 
         [Theory]
