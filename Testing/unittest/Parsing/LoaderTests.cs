@@ -313,9 +313,9 @@ namespace VDS.RDF.Parsing
         {
             Graph g = new Graph();
 #if PORTABLE
-            EmbeddedResourceLoader.Load(g, "dotNetRDF.Test.embedded.ttl, dotNetRDF.Portable.Test");
+            EmbeddedResourceLoader.Load(g, "VDS.RDF.embedded.ttl, dotNetRDF.Portable.Test");
 #else
-            EmbeddedResourceLoader.Load(g, "dotNetRDF.Test.embedded.ttl, dotNetRDF.Test");
+            EmbeddedResourceLoader.Load(g, "VDS.RDF.embedded.ttl, dotNetRDF.Test");
 #endif
 
             TestTools.ShowGraph(g);
