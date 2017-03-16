@@ -105,8 +105,8 @@ namespace VDS.RDF.Parsing.Handlers
 
             Assert.Equal(101, g.Triples.Count);
             Assert.Equal(100, h.Triples.Count);
-            Assert.Equal(g.Triples.Count, h.Triples.Count);
-            Assert.Equal(g, h);
+            Assert.NotEqual(g.Triples.Count, h.Triples.Count);
+            Assert.NotEqual(g, h);
         }
 
         [Fact]
@@ -127,8 +127,8 @@ namespace VDS.RDF.Parsing.Handlers
 
             Assert.Equal(101, g.Triples.Count);
             Assert.Equal(100, h.Triples.Count);
-            Assert.Equal(g.Triples.Count, h.Triples.Count);
-            Assert.Equal(g, h);
+            Assert.NotEqual(g.Triples.Count, h.Triples.Count);
+            Assert.NotEqual(g, h);
         }
         
         [Fact]
