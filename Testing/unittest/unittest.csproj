@@ -28,6 +28,10 @@
     <ProjectReference Include="..\..\Libraries\dotNetRDF.Data.Virtuoso\dotNetRDF.Data.Virtuoso.csproj" />
     <ProjectReference Include="..\..\Libraries\dotNetRDF\dotNetRDF.csproj" />
     <AdditionalFiles Include="..\..\stylecop.json" />
+    <Content Include="..\..\Samples\bsbm\App_Data\dataset_50.ttl.gz">
+      <Link>resources\dataset_50.ttl.gz</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
