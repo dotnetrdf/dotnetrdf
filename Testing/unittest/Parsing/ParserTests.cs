@@ -520,7 +520,6 @@ namespace VDS.RDF.Parsing
             TurtleParser parser = new TurtleParser(TurtleSyntax.Original);
 
             Assert.Throws<RdfParseException>(() => parser.Load(g, "resources\\dbpedia_malformed.ttl"));
-            Assert.False(g.IsEmpty);
         }
 
         [Fact]
