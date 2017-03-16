@@ -32,6 +32,7 @@ using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Storage
 {
@@ -477,7 +478,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Fact]
+        [SkippableFact]
         public void StorageAsyncSaveLoad()
         {
             Graph g = new Graph();
@@ -485,7 +486,7 @@ namespace VDS.RDF.Storage
             this.TestAsyncSaveLoad(g);
         }
 
-        [Fact]
+        [SkippableFact]
         public void StorageAsyncDeleteGraph()
         {
             Graph g = new Graph();
@@ -493,7 +494,7 @@ namespace VDS.RDF.Storage
             this.TestAsyncDelete(g);
         }
         
-        [Fact]
+        [SkippableFact]
         public void StorageAsyncRemoveTriples()
         {
             Graph g = new Graph();
@@ -501,7 +502,7 @@ namespace VDS.RDF.Storage
             this.TestAsyncDeleteTriples(g);
         }
 
-        [Fact]
+        [SkippableFact]
         public void StorageAsyncAddTriples()
         {
             Graph g = new Graph();
@@ -509,13 +510,13 @@ namespace VDS.RDF.Storage
             this.TestAsyncAddTriples(g);
         }
 
-        [Fact]
+        [SkippableFact]
         public void StorageAsyncListGraphs()
         {
             this.TestAsyncListGraphs();
         }
 
-        [Fact]
+        [SkippableFact]
         public void StorageAsyncQuery()
         {
             Graph g = new Graph();

@@ -31,6 +31,7 @@ using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using VDS.RDF.Update;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Update
 {
@@ -41,7 +42,7 @@ namespace VDS.RDF.Update
 
         protected abstract IStorageProvider GetManager();
 
-        [Fact]
+        [SkippableFact]
         public void SparqlUpdateGenericCreateAndInsertData()
         {
             IStorageProvider manager = this.GetManager();
@@ -59,7 +60,7 @@ namespace VDS.RDF.Update
             Assert.Equal(1, g.Triples.Count);
         }
 
-        [Fact]
+        [SkippableFact]
         public void SparqlUpdateGenericCreateInsertDeleteData()
         {
             IStorageProvider manager = this.GetManager();

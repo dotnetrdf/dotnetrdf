@@ -31,6 +31,7 @@ using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Parsing.Handlers
 {
@@ -201,7 +202,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
 #if !PORTABLE // No VirtuosoManager in PCL
-        [Fact]
+        [SkippableFact]
         public void ParsingWriteToStoreHandlerVirtuoso()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
@@ -210,7 +211,7 @@ namespace VDS.RDF.Parsing.Handlers
 #endif
 
 #if !NO_SYNC_HTTP // Require Sync interface for test
-        [Fact]
+        [SkippableFact]
         public void ParsingWriteToStoreHandlerAllegroGraph()
         {
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
@@ -219,7 +220,7 @@ namespace VDS.RDF.Parsing.Handlers
 #endif
 
 #if !NO_SYNC_HTTP // Test requires synchronous APIs
-        [Fact]
+        [SkippableFact]
         public void ParsingWriteToStoreHandlerFuseki()
         {
             try
@@ -239,14 +240,14 @@ namespace VDS.RDF.Parsing.Handlers
         }
 #endif
 
-        [Fact]
+        [SkippableFact]
         public void ParsingWriteToStoreHandlerInMemory()
         {
             InMemoryManager mem = new InMemoryManager();
             this.TestWriteToStoreHandler(mem);
         }
 
-        [Fact]
+        [SkippableFact]
         public void ParsingWriteToStoreHandlerDatasetsInMemory()
         {
             InMemoryManager manager = new InMemoryManager();
@@ -254,7 +255,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
 #if !PORTABLE // No VirtuousoManager in PCL
-        [Fact]
+        [SkippableFact]
         public void ParsingWriteToStoreHandlerDatasetsVirtuoso()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
@@ -263,7 +264,7 @@ namespace VDS.RDF.Parsing.Handlers
 #endif
 
 #if !NO_SYNC_HTTP // Test requires synchronous APIs
-        [Fact]
+        [SkippableFact]
         public void ParsingWriteToStoreHandlerBNodesAcrossBatchesAllegroGraph()
         {
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
@@ -272,7 +273,7 @@ namespace VDS.RDF.Parsing.Handlers
 #endif
 
 #if !NO_SYNC_HTTP
-        [Fact]
+        [SkippableFact]
         public void ParsingWriteToStoreHandlerBNodesAcrossBatchesFuseki()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
@@ -280,7 +281,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 #endif
 
-        [Fact]
+        [SkippableFact]
         public void ParsingWriteToStoreHandlerBNodesAcrossBatchesInMemory()
         {
             InMemoryManager manager = new InMemoryManager();
@@ -288,7 +289,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
 #if !PORTABLE // No VirtuosoManager in PCL
-        [Fact]
+        [SkippableFact]
         public void ParsingWriteToStoreHandlerBNodesAcrossBatchesVirtuoso()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
