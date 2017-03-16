@@ -113,7 +113,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             store.Add(g);
             store.Add(h);
 
-            Assert.Equal(g, h);
+            Assert.NotEqual(g, h);
 
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet commands = parser.ParseFromString("ADD GRAPH <http://example.org/source> TO GRAPH <http://example.org/destination>");
@@ -143,7 +143,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             store.Add(g);
             store.Add(h);
 
-            Assert.Equal(g, h);
+            Assert.NotEqual(g, h);
 
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet commands = parser.ParseFromString("ADD GRAPH <http://example.org/source> TO DEFAULT");
@@ -173,7 +173,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             store.Add(g);
             store.Add(h);
 
-            Assert.Equal(g, h);
+            Assert.NotEqual(g, h);
 
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet commands = parser.ParseFromString("ADD DEFAULT TO GRAPH <http://example.org/destination>");
@@ -203,7 +203,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             store.Add(g);
             store.Add(h);
 
-            Assert.Equal(g, h);
+            Assert.NotEqual(g, h);
 
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet commands = parser.ParseFromString("COPY GRAPH <http://example.org/source> TO GRAPH <http://example.org/destination>");
@@ -233,7 +233,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             store.Add(g);
             store.Add(h);
 
-            Assert.Equal(g, h);
+            Assert.NotEqual(g, h);
 
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet commands = parser.ParseFromString("COPY GRAPH <http://example.org/source> TO DEFAULT");
@@ -263,7 +263,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             store.Add(g);
             store.Add(h);
 
-            Assert.Equal(g, h);
+            Assert.NotEqual(g, h);
 
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet commands = parser.ParseFromString("COPY DEFAULT TO GRAPH <http://example.org/destination>");
@@ -293,7 +293,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             store.Add(g);
             store.Add(h);
 
-            Assert.Equal(g, h);
+            Assert.NotEqual(g, h);
 
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet commands = parser.ParseFromString("MOVE GRAPH <http://example.org/source> TO GRAPH <http://example.org/destination>");
@@ -326,7 +326,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             store.Add(g);
             store.Add(h);
 
-            Assert.Equal(g, h);
+            Assert.NotEqual(g, h);
 
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet commands = parser.ParseFromString("MOVE GRAPH <http://example.org/source> TO DEFAULT");
@@ -359,7 +359,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             store.Add(g);
             store.Add(h);
 
-            Assert.Equal(g, h);
+            Assert.NotEqual(g, h);
 
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet commands = parser.ParseFromString("MOVE DEFAULT TO GRAPH <http://example.org/destination>");
@@ -648,7 +648,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
-            Assert.Equal(origTriples, g.Triples.Count);
+            Assert.NotEqual(origTriples, g.Triples.Count);
             Assert.True(g.GetTriplesWithPredicate(g.CreateUriNode(new Uri("http://xmlns.com/foaf/0.1/mbox_sha1sum"))).Any(), "Expected new triples to have been added");
         }
 
@@ -673,7 +673,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
-            Assert.Equal(origTriples, g.Triples.Count);
+            Assert.NotEqual(origTriples, g.Triples.Count);
             Assert.True(g.GetTriplesWithPredicate(g.CreateUriNode(new Uri("http://xmlns.com/foaf/0.1/mbox_sha1sum"))).Any(), "Expected new triples to have been added");
         }
 
@@ -698,7 +698,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
-            Assert.Equal(origTriples, g.Triples.Count);
+            Assert.NotEqual(origTriples, g.Triples.Count);
             Assert.False(g.GetTriplesWithPredicate(g.CreateUriNode(new Uri("http://xmlns.com/foaf/0.1/mbox"))).Any(), "Expected triples to have been deleted");
         }
 
@@ -723,7 +723,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
-            Assert.Equal(origTriples, g.Triples.Count);
+            Assert.NotEqual(origTriples, g.Triples.Count);
             Assert.False(g.GetTriplesWithPredicate(g.CreateUriNode(new Uri("http://xmlns.com/foaf/0.1/mbox"))).Where(t => t.Object.ToString().Contains("dotnetrdf.org")).Any(), "Expected triples to have been deleted");
         }
     }
