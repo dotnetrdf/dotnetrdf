@@ -194,7 +194,7 @@ namespace VDS.RDF.Parsing.Handlers
 
             parser.Load(handler, "temp.ttl");
             Assert.Equal(g.Triples.Count + 2, h.Triples.Count);
-            Assert.Equal(g, h);
+            Assert.NotEqual(g, h);
 
             NTriplesFormatter formatter = new NTriplesFormatter();
             foreach (Triple t in h.Triples.Where(x => !x.IsGroundTriple))
@@ -223,7 +223,7 @@ namespace VDS.RDF.Parsing.Handlers
 
             parser.Load(h, "temp.ttl");
             Assert.Equal(g.Triples.Count + 2, h.Triples.Count);
-            Assert.Equal(g, h);
+            Assert.NotEqual(g, h);
 
             NTriplesFormatter formatter = new NTriplesFormatter();
             foreach (Triple t in h.Triples.Where(x => !x.IsGroundTriple))

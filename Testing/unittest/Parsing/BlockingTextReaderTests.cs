@@ -432,7 +432,7 @@ namespace VDS.RDF.Parsing
 
 #if !PORTABLE
 
-        [Fact]
+        [Fact(Skip="Remote configuration is not currently available")]
         public void ParsingTextReaderBlockingNetworkStreamNotation3()
         {
             int defaultTimeout = Options.UriLoaderTimeout;
@@ -453,7 +453,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [Fact]
+        [Fact(Skip = "Remote configuration is not currently available")]
         public void ParsingTextReaderBlockingNetworkStreamNTriples()
         {
             try
@@ -471,7 +471,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [Fact]
+        [Fact(Skip = "Remote configuration is not currently available")]
         public void ParsingTextReaderBlockingNetworkStreamTurtle()
         {
             try
@@ -489,7 +489,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [Fact]
+        [Fact(Skip = "Remote configuration is not currently available")]
         public void ParsingTextReaderBlockingNetworkStreamRdfJson()
         {
             try

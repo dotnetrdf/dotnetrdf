@@ -107,12 +107,12 @@ namespace VDS.RDF
             store.Add(empty);
 
             Assert.True(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
-            Assert.Equal(g, store[g.BaseUri]);
+            Assert.NotEqual(g, store[g.BaseUri]);
         }
 #endif
 
 #if !SILVERLIGHT
-        [Fact]
+        [Fact(Skip="Remote configuration file is not currently available")]
         public void GraphCollectionWebDemand1()
         {
             TripleStore store = new TripleStore(new WebDemandGraphCollection());
@@ -125,7 +125,7 @@ namespace VDS.RDF
             Assert.Equal(g, store[g.BaseUri]);
         }
 
-        [Fact]
+        [Fact(Skip = "Remote configuration file is not currently available")]
         public void GraphCollectionWebDemand2()
         {
             //Test that on-demand loading does not kick in for pre-existing graphs
@@ -141,7 +141,7 @@ namespace VDS.RDF
             store.Add(empty);
 
             Assert.True(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
-            Assert.Equal(g, store[g.BaseUri]);
+            Assert.NotEqual(g, store[g.BaseUri]);
         }
 #endif
     }

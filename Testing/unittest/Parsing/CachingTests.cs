@@ -41,7 +41,7 @@ namespace VDS.RDF.Parsing
     {
         private static Uri test = new Uri("http://www.dotnetrdf.org/configuration#");
 
-        [Fact]
+        [Fact(Skip = "Remote configuration is not currently available")]
         public void ParsingUriLoaderCache()
         {
             //Load the Graph
@@ -55,7 +55,7 @@ namespace VDS.RDF.Parsing
             Assert.Equal(g, h);
         }
 
-        [Fact]
+        [Fact(Skip = "Remote configuration is not currently available")]
         public void ParsingUriLoaderCustomCache()
         {
             String original = UriLoader.CacheDirectory;
@@ -71,7 +71,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [Fact]
+        [Fact(Skip = "Remote configuration is not currently available")]
         public void ParsingUriLoaderUriSantisation()
         {
             Uri a = new Uri(ConfigurationLoader.ClassTripleStore);

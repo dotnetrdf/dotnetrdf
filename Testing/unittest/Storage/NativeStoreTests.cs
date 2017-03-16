@@ -30,6 +30,7 @@ using System.Text;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF
 {
@@ -37,7 +38,7 @@ namespace VDS.RDF
     public class NativeStoreTests
         : BaseTest
     {
-        [Fact]
+        [SkippableFact]
         public void StorageNativeGraph()
         {
             //Load in our Test Graph
