@@ -135,7 +135,7 @@ namespace VDS.RDF.Query.Expressions
         }
 
         [Theory]
-        [InlineData("2013-07-05", "2013-07-05")]
+        [InlineData(null, null)]
         public void SparqlDateIncomparable(String x, String y)
         {
             IGraph g = new Graph();
