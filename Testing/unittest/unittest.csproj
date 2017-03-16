@@ -3,7 +3,7 @@
   <PropertyGroup>
     <AssemblyTitle>dotNetRDF.Test</AssemblyTitle>
     <VersionPrefix>1.0.13-pre6</VersionPrefix>
-    <TargetFramework>net451</TargetFramework>
+    <TargetFramework>net452</TargetFramework>
     <AssemblyName>dotNetRDF.Test</AssemblyName>
     <AssemblyOriginatorKeyFile>../../Build/dotNetRDF.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
@@ -34,11 +34,12 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
     <PackageReference Include="Moq" Version="4.7.1" />
     <PackageReference Include="xunit" Version="2.2.0" />
+    <PackageReference Include="xunit.extensibility.execution" Version="2.2.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
     <PackageReference Include="xunit.runner.console" Version="2.2.0" />
  </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Data" />
     <Reference Include="System" />
@@ -46,11 +47,11 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net451' ">
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net452' ">
     <DefineConstants>$(DefineConstants);NET40</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
     <Compile Remove="Compatibility\*.cs" />
     <EmbeddedResource Include="Query\SampleWeightings.n3;embedded.ttl" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
     <None Update="resources\**\*.*;resources\*.*">
