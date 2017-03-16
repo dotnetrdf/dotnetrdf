@@ -46,7 +46,7 @@ namespace VDS.RDF.Writing
             g.BaseUri = new Uri("http://example.org/graph");
             store.Add(g);
             g = new Graph();
-            g.LoadFromFile(@"..\\resources\cyrillic.rdf");
+            g.LoadFromFile(@"resources\cyrillic.rdf");
             g.BaseUri = new Uri("http://example.org/cyrillic");
             store.Add(g);
 

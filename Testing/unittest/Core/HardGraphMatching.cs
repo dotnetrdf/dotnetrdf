@@ -192,9 +192,9 @@ namespace VDS.RDF
         public void GraphMatchTrivial1()
         {
             Graph g = new Graph();
-            g.LoadFromFile("..\\resources/turtle11-unofficial/test-13.ttl");
+            g.LoadFromFile("resources/turtle11-unofficial/test-13.ttl");
             Graph h = new Graph();
-            h.LoadFromFile("..\\resources/turtle11-unofficial/test-13.out", new NTriplesParser());
+            h.LoadFromFile("resources/turtle11-unofficial/test-13.out", new NTriplesParser());
 
             GraphDiffReport report = g.Difference(h);
             if (!report.AreEqual) TestTools.ShowDifferences(report);
@@ -239,9 +239,9 @@ namespace VDS.RDF
         public void GraphHardTrivial3()
         {
             Graph g = new Graph();
-            g.LoadFromFile("..\\resources/turtle11/first.ttl");
+            g.LoadFromFile("resources/turtle11/first.ttl");
             Graph h = new Graph();
-            h.LoadFromFile("..\\resources/turtle11/first.ttl");
+            h.LoadFromFile("resources/turtle11/first.ttl");
 
             Assert.Equal(g, h);
         }
