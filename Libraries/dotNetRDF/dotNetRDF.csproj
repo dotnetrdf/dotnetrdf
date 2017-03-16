@@ -45,7 +45,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <EmbeddedResource Include="Configuration\configuration.ttl;Query\Optimisation\OptimiserStats.ttl" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+    <EmbeddedResource Include="Configuration\configuration.ttl" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
   
