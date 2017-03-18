@@ -37,7 +37,6 @@ using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Query
 {
-
     public class ViewTests
     {
         [Fact]
