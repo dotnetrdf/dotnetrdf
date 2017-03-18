@@ -25,8 +25,8 @@ test_script:
   
 on_finish:
   - ps: $wc = New-Object 'System.Net.WebClient'
-  - ps: Get-ChildItem -Filter *.trx -Recurse | ${ Push-AppveyorArtifact $_.FullName }
   - ps: Get-ChildItem -Filter *.trx -Recurse | ${ $wc.UploadFile("https://ci.appveyor.com/api/testresults/xunit/$($env:APPVEYOR_JOB_ID)", $_.FullName }
 
 artifacts:
   - path: 'nugets\*.nupkg'
+  - path: 'Testing\unittest\TestResults\*.trx'
