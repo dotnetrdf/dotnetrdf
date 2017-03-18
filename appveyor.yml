@@ -21,12 +21,12 @@ build_script:
   - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF.Query.FullText /p:Version=%GitVersion_NuGetVersion%
 
 test_script:
-  - dotnet test Testing/unittest/unittest.csproj
+  - dotnet test Testing/unittest/unittest.csproj -l trx --filter category!=explicit
   
 on_finish:
   - ps: $wc = New-Object 'System.Net.WebClient'
-  - ps: Push-AppveyorArtifact .\TestResult.xml
-  - ps: $wc.UploadFile("https://ci.appveyor.com/api/testresults/xunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestResult.xml))
+  - ps: Get-Child *.trx | Push-AppveyorArtifact $_.FullPath
+  - ps: Get-Child *.trx | $wc.UploadFile("https://ci.appveyor.com/api/testresults/xunit/$($env:APPVEYOR_JOB_ID)", $_.FullPath
 
 artifacts:
   - path: 'nugets\*.nupkg'

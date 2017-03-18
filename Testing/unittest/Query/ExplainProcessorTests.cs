@@ -31,6 +31,7 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Query
 {
 
+    [Trait("category", "explicit")]
     public class ExplainProcessorTests
     {
         private ExplainQueryProcessor _processor;
