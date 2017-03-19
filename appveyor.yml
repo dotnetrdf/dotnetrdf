@@ -26,9 +26,8 @@ test_script:
 on_finish:
   - ps: $wc = New-Object 'System.Net.WebClient'
   - ps: Push-AppveyorArtifact .\Testing\unittest\TestResults\output.trx
+  - ps: Push-AppveyorArtifact .\test.log
   - ps: $wc.UploadFile("https://ci.appveyor.com/api/testresults/xunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\Testing\unittest\TestResults\output.trx ) )
 
 artifacts:
   - path: 'nugets\*.nupkg'
-  - path: 'Testing\unittest\TestResults\output.trx'
-  - path: 'test.log'
