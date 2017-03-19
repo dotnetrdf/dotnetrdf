@@ -21,7 +21,7 @@ build_script:
   - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF.Query.FullText /p:Version=%GitVersion_NuGetVersion%
 
 test_script:
-  - ps: dotnet test .\Testing\unittest\unittest.csproj -l "trx;LogFileName=tests.trx" --filter category!=explicit --no-build | Out-File .\test.log
+  - ps: dotnet test .\Testing\unittest\unittest.csproj -l "trx;LogFileName=output.trx" --filter category!=explicit --no-build | Out-File .\test.log
   
 on_finish:
   - ps: $wc = New-Object 'System.Net.WebClient'
