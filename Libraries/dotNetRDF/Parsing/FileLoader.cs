@@ -83,11 +83,7 @@ namespace VDS.RDF.Parsing
 
             if (!File.Exists(filename))
             {
-#if SILVERLIGHT
-                throw new FileNotFoundException("Cannot read RDF from the File '" + filename + "' since it doesn't exist");
-#else
-                throw new FileNotFoundException("Cannot read RDF from the File '" + filename + "' since it doesn't exist", filename);
-#endif
+                ThrowNotFoundException(filename);
             }
 
             // Assign a File Uri to the Graph if the Graph is Empty
@@ -233,11 +229,7 @@ namespace VDS.RDF.Parsing
 
             if (!File.Exists(filename))
             {
-#if SILVERLIGHT
-                throw new FileNotFoundException("Cannot read a RDF Dataset from the File '" + filename + "' since it doesn't exist");
-#else
-                throw new FileNotFoundException("Cannot read a RDF Dataset from the File '" + filename + "' since it doesn't exist", filename);
-#endif
+                ThrowNotFoundException(filename);
             }
 
             if (parser == null)
@@ -335,6 +327,15 @@ namespace VDS.RDF.Parsing
         /// Event which is raised when the Store parser invoked by the FileLoader detects a non-fatal issue with the RDF syntax
         /// </summary>
         public static event StoreReaderWarning StoreWarning;
+
+        private static void ThrowNotFoundException(string filename)
+        {
+#if SILVERLIGHT
+            throw new FileNotFoundException("Cannot read RDF from the File '" + filename + "' since it doesn't exist");
+#else
+            throw new FileNotFoundException("Cannot read RDF from the File '" + Path.GetFullPath(filename) + "' since it doesn't exist", filename);
+#endif
+        }
     }
 #endif
 
