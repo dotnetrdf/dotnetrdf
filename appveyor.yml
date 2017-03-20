@@ -24,7 +24,6 @@ test_script:
   - ps: dotnet test .\Testing\unittest\unittest.csproj -l "trx;LogFileName=output.trx" --filter category!=explicit --no-build | Out-File .\test.log
   
 on_finish:
-  - ps: $wc = New-Object 'System.Net.WebClient'
   - ps: Push-AppveyorArtifact .\Testing\unittest\TestResults\output.trx
   - ps: Push-AppveyorArtifact .\test.log
   - ps: (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/mstest/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\Testing\unittest\TestResults\output.trx ) )
