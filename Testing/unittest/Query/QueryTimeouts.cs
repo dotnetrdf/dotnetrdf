@@ -334,7 +334,7 @@ namespace VDS.RDF.Query
             Graph g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
-            String query = "SELECT * WHERE { ?s ?p ?o . ?x ?y ?z }";
+            String query = "SELECT * WHERE { ?s ?p ?o . ?x ?y ?z . ?a ?b ?c }";
 
             long currTimeout = Options.QueryExecutionTimeout;
             try
@@ -353,7 +353,7 @@ namespace VDS.RDF.Query
                 {
                     SparqlResultSet rset = (SparqlResultSet)results;
                     Console.WriteLine("Results: " + rset.Count + " - Query Time: " + q.QueryExecutionTime);
-                    Assert.True(rset.Count < (g.Triples.Count * g.Triples.Count));
+                    Assert.True(rset.Count < (g.Triples.Count * g.Triples.Count * g.Triples.Count));
                 }
             }
             finally
