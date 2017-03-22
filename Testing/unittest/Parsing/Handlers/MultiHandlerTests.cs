@@ -39,11 +39,11 @@ namespace VDS.RDF.Parsing.Handlers
     {
         private void EnsureTestData()
         {
-            if (!System.IO.File.Exists("temp.ttl"))
+            if (!System.IO.File.Exists("multi_handler_tests_temp.ttl"))
             {
                 Graph g = new Graph();
                 EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
-                g.SaveToFile("temp.ttl");
+                g.SaveToFile("multi_handler_tests_temp.ttl");
             }
         }
         
@@ -81,7 +81,7 @@ namespace VDS.RDF.Parsing.Handlers
             MultiHandler handler = new MultiHandler(new IRdfHandler[] { handler1, handler2 });
 
             TurtleParser parser = new TurtleParser();
-            parser.Load(handler, "temp.ttl");
+            parser.Load(handler, "multi_handler_tests_temp.ttl");
 
             Assert.Equal(g.Triples.Count, h.Triples.Count);
             Assert.Equal(g, h);
@@ -101,7 +101,7 @@ namespace VDS.RDF.Parsing.Handlers
             MultiHandler handler = new MultiHandler(new IRdfHandler[] { handler1, handler2 });
 
             TurtleParser parser = new TurtleParser();
-            parser.Load(handler, "temp.ttl");
+            parser.Load(handler, "multi_handler_tests_temp.ttl");
 
             Assert.Equal(101, g.Triples.Count);
             Assert.Equal(100, h.Triples.Count);
@@ -123,7 +123,7 @@ namespace VDS.RDF.Parsing.Handlers
             MultiHandler handler = new MultiHandler(new IRdfHandler[] { handler2, handler1 });
 
             TurtleParser parser = new TurtleParser();
-            parser.Load(handler, "temp.ttl");
+            parser.Load(handler, "multi_handler_tests_temp.ttl");
 
             Assert.Equal(101, g.Triples.Count);
             Assert.Equal(100, h.Triples.Count);
@@ -144,7 +144,7 @@ namespace VDS.RDF.Parsing.Handlers
             MultiHandler handler = new MultiHandler(new IRdfHandler[] { handler1, handler2 });
 
             TurtleParser parser = new TurtleParser();
-            parser.Load(handler, "temp.ttl");
+            parser.Load(handler, "multi_handler_tests_temp.ttl");
 
             Assert.Equal(g.Triples.Count, handler2.Count);
  
@@ -163,7 +163,7 @@ namespace VDS.RDF.Parsing.Handlers
             MultiHandler handler = new MultiHandler(new IRdfHandler[] { handler1, handler2 });
 
             TurtleParser parser = new TurtleParser();
-            parser.Load(handler, "temp.ttl");
+            parser.Load(handler, "multi_handler_tests_temp.ttl");
         }
     }
 }

@@ -46,11 +46,11 @@ namespace VDS.RDF.Parsing.Handlers
 
         private void EnsureTestData()
         {
-            if (!System.IO.File.Exists("temp.ttl"))
+            if (!System.IO.File.Exists("write_to_store_handler_tests_temp.ttl"))
             {
                 Graph g = new Graph();
                 EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
-                g.SaveToFile("temp.ttl");
+                g.SaveToFile("write_to_store_handler_tests_temp.ttl");
             }
         }
 
@@ -84,13 +84,13 @@ namespace VDS.RDF.Parsing.Handlers
 
             WriteToStoreHandler handler = new WriteToStoreHandler(manager, TestGraphUri, 100);
             TurtleParser parser = new TurtleParser();
-            parser.Load(handler, "temp.ttl");
+            parser.Load(handler, "write_to_store_handler_tests_temp.ttl");
 
             manager.LoadGraph(temp, TestGraphUri);
             Assert.False(temp.IsEmpty, "Graph should not be empty");
 
             Graph orig = new Graph();
-            orig.LoadFromFile("temp.ttl");
+            orig.LoadFromFile("write_to_store_handler_tests_temp.ttl");
 
             Assert.Equal(orig, temp);
         }
