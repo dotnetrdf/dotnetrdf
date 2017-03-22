@@ -45,7 +45,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.FullText
 {
-
+    [Collection("FullText")]
     public class FullTextSparqlTests
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
