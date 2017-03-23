@@ -2437,9 +2437,6 @@
     <Compile Include="..\net40\Query\Builder\ExpressionBuilder.cs">
       <Link>Query\Builder\ExpressionBuilder.cs</Link>
     </Compile>
-    <Compile Include="..\net40\Query\Builder\ExpressionBuilderFunctionalFormsExtensions.cs">
-      <Link>Query\Builder\ExpressionBuilderFunctionalFormsExtensions.cs</Link>
-    </Compile>
     <Compile Include="..\net40\Query\Builder\Expressions\IriExpression.cs">
       <Link>Query\Builder\Expressions\IriExpression.cs</Link>
     </Compile>
@@ -2510,14 +2507,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\net40\Query\Builder\ExpressionBuilderRdfTermsFunctionsExtensions.cs">
-      <Link>Query\Builder\ExpressionBuilderRdfTermsFunctionsExtensions.cs</Link>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\net40\Query\Builder\ExpressionBuilderStringExtensions.cs">
-      <Link>Query\Builder\ExpressionBuilderStringExtensions.cs</Link>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\net40\Query\Builder\DescribeGraphPatternBuilder.cs">
@@ -2585,6 +2576,38 @@
   <ItemGroup>
     <Compile Include="..\net40\Storage\Virtualisation\StoreVirtualGraphPersistenceWrapper.cs">
       <Link>Storage\Virtualisation\StoreVirtualGraphPersistenceWrapper.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Query\Builder\ExpressionBuilder.Aggregates.cs">
+      <Link>Query\Builder\ExpressionBuilder.Aggregates.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\Expressions\AggregateExpression.cs">
+      <Link>Query\Builder\Expressions\AggregateExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\ExpressionBuilder.RdfTermsFunctions.cs">
+      <Link>Query\Builder\ExpressionBuilder.RdfTermsFunctions.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\ExpressionBuilder.FunctionalForms.cs">
+      <Link>Query\Builder\ExpressionBuilder.FunctionalForms.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\ExpressionBuilder.String.cs">
+      <Link>Query\Builder\ExpressionBuilder.String.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\Expressions\PrimaryExpression.cs">
+      <Link>Query\Builder\Expressions\PrimaryExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\IAggregateBuilder.cs">
+      <Link>Query\Builder\IAggregateBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\IDistinctAggregateBuilder.cs">
+      <Link>Query\Builder\IDistinctAggregateBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\IExpressionBuilder.cs">
+      <Link>Query\Builder\IExpressionBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\INonAggregateExpressionBuilder.cs">
+      <Link>Query\Builder\INonAggregateExpressionBuilder.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>
