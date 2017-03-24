@@ -22,11 +22,13 @@ build_script:
 
 test_script:
   - ps: dotnet test .\Testing\unittest\unittest.csproj -l "trx;LogFileName=output.trx" --filter category!=explicit --no-build | Out-File .\test.log
-  
-on_finish:
   - ps: Push-AppveyorArtifact .\Testing\unittest\TestResults\output.trx
   - ps: Push-AppveyorArtifact .\test.log
   - ps: (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/mstest/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\Testing\unittest\TestResults\output.trx ) )
+  - ps: dotnet test .\Testing\unittest\unittest.csproj -l "trx;LogFileName=fulltext.trx" --filter category=fulltext --no-build | Out-File .\fulltext.log
+  - ps: Push-AppveyorArtifact .\Testing\unittest\TestResults\fulltext.trx
+  - ps: Push-AppveyorArtifact .\fulltext.log
+  - ps: (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/mstest/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\Testing\unittest\TestResults\fulltext.trx ) )
 
 artifacts:
   - path: 'nugets\*.nupkg'

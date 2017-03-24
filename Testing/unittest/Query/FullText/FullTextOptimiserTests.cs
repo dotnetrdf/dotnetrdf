@@ -40,7 +40,8 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.FullText
 {
-
+    [Trait("category", "explicit")]
+    [Trait("category", "fulltext")]
     public class FullTextOptimiserTests
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
