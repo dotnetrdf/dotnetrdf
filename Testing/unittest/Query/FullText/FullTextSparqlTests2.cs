@@ -42,39 +42,31 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.FullText
 {
-
+    [Collection("FullText")]
     public class FullTextSparqlTests2
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
         private INamespaceMapper _nsmap;
         private ISparqlDataset _dataset;
 
-        private INamespaceMapper GetQueryNamespaces()
+        public FullTextSparqlTests2()
         {
-            if (this._nsmap == null)
-            {
-                this._nsmap = new NamespaceMapper();
-                this._nsmap.AddNamespace("pf", new Uri(FullTextHelper.FullTextMatchNamespace));
-            }
-            return this._nsmap;
+            this._nsmap = new NamespaceMapper();
+            this._nsmap.AddNamespace("pf", new Uri(FullTextHelper.FullTextMatchNamespace));
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            store.Add(g);
+            this._dataset = new InMemoryDataset(store, true);
         }
 
-        private void EnsureTestData()
+        private INamespaceMapper GetQueryNamespaces()
         {
-            if (this._dataset == null)
-            {
-                TripleStore store = new TripleStore();
-                Graph g = new Graph();
-                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-                store.Add(g);
-
-                this._dataset = new InMemoryDataset(store, true);
-            }
+            return this._nsmap;
         }
 
         private void RunTest(IFullTextIndexer indexer, String query, IEnumerable<INode> expected)
         {
-            this.EnsureTestData();
 
             indexer.Index(this._dataset);
             indexer.Dispose();
@@ -99,6 +91,7 @@ namespace VDS.RDF.Query.FullText
             try
             {
                 q.AlgebraOptimisers = new IAlgebraOptimiser[] { new FullTextOptimiser(provider) };
+                Options.AlgebraOptimisation = true;
 
                 LeviathanQueryProcessor processor = new LeviathanQueryProcessor(this._dataset);
                 SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
@@ -136,8 +129,6 @@ namespace VDS.RDF.Query.FullText
         [Fact]
         public void FullTextSparqlComplexLuceneSubjects2()
         {
-            this.EnsureTestData();
-
             List<INode> expected = (from t in this._dataset.Triples
                                     where t.Object.NodeType == NodeType.Literal
                                           && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
@@ -152,8 +143,6 @@ namespace VDS.RDF.Query.FullText
         [Fact]
         public void FullTextSparqlComplexLuceneSubjects3()
         {
-            this.EnsureTestData();
-
             List<INode> expected = (from t in this._dataset.Triples
                                     where t.Object.NodeType == NodeType.Literal
                                           && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
@@ -168,8 +157,6 @@ namespace VDS.RDF.Query.FullText
         [Fact]
         public void FullTextSparqlComplexLuceneSubjects4()
         {
-            this.EnsureTestData();
-
             List<INode> expected = (from t in this._dataset.Triples
                                     where t.Object.NodeType == NodeType.Literal
                                           && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
@@ -185,8 +172,6 @@ namespace VDS.RDF.Query.FullText
         [Fact]
         public void FullTextSparqlComplexLuceneSubjects5()
         {
-            this.EnsureTestData();
-
             List<INode> expected = (from t in this._dataset.Triples
                                     where t.Object.NodeType == NodeType.Literal
                                           && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
@@ -202,8 +187,6 @@ namespace VDS.RDF.Query.FullText
         [Fact]
         public void FullTextSparqlComplexLuceneSubjects6()
         {
-            this.EnsureTestData();
-
             List<INode> expected = (from t in this._dataset.Triples
                                     where t.Object.NodeType == NodeType.Literal
                                           && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")

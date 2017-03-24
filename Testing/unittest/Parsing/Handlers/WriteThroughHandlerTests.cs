@@ -39,30 +39,30 @@ namespace VDS.RDF.Parsing.Handlers
     {
         private void ParsingUsingWriteThroughHandler(ITripleFormatter formatter)
         {
-            if (!System.IO.File.Exists("temp.ttl"))
+            if (!System.IO.File.Exists("write_through_handler_tests_temp.ttl"))
             {
                 Graph g = new Graph();
                 EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
-                g.SaveToFile("temp.ttl");
+                g.SaveToFile("write_through_handler_tests_temp.ttl");
             }
 
             WriteThroughHandler handler = new WriteThroughHandler(formatter, Console.Out, false);
             TurtleParser parser = new TurtleParser();
-            parser.Load(handler, "temp.ttl");
+            parser.Load(handler, "write_through_handler_tests_temp.ttl");
         }
 
         private void ParsingUsingWriteThroughHandler(Type formatterType)
         {
-            if (!System.IO.File.Exists("temp.ttl"))
+            if (!System.IO.File.Exists("write_through_handler_tests_temp.ttl"))
             {
                 Graph g = new Graph();
                 EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
-                g.SaveToFile("temp.ttl");
+                g.SaveToFile("write_through_handler_tests_temp.ttl");
             }
 
             WriteThroughHandler handler = new WriteThroughHandler(formatterType, Console.Out, false);
             TurtleParser parser = new TurtleParser();
-            parser.Load(handler, "temp.ttl");
+            parser.Load(handler, "write_through_handler_tests_temp.ttl");
         }
 
         [Fact]

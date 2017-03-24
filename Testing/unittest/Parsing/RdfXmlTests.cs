@@ -169,8 +169,6 @@ namespace VDS.RDF.Parsing
             Uri encoded = new Uri("http://example.com/some%20encoded%2FUri");
             Uri unencoded = new Uri("http://example.com/some encoded/Uri");
 
-            Assert.True(EqualityHelper.AreUrisEqual(encoded, unencoded), "URIs should be equivalent");
-
             IUriNode encodedNode = g.GetUriNode(encoded);
             Assert.NotNull(encodedNode);
             IUriNode unencodedNode = g.GetUriNode(unencoded);

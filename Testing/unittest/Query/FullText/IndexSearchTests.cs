@@ -40,7 +40,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.FullText
 {
-
+    [Collection("FullText")]
     public class IndexSearchTests
     {
         private IGraph GetTestData()

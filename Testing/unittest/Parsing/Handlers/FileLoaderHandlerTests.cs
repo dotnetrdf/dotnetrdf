@@ -31,7 +31,7 @@ namespace VDS.RDF.Parsing.Handlers
 
     public class FileLoaderHandlerTests
     {
-        private const string TestDataFile = "resources\\temp.ttl";
+        private const string TestDataFile = "resources\\file_loader_handler_tests_temp.ttl";
 
         public FileLoaderHandlerTests()
         {
@@ -89,7 +89,7 @@ namespace VDS.RDF.Parsing.Handlers
                 StreamLoader.Load(handler, TestDataFile, input);
             }
 #else
-            FileLoader.Load(handler, "temp.ttl");
+            FileLoader.Load(handler, TestDataFile);
 #endif
 
             Assert.Equal(orig.Triples.Count, handler.Count);

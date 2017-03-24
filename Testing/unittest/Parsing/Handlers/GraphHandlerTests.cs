@@ -134,26 +134,26 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingGraphHandlerExplicitNTriples()
         {
-            this.ParsingUsingGraphHandlerExplicitTest("temp.nt", new NTriplesParser(), false);
+            this.ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.nt", new NTriplesParser(), false);
         }
 
         [Fact]
         public void ParsingGraphHandlerExplicitTurtle()
         {
-            this.ParsingUsingGraphHandlerExplicitTest("temp.ttl", new TurtleParser(), true);
+            this.ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.ttl", new TurtleParser(), true);
         }
 
         [Fact]
         public void ParsingGraphHandlerExplicitNotation3()
         {
-            this.ParsingUsingGraphHandlerExplicitTest("temp.n3", new Notation3Parser(), true);
+            this.ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.n3", new Notation3Parser(), true);
         }
 
 #if !NO_XMLENTITIES
         [Fact]
         public void ParsingGraphHandlerExplicitRdfXml()
         {
-            this.ParsingUsingGraphHandlerExplicitTest("temp.rdf", new RdfXmlParser(), true);
+            this.ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.rdf", new RdfXmlParser(), true);
         }
 #endif
 
@@ -161,14 +161,14 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingGraphHandlerExplicitRdfA()
         {
-            this.ParsingUsingGraphHandlerExplicitTest("temp.html", new RdfAParser(), false);
+            this.ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.html", new RdfAParser(), false);
         }
 #endif
 
         [Fact]
         public void ParsingGraphHandlerExplicitRdfJson()
         {
-            this.ParsingUsingGraphHandlerExplicitTest("temp.json", new RdfJsonParser(), false);
+            this.ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.json", new RdfJsonParser(), false);
         }
 
         #endregion
@@ -178,13 +178,13 @@ namespace VDS.RDF.Parsing.Handlers
         {
             Graph g = new Graph();
             EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
-            g.SaveToFile("temp.ttl");
+            g.SaveToFile("graph_handler_tests_temp.ttl");
 
             Graph h = new Graph();
             GraphHandler handler = new GraphHandler(h);
 
             TurtleParser parser = new TurtleParser();
-            parser.Load(handler, "temp.ttl");
+            parser.Load(handler, "graph_handler_tests_temp.ttl");
 
             Assert.False(g.IsEmpty, "Graph should not be empty");
             Assert.True(g.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
@@ -192,7 +192,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.True(h.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
             Assert.Equal(g, h);
 
-            parser.Load(handler, "temp.ttl");
+            parser.Load(handler, "graph_handler_tests_temp.ttl");
             Assert.Equal(g.Triples.Count + 2, h.Triples.Count);
             Assert.NotEqual(g, h);
 
@@ -208,12 +208,12 @@ namespace VDS.RDF.Parsing.Handlers
         {
             Graph g = new Graph();
             EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
-            g.SaveToFile("temp.ttl");
+            g.SaveToFile("graph_handler_tests_temp.ttl");
 
             Graph h = new Graph();
 
             TurtleParser parser = new TurtleParser();
-            parser.Load(h, "temp.ttl");
+            parser.Load(h, "graph_handler_tests_temp.ttl");
 
             Assert.False(g.IsEmpty, "Graph should not be empty");
             Assert.True(g.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
@@ -221,7 +221,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.True(h.NamespaceMap.HasNamespace("dnr"), "Graph should have the dnr: Namespace");
             Assert.Equal(g, h);
 
-            parser.Load(h, "temp.ttl");
+            parser.Load(h, "graph_handler_tests_temp.ttl");
             Assert.Equal(g.Triples.Count + 2, h.Triples.Count);
             Assert.NotEqual(g, h);
 

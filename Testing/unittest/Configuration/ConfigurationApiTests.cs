@@ -160,7 +160,7 @@ _:a a dnr:Graph ;
 _:a a dnr:Graph ;
   dnr:usingTripleCollection <ex:collection> .
 
-[] dnr:imports ""ConfigurationImports3-b.ttl"" , ""ConfigurationImports3-c.ttl"", ""ConfigurationImports3-c.ttl"" . ";
+[] dnr:imports ""ConfigurationImports4-b.ttl"" , ""ConfigurationImports4-c.ttl"", ""ConfigurationImports4-c.ttl"" . ";
 
             String graph2 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 <ex:collection> a dnr:TripleCollection ;

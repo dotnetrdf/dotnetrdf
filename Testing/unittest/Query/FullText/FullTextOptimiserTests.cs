@@ -47,6 +47,12 @@ namespace VDS.RDF.Query.FullText
         private List<IAlgebraOptimiser> _optimisers;
         private SparqlFormatter _formatter = new SparqlFormatter();
 
+        public FullTextOptimiserTests()
+        {
+            Options.AlgebraOptimisation = true;
+            Options.QueryOptimisation = true;
+        }
+
         private SparqlQuery TestOptimisation(String query)
         {
             query = "PREFIX pf: <http://jena.hpl.hp.com/ARQ/property#>\n" + query;
@@ -64,6 +70,7 @@ namespace VDS.RDF.Query.FullText
                 };
             }
             q.AlgebraOptimisers = this._optimisers;
+            Options.AlgebraOptimisation = true;
 
             String algebra = q.ToAlgebra().ToString();
             Console.WriteLine("Optimised Algebra: " + algebra);
