@@ -23,7 +23,9 @@ build_script:
 test_script:
   - ps: |
       dotnet test .\Testing\unittest\unittest.csproj -l "trx;LogFileName=output.trx" --filter category!=explicit --no-build | Out-File .\test.log
+      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
       dotnet test .\Testing\unittest\unittest.csproj -l "trx;LogFileName=fulltext.trx" --filter category=fulltext --no-build | Out-File .\fulltext.log
+      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
   
 on_finish:
   - ps: |
