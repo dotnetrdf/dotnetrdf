@@ -45,7 +45,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.FullText
 {
-    [Trait("category", "fulltext")]
+    [Collection("FullText")]
     public class FullTextIncrementalIndexAndSearch
     {
         private NTriplesFormatter _formatter = new NTriplesFormatter();

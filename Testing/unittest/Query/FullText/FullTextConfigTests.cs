@@ -50,7 +50,7 @@ using VDS.RDF.Query.Optimisation;
 namespace VDS.RDF.Query.FullText
 {
 
-    [Trait("category", "fulltext")]
+    [Collection("FullText")]
     public class FullTextConfigTests
     {
         private FullTextObjectFactory _factory = new FullTextObjectFactory();

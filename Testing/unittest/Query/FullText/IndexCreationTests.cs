@@ -41,7 +41,7 @@ using VDS.RDF.Query.FullText.Search.Lucene;
 namespace VDS.RDF.Query.FullText
 {
 
-    [Trait("category", "fulltext")]
+    [Collection("FullText")]
     public class IndexCreationTests
     {
         private IGraph GetTestData()
