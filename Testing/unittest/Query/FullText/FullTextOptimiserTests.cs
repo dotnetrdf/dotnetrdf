@@ -70,6 +70,7 @@ namespace VDS.RDF.Query.FullText
                 };
             }
             q.AlgebraOptimisers = this._optimisers;
+            Options.AlgebraOptimisation = true;
 
             String algebra = q.ToAlgebra().ToString();
             Console.WriteLine("Optimised Algebra: " + algebra);

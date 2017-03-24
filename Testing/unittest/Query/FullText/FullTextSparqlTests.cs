@@ -97,6 +97,7 @@ namespace VDS.RDF.Query.FullText
             {
                 PropertyFunctionFactory.AddFactory(factory);
                 q.AlgebraOptimisers = new IAlgebraOptimiser[] { new FullTextOptimiser(provider) };
+                Options.AlgebraOptimisation = true;
 
                 LeviathanQueryProcessor processor = new LeviathanQueryProcessor(this._dataset);
                 SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
