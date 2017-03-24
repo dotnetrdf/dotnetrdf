@@ -27,6 +27,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+#if NET40 || NETCORE
+using System.Threading.Tasks;
+#endif
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -75,12 +78,21 @@ namespace VDS.RDF.Query.Algebra
 #if NET40 && !SILVERLIGHT
             }
 #endif
-            StopToken stop = new StopToken();
+            var stop = new StopToken();
+            var t = (int)Math.Min(timeout, int.MaxValue);
+#if NET40 || NETCORE
+            var productTask = Task.Factory.StartNew(() => GenerateProduct(multiset, other, productSet, stop));
+            if (!productTask.Wait(t))
+            {
+                stop.ShouldStop = true;
+                productTask.Wait();
+            }
+
+            return productSet;
+#else
             GenerateProductDelegate d = new GenerateProductDelegate(GenerateProduct);
             IAsyncResult r = d.BeginInvoke(multiset, other, productSet, stop, null, null);
-
             //Wait
-            int t = (int)Math.Min(timeout, Int32.MaxValue);
             r.AsyncWaitHandle.WaitOne(t);
             if (!r.IsCompleted)
             {
@@ -88,6 +100,7 @@ namespace VDS.RDF.Query.Algebra
                 r.AsyncWaitHandle.WaitOne();
             }
             return productSet;
+#endif
         }
 
         /// <summary>

@@ -24,12 +24,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using VDS.RDF.Query.Aggregates;
 using VDS.RDF.Query.Builder.Expressions;
+using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
 {
-    sealed class BindAssignmentVariableNamePart : AssignmentVariableNamePart, IAssignmentVariableNamePart<IGraphPatternBuilder>, IAssignmentVariableNamePart<IQueryBuilder>
+    sealed class BindAssignmentVariableNamePart :
+        AssignmentVariableNamePart<ISparqlExpression>,
+        IAssignmentVariableNamePart<IGraphPatternBuilder>,
+        IAssignmentVariableNamePart<IQueryBuilder>
     {
         private readonly GraphPatternBuilder _graphPatternBuilder;
         private readonly QueryBuilder _queryBuilder;

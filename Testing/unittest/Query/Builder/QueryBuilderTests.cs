@@ -26,10 +26,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Linq;
 using NUnit.Framework;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
-using VDS.RDF.Query.Builder;
+using VDS.RDF.Query.Aggregates;
+using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;
 using VDS.RDF.Query.Expressions.Primary;
@@ -580,6 +582,112 @@ namespace VDS.RDF.Query.Builder
                 currentOrdering = currentOrdering.Child;
             }
             Assert.IsNull(currentOrdering);
+        }
+
+        [Test]
+        public void CanBuildUnionOfChildPattern()
+        {
+            // when
+            var query = QueryBuilder.SelectAll()
+                .Union(first => first.Where(BuildSPOPattern),
+                       second => second.Where(BuildSPOPattern),
+                       third => third.Where(BuildSPOPattern))
+                .BuildQuery();
+
+            // then
+            var union = query.RootGraphPattern.ChildGraphPatterns.Single();
+            Assert.That(union.IsUnion);
+            Assert.That(union.ChildGraphPatterns, Has.Count.EqualTo(3));
+        }
+
+        [Test]
+        public void CanBuildUnionOfMixedPatterns()
+        {
+            // when
+            var query = QueryBuilder.SelectAll()
+                .Union(
+                    first => first.Service(new Uri("http://example.com"), service => service.Where(BuildSPOPattern)),
+                    second => second.Graph("s", graph => graph.Where(BuildSPOPattern)))
+                .BuildQuery();
+
+            // then
+            var union = query.RootGraphPattern.ChildGraphPatterns.Single();
+            Assert.That(union.IsUnion);
+            Assert.That(union.ChildGraphPatterns, Has.Count.EqualTo(2));
+            Assert.That(union.ChildGraphPatterns[0].ChildGraphPatterns[0].IsService);
+            Assert.That(union.ChildGraphPatterns[1].ChildGraphPatterns[0].IsGraph);
+        }
+
+        [Test]
+        public void SingleGraphPatternInUnionBehavesLikeChildPattern()
+        {
+            // when
+            var query = QueryBuilder.SelectAll()
+                .Union(graph => graph.Where(BuildSPOPattern))
+                .BuildQuery();
+
+            // then
+            var union = query.RootGraphPattern.ChildGraphPatterns.Single();
+            Assert.That(union.IsUnion, Is.False);
+            Assert.That(union.TriplePatterns, Has.Count.EqualTo(1));
+        }
+
+        [Test]
+        public void CanBuildSelectSumWithGrouping()
+        {
+            // given
+            var o = new VariableTerm("o");
+
+            // when
+            var query = QueryBuilder.Select(ex => ex.Sum(o)).As("sum")
+                .Where(BuildSPOPattern)
+                .GroupBy("s")
+                .BuildQuery();
+
+            // then
+            Assert.That(query.Variables.Single().Name, Is.EqualTo("sum"));
+            Assert.That(query.GroupBy.Variables.Single(), Is.EqualTo("s"));
+        }
+
+        [Test]
+        public void CanBuildGroupingWithExpression()
+        {
+            // when
+            var query = QueryBuilder.SelectAll()
+                .Where(BuildSPOPattern)
+                .GroupBy(eb => eb.Datatype(eb.Variable("s")))
+                .BuildQuery();
+
+            // then
+            Assert.That(query.GroupBy.Expression.ToString(), Is.EqualTo("DATATYPE(?s)"));
+        }
+
+        [Test]
+        public void CanBuildSelectSumWithHaving()
+        {
+            // given
+            var o = new VariableTerm("o");
+
+            // when
+            var query = QueryBuilder.Select(ex => ex.Sum(o)).As("sum")
+                .Where(BuildSPOPattern)
+                .Having(ex => ex.Variable("sum") > 10)
+                .BuildQuery();
+
+            // then
+            Assert.That(query.Having.Expression.ToString().Trim(), Is.EqualTo("?sum > 10"));
+        }
+
+        [Test]
+        public void WithoutCallingHavingItIsNullOnBuiltQuery()
+        {
+            // when
+            var query = QueryBuilder.Select("o")
+                .Where(BuildSPOPattern)
+                .BuildQuery();
+
+            // then
+            Assert.That(query.Having, Is.Null);
         }
     }
 }

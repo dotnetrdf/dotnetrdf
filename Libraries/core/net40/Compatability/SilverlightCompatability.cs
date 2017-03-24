@@ -23,7 +23,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#if SILVERLIGHT
+#if (SILVERLIGHT||NETCORE)
 
 using System;
 using System.Collections.Generic;
@@ -94,7 +94,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public static bool IsFile(this Uri u)
         {
-#if PORTABLE
+#if PORTABLE || NETCORE
             return u.Scheme.Equals("file", StringComparison.OrdinalIgnoreCase);
 #else
             return u.Scheme.Equals(Uri.UriSchemeFile);

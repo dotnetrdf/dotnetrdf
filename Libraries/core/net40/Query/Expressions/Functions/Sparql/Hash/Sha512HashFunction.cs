@@ -45,7 +45,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         /// </summary>
         /// <param name="expr">Argument Expression</param>
         public Sha512HashFunction(ISparqlExpression expr)
+#if NETCORE
+            :base(expr, SHA512.Create()) { }
+#else
             : base(expr, new SHA512Managed()) { }
+#endif
 
         /// <summary>
         /// Gets the Functor of the Expression
@@ -78,4 +82,4 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         }
     }
 #endif
-}
+    }

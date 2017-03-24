@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using VDS.RDF.Parsing;
@@ -100,9 +101,12 @@ namespace VDS.RDF.Writing
         {
             if (filename == null) throw new RdfOutputException("Cannot output to a null file");
 #if !SILVERLIGHT
-            this.Save(store, new StreamWriter(filename, false, Encoding.ASCII));
+            using (var writer = new StreamWriter(File.Open(filename, FileMode.Create), Encoding.ASCII))
+            {
+                this.Save(store, writer);
+            }
 #else
-            this.Save(store, new StreamWriter(filename));
+            this.Save(store, new StreamWriter(File.OpenWrite(filename)));
 #endif
         }
 #endif
@@ -303,7 +307,7 @@ namespace VDS.RDF.Writing
                     }
                 }
             }
-#if !PORTABLE // PCL doesn't provide Thread.Abort() or ThreadAbortException
+#if !(PORTABLE||NETCORE) // PCL doesn't provide Thread.Abort() or ThreadAbortException
             catch (ThreadAbortException)
             {
                 //We've been terminated, don't do anything

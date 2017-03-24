@@ -505,7 +505,7 @@ namespace VDS.RDF
             //Output the Response Uri and Headers
             Console.Error.WriteLine();
             Console.Error.WriteLine("HTTP Response from " + httpResponse.ResponseUri.AbsoluteUri);
-#if SILVERLIGHT
+#if (SILVERLIGHT||NETCORE)
             Console.Error.WriteLine("HTTP " + (int)httpResponse.StatusCode + " " + httpResponse.StatusDescription);
 #else
             Console.Error.WriteLine("HTTP/" + httpResponse.ProtocolVersion + " " + (int)httpResponse.StatusCode + " " + httpResponse.StatusDescription);

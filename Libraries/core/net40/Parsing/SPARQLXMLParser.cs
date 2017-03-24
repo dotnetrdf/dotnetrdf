@@ -76,7 +76,7 @@ namespace VDS.RDF.Parsing
         {
             if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
             if (filename == null) throw new RdfParseException("Cannot read SPARQL Results from a null File");
-            this.Load(results, new StreamReader(filename));
+            this.Load(results, new StreamReader(File.OpenRead(filename)));
         }
 #endif
 
@@ -133,7 +133,7 @@ namespace VDS.RDF.Parsing
         public void Load(ISparqlResultsHandler handler, String filename)
         {
             if (filename == null) throw new RdfParseException("Cannot read SPARQL Results from a null File");
-            this.Load(handler, new StreamReader(filename));
+            this.Load(handler, new StreamReader(File.OpenRead(filename)));
         }
 #endif
 
@@ -144,7 +144,7 @@ namespace VDS.RDF.Parsing
         private XmlReaderSettings GetSettings()
         {
             XmlReaderSettings settings = new XmlReaderSettings();
-#if PORTABLE
+#if PORTABLE || NETCORE
             settings.DtdProcessing = DtdProcessing.Ignore;
 #elif SILVERLIGHT || NET40
             settings.DtdProcessing = DtdProcessing.Parse;

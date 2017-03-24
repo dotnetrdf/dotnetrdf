@@ -197,16 +197,18 @@ namespace VDS.RDF.Writing
         /// <param name="filename">Filename to save to</param>
         public void Save(IGraph g, string filename)
         {
-            StreamWriter output = new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8));
-            this.Save(g, output);
+            using (var stream = File.Open(filename, FileMode.Create))
+            {
+                this.Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
+            }
         }
 #endif
 
-        /// <summary>
-        /// Saves a Graph to an arbitrary output stream
-        /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="output">Stream to save to</param>
+            /// <summary>
+            /// Saves a Graph to an arbitrary output stream
+            /// </summary>
+            /// <param name="g">Graph to save</param>
+            /// <param name="output">Stream to save to</param>
         public void Save(IGraph g, TextWriter output)
         {
             try

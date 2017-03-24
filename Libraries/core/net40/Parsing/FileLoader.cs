@@ -168,7 +168,7 @@ namespace VDS.RDF.Parsing
                 //Unable to determine format from File Extension
                 //Read file in locally and use the StringParser to select a parser
                 RaiseWarning("Attempting to select parser based on analysis of the data file, this requires loading the file into memory");
-                StreamReader reader = new StreamReader(filename);
+                StreamReader reader = new StreamReader(File.OpenRead(filename));
                 String data = reader.ReadToEnd();
                 reader.Close();
                 parser = StringParser.GetParser(data);
@@ -271,7 +271,7 @@ namespace VDS.RDF.Parsing
             {
                 //Unable to determine format from File Extension
                 //Read file in locally and use the StringParser to select a parser
-                StreamReader reader = new StreamReader(filename);
+                StreamReader reader = new StreamReader(File.OpenRead(filename));
                 String data = reader.ReadToEnd();
                 reader.Close();
                 parser = StringParser.GetDatasetParser(data);

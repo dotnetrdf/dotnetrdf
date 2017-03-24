@@ -242,7 +242,7 @@ namespace VDS.RDF.Parsing
         public SparqlQuery ParseFromFile(String queryFile)
         {
             if (queryFile == null) throw new RdfParseException("Cannot parse a SPARQL Query from a null File");
-            StreamReader reader = new StreamReader(queryFile, Encoding.UTF8);
+            StreamReader reader = new StreamReader(File.OpenRead(queryFile), Encoding.UTF8);
             return this.ParseInternal(reader);
         }
 #endif

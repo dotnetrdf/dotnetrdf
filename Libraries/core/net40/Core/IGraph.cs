@@ -41,7 +41,7 @@ namespace VDS.RDF
     /// </para>
     /// </remarks>
     public interface IGraph : INodeFactory, IDisposable
-#if !SILVERLIGHT
+#if !(SILVERLIGHT ||NETCORE)
         , IXmlSerializable
 #endif
     {

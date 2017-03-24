@@ -55,7 +55,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public static String HtmlDecode(String value)
         {
-#if PORTABLE
+#if PORTABLE||NETCORE
             return System.Net.WebUtility.HtmlDecode(value);
 #else
             return HtmlEntity.DeEntitize(value);
@@ -69,7 +69,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public static String HtmlEncode(String value)
         {
-#if PORTABLE
+#if PORTABLE||NETCORE
             return System.Net.WebUtility.HtmlEncode(value);
 #else
             return HtmlEntity.Entitize(value, true, true);

@@ -184,24 +184,26 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        public IGraphPatternBuilder Union(Action<IGraphPatternBuilder> buildGraphPattern)
+        public IGraphPatternBuilder Union(Action<IGraphPatternBuilder> firstGraphPattern, params Action<IGraphPatternBuilder>[] unionedGraphPatternBuilders)
         {
-            GraphPatternBuilder union;
-            if (_graphPatternType == GraphPatternType.Union)
+            if (unionedGraphPatternBuilders == null || unionedGraphPatternBuilders.Length == 0)
             {
-                union = this;
-            }
-            else
-            {
-                union = new GraphPatternBuilder(GraphPatternType.Union);
-                union._childGraphPatternBuilders.Add(this);
+                return Child(firstGraphPattern);
             }
 
-            union.AddChildGraphPattern(buildGraphPattern, GraphPatternType.Normal);
-            return union;
+            var union = new GraphPatternBuilder(GraphPatternType.Union);
+            union.AddChildGraphPattern(firstGraphPattern, GraphPatternType.Normal);
+
+            foreach (var builder in unionedGraphPatternBuilders)
+            {
+                union.AddChildGraphPattern(builder, GraphPatternType.Normal);
+            }
+
+            _childGraphPatternBuilders.Add(union);
+            return this;
         }
 
-        public IAssignmentVariableNamePart<IGraphPatternBuilder> Bind(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
+        public IAssignmentVariableNamePart<IGraphPatternBuilder> Bind(Func<INonAggregateExpressionBuilder, SparqlExpression> buildAssignmentExpression)
         {
             return new BindAssignmentVariableNamePart(this, buildAssignmentExpression);
         }
@@ -212,7 +214,7 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        public IGraphPatternBuilder Filter(Func<ExpressionBuilder, BooleanExpression> buildExpression)
+        public IGraphPatternBuilder Filter(Func<INonAggregateExpressionBuilder, BooleanExpression> buildExpression)
         {
             _filterBuilders.Add(namespaceMapper =>
                 {

@@ -64,15 +64,18 @@ namespace VDS.RDF.Writing
         /// <param name="filename">File to save to</param>
         public void Save(IGraph g, string filename)
         {
-            this.Save(g, new StreamWriter(filename, false, Encoding.UTF8));
+            using (var stream = File.Open(filename, FileMode.Create))
+            {
+                this.Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
+            }
         }
 #endif
 
-        /// <summary>
-        /// Saves a Graph to CSV format
-        /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="output">Writer to save to</param>
+            /// <summary>
+            /// Saves a Graph to CSV format
+            /// </summary>
+            /// <param name="g">Graph</param>
+            /// <param name="output">Writer to save to</param>
         public void Save(IGraph g, TextWriter output)
         {
             try
@@ -182,7 +185,7 @@ namespace VDS.RDF.Writing
         public void Save(ITripleStore store, String filename)
         {
             if (filename == null) throw new RdfOutputException("Cannot write to a null file");
-            this.Save(store, new StreamWriter(filename));
+            this.Save(store, new StreamWriter(File.OpenWrite(filename)));
         }
 #endif
 
@@ -278,7 +281,7 @@ namespace VDS.RDF.Writing
                     }
                 }
             }
-#if !PORTABLE
+#if !(PORTABLE||NETCORE)
             catch (ThreadAbortException)
             {
                 //We've been terminated, don't do anything

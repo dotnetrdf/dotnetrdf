@@ -98,12 +98,14 @@ namespace VDS.RDF.Writing
         public void Save(IGraph g, string filename)
         {
 #if SILVERLIGHT
-            StreamWriter output = new StreamWriter(filename);
-#else
-            StreamWriter output = new StreamWriter(filename, false, Encoding.ASCII);
-#endif
-
+            StreamWriter output = new StreamWriter(File.OpenWrite(filename));
             this.Save(g, output);
+#else
+            using (var writer = new StreamWriter(File.Open(filename, FileMode.Create), Encoding.ASCII))
+            {
+                this.Save(g, writer);
+            }
+#endif
         }
 #endif
 

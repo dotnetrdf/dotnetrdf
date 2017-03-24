@@ -215,7 +215,7 @@ namespace VDS.RDF.Writing
             this._styles.Add(new KeyValuePair<String, String>(this.GetStyleName(key), value));
         }
 
-#if PORTABLE
+#if PORTABLE || NETCORE
         /// <summary>
         /// Close the writer
         /// </summary>

@@ -203,7 +203,7 @@ namespace VDS.RDF.Storage
         /// <returns>HTTP Web Request with standard options applied</returns>
         protected HttpWebRequest ApplyRequestOptions(HttpWebRequest request)
         {
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
             if (this.Timeout > 0) request.Timeout = this.Timeout;
 #endif
 
@@ -214,7 +214,7 @@ namespace VDS.RDF.Storage
             }
 #endif
 
-#if !PORTABLE
+#if !(PORTABLE || NETCORE)
             // Disable Keep Alive since it can cause errors when carrying out high volumes of operations or when performing long running operations
             request.KeepAlive = false;
 #endif

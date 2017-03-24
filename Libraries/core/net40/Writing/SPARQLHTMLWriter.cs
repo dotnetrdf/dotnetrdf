@@ -69,16 +69,18 @@ namespace VDS.RDF.Writing
         /// <param name="filename">File to save to</param>
         public void Save(SparqlResultSet results, String filename)
         {
-            StreamWriter output = new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8));
-            this.Save(results, output);
+            using (var stream = File.Open(filename, FileMode.Create))
+            {
+                this.Save(results, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
+            }
         }
 #endif
 
-        /// <summary>
-        /// Saves the Result Set to the given Stream as a HTML Table
-        /// </summary>
-        /// <param name="results">Result Set to save</param>
-        /// <param name="output">Stream to save to</param>
+            /// <summary>
+            /// Saves the Result Set to the given Stream as a HTML Table
+            /// </summary>
+            /// <param name="results">Result Set to save</param>
+            /// <param name="output">Stream to save to</param>
         public void Save(SparqlResultSet results, TextWriter output)
         {
             try

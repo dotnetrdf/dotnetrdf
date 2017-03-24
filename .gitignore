@@ -7,7 +7,6 @@ bin/
 **/obj
 **/Debug
 TestResults/
-Build/ndoc3/docs
 Build/nuget/**/*.nupkg
 Build/nuget/**/lib/*
 Build/nuget/**/src/*
@@ -28,6 +27,7 @@ _ReSharper*/
 *.lnk
 *.PublicKey
 Build/ToolkitInstaller/*.wxs
+*.lock.json
 
 # NuGet Package Management Stuff
 .nuget/*.exe
@@ -38,3 +38,6 @@ Testing/unittest/resources/UnitTestConfig.properties
 
 # Visual Studio config
 .vs/
+
+# Sandcastle Help File Builder Output Directory
+Build/shfb/Help/

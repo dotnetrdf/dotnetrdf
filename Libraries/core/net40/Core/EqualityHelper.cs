@@ -359,7 +359,7 @@ namespace VDS.RDF
             }
             else if (a.DataType == null && b.DataType == null)
             {
-                return String.Compare(a.Value, b.Value, culture, comparisonOptions);
+                return culture.CompareInfo.Compare(a.Value, b.Value, comparisonOptions);
             }
             else if (EqualityHelper.AreUrisEqual(a.DataType, b.DataType))
             {
@@ -368,7 +368,7 @@ namespace VDS.RDF
                 if (!XmlSpecsHelper.IsSupportedType(type))
                 {
                     //Don't know how to order so use specified order on the value
-                    return String.Compare(a.Value, b.Value, culture, comparisonOptions);
+                    return culture.CompareInfo.Compare(a.Value, b.Value, comparisonOptions);
                 }
                 else
                 {
@@ -813,7 +813,8 @@ namespace VDS.RDF
 
                             default:
                                 //Don't know how to order so use lexical ordering on the value
-                                return String.Compare(a.Value, b.Value, culture, comparisonOptions);
+                                //return String.Compare(a.Value, b.Value, culture, comparisonOptions);
+                                return culture.CompareInfo.Compare(a.Value, b.Value, comparisonOptions);
                         }
                     }
                     catch
@@ -821,7 +822,8 @@ namespace VDS.RDF
                         //There was some error suggesting a non-valid value for a type
                         //e.g. "example"^^xsd:integer
                         //In this case just use lexical ordering on the value
-                        return String.Compare(a.Value, b.Value, culture, comparisonOptions);
+                        //return String.Compare(a.Value, b.Value, culture, comparisonOptions);
+                        return culture.CompareInfo.Compare(a.Value, b.Value, comparisonOptions);
                     }
                 }
             }

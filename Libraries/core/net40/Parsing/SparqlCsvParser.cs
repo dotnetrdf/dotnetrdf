@@ -70,7 +70,7 @@ namespace VDS.RDF.Parsing
         public void Load(SparqlResultSet results, string filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse SPARQL Results from a null file");
-            this.Load(results, new StreamReader(filename));
+            this.Load(results, new StreamReader(File.OpenRead(filename)));
         }
 #endif
 
@@ -117,7 +117,7 @@ namespace VDS.RDF.Parsing
         public void Load(ISparqlResultsHandler handler, string filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse SPARQL Results from a null file");
-            this.Load(handler, new StreamReader(filename));
+            this.Load(handler, new StreamReader(File.OpenRead(filename)));
         }
 #endif
 

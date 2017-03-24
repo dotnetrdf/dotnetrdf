@@ -38,7 +38,7 @@ namespace VDS.RDF
     /// <summary>
     /// Abstract Base Class for Blank Nodes
     /// </summary>
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
     [Serializable,XmlRoot(ElementName="bnode")]
 #endif
     public abstract class BaseBlankNode
@@ -97,7 +97,7 @@ namespace VDS.RDF
             : base(null, NodeType.Blank)
         { }
 
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
 
         /// <summary>
         /// Deserialization Constructor
@@ -400,7 +400,7 @@ namespace VDS.RDF
             return "_:" + this._id;
         }
 
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
 
         #region ISerializable Members
 
@@ -553,7 +553,7 @@ namespace VDS.RDF
     /// <summary>
     /// Class for representing Blank RDF Nodes
     /// </summary>
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
     [Serializable,XmlRoot(ElementName = "bnode")]
 #endif
     public class BlankNode 
@@ -588,7 +588,7 @@ namespace VDS.RDF
             : base()
         { }
 
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
         /// <summary>
         /// Deserialization Constructor
         /// </summary>

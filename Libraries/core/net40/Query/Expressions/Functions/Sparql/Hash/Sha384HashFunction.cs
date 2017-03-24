@@ -44,8 +44,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         /// </summary>
         /// <param name="expr">Argument Expression</param>
         public Sha384HashFunction(ISparqlExpression expr)
+#if NETCORE
+            : base(expr, SHA384.Create()) { }
+#else
             : base(expr, new SHA384Managed()) { }
-
+#endif
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
@@ -78,4 +81,4 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
     }
 
 #endif
-}
+    }

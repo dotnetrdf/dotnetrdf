@@ -61,15 +61,18 @@ namespace VDS.RDF.Writing
         public void Save(ITripleStore store, String filename)
         {
             if (filename == null) throw new RdfOutputException("Cannot output to a null file");
-            this.Save(store, new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8)));
+            using (var stream = File.Open(filename, FileMode.Create))
+            {
+                this.Save(store, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
+            }
         }
 #endif
 
-        /// <summary>
-        /// Saves a Store in TriX format
-        /// </summary>
-        /// <param name="store">Store to save</param>
-        /// <param name="output">Writer to save to</param>
+            /// <summary>
+            /// Saves a Store in TriX format
+            /// </summary>
+            /// <param name="store">Store to save</param>
+            /// <param name="output">Writer to save to</param>
         public void Save(ITripleStore store, TextWriter output)
         {
             if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");

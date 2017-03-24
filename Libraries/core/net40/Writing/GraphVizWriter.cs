@@ -49,7 +49,7 @@ namespace VDS.RDF.Writing
         public void Save(IGraph g, string filename)
         {
             //Open the Stream for the File
-            StreamWriter output = new StreamWriter(filename);
+            StreamWriter output = new StreamWriter(File.OpenWrite(filename));
 
             //Call the other version of Save to do the actual work
             this.Save(g, output);

@@ -61,12 +61,12 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\packages\HtmlAgilityPack.1.4.9\lib\Net40\HtmlAgilityPack.dll</HintPath>
+    <Reference Include="HtmlAgilityPack, Version=1.4.9.5, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\HtmlAgilityPack.1.4.9.5\lib\Net40\HtmlAgilityPack.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Newtonsoft.Json.8.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Newtonsoft.Json.9.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -77,8 +77,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
-    <Reference Include="VDS.Common, Version=1.6.4.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\VDS.Common.1.6.4\lib\net40-client\VDS.Common.dll</HintPath>
+    <Reference Include="VDS.Common, Version=1.7.0.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\VDS.Common.1.7.0\lib\net40-client\VDS.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -137,17 +137,20 @@
     <Compile Include="Query\Algebra\PropertyFunction.cs" />
     <Compile Include="Query\Algebra\SetDistinctnessComparer.cs" />
     <Compile Include="Query\Algebra\Table.cs" />
+    <Compile Include="Query\Builder\ExpressionBuilder.Aggregates.cs" />
+    <Compile Include="Query\Builder\Expressions\AggregateExpression.cs" />
     <Compile Include="Query\Builder\BindAssignmentVariableNamePart.cs" />
     <Compile Include="Query\Builder\DescribeBuilder.cs" />
     <Compile Include="Query\Builder\DescribeGraphPatternBuilder.cs" />
-    <Compile Include="Query\Builder\ExpressionBuilderRdfTermsFunctionsExtensions.cs" />
+    <Compile Include="Query\Builder\ExpressionBuilder.RdfTermsFunctions.cs" />
     <Compile Include="Query\Builder\Expressions\BlankNodeExpression.cs" />
     <Compile Include="Query\Builder\Expressions\BooleanExpression.cs" />
     <Compile Include="Query\Builder\ExpressionBuilder.cs" />
-    <Compile Include="Query\Builder\ExpressionBuilderFunctionalFormsExtensions.cs" />
-    <Compile Include="Query\Builder\ExpressionBuilderStringExtensions.cs" />
+    <Compile Include="Query\Builder\ExpressionBuilder.FunctionalForms.cs" />
+    <Compile Include="Query\Builder\ExpressionBuilder.String.cs" />
     <Compile Include="Query\Builder\Expressions\LiteralExpressionExtensions.cs" />
     <Compile Include="Query\Builder\Expressions\NumericExpression.cs" />
+    <Compile Include="Query\Builder\Expressions\PrimaryExpression.cs" />
     <Compile Include="Query\Builder\Expressions\VariableExpressionLiteralArithmeticOperators.cs" />
     <Compile Include="Query\Builder\Expressions\VariableExpressionLiteralComparisonOperators.cs" />
     <Compile Include="Query\Builder\Expressions\VariableExpressionLiteralExpressionOperators.cs" />
@@ -157,9 +160,13 @@
     <Compile Include="Query\Builder\GraphPatternBuilder.cs" />
     <Compile Include="Query\Builder\GraphPatternType.cs" />
     <Compile Include="Query\Builder\AssignmentVariableNamePart.cs" />
+    <Compile Include="Query\Builder\IAggregateBuilder.cs" />
     <Compile Include="Query\Builder\IDescribeGraphPatternBuilder.cs" />
     <Compile Include="Query\Builder\IDescribeBuilder.cs" />
+    <Compile Include="Query\Builder\IDistinctAggregateBuilder.cs" />
+    <Compile Include="Query\Builder\IExpressionBuilder.cs" />
     <Compile Include="Query\Builder\IGraphPatternBuilder.cs" />
+    <Compile Include="Query\Builder\INonAggregateExpressionBuilder.cs" />
     <Compile Include="Query\Builder\ISelectBuilder.cs" />
     <Compile Include="Query\Builder\ITriplePatternBuilder.cs" />
     <Compile Include="Query\Builder\IQueryWithVariablesBuilder.cs" />

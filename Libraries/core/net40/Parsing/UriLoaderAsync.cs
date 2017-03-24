@@ -209,12 +209,12 @@ namespace VDS.RDF.Parsing
 
                 //Use HTTP GET
                 request.Method = "GET";
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
                 request.Timeout = Options.UriLoaderTimeout;
 #endif
                 if (_userAgent != null && !_userAgent.Equals(String.Empty))
                 {
-#if PORTABLE
+#if PORTABLE || NETCORE
                     request.Headers[HttpRequestHeader.UserAgent] = _userAgent;
 #else
                     request.UserAgent = _userAgent;
@@ -424,12 +424,12 @@ namespace VDS.RDF.Parsing
 
                 //Use HTTP GET
                 request.Method = "GET";
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
                 request.Timeout = Options.UriLoaderTimeout;
 #endif
                 if (_userAgent != null && !_userAgent.Equals(String.Empty))
                 {
-#if PORTABLE
+#if PORTABLE || NETCORE
                     request.Headers[HttpRequestHeader.UserAgent] = _userAgent;
 #else
                     request.UserAgent = _userAgent;

@@ -694,7 +694,7 @@ namespace VDS.RDF.Storage.Virtualisation
             return this._value.ToString();
         }
 
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
         /// <summary>
         /// Gets the data for serialization
         /// </summary>

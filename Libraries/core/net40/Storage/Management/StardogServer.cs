@@ -603,7 +603,7 @@ namespace VDS.RDF.Storage.Management
             request = base.ApplyRequestOptions(request);
 
             //Add the special Stardog Headers
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
             request.Headers.Add("SD-Protocol", "1.0");
 #else
             request.Headers["SD-Protocol"] = "1.0";
@@ -615,7 +615,7 @@ namespace VDS.RDF.Storage.Management
                 if (Options.ForceHttpBasicAuth)
                 {
                     //Forcibly include a HTTP basic authentication header
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
                     string credentials = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(this._username + ":" + this._pwd));
                     request.Headers.Add("Authorization", "Basic " + credentials);
 #else
@@ -628,7 +628,7 @@ namespace VDS.RDF.Storage.Management
                     //Leave .Net to cope with HTTP auth challenge response
                     NetworkCredential credentials = new NetworkCredential(this._username, this._pwd);
                     request.Credentials = credentials;
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
                     request.PreAuthenticate = true;
 #endif
                 }

@@ -34,6 +34,7 @@ using System.Xml;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
+using VDS.RDF.Query.Expressions.Functions.Leviathan.Hash;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
@@ -43,7 +44,6 @@ namespace VDS.RDF
     /// </summary>
     public static class Extensions
     {
-        private static SHA256Managed _sha256;
 
         #region Enumerable Extensions
 
@@ -188,6 +188,59 @@ namespace VDS.RDF
             return u.AbsoluteUri.GetHashCode();
         }
 
+#if NETCORE
+        private static SHA256 _sha256 = null;
+        /// <summary>
+        /// Gets an SHA256 Hash for a URI
+        /// </summary>
+        /// <param name="u">URI to get Hash Code for</param>
+        /// <returns></returns>
+        public static String GetSha256Hash(this Uri u)
+        {
+            if (u == null) throw new ArgumentNullException("u");
+
+            //Only instantiate the SHA256 class when we first use it
+            if (_sha256 == null) _sha256 = SHA256.Create();
+
+            Byte[] input = Encoding.UTF8.GetBytes(u.AbsoluteUri);
+            Byte[] output = _sha256.ComputeHash(input);
+
+            StringBuilder hash = new StringBuilder();
+            foreach (Byte b in output)
+            {
+                hash.Append(b.ToString("x2"));
+            }
+
+            return hash.ToString();
+        }
+
+
+        /// <summary>
+        /// Gets a SHA256 Hash for a String
+        /// </summary>
+        /// <param name="s">String to hash</param>
+        /// <returns></returns>
+        internal static String GetSha256Hash(this String s)
+        {
+            if (s == null) throw new ArgumentNullException("s");
+
+            //Only instantiate the SHA256 class when we first use it
+            if (_sha256 == null) _sha256 = SHA256.Create();
+
+            Byte[] input = Encoding.UTF8.GetBytes(s);
+            Byte[] output = _sha256.ComputeHash(input);
+
+            StringBuilder hash = new StringBuilder();
+            foreach (Byte b in output)
+            {
+                hash.Append(b.ToString("x2"));
+            }
+
+            return hash.ToString();
+        }
+#else
+        private static SHA256Managed _sha256;
+
         /// <summary>
         /// Gets an SHA256 Hash for a URI
         /// </summary>
@@ -212,6 +265,7 @@ namespace VDS.RDF
             return hash.ToString();
         }
 
+
         /// <summary>
         /// Gets a SHA256 Hash for a String
         /// </summary>
@@ -235,6 +289,7 @@ namespace VDS.RDF
 
             return hash.ToString();
         }
+#endif
 
         #endregion
 
@@ -266,9 +321,9 @@ namespace VDS.RDF
             g.Retract(new Triple(Tools.CopyNode(subj, g), Tools.CopyNode(pred, g), Tools.CopyNode(obj, g)));
         }
 
-        #endregion
+#endregion
 
-        #region List Helpers
+#region List Helpers
 
         /// <summary>
         /// Asserts a list as a RDF collection and returns the node that represents the root of the RDF collection
@@ -533,9 +588,9 @@ namespace VDS.RDF
             RemoveFromList(g, listRoot, objects, n => n);
         }
 
-        #endregion
+#endregion
 
-        #region Node and Triple Copying Extensions
+#region Node and Triple Copying Extensions
 
         /// <summary>
         /// Copies a Node to the target Graph
@@ -625,9 +680,9 @@ namespace VDS.RDF
             return new Triple(s, p, o);
         }
 
-        #endregion
+#endregion
 
-        #region String related Extensions
+#region String related Extensions
 
         /// <summary>
         /// Gets either the String representation of the Object or the Empty String if the object is null
@@ -932,7 +987,7 @@ namespace VDS.RDF
             }
         }
 
-        #endregion
+#endregion
 
     }
 

@@ -45,7 +45,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
         /// </summary>
         /// <param name="expr">Expression</param>
         public MD5HashFunction(ISparqlExpression expr)
+#if NETCORE
+            : base(expr, MD5.Create()) { }
+#else
             : base(expr, new MD5Cng()) { }
+#endif
 
         /// <summary>
         /// Gets the String representation of the function
@@ -78,4 +82,4 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
         }
     }
 #endif
-}
+    }

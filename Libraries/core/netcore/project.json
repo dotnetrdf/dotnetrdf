@@ -1,0 +1,37 @@
+{
+  "title": "dotNetRDF",
+  "version": "1.0.13-pre7",
+  "description": "API for manipulating RDF data (.NET Core)",
+  "copyright": "Copyright © dotNetRDF Project 2009-2017",
+
+  "dependencies": {
+    "NETStandard.Library": "1.6.0",
+    "Newtonsoft.Json": "9.0.1",
+    "System.ComponentModel.TypeConverter": "4.1.0",
+    "System.Globalization.Extensions": "4.0.1",
+    "System.Net.Requests": "4.0.11",
+    "System.Reflection.TypeExtensions": "4.1.0",
+    "System.Threading.Thread": "4.0.0",
+    "System.Xml.XmlDocument": "4.0.1",
+    "System.Xml.XmlSerializer": "4.0.11", 
+    "VDS.Common": "1.7.0"
+  },
+
+  "frameworks": {
+    "netstandard1.4": {}
+  },
+
+  "buildOptions": {
+    "compile": {
+      "include": [ "../net40/**/*.cs", "../portable/Parsing/StreamLoader.cs" ],
+      "exclude": [
+        "../net40/Web/**/*.cs",
+        "../net40/Update/Protocol/*.cs"
+      ]
+    },
+    "define": [ "NO_SYSTEMCONFIGURATION", "NO_PROXY", "NO_XSL", "NO_HTMLAGILITYPACK", "NO_DATA", "NO_WEB", "NO_PROCESS", "NO_URICACHE", "NETCORE" ],
+    "outputName": "dotNetRDF"
+  }
+
+}
+

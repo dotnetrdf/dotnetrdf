@@ -3,7 +3,7 @@ dotNetRDF is free and open source software licensed under the MIT License
 
 -----------------------------------------------------------------------------
 
-Copyright (c) 2009-2013 dotNetRDF Project (dotnetrdf-developer@lists.sf.net)
+Copyright (c) 2009-2017 dotNetRDF Project
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -61,11 +61,23 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Adds ascending ordering by an expression to the query
         /// </summary>
-        IQueryBuilder OrderBy(Func<ExpressionBuilder, SparqlExpression> buildOrderExpression);
+        IQueryBuilder OrderBy(Func<IExpressionBuilder, SparqlExpression> buildOrderExpression);
         /// <summary>
         /// Adds descending ordering by an expression to the query
         /// </summary>
-        IQueryBuilder OrderByDescending(Func<ExpressionBuilder, SparqlExpression> buildOrderExpression);
+        IQueryBuilder OrderByDescending(Func<IExpressionBuilder, SparqlExpression> buildOrderExpression);
+        /// <summary>
+        /// Adds a GROUP BY clause to the query.
+        /// </summary>
+        IQueryBuilder GroupBy(string variableName);
+        /// <summary>
+        /// Adds a GROUP BY clause to the query.
+        /// </summary>
+        IQueryBuilder GroupBy(Func<INonAggregateExpressionBuilder, SparqlExpression> buildGroupingExpression);
+        /// <summary>
+        /// Adds a HAVING clause to the query.
+        /// </summary>
+        IQueryBuilder Having(Func<IExpressionBuilder, BooleanExpression> buildHavingConstraint);
         /// <summary>
         /// Builds and returns a <see cref="SparqlQuery"/>
         /// </summary>
@@ -73,6 +85,6 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Adds a BIND variable assignment to the root graph pattern
         /// </summary>
-        IAssignmentVariableNamePart<IQueryBuilder> Bind(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression);
+        IAssignmentVariableNamePart<IQueryBuilder> Bind(Func<INonAggregateExpressionBuilder, SparqlExpression> buildAssignmentExpression);
     }
 }

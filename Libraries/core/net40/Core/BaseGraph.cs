@@ -43,12 +43,12 @@ namespace VDS.RDF
     /// <summary>
     /// Abstract Base Implementation of the <see cref="IGraph">IGraph</see> interface
     /// </summary>
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
     [Serializable,XmlRoot(ElementName="graph")]
 #endif
     public abstract class BaseGraph 
         : IGraph
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
         ,ISerializable
 #endif
     {
@@ -72,7 +72,7 @@ namespace VDS.RDF
         protected BlankNodeMapper _bnodemapper;
 
         private TripleEventHandler TripleAddedHandler, TripleRemovedHandler;
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
         private GraphDeserializationInfo _dsInfo;
 #endif
 
@@ -102,7 +102,7 @@ namespace VDS.RDF
         protected BaseGraph()
             : this(new TreeIndexedTripleCollection()) { }
 
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
         /// <summary>
         /// Creates a Graph from the given Serialization Information
         /// </summary>
@@ -1078,7 +1078,7 @@ namespace VDS.RDF
             this.DetachEventHandlers(this._triples);
         }
 
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
 
         #region ISerializable Members
 

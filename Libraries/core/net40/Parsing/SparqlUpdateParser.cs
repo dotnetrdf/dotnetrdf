@@ -206,7 +206,7 @@ namespace VDS.RDF.Parsing
         public SparqlUpdateCommandSet ParseFromFile(String file)
         {
             if (file == null) throw new RdfParseException("Cannot parse SPARQL Update Commands from a null File");
-            return this.Parse(new StreamReader(file, Encoding.UTF8));
+            return this.Parse(new StreamReader(File.OpenRead(file), Encoding.UTF8));
         }
 #endif
 

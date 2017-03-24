@@ -180,15 +180,18 @@ namespace VDS.RDF.Writing
         /// <param name="filename">File to save to</param>
         public void Save(IGraph g, string filename)
         {
-            this.Save(g, new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8)));
+            using (var stream = File.Open(filename, FileMode.Create))
+            {
+                this.Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
+            }
         }
 #endif
 
-        /// <summary>
-        /// Saves a Graph to the given Stream using Turtle Syntax
-        /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="output">Stream to save to</param>
+            /// <summary>
+            /// Saves a Graph to the given Stream using Turtle Syntax
+            /// </summary>
+            /// <param name="g">Graph to save</param>
+            /// <param name="output">Stream to save to</param>
         public void Save(IGraph g, TextWriter output)
         {
             try

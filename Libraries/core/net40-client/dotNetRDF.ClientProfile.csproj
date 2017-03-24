@@ -42,12 +42,12 @@
     <AssemblyOriginatorKeyFile>dotNetRDF.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\packages\HtmlAgilityPack.1.4.9\lib\Net40-client\HtmlAgilityPack.dll</HintPath>
+    <Reference Include="HtmlAgilityPack, Version=1.4.9.5, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\HtmlAgilityPack.1.4.9.5\lib\Net40-client\HtmlAgilityPack.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Newtonsoft.Json.8.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Newtonsoft.Json.9.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -57,8 +57,8 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="VDS.Common, Version=1.6.4.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\VDS.Common.1.6.4\lib\net40-client\VDS.Common.dll</HintPath>
+    <Reference Include="VDS.Common, Version=1.7.0.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\VDS.Common.1.7.0\lib\net40-client\VDS.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -2409,9 +2409,6 @@
     <Compile Include="..\net40\Query\Builder\DescribeGraphPatternBuilder.cs">
       <Link>Query\Builder\DescribeGraphPatternBuilder.cs</Link>
     </Compile>
-    <Compile Include="..\net40\Query\Builder\ExpressionBuilderRdfTermsFunctionsExtensions.cs">
-      <Link>Query\Builder\ExpressionBuilderRdfTermsFunctionsExtensions.cs</Link>
-    </Compile>
     <Compile Include="..\net40\Query\Builder\Expressions\BlankNodeExpression.cs">
       <Link>Query\Builder\Expressions\BlankNodeExpression.cs</Link>
     </Compile>
@@ -2420,12 +2417,6 @@
     </Compile>
     <Compile Include="..\net40\Query\Builder\ExpressionBuilder.cs">
       <Link>Query\Builder\ExpressionBuilder.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Query\Builder\ExpressionBuilderFunctionalFormsExtensions.cs">
-      <Link>Query\Builder\ExpressionBuilderFunctionalFormsExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Query\Builder\ExpressionBuilderStringExtensions.cs">
-      <Link>Query\Builder\ExpressionBuilderStringExtensions.cs</Link>
     </Compile>
     <Compile Include="..\net40\Query\Builder\Expressions\LiteralExpressionExtensions.cs">
       <Link>Query\Builder\Expressions\LiteralExpressionExtensions.cs</Link>
@@ -2530,4 +2521,37 @@
     <Compile Include="..\net40\Storage\Virtualisation\StoreVirtualGraphPersistenceWrapper.cs">
       <Link>Storage\Virtualisation\StoreVirtualGraphPersistenceWrapper.cs</Link>
     </Compile>
-  </ItemGroup></Project>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Query\Builder\ExpressionBuilder.Aggregates.cs">
+      <Link>Query\Builder\ExpressionBuilder.Aggregates.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\Expressions\AggregateExpression.cs">
+      <Link>Query\Builder\Expressions\AggregateExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\ExpressionBuilder.RdfTermsFunctions.cs">
+      <Link>Query\Builder\ExpressionBuilder.RdfTermsFunctions.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\ExpressionBuilder.FunctionalForms.cs">
+      <Link>Query\Builder\ExpressionBuilder.FunctionalForms.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\ExpressionBuilder.String.cs">
+      <Link>Query\Builder\ExpressionBuilder.String.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\Expressions\PrimaryExpression.cs">
+      <Link>Query\Builder\Expressions\PrimaryExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\IAggregateBuilder.cs">
+      <Link>Query\Builder\IAggregateBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\IDistinctAggregateBuilder.cs">
+      <Link>Query\Builder\IDistinctAggregateBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\IExpressionBuilder.cs">
+      <Link>Query\Builder\IExpressionBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\INonAggregateExpressionBuilder.cs">
+      <Link>Query\Builder\INonAggregateExpressionBuilder.cs</Link>
+    </Compile>
+  </ItemGroup>
+</Project>

@@ -146,7 +146,10 @@ namespace VDS.RDF.Parsing
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-            this.Load(g, new StreamReader(filename, Encoding.UTF8));
+            using (var reader = new StreamReader(File.OpenRead(filename), Encoding.UTF8))
+            {
+                this.Load(g, reader);
+            }
         }
 #endif
 
@@ -214,7 +217,10 @@ namespace VDS.RDF.Parsing
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-            this.Load(handler, new StreamReader(filename, Encoding.UTF8));
+            using (var reader = new StreamReader(File.OpenRead(filename), Encoding.UTF8))
+            {
+                this.Load(handler, reader);
+            }
         }
 #endif
 

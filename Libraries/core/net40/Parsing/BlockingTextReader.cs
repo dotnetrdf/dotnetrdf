@@ -360,7 +360,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-#if PORTABLE
+#if PORTABLE || NETCORE
         public void Close()
         {
             // No-op as portable library version of TextReader has no Close() method

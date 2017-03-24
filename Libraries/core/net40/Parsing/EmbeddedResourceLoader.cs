@@ -36,7 +36,11 @@ namespace VDS.RDF.Parsing
     /// </summary>
     public static class EmbeddedResourceLoader
     {
+#if NETCORE
+        private static string _currAsmName = GetAssemblyName(typeof(EmbeddedResourceLoader).GetTypeInfo().Assembly);
+#else
         private static String _currAsmName = GetAssemblyName(Assembly.GetExecutingAssembly());
+#endif
 
         /// <summary>
         /// Loads a Graph from an Embedded Resource
@@ -47,7 +51,7 @@ namespace VDS.RDF.Parsing
         public static void Load(IGraph g, String resource, IRdfReader parser)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-            EmbeddedResourceLoader.Load(new GraphHandler(g), resource, (IRdfReader)null);
+            Load(new GraphHandler(g), resource, (IRdfReader)null);
         }
 
         /// <summary>
@@ -72,11 +76,17 @@ namespace VDS.RDF.Parsing
                     resourceName = resourceName.Substring(0, resource.IndexOf(',')).TrimEnd();
 
                     //Try to load this assembly
+#if NETCORE
+                    Assembly asm = assemblyName.Equals(_currAsmName)
+                        ? typeof(EmbeddedResourceLoader).GetTypeInfo().Assembly
+                        : Assembly.Load(new AssemblyName(assemblyName));
+#else
                     Assembly asm = assemblyName.Equals(_currAsmName) ? Assembly.GetExecutingAssembly() : Assembly.Load(assemblyName);
+#endif
                     if (asm != null)
                     {
                         //Resource is in the loaded assembly
-                        EmbeddedResourceLoader.LoadGraphInternal(handler, asm, resourceName, parser);
+                        LoadGraphInternal(handler, asm, resourceName, parser);
                     }
                     else
                     {
@@ -86,7 +96,11 @@ namespace VDS.RDF.Parsing
                 else
                 {
                     //Resource is in dotNetRDF
+#if NETCORE
+                    LoadGraphInternal(handler, typeof(EmbeddedResourceLoader).GetTypeInfo().Assembly, resourceName, parser);
+#else
                     EmbeddedResourceLoader.LoadGraphInternal(handler, Assembly.GetExecutingAssembly(), resourceName, parser);
+#endif
                 }
             }
             catch (RdfParseException)
@@ -106,7 +120,7 @@ namespace VDS.RDF.Parsing
         /// <param name="resource">Assembly Qualified Name of the Resource to load</param>
         public static void Load(IRdfHandler handler, String resource)
         {
-            EmbeddedResourceLoader.Load(handler, resource, (IRdfReader)null);
+            Load(handler, resource, (IRdfReader)null);
         }
 
         /// <summary>
@@ -119,7 +133,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static void Load(IGraph g, String resource)
         {
-            EmbeddedResourceLoader.Load(g, resource, null);
+            Load(g, resource, null);
         }
 
         /// <summary>
@@ -188,7 +202,7 @@ namespace VDS.RDF.Parsing
         public static void Load(ITripleStore store, String resource, IStoreReader parser)
         {
             if (store == null) throw new RdfParseException("Cannot read RDF Dataset into a null Store");
-            EmbeddedResourceLoader.Load(new StoreHandler(store), resource, parser);
+            Load(new StoreHandler(store), resource, parser);
         }
 
         /// <summary>
@@ -201,7 +215,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static void Load(ITripleStore store, String resource)
         {
-            EmbeddedResourceLoader.Load(store, resource, null);
+            Load(store, resource, null);
         }
 
         /// <summary>
@@ -226,11 +240,17 @@ namespace VDS.RDF.Parsing
                     resourceName = resourceName.Substring(0, resource.IndexOf(',')).TrimEnd();
 
                     //Try to load this assembly
+#if NETCORE
+                    Assembly asm = assemblyName.Equals(_currAsmName)
+                        ? typeof(EmbeddedResourceLoader).GetTypeInfo().Assembly
+                        : Assembly.Load(new AssemblyName(assemblyName));
+#else
                     Assembly asm = (assemblyName.Equals(_currAsmName) ? Assembly.GetExecutingAssembly() : Assembly.Load(assemblyName)) as Assembly;
+#endif
                     if (asm != null)
                     {
                         //Resource is in the loaded assembly
-                        EmbeddedResourceLoader.LoadDatasetInternal(handler, asm, resourceName, parser);
+                        LoadDatasetInternal(handler, asm, resourceName, parser);
                     }
                     else
                     {
@@ -240,7 +260,12 @@ namespace VDS.RDF.Parsing
                 else
                 {
                     //Resource is in dotNetRDF
+#if NETCORE
+                    LoadDatasetInternal(handler,
+                        typeof(EmbeddedResourceLoader).GetTypeInfo().Assembly, resourceName, parser);
+#else
                     EmbeddedResourceLoader.LoadDatasetInternal(handler, Assembly.GetExecutingAssembly(), resourceName, parser);
+#endif
                 }
             }
             catch (RdfParseException)
@@ -260,7 +285,7 @@ namespace VDS.RDF.Parsing
         /// <param name="resource">Assembly Qualified Name of the Resource to load</param>
         public static void LoadDataset(IRdfHandler handler, String resource)
         {
-            EmbeddedResourceLoader.Load(handler, resource, (IStoreReader)null);
+            Load(handler, resource, (IStoreReader)null);
         }
 
         /// <summary>
@@ -337,5 +362,7 @@ namespace VDS.RDF.Parsing
             return asm.GetName().Name;
 #endif
         }
+
+
     }
 }

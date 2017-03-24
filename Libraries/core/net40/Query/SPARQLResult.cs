@@ -44,12 +44,12 @@ namespace VDS.RDF.Query
     /// <summary>
     /// Class for representing a Row of a Sparql Result Set
     /// </summary>
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
     [Serializable,XmlRoot(ElementName="result")]
 #endif
     public sealed class SparqlResult 
         : IEnumerable<KeyValuePair<String, INode>>
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
         , ISerializable, IXmlSerializable
 #endif
     {
@@ -89,7 +89,7 @@ namespace VDS.RDF.Query
             }
         }
 
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
         /// <summary>
         /// Deserialization only constructor
         /// </summary>
@@ -479,7 +479,7 @@ namespace VDS.RDF.Query
 
         #endregion
 
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
         #region Serialization
 
         /// <summary>
