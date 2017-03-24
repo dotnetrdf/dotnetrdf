@@ -34,7 +34,7 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
 {
-    internal sealed class GraphPatternBuilder : IGraphPatternBuilder
+    sealed class GraphPatternBuilder : IGraphPatternBuilder
     {
         private readonly IList<GraphPatternBuilder> _childGraphPatternBuilders = new List<GraphPatternBuilder>();
         private readonly IList<Func<INamespaceMapper, ISparqlExpression>> _filterBuilders = new List<Func<INamespaceMapper, ISparqlExpression>>();
@@ -140,11 +140,11 @@ namespace VDS.RDF.Query.Builder
         public IGraphPatternBuilder Where(Action<ITriplePatternBuilder> buildTriplePatterns)
         {
             return Where(prefixes =>
-                {
-                    var builder = new TriplePatternBuilder(prefixes);
-                    buildTriplePatterns(builder);
-                    return builder.Patterns;
-                });
+            {
+                var builder = new TriplePatternBuilder(prefixes);
+                buildTriplePatterns(builder);
+                return builder.Patterns;
+            });
         }
 
         internal IGraphPatternBuilder Where(Func<INamespaceMapper, ITriplePattern[]> buildTriplePatternFunc)
@@ -180,7 +180,7 @@ namespace VDS.RDF.Query.Builder
         public IGraphPatternBuilder Service(Uri serviceUri, Action<IGraphPatternBuilder> buildGraphPattern)
         {
             AddChildGraphPattern(buildGraphPattern, GraphPatternType.Service,
-                                 new UriToken(string.Format("<{0}>", serviceUri), 0, 0, 0));
+                new UriToken(string.Format("<{0}>", serviceUri), 0, 0, 0));
             return this;
         }
 
@@ -203,7 +203,7 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        public IAssignmentVariableNamePart<IGraphPatternBuilder> Bind(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
+        public IAssignmentVariableNamePart<IGraphPatternBuilder> Bind(Func<INonAggregateExpressionBuilder, SparqlExpression> buildAssignmentExpression)
         {
             return new BindAssignmentVariableNamePart(this, buildAssignmentExpression);
         }
@@ -214,13 +214,13 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        public IGraphPatternBuilder Filter(Func<ExpressionBuilder, BooleanExpression> buildExpression)
+        public IGraphPatternBuilder Filter(Func<INonAggregateExpressionBuilder, BooleanExpression> buildExpression)
         {
             _filterBuilders.Add(namespaceMapper =>
-                {
-                    var builder = new ExpressionBuilder(namespaceMapper);
-                    return buildExpression(builder).Expression;
-                });
+            {
+                var builder = new ExpressionBuilder(namespaceMapper);
+                return buildExpression(builder).Expression;
+            });
             return this;
         }
 

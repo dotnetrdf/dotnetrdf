@@ -24,15 +24,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using VDS.RDF.Query.Aggregates;
 using VDS.RDF.Query.Builder.Expressions;
+using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Query.Builder
 {
-    sealed class SelectAssignmentVariableNamePart : AssignmentVariableNamePart, IAssignmentVariableNamePart<ISelectBuilder>
+    sealed class SelectAssignmentVariableNamePart<TExpression> : AssignmentVariableNamePart<TExpression>, IAssignmentVariableNamePart<ISelectBuilder>
     {
         private readonly SelectBuilder _selectBuilder;
 
-        internal SelectAssignmentVariableNamePart(SelectBuilder selectBuilder, Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
+        internal SelectAssignmentVariableNamePart(SelectBuilder selectBuilder, Func<ExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression)
             : base(buildAssignmentExpression)
         {
             _selectBuilder = selectBuilder;
@@ -40,7 +42,17 @@ namespace VDS.RDF.Query.Builder
 
         public ISelectBuilder As(string variableName)
         {
-            _selectBuilder.And(mapper =>  new SparqlVariable(variableName, BuildAssignmentExpression(mapper)));
+            _selectBuilder.And(mapper =>
+            {
+                var assignmentExpression = BuildAssignmentExpression(mapper);
+
+                if (assignmentExpression is ISparqlAggregate)
+                {
+                    return new SparqlVariable(variableName, (ISparqlAggregate)assignmentExpression);
+                }
+
+                return new SparqlVariable(variableName, (ISparqlExpression)assignmentExpression);
+            });
             return _selectBuilder;
         }
     }

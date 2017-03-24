@@ -3,7 +3,7 @@ dotNetRDF is free and open source software licensed under the MIT License
 
 -----------------------------------------------------------------------------
 
-Copyright (c) 2009-2013 dotNetRDF Project (dotnetrdf-developer@lists.sf.net)
+Copyright (c) 2009-2013 dotNetRDF Project (dotnetrdf-develop@lists.sf.net)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,31 +23,12 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using VDS.RDF.Query.Builder.Expressions;
-
 namespace VDS.RDF.Query.Builder
 {
     /// <summary>
-    /// Interface for creating SELECT queries
+    /// Provides methods for building SPARQL expressions, including aggregates
     /// </summary>
-    public interface ISelectBuilder : IQueryWithVariablesBuilder
+    public interface IExpressionBuilder : INonAggregateExpressionBuilder, IAggregateBuilder
     {
-        /// <summary>
-        /// Adds additional SELECT return <paramref name="variables"/>
-        /// </summary>
-        ISelectBuilder And(params SparqlVariable[] variables);
-        /// <summary>
-        /// Adds additional SELECT return <paramref name="variables"/>
-        /// </summary>
-        ISelectBuilder And(params string[] variables);
-        /// <summary>
-        /// Adds additional SELECT expression
-        /// </summary>
-        IAssignmentVariableNamePart<ISelectBuilder> And<TExpression>(Func<IExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression);
-        /// <summary>
-        /// Applies the DISTINCT modifier if the Query is a SELECT, otherwise leaves query unchanged (since results from any other query are DISTINCT by default)
-        /// </summary>
-        ISelectBuilder Distinct();
     }
 }

@@ -3,7 +3,7 @@ dotNetRDF is free and open source software licensed under the MIT License
 
 -----------------------------------------------------------------------------
 
-Copyright (c) 2009-2013 dotNetRDF Project (dotnetrdf-developer@lists.sf.net)
+Copyright (c) 2009-2017 dotNetRDF Project
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,31 +23,20 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using VDS.RDF.Query.Builder.Expressions;
+using VDS.RDF.Query.Aggregates;
 
-namespace VDS.RDF.Query.Builder
+namespace VDS.RDF.Query.Builder.Expressions
 {
     /// <summary>
-    /// Interface for creating SELECT queries
+    /// Represents a SPARQL aggregate
     /// </summary>
-    public interface ISelectBuilder : IQueryWithVariablesBuilder
+    public class AggregateExpression : PrimaryExpression<ISparqlAggregate>
     {
         /// <summary>
-        /// Adds additional SELECT return <paramref name="variables"/>
+        /// Initializes a new instance of the <see cref="AggregateExpression"/> class.
         /// </summary>
-        ISelectBuilder And(params SparqlVariable[] variables);
-        /// <summary>
-        /// Adds additional SELECT return <paramref name="variables"/>
-        /// </summary>
-        ISelectBuilder And(params string[] variables);
-        /// <summary>
-        /// Adds additional SELECT expression
-        /// </summary>
-        IAssignmentVariableNamePart<ISelectBuilder> And<TExpression>(Func<IExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression);
-        /// <summary>
-        /// Applies the DISTINCT modifier if the Query is a SELECT, otherwise leaves query unchanged (since results from any other query are DISTINCT by default)
-        /// </summary>
-        ISelectBuilder Distinct();
+        public AggregateExpression(ISparqlAggregate expression) : base(expression)
+        {
+        }
     }
 }

@@ -1,4 +1,4 @@
-dotNetRDF
+﻿dotNetRDF
 =========
 
 A Library for RDF manipulation and parsing in .Net using C# 3.0
@@ -11,6 +11,7 @@ This package contains the Core Library for the following .Net profiles:
 - .Net 3.5
 - .Net 3.5 Client Profile
 - Portable Class Library Profile 328
+- .Net Core (netstandard-1.4)
 
 It also contains the Data plugin for our OpenLink Virtuoso support, builds
 are provided for the following .Net profiles:
@@ -26,7 +27,7 @@ for the following .Net profiles:
 
 Please see the Release Notes for usage details and Known Issues
 
-dotNetRDF Project 2009-15
+dotNetRDF Project 2009-17
 dotnetrdf-develop@lists.sf.net
 
 See Acknowledgements.txt for full list of developers and contributors

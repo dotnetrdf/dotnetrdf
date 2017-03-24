@@ -67,9 +67,9 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Adds additional SELECT expression
         /// </summary>
-        public IAssignmentVariableNamePart<ISelectBuilder> And(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
+        public IAssignmentVariableNamePart<ISelectBuilder> And<TExpression>(Func<IExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression)
         {
-            return new SelectAssignmentVariableNamePart(this, buildAssignmentExpression);
+            return new SelectAssignmentVariableNamePart<TExpression>(this, buildAssignmentExpression);
         }
 
         private static SparqlVariable EnsureIsResultVariable(SparqlVariable sparqlVariable)
