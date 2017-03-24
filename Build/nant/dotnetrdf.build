@@ -517,25 +517,20 @@
   <target name="compile-libs-core" description="Compiles all builds of the Core library" unless="${dotnetrdf.nocompile}"
           depends="restore-packages,
                    compile-core,
-                   compile-core-net35,
                    compile-core-clientprofile,
-                   compile-core-clientprofile-net35,
                    compile-core-portable,
 				   compile-core-netcore">  
   </target>
 
   <target name="compile-libs-data-virtuoso" description="Compiles all builds of the Data.Virtuoso library" unless="${dotnetrdf.nocompile}"
           depends="restore-packages,
-                   compile-data-virtuoso,
-                   compile-data-virtuoso-net35">
+                   compile-data-virtuoso">
   </target>
 
   <target name="compile-libs-query-fulltext" description="Compiles all builds of the Query.FullText library" unless="${dotnetrdf.nocompile}"
           depends="restore-packages,
                    compile-query-fulltext,
-                   compile-query-fulltext-net35,
-                   compile-query-fulltext-clientprofile,
-                   compile-query-fulltext-clientprofile-net35">
+                   compile-query-fulltext-clientprofile">
   </target>
 
   <target name="compile-libs-utils" description="Compiles all the additional libraries needed for the Toolkit distribution" unless="${dotnetrdf.nocompile}"
@@ -875,12 +870,12 @@
   </target>
 
   <target name="build-libs" description="Builds dotNetRDF library nightlies" unless="${dotnetrdf.nobuild}"
-          depends="build-core,build-core-net35,
-                   build-core-clientprofile,build-core-clientprofile-net35,
+          depends="build-core,
+                   build-core-clientprofile,
                    build-core-portable,
 				   build-core-netcore,
-                   build-data-virtuoso,build-data-virtuoso-net35,
-                   build-query-fulltext,build-query-fulltext-net35,build-query-fulltext-clientprofile,build-query-fulltext-clientprofile-net35" />
+                   build-data-virtuoso,
+                   build-query-fulltext,build-query-fulltext-clientprofile" />
 
   <target name="build-utils" description="Builds dotNetRDF Toolkit nightlies" unless="${dotnetrdf.nobuild}"
           depends="build-util-convert,
@@ -1372,6 +1367,7 @@
         <include name="dotNetRDF.*" />
       </fileset>
     </copy>
+	<!--
     <copy todir="Build/nuget/Core/lib/net35/">
       <fileset basedir="bin/stable/Libraries/Core/net35/">
         <include name="dotNetRDF.*" />
@@ -1382,6 +1378,7 @@
         <include name="dotNetRDF.*" />
       </fileset>
     </copy>
+	-->
     <copy todir="Build/nuget/Core/lib/portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1">
       <fileset basedir="bin/stable/Libraries/Core/portable/">
         <include name="dotNetRDF.*" />
@@ -1442,11 +1439,13 @@
         <include name="dotNetRDF.*" />
       </fileset>
     </copy>
+	<!--
     <copy todir="Build/nuget/Data.Virtuoso/lib/net35/">
       <fileset basedir="bin/stable/Libraries/Data/Virtuoso/net35/">
         <include name="dotNetRDF.*" />
       </fileset>
     </copy>
+	-->
     <!-- Invoke nuget on the package -->
     <exec workingdir="Build/nuget/Data.Virtuoso/" program="nuget.exe">
       <arg value="pack" />
@@ -1499,6 +1498,7 @@
         <include name="dotNetRDF.*" />
       </fileset>
     </copy>
+	<!--
     <copy todir="Build/nuget/Query.FullText/lib/net35/">
       <fileset basedir="bin/stable/Libraries/Query/FullText/net35/">
         <include name="dotNetRDF.*" />
@@ -1509,6 +1509,7 @@
         <include name="dotNetRDF.*" />
       </fileset>
     </copy>
+	-->
     <!-- Invoke nuget on the package -->
     <exec workingdir="Build/nuget/Query.FullText/" program="nuget.exe">
       <arg value="pack" />
