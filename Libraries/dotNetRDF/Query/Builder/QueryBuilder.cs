@@ -1,33 +1,38 @@
 /*
-dotNetRDF is free and open source software licensed under the MIT License
-
------------------------------------------------------------------------------
-
-Copyright (c) 2009-2013 dotNetRDF Project (dotnetrdf-developer@lists.sf.net)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is furnished
-to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// <copyright>
+// dotNetRDF is free and open source software licensed under the MIT License
+// -------------------------------------------------------------------------
+// 
+// Copyright (c) 2009-2017 dotNetRDF Project (http://dotnetrdf.org/)
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is furnished
+// to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// </copyright>
 */
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Query.Builder.Expressions;
+using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Filters;
+using VDS.RDF.Query.Grouping;
 using VDS.RDF.Query.Ordering;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
 {
@@ -46,6 +51,8 @@ namespace VDS.RDF.Query.Builder
         private DescribeGraphPatternBuilder _constructGraphPatternBuilder;
         private readonly SelectBuilder _selectBuilder;
         private readonly IList<Func<INamespaceMapper, ISparqlOrderBy>> _buildOrderings = new List<Func<INamespaceMapper, ISparqlOrderBy>>();
+        private readonly IList<Func<INamespaceMapper, ISparqlGroupBy>> _buildGroups = new List<Func<INamespaceMapper, ISparqlGroupBy>>();
+        private readonly IList<Func<INamespaceMapper, ISparqlExpression>> _buildHavings = new List<Func<INamespaceMapper, ISparqlExpression>>();
         private readonly SparqlQueryType _sparqlQueryType;
         private int _queryLimit = -1;
         private int _queryOffset;
@@ -152,10 +159,10 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Creates a new SELECT query which will return an expression
         /// </summary>
-        public static IAssignmentVariableNamePart<ISelectBuilder> Select(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
+        public static IAssignmentVariableNamePart<ISelectBuilder> Select<TExpression>(Func<IExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression)
         {
             SelectBuilder selectBuilder = (SelectBuilder)Select(new SparqlVariable[0]);
-            return new SelectAssignmentVariableNamePart(selectBuilder, buildAssignmentExpression);
+            return new SelectAssignmentVariableNamePart<TExpression>(selectBuilder, buildAssignmentExpression);
         }
 
         /// <summary>
@@ -226,7 +233,7 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Adds ascending ordering by an expression to the query
         /// </summary>
-        public IQueryBuilder OrderBy(Func<ExpressionBuilder, SparqlExpression> buildOrderExpression)
+        public IQueryBuilder OrderBy(Func<IExpressionBuilder, SparqlExpression> buildOrderExpression)
         {
             AppendOrdering(buildOrderExpression, false);
             return this;
@@ -235,31 +242,54 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Adds descending ordering by an expression to the query
         /// </summary>
-        public IQueryBuilder OrderByDescending(Func<ExpressionBuilder, SparqlExpression> buildOrderExpression)
+        public IQueryBuilder OrderByDescending(Func<IExpressionBuilder, SparqlExpression> buildOrderExpression)
         {
             AppendOrdering(buildOrderExpression, true);
+            return this;
+        }
+
+        public IQueryBuilder GroupBy(string variableName)
+        {
+            _buildGroups.Add(prefixes => new GroupByVariable(variableName));
+            return this;
+        }
+
+        public IQueryBuilder GroupBy(Func<INonAggregateExpressionBuilder, SparqlExpression> buildGroupingExpression)
+        {
+            _buildGroups.Add(prefixes =>
+            {
+                var expressionBuilder = new ExpressionBuilder(prefixes);
+                var sparqlExpression = buildGroupingExpression(expressionBuilder).Expression;
+                return new GroupByExpression(sparqlExpression);
+            });
+            return this;
+        }
+
+        public IQueryBuilder Having(Func<IExpressionBuilder, BooleanExpression> buildHavingConstraint)
+        {
+            _buildHavings.Add(prefixes => buildHavingConstraint(new ExpressionBuilder(prefixes)).Expression);
             return this;
         }
 
         private void AppendOrdering(Func<ExpressionBuilder, SparqlExpression> orderExpression, bool descending)
         {
             _buildOrderings.Add(prefixes =>
-                {
-                    var expressionBuilder = new ExpressionBuilder(prefixes);
-                    var sparqlExpression = orderExpression.Invoke(expressionBuilder).Expression;
-                    var orderBy = new OrderByExpression(sparqlExpression) { Descending = descending };
-                    return orderBy;
-                });
+            {
+                var expressionBuilder = new ExpressionBuilder(prefixes);
+                var sparqlExpression = orderExpression.Invoke(expressionBuilder).Expression;
+                var orderBy = new OrderByExpression(sparqlExpression) { Descending = descending };
+                return orderBy;
+            });
         }
 
         public SparqlQuery BuildQuery()
         {
             SparqlQuery query = new SparqlQuery
-                {
-                    QueryType = _sparqlQueryType,
-                    Limit = _queryLimit,
-                    Offset = _queryOffset
-                };
+            {
+                QueryType = _sparqlQueryType,
+                Limit = _queryLimit,
+                Offset = _queryOffset
+            };
 
             switch (_sparqlQueryType)
             {
@@ -281,6 +311,8 @@ namespace VDS.RDF.Query.Builder
             }
 
             BuildRootGraphPattern(query);
+            BuildGroupByClauses(query);
+            BuildHavingClauses(query);
             BuildAndChainOrderings(query);
 
             query.NamespaceMap.Import(Prefixes);
@@ -326,10 +358,41 @@ namespace VDS.RDF.Query.Builder
             }
         }
 
+        private void BuildGroupByClauses(SparqlQuery query)
+        {
+            ISparqlGroupBy rootGroup = null;
+            ISparqlGroupBy lastGroup = null;
+
+            foreach (var buildGroup in _buildGroups)
+            {
+                if (rootGroup == null)
+                {
+                    rootGroup = lastGroup = buildGroup(Prefixes);
+                }
+                else
+                {
+                    lastGroup.Child = buildGroup(Prefixes);
+                }
+            }
+
+            query.GroupBy = rootGroup;
+        }
+
+        private void BuildHavingClauses(SparqlQuery query)
+        {
+            var filters = (from builder in _buildHavings
+                select new UnaryExpressionFilter(builder(Prefixes))).ToList();
+
+            if (filters.Any())
+            {
+                query.Having = new ChainFilter(filters);
+            }
+        }
+
         private void BuildAndChainOrderings(SparqlQuery executableQuery)
         {
             IList<ISparqlOrderBy> orderings = (from orderByBuilder in _buildOrderings
-                                               select orderByBuilder(Prefixes)).ToList();
+                select orderByBuilder(Prefixes)).ToList();
             for (int i = 1; i < orderings.Count; i++)
             {
                 orderings[i - 1].Child = orderings[i];
@@ -337,7 +400,7 @@ namespace VDS.RDF.Query.Builder
             executableQuery.OrderBy = orderings.FirstOrDefault();
         }
 
-        public IAssignmentVariableNamePart<IQueryBuilder> Bind(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
+        public IAssignmentVariableNamePart<IQueryBuilder> Bind(Func<INonAggregateExpressionBuilder, SparqlExpression> buildAssignmentExpression)
         {
             return new BindAssignmentVariableNamePart(this, buildAssignmentExpression);
         }

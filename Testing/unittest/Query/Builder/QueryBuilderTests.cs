@@ -25,14 +25,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Linq;
-using Xunit;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query.Aggregates;
+using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Ordering;
 using VDS.RDF.Query.Patterns;
+using Xunit;
 
 namespace VDS.RDF.Query.Builder
 {
@@ -626,6 +630,64 @@ namespace VDS.RDF.Query.Builder
             var union = query.RootGraphPattern.ChildGraphPatterns.Single();
             Assert.False(union.IsUnion);
             Assert.Equal(1, union.TriplePatterns.Count);
+        }
+
+        [Fact]
+        public void CanBuildSelectSumWithGrouping()
+        {
+            // given
+            var o = new VariableTerm("o");
+
+            // when
+            var query = QueryBuilder.Select(ex => ex.Sum(o)).As("sum")
+                .Where(BuildSPOPattern)
+                .GroupBy("s")
+                .BuildQuery();
+
+            // then
+            Assert.Equal("sum", query.Variables.Single().Name);
+            Assert.Equal("s", query.GroupBy.Variables.Single());
+        }
+
+        [Fact]
+        public void CanBuildGroupingWithExpression()
+        {
+            // when
+            var query = QueryBuilder.SelectAll()
+                .Where(BuildSPOPattern)
+                .GroupBy(eb => eb.Datatype(eb.Variable("s")))
+                .BuildQuery();
+
+            // then
+            Assert.Equal("DATATYPE(?s)", query.GroupBy.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildSelectSumWithHaving()
+        {
+            // given
+            var o = new VariableTerm("o");
+
+            // when
+            var query = QueryBuilder.Select(ex => ex.Sum(o)).As("sum")
+                .Where(BuildSPOPattern)
+                .Having(ex => ex.Variable("sum") > 10)
+                .BuildQuery();
+
+            // then
+            Assert.Equal("?sum > 10", query.Having.Expression.ToString().Trim());
+        }
+
+        [Fact]
+        public void WithoutCallingHavingItIsNullOnBuiltQuery()
+        {
+            // when
+            var query = QueryBuilder.Select("o")
+                .Where(BuildSPOPattern)
+                .BuildQuery();
+
+            // then
+            Assert.Null(query.Having);
         }
     }
 }

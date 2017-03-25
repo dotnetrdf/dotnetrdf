@@ -27,8 +27,6 @@ using System;
 using System.Linq;
 using Xunit;
 using Moq;
-using VDS.RDF.Query.Builder;
-using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Constructor;
@@ -615,6 +613,306 @@ namespace VDS.RDF.Query.Builder.Expressions
 
             // then
             Assert.NotNull(cast);
+        }
+
+        [Fact]
+        public void CanBuildSumAggregateGivenVariableName()
+        {
+            // when
+            var sum = Builder.Sum("s");
+
+            // then
+            Assert.Equal("SUM(?s)", sum.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildSumAggregateGivenAnExpression()
+        {
+            // when
+            var sum = Builder.Sum(Builder.StrLen(Builder.Variable("x")));
+
+            // then
+            Assert.Equal("SUM(STRLEN(?x))", sum.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildDisctinctSumAggregateGivenVariableName()
+        {
+            // when
+            var sum = Builder.Distinct.Sum("s");
+
+            // then
+            Assert.Equal("SUM(DISTINCT ?s)", sum.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildAvgAggregateGivenVariableName()
+        {
+            // when
+            var sum = Builder.Avg("s");
+
+            // then
+            Assert.Equal("AVG(?s)", sum.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildAvgAggregateGivenVariable()
+        {
+            // when
+            var sum = Builder.Avg(new VariableTerm("s"));
+
+            // then
+            Assert.Equal("AVG(?s)", sum.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildAvgAggregateGivenAnExpression()
+        {
+            // when
+            var sum = Builder.Avg(Builder.StrLen(Builder.Variable("x")));
+
+            // then
+            Assert.Equal("AVG(STRLEN(?x))", sum.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildDisctinctAvgAggregateGivenVariableName()
+        {
+            // when
+            var sum = Builder.Distinct.Avg("s");
+
+            // then
+            Assert.Equal("AVG(DISTINCT ?s)", sum.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildMinAggregateGivenVariableName()
+        {
+            // when
+            var min = Builder.Min("s");
+
+            // then
+            Assert.Equal("MIN(?s)", min.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildMinAggregateGivenVariable()
+        {
+            // when
+            var min = Builder.Min(new VariableTerm("s"));
+
+            // then
+            Assert.Equal("MIN(?s)", min.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildMinAggregateGivenAnExpression()
+        {
+            // when
+            var min = Builder.Min(Builder.StrLen(Builder.Variable("x")));
+
+            // then
+            Assert.Equal("MIN(STRLEN(?x))", min.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildDisctinctMinAggregateGivenVariableName()
+        {
+            // when
+            var min = Builder.Distinct.Min("s");
+
+            // then
+            Assert.Equal("MIN(DISTINCT ?s)", min.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildMaxAggregateGivenVariableName()
+        {
+            // when
+            var max = Builder.Max("s");
+
+            // then
+            Assert.Equal("MAX(?s)", max.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildMaxAggregateGivenVariable()
+        {
+            // when
+            var max = Builder.Max(new VariableTerm("s"));
+
+            // then
+            Assert.Equal("MAX(?s)", max.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildMaxAggregateGivenAnExpression()
+        {
+            // when
+            var max = Builder.Max(Builder.StrLen(Builder.Variable("x")));
+
+            // then
+            Assert.Equal("MAX(STRLEN(?x))", max.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildDisctinctMaxAggregateGivenVariableName()
+        {
+            // when
+            var max = Builder.Distinct.Max("s");
+
+            // then
+            Assert.Equal("MAX(DISTINCT ?s)", max.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildSampleAggregateGivenVariableName()
+        {
+            // when
+            var sample = Builder.Sample("s");
+
+            // then
+            Assert.Equal("SAMPLE(?s)", sample.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildSampleAggregateGivenVariable()
+        {
+            // when
+            var sample = Builder.Sample(new VariableTerm("s"));
+
+            // then
+            Assert.Equal("SAMPLE(?s)", sample.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildSampleAggregateGivenAnExpression()
+        {
+            // when
+            var sample = Builder.Sample(Builder.StrLen(Builder.Variable("x")));
+
+            // then
+            Assert.Equal("SAMPLE(STRLEN(?x))", sample.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildGroupConcatAggregateGivenVariableName()
+        {
+            // when
+            var groupConcat = Builder.GroupConcat("s");
+
+            // then
+            Assert.Equal("GROUP_CONCAT(?s)", groupConcat.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildGroupConcatAggregateGivenVariable()
+        {
+            // when
+            var groupConcat = Builder.GroupConcat(new VariableTerm("s"));
+
+            // then
+            Assert.Equal("GROUP_CONCAT(?s)", groupConcat.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildGroupConcatAggregateGivenAnExpression()
+        {
+            // when
+            var groupConcat = Builder.GroupConcat(Builder.StrLen(Builder.Variable("x")));
+
+            // then
+            Assert.Equal("GROUP_CONCAT(STRLEN(?x))", groupConcat.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildDisctinctGroupConcatAggregateGivenVariableName()
+        {
+            // when
+            var groupConcat = Builder.Distinct.GroupConcat("s");
+
+            // then
+            Assert.Equal("GROUP_CONCAT(DISTINCT ?s)", groupConcat.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildGroupConcatAggregateGivenVariableNameWithSeparator()
+        {
+            // when
+            var groupConcat = Builder.GroupConcat("s", ", ");
+
+            // then
+            Assert.Equal("GROUP_CONCAT(?s ; SEPARATOR = \", \")", groupConcat.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildGroupConcatAggregateGivenVariableWithSeparator()
+        {
+            // when
+            var groupConcat = Builder.GroupConcat(new VariableTerm("s"), ", ");
+
+            // then
+            Assert.Equal("GROUP_CONCAT(?s ; SEPARATOR = \", \")", groupConcat.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildGroupConcatAggregateGivenAnExpressionWithSeparator()
+        {
+            // when
+            var groupConcat = Builder.GroupConcat(Builder.StrLen(Builder.Variable("x")), ", ");
+
+            // then
+            Assert.Equal("GROUP_CONCAT(STRLEN(?x) ; SEPARATOR = \", \")", groupConcat.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildCountStarAggregateGivenVariableName()
+        {
+            // when
+            var count = Builder.Count();
+
+            // then
+            Assert.Equal("COUNT(*)", count.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildCountAggregateGivenVariableName()
+        {
+            // when
+            var count = Builder.Count("s");
+
+            // then
+            Assert.Equal("COUNT(?s)", count.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildCountAggregateGivenVariable()
+        {
+            // when
+            var count = Builder.Count(new VariableTerm("s"));
+
+            // then
+            Assert.Equal("COUNT(?s)", count.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildCountAggregateGivenAnExpression()
+        {
+            // when
+            var count = Builder.Count(Builder.StrLen(Builder.Variable("x")));
+
+            // then
+            Assert.Equal("COUNT(STRLEN(?x))", count.Expression.ToString());
+        }
+
+        [Fact]
+        public void CanBuildDisctinctCountAggregateGivenVariableName()
+        {
+            // when
+            var count = Builder.Distinct.Count("s");
+
+            // then
+            Assert.Equal("COUNT(DISTINCT ?s)", count.Expression.ToString());
         }
     }
 }

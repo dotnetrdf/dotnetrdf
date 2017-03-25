@@ -56,7 +56,7 @@
 
   <ItemGroup>
     <PackageReference Include="VDS.Common" Version="1.7.0" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.0.0">
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta001">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
   </ItemGroup>

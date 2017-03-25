@@ -45,6 +45,8 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.FullText
 {
+    [Trait("category", "explicit")]
+    [Trait("category", "fulltext")]
     [Collection("FullText")]
     public class FullTextSparqlTests
     {
@@ -97,6 +99,7 @@ namespace VDS.RDF.Query.FullText
             {
                 PropertyFunctionFactory.AddFactory(factory);
                 q.AlgebraOptimisers = new IAlgebraOptimiser[] { new FullTextOptimiser(provider) };
+                Options.AlgebraOptimisation = true;
 
                 LeviathanQueryProcessor processor = new LeviathanQueryProcessor(this._dataset);
                 SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;

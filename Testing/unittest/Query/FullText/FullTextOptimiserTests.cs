@@ -40,7 +40,8 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.FullText
 {
-
+    [Trait("category", "explicit")]
+    [Trait("category", "fulltext")]
     public class FullTextOptimiserTests
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
@@ -70,6 +71,7 @@ namespace VDS.RDF.Query.FullText
                 };
             }
             q.AlgebraOptimisers = this._optimisers;
+            Options.AlgebraOptimisation = true;
 
             String algebra = q.ToAlgebra().ToString();
             Console.WriteLine("Optimised Algebra: " + algebra);

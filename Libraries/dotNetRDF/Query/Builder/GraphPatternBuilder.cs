@@ -1,26 +1,27 @@
 /*
-dotNetRDF is free and open source software licensed under the MIT License
-
------------------------------------------------------------------------------
-
-Copyright (c) 2009-2013 dotNetRDF Project (dotnetrdf-developer@lists.sf.net)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is furnished
-to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// <copyright>
+// dotNetRDF is free and open source software licensed under the MIT License
+// -------------------------------------------------------------------------
+// 
+// Copyright (c) 2009-2017 dotNetRDF Project (http://dotnetrdf.org/)
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is furnished
+// to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// </copyright>
 */
 
 using System;
@@ -34,7 +35,7 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
 {
-    internal sealed class GraphPatternBuilder : IGraphPatternBuilder
+    sealed class GraphPatternBuilder : IGraphPatternBuilder
     {
         private readonly IList<GraphPatternBuilder> _childGraphPatternBuilders = new List<GraphPatternBuilder>();
         private readonly IList<Func<INamespaceMapper, ISparqlExpression>> _filterBuilders = new List<Func<INamespaceMapper, ISparqlExpression>>();
@@ -140,11 +141,11 @@ namespace VDS.RDF.Query.Builder
         public IGraphPatternBuilder Where(Action<ITriplePatternBuilder> buildTriplePatterns)
         {
             return Where(prefixes =>
-                {
-                    var builder = new TriplePatternBuilder(prefixes);
-                    buildTriplePatterns(builder);
-                    return builder.Patterns;
-                });
+            {
+                var builder = new TriplePatternBuilder(prefixes);
+                buildTriplePatterns(builder);
+                return builder.Patterns;
+            });
         }
 
         internal IGraphPatternBuilder Where(Func<INamespaceMapper, ITriplePattern[]> buildTriplePatternFunc)
@@ -180,7 +181,7 @@ namespace VDS.RDF.Query.Builder
         public IGraphPatternBuilder Service(Uri serviceUri, Action<IGraphPatternBuilder> buildGraphPattern)
         {
             AddChildGraphPattern(buildGraphPattern, GraphPatternType.Service,
-                                 new UriToken(string.Format("<{0}>", serviceUri), 0, 0, 0));
+                new UriToken(string.Format("<{0}>", serviceUri), 0, 0, 0));
             return this;
         }
 
@@ -203,7 +204,7 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        public IAssignmentVariableNamePart<IGraphPatternBuilder> Bind(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
+        public IAssignmentVariableNamePart<IGraphPatternBuilder> Bind(Func<INonAggregateExpressionBuilder, SparqlExpression> buildAssignmentExpression)
         {
             return new BindAssignmentVariableNamePart(this, buildAssignmentExpression);
         }
@@ -214,13 +215,13 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        public IGraphPatternBuilder Filter(Func<ExpressionBuilder, BooleanExpression> buildExpression)
+        public IGraphPatternBuilder Filter(Func<INonAggregateExpressionBuilder, BooleanExpression> buildExpression)
         {
             _filterBuilders.Add(namespaceMapper =>
-                {
-                    var builder = new ExpressionBuilder(namespaceMapper);
-                    return buildExpression(builder).Expression;
-                });
+            {
+                var builder = new ExpressionBuilder(namespaceMapper);
+                return buildExpression(builder).Expression;
+            });
             return this;
         }
 

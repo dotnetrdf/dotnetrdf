@@ -42,7 +42,8 @@ using VDS.RDF.Query.Optimisation;
 
 namespace VDS.RDF.Query.FullText
 {
-
+    [Trait("category", "explicit")]
+    [Trait("category", "fulltext")]
     public class FullTextGraphScopingTests
     {
         private const String FullTextPrefix = "PREFIX pf: <" + FullTextHelper.FullTextMatchNamespace + ">";
