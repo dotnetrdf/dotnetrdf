@@ -257,7 +257,7 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlQueryTimeoutDuringProductLazy()
         {
-            String query = "SELECT * WHERE { ?s ?p ?o . ?x ?y ?z } LIMIT 5000";
+            String query = "SELECT * WHERE { ?s ?p ?o . ?x ?y ?z . ?a ?b ?c }";
             SparqlQuery q = this._parser.ParseFromString(query);
             q.Timeout = 1;
 
