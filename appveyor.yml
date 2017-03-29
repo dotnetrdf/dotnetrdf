@@ -27,7 +27,19 @@ test_script:
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
       dotnet test .\Testing\unittest\unittest.csproj -l "trx;LogFileName=fulltext.trx" --filter category=fulltext --no-build | Out-File .\fulltext.log
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
-  
+      
+deploy:
+  - provider: GitHub
+  auth_token:
+    secure: j1Qanb5R8lGcUc4Drk5Pjk1ra9domw0vA1pbILJBWPQ1r3XAIETCd9L8N6GN2NZbE/aYCEdHjr4VTjfNQB1bKTKcZ4Unux/XuyAwFrzjZHg=
+  on:
+    branch: master
+  - provider: NuGet
+  api_key:
+    secure: O+A+fVoQX6IuAOXUJk/CvAdXinL4tLb9ERiXJ8Omk0PH6BSOWPLdG0DGPxmD9eq4QHwYi36C0I2q5U5ycFcirlUi7Zc+BNO6b2a8MQlaGKU=
+  on:
+    branch: master
+
 on_finish:
   - ps: |
       $ws = (New-Object 'System.Net.WebClient')
