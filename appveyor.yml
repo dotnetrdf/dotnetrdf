@@ -39,6 +39,10 @@ deploy:
       secure: O+A+fVoQX6IuAOXUJk/CvAdXinL4tLb9ERiXJ8Omk0PH6BSOWPLdG0DGPxmD9eq4QHwYi36C0I2q5U5ycFcirlUi7Zc+BNO6b2a8MQlaGKU=
     on:
       branch: master
+    artifact:
+      - path: nugets\dotNetRDF.*.nupkg
+      - path: nugets\dotNetRDF.Data.Virtuoso.*.nupkg
+      - path: nugets\dotNetRDF.Query.FullText.*.nupkg
 
 on_finish:
   - ps: |
