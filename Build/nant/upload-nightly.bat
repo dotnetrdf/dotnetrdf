@@ -1,1 +1,0 @@
-nant upload-nightly -D:dotnetrdf.webserver=%1 -D:dotnetrdf.webserver.username=%2 -D:dotnetrdf.webserver.password=%3
