@@ -4,8 +4,17 @@ branches:
 
 image: Visual Studio 2017
 
+environment:
+  SHFBROOT:  C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\
+  SandCastleZipFile: SHFBInstaller.zip
+  SandCastleUri: https://github.com/EWSoftware/SHFB/releases/download/v2017.1.28.0/SHFBInstaller_v20171.28.0.zip
+  
 install:
   - choco install gitversion.portable -pre -y
+  - ps: Start-FileDownload $env:SandCastleUri -FileName $env:SandCastleZipFile
+  - cmd: 7z x SHFBInstaller.zip -y
+  - ps: msiexec /i InstallResources\SandcastleHelpFileBuilder.msi /quiet /qn /norestart /log install.log
+
 
 before_build:
   - dotnet restore dotNetRDF.sln
@@ -20,6 +29,7 @@ build_script:
   - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF.Data.Virtuoso /p:Version=%GitVersion_NuGetVersion%
   - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF.Query.FullText /p:Version=%GitVersion_NuGetVersion%
   - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF.Query.Spin /p:Version=%GitVersion_NuGetVersion%
+  - cmd: msbuild Build\shfb\dotnetrdf.shfbproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /p:Configuration=%CONFIGURATION%
 
 test_script:
   - ps: |
@@ -57,3 +67,4 @@ on_finish:
 
 artifacts:
   - path: 'nugets\*.nupkg'
+  - path: 'Build\shfb\Help\dotNetRDFApi.chm'
