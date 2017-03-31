@@ -44,7 +44,7 @@
 <DocumentationSource sourceFile="..\..\Libraries\dotNetRDF.Data.Virtuoso\bin\$(Configuration)\net40\dotNetRDF.Data.Virtuoso.dll" />
 <DocumentationSource sourceFile="..\..\Libraries\dotNetRDF.Data.Virtuoso\bin\$(Configuration)\net40\dotNetRDF.Data.Virtuoso.xml" />
 <DocumentationSource sourceFile="..\..\Libraries\dotNetRDF.Query.FullText\bin\$(Configuration)\net40\dotNetRDF.Query.FullText.dll" />
-<DocumentationSource sourceFile="..\..\Libraries\Query\FullText\net40\bin\$(Configuration)\dotNetRDF.Query.FullText.xml" /></DocumentationSources>
+<DocumentationSource sourceFile="..\..\Libraries\dotNetRDF.Query.FullText\bin\$(Configuration)\net40\dotNetRDF.Query.FullText.xml" /></DocumentationSources>
     <ProjectSummary>&amp;lt%3bp&amp;gt%3b&amp;lt%3bstrong&amp;gt%3bdotNetRDF&amp;lt%3b/strong&amp;gt%3b is a C#/.Net Library for working with RDF and the Semantic Web which is entirely free and open source.&amp;lt%3b/p&amp;gt%3b
 
 &amp;lt%3bp&amp;gt%3bThis is the formal API documentation for the Library whose main namespace is VDS.RDF.  You may alternatively wish to look at the &amp;lt%3ba href=&amp;quot%3bhttp://github.com/dotnetrdf/dotnetrdf/wiki/UserGuide&amp;quot%3b&amp;gt%3bUser Guide&amp;lt%3b/a&amp;gt%3b which contains informal documentation and examples or just visit the main &amp;lt%3ba href=&amp;quot%3bhttp://dotnetrdf.github.io&amp;quot%3b&amp;gt%3bProject Website&amp;lt%3b/a&amp;gt%3b.&amp;lt%3b/p&amp;gt%3b</ProjectSummary>
