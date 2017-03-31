@@ -35,15 +35,15 @@
     <NamingMethod>MemberName</NamingMethod>
     <HelpTitle>dotNetRDF API Documentation</HelpTitle>
     <FooterText>Please report any bugs or issues with this documentation at http://github.com/dotnetrdf/dotnetrdf/issues</FooterText>
-    <CopyrightText>Copyright %28c%29 2009 - 2016 dotNetRDF Project</CopyrightText>
+    <CopyrightText>Copyright %28c%29 2009 - 2017 dotNetRDF Project</CopyrightText>
     <CopyrightHref>https://raw.githubusercontent.com/dotnetrdf/dotnetrdf/develop/License.txt</CopyrightHref>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\..\Libraries\core\net40\bin\Debug\dotNetRDF.dll" />
-<DocumentationSource sourceFile="..\..\Libraries\core\net40\bin\Debug\dotNetRDF.xml" />
-<DocumentationSource sourceFile="..\..\Libraries\Data\Virtuoso\net40\bin\Debug\dotNetRDF.Data.Virtuoso.dll" />
-<DocumentationSource sourceFile="..\..\Libraries\Data\Virtuoso\net40\bin\Debug\dotNetRDF.Data.Virtuoso.xml" />
-<DocumentationSource sourceFile="..\..\Libraries\Query\FullText\net40\bin\Debug\dotNetRDF.Query.FullText.dll" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRDF\bin\Debug\net40\dotNetRDF.dll" />
+<DocumentationSource sourceFile="..\..\Libraries\dotNetRDF\bin\Debug\net40\dotNetRDF.xml" />
+<DocumentationSource sourceFile="..\..\Libraries\dotNetRDF.Data.Virtuoso\bin\Debug\net40\dotNetRDF.Data.Virtuoso.dll" />
+<DocumentationSource sourceFile="..\..\Libraries\dotNetRDF.Data.Virtuoso\bin\Debug\net40\dotNetRDF.Data.Virtuoso.xml" />
+<DocumentationSource sourceFile="..\..\Libraries\dotNetRDF.Query.FullText\bin\Debug\net40\dotNetRDF.Query.FullText.dll" />
 <DocumentationSource sourceFile="..\..\Libraries\Query\FullText\net40\bin\Debug\dotNetRDF.Query.FullText.xml" /></DocumentationSources>
     <ProjectSummary>&amp;lt%3bp&amp;gt%3b&amp;lt%3bstrong&amp;gt%3bdotNetRDF&amp;lt%3b/strong&amp;gt%3b is a C#/.Net Library for working with RDF and the Semantic Web which is entirely free and open source.&amp;lt%3b/p&amp;gt%3b
 
