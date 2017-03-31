@@ -155,7 +155,7 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlQueryTimeout()
         {
-            String query = "SELECT * WHERE { ?s ?p ?o . ?s ?p2 ?o2}";
+            String query = "SELECT * WHERE { ?s ?p ?o . ?s ?p2 ?o2 . ?a ?b ?c }";
             SparqlQuery q = this._parser.ParseFromString(query);
             q.Timeout = 1;
 
