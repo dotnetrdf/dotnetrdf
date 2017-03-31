@@ -1,7 +1,3 @@
-branches:
-  only:
-    - netcore-reorg
-
 image: Visual Studio 2017
 
 environment:
