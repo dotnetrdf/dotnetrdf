@@ -29,7 +29,6 @@ build_script:
   - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF.Data.Virtuoso /p:Version=%GitVersion_NuGetVersion%
   - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF.Query.FullText /p:Version=%GitVersion_NuGetVersion%
   - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF.Query.Spin /p:Version=%GitVersion_NuGetVersion%
-  - cmd: msbuild Build\shfb\dotnetrdf.shfbproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /p:Configuration=%CONFIGURATION%
 
 test_script:
   - ps: |
@@ -37,6 +36,9 @@ test_script:
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
       dotnet test .\Testing\unittest\unittest.csproj -l "trx;LogFileName=fulltext.trx" --filter category=fulltext --no-build | Out-File .\fulltext.log
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
+
+after_test:
+  - cmd: msbuild Build\shfb\dotnetrdf.shfbproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /p:Configuration=%CONFIGURATION%
       
 deploy:
   - provider: GitHub
