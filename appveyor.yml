@@ -38,7 +38,7 @@ test_script:
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
 
 after_test:
-  - cmd: msbuild Build\shfb\dotnetrdf.shfbproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /p:Configuration=%CONFIGURATION%
+  - cmd: msbuild Build\shfb\dotnetrdf.shfbproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /p:Configuration=%CONFIGURATION% /p:HelpFileVersion=%GitVersion_NuGetVersion%
       
 deploy:
   - provider: GitHub
@@ -70,3 +70,5 @@ on_finish:
 artifacts:
   - path: 'nugets\*.nupkg'
   - path: 'Build\shfb\Help\dotNetRDFApi.chm'
+  - path: 'Build\shfb\Help'
+
