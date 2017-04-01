@@ -40,7 +40,7 @@ namespace VDS.RDF.Writing
     /// </summary>
     /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call the Save() method from multiple threads on different Graphs without issue</threadsafety>
     public class NTriplesWriter 
-        : IRdfWriter, IFormatterBasedWriter
+        : BaseRdfWriter, IFormatterBasedWriter
     {
         private bool _sort = false;
 
@@ -96,7 +96,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="g">Graph to save</param>
         /// <param name="filename">File to save to</param>
-        public void Save(IGraph g, string filename)
+        public override void Save(IGraph g, string filename)
         {
 #if SILVERLIGHT
             StreamWriter output = new StreamWriter(File.OpenWrite(filename));
@@ -115,33 +115,15 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="g">Graph to save</param>
         /// <param name="output">Stream to save to</param>
-        public void Save(IGraph g, TextWriter output)
+        protected override void SaveInternal(IGraph g, TextWriter output)
         {
-            try
-            {
-                NTriplesWriterContext context = new NTriplesWriterContext(g, output, this.Syntax);
-                List<Triple> ts = g.Triples.ToList();
-                if (this._sort) ts.Sort(new FullTripleComparer(new FastNodeComparer()));
+            NTriplesWriterContext context = new NTriplesWriterContext(g, output, this.Syntax);
+            List<Triple> ts = g.Triples.ToList();
+            if (this._sort) ts.Sort(new FullTripleComparer(new FastNodeComparer()));
 
-                foreach (Triple t in ts)
-                {
-                    output.WriteLine(this.TripleToNTriples(context, t));
-                }
-
-                output.Close();
-            }
-            catch
+            foreach (Triple t in ts)
             {
-                // Try and ensure the Stream gets closed
-                try
-                {
-                    output.Close();
-                }
-                catch
-                {
-                    // No Catch actions
-                }
-                throw;
+                output.WriteLine(this.TripleToNTriples(context, t));
             }
         }
 
@@ -200,7 +182,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Event which is raised when there is an issue with the Graph being serialized that doesn't prevent serialization but the user should be aware of
         /// </summary>
-        public event RdfWriterWarning Warning;
+        public override event RdfWriterWarning Warning;
 
         /// <summary>
         /// Internal Helper method which raises the Warning event only if there is an Event Handler registered

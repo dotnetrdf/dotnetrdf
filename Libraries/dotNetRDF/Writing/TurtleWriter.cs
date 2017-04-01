@@ -44,7 +44,7 @@ namespace VDS.RDF.Writing
     /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call the Save() method from multiple threads on different Graphs without issue</threadsafety>
     [Obsolete("Deprecated in favour of the CompressionTurtleWriter which uses a much fuller range of syntax compressions", false)]
     public class TurtleWriter 
-        : IRdfWriter, IPrettyPrintingWriter, IHighSpeedWriter, IFormatterBasedWriter
+        : BaseRdfWriter, IPrettyPrintingWriter, IHighSpeedWriter, IFormatterBasedWriter
     {
         private bool _prettyprint = true;
         private bool _allowhispeed = false;
@@ -112,7 +112,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="g">Graph to save</param>
         /// <param name="filename">Filename to save to</param>
-        public void Save(IGraph g, string filename)
+        public override void Save(IGraph g, string filename)
         {
             using (var stream = File.Open(filename, FileMode.Create))
             {
@@ -126,26 +126,10 @@ namespace VDS.RDF.Writing
             /// </summary>
             /// <param name="g">Graph to save</param>
             /// <param name="output">Writer to save using</param>
-        public void Save(IGraph g, TextWriter output)
+        protected override void SaveInternal(IGraph g, TextWriter output)
         {
-            try
-            {
-                TurtleWriterContext context = new TurtleWriterContext(g, output, this._prettyprint, this._allowhispeed, this._syntax);
-                this.GenerateOutput(context);
-                output.Close();
-            }
-            catch
-            {
-                try
-                {
-                    output.Close();
-                }
-                catch
-                {
-                    // No Catch Actions - just trying to clean up
-                }
-                throw;
-            }
+            TurtleWriterContext context = new TurtleWriterContext(g, output, this._prettyprint, this._allowhispeed, this._syntax);
+            this.GenerateOutput(context);
         }
 
         /// <summary>
@@ -308,7 +292,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Event which is raised when a non-fatal issue with the Graph being serialized is encountered
         /// </summary>
-        public event RdfWriterWarning Warning;
+        public override event RdfWriterWarning Warning;
 
         /// <summary>
         /// Gets the String representation of the writer which is a description of the syntax it produces

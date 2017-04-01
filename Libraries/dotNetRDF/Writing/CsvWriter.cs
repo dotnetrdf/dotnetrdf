@@ -40,7 +40,7 @@ namespace VDS.RDF.Writing
     /// Class for generating CSV output from RDF Graphs
     /// </summary>
     public class CsvWriter 
-        : IRdfWriter, IFormatterBasedWriter
+        : BaseRdfWriter, IFormatterBasedWriter
     {
         private CsvFormatter _formatter = new CsvFormatter();
 
@@ -62,7 +62,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="g">Graph</param>
         /// <param name="filename">File to save to</param>
-        public void Save(IGraph g, string filename)
+        public override void Save(IGraph g, string filename)
         {
             using (var stream = File.Open(filename, FileMode.Create))
             {
@@ -71,38 +71,21 @@ namespace VDS.RDF.Writing
         }
 #endif
 
-            /// <summary>
-            /// Saves a Graph to CSV format
-            /// </summary>
-            /// <param name="g">Graph</param>
-            /// <param name="output">Writer to save to</param>
-        public void Save(IGraph g, TextWriter output)
+        /// <summary>
+        /// Saves a Graph to CSV format
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="output">Writer to save to</param>
+        protected override void SaveInternal(IGraph g, TextWriter output)
         {
-            try
+            foreach (Triple t in g.Triples)
             {
-                foreach (Triple t in g.Triples)
-                {
-                    this.GenerateNodeOutput(output, t.Subject, TripleSegment.Subject);
-                    output.Write(',');
-                    this.GenerateNodeOutput(output, t.Predicate, TripleSegment.Predicate);
-                    output.Write(',');
-                    this.GenerateNodeOutput(output, t.Object, TripleSegment.Object);
-                    output.Write("\r\n");
-                }
-
-                output.Close();
-            }
-            catch
-            {
-                try
-                {
-                    output.Close();
-                }
-                catch
-                {
-                    // No error handling, just trying to clean up
-                }
-                throw;
+                this.GenerateNodeOutput(output, t.Subject, TripleSegment.Subject);
+                output.Write(',');
+                this.GenerateNodeOutput(output, t.Predicate, TripleSegment.Predicate);
+                output.Write(',');
+                this.GenerateNodeOutput(output, t.Object, TripleSegment.Object);
+                output.Write("\r\n");
             }
         }
 
@@ -144,7 +127,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Event which is raised if the Writer detects a non-fatal error while outputting CSV
         /// </summary>
-        public event RdfWriterWarning Warning;
+        public override event RdfWriterWarning Warning;
 
         /// <summary>
         /// Gets the String representation of the writer which is a description of the syntax it produces

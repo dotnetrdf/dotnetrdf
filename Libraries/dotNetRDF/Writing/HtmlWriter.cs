@@ -82,29 +82,37 @@ namespace VDS.RDF.Writing
         }
 #endif
 
-            /// <summary>
-            /// Saves the Result Set to the given Stream as an XHTML Table with embedded RDFa
-            /// </summary>
-            /// <param name="g">Graph to save</param>
-            /// <param name="output">Stream to save to</param>
+        /// <summary>
+        /// Saves the Result Set to the given Stream as an XHTML Table with embedded RDFa
+        /// </summary>
+        /// <param name="g">Graph to save</param>
+        /// <param name="output">Stream to save to</param>
         public void Save(IGraph g, TextWriter output)
         {
+            Save(g, output, false);
+        }
+
+        public void Save(IGraph g, TextWriter output, bool leaveOpen)
+        { 
             try
             {
                 g.NamespaceMap.Import(this._defaultNamespaces);
                 HtmlWriterContext context = new HtmlWriterContext(g, output);
                 this.GenerateOutput(context);
-                output.Close();
+                if (!leaveOpen) output.Close();
             }
             catch
             {
-                try
+                if (!leaveOpen)
                 {
-                    output.Close();
-                }
-                catch
-                {
-                    // No Catch Actions
+                    try
+                    {
+                        output.Close();
+                    }
+                    catch
+                    {
+                        // No Catch Actions
+                    }
                 }
                 throw;
             }

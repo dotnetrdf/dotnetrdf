@@ -41,7 +41,7 @@ namespace VDS.RDF.Writing
     /// </para>
     /// </remarks>
     public abstract class BaseGZipWriter
-        : IRdfWriter
+        : BaseRdfWriter
     {
         private IRdfWriter _writer;
 
@@ -61,7 +61,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="g">Graph to save</param>
         /// <param name="filename">File to save to</param>
-        public void Save(IGraph g, string filename)
+        public override void Save(IGraph g, string filename)
         {
             if (filename == null) throw new RdfOutputException("Cannot write RDF to a null file");
             this.Save(g, new StreamWriter(new GZipStream(new FileStream(filename, FileMode.OpenOrCreate, FileAccess.Write), CompressionMode.Compress)));
@@ -73,7 +73,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="g">Graph to save</param>
         /// <param name="output">Writer to save to</param>
-        public void Save(IGraph g, TextWriter output)
+        protected override void SaveInternal(IGraph g, TextWriter output)
         {
             if (g == null) throw new RdfOutputException("Cannot write RDF from a null Graph");
 
@@ -110,7 +110,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Event which is raised if non-fatal errors occur writing RDF output
         /// </summary>
-        public event RdfWriterWarning Warning;
+        public override event RdfWriterWarning Warning;
 
         /// <summary>
         /// Gets the description of the writer
