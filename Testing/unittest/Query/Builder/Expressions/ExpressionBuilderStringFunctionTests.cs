@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
@@ -35,7 +35,7 @@ namespace VDS.RDF.Query.Builder.Expressions
 {
     public partial class ExpressionBuilderTests
     {
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingRegexFunctionWithVariableAndStringParameters()
         {
             // given
@@ -45,13 +45,13 @@ namespace VDS.RDF.Query.Builder.Expressions
             var regex = Builder.Regex(var, "@gmail.com$").Expression;
 
             // then
-            Assert.IsTrue(regex is RegexFunction);
-            Assert.AreEqual(2, regex.Arguments.Count());
-            Assert.AreSame(var.Expression, regex.Arguments.ElementAt(0));
-            Assert.IsTrue(regex.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(regex is RegexFunction);
+            Assert.Equal(2, regex.Arguments.Count());
+            Assert.Same(var.Expression, regex.Arguments.ElementAt(0));
+            Assert.True(regex.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingRegexFunctionWithTwoVariableParameters()
         {
             // given
@@ -62,13 +62,13 @@ namespace VDS.RDF.Query.Builder.Expressions
             var regex = Builder.Regex(text, pattern).Expression;
 
             // then
-            Assert.IsTrue(regex is RegexFunction);
-            Assert.AreEqual(2, regex.Arguments.Count());
-            Assert.AreSame(text.Expression, regex.Arguments.ElementAt(0));
-            Assert.AreSame(pattern.Expression, regex.Arguments.ElementAt(1));
+            Assert.True(regex is RegexFunction);
+            Assert.Equal(2, regex.Arguments.Count());
+            Assert.Same(text.Expression, regex.Arguments.ElementAt(0));
+            Assert.Same(pattern.Expression, regex.Arguments.ElementAt(1));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingRegexFunctionWithLiteralAndStringParameters()
         {
             // given
@@ -78,13 +78,13 @@ namespace VDS.RDF.Query.Builder.Expressions
             var regex = Builder.Regex(text, "@gmail.com$").Expression;
 
             // then
-            Assert.IsTrue(regex is RegexFunction);
-            Assert.AreEqual(2, regex.Arguments.Count());
-            Assert.AreSame(text.Expression, regex.Arguments.ElementAt(0));
-            Assert.IsTrue(regex.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(regex is RegexFunction);
+            Assert.Equal(2, regex.Arguments.Count());
+            Assert.Same(text.Expression, regex.Arguments.ElementAt(0));
+            Assert.True(regex.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingRegexFunctionWithLiteralAndVariableParameters()
         {
             // given
@@ -95,13 +95,13 @@ namespace VDS.RDF.Query.Builder.Expressions
             var regex = Builder.Regex(text, pattern).Expression;
 
             // then
-            Assert.IsTrue(regex is RegexFunction);
-            Assert.AreEqual(2, regex.Arguments.Count());
-            Assert.AreSame(text.Expression, regex.Arguments.ElementAt(0));
-            Assert.AreSame(pattern.Expression, regex.Arguments.ElementAt(1));
+            Assert.True(regex is RegexFunction);
+            Assert.Equal(2, regex.Arguments.Count());
+            Assert.Same(text.Expression, regex.Arguments.ElementAt(0));
+            Assert.Same(pattern.Expression, regex.Arguments.ElementAt(1));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingRegexFunctionWithTwoLiteralParameters()
         {
             // given
@@ -112,13 +112,13 @@ namespace VDS.RDF.Query.Builder.Expressions
             var regex = Builder.Regex(text, pattern).Expression;
 
             // then
-            Assert.IsTrue(regex is RegexFunction);
-            Assert.AreEqual(2, regex.Arguments.Count());
-            Assert.AreSame(text.Expression, regex.Arguments.ElementAt(0));
-            Assert.AreSame(pattern.Expression, regex.Arguments.ElementAt(1));
+            Assert.True(regex is RegexFunction);
+            Assert.Equal(2, regex.Arguments.Count());
+            Assert.Same(text.Expression, regex.Arguments.ElementAt(0));
+            Assert.Same(pattern.Expression, regex.Arguments.ElementAt(1));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingRegexFunctionWithVariableAndStringParametersAndStringFlags()
         {
             // given
@@ -128,14 +128,14 @@ namespace VDS.RDF.Query.Builder.Expressions
             var regex = Builder.Regex(var, "@gmail.com$", "i").Expression;
 
             // then
-            Assert.IsTrue(regex is RegexFunction);
-            Assert.AreEqual(3, regex.Arguments.Count());
-            Assert.AreSame(var.Expression, regex.Arguments.ElementAt(0));
-            Assert.IsTrue(regex.Arguments.ElementAt(1) is ConstantTerm);
-            Assert.IsTrue(regex.Arguments.ElementAt(2) is ConstantTerm);
+            Assert.True(regex is RegexFunction);
+            Assert.Equal(3, regex.Arguments.Count());
+            Assert.Same(var.Expression, regex.Arguments.ElementAt(0));
+            Assert.True(regex.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(regex.Arguments.ElementAt(2) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingRegexFunctionWithTwoVariableParametersAndStringFlags()
         {
             // given
@@ -146,14 +146,14 @@ namespace VDS.RDF.Query.Builder.Expressions
             var regex = Builder.Regex(text, pattern, "i").Expression;
 
             // then
-            Assert.IsTrue(regex is RegexFunction);
-            Assert.AreEqual(3, regex.Arguments.Count());
-            Assert.AreSame(text.Expression, regex.Arguments.ElementAt(0));
-            Assert.AreSame(pattern.Expression, regex.Arguments.ElementAt(1));
-            Assert.IsTrue(regex.Arguments.ElementAt(2) is ConstantTerm);
+            Assert.True(regex is RegexFunction);
+            Assert.Equal(3, regex.Arguments.Count());
+            Assert.Same(text.Expression, regex.Arguments.ElementAt(0));
+            Assert.Same(pattern.Expression, regex.Arguments.ElementAt(1));
+            Assert.True(regex.Arguments.ElementAt(2) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingRegexFunctionWithLiteralAndStringParametersAndStringFlags()
         {
             // given
@@ -163,14 +163,14 @@ namespace VDS.RDF.Query.Builder.Expressions
             var regex = Builder.Regex(text, "@gmail.com$", "i").Expression;
 
             // then
-            Assert.IsTrue(regex is RegexFunction);
-            Assert.AreEqual(3, regex.Arguments.Count());
-            Assert.AreSame(text.Expression, regex.Arguments.ElementAt(0));
-            Assert.IsTrue(regex.Arguments.ElementAt(1) is ConstantTerm);
-            Assert.IsTrue(regex.Arguments.ElementAt(2) is ConstantTerm);
+            Assert.True(regex is RegexFunction);
+            Assert.Equal(3, regex.Arguments.Count());
+            Assert.Same(text.Expression, regex.Arguments.ElementAt(0));
+            Assert.True(regex.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(regex.Arguments.ElementAt(2) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingRegexFunctionWithLiteralAndVariableParametersAndStringFlags()
         {
             // given
@@ -181,14 +181,14 @@ namespace VDS.RDF.Query.Builder.Expressions
             var regex = Builder.Regex(text, pattern, "i").Expression;
 
             // then
-            Assert.IsTrue(regex is RegexFunction);
-            Assert.AreEqual(3, regex.Arguments.Count());
-            Assert.AreSame(text.Expression, regex.Arguments.ElementAt(0));
-            Assert.AreSame(pattern.Expression, regex.Arguments.ElementAt(1));
-            Assert.IsTrue(regex.Arguments.ElementAt(2) is ConstantTerm);
+            Assert.True(regex is RegexFunction);
+            Assert.Equal(3, regex.Arguments.Count());
+            Assert.Same(text.Expression, regex.Arguments.ElementAt(0));
+            Assert.Same(pattern.Expression, regex.Arguments.ElementAt(1));
+            Assert.True(regex.Arguments.ElementAt(2) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingRegexFunctionWithTwoLiteralParametersAndStringFlags()
         {
             // given
@@ -199,14 +199,14 @@ namespace VDS.RDF.Query.Builder.Expressions
             var regex = Builder.Regex(text, pattern, "i").Expression;
 
             // then
-            Assert.IsTrue(regex is RegexFunction);
-            Assert.AreEqual(3, regex.Arguments.Count());
-            Assert.AreSame(text.Expression, regex.Arguments.ElementAt(0));
-            Assert.AreSame(pattern.Expression, regex.Arguments.ElementAt(1));
-            Assert.IsTrue(regex.Arguments.ElementAt(2) is ConstantTerm);
+            Assert.True(regex is RegexFunction);
+            Assert.Equal(3, regex.Arguments.Count());
+            Assert.Same(text.Expression, regex.Arguments.ElementAt(0));
+            Assert.Same(pattern.Expression, regex.Arguments.ElementAt(1));
+            Assert.True(regex.Arguments.ElementAt(2) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToStrlenFunctionWithVariableParameter()
         {
             // given
@@ -216,11 +216,11 @@ namespace VDS.RDF.Query.Builder.Expressions
             NumericExpression<int> strlen = Builder.StrLen(var);
 
             // then
-            Assert.IsTrue(strlen.Expression is StrLenFunction);
-            Assert.AreSame(var.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.True(strlen.Expression is StrLenFunction);
+            Assert.Same(var.Expression, strlen.Expression.Arguments.ElementAt(0));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToStrlenFunctionWithStringLiteralParameter()
         {
             // given
@@ -230,11 +230,11 @@ namespace VDS.RDF.Query.Builder.Expressions
             NumericExpression<int> strlen = Builder.StrLen(literal);
 
             // then
-            Assert.IsTrue(strlen.Expression is StrLenFunction);
-            Assert.AreSame(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.True(strlen.Expression is StrLenFunction);
+            Assert.Same(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToSubstrFunctionWithStringLiteralAndNumericExpressionParameter()
         {
             // given
@@ -245,12 +245,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation);
 
             // then
-            Assert.IsTrue(strlen.Expression is SubStrFunction);
-            Assert.AreSame(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreSame(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
+            Assert.True(strlen.Expression is SubStrFunction);
+            Assert.Same(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Same(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToSubstrFunctionWithStringLiteralAndIntegerParameter()
         {
             // given
@@ -261,12 +261,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             TypedLiteralExpression<string> strlen = Builder.Substr(literal, 5);
 
             // then
-            Assert.IsTrue(strlen.Expression is SubStrFunction);
-            Assert.AreSame(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreEqual(startLocation.Expression.ToString(), strlen.Expression.Arguments.ElementAt(1).ToString());
+            Assert.True(strlen.Expression is SubStrFunction);
+            Assert.Same(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Equal(startLocation.Expression.ToString(), strlen.Expression.Arguments.ElementAt(1).ToString());
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToSubstrFunctionWithVariableAndNumericExpressionParameter()
         {
             // given
@@ -277,12 +277,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation);
 
             // then
-            Assert.IsTrue(strlen.Expression is SubStrFunction);
-            Assert.AreSame(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreSame(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
+            Assert.True(strlen.Expression is SubStrFunction);
+            Assert.Same(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Same(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToSubstrFunctionWithVariableAndIntegerParameter()
         {
             // given
@@ -293,12 +293,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             TypedLiteralExpression<string> strlen = Builder.Substr(literal, 5);
 
             // then
-            Assert.IsTrue(strlen.Expression is SubStrFunction);
-            Assert.AreSame(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreEqual(startLocation.Expression.ToString(), strlen.Expression.Arguments.ElementAt(1).ToString());
+            Assert.True(strlen.Expression is SubStrFunction);
+            Assert.Same(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Equal(startLocation.Expression.ToString(), strlen.Expression.Arguments.ElementAt(1).ToString());
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToSubstrFunctionWithTwoVariableParameters()
         {
             // given
@@ -309,12 +309,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation);
 
             // then
-            Assert.IsTrue(strlen.Expression is SubStrFunction);
-            Assert.AreSame(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreSame(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
+            Assert.True(strlen.Expression is SubStrFunction);
+            Assert.Same(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Same(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToSubstrFunctionWithLiteralExpressionAndVariableParameters()
         {
             // given
@@ -325,12 +325,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation);
 
             // then
-            Assert.IsTrue(strlen.Expression is SubStrFunction);
-            Assert.AreSame(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreSame(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
+            Assert.True(strlen.Expression is SubStrFunction);
+            Assert.Same(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Same(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToSubstrFunctionWithStringLiteralAndNumericExpressionAndIntegerParameter()
         {
             // given
@@ -341,13 +341,13 @@ namespace VDS.RDF.Query.Builder.Expressions
             TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation, 5);
 
             // then
-            Assert.IsTrue(strlen.Expression is SubStrFunction);
-            Assert.AreSame(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreSame(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
-            Assert.AreEqual(new NumericExpression<int>(5).Expression.ToString(), strlen.Expression.Arguments.ElementAt(2).ToString());
+            Assert.True(strlen.Expression is SubStrFunction);
+            Assert.Same(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Same(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
+            Assert.Equal(new NumericExpression<int>(5).Expression.ToString(), strlen.Expression.Arguments.ElementAt(2).ToString());
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToSubstrFunctionWithStringLiteralAndIntegerAndIntegerParameter()
         {
             // given
@@ -358,13 +358,13 @@ namespace VDS.RDF.Query.Builder.Expressions
             TypedLiteralExpression<string> strlen = Builder.Substr(literal, 5, 5);
 
             // then
-            Assert.IsTrue(strlen.Expression is SubStrFunction);
-            Assert.AreSame(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreEqual(startLocation.Expression.ToString(), strlen.Expression.Arguments.ElementAt(1).ToString());
-            Assert.AreEqual(new NumericExpression<int>(5).Expression.ToString(), strlen.Expression.Arguments.ElementAt(2).ToString());
+            Assert.True(strlen.Expression is SubStrFunction);
+            Assert.Same(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Equal(startLocation.Expression.ToString(), strlen.Expression.Arguments.ElementAt(1).ToString());
+            Assert.Equal(new NumericExpression<int>(5).Expression.ToString(), strlen.Expression.Arguments.ElementAt(2).ToString());
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToSubstrFunctionWithVariableAndNumericExpressionAndIntegerParameter()
         {
             // given
@@ -375,13 +375,13 @@ namespace VDS.RDF.Query.Builder.Expressions
             TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation, 5);
 
             // then
-            Assert.IsTrue(strlen.Expression is SubStrFunction);
-            Assert.AreSame(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreSame(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
-            Assert.AreEqual(new NumericExpression<int>(5).Expression.ToString(), strlen.Expression.Arguments.ElementAt(2).ToString());
+            Assert.True(strlen.Expression is SubStrFunction);
+            Assert.Same(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Same(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
+            Assert.Equal(new NumericExpression<int>(5).Expression.ToString(), strlen.Expression.Arguments.ElementAt(2).ToString());
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToSubstrFunctionWithVariableAndIntegerAndIntegerParameter()
         {
             // given
@@ -392,13 +392,13 @@ namespace VDS.RDF.Query.Builder.Expressions
             TypedLiteralExpression<string> strlen = Builder.Substr(literal, 5, 5);
 
             // then
-            Assert.IsTrue(strlen.Expression is SubStrFunction);
-            Assert.AreSame(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreEqual(startLocation.Expression.ToString(), strlen.Expression.Arguments.ElementAt(1).ToString());
-            Assert.AreEqual(new NumericExpression<int>(5).Expression.ToString(), strlen.Expression.Arguments.ElementAt(2).ToString());
+            Assert.True(strlen.Expression is SubStrFunction);
+            Assert.Same(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Equal(startLocation.Expression.ToString(), strlen.Expression.Arguments.ElementAt(1).ToString());
+            Assert.Equal(new NumericExpression<int>(5).Expression.ToString(), strlen.Expression.Arguments.ElementAt(2).ToString());
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToSubstrFunctionWithTwoVariableAndIntegerParameters()
         {
             // given
@@ -409,13 +409,13 @@ namespace VDS.RDF.Query.Builder.Expressions
             TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation, 5);
 
             // then
-            Assert.IsTrue(strlen.Expression is SubStrFunction);
-            Assert.AreSame(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreSame(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
-            Assert.AreEqual(new NumericExpression<int>(5).Expression.ToString(), strlen.Expression.Arguments.ElementAt(2).ToString());
+            Assert.True(strlen.Expression is SubStrFunction);
+            Assert.Same(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Same(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
+            Assert.Equal(new NumericExpression<int>(5).Expression.ToString(), strlen.Expression.Arguments.ElementAt(2).ToString());
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToSubstrFunctionWithLiteralExpressionAndVariableAndIntegerParameters()
         {
             // given
@@ -426,13 +426,13 @@ namespace VDS.RDF.Query.Builder.Expressions
             TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation, 5);
 
             // then
-            Assert.IsTrue(strlen.Expression is SubStrFunction);
-            Assert.AreSame(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreSame(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
-            Assert.AreEqual(new NumericExpression<int>(5).Expression.ToString(), strlen.Expression.Arguments.ElementAt(2).ToString());
+            Assert.True(strlen.Expression is SubStrFunction);
+            Assert.Same(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Same(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
+            Assert.Equal(new NumericExpression<int>(5).Expression.ToString(), strlen.Expression.Arguments.ElementAt(2).ToString());
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToSubstrFunctionWithStringLiteralAndNumericExpressionAndIntegerExpressionParameter()
         {
             // given
@@ -444,13 +444,13 @@ namespace VDS.RDF.Query.Builder.Expressions
             TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation, length);
 
             // then
-            Assert.IsTrue(strlen.Expression is SubStrFunction);
-            Assert.AreSame(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreSame(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
-            Assert.AreSame(length.Expression, strlen.Expression.Arguments.ElementAt(2));
+            Assert.True(strlen.Expression is SubStrFunction);
+            Assert.Same(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Same(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
+            Assert.Same(length.Expression, strlen.Expression.Arguments.ElementAt(2));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToSubstrFunctionWithStringLiteralAndIntegerAndIntegerExpressionParameter()
         {
             // given
@@ -462,13 +462,13 @@ namespace VDS.RDF.Query.Builder.Expressions
             TypedLiteralExpression<string> strlen = Builder.Substr(literal, 5, length);
 
             // then
-            Assert.IsTrue(strlen.Expression is SubStrFunction);
-            Assert.AreSame(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreEqual(startLocation.Expression.ToString(), strlen.Expression.Arguments.ElementAt(1).ToString());
-            Assert.AreSame(length.Expression, strlen.Expression.Arguments.ElementAt(2));
+            Assert.True(strlen.Expression is SubStrFunction);
+            Assert.Same(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Equal(startLocation.Expression.ToString(), strlen.Expression.Arguments.ElementAt(1).ToString());
+            Assert.Same(length.Expression, strlen.Expression.Arguments.ElementAt(2));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToSubstrFunctionWithVariableAndNumericExpressionAndIntegerExpressionParameter()
         {
             // given
@@ -480,13 +480,13 @@ namespace VDS.RDF.Query.Builder.Expressions
             TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation, length);
 
             // then
-            Assert.IsTrue(strlen.Expression is SubStrFunction);
-            Assert.AreSame(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreSame(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
-            Assert.AreSame(length.Expression, strlen.Expression.Arguments.ElementAt(2));
+            Assert.True(strlen.Expression is SubStrFunction);
+            Assert.Same(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Same(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
+            Assert.Same(length.Expression, strlen.Expression.Arguments.ElementAt(2));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToSubstrFunctionWithVariableAndIntegerAndIntegerExpressionParameter()
         {
             // given
@@ -498,13 +498,13 @@ namespace VDS.RDF.Query.Builder.Expressions
             TypedLiteralExpression<string> strlen = Builder.Substr(literal, 5, length);
 
             // then
-            Assert.IsTrue(strlen.Expression is SubStrFunction);
-            Assert.AreSame(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreEqual(startLocation.Expression.ToString(), strlen.Expression.Arguments.ElementAt(1).ToString());
-            Assert.AreSame(length.Expression, strlen.Expression.Arguments.ElementAt(2));
+            Assert.True(strlen.Expression is SubStrFunction);
+            Assert.Same(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Equal(startLocation.Expression.ToString(), strlen.Expression.Arguments.ElementAt(1).ToString());
+            Assert.Same(length.Expression, strlen.Expression.Arguments.ElementAt(2));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToSubstrFunctionWithTwoVariableAndIntegerExpressionParameters()
         {
             // given
@@ -516,13 +516,13 @@ namespace VDS.RDF.Query.Builder.Expressions
             TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation, length);
 
             // then
-            Assert.IsTrue(strlen.Expression is SubStrFunction);
-            Assert.AreSame(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreSame(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
-            Assert.AreSame(length.Expression, strlen.Expression.Arguments.ElementAt(2));
+            Assert.True(strlen.Expression is SubStrFunction);
+            Assert.Same(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Same(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
+            Assert.Same(length.Expression, strlen.Expression.Arguments.ElementAt(2));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToSubstrFunctionWithLiteralExpressionAndVariableAndIntegerExpressionParameters()
         {
             // given
@@ -534,13 +534,13 @@ namespace VDS.RDF.Query.Builder.Expressions
             TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation, length);
 
             // then
-            Assert.IsTrue(strlen.Expression is SubStrFunction);
-            Assert.AreSame(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreSame(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
-            Assert.AreSame(length.Expression, strlen.Expression.Arguments.ElementAt(2));
+            Assert.True(strlen.Expression is SubStrFunction);
+            Assert.Same(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Same(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
+            Assert.Same(length.Expression, strlen.Expression.Arguments.ElementAt(2));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToSubstrFunctionWithStringLiteralAndNumericExpressionAndVariableExpressionParameter()
         {
             // given
@@ -552,13 +552,13 @@ namespace VDS.RDF.Query.Builder.Expressions
             TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation, length);
 
             // then
-            Assert.IsTrue(strlen.Expression is SubStrFunction);
-            Assert.AreSame(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreSame(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
-            Assert.AreSame(length.Expression, strlen.Expression.Arguments.ElementAt(2));
+            Assert.True(strlen.Expression is SubStrFunction);
+            Assert.Same(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Same(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
+            Assert.Same(length.Expression, strlen.Expression.Arguments.ElementAt(2));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToSubstrFunctionWithStringLiteralAndIntegerAndVariableExpressionParameter()
         {
             // given
@@ -570,13 +570,13 @@ namespace VDS.RDF.Query.Builder.Expressions
             TypedLiteralExpression<string> strlen = Builder.Substr(literal, 5, length);
 
             // then
-            Assert.IsTrue(strlen.Expression is SubStrFunction);
-            Assert.AreSame(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreEqual(startLocation.Expression.ToString(), strlen.Expression.Arguments.ElementAt(1).ToString());
-            Assert.AreSame(length.Expression, strlen.Expression.Arguments.ElementAt(2));
+            Assert.True(strlen.Expression is SubStrFunction);
+            Assert.Same(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Equal(startLocation.Expression.ToString(), strlen.Expression.Arguments.ElementAt(1).ToString());
+            Assert.Same(length.Expression, strlen.Expression.Arguments.ElementAt(2));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToSubstrFunctionWithVariableAndNumericExpressionAndVariableExpressionParameter()
         {
             // given
@@ -588,13 +588,13 @@ namespace VDS.RDF.Query.Builder.Expressions
             TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation, length);
 
             // then
-            Assert.IsTrue(strlen.Expression is SubStrFunction);
-            Assert.AreSame(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreSame(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
-            Assert.AreSame(length.Expression, strlen.Expression.Arguments.ElementAt(2));
+            Assert.True(strlen.Expression is SubStrFunction);
+            Assert.Same(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Same(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
+            Assert.Same(length.Expression, strlen.Expression.Arguments.ElementAt(2));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToSubstrFunctionWithVariableAndIntegerAndVariableExpressionParameter()
         {
             // given
@@ -606,13 +606,13 @@ namespace VDS.RDF.Query.Builder.Expressions
             TypedLiteralExpression<string> strlen = Builder.Substr(literal, 5, length);
 
             // then
-            Assert.IsTrue(strlen.Expression is SubStrFunction);
-            Assert.AreSame(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreEqual(startLocation.Expression.ToString(), strlen.Expression.Arguments.ElementAt(1).ToString());
-            Assert.AreSame(length.Expression, strlen.Expression.Arguments.ElementAt(2));
+            Assert.True(strlen.Expression is SubStrFunction);
+            Assert.Same(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Equal(startLocation.Expression.ToString(), strlen.Expression.Arguments.ElementAt(1).ToString());
+            Assert.Same(length.Expression, strlen.Expression.Arguments.ElementAt(2));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToSubstrFunctionWithTwoVariableAndVariableExpressionParameters()
         {
             // given
@@ -624,13 +624,13 @@ namespace VDS.RDF.Query.Builder.Expressions
             TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation, length);
 
             // then
-            Assert.IsTrue(strlen.Expression is SubStrFunction);
-            Assert.AreSame(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreSame(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
-            Assert.AreSame(length.Expression, strlen.Expression.Arguments.ElementAt(2));
+            Assert.True(strlen.Expression is SubStrFunction);
+            Assert.Same(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Same(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
+            Assert.Same(length.Expression, strlen.Expression.Arguments.ElementAt(2));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToSubstrFunctionWithLiteralExpressionAndVariableAndVariableExpressionParameters()
         {
             // given
@@ -642,13 +642,13 @@ namespace VDS.RDF.Query.Builder.Expressions
             TypedLiteralExpression<string> strlen = Builder.Substr(literal, startLocation, length);
 
             // then
-            Assert.IsTrue(strlen.Expression is SubStrFunction);
-            Assert.AreSame(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreSame(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
-            Assert.AreSame(length.Expression, strlen.Expression.Arguments.ElementAt(2));
+            Assert.True(strlen.Expression is SubStrFunction);
+            Assert.Same(literal.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Same(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
+            Assert.Same(length.Expression, strlen.Expression.Arguments.ElementAt(2));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToLangMatchesFunctionWithLiteralExpressionAndStringParameters()
         {
             // given
@@ -658,12 +658,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             BooleanExpression strlen = Builder.LangMatches(languageTag, "fr");
 
             // then
-            Assert.IsTrue(strlen.Expression is LangMatchesFunction);
-            Assert.AreSame(languageTag.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreEqual("\"fr\"", strlen.Expression.Arguments.ElementAt(1).ToString());
+            Assert.True(strlen.Expression is LangMatchesFunction);
+            Assert.Same(languageTag.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Equal("\"fr\"", strlen.Expression.Arguments.ElementAt(1).ToString());
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToLangMatchesFunctionWithVariableAndStringParameters()
         {
             // given
@@ -673,12 +673,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             BooleanExpression strlen = Builder.LangMatches(languageTag, "fr");
 
             // then
-            Assert.IsTrue(strlen.Expression is LangMatchesFunction);
-            Assert.AreSame(languageTag.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreEqual("\"fr\"", strlen.Expression.Arguments.ElementAt(1).ToString());
+            Assert.True(strlen.Expression is LangMatchesFunction);
+            Assert.Same(languageTag.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Equal("\"fr\"", strlen.Expression.Arguments.ElementAt(1).ToString());
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToLangMatchesFunctionWithLiteralExpressionAndLiteralExpressionParameters()
         {
             // given
@@ -689,12 +689,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             BooleanExpression strlen = Builder.LangMatches(languageTag, languageRange);
 
             // then
-            Assert.IsTrue(strlen.Expression is LangMatchesFunction);
-            Assert.AreSame(languageTag.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreSame(languageRange.Expression, strlen.Expression.Arguments.ElementAt(1));
+            Assert.True(strlen.Expression is LangMatchesFunction);
+            Assert.Same(languageTag.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Same(languageRange.Expression, strlen.Expression.Arguments.ElementAt(1));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToLangMatchesFunctionWithVariableAndLiteralExpressionParameters()
         {
             // given
@@ -705,12 +705,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             BooleanExpression strlen = Builder.LangMatches(languageTag, languageRange);
 
             // then
-            Assert.IsTrue(strlen.Expression is LangMatchesFunction);
-            Assert.AreSame(languageTag.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreSame(languageRange.Expression, strlen.Expression.Arguments.ElementAt(1));
+            Assert.True(strlen.Expression is LangMatchesFunction);
+            Assert.Same(languageTag.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Same(languageRange.Expression, strlen.Expression.Arguments.ElementAt(1));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToLangMatchesFunctionWithLiteralExpressionAndVariableParameters()
         {
             // given
@@ -721,12 +721,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             BooleanExpression strlen = Builder.LangMatches(languageTag, languageRange);
 
             // then
-            Assert.IsTrue(strlen.Expression is LangMatchesFunction);
-            Assert.AreSame(languageTag.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreSame(languageRange.Expression, strlen.Expression.Arguments.ElementAt(1));
+            Assert.True(strlen.Expression is LangMatchesFunction);
+            Assert.Same(languageTag.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Same(languageRange.Expression, strlen.Expression.Arguments.ElementAt(1));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowCreatingCallToLangMatchesFunctionWithTwoVariableParameters()
         {
             // given
@@ -737,9 +737,9 @@ namespace VDS.RDF.Query.Builder.Expressions
             BooleanExpression strlen = Builder.LangMatches(languageTag, languageRange);
 
             // then
-            Assert.IsTrue(strlen.Expression is LangMatchesFunction);
-            Assert.AreSame(languageTag.Expression, strlen.Expression.Arguments.ElementAt(0));
-            Assert.AreSame(languageRange.Expression, strlen.Expression.Arguments.ElementAt(1));
+            Assert.True(strlen.Expression is LangMatchesFunction);
+            Assert.Same(languageTag.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.Same(languageRange.Expression, strlen.Expression.Arguments.ElementAt(1));
         }
     }
 }

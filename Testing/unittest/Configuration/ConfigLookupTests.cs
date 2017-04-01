@@ -27,20 +27,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Configuration
 {
-    [TestFixture]
+
     public class ConfigLookupTests
     {
         public const String Prefixes = @"@prefix rdf: <" + NamespaceMapper.RDF + @"> .
 @prefix xsd: <"+ NamespaceMapper.XMLSCHEMA + @"> .
 @prefix dnr: <http://www.dotnetrdf.org/configuration#> .";
 
-        [Test]
+        [Fact]
         public void ConfigurationLookupNode1()
         {
             String graph = Prefixes + @"
@@ -51,11 +51,11 @@ _:a dnr:type ""literal"" .";
 
             INode value = ConfigurationLoader.GetConfigurationNode(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"));
 
-            Assert.AreEqual(NodeType.Literal, value.NodeType);
-            Assert.AreEqual("literal", ((ILiteralNode)value).Value);
+            Assert.Equal(NodeType.Literal, value.NodeType);
+            Assert.Equal("literal", ((ILiteralNode)value).Value);
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationLookupNode2()
         {
             String graph = Prefixes + @"
@@ -66,12 +66,12 @@ _:a dnr:type <http://uri> .";
 
             INode value = ConfigurationLoader.GetConfigurationNode(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"));
 
-            Assert.AreEqual(NodeType.Uri, value.NodeType);
-            Assert.IsTrue(EqualityHelper.AreUrisEqual(new Uri("http://uri"), ((IUriNode)value).Uri));
+            Assert.Equal(NodeType.Uri, value.NodeType);
+            Assert.True(EqualityHelper.AreUrisEqual(new Uri("http://uri"), ((IUriNode)value).Uri));
         }
 
 #if !NO_SYSTEMCONFIGURATION
-        [Test]
+        [Fact]
         public void ConfigurationLookupNode3()
         {
             String graph = Prefixes + @"
@@ -84,20 +84,20 @@ _:a dnr:type <appsetting:ConfigurationLookupNode3> .";
 
             INode value = ConfigurationLoader.GetConfigurationNode(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"));
 
-            Assert.AreEqual(NodeType.Literal, value.NodeType);
-            Assert.AreEqual("literal", ((ILiteralNode)value).Value);
+            Assert.Equal(NodeType.Literal, value.NodeType);
+            Assert.Equal("literal", ((ILiteralNode)value).Value);
         }
 #endif
 
-        [Test]
+        [Fact]
         public void ConfigurationLookupNode4()
         {
             Graph g = new Graph();
             INode value = ConfigurationLoader.GetConfigurationNode(g, g.CreateBlankNode("a"), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType)));
-            Assert.IsNull(value);
+            Assert.Null(value);
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationLookupNode5()
         {
             String graph = Prefixes + @"
@@ -109,11 +109,11 @@ _:a dnr:other ""other"" ;
 
             INode value = ConfigurationLoader.GetConfigurationNode(g, g.GetBlankNode("a"), new INode[] { g.CreateUriNode("dnr:missing"), g.CreateUriNode("dnr:other"), g.CreateUriNode("dnr:type") });
 
-            Assert.AreEqual(NodeType.Literal, value.NodeType);
-            Assert.AreEqual("other", ((ILiteralNode)value).Value);
+            Assert.Equal(NodeType.Literal, value.NodeType);
+            Assert.Equal("other", ((ILiteralNode)value).Value);
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationLookupNode6()
         {
             String graph = Prefixes + @"
@@ -125,11 +125,11 @@ _:a dnr:other <http://other> ;
 
             INode value = ConfigurationLoader.GetConfigurationNode(g, g.GetBlankNode("a"), new INode[] { g.CreateUriNode("dnr:missing"), g.CreateUriNode("dnr:other"), g.CreateUriNode("dnr:type") });
 
-            Assert.AreEqual(NodeType.Uri, value.NodeType);
-            Assert.IsTrue(EqualityHelper.AreUrisEqual(new Uri("http://other"), ((IUriNode)value).Uri));
+            Assert.Equal(NodeType.Uri, value.NodeType);
+            Assert.True(EqualityHelper.AreUrisEqual(new Uri("http://other"), ((IUriNode)value).Uri));
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationLookupNode7()
         {
             String graph = Prefixes + @"
@@ -141,28 +141,28 @@ _:a dnr:other <http://other> ;
 
             INode value = ConfigurationLoader.GetConfigurationNode(g, g.GetBlankNode("a"), new INode[] { g.CreateUriNode("dnr:missing"), g.CreateUriNode("dnr:type"), g.CreateUriNode("dnr:other") });
 
-            Assert.AreEqual(NodeType.Uri, value.NodeType);
-            Assert.IsTrue(EqualityHelper.AreUrisEqual(new Uri("http://uri"), ((IUriNode)value).Uri));
+            Assert.Equal(NodeType.Uri, value.NodeType);
+            Assert.True(EqualityHelper.AreUrisEqual(new Uri("http://uri"), ((IUriNode)value).Uri));
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationLookupNode8()
         {
             Graph g = new Graph();
             g.NamespaceMap.AddNamespace("dnr", UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
             INode value = ConfigurationLoader.GetConfigurationNode(g, g.CreateBlankNode("a"), new INode[] { g.CreateUriNode("dnr:missing"), g.CreateUriNode("dnr:type"), g.CreateUriNode("dnr:other") });
-            Assert.IsNull(value);
+            Assert.Null(value);
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationLookupNode9()
         {
             Graph g = new Graph();
             INode value = ConfigurationLoader.GetConfigurationNode(g, g.CreateBlankNode("a"), new INode[] { });
-            Assert.IsNull(value);
+            Assert.Null(value);
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationLookupBoolean1()
         {
             String graph = Prefixes + @"
@@ -172,10 +172,10 @@ _:a dnr:type true .";
             g.LoadFromString(graph);
 
             bool value = ConfigurationLoader.GetConfigurationBoolean(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"), false);
-            Assert.IsTrue(value);
+            Assert.True(value);
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationLookupBoolean2()
         {
             String graph = Prefixes + @"
@@ -185,10 +185,10 @@ _:a dnr:type false .";
             g.LoadFromString(graph);
 
             bool value = ConfigurationLoader.GetConfigurationBoolean(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"), true);
-            Assert.IsFalse(value);
+            Assert.False(value);
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationLookupBoolean3()
         {
             String graph = Prefixes + @"
@@ -198,10 +198,10 @@ _:a dnr:type ""not a boolean"" .";
             g.LoadFromString(graph);
 
             bool value = ConfigurationLoader.GetConfigurationBoolean(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"), true);
-            Assert.IsTrue(value);
+            Assert.True(value);
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationLookupBoolean4()
         {
             String graph = Prefixes + @"
@@ -211,11 +211,11 @@ _:a dnr:type ""not a boolean"" .";
             g.LoadFromString(graph);
 
             bool value = ConfigurationLoader.GetConfigurationBoolean(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"), false);
-            Assert.IsFalse(value);
+            Assert.False(value);
         }
 
 #if !NO_SYSTEMCONFIGURATION
-        [Test]
+        [Fact]
         public void ConfigurationLookupBoolean5()
         {
             String graph = Prefixes + @"
@@ -227,11 +227,11 @@ _:a dnr:type <appsetting:ConfigurationLookupBoolean5> .";
             g.LoadFromString(graph);
 
             bool value = ConfigurationLoader.GetConfigurationBoolean(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"), false);
-            Assert.IsTrue(value);
+            Assert.True(value);
         }
 #endif
 
-        [Test]
+        [Fact]
         public void ConfigurationLookupBoolean6()
         {
             String graph = Prefixes + @"
@@ -241,10 +241,10 @@ _:a dnr:other false ; dnr:type true .";
             g.LoadFromString(graph);
 
             bool value = ConfigurationLoader.GetConfigurationBoolean(g, g.GetBlankNode("a"), new INode[] { g.CreateUriNode("dnr:other"), g.CreateUriNode("dnr:type")}, true);
-            Assert.IsFalse(value);
+            Assert.False(value);
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationLookupBoolean7()
         {
             String graph = Prefixes + @"
@@ -254,10 +254,10 @@ _:a dnr:other false ; dnr:type true .";
             g.LoadFromString(graph);
 
             bool value = ConfigurationLoader.GetConfigurationBoolean(g, g.GetBlankNode("a"), new INode[] { g.CreateUriNode("dnr:type"), g.CreateUriNode("dnr:other") }, false);
-            Assert.IsTrue(value);
+            Assert.True(value);
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationLookupInt1()
         {
             String graph = Prefixes + @"
@@ -267,10 +267,10 @@ _:a dnr:type 123 .";
             g.LoadFromString(graph);
 
             int value = ConfigurationLoader.GetConfigurationInt32(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"), 0);
-            Assert.AreEqual(123, value);
+            Assert.Equal(123, value);
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationLookupInt2()
         {
             String graph = Prefixes + @"
@@ -280,11 +280,11 @@ _:a dnr:type ""not an integer"" .";
             g.LoadFromString(graph);
 
             int value = ConfigurationLoader.GetConfigurationInt32(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"), 0);
-            Assert.AreEqual(0, value);
+            Assert.Equal(0, value);
         }
 
 #if !NO_SYSTEMCONFIGURATION
-        [Test]
+        [Fact]
         public void ConfigurationLookupInt3()
         {
             String graph = Prefixes + @"
@@ -296,11 +296,11 @@ _:a dnr:type <appsetting:ConfigurationLookupInt3> .";
             g.LoadFromString(graph);
 
             int value = ConfigurationLoader.GetConfigurationInt32(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"), 0);
-            Assert.AreEqual(123, value);
+            Assert.Equal(123, value);
         }
 #endif
 
-        [Test]
+        [Fact]
         public void ConfigurationLookupLong1()
         {
             String graph = Prefixes + @"
@@ -310,10 +310,10 @@ _:a dnr:type 123 .";
             g.LoadFromString(graph);
 
             long value = ConfigurationLoader.GetConfigurationInt64(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"), 0);
-            Assert.AreEqual(123, value);
+            Assert.Equal(123, value);
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationLookupLong2()
         {
             String graph = Prefixes + @"
@@ -323,11 +323,11 @@ _:a dnr:type ""not an integer"" .";
             g.LoadFromString(graph);
 
             long value = ConfigurationLoader.GetConfigurationInt64(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"), 0);
-            Assert.AreEqual(0, value);
+            Assert.Equal(0, value);
         }
 
 #if !NO_SYSTEMCONFIGURATION
-        [Test]
+        [Fact]
         public void ConfigurationLookupLong3()
         {
             String graph = Prefixes + @"
@@ -339,11 +339,11 @@ _:a dnr:type <appsetting:ConfigurationLookupLong3> .";
             g.LoadFromString(graph);
 
             long value = ConfigurationLoader.GetConfigurationInt32(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"), 0);
-            Assert.AreEqual(123, value);
+            Assert.Equal(123, value);
         }
 #endif
 
-        [Test]
+        [Fact]
         public void ConfigurationLookupString1()
         {
             String graph = Prefixes + @"
@@ -354,10 +354,10 @@ _:a dnr:type ""literal"" .";
 
             String value = ConfigurationLoader.GetConfigurationString(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"));
 
-            Assert.AreEqual("literal", value);
+            Assert.Equal("literal", value);
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationLookupString2()
         {
             String graph = Prefixes + @"
@@ -368,11 +368,11 @@ _:a dnr:type <http://uri> .";
 
             String value = ConfigurationLoader.GetConfigurationString(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"));
 
-            Assert.IsNull(value);
+            Assert.Null(value);
         }
 
 #if !NO_SYSTEMCONFIGURATION
-        [Test]
+        [Fact]
         public void ConfigurationLookupString3()
         {
             String graph = Prefixes + @"
@@ -385,19 +385,19 @@ _:a dnr:type <appsetting:ConfigurationLookupString3> .";
 
             String value = ConfigurationLoader.GetConfigurationString(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"));
 
-            Assert.AreEqual("literal", value);
+            Assert.Equal("literal", value);
         }
 #endif
 
-        [Test]
+        [Fact]
         public void ConfigurationLookupString4()
         {
             Graph g = new Graph();
             String value = ConfigurationLoader.GetConfigurationString(g, g.CreateBlankNode("a"), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType)));
-            Assert.IsNull(value);
+            Assert.Null(value);
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationLookupValue1()
         {
             String graph = Prefixes + @"
@@ -408,10 +408,10 @@ _:a dnr:type ""literal"" .";
 
             String value = ConfigurationLoader.GetConfigurationValue(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"));
 
-            Assert.AreEqual("literal", value);
+            Assert.Equal("literal", value);
         }
 
-        [Test]
+        [Fact]
         public void ConfigurationLookupValue2()
         {
             String graph = Prefixes + @"
@@ -422,11 +422,11 @@ _:a dnr:type <http://uri> .";
 
             String value = ConfigurationLoader.GetConfigurationValue(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"));
 
-            Assert.AreEqual("http://uri/", value);
+            Assert.Equal("http://uri/", value);
         }
 
 #if !NO_SYSTEMCONFIGURATION
-        [Test]
+        [Fact]
         public void ConfigurationLookupValue3()
         {
             String graph = Prefixes + @"
@@ -439,16 +439,16 @@ _:a dnr:type <appsetting:ConfigurationLookupString3> .";
 
             String value = ConfigurationLoader.GetConfigurationValue(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"));
 
-            Assert.AreEqual("literal", value);
+            Assert.Equal("literal", value);
         }
 #endif
 
-        [Test]
+        [Fact]
         public void ConfigurationLookupValue4()
         {
             Graph g = new Graph();
             String value = ConfigurationLoader.GetConfigurationValue(g, g.CreateBlankNode("a"), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType)));
-            Assert.IsNull(value);
+            Assert.Null(value);
         }
     }
 }

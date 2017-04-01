@@ -1,12 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Parsing
 {
-    [TestFixture]
+
     public class SparqlCsvTests
     {
         private readonly SparqlCsvParser _parser = new SparqlCsvParser();
@@ -15,11 +15,11 @@ namespace VDS.RDF.Parsing
         {
             foreach (String var in vars)
             {
-                Assert.IsTrue(results.Variables.Contains(var), "Missing variable ?" + var);
+                Assert.True(results.Variables.Contains(var), "Missing variable ?" + var);
             }
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlCsv01()
         {
             const String data = @"x,y
@@ -31,13 +31,13 @@ http://x,http://y
 
             TestTools.ShowResults(results);
 
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType);
-            Assert.AreEqual(2, results.Variables.Count());
+            Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
+            Assert.Equal(2, results.Variables.Count());
             CheckVariables(results, "x", "y");
-            Assert.AreEqual(1, results.Results.Count);
+            Assert.Equal(1, results.Results.Count);
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlCsv02()
         {
             // Header row has quoting - CORE-433
@@ -50,13 +50,13 @@ http://x,http://y
 
             TestTools.ShowResults(results);
 
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType);
-            Assert.AreEqual(2, results.Variables.Count());
+            Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
+            Assert.Equal(2, results.Variables.Count());
             CheckVariables(results, "x", "y");
-            Assert.AreEqual(1, results.Results.Count);
+            Assert.Equal(1, results.Results.Count);
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlCsv03()
         {
             // Invalid URI - CORE-432
@@ -68,14 +68,14 @@ http://x a bad uri,http://y
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
 
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType);
-            Assert.AreEqual(2, results.Variables.Count());
+            Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
+            Assert.Equal(2, results.Variables.Count());
             CheckVariables(results, "x", "y");
-            Assert.AreEqual(1, results.Results.Count);
+            Assert.Equal(1, results.Results.Count);
 
             INode n = results.Results[0]["x"];
-            Assert.IsNotNull(n);
-            Assert.AreEqual(NodeType.Literal, n.NodeType);
+            Assert.NotNull(n);
+            Assert.Equal(NodeType.Literal, n.NodeType);
         }
     }
 }

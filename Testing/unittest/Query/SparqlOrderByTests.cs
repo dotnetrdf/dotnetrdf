@@ -26,7 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Ordering;
@@ -34,40 +34,40 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class SparqlOrderByTests
     {
-        [Test]
+        [Fact]
         public void SparqlOrderByWithRawVariableName()
         {
             // when
             var ordering = new OrderByVariable("name");
 
             // then
-            Assert.AreEqual("name", ordering.Variables.Single());
+            Assert.Equal("name", ordering.Variables.Single());
         }
 
-        [Test]
+        [Fact]
         public void SparqlOrderByWithVariableNameWithDollarSign()
         {
             // when
             var ordering = new OrderByVariable("$name");
 
             // then
-            Assert.AreEqual("name", ordering.Variables.Single());
+            Assert.Equal("name", ordering.Variables.Single());
         }
 
-        [Test]
+        [Fact]
         public void SparqlOrderByWithVariableNameWithQuestionMark()
         {
             // when
             var ordering = new OrderByVariable("?name");
 
             // then
-            Assert.AreEqual("name", ordering.Variables.Single());
+            Assert.Equal("name", ordering.Variables.Single());
         }
 
-        [Test]
+        [Fact]
         public void SparqlOrderByDescendingScope1()
         {
             //Test Case for CORE-350
@@ -92,23 +92,23 @@ namespace VDS.RDF.Query
                 }
             }
             g.Assert(ts);
-            Assert.AreEqual(27, g.Triples.Count);
+            Assert.Equal(27, g.Triples.Count);
 
             String query = @"SELECT * WHERE { ?s ?p ?o } ORDER BY ?s DESC(?p) ?o";
             SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
 
             SparqlResultSet results = g.ExecuteQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.AreEqual(27, results.Count);
+            Assert.NotNull(results);
+            Assert.Equal(27, results.Count);
 
             for (int i = 0; i < ts.Count; i++)
             {
                 Triple t = new Triple(results[i]["s"], results[i]["p"], results[i]["o"]);
-                Assert.AreEqual(ts[i], t, "Element at position " + i + " is not as expected");
+                Assert.Equal(ts[i], t);
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlOrderByDescendingScope2()
         {
             //Test Case for CORE-350
@@ -133,23 +133,23 @@ namespace VDS.RDF.Query
                 }
             }
             g.Assert(ts);
-            Assert.AreEqual(27, g.Triples.Count);
+            Assert.Equal(27, g.Triples.Count);
 
             String query = @"SELECT * WHERE { ?s ?p ?o } ORDER BY STR(?s) DESC(STR(?p)) STR(?o)";
             SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
 
             SparqlResultSet results = g.ExecuteQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.AreEqual(27, results.Count);
+            Assert.NotNull(results);
+            Assert.Equal(27, results.Count);
 
             for (int i = 0; i < ts.Count; i++)
             {
                 Triple t = new Triple(results[i]["s"], results[i]["p"], results[i]["o"]);
-                Assert.AreEqual(ts[i], t, "Element at position " + i + " is not as expected");
+                Assert.Equal(ts[i], t);
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlOrderByNullInFirstCondition1()
         {
             //Test Case for CORE-350
@@ -172,25 +172,25 @@ namespace VDS.RDF.Query
             SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
 
             SparqlResultSet results = g.ExecuteQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.AreEqual(6, results.Count);
+            Assert.NotNull(results);
+            Assert.Equal(6, results.Count);
 
             for (int i = 0; i < results.Count; i++)
             {
                 if (i < 3)
                 {
-                    Assert.IsFalse(results[i].HasBoundValue("a"));
+                    Assert.False(results[i].HasBoundValue("a"));
                 }
                 else
                 {
-                    Assert.IsTrue(results[i].HasBoundValue("a"));
+                    Assert.True(results[i].HasBoundValue("a"));
                 }
                 int expected = (i % 3) + 1;
-                Assert.AreEqual(expected, results[i]["b"].AsValuedNode().AsInteger());
+                Assert.Equal(expected, results[i]["b"].AsValuedNode().AsInteger());
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlOrderByNullInFirstCondition2()
         {
             //Test Case for CORE-350
@@ -213,21 +213,21 @@ namespace VDS.RDF.Query
             SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
 
             SparqlResultSet results = g.ExecuteQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.AreEqual(6, results.Count);
+            Assert.NotNull(results);
+            Assert.Equal(6, results.Count);
 
             for (int i = 0; i < results.Count; i++)
             {
                 if (i < 3)
                 {
-                    Assert.IsFalse(results[i].HasBoundValue("a"));
+                    Assert.False(results[i].HasBoundValue("a"));
                 }
                 else
                 {
-                    Assert.IsTrue(results[i].HasBoundValue("a"));
+                    Assert.True(results[i].HasBoundValue("a"));
                 }
                 int expected = (i % 3) + 1;
-                Assert.AreEqual(expected, results[i]["b"].AsValuedNode().AsInteger());
+                Assert.Equal(expected, results[i]["b"].AsValuedNode().AsInteger());
             }
         }
     }

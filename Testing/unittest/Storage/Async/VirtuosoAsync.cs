@@ -27,14 +27,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Storage;
 
 #if !NO_DATAEXTENSIONS
 namespace VDS.RDF.Storage.Async
 {
 #if !PORTABLE // No Virtuoso support in PCL
-    [TestFixture]
+
     public class VirtuosoAsync
         : BaseAsyncTests
     {

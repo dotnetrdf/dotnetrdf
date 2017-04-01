@@ -30,18 +30,19 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Net;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Parsing
 {
-    [TestFixture]
+
     public class ParserTests
     {
-        [Test]
+        [Fact]
         public void ParsingStringParser()
         {
                 String[] someRDF = { "<http://example.org/subject> <http://example.org/predicate> <http://example.org/object>.",
@@ -81,7 +82,7 @@ namespace VDS.RDF.Parsing
 
                         if (!parseExpected[i])
                         {
-                            Assert.Fail("Expected Parsing to Fail but succeeded");
+                            Assert.True(false, "Expected Parsing to Fail but succeeded");
                         }
                     }
                     catch (RdfParseException parseEx)
@@ -108,7 +109,7 @@ namespace VDS.RDF.Parsing
                 }
         }
 
-        [Test]
+        [Fact]
         public void ParsingBlankNodeIDs()
         {
             List<IRdfReader> parsersToTest = new List<IRdfReader>()
@@ -191,8 +192,8 @@ namespace VDS.RDF.Parsing
                     }
                     Console.WriteLine();
 
-                    Assert.AreEqual(expectedTriples[s], g.Triples.Count, "Should have produced " + expectedTriples[s] + " Triples");
-                    Assert.AreEqual(expectedSubjects[s], g.Triples.SubjectNodes.Distinct().Count(), "Should have produced " + expectedSubjects[s] + " distinct subjects");
+                    Assert.Equal(expectedTriples[s], g.Triples.Count);
+                    Assert.Equal(expectedSubjects[s], g.Triples.SubjectNodes.Distinct().Count());
 
                     //Try outputting with each of the available writers
                     for (int i = 0; i < writers.Count; i++)
@@ -217,8 +218,8 @@ namespace VDS.RDF.Parsing
                             Console.WriteLine(temp);
                         }
 
-                        Assert.AreEqual(expectedTriples[s], h.Triples.Count, "Should have produced " + expectedTriples[s] + " Triples");
-                        Assert.AreEqual(expectedSubjects[s], h.Triples.SubjectNodes.Distinct().Count(), "Should have produced " + expectedSubjects[s] + " distinct subjects");
+                        Assert.Equal(expectedTriples[s], h.Triples.Count);
+                        Assert.Equal(expectedSubjects[s], h.Triples.SubjectNodes.Distinct().Count());
 
                         //Do full equality Test
                         Dictionary<INode, INode> mapping;
@@ -228,7 +229,7 @@ namespace VDS.RDF.Parsing
                             Console.WriteLine(writers[i].GetType().ToString() + " failed");
                             Console.WriteLine(temp);
                         }
-                        Assert.IsTrue(equals, "Graphs should be equal");
+                        Assert.True(equals, "Graphs should be equal");
                         Console.WriteLine("Node Mapping was:");
                         foreach (KeyValuePair<INode, INode> pair in mapping)
                         {
@@ -245,7 +246,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [Test]
+        [Fact]
         public void ParsingCollections()
         {
             List<IRdfReader> parsersToTest = new List<IRdfReader>()
@@ -315,8 +316,8 @@ namespace VDS.RDF.Parsing
                     }
                     Console.WriteLine();
 
-                    Assert.AreEqual(expectedTriples[s], g.Triples.Count, "Should have produced " + expectedTriples[s] + " Triples");
-                    Assert.AreEqual(expectedSubjects[s], g.Triples.SubjectNodes.Distinct().Count(), "Should have produced " + expectedSubjects[s] + " distinct subjects");
+                    Assert.Equal(expectedTriples[s], g.Triples.Count);
+                    Assert.Equal(expectedSubjects[s], g.Triples.SubjectNodes.Distinct().Count());
 
                     //Try outputting with each of the available writers
                     for (int i = 0; i < writers.Count; i++)
@@ -335,12 +336,12 @@ namespace VDS.RDF.Parsing
                             throw;
                         }
 
-                        Assert.AreEqual(expectedTriples[s], h.Triples.Count, "Should have produced " + expectedTriples[s] + " Triples");
-                        Assert.AreEqual(expectedSubjects[s], h.Triples.SubjectNodes.Distinct().Count(), "Should have produced " + expectedSubjects[s] + " distinct subjects");
+                        Assert.Equal(expectedTriples[s], h.Triples.Count);
+                        Assert.Equal(expectedSubjects[s], h.Triples.SubjectNodes.Distinct().Count());
 
                         Dictionary<INode, INode> mapping;
                         bool equals = g.Equals(h, out mapping);
-                        Assert.IsTrue(equals, "Graphs should have been equal");
+                        Assert.True(equals, "Graphs should have been equal");
                         Console.WriteLine("Node mapping was:");
                         foreach (KeyValuePair<INode, INode> pair in mapping)
                         {
@@ -357,12 +358,12 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void ParsingRdfXmlNamespaceAttributes()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
             {
-                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
             }
 
             Graph g = new Graph();
@@ -380,7 +381,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [Test]
+        [Fact]
         public void ParsingRdfXmlStreaming()
         {
                 RdfXmlParser parser = new RdfXmlParser(RdfXmlParserMode.Streaming);
@@ -391,7 +392,7 @@ namespace VDS.RDF.Parsing
                 TestTools.ShowGraph(g);
         }
 
-        [Test]
+        [Fact]
         public void ParsingMalformedFileUris()
         {
             String malformedFileUriFragment = "@base <file:/path/to/somewhere>. @prefix ex: <file:/path/to/nowhere/> . <#this> a \"URI Resolved with a malformed Base URI\" . <this> a \"Another URI Resolved with a malformed Base URI\" . ex:this a \"QName Resolved with a malformed Namespace URI\" .";
@@ -404,7 +405,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        //[Test]
+        //[Fact]
         //public void JsonNTriplesParsing()
         //{
         //    Graph g = new Graph();
@@ -423,10 +424,10 @@ namespace VDS.RDF.Parsing
         //        Console.WriteLine(t.ToString());
         //    }
 
-        //    Assert.AreEqual(g, h, "Graphs should be equal before and after serialization");
+        //    Assert.Equal(g, h);
         //}
 
-        //[Test]
+        //[Fact]
         //public void JsonNTriplesEscaping()
         //{
         //    Graph g = new Graph();
@@ -472,10 +473,10 @@ namespace VDS.RDF.Parsing
         //        Console.WriteLine(t.ToString());
         //    }
 
-        //    Assert.AreEqual(g, h, "Graphs should have been equal");
+        //    Assert.Equal(g, h);
         //}
 
-        [Test]
+        [Fact]
         public void ParsingRdfXmlEmptyElement()
         {
             String fragment = @"<?xml version='1.0'?><rdf:RDF xmlns:rdf='" + NamespaceMapper.RDF + @"' xmlns='http://example.org/'><rdf:Description rdf:about='http://example.org/subject'><predicate rdf:resource='http://example.org/object' /></rdf:Description></rdf:RDF>";
@@ -490,7 +491,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtleWithAndWithoutBOM()
         {
             TurtleParser parser = new TurtleParser();
@@ -500,66 +501,68 @@ namespace VDS.RDF.Parsing
             Graph h = new Graph();
             FileLoader.Load(h, "resources\\ttl-without-bom.ttl");
 
-            Assert.AreEqual(g, h, "Graphs should be equal as presence (or lack thereof) of UTF-8 BOM should make no difference");
+            Assert.Equal(g, h);
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Fact]
         public void ParsingMalformedSparqlXml()
         {
             SparqlResultSet results = new SparqlResultSet();
             SparqlXmlParser parser = new SparqlXmlParser();
-            parser.Load(results, "resources\\bad_srx.srx");
+
+            Assert.Throws<RdfParseException>(() => parser.Load(results, "resources\\bad_srx.srx"));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Fact]
         public void ParsingTurtleDBPediaMalformedData()
         {
             Graph g = new Graph();
             TurtleParser parser = new TurtleParser(TurtleSyntax.Original);
-            parser.Load(g, "resources\\dbpedia_malformed.ttl");
-            Assert.IsFalse(g.IsEmpty);
+
+            Assert.Throws<RdfParseException>(() => parser.Load(g, "resources\\dbpedia_malformed.ttl"));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Fact]
         public void ParsingDefaultPrefixFallbackTurtle1()
         {
             String data = @"@base <http://base/> . :subj :pred :obj .";
             IRdfReader parser = new TurtleParser();
             Graph g = new Graph();
-            parser.Load(g, new StringReader(data));
+
+            Assert.Throws<RdfParseException>(() => parser.Load(g, new StringReader(data)));
         }
 
-        [Test]
+        [Fact]
         public void ParsingDefaultPrefixFallbackTurtle2()
         {
             String data = @"@prefix : <http://default/ns#> . :subj :pred :obj .";
             IRdfReader parser = new TurtleParser();
             Graph g = new Graph();
             parser.Load(g, new StringReader(data));
-            Assert.IsFalse(g.IsEmpty);
-            Assert.AreEqual(1, g.Triples.Count);
+            Assert.False(g.IsEmpty);
+            Assert.Equal(1, g.Triples.Count);
         }
 
-        [Test]
+        [Fact]
         public void ParsingDefaultPrefixFallbackNotation3_1()
         {
             String data = @"@base <http://base/> . :subj :pred :obj .";
             IRdfReader parser = new Notation3Parser();
             Graph g = new Graph();
             parser.Load(g, new StringReader(data));
-            Assert.IsFalse(g.IsEmpty);
-            Assert.AreEqual(1, g.Triples.Count);
+            Assert.False(g.IsEmpty);
+            Assert.Equal(1, g.Triples.Count);
         }
 
-        [Test]
+        [Fact]
         public void ParsingDefaultPrefixFallbackNotation3_2()
         {
             String data = @"@prefix : <http://default/ns#> . :subj :pred :obj .";
             IRdfReader parser = new Notation3Parser();
             Graph g = new Graph();
             parser.Load(g, new StringReader(data));
-            Assert.IsFalse(g.IsEmpty);
-            Assert.AreEqual(1, g.Triples.Count);
+            Assert.False(g.IsEmpty);
+            Assert.Equal(1, g.Triples.Count);
         }
     }
 }

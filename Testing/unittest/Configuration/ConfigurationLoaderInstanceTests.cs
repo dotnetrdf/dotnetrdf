@@ -25,11 +25,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.IO;
-using NUnit.Framework;
+using Xunit;
 
 namespace VDS.RDF.Configuration
 {
-    [TestFixture]
+
     public class ConfigurationLoaderInstanceTests
     {
         private const string TestConfigGraph = ConfigLookupTests.Prefixes + @"
@@ -41,7 +41,7 @@ _:a a dnr:TripleCollection ;
 <indexedCollection> a dnr:TripleCollection ;
   dnr:type ""VDS.RDF.TreeIndexedTripleCollection"" .";
 
-        [Test]
+        [Fact]
         public void CanCreateInstanceFromExistingGraphAndLoadObjectFromBlankNode()
         {
             // given
@@ -53,11 +53,11 @@ _:a a dnr:TripleCollection ;
             var collection = configuration.LoadObject<BaseTripleCollection>("a");
 
             // then
-            Assert.IsNotNull(collection);
-            Assert.IsTrue(collection is ThreadSafeTripleCollection);
+            Assert.NotNull(collection);
+            Assert.True(collection is ThreadSafeTripleCollection);
         }
 
-        [Test]
+        [Fact]
         public void CanCreateInstanceFromExistingGraphAndLoadObjectFromUri()
         {
             // given
@@ -69,11 +69,11 @@ _:a a dnr:TripleCollection ;
             var collection = configuration.LoadObject<BaseTripleCollection>(new Uri("http://example.com/indexedCollection"));
 
             // then
-            Assert.IsNotNull(collection);
-            Assert.IsTrue(collection is TreeIndexedTripleCollection);
+            Assert.NotNull(collection);
+            Assert.True(collection is TreeIndexedTripleCollection);
         }
 
-        [Test]
+        [Fact]
         public void CanCreateInstanceFromExistingGraphAndLoadObjectFromBlankNodeUsingTypeAsParameter()
         {
             // given
@@ -85,11 +85,11 @@ _:a a dnr:TripleCollection ;
             var collection = (BaseTripleCollection)configuration.LoadObject("a");
 
             // then
-            Assert.IsNotNull(collection);
-            Assert.IsTrue(collection is ThreadSafeTripleCollection);
+            Assert.NotNull(collection);
+            Assert.True(collection is ThreadSafeTripleCollection);
         }
 
-        [Test]
+        [Fact]
         public void CanCreateInstanceFromExistingGraphAndLoadObjectFromUriUsingTypeAsParameter()
         {
             // given
@@ -101,11 +101,11 @@ _:a a dnr:TripleCollection ;
             var collection = (BaseTripleCollection)configuration.LoadObject(new Uri("http://example.com/indexedCollection"));
 
             // then
-            Assert.IsNotNull(collection);
-            Assert.IsTrue(collection is TreeIndexedTripleCollection);
+            Assert.NotNull(collection);
+            Assert.True(collection is TreeIndexedTripleCollection);
         }
 
-        [Test]
+        [Fact]
         public void CanCreateInstanceFromGraphFileAndLoadObjectFromUri()
         {
             // given
@@ -122,11 +122,11 @@ _:a a dnr:TripleCollection ;
             var collection = configuration.LoadObject<BaseTripleCollection>(new Uri("http://example.com/indexedCollection"));
 
             // then
-            Assert.IsNotNull(collection);
-            Assert.IsTrue(collection is TreeIndexedTripleCollection);
+            Assert.NotNull(collection);
+            Assert.True(collection is TreeIndexedTripleCollection);
         }
 
-        [Test, ExpectedException(typeof(ArgumentException), ExpectedMessage = "Resource <http://example.com/notSuchObject> was not found is configuration graph")]
+        [Fact]
         public void ShouldThrowWhenUriNodeIsNotFound()
         {
             // given
@@ -141,10 +141,11 @@ _:a a dnr:TripleCollection ;
             var configuration = new ConfigurationLoader("configuration.ttl");
 #endif
             // then
-            configuration.LoadObject<BaseTripleCollection>(new Uri("http://example.com/notSuchObject"));
+            var exception = Assert.Throws<ArgumentException>(() => configuration.LoadObject<BaseTripleCollection>(new Uri("http://example.com/notSuchObject")));
+            Assert.Equal("Resource <http://example.com/notSuchObject> was not found is configuration graph", exception.Message);
         }
 
-        [Test, ExpectedException(typeof(ArgumentException), ExpectedMessage = "Resource _:store was not found is configuration graph")]
+        [Fact]
         public void ShouldThrowWhenBlankNodeIsNotFound()
         {
             // given
@@ -160,10 +161,11 @@ _:a a dnr:TripleCollection ;
 #endif
 
             // then
-            configuration.LoadObject<BaseTripleCollection>("store");
+            var exception = Assert.Throws<ArgumentException>(() => configuration.LoadObject<BaseTripleCollection>("store"));
+            Assert.Equal("Resource _:store was not found is configuration graph", exception.Message);
         }
 
-        [Test, ExpectedException(typeof(InvalidCastException))]
+        [Fact]
         public void ShouldThrowWhenTryingToLoadWrongType()
         {
             // given
@@ -178,7 +180,7 @@ _:a a dnr:TripleCollection ;
             var configuration = new ConfigurationLoader("configuration.ttl");
 #endif
             // then
-            configuration.LoadObject<TripleStore>(new Uri("http://example.com/indexedCollection"));
+            Assert.Throws<InvalidCastException>(() => configuration.LoadObject<TripleStore>(new Uri("http://example.com/indexedCollection")));
         } 
     }
 }

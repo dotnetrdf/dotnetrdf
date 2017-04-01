@@ -29,24 +29,25 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Net;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF
 {
-    [TestFixture]
+
     public class BasicTests2 : BaseTest
     {
 
 #if !PORTABLE
 
-        [Test]
+        [SkippableFact]
         public void GraphEquality() {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
             {
-                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
             }
 
             try
@@ -67,14 +68,14 @@ namespace VDS.RDF
                 Console.WriteLine("Loaded second copy OK - " + h.Triples.Count + " Triples");
 
                 //Should have same Base Uri
-                Assert.AreEqual(g.BaseUri, h.BaseUri, "Should have the same Base URI after being loaded from the same URI via the URILoader");
+                Assert.Equal(g.BaseUri, h.BaseUri);
 
                 //Do equality check
                 Console.WriteLine("Checking the Equality of the Graphs");
                 //TestTools.CompareGraphs(g, h, true);
                 Dictionary<INode, INode> mapping;
                 bool equals = g.Equals(h, out mapping);
-                Assert.IsTrue(equals, "Graphs should have been equal");
+                Assert.True(equals, "Graphs should have been equal");
                 if (mapping != null)
                 {
                     Console.WriteLine("Blank Node Mapping was:");
@@ -92,10 +93,10 @@ namespace VDS.RDF
                 VDS.RDF.Parsing.UriLoader.Load(i, target2);
 
                 //Should have different Base URIs and be non-equal
-                Assert.AreNotEqual(g.BaseUri, i.BaseUri, "Graphs retrieved from different URIs via the URILoader should have different Base URIs");
-                Assert.AreNotEqual(h.BaseUri, i.BaseUri, "Graphs retrieved from different URIs via the URILoader should have different Base URIs");
-                Assert.IsFalse(g.Equals(i));
-                Assert.IsFalse(h.Equals(i));
+                Assert.Equal(g.BaseUri, i.BaseUri);
+                Assert.Equal(h.BaseUri, i.BaseUri);
+                Assert.False(g.Equals(i));
+                Assert.False(h.Equals(i));
                 //TestTools.CompareGraphs(g, i, false);
                 //TestTools.CompareGraphs(h, i, false);
 
@@ -105,7 +106,7 @@ namespace VDS.RDF
                 TestTools.ReportError("Web Exception", webEx);
                 Console.WriteLine();
                 Console.WriteLine("Unable to retrieve the Graphs from the Web successfully!");
-                Assert.Inconclusive();
+                throw new SkipTestException("Unable to retrieve the graphs from the web successfully.");
             }
             catch (RdfParseException parseEx)
             {
@@ -123,7 +124,7 @@ namespace VDS.RDF
             }
         }
 
-        [Test]
+        [Fact]
         public void GraphSubGraphMatching()
         {
             Graph parent = new Graph();
@@ -135,18 +136,18 @@ namespace VDS.RDF
             //Check method calls
             Dictionary<INode, INode> mapping;
             Console.WriteLine("Doing basic sub-graph matching with no BNode tests");
-            Assert.IsTrue(parent.HasSubGraph(subgraph, out mapping), "Failed to match the sub-graph as expected");
-            Assert.IsFalse(parent.IsSubGraphOf(subgraph, out mapping), "Parent should not be a sub-graph of the sub-graph");
-            Assert.IsFalse(subgraph.HasSubGraph(parent, out mapping), "Sub-graph should not have parent as its sub-graph");
-            Assert.IsTrue(subgraph.IsSubGraphOf(parent, out mapping), "Failed to match the sub-graph as expected");
+            Assert.True(parent.HasSubGraph(subgraph, out mapping), "Failed to match the sub-graph as expected");
+            Assert.False(parent.IsSubGraphOf(subgraph, out mapping), "Parent should not be a sub-graph of the sub-graph");
+            Assert.False(subgraph.HasSubGraph(parent, out mapping), "Sub-graph should not have parent as its sub-graph");
+            Assert.True(subgraph.IsSubGraphOf(parent, out mapping), "Failed to match the sub-graph as expected");
             Console.WriteLine("OK");
             Console.WriteLine();
 
             //Add an extra triple into the Graph which will cause it to no longer be a sub-graph
             Console.WriteLine("Adding an extra Triple so the sub-graph is no longer such");
             subgraph.Assert(new Triple(subgraph.CreateUriNode("eg:Rocket"), subgraph.CreateUriNode("rdf:type"), subgraph.CreateUriNode("eg:AirVehicle")));
-            Assert.IsFalse(parent.HasSubGraph(subgraph, out mapping), "Sub-graph should no longer be considered a sub-graph");
-            Assert.IsFalse(subgraph.IsSubGraphOf(parent, out mapping), "Sub-graph should no longer be considered a sub-graph");
+            Assert.False(parent.HasSubGraph(subgraph, out mapping), "Sub-graph should no longer be considered a sub-graph");
+            Assert.False(subgraph.IsSubGraphOf(parent, out mapping), "Sub-graph should no longer be considered a sub-graph");
             Console.WriteLine("OK");
             Console.WriteLine();
 
@@ -156,23 +157,23 @@ namespace VDS.RDF
             subgraph.NamespaceMap.Import(parent.NamespaceMap);
             subgraph.Assert(parent.GetTriplesWithSubject(parent.CreateUriNode("eg:FordFiesta")));
             Console.WriteLine("Adding additional information to the parent Graph, this should not affect the fact that the sub-graph is a sub-graph of it");
-            Assert.IsTrue(parent.HasSubGraph(subgraph, out mapping), "Failed to match the sub-graph as expected");
-            Assert.IsFalse(parent.IsSubGraphOf(subgraph, out mapping), "Parent should not be a sub-graph of the sub-graph");
-            Assert.IsFalse(subgraph.HasSubGraph(parent, out mapping), "Sub-graph should not have parent as its sub-graph");
-            Assert.IsTrue(subgraph.IsSubGraphOf(parent, out mapping), "Failed to match the sub-graph as expected");
+            Assert.True(parent.HasSubGraph(subgraph, out mapping), "Failed to match the sub-graph as expected");
+            Assert.False(parent.IsSubGraphOf(subgraph, out mapping), "Parent should not be a sub-graph of the sub-graph");
+            Assert.False(subgraph.HasSubGraph(parent, out mapping), "Sub-graph should not have parent as its sub-graph");
+            Assert.True(subgraph.IsSubGraphOf(parent, out mapping), "Failed to match the sub-graph as expected");
             Console.WriteLine("OK");
             Console.WriteLine();
 
             //Remove stuff from parent graph so it won't match any more
             Console.WriteLine("Removing stuff from parent graph so that it won't have the sub-graph anymore");
             parent.Retract(parent.GetTriplesWithSubject(parent.CreateUriNode("eg:FordFiesta")).ToList());
-            Assert.IsFalse(parent.HasSubGraph(subgraph, out mapping), "Parent should no longer contian the sub-graph");
-            Assert.IsFalse(subgraph.IsSubGraphOf(parent, out mapping), "Parent should no longer contain the sub-graph");
+            Assert.False(parent.HasSubGraph(subgraph, out mapping), "Parent should no longer contian the sub-graph");
+            Assert.False(subgraph.IsSubGraphOf(parent, out mapping), "Parent should no longer contain the sub-graph");
             Console.WriteLine("OK");
             Console.WriteLine();
         }
 
-        [Test]
+        [Fact]
         public void GraphSubGraphMatchingWithBNodes()
         {
             Graph parent = new Graph();
@@ -183,33 +184,33 @@ namespace VDS.RDF
             //Check method calls
             Dictionary<INode, INode> mapping;
             Console.WriteLine("Doing basic sub-graph matching with BNode tests");
-            Assert.IsTrue(parent.HasSubGraph(subgraph, out mapping), "Failed to match the sub-graph as expected");
-            Assert.IsFalse(parent.IsSubGraphOf(subgraph, out mapping), "Parent should not be a sub-graph of the sub-graph");
-            Assert.IsFalse(subgraph.HasSubGraph(parent, out mapping), "Sub-graph should not have parent as its sub-graph");
-            Assert.IsTrue(subgraph.IsSubGraphOf(parent, out mapping), "Failed to match the sub-graph as expected");
+            Assert.True(parent.HasSubGraph(subgraph, out mapping), "Failed to match the sub-graph as expected");
+            Assert.False(parent.IsSubGraphOf(subgraph, out mapping), "Parent should not be a sub-graph of the sub-graph");
+            Assert.False(subgraph.HasSubGraph(parent, out mapping), "Sub-graph should not have parent as its sub-graph");
+            Assert.True(subgraph.IsSubGraphOf(parent, out mapping), "Failed to match the sub-graph as expected");
             Console.WriteLine("OK");
             Console.WriteLine();
 
             //Eliminate some of the Triples from the sub-graph
             Console.WriteLine("Eliminating some Triples from the sub-graph and seeing if the mapping still computes OK");
             subgraph.Retract(subgraph.Triples.Skip(2).Take(5).ToList());
-            Assert.IsTrue(parent.HasSubGraph(subgraph, out mapping), "Failed to match the sub-graph as expected");
-            Assert.IsFalse(parent.IsSubGraphOf(subgraph, out mapping), "Parent should not be a sub-graph of the sub-graph");
-            Assert.IsFalse(subgraph.HasSubGraph(parent, out mapping), "Sub-graph should not have parent as its sub-graph");
-            Assert.IsTrue(subgraph.IsSubGraphOf(parent, out mapping), "Failed to match the sub-graph as expected");
+            Assert.True(parent.HasSubGraph(subgraph, out mapping), "Failed to match the sub-graph as expected");
+            Assert.False(parent.IsSubGraphOf(subgraph, out mapping), "Parent should not be a sub-graph of the sub-graph");
+            Assert.False(subgraph.HasSubGraph(parent, out mapping), "Sub-graph should not have parent as its sub-graph");
+            Assert.True(subgraph.IsSubGraphOf(parent, out mapping), "Failed to match the sub-graph as expected");
             Console.WriteLine("OK");
             Console.WriteLine();
 
             Console.WriteLine("Eliminating Blank Nodes from the parent Graph to check that the sub-graph is no longer considered as such afterwards");
             parent.Retract(parent.Triples.Where(t => !t.IsGroundTriple).ToList());
-            Assert.IsFalse(parent.HasSubGraph(subgraph), "Sub-graph should no longer be considered as such");
-            Assert.IsFalse(subgraph.IsSubGraphOf(parent), "Sub-graph should no longer be considered as such");
+            Assert.False(parent.HasSubGraph(subgraph), "Sub-graph should no longer be considered as such");
+            Assert.False(subgraph.IsSubGraphOf(parent), "Sub-graph should no longer be considered as such");
 
         }
 
 #endif
 
-        [Test]
+        [Fact]
         public void GraphWithBNodeEquality()
         {
             try
@@ -222,11 +223,11 @@ namespace VDS.RDF
                 ttlparser.Load(g, "resources\\MergePart1.ttl");
                 ttlparser.Load(h, "resources\\MergePart1.ttl");
 
-                Assert.AreEqual(g.BaseUri, h.BaseUri, "The Base URIs of the Graphs should not be affected by the Load and so should be both null");
+                Assert.Equal(g.BaseUri, h.BaseUri);
                 //TestTools.CompareGraphs(g, h, true);
                 Dictionary<INode, INode> mapping;
                 bool equals = g.Equals(h, out mapping);
-                Assert.IsTrue(equals, "Graphs should have been equal");
+                Assert.True(equals, "Graphs should have been equal");
                 if (mapping != null)
                 {
                     Console.WriteLine("Blank Node Mapping was:");
@@ -248,12 +249,12 @@ namespace VDS.RDF
 
 #if !PORTABLE
 
-        [Test]
+        [SkippableFact]
         public void ParsingUriLoader()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
             {
-                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
             }
 
             int defaultTimeout = Options.UriLoaderTimeout;
@@ -283,12 +284,12 @@ namespace VDS.RDF
 
                     //Load the Test RDF
                     Graph g = new Graph();
-                    Assert.IsNotNull(g);
+                    Assert.NotNull(g);
                     VDS.RDF.Parsing.UriLoader.Load(g, u);
 
                     if (!u.IsFile)
                     {
-                        Assert.AreEqual(u, g.BaseUri);
+                        Assert.Equal(u, g.BaseUri);
                     }
 
                     Console.WriteLine();
@@ -313,7 +314,7 @@ namespace VDS.RDF
 
 #endif
 
-        [Test]
+        [Fact]
         public void NodesEqualityOperator()
         {
             Console.WriteLine("Testing that the overridden operators for Nodes work as expected");
@@ -325,17 +326,17 @@ namespace VDS.RDF
                 IBlankNode b = g.CreateBlankNode();
 
                 Console.WriteLine("Testing using Equals() method");
-                Assert.IsFalse(a.Equals(b), "Two different Blank Nodes should be non-equal");
-                Assert.IsTrue(a.Equals(a), "A Blank Node should be equal to itself");
-                Assert.IsTrue(b.Equals(b), "A Blank Node should be equal to itself");
+                Assert.False(a.Equals(b), "Two different Blank Nodes should be non-equal");
+                Assert.True(a.Equals(a), "A Blank Node should be equal to itself");
+                Assert.True(b.Equals(b), "A Blank Node should be equal to itself");
                 Console.WriteLine("OK");
 
                 Console.WriteLine();
 
                 Console.WriteLine("Testing using == operator");
-                Assert.IsFalse(a == b, "Two different Blank Nodes should be non-equal");
-                Assert.IsTrue(a == a, "A Blank Node should be equal to itself");
-                Assert.IsTrue(b == b, "A Blank Node should be equal to itself");
+                Assert.False(a == b, "Two different Blank Nodes should be non-equal");
+                Assert.True(a == a, "A Blank Node should be equal to itself");
+                Assert.True(b == b, "A Blank Node should be equal to itself");
                 Console.WriteLine("OK");
 
                 Console.WriteLine();
@@ -345,17 +346,17 @@ namespace VDS.RDF
                 INode d = g.CreateBlankNode();
 
                 Console.WriteLine("Now testing with typed as INode using Equals()");
-                Assert.IsFalse(c.Equals(d), "Two different Nodes should be non-equal");
-                Assert.IsTrue(c.Equals(c), "A Node should be equal to itself");
-                Assert.IsTrue(d.Equals(d), "A Node should be equal to itself");
+                Assert.False(c.Equals(d), "Two different Nodes should be non-equal");
+                Assert.True(c.Equals(c), "A Node should be equal to itself");
+                Assert.True(d.Equals(d), "A Node should be equal to itself");
                 Console.WriteLine("OK");
 
                 Console.WriteLine();
 
                 Console.WriteLine("Now testing with typed as INode using == operator");
-                Assert.IsFalse(c == d, "Two different Nodes should be non-equal");
-                Assert.IsTrue(c == c, "A Node should be equal to itself");
-                Assert.IsTrue(d == d, "A Node should be equal to itself");
+                Assert.False(c == d, "Two different Nodes should be non-equal");
+                Assert.True(c == c, "A Node should be equal to itself");
+                Assert.True(d == d, "A Node should be equal to itself");
                 Console.WriteLine("OK");
 
             }
@@ -370,7 +371,7 @@ namespace VDS.RDF
         }
 
 #if !NO_DATA
-        [Test]
+        [Fact]
         public void GraphToDataTable()
         {
             Graph g = new Graph();
@@ -378,8 +379,8 @@ namespace VDS.RDF
 
             DataTable table = (DataTable)g;
 
-            Assert.AreEqual(g.Triples.Count, table.Rows.Count, "Rows should have been equal to original number of Triples");
-            Assert.AreEqual(3, table.Columns.Count, "Should have had 3 columns");
+            Assert.Equal(g.Triples.Count, table.Rows.Count);
+            Assert.Equal(3, table.Columns.Count);
 
             foreach (DataRow row in table.Rows)
             {
@@ -391,15 +392,15 @@ namespace VDS.RDF
             }
         }
 
-        [Test]
+        [Fact]
         public void GraphToDataTable2()
         {
             Graph g = new Graph();
 
             DataTable table = (DataTable)g;
 
-            Assert.AreEqual(g.Triples.Count, table.Rows.Count, "Rows should have been equal to original number of Triples");
-            Assert.AreEqual(3, table.Columns.Count, "Should have had 3 columns");
+            Assert.Equal(g.Triples.Count, table.Rows.Count);
+            Assert.Equal(3, table.Columns.Count);
 
             foreach (DataRow row in table.Rows)
             {
@@ -412,7 +413,7 @@ namespace VDS.RDF
         }
 #endif
 
-        [Test]
+        [Fact]
         public void GraphPersistenceWrapperNodeCreation()
         {
             Graph g = new Graph();

@@ -28,17 +28,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class ResultSetWriterTests
     {
-        [Test]
+        [Fact]
         public void SparqlXmlWriter()
         {
                 Graph g = new Graph();
@@ -63,8 +63,8 @@ namespace VDS.RDF.Query
                 SparqlResultSet results2 = new SparqlResultSet();
                 StringParser.ParseResultSet(results2, output.ToString());
 
-                Assert.AreEqual(((SparqlResultSet)results).Count, results2.Count, "Result Sets should have contained same number of Results");
-                Assert.IsTrue(((SparqlResultSet)results).Equals(results2), "Result Sets should have been equal");
+                Assert.Equal(((SparqlResultSet)results).Count, results2.Count);
+                Assert.True(((SparqlResultSet)results).Equals(results2), "Result Sets should have been equal");
         }
     }
 }

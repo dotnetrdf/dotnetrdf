@@ -27,7 +27,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -39,7 +39,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class PropertyPathEvaluationTests
     {
         private NodeFactory _factory = new NodeFactory();
@@ -112,7 +112,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlPropertyPathEvaluationZeroLength()
         {
             EnsureTestData();
@@ -125,10 +125,10 @@ namespace VDS.RDF.Query
 
             TestTools.ShowMultiset(results);
 
-            Assert.IsFalse(results.IsEmpty, "Results should not be empty");
+            Assert.False(results.IsEmpty, "Results should not be empty");
         }
 
-        [Test]
+        [Fact]
         public void SparqlPropertyPathEvaluationZeroLengthWithTermEnd()
         {
             EnsureTestData();
@@ -142,12 +142,12 @@ namespace VDS.RDF.Query
 
             TestTools.ShowMultiset(results);
 
-            Assert.IsFalse(results.IsEmpty, "Results should not be empty");
-            Assert.AreEqual(1, results.Count, "Expected 1 Result");
-            Assert.AreEqual(rdfsClass, results[1]["x"], "Expected 1 Result set to rdfs:Class");
+            Assert.False(results.IsEmpty, "Results should not be empty");
+            Assert.Equal(1, results.Count);
+            Assert.Equal(rdfsClass, results[1]["x"]);
         }
 
-        [Test]
+        [Fact]
         public void SparqlPropertyPathEvaluationZeroLengthWithTermStart()
         {
             EnsureTestData();
@@ -162,10 +162,10 @@ namespace VDS.RDF.Query
 
             TestTools.ShowMultiset(results);
 
-            Assert.IsFalse(results.IsEmpty, "Results should not be empty");
+            Assert.False(results.IsEmpty, "Results should not be empty");
         }
 
-        [Test]
+        [Fact]
         public void SparqlPropertyPathEvaluationZeroLengthWithBothTerms()
         {
             EnsureTestData();
@@ -181,11 +181,11 @@ namespace VDS.RDF.Query
 
             TestTools.ShowMultiset(results);
 
-            Assert.IsTrue(results.IsEmpty, "Results should  be empty");
-            Assert.IsTrue(results is NullMultiset, "Results should be Null");
+            Assert.True(results.IsEmpty, "Results should  be empty");
+            Assert.True(results is NullMultiset, "Results should be Null");
         }
 
-        [Test]
+        [Fact]
         public void SparqlPropertyPathEvaluationNegatedPropertySet()
         {
             EnsureTestData();
@@ -200,10 +200,10 @@ namespace VDS.RDF.Query
 
             TestTools.ShowMultiset(results);
 
-            Assert.IsFalse(results.IsEmpty, "Results should not be empty");
+            Assert.False(results.IsEmpty, "Results should not be empty");
         }
 
-        [Test]
+        [Fact]
         public void SparqlPropertyPathEvaluationInverseNegatedPropertySet()
         {
             EnsureTestData();
@@ -220,10 +220,10 @@ namespace VDS.RDF.Query
 
             TestTools.ShowMultiset(results);
 
-            Assert.IsFalse(results.IsEmpty, "Results should not be empty");
+            Assert.False(results.IsEmpty, "Results should not be empty");
         }
 
-        [Test]
+        [Fact]
         public void SparqlPropertyPathEvaluationSequencedAlternatives()
         {
             EnsureTestData();
@@ -238,10 +238,10 @@ namespace VDS.RDF.Query
 
             TestTools.ShowMultiset(results);
 
-            Assert.IsFalse(results.IsEmpty, "Results should not be empty");
+            Assert.False(results.IsEmpty, "Results should not be empty");
         }
 
-        [Test]
+        [Fact]
         public void SparqlPropertyPathEvaluationOneOrMorePath()
         {
             TripleStore store = new TripleStore();
@@ -257,10 +257,10 @@ namespace VDS.RDF.Query
 
             TestTools.ShowMultiset(results);
 
-            Assert.IsFalse(results.IsEmpty, "Results should not be empty");
+            Assert.False(results.IsEmpty, "Results should not be empty");
         }
 
-        [Test]
+        [Fact]
         public void SparqlPropertyPathEvaluationOneOrMorePathForward()
         {
             TripleStore store = new TripleStore();
@@ -277,10 +277,10 @@ namespace VDS.RDF.Query
 
             TestTools.ShowMultiset(results);
 
-            Assert.IsFalse(results.IsEmpty, "Results should not be empty");
+            Assert.False(results.IsEmpty, "Results should not be empty");
         }
 
-        [Test]
+        [Fact]
         public void SparqlPropertyPathEvaluationOneOrMorePathReverse()
         {
             TripleStore store = new TripleStore();
@@ -297,10 +297,10 @@ namespace VDS.RDF.Query
 
             TestTools.ShowMultiset(results);
 
-            Assert.IsFalse(results.IsEmpty, "Results should not be empty");
+            Assert.False(results.IsEmpty, "Results should not be empty");
         }
 
-        [Test]
+        [Fact]
         public void SparqlPropertyPathEvaluationZeroOrMorePath()
         {
             TripleStore store = new TripleStore();
@@ -316,10 +316,10 @@ namespace VDS.RDF.Query
 
             TestTools.ShowMultiset(results);
 
-            Assert.IsFalse(results.IsEmpty, "Results should not be empty");
+            Assert.False(results.IsEmpty, "Results should not be empty");
         }
 
-        [Test]
+        [Fact]
         public void SparqlPropertyPathEvaluationZeroOrMorePathForward()
         {
             TripleStore store = new TripleStore();
@@ -336,10 +336,10 @@ namespace VDS.RDF.Query
 
             TestTools.ShowMultiset(results);
 
-            Assert.IsFalse(results.IsEmpty, "Results should not be empty");
+            Assert.False(results.IsEmpty, "Results should not be empty");
         }
 
-        [Test]
+        [Fact]
         public void SparqlPropertyPathEvaluationZeroOrMorePathReverse()
         {
             TripleStore store = new TripleStore();
@@ -356,10 +356,10 @@ namespace VDS.RDF.Query
 
             TestTools.ShowMultiset(results);
 
-            Assert.IsFalse(results.IsEmpty, "Results should not be empty");
+            Assert.False(results.IsEmpty, "Results should not be empty");
         }
 
-        [Test]
+        [Fact]
         public void SparqlPropertyPathEvaluationGraphInteraction()
         {
             String query = @"PREFIX ex: <http://www.example.org/schema#>
@@ -381,12 +381,12 @@ WHERE
             store.LoadFromString(data, new NQuadsParser());
 
             SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType);
-            Assert.AreEqual(0, results.Results.Count);
+            Assert.NotNull(results);
+            Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
+            Assert.Equal(0, results.Results.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlPropertyPathEvaluationDuplicates()
         {
             IGraph g = new Graph();
@@ -401,16 +401,16 @@ WHERE
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
 
             SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.IsFalse(results.IsEmpty);
+            Assert.NotNull(results);
+            Assert.False(results.IsEmpty);
             SparqlResultSet resultsDistinct = processor.ProcessQuery(qDistinct) as SparqlResultSet;
-            Assert.IsNotNull(resultsDistinct);
-            Assert.IsFalse(resultsDistinct.IsEmpty);
+            Assert.NotNull(resultsDistinct);
+            Assert.False(resultsDistinct.IsEmpty);
 
-            Assert.AreEqual(resultsDistinct.Count, results.Count);
+            Assert.Equal(resultsDistinct.Count, results.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlPropertyPathEvaluationCore349RigorousEvaluation()
         {
             try
@@ -433,12 +433,12 @@ WHERE
                 Console.WriteLine(q.ToAlgebra().ToString());
                 LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
                 SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
-                Assert.IsNotNull(results);
+                Assert.NotNull(results);
 
                 Console.WriteLine();
                 TestTools.ShowResults(results);
 
-                Assert.AreEqual(2, results.Count);
+                Assert.Equal(2, results.Count);
             }
             finally
             {
@@ -446,7 +446,7 @@ WHERE
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlPropertyPathEvaluationCore349NonRigorousEvaluation()
         {
             try
@@ -469,12 +469,12 @@ WHERE
                 Console.WriteLine(q.ToAlgebra().ToString());
                 LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
                 SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
-                Assert.IsNotNull(results);
+                Assert.NotNull(results);
 
                 Console.WriteLine();
                 TestTools.ShowResults(results);
 
-                Assert.AreEqual(2, results.Count);
+                Assert.Equal(2, results.Count);
             }
             finally
             {
@@ -482,7 +482,7 @@ WHERE
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlPropertyPathEvaluationNonRigorous()
         {
             try
@@ -498,12 +498,12 @@ WHERE
                 Console.WriteLine(q.ToAlgebra().ToString());
                 LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
                 SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
-                Assert.IsNotNull(results);
+                Assert.NotNull(results);
 
                 Console.WriteLine();
                 TestTools.ShowResults(results);
 
-                Assert.AreEqual(73, results.Count);
+                Assert.Equal(73, results.Count);
             }
             finally
             {
@@ -512,7 +512,7 @@ WHERE
         }
 
 #if !NO_FILE
-        [Test]
+        [Fact]
         public void SparqlPropertyPathEvaluationCore395ExactQuery()
         {
             IGraph g = new Graph();
@@ -525,12 +525,12 @@ WHERE
             Assert.NotNull(results);
             TestTools.ShowResults(results);
 
-            Assert.IsInstanceOf(typeof(SparqlResultSet), results);
+            Assert.IsType(typeof(SparqlResultSet), results);
             SparqlResultSet rset = (SparqlResultSet) results;
-            Assert.AreEqual(3, rset.Count);
+            Assert.Equal(3, rset.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlPropertyPathEvaluationCore395ListQuery()
         {
             IGraph g = new Graph();
@@ -552,12 +552,12 @@ select ?superclass where {
             Assert.NotNull(results);
             TestTools.ShowResults(results);
 
-            Assert.IsInstanceOf(typeof(SparqlResultSet), results);
+            Assert.IsType(typeof(SparqlResultSet), results);
             SparqlResultSet rset = (SparqlResultSet)results;
-            Assert.AreEqual(2, rset.Count);
+            Assert.Equal(2, rset.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlPropertyPathEvaluationCore441ZeroOrMorePath()
         {
             IGraph g = new Graph();
@@ -572,13 +572,13 @@ select ?superclass where {
             Assert.NotNull(results);
             TestTools.ShowResults(results);
 
-            Assert.IsInstanceOf(typeof(SparqlResultSet), results);
+            Assert.IsType(typeof(SparqlResultSet), results);
             SparqlResultSet rset = (SparqlResultSet)results;
-            Assert.AreEqual(1, rset.Count);
-            Assert.AreEqual(g.CreateUriNode("Frame:Sheep"), rset[0]["prey"]);
+            Assert.Equal(1, rset.Count);
+            Assert.Equal(g.CreateUriNode("Frame:Sheep"), rset[0]["prey"]);
         }
 
-        [Test]
+        [Fact]
         public void SparqlPropertyPathEvaluationCore441OneOrMorePath()
         {
             IGraph g = new Graph();
@@ -593,12 +593,12 @@ select ?superclass where {
             Assert.NotNull(results);
             TestTools.ShowResults(results);
 
-            Assert.IsInstanceOf(typeof(SparqlResultSet), results);
+            Assert.IsType(typeof(SparqlResultSet), results);
             SparqlResultSet rset = (SparqlResultSet)results;
-            Assert.AreEqual(0, rset.Count);
+            Assert.Equal(0, rset.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlPropertyPathEvaluationCore441NoPath()
         {
             IGraph g = new Graph();
@@ -612,10 +612,10 @@ select ?superclass where {
             Assert.NotNull(results);
             TestTools.ShowResults(results);
 
-            Assert.IsInstanceOf(typeof(SparqlResultSet), results);
+            Assert.IsType(typeof(SparqlResultSet), results);
             SparqlResultSet rset = (SparqlResultSet)results;
-            Assert.AreEqual(1, rset.Count);
-            Assert.AreEqual(g.CreateUriNode("Frame:Sheep"), rset[0]["prey"]);
+            Assert.Equal(1, rset.Count);
+            Assert.Equal(g.CreateUriNode("Frame:Sheep"), rset[0]["prey"]);
         }
 #endif
     }

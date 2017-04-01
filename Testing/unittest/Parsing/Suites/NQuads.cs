@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using VDS.RDF.XunitExtensions;
+using Xunit;
 
 namespace VDS.RDF.Parsing.Suites
 {
-    [TestFixture]
+
     public class NQuads
         : BaseDatasetParserSuite
     {
@@ -17,7 +18,7 @@ namespace VDS.RDF.Parsing.Suites
             this.Parser.Warning += TestTools.WarningPrinter;
         }
 
-        [Test]
+        [SkippableFact]
         public void ParsingSuitesNQuads11()
         {
             //Nodes for positive and negative tests
@@ -27,15 +28,15 @@ namespace VDS.RDF.Parsing.Suites
             INode negSyntaxTest = g.CreateUriNode("rdft:TestNQuadsNegativeSyntax");
 
             //Run manifests
-            this.RunManifest(@"resources\nquads11\manifest.ttl", posSyntaxTest, negSyntaxTest);
+            this.RunManifest(@"..\\resources\nquads11\manifest.ttl", posSyntaxTest, negSyntaxTest);
 
-            if (this.Count == 0) Assert.Fail("No tests found");
+            if (this.Count == 0) Assert.True(false, "No tests found");
 
             Console.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed");
             Console.WriteLine((((double)this.Passed / (double)this.Count) * 100) + "% Passed");
 
-            if (this.Failed > 0) Assert.Fail(this.Failed + " Tests failed");
-            if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate");
+            if (this.Failed > 0) Assert.True(false, this.Failed + " Tests failed");
+            if (this.Indeterminate > 0) throw new SkipTestException(Indeterminate + " Tests are indeterminate");
         }
     }
 }

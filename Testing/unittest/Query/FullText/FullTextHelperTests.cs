@@ -27,7 +27,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Patterns;
@@ -36,7 +36,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.FullText
 {
-    [TestFixture]
+
     public class FullTextHelperTests
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
@@ -72,11 +72,11 @@ namespace VDS.RDF.Query.FullText
                     Console.WriteLine("Limit: " + (propFunc.ObjectArgs.Count() > 2 ? propFunc.ObjectArgs.Skip(2).First().ToString() : "N/A"));
                     Console.WriteLine();
 
-                    if (expectedSubjArgs > 0) Assert.AreEqual(expectedSubjArgs, propFunc.SubjectArgs.Count(), "Wrong number of subject arguments");
-                    if (expectedObjArgs > 0) Assert.AreEqual(expectedObjArgs, propFunc.ObjectArgs.Count(), "Wrong number of object arguments");
+                    if (expectedSubjArgs > 0) Assert.Equal(expectedSubjArgs, propFunc.SubjectArgs.Count());
+                    if (expectedObjArgs > 0) Assert.Equal(expectedObjArgs, propFunc.ObjectArgs.Count());
                 }
 
-                Assert.AreEqual(expectedPatterns, ps.Count);
+                Assert.Equal(expectedPatterns, ps.Count);
             }
             finally
             {
@@ -84,49 +84,49 @@ namespace VDS.RDF.Query.FullText
             }
         }
 
-        [Test]
+        [Fact]
         public void FullTextHelperExtractPatterns1()
         {
             this.TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch 'text' }", 1, 1, 1);
         }
 
-        [Test]
+        [Fact]
         public void FullTextHelperExtractPatterns2()
         {
             this.TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch 'text' . ?s2 pf:textMatch 'text2' }", 2, 1, 1);
         }
 
-        [Test]
+        [Fact]
         public void FullTextHelperExtractPatterns3()
         {
             this.TestExtractPatterns("SELECT * WHERE { (?match ?score) pf:textMatch 'text' }", 1, 2, 1);
         }
 
-        [Test]
+        [Fact]
         public void FullTextHelperExtractPatterns4()
         {
             this.TestExtractPatterns("SELECT * WHERE { (?match ?score) pf:textMatch 'text' . ?match2 pf:textMatch 'text2' }", 2, 0, 1);
         }
 
-        [Test]
+        [Fact]
         public void FullTextHelperExtractPatterns5()
         {
             this.TestExtractPatterns("SELECT * WHERE { (?match ?score) pf:textMatch 'text' . (?match2 ?score2) pf:textMatch 'text2' }", 2, 2, 1);
         }
 
-        [Test]
+        [Fact]
         public void FullTextHelperExtractPatterns6()
         {
             this.TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch ('text' 0.75) }", 1, 1, 2);
         }
 
-        [Test]
+        [Fact]
         public void FullTextHelperExtractPatterns7()
         {
             this.TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch ('text' 0.75 25) }", 1, 1, 3);
         }
 
-        [Test]
+        [Fact]
         public void FullTextHelperExtractPatterns8()
         {
             this.TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch ('text' 25) }", 1, 1, 2);

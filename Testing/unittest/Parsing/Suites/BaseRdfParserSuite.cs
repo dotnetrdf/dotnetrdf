@@ -25,11 +25,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.IO;
-using NUnit.Framework;
+using Xunit;
 
 namespace VDS.RDF.Parsing.Suites
 {
-    [TestFixture]
+
     public abstract class BaseRdfParserSuite : BaseParserSuite<IRdfReader, Graph>
     {
         protected BaseRdfParserSuite(IRdfReader testParser, IRdfReader resultsParser, String baseDir)

@@ -24,17 +24,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System.IO;
-using NUnit.Framework;
+using Xunit;
 
 namespace VDS.RDF.Parsing.Handlers
 {
-    [TestFixture]
+
     public class FileLoaderHandlerTests
     {
-        private const string TestDataFile = "resources\\temp.ttl";
+        private const string TestDataFile = "resources\\file_loader_handler_tests_temp.ttl";
 
-        [SetUp]
-        public void Setup()
+        public FileLoaderHandlerTests()
         {
             if (File.Exists(TestDataFile))
             {
@@ -46,7 +45,7 @@ namespace VDS.RDF.Parsing.Handlers
             g.SaveToFile(TestDataFile);
         }
 
-        [Test]
+        [Fact]
         public void ParsingFileLoaderGraphHandlerImplicitTurtle()
         {
             Graph g = new Graph();
@@ -57,10 +56,10 @@ namespace VDS.RDF.Parsing.Handlers
 #endif
 
             TestTools.ShowGraph(g);
-            Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
+            Assert.False(g.IsEmpty, "Graph should not be empty");
         }
 
-        [Test]
+        [Fact]
         public void ParsingFileLoaderGraphHandlerExplicitTurtle()
         {
             Graph g = new Graph();
@@ -75,10 +74,10 @@ namespace VDS.RDF.Parsing.Handlers
 #endif
 
             TestTools.ShowGraph(g);
-            Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
+            Assert.False(g.IsEmpty, "Graph should not be empty");
         }
 
-        [Test]
+        [Fact]
         public void ParsingFileLoaderCountHandlerTurtle()
         {
             Graph orig = new Graph();
@@ -90,10 +89,10 @@ namespace VDS.RDF.Parsing.Handlers
                 StreamLoader.Load(handler, TestDataFile, input);
             }
 #else
-            FileLoader.Load(handler, "temp.ttl");
+            FileLoader.Load(handler, TestDataFile);
 #endif
 
-            Assert.AreEqual(orig.Triples.Count, handler.Count);
+            Assert.Equal(orig.Triples.Count, handler.Count);
         }
     }
 }

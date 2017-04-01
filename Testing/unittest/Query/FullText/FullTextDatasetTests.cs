@@ -28,7 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using Lucene.Net;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
@@ -45,12 +45,12 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.FullText
 {
-    [TestFixture]
+    [Collection("FullText")]
     public class FullTextDatasetTests
     {
         private NTriplesFormatter _formatter = new NTriplesFormatter();
 
-        [Test]
+        [Fact]
         public void FullTextDatasetLucene1()
         {
             //Lucene Index
@@ -66,7 +66,7 @@ namespace VDS.RDF.Query.FullText
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             dataset.AddGraph(g);
-            Assert.IsTrue(dataset.HasGraph(g.BaseUri), "Graph should exist in dataset");
+            Assert.True(dataset.HasGraph(g.BaseUri), "Graph should exist in dataset");
 
             //Now do a search to check all the triples got indexed
             String searchTerm = "http";
@@ -76,7 +76,7 @@ namespace VDS.RDF.Query.FullText
             {
                 INode targetNode = searchTriple.Subject;
                 IEnumerable<IFullTextSearchResult> results = searcher.Match(searchTerm);
-                Assert.IsTrue(results.Any(r => r.Node.Equals(targetNode)), "Did not find expected node " + targetNode.ToString(this._formatter) + " in search results using search term '" + searchTerm + "' (found " + results.Count() + " results)");
+                Assert.True(results.Any(r => r.Node.Equals(targetNode)), "Did not find expected node " + targetNode.ToString(this._formatter) + " in search results using search term '" + searchTerm + "' (found " + results.Count() + " results)");
                 Console.WriteLine();
             }
 
@@ -88,7 +88,7 @@ namespace VDS.RDF.Query.FullText
             {
                 INode targetNode = searchTriple.Subject;
                 IEnumerable<IFullTextSearchResult> results = searcher.Match(searchTerm);
-                Assert.IsFalse(results.Any(r => r.Node.Equals(targetNode)), "Found unexpected node " + targetNode.ToString(this._formatter) + " in search results using search term '" + searchTerm + "' (found " + results.Count() + " results)");
+                Assert.False(results.Any(r => r.Node.Equals(targetNode)), "Found unexpected node " + targetNode.ToString(this._formatter) + " in search results using search term '" + searchTerm + "' (found " + results.Count() + " results)");
                 Console.WriteLine();
             }
 
@@ -96,7 +96,7 @@ namespace VDS.RDF.Query.FullText
             indexer.Dispose();
         }
 
-        [Test]
+        [Fact]
         public void FullTextDatasetLucene2()
         {
             //Lucene Index
@@ -113,7 +113,7 @@ namespace VDS.RDF.Query.FullText
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             dataset.AddGraph(g);
-            Assert.IsTrue(dataset.HasGraph(g.BaseUri), "Graph should exist in dataset");
+            Assert.True(dataset.HasGraph(g.BaseUri), "Graph should exist in dataset");
 
             //Now do a search to check all the triples got indexed
             String searchTerm = "http";
@@ -122,7 +122,7 @@ namespace VDS.RDF.Query.FullText
             {
                 INode targetNode = searchTriple.Subject;
                 IEnumerable<IFullTextSearchResult> results = searcher.Match(searchTerm);
-                Assert.IsTrue(results.Any(r => r.Node.Equals(targetNode)), "Did not find expected node " + targetNode.ToString(this._formatter) + " in search results using search term '" + searchTerm + "' (found " + results.Count() + " results)");
+                Assert.True(results.Any(r => r.Node.Equals(targetNode)), "Did not find expected node " + targetNode.ToString(this._formatter) + " in search results using search term '" + searchTerm + "' (found " + results.Count() + " results)");
                 Console.WriteLine();
             }
 
@@ -134,7 +134,7 @@ namespace VDS.RDF.Query.FullText
             {
                 INode targetNode = searchTriple.Subject;
                 IEnumerable<IFullTextSearchResult> results = searcher.Match(searchTerm);
-                Assert.IsFalse(results.Any(r => r.Node.Equals(targetNode)), "Found unexpected node " + targetNode.ToString(this._formatter) + " in search results using search term '" + searchTerm + "' (found " + results.Count() + " results)");
+                Assert.False(results.Any(r => r.Node.Equals(targetNode)), "Found unexpected node " + targetNode.ToString(this._formatter) + " in search results using search term '" + searchTerm + "' (found " + results.Count() + " results)");
                 Console.WriteLine();
             }
 

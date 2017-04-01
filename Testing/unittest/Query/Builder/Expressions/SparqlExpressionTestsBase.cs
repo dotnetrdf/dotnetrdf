@@ -25,7 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
@@ -41,10 +41,10 @@ namespace VDS.RDF.Query.Builder.Expressions
                                                                                 Action<ISparqlExpression> assertLeftOperand = null,
                                                                                 Action<ISparqlExpression> assertRightOperand = null)
         {
-            Assert.AreEqual(typeof(TExpressionType), expression.Expression.GetType());
+            Assert.Equal(typeof(TExpressionType), expression.Expression.GetType());
             if (assertLeftOperand == null)
             {
-                Assert.AreSame(Left, expression.Expression.Arguments.ElementAt(0));
+                Assert.Same(Left, expression.Expression.Arguments.ElementAt(0));
             }
             else
             {
@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Builder.Expressions
             }
             if (assertRightOperand == null)
             {
-                Assert.AreSame(Right, expression.Expression.Arguments.ElementAt(1));
+                Assert.Same(Right, expression.Expression.Arguments.ElementAt(1));
             }
             else
             {
@@ -62,8 +62,8 @@ namespace VDS.RDF.Query.Builder.Expressions
 
         protected void AssertCorrectConstantTerm<TConstant>(ISparqlExpression operand, TConstant value)
         {
-            Assert.IsTrue(operand is ConstantTerm);
-            Assert.AreEqual(value.ToConstantTerm().ToString(), operand.ToString());
+            Assert.True(operand is ConstantTerm);
+            Assert.Equal(value.ToConstantTerm().ToString(), operand.ToString());
         }
     }
 }

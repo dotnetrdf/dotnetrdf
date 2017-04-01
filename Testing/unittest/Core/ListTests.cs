@@ -27,11 +27,11 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 
 namespace VDS.RDF
 {
-    [TestFixture]
+
     public class ListTests
     {
         private INode TestListsBasic(IGraph g)
@@ -41,37 +41,37 @@ namespace VDS.RDF
 
             TestTools.ShowGraph(g);
 
-            Assert.AreEqual(items.Count * 2, g.Triples.Count, "Expected " + (items.Count * 2) + " Triples");
+            Assert.Equal(items.Count * 2, g.Triples.Count);
             List<INode> listItems = g.GetListItems(listRoot).ToList();
-            Assert.AreEqual(items.Count, listItems.Count, "Expected " + items.Count + " Items in the List");
+            Assert.Equal(items.Count, listItems.Count);
 
             for (int i = 0; i < items.Count; i++)
             {
-                Assert.AreEqual(items[i], listItems[i], "Items were not in list in correct order");
+                Assert.Equal(items[i], listItems[i]);
             }
 
-            Assert.IsTrue(listRoot.IsListRoot(g), "Should be considered a list root");
+            Assert.True(listRoot.IsListRoot(g), "Should be considered a list root");
 
             List<INode> listNodes = g.GetListNodes(listRoot).Skip(1).ToList();
             foreach (INode n in listNodes)
             {
-                Assert.IsFalse(n.IsListRoot(g), "Should not be considered a list root");
+                Assert.False(n.IsListRoot(g), "Should not be considered a list root");
             }
 
             return listRoot;
         }
 
-        [Test]
+        [Fact]
         public void GraphLists1()
         {
             Graph g = new Graph();
             INode listRoot = this.TestListsBasic(g);
 
             g.RetractList(listRoot);
-            Assert.AreEqual(0, g.Triples.Count, "Should be no triples after the list is retracted");
+            Assert.Equal(0, g.Triples.Count);
         }
 
-        [Test]
+        [Fact]
         public void GraphLists2()
         {
             Graph g = new Graph();
@@ -82,20 +82,20 @@ namespace VDS.RDF
             g.AddToList(listRoot, items);
             TestTools.ShowGraph(g);
 
-            Assert.AreEqual(items.Count * 4, g.Triples.Count, "Expected " + (items.Count * 4) + " Triples");
+            Assert.Equal(items.Count * 4, g.Triples.Count);
             List<INode> listItems = g.GetListItems(listRoot).ToList();
-            Assert.AreEqual(items.Count * 2, listItems.Count, "Expected " + (items.Count * 2) + " Items in the List");
+            Assert.Equal(items.Count * 2, listItems.Count);
 
             for (int i = 0; i < items.Count; i++)
             {
-                Assert.AreEqual(items[i], listItems[i + 10], "Items were not in list in correct order");
+                Assert.Equal(items[i], listItems[i + 10]);
             }
 
             g.RetractList(listRoot);
-            Assert.AreEqual(0, g.Triples.Count, "Should be no triples after the list is retracted");
+            Assert.Equal(0, g.Triples.Count);
         }
 
-        [Test]
+        [Fact]
         public void GraphLists3()
         {
             Graph g = new Graph();
@@ -106,66 +106,71 @@ namespace VDS.RDF
             g.RemoveFromList(listRoot, items);
             TestTools.ShowGraph(g);
 
-            Assert.AreEqual(items.Count * 2, g.Triples.Count, "Expected " + (items.Count * 2) + " Triples");
+            Assert.Equal(items.Count * 2, g.Triples.Count);
             List<INode> listItems = g.GetListItems(listRoot).ToList();
-            Assert.AreEqual(items.Count * 2, listItems.Count * 2, "Expected " + (items.Count * 2) + " Items in the List");
+            Assert.Equal(items.Count * 2, listItems.Count * 2);
 
             for (int i = 0; i < items.Count; i++)
             {
-                Assert.IsFalse(listItems.Contains(items[i]), "Item " + items[i].ToString() + " which should have been removed from the list is still present");
+                Assert.False(listItems.Contains(items[i]), "Item " + items[i].ToString() + " which should have been removed from the list is still present");
             }
 
             g.RetractList(listRoot);
-            Assert.AreEqual(0, g.Triples.Count, "Should be no triples after the list is retracted");
+            Assert.Equal(0, g.Triples.Count);
         }
 
-        [Test]
+        [Fact]
         public void GraphLists4()
         {
             Graph g = new Graph();
             g.AddToList(g.CreateBlankNode(), Enumerable.Empty<INode>());
         }
 
-        [Test]
+        [Fact]
         public void GraphLists5()
         {
             Graph g = new Graph();
             g.AddToList(g.CreateBlankNode(), Enumerable.Empty<INode>());
         }
 
-        [Test, ExpectedException(typeof(RdfException))]
+        [Fact]
         public void GraphListsError1()
         {
             Graph g = new Graph();
-            g.GetListItems(g.CreateBlankNode());
+
+            Assert.Throws<RdfException>(() => g.GetListItems(g.CreateBlankNode()));
         }
 
-        [Test, ExpectedException(typeof(RdfException))]
+        [Fact]
         public void GraphListsError2()
         {
             Graph g = new Graph();
-            g.GetListAsTriples(g.CreateBlankNode());
+
+            Assert.Throws<RdfException>(() => g.GetListAsTriples(g.CreateBlankNode()));
         }
 
-        [Test, ExpectedException(typeof(RdfException))]
+        [Fact]
         public void GraphListsError3()
         {
             Graph g = new Graph();
-            g.RetractList(g.CreateBlankNode());
+
+            Assert.Throws<RdfException>(() => g.RetractList(g.CreateBlankNode()));
         }
 
-        [Test, ExpectedException(typeof(RdfException))]
+        [Fact]
         public void GraphListsError4()
         {
             Graph g = new Graph();
-            g.AddToList<int>(g.CreateBlankNode(), Enumerable.Range(1, 10), i => i.ToLiteral(g));
+
+            Assert.Throws<RdfException>(() => g.AddToList<int>(g.CreateBlankNode(), Enumerable.Range(1, 10), i => i.ToLiteral(g)));
         }
 
-        [Test, ExpectedException(typeof(RdfException))]
+        [Fact]
         public void GraphListsError5()
         {
             Graph g = new Graph();
-            g.RemoveFromList<int>(g.CreateBlankNode(), Enumerable.Range(1, 10), i => i.ToLiteral(g));
+
+            Assert.Throws<RdfException>(() => g.RemoveFromList<int>(g.CreateBlankNode(), Enumerable.Range(1, 10), i => i.ToLiteral(g)));
         }
     }
 }

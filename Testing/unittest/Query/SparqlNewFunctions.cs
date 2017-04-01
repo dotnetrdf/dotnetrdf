@@ -27,7 +27,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
@@ -37,10 +37,10 @@ namespace VDS.RDF.Query
     /// <summary>
     /// Summary description for SparqlNewFunctions
     /// </summary>
-    [TestFixture]
+
     public class SparqlNewFunctions
     {
-        [Test]
+        [Fact]
         public void SparqlFunctionsIsNumeric()
         {
             Graph g = new Graph();
@@ -65,11 +65,11 @@ namespace VDS.RDF.Query
 
             Object results = store.ExecuteQuery(q);
 
-            Assert.IsTrue(results is SparqlResultSet, "Result should be a SPARQL Result Set");
+            Assert.True(results is SparqlResultSet, "Result should be a SPARQL Result Set");
             TestTools.ShowResults(results);
         }
 
-        [Test]
+        [Fact]
         public void SparqlFunctionsNow()
         {
             SparqlQueryParser parser = new SparqlQueryParser();
@@ -88,15 +88,15 @@ namespace VDS.RDF.Query
             SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
             if (results != null)
             {
-                Assert.IsTrue(results.Result, "Result should be true");
+                Assert.True(results.Result, "Result should be true");
             }
             else
             {
-                Assert.Fail("Expected a non-null result");
+                Assert.True(false, "Expected a non-null result");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlFunctionsRand()
         {
             String query = "SELECT ?s (RAND() AS ?rand) WHERE { ?s ?p ?o } ORDER BY ?rand";
@@ -111,11 +111,11 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.Fail("Did not get a SPARQL Result Set as expected");
+                Assert.True(false, "Did not get a SPARQL Result Set as expected");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlOrderByNonDeterministic()
         {
             String query = "SELECT * WHERE { ?s ?p ?o } ORDER BY " + SparqlSpecsHelper.SparqlKeywordRand + "()";
@@ -131,7 +131,7 @@ namespace VDS.RDF.Query
                 }
                 else
                 {
-                    Assert.Fail("Did not get a SPARQL Result Set as expected");
+                    Assert.True(false, "Did not get a SPARQL Result Set as expected");
                 }
             }
         }

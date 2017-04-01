@@ -25,7 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
@@ -33,13 +33,13 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class WeightedOptimiserTests
     {
         private readonly SparqlQueryParser _parser = new SparqlQueryParser();
         private readonly SparqlFormatter _formatter = new SparqlFormatter();
 
-        [Test]
+        [Fact]
         public void SparqlOptimiserQueryWeightedSimple()
         {
             try
@@ -63,8 +63,8 @@ SELECT * WHERE
 
                 Console.WriteLine(this._formatter.Format(q));
 
-                Assert.IsFalse(q.RootGraphPattern.TriplePatterns[0].IsAcceptAll, "First Triple Pattern should not be the ?s ?p ?o Pattern");
-                Assert.IsTrue(q.RootGraphPattern.TriplePatterns[1].IsAcceptAll, "Second Triple Pattern should be the ?s ?p ?o pattern");
+                Assert.False(q.RootGraphPattern.TriplePatterns[0].IsAcceptAll, "First Triple Pattern should not be the ?s ?p ?o Pattern");
+                Assert.True(q.RootGraphPattern.TriplePatterns[1].IsAcceptAll, "Second Triple Pattern should be the ?s ?p ?o pattern");
             }
             finally
             {
@@ -72,7 +72,7 @@ SELECT * WHERE
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlOptimiserQueryWeightedSimple2()
         {
             try
@@ -96,8 +96,8 @@ SELECT * WHERE
 
                 Console.WriteLine(this._formatter.Format(q));
 
-                Assert.IsTrue(q.RootGraphPattern.TriplePatterns[0].Variables.Contains("comment"), "First Triple Pattern should contain ?comment");
-                Assert.IsTrue(q.RootGraphPattern.TriplePatterns[1].Variables.Contains("label"), "Second Triple Pattern should contain ?label");
+                Assert.True(q.RootGraphPattern.TriplePatterns[0].Variables.Contains("comment"), "First Triple Pattern should contain ?comment");
+                Assert.True(q.RootGraphPattern.TriplePatterns[1].Variables.Contains("label"), "Second Triple Pattern should contain ?label");
             }
             finally
             {
@@ -105,7 +105,7 @@ SELECT * WHERE
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlOptimiserQueryWeightedSimple3()
         {
             try
@@ -129,8 +129,8 @@ SELECT * WHERE
 
                 Console.WriteLine(this._formatter.Format(q));
 
-                Assert.IsTrue(q.RootGraphPattern.TriplePatterns[0].Variables.Contains("label"), "First Triple Pattern should contain ?label");
-                Assert.IsTrue(q.RootGraphPattern.TriplePatterns[1].Variables.Contains("type"), "Second Triple Pattern should contain ?type");
+                Assert.True(q.RootGraphPattern.TriplePatterns[0].Variables.Contains("label"), "First Triple Pattern should contain ?label");
+                Assert.True(q.RootGraphPattern.TriplePatterns[1].Variables.Contains("type"), "Second Triple Pattern should contain ?type");
             }
             finally
             {
@@ -138,7 +138,7 @@ SELECT * WHERE
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlOptimiserQueryWeightedSimple4()
         {
             try
@@ -162,8 +162,8 @@ SELECT * WHERE
 
                 Console.WriteLine(this._formatter.Format(q));
 
-                Assert.IsTrue(((NodeMatchPattern)((IMatchTriplePattern)q.RootGraphPattern.TriplePatterns[0]).Object).Node.NodeType == NodeType.Literal, "First Triple Pattern should have object 'example'");
-                Assert.IsTrue(((NodeMatchPattern)((IMatchTriplePattern)q.RootGraphPattern.TriplePatterns[1]).Object).Node.NodeType == NodeType.Uri, "Second Triple Pattern should have object rdfs:Class");
+                Assert.True(((NodeMatchPattern)((IMatchTriplePattern)q.RootGraphPattern.TriplePatterns[0]).Object).Node.NodeType == NodeType.Literal, "First Triple Pattern should have object 'example'");
+                Assert.True(((NodeMatchPattern)((IMatchTriplePattern)q.RootGraphPattern.TriplePatterns[1]).Object).Node.NodeType == NodeType.Uri, "Second Triple Pattern should have object rdfs:Class");
 
             }
             finally
@@ -172,7 +172,7 @@ SELECT * WHERE
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlOptimiserQueryWeightedUnknowns()
         {
             try
@@ -196,8 +196,8 @@ SELECT * WHERE
 
                 Console.WriteLine(this._formatter.Format(q));
 
-                Assert.IsFalse(q.RootGraphPattern.TriplePatterns[0].Variables.Contains("s"), "First Triple Pattern should not contain ?s");
-                Assert.IsTrue(q.RootGraphPattern.TriplePatterns[1].Variables.Contains("s"), "Second Triple Pattern should contain ?s");
+                Assert.False(q.RootGraphPattern.TriplePatterns[0].Variables.Contains("s"), "First Triple Pattern should not contain ?s");
+                Assert.True(q.RootGraphPattern.TriplePatterns[1].Variables.Contains("s"), "Second Triple Pattern should contain ?s");
             }
             finally
             {
@@ -205,7 +205,7 @@ SELECT * WHERE
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlOptimiserQueryWeightedUnknowns2()
         {
             try
@@ -230,9 +230,9 @@ SELECT * WHERE
 
                 Console.WriteLine(this._formatter.Format(q));
 
-                Assert.IsTrue(q.RootGraphPattern.TriplePatterns[0].Variables.Intersect(new String[] { "p", "o" }).Count() == 2, "First Triple Pattern should contain ?p and ?o");
-                Assert.IsTrue(q.RootGraphPattern.TriplePatterns[1].Variables.Intersect(new String[] { "s", "p" }).Count() == 2, "Second Triple Pattern should contain ?s and ?p");
-                Assert.IsTrue(q.RootGraphPattern.TriplePatterns[2].Variables.Intersect(new String[] { "s", "o" }).Count() == 2, "Second Triple Pattern should contain ?s and ?o");
+                Assert.True(q.RootGraphPattern.TriplePatterns[0].Variables.Intersect(new String[] { "p", "o" }).Count() == 2, "First Triple Pattern should contain ?p and ?o");
+                Assert.True(q.RootGraphPattern.TriplePatterns[1].Variables.Intersect(new String[] { "s", "p" }).Count() == 2, "Second Triple Pattern should contain ?s and ?p");
+                Assert.True(q.RootGraphPattern.TriplePatterns[2].Variables.Intersect(new String[] { "s", "o" }).Count() == 2, "Second Triple Pattern should contain ?s and ?o");
             }
             finally
             {

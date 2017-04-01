@@ -27,14 +27,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Handlers
 {
-    [TestFixture]
+
     public class CountHandlerTests
     {
         private void ParsingUsingCountHandler(String tempFile, IRdfReader parser)
@@ -47,29 +47,29 @@ namespace VDS.RDF.Parsing.Handlers
             parser.Load(handler, tempFile);
 
             Console.WriteLine("Counted " + handler.Count + " Triples");
-            Assert.AreEqual(g.Triples.Count, handler.Count, "Counts should have been equal");
+            Assert.Equal(g.Triples.Count, handler.Count);
         }
 
-        [Test]
+        [Fact]
         public void ParsingCountHandlerNTriples()
         {
             this.ParsingUsingCountHandler("test.nt", new NTriplesParser());
         }
 
-        [Test]
+        [Fact]
         public void ParsingCountHandlerTurtle()
         {
             this.ParsingUsingCountHandler("test.ttl", new TurtleParser());
         }
 
-        [Test]
+        [Fact]
         public void ParsingCountHandlerNotation3()
         {
             this.ParsingUsingCountHandler("temp.n3", new Notation3Parser());
         }
 
 #if !NO_XMLENTITIES
-        [Test]
+        [Fact]
         public void ParsingCountHandlerRdfXml()
         {
             this.ParsingUsingCountHandler("test.rdf", new RdfXmlParser());
@@ -77,14 +77,14 @@ namespace VDS.RDF.Parsing.Handlers
 #endif
 
 #if !NO_HTMLAGILITYPACK
-        [Test]
+        [Fact]
         public void ParsingCountHandlerRdfA()
         {
             this.ParsingUsingCountHandler("test.html", new RdfAParser());
         }
 #endif
 
-        [Test]
+        [Fact]
         public void ParsingCountHandlerRdfJson()
         {
             this.ParsingUsingCountHandler("test.json", new RdfJsonParser());

@@ -27,186 +27,186 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query.Aggregates
 {
-    [TestFixture]
+
     public class AggregatesOverNullTests
     {
         private INodeFactory _factory = new NodeFactory();
         private SparqlQueryParser _parser = new SparqlQueryParser();
         private LeviathanQueryProcessor _processor = new LeviathanQueryProcessor(new InMemoryDataset());
 
-        [Test]
+        [Fact]
         public void SparqlAggregatesOverNullCount1()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (COUNT(*) AS ?Count) WHERE { ?s ?p ?o }");
             SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.AreEqual(1, results.Count);
+            Assert.NotNull(results);
+            Assert.Equal(1, results.Count);
 
             SparqlResult r = results.First();
-            Assert.AreEqual((0).ToLiteral(this._factory), r["Count"]);
+            Assert.Equal((0).ToLiteral(this._factory), r["Count"]);
         }
 
-        [Test]
+        [Fact]
         public void SparqlAggregatesOverNullCount2()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (COUNT(?s) AS ?Count) WHERE { ?s ?p ?o }");
             SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.AreEqual(1, results.Count);
+            Assert.NotNull(results);
+            Assert.Equal(1, results.Count);
 
             SparqlResult r = results.First();
-            Assert.AreEqual((0).ToLiteral(this._factory), r["Count"]);
+            Assert.Equal((0).ToLiteral(this._factory), r["Count"]);
         }
 
-        [Test]
+        [Fact]
         public void SparqlAggregatesOverNullCount3()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (COUNT(*) AS ?Count) WHERE { ?s ?p ?o } GROUP BY ?s");
             SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.AreEqual(1, results.Count);
+            Assert.NotNull(results);
+            Assert.Equal(1, results.Count);
 
             SparqlResult r = results.First();
-            Assert.AreEqual((0).ToLiteral(this._factory), r["Count"]);
+            Assert.Equal((0).ToLiteral(this._factory), r["Count"]);
         }
 
-        [Test]
+        [Fact]
         public void SparqlAggregatesOverNullCount4()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (COUNT(?s) AS ?Count) WHERE { ?s ?p ?o } GROUP BY ?s");
             SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.AreEqual(1, results.Count);
+            Assert.NotNull(results);
+            Assert.Equal(1, results.Count);
 
             SparqlResult r = results.First();
-            Assert.AreEqual((0).ToLiteral(this._factory), r["Count"]);
+            Assert.Equal((0).ToLiteral(this._factory), r["Count"]);
         }
 
-        [Test]
+        [Fact]
         public void SparqlAggregatesOverNullSum1()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (SUM(?s) AS ?Sum) WHERE { ?s ?p ?o }");
             SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.AreEqual(1, results.Count);
+            Assert.NotNull(results);
+            Assert.Equal(1, results.Count);
 
             SparqlResult r = results.First();
-            Assert.AreEqual((0).ToLiteral(this._factory), r["Sum"]);
+            Assert.Equal((0).ToLiteral(this._factory), r["Sum"]);
         }
 
-        [Test]
+        [Fact]
         public void SparqlAggregatesOverNullSum2()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (SUM(?s) AS ?Sum) WHERE { ?s ?p ?o } GROUP BY ?s");
             SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.AreEqual(1, results.Count);
+            Assert.NotNull(results);
+            Assert.Equal(1, results.Count);
 
             SparqlResult r = results.First();
-            Assert.AreEqual((0).ToLiteral(this._factory), r["Sum"]);
+            Assert.Equal((0).ToLiteral(this._factory), r["Sum"]);
         }
 
-        [Test]
+        [Fact]
         public void SparqlAggregatesOverNullAvg1()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (AVG(?s) AS ?Avg) WHERE { ?s ?p ?o }");
             SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.AreEqual(1, results.Count);
+            Assert.NotNull(results);
+            Assert.Equal(1, results.Count);
 
             SparqlResult r = results.First();
-            Assert.AreEqual((0).ToLiteral(this._factory), r["Avg"]);
+            Assert.Equal((0).ToLiteral(this._factory), r["Avg"]);
         }
 
-        [Test]
+        [Fact]
         public void SparqlAggregatesOverNullAvg2()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (AVG(?s) AS ?Avg) WHERE { ?s ?p ?o } GROUP BY ?s");
             SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.AreEqual(1, results.Count);
+            Assert.NotNull(results);
+            Assert.Equal(1, results.Count);
 
             SparqlResult r = results.First();
-            Assert.AreEqual((0).ToLiteral(this._factory), r["Avg"]);
+            Assert.Equal((0).ToLiteral(this._factory), r["Avg"]);
         }
 
-        [Test]
+        [Fact]
         public void SparqlAggregatesOverNullMax1()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (MAX(?s) AS ?Max) WHERE { ?s ?p ?o }");
             SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.AreEqual(1, results.Count);
+            Assert.NotNull(results);
+            Assert.Equal(1, results.Count);
 
             SparqlResult r = results.First();
-            Assert.IsNull(r["Max"]);
+            Assert.Null(r["Max"]);
         }
 
-        [Test]
+        [Fact]
         public void SparqlAggregatesOverNullMax2()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (MAX(?s) AS ?Max) WHERE { ?s ?p ?o } GROUP BY ?s");
             SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.AreEqual(1, results.Count);
+            Assert.NotNull(results);
+            Assert.Equal(1, results.Count);
 
             SparqlResult r = results.First();
-            Assert.IsNull(r["Max"]);
+            Assert.Null(r["Max"]);
         }
 
-        [Test]
+        [Fact]
         public void SparqlAggregatesOverNullMin1()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (MIN(?s) AS ?Min) WHERE { ?s ?p ?o }");
             SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.AreEqual(1, results.Count);
+            Assert.NotNull(results);
+            Assert.Equal(1, results.Count);
 
             SparqlResult r = results.First();
-            Assert.IsNull(r["Min"]);
+            Assert.Null(r["Min"]);
         }
 
         
-        [Test]
+        [Fact]
         public void SparqlAggregatesOverNullMin2()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (MIN(?s) AS ?Min) WHERE { ?s ?p ?o } GROUP BY ?s");
             SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.AreEqual(1, results.Count);
+            Assert.NotNull(results);
+            Assert.Equal(1, results.Count);
 
             SparqlResult r = results.First();
-            Assert.IsNull(r["Min"]);
+            Assert.Null(r["Min"]);
         }
 
-        [Test]
+        [Fact]
         public void SparqlAggregatesOverNullGroupConcat1()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (GROUP_CONCAT(?s) AS ?GroupConcat) WHERE { ?s ?p ?o }");
             SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.AreEqual(1, results.Count);
+            Assert.NotNull(results);
+            Assert.Equal(1, results.Count);
 
             SparqlResult r = results.First();
-            Assert.AreEqual(this._factory.CreateLiteralNode(String.Empty), r["GroupConcat"]);
+            Assert.Equal(this._factory.CreateLiteralNode(String.Empty), r["GroupConcat"]);
         }
 
-        [Test]
+        [Fact]
         public void SparqlAggregatesOverNullGroupConcat2()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (GROUP_CONCAT(?s) AS ?GroupConcat) WHERE { ?s ?p ?o } GROUP BY ?s");
             SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.AreEqual(1, results.Count);
+            Assert.NotNull(results);
+            Assert.Equal(1, results.Count);
 
             SparqlResult r = results.First();
-            Assert.AreEqual(this._factory.CreateLiteralNode(String.Empty), r["GroupConcat"]);
+            Assert.Equal(this._factory.CreateLiteralNode(String.Empty), r["GroupConcat"]);
         }
     }
 }

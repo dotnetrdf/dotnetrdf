@@ -24,17 +24,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions.Arithmetic;
 using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Builder.Expressions
 {
-    [TestFixture]
+
     public class ArithmeticOperatorsTests
     {
-        [Test]
+        [Fact]
         public void CanMultiplyTypedNumericsOfMatchingTypes()
         {
             // given
@@ -45,12 +45,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (left * right).Expression;
 
             // then
-            Assert.IsTrue(multiplication is MultiplicationExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is MultiplicationExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanMultiplyTypedNumericsOfdifferentTypes()
         {
             // given
@@ -61,12 +61,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (left * right).Expression;
 
             // then
-            Assert.IsTrue(multiplication is MultiplicationExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is MultiplicationExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanMultiplyTypedNumericAndUntypedNumeric()
         {
             // given
@@ -77,12 +77,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (right * left).Expression;
 
             // then
-            Assert.IsTrue(multiplication is MultiplicationExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is MultiplicationExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanMultiplyTypedNumericAndUntypedNumeric2()
         {
             // given
@@ -93,12 +93,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (left * right).Expression;
 
             // then
-            Assert.IsTrue(multiplication is MultiplicationExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is MultiplicationExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanMultiplyTypedNumericBySimpleValue()
         {
             // given
@@ -108,12 +108,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (left * 10m).Expression;
 
             // then
-            Assert.IsTrue(multiplication is MultiplicationExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is MultiplicationExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanMultiplySimpleValueByTypedNumeric()
         {
             // given
@@ -123,12 +123,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (10m * right).Expression;
 
             // then
-            Assert.IsTrue(multiplication is MultiplicationExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is MultiplicationExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanMultiplyNumericBySimpleValue()
         {
             // given
@@ -138,12 +138,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (left * 10).Expression;
 
             // then
-            Assert.IsTrue(multiplication is MultiplicationExpression);
-            Assert.AreSame(left.Expression, multiplication.Arguments.ElementAt(0));
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is MultiplicationExpression);
+            Assert.Same(left.Expression, multiplication.Arguments.ElementAt(0));
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanMultiplySimpleValueByNumeric()
         {
             // given
@@ -153,12 +153,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (10 * right).Expression;
 
             // then
-            Assert.IsTrue(multiplication is MultiplicationExpression);
-            Assert.AreSame(right.Expression, multiplication.Arguments.ElementAt(1));
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(multiplication is MultiplicationExpression);
+            Assert.Same(right.Expression, multiplication.Arguments.ElementAt(1));
+            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanChainMultiplicationOfNumerics()
         {
             // given
@@ -170,12 +170,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (op1 * op2 * op3).Expression;
 
             // then
-            Assert.IsTrue(multiplication is MultiplicationExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is MultiplicationExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is MultiplicationExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is MultiplicationExpression);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanDivideTypedNumericsOfMatchingTypes()
         {
             // given
@@ -186,12 +186,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (left / right).Expression;
 
             // then
-            Assert.IsTrue(multiplication is DivisionExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is DivisionExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanDivideTypedNumericsOfdifferentTypes()
         {
             // given
@@ -202,12 +202,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (left / right).Expression;
 
             // then
-            Assert.IsTrue(multiplication is DivisionExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is DivisionExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanDivideTypedNumericByUntypedNumeric()
         {
             // given
@@ -218,12 +218,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (right / left).Expression;
 
             // then
-            Assert.IsTrue(multiplication is DivisionExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is DivisionExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanDivideTypedNumericByUntypedNumeric2()
         {
             // given
@@ -234,12 +234,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (left / right).Expression;
 
             // then
-            Assert.IsTrue(multiplication is DivisionExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is DivisionExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanDivideTypedNumericBySimpleValue()
         {
             // given
@@ -249,12 +249,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (left / 10m).Expression;
 
             // then
-            Assert.IsTrue(multiplication is DivisionExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is DivisionExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanDivideSimpleValueByTypedNumeric()
         {
             // given
@@ -264,12 +264,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (10m / right).Expression;
 
             // then
-            Assert.IsTrue(multiplication is DivisionExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is DivisionExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanChainDivisionsOfNumerics()
         {
             // given
@@ -281,12 +281,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (op1 / op2 / op3).Expression;
 
             // then
-            Assert.IsTrue(multiplication is DivisionExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is DivisionExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is DivisionExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is DivisionExpression);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanAddTypedNumericsOfMatchingTypes()
         {
             // given
@@ -297,12 +297,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (left + right).Expression;
 
             // then
-            Assert.IsTrue(multiplication is AdditionExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is AdditionExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanAddTypedNumericsOfdifferentTypes()
         {
             // given
@@ -313,12 +313,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (left + right).Expression;
 
             // then
-            Assert.IsTrue(multiplication is AdditionExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is AdditionExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanAddTypedNumericToUntypedNumeric()
         {
             // given
@@ -329,12 +329,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (right + left).Expression;
 
             // then
-            Assert.IsTrue(multiplication is AdditionExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is AdditionExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanAddTypedNumericToUntypedNumeric2()
         {
             // given
@@ -345,12 +345,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (left + right).Expression;
 
             // then
-            Assert.IsTrue(multiplication is AdditionExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is AdditionExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanAddSimpleValueToTypedNumeric()
         {
             // given
@@ -360,12 +360,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (left + 10m).Expression;
 
             // then
-            Assert.IsTrue(multiplication is AdditionExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is AdditionExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanAddTypedNumericToSimpleValue()
         {
             // given
@@ -375,12 +375,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (10m + right).Expression;
 
             // then
-            Assert.IsTrue(multiplication is AdditionExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is AdditionExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanChainAdditionsOfNumerics()
         {
             // given
@@ -392,12 +392,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (op1 + op2 + op3).Expression;
 
             // then
-            Assert.IsTrue(multiplication is AdditionExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is AdditionExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is AdditionExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is AdditionExpression);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanSubtractTypedNumericsOfMatchingTypes()
         {
             // given
@@ -408,12 +408,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (left - right).Expression;
 
             // then
-            Assert.IsTrue(multiplication is SubtractionExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is SubtractionExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanSubtractTypedNumericsOfdifferentTypes()
         {
             // given
@@ -424,12 +424,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (left - right).Expression;
 
             // then
-            Assert.IsTrue(multiplication is SubtractionExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is SubtractionExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanSubtractTypedNumericToUntypedNumeric()
         {
             // given
@@ -440,12 +440,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (right - left).Expression;
 
             // then
-            Assert.IsTrue(multiplication is SubtractionExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is SubtractionExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanSubtractTypedNumericToUntypedNumeric2()
         {
             // given
@@ -456,12 +456,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (left - right).Expression;
 
             // then
-            Assert.IsTrue(multiplication is SubtractionExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is SubtractionExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanSubtractSimpleValueFromTypedNumeric()
         {
             // given
@@ -471,12 +471,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (left - 10m).Expression;
 
             // then
-            Assert.IsTrue(multiplication is SubtractionExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is SubtractionExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanSubtractTypedNumericFromSimpleValue()
         {
             // given
@@ -486,12 +486,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (10m - right).Expression;
 
             // then
-            Assert.IsTrue(multiplication is SubtractionExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is SubtractionExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanChainSubtractionsOfNumerics()
         {
             // given
@@ -503,9 +503,9 @@ namespace VDS.RDF.Query.Builder.Expressions
             var multiplication = (op1 - op2 - op3).Expression;
 
             // then
-            Assert.IsTrue(multiplication is SubtractionExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is SubtractionExpression);
-            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(multiplication is SubtractionExpression);
+            Assert.True(multiplication.Arguments.ElementAt(0) is SubtractionExpression);
+            Assert.True(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
     }
 }

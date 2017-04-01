@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
@@ -35,7 +35,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class QueryTimeouts
     {
         private long[] _timeouts = new long[] { 50, 100, 250, 500, 1000 };
@@ -118,20 +118,17 @@ namespace VDS.RDF.Query
                             expected = Options.QueryExecutionTimeout;
                         }
                     }
-                    Assert.AreEqual(expected, context.QueryTimeout, "Reported Timeout not as expected");
+                    Assert.Equal(expected, context.QueryTimeout);
 
                     //Run the Query
                     Object results = processor.ProcessQuery(q);
+                    Assert.IsAssignableFrom<SparqlResultSet>(results);
                     if (results is SparqlResultSet)
                     {
                         SparqlResultSet rset = (SparqlResultSet)results;
 
                         Console.WriteLine("Requested Timeout: " + t + " - Actual Timeout: " + expected + "ms - Results: " + rset.Count + " - Query Time: " + q.QueryExecutionTime);
-                        Assert.IsTrue(rset.Count <= expectedResults, "Results should be <= expected");
-                    }
-                    else
-                    {
-                        Assert.Fail("Did not get a Result Set as expected");
+                        Assert.True(rset.Count <= expectedResults, "Results should be <= expected");
                     }
                 }
             }
@@ -155,10 +152,10 @@ namespace VDS.RDF.Query
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlQueryTimeout()
         {
-            String query = "SELECT * WHERE { ?s ?p ?o . ?s ?p2 ?o2}";
+            String query = "SELECT * WHERE { ?s ?p ?o . ?s ?p2 ?o2 . ?a ?b ?c }";
             SparqlQuery q = this._parser.ParseFromString(query);
             q.Timeout = 1;
 
@@ -167,25 +164,17 @@ namespace VDS.RDF.Query
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             store.Add(g);
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
-            try
+            Assert.Throws<RdfQueryTimeoutException>(() =>
             {
-                //Try multiple times because sometimes machine load may mean we don't timeout
-                for (int i = 0; i < 10; i++)
+                    //Try multiple times because sometimes machine load may mean we don't timeout
+                    for (int i = 0; i < 10; i++)
                 {
                     processor.ProcessQuery(q);
                 }
-                Assert.Fail("Did not throw a RdfQueryTimeoutException as expected");
-            }
-            catch (RdfQueryTimeoutException timeoutEx)
-            {
-                TestTools.ReportError("Timeout", timeoutEx);
-
-                Console.WriteLine();
-                Console.WriteLine("Execution Time: " + q.QueryExecutionTime.Value.ToString());
-            }
+            });
         }
 
-        [Test]
+        [Fact]
         public void SparqlQueryTimeoutDuringProduct()
         {
             Graph g = new Graph();
@@ -195,7 +184,7 @@ namespace VDS.RDF.Query
             this.TestProductTimeout(g, query, false, g.Triples.Count * g.Triples.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlQueryTimeoutDuringProduct2()
         {
             Graph g = new Graph();
@@ -205,7 +194,7 @@ namespace VDS.RDF.Query
             this.TestProductTimeout(g, query, false, g.Triples.Count * g.Triples.Count * g.Triples.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlQueryTimeoutGlobalDuringProduct()
         {
             Graph g = new Graph();
@@ -215,7 +204,7 @@ namespace VDS.RDF.Query
             this.TestProductTimeout(g, query, true, g.Triples.Count * g.Triples.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlQueryTimeoutGlobalDuringProduct2()
         {
             Graph g = new Graph();
@@ -225,7 +214,7 @@ namespace VDS.RDF.Query
             this.TestProductTimeout(g, query, true, g.Triples.Count * g.Triples.Count * g.Triples.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlQueryTimeoutDuringProductOverriddenByGlobal()
         {
             Graph g = new Graph();
@@ -235,7 +224,7 @@ namespace VDS.RDF.Query
             this.TestProductTimeoutGlobalOverride(g, query, 1000, g.Triples.Count * g.Triples.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlQueryTimeoutDuringProductOverriddenByGlobal2()
         {
             Graph g = new Graph();
@@ -245,7 +234,7 @@ namespace VDS.RDF.Query
             this.TestProductTimeoutGlobalOverride(g, query, 1000, g.Triples.Count * g.Triples.Count * g.Triples.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlQueryTimeoutDuringProductNotOverriddenByGlobal()
         {
             Graph g = new Graph();
@@ -255,7 +244,7 @@ namespace VDS.RDF.Query
             this.TestProductTimeoutGlobalOverride(g, query, 0, g.Triples.Count * g.Triples.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlQueryTimeoutDuringProductNotOverriddenByGlobal2()
         {
             Graph g = new Graph();
@@ -265,38 +254,27 @@ namespace VDS.RDF.Query
             this.TestProductTimeoutGlobalOverride(g, query, 0, g.Triples.Count * g.Triples.Count * g.Triples.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlQueryTimeoutDuringProductLazy()
         {
-            String query = "SELECT * WHERE { ?s ?p ?o . ?x ?y ?z } LIMIT 5000";
+            String query = "SELECT * WHERE { ?s ?p ?o . ?x ?y ?z . ?a ?b ?c }";
             SparqlQuery q = this._parser.ParseFromString(query);
-            q.Timeout = 10;
+            q.Timeout = 1;
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             store.Add(g);
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
-            try
+            Assert.Throws<RdfQueryTimeoutException>(() =>
             {
                 processor.ProcessQuery(q);
-                Assert.Fail("Did not throw a RdfQueryTimeoutException as expected");
-            }
-            catch (RdfQueryTimeoutException timeoutEx)
-            {
-                TestTools.ReportError("Timeout", timeoutEx);
-
-                Console.WriteLine();
-                Console.WriteLine("Execution Time: " + q.QueryExecutionTime.Value.ToString());
-            }
+            });
         }
 
-        [Test]
-        [Ignore]
+        [Fact(Skip = "in practise it is suprisingly easy to compute this in under a millisecond given a reasonable machine since it only needs to compute one value")]
         public void SparqlQueryTimeoutDuringProductLazy2()
         {
-            // This is ignored because in practise it is suprisingly easy to compute this in under a millisecond given a reasonable machine
-            // since it only needs to compute one value
             String query = "ASK WHERE { ?s ?p ?o . ?x ?y ?z }";
             SparqlQuery q = this._parser.ParseFromString(query);
             q.Timeout = 1;
@@ -307,25 +285,17 @@ namespace VDS.RDF.Query
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             store.Add(g);
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
-            try
+            Assert.Throws<RdfQueryTimeoutException>(() =>
             {
                 //Try multiple times because sometimes machine load may mean we don't timeout
                 for (int i = 0; i < 100; i++)
                 {
                     processor.ProcessQuery(q);
                 }
-                Assert.Fail("Did not throw a RdfQueryTimeoutException as expected");
-            }
-            catch (RdfQueryTimeoutException timeoutEx)
-            {
-                TestTools.ReportError("Timeout", timeoutEx);
-
-                Console.WriteLine();
-                Console.WriteLine("Execution Time: " + q.QueryExecutionTime.Value.ToString());
-            }
+            });
         }
 
-        [Test]
+        [Fact]
         public void SparqlQueryTimeoutNone()
         {
             Graph g = new Graph();
@@ -344,15 +314,12 @@ namespace VDS.RDF.Query
 
                 LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
                 Object results = processor.ProcessQuery(q);
+                Assert.IsAssignableFrom<SparqlResultSet>(results);
                 if (results is SparqlResultSet)
                 {
                     SparqlResultSet rset = (SparqlResultSet)results;
                     Console.WriteLine("Results: " + rset.Count + " - Query Time: " + q.QueryExecutionTime);
-                    Assert.AreEqual(g.Triples.Count * g.Triples.Count, rset.Count);
-                }
-                else
-                {
-                    Assert.Fail("Did not get a Result Set as expected");
+                    Assert.Equal(g.Triples.Count * g.Triples.Count, rset.Count);
                 }
             }
             finally
@@ -361,13 +328,13 @@ namespace VDS.RDF.Query
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlQueryTimeoutMinimal()
         {
             Graph g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
-            String query = "SELECT * WHERE { ?s ?p ?o . ?x ?y ?z }";
+            String query = "SELECT * WHERE { ?s ?p ?o . ?x ?y ?z . ?a ?b ?c }";
 
             long currTimeout = Options.QueryExecutionTimeout;
             try
@@ -381,15 +348,12 @@ namespace VDS.RDF.Query
 
                 LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
                 Object results = processor.ProcessQuery(q);
+                Assert.IsAssignableFrom<SparqlResultSet>(results);
                 if (results is SparqlResultSet)
                 {
                     SparqlResultSet rset = (SparqlResultSet)results;
                     Console.WriteLine("Results: " + rset.Count + " - Query Time: " + q.QueryExecutionTime);
-                    Assert.IsTrue(rset.Count < (g.Triples.Count * g.Triples.Count));
-                }
-                else
-                {
-                    Assert.Fail("Did not get a Result Set as expected");
+                    Assert.True(rset.Count < (g.Triples.Count * g.Triples.Count * g.Triples.Count));
                 }
             }
             finally

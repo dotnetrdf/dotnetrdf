@@ -30,15 +30,16 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Update;
 using VDS.RDF.Writing.Formatting;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class RemoteEndpoints
     {
         const int AsyncTimeout = 45000;
@@ -47,7 +48,7 @@ namespace VDS.RDF.Query
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS))
             {
-                Assert.Inconclusive("Test Config marks IIS as unavailable, cannot run test");
+                throw new SkipTestException("Test Config marks IIS as unavailable, cannot run test");
             }
             return new SparqlRemoteEndpoint(new Uri(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreQueryUri)));
         }
@@ -56,14 +57,14 @@ namespace VDS.RDF.Query
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS))
             {
-                Assert.Inconclusive("Test Config marks IIS as unavailable, cannot run test");
+                throw new SkipTestException("Test Config marks IIS as unavailable, cannot run test");
             }
             return new SparqlRemoteUpdateEndpoint(new Uri(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUpdateUri)));
         }
 
 #if !PORTABLE
 
-        [Test]
+        [SkippableFact]
         public void SparqlRemoteEndpointLongQuery()
         {
             try
@@ -76,15 +77,11 @@ namespace VDS.RDF.Query
 
                 SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
                 Object results = endpoint.QueryWithResultSet(input.ToString());
+                Assert.IsAssignableFrom<SparqlResultSet>(results);
                 if (results is SparqlResultSet)
                 {
                     TestTools.ShowResults(results);
                 }
-                else
-                {
-                    Assert.Fail("Should have returned a SPARQL Result Set");
-                }
-
             }
             finally
             {
@@ -92,12 +89,12 @@ namespace VDS.RDF.Query
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void SparqlRemoteEndpointLongUpdate()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
             {
-                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
             }
 
             try
@@ -117,7 +114,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void SparqlRemoteEndpointCountHandler()
         {
             SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
@@ -125,10 +122,10 @@ namespace VDS.RDF.Query
             endpoint.QueryWithResultGraph(handler, "CONSTRUCT { ?s ?p ?o } WHERE { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }");
 
             Console.WriteLine("Triple Count: " + handler.Count);
-            Assert.AreNotEqual(0, handler.Count, "Count should not be zero");
+            Assert.NotEqual(0, handler.Count);
         }
 
-        [Test]
+        [SkippableFact]
         public void SparqlRemoteEndpointResultCountHandler()
         {
             SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
@@ -136,10 +133,10 @@ namespace VDS.RDF.Query
             endpoint.QueryWithResultSet(handler, "SELECT * WHERE { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }");
 
             Console.WriteLine("Result Count: " + handler.Count);
-            Assert.AreNotEqual(0, handler.Count, "Count should not be zero");
+            Assert.NotEqual(0, handler.Count);
         }
 
-        [Test]
+        [SkippableFact]
         public void SparqlRemoteEndpointMemoryLeak1()
         {
             /*
@@ -171,7 +168,7 @@ results.Dispose()
                 queryString.CommandText = "SELECT * WHERE { ?s ?p ?o }";
 
                 SparqlResultSet results = endpoint.QueryWithResultSet(queryString.ToString());
-                Assert.AreEqual(1, results.Count);
+                Assert.Equal(1, results.Count);
                 foreach (SparqlResult result in results)
                 {
                     //We're just iterating to make sure we touch the whole of the results
@@ -186,7 +183,7 @@ results.Dispose()
             Debug.WriteLine("Memory Usage after " + totalRuns + " Iterations: " + Process.GetCurrentProcess().PrivateMemorySize64);
         }
 
-        [Test]
+        [SkippableFact]
         public void SparqlRemoteEndpointMemoryLeak2()
         {
             //Do a GC before attempting the test
@@ -212,7 +209,7 @@ results.Dispose()
 
                 ResultCountHandler handler = new ResultCountHandler();
                 endpoint.QueryWithResultSet(handler, queryString.ToString());
-                Assert.IsTrue(handler.Count >= 1 && handler.Count <= subjects, "Result Count " + handler.Count + " is not in expected range 1 <= x < " + (i % 1000));
+                Assert.True(handler.Count >= 1 && handler.Count <= subjects, "Result Count " + handler.Count + " is not in expected range 1 <= x < " + (i % 1000));
 
                 if (i % 500 == 0)
                 {
@@ -222,7 +219,7 @@ results.Dispose()
             Debug.WriteLine("Memory Usage after " + totalRuns + " Iterations: " + Process.GetCurrentProcess().PrivateMemorySize64);
         }
 
-        [Test]
+        [SkippableFact]
         public void SparqlRemoteEndpointWriteThroughHandler()
         {
             SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
@@ -232,7 +229,7 @@ results.Dispose()
 
 #endif
 
-        [Test]
+        [SkippableFact]
         public void SparqlRemoteEndpointAsyncApiQueryWithResultSet()
         {
             SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
@@ -245,10 +242,10 @@ results.Dispose()
             }, null);
 
             Thread.Sleep(AsyncTimeout);
-            Assert.IsTrue(signal.SafeWaitHandle.IsClosed, "WaitHandle should be closed");
+            Assert.True(signal.SafeWaitHandle.IsClosed, "WaitHandle should be closed");
         }
 
-        [Test]
+        [SkippableFact]
         public void SparqlRemoteEndpointAsyncApiQueryWithResultGraph()
         {
             SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
@@ -261,17 +258,17 @@ results.Dispose()
             }, null);
 
             Thread.Sleep(AsyncTimeout);
-            Assert.IsTrue(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
+            Assert.True(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
         }
 
 #if !PORTABLE
 
-        [Test]
+        [SkippableFact]
         public void SparqlRemoteEndpointAsyncApiUpdate()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
             {
-                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
             }
 
             SparqlRemoteUpdateEndpoint endpoint = RemoteEndpoints.GetUpdateEndpoint();
@@ -283,21 +280,21 @@ results.Dispose()
             }, null);
 
             Thread.Sleep(AsyncTimeout);
-            Assert.IsTrue(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
+            Assert.True(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
 
             //Check that the Graph was really loaded
             SparqlRemoteEndpoint queryEndpoint = RemoteEndpoints.GetQueryEndpoint();
             IGraph g = queryEndpoint.QueryWithResultGraph("CONSTRUCT FROM <http://example.org/async/graph> WHERE { ?s ?p ?o }");
-            Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
+            Assert.False(g.IsEmpty, "Graph should not be empty");
         }
 
 
-        [Test]
+        [SkippableFact]
         public void SparqlRemoteEndpointSyncVsAsyncTimeDBPedia()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
             {
-                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
             }
 
             String query;
@@ -341,15 +338,15 @@ results.Dispose()
             }, null);
 
             Thread.Sleep(AsyncTimeout);
-            Assert.IsTrue(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
+            Assert.True(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
 
             Console.WriteLine("Async Query: " + timer.Elapsed);//(end - start));
             TestTools.ShowResults(asyncResults);
 
-            Assert.AreEqual(syncGetResults, asyncResults, "Result Sets should be equal");
+            Assert.Equal(syncGetResults, asyncResults);
         }
 
-        [Test, Ignore("TP: I think that we should either ignore or remove redundant tests")]
+        [SkippableFact(Skip = "TP: I think that we should either ignore or remove redundant tests")]
         public void SparqlRemoteEndpointSyncVsAsyncTimeOpenLinkLOD()
         {
             String query;
@@ -394,15 +391,15 @@ results.Dispose()
             }, null);
 
             Thread.Sleep(AsyncTimeout * 2);
-            Assert.IsTrue(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
+            Assert.True(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
 
             Console.WriteLine("Async Query: " + timer.Elapsed);//(end - start));
             TestTools.ShowResults(asyncResults);
 
-            Assert.AreEqual(syncGetResults, asyncResults, "Result Sets should be equal");
+            Assert.Equal(syncGetResults, asyncResults);
         }
 
-        [Test, Ignore("TP: I think that we should either ignore or remove redundant tests")]
+        [SkippableFact(Skip="TP: I think that we should either ignore or remove redundant tests")]
         public void SparqlRemoteEndpointSyncVsAsyncTimeFactforge()
         {
             String query;
@@ -447,15 +444,15 @@ results.Dispose()
             }, null);
 
             Thread.Sleep(AsyncTimeout);
-            Assert.IsTrue(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
+            Assert.True(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
 
             Console.WriteLine("Async Query: " + timer.Elapsed);//(end - start));
             TestTools.ShowResults(asyncResults);
 
-            Assert.AreEqual(syncGetResults, asyncResults, "Result Sets should be equal");
+            Assert.Equal(syncGetResults, asyncResults);
         }
 
-        [Test]
+        [SkippableFact]
         public void SparqlRemoteEndpointSyncVsAsyncTimeLocal()
         {
             String query;
@@ -499,20 +496,20 @@ results.Dispose()
             }, null);
 
             Thread.Sleep(AsyncTimeout);
-            Assert.IsTrue(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
+            Assert.True(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
 
             Console.WriteLine("Async Query: " + timer.Elapsed);//(end - start));
             TestTools.ShowResults(asyncResults);
 
-            Assert.AreEqual(syncGetResults, asyncResults, "Result Sets should be equal");
+            Assert.Equal(syncGetResults, asyncResults);
         }
 
-        [Test]
+        [SkippableFact]
         public void SparqlRemoteEndpointSyncVsAsyncTimeLocalVirtuoso()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseVirtuoso))
             {
-                Assert.Inconclusive("Test Config marks Virtuoso as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Virtuoso as unavailable, test cannot be run");
             }
 
             String query;
@@ -557,12 +554,12 @@ results.Dispose()
             }, null);
 
             Thread.Sleep(AsyncTimeout);
-            Assert.IsTrue(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
+            Assert.True(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
 
             Console.WriteLine("Async Query: " + timer.Elapsed);//(end - start));
             TestTools.ShowResults(asyncResults);
 
-            Assert.AreEqual(syncGetResults, asyncResults, "Result Sets should be equal");
+            Assert.Equal(syncGetResults, asyncResults);
         }
 
 #endif

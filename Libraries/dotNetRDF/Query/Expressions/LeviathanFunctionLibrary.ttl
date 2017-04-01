@@ -1,0 +1,236 @@
+﻿@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix dc: <http://purl.org/dc/terms/>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix vann: <http://purl.org/vocab/vann/> .
+@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix lfn: <http://www.dotnetrdf.org/leviathan#>.
+@prefix sed: <http://purl.org/net/schemas/sparql-extension-description#>.
+@prefix ssd: <http://www.w3.org/ns/sparql-service-description#> .
+
+@base <http://www.dotnetrdf.org/leviathan#>.
+
+<> a sed:FunctionLibrary;
+   dc:title "Leviathan Function Library";
+   dc:description "A collection of mostly numeric SPARQL extension functions implemented by the Leviathan Engine";
+   dc:created "2010-01-26"^^xsd:date;
+   dc:modified "2010-02-19"^^xsd:date;
+   foaf:homepage <http://www.dotnetrdf.org/content.asp?pageID=Leviathan%20Function%20Library>;
+   sed:includes lfn:all,
+				lfn:any,
+				lfn:cartesian,
+				lfn:cube,
+				lfn:degrees-to-radians,
+				lfn:e,
+				lfn:factorial,
+				lfn:ln,
+				lfn:log,
+				lfn:md5hash,
+				lfn:median,
+				lfn:mode,
+				lfn:nmax,
+				lfn:nmin,
+				lfn:pow,
+				lfn:pythagoras,
+				lfn:radians-to-degrees,
+				lfn:random,
+				lfn:reciprocal,
+				lfn:root,
+				lfn:sha256hash,
+				lfn:sq,
+				lfn:sqrt,
+				lfn:ten,
+				lfn:cos,
+				lfn:cos-1,
+				lfn:cosec,
+				lfn:cosec-1,
+				lfn:cotan,
+				lfn:cotan-1,
+				lfn:sec,
+				lfn:sec-1,
+				lfn:sin,
+				lfn:sin-1,
+				lfn:tan,
+				lfn:tan-1.	
+   
+lfn:all a ssd:AggregateFunction;
+	    rdfs:label "all";
+	    dc:description "Calculate whether the expression evaluates true for all solutions";
+	    sed:includedIn <>.
+	  
+lfn:any a ssd:AggregateFunction;
+	    rdfs:label "any";
+	    dc:description "Calculate whether the expression evaluates true for any solution";
+	    sed:includedIn <>.
+	 
+lfn:cartesian a ssd:ScalarFunction;
+		      rdfs:label "cartesian";
+		      dc:description "Calculates the distance between two points in a cartesian coordinates system, a 2D and a 3D version are supported.  For 2D version the argument format is (x1,y1,x2,y2) and for the 3D version the argument format is (x1,y1,z1,x2,y2,z2)";
+		      sed:includedIn <>.
+		   
+lfn:cube a ssd:ScalarFunction;
+	     rdfs:label "cube";
+	     dc:description "Calculates the Cube of a Number";
+	    sed:includeIn <>.
+	  
+lfn:degrees-to-radians a ssd:ScalarFunction;
+					   rdfs:label "degrees-to-radians";
+					   dc:description "Converts Degrees to Radians";
+					   sed:includedIn <>.
+					
+lfn:e a ssd:ScalarFunction;
+      rdfs:label "e";
+      dc:description "Raises e (the natural logarithmic base) to the power of the argument";
+      sed:includedIn <>.
+   
+lfn:factorial a ssd:ScalarFunction;
+		      rdfs:label "factorial";
+		      dc:description "Calculates the factorial of the argument";
+		     sed:includedIn <>.
+		
+lfn:ln a ssd:ScalarFunction;
+	   rdfs:label "ln";
+	   dc:description "Calculates the natural logarithm of the argument";
+	   sed:includedIn <>.
+	
+lfn:log a ssd:ScalarFunction;
+	    rdfs:label "log";
+	    dc:description "Calculates the logarithm of the argument.  The single argument version uses 10 as the base while the two argument version supports an arbitrary base specified by the second argument";
+	    sed:includedIn <>.
+	 
+lfn:md5hash a ssd:ScalarFunction;
+		    rdfs:label "md5hash";
+		    dc:description "Calculates the MD5 Hash of the lexical value of Strings and URIs";
+		    sed:includedIn <>.
+		 
+lfn:median a ssd:AggregateFunction;
+		   rdfs:label "median";
+		   dc:description "Calculates the Median value (according to SPARQL ordering) of the expression as evaluated for solutions";
+		   sed:includedIn <>.
+		   
+lfn:mode a ssd:AggregateFunction;
+		 rdfs:label "mode";
+		 dc:description "Calculates the Modal value of the expression as evaluated for solutions.  This may be null if most solutions evaluate to null/error for the expression";
+		 sed:includedIn <>.
+
+lfn:nmax a ssd:AggregateFunction;
+		 rdfs:label "nmax";
+		 dc:description "Calculates the Numeric Maximum of the expression as evaluated for solutions.  Any non-numeric values are ignored, in the case that no numeric values are encountered an error occurs";
+		 sed:includedIn <>.
+
+lfn:nmin a ssd:AggregateFunction;
+		 rdfs:label "nmin";
+		 dc:description "Calculates the Numeric Minimum of the expression as evaluated for solutions.  Any non-numeric values are ignored, in the case that no numeric values are encountered an error occurs";
+		 sed:includedIn <>.
+
+lfn:pow a ssd:ScalarFunction;
+		rdfs:label "pow";
+		dc:description "Calculates the value of the first argument raised to the power of the second argument";
+		sed:includedIn <>.
+		
+lfn:pythagoras a ssd:ScalarFunction;
+			   rdfs:label "pythagoras";
+			   dc:description "Calculates the length of the hypotenuse of a right angled triangle given the length of the other two sides";
+			   sed:includedIn <>.
+			   
+lfn:radians-to-degrees a ssd:ScalarFunction;
+					   rdfs:label "radians-to-degrees";
+					   dc:description "Converts Radians to Degrees";
+					   sed:includedIn <>.
+					   
+lfn:random a ssd:ScalarFunction;
+		   rdfs:label "random";
+		   dc:description "Returns a random number as a double.  With no arguments a number between 0 and 1 is returned, with a single argument a number between 0 and the argument is returned and with two arguments a number between the arguments is returned";
+		   sed:includedIn <>.
+		   
+lfn:reciprocal a ssd:ScalarFunction;
+			   rdfs:label "reciprocal";
+			   dc:description "Returns the reciprocal of a number i.e. 1/n";
+			   sed:includedIn <>.
+			   
+lfn:root a ssd:ScalarFunction;
+		 rdfs:label "root";
+		 dc:description "Calculates an arbitrary root of a number e.g. lfn:root(16,4) returns the 4th root of 16 which is 2";
+		 sed:includedIn <>.
+		 
+lfn:sha256hash a ssd:ScalarFunction;
+			   rdfs:label "sha256hash";
+			   dc:description "Calculates the SHA256 Hash of the lexical value of Strings and URIs";
+		       sed:includedIn <>.
+		       
+lfn:sq a ssd:ScalarFunction;
+	   rdfs:label "sq";
+	   dc:description "Calculates the square of a number ie. x^2";
+	   sed:includedIn <>.
+	   
+lfn:sqrt a ssd:ScalarFunction;
+		 rdfs:label "sqrt";
+		 dc:description "Calculates the square root of a number";
+		 sed:includedIn <>.
+		 
+lfn:ten a ssd:ScalarFunction;
+		rdfs:label "ten";
+		dc:description "Calculates ten raised to the power of the argument i.e. 10^x";
+		sed:includedIn <>.
+		
+lfn:cos a ssd:ScalarFunction;
+		rdfs:label "cos";
+		dc:description "Calculates the cosine of a number";
+		sed:includedIn <>.
+				
+lfn:cos-1 a ssd:ScalarFunction;
+		  rdfs:label "cos-1";
+		  dc:description "Calculates the inverse cosine (arccosine) of a number";
+		  sed:includedIn <>.
+		
+lfn:cosec a ssd:ScalarFunction;
+		  rdfs:label "cosec";
+		  dc:description "Calculates the cosecant of a number";
+		  sed:includedIn <>.
+		
+lfn:cosec-1 a ssd:ScalarFunction;
+			rdfs:label "cosec-1";
+			dc:description "Calculates the inverse cosecant (arccosecant) of a number";
+			sed:includedIn <>.
+			
+lfn:cotan a ssd:ScalarFunction;
+		  rdfs:label "cotan";
+		  dc:description "Calculates the cotangent of a number";
+		  sed:includedIn <>.
+		  
+lfn:cotan-1 a ssd:ScalarFunction;
+			rdfs:label "cotan-1";
+			dc:description "Calculates the inverse cotangent (arccotangent) of a number";
+			sed:includedIn <>.
+			
+lfn:sec a ssd:ScalarFunction;
+		rdfs:label "sec";
+		dc:description "Calculates the secant of a number";
+		sed:includedIn <>.
+		
+lfn:sec-1 a ssd:ScalarFunction;
+		  rdfs:label "sec-1";
+		  dc:description "Calculates the inverse secant (arcsecant) of a number";
+		  sed:includedIn <>.
+		
+lfn:sin a ssd:ScalarFunction;
+		rdfs:label "sin";
+		dc:description "Calculates the sine of a number";
+		sed:includedIn <>.
+		
+lfn:sin-1 a ssd:ScalarFunction;
+		  rdfs:label "sin-1";
+		  dc:description "Calculates the inverse sine (arcsin) of a number";
+		  sed:includedIn <>.
+		  
+lfn:tan a ssd:ScalarFunction;
+		rdfs:label "tan";
+		dc:description "Calculates the tangent of a number";
+		sed:includedIn <>.
+		
+lfn:tan-1 a ssd:ScalarFunction;
+		rdfs:label "tan-1";
+		dc:description "Calculates the inverse tangent (arctangent) of a number";
+		sed:includedIn <>.

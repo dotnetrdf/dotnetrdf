@@ -27,13 +27,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query.Aggregates
 {
-    [TestFixture]
+
     public class GroupConcatTests
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
@@ -44,31 +44,31 @@ namespace VDS.RDF.Query.Aggregates
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(new InMemoryDataset(g));
 
             SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
+            Assert.NotNull(results);
             TestTools.ShowResults(results);
 
-            Assert.AreEqual(expected, results.Count);
-            Assert.IsTrue(results.Variables.Contains(var));
+            Assert.Equal(expected, results.Count);
+            Assert.True(results.Variables.Contains(var));
 
             foreach (SparqlResult r in results)
             {
-                Assert.IsTrue(r.HasValue(var));
+                Assert.True(r.HasValue(var));
                 if (expectNotNull)
                 {
-                    Assert.IsTrue(r.HasBoundValue(var));
+                    Assert.True(r.HasBoundValue(var));
                     INode value = r[var];
-                    Assert.AreEqual(NodeType.Literal, value.NodeType);
+                    Assert.Equal(NodeType.Literal, value.NodeType);
                     String lexValue = ((ILiteralNode)value).Value;
-                    Assert.IsTrue(lexValue.Contains(expectMatch));
+                    Assert.True(lexValue.Contains(expectMatch));
                 }
                 else
                 {
-                    Assert.IsFalse(r.HasBoundValue(var));
+                    Assert.False(r.HasBoundValue(var));
                 }
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlGroupConcat1()
         {
             IGraph g = new Graph();
@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.Aggregates
             this.RunTest(g, "SELECT (GROUP_CONCAT(?o) AS ?concat) WHERE { ?s ?p ?o }", 1, "concat", true, "object");
         }
 
-        [Test]
+        [Fact]
         public void SparqlGroupConcat2()
         {
             IGraph g = new Graph();
@@ -88,7 +88,7 @@ namespace VDS.RDF.Query.Aggregates
             this.RunTest(g, "SELECT (GROUP_CONCAT(?s) AS ?concat) WHERE { ?s ?p ?o }", 1, "concat", true, "subject");
         }
 
-        [Test]
+        [Fact]
         public void SparqlGroupConcat3()
         {
             IGraph g = new Graph();
@@ -106,7 +106,7 @@ WHERE
             this.RunTest(g, query, 1, "concat", true, "1234");
         }
 
-        [Test]
+        [Fact]
         public void SparqlGroupConcat4()
         {
             IGraph g = new Graph();

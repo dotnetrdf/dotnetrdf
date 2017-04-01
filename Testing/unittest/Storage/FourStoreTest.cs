@@ -28,10 +28,11 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing.Formatting;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Storage
 {
@@ -39,7 +40,7 @@ namespace VDS.RDF.Storage
     /// <summary>
     /// Summary description for FourStoreTest
     /// </summary>
-    [TestFixture]
+
     public class FourStoreTest
     {
         private NTriplesFormatter _formatter = new NTriplesFormatter();
@@ -48,13 +49,13 @@ namespace VDS.RDF.Storage
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseFourStore))
             {
-                Assert.Inconclusive("Test Config marks 4store as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks 4store as unavailable, test cannot be run");
             }
             return new FourStoreConnector(TestConfigManager.GetSetting(TestConfigManager.FourStoreServer));
         }
 
 #if !NO_SYNC_HTTP // The tests here all use the synchronous API
-        [Test]
+        [SkippableFact]
 
         public void StorageFourStoreSaveGraph()
         {
@@ -68,10 +69,10 @@ namespace VDS.RDF.Storage
             Graph h = new Graph();
             fourstore.LoadGraph(h, "http://example.org/4storeTest");
 
-            Assert.AreEqual(g, h, "Graphs should be equal");
+            Assert.Equal(g, h);
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageFourStoreLoadGraph()
         {
             StorageFourStoreSaveGraph();
@@ -85,10 +86,10 @@ namespace VDS.RDF.Storage
             Graph h = new Graph();
             fourstore.LoadGraph(h, "http://example.org/4storeTest");
 
-            Assert.AreEqual(g, h, "Graphs should be equal");
+            Assert.Equal(g, h);
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageFourStoreDeleteGraph()
         {
             StorageFourStoreSaveGraph();
@@ -99,10 +100,10 @@ namespace VDS.RDF.Storage
             Graph g = new Graph();
             fourstore.LoadGraph(g, "http://example.org/4storeTest");
 
-            Assert.IsTrue(g.IsEmpty, "Graph should be empty as it was deleted from 4store");
+            Assert.True(g.IsEmpty, "Graph should be empty as it was deleted from 4store");
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageFourStoreAddTriples()
         {
             StorageFourStoreDeleteGraph();
@@ -117,10 +118,10 @@ namespace VDS.RDF.Storage
 
             fourstore.LoadGraph(g, "http://example.org/4storeTest");
 
-            Assert.IsTrue(ts.All(t => g.ContainsTriple(t)), "Added Triple should be in the Graph");
+            Assert.True(ts.All(t => g.ContainsTriple(t)), "Added Triple should be in the Graph");
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageFourStoreRemoveTriples()
         {
             StorageFourStoreAddTriples();
@@ -136,10 +137,10 @@ namespace VDS.RDF.Storage
 
             fourstore.LoadGraph(g, "http://example.org/4storeTest");
 
-            Assert.IsTrue(ts.All(t => !g.ContainsTriple(t)), "Removed Triple should not have been in the Graph");
+            Assert.True(ts.All(t => !g.ContainsTriple(t)), "Removed Triple should not have been in the Graph");
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageFourStoreUpdate()
         {
             FourStoreConnector fourstore = FourStoreTest.GetConnection();
@@ -148,14 +149,14 @@ namespace VDS.RDF.Storage
             Graph g = new Graph();
             fourstore.LoadGraph(g, "http://example.org/update");
 
-            Assert.AreEqual(1, g.Triples.Count, "The CREATE GRAPH and INSERT DATA commands should result in 1 Triple in the Graph");
+            Assert.Equal(1, g.Triples.Count);
 
             fourstore.Update("DROP SILENT GRAPH <http://example.org/update>");
             Graph h = new Graph();
             fourstore.LoadGraph(h, "http://example.org/update");
 
-            Assert.IsTrue(h.IsEmpty, "Graph should be empty after the DROP GRAPH update was issued");
-            Assert.AreNotEqual(g, h, "Graphs should not be equal");
+            Assert.True(h.IsEmpty, "Graph should be empty after the DROP GRAPH update was issued");
+            Assert.Equal(g, h);
         }
 #endif
     }

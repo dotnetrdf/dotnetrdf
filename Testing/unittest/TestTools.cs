@@ -31,7 +31,7 @@ using System.Text;
 using System.Threading;
 using System.IO;
 using System.Reflection;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
@@ -67,13 +67,13 @@ namespace VDS.RDF
 
             if (expectEquality)
             {
-                Assert.AreEqual(a.GetHashCode(), b.GetHashCode());
-                Assert.AreEqual(a, b);
+                Assert.Equal(a.GetHashCode(), b.GetHashCode());
+                Assert.Equal(a, b);
             }
             else
             {
-                Assert.AreNotEqual(a.GetHashCode(), b.GetHashCode());
-                Assert.AreNotEqual(a, b);
+                Assert.NotEqual(a.GetHashCode(), b.GetHashCode());
+                Assert.NotEqual(a, b);
             }
         }
 
@@ -82,12 +82,12 @@ namespace VDS.RDF
             if (expectEquality)
             {
                 //Triple Counts must be identical
-                Assert.AreEqual(g.Triples.Count, h.Triples.Count);
+                Assert.Equal(g.Triples.Count, h.Triples.Count);
 
                 //Each Triple in g must be in h
                 foreach (Triple t in g.Triples)
                 {
-                    Assert.IsTrue(h.Triples.Contains(t), "Second Graph must contain Triple " + t.ToString());
+                    Assert.True(h.Triples.Contains(t), "Second Graph must contain Triple " + t.ToString());
                 }
             }
             else
@@ -96,12 +96,12 @@ namespace VDS.RDF
                 {
                     //Different number of Triples so must be non-equal
                     //We know this Assertion should succeed based on our previous IF but should Assert anyway
-                    Assert.AreNotEqual(g.Triples.Count, h.Triples.Count, "Two non-equivalent Graphs should have different numbers of Triples");
+                    Assert.Equal(g.Triples.Count, h.Triples.Count);
                 }
                 else
                 {
                     //Not every Triple in g is in h and not every Triple in h is in g
-                    Assert.IsFalse(g.Triples.All(t => h.Triples.Contains(t)) && h.Triples.All(t => g.Triples.Contains(t)), "Graphs contain the same Triples when they were expected to be different");
+                    Assert.False(g.Triples.All(t => h.Triples.Contains(t)) && h.Triples.All(t => g.Triples.Contains(t)), "Graphs contain the same Triples when they were expected to be different");
                 }
             }
         }

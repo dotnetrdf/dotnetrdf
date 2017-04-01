@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
@@ -42,7 +42,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class ParallelEvaluation
     {
         private InMemoryDataset _dataset;
@@ -111,27 +111,27 @@ namespace VDS.RDF.Query
                 {
                     SparqlResultSet rsetPar = (SparqlResultSet)parResults;
                     Console.WriteLine("Parallel Evaluation returned " + rsetPar.Count + " Result(s)");
-                    Assert.AreEqual(rsetNorm.Count, rsetPar.Count, "Result Sets should have same number of results");
-                    Assert.AreEqual(rsetNorm, rsetPar, "Result Sets should be equal");
+                    Assert.Equal(rsetNorm.Count, rsetPar.Count);
+                    Assert.Equal(rsetNorm, rsetPar);
                 }
                 else
                 {
-                    Assert.Fail("Query did not return a SPARQL Result Set as expected");
+                    Assert.True(false, "Query did not return a SPARQL Result Set as expected");
                 }
             }
             else
             {
-                Assert.Fail("Query did not return a SPARQL Result Set for normal evaluation as expected");
+                Assert.True(false, "Query did not return a SPARQL Result Set for normal evaluation as expected");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlParallelEvaluationJoin1()
         {
             this.TestQuery("SELECT * WHERE { ?s ?p ?o { ?x ?y ?z } }");
         }
 
-        [Test]
+        [Fact]
         public void SparqlParallelEvaluationJoin2()
         {
             try
@@ -144,7 +144,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlParallelEvaluationDivision1()
         {
             INode zero = (0).ToLiteral(this._factory);
@@ -180,7 +180,7 @@ namespace VDS.RDF.Query
 
                 foreach (ISet s in context.OutputMultiset.Sets)
                 {
-                    Assert.AreEqual(s["expected"], s["actual"]);
+                    Assert.Equal(s["expected"], s["actual"]);
                 }
                 Console.WriteLine("Iteration #" + i + " Completed OK");
             }
@@ -202,7 +202,7 @@ namespace VDS.RDF.Query
             context.OutputMultiset.Add(s);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParallelEvaluationOptional1()
         {
             String data = @"<http://a> <http://p> <http://x> .
@@ -225,9 +225,9 @@ namespace VDS.RDF.Query
             for (i = 1; i <= 100000; i++)
             {
                 SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
-                Assert.IsNotNull(results);
+                Assert.NotNull(results);
                 if (results.Count != 3) TestTools.ShowResults(results);
-                Assert.AreEqual(3, results.Count, "Failed after " + i + " iterations");
+                Assert.Equal(3, results.Count);
             }
             timer.Stop();
 

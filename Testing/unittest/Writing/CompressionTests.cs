@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 
@@ -72,7 +72,7 @@ namespace VDS.RDF.Writing
 
                 GraphDiffReport report = g.Difference(h);
                 if (!report.AreEqual) TestTools.ShowDifferences(report);
-                Assert.AreEqual(g, h, "Graphs should be equal after round trip to and from serialization using " + kvp.Key.GetType().Name);
+                Assert.Equal(g, h);
             }
         }
     }

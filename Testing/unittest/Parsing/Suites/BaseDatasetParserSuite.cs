@@ -24,11 +24,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using NUnit.Framework;
+using Xunit;
 
 namespace VDS.RDF.Parsing.Suites
 {
-    [TestFixture]
+
     public abstract class BaseDatasetParserSuite : BaseParserSuite<IStoreReader, TripleStore>
     {
         protected BaseDatasetParserSuite(IStoreReader testParser, IStoreReader resultsParser, String baseDir)

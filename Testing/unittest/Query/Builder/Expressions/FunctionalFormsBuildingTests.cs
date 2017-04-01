@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions.Functions.Sparql;
@@ -35,18 +35,18 @@ namespace VDS.RDF.Query.Builder.Expressions
 {
     public partial class ExpressionBuilderTests
     {
-        [Test]
+        [Fact]
         public void CanCreateBoundFunctionUsingVariableTerm()
         {
             // when
             BooleanExpression bound = Builder.Bound("person");
 
             // then
-            Assert.IsTrue(bound.Expression is BoundFunction);
-            Assert.IsTrue(bound.Expression.Arguments.ElementAt(0) is VariableTerm);
+            Assert.True(bound.Expression is BoundFunction);
+            Assert.True(bound.Expression.Arguments.ElementAt(0) is VariableTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanCreateBoundFunctionUsingVariableName()
         {
             // given
@@ -56,11 +56,11 @@ namespace VDS.RDF.Query.Builder.Expressions
             BooleanExpression bound = Builder.Bound(variableTerm);
 
             // then
-            Assert.IsTrue(bound.Expression is BoundFunction);
-            Assert.AreSame(variableTerm.Expression, bound.Expression.Arguments.ElementAt(0));
+            Assert.True(bound.Expression is BoundFunction);
+            Assert.Same(variableTerm.Expression, bound.Expression.Arguments.ElementAt(0));
         }
 
-        [Test]
+        [Fact]
         public void CanCreateIfFunctionCall()
         {
             // given
@@ -72,13 +72,13 @@ namespace VDS.RDF.Query.Builder.Expressions
             RdfTermExpression expression = Builder.If(ifExpr).Then(thenExpr).Else(elseExpr);
 
             // then
-            Assert.IsTrue(expression.Expression is IfElseFunction);
-            Assert.AreSame(expression.Expression.Arguments.ElementAt(0), ifExpr.Expression);
-            Assert.AreSame(expression.Expression.Arguments.ElementAt(1), thenExpr.Expression);
-            Assert.AreSame(expression.Expression.Arguments.ElementAt(2), elseExpr.Expression);
+            Assert.True(expression.Expression is IfElseFunction);
+            Assert.Same(expression.Expression.Arguments.ElementAt(0), ifExpr.Expression);
+            Assert.Same(expression.Expression.Arguments.ElementAt(1), thenExpr.Expression);
+            Assert.Same(expression.Expression.Arguments.ElementAt(2), elseExpr.Expression);
         }
 
-        [Test]
+        [Fact]
         public void CanCreateIfFunctionCallUsingVariables()
         {
             // given
@@ -90,13 +90,13 @@ namespace VDS.RDF.Query.Builder.Expressions
             RdfTermExpression expression = Builder.If(ifExpr).Then(thenExpr).Else(elseExpr);
 
             // then
-            Assert.IsTrue(expression.Expression is IfElseFunction);
-            Assert.AreSame(ifExpr.Expression, expression.Expression.Arguments.ElementAt(0));
-            Assert.AreSame(thenExpr.Expression, expression.Expression.Arguments.ElementAt(1));
-            Assert.AreSame(elseExpr.Expression, expression.Expression.Arguments.ElementAt(2));
+            Assert.True(expression.Expression is IfElseFunction);
+            Assert.Same(ifExpr.Expression, expression.Expression.Arguments.ElementAt(0));
+            Assert.Same(thenExpr.Expression, expression.Expression.Arguments.ElementAt(1));
+            Assert.Same(elseExpr.Expression, expression.Expression.Arguments.ElementAt(2));
         }
 
-        [Test]
+        [Fact]
         public void CanCreateTheCoalesceFunctionCall()
         {
             // given
@@ -109,11 +109,11 @@ namespace VDS.RDF.Query.Builder.Expressions
             RdfTermExpression coalesce = Builder.Coalesce(expr1, expr2, expr3, expr4);
 
             // then
-            Assert.IsTrue(coalesce.Expression is CoalesceFunction);
-            Assert.AreSame(expr1.Expression, coalesce.Expression.Arguments.ElementAt(0));
-            Assert.AreSame(expr2.Expression, coalesce.Expression.Arguments.ElementAt(1));
-            Assert.AreSame(expr3.Expression, coalesce.Expression.Arguments.ElementAt(2));
-            Assert.AreSame(expr4.Expression, coalesce.Expression.Arguments.ElementAt(3));
+            Assert.True(coalesce.Expression is CoalesceFunction);
+            Assert.Same(expr1.Expression, coalesce.Expression.Arguments.ElementAt(0));
+            Assert.Same(expr2.Expression, coalesce.Expression.Arguments.ElementAt(1));
+            Assert.Same(expr3.Expression, coalesce.Expression.Arguments.ElementAt(2));
+            Assert.Same(expr4.Expression, coalesce.Expression.Arguments.ElementAt(3));
         }
     }
 }

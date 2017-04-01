@@ -1,12 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Parsing
 {
-    [TestFixture]
+
     public class SparqlTsvTests
     {
         private readonly SparqlTsvParser _parser = new SparqlTsvParser();
@@ -15,11 +15,11 @@ namespace VDS.RDF.Parsing
         {
             foreach (String var in vars)
             {
-                Assert.IsTrue(results.Variables.Contains(var), "Missing variable ?" + var);
+                Assert.True(results.Variables.Contains(var), "Missing variable ?" + var);
             }
         }
 
-        [Test]
+        [Fact]
         public void ParsingSparqlTsv01()
         {
             const String data = "?x\t?y\n"
@@ -30,13 +30,13 @@ namespace VDS.RDF.Parsing
 
             TestTools.ShowResults(results);
 
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType);
-            Assert.AreEqual(2, results.Variables.Count());
+            Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
+            Assert.Equal(2, results.Variables.Count());
             CheckVariables(results, "x", "y");
-            Assert.AreEqual(1, results.Results.Count);
+            Assert.Equal(1, results.Results.Count);
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Fact]
         public void ParsingSparqlTsv02()
         {
             // Relative URI - CORE-432
@@ -44,10 +44,11 @@ namespace VDS.RDF.Parsing
                                 + "<http://x>\t<y>\n";
 
             SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+
+            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Fact]
         public void ParsingSparqlTsv03()
         {
             // Invalid URI - CORE-432
@@ -55,7 +56,8 @@ namespace VDS.RDF.Parsing
                                 + "<http://x a bad uri>\t<y>\n";
 
             SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+
+            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
         }
     }
 }

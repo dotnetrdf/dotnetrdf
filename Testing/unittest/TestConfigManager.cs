@@ -26,7 +26,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.IO;
-using NUnit.Framework;
+using VDS.RDF.XunitExtensions;
+using Xunit;
 
 namespace VDS.RDF
 {
@@ -100,9 +101,9 @@ namespace VDS.RDF
             if (_init) return;
             if (_failed) Fail();
 
-            if (File.Exists(@"resources\UnitTestConfig.properties"))
+            if (File.Exists(@"..\\resources\UnitTestConfig.properties"))
             {
-                using (StreamReader reader = new StreamReader(@"resources\UnitTestConfig.properties"))
+                using (StreamReader reader = new StreamReader(@"..\\resources\UnitTestConfig.properties"))
                 {
                     do
                     {
@@ -138,7 +139,7 @@ namespace VDS.RDF
 
         private static void Fail()
         {
-            Assert.Inconclusive("UnitTestConfig.properties cannot be found, to configure your test environment please make a copy of UnitTestConfig.template under the resources directory, add it to this project as a Content item and then edit it to match your test environment");
+            throw new SkipTestException("UnitTestConfig.properties cannot be found, to configure your test environment please make a copy of UnitTestConfig.template under the resources directory, add it to this project as a Content item and then edit it to match your test environment");
         }
 
         /// <summary>
@@ -155,7 +156,7 @@ namespace VDS.RDF
                 String value = _settings[key];
                 if (String.IsNullOrEmpty(value))
                 {
-                    Assert.Fail("Configuration setting '" + key + "' in your UnitTestConfig.properties file is empty/null");
+                    Assert.True(false, "Configuration setting '" + key + "' in your UnitTestConfig.properties file is empty/null");
                     return null;
                 }
                 else
@@ -165,7 +166,7 @@ namespace VDS.RDF
             }
             else
             {
-                Assert.Fail("Required configuration setting '" + key + "' not found in your UnitTestConfig.properties file");
+                Assert.True(false, "Required configuration setting '" + key + "' not found in your UnitTestConfig.properties file");
                 return null;
             }
         }
@@ -185,7 +186,7 @@ namespace VDS.RDF
             }
             else
             {
-                Assert.Fail("Configuration setting '" + key + "' in your UnitTestConfig.properties file is not a valid integer");
+                Assert.True(false, "Configuration setting '" + key + "' in your UnitTestConfig.properties file is not a valid integer");
                 return 0;
             }
         }
@@ -205,7 +206,7 @@ namespace VDS.RDF
             }
             else
             {
-                Assert.Fail("Configuration setting '" + key + "' in your UnitTestConfig.properties file is not a valid boolean");
+                Assert.True(false, "Configuration setting '" + key + "' in your UnitTestConfig.properties file is not a valid boolean");
                 return false;
             }
         }

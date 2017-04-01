@@ -23,7 +23,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using NUnit.Framework;
+using Xunit;
 using System;
 using System.Linq;
 using VDS.RDF.Nodes;
@@ -33,20 +33,20 @@ using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Expressions
 {
-    [TestFixture]
+
     public class ReplaceFunctionTests
     {
-        [Test]
+        [Fact]
         public void SparqlParsingReplaceExpression()
         {
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString("SELECT (REPLACE(?term, 'find', 'replace') AS ?test) { }");
 
             ISparqlExpression expr = q.Variables.First().Projection;
-            Assert.IsInstanceOf<ReplaceFunction>(expr);
+            Assert.IsType<ReplaceFunction>(expr);
         }
 
-        [Test]
+        [Fact]
         public void SparqlExpressionsXPathReplaceNullInCanParallelise1()
         {
             // when
@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Expressions
             var canParallelise = func.CanParallelise;
         }
 
-        [Test]
+        [Fact]
         public void SparqlExpressionsXPathReplaceNullInCanParallelise2()
         {
             // when

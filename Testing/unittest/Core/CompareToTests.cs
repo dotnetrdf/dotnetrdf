@@ -29,7 +29,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
@@ -37,7 +37,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
 {
-    [TestFixture]
+
     public class CompareToTests
     {
         private void CheckCombinations(List<INode> nodes)
@@ -52,7 +52,7 @@ namespace VDS.RDF
 
         private void CheckCombinations(List<INode> nodes, IComparer<INode> comparer)
         {
-            if (nodes.Count == 0) Assert.Fail("No Input");
+            if (nodes.Count == 0) Assert.True(false, "No Input");
 
             Console.WriteLine("INode Typed Tests");
             for (int i = 0; i < nodes.Count; i++)
@@ -63,19 +63,19 @@ namespace VDS.RDF
                     INode b = nodes[j];
                     if (i == j || ReferenceEquals(a, b))
                     {
-                        Assert.AreEqual(0, a.CompareTo(b), i + " == " + j + " was expected");
-                        Assert.AreEqual(0, b.CompareTo(a), j + " == " + i + " was expected");
+                        Assert.Equal(0, a.CompareTo(b));
+                        Assert.Equal(0, b.CompareTo(a));
                         Console.WriteLine(i + " compareTo " + j + " => i == j");
 
-                        Assert.AreEqual(0, comparer.Compare(a, b), i + " == " + j + " was expected (" + comparer.GetType().Name + ")");
-                        Assert.AreEqual(0, comparer.Compare(b, a), j + " == " + i + " was expected (" + comparer.GetType().Name + ")");
+                        Assert.Equal(0, comparer.Compare(a, b));
+                        Assert.Equal(0, comparer.Compare(b, a));
                     }
                     else
                     {
                         int c = a.CompareTo(b);
                         int d = comparer.Compare(a, b);
-                        Assert.AreEqual(c * -1, b.CompareTo(a), j + " compare " + i + " was expected to be inverse of " + i + " compareTo " + j);
-                        Assert.AreEqual(d * -1, comparer.Compare(b, a), j + " compare " + i + " was expected to be inverse of " + i + " compareTo " + j + " (" + comparer.GetType().Name + ")");
+                        Assert.Equal(c * -1, b.CompareTo(a));
+                        Assert.Equal(d * -1, comparer.Compare(b, a));
 
                         if (c > 0)
                         {
@@ -98,7 +98,7 @@ namespace VDS.RDF
 
         private void CheckCombinations<T>(List<T> nodes, IComparer<T> comparer)
         {
-            if (nodes.Count == 0) Assert.Fail("No Input");
+            if (nodes.Count == 0) Assert.True(false, "No Input");
 
             Console.WriteLine("Strongly Typed Tests - " + nodes.GetType().ToString());
             for (int i = 0; i < nodes.Count; i++)
@@ -109,14 +109,14 @@ namespace VDS.RDF
                     T b = nodes[j];
                     if (i == j || ReferenceEquals(a, b))
                     {
-                        Assert.AreEqual(0, comparer.Compare(a, b), i + " compareTo " + j + " was expected");
-                        Assert.AreEqual(0, comparer.Compare(b, a), j + " compateTo " + i + " was expected");
+                        Assert.Equal(0, comparer.Compare(a, b));
+                        Assert.Equal(0, comparer.Compare(b, a));
                         Console.WriteLine(i + " compareTo " + j + " => i == j");
                     }
                     else
                     {
                         int c = comparer.Compare(a, b);
-                        Assert.AreEqual(c * -1, comparer.Compare(b, a), j + " compare " + i + " was expected to be inverse of " + i + " compareTo " + j);
+                        Assert.Equal(c * -1, comparer.Compare(b, a));
 
                         if (c > 0)
                         {
@@ -204,16 +204,16 @@ namespace VDS.RDF
             if (expectFaster)
             {
                 Console.WriteLine("Speed Up: " + ((double)defTime) / ((double)custTime));
-                Assert.IsTrue(custTime <= defTime, comparer.GetType().Name + " should be faster");
+                Assert.True(custTime <= defTime, comparer.GetType().Name + " should be faster");
             }
             else
             {
                 Console.WriteLine("Slow Down: " + ((double)defTime) / ((double)custTime));
-                Assert.IsTrue(defTime <= custTime, comparer.GetType().Name + " should be slower");
+                Assert.True(defTime <= custTime, comparer.GetType().Name + " should be slower");
             }
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareToBlankNodes()
         {
             Graph g = new Graph();
@@ -237,7 +237,7 @@ namespace VDS.RDF
             this.CheckCombinations<BlankNode>(nodes.OfType<BlankNode>().ToList());
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareToLiteralNodes()
         {
             Graph g = new Graph();
@@ -264,7 +264,7 @@ namespace VDS.RDF
             this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareToMalformedLiteralNodes()
         {
             Graph g = new Graph();
@@ -285,7 +285,7 @@ namespace VDS.RDF
             this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareToWithCompareOptions()
         {
             Graph g = new Graph();
@@ -318,7 +318,7 @@ namespace VDS.RDF
             }
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareToLiteralNodesXsdBytes()
         {
             Graph g = new Graph();
@@ -339,7 +339,7 @@ namespace VDS.RDF
             this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareToLiteralNodesXsdUnsignedBytes()
         {
             Graph g = new Graph();
@@ -360,7 +360,7 @@ namespace VDS.RDF
             this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareToLiteralNodesXsdIntegers()
         {
             Graph g = new Graph();
@@ -381,7 +381,7 @@ namespace VDS.RDF
             this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareToLiteralNodesXsdShorts()
         {
             Graph g = new Graph();
@@ -402,7 +402,7 @@ namespace VDS.RDF
             this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareToLiteralNodesXsdLongs()
         {
             Graph g = new Graph();
@@ -423,7 +423,7 @@ namespace VDS.RDF
             this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareToLiteralNodesXsdUnsignedIntegers()
         {
             Graph g = new Graph();
@@ -444,7 +444,7 @@ namespace VDS.RDF
             this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareToLiteralNodesXsdUnsignedShorts()
         {
             Graph g = new Graph();
@@ -465,7 +465,7 @@ namespace VDS.RDF
             this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareToLiteralNodesXsdUnsignedLongs()
         {
             Graph g = new Graph();
@@ -486,7 +486,7 @@ namespace VDS.RDF
             this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareToLiteralNodesXsdNegativeIntegers()
         {
             Graph g = new Graph();
@@ -507,7 +507,7 @@ namespace VDS.RDF
             this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareToLiteralNodesXsdNonPositiveIntegers()
         {
             Graph g = new Graph();
@@ -528,7 +528,7 @@ namespace VDS.RDF
             this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareToLiteralNodesXsdNonNegativeIntegers()
         {
             Graph g = new Graph();
@@ -549,7 +549,7 @@ namespace VDS.RDF
             this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareToLiteralNodesXsdPositiveIntegers()
         {
             Graph g = new Graph();
@@ -570,7 +570,7 @@ namespace VDS.RDF
             this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareToLiteralNodesXsdHexBinary()
         {
             Graph g = new Graph();
@@ -591,7 +591,7 @@ namespace VDS.RDF
             this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareToLiteralNodesXsdDoubles()
         {
             Graph g = new Graph();
@@ -619,7 +619,7 @@ namespace VDS.RDF
             this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareToLiteralNodesXsdFloats()
         {
             Graph g = new Graph();
@@ -647,7 +647,7 @@ namespace VDS.RDF
             this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareToLiteralNodesXsdUris()
         {
             Graph g = new Graph();
@@ -674,7 +674,7 @@ namespace VDS.RDF
             this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareToLiteralNodesXsdDateTimes()
         {
             Graph g = new Graph();
@@ -699,7 +699,7 @@ namespace VDS.RDF
             this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareToUriNodes()
         {
             Graph g = new Graph();
@@ -728,7 +728,7 @@ namespace VDS.RDF
             this.CheckCombinations<UriNode>(nodes.OfType<UriNode>().ToList());
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareToMixedNodes()
         {
             Graph g = new Graph();
@@ -770,7 +770,7 @@ namespace VDS.RDF
             this.CheckCombinations(nodes);
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareToMixedNodes3()
         {
             Graph g = new Graph();
@@ -835,7 +835,7 @@ namespace VDS.RDF
             this.CheckCombinations(nodes);
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareToMixedNodes2()
         {
             Graph g = new Graph();
@@ -845,35 +845,35 @@ namespace VDS.RDF
             IVariableNode v = g.CreateVariableNode("var");
 
             int c = b.CompareTo(l);
-            Assert.AreEqual(c * -1, l.CompareTo(b), "Expected l compareTo b to be inverse of b compareTo l");
+            Assert.Equal(c * -1, l.CompareTo(b));
             c = b.CompareTo(u);
-            Assert.AreEqual(c * -1, u.CompareTo(b), "Expected l compareTo u to be inverse of u compareTo l");
+            Assert.Equal(c * -1, u.CompareTo(b));
             c = b.CompareTo(v);
-            Assert.AreEqual(c * -1, v.CompareTo(b), "Expected l compareTo v to be inverse of v compareTo l");
+            Assert.Equal(c * -1, v.CompareTo(b));
 
             c = l.CompareTo(b);
-            Assert.AreEqual(c * -1, b.CompareTo(l), "Expected b compareTo l to be inverse of l compareTo b");
+            Assert.Equal(c * -1, b.CompareTo(l));
             c = l.CompareTo(u);
-            Assert.AreEqual(c * -1, u.CompareTo(l), "Expected u compareTo l to be inverse of l compareTo u");
+            Assert.Equal(c * -1, u.CompareTo(l));
             c = l.CompareTo(v);
-            Assert.AreEqual(c * -1, v.CompareTo(l), "Expected v compareTo l to be inverse of l compareTo v");
+            Assert.Equal(c * -1, v.CompareTo(l));
 
             c = u.CompareTo(b);
-            Assert.AreEqual(c * -1, b.CompareTo(u), "Expected b compareTo u to be inverse of u compareTo b");
+            Assert.Equal(c * -1, b.CompareTo(u));
             c = u.CompareTo(l);
-            Assert.AreEqual(c * -1, l.CompareTo(u), "Expected l compareTo u to be inverse of u compareTo l");
+            Assert.Equal(c * -1, l.CompareTo(u));
             c = u.CompareTo(v);
-            Assert.AreEqual(c * -1, v.CompareTo(u), "Expected v compareTo u to be inverse of u compareTo v");
+            Assert.Equal(c * -1, v.CompareTo(u));
 
             c = v.CompareTo(b);
-            Assert.AreEqual(c * -1, b.CompareTo(v), "Expected b compareTo v to be inverse of v compareTo b");
+            Assert.Equal(c * -1, b.CompareTo(v));
             c = v.CompareTo(l);
-            Assert.AreEqual(c * -1, l.CompareTo(v), "Expected l compareTo v to be inverse of v compareTo l");
+            Assert.Equal(c * -1, l.CompareTo(v));
             c = v.CompareTo(u);
-            Assert.AreEqual(c * -1, u.CompareTo(v), "Expected u compareTo v to be inverse of v compareTo u");
+            Assert.Equal(c * -1, u.CompareTo(v));
         }
 
-        //[Test]
+        //[Fact]
         //public void NodeCompareToRdfXml()
         //{
         //    Graph g = new Graph();
@@ -904,7 +904,7 @@ namespace VDS.RDF
         //    }
         //}
 
-        [Test]
+        [Fact]
         public void NodeCompareToEquivalentLiterals1()
         {
             Graph g = new Graph();
@@ -917,8 +917,8 @@ namespace VDS.RDF
                 alternate                
             };
 
-            Assert.AreNotEqual(canonical, alternate, "Alternate lexical forms should not be equal");
-            Assert.AreEqual(0, canonical.CompareTo(alternate), "Comparison should compare alternate lexical forms as equal");
+            Assert.NotEqual(canonical, alternate);
+            Assert.Equal(0, canonical.CompareTo(alternate));
 
             this.ShowOrdering(ns);
             this.CheckCombinations(ns);
@@ -926,7 +926,7 @@ namespace VDS.RDF
             this.CheckCombinations(ns, new FastNodeComparer());
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareToEquivalentLiterals2()
         {
             Graph g = new Graph();
@@ -939,8 +939,8 @@ namespace VDS.RDF
                 alternate                
             };
 
-            Assert.AreNotEqual(canonical, alternate, "Alternate lexical forms should not be equal");
-            Assert.AreEqual(0, canonical.CompareTo(alternate), "Comparison should compare alternate lexical forms as equal");
+            Assert.NotEqual(canonical, alternate);
+            Assert.Equal(0, canonical.CompareTo(alternate));
 
             this.ShowOrdering(ns);
             this.CheckCombinations(ns);
@@ -948,7 +948,7 @@ namespace VDS.RDF
             this.CheckCombinations(ns, new FastNodeComparer());
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareToEquivalentLiterals3()
         {
             Graph g = new Graph();
@@ -961,8 +961,8 @@ namespace VDS.RDF
                 alternate                
             };
 
-            Assert.AreNotEqual(canonical, alternate, "Alternate lexical forms should not be equal");
-            Assert.AreEqual(0, canonical.CompareTo(alternate), "Comparison should compare alternate lexical forms as equal");
+            Assert.NotEqual(canonical, alternate);
+            Assert.Equal(0, canonical.CompareTo(alternate));
 
             this.ShowOrdering(ns);
             this.CheckCombinations(ns);
@@ -982,7 +982,7 @@ namespace VDS.RDF
             return ns;
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareSpeed1()
         {
             //Generate 10,000 node list of random integer nodes
@@ -991,7 +991,7 @@ namespace VDS.RDF
             this.TestSpeed(ns, new FastNodeComparer(), true);
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareSpeed2()
         {
             //Generate 100,000 node list of random integer nodes
@@ -1000,7 +1000,7 @@ namespace VDS.RDF
             this.TestSpeed(ns, new FastNodeComparer(), true);
         }
 
-        [Test]
+        [Fact]
         public void NodeCompareSpeed3()
         {
             //Generate 1,000,000 node list of random integer nodes

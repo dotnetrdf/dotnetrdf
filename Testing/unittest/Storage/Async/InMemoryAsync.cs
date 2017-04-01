@@ -27,12 +27,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Storage.Async
 {
-    [TestFixture]
+
     public class InMemoryAsync
         : BaseAsyncTests
     {

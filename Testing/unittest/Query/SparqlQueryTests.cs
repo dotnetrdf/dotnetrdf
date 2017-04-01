@@ -25,7 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
@@ -38,10 +38,10 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class SparqlQueryTests
     {
-        [Test]
+        [Fact]
         public void SparqlFilterShouldGetPlaced()
         {
             // given
@@ -64,11 +64,11 @@ namespace VDS.RDF.Query
             var algebra = (Distinct)query.ToAlgebra();
 
             // then
-            Assert.IsTrue(algebra.InnerAlgebra is Select);
-            Assert.IsTrue(((Select)algebra.InnerAlgebra).InnerAlgebra is Filter);
+            Assert.True(algebra.InnerAlgebra is Select);
+            Assert.True(((Select)algebra.InnerAlgebra).InnerAlgebra is Filter);
         }
 
-        [Test]
+        [Fact]
         public void SparqlJoinExplosion()
         {
             IGraph g = new Graph();
@@ -77,9 +77,9 @@ namespace VDS.RDF.Query
 
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(new InMemoryDataset(g));
             SparqlResultSet results = processor.ProcessQuery(query) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.IsFalse(results.IsEmpty);
-            Assert.AreEqual(176, results.Count);
+            Assert.NotNull(results);
+            Assert.False(results.IsEmpty);
+            Assert.Equal(176, results.Count);
         }
     }
 }

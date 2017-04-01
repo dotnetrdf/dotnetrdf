@@ -26,25 +26,24 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Diagnostics;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Parsing
 {
-    [TestFixture]
+
     public class TriXTests
     {
         private TriXWriter _writer;
         private TriXParser _parser;
 
-        [SetUp]
-        public void Setup()
+        public TriXTests()
         {
             _writer = new TriXWriter();
             _parser = new TriXParser();
         }
 
-        [Test, Timeout(5000)]
+        [Fact]
         public void ParsingTriXPerformanceCore351()
         {
             //Test case from CORE-351
@@ -56,17 +55,17 @@ namespace VDS.RDF.Parsing
             Console.WriteLine("Took " + timer.Elapsed + " to read from disk");
         }
 
-        [Timeout(50000)]
-        [TestCase(1000, 100)]
+        [Theory]
+        [InlineData(1000, 100)]
         public void ParsingTriXPerformance_LargeDataset(int numGraphs, int triplesPerGraph)
         {
             ParsingTriXPerformance(numGraphs, triplesPerGraph);
         }
 
-        [Timeout(5000)]
-        [TestCase(1000, 10)]
-        [TestCase(10, 1000)]
-        [TestCase(1, 100)]
+        [Theory]
+        [InlineData(1000, 10)]
+        [InlineData(10, 1000)]
+        [InlineData(1, 100)]
         public void ParsingTriXPerformance(int numGraphs, int triplesPerGraph)
         {
             //Generate data
@@ -101,16 +100,16 @@ namespace VDS.RDF.Parsing
             timer.Stop();
             Console.WriteLine("Took " + timer.Elapsed + " to read from disk");
 
-            Assert.AreEqual(numGraphs * triplesPerGraph, store2.Graphs.Sum(g => g.Triples.Count));
+            Assert.Equal(numGraphs * triplesPerGraph, store2.Graphs.Sum(g => g.Triples.Count));
 
         }
 
-        [Test]
+        [Fact]
         public void ParseTriXWithEmptyGraph()
         {
             TripleStore store = new TripleStore();
             this._parser.Load(store, @"resources\\trix\emptygraph.trix");
-            Assert.AreEqual(0, store.Graphs.Count);
+            Assert.Equal(0, store.Graphs.Count);
         }
     }
 }

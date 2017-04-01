@@ -28,14 +28,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Storage
 {
-    [TestFixture]
+
     public abstract class BaseAsyncTests
     {
         private const String SaveGraphUri = "http://localhost/storage/async/SaveGraph";
@@ -55,7 +56,7 @@ namespace VDS.RDF.Storage
 
         protected void Fail(IAsyncStorageProvider provider, String msg)
         {
-            Assert.Fail("[" + provider.GetType().Name + "] " + msg);
+            Assert.True(false, "[" + provider.GetType().Name + "] " + msg);
         }
 
         protected void Fail(IAsyncStorageProvider provider, String msg, Exception e)
@@ -103,7 +104,7 @@ namespace VDS.RDF.Storage
                         Console.WriteLine("Async LoadGraph() worked OK, checking for graph equality...");
                         GraphDiffReport diff = g.Difference(resArgs.Graph);
                         if (!diff.AreEqual) TestTools.ShowDifferences(diff);
-                        Assert.IsTrue(diff.AreEqual, "[" + provider.GetType().Name + "] Graphs were not equal");
+                        Assert.True(diff.AreEqual, "[" + provider.GetType().Name + "] Graphs were not equal");
                     }
                     else
                     {
@@ -179,7 +180,7 @@ namespace VDS.RDF.Storage
                         if (resArgs.WasSuccessful)
                         {
                             Console.WriteLine("Async LoadGraph() worked OK, checking for empty graph");
-                            Assert.IsTrue(resArgs.Graph.IsEmpty, "[" + provider.GetType().Name + "] Expected an empty Graph");
+                            Assert.True(resArgs.Graph.IsEmpty, "[" + provider.GetType().Name + "] Expected an empty Graph");
                         }
                         else
                         {
@@ -263,7 +264,7 @@ namespace VDS.RDF.Storage
                             Console.WriteLine("Async LoadGraph() worked OK, checking for triples removed...");
                             foreach (Triple t in ts)
                             {
-                                Assert.IsFalse(resArgs.Graph.ContainsTriple(t), "[" + provider.GetType().Name + "] Removed Triple " + t.ToString() + " is still present");
+                                Assert.False(resArgs.Graph.ContainsTriple(t), "[" + provider.GetType().Name + "] Removed Triple " + t.ToString() + " is still present");
                             }
                         }
                         else
@@ -348,7 +349,7 @@ namespace VDS.RDF.Storage
                             Console.WriteLine("Async LoadGraph() worked OK, checking for triples added...");
                             foreach (Triple t in ts)
                             {
-                                Assert.IsTrue(resArgs.Graph.ContainsTriple(t), "[" + provider.GetType().Name + "] Added Triple " + t.ToString() + " is not present");
+                                Assert.True(resArgs.Graph.ContainsTriple(t), "[" + provider.GetType().Name + "] Added Triple " + t.ToString() + " is not present");
                             }
                         }
                         else
@@ -458,7 +459,7 @@ namespace VDS.RDF.Storage
                         if (results == null) this.Fail(provider, "Result Set was empty");
                         foreach (SparqlResult r in results)
                         {
-                            Assert.IsTrue(g.GetTriplesWithSubjectObject(r["s"], r["type"]).Any(), "Unexpected Type triple " + r["s"].ToString() + " a " + r["type"].ToString() + " was returned");
+                            Assert.True(g.GetTriplesWithSubjectObject(r["s"], r["type"]).Any(), "Unexpected Type triple " + r["s"].ToString() + " a " + r["type"].ToString() + " was returned");
                         }
                     }
                     else
@@ -477,7 +478,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageAsyncSaveLoad()
         {
             Graph g = new Graph();
@@ -485,7 +486,7 @@ namespace VDS.RDF.Storage
             this.TestAsyncSaveLoad(g);
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageAsyncDeleteGraph()
         {
             Graph g = new Graph();
@@ -493,7 +494,7 @@ namespace VDS.RDF.Storage
             this.TestAsyncDelete(g);
         }
         
-        [Test]
+        [SkippableFact]
         public void StorageAsyncRemoveTriples()
         {
             Graph g = new Graph();
@@ -501,7 +502,7 @@ namespace VDS.RDF.Storage
             this.TestAsyncDeleteTriples(g);
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageAsyncAddTriples()
         {
             Graph g = new Graph();
@@ -509,13 +510,13 @@ namespace VDS.RDF.Storage
             this.TestAsyncAddTriples(g);
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageAsyncListGraphs()
         {
             this.TestAsyncListGraphs();
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageAsyncQuery()
         {
             Graph g = new Graph();

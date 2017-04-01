@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Ontology;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Inference;
@@ -35,10 +35,10 @@ using VDS.RDF.Query.Inference;
 
 namespace VDS.RDF.Ontology
 {
-    [TestFixture]
+
     public class OntologyTests
     {
-        [Test]
+        [Fact]
         public void OntologyClassBasic()
         {
             //Load Test Data
@@ -76,7 +76,7 @@ namespace VDS.RDF.Ontology
             }
         }
 
-        [Test]
+        [Fact]
         public void OntologyIndividualCreation()
         {
             //Load Test Data
@@ -88,7 +88,7 @@ namespace VDS.RDF.Ontology
             try
             {
                 Individual i = g.CreateIndividual(new Uri("http://example.org/noSuchThing"));
-                Assert.Fail("Attempting to create a none-existent Individual should fail");
+                Assert.True(false, "Attempting to create a none-existent Individual should fail");
             }
             catch (RdfOntologyException)
             {
@@ -109,7 +109,7 @@ namespace VDS.RDF.Ontology
             }
             catch (RdfOntologyException)
             {
-                Assert.Fail("Should be able to get an existing Individual");
+                Assert.True(false, "Should be able to get an existing Individual");
             }
             Console.WriteLine();
 
@@ -126,11 +126,11 @@ namespace VDS.RDF.Ontology
             }
             catch (RdfOntologyException)
             {
-                Assert.Fail("Should be able to create new Individuals");
+                Assert.True(false, "Should be able to create new Individuals");
             }
         }
 
-        [Test]
+        [Fact]
         public void OntologyPropertyBasic()
         {
             //Load Test Data
@@ -167,7 +167,7 @@ namespace VDS.RDF.Ontology
             }
         }
 
-        [Test]
+        [Fact]
         public void OntologyReasonerGraph()
         {
             //Load Test Data
@@ -194,8 +194,8 @@ namespace VDS.RDF.Ontology
 
             Console.WriteLine("Original Graph has " + g.Triples.Count + " Triples");
             Console.WriteLine("Reasoner Graph has " + g2.Triples.Count + " Triples");
-            Assert.IsTrue(g2.Triples.Count > g.Triples.Count, "Reasoner Graph should have more Triples");
-            Assert.AreEqual(g, g2.BaseGraph, "Original Graph should be equal to the Reasoner Graphs BaseGraph");
+            Assert.True(g2.Triples.Count > g.Triples.Count, "Reasoner Graph should have more Triples");
+            Assert.Equal(g, g2.BaseGraph);
 
             Console.WriteLine();
 
@@ -214,7 +214,7 @@ namespace VDS.RDF.Ontology
             }
         }
 
-        [Test]
+        [Fact]
         public void OntologyResourceCasting()
         {
             //Load Test Data
@@ -231,7 +231,7 @@ namespace VDS.RDF.Ontology
             }
         }
 
-        [Test]
+        [Fact]
         public void OntologyDomainAndRangeOfClassProperties()
         {
             OntologyGraph g = new OntologyGraph();
@@ -259,7 +259,7 @@ namespace VDS.RDF.Ontology
             }
         }
 
-        [Test]
+        [Fact]
         public void OntologyDomainAndRangeOfClassManual()
         {
             OntologyGraph g = new OntologyGraph();
@@ -300,7 +300,7 @@ namespace VDS.RDF.Ontology
             }
         }
 
-        [Test]
+        [Fact]
         public void OntologyClassSubClasses()
         {
             //Load Test Data
@@ -313,17 +313,17 @@ namespace VDS.RDF.Ontology
             Console.WriteLine("Got the class of Ground Vehicles");
 
             //Check counts of super classes
-            Assert.AreEqual(1, groundVehicle.SuperClasses.Count());
-            Assert.AreEqual(1, groundVehicle.DirectSuperClasses.Count());
-            Assert.AreEqual(0, groundVehicle.IndirectSuperClasses.Count());
+            Assert.Equal(1, groundVehicle.SuperClasses.Count());
+            Assert.Equal(1, groundVehicle.DirectSuperClasses.Count());
+            Assert.Equal(0, groundVehicle.IndirectSuperClasses.Count());
 
             //Check counts of sub-classes
-            Assert.AreEqual(5, groundVehicle.SubClasses.Count());
-            Assert.AreEqual(3, groundVehicle.DirectSubClasses.Count());
-            Assert.AreEqual(2, groundVehicle.IndirectSubClasses.Count());
+            Assert.Equal(5, groundVehicle.SubClasses.Count());
+            Assert.Equal(3, groundVehicle.DirectSubClasses.Count());
+            Assert.Equal(2, groundVehicle.IndirectSubClasses.Count());
         }
 
-        [Test]
+        [Fact]
         public void OntologyClassSiblings()
         {
             //Load Test Data
@@ -336,11 +336,11 @@ namespace VDS.RDF.Ontology
 
             //Get siblings
             List<OntologyClass> siblings = car.Siblings.ToList();
-            Assert.AreEqual(2, siblings.Count);
-            Assert.IsFalse(siblings.Contains(car));
+            Assert.Equal(2, siblings.Count);
+            Assert.False(siblings.Contains(car));
         }
 
-        [Test]
+        [Fact]
         public void OntologyClassTopAndBottom()
         {
             //Load Test Data
@@ -350,21 +350,21 @@ namespace VDS.RDF.Ontology
 
             //Get the class of Vehicles
             OntologyClass vehicle = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Vehicle"));
-            Assert.IsTrue(vehicle.IsTopClass);
-            Assert.IsFalse(vehicle.IsBottomClass);
+            Assert.True(vehicle.IsTopClass);
+            Assert.False(vehicle.IsBottomClass);
 
             //Get the class of cars
             OntologyClass car = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Car"));
-            Assert.IsFalse(car.IsTopClass);
-            Assert.IsFalse(car.IsBottomClass);
+            Assert.False(car.IsTopClass);
+            Assert.False(car.IsBottomClass);
 
             //Get the class of sports cars
             OntologyClass sportsCar = g.CreateOntologyClass(new Uri("http://example.org/vehicles/SportsCar"));
-            Assert.IsFalse(sportsCar.IsTopClass);
-            Assert.IsTrue(sportsCar.IsBottomClass);
+            Assert.False(sportsCar.IsTopClass);
+            Assert.True(sportsCar.IsBottomClass);
         }
 
-        [Test]
+        [Fact]
         public void OntologyPropertySubProperties()
         {
             //Load Test Data
@@ -376,18 +376,18 @@ namespace VDS.RDF.Ontology
             OntologyProperty groundSpeed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/GroundSpeed"));
 
             //Check counts of super properties
-            Assert.AreEqual(1, groundSpeed.SuperProperties.Count());
-            Assert.AreEqual(1, groundSpeed.DirectSuperProperties.Count());
-            Assert.AreEqual(0, groundSpeed.IndirectSuperProperty.Count());
+            Assert.Equal(1, groundSpeed.SuperProperties.Count());
+            Assert.Equal(1, groundSpeed.DirectSuperProperties.Count());
+            Assert.Equal(0, groundSpeed.IndirectSuperProperty.Count());
 
             //Check counts of sub-properties
             OntologyProperty speed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/Speed"));
-            Assert.AreEqual(3, speed.SubProperties.Count());
-            Assert.AreEqual(3, speed.DirectSubProperties.Count());
-            Assert.AreEqual(0, speed.IndirectSubProperties.Count());
+            Assert.Equal(3, speed.SubProperties.Count());
+            Assert.Equal(3, speed.DirectSubProperties.Count());
+            Assert.Equal(0, speed.IndirectSubProperties.Count());
         }
 
-        [Test]
+        [Fact]
         public void OntologyPropertyTopAndBottom()
         {
             //Load Test Data
@@ -397,16 +397,16 @@ namespace VDS.RDF.Ontology
 
             //Get the property Speed
             OntologyProperty speed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/Speed"));
-            Assert.IsTrue(speed.IsTopProperty);
-            Assert.IsFalse(speed.IsBottomProperty);
+            Assert.True(speed.IsTopProperty);
+            Assert.False(speed.IsBottomProperty);
 
             //Get the property AirSpeed
             OntologyProperty airSpeed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/AirSpeed"));
-            Assert.IsFalse(airSpeed.IsTopProperty);
-            Assert.IsTrue(airSpeed.IsBottomProperty);
+            Assert.False(airSpeed.IsTopProperty);
+            Assert.True(airSpeed.IsBottomProperty);
         }
 
-        [Test]
+        [Fact]
         public void OntologyPropertySiblings()
         {
             //Load Test Data
@@ -419,43 +419,43 @@ namespace VDS.RDF.Ontology
 
             //Get siblings
             List<OntologyProperty> siblings = limitedSpeed.Siblings.ToList();
-            Assert.AreEqual(2, siblings.Count);
-            Assert.IsFalse(siblings.Contains(limitedSpeed));
+            Assert.Equal(2, siblings.Count);
+            Assert.False(siblings.Contains(limitedSpeed));
         }
 
-        [Test]
+        [Fact]
         public void OntologyProperties()
         {
             OntologyGraph g = new OntologyGraph();
             g.LoadFromFile("resources\\ontology.ttl");
 
             //Check Property Counts
-            Assert.AreEqual(1, g.RdfProperties.Count());
-            Assert.AreEqual(1, g.OwlAnnotationProperties.Count());
-            Assert.AreEqual(1, g.OwlDatatypeProperties.Count());
-            Assert.AreEqual(1, g.OwlObjectProperties.Count());
-            Assert.AreEqual(3, g.OwlProperties.Count());
-            Assert.AreEqual(4, g.AllProperties.Count());
+            Assert.Equal(1, g.RdfProperties.Count());
+            Assert.Equal(1, g.OwlAnnotationProperties.Count());
+            Assert.Equal(1, g.OwlDatatypeProperties.Count());
+            Assert.Equal(1, g.OwlObjectProperties.Count());
+            Assert.Equal(3, g.OwlProperties.Count());
+            Assert.Equal(4, g.AllProperties.Count());
         }
 
-        [Test]
+        [Fact]
         public void OntologyClasses()
         {
             OntologyGraph g = new OntologyGraph();
             g.LoadFromFile("resources\\ontology.ttl");
 
             //Check Class Counts
-            Assert.AreEqual(1, g.RdfClasses.Count());
-            Assert.AreEqual(1, g.OwlClasses.Count());
-            Assert.AreEqual(2, g.AllClasses.Count());
+            Assert.Equal(1, g.RdfClasses.Count());
+            Assert.Equal(1, g.OwlClasses.Count());
+            Assert.Equal(2, g.AllClasses.Count());
         }
 
-        [Test]
+        [Fact]
         public void OntologyClassCount1()
         {
             OntologyGraph g = new OntologyGraph();
             g.LoadFromFile("resources\\swrc.owl");
-            Assert.IsFalse(g.IsEmpty);
+            Assert.False(g.IsEmpty);
 
             //Count classes, raw and distinct count should be same
             int count = g.OwlClasses.Count();
@@ -464,15 +464,15 @@ namespace VDS.RDF.Ontology
             Console.WriteLine("Count = " + count);
             Console.WriteLine("Distinct Count = " + distinctCount);
 
-            Assert.IsTrue(count == distinctCount, "Expected raw and distinct counts to be the same, got " + count + " and " + distinctCount);
+            Assert.True(count == distinctCount, "Expected raw and distinct counts to be the same, got " + count + " and " + distinctCount);
         }
 
-        [Test]
+        [Fact]
         public void OntologyClassCount2()
         {
             OntologyGraph g = new OntologyGraph();
             g.LoadFromFile("resources\\swrc.owl");
-            Assert.IsFalse(g.IsEmpty);
+            Assert.False(g.IsEmpty);
 
             OntologyClass classOfClasses = g.CreateOntologyClass(g.CreateUriNode("owl:Class"));
             int count = 0;
@@ -488,7 +488,7 @@ namespace VDS.RDF.Ontology
             Console.WriteLine("Count = " + count);
             Console.WriteLine("Distinct Count = " + resources.Count);
 
-            Assert.AreEqual(resources.Count, count);
+            Assert.Equal(resources.Count, count);
         }
     }
 }

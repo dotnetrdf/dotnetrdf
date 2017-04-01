@@ -27,14 +27,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class DefaultGraphTests2
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
@@ -61,7 +61,7 @@ namespace VDS.RDF.Query
             return new InMemoryDataset(store, defaultGraphUri);
         }
 
-        [Test]
+        [Fact]
         public void SparqlDatasetDefaultGraphUnion()
         {
             List<IGraph> gs = new List<IGraph>();
@@ -81,17 +81,17 @@ namespace VDS.RDF.Query
             if (results is IGraph)
             {
                 IGraph r = (IGraph)results;
-                Assert.AreEqual(g.Triples.Count + h.Triples.Count, r.Triples.Count);
-                Assert.IsTrue(r.HasSubGraph(g), "g should be a subgraph of the results");
-                Assert.IsTrue(r.HasSubGraph(h), "h should be a subgraph of the results");
+                Assert.Equal(g.Triples.Count + h.Triples.Count, r.Triples.Count);
+                Assert.True(r.HasSubGraph(g), "g should be a subgraph of the results");
+                Assert.True(r.HasSubGraph(h), "h should be a subgraph of the results");
             }
             else
             {
-                Assert.Fail("Did not return a Graph as expected");
+                Assert.True(false, "Did not return a Graph as expected");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlDatasetDefaultGraphUnionAndGraphClause()
         {
             List<IGraph> gs = new List<IGraph>();
@@ -111,17 +111,17 @@ namespace VDS.RDF.Query
             if (results is IGraph)
             {
                 IGraph r = (IGraph)results;
-                Assert.AreEqual(0, r.Triples.Count);
-                Assert.IsFalse(r.HasSubGraph(g), "g should not be a subgraph of the results");
-                Assert.IsFalse(r.HasSubGraph(h), "h should not be a subgraph of the results");
+                Assert.Equal(0, r.Triples.Count);
+                Assert.False(r.HasSubGraph(g), "g should not be a subgraph of the results");
+                Assert.False(r.HasSubGraph(h), "h should not be a subgraph of the results");
             }
             else
             {
-                Assert.Fail("Did not return a Graph as expected");
+                Assert.True(false, "Did not return a Graph as expected");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlDatasetDefaultGraphNoUnion()
         {
             List<IGraph> gs = new List<IGraph>();
@@ -141,17 +141,17 @@ namespace VDS.RDF.Query
             if (results is IGraph)
             {
                 IGraph r = (IGraph)results;
-                Assert.AreEqual(0, r.Triples.Count);
-                Assert.IsFalse(r.HasSubGraph(g), "g should not be a subgraph of the results");
-                Assert.IsFalse(r.HasSubGraph(h), "h should not be a subgraph of the results");
+                Assert.Equal(0, r.Triples.Count);
+                Assert.False(r.HasSubGraph(g), "g should not be a subgraph of the results");
+                Assert.False(r.HasSubGraph(h), "h should not be a subgraph of the results");
             }
             else
             {
-                Assert.Fail("Did not return a Graph as expected");
+                Assert.True(false, "Did not return a Graph as expected");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlDatasetDefaultGraphNamed()
         {
             List<IGraph> gs = new List<IGraph>();
@@ -173,17 +173,17 @@ namespace VDS.RDF.Query
             if (results is IGraph)
             {
                 IGraph r = (IGraph)results;
-                Assert.AreEqual(g.Triples.Count, r.Triples.Count);
-                Assert.AreEqual(g, r, "g should be equal to the results");
-                Assert.AreNotEqual(h, r, "h should not be equal to the results");
+                Assert.Equal(g.Triples.Count, r.Triples.Count);
+                Assert.Equal(g, r);
+                Assert.NotEqual(h, r);
             }
             else
             {
-                Assert.Fail("Did not return a Graph as expected");
+                Assert.True(false, "Did not return a Graph as expected");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlDatasetDefaultGraphNamedAndGraphClause()
         {
             List<IGraph> gs = new List<IGraph>();
@@ -205,17 +205,17 @@ namespace VDS.RDF.Query
             if (results is IGraph)
             {
                 IGraph r = (IGraph)results;
-                Assert.AreEqual(h.Triples.Count, r.Triples.Count);
-                Assert.AreNotEqual(g, r, "g should not be equal to the results");
-                Assert.AreEqual(h, r, "h should be equal to the results");
+                Assert.Equal(h.Triples.Count, r.Triples.Count);
+                Assert.NotEqual(g, r);
+                Assert.Equal(h, r);
             }
             else
             {
-                Assert.Fail("Did not return a Graph as expected");
+                Assert.True(false, "Did not return a Graph as expected");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlDatasetDefaultGraphNamed2()
         {
             List<IGraph> gs = new List<IGraph>();
@@ -237,17 +237,17 @@ namespace VDS.RDF.Query
             if (results is IGraph)
             {
                 IGraph r = (IGraph)results;
-                Assert.AreEqual(h.Triples.Count, r.Triples.Count);
-                Assert.AreNotEqual(g, r, "g should not be equal to the results");
-                Assert.AreEqual(h, r, "h should be equal to the results");
+                Assert.Equal(h.Triples.Count, r.Triples.Count);
+                Assert.NotEqual(g, r);
+                Assert.Equal(h, r);
             }
             else
             {
-                Assert.Fail("Did not return a Graph as expected");
+                Assert.True(false, "Did not return a Graph as expected");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlDatasetDefaultGraphNamedAndGraphClause2()
         {
             List<IGraph> gs = new List<IGraph>();
@@ -269,17 +269,17 @@ namespace VDS.RDF.Query
             if (results is IGraph)
             {
                 IGraph r = (IGraph)results;
-                Assert.AreEqual(g.Triples.Count, r.Triples.Count);
-                Assert.AreEqual(g, r, "g should be equal to the results");
-                Assert.AreNotEqual(h, r, "h should not be equal to the results");
+                Assert.Equal(g.Triples.Count, r.Triples.Count);
+                Assert.Equal(g, r);
+                Assert.NotEqual(h, r);
             }
             else
             {
-                Assert.Fail("Did not return a Graph as expected");
+                Assert.True(false, "Did not return a Graph as expected");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlDatasetDefaultGraphUnknownName()
         {
             List<IGraph> gs = new List<IGraph>();
@@ -301,17 +301,17 @@ namespace VDS.RDF.Query
             if (results is IGraph)
             {
                 IGraph r = (IGraph)results;
-                Assert.AreEqual(0, r.Triples.Count);
-                Assert.IsFalse(r.HasSubGraph(g), "g should not be a subgraph of the results");
-                Assert.IsFalse(r.HasSubGraph(h), "h should not be a subgraph of the results");
+                Assert.Equal(0, r.Triples.Count);
+                Assert.False(r.HasSubGraph(g), "g should not be a subgraph of the results");
+                Assert.False(r.HasSubGraph(h), "h should not be a subgraph of the results");
             }
             else
             {
-                Assert.Fail("Did not return a Graph as expected");
+                Assert.True(false, "Did not return a Graph as expected");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlDatasetDefaultGraphUnnamed()
         {
             List<IGraph> gs = new List<IGraph>();
@@ -333,13 +333,13 @@ namespace VDS.RDF.Query
             if (results is IGraph)
             {
                 IGraph r = (IGraph)results;
-                Assert.AreEqual(0, r.Triples.Count);
-                Assert.IsFalse(r.HasSubGraph(g), "g should not be a subgraph of the results");
-                Assert.IsFalse(r.HasSubGraph(h), "h should not be a subgraph of the results");
+                Assert.Equal(0, r.Triples.Count);
+                Assert.False(r.HasSubGraph(g), "g should not be a subgraph of the results");
+                Assert.False(r.HasSubGraph(h), "h should not be a subgraph of the results");
             }
             else
             {
-                Assert.Fail("Did not return a Graph as expected");
+                Assert.True(false, "Did not return a Graph as expected");
             }
         }
     }

@@ -29,17 +29,17 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Query
 {
 #if !NO_DATA
-    [TestFixture]
+
     public class DataTableTests
     {
-        [Test]
+        [Fact]
         public void SparqlResultSetToDataTable()
         {
             String query = "SELECT * WHERE {?s ?p ?o}";
@@ -78,8 +78,8 @@ namespace VDS.RDF.Query
                     table.Rows.Add(row);
                 }
 
-                Assert.AreEqual(rset.Variables.Count(), table.Columns.Count, "Number of Columns should be equal");
-                Assert.AreEqual(rset.Count, table.Rows.Count, "Number of Rows should be equal");
+                Assert.Equal(rset.Variables.Count(), table.Columns.Count);
+                Assert.Equal(rset.Count, table.Rows.Count);
 
                 foreach (DataRow row in table.Rows)
                 {
@@ -93,11 +93,11 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.Fail("Query should have returned a Result Set");
+                Assert.True(false, "Query should have returned a Result Set");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlResultSetToDataTable2()
         {
             String query = "PREFIX ex: <http://example.org/vehicles/> SELECT * WHERE {?s a ex:Car . OPTIONAL { ?s ex:Speed ?speed }}";
@@ -136,8 +136,8 @@ namespace VDS.RDF.Query
                     table.Rows.Add(row);
                 }
 
-                Assert.AreEqual(rset.Variables.Count(), table.Columns.Count, "Number of Columns should be equal");
-                Assert.AreEqual(rset.Count, table.Rows.Count, "Number of Rows should be equal");
+                Assert.Equal(rset.Variables.Count(), table.Columns.Count);
+                Assert.Equal(rset.Count, table.Rows.Count);
 
                 foreach (DataRow row in table.Rows)
                 {
@@ -151,11 +151,11 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.Fail("Query should have returned a Result Set");
+                Assert.True(false, "Query should have returned a Result Set");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlResultSetToDataTable3()
         {
             String query = "SELECT * WHERE {?s ?p ?o}";
@@ -172,8 +172,8 @@ namespace VDS.RDF.Query
 
                 DataTable table = (DataTable)rset;
 
-                Assert.AreEqual(rset.Variables.Count(), table.Columns.Count, "Number of Columns should be equal");
-                Assert.AreEqual(rset.Count, table.Rows.Count, "Number of Rows should be equal");
+                Assert.Equal(rset.Variables.Count(), table.Columns.Count);
+                Assert.Equal(rset.Count, table.Rows.Count);
 
                 foreach (DataRow row in table.Rows)
                 {
@@ -187,11 +187,11 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.Fail("Query should have returned a Result Set");
+                Assert.True(false, "Query should have returned a Result Set");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlResultSetToDataTable4()
         {
             String query = "PREFIX ex: <http://example.org/vehicles/> SELECT * WHERE {?s a ex:Car . OPTIONAL { ?s ex:Speed ?speed }}";
@@ -208,8 +208,8 @@ namespace VDS.RDF.Query
 
                 DataTable table = (DataTable)rset;
 
-                Assert.AreEqual(rset.Variables.Count(), table.Columns.Count, "Number of Columns should be equal");
-                Assert.AreEqual(rset.Count, table.Rows.Count, "Number of Rows should be equal");
+                Assert.Equal(rset.Variables.Count(), table.Columns.Count);
+                Assert.Equal(rset.Count, table.Rows.Count);
 
                 foreach (DataRow row in table.Rows)
                 {
@@ -223,11 +223,11 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.Fail("Query should have returned a Result Set");
+                Assert.True(false, "Query should have returned a Result Set");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlResultSetToDataTable5()
         {
             String query = "ASK WHERE {?s ?p ?o}";
@@ -244,10 +244,10 @@ namespace VDS.RDF.Query
 
                 DataTable table = (DataTable)rset;
 
-                Assert.IsTrue(rset.ResultsType == SparqlResultsType.Boolean);
-                Assert.AreEqual(table.Columns.Count, 1, "Should only be one Column");
-                Assert.AreEqual(table.Rows.Count, 1, "Should only be one Row");
-                Assert.IsTrue((bool)table.Rows[0]["ASK"], "Should be true");
+                Assert.True(rset.ResultsType == SparqlResultsType.Boolean);
+                Assert.Equal(table.Columns.Count, 1);
+                Assert.Equal(table.Rows.Count, 1);
+                Assert.True((bool)table.Rows[0]["ASK"], "Should be true");
 
                 foreach (DataRow row in table.Rows)
                 {
@@ -261,11 +261,11 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.Fail("Query should have returned a Result Set");
+                Assert.True(false, "Query should have returned a Result Set");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlResultSetToDataTable6()
         {
             String query = "ASK WHERE {?s <http://example.org/noSuchPredicate> ?o}";
@@ -282,10 +282,10 @@ namespace VDS.RDF.Query
 
                 DataTable table = (DataTable)rset;
 
-                Assert.IsTrue(rset.ResultsType == SparqlResultsType.Boolean);
-                Assert.AreEqual(table.Columns.Count, 1, "Should only be one Column");
-                Assert.AreEqual(table.Rows.Count, 1, "Should only be one Row");
-                Assert.IsFalse((bool)table.Rows[0]["ASK"], "Should be false");
+                Assert.True(rset.ResultsType == SparqlResultsType.Boolean);
+                Assert.Equal(table.Columns.Count, 1);
+                Assert.Equal(table.Rows.Count, 1);
+                Assert.False((bool)table.Rows[0]["ASK"], "Should be false");
 
                 foreach (DataRow row in table.Rows)
                 {
@@ -299,21 +299,21 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.Fail("Query should have returned a Result Set");
+                Assert.True(false, "Query should have returned a Result Set");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlResultSetToDataTable7()
         {
             SparqlResultSet rset = new SparqlResultSet(true);
 
             DataTable table = (DataTable)rset;
 
-            Assert.IsTrue(rset.ResultsType == SparqlResultsType.Boolean);
-            Assert.AreEqual(table.Columns.Count, 1, "Should only be one Column");
-            Assert.AreEqual(table.Rows.Count, 1, "Should only be one Row");
-            Assert.IsTrue((bool)table.Rows[0]["ASK"], "Should be true");
+            Assert.True(rset.ResultsType == SparqlResultsType.Boolean);
+            Assert.Equal(table.Columns.Count, 1);
+            Assert.Equal(table.Rows.Count, 1);
+            Assert.True((bool)table.Rows[0]["ASK"], "Should be true");
 
             foreach (DataRow row in table.Rows)
             {
@@ -326,17 +326,17 @@ namespace VDS.RDF.Query
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlResultSetToDataTable8()
         {
             SparqlResultSet rset = new SparqlResultSet(false);
 
             DataTable table = (DataTable)rset;
 
-            Assert.IsTrue(rset.ResultsType == SparqlResultsType.Boolean);
-            Assert.AreEqual(table.Columns.Count, 1, "Should only be one Column");
-            Assert.AreEqual(table.Rows.Count, 1, "Should only be one Row");
-            Assert.IsFalse((bool)table.Rows[0]["ASK"], "Should be false");
+            Assert.True(rset.ResultsType == SparqlResultsType.Boolean);
+            Assert.Equal(table.Columns.Count, 1);
+            Assert.Equal(table.Rows.Count, 1);
+            Assert.False((bool)table.Rows[0]["ASK"], "Should be false");
 
             foreach (DataRow row in table.Rows)
             {
@@ -349,18 +349,18 @@ namespace VDS.RDF.Query
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlResultSetToDataTable9()
         {
             SparqlResultSet results = new SparqlResultSet();
             try
             {
                 DataTable table = (DataTable)results;
-                Assert.Fail("Should have thrown an InvalidCastException");
+                Assert.True(false, "Should have thrown an InvalidCastException");
             }
             catch (InvalidCastException ex)
             {
-                Assert.AreEqual(SparqlResultsType.Unknown, results.ResultsType, "Should have unknown results type");
+                Assert.Equal(SparqlResultsType.Unknown, results.ResultsType);
                 Console.WriteLine("Errored as expected");
                 Console.WriteLine();
                 TestTools.ReportError("Invalid Cast", ex);

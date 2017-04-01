@@ -27,17 +27,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Parsing
 {
 #if !NO_HTMLAGILITYPACK
-    [TestFixture]
+
     public class RdfATests
     {
-        [Test]
+        [Fact]
         public void ParsingRdfABadSyntax()
         {
             RdfAParser parser = new RdfAParser();
@@ -58,7 +58,7 @@ namespace VDS.RDF.Parsing
             ttlwriter.Save(g, "test.ttl");
         }
 
-        [Test]
+        [Fact]
         public void ParsingRdfAGoodRelations()
         {
             try
@@ -97,7 +97,7 @@ namespace VDS.RDF.Parsing
                     TestTools.ShowGraph(h);
                     Console.WriteLine();
 
-                    Assert.AreEqual(g, h, "Graphs should have been equal");
+                    Assert.Equal(g, h);
                 }
             }
             finally
@@ -106,7 +106,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [Test]
+        [Fact]
         public void ParsingRdfABadProfile()
         {
             RdfAParser parser = new RdfAParser(RdfASyntax.RDFa_1_1);
@@ -117,7 +117,7 @@ namespace VDS.RDF.Parsing
 
             TestTools.ShowGraph(g);
 
-            Assert.AreEqual(1, g.Triples.Count, "Should only produce 1 Triple");
+            Assert.Equal(1, g.Triples.Count);
         }
     }
 #endif

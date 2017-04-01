@@ -27,19 +27,19 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class BindingsTests
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
 
-        [Test]
+        [Fact]
         public void SparqlBindingsSimple()
         {
             SparqlParameterizedString query = new SparqlParameterizedString();
@@ -53,7 +53,7 @@ namespace VDS.RDF.Query
             this.TestBindings(this.GetTestData(), bindingsQuery, query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlBindingsSimple2()
         {
             SparqlParameterizedString query = new SparqlParameterizedString();
@@ -66,7 +66,7 @@ namespace VDS.RDF.Query
 
             this.TestBindings(this.GetTestData(), bindingsQuery, query);
         }
-        [Test]
+        [Fact]
         public void SparqlBindingsSimple3()
         {
             SparqlParameterizedString query = new SparqlParameterizedString();
@@ -95,8 +95,8 @@ namespace VDS.RDF.Query
             SparqlResultSet bindingsResults = processor.ProcessQuery(bindingsQuery) as SparqlResultSet;
             SparqlResultSet noBindingsResults = processor.ProcessQuery(noBindingsQuery) as SparqlResultSet;
 
-            if (bindingsResults == null) Assert.Fail("Did not get a SPARQL Result Set for the Bindings Query");
-            if (noBindingsResults == null) Assert.Fail("Did not get a SPARQL Result Set for the Non-Bindings Query");
+            if (bindingsResults == null) Assert.True(false, "Did not get a SPARQL Result Set for the Bindings Query");
+            if (noBindingsResults == null) Assert.True(false, "Did not get a SPARQL Result Set for the Non-Bindings Query");
 
             Console.WriteLine("Bindings Results");
             TestTools.ShowResults(bindingsResults);
@@ -105,7 +105,7 @@ namespace VDS.RDF.Query
             TestTools.ShowResults(noBindingsResults);
             Console.WriteLine();
 
-            Assert.AreEqual(noBindingsResults, bindingsResults, "Result Sets should have been equal");
+            Assert.Equal(noBindingsResults, bindingsResults);
         }
 
         private void TestBindings(ISparqlDataset data, String queryWithBindings)
@@ -115,13 +115,13 @@ namespace VDS.RDF.Query
 
             SparqlResultSet bindingsResults = processor.ProcessQuery(bindingsQuery) as SparqlResultSet;
 
-            if (bindingsResults == null) Assert.Fail("Did not get a SPARQL Result Set for the Bindings Query");
+            if (bindingsResults == null) Assert.True(false, "Did not get a SPARQL Result Set for the Bindings Query");
 
             Console.WriteLine("Bindings Results");
             TestTools.ShowResults(bindingsResults);
             Console.WriteLine();
 
-            Assert.IsTrue(bindingsResults.IsEmpty, "Result Set should be empty");
+            Assert.True(bindingsResults.IsEmpty, "Result Set should be empty");
         }
 
         private ISparqlDataset GetTestData()

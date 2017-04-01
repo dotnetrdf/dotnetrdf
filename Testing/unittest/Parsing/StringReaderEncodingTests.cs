@@ -28,17 +28,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing
 {
-    [TestFixture]
+
     public class StringReaderEncodingTests
     {
-        [Test]
+        [Fact]
         public void ParsingStringReaderEncoding()
         {
             String test = "<http://example.org/subject> <http://example.org/predicate> \"" + (char)32769 + "\" . ";
@@ -51,7 +51,7 @@ namespace VDS.RDF.Parsing
             Graph h = new Graph();
             parser.Load(h, "encoding.ttl");
 
-            Assert.AreEqual(g, h);
+            Assert.Equal(g, h);
         }
     }
 }

@@ -31,7 +31,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -40,7 +40,7 @@ using VDS.RDF.Writing;
 namespace VDS.RDF.Parsing.Suites
 {
 #if !NO_HTMLAGILITYPACK
-    [TestFixture]
+
     public class RdfA
     {
         private void reportError(String header, Exception ex)
@@ -50,7 +50,7 @@ namespace VDS.RDF.Parsing.Suites
             Console.WriteLine(ex.StackTrace);
         }
 
-        [Test]
+        [Fact]
         public void ParsingSuiteRdfA10()
         {
             String[] wantOutput = {  };
@@ -272,7 +272,7 @@ namespace VDS.RDF.Parsing.Suites
                 }
                 Console.WriteLine("Average Parsing Speed was " + totalTriples / (totalTime / 1000d) + " triples/second");
 
-                if (testsFailed > 0) Assert.Fail(testsFailed + " Tests Failed");
+                if (testsFailed > 0) Assert.True(false, testsFailed + " Tests Failed");
             }
             catch (Exception ex)
             {

@@ -1,6 +1,17 @@
 ﻿Change Log
 ==========
 
+2.0.0
+-----
+
+This release marks a major restructuring of the project.
+Change Summary:
+ 
+- Tools and samples are now moved to their own independent GitHub repositories (https://github.com/dotnetrdf/dotNetRDF.Toolkit and https://github.com/dotnetrdf/dotNetRDF.Samples).
+- Support for .NET 3.5 and .NET 3.5 client profile has been removed.
+- Updated the solution and project files to .NET Core SDK 1.1
+- The build process has been simplified and no longer relies on NAnt - a build can be done from the command line as `dotnet restore` followed by `dotnet build`
+
 1.0.13
 ------
 

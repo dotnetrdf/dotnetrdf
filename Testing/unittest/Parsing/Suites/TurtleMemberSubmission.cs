@@ -28,37 +28,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Parsing.Suites
 {
-    [TestFixture]
+
     public class TurtleMemberSubmission
         : BaseRdfParserSuite
     {
         public TurtleMemberSubmission()
             : base(new TurtleParser(TurtleSyntax.Original), new NTriplesParser(), "turtle\\") { }
 
-        [Test]
+        [SkippableFact]
         public void ParsingSuiteTurtleOriginal()
         {
             //Run manifests
             this.RunManifest("resources/turtle/manifest.ttl", true);
             this.RunManifest("resources/turtle/manifest-bad.ttl", false);
 
-            if (this.Count == 0) Assert.Fail("No tests found");
+            if (this.Count == 0) Assert.True(false, "No tests found");
 
             Console.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed");
             Console.WriteLine((((double)this.Passed / (double)this.Count) * 100) + "% Passed");
 
-            if (this.Failed > 0) Assert.Fail(this.Failed + " Tests failed");
-            if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate");
+            if (this.Failed > 0) Assert.True(false, this.Failed + " Tests failed");
+            if (this.Indeterminate > 0) throw new SkipTestException(this.Indeterminate + " Tests are indeterminate");
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtleOriginalBaseTurtleStyle1()
         {
             //Dot required
@@ -66,93 +67,84 @@ namespace VDS.RDF.Parsing.Suites
             Graph g = new Graph();
             this.Parser.Load(g, new StringReader(graph));
 
-            Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
+            Assert.Equal(new Uri("http://example.org"), g.BaseUri);
         }
 
-        [Test,ExpectedException(typeof(RdfParseException))]
+        [Fact]
         public void ParsingTurtleOriginalBaseTurtleStyle2()
         {
             //Missing dot
             String graph = "@base <http://example.org/>";
             Graph g = new Graph();
-            this.Parser.Load(g, new StringReader(graph));
+            Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
 
-            Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
+            Assert.Equal(new Uri("http://example.org"), g.BaseUri);
         }
 
-        [Test,ExpectedException(typeof(RdfParseException))]
+        [Fact]
         public void ParsingTurtleOriginalBaseSparqlStyle1()
         {
             //Forbidden in Original Turtle
             String graph = "BASE <http://example.org/> .";
             Graph g = new Graph();
-            this.Parser.Load(g, new StringReader(graph));
-
-            Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
+            Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Fact]
         public void ParsingTurtleOriginalBaseSparqlStyle2()
         {
             //Forbidden in Original Turtle
             String graph = "BASE <http://example.org/>";
             Graph g = new Graph();
-            this.Parser.Load(g, new StringReader(graph));
-
-            Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
+            Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtleOriginalPrefixTurtleStyle1()
         {
             //Dot required
             String graph = "@prefix ex: <http://example.org/> .";
             Graph g = new Graph();
             this.Parser.Load(g, new StringReader(graph));
-
-            Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
+            Assert.Equal(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Fact]
         public void ParsingTurtleOriginalPrefixTurtleStyle2()
         {
             //Missing dot
             String graph = "@prefix ex: <http://example.org/>";
             Graph g = new Graph();
-            this.Parser.Load(g, new StringReader(graph));
+            Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
 
-            Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
+            Assert.Equal(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Fact]
         public void ParsingTurtleOriginalPrefixSparqlStyle1()
         {
             //Forbidden in Original Turtle
             String graph = "PREFIX ex: <http://example.org/> .";
             Graph g = new Graph();
-            this.Parser.Load(g, new StringReader(graph));
-
-            Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
+            Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Fact]
         public void ParsingTurtleOriginalPrefixSparqlStyle2()
         {
             //Forbidden in Original Turtle
             String graph = "PREFIX ex: <http://example.org/>";
             Graph g = new Graph();
-            this.Parser.Load(g, new StringReader(graph));
-
-            Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
+            Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtleOriginalPrefixedNames1()
         {
-            Assert.IsTrue(TurtleSpecsHelper.IsValidQName(":a1", TurtleSyntax.Original));
+            Assert.True(TurtleSpecsHelper.IsValidQName(":a1", TurtleSyntax.Original));
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtleOriginalPrefixedNames2()
         {
             this.Parser.Load(new Graph(), @"resources\turtle\test-14.ttl");

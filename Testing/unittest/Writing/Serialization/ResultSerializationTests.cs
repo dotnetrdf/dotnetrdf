@@ -33,13 +33,13 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Writing.Serialization
 {
 #if !SILVERLIGHT
-    [TestFixture]
+
     public class ResultSerializationTests
     {
         private void TestXmlSerialization(SparqlResult r, bool fullEquality)
@@ -58,11 +58,11 @@ namespace VDS.RDF.Writing.Serialization
 
             if (fullEquality)
             {
-                Assert.AreEqual(r, s, "Results should be equal");
+                Assert.Equal(r, s);
             }
             else
             {
-                Assert.AreEqual(r.ToString(), s.ToString(), "String forms should be equal");
+                Assert.Equal(r.ToString(), s.ToString());
             }
         }
 
@@ -86,7 +86,7 @@ namespace VDS.RDF.Writing.Serialization
 
             SparqlResultSet results2 = serializer.Deserialize(new StringReader(writer.ToString())) as SparqlResultSet;
 
-            Assert.AreEqual(results, results2, "Expected Result Sets to be equal");
+            Assert.Equal(results, results2);
         }
 
         private void TestBinarySerialization(SparqlResult r, bool fullEquality)
@@ -107,11 +107,11 @@ namespace VDS.RDF.Writing.Serialization
 
             if (fullEquality)
             {
-                Assert.AreEqual(r, s, "Results should be equal");
+                Assert.Equal(r, s);
             }
             else
             {
-                Assert.AreEqual(r.ToString(), s.ToString(), "String forms should be equal");
+                Assert.Equal(r.ToString(), s.ToString());
             }
 
             stream.Dispose();
@@ -141,7 +141,7 @@ namespace VDS.RDF.Writing.Serialization
 
             reader.Close();
 
-            Assert.AreEqual(results, results2, "Expected Result Sets to be equal");
+            Assert.Equal(results, results2);
         }
 
         private void TestDataContractSerialization(SparqlResult r, bool fullEquality)
@@ -160,11 +160,11 @@ namespace VDS.RDF.Writing.Serialization
 
             if (fullEquality)
             {
-                Assert.AreEqual(r, s, "Results should be equal");
+                Assert.Equal(r, s);
             }
             else
             {
-                Assert.AreEqual(r.ToString(), s.ToString(), "String forms should be equal");
+                Assert.Equal(r.ToString(), s.ToString());
             }
         }
 
@@ -188,7 +188,7 @@ namespace VDS.RDF.Writing.Serialization
 
             SparqlResultSet results2 = serializer.ReadObject(XmlTextReader.Create(new StringReader(writer.ToString()))) as SparqlResultSet;
 
-            Assert.AreEqual(results, results2, "Expected Result Sets to be equal");
+            Assert.Equal(results, results2);
         }
 
         private SparqlResultSet GetResults(String query)
@@ -203,37 +203,37 @@ namespace VDS.RDF.Writing.Serialization
             return this.GetResults("SELECT * WHERE { ?s a ?type } LIMIT 20");
         }
 
-        [Test]
+        [Fact]
         public void SerializationBinarySparqlResult()
         {
             this.TestBinarySerialization(this.GetResults(), true);
         }
 
-        [Test]
+        [Fact]
         public void SerializationBinarySparqlResultSet()
         {
             this.TestBinarySerialization(this.GetResults());
         }
 
-        [Test]
+        [Fact]
         public void SerializationXmlSparqlResult()
         {
             this.TestXmlSerialization(this.GetResults(), true);
         }
 
-        [Test]
+        [Fact]
         public void SerializationXmlSparqlResultSet()
         {
             this.TestXmlSerialization(this.GetResults());
         }
 
-        [Test]
+        [Fact]
         public void SerializationDataContractSparqlResult()
         {
             this.TestDataContractSerialization(this.GetResults(), true);
         }
 
-        [Test]
+        [Fact]
         public void SerializationDataContractSparqlResultSet()
         {
             this.TestDataContractSerialization(this.GetResults());

@@ -26,7 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.IO;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Parsing.Suites
@@ -103,8 +103,7 @@ namespace VDS.RDF.Parsing.Suites
             }
         }
 
-        [SetUp]
-        public void Setup()
+        public BaseParserSuite()
         {
             this._count = 0;
             this._pass = 0;
@@ -128,7 +127,7 @@ namespace VDS.RDF.Parsing.Suites
                         return Path.Combine(this._baseDir, lastSegment);
                     }
                 default:
-                    Assert.Fail("Malformed manifest file, input file must be a  URI");
+                    Assert.True(false, "Malformed manifest file, input file must be a  URI");
                     break;
             }
             //Keep compiler happy
@@ -177,10 +176,7 @@ namespace VDS.RDF.Parsing.Suites
 
         protected void RunManifest(String file, bool shouldParse)
         {
-            if (!File.Exists(file))
-            {
-                Assert.Fail("Manifest file " + file + " not found");
-            }
+            Assert.True(File.Exists(file), "Manifest file " + file + " not found");
 
             Graph manifest = new Graph();
             manifest.BaseUri = BaseUri;
@@ -191,7 +187,7 @@ namespace VDS.RDF.Parsing.Suites
             catch (Exception ex)
             {
                 TestTools.ReportError("Bad Manifest", ex);
-                Assert.Fail("Failed to load Manifest " + file);
+                Assert.True(false, "Failed to load Manifest " + file);
             }
 
             const string findTests = @"prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
@@ -208,7 +204,7 @@ WHERE
 }";
 
             SparqlResultSet tests = manifest.ExecuteQuery(findTests) as SparqlResultSet;
-            if (tests == null) Assert.Fail("Failed to find tests in the Manifest");
+            Assert.NotNull(tests);
 
             foreach (SparqlResult test in tests)
             {
@@ -232,10 +228,8 @@ WHERE
 
         protected void RunManifest(String file, INode[] positiveSyntaxTests, INode[] negativeSyntaxTests)
         {
-            if (!File.Exists(file))
-            {
-                Assert.Fail("Manifest file " + file + " not found");
-            }
+            Assert.True(File.Exists(file), "Manifest file " + file + " not found");
+            
 
             Graph manifest = new Graph();
             manifest.BaseUri = BaseUri;
@@ -246,7 +240,7 @@ WHERE
             catch (Exception ex)
             {
                 TestTools.ReportError("Bad Manifest", ex);
-                Assert.Fail("Failed to load Manifest " + file);
+                Assert.True(false, "Failed to load Manifest " + file);
             }
             manifest.NamespaceMap.AddNamespace("rdf", UriFactory.Create("http://www.w3.org/ns/rdftest#"));
 
@@ -268,7 +262,7 @@ WHERE
 }";
 
             SparqlResultSet tests = manifest.ExecuteQuery(findTests) as SparqlResultSet;
-            if (tests == null) Assert.Fail("Failed to find tests in the Manifest");
+            Assert.NotNull(tests);
 
             foreach (SparqlResult test in tests)
             {

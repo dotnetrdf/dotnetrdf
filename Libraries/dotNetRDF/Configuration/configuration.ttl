@@ -1,0 +1,679 @@
+# This file is part of dotNetRDF.
+#
+# dotNetRDF is free and open source software licensed under the MIT License
+#
+# -----------------------------------------------------------------------------
+#
+# Copyright (c) 2009-2013 dotNetRDF Project (dotnetrdf-develop@lists.sf.net)
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is furnished
+# to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+@base <http://www.dotnetrdf.org/configuration#>.
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix dcterms: <http://www.purl.org/dc/terms/>.
+@prefix vann: <http://purl.org/vocab/vann/>.
+@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix fmt: <http://www.w3.org/ns/formats/>.
+
+# Definition of this Schema
+
+<http://www.dotnetrdf.org/configuration#> a owl:Ontology ;
+   rdfs:label "dotNetRDF Configuration Vocabulary" ;
+   rdfs:comment """dotNetRDF Configuration Vocabulary is used to define configuration information for applications that make use of dotNetRDF in an RDF format.  This allows for automated validation of the Configuration but also allows the vocabulary to be extensible by design.  New Classes and Properties can be added by end users provided they provide an implementation of the <strong>VDS.RDF.Configuration.IObjectFactory</strong> interface in their application and register it in the Configuration Files that need it/within their application.  The use of the vocabulary to describe Configuration for a variety of types of objects is described in the <a href=\"http://www.dotnetrdf.org/content.asp?pageID=Configuration%20API\">User Guide</a>.""" ;
+   dc:creator [ foaf:name "Rob Vesse" ] ;
+   vann:preferredNamespacePrefix "dnr" ;
+   vann:preferredNamespaceUri <http://www.dotnetrdf.org/configuration#> .
+
+# Classes of things whose Configuration is understood by default
+			
+dnr:RdfParser a rdfs:Class ;
+				rdfs:label "Class of RDF Parsers" ;
+				rdfs:comment "A RDF Parser is a parser that reads a concrete RDF syntax e.g. Turtle into a Graph.  Parsers can be automatically loaded by calling ConfigurationLoader.AutoDetectReadersAndWriters(), parsers may be associated with specific MIME types and/or file extensions by using the fmt:media_type and fmt:preferred_suffix properties from the W3C Formats namespace." .
+				
+dnr:DatasetParser a rdfs:Class ;
+					rdfs:label "Class of RDF Dataset Parsers" ;
+					rdfs:comment "A RDF Dataset Parser is a parser that read a concrete RDF dataset syntax e.g. NQuads into a set of Graphs.  Parsers can be automatically loaded by calling ConfigurationLoader.AutoDetectReadersAndWriters(), parsers may be associated with specific MIME types and/or file extensions by using the fmt:media_type and fmt:preferred_suffix properties from the W3C Formats namespace." .
+					
+dnr:SparqlResultsParser a rdfs:Class ;
+						rdfs:label "Class of SPARQL Results Parsers" ;
+						rdfs:comment "A SPARQL Results Parser is a parser that reads a concrete SPARQL Results syntax e.g. SPARQL Results XML.  Parsers can be automatically loaded by calling ConfigurationLoader.AutoDetectReadersAndWriters(), parsers may be associated with specific MIME types and/or file extensions by using the fmt:media_type and fmt:preferred_suffix properties from the W3C Formats namespace." .
+						
+dnr:RdfWriter a rdfs:Class ;
+				rdfs:label "Class of RDF Writers" ;
+				rdfs:comment "A RDF Writer is a writer that writes a concrete RDF syntax e.g. NTriples.  Writers can be automatically loaded by calling ConfigurationLoader.AutoDetectReadersAndWriters(), writers may be associated with specific MIME types and/or file extensions by using the fmt:media_type and fmt:preferred_suffix properties from the W3C Formats namespace." .
+				
+dnr:DatasetWriter a rdfs:Class ;
+					rdfs:label "Class of RDF Dataset Writers" ;
+					rdfs:comment "A RDF Dataset Writer is a writer that writes a concrete RDF dataset syntax e.g. TriG.  Writers can be automatically loaded by calling ConfigurationLoader.AutoDetectReadersAndWriters(), writers may be associated with specific MIME types and/or file extensions by using the fmt:media_type and fmt:preferred_suffix properties from the W3C Formats namespace." .
+					
+dnr:SparqlResultsWriter a rdfs:Class ;
+							rdfs:label "Class of SPARQL Results Writers" ;
+							rdfs:comment "A SPARQL Results Writer is a writer that writes a concrete SPARQL Results syntax e.g. SPARQL Results JSON.  Writers can be automatically loaded by calling ConfigurationLoader.AutoDetectReadersAndWriters(), writers may be associated with specific MIME types and/or file extensions by using the fmt:media_type and fmt:preferred_suffix properties from the W3C Formats namespace." .
+
+dnr:ObjectFactory a rdfs:Class ;
+				  rdfs:label "Class of Object Factories" ;
+				  rdfs:comment "An Object Factory is a class that can load objects from a Configuration Graph.  Defining an Object Factory allows additional objects beyond those supported by default to be loaded from a Configuration Graph.  Object Factories can be automatically loaded by calling ConfigurationLoader.AutoDetectObjectFactories()" .
+
+dnr:TripleStore a rdfs:Class ;
+				rdfs:label "Class of Triple Stores" ;
+				rdfs:comment "A Triple Store is any class which implements the ITripleStore interface.  A Triple Store is used to define a set of Graphs that form an in-memory store or to instantiate other kinds of stores which may be automatically populated e.g. SQL Stores or may represent external stores e.g. Native Stores." .
+				
+dnr:GraphCollection a rdfs:Class ;
+					  rdfs:label "Class of Graph Collections" ;
+					  rdfs:comment "A Graph Collection is any class which extends the BaseGraphCollection abstract class.  A Graph Collection defines the low level storage of Graphs within a Triple Store" .
+				
+dnr:Graph a rdfs:Class ;
+		  rdfs:label "Class of Graphs" ;
+		  rdfs:comment "A Graph is any class which implements the IGraph interface.  A Graph is used to define a Graph which may be composed of data from single/multiple sources, in the case of multiple sources the resulting Graph is the merge of all those sources." .
+		  
+dnr:TripleCollection a rdfs:Class ;
+					   rdfs:label "Class of Triple Collections" ;
+					   rdfs:comment "A Triple Collection is a class which extends the BaseTripleCollection abstract class.  A Triple Collection defines the low level storage of Triples within a Graph" .
+				 
+dnr:GenericIOManager a rdfs:Class ;
+					 rdfs:label "Class of Generic IO Managers" ;
+					 rdfs:comment "Obsolete - use dnr:StorageProvider instead.  A Generic IO Manager is any class which implements the IGenericIOManager interface for providing read/write access to an arbitrary store.  Define Generic IO Managers in order to define connections to arbitrary stores." .
+					 
+dnr:StorageProvider a rdfs:Class ;
+					  rdfs:label "Class of Storage Providers" ;
+					  rdfs:comment "A Storage Provider is any class which implements the IStorageProvider interface (the new name for IGenericIOManager) and should be used in preference to dnr:GenericIOManager.  Define Storage Providers in order to define connections to arbitrary stores." .
+					  
+dnr:StorageServer a rdfs:Class ;
+					rdfs:label "Class of Storage Servers" ;
+					rdfs:comment "A Storage Server is any class which implements the IStorageServer interface, a Storage Server is a class capable of creating and retrieving Storage Providers" .
+					 		 
+dnr:HttpHandler a rdfs:Class ;
+				rdfs:label "Class of HTTP Handlers" ;
+				rdfs:comment "A HTTP Handler is an ASP.Net component that processes requests.  Define HTTP Handlers in order to set handler configuration and to allow for automated deployment of dotNetRDF based ASP.Net applications by use of the rdfWebDeploy tool." .
+				
+dnr:SparqlEndpoint a rdfs:Class ;
+				   rdfs:label "Class of SPARQL Endpoints" ;
+				   rdfs:comment "A SPARQL Endpoint is an endpoint that exposes one/more kinds of SPARQL endpoint.  Define these if you wish to set use things like the RemoteQueryProcessor or if you simply want to store settings for a particular SPARQL Endpoint you regularly use." .
+
+dnr:SparqlQueryEndpoint a rdfs:Class ;
+				   rdfs:subClassOf dnr:SparqlEndpoint ;
+				   rdfs:label "Class of SPARQL Query Endpoints" ;
+				   rdfs:comment "A SPARQL Query Endpoint is a SPARQL endpoint that supports SPARQL queries.  Define these if you wish to set use things like the RemoteQueryProcessor or if you simply want to store settings for a particular SPARQL Endpoint you regularly use." .
+
+dnr:SparqlUpdateEndpoint a rdfs:Class ;
+				   rdfs:subClassOf dnr:SparqlEndpoint ;
+				   rdfs:label "Class of SPARQL Update Endpoints" ;
+				   rdfs:comment "A SPARQL Update Endpoint is a SPARQL endpoint that supports SPARQL updates.  Define these if you wish to set use things like the RemoteQueryProcessor or if you simply want to store settings for a particular SPARQL Endpoint you regularly use." .
+				   
+dnr:SparqlQueryProcessor a rdfs:Class ;
+						 rdfs:label "Class of SPARQL Query Processors" ;
+						 rdfs:comment "A SPARQL Query Processor is a class that can process SPARQL queries.  You must define one of these in order to attach it to any Query Handlers you define." .
+						 
+dnr:SparqlUpdateProcessor a rdfs:Class ;
+						  rdfs:label "Class of SPARQL Update Processors" ;
+						  rdfs:comment "A SPARQL Update Processor is a class that can process SPARQL updates.  You must define one of these in order to attach it to any Update Handlers you define." .
+						  
+dnr:SparqlHttpProtocolProcessor a rdfs:Class ;
+								rdfs:label "Class of SPARQL Graph Store HTTP Protocol Processors" ;
+								rdfs:comment "A SPARQL Graph Store HTTP Protocol Processor is a class that can process Graph Store HTTP Protocol requets.  You must define one of these in order to attach it to any Protocol Handlers you define." .
+								
+dnr:SparqlExpressionFactory a rdfs:Class ;
+							rdfs:label "Class of Custom SPARQL Expression factories" ;
+							rdfs:comment "A Custom SPARQL Expression Factory is a class that can generate expressions from extension functions used in SPARQL queries." .
+							
+dnr:SparqlPropertyFunctionFactory a rdfs:Class ;
+									 rdfs:label "Class of Custom SPARQL Property Function factories" ;
+									 rdfs:comment "A Custom SPARQL Property Function Factory is a class that can generate property functions." .
+									 
+dnr:SparqlOperator a rdfs:Class ;
+					 rdfs:label "Class of SPARQL Operators" ;
+					 rdfs:comment "A SPARQL Operator implements custom logic for operator evaluation in SPARQL" .
+							
+dnr:SparqlDataset a rdfs:Class ;
+				  rdfs:label "Class of SPARQL Datasets" ;
+				  rdfs:comment "A SPARQL Dataset is a dataset that can be used to execute SPARQL queries against using dotNetRDF's Leviathan Query engine" .
+				  
+dnr:QueryOptimiser a rdfs:Class ;
+					rdfs:label "Class of Query Optimisers" ;
+					rdfs:comment "A Query Optimiser is a class that can optimise the Graph Patterns of a Query to improve evaluation speed.  Optimisers may use information about the data being queried to help them better optimise queries" .
+					
+dnr:AlgebraOptimiser a rdfs:Class ;
+						rdfs:label "Class of Algebra Optimisers" ;
+						rdfs:comment "A Algebra Optimiser is a class that can optimise the SPARQL Algebra form of a query to improve evaluation speed.  These typically use static optimisation based on things like substituting alternative implementations of some algebra operators e.g. the AskBgp() in place of Bgp() in ASK queries" .
+								
+dnr:Reasoner a rdfs:Class ;
+			 rdfs:label "Class of Forward Chaining Reasoners" ;
+			 rdfs:comment "A Forward Chaining Reasoner is a reasoner that applies inference rules to Graphs to generate additional triples" .
+			
+dnr:OwlReasoner a rdfs:Class ;
+				rdfs:label "Class of OWL Reasoners" ;
+				rdfs:comment "An OWL reasoner is a reasoner that provides OWL reasoning capabilities" .
+								
+dnr:UserGroup a rdfs:Class ;
+			  rdfs:label "Class of User Groups" ;
+			  rdfs:comment "A User Group is a group of users who are assigned a set of permissions." .
+			  
+dnr:User a rdfs:Class ;
+		 rdfs:label "Class of Users" ;
+		 rdfs:comment "A User represents a User" .
+		 
+dnr:Permission a rdfs:Class ;
+			   rdfs:label "Class of Permissions" ;
+			   rdfs:comment "A Permission is used to represent some action that can be performed." .
+			   
+dnr:Proxy a rdfs:Class ;
+		  rdfs:label "Class of Proxy Servers" ;
+		  rdfs:comment "A Proxy Server is used to specify proxy settings." .
+			   
+# General Properties
+
+dnr:imports a rdf:Property ;
+			rdfs:label "Imports" ;
+			rdfs:comment "This property is used to declare that the final Configuration Graph is created by importing another Graph from the given URI and merging it into this Graph" .
+			
+dnr:configure a rdf:Property ;
+				rdfs:label "Configure" ;
+				rdfs:comment "This property is used to configure global options for dotNetRDF when used as the predicate for a triple which has a special <dotnetrdf-configure:Class#Property> URI" .
+
+dnr:type a rdf:Property ;
+		 rdfs:label "Type" ;
+		 rdfs:comment "This property is used to declare the fully qualified type name (including assembly if not from the core dotNetRDF.dll library) of an object whose configuration is defined in this vocabulary.  This type name can then be used with reflection to ensure that objects of valid types are generated." .
+
+dnr:enabled a rdf:Property ;
+			rdfs:label "Enabled" ;
+			rdfs:comment "This property is used to declare whether something is enabled, the interpretation and usage of this is left up to implementers unlike the more specific dnr:enableUpdates and dnr:enableCors properties which control specific functionality" .
+		 
+dnr:user a rdf:Property ;
+		 rdfs:label "Username" ;
+		 rdfs:comment "This property is used to state usernames." .
+		 
+dnr:password a rdf:Property ;
+			 rdfs:label "Password" ;
+			 rdfs:comment "This property is used to state passwords." .
+			 
+dnr:credentials a rdf:Property ;
+				rdfs:label "Credentials" ;
+				rdfs:comment "This property points to some object which then has dnr:user and dnr:password properties to define user credentials." .
+				
+dnr:useCredentialsForProxy a rdf:Property ;
+						   rdfs:label "Use Credentials for Proxy" ;
+						   rdfs:comment "This property indicates whether the credentials specified for this object should also be used for the proxy which is specified via the dnr:proxy property." ;
+						   rdfs:range xsd:boolean .	
+		 
+# Connection Properties
+# These properties are used to define connections
+
+dnr:server a rdf:Property ;
+		   rdfs:label "Server" ;
+		   rdfs:comment "This property is used to define the server for a connection." ;
+		   rdfs:domain dnr:GenericIOManager ;
+		   rdfs:domain dnr:StorageProvider ;
+		   rdfs:domain dnr:SparqlQueryProcessor ;
+		   rdfs:domain dnr:Proxy .
+		   
+dnr:port a rdf:Property ;
+		 rdfs:label "Port" ;
+		 rdfs:comment "This property is used to define the port for a connection." ;
+		 rdfs:domain dnr:GenericIOManager ;
+		 rdfs:domain dnr:StorageProvider .
+		 
+dnr:database a rdf:Property ;
+			 rdfs:label "Database" ;
+			 rdfs:comment "This property is used to define the database for a connection." ;
+		     rdfs:domain dnr:GenericIOManager ;
+		     rdfs:domain dnr:StorageProvider .
+			 
+dnr:catalogID a rdf:Property ;
+			  rdfs:label "Catalog ID" ;
+			  rdfs:comment "This property is used to define the catalog for a connection." ;
+		      rdfs:domain dnr:GenericIOManager ;
+		      rdfs:domain dnr:StorageProvider .
+			  
+dnr:storeID a rdf:Property ;
+			rdfs:label "Store ID" ;
+			rdfs:comment "This property is used to define the store for a connection." ;
+		    rdfs:domain dnr:GenericIOManager ;
+		    rdfs:domain dnr:StorageProvider ;
+		    rdfs:domain dnr:SparqlQueryProcessor .
+			
+dnr:queryPath a rdf:Property ;
+			  rdfs:label "Query Path" ;
+			  rdfs:comment "This property is used to define the path to the query service relative to the base URI specified with the dnr:server property." ;
+		      rdfs:domain dnr:GenericIOManager ;
+		      rdfs:domain dnr:StorageProvider .
+			  
+dnr:updatePath a rdf:Property ;
+			   rdfs:label "Update Path" ;
+			   rdfs:comment "This property is used to define the path to the update service relative to the base URI specified with the dnr:server property." ;
+		       rdfs:domain dnr:GenericIOManager ;
+		       rdfs:domain dnr:StorageProvider .
+			     
+dnr:readOnly a rdf:Property ;
+			 rdfs:label "Read Only" ;
+			 rdfs:comment "This property indicates whether a connection should be created in read-only mode." ;
+			 rdfs:domain dnr:GenericIOManager ;
+			 rdfs:domain dnr:StorageProvider ;
+			 rdfs:range xsd:boolean .
+			 
+dnr:enableUpdates a rdf:Property ;
+				  rdfs:label "Enable Updates" ;
+				  rdfs:comment "This property indicates whether a connections update capabilities should be enabled." ;
+				  rdfs:domain dnr:GenericIOManager ;
+				  rdfs:domain dnr:StorageProvider ;
+				  rdfs:range xsd:boolean .
+				   
+dnr:async a rdf:Property ;
+		  rdfs:label "Asynchronous" ;
+		  rdfs:comment "This property indicates whether a connection should be opened in asynchronous mode." ;
+		  rdfs:domain dnr:GenericIOManager ;
+		  rdfs:domain dnr:StorageProvider ;
+		  rdfs:range xsd:boolean .
+		  
+dnr:loadMode a rdf:Property ;
+			 rdfs:label "Load Mode" ;
+			 rdfs:comment "This property indicates the loading mode.  It is a general purpose property that can be used to indicate additional parameters for Objects, the exact meaning of this property depends on the Object being declared and the Object Factory which loads it" ;
+			 rdfs:domain dnr:GenericIOManager ;
+			 rdfs:domain dnr:StorageProvider ;
+			 rdfs:domain dnr:TripleStore .
+			 
+dnr:encryptConnection a rdf:Property ;
+					  rdfs:label "Encrypt Connection" ;
+					  rdfs:comment "This property indicates whether the connection needs to be encrypted." ;
+					  rdfs:range xsd:boolean ;
+					  rdfs:domain dnr:GenericIOManager ;
+					  rdfs:domain dnr:StorageProvider .
+		  
+# Properties to associate connections with other objects
+
+dnr:genericManager a rdf:Property ;
+				   rdfs:label "Generic Manager" ;
+				   rdfs:comment "Obsolete - Use dnr:storageProvider instead. This property associates a Generic IO Manager with an object." ;
+				   rdfs:range dnr:GenericIOManager .
+				   
+dnr:storageProvider a rdf:Property ;
+					  rdfs:label "Storage Provider" ;
+					  rdfs:comment "This property associates a Storage Provider with an object" ;
+					  rdfs:range dnr:StorageProvider .
+			   
+# Properties to associate SPARQL processors with other objects
+
+dnr:queryProcessor a rdf:Property ;
+				   rdfs:label "Query Processor" ;
+				   rdfs:comment "This property associates a SPARQL Query Processor with an object." ;
+				   rdfs:range dnr:SparqlQueryProcessor .
+				   
+dnr:updateProcessor a rdf:Property ;
+					rdfs:label "Update Processor" ;
+					rdfs:comment "This property associates a SPARQL Update Processor with an object." ;
+					rdfs:range dnr:SparqlUpdateProcessor .
+					
+dnr:protocolProcessor a rdf:Property ;
+					  rdfs:label "Protocol Processor" ;
+					  rdfs:comment "This property associates a SPARQL Protocol Processor with an object." ;
+					  rdfs:range dnr:SparqlHttpProtocolProcessor .
+					  					  
+# Properties for associating Datasets, Stores and Graphs with other objects
+
+dnr:usingDataset a rdf:Property ;
+				 rdfs:label "Using Dataset" ;
+				 rdfs:comment "This property indicates that an object uses a SPARQL Dataset." ;
+				 rdfs:range dnr:SparqlDataset .
+
+dnr:usingStore a rdf:Property ;
+			   rdfs:label "Using Store" ;
+			   rdfs:comment "This property indicates that an object uses a Triple Store." ;
+			   rdfs:range dnr:TripleStore .
+			   
+dnr:usingGraph a rdf:Property ;
+			   rdfs:label "Using Graph" ;
+			   rdfs:comment "This property indicates that an object uses a Graph." ;
+			   rdfs:range dnr:Graph .
+			   
+# Properties which set the low level storage for Graphs and Triple Collections
+
+dnr:usingTripleCollection a rdf:Property ;
+							rdfs:label "Using Triple Collection" ;
+							rdfs:comment "This property indicates that a Graph should use the specified Triple Collection" ;
+							rdfs:range dnr:TripleCollection ;
+							rdfs:domain dnr:Graph .
+							
+dnr:usingGraphCollection a rdf:Property ;
+							rdfs:label "Using Graph Collection" ;
+							rdfs:comment "This property indicates that a Triple Store should use the specified Graph Collection" ;
+							rdfs:range dnr:GraphCollection ;
+							rdfs:domain dnr:TripleStore .							
+			   
+# Properties for defining data sources
+
+dnr:fromGraph a rdf:Property ;
+			  rdfs:label "From Graph" ;
+			  rdfs:comment "This property states that data is retrieved from another Graph." ;
+			  rdfs:domain dnr:Graph ;
+			  rdfs:range dnr:Graph .
+
+dnr:fromFile a rdf:Property ;
+			 rdfs:label "From File" ;
+			 rdfs:comment "This property states that data is retrieved from a file." ;
+			 rdfs:domain dnr:Graph ;
+			 rdfs:domain dnr:TripleStore .
+			 
+dnr:fromEmbedded a rdf:Property ;
+				  rdfs:label "From Embedded" ;
+				  rdfs:comment "This property states that data is retrieved from an embedded resource in the manifest.  This will usually require that the fully qualified name of the embedded resource be used so that the Configuration Loader can use the correct assembly to read the stream from" ;
+				  rdfs:domain dnr:Graph ;
+				  rdfs:domain dnr:TripleStore .
+			 
+dnr:fromUri a rdf:Property ;
+			rdfs:label "From URI" ;
+			rdfs:comment "This property states that data is retrieved from a URI." ;
+			rdfs:domain dnr:Graph .
+			
+dnr:fromString a rdf:Property ;
+			   rdfs:label "From String" ;
+			   rdfs:comment "This property states that data is parsed from a String fragment using heuristic format detection parsing." ;
+			   rdfs:domain dnr:Graph .
+				 
+dnr:fromStore a rdf:Property ;
+			  rdfs:label "From Store" ;
+			  rdfs:comment "This property states that data is retrieved from a storage provider." ;
+			  rdfs:domain dnr:Graph ;
+			  rdfs:range dnr:StorageProvider .
+
+dnr:fromDataset a rdf:Property ;
+				rdfs:label "From Dataset" ;
+				rdfs:comment "This property states that date is retrieved from a SPARQL Dataset." ;
+				rdfs:domain dnr:Graph ;
+				rdfs:range dnr:SparqlDataset .
+			  
+dnr:withUri a rdf:Property ;
+			rdfs:label "With URI" ;
+			rdfs:comment "This property defines the URI of a Graph to be retrieved from a database/generic store connection.  This is only valid in conjunction with a dnr:fromDatabase or dnr:fromStore property." ;
+			rdfs:domain dnr:Graph .
+			
+dnr:assignUri a rdf:Property ;
+			  rdfs:label "Assign URI" ;
+			  rdfs:comment "This property assigns the resulting Graph the given Base URI." ;
+			  rdfs:domain dnr:Graph .
+			  
+# Properties for SPARQL related stuff
+
+dnr:endpoint a rdf:Property ;
+			 rdfs:label "Endpoint" ;
+			 rdfs:comment "This property associates an endpoint with an object." ;
+			 rdfs:range dnr:SparqlEndpoint .
+
+dnr:queryEndpoint a rdf:Property ;
+			 rdfs:label "Query Endpoint" ;
+			 rdfs:comment "This property associates a query endpoint with an object." ;
+			 rdfs:range dnr:SparqlQueryEndpoint .
+
+dnr:updateEndpoint a rdf:Property ;
+			 rdfs:label "Update Endpoint" ;
+			 rdfs:comment "This property associates an update endpoint with an object." ;
+			 rdfs:range dnr:SparqlUpdateEndpoint .
+			 
+dnr:endpointUri a rdf:Property ;
+				rdfs:label "Endpoint URI" ;
+				rdfs:comment "This property defines the Endpoint URI." ;
+				rdfs:domain dnr:SparqlEndpoint ;
+				rdfs:domain dnr:GenericIOManager ;
+				rdfs:domain dnr:StorageProvider .
+
+dnr:queryEndpointUri a rdf:Property ;
+				rdfs:label "Query Endpoint URI" ;
+				rdfs:comment "This property defines the Query Endpoint URI." ;
+				rdfs:domain dnr:SparqlQueryEndpoint .
+
+dnr:updateEndpointUri a rdf:Property ;
+				rdfs:label "Update Endpoint URI" ;
+				rdfs:comment "This property defines the Update Endpoint URI." ;
+				rdfs:domain dnr:SparqlUpdateEndpoint .
+			 
+dnr:defaultGraphUri a rdf:Property ;
+					rdfs:label "Default Graph URI" ;
+					rdfs:comment "This property defines Default Graph URIs." .
+					
+dnr:namedGraphUri a rdf:Property ;
+				  rdfs:label "Named Graph URI" ;
+				  rdfs:comment "This property defines Named Graph URIs." .
+
+
+dnr:unionDefaultGraph a rdf:Property ;
+					  rdfs:label "Union Default Graph" ;
+					  rdfs:comment "This property indicates whether a union default graph should be used" ;
+					  rdfs:range xsd:boolean ;
+					  rdfs:domain dnr:SparqlDataset .
+				  
+dnr:proxy a rdf:Property ;
+		  rdfs:label "Proxy Server" ;
+		  rdfs:domain dnr:SparqlEndpoint ;
+		  rdfs:range dnr:Proxy .
+		  				  
+# Properties for associating Reasoners with objects
+
+dnr:reasoner a rdf:Property ;
+			 rdfs:label "Reasoner" ;
+			 rdfs:comment "This property associates a reasoner with an object." ;
+			 rdfs:domain dnr:Graph ;
+			 rdfs:domain dnr:TripleStore ;
+			 rdfs:range dnr:Reasoner .
+			 
+dnr:owlReasoner a rdf:Property ;
+				rdfs:label "This property associates an OWL reasoner with an object." ;
+				rdfs:domain dnr:Graph ;
+				rdfs:domain dnr:TripleStore ;
+				rdfs:domain dnr:Reasoner ;
+				rdfs:range dnr:OwlReasoner .
+				  
+# Properties for User Groups and Permissions
+
+dnr:userGroup a rdf:Property ;
+			  rdfs:label "User Group" ;
+			  rdfs:comment "This property associates a User Group with a HTTP Handler." .
+			  
+dnr:member a rdf:Property ;
+		   rdfs:label "Member" ;
+		   rdfs:comment "This property associates a User with a User Group." ;
+		   rdfs:domain dnr:UserGroup ;
+		   rdfs:range dnr:User .
+		   
+		   						   
+dnr:requiresAuthentication a rdf:Property ;
+						   rdfs:label "Requires Authentication" ;
+						   rdfs:comment "This property indicates whether the permissions of a User Group apply only to authenticated users in that group or whether they apply to unauthenticated users as well.  In effect setting this to false allows for guest users to be subject to the permissions of a group." ;
+						   rdfs:domain dnr:UserGroup ;
+						   rdfs:range xsd:boolean .
+						   
+dnr:permissionModel a rdf:Property ;
+					rdfs:label "Permission Model" ;
+					rdfs:comment "This property specifies the permissions model for a User Group" ;
+					rdfs:domain dnr:UserGroup .
+		   
+dnr:allow a rdf:Property ;
+		  rdfs:label "Allow" ;
+		  rdfs:comment "This property indicates that a User Group is allowed a specific permission." ;
+		  rdfs:domain dnr:UserGroup ;
+		  rdfs:range dnr:Permission .
+		  
+dnr:deny a rdf:Property ;
+		 rdfs:label "Deny" ;
+		 rdfs:comment "This property indicates that a User Group is denied a specific permission." ;
+		 rdfs:domain dnr:UserGroup ;
+		 rdfs:range dnr:Permission.
+		 
+dnr:action a rdf:Property ;
+		   rdfs:label "Action" ;
+		   rdfs:comment "This property declares an action to which a permission applies." ;
+		   rdfs:domain dnr:Permission .
+		   
+# Properties for HTTP Handler Configuration
+# Most of these properties pertain to SPARQL Endpoint configuration but some are more general
+
+dnr:enableCors a rdf:Property ;
+				rdfs:label "Enable CORS" ;
+				rdfs:comment "This property sets whether CORS Headers are output (typically defaults to true if not set)" ;
+				rdfs:domain dnr:HttpHandler .
+
+dnr:syntax a rdf:Property ;
+			rdfs:label "Syntax" ;
+			rdfs:comment "This property sets the Syntax in use." ;
+			rdfs:domain dnr:HttpHandler .
+
+dnr:timeout a rdf:Property ;
+			rdfs:label "Timeout" ;
+			rdfs:comment "This property sets the timeout." ;
+			rdfs:domain dnr:HttpHandler ;
+			rdfs:range xsd:integer .
+			
+dnr:partialResults a rdf:Property ;
+				   rdfs:label "Partial Results" ;
+				   rdfs:comment "This property sets the partial results behaviour." ;
+				   rdfs:domain dnr:HttpHandler ;
+				   rdfs:range xsd:boolean .
+				   
+dnr:showErrors a rdf:Property ;
+			   rdfs:label "Show Friendly Errors" ;
+			   rdfs:comment "This property sets whether friendly error messages are shown rather than just returning HTTP status codes." ;
+			   rdfs:domain dnr:HttpHandler ;
+			   rdfs:range xsd:boolean .
+			   
+dnr:haltOnError a rdf:Property ;
+				rdfs:label "Halt on Error" ;
+				rdfs:comment "This property sets whether processing should halt on errors.  It was originally intended for use with SPARQL Update endpoints but was later removed from that use as disabling this option (i.e. allowing continuation on error) would go against the stated semantics of SPARQL Update that a set of commands is applied atomically." ;
+				rdfs:domain dnr:HttpHandler ;
+			    rdfs:range xsd:boolean ;
+			    vs:term-status "archaic" .
+				
+dnr:showQueryForm a rdf:Property ;
+				  rdfs:label "Show Query Form" ;
+				  rdfs:comment "This property sets whether a Query Form should be shown if no query is made." ;
+				  rdfs:domain dnr:HttpHandler ;
+			      rdfs:range xsd:boolean .
+				  
+dnr:showUpdateForm a rdf:Property ;
+				   rdfs:label "Show Update Form" ;
+				   rdfs:comment "This property sets whether a Update Form should be shown if no Update is made." ;
+				   rdfs:domain dnr:HttpHandler ;
+				   rdfs:range xsd:boolean .
+				   
+dnr:defaultQueryFile a rdf:Property ;
+					 rdfs:label "Default Query File" ;
+					 rdfs:comment "This property indicates a file from which the default query to be displayed in the Query Form should be read." ;
+					 rdfs:domain dnr:HttpHandler .
+					 
+dnr:defaultUpdateFile a rdf:Property ;
+					  rdfs:label "Default Update File" ;
+					  rdfs:comment "This property indicates a file from which the default Update to be displayed in the Update Form should be read." ;
+					  rdfs:domain dnr:HttpHandler .
+					  
+dnr:introText a rdf:Property ;
+			  rdfs:label "Introduction Text" ;
+			  rdfs:comment "This property indicates a file from which the introduction text for Forms should be read." ;
+			  rdfs:domain dnr:HttpHandler .
+			  
+dnr:stylesheet a rdf:Property ;
+			   rdfs:label "Stylesheet" ;
+			   rdfs:comment "This property indicates a URL for a stylesheet which should be used for the formatting of any generated HTML." ;
+			   rdfs:domain dnr:HttpHandler .
+			   
+dnr:cacheDuration a rdf:Property ;
+				  rdfs:label "Cache Duration" ;
+				  rdfs:comment "This property indicates the Cache Duration to be used." ;
+				  rdfs:domain dnr:HttpHandler ;
+				  rdfs:range xsd:integer .
+				  
+dnr:cacheSliding a rdf:Property ;
+				 rdfs:label "Cache Sliding" ;
+				 rdfs:comment "This property sets whether sliding cache expiration is used." ;
+				 rdfs:domain dnr:HttpHandler ;
+			     rdfs:range xsd:boolean .
+			     
+dnr:expressionFactory a rdf:Property ;
+					  rdfs:label "Expression Factory" ;
+					  rdfs:comment "This property associates a custom expression factory for SPARQL parsing with a handler." ;
+					  rdfs:range dnr:SparqlExpressionFactory ;
+					  rdfs:domain dnr:HttpHandler .
+					  
+dnr:propertyFunctionFactory a rdf:Property ;
+							  rdfs:label "Property Function Factory" ;
+							  rdfs:comment "This property associates a custom property function factory for SPARQL evaluation with a handler" ;
+							  rdfs:range dnr:SparqlPropertyFunctionFactory ;
+							  rdfs:domain dnr:HttpHandler .
+					  
+dnr:describeAlgorithm a rdf:Property ;
+						rdfs:label "SPARQL Describe Algorithm" ;
+						rdfs:comment "This property associates a custom SPARQL Describe Algorithm with a HTTP Handler.  The value should be a literal which contains a fully qualified type name of the Describe Algorithm which must implement the VDS.RDF.Query.Describe.ISparqlDescribe interface." ;
+						rdfs:domain dnr:HttpHandler .
+						
+dnr:serviceDescription a rdf:Property ;
+						 rdfs:label "Service Description" ;
+						 rdfs:comment "This property allows a Graph containing a user defined SPARQL Service Description be used as the Service Description Graph rather than having dotNetRDF auto-generate the Description" ;
+						 rdfs:domain dnr:HttpHandler ;
+						 rdfs:range dnr:Graph .
+						 
+dnr:queryOptimiser a rdf:Property ;
+					 rdfs:label "Query Optimiser" ;
+					 rdfs:comment "This property allows a Query Optimiser to be associated with a HTTP Handler.  If the HTTP Handler is a SPARQL Query supporting handler then it will use the given Query Optimiser instead of the Default Optimiser for the optimisation of SPARQL Queries.  Note that only one Query Optimiser is allowed per Handler at any time so if more than one is specified only the first the ConfigurationLoader encounters will be used." ;
+					 rdfs:range dnr:QueryOptimiser ;
+					 rdfs:domain dnr:HttpHandler .
+					 
+dnr:algebraOptimiser a rdf:Property ;
+						rdfs:label "Algebra Optimiser" ;
+						rdfs:comment "This property allows Algebra Optimisers to be associated with a HTTP Handler.  If the HTTP Handler is a SPARQL Query supported handler then it will use these optimisers to help optimise SPARQL Algebra generated from queries.  Multiple algebra optimisers can be specified and these will be used in addition to the libraries own default optimisers." ;
+						rdfs:domain dnr:HttpHandler ;
+						rdfs:range dnr:AlgebraOptimiser .
+						
+# Properties pertaining to options for RDF writers
+
+dnr:compressionLevel a rdf:Property ;
+						rdfs:label "Compression Level" ;
+						rdfs:comment "Specifies the compression level to be used for writers that support compression.  Defaults to a limited level of compression which has an integer value of 1" ;
+						rdfs:range xsd:integer .
+
+dnr:prettyPrinting a rdf:Property ;
+					rdfs:label "Pretty Printing" ;
+					rdfs:comment "Specifies whether Pretty Printing should be used for writers that support it.  Default is true for most writers" ;
+					rdfs:range xsd:boolean .
+					
+dnr:highSpeedWriting a rdf:Property ;
+						rdfs:label "High Speed Writing" ;
+						rdfs:comment "Specifies whether supporting writers can use high speed writing mode if the RDF is not suited to normal syntax compressions.  Default is true for most writers" ;
+						rdfs:range xsd:boolean .
+						
+dnr:dtdWriting a rdf:Property ;
+				rdfs:label "DTD Writing" ;
+				rdfs:comment "Specifies whether supporting writers should use DTDs in their output.  Default is true for most writers" ;
+				rdfs:range xsd:boolean .
+				
+dnr:attributeWriting a rdf:Property ;
+					   rdfs:label "Attribute Writing" ;
+					   rdfs:comment "Specifies whether supporting writers should use attributes to compress their output where they have the choice between using attributes or elements.  Default is true for most writers" ;
+					   rdfs:range xsd:boolean .
+
+dnr:multiThreadedWriting a rdf:Property ;
+							rdfs:label "Multi-Threaded Writing" ;
+							rdfs:comment "Specifies whether supporting writers should use multi-threaded writing.  Default is true for most supporting writers" ;
+							rdfs:range xsd:boolean .
+							
+dnr:importNamespacesFrom a rdf:Property ;
+							rdfs:label "Import Namespaces From" ;
+							rdfs:comment "Specifies a Graph from which default namespace declarations will be taken" ;
+							rdfs:range dnr:Graph ;
+							rdfs:domain dnr:HttpHandler .

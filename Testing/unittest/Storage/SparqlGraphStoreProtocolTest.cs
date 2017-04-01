@@ -30,15 +30,16 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Storage
 {
-    [TestFixture]
+
     public class SparqlGraphStoreProtocolTest
     {
         private NTriplesFormatter _formatter = new NTriplesFormatter();
@@ -47,14 +48,14 @@ namespace VDS.RDF.Storage
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS))
             {
-                Assert.Inconclusive("Test Config marks IIS as unavailable, cannot run test");
+                throw new SkipTestException("Test Config marks IIS as unavailable, cannot run test");
             }
             return new SparqlHttpProtocolConnector(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri));
         }
 
 #if !NO_SYNC_HTTP
 
-        [Test]
+        [SkippableFact]
         public void StorageSparqlUniformHttpProtocolSaveGraph()
         {
             try
@@ -96,10 +97,10 @@ namespace VDS.RDF.Storage
                         Console.WriteLine(t.ToString(this._formatter));
                     }
 
-                    Assert.IsTrue(diff.AddedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization");
-                    Assert.IsTrue(diff.RemovedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization");
-                    Assert.IsFalse(diff.AddedMSGs.Any(), "Should not be any MSG differences");
-                    Assert.IsFalse(diff.RemovedMSGs.Any(), "Should not be any MSG differences");
+                    Assert.True(diff.AddedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization");
+                    Assert.True(diff.RemovedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization");
+                    Assert.False(diff.AddedMSGs.Any(), "Should not be any MSG differences");
+                    Assert.False(diff.RemovedMSGs.Any(), "Should not be any MSG differences");
                 }
             }
             finally
@@ -108,7 +109,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageSparqlUniformHttpProtocolSaveGraph2()
         {
             try
@@ -150,10 +151,10 @@ namespace VDS.RDF.Storage
                         Console.WriteLine(t.ToString(this._formatter));
                     }
 
-                    Assert.IsTrue(diff.AddedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization");
-                    Assert.IsTrue(diff.RemovedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization");
-                    Assert.IsFalse(diff.AddedMSGs.Any(), "Should not be any MSG differences");
-                    Assert.IsFalse(diff.RemovedMSGs.Any(), "Should not be any MSG differences");
+                    Assert.True(diff.AddedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization");
+                    Assert.True(diff.RemovedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization");
+                    Assert.False(diff.AddedMSGs.Any(), "Should not be any MSG differences");
+                    Assert.False(diff.RemovedMSGs.Any(), "Should not be any MSG differences");
                 }
             }
             finally
@@ -162,7 +163,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageSparqlUniformHttpProtocolLoadGraph()
         {
             try
@@ -203,10 +204,10 @@ namespace VDS.RDF.Storage
                         Console.WriteLine(t.ToString(this._formatter));
                     }
 
-                    Assert.IsTrue(diff.AddedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization (added)");
-                    Assert.IsTrue(diff.RemovedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization (removed)");
-                    Assert.IsFalse(diff.AddedMSGs.Any(), "Should not be any MSG differences");
-                    Assert.IsFalse(diff.RemovedMSGs.Any(), "Should not be any MSG differences");
+                    Assert.True(diff.AddedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization (added)");
+                    Assert.True(diff.RemovedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization (removed)");
+                    Assert.False(diff.AddedMSGs.Any(), "Should not be any MSG differences");
+                    Assert.False(diff.RemovedMSGs.Any(), "Should not be any MSG differences");
                 }
             }
             finally
@@ -216,7 +217,7 @@ namespace VDS.RDF.Storage
         }
 
 #if !NO_SYNC_HTTP // There is currently no async version of HasGraph to delegate to
-        [Test]
+        [SkippableFact]
         public void StorageSparqlUniformHttpProtocolGraphExists()
         {
             try
@@ -227,7 +228,7 @@ namespace VDS.RDF.Storage
 
                 //Check the Graph exists in the Store
                 SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
-                Assert.IsTrue(sparql.HasGraph("http://example.org/sparqlTest"));
+                Assert.True(sparql.HasGraph("http://example.org/sparqlTest"));
             }
             finally
             {
@@ -236,7 +237,7 @@ namespace VDS.RDF.Storage
         }
 #endif
 
-        [Test]
+        [SkippableFact]
         public void StorageSparqlUniformHttpProtocolDeleteGraph()
         {
             try
@@ -256,7 +257,7 @@ namespace VDS.RDF.Storage
                     sparql.LoadGraph(g, "http://example.org/sparqlTest");
 
                     //If we do get here without erroring then the Graph should be empty
-                    Assert.IsTrue(g.IsEmpty, "If the Graph loaded without error then it should have been empty as we deleted it from the store");
+                    Assert.True(g.IsEmpty, "If the Graph loaded without error then it should have been empty as we deleted it from the store");
                 }
                 catch (Exception ex)
                 {
@@ -270,7 +271,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageSparqlUniformHttpProtocolAddTriples()
         {
             try
@@ -294,7 +295,7 @@ namespace VDS.RDF.Storage
                     Console.WriteLine(t.ToString(this._formatter));
                 }
 
-                Assert.IsTrue(g.IsSubGraphOf(h), "Retrieved Graph should have the added Triples as a Sub Graph");
+                Assert.True(g.IsSubGraphOf(h), "Retrieved Graph should have the added Triples as a Sub Graph");
             }
             finally
             {
@@ -302,7 +303,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageSparqlUniformHttpProtocolRemoveTriples()
         {
             try
@@ -316,7 +317,7 @@ namespace VDS.RDF.Storage
                     SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
                     sparql.UpdateGraph("http://example.org/sparqlTest", null, g.Triples);
 
-                    Assert.Fail("SPARQL Uniform HTTP Protocol does not support removing Triples");
+                    Assert.True(false, "SPARQL Uniform HTTP Protocol does not support removing Triples");
                 }
                 catch (RdfStorageException storeEx)
                 {
@@ -335,7 +336,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageSparqlUniformHttpProtocolPostCreate()
         {
             SparqlHttpProtocolConnector connector = SparqlGraphStoreProtocolTest.GetConnection();
@@ -359,7 +360,7 @@ namespace VDS.RDF.Storage
                 //Should get a 201 Created response
                 if (response.StatusCode == HttpStatusCode.Created)
                 {
-                    if (response.Headers["Location"] == null) Assert.Fail("A Location: Header containing the URI of the newly created Graph should have been returned");
+                    if (response.Headers["Location"] == null) Assert.True(false, "A Location: Header containing the URI of the newly created Graph should have been returned");
                     Uri graphUri = new Uri(response.Headers["Location"]);
 
                     Console.WriteLine("New Graph URI is " + graphUri.ToString());
@@ -370,17 +371,17 @@ namespace VDS.RDF.Storage
 
                     TestTools.ShowGraph(h);
 
-                    Assert.AreEqual(g, h, "Graphs should have been equal");
+                    Assert.Equal(g, h);
                 }
                 else
                 {
-                    Assert.Fail("A 201 Created response should have been received but got a " + (int)response.StatusCode + " response");
+                    Assert.True(false, "A 201 Created response should have been received but got a " + (int)response.StatusCode + " response");
                 }
                 response.Close();
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageSparqlUniformHttpProtocolPostCreateMultiple()
         {
             SparqlHttpProtocolConnector connector = SparqlGraphStoreProtocolTest.GetConnection();
@@ -407,7 +408,7 @@ namespace VDS.RDF.Storage
                     //Should get a 201 Created response
                     if (response.StatusCode == HttpStatusCode.Created)
                     {
-                        if (response.Headers["Location"] == null) Assert.Fail("A Location: Header containing the URI of the newly created Graph should have been returned");
+                        if (response.Headers["Location"] == null) Assert.True(false, "A Location: Header containing the URI of the newly created Graph should have been returned");
                         Uri graphUri = new Uri(response.Headers["Location"]);
                         uris.Add(graphUri);
 
@@ -417,19 +418,19 @@ namespace VDS.RDF.Storage
                         Graph h = new Graph();
                         connector.LoadGraph(h, graphUri);
 
-                        Assert.AreEqual(g, h, "Graphs should have been equal");
+                        Assert.Equal(g, h);
                         Console.WriteLine("Graphs were equal as expected");
                     }
                     else
                     {
-                        Assert.Fail("A 201 Created response should have been received but got a " + (int)response.StatusCode + " response");
+                        Assert.True(false, "A 201 Created response should have been received but got a " + (int)response.StatusCode + " response");
                     }
                     response.Close();
                 }
                 Console.WriteLine();
             }
 
-            Assert.IsTrue(uris.Distinct().Count() == 10, "Should have generated 10 distinct URIs");
+            Assert.True(uris.Distinct().Count() == 10, "Should have generated 10 distinct URIs");
         }
 
         /// <summary>

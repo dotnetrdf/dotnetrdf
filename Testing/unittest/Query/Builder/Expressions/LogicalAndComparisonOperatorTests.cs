@@ -25,7 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Conditional;
@@ -33,10 +33,10 @@ using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Builder.Expressions
 {
-    [TestFixture]
+
     public class LogicalAndComparisonOperatorTests
     {
-        [Test]
+        [Fact]
         public void CanJoinTwoBooleanExpressionWithAndOperator()
         {
             // given 
@@ -47,12 +47,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var conjunction = (b1 && b2).Expression;
 
             // then
-            Assert.IsTrue(conjunction is AndExpression);
-            Assert.AreSame(b1.Expression, conjunction.Arguments.ElementAt(0));
-            Assert.AreSame(b2.Expression, conjunction.Arguments.ElementAt(1));
+            Assert.True(conjunction is AndExpression);
+            Assert.Same(b1.Expression, conjunction.Arguments.ElementAt(0));
+            Assert.Same(b2.Expression, conjunction.Arguments.ElementAt(1));
         }
 
-        [Test]
+        [Fact]
         public void ShouldReturnTheExpressionIfAppliedLogicalOperatoWithNull()
         {
             // todo: TP: not sure this is expected behaviour
@@ -60,15 +60,15 @@ namespace VDS.RDF.Query.Builder.Expressions
             BooleanExpression notNull = new BooleanExpression(new VariableTerm("var"));
 
             // then
-            Assert.AreSame(notNull, notNull || null);
-            Assert.AreSame(notNull, null || notNull);
+            Assert.Same(notNull, notNull || null);
+            Assert.Same(notNull, null || notNull);
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
-            Assert.AreSame(notNull, notNull && null);
-            Assert.AreSame(notNull, null && notNull);
+            Assert.Same(notNull, notNull && null);
+            Assert.Same(notNull, null && notNull);
 // ReSharper restore ConditionIsAlwaysTrueOrFalse
         }
 
-        [Test]
+        [Fact]
         public void CanJoinTwoExpressionWithOrOperator()
         {
             // given 
@@ -79,12 +79,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var disjunction = (b1 || b2).Expression;
 
             // then
-            Assert.IsTrue(disjunction is OrExpression);
-            Assert.AreSame(b1.Expression, disjunction.Arguments.ElementAt(0));
-            Assert.AreSame(b2.Expression, disjunction.Arguments.ElementAt(1));
+            Assert.True(disjunction is OrExpression);
+            Assert.Same(b1.Expression, disjunction.Arguments.ElementAt(0));
+            Assert.Same(b2.Expression, disjunction.Arguments.ElementAt(1));
         }
 
-        [Test]
+        [Fact]
         public void CanCreateEqualityComparisonBetweenVariables()
         {
             // given
@@ -95,12 +95,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var areEqual = (v1 == v2).Expression;
 
             // then
-            Assert.IsTrue(areEqual is EqualsExpression);
-            Assert.IsTrue(areEqual.Arguments.ElementAt(0) is VariableTerm);
-            Assert.IsTrue(areEqual.Arguments.ElementAt(1) is VariableTerm);
+            Assert.True(areEqual is EqualsExpression);
+            Assert.True(areEqual.Arguments.ElementAt(0) is VariableTerm);
+            Assert.True(areEqual.Arguments.ElementAt(1) is VariableTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanCreateEqualityComparisonBetweenVariableAndLiteral()
         {
             // given
@@ -111,12 +111,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var areEqual = (v1 == lit).Expression;
 
             // then
-            Assert.IsTrue(areEqual is EqualsExpression);
-            Assert.IsTrue(areEqual.Arguments.ElementAt(0) is VariableTerm);
-            Assert.IsTrue(areEqual.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(areEqual is EqualsExpression);
+            Assert.True(areEqual.Arguments.ElementAt(0) is VariableTerm);
+            Assert.True(areEqual.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanCreateEqualityComparisonBetweenTypedLiteralAndConcreteValue()
         {
             // given
@@ -126,12 +126,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var areEqual = (lit == "some value").Expression;
 
             // then
-            Assert.IsTrue(areEqual is EqualsExpression);
-            Assert.IsTrue(areEqual.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(areEqual.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(areEqual is EqualsExpression);
+            Assert.True(areEqual.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(areEqual.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanCreateEqualityComparisonBetweenTypedLiteralAndConcreteValueReversed()
         {
             // given
@@ -141,12 +141,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var areEqual = ("some value" == lit).Expression;
 
             // then
-            Assert.IsTrue(areEqual is EqualsExpression);
-            Assert.IsTrue(areEqual.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(areEqual.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(areEqual is EqualsExpression);
+            Assert.True(areEqual.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(areEqual.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanCreateEqualityComparisonBetweenUntypedLiteralAndConcreteValue()
         {
             // given
@@ -156,12 +156,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var areEqual = ("some value" == lit).Expression;
 
             // then
-            Assert.IsTrue(areEqual is EqualsExpression);
-            Assert.IsTrue(areEqual.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(areEqual.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(areEqual is EqualsExpression);
+            Assert.True(areEqual.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(areEqual.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanCreateEqualityComparisonBetweenUntypedLiteralAndConcreteValueReversed()
         {
             // given
@@ -171,12 +171,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var areEqual = ("some value" == lit).Expression;
 
             // then
-            Assert.IsTrue(areEqual is EqualsExpression);
-            Assert.IsTrue(areEqual.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(areEqual.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(areEqual is EqualsExpression);
+            Assert.True(areEqual.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(areEqual.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanCreateEqualityComparisonBetweenConstantAndVariable()
         {
             // given
@@ -187,12 +187,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var areEqual = (lit == v1).Expression;
 
             // then
-            Assert.IsTrue(areEqual is EqualsExpression);
-            Assert.IsTrue(areEqual.Arguments.ElementAt(0) is ConstantTerm);
-            Assert.IsTrue(areEqual.Arguments.ElementAt(1) is VariableTerm);
+            Assert.True(areEqual is EqualsExpression);
+            Assert.True(areEqual.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.True(areEqual.Arguments.ElementAt(1) is VariableTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanCreateGreaterThanOperatorBetweenVariables()
         {
             // given
@@ -203,12 +203,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var areEqual = (v1 > v2).Expression;
 
             // then
-            Assert.IsTrue(areEqual is GreaterThanExpression);
-            Assert.IsTrue(areEqual.Arguments.ElementAt(0) is VariableTerm);
-            Assert.IsTrue(areEqual.Arguments.ElementAt(1) is VariableTerm);
+            Assert.True(areEqual is GreaterThanExpression);
+            Assert.True(areEqual.Arguments.ElementAt(0) is VariableTerm);
+            Assert.True(areEqual.Arguments.ElementAt(1) is VariableTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanCreateGreaterThanOperatorBetweenVariableAndLiteral()
         {
             // given
@@ -219,12 +219,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var areEqual = (v1 > literal).Expression;
 
             // then
-            Assert.IsTrue(areEqual is GreaterThanExpression);
-            Assert.IsTrue(areEqual.Arguments.ElementAt(0) is VariableTerm);
-            Assert.IsTrue(areEqual.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.True(areEqual is GreaterThanExpression);
+            Assert.True(areEqual.Arguments.ElementAt(0) is VariableTerm);
+            Assert.True(areEqual.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanCreateGreaterThanOrEqualOperatorBetweenVariables()
         {
             // given
@@ -235,12 +235,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var areEqual = (v1 >= v2).Expression;
 
             // then
-            Assert.IsTrue(areEqual is GreaterThanOrEqualToExpression);
-            Assert.IsTrue(areEqual.Arguments.ElementAt(0) is VariableTerm);
-            Assert.IsTrue(areEqual.Arguments.ElementAt(1) is VariableTerm);
+            Assert.True(areEqual is GreaterThanOrEqualToExpression);
+            Assert.True(areEqual.Arguments.ElementAt(0) is VariableTerm);
+            Assert.True(areEqual.Arguments.ElementAt(1) is VariableTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanCreateLessThanOperatorBetweenVariables()
         {
             // given
@@ -251,12 +251,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var areEqual = (v1 < v2).Expression;
 
             // then
-            Assert.IsTrue(areEqual is LessThanExpression);
-            Assert.IsTrue(areEqual.Arguments.ElementAt(0) is VariableTerm);
-            Assert.IsTrue(areEqual.Arguments.ElementAt(1) is VariableTerm);
+            Assert.True(areEqual is LessThanExpression);
+            Assert.True(areEqual.Arguments.ElementAt(0) is VariableTerm);
+            Assert.True(areEqual.Arguments.ElementAt(1) is VariableTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanCreateLessThanOrEqualOperatorBetweenVariables()
         {
             // given
@@ -267,12 +267,12 @@ namespace VDS.RDF.Query.Builder.Expressions
             var areEqual = (v1 <= v2).Expression;
 
             // then
-            Assert.IsTrue(areEqual is LessThanOrEqualToExpression);
-            Assert.IsTrue(areEqual.Arguments.ElementAt(0) is VariableTerm);
-            Assert.IsTrue(areEqual.Arguments.ElementAt(1) is VariableTerm);
+            Assert.True(areEqual is LessThanOrEqualToExpression);
+            Assert.True(areEqual.Arguments.ElementAt(0) is VariableTerm);
+            Assert.True(areEqual.Arguments.ElementAt(1) is VariableTerm);
         }
 
-        [Test]
+        [Fact]
         public void CanCreateEqualityComparisonBetweenRdfTerms()
         {
             // given
@@ -283,147 +283,147 @@ namespace VDS.RDF.Query.Builder.Expressions
             var areEqual = (left == right).Expression;
 
             // then
-            Assert.IsTrue(areEqual is EqualsExpression);
-            Assert.AreSame(left.Expression, areEqual.Arguments.ElementAt(0));
-            Assert.AreSame(right.Expression, areEqual.Arguments.ElementAt(1));
+            Assert.True(areEqual is EqualsExpression);
+            Assert.Same(left.Expression, areEqual.Arguments.ElementAt(0));
+            Assert.Same(right.Expression, areEqual.Arguments.ElementAt(1));
         }
 
-        [Test]
+        [Fact]
         public void CanApplyLessThanOperatorBetweenSimpleValuesAndVariables()
         {
             // given
             VariableExpression var = new VariableExpression("var");
 
             // then
-            Assert.IsTrue((10 < var).Expression is LessThanExpression);
-            Assert.IsTrue((var < 10).Expression is LessThanExpression);
-            Assert.IsTrue((10m < var).Expression is LessThanExpression);
-            Assert.IsTrue((var < 10m).Expression is LessThanExpression);
-            Assert.IsTrue((10f < var).Expression is LessThanExpression);
-            Assert.IsTrue((var < 10f).Expression is LessThanExpression);
-            Assert.IsTrue((10d < var).Expression is LessThanExpression);
-            Assert.IsTrue((var < 10d).Expression is LessThanExpression);
-            Assert.IsTrue(("10" < var).Expression is LessThanExpression);
-            Assert.IsTrue((var < "10").Expression is LessThanExpression);
-            Assert.IsTrue((true < var).Expression is LessThanExpression);
-            Assert.IsTrue((var < true).Expression is LessThanExpression);
-            Assert.IsTrue((new DateTime(2010, 10, 10) < var).Expression is LessThanExpression);
-            Assert.IsTrue((var < new DateTime(2010, 10, 10)).Expression is LessThanExpression);
+            Assert.True((10 < var).Expression is LessThanExpression);
+            Assert.True((var < 10).Expression is LessThanExpression);
+            Assert.True((10m < var).Expression is LessThanExpression);
+            Assert.True((var < 10m).Expression is LessThanExpression);
+            Assert.True((10f < var).Expression is LessThanExpression);
+            Assert.True((var < 10f).Expression is LessThanExpression);
+            Assert.True((10d < var).Expression is LessThanExpression);
+            Assert.True((var < 10d).Expression is LessThanExpression);
+            Assert.True(("10" < var).Expression is LessThanExpression);
+            Assert.True((var < "10").Expression is LessThanExpression);
+            Assert.True((true < var).Expression is LessThanExpression);
+            Assert.True((var < true).Expression is LessThanExpression);
+            Assert.True((new DateTime(2010, 10, 10) < var).Expression is LessThanExpression);
+            Assert.True((var < new DateTime(2010, 10, 10)).Expression is LessThanExpression);
         }
 
-        [Test]
+        [Fact]
         public void CanApplyLessThanOrEqualOperatorBetweenSimpleValuesAndVariables()
         {
             // given
             VariableExpression var = new VariableExpression("var");
 
             // then
-            Assert.IsTrue((10 <= var).Expression is LessThanOrEqualToExpression);
-            Assert.IsTrue((var <= 10).Expression is LessThanOrEqualToExpression);
-            Assert.IsTrue((10m <= var).Expression is LessThanOrEqualToExpression);
-            Assert.IsTrue((var <= 10m).Expression is LessThanOrEqualToExpression);
-            Assert.IsTrue((10f <= var).Expression is LessThanOrEqualToExpression);
-            Assert.IsTrue((var <= 10f).Expression is LessThanOrEqualToExpression);
-            Assert.IsTrue((10d <= var).Expression is LessThanOrEqualToExpression);
-            Assert.IsTrue((var <= 10d).Expression is LessThanOrEqualToExpression);
-            Assert.IsTrue(("10" <= var).Expression is LessThanOrEqualToExpression);
-            Assert.IsTrue((var <= "10").Expression is LessThanOrEqualToExpression);
-            Assert.IsTrue((true <= var).Expression is LessThanOrEqualToExpression);
-            Assert.IsTrue((var <= true).Expression is LessThanOrEqualToExpression);
-            Assert.IsTrue((new DateTime(2010, 10, 10) <= var).Expression is LessThanOrEqualToExpression);
-            Assert.IsTrue((var <= new DateTime(2010, 10, 10)).Expression is LessThanOrEqualToExpression);
+            Assert.True((10 <= var).Expression is LessThanOrEqualToExpression);
+            Assert.True((var <= 10).Expression is LessThanOrEqualToExpression);
+            Assert.True((10m <= var).Expression is LessThanOrEqualToExpression);
+            Assert.True((var <= 10m).Expression is LessThanOrEqualToExpression);
+            Assert.True((10f <= var).Expression is LessThanOrEqualToExpression);
+            Assert.True((var <= 10f).Expression is LessThanOrEqualToExpression);
+            Assert.True((10d <= var).Expression is LessThanOrEqualToExpression);
+            Assert.True((var <= 10d).Expression is LessThanOrEqualToExpression);
+            Assert.True(("10" <= var).Expression is LessThanOrEqualToExpression);
+            Assert.True((var <= "10").Expression is LessThanOrEqualToExpression);
+            Assert.True((true <= var).Expression is LessThanOrEqualToExpression);
+            Assert.True((var <= true).Expression is LessThanOrEqualToExpression);
+            Assert.True((new DateTime(2010, 10, 10) <= var).Expression is LessThanOrEqualToExpression);
+            Assert.True((var <= new DateTime(2010, 10, 10)).Expression is LessThanOrEqualToExpression);
         }
 
-        [Test]
+        [Fact]
         public void CanApplyGreaterThanOperatorBetweenSimpleValuesAndVariables()
         {
             // given
             VariableExpression var = new VariableExpression("var");
 
             // then
-            Assert.IsTrue((10 > var).Expression is GreaterThanExpression);
-            Assert.IsTrue((var > 10).Expression is GreaterThanExpression);
-            Assert.IsTrue((10m > var).Expression is GreaterThanExpression);
-            Assert.IsTrue((var > 10m).Expression is GreaterThanExpression);
-            Assert.IsTrue((10f > var).Expression is GreaterThanExpression);
-            Assert.IsTrue((var > 10f).Expression is GreaterThanExpression);
-            Assert.IsTrue((10d > var).Expression is GreaterThanExpression);
-            Assert.IsTrue((var > 10d).Expression is GreaterThanExpression);
-            Assert.IsTrue(("10" > var).Expression is GreaterThanExpression);
-            Assert.IsTrue((var > "10").Expression is GreaterThanExpression);
-            Assert.IsTrue((true > var).Expression is GreaterThanExpression);
-            Assert.IsTrue((var > true).Expression is GreaterThanExpression);
-            Assert.IsTrue((new DateTime(2010, 10, 10) > var).Expression is GreaterThanExpression);
-            Assert.IsTrue((var > new DateTime(2010, 10, 10)).Expression is GreaterThanExpression);
+            Assert.True((10 > var).Expression is GreaterThanExpression);
+            Assert.True((var > 10).Expression is GreaterThanExpression);
+            Assert.True((10m > var).Expression is GreaterThanExpression);
+            Assert.True((var > 10m).Expression is GreaterThanExpression);
+            Assert.True((10f > var).Expression is GreaterThanExpression);
+            Assert.True((var > 10f).Expression is GreaterThanExpression);
+            Assert.True((10d > var).Expression is GreaterThanExpression);
+            Assert.True((var > 10d).Expression is GreaterThanExpression);
+            Assert.True(("10" > var).Expression is GreaterThanExpression);
+            Assert.True((var > "10").Expression is GreaterThanExpression);
+            Assert.True((true > var).Expression is GreaterThanExpression);
+            Assert.True((var > true).Expression is GreaterThanExpression);
+            Assert.True((new DateTime(2010, 10, 10) > var).Expression is GreaterThanExpression);
+            Assert.True((var > new DateTime(2010, 10, 10)).Expression is GreaterThanExpression);
         }
 
-        [Test]
+        [Fact]
         public void CanApplyGreaterThanOrEqualOperatorBetweenSimpleValuesAndVariables()
         {
             // given
             VariableExpression var = new VariableExpression("var");
 
             // then
-            Assert.IsTrue((10 >= var).Expression is GreaterThanOrEqualToExpression);
-            Assert.IsTrue((var >= 10).Expression is GreaterThanOrEqualToExpression);
-            Assert.IsTrue((10m >= var).Expression is GreaterThanOrEqualToExpression);
-            Assert.IsTrue((var >= 10m).Expression is GreaterThanOrEqualToExpression);
-            Assert.IsTrue((10f >= var).Expression is GreaterThanOrEqualToExpression);
-            Assert.IsTrue((var >= 10f).Expression is GreaterThanOrEqualToExpression);
-            Assert.IsTrue((10d >= var).Expression is GreaterThanOrEqualToExpression);
-            Assert.IsTrue((var >= 10d).Expression is GreaterThanOrEqualToExpression);
-            Assert.IsTrue(("10" >= var).Expression is GreaterThanOrEqualToExpression);
-            Assert.IsTrue((var >= "10").Expression is GreaterThanOrEqualToExpression);
-            Assert.IsTrue((true >= var).Expression is GreaterThanOrEqualToExpression);
-            Assert.IsTrue((var >= true).Expression is GreaterThanOrEqualToExpression);
-            Assert.IsTrue((new DateTime(2010, 10, 10) >= var).Expression is GreaterThanOrEqualToExpression);
-            Assert.IsTrue((var >= new DateTime(2010, 10, 10)).Expression is GreaterThanOrEqualToExpression);
+            Assert.True((10 >= var).Expression is GreaterThanOrEqualToExpression);
+            Assert.True((var >= 10).Expression is GreaterThanOrEqualToExpression);
+            Assert.True((10m >= var).Expression is GreaterThanOrEqualToExpression);
+            Assert.True((var >= 10m).Expression is GreaterThanOrEqualToExpression);
+            Assert.True((10f >= var).Expression is GreaterThanOrEqualToExpression);
+            Assert.True((var >= 10f).Expression is GreaterThanOrEqualToExpression);
+            Assert.True((10d >= var).Expression is GreaterThanOrEqualToExpression);
+            Assert.True((var >= 10d).Expression is GreaterThanOrEqualToExpression);
+            Assert.True(("10" >= var).Expression is GreaterThanOrEqualToExpression);
+            Assert.True((var >= "10").Expression is GreaterThanOrEqualToExpression);
+            Assert.True((true >= var).Expression is GreaterThanOrEqualToExpression);
+            Assert.True((var >= true).Expression is GreaterThanOrEqualToExpression);
+            Assert.True((new DateTime(2010, 10, 10) >= var).Expression is GreaterThanOrEqualToExpression);
+            Assert.True((var >= new DateTime(2010, 10, 10)).Expression is GreaterThanOrEqualToExpression);
         }
 
-        [Test]
+        [Fact]
         public void CanApplyEqualsOperatorBetweenSimpleValuesAndVariables()
         {
             // given
             VariableExpression var = new VariableExpression("var");
 
             // then
-            Assert.IsTrue((10 == var).Expression is EqualsExpression);
-            Assert.IsTrue((var == 10).Expression is EqualsExpression);
-            Assert.IsTrue((10m == var).Expression is EqualsExpression);
-            Assert.IsTrue((var == 10m).Expression is EqualsExpression);
-            Assert.IsTrue((10f == var).Expression is EqualsExpression);
-            Assert.IsTrue((var == 10f).Expression is EqualsExpression);
-            Assert.IsTrue((10d == var).Expression is EqualsExpression);
-            Assert.IsTrue((var == 10d).Expression is EqualsExpression);
-            Assert.IsTrue(("10" == var).Expression is EqualsExpression);
-            Assert.IsTrue((var == "10").Expression is EqualsExpression);
-            Assert.IsTrue((true == var).Expression is EqualsExpression);
-            Assert.IsTrue((var == true).Expression is EqualsExpression);
-            Assert.IsTrue((new DateTime(2010, 10, 10) == var).Expression is EqualsExpression);
-            Assert.IsTrue((var == new DateTime(2010, 10, 10)).Expression is EqualsExpression);
+            Assert.True((10 == var).Expression is EqualsExpression);
+            Assert.True((var == 10).Expression is EqualsExpression);
+            Assert.True((10m == var).Expression is EqualsExpression);
+            Assert.True((var == 10m).Expression is EqualsExpression);
+            Assert.True((10f == var).Expression is EqualsExpression);
+            Assert.True((var == 10f).Expression is EqualsExpression);
+            Assert.True((10d == var).Expression is EqualsExpression);
+            Assert.True((var == 10d).Expression is EqualsExpression);
+            Assert.True(("10" == var).Expression is EqualsExpression);
+            Assert.True((var == "10").Expression is EqualsExpression);
+            Assert.True((true == var).Expression is EqualsExpression);
+            Assert.True((var == true).Expression is EqualsExpression);
+            Assert.True((new DateTime(2010, 10, 10) == var).Expression is EqualsExpression);
+            Assert.True((var == new DateTime(2010, 10, 10)).Expression is EqualsExpression);
         }
 
-        [Test]
+        [Fact]
         public void CanApplyNotEqualsOperatorBetweenSimpleValuesAndVariables()
         {
             // given
             VariableExpression var = new VariableExpression("var");
 
             // then
-            Assert.IsTrue((10 != var).Expression is NotEqualsExpression);
-            Assert.IsTrue((var != 10).Expression is NotEqualsExpression);
-            Assert.IsTrue((10m != var).Expression is NotEqualsExpression);
-            Assert.IsTrue((var != 10m).Expression is NotEqualsExpression);
-            Assert.IsTrue((10f != var).Expression is NotEqualsExpression);
-            Assert.IsTrue((var != 10f).Expression is NotEqualsExpression);
-            Assert.IsTrue((10d != var).Expression is NotEqualsExpression);
-            Assert.IsTrue((var != 10d).Expression is NotEqualsExpression);
-            Assert.IsTrue(("10" != var).Expression is NotEqualsExpression);
-            Assert.IsTrue((var != "10").Expression is NotEqualsExpression);
-            Assert.IsTrue((true != var).Expression is NotEqualsExpression);
-            Assert.IsTrue((var != true).Expression is NotEqualsExpression);
-            Assert.IsTrue((new DateTime(2010, 10, 10) != var).Expression is NotEqualsExpression);
-            Assert.IsTrue((var != new DateTime(2010, 10, 10)).Expression is NotEqualsExpression);
+            Assert.True((10 != var).Expression is NotEqualsExpression);
+            Assert.True((var != 10).Expression is NotEqualsExpression);
+            Assert.True((10m != var).Expression is NotEqualsExpression);
+            Assert.True((var != 10m).Expression is NotEqualsExpression);
+            Assert.True((10f != var).Expression is NotEqualsExpression);
+            Assert.True((var != 10f).Expression is NotEqualsExpression);
+            Assert.True((10d != var).Expression is NotEqualsExpression);
+            Assert.True((var != 10d).Expression is NotEqualsExpression);
+            Assert.True(("10" != var).Expression is NotEqualsExpression);
+            Assert.True((var != "10").Expression is NotEqualsExpression);
+            Assert.True((true != var).Expression is NotEqualsExpression);
+            Assert.True((var != true).Expression is NotEqualsExpression);
+            Assert.True((new DateTime(2010, 10, 10) != var).Expression is NotEqualsExpression);
+            Assert.True((var != new DateTime(2010, 10, 10)).Expression is NotEqualsExpression);
         }
     }
 }

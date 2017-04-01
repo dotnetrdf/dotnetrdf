@@ -24,13 +24,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
+    [Trait("category", "explicit")]
     public class ExplainProcessorTests
     {
         private ExplainQueryProcessor _processor;
@@ -71,91 +72,91 @@ namespace VDS.RDF.Query
             results = this._processor.ProcessQuery(q);
         }
 
-        [Test]
+        [Fact]
         public void SparqlExplainProcessor01()
         {
             this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o }");
         }
 
-        [Test]
+        [Fact]
         public void SparqlExplainProcessor02()
         {
             this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o OPTIONAL { ?s a ?type } }");
         }
 
-        [Test]
+        [Fact]
         public void SparqlExplainProcessor03()
         {
             this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o MINUS { ?s a ?type } }");
         }
 
-        [Test]
+        [Fact]
         public void SparqlExplainProcessor04()
         {
             this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o . OPTIONAL { ?s a ?type } FILTER(!BOUND(?type)) }");
         }
 
-        [Test]
+        [Fact]
         public void SparqlExplainProcessor05()
         {
             this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o . ?x ?y ?z }");
         }
 
-        [Test]
+        [Fact]
         public void SparqlExplainProcessor06()
         {
             this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o . ?s a ?type }");
         }
 
-        [Test]
+        [Fact]
         public void SparqlExplainProcessor07()
         {
             this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o . ?s ?p ?o2 }");
         }
 
-        [Test]
+        [Fact]
         public void SparqlExplainProcessor08()
         {
             this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o MINUS { ?x ?y ?z } }");
         }
 
-        [Test]
+        [Fact]
         public void SparqlExplainProcessor09()
         {
             this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o . FILTER (!SAMETERM(?s, <ex:nothing>)) . BIND(IsLiteral(?o) AS ?hasLiteral) . ?s a ?type }");
         }
 
-        [Test]
+        [Fact]
         public void SparqlExplainProcessor10()
         {
             this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o . FILTER (!SAMETERM(?s, <ex:nothing>)) . ?s a ?type . BIND(IsLiteral(?o) AS ?hasLiteral)}");
         }
 
-        [Test]
+        [Fact]
         public void SparqlExplainProcessor11()
         {
             this.TestExplainProcessor("SELECT * WHERE { GRAPH <http://graph> { ?s ?p ?o } }");
         }
 
-        [Test]
+        [Fact]
         public void SparqlExplainProcessor12()
         {
             this.TestExplainProcessor("SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }");
         }
 
-        [Test]
+        [Fact]
         public void SparqlExplainProcessor13()
         {
             this.TestExplainProcessor("SELECT * WHERE { BIND(<http://graph> AS ?g) GRAPH ?g { ?s ?p ?o } }");
         }
 
-        [Test]
+        [Fact]
         public void SparqlExplainProcessor14()
         {
             this.TestExplainProcessor("SELECT * FROM <http://default> WHERE { GRAPH ?g { ?s ?p ?o } }");
         }
 
-        [Test]
+        [Fact]
         public void SparqlExplainProcessor15()
         {
             this.TestExplainProcessor("SELECT * FROM NAMED <http://graph> WHERE { GRAPH ?g { ?s ?p ?o } }");

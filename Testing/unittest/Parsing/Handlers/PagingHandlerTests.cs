@@ -27,14 +27,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Handlers
 {
-    [TestFixture]
+
     public class PagingHandlerTests
     {
         public void ParsingUsingPagingHandler(String tempFile, IRdfReader parser)
@@ -55,8 +55,8 @@ namespace VDS.RDF.Parsing.Handlers
             }
             Console.WriteLine();
 
-            Assert.IsFalse(h.IsEmpty, "Graph should not be empty");
-            Assert.IsTrue(h.Triples.Count <= 25, "Graphs should have <= 25 Triples");
+            Assert.False(h.IsEmpty, "Graph should not be empty");
+            Assert.True(h.Triples.Count <= 25, "Graphs should have <= 25 Triples");
 
             Graph i = new Graph();
             handler = new PagingHandler(new GraphHandler(i), 25, 25);
@@ -69,13 +69,13 @@ namespace VDS.RDF.Parsing.Handlers
             }
             Console.WriteLine();
 
-            Assert.IsFalse(i.IsEmpty, "Graph should not be empty");
-            Assert.IsTrue(i.Triples.Count <= 25, "Graphs should have <= 25 Triples");
+            Assert.False(i.IsEmpty, "Graph should not be empty");
+            Assert.True(i.Triples.Count <= 25, "Graphs should have <= 25 Triples");
 
             GraphDiffReport report = h.Difference(i);
-            Assert.IsFalse(report.AreEqual, "Graphs should not be equal");
-            Assert.AreEqual(i.Triples.Count, report.AddedTriples.Count(), "Should be " + i.Triples.Count + " added Triples");
-            Assert.AreEqual(h.Triples.Count, report.RemovedTriples.Count(), "Should be " + h.Triples.Count + " removed Triples");
+            Assert.False(report.AreEqual, "Graphs should not be equal");
+            Assert.Equal(i.Triples.Count, report.AddedTriples.Count());
+            Assert.Equal(h.Triples.Count, report.RemovedTriples.Count());
         }
 
         public void ParsingUsingPagingHandler2(String tempFile, IRdfReader parser)
@@ -89,7 +89,7 @@ namespace VDS.RDF.Parsing.Handlers
 
             parser.Load(handler, tempFile);
 
-            Assert.IsTrue(h.IsEmpty, "Graph should be empty");
+            Assert.True(h.IsEmpty, "Graph should be empty");
         }
 
         public void ParsingUsingPagingHandler3(String tempFile, IRdfReader parser)
@@ -103,138 +103,138 @@ namespace VDS.RDF.Parsing.Handlers
 
             parser.Load(handler, tempFile);
 
-            Assert.IsFalse(h.IsEmpty, "Graph should not be empty");
-            Assert.AreEqual(g.Triples.Count - 100, h.Triples.Count, "Should have 100 less triples than original graph as first 100 triples are skipped");
+            Assert.False(h.IsEmpty, "Graph should not be empty");
+            Assert.Equal(g.Triples.Count - 100, h.Triples.Count);
         }
 
         #region These tests take two slices from the graph (0-25) and (26-50) and ensure they are different
 
-        [Test]
+        [Fact]
         public void ParsingPagingHandlerNTriples()
         {
-            this.ParsingUsingPagingHandler("temp.nt", new NTriplesParser());
+            this.ParsingUsingPagingHandler("paging_handler_tests_temp.nt", new NTriplesParser());
         }
 
-        [Test]
+        [Fact]
         public void ParsingPagingHandlerTurtle()
         {
-            this.ParsingUsingPagingHandler("temp.ttl", new TurtleParser());
+            this.ParsingUsingPagingHandler("paging_handler_tests_temp.ttl", new TurtleParser());
         }
 
-        [Test]
+        [Fact]
         public void ParsingPagingHandlerNotation3()
         {
-            this.ParsingUsingPagingHandler("temp.n3", new Notation3Parser());
+            this.ParsingUsingPagingHandler("paging_handler_tests_temp.n3", new Notation3Parser());
         }
 
 #if !NO_XMLENTITIES
-        [Test]
+        [Fact]
         public void ParsingPagingHandlerRdfXml()
         {
-            this.ParsingUsingPagingHandler("temp.rdf", new RdfXmlParser());
+            this.ParsingUsingPagingHandler("paging_handler_tests_temp.rdf", new RdfXmlParser());
         }
 #endif
 
 #if !NO_HTMLAGILITYPACK
-        [Test]
+        [Fact]
         public void ParsingPagingHandlerRdfA()
         {
-            this.ParsingUsingPagingHandler("temp.html", new RdfAParser());
+            this.ParsingUsingPagingHandler("paging_handler_tests_temp.html", new RdfAParser());
         }
 #endif
 
-        [Test]
+        [Fact]
         public void ParsingPagingHandlerRdfJson()
         {
-            this.ParsingUsingPagingHandler("temp.json", new RdfJsonParser());
+            this.ParsingUsingPagingHandler("paging_handler_tests_temp.json", new RdfJsonParser());
         }
 
         #endregion
 
         #region These tests take 0 triples from the graph and ensure it is empty
 
-        [Test]
+        [Fact]
         public void ParsingPagingHandlerNTriples2()
         {
-            this.ParsingUsingPagingHandler2("temp.nt", new NTriplesParser());
+            this.ParsingUsingPagingHandler2("paging_handler_tests_temp.nt", new NTriplesParser());
         }
 
-        [Test]
+        [Fact]
         public void ParsingPagingHandlerTurtle2()
         {
-            this.ParsingUsingPagingHandler2("temp.ttl", new TurtleParser());
+            this.ParsingUsingPagingHandler2("paging_handler_tests_temp.ttl", new TurtleParser());
         }
 
-        [Test]
+        [Fact]
         public void ParsingPagingHandlerNotation3_2()
         {
-            this.ParsingUsingPagingHandler2("temp.n3", new Notation3Parser());
+            this.ParsingUsingPagingHandler2("paging_handler_tests_temp.n3", new Notation3Parser());
         }
 
 #if !NO_XMLENTITIES
-        [Test]
+        [Fact]
         public void ParsingPagingHandlerRdfXml2()
         {
-            this.ParsingUsingPagingHandler2("temp.rdf", new RdfXmlParser());
+            this.ParsingUsingPagingHandler2("paging_handler_tests_temp.rdf", new RdfXmlParser());
         }
 #endif
 
 #if !NO_HTMLAGILITYPACK
-        [Test]
+        [Fact]
         public void ParsingPagingHandlerRdfA2()
         {
-            this.ParsingUsingPagingHandler2("temp.html", new RdfAParser());
+            this.ParsingUsingPagingHandler2("paging_handler_tests_temp.html", new RdfAParser());
         }
 #endif
 
-        [Test]
+        [Fact]
         public void ParsingPagingHandlerRdfJson2()
         {
-            this.ParsingUsingPagingHandler2("temp.json", new RdfJsonParser());
+            this.ParsingUsingPagingHandler2("paging_handler_tests_temp.json", new RdfJsonParser());
         }
 
         #endregion
 
         #region These tests discard the first 100 triples and take the rest
 
-        [Test]
+        [Fact]
         public void ParsingPagingHandlerNTriples3()
         {
-            this.ParsingUsingPagingHandler3("temp.nt", new NTriplesParser());
+            this.ParsingUsingPagingHandler3("paging_handler_tests_temp.nt", new NTriplesParser());
         }
 
-        [Test]
+        [Fact]
         public void ParsingPagingHandlerTurtle3()
         {
-            this.ParsingUsingPagingHandler3("temp.ttl", new TurtleParser());
+            this.ParsingUsingPagingHandler3("paging_handler_tests_temp.ttl", new TurtleParser());
         }
 
-        [Test]
+        [Fact]
         public void ParsingPagingHandlerNotation3_3()
         {
-            this.ParsingUsingPagingHandler3("temp.n3", new Notation3Parser());
+            this.ParsingUsingPagingHandler3("paging_handler_tests_temp.n3", new Notation3Parser());
         }
 
 #if !NO_XMLENTITIES
-        [Test]
+        [Fact]
         public void ParsingPagingHandlerRdfXml3()
         {
-            this.ParsingUsingPagingHandler3("temp.rdf", new RdfXmlParser());
+            this.ParsingUsingPagingHandler3("paging_handler_tests_temp.rdf", new RdfXmlParser());
         }
 #endif
 
 #if !NO_HTMLAGILITYPACK
-        [Test]
+        [Fact]
         public void ParsingPagingHandlerRdfA3()
         {
-            this.ParsingUsingPagingHandler3("temp.html", new RdfAParser());
+            this.ParsingUsingPagingHandler3("paging_handler_tests_temp.html", new RdfAParser());
         }
 #endif
 
-        [Test]
+        [Fact]
         public void ParsingPagingHandlerRdfJson3()
         {
-            this.ParsingUsingPagingHandler3("temp.json", new RdfJsonParser());
+            this.ParsingUsingPagingHandler3("paging_handler_tests_temp.json", new RdfJsonParser());
         }
 
         #endregion

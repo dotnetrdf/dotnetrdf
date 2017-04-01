@@ -1,0 +1,74 @@
+image: Visual Studio 2017
+
+environment:
+  SHFBROOT:  C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\
+  SandCastleZipFile: SHFBInstaller.zip
+  SandCastleUri: https://github.com/EWSoftware/SHFB/releases/download/v2017.1.28.0/SHFBInstaller_v20171.28.0.zip
+  
+install:
+  - choco install gitversion.portable -pre -y
+  - ps: Start-FileDownload $env:SandCastleUri -FileName $env:SandCastleZipFile
+  - cmd: 7z x SHFBInstaller.zip -y
+  - ps: msiexec /i InstallResources\SandcastleHelpFileBuilder.msi /quiet /qn /norestart /log install.log
+
+
+before_build:
+  - dotnet restore dotNetRDF.sln
+  - ps: gitversion /l console /output buildserver /updateassemblyinfo
+
+configuration: Release
+
+build_script:
+  - dotnet build Libraries/dotNetRDF.Query.Spin
+  - dotnet build Testing/Unittest
+  - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF /p:Version=%GitVersion_NuGetVersion%
+  - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF.Data.Virtuoso /p:Version=%GitVersion_NuGetVersion%
+  - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF.Query.FullText /p:Version=%GitVersion_NuGetVersion%
+  - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF.Query.Spin /p:Version=%GitVersion_NuGetVersion%
+
+test_script:
+  - ps: |
+      dotnet test .\Testing\unittest\unittest.csproj -l "trx;LogFileName=output.trx" --filter category!=explicit --no-build | Out-File .\test.log
+      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
+      dotnet test .\Testing\unittest\unittest.csproj -l "trx;LogFileName=fulltext.trx" --filter category=fulltext --no-build | Out-File .\fulltext.log
+      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
+
+after_test:
+  - cmd: msbuild Build\shfb\dotnetrdf.shfbproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /p:Configuration=%CONFIGURATION% /p:HelpFileVersion=%GitVersion_NuGetVersion%
+      
+deploy:
+  - provider: GitHub
+    description: 'dotNetRDF $(GitVersion_SemVer)'
+    auth_token:
+      secure: j1Qanb5R8lGcUc4Drk5Pjk1ra9domw0vA1pbILJBWPQ1r3XAIETCd9L8N6GN2NZbE/aYCEdHjr4VTjfNQB1bKTKcZ4Unux/XuyAwFrzjZHg=
+    on:
+      branch: master
+      appveyor_repo_tag: true 
+    artifact: Build\shfb\Help.zip, Build\shfb\Help\dotNetRDFApi.chm, /.*\.nupkg/
+  - provider: NuGet
+    api_key:
+      secure: O+A+fVoQX6IuAOXUJk/CvAdXinL4tLb9ERiXJ8Omk0PH6BSOWPLdG0DGPxmD9eq4QHwYi36C0I2q5U5ycFcirlUi7Zc+BNO6b2a8MQlaGKU=
+    on:
+      branch: master
+      appveyor_repo_tag: true 
+    artifact: /((?!Spin).)*/
+
+on_finish:
+  - ps: |
+      $ws = (New-Object 'System.Net.WebClient')
+      if((Test-Path .\Testing\unittest\TestResults\output.trx)) {    
+        Push-AppveyorArtifact .\Testing\unittest\TestResults\output.trx
+        Push-AppveyorArtifact .\test.log
+        $ws.UploadFile("https://ci.appveyor.com/api/testresults/mstest/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\Testing\unittest\TestResults\output.trx ) )
+      }
+      if((Test-Path .\Testing\unittest\TestResults\fulltext.trx)) {
+        Push-AppveyorArtifact .\Testing\unittest\TestResults\fulltext.trx
+        Push-AppveyorArtifact .\fulltext.log
+        $ws.UploadFile("https://ci.appveyor.com/api/testresults/mstest/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\Testing\unittest\TestResults\fulltext.trx ) )
+      }
+
+artifacts:
+  - path: 'nugets\*.nupkg'
+  - path: 'Build\shfb\Help\dotNetRDFApi.chm'
+  - path: 'Build\shfb\Help'
+

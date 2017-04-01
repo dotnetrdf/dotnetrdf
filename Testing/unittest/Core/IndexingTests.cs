@@ -27,7 +27,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.Common.Collections;
 using VDS.Common.Trees;
 using VDS.RDF.Parsing;
@@ -38,10 +38,10 @@ namespace VDS.RDF
     /// <summary>
     /// Summary description for IndexingTests
     /// </summary>
-    [TestFixture]
+
     public class IndexingTests
     {
-        [Test]
+        [Fact]
         public void IndexingNodesInMultiDictionary1()
         {
             Graph g = new Graph();
@@ -51,18 +51,18 @@ namespace VDS.RDF
             //Use a dud hash function to put everything into a single bucket
             MultiDictionary<INode, int> dictionary = new MultiDictionary<INode, int>(n => 1, false);
             dictionary.Add(canonical, 1);
-            Assert.AreEqual(1, dictionary[canonical]);
+            Assert.Equal(1, dictionary[canonical]);
             dictionary[alternate] = 2;
 
             //With everything in a single bucket the keys should be considered
             //equal by the default comparer hence the key count will only be one
             //and retrieving with either 2 gives the value from the second Add()
-            Assert.AreEqual(1, dictionary.Count);
-            Assert.AreEqual(2, dictionary[alternate]);
-            Assert.AreEqual(2, dictionary[canonical]);
+            Assert.Equal(1, dictionary.Count);
+            Assert.Equal(2, dictionary[alternate]);
+            Assert.Equal(2, dictionary[canonical]);
         }
 
-        [Test]
+        [Fact]
         public void IndexingNodesInMultiDictionary2()
         {
             Graph g = new Graph();
@@ -71,13 +71,13 @@ namespace VDS.RDF
 
             MultiDictionary<INode, int> dictionary = new MultiDictionary<INode, int>();
             dictionary.Add(canonical, 1);
-            Assert.AreEqual(1, dictionary[canonical]);
+            Assert.Equal(1, dictionary[canonical]);
             dictionary.Add(alternate, 2);
-            Assert.AreEqual(2, dictionary.Count);
-            Assert.AreEqual(2, dictionary[alternate]);
+            Assert.Equal(2, dictionary.Count);
+            Assert.Equal(2, dictionary[alternate]);
         }
 
-        [Test]
+        [Fact]
         public void IndexingNodesInMultiDictionary3()
         {
             Graph g = new Graph();
@@ -88,19 +88,19 @@ namespace VDS.RDF
             //the FastNodeComparer
             MultiDictionary<INode, int> dictionary = new MultiDictionary<INode, int>(n => 1, false, new FastNodeComparer(), MultiDictionaryMode.AVL);
             dictionary.Add(canonical, 1);
-            Assert.AreEqual(1, dictionary[canonical]);
+            Assert.Equal(1, dictionary[canonical]);
             dictionary.Add(alternate, 2);
 
             //With everything in a single bucket the keys should be considered
             //non-equal by FastNodeComparer so should see key count of 2 and be able
             //to retrieve the specific values by their keys
-            Assert.AreEqual(2, dictionary.Count);
-            Assert.AreEqual(2, dictionary[alternate]);
-            Assert.AreEqual(1, dictionary[canonical]);
-            Assert.AreNotEqual(2, dictionary[canonical]);
+            Assert.Equal(2, dictionary.Count);
+            Assert.Equal(2, dictionary[alternate]);
+            Assert.Equal(1, dictionary[canonical]);
+            Assert.NotEqual(2, dictionary[canonical]);
         }
 
-        [Test]
+        [Fact]
         public void IndexingNodesInBinaryTree1()
         {
             Graph g = new Graph();
@@ -110,22 +110,22 @@ namespace VDS.RDF
             AVLTree<INode, int> tree = new AVLTree<INode, int>();
             
             tree.Add(canonical, 1);
-            Assert.AreEqual(1, tree[canonical]);
+            Assert.Equal(1, tree[canonical]);
             tree[alternate] = 2;
 
             //Since the default comparer considers the keys to be equal
             //lookup via either key should now give the value 2 rather than the originally
             //set value since the 2nd Add() just changes the existing value for the key
             //rather than adding a new key value pair
-            Assert.AreEqual(2, tree[alternate]);
-            Assert.AreEqual(2, tree[canonical]);
+            Assert.Equal(2, tree[alternate]);
+            Assert.Equal(2, tree[canonical]);
 
             //With the default comparer we expect to see 1 here rather than 2 because
             //the keys are considered equal
-            Assert.AreEqual(1, tree.Keys.Count());
+            Assert.Equal(1, tree.Keys.Count());
         }
 
-        [Test]
+        [Fact]
         public void IndexingNodesInBinaryTree2()
         {
             Graph g = new Graph();
@@ -135,21 +135,21 @@ namespace VDS.RDF
             AVLTree<INode, int> tree = new AVLTree<INode, int>(new FastNodeComparer());
 
             tree.Add(canonical, 1);
-            Assert.AreEqual(1, tree[canonical]);
+            Assert.Equal(1, tree[canonical]);
             tree.Add(alternate, 2);
 
             //With the FastNodeComparer the keys are non-equal so should
             //create separate key value pairs in the tree
-            Assert.AreEqual(2, tree[alternate]);
-            Assert.AreEqual(1, tree[canonical]);
-            Assert.AreNotEqual(2, tree[canonical]);
+            Assert.Equal(2, tree[alternate]);
+            Assert.Equal(1, tree[canonical]);
+            Assert.NotEqual(2, tree[canonical]);
 
             //With the FastNodeComparer there should be 2 keys in the tree
             //because the keys are not considered equal
-            Assert.AreEqual(2, tree.Keys.Count());
+            Assert.Equal(2, tree.Keys.Count());
         }
 
-        [Test]
+        [Fact]
         public void IndexingTriplesInBinaryTree1()
         {
             Graph g = new Graph();
@@ -161,22 +161,22 @@ namespace VDS.RDF
             AVLTree<Triple, int> tree = new AVLTree<Triple, int>();
 
             tree.Add(a, 1);
-            Assert.AreEqual(1, tree[a]);
+            Assert.Equal(1, tree[a]);
             tree[b] = 2;
 
             //Since the default comparer considers the keys to be equal
             //lookup via either key should now give the value 2 rather than the originally
             //set value since the 2nd Add() just changes the existing value for the key
             //rather than adding a new key value pair
-            Assert.AreEqual(2, tree[a]);
-            Assert.AreEqual(2, tree[b]);
+            Assert.Equal(2, tree[a]);
+            Assert.Equal(2, tree[b]);
 
             //With the default comparer we expect to see 1 here rather than 2 because
             //the keys are considered equal
-            Assert.AreEqual(1, tree.Keys.Count());
+            Assert.Equal(1, tree.Keys.Count());
         }
 
-        [Test]
+        [Fact]
         public void IndexingTriplesInBinaryTree2()
         {
             Graph g = new Graph();
@@ -188,18 +188,18 @@ namespace VDS.RDF
             AVLTree<Triple, int> tree = new AVLTree<Triple, int>(new FullTripleComparer(new FastNodeComparer()));
 
             tree.Add(a, 1);
-            Assert.AreEqual(1, tree[a]);
+            Assert.Equal(1, tree[a]);
             tree.Add(b, 2);
 
             //With the FastNodeComparer the keys are non-equal so should
             //create separate key value pairs in the tree
-            Assert.AreEqual(2, tree[b]);
-            Assert.AreEqual(1, tree[a]);
-            Assert.AreNotEqual(2, tree[a]);
+            Assert.Equal(2, tree[b]);
+            Assert.Equal(1, tree[a]);
+            Assert.NotEqual(2, tree[a]);
 
             //With the FastNodeComparer there should be 2 keys in the tree
             //because the keys are not considered equal
-            Assert.AreEqual(2, tree.Keys.Count());
+            Assert.Equal(2, tree.Keys.Count());
         }
     }
 }

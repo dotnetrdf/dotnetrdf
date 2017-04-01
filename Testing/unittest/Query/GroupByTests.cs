@@ -27,19 +27,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Writing.Formatting;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class GroupByTests
     {
-        [Test]
+        [Fact]
         public void SparqlGroupByInSubQuery()
         {
             String query = "SELECT ?s WHERE {{SELECT ?s WHERE {?s ?p ?o} GROUP BY ?s}} GROUP BY ?s";
@@ -47,7 +48,7 @@ namespace VDS.RDF.Query
             SparqlQuery q = parser.ParseFromString(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlGroupByAssignmentSimple()
         {
             String query = "SELECT ?x WHERE { ?s ?p ?o } GROUP BY ?s AS ?x";
@@ -67,15 +68,15 @@ namespace VDS.RDF.Query
                 SparqlResultSet rset = (SparqlResultSet)results;
                 TestTools.ShowResults(rset);
 
-                Assert.IsTrue(rset.All(r => r.HasValue("x") && !r.HasValue("s")), "All Results should have a ?x variable and no ?s variable");
+                Assert.True(rset.All(r => r.HasValue("x") && !r.HasValue("s")), "All Results should have a ?x variable and no ?s variable");
             }
             else
             {
-                Assert.Fail("Didn't get a Result Set as expected");
+                Assert.True(false, "Didn't get a Result Set as expected");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlGroupByAssignmentSimple2()
         {
             String query = "SELECT ?x (COUNT(?p) AS ?predicates) WHERE { ?s ?p ?o } GROUP BY ?s AS ?x";
@@ -95,15 +96,15 @@ namespace VDS.RDF.Query
                 SparqlResultSet rset = (SparqlResultSet)results;
                 TestTools.ShowResults(rset);
 
-                Assert.IsTrue(rset.All(r => r.HasValue("x") && !r.HasValue("s") && r.HasValue("predicates")), "All Results should have a ?x and ?predicates variables and no ?s variable");
+                Assert.True(rset.All(r => r.HasValue("x") && !r.HasValue("s") && r.HasValue("predicates")), "All Results should have a ?x and ?predicates variables and no ?s variable");
             }
             else
             {
-                Assert.Fail("Didn't get a Result Set as expected");
+                Assert.True(false, "Didn't get a Result Set as expected");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlGroupByAssignmentExpression()
         {
             String query = "SELECT ?s ?sum WHERE { ?s ?p ?o } GROUP BY ?s (1 + 2 AS ?sum)";
@@ -123,22 +124,22 @@ namespace VDS.RDF.Query
                 SparqlResultSet rset = (SparqlResultSet)results;
                 TestTools.ShowResults(rset);
 
-                Assert.IsTrue(rset.All(r => r.HasValue("s") && r.HasValue("sum")), "All Results should have a ?s and a ?sum variable");
+                Assert.True(rset.All(r => r.HasValue("s") && r.HasValue("sum")), "All Results should have a ?s and a ?sum variable");
             }
             else
             {
-                Assert.Fail("Didn't get a Result Set as expected");
+                Assert.True(false, "Didn't get a Result Set as expected");
             }
         }
 
 #if !PORTABLE
 
-        [Test]
+        [SkippableFact]
         public void SparqlGroupByAssignmentExpression2()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
             {
-                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
             }
 
             String query = "SELECT ?lang (SAMPLE(?o) AS ?example) WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) } GROUP BY (LANG(?o) AS ?lang)";
@@ -158,20 +159,20 @@ namespace VDS.RDF.Query
                 SparqlResultSet rset = (SparqlResultSet)results;
                 TestTools.ShowResults(rset);
 
-                Assert.IsTrue(rset.All(r => r.HasValue("lang") && r.HasValue("example")), "All Results should have a ?lang and a ?example variable");
+                Assert.True(rset.All(r => r.HasValue("lang") && r.HasValue("example")), "All Results should have a ?lang and a ?example variable");
             }
             else
             {
-                Assert.Fail("Didn't get a Result Set as expected");
+                Assert.True(false, "Didn't get a Result Set as expected");
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void SparqlGroupByAssignmentExpression3()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
             {
-                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
             }
 
             String query = "SELECT ?lang (SAMPLE(?o) AS ?example) WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) } GROUP BY (LANG(?o) AS ?lang) HAVING LANGMATCHES(?lang, \"*\")";
@@ -191,17 +192,17 @@ namespace VDS.RDF.Query
                 SparqlResultSet rset = (SparqlResultSet)results;
                 TestTools.ShowResults(rset);
 
-                Assert.IsTrue(rset.All(r => r.HasValue("lang") && r.HasValue("example")), "All Results should have a ?lang and a ?example variable");
+                Assert.True(rset.All(r => r.HasValue("lang") && r.HasValue("example")), "All Results should have a ?lang and a ?example variable");
             }
             else
             {
-                Assert.Fail("Didn't get a Result Set as expected");
+                Assert.True(false, "Didn't get a Result Set as expected");
             }
         }
 
 #endif
 
-        [Test]
+        [Fact]
         public void SparqlGroupBySample()
         {
             String query = "SELECT ?s (SAMPLE(?o) AS ?object) WHERE {?s ?p ?o} GROUP BY ?s";
@@ -209,7 +210,7 @@ namespace VDS.RDF.Query
             SparqlQuery q = parser.ParseFromString(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlGroupByAggregateEmptyGroup1()
         {
             String query = @"PREFIX ex: <http://example.com/>
@@ -223,14 +224,14 @@ WHERE {
             Console.WriteLine(q.ToAlgebra().ToString());
 
             SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
-            if (results == null) Assert.Fail("Null results");
+            if (results == null) Assert.True(false, "Null results");
 
-            Assert.IsFalse(results.IsEmpty, "Results should not be empty");
-            Assert.AreEqual(1, results.Count, "Should be a single result");
-            Assert.IsTrue(results.First().All(kvp => kvp.Value == null), "Should be no bound values");
+            Assert.False(results.IsEmpty, "Results should not be empty");
+            Assert.Equal(1, results.Count);
+            Assert.True(results.First().All(kvp => kvp.Value == null), "Should be no bound values");
         }
 
-        [Test]
+        [Fact]
         public void SparqlGroupByAggregateEmptyGroup2()
         {
             String query = @"PREFIX ex: <http://example.com/>
@@ -244,12 +245,12 @@ WHERE {
             Console.WriteLine(q.ToAlgebra().ToString());
 
             SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
-            if (results == null) Assert.Fail("Null results");
+            if (results == null) Assert.True(false, "Null results");
 
-            Assert.IsFalse(results.IsEmpty, "Results should not be empty");
+            Assert.False(results.IsEmpty, "Results should not be empty");
         }
 
-        [Test]
+        [Fact]
         public void SparqlGroupByRefactor1()
         {
             String query = @"BASE <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/dataset/manifest#>
@@ -272,12 +273,12 @@ _:a <http://example/p> ""9""^^<http://www.w3.org/2001/XMLSchema#integer> <http:/
             StringParser.ParseDataset(store, data, new NQuadsParser());
 
             SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
-            Assert.IsNotNull(results);
+            Assert.NotNull(results);
             TestTools.ShowResults(results);
-            Assert.AreEqual(6, results.Variables.Count());
+            Assert.Equal(6, results.Variables.Count());
         }
 
-        [Test]
+        [Fact]
         public void SparqlGroupByRefactor2()
         {
             String query = @"BASE <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#>
@@ -302,13 +303,13 @@ WHERE
             StringParser.ParseDataset(store, data, new NQuadsParser());
 
             SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
-            Assert.IsNotNull(results);
+            Assert.NotNull(results);
             TestTools.ShowResults(results);
-            Assert.AreEqual(1, results.Count);
-            Assert.AreEqual(2, results.Variables.Count());
+            Assert.Equal(1, results.Count);
+            Assert.Equal(2, results.Variables.Count());
         }
 
-        [Test]
+        [Fact]
         public void SparqlGroupByRefactor3()
         {
             String query = @"BASE <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#>
@@ -340,13 +341,13 @@ _:a <http://example/p> ""9""^^<http://www.w3.org/2001/XMLSchema#integer> <http:/
             StringParser.ParseDataset(store, data, new NQuadsParser());
 
             SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
-            Assert.IsNotNull(results);
+            Assert.NotNull(results);
             TestTools.ShowResults(results);
-            Assert.AreEqual(1, results.Count);
-            Assert.AreEqual(3, results.Variables.Count());
+            Assert.Equal(1, results.Count);
+            Assert.Equal(3, results.Variables.Count());
         }
 
-        [Test]
+        [Fact]
         public void SparqlGroupByRefactor4()
         {
             String query = @"PREFIX : <http://example/>
@@ -369,15 +370,15 @@ GROUP BY ?s ?w";
             StringParser.ParseDataset(store, data, new NQuadsParser());
 
             SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
-            Assert.IsNotNull(results);
+            Assert.NotNull(results);
             TestTools.ShowResults(results);
-            Assert.AreEqual(3, results.Count);
-            Assert.AreEqual(2, results.Variables.Count());
-            Assert.IsTrue(results.All(r => r.Count > 0), "One or more rows were empty");
-            Assert.IsTrue(results.All(r => r.HasBoundValue("s")), "One or more rows were empty or failed to have a value for ?s");
+            Assert.Equal(3, results.Count);
+            Assert.Equal(2, results.Variables.Count());
+            Assert.True(results.All(r => r.Count > 0), "One or more rows were empty");
+            Assert.True(results.All(r => r.HasBoundValue("s")), "One or more rows were empty or failed to have a value for ?s");
         }
 
-        [Test]
+        [Fact]
         public void SparqlGroupByRefactor5()
         {
             String query = "SELECT ?s WHERE { ?s ?p ?o } GROUP BY ?s";
@@ -389,15 +390,15 @@ GROUP BY ?s ?w";
             Console.WriteLine("Raw ToString()");
             Console.WriteLine(queryStr);
             Console.WriteLine();
-            Assert.IsTrue(queryStr.Contains("GROUP BY ?s"));
+            Assert.True(queryStr.Contains("GROUP BY ?s"));
 
             String queryStrFmt = new SparqlFormatter().Format(q);
             Console.WriteLine("Formatted String");
             Console.WriteLine(queryStrFmt);
-            Assert.IsTrue(queryStrFmt.Contains("GROUP BY ?s"));
+            Assert.True(queryStrFmt.Contains("GROUP BY ?s"));
         }
 
-        [Test]
+        [Fact]
         public void SparqlGroupByRefactor6()
         {
             String query = "SELECT ?s ?p WHERE { ?s ?p ?o } GROUP BY ?s ?p";
@@ -409,15 +410,15 @@ GROUP BY ?s ?w";
             Console.WriteLine("Raw ToString()");
             Console.WriteLine(queryStr);
             Console.WriteLine();
-            Assert.IsTrue(queryStr.Contains("GROUP BY ?s ?p"));
+            Assert.True(queryStr.Contains("GROUP BY ?s ?p"));
 
             String queryStrFmt = new SparqlFormatter().Format(q);
             Console.WriteLine("Formatted String");
             Console.WriteLine(queryStrFmt);
-            Assert.IsTrue(queryStrFmt.Contains("GROUP BY ?s ?p"));
+            Assert.True(queryStrFmt.Contains("GROUP BY ?s ?p"));
         }
 
-        [Test]
+        [Fact]
         public void SparqlGroupByRefactor7()
         {
             String query = "SELECT ?s WHERE { ?s ?p ?o } GROUP BY (?s)";
@@ -429,15 +430,15 @@ GROUP BY ?s ?w";
             Console.WriteLine("Raw ToString()");
             Console.WriteLine(queryStr);
             Console.WriteLine();
-            Assert.IsTrue(queryStr.Contains("GROUP BY ?s"));
+            Assert.True(queryStr.Contains("GROUP BY ?s"));
 
             String queryStrFmt = new SparqlFormatter().Format(q);
             Console.WriteLine("Formatted String");
             Console.WriteLine(queryStrFmt);
-            Assert.IsTrue(queryStrFmt.Contains("GROUP BY ?s"));
+            Assert.True(queryStrFmt.Contains("GROUP BY ?s"));
         }
 
-        [Test]
+        [Fact]
         public void SparqlGroupByRefactor8()
         {
             String query = @"PREFIX : <http://example.org/>
@@ -463,10 +464,10 @@ WHERE
             StringParser.ParseDataset(store, data, new NQuadsParser());
 
             SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
-            Assert.IsNotNull(results);
+            Assert.NotNull(results);
             TestTools.ShowResults(results);
-            Assert.AreEqual(4, results.Count);
-            Assert.AreEqual(3, results.Variables.Count());
+            Assert.Equal(4, results.Count);
+            Assert.Equal(3, results.Variables.Count());
 
             foreach (SparqlResult r in results)
             {
@@ -475,21 +476,21 @@ WHERE
                     long xVal = r["x"].AsValuedNode().AsInteger();
                     if (xVal == 0)
                     {
-                        Assert.AreEqual(-2, r["div"].AsValuedNode().AsInteger(), "Divide by zero did not get coalesced to -2 as expected");
+                        Assert.Equal(-2, r["div"].AsValuedNode().AsInteger());
                     }
                     else
                     {
-                        Assert.AreEqual(r["o"].AsValuedNode().AsInteger() / xVal, r["div"].AsValuedNode().AsInteger(), "Division yielded incorrect result");
+                        Assert.Equal(r["o"].AsValuedNode().AsInteger() / xVal, r["div"].AsValuedNode().AsInteger());
                     }
                 }
                 else
                 {
-                    Assert.AreEqual(-2, r["div"].AsValuedNode().AsInteger(), "Divide by null did not get coalesced to -2 as expected");
+                    Assert.Equal(-2, r["div"].AsValuedNode().AsInteger());
                 }
             }            
         }
 
-        [Test]
+        [Fact]
         public void SparqlGroupByRefactor9()
         {
             try
@@ -521,15 +522,15 @@ WHERE
                 StringParser.ParseDataset(store, data, new NQuadsParser());
 
                 SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
-                Assert.IsNotNull(results);
+                Assert.NotNull(results);
                 TestTools.ShowResults(results);
-                Assert.AreEqual(4, results.Count);
-                Assert.AreEqual(4, results.Variables.Count());
+                Assert.Equal(4, results.Count);
+                Assert.Equal(4, results.Variables.Count());
 
                 foreach (SparqlResult r in results)
                 {
                     long cxVal = r["cx"].AsValuedNode().AsInteger();
-                    if (cxVal == -1) Assert.AreEqual(-2, r["div"].AsValuedNode().AsInteger(), "?div value is incorrect");
+                    if (cxVal == -1) Assert.Equal(-2, r["div"].AsValuedNode().AsInteger());
                 }
             }
             finally
@@ -538,7 +539,7 @@ WHERE
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlGroupByComplex1()
         {
             String data = @"PREFIX : <http://test/> INSERT DATA { :x :p 1 , 2 . :y :p 5 }";
@@ -546,57 +547,58 @@ WHERE
 
             TripleStore store = new TripleStore();
             store.ExecuteUpdate(data);
-            Assert.AreEqual(1, store.Graphs.Count);
-            Assert.AreEqual(3, store.Triples.Count());
+            Assert.Equal(1, store.Graphs.Count);
+            Assert.Equal(3, store.Triples.Count());
 
             //Aggregates may occur in project expressions and should evaluate correctly
             SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.IsTrue(results.All(r => r.HasBoundValue("Total")));
+            Assert.NotNull(results);
+            Assert.True(results.All(r => r.HasBoundValue("Total")));
 
             SparqlResult x = results.Where(r => ((IUriNode)r["s"]).Uri.Equals(new Uri("http://test/x"))).FirstOrDefault();
-            Assert.IsNotNull(x);
-            Assert.AreEqual("$3", x["Total"].AsValuedNode().AsString());
+            Assert.NotNull(x);
+            Assert.Equal("$3", x["Total"].AsValuedNode().AsString());
 
             SparqlResult y = results.Where(r => ((IUriNode)r["s"]).Uri.Equals(new Uri("http://test/y"))).FirstOrDefault();
-            Assert.IsNotNull(y);
-            Assert.AreEqual("$5", y["Total"].AsValuedNode().AsString());
+            Assert.NotNull(y);
+            Assert.Equal("$5", y["Total"].AsValuedNode().AsString());
         }
 
-        [Test,ExpectedException(typeof(RdfParseException))]
+        [Fact]
         public void SparqlGroupByComplex2()
         {
             //Nested aggregates are a parser error
             String query = @"SELECT ?s (SUM(MIN(?o)) AS ?Total) WHERE { ?s ?p ?o } GROUP BY ?s";
             SparqlQueryParser parser = new SparqlQueryParser();
-            parser.ParseFromString(query);
+
+            Assert.Throws<RdfParseException>(() => parser.ParseFromString(query));
         }
 
-        [Test]
+        [Fact]
         public void SparqlGroupByWithValues1()
         {
             String query = @"SELECT ?a WHERE { VALUES ( ?a ) { ( 1 ) ( 2 ) } } GROUP BY ?a";
 
             QueryableGraph g = new QueryableGraph();
             SparqlResultSet results = g.ExecuteQuery(query) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.IsFalse(results.IsEmpty);
-            Assert.AreEqual(2, results.Count);
+            Assert.NotNull(results);
+            Assert.False(results.IsEmpty);
+            Assert.Equal(2, results.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlGroupByWithValues2()
         {
             String query = @"SELECT ?a ?b WHERE { VALUES ( ?a ?b ) { ( 1 2 ) ( 1 UNDEF ) ( UNDEF 2 ) } } GROUP BY ?a ?b";
 
             QueryableGraph g = new QueryableGraph();
             SparqlResultSet results = g.ExecuteQuery(query) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.IsFalse(results.IsEmpty);
-            Assert.AreEqual(3, results.Count);
+            Assert.NotNull(results);
+            Assert.False(results.IsEmpty);
+            Assert.Equal(3, results.Count);
         }
 
-        [Test]
+        [Fact]
         public void SparqlGroupByWithGraph1()
         {
             String query = @"SELECT ?g WHERE { GRAPH ?g { } } GROUP BY ?g";
@@ -608,15 +610,15 @@ WHERE
             named.BaseUri = new Uri("http://name");
             store.Add(named);
 
-            Assert.AreEqual(2, store.Graphs.Count);
+            Assert.Equal(2, store.Graphs.Count);
 
             SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
             SparqlResultSet results = store.ExecuteQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.IsFalse(results.IsEmpty);
+            Assert.NotNull(results);
+            Assert.False(results.IsEmpty);
 
             //Count only covers named graphs
-            Assert.AreEqual(1, results.Count);
+            Assert.Equal(1, results.Count);
         }
     }
 }

@@ -27,7 +27,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
@@ -40,10 +40,10 @@ namespace VDS.RDF.Query
     /// <summary>
     /// Summary description for DefaultGraphTests
     /// </summary>
-    [TestFixture]
+
     public class DefaultGraphTests
     {
-        [Test]
+        [Fact]
         public void SparqlDefaultGraphExists()
         {
             TripleStore store = new TripleStore();
@@ -54,15 +54,15 @@ namespace VDS.RDF.Query
             Object results = store.ExecuteQuery("ASK WHERE { GRAPH ?g { ?s ?p ?o }}");
             if (results is SparqlResultSet)
             {
-                Assert.IsFalse(((SparqlResultSet)results).Result);
+                Assert.False(((SparqlResultSet)results).Result);
             }
             else
             {
-                Assert.Fail("ASK Query did not return a SPARQL Result Set as expected");
+                Assert.True(false, "ASK Query did not return a SPARQL Result Set as expected");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlDefaultGraphExists2()
         {
             TripleStore store = new TripleStore();
@@ -73,15 +73,15 @@ namespace VDS.RDF.Query
             Object results = store.ExecuteQuery("ASK WHERE { GRAPH <dotnetrdf:default-graph> { ?s ?p ?o }}");
             if (results is SparqlResultSet)
             {
-                Assert.IsFalse(((SparqlResultSet)results).Result);
+                Assert.False(((SparqlResultSet)results).Result);
             }
             else
             {
-                Assert.Fail("ASK Query did not return a SPARQL Result Set as expected");
+                Assert.True(false, "ASK Query did not return a SPARQL Result Set as expected");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlDatasetDefaultGraphManagement()
         {
             TripleStore store = new TripleStore();
@@ -102,15 +102,15 @@ namespace VDS.RDF.Query
             if (results is SparqlResultSet)
             {
                 TestTools.ShowResults(results);
-                Assert.IsTrue(((SparqlResultSet)results).IsEmpty, "Results should be empty as an empty Graph was set as the Default Graph");
+                Assert.True(((SparqlResultSet)results).IsEmpty, "Results should be empty as an empty Graph was set as the Default Graph");
             }
             else
             {
-                Assert.Fail("ASK Query did not return a SPARQL Result Set as expected");
+                Assert.True(false, "ASK Query did not return a SPARQL Result Set as expected");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlDatasetDefaultGraphManagement2()
         {
             TripleStore store = new TripleStore();
@@ -131,16 +131,16 @@ namespace VDS.RDF.Query
             if (results is SparqlResultSet)
             {
                 TestTools.ShowResults(results);
-                Assert.IsFalse(((SparqlResultSet)results).IsEmpty, "Results should be false as a non-empty Graph was set as the Default Graph");
+                Assert.False(((SparqlResultSet)results).IsEmpty, "Results should be false as a non-empty Graph was set as the Default Graph");
             }
             else
             {
-                Assert.Fail("ASK Query did not return a SPARQL Result Set as expected");
+                Assert.True(false, "ASK Query did not return a SPARQL Result Set as expected");
             }
         }
 
 #if !SILVERLIGHT
-        [Test]
+        [Fact(Skip="Remote configuration is not currently available")]
         public void SparqlDatasetDefaultGraphManagementWithUpdate()
         {
             TripleStore store = new TripleStore();
@@ -157,13 +157,13 @@ namespace VDS.RDF.Query
 
             processor.ProcessCommandSet(cmds);
 
-            Assert.IsTrue(g.IsEmpty, "Graph with null URI (normally the default Graph) should be empty as the Default Graph for the Dataset should have been a named Graph so this Graph should not have been filled by the LOAD Command");
-            Assert.IsFalse(h.IsEmpty, "Graph with name should be non-empty as it should have been the Default Graph for the Dataset and so filled by the LOAD Command");
+            Assert.True(g.IsEmpty, "Graph with null URI (normally the default Graph) should be empty as the Default Graph for the Dataset should have been a named Graph so this Graph should not have been filled by the LOAD Command");
+            Assert.False(h.IsEmpty, "Graph with name should be non-empty as it should have been the Default Graph for the Dataset and so filled by the LOAD Command");
         }
 #endif
 
 #if !SILVERLIGHT
-        [Test]
+        [Fact(Skip = "Remote configuration is not currently available")]
         public void SparqlDatasetDefaultGraphManagementWithUpdate2()
         {
             TripleStore store = new TripleStore();
@@ -181,13 +181,13 @@ namespace VDS.RDF.Query
 
             processor.ProcessCommandSet(cmds);
 
-            Assert.IsFalse(g.IsEmpty, "First Graph should not be empty as should have been filled by the LOAD command");
-            Assert.IsTrue(h.IsEmpty, "Second Graph should be empty as should not have been filled by the LOAD command");
+            Assert.False(g.IsEmpty, "First Graph should not be empty as should have been filled by the LOAD command");
+            Assert.True(h.IsEmpty, "Second Graph should be empty as should not have been filled by the LOAD command");
         }
 #endif
 
 #if !SILVERLIGHT
-        [Test]
+        [Fact(Skip = "Remote configuration is not currently available")]
         public void SparqlDatasetDefaultGraphManagementWithUpdate3()
         {
             TripleStore store = new TripleStore();
@@ -205,14 +205,14 @@ namespace VDS.RDF.Query
 
             processor.ProcessCommandSet(cmds);
 
-            Assert.IsFalse(g.IsEmpty, "First Graph should not be empty as should have been filled by the first LOAD command");
-            Assert.IsFalse(h.IsEmpty, "Second Graph should not be empty as should not have been filled by the second LOAD command");
-            Assert.AreEqual(g, h, "Graphs should be equal");
+            Assert.False(g.IsEmpty, "First Graph should not be empty as should have been filled by the first LOAD command");
+            Assert.False(h.IsEmpty, "Second Graph should not be empty as should not have been filled by the second LOAD command");
+            Assert.Equal(g, h);
         }
 #endif
 
 #if !SILVERLIGHT
-        [Test]
+        [Fact(Skip = "Remote configuration is not currently available")]
         public void SparqlDatasetDefaultGraphManagementWithUpdate4()
         {
             TripleStore store = new TripleStore();
@@ -230,14 +230,14 @@ namespace VDS.RDF.Query
 
             processor.ProcessCommandSet(cmds);
 
-            Assert.IsFalse(g.IsEmpty, "First Graph should not be empty as should have been filled by the INSERT command");
-            Assert.IsFalse(h.IsEmpty, "Second Graph should not be empty as should not have been filled by the LOAD command");
-            Assert.IsTrue(h.HasSubGraph(g), "First Graph should be a subgraph of the Second Graph");
+            Assert.False(g.IsEmpty, "First Graph should not be empty as should have been filled by the INSERT command");
+            Assert.False(h.IsEmpty, "Second Graph should not be empty as should not have been filled by the LOAD command");
+            Assert.True(h.HasSubGraph(g), "First Graph should be a subgraph of the Second Graph");
         }
 #endif
 
 #if !SILVERLIGHT
-        [Test]
+        [Fact(Skip = "Remote configuration is not currently available")]
         public void SparqlDatasetDefaultGraphManagementWithUpdate5()
         {
             TripleStore store = new TripleStore();
@@ -255,13 +255,13 @@ namespace VDS.RDF.Query
 
             processor.ProcessCommandSet(cmds);
 
-            Assert.IsFalse(g.IsEmpty, "First Graph should not be empty as should have been filled by the INSERT command");
-            Assert.IsFalse(h.IsEmpty, "Second Graph should not be empty as should not have been filled by the  LOAD command");
-            Assert.IsFalse(h.HasSubGraph(g), "First Graph should not be a subgraph of the Second Graph as the DELETE should have eliminated the subgraph relationship");
+            Assert.False(g.IsEmpty, "First Graph should not be empty as should have been filled by the INSERT command");
+            Assert.False(h.IsEmpty, "Second Graph should not be empty as should not have been filled by the  LOAD command");
+            Assert.False(h.HasSubGraph(g), "First Graph should not be a subgraph of the Second Graph as the DELETE should have eliminated the subgraph relationship");
         }
 #endif
 
-        [Test]
+        [Fact]
         public void SparqlGraphClause()
         {
             String query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
@@ -285,15 +285,15 @@ namespace VDS.RDF.Query
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
                 TestTools.ShowResults(rset);
-                Assert.AreEqual(ex.Triples.Count, rset.Count, "Number of Results should have been equal to number of Triples");
+                Assert.Equal(ex.Triples.Count, rset.Count);
             }
             else
             {
-                Assert.Fail("Did not get a SPARQL Result Set as expected");
+                Assert.True(false, "Did not get a SPARQL Result Set as expected");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlGraphClause2()
         {
             String query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
@@ -315,15 +315,15 @@ namespace VDS.RDF.Query
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
                 TestTools.ShowResults(rset);
-                Assert.AreEqual(ex.Triples.Count, rset.Count, "Number of Results should have been equal to number of Triples");
+                Assert.Equal(ex.Triples.Count, rset.Count);
             }
             else
             {
-                Assert.Fail("Did not get a SPARQL Result Set as expected");
+                Assert.True(false, "Did not get a SPARQL Result Set as expected");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlGraphClause3()
         {
             String query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
@@ -347,15 +347,15 @@ namespace VDS.RDF.Query
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
                 TestTools.ShowResults(rset);
-                Assert.AreEqual(ex.Triples.Count, rset.Count, "Number of Results should have been equal to number of Triples");
+                Assert.Equal(ex.Triples.Count, rset.Count);
             }
             else
             {
-                Assert.Fail("Did not get a SPARQL Result Set as expected");
+                Assert.True(false, "Did not get a SPARQL Result Set as expected");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlGraphClause4()
         {
             String query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
@@ -377,15 +377,15 @@ namespace VDS.RDF.Query
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
                 TestTools.ShowResults(rset);
-                Assert.AreEqual(ex.Triples.Count, rset.Count, "Number of Results should have been equal to number of Triples");
+                Assert.Equal(ex.Triples.Count, rset.Count);
             }
             else
             {
-                Assert.Fail("Did not get a SPARQL Result Set as expected");
+                Assert.True(false, "Did not get a SPARQL Result Set as expected");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlGraphClause5()
         {
             String query = "SELECT * FROM NAMED <http://example.org/named> WHERE { GRAPH <http://example.org/other> { ?s ?p ?o } }";
@@ -410,11 +410,11 @@ namespace VDS.RDF.Query
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
                 TestTools.ShowResults(rset);
-                Assert.AreEqual(0, rset.Count, "Should be no results because GRAPH <> specified a Graph not in the dataset");
+                Assert.Equal(0, rset.Count);
             }
             else
             {
-                Assert.Fail("Did not get a SPARQL Result Set as expected");
+                Assert.True(false, "Did not get a SPARQL Result Set as expected");
             }
         }
     }

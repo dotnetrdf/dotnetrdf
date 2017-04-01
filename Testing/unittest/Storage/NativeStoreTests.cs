@@ -27,17 +27,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF
 {
-    [TestFixture]
+
     public class NativeStoreTests
         : BaseTest
     {
-        [Test]
+        [SkippableFact]
         public void StorageNativeGraph()
         {
             //Load in our Test Graph
@@ -48,7 +49,7 @@ namespace VDS.RDF
             Console.WriteLine("Loaded Test Graph OK");
             Console.WriteLine("Test Graph contains:");
 
-            Assert.IsFalse(g.IsEmpty, "Test Graph should be non-empty");
+            Assert.False(g.IsEmpty, "Test Graph should be non-empty");
 
             foreach (Triple t in g.Triples)
             {
@@ -80,8 +81,8 @@ namespace VDS.RDF
                 StoreGraphPersistenceWrapper native = new StoreGraphPersistenceWrapper(manager, g.BaseUri);
                 Console.WriteLine("Loaded OK");
 
-                Assert.IsFalse(native.IsEmpty, "Retrieved Graph should contain Triples");
-                Assert.AreEqual(g.Triples.Count, native.Triples.Count, "Retrieved Graph should contain same number of Triples as original Graph");
+                Assert.False(native.IsEmpty, "Retrieved Graph should contain Triples");
+                Assert.Equal(g.Triples.Count, native.Triples.Count);
 
                 Console.WriteLine("Loaded Graph contains:");
                 foreach (Triple t in native.Triples)

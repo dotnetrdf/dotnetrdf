@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
@@ -44,10 +44,10 @@ using VDS.RDF.Update;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class LeviathanTests
     {
-        [Test]
+        [Fact]
         public void SparqlBgpEvaluation()
         {
             //Prepare the Store
@@ -121,7 +121,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             this.ShowMultiset(selectAllUriObjects.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store))));
         }
 
-        [Test]
+        [Fact]
         public void SparqlMultisetLeftJoin()
         {
             //Create a load of Nodes to use in the tests
@@ -292,7 +292,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             Console.WriteLine();
         }
 
-        [Test]
+        [Fact]
         public void SparqlPropertyPathParser()
         {
             //Load our test data
@@ -358,7 +358,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlStreamingBgpAskEvaluation()
         {
             //Get the Data we want to query
@@ -430,13 +430,13 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
                 Console.WriteLine("ASK = " + results1.GetType().ToString() + " in " + unopt.ToString());
                 Console.WriteLine("ASK Optimised = " + results2.GetType().ToString() + " in " + opt.ToString());
 
-                Assert.AreEqual(results1.GetType(), results2.GetType(), "Both ASK queries should have produced the same result");
+                Assert.Equal(results1.GetType(), results2.GetType());
 
                 Console.WriteLine();
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlEvaluationGraphNonExistentUri()
         {
             String query = "SELECT * WHERE { GRAPH <http://example.org/noSuchGraph> { ?s ?p ?o } }";
@@ -448,25 +448,25 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
                 TestTools.ShowResults(results);
 
                 SparqlResultSet rset = (SparqlResultSet)results;
-                Assert.IsTrue(rset.IsEmpty, "Result Set should be empty");
-                Assert.AreEqual(3, rset.Variables.Count(), "Should still be 3 Variables even if no results");
+                Assert.True(rset.IsEmpty, "Result Set should be empty");
+                Assert.Equal(3, rset.Variables.Count());
             }
             else
             {
-                Assert.Fail("Query should have returned a SPARQL Result Set");
+                Assert.True(false, "Query should have returned a SPARQL Result Set");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlDatasetListGraphs()
         {
             InMemoryDataset dataset = new InMemoryDataset(new TripleStore());
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
 
-            Assert.IsTrue(dataset.GraphUris.Count() == 1, "Should be 1 Graph as the Update Processor should ensure a Default unnamed Graph exists");
+            Assert.True(dataset.GraphUris.Count() == 1, "Should be 1 Graph as the Update Processor should ensure a Default unnamed Graph exists");
         }
 
-        [Test]
+        [Fact]
         public void SparqlStreamingBgpSelectEvaluation()
         {
             //Get the Data we want to query
@@ -545,7 +545,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
                     Console.WriteLine(s.ToString());
                 }
 
-                Assert.IsTrue(results1.Count >= results2.Count, "Optimised Select should have produced as many/fewer results than Unoptimised Select");
+                Assert.True(results1.Count >= results2.Count, "Optimised Select should have produced as many/fewer results than Unoptimised Select");
 
                 Console.WriteLine();
             }

@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
@@ -37,7 +37,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Handlers
 {
-    [TestFixture]
+
     public class ResultSetHandlerTests
     {
         private void EnsureTestData(String file)
@@ -54,13 +54,13 @@ namespace VDS.RDF.Parsing.Handlers
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.Retract(g.Triples.Where(t => !t.IsGroundTriple).ToList());
                 SparqlResultSet results = g.ExecuteQuery("SELECT * WHERE { ?s ?p ?o }") as SparqlResultSet;
-                if (results == null) Assert.Fail("Failed to generate sample SPARQL Results");
+                if (results == null) Assert.True(false, "Failed to generate sample SPARQL Results");
 
                 writer.Save(results, file);
             }
         }
 
-        [Test]
+        [Fact]
         public void ParsingResultSetHandlerImplicitSparqlXml()
         {
             this.EnsureTestData("test.srx");
@@ -75,11 +75,11 @@ namespace VDS.RDF.Parsing.Handlers
                 Console.WriteLine(r.ToString(formatter));
             }
 
-            Assert.IsFalse(results.IsEmpty, "Result Set should not be empty");
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
+            Assert.False(results.IsEmpty, "Result Set should not be empty");
+            Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
         }
 
-        [Test]
+        [Fact]
         public void ParsingResultSetHandlerImplicitSparqlJson()
         {
             this.EnsureTestData("test.srj");
@@ -94,11 +94,11 @@ namespace VDS.RDF.Parsing.Handlers
                 Console.WriteLine(r.ToString(formatter));
             }
 
-            Assert.IsFalse(results.IsEmpty, "Result Set should not be empty");
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
+            Assert.False(results.IsEmpty, "Result Set should not be empty");
+            Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
         }
 
-        [Test]
+        [Fact]
         public void ParsingResultSetHandlerImplicitSparqlRdfNTriples()
         {
             this.EnsureTestData("test.sparql.nt", new SparqlRdfWriter(new NTriplesWriter()));
@@ -113,11 +113,11 @@ namespace VDS.RDF.Parsing.Handlers
                 Console.WriteLine(r.ToString(formatter));
             }
 
-            Assert.IsFalse(results.IsEmpty, "Result Set should not be empty");
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
+            Assert.False(results.IsEmpty, "Result Set should not be empty");
+            Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
         }
 
-        [Test]
+        [Fact]
         public void ParsingResultSetHandlerImplicitSparqlRdfTurtle()
         {
             this.EnsureTestData("test.sparql.ttl", new SparqlRdfWriter(new CompressingTurtleWriter()));
@@ -132,11 +132,11 @@ namespace VDS.RDF.Parsing.Handlers
                 Console.WriteLine(r.ToString(formatter));
             }
 
-            Assert.IsFalse(results.IsEmpty, "Result Set should not be empty");
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
+            Assert.False(results.IsEmpty, "Result Set should not be empty");
+            Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
         }
 
-        [Test]
+        [Fact]
         public void ParsingResultSetHandlerImplicitSparqlRdfNotation3()
         {
             this.EnsureTestData("test.sparql.n3", new SparqlRdfWriter(new Notation3Writer()));
@@ -151,11 +151,11 @@ namespace VDS.RDF.Parsing.Handlers
                 Console.WriteLine(r.ToString(formatter));
             }
 
-            Assert.IsFalse(results.IsEmpty, "Result Set should not be empty");
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
+            Assert.False(results.IsEmpty, "Result Set should not be empty");
+            Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
         }
 
-        [Test]
+        [Fact]
         public void ParsingResultSetHandlerImplicitSparqlRdfXml()
         {
             this.EnsureTestData("test.sparql.rdf", new SparqlRdfWriter(new RdfXmlWriter()));
@@ -170,11 +170,11 @@ namespace VDS.RDF.Parsing.Handlers
                 Console.WriteLine(r.ToString(formatter));
             }
 
-            Assert.IsFalse(results.IsEmpty, "Result Set should not be empty");
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
+            Assert.False(results.IsEmpty, "Result Set should not be empty");
+            Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
         }
 
-        [Test]
+        [Fact]
         public void ParsingResultSetHandlerImplicitSparqlRdfJson()
         {
             this.EnsureTestData("test.sparql.json", new SparqlRdfWriter(new RdfJsonWriter()));
@@ -189,11 +189,11 @@ namespace VDS.RDF.Parsing.Handlers
                 Console.WriteLine(r.ToString(formatter));
             }
 
-            Assert.IsFalse(results.IsEmpty, "Result Set should not be empty");
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
+            Assert.False(results.IsEmpty, "Result Set should not be empty");
+            Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
         }
 
-        [Test]
+        [Fact]
         public void ParsingResultSetHandlerExplicitSparqlXml()
         {
             this.EnsureTestData("test.srx");
@@ -208,11 +208,11 @@ namespace VDS.RDF.Parsing.Handlers
                 Console.WriteLine(r.ToString(formatter));
             }
 
-            Assert.IsFalse(results.IsEmpty, "Result Set should not be empty");
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
+            Assert.False(results.IsEmpty, "Result Set should not be empty");
+            Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
         }
 
-        [Test]
+        [Fact]
         public void ParsingResultSetHandlerExplicitSparqlJson()
         {
             this.EnsureTestData("test.srj");
@@ -227,11 +227,11 @@ namespace VDS.RDF.Parsing.Handlers
                 Console.WriteLine(r.ToString(formatter));
             }
 
-            Assert.IsFalse(results.IsEmpty, "Result Set should not be empty");
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
+            Assert.False(results.IsEmpty, "Result Set should not be empty");
+            Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
         }
 
-        [Test]
+        [Fact]
         public void ParsingResultSetHandlerExplicitSparqlRdfNTriples()
         {
             this.EnsureTestData("test.sparql.nt", new SparqlRdfWriter(new NTriplesWriter()));
@@ -246,11 +246,11 @@ namespace VDS.RDF.Parsing.Handlers
                 Console.WriteLine(r.ToString(formatter));
             }
 
-            Assert.IsFalse(results.IsEmpty, "Result Set should not be empty");
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
+            Assert.False(results.IsEmpty, "Result Set should not be empty");
+            Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
         }
 
-        [Test]
+        [Fact]
         public void ParsingResultSetHandlerExplicitSparqlRdfTurtle()
         {
             this.EnsureTestData("test.sparql.ttl", new SparqlRdfWriter(new CompressingTurtleWriter()));
@@ -265,11 +265,11 @@ namespace VDS.RDF.Parsing.Handlers
                 Console.WriteLine(r.ToString(formatter));
             }
 
-            Assert.IsFalse(results.IsEmpty, "Result Set should not be empty");
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
+            Assert.False(results.IsEmpty, "Result Set should not be empty");
+            Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
         }
 
-        [Test]
+        [Fact]
         public void ParsingResultSetHandlerExplicitSparqlRdfNotation3()
         {
             this.EnsureTestData("test.sparql.n3", new SparqlRdfWriter(new Notation3Writer()));
@@ -284,11 +284,11 @@ namespace VDS.RDF.Parsing.Handlers
                 Console.WriteLine(r.ToString(formatter));
             }
 
-            Assert.IsFalse(results.IsEmpty, "Result Set should not be empty");
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
+            Assert.False(results.IsEmpty, "Result Set should not be empty");
+            Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
         }
 
-        [Test]
+        [Fact]
         public void ParsingResultSetHandlerExplicitSparqlRdfXml()
         {
             this.EnsureTestData("test.sparql.rdf", new SparqlRdfWriter(new RdfXmlWriter()));
@@ -303,11 +303,11 @@ namespace VDS.RDF.Parsing.Handlers
                 Console.WriteLine(r.ToString(formatter));
             }
 
-            Assert.IsFalse(results.IsEmpty, "Result Set should not be empty");
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
+            Assert.False(results.IsEmpty, "Result Set should not be empty");
+            Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
         }
 
-        [Test]
+        [Fact]
         public void ParsingResultSetHandlerExplicitSparqlRdfJson()
         {
             this.EnsureTestData("test.sparql.json", new SparqlRdfWriter(new RdfJsonWriter()));
@@ -322,11 +322,11 @@ namespace VDS.RDF.Parsing.Handlers
                 Console.WriteLine(r.ToString(formatter));
             }
 
-            Assert.IsFalse(results.IsEmpty, "Result Set should not be empty");
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
+            Assert.False(results.IsEmpty, "Result Set should not be empty");
+            Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
         }
 
-        [Test]
+        [Fact]
         public void ParsingMergingResultSetHandler()
         {
             this.EnsureTestData("test.srx", new SparqlXmlWriter());
@@ -336,18 +336,18 @@ namespace VDS.RDF.Parsing.Handlers
             MergingResultSetHandler handler = new MergingResultSetHandler(results);
             parser.Load(handler, "test.srx");
 
-            Assert.IsFalse(results.IsEmpty, "Result Set should not be empty");
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
+            Assert.False(results.IsEmpty, "Result Set should not be empty");
+            Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
 
             int count = results.Count;
 
             //Load again
             parser.Load(handler, "test.srx");
 
-            Assert.AreEqual(count * 2, results.Count, "Expected result count to have doubled");
+            Assert.Equal(count * 2, results.Count);
         }
 
-        [Test]
+        [Fact]
         public void ParsingResultsWriteThroughHandlerSparqlXml()
         {
             Graph g = new Graph();
@@ -369,7 +369,7 @@ namespace VDS.RDF.Parsing.Handlers
             Console.WriteLine("Original Result Count: " + original.Count);
             Console.WriteLine("Round Trip Result Count: " + results.Count);
 
-            Assert.AreEqual(original, results, "Result Sets should be equal");
+            Assert.Equal(original, results);
         }
     }
 }

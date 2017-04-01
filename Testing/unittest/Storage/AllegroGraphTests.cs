@@ -27,43 +27,41 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.XunitExtensions;
 using VDS.RDF.Storage;
 
-
+#if !NO_SYNC_HTTP
 namespace VDS.RDF.Storage
 {
-    [TestFixture]
-    public class AllegroGraphTests
+
+    public class AllegroGraphTests : IDisposable
     {
         public static AllegroGraphConnector GetConnection()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseAllegroGraph))
             {
-                Assert.Inconclusive("Test Config marks AllegroGraph as unavailable, cannot run this test");
+                throw new SkipTestException("Test Config marks AllegroGraph as unavailable, cannot run this test");
             }
 
             return new AllegroGraphConnector(TestConfigManager.GetSetting(TestConfigManager.AllegroGraphServer), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphCatalog), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphRepository), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphUser), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphPassword));
         }
 
-#if !NO_SYNC_HTTP
         // These tests are using the synchronous API
 
-        [SetUp]
-        public void Setup()
+        public AllegroGraphTests()
         {
             Options.HttpDebugging = true;
         }
 
-        [TearDown]
-        public void Teardown()
+        public void Dispose()
         {
             Options.HttpDebugging = false;
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageAllegroGraphSaveLoad()
         {
             Graph g = new Graph();
@@ -75,12 +73,12 @@ namespace VDS.RDF.Storage
 
             Graph h = new Graph();
             agraph.LoadGraph(h, "http://example.org/AllegroGraphTest");
-            Assert.IsFalse(h.IsEmpty, "Graph should not be empty after loading");
+            Assert.False(h.IsEmpty, "Graph should not be empty after loading");
 
-            Assert.AreEqual(g, h, "Graphs should have been equal");
+            Assert.Equal(g, h);
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageAllegroGraphSaveEmptyGraph1()
         {
             Graph g = new Graph();
@@ -91,12 +89,12 @@ namespace VDS.RDF.Storage
 
             Graph h = new Graph();
             agraph.LoadGraph(h, "http://example.org/AllegroGraph/empty");
-            Assert.IsTrue(h.IsEmpty, "Graph should be empty after loading");
+            Assert.True(h.IsEmpty, "Graph should be empty after loading");
 
-            Assert.AreEqual(g, h, "Graphs should have been equal");
+            Assert.Equal(g, h);
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageAllegroGraphSaveEmptyGraph2()
         {
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
@@ -115,9 +113,9 @@ namespace VDS.RDF.Storage
 
             Graph h = new Graph();
             agraph.LoadGraph(h, graphUri);
-            Assert.IsFalse(h.IsEmpty, "Graph should not be empty after loading");
+            Assert.False(h.IsEmpty, "Graph should not be empty after loading");
 
-            Assert.AreEqual(g, h, "Graphs should be equal");
+            Assert.Equal(g, h);
 
             // Now attempt to save an empty graph as well
             g = new Graph();
@@ -128,12 +126,12 @@ namespace VDS.RDF.Storage
 
             h = new Graph();
             agraph.LoadGraph(h, graphUri);
-            Assert.IsTrue(h.IsEmpty, "Graph should be empty after loading");
+            Assert.True(h.IsEmpty, "Graph should be empty after loading");
 
-            Assert.AreEqual(g, h, "Graphs should have been equal");
+            Assert.Equal(g, h);
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageAllegroGraphSaveEmptyGraph3()
         {
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
@@ -152,9 +150,9 @@ namespace VDS.RDF.Storage
 
             Graph h = new Graph();
             agraph.LoadGraph(h, graphUri);
-            Assert.IsFalse(h.IsEmpty, "Graph should not be empty after loading");
+            Assert.False(h.IsEmpty, "Graph should not be empty after loading");
 
-            Assert.AreEqual(g, h, "Graphs should be equal");
+            Assert.Equal(g, h);
 
             // Now attempt to overwrite with an empty graph
             g = new Graph();
@@ -167,10 +165,10 @@ namespace VDS.RDF.Storage
             agraph.LoadGraph(h, graphUri);
 
             // Since saving to default graph does not overwrite the graph we've just retrieved must contain the empty graph as a sub-graph
-            Assert.IsTrue(h.HasSubGraph(g));
+            Assert.True(h.HasSubGraph(g));
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageAllegroGraphDeleteTriples()
         {
             Graph g = new Graph();
@@ -192,18 +190,18 @@ namespace VDS.RDF.Storage
             Console.WriteLine("Graph after deletion");
             TestTools.ShowGraph(h);
 
-            Assert.IsFalse(h.IsEmpty, "Graph should not be completely empty");
-            Assert.IsTrue(g.HasSubGraph(h), "Graph retrieved with missing Triples should be a sub-graph of the original Graph");
-            Assert.IsFalse(g.Equals(h), "Graph retrieved should not be equal to original Graph");
+            Assert.False(h.IsEmpty, "Graph should not be completely empty");
+            Assert.True(g.HasSubGraph(h), "Graph retrieved with missing Triples should be a sub-graph of the original Graph");
+            Assert.False(g.Equals(h), "Graph retrieved should not be equal to original Graph");
 
             Object results = agraph.Query("ASK WHERE { GRAPH <http://example.org/AllegroGraphTest> { <http://example.org/vehicles/FordFiesta> ?p ?o } }");
             if (results is SparqlResultSet)
             {
-                Assert.IsFalse(((SparqlResultSet) results).Result, "There should no longer be any triples about the Ford Fiesta present");
+                Assert.False(((SparqlResultSet) results).Result, "There should no longer be any triples about the Ford Fiesta present");
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageAllegroGraphDeleteGraph1()
         {
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
@@ -217,18 +215,18 @@ namespace VDS.RDF.Storage
 
             Graph h = new Graph();
             agraph.LoadGraph(h, graphUri);
-            Assert.IsFalse(h.IsEmpty, "Graph should not be empty after loading");
+            Assert.False(h.IsEmpty, "Graph should not be empty after loading");
 
-            Assert.AreEqual(g, h, "Graphs should have been equal");
+            Assert.Equal(g, h);
 
             agraph.DeleteGraph(graphUri);
             h = new Graph();
             agraph.LoadGraph(h, graphUri);
-            Assert.IsTrue(h.IsEmpty, "Graph should be equal after deletion");
-            Assert.AreNotEqual(g, h, "Graphs should not be equal after deletion");
+            Assert.True(h.IsEmpty, "Graph should be equal after deletion");
+            Assert.NotEqual(g, h);
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageAllegroGraphDeleteGraph2()
         {
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
@@ -243,18 +241,18 @@ namespace VDS.RDF.Storage
 
             Graph h = new Graph();
             agraph.LoadGraph(h, graphUri);
-            Assert.IsFalse(h.IsEmpty, "Graph should not be empty after loading");
+            Assert.False(h.IsEmpty, "Graph should not be empty after loading");
 
-            Assert.AreEqual(g, h, "Graphs should have been equal after loading");
+            Assert.Equal(g, h);
 
             agraph.DeleteGraph(graphUri);
             h = new Graph();
             agraph.LoadGraph(h, graphUri);
-            Assert.IsTrue(h.IsEmpty, "Graph should be equal after deletion");
-            Assert.AreNotEqual(g, h, "Graphs should not be equal after deletion");
+            Assert.True(h.IsEmpty, "Graph should be equal after deletion");
+            Assert.NotEqual(g, h);
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageAllegroGraphAsk()
         {
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
@@ -262,17 +260,14 @@ namespace VDS.RDF.Storage
             String ask = "ASK WHERE { ?s ?p ?o }";
 
             Object results = agraph.Query(ask);
+            Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
                 TestTools.ShowResults(results);
             }
-            else
-            {
-                Assert.Fail("Failed to get a Result Set as expected");
-            }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageAllegroGraphDescribe()
         {
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
@@ -280,17 +275,14 @@ namespace VDS.RDF.Storage
             String describe = "DESCRIBE <http://example.org/Vehicles/FordFiesta>";
 
             Object results = agraph.Query(describe);
+            Assert.IsAssignableFrom<IGraph>(results);
             if (results is IGraph)
             {
                 TestTools.ShowGraph((IGraph) results);
             }
-            else
-            {
-                Assert.Fail("Failed to get a Graph as expected");
-            }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageAllegroGraphSparqlUpdate()
         {
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
@@ -300,9 +292,9 @@ namespace VDS.RDF.Storage
             agraph.Update(updates);
 
             SparqlResultSet results = agraph.Query("SELECT * WHERE { GRAPH <http://example.org/new-graph> { ?s ?p ?o } }") as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.AreEqual(1, results.Count);
+            Assert.NotNull(results);
+            Assert.Equal(1, results.Count);
         }
-#endif
     }
 }
+#endif

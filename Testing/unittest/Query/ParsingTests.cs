@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Tokens;
@@ -41,7 +41,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class ParsingTests
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
@@ -67,56 +67,56 @@ namespace VDS.RDF.Query
             return cmds;
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingComplexGraphAfterUnion()
         {
             String query = "SELECT * WHERE {{?x ?y ?z} UNION {?z ?y ?x} GRAPH ?g {?x ?y ?z}}";
             this.TestQuery(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingComplexFilterAfterUnion()
         {
             String query = "SELECT * WHERE {{?x ?y ?z} UNION {?z ?y ?x} FILTER(true)}";
             this.TestQuery(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingComplexOptionalAfterUnion()
         {
             String query = "SELECT * WHERE {{?x ?y ?z} UNION {?z ?y ?x} OPTIONAL {?x a ?u}}";
             this.TestQuery(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingComplexMinusAfterUnion()
         {
             String query = "SELECT * WHERE {{?x ?y ?z} UNION {?z ?y ?x} MINUS {?s ?p ?o}}";
             this.TestQuery(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingComplexOptionalServiceUnion()
         {
             String query = "SELECT * WHERE {{?x ?y ?z} UNION {?z ?y ?x} SERVICE ?g {?x ?y ?z}}";
             this.TestQuery(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingSingleSubQuery()
         {
             String query = "SELECT * WHERE {{SELECT * WHERE {?s ?p ?o}}}";
             this.TestQuery(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingSetExpression()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . FILTER(?o IN (1, 2, 3)) }";
             TestQuery(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingSetExpression2()
         {
             String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA +
@@ -124,7 +124,7 @@ namespace VDS.RDF.Query
             TestQuery(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingSetExpression3()
         {
             String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA +
@@ -132,7 +132,7 @@ namespace VDS.RDF.Query
             TestQuery(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingSetExpression4()
         {
             String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA +
@@ -140,7 +140,7 @@ namespace VDS.RDF.Query
             TestQuery(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingNumericExpression1()
         {
             String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA +
@@ -148,7 +148,7 @@ namespace VDS.RDF.Query
             TestQuery(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingNumericExpression2()
         {
             String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA +
@@ -156,7 +156,7 @@ namespace VDS.RDF.Query
             TestQuery(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingNumericExpression3()
         {
             String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA +
@@ -164,7 +164,7 @@ namespace VDS.RDF.Query
             TestQuery(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingNumericExpression4()
         {
             String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA +
@@ -172,28 +172,28 @@ namespace VDS.RDF.Query
             TestQuery(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingPropertyPathsNegatedSetSimple()
         {
             String query = "SELECT * WHERE { ?s !a ?o }";
             TestQuery(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingPropertyPathsNegatedSetSimpleInSequence1()
         {
             String query = "SELECT * WHERE { ?s a / !a ?o }";
             TestQuery(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingPropertyPathsNegatedSetSimpleInSequence2()
         {
             String query = "SELECT * WHERE { ?s !a / a ?o }";
             TestQuery(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingPropertyPathsNegatedSet()
         {
             String query = "PREFIX rdfs: <" + NamespaceMapper.RDFS +
@@ -201,7 +201,7 @@ namespace VDS.RDF.Query
             TestQuery(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingPropertyPathsNegatedSetModified()
         {
             String query = "PREFIX rdfs: <" + NamespaceMapper.RDFS +
@@ -209,7 +209,7 @@ namespace VDS.RDF.Query
             TestQuery(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingPropertyPathsNegatedSetSimpleInAlternative()
         {
             String query = "PREFIX rdfs: <" + NamespaceMapper.RDFS +
@@ -217,7 +217,7 @@ namespace VDS.RDF.Query
             TestQuery(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingNoGapPrefixes()
         {
             String query;
@@ -229,7 +229,7 @@ namespace VDS.RDF.Query
             TestQuery(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingPropertyPathsUnbracketedAlternatives()
         {
             String query = @"PREFIX : <http://www.example.org/>
@@ -241,21 +241,21 @@ SELECT ?X WHERE
             TestQuery(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingExistsWithinSubQuery1()
         {
             String query = "SELECT * WHERE { { SELECT ?s WHERE { ?s a ?type FILTER NOT EXISTS { ?s a <http://restricted> } } } }";
             TestQuery(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingExistsWithinSubQuery2()
         {
             String query = "SELECT * WHERE { { SELECT ?s WHERE { ?s a ?type FILTER NOT EXISTS { { ?s a <http://restricted> } UNION { ?s a <http://other> } } } } }";
             TestQuery(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlVarNames()
         {
             List<String> names = new List<String>
@@ -268,31 +268,33 @@ SELECT ?X WHERE
             foreach (String name in names)
             {
                 SparqlVariable var = new SparqlVariable(name);
-                Assert.AreEqual("var", var.Name);
+                Assert.Equal("var", var.Name);
 
                 VariablePattern varPat = new VariablePattern(name);
-                Assert.AreEqual("var", varPat.VariableName);
+                Assert.Equal("var", varPat.VariableName);
 
                 VariableTerm varTerm = new VariableTerm(name);
-                Assert.AreEqual("var", varTerm.Variables.First());
+                Assert.Equal("var", varTerm.Variables.First());
             }
         }
 
-        [Test, ExpectedException(typeof (RdfParseException))]
+        [Fact]
         public void SparqlParsingInsertDataWithGraphVar()
         {
             String update = "INSERT DATA { GRAPH ?g { } }";
-            TestUpdate(update);
+
+            Assert.Throws<RdfParseException>(() => TestUpdate(update));
         }
 
-        [Test, ExpectedException(typeof (RdfParseException))]
+        [Fact]
         public void SparqlParsingDeleteDataWithGraphVar()
         {
             String update = "DELETE DATA { GRAPH ?g { } }";
-            TestUpdate(update);
+
+            Assert.Throws<RdfParseException>(() => TestUpdate(update));
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingExistsWithinUpdateWhereClause1()
         {
             String update = @"WITH <http://source>
@@ -302,7 +304,7 @@ WHERE { ?s ?p ?o . FILTER NOT EXISTS { ?s a <http://restricted> } }";
             TestUpdate(update);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingExistsWithinUpdateWhereClause2()
         {
             String update = @"WITH <http://source>
@@ -311,7 +313,7 @@ WHERE { ?s ?p ?o . FILTER NOT EXISTS { ?s a <http://restricted> } }";
             TestUpdate(update);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingExistsWithinUpdateWhereClause3()
         {
             String update = @"WITH <http://source>
@@ -320,7 +322,7 @@ WHERE { ?s ?p ?o . FILTER NOT EXISTS { ?s a <http://restricted> } }";
             TestUpdate(update);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingExistsWithinUpdateWhereClause4()
         {
             String update = @"DELETE { GRAPH <http://source> { ?s ?p ?o } }
@@ -328,7 +330,7 @@ WHERE { GRAPH <htp://source> { ?s ?p ?o  } . FILTER NOT EXISTS { ?s a <http://re
             TestUpdate(update);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingExistsWithinUpdateWhereClause5()
         {
             String update = @"INSERT { GRAPH <http://target> { ?s ?p ?o } }
@@ -336,7 +338,7 @@ WHERE { GRAPH <htp://source> { ?s ?p ?o } . FILTER NOT EXISTS { ?s a <http://res
             TestUpdate(update);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingExistsWithinUpdateWhereClause6()
         {
             String update = @"PREFIX myschema: <http://www.example.com/schema#>
@@ -357,7 +359,7 @@ WHERE { GRAPH <htp://source> { ?s ?p ?o } . FILTER NOT EXISTS { ?s a <http://res
             TestUpdate(update);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingExistsWithinUpdateWhereClause7()
         {
             String update = @"DELETE { GRAPH <http://source> { ?s ?p ?o } }
@@ -365,7 +367,7 @@ WHERE { GRAPH <htp://source> { ?s ?p ?o  } . FILTER (NOT EXISTS { ?s a <http://r
             TestUpdate(update);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingExistsWithinUpdateWhereClause8()
         {
             String update = @"INSERT { GRAPH <http://target> { ?s ?p ?o } }
@@ -373,7 +375,7 @@ WHERE { GRAPH <htp://source> { ?s ?p ?o } . FILTER (NOT EXISTS { ?s a <http://re
             TestUpdate(update);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingLiteralsInExpressions()
         {
             Queue<IToken> tokens = new Queue<IToken>();
@@ -384,18 +386,18 @@ WHERE { GRAPH <htp://source> { ?s ?p ?o } . FILTER (NOT EXISTS { ?s a <http://re
             SparqlExpressionParser parser = new SparqlExpressionParser();
             ISparqlExpression expr = parser.Parse(tokens);
 
-            Assert.IsInstanceOf(typeof (ConstantTerm), expr);
+            Assert.IsType(typeof (ConstantTerm), expr);
             ConstantTerm constant = expr as ConstantTerm;
-            Assert.IsNotNull(constant);
+            Assert.NotNull(constant);
 
             IValuedNode n = constant.Node;
-            Assert.IsInstanceOf(typeof(ILiteralNode), n);
+            Assert.IsAssignableFrom(typeof(ILiteralNode), n);
             ILiteralNode lit = (ILiteralNode) n;
-            Assert.AreEqual(String.Empty, lit.Language);
-            Assert.IsTrue(EqualityHelper.AreUrisEqual(lit.DataType, new Uri("http://example/type")));
+            Assert.Equal(String.Empty, lit.Language);
+            Assert.True(EqualityHelper.AreUrisEqual(lit.DataType, new Uri("http://example/type")));
         }
         
-        [Test]
+        [Fact]
         public void SparqlParsingHandlesDollarSignInUriParameter1()
         {
             const string queryString = @"SELECT ?p ?o WHERE { @subject ?p ?o . }";
@@ -407,10 +409,10 @@ WHERE { GRAPH <htp://source> { ?s ?p ?o } . FILTER (NOT EXISTS { ?s a <http://re
             var sparqlQuery = new SparqlQueryParser().ParseFromString(parametrizedQueryString);
             Console.WriteLine(sparqlQuery.ToString());
 
-            Assert.That(sparqlQuery.ToString(), Contains.Substring(expectedCondition));
+            Assert.Contains(expectedCondition, sparqlQuery.ToString());
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingHandlesDollarSignInUriParameter2()
         {
             const string queryString = @"SELECT ?p ?o WHERE { $subject ?p ?o . }";
@@ -422,10 +424,10 @@ WHERE { GRAPH <htp://source> { ?s ?p ?o } . FILTER (NOT EXISTS { ?s a <http://re
             var sparqlQuery = new SparqlQueryParser().ParseFromString(parametrizedQueryString);
             Console.WriteLine(sparqlQuery.ToString());
 
-            Assert.That(sparqlQuery.ToString(), Contains.Substring(expectedCondition));
+            Assert.Contains(expectedCondition, sparqlQuery.ToString());
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingExcessTokens1()
         {
             const String query = @"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -437,20 +439,20 @@ SELECT * WHERE
             try
             {
                 this._parser.ParseFromString(query);
-                Assert.Fail("Did not error as expected");
+                Assert.True(false, "Did not error as expected");
             }
             catch (RdfParseException parseEx)
             {
                 Console.WriteLine(parseEx.Message);
-                Assert.IsFalse(parseEx.Message.Contains("?s"));
-                Assert.IsFalse(parseEx.Message.Contains("rdf:type"));
-                Assert.IsFalse(parseEx.Message.Contains("?type"));
-                Assert.IsTrue(parseEx.Message.Contains("?p"));
-                Assert.IsTrue(parseEx.Message.Contains("?o"));
+                Assert.False(parseEx.Message.Contains("?s"));
+                Assert.False(parseEx.Message.Contains("rdf:type"));
+                Assert.False(parseEx.Message.Contains("?type"));
+                Assert.True(parseEx.Message.Contains("?p"));
+                Assert.True(parseEx.Message.Contains("?o"));
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingExcessTokens2()
         {
             const String query = @"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -462,20 +464,20 @@ SELECT * WHERE
             try
             {
                 this._parser.ParseFromString(query);
-                Assert.Fail("Did not error as expected");
+                Assert.True(false, "Did not error as expected");
             }
             catch (RdfParseException parseEx)
             {
                 Console.WriteLine(parseEx.Message);
-                Assert.IsFalse(parseEx.Message.Contains("?s"));
-                Assert.IsFalse(parseEx.Message.Contains("rdf:type"));
-                Assert.IsFalse(parseEx.Message.Contains("?type"));
-                Assert.IsTrue(parseEx.Message.Contains("?p"));
-                Assert.IsTrue(parseEx.Message.Contains("?o"));
+                Assert.False(parseEx.Message.Contains("?s"));
+                Assert.False(parseEx.Message.Contains("rdf:type"));
+                Assert.False(parseEx.Message.Contains("?type"));
+                Assert.True(parseEx.Message.Contains("?p"));
+                Assert.True(parseEx.Message.Contains("?o"));
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingExcessTokens3()
         {
             const String query = @"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -487,20 +489,20 @@ SELECT * WHERE
             try
             {
                 this._parser.ParseFromString(query);
-                Assert.Fail("Did not error as expected");
+                Assert.True(false, "Did not error as expected");
             }
             catch (RdfParseException parseEx)
             {
                 Console.WriteLine(parseEx.Message);
-                Assert.IsFalse(parseEx.Message.Contains("?s"));
-                Assert.IsFalse(parseEx.Message.Contains("rdf:type"));
-                Assert.IsFalse(parseEx.Message.Contains("?type"));
-                Assert.IsTrue(parseEx.Message.Contains("?p"));
-                Assert.IsTrue(parseEx.Message.Contains("?o"));
+                Assert.False(parseEx.Message.Contains("?s"));
+                Assert.False(parseEx.Message.Contains("rdf:type"));
+                Assert.False(parseEx.Message.Contains("?type"));
+                Assert.True(parseEx.Message.Contains("?p"));
+                Assert.True(parseEx.Message.Contains("?o"));
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingExcessTokens4()
         {
             const String query = @"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -512,20 +514,20 @@ SELECT * WHERE
             try
             {
                 this._parser.ParseFromString(query);
-                Assert.Fail("Did not error as expected");
+                Assert.True(false, "Did not error as expected");
             }
             catch (RdfParseException parseEx)
             {
                 Console.WriteLine(parseEx.Message);
-                Assert.IsFalse(parseEx.Message.Contains("?s"));
-                Assert.IsFalse(parseEx.Message.Contains("rdf:type"));
-                Assert.IsFalse(parseEx.Message.Contains("?type"));
-                Assert.IsTrue(parseEx.Message.Contains("?p"));
-                Assert.IsTrue(parseEx.Message.Contains("?o"));
+                Assert.False(parseEx.Message.Contains("?s"));
+                Assert.False(parseEx.Message.Contains("rdf:type"));
+                Assert.False(parseEx.Message.Contains("?type"));
+                Assert.True(parseEx.Message.Contains("?p"));
+                Assert.True(parseEx.Message.Contains("?o"));
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingComplexCore428_1()
         {
             // Distilled from CORE-428 report
@@ -543,7 +545,7 @@ WHERE
             this._parser.ParseFromString(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingComplexCore428_2()
         {
             // Distilled from CORE-428 report
@@ -561,7 +563,7 @@ WHERE
             this._parser.ParseFromString(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingComplexCore428_3()
         {
             // Distilled from CORE-428 report
@@ -579,7 +581,7 @@ WHERE
             this._parser.ParseFromString(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingComplexCore428_4()
         {
             // Distilled from CORE-428 report
@@ -597,7 +599,7 @@ WHERE
             this._parser.ParseFromString(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingComplexCore428_5()
         {
             // Distilled from CORE-428 report
@@ -615,7 +617,7 @@ WHERE
             this._parser.ParseFromString(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingCore427_1()
         {
             const String query = "SELECT (UUID() AS ?test) { }";
@@ -623,13 +625,13 @@ WHERE
             SparqlQuery q = this._parser.ParseFromString(query);
 
             String toString = q.ToString();
-            Assert.IsTrue(toString.Contains("(UUID"));
+            Assert.True(toString.Contains("(UUID"));
 
             String formattedString = new SparqlFormatter().Format(q);
-            Assert.IsTrue(formattedString.Contains("(UUID"));
+            Assert.True(formattedString.Contains("(UUID"));
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingCore427_2()
         {
             const String query = "SELECT (StrUUID() AS ?test) { }";
@@ -637,30 +639,31 @@ WHERE
             SparqlQuery q = this._parser.ParseFromString(query);
 
             String toString = q.ToString();
-            Assert.IsTrue(toString.Contains("(STRUUID"));
+            Assert.True(toString.Contains("(STRUUID"));
 
             String formattedString = new SparqlFormatter().Format(q);
-            Assert.IsTrue(formattedString.Contains("(STRUUID"));
+            Assert.True(formattedString.Contains("(STRUUID"));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Fact]
         public void SparqlParsingIllegalWhitespaceInUris()
         {
             const string query = "SELECT * WHERE { <http://example.com/foo bar> a <http://example.com/foo%20type> }";
-            this._parser.ParseFromString(query);
+
+            Assert.Throws<RdfParseException>(() => this._parser.ParseFromString(query));
         }
         
-        [Test]
+        [Fact]
         public void SparqlParsingEscapedWhitespaceInUris()
         {
             const string query = "SELECT * WHERE { <http://example.com/foo%20bar> a <http://example.com/foo%20type> }";
             SparqlQuery q = this._parser.ParseFromString(query);
             var pattern = q.RootGraphPattern.TriplePatterns[0] as IMatchTriplePattern;
             var subjectMatch = pattern.Subject as NodeMatchPattern;
-            Assert.AreEqual(new Uri("http://example.com/foo bar"), ((IUriNode)subjectMatch.Node).Uri);
+            Assert.Equal(new Uri("http://example.com/foo bar"), ((IUriNode)subjectMatch.Node).Uri);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingAggregatesCore446_1()
         {
             const String query = @" PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -686,7 +689,7 @@ WHERE
             this._parser.ParseFromString(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingAggregatesCore446_2()
         {
             // Valid because only aggregates used in the projection
@@ -694,15 +697,16 @@ WHERE
             this._parser.ParseFromString(query);
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Fact]
         public void SparqlParsingAggregatesCore446_3()
         {
             // Invalid because non-aggregate and non-group key used in projection
             const String query = @"SELECT (<http://func>(?s) AS ?test) (COUNT(*) AS ?count) WHERE { ?s ?p ?o }";
-            this._parser.ParseFromString(query);
+
+            Assert.Throws<RdfParseException>(() => this._parser.ParseFromString(query));
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingAggregatesCore446_4()
         {
             // Valid because only aggregates and group keys used in projection
@@ -710,7 +714,7 @@ WHERE
             this._parser.ParseFromString(query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlParsingAggregatesCore446_5()
         {
             // Invalid because non-aggregate and non-group key used in projection

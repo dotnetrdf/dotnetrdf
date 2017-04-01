@@ -27,19 +27,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class SetTests
     {
         private NodeFactory _factory = new NodeFactory();
 
-        [Test]
+        [Fact]
         public void SparqlSetHashCodes1()
         {
             INode a = this._factory.CreateLiteralNode("a");
@@ -55,11 +55,11 @@ namespace VDS.RDF.Query
             y.Add("a", a);
             Console.WriteLine(y.ToString());
 
-            Assert.AreEqual(x, y);
-            Assert.AreEqual(x.GetHashCode(), y.GetHashCode());
+            Assert.Equal(x, y);
+            Assert.Equal(x.GetHashCode(), y.GetHashCode());
         }
 
-        [Test]
+        [Fact]
         public void SparqlSetHashCodes2()
         {
             INode a = this._factory.CreateLiteralNode("a");
@@ -73,17 +73,17 @@ namespace VDS.RDF.Query
             y.Add("b", b);
             Console.WriteLine(y.ToString());
 
-            Assert.AreNotEqual(x, y);
-            Assert.AreNotEqual(x.GetHashCode(), y.GetHashCode());
+            Assert.NotEqual(x, y);
+            Assert.NotEqual(x.GetHashCode(), y.GetHashCode());
 
             ISet z1 = x.Join(y);
             ISet z2 = y.Join(x);
 
-            Assert.AreEqual(z1, z2);
-            Assert.AreEqual(z1.GetHashCode(), z2.GetHashCode());
+            Assert.Equal(z1, z2);
+            Assert.Equal(z1.GetHashCode(), z2.GetHashCode());
         }
 
-        [Test]
+        [Fact]
         public void SparqlSetDistinct1()
         {
             INode a = this._factory.CreateBlankNode();
@@ -98,12 +98,12 @@ namespace VDS.RDF.Query
             y.Add("a", a);
             y.Add("_:b", b2);
 
-            Assert.AreNotEqual(x, y);
+            Assert.NotEqual(x, y);
 
             Multiset data = new Multiset();
             data.Add(x);
             data.Add(y);
-            Assert.AreEqual(2, data.Count);
+            Assert.Equal(2, data.Count);
 
             Table table = new Table(data);
             Distinct distinct = new Distinct(table);
@@ -112,11 +112,11 @@ namespace VDS.RDF.Query
             //are stripped
             SparqlEvaluationContext context = new SparqlEvaluationContext(null, null);
             BaseMultiset results = distinct.Evaluate(context);
-            Assert.AreEqual(1, results.Count);
-            Assert.IsFalse(results.ContainsVariable("_:b"));
+            Assert.Equal(1, results.Count);
+            Assert.False(results.ContainsVariable("_:b"));
         }
 
-        [Test]
+        [Fact]
         public void SparqlSetDistinct2()
         {
             INode a = this._factory.CreateBlankNode();
@@ -131,12 +131,12 @@ namespace VDS.RDF.Query
             y.Add("a", a);
             y.Add("_:b", b2);
 
-            Assert.AreNotEqual(x, y);
+            Assert.NotEqual(x, y);
 
             Multiset data = new Multiset();
             data.Add(x);
             data.Add(y);
-            Assert.AreEqual(2, data.Count);
+            Assert.Equal(2, data.Count);
 
             Table table = new Table(data);
             Distinct distinct = new Distinct(table, true);
@@ -145,11 +145,11 @@ namespace VDS.RDF.Query
             //be present
             SparqlEvaluationContext context = new SparqlEvaluationContext(null, null);
             BaseMultiset results = distinct.Evaluate(context);
-            Assert.AreEqual(2, results.Count);
-            Assert.IsTrue(results.ContainsVariable("_:b"));
+            Assert.Equal(2, results.Count);
+            Assert.True(results.ContainsVariable("_:b"));
         }
 
-        [Test]
+        [Fact]
         public void SparqlSetDistinctnessComparer1()
         {
             ISet x = new Set();
@@ -162,11 +162,11 @@ namespace VDS.RDF.Query
             int xHash = comparer.GetHashCode(x);
             int yHash = comparer.GetHashCode(y);
 
-            Assert.AreEqual(xHash, yHash);
-            Assert.IsTrue(comparer.Equals(x, y));
+            Assert.Equal(xHash, yHash);
+            Assert.True(comparer.Equals(x, y));
         }
 
-        [Test]
+        [Fact]
         public void SparqlSetDistinctnessComparer2()
         {
             ISet x = new Set();
@@ -180,11 +180,11 @@ namespace VDS.RDF.Query
             int xHash = comparer.GetHashCode(x);
             int yHash = comparer.GetHashCode(y);
 
-            Assert.AreEqual(xHash, yHash);
-            Assert.IsTrue(comparer.Equals(x, y));
+            Assert.Equal(xHash, yHash);
+            Assert.True(comparer.Equals(x, y));
         }
 
-        [Test]
+        [Fact]
         public void SparqlSetDistinctnessComparer3()
         {
             ISet x = new Set();
@@ -198,11 +198,11 @@ namespace VDS.RDF.Query
             int xHash = comparer.GetHashCode(x);
             int yHash = comparer.GetHashCode(y);
 
-            Assert.AreNotEqual(xHash, yHash);
-            Assert.IsFalse(comparer.Equals(x, y));
+            Assert.NotEqual(xHash, yHash);
+            Assert.False(comparer.Equals(x, y));
         }
 
-        [Test]
+        [Fact]
         public void SparqlSetDistinctnessComparer4()
         {
             ISet x = new Set();
@@ -213,8 +213,8 @@ namespace VDS.RDF.Query
             int xHash = comparer.GetHashCode(x);
             int yHash = comparer.GetHashCode(y);
 
-            Assert.AreNotEqual(xHash, yHash);
-            Assert.IsFalse(comparer.Equals(x, y));
+            Assert.NotEqual(xHash, yHash);
+            Assert.False(comparer.Equals(x, y));
         }
     }
 }

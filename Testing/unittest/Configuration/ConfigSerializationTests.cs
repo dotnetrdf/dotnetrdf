@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Operators;
@@ -37,10 +37,10 @@ using VDS.RDF.Query.PropertyFunctions;
 
 namespace VDS.RDF.Configuration
 {
-    [TestFixture]
+
     public class ConfigSerializationTests
     {
-        [Test]
+        [Fact]
         public void ConfigurationSerializationOperators()
         {
             List<ISparqlOperator> ops = new List<ISparqlOperator>()
@@ -73,8 +73,8 @@ namespace VDS.RDF.Configuration
             {
                 INode opNode = nodes[i];
                 ISparqlOperator resultOp = ConfigurationLoader.LoadObject(g, opNode) as ISparqlOperator;
-                Assert.IsNotNull(resultOp, "Failed to load serialized operator " + ops[i].GetType().Name);
-                Assert.AreEqual(ops[i].GetType(), resultOp.GetType());
+                Assert.NotNull(resultOp);
+                Assert.Equal(ops[i].GetType(), resultOp.GetType());
             }
         }
     }

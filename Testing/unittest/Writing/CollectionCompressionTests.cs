@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
@@ -37,11 +37,11 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
-    [TestFixture]
+
     public class CollectionCompressionTests
         : CompressionTests
     {
-        [Test]
+        [Fact]
         public void WritingCollectionCompressionEmpty1()
         {
             Graph g = new Graph();
@@ -54,13 +54,13 @@ namespace VDS.RDF.Writing
             CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);
 
-            Assert.AreEqual(1, context.Collections.Count, "Expected 1 Collection to be found");
-            Assert.AreEqual(0, context.Collections.First().Value.Triples.Count, "Expected no Triples to be in the collection");
+            Assert.Equal(1, context.Collections.Count);
+            Assert.Equal(0, context.Collections.First().Value.Triples.Count);
 
             this.CheckCompressionRoundTrip(g);
         }
 
-        [Test]
+        [Fact]
         public void WritingCollectionCompressionEmpty2()
         {
             Graph g = new Graph();
@@ -72,12 +72,12 @@ namespace VDS.RDF.Writing
             CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);
 
-            Assert.AreEqual(0, context.Collections.Count, "Expected 0 Collection to be found");
+            Assert.Equal(0, context.Collections.Count);
 
             this.CheckCompressionRoundTrip(g);
         }
 
-        [Test]
+        [Fact]
         public void WritingCollectionCompressionSimple1()
         {
             Graph g = new Graph();
@@ -91,13 +91,13 @@ namespace VDS.RDF.Writing
             CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);
 
-            Assert.AreEqual(1, context.Collections.Count, "Expected 1 Collection to be found");
-            Assert.AreEqual(1, context.Collections.First().Value.Triples.Count, "Expected 1 Triple to be in the collection");
+            Assert.Equal(1, context.Collections.Count);
+            Assert.Equal(1, context.Collections.First().Value.Triples.Count);
 
             this.CheckCompressionRoundTrip(g);
         }
 
-        [Test]
+        [Fact]
         public void WritingCollectionCompressionSimple2()
         {
             Graph g = new Graph();
@@ -112,12 +112,12 @@ namespace VDS.RDF.Writing
             CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);
 
-            Assert.AreEqual(0, context.Collections.Count, "Expected no Collections to be found");
+            Assert.Equal(0, context.Collections.Count);
 
             this.CheckCompressionRoundTrip(g);
         }
 
-        [Test]
+        [Fact]
         public void WritingCollectionCompressionSimple3()
         {
             Graph g = new Graph();
@@ -135,12 +135,12 @@ namespace VDS.RDF.Writing
             CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);
 
-            Assert.AreEqual(1, context.Collections.Count, "Expected 1 collection to be found");
+            Assert.Equal(1, context.Collections.Count);
 
             this.CheckCompressionRoundTrip(g);
         }
 
-        [Test]
+        [Fact]
         public void WritingCollectionCompressionSimple4()
         {
             Graph g = new Graph();
@@ -157,12 +157,12 @@ namespace VDS.RDF.Writing
             CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);
 
-            Assert.AreEqual(0, context.Collections.Count, "Expected no collections to be found");
+            Assert.Equal(0, context.Collections.Count);
 
             this.CheckCompressionRoundTrip(g);
         }
 
-        [Test]
+        [Fact]
         public void WritingCollectionCompressionSimple5()
         {
             Graph g = new Graph();
@@ -181,12 +181,12 @@ namespace VDS.RDF.Writing
             CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);
 
-            Assert.AreEqual(0, context.Collections.Count, "Expected no collections to be found");
+            Assert.Equal(0, context.Collections.Count);
 
             this.CheckCompressionRoundTrip(g);
         }
 
-        //[Test]
+        //[Fact]
         //public void WritingCollectionCompressionSimple6()
         //{
         //    Graph g = new Graph();
@@ -199,13 +199,13 @@ namespace VDS.RDF.Writing
         //    CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
         //    WriterHelper.FindCollections(context);
 
-        //    Assert.AreEqual(1, context.Collections.Count, "Expected 1 Collection to be found");
-        //    Assert.AreEqual(0, context.Collections.First().Value.Triples.Count, "Expected 1 Triple to be in the collection");
+        //    Assert.Equal(1, context.Collections.Count);
+        //    Assert.Equal(0, context.Collections.First().Value.Triples.Count, "Expected 1 Triple to be in the collection");
 
         //    this.CheckCompressionRoundTrip(g);
         //}
 
-        //[Test]
+        //[Fact]
         //public void WritingCollectionCompressionSimple7()
         //{
         //    Graph g = new Graph();
@@ -219,14 +219,14 @@ namespace VDS.RDF.Writing
         //    CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
         //    WriterHelper.FindCollections(context);
 
-        //    Assert.AreEqual(1, context.Collections.Count, "Expected 1 Collection to be found");
-        //    Assert.AreEqual(1, context.Collections.First().Value.Triples.Count, "Expected 1 Triple to be in the collection");
+        //    Assert.Equal(1, context.Collections.Count);
+        //    Assert.Equal(1, context.Collections.First().Value.Triples.Count, "Expected 1 Triple to be in the collection");
 
         //    this.CheckCompressionRoundTrip(g);
         //}
 
 #if !NO_SYNC_HTTP // No SparqlConnector
-        [Test]
+        [Fact]
         public void WritingCollectionCompressionComplex1()
         {
             SparqlConnector connector = new SparqlConnector(new VDS.RDF.Query.SparqlRemoteEndpoint(new Uri("http://dbpedia.org/sparql")));
@@ -243,13 +243,13 @@ namespace VDS.RDF.Writing
             CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);
 
-            Assert.AreEqual(2, context.Collections.Count, "Expected 2 collections");
+            Assert.Equal(2, context.Collections.Count);
 
             this.CheckCompressionRoundTrip(g);
         }
 #endif
 
-        [Test]
+        [Fact]
         public void WritingCollectionCompressionComplex2()
         {
             Graph g = new Graph();
@@ -273,7 +273,7 @@ namespace VDS.RDF.Writing
             this.CheckCompressionRoundTrip(g);
         }
 
-        [Test]
+        [Fact]
         public void WritingCollectionCompressionNamedListNodes()
         {
             Graph g = new Graph();
@@ -291,12 +291,12 @@ namespace VDS.RDF.Writing
             CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);
 
-            Assert.AreEqual(0, context.Collections.Count, "Expected no collections to be found");
+            Assert.Equal(0, context.Collections.Count);
 
             this.CheckCompressionRoundTrip(g);
         }
 
-        [Test]
+        [Fact]
         public void WritingCollectionCompressionNamedListNodes2()
         {
             Graph g = new Graph();
@@ -317,12 +317,12 @@ namespace VDS.RDF.Writing
             CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);
 
-            Assert.AreEqual(0, context.Collections.Count, "Expected no collections to be found");
+            Assert.Equal(0, context.Collections.Count);
 
             this.CheckCompressionRoundTrip(g);
         }
 
-        [Test]
+        [Fact]
         public void WritingCollectionCompressionNamedListNodes3()
         {
             Graph g = new Graph();
@@ -376,10 +376,10 @@ namespace VDS.RDF.Writing
                 Console.WriteLine(t.ToString(formatter));
             }
 
-            Assert.AreEqual(g, h, "Graphs should be equal");
+            Assert.Equal(g, h);
         }
 
-        [Test]
+        [Fact]
         public void WritingCollectionCompressionCyclic()
         {
             Graph g = new Graph();
@@ -401,12 +401,12 @@ namespace VDS.RDF.Writing
             CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);
 
-            Assert.AreEqual(2, context.Collections.Count, "Expected 2 collections (one should be eliminated to break the cycle)");
+            Assert.Equal(2, context.Collections.Count);
 
             this.CheckCompressionRoundTrip(g);
         }
 
-        [Test]
+        [Fact]
         public void WritingCollectionCompressionCyclic2()
         {
             Graph g = new Graph();
@@ -431,12 +431,12 @@ namespace VDS.RDF.Writing
             CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);
 
-            Assert.AreEqual(2, context.Collections.Count, "Expected 2 collections (one should be eliminated to break the cycle)");
+            Assert.Equal(2, context.Collections.Count);
 
             this.CheckCompressionRoundTrip(g);
         }
 
-        [Test]
+        [Fact]
         public void WritingCollectionCompressionCyclic3()
         {
             Graph g = new Graph();
@@ -463,7 +463,7 @@ namespace VDS.RDF.Writing
             CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);
 
-            Assert.AreEqual(3, context.Collections.Count, "Expected 3 collections (one should be eliminated to break the cycle)");
+            Assert.Equal(3, context.Collections.Count);
 
             this.CheckCompressionRoundTrip(g);
         }

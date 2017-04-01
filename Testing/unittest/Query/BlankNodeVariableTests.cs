@@ -27,7 +27,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
@@ -36,7 +36,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class BlankNodeVariableTests
     {
         private LeviathanQueryProcessor _processor;
@@ -58,7 +58,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlBlankNodeVariables1()
         {
             this.EnsureTestData();
@@ -70,10 +70,10 @@ namespace VDS.RDF.Query
             Console.WriteLine(q.ToAlgebra().ToString());
 
             SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
-            if (results == null) Assert.Fail("Did not get a SPARQL Result Set as expected");
-            Assert.IsFalse(results.Count == 0, "Result Set should not be empty");
+            if (results == null) Assert.True(false, "Did not get a SPARQL Result Set as expected");
+            Assert.False(results.Count == 0, "Result Set should not be empty");
 
-            Assert.IsTrue(results.All(r => r.HasValue("o") && r["o"] != null && r["o"].NodeType == NodeType.Literal), "All results should be literals");
+            Assert.True(results.All(r => r.HasValue("o") && r["o"] != null && r["o"].NodeType == NodeType.Literal), "All results should be literals");
         }
     }
 }

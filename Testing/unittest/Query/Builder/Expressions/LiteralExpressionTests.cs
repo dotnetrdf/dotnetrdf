@@ -23,26 +23,26 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Builder.Expressions
 {
-    [TestFixture]
+
     public class LiteralExpressionTests : SparqlExpressionTestsBase
     {
         private const string TestingStringValue = "text";
 
-        [SetUp]
-        public void Setup()
+        
+        public LiteralExpressionTests()
         {
             Left = "text".ToConstantTerm();
             Right = "text".ToConstantTerm();
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowEuqlityComparisonBetweenLiteralExpressionAndString()
         {
             // given
@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Builder.Expressions
                 assertRightOperand: op => AssertCorrectConstantTerm(op, TestingStringValue));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowEuqlityComparisonBetweenStringAndLiteralExpression()
         {
             // given
@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Builder.Expressions
                 assertLeftOperand: op => AssertCorrectConstantTerm(op, TestingStringValue));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowExtractingUntypedLiteral()
         {
             // given
@@ -78,8 +78,8 @@ namespace VDS.RDF.Query.Builder.Expressions
             LiteralExpression simpleLiteral = literal.ToSimpleLiteral();
 
             // then
-            Assert.IsTrue(simpleLiteral.Expression is ConstantTerm);
-            Assert.AreEqual("\"5.5\"", simpleLiteral.Expression.ToString());
+            Assert.True(simpleLiteral.Expression is ConstantTerm);
+            Assert.Equal("\"5.5\"", simpleLiteral.Expression.ToString());
         }
     }
 }

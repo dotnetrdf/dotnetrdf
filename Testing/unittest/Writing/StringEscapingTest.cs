@@ -29,14 +29,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
-    [TestFixture]
+
     public class StringEscapingTest
     {
         private readonly List<String> _values = new List<string>()
@@ -88,9 +88,9 @@ new line",
 
                     StringParser.Parse(g, writer.ToString(), parser);
                     Triple t = g.Triples.FirstOrDefault();
-                    if (t == null) Assert.Fail("Failed to parse a Triple");
+                    Assert.NotNull(t);
 
-                    Assert.AreEqual(tOrig.Object, t.Object);
+                    Assert.Equal(tOrig.Object, t.Object);
                 }
 
                 Console.WriteLine();
@@ -99,55 +99,55 @@ new line",
             }
         }
 
-        [Test]
+        [Fact]
         public void WritingStringBackslashEscapingNTriples1()
         {
             this.TestEscaping<NTriplesFormatter>(new NTriplesFormatter(NTriplesSyntax.Original), new NTriplesParser());
         }
 
-        [Test]
+        [Fact]
         public void WritingStringBackslashEscapingNTriples2()
         {
             this.TestEscaping<NTriplesFormatter>(new NTriplesFormatter(NTriplesSyntax.Rdf11), new NTriplesParser());
         }
 
-        [Test]
+        [Fact]
         public void WritingStringBackslashEscapingTurtle1()
         {
             this.TestEscaping<TurtleFormatter>(new TurtleFormatter(), new TurtleParser());
         }
 
-        [Test]
+        [Fact]
         public void WritingStringBackslashEscapingTurtle2()
         {
             this.TestEscaping<UncompressedTurtleFormatter>(new UncompressedTurtleFormatter(), new TurtleParser());
         }
 
-        [Test]
+        [Fact]
         public void WritingStringBackslashEscapingTurtle3()
         {
             this.TestEscaping<TurtleW3CFormatter>(new TurtleW3CFormatter(), new TurtleParser());
         }
 
-        [Test]
+        [Fact]
         public void WritingStringBackslashEscapingNotation3_1()
         {
             this.TestEscaping<Notation3Formatter>(new Notation3Formatter(), new Notation3Parser());
         }
 
-        [Test]
+        [Fact]
         public void WritingStringBackslashEscapingNotation3_2()
         {
             this.TestEscaping<UncompressedNotation3Formatter>(new UncompressedNotation3Formatter(), new Notation3Parser());
         }
 
-        [Test]
+        [Fact]
         public void WritingStringBackslashEscapingSparql()
         {
             this.TestEscaping<SparqlFormatter>(new SparqlFormatter(), null);
         }
 
-        [Test]
+        [Fact]
         public void WritingStringBackslashEscapingTsv()
         {
             this.TestEscaping<TsvFormatter>(new TsvFormatter(), null);

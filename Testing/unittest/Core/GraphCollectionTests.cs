@@ -28,25 +28,25 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 
 namespace VDS.RDF
 {
-    [TestFixture]
+
     public class GraphCollectionTests
     {
-        [Test]
+        [Fact]
         public void GraphCollectionBasic1()
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
             store.Add(g);
 
-            Assert.IsTrue(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
-            Assert.AreEqual(g, store[g.BaseUri], "Graphs should be equal");
+            Assert.True(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
+            Assert.Equal(g, store[g.BaseUri]);
         }
 
-        [Test]
+        [Fact]
         public void GraphCollectionBasic2()
         {
             TripleStore store = new TripleStore();
@@ -54,33 +54,33 @@ namespace VDS.RDF
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             store.Add(g);
 
-            Assert.IsTrue(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
-            Assert.AreEqual(g, store[g.BaseUri], "Graphs should be equal");
+            Assert.True(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
+            Assert.Equal(g, store[g.BaseUri]);
         }
 
-        [Test]
+        [Fact]
         public void GraphCollectionBasic3()
         {
             GraphCollection collection = new GraphCollection();
             Graph g = new Graph();
             collection.Add(g, true);
 
-            Assert.IsTrue(collection.Contains(g.BaseUri));
+            Assert.True(collection.Contains(g.BaseUri));
         }
 
-        [Test]
+        [Fact]
         public void GraphCollectionBasic4()
         {
             GraphCollection collection = new GraphCollection();
             Graph g = new Graph();
             collection.Add(g, true);
 
-            Assert.IsTrue(collection.Contains(g.BaseUri));
-            Assert.IsTrue(collection.GraphUris.Contains(null));
+            Assert.True(collection.Contains(g.BaseUri));
+            Assert.True(collection.GraphUris.Contains(null));
         }
 
 #if !NO_FILE
-        [Test]
+        [Fact]
         public void GraphCollectionDiskDemand1()
         {
             TripleStore store = new TripleStore(new DiskDemandGraphCollection());
@@ -88,11 +88,11 @@ namespace VDS.RDF
             g.LoadFromFile("resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("file:///" + Path.GetFullPath("resources\\InferenceTest.ttl"));
 
-            Assert.IsTrue(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
-            Assert.AreEqual(g, store[g.BaseUri], "Graphs should be equal");
+            Assert.True(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
+            Assert.Equal(g, store[g.BaseUri]);
         }
 
-        [Test]
+        [Fact]
         public void GraphCollectionDiskDemand2()
         {
             //Test that on-demand loading does not kick in for pre-existing graphs
@@ -106,13 +106,13 @@ namespace VDS.RDF
             empty.BaseUri = g.BaseUri;
             store.Add(empty);
 
-            Assert.IsTrue(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
-            Assert.AreNotEqual(g, store[g.BaseUri], "Graphs should not be equal");
+            Assert.True(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
+            Assert.NotEqual(g, store[g.BaseUri]);
         }
 #endif
 
 #if !SILVERLIGHT
-        [Test]
+        [Fact(Skip="Remote configuration file is not currently available")]
         public void GraphCollectionWebDemand1()
         {
             TripleStore store = new TripleStore(new WebDemandGraphCollection());
@@ -121,11 +121,11 @@ namespace VDS.RDF
             g.LoadFromUri(u);
             g.BaseUri = u; 
 
-            Assert.IsTrue(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
-            Assert.AreEqual(g, store[g.BaseUri], "Graphs should be equal");
+            Assert.True(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
+            Assert.Equal(g, store[g.BaseUri]);
         }
 
-        [Test]
+        [Fact(Skip = "Remote configuration file is not currently available")]
         public void GraphCollectionWebDemand2()
         {
             //Test that on-demand loading does not kick in for pre-existing graphs
@@ -140,8 +140,8 @@ namespace VDS.RDF
             empty.BaseUri = g.BaseUri;
             store.Add(empty);
 
-            Assert.IsTrue(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
-            Assert.AreNotEqual(g, store[g.BaseUri], "Graphs should not be equal");
+            Assert.True(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
+            Assert.NotEqual(g, store[g.BaseUri]);
         }
 #endif
     }

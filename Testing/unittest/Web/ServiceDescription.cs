@@ -29,27 +29,28 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Web
 {
     /// <summary>
     /// Summary description for ServiceDescription
     /// </summary>
-    [TestFixture]
+
     public class ServiceDescription
     {
         private void EnsureIIS()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS))
             {
-                Assert.Inconclusive("Test Config marks IIS as unavailable, cannot run this test");
+                throw new SkipTestException("Test Config marks IIS as unavailable, cannot run this test");
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void ServiceDescriptionOptionsRequestOnSparqlServer()
         {
             EnsureIIS();
@@ -72,13 +73,13 @@ namespace VDS.RDF.Web
 
                 TestTools.ShowGraph(g);
 
-                Assert.IsFalse(g.IsEmpty, "A non-empty Service Description Graph should have been returned");
+                Assert.False(g.IsEmpty, "A non-empty Service Description Graph should have been returned");
 
                 response.Close();
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void ServiceDescriptionOptionsRequestOnSparqlServer2()
         {
             EnsureIIS();
@@ -102,7 +103,7 @@ namespace VDS.RDF.Web
 
                 TestTools.ShowGraph(g);
 
-                Assert.IsFalse(g.IsEmpty, "A non-empty Service Description Graph should have been returned");
+                Assert.False(g.IsEmpty, "A non-empty Service Description Graph should have been returned");
 
                 response.Close();
             }
@@ -110,7 +111,7 @@ namespace VDS.RDF.Web
 
 #if !PORTABLE
 
-        [Test]
+        [SkippableFact]
         public void ServiceDescriptionDescriptionUriSparqlServer()
         {
             EnsureIIS();
@@ -124,12 +125,12 @@ namespace VDS.RDF.Web
             UriLoader.Load(g, new Uri(path));
             TestTools.ShowGraph(g);
 
-            Assert.IsFalse(g.IsEmpty, "A non-empty Service Description Graph should have been returned");
+            Assert.False(g.IsEmpty, "A non-empty Service Description Graph should have been returned");
         }
 
 #endif
 
-        [Test]
+        [SkippableFact]
         public void ServiceDescriptionOptionsRequestOnQueryHandler()
         {
             EnsureIIS();
@@ -152,13 +153,13 @@ namespace VDS.RDF.Web
 
                 TestTools.ShowGraph(g);
 
-                Assert.IsFalse(g.IsEmpty, "A non-empty Service Description Graph should have been returned");
+                Assert.False(g.IsEmpty, "A non-empty Service Description Graph should have been returned");
 
                 response.Close();
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void ServiceDescriptionOptionsRequestOnSparqlServer3()
         {
             EnsureIIS();
@@ -181,13 +182,13 @@ namespace VDS.RDF.Web
 
                 TestTools.ShowGraph(g);
 
-                Assert.IsFalse(g.IsEmpty, "A non-empty Service Description Graph should have been returned");
+                Assert.False(g.IsEmpty, "A non-empty Service Description Graph should have been returned");
 
                 response.Close();
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void ServiceDescriptionOptionsRequestOnSparqlServer4()
         {
             EnsureIIS();
@@ -210,7 +211,7 @@ namespace VDS.RDF.Web
 
                 TestTools.ShowGraph(g);
 
-                Assert.IsFalse(g.IsEmpty, "A non-empty Service Description Graph should have been returned");
+                Assert.False(g.IsEmpty, "A non-empty Service Description Graph should have been returned");
 
                 response.Close();
             }

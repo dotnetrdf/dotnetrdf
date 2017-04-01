@@ -28,7 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
@@ -42,39 +42,33 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.FullText
 {
-    [TestFixture]
+    [Trait("category", "explicit")]
+    [Trait("category", "fulltext")]
+    [Collection("FullText")]
     public class FullTextSparqlTests2
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
         private INamespaceMapper _nsmap;
         private ISparqlDataset _dataset;
 
-        private INamespaceMapper GetQueryNamespaces()
+        public FullTextSparqlTests2()
         {
-            if (this._nsmap == null)
-            {
-                this._nsmap = new NamespaceMapper();
-                this._nsmap.AddNamespace("pf", new Uri(FullTextHelper.FullTextMatchNamespace));
-            }
-            return this._nsmap;
+            this._nsmap = new NamespaceMapper();
+            this._nsmap.AddNamespace("pf", new Uri(FullTextHelper.FullTextMatchNamespace));
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            store.Add(g);
+            this._dataset = new InMemoryDataset(store, true);
         }
 
-        private void EnsureTestData()
+        private INamespaceMapper GetQueryNamespaces()
         {
-            if (this._dataset == null)
-            {
-                TripleStore store = new TripleStore();
-                Graph g = new Graph();
-                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-                store.Add(g);
-
-                this._dataset = new InMemoryDataset(store, true);
-            }
+            return this._nsmap;
         }
 
         private void RunTest(IFullTextIndexer indexer, String query, IEnumerable<INode> expected)
         {
-            this.EnsureTestData();
 
             indexer.Index(this._dataset);
             indexer.Dispose();
@@ -99,6 +93,7 @@ namespace VDS.RDF.Query.FullText
             try
             {
                 q.AlgebraOptimisers = new IAlgebraOptimiser[] { new FullTextOptimiser(provider) };
+                Options.AlgebraOptimisation = true;
 
                 LeviathanQueryProcessor processor = new LeviathanQueryProcessor(this._dataset);
                 SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
@@ -108,16 +103,16 @@ namespace VDS.RDF.Query.FullText
 
                     foreach (INode n in expected)
                     {
-                        Assert.IsTrue(results.Any(r => r.HasValue("match") && r["match"] != null && r["match"].Equals(n)), "Did not get expected ?match => " + formatter.Format(n));
+                        Assert.True(results.Any(r => r.HasValue("match") && r["match"] != null && r["match"].Equals(n)), "Did not get expected ?match => " + formatter.Format(n));
                     }
                     foreach (SparqlResult r in results)
                     {
-                        Assert.IsTrue(r.HasValue("match") && r["match"] != null && expected.Contains(r["match"]), "Unexpected Match " + formatter.Format(r["match"]));
+                        Assert.True(r.HasValue("match") && r["match"] != null && expected.Contains(r["match"]), "Unexpected Match " + formatter.Format(r["match"]));
                     }
                 }
                 else
                 {
-                    Assert.Fail("Did not get a SPARQL Result Set as expected");
+                    Assert.True(false, "Did not get a SPARQL Result Set as expected");
                 }
             }
             finally
@@ -127,49 +122,43 @@ namespace VDS.RDF.Query.FullText
             }
         }
 
-        [Test]
+        [Fact]
         public void FullTextSparqlComplexLuceneSubjects1()
         {
             this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . ?match a <http://example.org/noSuchThing> }", Enumerable.Empty<INode>());
         }
 
-        [Test]
+        [Fact]
         public void FullTextSparqlComplexLuceneSubjects2()
         {
-            this.EnsureTestData();
-
             List<INode> expected = (from t in this._dataset.Triples
                                     where t.Object.NodeType == NodeType.Literal
                                           && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                                     select t.Subject).ToList();
             NodeFactory factory = new NodeFactory();
             expected.RemoveAll(n => !this._dataset.ContainsTriple(new Triple(Tools.CopyNode(n, factory), factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")))));
-            Assert.IsTrue(expected.Any());
+            Assert.True(expected.Any());
 
             this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . ?match a rdfs:Class }", expected);
         }
 
-        [Test]
+        [Fact]
         public void FullTextSparqlComplexLuceneSubjects3()
         {
-            this.EnsureTestData();
-
             List<INode> expected = (from t in this._dataset.Triples
                                     where t.Object.NodeType == NodeType.Literal
                                           && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                                     select t.Subject).ToList();
             NodeFactory factory = new NodeFactory();
             expected.RemoveAll(n => !this._dataset.ContainsTriple(new Triple(Tools.CopyNode(n, factory), factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")))));
-            Assert.IsTrue(expected.Any());
+            Assert.True(expected.Any());
 
             this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match a rdfs:Class . { ?match pf:textMatch 'http' } }", expected);
         }
 
-        [Test]
+        [Fact]
         public void FullTextSparqlComplexLuceneSubjects4()
         {
-            this.EnsureTestData();
-
             List<INode> expected = (from t in this._dataset.Triples
                                     where t.Object.NodeType == NodeType.Literal
                                           && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
@@ -177,16 +166,14 @@ namespace VDS.RDF.Query.FullText
             NodeFactory factory = new NodeFactory();
             expected.RemoveAll(n => !this._dataset.ContainsTriple(new Triple(Tools.CopyNode(n, factory), factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")))));
             expected.RemoveAll(n => !this._dataset.GetTriplesWithPredicateObject(factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "domain")), n).Any());
-            Assert.IsTrue(expected.Any());
+            Assert.True(expected.Any());
 
             this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . ?match a rdfs:Class . ?property rdfs:domain ?match }", expected);
         }
 
-        [Test]
+        [Fact]
         public void FullTextSparqlComplexLuceneSubjects5()
         {
-            this.EnsureTestData();
-
             List<INode> expected = (from t in this._dataset.Triples
                                     where t.Object.NodeType == NodeType.Literal
                                           && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
@@ -199,11 +186,9 @@ namespace VDS.RDF.Query.FullText
             this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . ?match a rdfs:Class . ?property rdfs:domain ?match . OPTIONAL { ?property rdfs:label ?label } }", expected);
         }
 
-        [Test]
+        [Fact]
         public void FullTextSparqlComplexLuceneSubjects6()
         {
-            this.EnsureTestData();
-
             List<INode> expected = (from t in this._dataset.Triples
                                     where t.Object.NodeType == NodeType.Literal
                                           && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")

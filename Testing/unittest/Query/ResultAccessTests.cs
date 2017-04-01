@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
@@ -35,7 +35,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
+
     public class ResultAccessTests
     {
         private ISparqlDataset _dataset;
@@ -43,8 +43,7 @@ namespace VDS.RDF.Query
         private SparqlQueryParser _parser = new SparqlQueryParser();
         private NTriplesFormatter _formatter = new NTriplesFormatter();
 
-        [SetUp]
-        public void EnsureDataset()
+        public ResultAccessTests()
         {
             Graph g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
@@ -64,18 +63,11 @@ namespace VDS.RDF.Query
         private SparqlResultSet GetResults(SparqlQuery query)
         {
             Object results = this._processor.ProcessQuery(query);
-            if (results is SparqlResultSet)
-            {
-                return (SparqlResultSet)results;
-            }
-            else
-            {
-                Assert.Fail("Did not get a Result Set as expected");
-                return null;
-            }
+            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            return results as SparqlResultSet;
         }
 
-        [Test]
+        [Fact]
         public void SparqlResultAccessByName()
         {
             String query = "SELECT * WHERE { ?s a ?type ; rdfs:comment ?comment }";
@@ -88,20 +80,24 @@ namespace VDS.RDF.Query
             }
         }
 
-        [Test,ExpectedException(typeof(RdfException))]
+        [Fact]
         public void SparqlResultAccessByNameError()
         {
-            String query = "SELECT * WHERE { ?s a ?type . OPTIONAL { ?s ex:range ?range } }";
-            SparqlQuery q = this.CreateQuery(query);
-            SparqlResultSet results = this.GetResults(q);
-
-            foreach (SparqlResult r in results)
+            Assert.Throws<RdfException>(() =>
             {
-                Console.WriteLine("?s = " + r["s"].ToString(this._formatter) + " ?range = " + r["range"].ToString(this._formatter));
-            }
+                String query = "SELECT * WHERE { ?s a ?type . OPTIONAL { ?s ex:range ?range } }";
+                SparqlQuery q = this.CreateQuery(query);
+                SparqlResultSet results = this.GetResults(q);
+
+                foreach (SparqlResult r in results)
+                {
+                    Console.WriteLine("?s = " + r["s"].ToString(this._formatter) + " ?range = " +
+                                      r["range"].ToString(this._formatter));
+                }
+            });
         }
 
-        [Test]
+        [Fact]
         public void SparqlResultAccessByNameSafeHasValue()
         {
             String query = "SELECT * WHERE { ?s a ?type . OPTIONAL { ?s rdfs:range ?range } }";
@@ -122,7 +118,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlResultAccessByNameSafeTryGetValue()
         {
             String query = "SELECT * WHERE { ?s a ?type . OPTIONAL { ?s rdfs:range ?range } }";
@@ -144,7 +140,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlResultAccessByNameSafeTryGetBoundValue()
         {
             String query = "SELECT * WHERE { ?s a ?type . OPTIONAL { ?s rdfs:range ?range } }";
@@ -166,7 +162,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlResultAccessByIndex()
         {
             String query = "SELECT * WHERE { ?s a ?type ; rdfs:comment ?comment }";
@@ -184,7 +180,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlResultSetVariableOrder1()
         {
             String query = "SELECT ?s ?type ?comment WHERE { ?s a ?type ; rdfs:comment ?comment }";
@@ -194,7 +190,7 @@ namespace VDS.RDF.Query
             this.TestVariableOrder(results, new List<String>() { "s", "type", "comment" });
         }
 
-        [Test]
+        [Fact]
         public void SparqlResultSetVariableOrder2()
         {
             String query = "SELECT ?s ?comment ?type WHERE { ?s a ?type ; rdfs:comment ?comment }";
@@ -204,7 +200,7 @@ namespace VDS.RDF.Query
             this.TestVariableOrder(results, new List<String>() { "s", "comment", "type" });
         }
 
-        [Test]
+        [Fact]
         public void SparqlResultSetVariableOrder3()
         {
             String query = "SELECT ?comment ?type ?s WHERE { ?s a ?type ; rdfs:comment ?comment }";
@@ -214,7 +210,7 @@ namespace VDS.RDF.Query
             this.TestVariableOrder(results, new List<String>() { "comment", "type", "s"});
         }
 
-        [Test]
+        [Fact]
         public void SparqlResultSetVariableOrder4()
         {
             String query = "SELECT ?comment ?type WHERE { ?s a ?type ; rdfs:comment ?comment }";
@@ -224,7 +220,7 @@ namespace VDS.RDF.Query
             this.TestVariableOrder(results, new List<String>() { "comment", "type" });
         }
 
-        [Test]
+        [Fact]
         public void SparqlResultSetVariableOrder5()
         {
             String data = @"<?xml version=""1.0"" encoding=""utf-8""?>
@@ -242,7 +238,7 @@ namespace VDS.RDF.Query
             this.TestVariableOrder(results, new List<string>() { "a", "b" });
         }
 
-        [Test]
+        [Fact]
         public void SparqlResultSetVariableOrder6()
         {
             String data = @"<?xml version=""1.0"" encoding=""utf-8""?>
@@ -260,7 +256,7 @@ namespace VDS.RDF.Query
             this.TestVariableOrder(results, new List<string>() { "b", "a" });
         }
 
-        [Test]
+        [Fact]
         public void SparqlResultSetVariableOrder7()
         {
             String data = @"<?xml version=""1.0"" encoding=""utf-8""?>
@@ -307,10 +303,10 @@ namespace VDS.RDF.Query
 
         private void TestVariableOrder(List<String> expected, List<String> actual)
         {
-            Assert.AreEqual(expected.Count, actual.Count);
+            Assert.Equal(expected.Count, actual.Count);
             for (int i = 0; i < expected.Count; i++)
             {
-                Assert.AreEqual(expected[i], actual[i], "Incorrect variable at index " + i + " - got ?" + actual[i] + " but expected ?" + expected[i]);
+                Assert.Equal(expected[i], actual[i]);
             }
         }
     }

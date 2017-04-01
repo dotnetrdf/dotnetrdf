@@ -27,17 +27,17 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Update;
 
 namespace VDS.RDF.Parsing
 {
-    [TestFixture]
+
     public class ObjectParserTests
     {
-        [Test]
+        [Fact]
         public void ParsingObjectsListAvailable()
         {
             foreach (MimeTypeDefinition def in MimeTypesHelper.Definitions)
@@ -50,44 +50,44 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [Test]
+        [Fact]
         public void ParsingObjectsQueryTypeCheck()
         {
             Type target = typeof(SparqlQueryParser);
             MimeTypeDefinition def = MimeTypesHelper.Definitions.FirstOrDefault(d => d.CanParseObject<SparqlQuery>());
-            Assert.AreNotEqual(null, def, "Should get a valid definition");
-            Assert.AreEqual(target, def.GetObjectParserType<SparqlQuery>());
+            Assert.NotNull(def);
+            Assert.Equal(target, def.GetObjectParserType<SparqlQuery>());
         }
 
-        [Test]
+        [Fact]
         public void ParsingObjectsUpdateTypeCheck()
         {
             Type target = typeof(SparqlUpdateParser);
             MimeTypeDefinition def = MimeTypesHelper.Definitions.FirstOrDefault(d => d.CanParseObject<SparqlUpdateCommandSet>());
-            Assert.AreNotEqual(null, def, "Should get a valid definition");
-            Assert.AreEqual(target, def.GetObjectParserType<SparqlUpdateCommandSet>());
+            Assert.NotNull(def);
+            Assert.Equal(target, def.GetObjectParserType<SparqlUpdateCommandSet>());
         }
 
-        [Test]
+        [Fact]
         public void ParsingObjectsQueryParserCheck()
         {
             Type target = typeof(SparqlQueryParser);
             MimeTypeDefinition def = MimeTypesHelper.Definitions.FirstOrDefault(d => d.CanParseObject<SparqlQuery>());
-            Assert.AreNotEqual(null, def, "Should get a valid definition");
-            Assert.AreEqual(target, def.GetObjectParserType<SparqlQuery>());
+            Assert.NotNull(def);
+            Assert.Equal(target, def.GetObjectParserType<SparqlQuery>());
 
             IObjectParser<SparqlQuery> parser = def.GetObjectParser<SparqlQuery>();
             SparqlQuery q = parser.ParseFromString("SELECT * WHERE { ?s ?p ?o }");
             Console.WriteLine(q.ToString());
         }
 
-        [Test]
+        [Fact]
         public void ParsingObjectsUpdateParserCheck()
         {
             Type target = typeof(SparqlUpdateParser);
             MimeTypeDefinition def = MimeTypesHelper.Definitions.FirstOrDefault(d => d.CanParseObject<SparqlUpdateCommandSet>());
-            Assert.AreNotEqual(null, def, "Should get a valid definition");
-            Assert.AreEqual(target, def.GetObjectParserType<SparqlUpdateCommandSet>());
+            Assert.NotNull(def);
+            Assert.Equal(target, def.GetObjectParserType<SparqlUpdateCommandSet>());
 
             IObjectParser<SparqlUpdateCommandSet> parser = def.GetObjectParser<SparqlUpdateCommandSet>();
             SparqlUpdateCommandSet cmds = parser.ParseFromString("CLEAR DEFAULT");

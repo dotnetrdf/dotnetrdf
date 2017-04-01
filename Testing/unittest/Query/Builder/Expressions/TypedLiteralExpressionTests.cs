@@ -23,16 +23,16 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions.Comparison;
 
 namespace VDS.RDF.Query.Builder.Expressions
 {
-    [TestFixture]
+
     public class TypedLiteralExpressionTests : SparqlExpressionTestsBase
     {
-        [Test]
+        [Fact]
         public void ShouldAllowComparisonOperationOnTypedLiteralExpressions()
         {
             // given
@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.Builder.Expressions
             AssertExpressionTypeAndCorrectArguments<NotEqualsExpression>(left != right);
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowComparisonOperationOnTypedLiteralExpressionAndLiteralValue()
         {
             // given
@@ -73,7 +73,7 @@ namespace VDS.RDF.Query.Builder.Expressions
                 assertRightOperand: ex => AssertCorrectConstantTerm(ex, value));
         }
 
-        [Test]
+        [Fact]
         public void ShouldAllowComparisonOperationOnLiteralValueAndTypedLiteralExpression()
         {
             // given

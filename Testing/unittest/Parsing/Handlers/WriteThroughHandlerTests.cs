@@ -27,159 +27,159 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Handlers
 {
-    [TestFixture]
+
     public class WriteThroughHandlerTests
     {
         private void ParsingUsingWriteThroughHandler(ITripleFormatter formatter)
         {
-            if (!System.IO.File.Exists("temp.ttl"))
+            if (!System.IO.File.Exists("write_through_handler_tests_temp.ttl"))
             {
                 Graph g = new Graph();
                 EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
-                g.SaveToFile("temp.ttl");
+                g.SaveToFile("write_through_handler_tests_temp.ttl");
             }
 
             WriteThroughHandler handler = new WriteThroughHandler(formatter, Console.Out, false);
             TurtleParser parser = new TurtleParser();
-            parser.Load(handler, "temp.ttl");
+            parser.Load(handler, "write_through_handler_tests_temp.ttl");
         }
 
         private void ParsingUsingWriteThroughHandler(Type formatterType)
         {
-            if (!System.IO.File.Exists("temp.ttl"))
+            if (!System.IO.File.Exists("write_through_handler_tests_temp.ttl"))
             {
                 Graph g = new Graph();
                 EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
-                g.SaveToFile("temp.ttl");
+                g.SaveToFile("write_through_handler_tests_temp.ttl");
             }
 
             WriteThroughHandler handler = new WriteThroughHandler(formatterType, Console.Out, false);
             TurtleParser parser = new TurtleParser();
-            parser.Load(handler, "temp.ttl");
+            parser.Load(handler, "write_through_handler_tests_temp.ttl");
         }
 
-        [Test]
+        [Fact]
         public void ParsingWriteThroughHandlerNTriples()
         {
             this.ParsingUsingWriteThroughHandler(new NTriplesFormatter());
         }
 
-        [Test]
+        [Fact]
         public void ParsingWriteThroughHandlerTurtle()
         {
             this.ParsingUsingWriteThroughHandler(new TurtleFormatter());
         }
 
-        [Test]
+        [Fact]
         public void ParsingWriteThroughHandlerNotation3()
         {
             this.ParsingUsingWriteThroughHandler(new Notation3Formatter());
         }
 
-        [Test]
+        [Fact]
         public void ParsingWriteThroughHandlerNQuads()
         {
             this.ParsingUsingWriteThroughHandler(new NQuadsFormatter());
         }
 
-        [Test]
+        [Fact]
         public void ParsingWriteThroughHandlerUncompressedNotation3()
         {
             this.ParsingUsingWriteThroughHandler(new UncompressedNotation3Formatter());
         }
 
-        [Test]
+        [Fact]
         public void ParsingWriteThroughHandlerUncompressedTurtle()
         {
             this.ParsingUsingWriteThroughHandler(new UncompressedTurtleFormatter());
         }
 
-        [Test]
+        [Fact]
         public void ParsingWriteThroughHandlerCsv()
         {
             this.ParsingUsingWriteThroughHandler(new CsvFormatter());
         }
 
-        [Test]
+        [Fact]
         public void ParsingWriteThroughHandlerTsv()
         {
             this.ParsingUsingWriteThroughHandler(new TsvFormatter());
         }
 
-        [Test]
+        [Fact]
         public void ParsingWriteThroughHandlerRdfXml()
         {
             this.ParsingUsingWriteThroughHandler(new RdfXmlFormatter());
         }
 
-        [Test]
+        [Fact]
         public void ParsingWriteThroughHandlerRdfXml2()
         {
             this.ParsingUsingWriteThroughHandler(typeof(RdfXmlFormatter));
         }
 
-        [Test]
+        [Fact]
         public void ParsingWriteThroughHandlerSparql()
         {
             this.ParsingUsingWriteThroughHandler(new SparqlFormatter());
         }
 
-        [Test]
+        [Fact]
         public void ParsingWriteThroughHandlerNTriples2()
         {
             this.ParsingUsingWriteThroughHandler(typeof(NTriplesFormatter));
         }
 
-        [Test]
+        [Fact]
         public void ParsingWriteThroughHandlerTurtle2()
         {
             this.ParsingUsingWriteThroughHandler(typeof(TurtleFormatter));
         }
 
-        [Test]
+        [Fact]
         public void ParsingWriteThroughHandlerNotation32()
         {
             this.ParsingUsingWriteThroughHandler(typeof(Notation3Formatter));
         }
 
-        [Test]
+        [Fact]
         public void ParsingWriteThroughHandlerNQuads2()
         {
             this.ParsingUsingWriteThroughHandler(typeof(NQuadsFormatter));
         }
 
-        [Test]
+        [Fact]
         public void ParsingWriteThroughHandlerUncompressedNotation32()
         {
             this.ParsingUsingWriteThroughHandler(typeof(UncompressedNotation3Formatter));
         }
 
-        [Test]
+        [Fact]
         public void ParsingWriteThroughHandlerUncompressedTurtle2()
         {
             this.ParsingUsingWriteThroughHandler(typeof(UncompressedTurtleFormatter));
         }
 
-        [Test]
+        [Fact]
         public void ParsingWriteThroughHandlerCsv2()
         {
             this.ParsingUsingWriteThroughHandler(typeof(CsvFormatter));
         }
 
-        [Test]
+        [Fact]
         public void ParsingWriteThroughHandlerTsv2()
         {
             this.ParsingUsingWriteThroughHandler(typeof(TsvFormatter));
         }
 
-        [Test]
+        [Fact]
         public void ParsingWriteThroughHandlerSparql2()
         {
             this.ParsingUsingWriteThroughHandler(typeof(SparqlFormatter));

@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
@@ -35,8 +35,8 @@ using VDS.RDF.Query.Describe;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture]
-    public class DescribeAlgorithms
+
+    public class DescribeAlgorithms : IDisposable
     {
         private const String DescribeQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/> DESCRIBE ?x WHERE {?x foaf:name \"Dave\" }";
 
@@ -44,8 +44,7 @@ namespace VDS.RDF.Query
         private InMemoryDataset _data;
         private LeviathanQueryProcessor _processor;
 
-        [SetUp]
-        public void Setup()
+        public DescribeAlgorithms()
         {
             this._parser = new SparqlQueryParser();
             TripleStore store = new TripleStore();
@@ -56,8 +55,7 @@ namespace VDS.RDF.Query
             this._processor = new LeviathanQueryProcessor(this._data);
         }
 
-        [TearDown]
-        public void Cleanup()
+        public void Dispose()
         {
             this._parser = null;
             this._data = null;
@@ -68,28 +66,26 @@ namespace VDS.RDF.Query
             return this._parser.ParseFromString(DescribeQuery);
         }
 
-        [TestCase(typeof(ConciseBoundedDescription))]
-        [TestCase(typeof(SymmetricConciseBoundedDescription))]
-        [TestCase(typeof(SimpleSubjectDescription))]
-        [TestCase(typeof(SimpleSubjectObjectDescription))]
-        [TestCase(typeof(MinimalSpanningGraph))]
-        [TestCase(typeof(LabelledDescription))]
+        [Theory]
+        [InlineData(typeof(ConciseBoundedDescription))]
+        [InlineData(typeof(SymmetricConciseBoundedDescription))]
+        [InlineData(typeof(SimpleSubjectDescription))]
+        [InlineData(typeof(SimpleSubjectObjectDescription))]
+        [InlineData(typeof(MinimalSpanningGraph))]
+        [InlineData(typeof(LabelledDescription))]
         public void SparqlDescribeAlgorithms(Type describerType)
         {
             SparqlQuery q = this.GetQuery();
             q.Describer = (ISparqlDescribe) Activator.CreateInstance(describerType);
             Object results = this._processor.ProcessQuery(q);
+            Assert.IsAssignableFrom<Graph>(results);
             if (results is Graph)
             {
                 TestTools.ShowResults(results);
             }
-            else
-            {
-                Assert.Fail("Expected a Graph as the Result");
-            }
         }
 
-        [Test]
+        [Fact]
         public void SparqlDescribeDefaultGraphHandling1()
         {
             InMemoryDataset dataset = new InMemoryDataset();
@@ -101,11 +97,11 @@ namespace VDS.RDF.Query
 
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
             IGraph description = processor.ProcessQuery(this._parser.ParseFromString("DESCRIBE ?s FROM <http://graph> WHERE { ?s ?p ?o }")) as IGraph;
-            Assert.IsNotNull(description);
-            Assert.IsFalse(description.IsEmpty);
+            Assert.NotNull(description);
+            Assert.False(description.IsEmpty);
         }
 
-        [Test]
+        [Fact]
         public void SparqlDescribeDefaultGraphHandling2()
         {
             InMemoryDataset dataset = new InMemoryDataset();
@@ -117,11 +113,11 @@ namespace VDS.RDF.Query
 
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
             IGraph description = processor.ProcessQuery(this._parser.ParseFromString("DESCRIBE ?s WHERE { GRAPH <http://graph> { ?s ?p ?o } }")) as IGraph;
-            Assert.IsNotNull(description);
-            Assert.IsTrue(description.IsEmpty);
+            Assert.NotNull(description);
+            Assert.True(description.IsEmpty);
         }
 
-        [Test]
+        [Fact]
         public void SparqlDescribeDefaultGraphHandling3()
         {
             InMemoryDataset dataset = new InMemoryDataset();
@@ -133,11 +129,11 @@ namespace VDS.RDF.Query
 
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
             IGraph description = processor.ProcessQuery(this._parser.ParseFromString("DESCRIBE ?s FROM <http://graph> WHERE { GRAPH <http://graph> { ?s ?p ?o } }")) as IGraph;
-            Assert.IsNotNull(description);
-            Assert.IsTrue(description.IsEmpty);
+            Assert.NotNull(description);
+            Assert.True(description.IsEmpty);
         }
 
-        [Test]
+        [Fact]
         public void SparqlDescribeDefaultGraphHandling4()
         {
             InMemoryDataset dataset = new InMemoryDataset();
@@ -149,8 +145,8 @@ namespace VDS.RDF.Query
 
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
             IGraph description = processor.ProcessQuery(this._parser.ParseFromString("DESCRIBE ?s FROM <http://graph> FROM NAMED <http://graph> WHERE { GRAPH <http://graph> { ?s ?p ?o } }")) as IGraph;
-            Assert.IsNotNull(description);
-            Assert.IsFalse(description.IsEmpty);
+            Assert.NotNull(description);
+            Assert.False(description.IsEmpty);
         }
     }
 }

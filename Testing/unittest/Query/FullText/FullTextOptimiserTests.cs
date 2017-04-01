@@ -29,7 +29,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
@@ -40,12 +40,19 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.FullText
 {
-    [TestFixture]
+    [Trait("category", "explicit")]
+    [Trait("category", "fulltext")]
     public class FullTextOptimiserTests
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
         private List<IAlgebraOptimiser> _optimisers;
         private SparqlFormatter _formatter = new SparqlFormatter();
+
+        public FullTextOptimiserTests()
+        {
+            Options.AlgebraOptimisation = true;
+            Options.QueryOptimisation = true;
+        }
 
         private SparqlQuery TestOptimisation(String query)
         {
@@ -64,68 +71,69 @@ namespace VDS.RDF.Query.FullText
                 };
             }
             q.AlgebraOptimisers = this._optimisers;
+            Options.AlgebraOptimisation = true;
 
             String algebra = q.ToAlgebra().ToString();
             Console.WriteLine("Optimised Algebra: " + algebra);
-            Assert.IsTrue(algebra.Contains("FullTextQuery("), "Optimised Algebra should use FullTextQuery operator");
-            Assert.IsTrue(algebra.Contains("PropertyFunction("), "Optimised Algebra should use PropertyFunction operator");
+            Assert.True(algebra.Contains("FullTextQuery("), "Optimised Algebra should use FullTextQuery operator");
+            Assert.True(algebra.Contains("PropertyFunction("), "Optimised Algebra should use PropertyFunction operator");
 
             return q;
         }
 
-        [Test]
+        [Fact]
         public void FullTextOptimiserSimple1()
         {
             this.TestOptimisation("SELECT * WHERE { ?s pf:textMatch 'value' }");
         }
 
-        [Test]
+        [Fact]
         public void FullTextOptimiserSimple2()
         {
             this.TestOptimisation("SELECT * WHERE { ?s ?p ?o . ?s pf:textMatch 'value' }");
         }
 
-        [Test]
+        [Fact]
         public void FullTextOptimiserSimple3()
         {
             this.TestOptimisation("SELECT * WHERE { ?s pf:textMatch 'value' . FILTER(ISURI(?s)) }");
         }
 
-        [Test]
+        [Fact]
         public void FullTextOptimiserSimple4()
         {
             this.TestOptimisation("SELECT * WHERE { (?match ?score) pf:textMatch 'value' }");
         }
 
-        [Test]
+        [Fact]
         public void FullTextOptimiserComplex1()
         {
             this.TestOptimisation("SELECT * WHERE { ?s ?p ?o . ?s pf:textMatch 'value' }");
         }
 
-        [Test]
+        [Fact]
         public void FullTextOptimiserComplex2()
         {
             this.TestOptimisation("SELECT * WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) . ?s pf:textMatch 'value' }");
         }
 
-        [Test]
+        [Fact]
         public void FullTextOptimiserComplex3()
         {
             SparqlQuery q = this.TestOptimisation("SELECT * WHERE { ?s pf:textMatch 'value' . BIND(STR(?s) AS ?str) }");
             ISparqlAlgebra algebra = q.ToAlgebra();
-            Assert.IsFalse(algebra.ToString().Contains("PropertyFunction(Extend("));
+            Assert.False(algebra.ToString().Contains("PropertyFunction(Extend("));
         }
 
-        [Test]
+        [Fact]
         public void FullTextOptimiserComplex4()
         {
             SparqlQuery q = this.TestOptimisation("SELECT * WHERE { (?s ?score) pf:textMatch 'value' . BIND(STR(?s) AS ?str) }");
             ISparqlAlgebra algebra = q.ToAlgebra();
-            Assert.IsFalse(algebra.ToString().Contains("PropertyFunction(Extend("));
+            Assert.False(algebra.ToString().Contains("PropertyFunction(Extend("));
         }
 
-        [Test]
+        [Fact]
         public void FullTextOptimiserComplex5()
         {
             //Actual test case from FTXT-364
@@ -147,7 +155,7 @@ SELECT DISTINCT ?result ?isWebSite WHERE {
     } ORDER BY DESC(?isWebSite) DESC(?score) ASC(?label)";
             SparqlQuery q = this.TestOptimisation(query);
             ISparqlAlgebra algebra = q.ToAlgebra();
-            Assert.IsFalse(algebra.ToString().Contains("PropertyFunction(Extend("));
+            Assert.False(algebra.ToString().Contains("PropertyFunction(Extend("));
         }
     }
 

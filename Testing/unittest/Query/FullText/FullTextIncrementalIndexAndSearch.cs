@@ -29,7 +29,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using Lucene.Net;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
@@ -45,12 +45,12 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.FullText
 {
-    [TestFixture]
+    [Collection("FullText")]
     public class FullTextIncrementalIndexAndSearch
     {
         private NTriplesFormatter _formatter = new NTriplesFormatter();
 
-        [Test]
+        [Fact]
         public void FullTextIncrementalIndexingLucene1()
         {
             //Lucene Index
@@ -88,14 +88,14 @@ namespace VDS.RDF.Query.FullText
                     Console.WriteLine("Got result " + r.Node.ToString(this._formatter) + " with score " + r.Score);
                 }
 
-                Assert.IsTrue(results.Any(r => r.Node.Equals(targetNode)), "Did not find expected node in search results");
+                Assert.True(results.Any(r => r.Node.Equals(targetNode)), "Did not find expected node in search results");
                 searcher.Dispose();
                 Console.WriteLine();
             }
             indexer.Dispose();
         }
 
-        [Test]
+        [Fact]
         public void FullTextIncrementalIndexingLucene2()
         {
             //Lucene Index
@@ -133,7 +133,7 @@ namespace VDS.RDF.Query.FullText
                     Console.WriteLine("Got result " + r.Node.ToString(this._formatter) + " with score " + r.Score);
                 }
 
-                Assert.IsTrue(results.Any(r => r.Node.Equals(targetNode)), "Did not find expected node in search results");
+                Assert.True(results.Any(r => r.Node.Equals(targetNode)), "Did not find expected node in search results");
                 Console.WriteLine();
             }
             searcher.Dispose();

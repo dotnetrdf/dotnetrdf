@@ -26,44 +26,45 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.IO;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Writing.Formatting;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Parsing.Suites
 {
-    [TestFixture]
+
     public class Turtle11Unofficial
         : BaseRdfParserSuite
     {
         public Turtle11Unofficial()
             : base(new TurtleParser(TurtleSyntax.W3C), new NTriplesParser(), "turtle11-unofficial\\") { }
 
-        [Test]
+        [SkippableFact]
         public void ParsingSuiteTurtleW3CUnofficalTests()
         {
             //Run manifests
-            this.RunManifest("resources/turtle11-unofficial/manifest.ttl", true);
-            this.RunManifest("resources/turtle11-unofficial/manifest-bad.ttl", false);
+            this.RunManifest("..\\resources/turtle11-unofficial/manifest.ttl", true);
+            this.RunManifest("..\\resources/turtle11-unofficial/manifest-bad.ttl", false);
 
-            if (this.Count == 0) Assert.Fail("No tests found");
+            if (this.Count == 0) Assert.True(false, "No tests found");
 
             Console.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed");
             Console.WriteLine((((double)this.Passed / (double)this.Count) * 100) + "% Passed");
 
-            if (this.Failed > 0) Assert.Fail(this.Failed + " Tests failed");
-            if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate");
+            if (this.Failed > 0) Assert.True(false, this.Failed + " Tests failed");
+            if (this.Indeterminate > 0) throw new SkipTestException(this.Indeterminate + " Tests are indeterminate");
         }
     }
 
    
-    [TestFixture]
+
     public class Turtle11
         : BaseRdfParserSuite
     {
         public Turtle11()
             : base(new TurtleParser(TurtleSyntax.W3C), new NTriplesParser(), "turtle11\\") { }
 
-        [Test]
+        [SkippableFact]
         public void ParsingSuiteTurtleW3C()
         {
             try
@@ -79,9 +80,9 @@ namespace VDS.RDF.Parsing.Suites
                 INode negEvalTest = g.CreateUriNode("rdft:TestTurtleNegativeEval");
 
                 //Run manifests
-                this.RunManifest("resources/turtle11/manifest.ttl", new INode[] { posSyntaxTest }, new INode[] { negSyntaxTest, negEvalTest });
+                this.RunManifest("..\\resources/turtle11/manifest.ttl", new INode[] { posSyntaxTest }, new INode[] { negSyntaxTest, negEvalTest });
 
-                if (this.Count == 0) Assert.Fail("No tests found");
+                if (this.Count == 0) Assert.True(false, "No tests found");
 
                 Console.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed - " + this.Indeterminate + " Indeterminate");
                 Console.WriteLine((((double)this.Passed / (double)this.Count) * 100) + "% Passed");
@@ -90,14 +91,14 @@ namespace VDS.RDF.Parsing.Suites
                 {
                     if (this.Indeterminate == 0)
                     {
-                        Assert.Fail(this.Failed + " Tests failed and " + this.Passed + " Tests Passed");
+                        Assert.True(false, this.Failed + " Tests failed and " + this.Passed + " Tests Passed");
                     }
                     else
                     {
-                        Assert.Fail(this.Failed + " Test failed, " + this.Indeterminate + " Tests are indeterminate and " + this.Passed + " Tests Passed");
+                        Assert.True(false, this.Failed + " Test failed, " + this.Indeterminate + " Tests are indeterminate and " + this.Passed + " Tests Passed");
                     }
                 }
-                if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate and " + this.Passed + " Tests Passed");
+                if (this.Indeterminate > 0) throw new SkipTestException(this.Indeterminate + " Tests are indeterminate and " + this.Passed + " Tests Passed");
             }
             finally
             {
@@ -105,146 +106,147 @@ namespace VDS.RDF.Parsing.Suites
             }
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtleW3CComplexPrefixedNames1()
         {
             String input = "AZazÀÖØöø˿ͰͽͿ῿‌‍⁰↏Ⰰ⿯、퟿豈﷏ﷰ�𐀀�:";
-            Assert.IsTrue(TurtleSpecsHelper.IsValidPrefix(input, TurtleSyntax.W3C));
+            Assert.True(TurtleSpecsHelper.IsValidPrefix(input, TurtleSyntax.W3C));
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtleW3CComplexPrefixedNames2()
         {
             String input = "AZazÀÖØöø˿ͰͽͿ῿‌‍⁰↏Ⰰ⿯、퟿豈﷏ﷰ�𐀀�:o";
-            Assert.IsTrue(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
+            Assert.True(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtleW3CComplexPrefixedNames3()
         {
             String input = ":a~b";
-            Assert.IsFalse(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
+            Assert.False(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtleW3CComplexPrefixedNames4()
         {
             String input = ":a%b";
-            Assert.IsFalse(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
+            Assert.False(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtleW3CComplexPrefixedNames5()
         {
             String input = @":a\~b";
-            Assert.IsTrue(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
+            Assert.True(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtleW3CComplexPrefixedNames6()
         {
             String input = ":a%bb";
-            Assert.IsTrue(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
+            Assert.True(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtleW3CComplexPrefixedNames7()
         {
             String input = @":\~";
-            Assert.IsTrue(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
+            Assert.True(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtleW3CComplexPrefixedNames8()
         {
             String input = ":%bb";
-            Assert.IsTrue(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
+            Assert.True(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtleW3CComplexPrefixedNames9()
         {
             String input = @"p:AZazÀÖØöø˿Ͱͽ΄῾‌‍⁰↉Ⰰ⿕、ퟻ﨎ﷇﷰ￯𐀀󠇯";
-            Assert.IsTrue(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
+            Assert.True(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtleW3CComplexPrefixedNames10()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
 
             Graph ttl = new Graph();
             ttl.LoadFromFile(@"resources\\turtle11\localName_with_non_leading_extras.ttl");
-            Assert.IsFalse(ttl.IsEmpty);
+            Assert.False(ttl.IsEmpty);
             Console.WriteLine("Subject from Turtle: " + ttl.Triples.First().Subject.ToString(formatter));
 
             Graph nt = new Graph();
             NTriplesParser parser = new NTriplesParser();
             parser.Warning += TestTools.WarningPrinter;
             nt.LoadFromFile(@"resources\\turtle11\localName_with_non_leading_extras.nt", parser);
-            Assert.IsFalse(nt.IsEmpty);
+            Assert.False(nt.IsEmpty);
             Console.WriteLine("Subject from NTriples: " + nt.Triples.First().Subject.ToString(formatter));
 
-            Assert.AreEqual(ttl.Triples.First().Subject, nt.Triples.First().Subject, "Subjects should be equal");
+            Assert.Equal(ttl.Triples.First().Subject, nt.Triples.First().Subject);
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtleW3CNumericLiterals1()
         {
             String input = "123.E+1";
-            Assert.IsTrue(TurtleSpecsHelper.IsValidDouble(input));
+            Assert.True(TurtleSpecsHelper.IsValidDouble(input));
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtleW3CNumericLiterals2()
         {
             String input = @"@prefix : <http://example.org/> .
 :subject :predicate 123.E+1.";
             Graph g = new Graph();
             g.LoadFromString(input, new TurtleParser(TurtleSyntax.W3C));
-            Assert.IsFalse(g.IsEmpty);
-            Assert.AreEqual(1, g.Triples.Count);
+            Assert.False(g.IsEmpty);
+            Assert.Equal(1, g.Triples.Count);
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtleW3CLiteralEscapes1()
         {
             Graph g = new Graph();
             g.LoadFromFile(@"resources\\turtle11\literal_with_escaped_BACKSPACE.ttl");
-            Assert.IsFalse(g.IsEmpty);
-            Assert.AreEqual(1, g.Triples.Count);
+            Assert.False(g.IsEmpty);
+            Assert.Equal(1, g.Triples.Count);
             Triple t = g.Triples.First();
-            Assert.AreEqual(NodeType.Literal, t.Object.NodeType);
+            Assert.Equal(NodeType.Literal, t.Object.NodeType);
             ILiteralNode lit = (ILiteralNode)t.Object;
-            Assert.AreEqual(1, lit.Value.Length);
+            Assert.Equal(1, lit.Value.Length);
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtleW3CComplexLiterals1()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
 
             Graph ttl = new Graph();
             ttl.LoadFromFile(@"resources\\turtle11\LITERAL1_ascii_boundaries.ttl");
-            Assert.IsFalse(ttl.IsEmpty);
+            Assert.False(ttl.IsEmpty);
             Console.WriteLine("Object from Turtle: " + ttl.Triples.First().Object.ToString(formatter));
 
             Graph nt = new Graph();
             nt.LoadFromFile(@"resources\\turtle11\LITERAL1_ascii_boundaries.nt");
-            Assert.IsFalse(nt.IsEmpty);
+            Assert.False(nt.IsEmpty);
             Console.WriteLine("Object from NTriples: " + nt.Triples.First().Object.ToString(formatter));
 
-            Assert.AreEqual(ttl.Triples.First().Object, nt.Triples.First().Object, "Objects should be equal");
+            Assert.Equal(ttl.Triples.First().Object, nt.Triples.First().Object);
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Fact]
         public void ParsingTurtleW3CComplexLiterals2()
         {
             Graph g = new Graph();
-            g.LoadFromFile(@"resources\\turtle11\turtle-syntax-bad-string-04.ttl");
+
+            Assert.Throws<RdfParseException>(() => g.LoadFromFile(@"resources\\turtle11\turtle-syntax-bad-string-04.ttl"));
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtleW3CBaseTurtleStyle1()
         {
             //Dot required
@@ -252,41 +254,42 @@ namespace VDS.RDF.Parsing.Suites
             Graph g = new Graph();
             this.Parser.Load(g, new StringReader(graph));
 
-            Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
+            Assert.Equal(new Uri("http://example.org"), g.BaseUri);
         }
 
-        [Test,ExpectedException(typeof(RdfParseException))]
+        [Fact]
         public void ShouldThrowWhenTurtleStyleBaseIsMissingDot()
         {
             //Missing dot
             String graph = "@base <http://example.org/>";
             Graph g = new Graph();
-            this.Parser.Load(g, new StringReader(graph));
+            Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
 
-            Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
+            Assert.Equal(new Uri("http://example.org"), g.BaseUri);
         }
 
-        [Test,ExpectedException(typeof(RdfParseException))]
+        [Fact]
         public void ParsingTurtleW3CBaseTurtleStyle3()
         {
             //@base is case sensitive in Turtle
             String graph = "@BASE <http://example.org/> .";
             Graph g = new Graph();
-            this.Parser.Load(g, new StringReader(graph));
+
+            Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
         }
 
-        [Test,ExpectedException(typeof(RdfParseException))]
+        [Fact]
         public void ParsingTurtleW3CBaseSparqlStyle1()
         {
             //Forbidden dot
             String graph = "BASE <http://example.org/> .";
             Graph g = new Graph();
-            this.Parser.Load(g, new StringReader(graph));
+            Assert.Throws<RdfParseException>(() =>  this.Parser.Load(g, new StringReader(graph)));
 
-            Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
+            Assert.Equal(new Uri("http://example.org"), g.BaseUri);
         }
 
-        [Test]
+        [Fact]
         public void ShouldSuccessfullyParseValidSparqlStyleW3CBase()
         {
             //No dot required
@@ -294,10 +297,10 @@ namespace VDS.RDF.Parsing.Suites
             Graph g = new Graph();
             this.Parser.Load(g, new StringReader(graph));
 
-            Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
+            Assert.Equal(new Uri("http://example.org"), g.BaseUri);
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtleW3CBaseSparqlStyle3()
         {
             //No dot required and case insensitive
@@ -305,10 +308,10 @@ namespace VDS.RDF.Parsing.Suites
             Graph g = new Graph();
             this.Parser.Load(g, new StringReader(graph));
 
-            Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
+            Assert.Equal(new Uri("http://example.org"), g.BaseUri);
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtleW3CPrefixTurtleStyle1()
         {
             //Dot required
@@ -316,41 +319,42 @@ namespace VDS.RDF.Parsing.Suites
             Graph g = new Graph();
             this.Parser.Load(g, new StringReader(graph));
 
-            Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
+            Assert.Equal(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Fact]
         public void ShouldThrowWhenTurtleStylePrefixIsMissingDot()
         {
             //Missing dot
             String graph = "@prefix ex: <http://example.org/>";
             Graph g = new Graph();
-            this.Parser.Load(g, new StringReader(graph));
+            Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
 
-            Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
+            Assert.Equal(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Fact]
         public void ParsingTurtleW3CPrefixTurtleStyle3()
         {
             //@prefix is case sensitive in Turtle
             String graph = "@PREFIX ex: <http://example.org/> .";
             Graph g = new Graph();
-            this.Parser.Load(g, new StringReader(graph));
+
+            Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Fact]
         public void ParsingTurtleW3CPrefixSparqlStyle1()
         {
             //Forbidden dot
             String graph = "PREFIX ex: <http://example.org/> .";
             Graph g = new Graph();
-            this.Parser.Load(g, new StringReader(graph));
+            Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
 
-            Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
+            Assert.Equal(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtleW3CPrefixSparqlStyle3()
         {
             //No dot required and case insensitive
@@ -358,10 +362,10 @@ namespace VDS.RDF.Parsing.Suites
             Graph g = new Graph();
             this.Parser.Load(g, new StringReader(graph));
 
-            Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
+            Assert.Equal(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtlePrefixDeclarations1()
         {
             // No white space between prefix and URI
@@ -369,40 +373,38 @@ namespace VDS.RDF.Parsing.Suites
             Graph g = new Graph();
             this.Parser.Load(g, new StringReader(graph));
 
-            Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("pre"));
+            Assert.Equal(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("pre"));
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtlePrefixDeclarations2()
         {
             const String graph = "@prefix pre: <http://example.org> .";
             Graph g = new Graph();
             this.Parser.Load(g, new StringReader(graph));
 
-            Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("pre"));
+            Assert.Equal(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("pre"));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Fact]
         public void ParsingTurtlePrefixDeclarations3()
         {
             // Multiple : are not supported
             const String graph = "@prefix pre:pre: <http://example.org> .";
             Graph g = new Graph();
-            this.Parser.Load(g, new StringReader(graph));
-
-            Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("pre"));
+            Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Fact]
         public void ParsingTurtleLiteralEscapes1()
         {
             const String data = @"<http://s> <http://p> ""literal\'quote"" .";
 
             Graph g = new Graph();
-            g.LoadFromString(data, new TurtleParser(TurtleSyntax.Original));
+            Assert.Throws<RdfParseException>(() => g.LoadFromString(data, new TurtleParser(TurtleSyntax.Original)));
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtleLiteralEscapes2()
         {
             const String data = @"<http://s> <http://p> ""literal\""quote"" .";
@@ -410,11 +412,11 @@ namespace VDS.RDF.Parsing.Suites
             Graph g = new Graph();
             g.LoadFromString(data, new TurtleParser(TurtleSyntax.Original));
 
-            Assert.IsFalse(g.IsEmpty);
-            Assert.AreEqual(1, g.Triples.Count);
+            Assert.False(g.IsEmpty);
+            Assert.Equal(1, g.Triples.Count);
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtleW3CLiteralEscapes2()
         {
             const String data = @"<http://s> <http://p> ""literal\'quote"" .";
@@ -422,11 +424,11 @@ namespace VDS.RDF.Parsing.Suites
             Graph g = new Graph();
             g.LoadFromString(data, this.Parser);
 
-            Assert.IsFalse(g.IsEmpty);
-            Assert.AreEqual(1, g.Triples.Count);
+            Assert.False(g.IsEmpty);
+            Assert.Equal(1, g.Triples.Count);
         }
 
-        [Test]
+        [Fact]
         public void ParsingTurtleW3CLiteralEscapes3()
         {
             const String data = @"<http://s> <http://p> ""literal\""quote"" .";
@@ -434,8 +436,8 @@ namespace VDS.RDF.Parsing.Suites
             Graph g = new Graph();
             g.LoadFromString(data, this.Parser);
 
-            Assert.IsFalse(g.IsEmpty);
-            Assert.AreEqual(1, g.Triples.Count);
+            Assert.False(g.IsEmpty);
+            Assert.Equal(1, g.Triples.Count);
         }
     }
 }

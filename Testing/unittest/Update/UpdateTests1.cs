@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
@@ -37,7 +37,7 @@ using VDS.RDF.Update.Commands;
 
 namespace VDS.RDF.Update
 {
-    [TestFixture]
+
     public class UpdateTests1
     {
         public const String InsertPatterns1 = @"ex:IndividualA rdf:type          tpl:MyIndividualClass .
@@ -52,7 +52,7 @@ _:template        tpl:ObjectRole    rdl:MyTypeClass .
 _:template        tpl:PossessorRole ex:IndividualB .
 _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
-        [Test]
+        [Fact]
         public void SparqlUpdateInsertDataWithBNodes()
         {
             TripleStore store = new TripleStore();
@@ -75,7 +75,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateInsertDataWithSkolemBNodes()
         {
             TripleStore store = new TripleStore();
@@ -98,7 +98,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateAddCommand()
         {
             IGraph g = new Graph();
@@ -113,7 +113,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             store.Add(g);
             store.Add(h);
 
-            Assert.AreNotEqual(g, h, "Graphs should not be equal");
+            Assert.NotEqual(g, h);
 
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet commands = parser.ParseFromString("ADD GRAPH <http://example.org/source> TO GRAPH <http://example.org/destination>");
@@ -123,12 +123,12 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
             g = store[new Uri("http://example.org/source")];
             h = store[new Uri("http://example.org/destination")];
-            Assert.IsFalse(g.IsEmpty, "Source Graph should not be empty");
-            Assert.IsFalse(h.IsEmpty, "Destination Graph should not be empty");
-            Assert.IsTrue(h.HasSubGraph(g), "Destination Graph should have Source Graph as a subgraph");
+            Assert.False(g.IsEmpty, "Source Graph should not be empty");
+            Assert.False(h.IsEmpty, "Destination Graph should not be empty");
+            Assert.True(h.HasSubGraph(g), "Destination Graph should have Source Graph as a subgraph");
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateAddCommand2()
         {
             IGraph g = new Graph();
@@ -143,7 +143,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             store.Add(g);
             store.Add(h);
 
-            Assert.AreNotEqual(g, h, "Graphs should not be equal");
+            Assert.NotEqual(g, h);
 
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet commands = parser.ParseFromString("ADD GRAPH <http://example.org/source> TO DEFAULT");
@@ -153,12 +153,12 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
             g = store[new Uri("http://example.org/source")];
             h = store[null];
-            Assert.IsFalse(g.IsEmpty, "Source Graph should not be empty");
-            Assert.IsFalse(h.IsEmpty, "Destination Graph should not be empty");
-            Assert.IsTrue(h.HasSubGraph(g), "Destination Graph should have Source Graph as a subgraph");
+            Assert.False(g.IsEmpty, "Source Graph should not be empty");
+            Assert.False(h.IsEmpty, "Destination Graph should not be empty");
+            Assert.True(h.HasSubGraph(g), "Destination Graph should have Source Graph as a subgraph");
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateAddCommand3()
         {
             IGraph g = new Graph();
@@ -173,7 +173,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             store.Add(g);
             store.Add(h);
 
-            Assert.AreNotEqual(g, h, "Graphs should not be equal");
+            Assert.NotEqual(g, h);
 
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet commands = parser.ParseFromString("ADD DEFAULT TO GRAPH <http://example.org/destination>");
@@ -183,12 +183,12 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
             g = store[null];
             h = store[new Uri("http://example.org/destination")];
-            Assert.IsFalse(g.IsEmpty, "Source Graph should not be empty");
-            Assert.IsFalse(h.IsEmpty, "Destination Graph should not be empty");
-            Assert.IsTrue(h.HasSubGraph(g), "Destination Graph should have Source Graph as a subgraph");
+            Assert.False(g.IsEmpty, "Source Graph should not be empty");
+            Assert.False(h.IsEmpty, "Destination Graph should not be empty");
+            Assert.True(h.HasSubGraph(g), "Destination Graph should have Source Graph as a subgraph");
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateCopyCommand()
         {
             IGraph g = new Graph();
@@ -203,7 +203,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             store.Add(g);
             store.Add(h);
 
-            Assert.AreNotEqual(g, h, "Graphs should not be equal");
+            Assert.NotEqual(g, h);
 
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet commands = parser.ParseFromString("COPY GRAPH <http://example.org/source> TO GRAPH <http://example.org/destination>");
@@ -213,12 +213,12 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
             g = store[new Uri("http://example.org/source")];
             h = store[new Uri("http://example.org/destination")];
-            Assert.IsFalse(g.IsEmpty, "Source Graph should not be empty");
-            Assert.IsFalse(h.IsEmpty, "Destination Graph should not be empty");
-            Assert.AreEqual(g, h, "Graphs should now be equal");
+            Assert.False(g.IsEmpty, "Source Graph should not be empty");
+            Assert.False(h.IsEmpty, "Destination Graph should not be empty");
+            Assert.Equal(g, h);
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateCopyCommand2()
         {
             IGraph g = new Graph();
@@ -233,7 +233,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             store.Add(g);
             store.Add(h);
 
-            Assert.AreNotEqual(g, h, "Graphs should not be equal");
+            Assert.NotEqual(g, h);
 
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet commands = parser.ParseFromString("COPY GRAPH <http://example.org/source> TO DEFAULT");
@@ -243,12 +243,12 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
             g = store[new Uri("http://example.org/source")];
             h = store[null];
-            Assert.IsFalse(g.IsEmpty, "Source Graph should not be empty");
-            Assert.IsFalse(h.IsEmpty, "Destination Graph should not be empty");
-            Assert.AreEqual(g, h, "Graphs should now be equal");
+            Assert.False(g.IsEmpty, "Source Graph should not be empty");
+            Assert.False(h.IsEmpty, "Destination Graph should not be empty");
+            Assert.Equal(g, h);
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateCopyCommand3()
         {
             IGraph g = new Graph();
@@ -263,7 +263,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             store.Add(g);
             store.Add(h);
 
-            Assert.AreNotEqual(g, h, "Graphs should not be equal");
+            Assert.NotEqual(g, h);
 
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet commands = parser.ParseFromString("COPY DEFAULT TO GRAPH <http://example.org/destination>");
@@ -273,12 +273,12 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
             g = store[null];
             h = store[new Uri("http://example.org/destination")];
-            Assert.IsFalse(g.IsEmpty, "Source Graph should not be empty");
-            Assert.IsFalse(h.IsEmpty, "Destination Graph should not be empty");
-            Assert.AreEqual(g, h, "Graphs should now be equal");
+            Assert.False(g.IsEmpty, "Source Graph should not be empty");
+            Assert.False(h.IsEmpty, "Destination Graph should not be empty");
+            Assert.Equal(g, h);
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateMoveCommand()
         {
             IGraph g = new Graph();
@@ -293,7 +293,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             store.Add(g);
             store.Add(h);
 
-            Assert.AreNotEqual(g, h, "Graphs should not be equal");
+            Assert.NotEqual(g, h);
 
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet commands = parser.ParseFromString("MOVE GRAPH <http://example.org/source> TO GRAPH <http://example.org/destination>");
@@ -303,15 +303,15 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
             g = store.HasGraph(new Uri("http://example.org/source")) ? store[new Uri("http://example.org/source")] : null;
             h = store[new Uri("http://example.org/destination")];
-            Assert.IsFalse(h.IsEmpty, "Destination Graph should not be empty");
-            Assert.IsTrue(g == null || g.IsEmpty, "Source Graph should be Deleted/Empty");
+            Assert.False(h.IsEmpty, "Destination Graph should not be empty");
+            Assert.True(g == null || g.IsEmpty, "Source Graph should be Deleted/Empty");
 
             Graph orig = new Graph();
             FileLoader.Load(orig, "resources\\InferenceTest.ttl");
-            Assert.AreEqual(orig, h, "Destination Graph should be equal to the original contents of the Source Graph");
+            Assert.Equal(orig, h);
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateMoveCommand2()
         {
             IGraph g = new Graph();
@@ -326,7 +326,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             store.Add(g);
             store.Add(h);
 
-            Assert.AreNotEqual(g, h, "Graphs should not be equal");
+            Assert.NotEqual(g, h);
 
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet commands = parser.ParseFromString("MOVE GRAPH <http://example.org/source> TO DEFAULT");
@@ -336,15 +336,15 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
             g = store.HasGraph(new Uri("http://example.org/source")) ? store[new Uri("http://example.org/source")] : null;
             h = store[null];
-            Assert.IsFalse(h.IsEmpty, "Destination Graph should not be empty");
-            Assert.IsTrue(g == null || g.IsEmpty, "Source Graph should be Deleted/Empty");
+            Assert.False(h.IsEmpty, "Destination Graph should not be empty");
+            Assert.True(g == null || g.IsEmpty, "Source Graph should be Deleted/Empty");
 
             Graph orig = new Graph();
             FileLoader.Load(orig, "resources\\InferenceTest.ttl");
-            Assert.AreEqual(orig, h, "Destination Graph should be equal to the original contents of the Source Graph");
+            Assert.Equal(orig, h);
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateMoveCommand3()
         {
             IGraph g = new Graph();
@@ -359,7 +359,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             store.Add(g);
             store.Add(h);
 
-            Assert.AreNotEqual(g, h, "Graphs should not be equal");
+            Assert.NotEqual(g, h);
 
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet commands = parser.ParseFromString("MOVE DEFAULT TO GRAPH <http://example.org/destination>");
@@ -369,16 +369,16 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
             g = store.HasGraph(null) ? store[null] : null;
             h = store[new Uri("http://example.org/destination")];
-            Assert.IsFalse(h.IsEmpty, "Destination Graph should not be empty");
-            Assert.IsFalse(g == null, "Default Graph should still exist");
-            Assert.IsTrue(g.IsEmpty, "Source Graph (the Default Graph) should be Empty");
+            Assert.False(h.IsEmpty, "Destination Graph should not be empty");
+            Assert.False(g == null, "Default Graph should still exist");
+            Assert.True(g.IsEmpty, "Source Graph (the Default Graph) should be Empty");
 
             Graph orig = new Graph();
             FileLoader.Load(orig, "resources\\InferenceTest.ttl");
-            Assert.AreEqual(orig, h, "Destination Graph should be equal to the original contents of the Source Graph");
+            Assert.Equal(orig, h);
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateInsertCommand()
         {
             SparqlParameterizedString command = new SparqlParameterizedString();
@@ -418,10 +418,10 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
                 TestTools.ShowDifferences(diff);
             }
 
-            Assert.AreEqual(h, g, "Graphs should be equal");            
+            Assert.Equal(h, g);            
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateInsertCommand2()
         {
             SparqlParameterizedString command = new SparqlParameterizedString();
@@ -444,7 +444,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(store);
             processor.ProcessCommandSet(cmds);
 
-            Assert.AreEqual(origTriples, g.Triples.Count, "Triples in input Graph shouldn't have changed as INSERTs should have gone to the default graph");
+            Assert.Equal(origTriples, g.Triples.Count);
 
             IGraph def = store[null];
 
@@ -464,11 +464,11 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             {
                 TestTools.ShowDifferences(report);
 
-                Assert.IsTrue(report.RemovedTriples.Count() == 1, "Should have only 1 missing Triple (due to rdfs:domain inference which is hard to encode in an INSERT command)");
+                Assert.True(report.RemovedTriples.Count() == 1, "Should have only 1 missing Triple (due to rdfs:domain inference which is hard to encode in an INSERT command)");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateInsertCommand3()
         {
             SparqlParameterizedString command = new SparqlParameterizedString();
@@ -494,10 +494,10 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
             IGraph def = store[null];
             TestTools.ShowGraph(def);
-            Assert.IsTrue(def.IsEmpty, "Graph should be empty as the commands only used USING NAMED (so shouldn't have changed the dataset) and the Active Graph for the dataset was empty so there should have been nothing matched to generate insertions from");
+            Assert.True(def.IsEmpty, "Graph should be empty as the commands only used USING NAMED (so shouldn't have changed the dataset) and the Active Graph for the dataset was empty so there should have been nothing matched to generate insertions from");
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateInsertCommand4()
         {
             SparqlParameterizedString command = new SparqlParameterizedString();
@@ -537,11 +537,11 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             {
                 TestTools.ShowDifferences(report);
 
-                Assert.IsTrue(report.RemovedTriples.Count() == 1, "Should have only 1 missing Triple (due to rdfs:domain inference which is hard to encode in an INSERT command)");
+                Assert.True(report.RemovedTriples.Count() == 1, "Should have only 1 missing Triple (due to rdfs:domain inference which is hard to encode in an INSERT command)");
             }
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateDeleteWithCommand()
         {
             String command = "WITH <http://example.org/> DELETE { ?s ?p ?o } WHERE {?s ?p ?o}";
@@ -550,10 +550,10 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
             DeleteCommand delete = (DeleteCommand)cmds[0];
 
-            Assert.AreEqual(new Uri("http://example.org/"), delete.GraphUri, "Graph URI of the Command should be equal to http://example.org/");
+            Assert.Equal(new Uri("http://example.org/"), delete.GraphUri);
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateInsertDataCombination()
         {
             SparqlParameterizedString command = new SparqlParameterizedString();
@@ -563,9 +563,9 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
 
-            Assert.IsFalse(cmds.Commands.All(cmd => cmd.AffectsSingleGraph), "Commands should report that they do not affect a single Graph");
-            Assert.IsTrue(cmds.Commands.All(cmd => cmd.AffectsGraph(null)), "Commands should report that they affect the Default Graph");
-            Assert.IsTrue(cmds.Commands.All(cmd => cmd.AffectsGraph(new Uri("http://example.org/graph"))), "Commands should report that they affect the named Graph");
+            Assert.False(cmds.Commands.All(cmd => cmd.AffectsSingleGraph), "Commands should report that they do not affect a single Graph");
+            Assert.True(cmds.Commands.All(cmd => cmd.AffectsGraph(null)), "Commands should report that they affect the Default Graph");
+            Assert.True(cmds.Commands.All(cmd => cmd.AffectsGraph(new Uri("http://example.org/graph"))), "Commands should report that they affect the named Graph");
 
             InMemoryDataset dataset = new InMemoryDataset();
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
@@ -576,16 +576,16 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Triple t = new Triple(g.CreateUriNode("ex:a"), g.CreateUriNode("ex:b"), g.CreateUriNode("ex:c"));
 
             IGraph def = dataset[null];
-            Assert.AreEqual(1, def.Triples.Count, "Should be 1 Triple in the Default Graph");
-            Assert.IsTrue(def.ContainsTriple(t), "Should have the inserted Triple in the Default Graph");
+            Assert.Equal(1, def.Triples.Count);
+            Assert.True(def.ContainsTriple(t), "Should have the inserted Triple in the Default Graph");
 
             IGraph ex = dataset[new Uri("http://example.org/graph")];
-            Assert.AreEqual(1, ex.Triples.Count, "Should be 1 Triple in the Named Graph");
-            Assert.IsTrue(ex.ContainsTriple(t), "Should have the inserted Triple in the Named Graph");
+            Assert.Equal(1, ex.Triples.Count);
+            Assert.True(ex.ContainsTriple(t), "Should have the inserted Triple in the Named Graph");
 
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateDeleteDataCombination()
         {
             SparqlParameterizedString command = new SparqlParameterizedString();
@@ -595,9 +595,9 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
 
-            Assert.IsFalse(cmds.Commands.All(cmd => cmd.AffectsSingleGraph), "Commands should report that they do not affect a single Graph");
-            Assert.IsTrue(cmds.Commands.All(cmd => cmd.AffectsGraph(null)), "Commands should report that they affect the Default Graph");
-            Assert.IsTrue(cmds.Commands.All(cmd => cmd.AffectsGraph(new Uri("http://example.org/graph"))), "Commands should report that they affect the named Graph");
+            Assert.False(cmds.Commands.All(cmd => cmd.AffectsSingleGraph), "Commands should report that they do not affect a single Graph");
+            Assert.True(cmds.Commands.All(cmd => cmd.AffectsGraph(null)), "Commands should report that they affect the Default Graph");
+            Assert.True(cmds.Commands.All(cmd => cmd.AffectsGraph(new Uri("http://example.org/graph"))), "Commands should report that they affect the named Graph");
 
             InMemoryDataset dataset = new InMemoryDataset();
             IGraph def = new Graph();
@@ -618,16 +618,16 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Triple t = new Triple(g.CreateUriNode("ex:a"), g.CreateUriNode("ex:b"), g.CreateUriNode("ex:c"));
 
             def = dataset[null];
-            Assert.AreEqual(0, def.Triples.Count, "Should be 0 Triples in the Default Graph");
-            Assert.IsFalse(def.ContainsTriple(t), "Should not have the deleted Triple in the Default Graph");
+            Assert.Equal(0, def.Triples.Count);
+            Assert.False(def.ContainsTriple(t), "Should not have the deleted Triple in the Default Graph");
 
             ex = dataset[new Uri("http://example.org/graph")];
-            Assert.AreEqual(0, ex.Triples.Count, "Should be 0 Triples in the Named Graph");
-            Assert.IsFalse(ex.ContainsTriple(t), "Should not have the deleted Triple in the Named Graph");
+            Assert.Equal(0, ex.Triples.Count);
+            Assert.False(ex.ContainsTriple(t), "Should not have the deleted Triple in the Named Graph");
 
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateInsertWithBind()
         {
             TripleStore store = new TripleStore();
@@ -648,11 +648,11 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
-            Assert.AreNotEqual(origTriples, g.Triples.Count, "Expected new triples to have been added");
-            Assert.IsTrue(g.GetTriplesWithPredicate(g.CreateUriNode(new Uri("http://xmlns.com/foaf/0.1/mbox_sha1sum"))).Any(), "Expected new triples to have been added");
+            Assert.NotEqual(origTriples, g.Triples.Count);
+            Assert.True(g.GetTriplesWithPredicate(g.CreateUriNode(new Uri("http://xmlns.com/foaf/0.1/mbox_sha1sum"))).Any(), "Expected new triples to have been added");
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateInsertWithFilter()
         {
             TripleStore store = new TripleStore();
@@ -673,11 +673,11 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
-            Assert.AreNotEqual(origTriples, g.Triples.Count, "Expected new triples to have been added");
-            Assert.IsTrue(g.GetTriplesWithPredicate(g.CreateUriNode(new Uri("http://xmlns.com/foaf/0.1/mbox_sha1sum"))).Any(), "Expected new triples to have been added");
+            Assert.NotEqual(origTriples, g.Triples.Count);
+            Assert.True(g.GetTriplesWithPredicate(g.CreateUriNode(new Uri("http://xmlns.com/foaf/0.1/mbox_sha1sum"))).Any(), "Expected new triples to have been added");
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateDeleteWithBind()
         {
             TripleStore store = new TripleStore();
@@ -698,11 +698,11 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
-            Assert.AreNotEqual(origTriples, g.Triples.Count, "Expected triples to have been deleted");
-            Assert.IsFalse(g.GetTriplesWithPredicate(g.CreateUriNode(new Uri("http://xmlns.com/foaf/0.1/mbox"))).Any(), "Expected triples to have been deleted");
+            Assert.NotEqual(origTriples, g.Triples.Count);
+            Assert.False(g.GetTriplesWithPredicate(g.CreateUriNode(new Uri("http://xmlns.com/foaf/0.1/mbox"))).Any(), "Expected triples to have been deleted");
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateDeleteWithFilter()
         {
             TripleStore store = new TripleStore();
@@ -723,8 +723,8 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
-            Assert.AreNotEqual(origTriples, g.Triples.Count, "Expected triples to have been deleted");
-            Assert.IsFalse(g.GetTriplesWithPredicate(g.CreateUriNode(new Uri("http://xmlns.com/foaf/0.1/mbox"))).Where(t => t.Object.ToString().Contains("dotnetrdf.org")).Any(), "Expected triples to have been deleted");
+            Assert.NotEqual(origTriples, g.Triples.Count);
+            Assert.False(g.GetTriplesWithPredicate(g.CreateUriNode(new Uri("http://xmlns.com/foaf/0.1/mbox"))).Where(t => t.Object.ToString().Contains("dotnetrdf.org")).Any(), "Expected triples to have been deleted");
         }
     }
 }

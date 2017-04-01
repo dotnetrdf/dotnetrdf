@@ -30,16 +30,17 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Storage
 {
-   [TestFixture]
+
     public class FusekiTest
     {
         private readonly NTriplesFormatter _formatter = new NTriplesFormatter();
@@ -48,14 +49,14 @@ namespace VDS.RDF.Storage
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseFuseki))
             {
-                Assert.Inconclusive("Test Configuration marks Fuseki as unavailable, test cannot be run");
+                throw new SkipTestException("Test Configuration marks Fuseki as unavailable, test cannot be run");
             }
             return new FusekiConnector(TestConfigManager.GetSetting(TestConfigManager.FusekiServer));
         }
 
 #if !NO_SYNC_HTTP
 
-        [Test]
+        [SkippableFact]
         public void StorageFusekiSaveGraph()
         {
             try
@@ -83,7 +84,7 @@ namespace VDS.RDF.Storage
                     Console.WriteLine(t.ToString(this._formatter));
                 }
 
-                Assert.AreEqual(g, h, "Graphs should be equal");
+                Assert.Equal(g, h);
             }
             finally
             {
@@ -93,7 +94,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageFusekiSaveGraph2()
         {
             try
@@ -121,7 +122,7 @@ namespace VDS.RDF.Storage
                     Console.WriteLine(t.ToString(this._formatter));
                 }
 
-                Assert.AreEqual(g, h, "Graphs should be equal");
+                Assert.Equal(g, h);
             }
             finally
             {
@@ -131,7 +132,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageFusekiSaveDefaultGraph()
         {
             try
@@ -159,8 +160,8 @@ namespace VDS.RDF.Storage
                     Console.WriteLine(t.ToString(this._formatter));
                 }
 
-                Assert.AreEqual(g, h, "Graphs should be equal");
-                Assert.IsNull(h.BaseUri, "Retrieved Graph should have a null Base URI");
+                Assert.Equal(g, h);
+                Assert.Null(h.BaseUri);
             }
             finally
             {
@@ -170,7 +171,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageFusekiSaveDefaultGraph2()
         {
             try
@@ -198,8 +199,8 @@ namespace VDS.RDF.Storage
                     Console.WriteLine(t.ToString(this._formatter));
                 }
 
-                Assert.AreEqual(g, h, "Graphs should be equal");
-                Assert.IsNull(h.BaseUri, "Retrieved Graph should have a null Base URI");
+                Assert.Equal(g, h);
+                Assert.Null(h.BaseUri);
             }
             finally
             {
@@ -209,7 +210,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageFusekiLoadGraph()
         {
             try
@@ -236,7 +237,7 @@ namespace VDS.RDF.Storage
                     Console.WriteLine(t.ToString(this._formatter));
                 }
 
-                Assert.AreEqual(g, h, "Graphs should be equal");
+                Assert.Equal(g, h);
             }
             finally
             {
@@ -246,7 +247,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageFusekiDeleteGraph()
         {
             try
@@ -273,7 +274,7 @@ namespace VDS.RDF.Storage
                 Console.WriteLine();
 
                 //If we do get here without erroring then the Graph should be empty
-                Assert.IsTrue(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
+                Assert.True(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
             }
             finally
             {
@@ -283,7 +284,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageFusekiDeleteDefaultGraph()
         {
             try
@@ -309,7 +310,7 @@ namespace VDS.RDF.Storage
                 Console.WriteLine();
 
                 //If we do get here without erroring then the Graph should be empty
-                Assert.IsTrue(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
+                Assert.True(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
             }
             finally
             {
@@ -319,7 +320,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageFusekiDeleteDefaultGraph2()
         {
             try
@@ -345,7 +346,7 @@ namespace VDS.RDF.Storage
                 Console.WriteLine();
 
                 //If we do get here without erroring then the Graph should be empty
-                Assert.IsTrue(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
+                Assert.True(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
             }
             finally
             {
@@ -355,7 +356,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageFusekiAddTriples()
         {
             try
@@ -373,7 +374,7 @@ namespace VDS.RDF.Storage
                 fuseki.UpdateGraph("http://example.org/fusekiTest", ts, null);
 
                 fuseki.LoadGraph(g, "http://example.org/fusekiTest");
-                Assert.IsTrue(ts.All(t => g.ContainsTriple(t)), "Added Triple should have been in the Graph");
+                Assert.True(ts.All(t => g.ContainsTriple(t)), "Added Triple should have been in the Graph");
             }
             finally
             {
@@ -383,7 +384,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageFusekiRemoveTriples()
         {
             try
@@ -401,7 +402,7 @@ namespace VDS.RDF.Storage
                 fuseki.UpdateGraph("http://example.org/fusekiTest", null, ts);
 
                 fuseki.LoadGraph(g, "http://example.org/fusekiTest");
-                Assert.IsTrue(ts.All(t => !g.ContainsTriple(t)), "Removed Triple should not have been in the Graph");
+                Assert.True(ts.All(t => !g.ContainsTriple(t)), "Removed Triple should not have been in the Graph");
             }
             finally
             {
@@ -411,7 +412,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageFusekiQuery()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
@@ -423,16 +424,16 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                Assert.Fail("Did not get a SPARQL Result Set as expected");
+                Assert.True(false, "Did not get a SPARQL Result Set as expected");
             }
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageFusekiUpdate()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
             {
-                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
             }
 
             try
@@ -448,7 +449,7 @@ namespace VDS.RDF.Storage
                 //Then see if we can retrieve the newly loaded graph
                 IGraph g = new Graph();
                 fuseki.LoadGraph(g, "http://example.org/Ilson");
-                Assert.IsFalse(g.IsEmpty, "Graph should be non-empty");
+                Assert.False(g.IsEmpty, "Graph should be non-empty");
                 foreach (Triple t in g.Triples)
                 {
                     Console.WriteLine(t.ToString(this._formatter));
@@ -461,7 +462,7 @@ namespace VDS.RDF.Storage
 
                 g = new Graph();
                 fuseki.LoadGraph(g, "http://example.org/Ilson");
-                Assert.IsTrue(g.IsEmpty, "Graph should be empty as it should have been DROPped by Fuseki");
+                Assert.True(g.IsEmpty, "Graph should be empty as it should have been DROPped by Fuseki");
             }
             finally
             {
@@ -470,7 +471,7 @@ namespace VDS.RDF.Storage
             
         }
 
-        [Test]
+        [SkippableFact]
         public void StorageFusekiDescribe()
         {
             try
@@ -486,7 +487,7 @@ namespace VDS.RDF.Storage
                 }
                 else
                 {
-                    Assert.Fail("Did not return a Graph as expected");
+                    Assert.True(false, "Did not return a Graph as expected");
                 }
             }
             finally

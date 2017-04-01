@@ -27,7 +27,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
@@ -37,7 +37,7 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Query
 {
 
-    [TestFixture]
+
     public class ConstructWithOptionalTests
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
@@ -88,11 +88,11 @@ namespace VDS.RDF.Query
                 }
                 Console.WriteLine();
 
-                Assert.AreEqual(expected, result, "Graphs should be equal");
+                Assert.Equal(expected, result);
             }
             else
             {
-                Assert.Fail("Did not get a Graph as expected");
+                Assert.True(false, "Did not get a Graph as expected");
             }
         }
 
@@ -111,7 +111,7 @@ namespace VDS.RDF.Query
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(store);
             processor.ProcessCommandSet(cmds);
 
-            Assert.IsTrue(store.HasGraph(null), "Store should have a default unnamed Graph");
+            Assert.True(store.HasGraph(null), "Store should have a default unnamed Graph");
             IGraph result = store[null];
             
             NTriplesFormatter formatter = new NTriplesFormatter();
@@ -129,10 +129,10 @@ namespace VDS.RDF.Query
             }
             Console.WriteLine();
 
-            Assert.AreEqual(expected, result, "Graphs should be equal");
+            Assert.Equal(expected, result);
         }
 
-        [Test]
+        [Fact]
         public void SparqlConstructWithOptional()
         {
             Graph g = new Graph();
@@ -147,7 +147,7 @@ namespace VDS.RDF.Query
             this.TestConstruct(g, expected, query);
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateInsertWithOptional()
         {
             Graph g = new Graph();
@@ -163,7 +163,7 @@ namespace VDS.RDF.Query
             this.TestUpdate(g, expected, update);
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateDeleteWithOptional()
         {
             Graph g = new Graph();
@@ -188,7 +188,7 @@ namespace VDS.RDF.Query
             this.TestUpdate(store, expected, update);
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateModifyWithOptional()
         {
             Graph g = new Graph();
@@ -204,7 +204,7 @@ namespace VDS.RDF.Query
             this.TestUpdate(g, expected, update);
         }
 
-        [Test]
+        [Fact]
         public void SparqlUpdateModifyWithOptional2()
         {
             Graph g = new Graph();
