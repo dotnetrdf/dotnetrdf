@@ -353,7 +353,7 @@ namespace VDS.RDF.Web.Configuration.Server
                 defQueryFile = ConfigurationLoader.ResolvePath(defQueryFile);
                 if (File.Exists(defQueryFile))
                 {
-                    using (StreamReader reader = new StreamReader(defQueryFile))
+                    using (StreamReader reader = new StreamReader(new FileStream(defQueryFile, FileMode.Open)))
                     {
                         this._defaultQuery = reader.ReadToEnd();
                         reader.Close();
@@ -457,7 +457,7 @@ namespace VDS.RDF.Web.Configuration.Server
                 defUpdateFile = ConfigurationLoader.ResolvePath(defUpdateFile);
                 if (File.Exists(defUpdateFile))
                 {
-                    using (StreamReader reader = new StreamReader(defUpdateFile))
+                    using (StreamReader reader = new StreamReader(new FileStream(defUpdateFile, FileMode.Open)))
                     {
                         this._defaultUpdate = reader.ReadToEnd();
                         reader.Close();

@@ -63,10 +63,12 @@
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.4' ">
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+	<PackageReference Include="System.Collections.Specialized" Version="4.0.1" />
     <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.1.0" />
     <PackageReference Include="System.Globalization.Extensions" Version="4.0.1" />
     <PackageReference Include="System.Net.Requests" Version="4.0.11" />
     <PackageReference Include="System.Reflection.TypeExtensions" Version="4.1.0" />
+	<PackageReference Include="System.Security.Principal" Version="4.0.1" />
     <PackageReference Include="System.Threading.Thread" Version="4.0.0" />
     <PackageReference Include="System.Xml.XmlDocument" Version="4.0.1" />
     <PackageReference Include="System.Xml.XmlSerializer" Version="4.0.11" />
@@ -96,11 +98,12 @@
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.4' ">
-    <DefineConstants>$(DefineConstants);NO_SYSTEMCONFIGURATION;NO_PROXY;NO_XSL;NO_HTMLAGILITYPACK;NO_DATA;NO_WEB;NO_PROCESS;NO_URICACHE;NETCORE</DefineConstants>
+    <DefineConstants>$(DefineConstants);NO_SYSTEMCONFIGURATION;NO_PROXY;NO_XSL;NO_HTMLAGILITYPACK;NO_DATA;NO_PROCESS;NO_URICACHE;NETCORE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.4' ">
-    <Compile Remove="Web\**\*.cs;Update\Protocol\*.cs;Compatibility\Portable\**\*.cs" />
+    <Compile Remove="Web\**\*.cs;Compatibility\Portable\**\*.cs" />
+	<Compile Include="Web\IHttpContext.cs;Web\HandlerHelper.cs;Web\SparqlServiceDescriber.cs;Web\Configuration\**\*.cs" />
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net40' ">

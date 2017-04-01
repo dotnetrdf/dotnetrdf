@@ -30,7 +30,7 @@ using System.Linq;
 using System.Net;
 using Newtonsoft.Json.Linq;
 using VDS.RDF.Parsing;
-#if !NO_WEB
+#if !NO_WEB && !NETSTANDARD1_4
 using System.Web;
 #endif
 

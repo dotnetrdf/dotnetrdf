@@ -621,6 +621,16 @@ namespace VDS.RDF.Web
         /// <param name="config">Handler Configuration</param>
         public static void AddStandardHeaders(IHttpContext context, BaseHandlerConfiguration config)
         {
+#if NETSTANDARD1_4
+            try
+            {
+                context.Response.Headers.Add("X-dotNetRDF-Version", typeof(HandlerHelper).GetTypeInfo().Assembly.GetName().Version.ToString());
+            }
+            catch (PlatformNotSupportedException)
+            {
+                context.Response.AddHeader("X-dotNetRDF-Version", typeof(HandlerHelper).GetTypeInfo().Assembly.GetName().Version.ToString());
+            }
+#else
             try
             {
                 context.Response.Headers.Add("X-dotNetRDF-Version", Assembly.GetExecutingAssembly().GetName().Version.ToString());
@@ -629,6 +639,7 @@ namespace VDS.RDF.Web
             {
                 context.Response.AddHeader("X-dotNetRDF-Version", Assembly.GetExecutingAssembly().GetName().Version.ToString());
             }
+#endif
             if (config.IsCorsEnabled) AddCorsHeaders(context);
         }
 
@@ -658,7 +669,7 @@ namespace VDS.RDF.Web
             return dt.ToString("ddd, d MMM yyyy HH:mm:ss K");
         }
 
-        #endregion
+#endregion
     }
 }
 

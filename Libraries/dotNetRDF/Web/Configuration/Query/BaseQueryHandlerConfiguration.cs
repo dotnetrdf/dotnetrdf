@@ -146,7 +146,7 @@ namespace VDS.RDF.Web.Configuration.Query
                 defQueryFile = ConfigurationLoader.ResolvePath(defQueryFile);
                 if (File.Exists(defQueryFile))
                 {
-                    using (StreamReader reader = new StreamReader(defQueryFile))
+                    using (StreamReader reader = new StreamReader(new FileStream(defQueryFile, FileMode.Open)))
                     {
                         this._defaultQuery = reader.ReadToEnd();
                         reader.Close();

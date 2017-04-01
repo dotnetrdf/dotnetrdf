@@ -26,7 +26,7 @@
 
 using System;
 
-#if !NO_WEB
+#if !NO_WEB && !NETSTANDARD1_4
 using System.Web;
 #endif
 

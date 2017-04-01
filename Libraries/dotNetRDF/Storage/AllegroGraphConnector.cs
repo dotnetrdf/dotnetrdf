@@ -33,7 +33,7 @@ using System.Text;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage.Management;
-#if !NO_WEB
+#if !NO_SYNC_HTTP && !NETSTANDARD1_4
 using System.Web;
 #endif
 

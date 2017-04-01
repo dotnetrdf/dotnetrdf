@@ -30,7 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Writing.Contexts;
-#if !NO_WEB
+#if !NO_WEB && !NETSTANDARD1_4
 using System.Web.UI;
 #endif
 

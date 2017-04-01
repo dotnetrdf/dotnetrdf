@@ -36,7 +36,7 @@ using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage.Management.Provisioning;
 using VDS.RDF.Storage.Management.Provisioning.Stardog;
-#if !NO_WEB
+#if !NO_WEB && !NETSTANDARD1_4
 using System.Web;
 #endif
 
