@@ -40,7 +40,7 @@ namespace VDS.RDF.Writing
     /// </summary>
     /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call the Save() method from multiple threads on different Graphs without issue</threadsafety>
     public class Notation3Writer 
-        : IRdfWriter, IPrettyPrintingWriter, IHighSpeedWriter, ICompressingWriter, INamespaceWriter, IFormatterBasedWriter
+        : BaseRdfWriter, IPrettyPrintingWriter, IHighSpeedWriter, ICompressingWriter, INamespaceWriter, IFormatterBasedWriter
     {
         private bool _prettyprint = true;
         private bool _allowHiSpeed = true;
@@ -152,7 +152,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="g">Graph to save</param>
         /// <param name="filename">File to save to</param>
-        public void Save(IGraph g, string filename)
+        public override void Save(IGraph g, string filename)
         {
             using (var stream = File.Open(filename, FileMode.Create))
             {
@@ -166,26 +166,12 @@ namespace VDS.RDF.Writing
             /// </summary>
             /// <param name="g">Graph to save</param>
             /// <param name="output">Stream to save to</param>
-        public void Save(IGraph g, TextWriter output)
+        protected override void SaveInternal(IGraph g, TextWriter output)
         {
-            try
-            {
-                g.NamespaceMap.Import(this._defaultNamespaces);
-                CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, output, this._compressionLevel, this._prettyprint, this._allowHiSpeed);
-                context.NodeFormatter = new Notation3Formatter(g);
-                this.GenerateOutput(context);
-            }
-            finally
-            {
-                try
-                {
-                    output.Close();
-                }
-                catch
-                {
-                    // No Catch actions - just trying to clean up
-                }
-            }
+            g.NamespaceMap.Import(this._defaultNamespaces);
+            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, output, this._compressionLevel, this._prettyprint, this._allowHiSpeed);
+            context.NodeFormatter = new Notation3Formatter(g);
+            this.GenerateOutput(context);
         }
 
         /// <summary>
@@ -539,7 +525,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Event which is raised when there is a non-fatal issue with the Graph being written
         /// </summary>
-        public event RdfWriterWarning Warning;
+        public override event RdfWriterWarning Warning;
 
         /// <summary>
         /// Gets the String representation of the writer which is a description of the syntax it produces

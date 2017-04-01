@@ -47,7 +47,7 @@ namespace VDS.RDF.Writing
     /// </para>
     /// </remarks>
     public class RdfXmlWriter 
-        : IRdfWriter, IPrettyPrintingWriter, ICompressingWriter, IDtdWriter, INamespaceWriter, IFormatterBasedWriter
+        : BaseRdfWriter, IPrettyPrintingWriter, ICompressingWriter, IDtdWriter, INamespaceWriter, IFormatterBasedWriter
     {
         private bool _prettyprint = true;
         private int _compressionLevel = WriterCompressionLevel.High;
@@ -165,7 +165,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="g">Graph to save</param>
         /// <param name="filename">Filename to save to</param>
-        public void Save(IGraph g, string filename)
+        public override void Save(IGraph g, string filename)
         {
             using (var stream = File.Open(filename, FileMode.Create))
             {
@@ -179,26 +179,9 @@ namespace VDS.RDF.Writing
             /// </summary>
             /// <param name="g">Graph to save</param>
             /// <param name="output">Stream to save to</param>
-        public void Save(IGraph g, TextWriter output)
+        protected override void SaveInternal(IGraph g, TextWriter output)
         {
-            try
-            {
-                this.GenerateOutput(g, output);
-                output.Close();
-            }
-            catch
-            {
-                try
-                {
-                    // Close the Output Stream
-                    output.Close();
-                }
-                catch
-                {
-                    // No Catch actions here
-                }
-                throw;
-            }
+            this.GenerateOutput(g, output);
         }
 
         /// <summary>
@@ -470,7 +453,6 @@ namespace VDS.RDF.Writing
 
             // Save to the Output Stream
             context.Writer.Flush();
-            context.Writer.Close();
         }
 
         private void GenerateCollectionOutput(RdfXmlWriterContext context, INode key)
@@ -898,7 +880,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Event which is raised when there is a non-fatal issue with the RDF being output
         /// </summary>
-        public event RdfWriterWarning Warning;
+        public override event RdfWriterWarning Warning;
 
         /// <summary>
         /// Gets the String representation of the writer which is a description of the syntax it produces

@@ -305,5 +305,25 @@ namespace VDS.RDF.Writing
 
             this.CheckCompressionRoundTrip(g);
         }
+
+        [Theory]
+        [InlineData(typeof(NTriplesWriter))]
+        [InlineData(typeof(RdfXmlWriter))]
+        [InlineData(typeof(PrettyRdfXmlWriter))]
+        [InlineData(typeof(RdfJsonWriter))]
+        [InlineData(typeof(CompressingTurtleWriter))]
+        [InlineData(typeof(HtmlWriter))]
+        [InlineData(typeof(HtmlSchemaWriter))]
+        [InlineData(typeof(GraphVizWriter))]
+        public void TextWriterCanBeLeftOpen(Type writerType)
+        {
+            var g = new Graph();
+            var writer = new System.IO.StringWriter();
+            var rdfWriter = writerType.GetConstructor(new Type[0]).Invoke(new object[0]) as IRdfWriter;
+            rdfWriter.Save(g, writer, true);
+            writer.Write("\n"); // This should not throw because the writer is still open
+            rdfWriter.Save(g, writer);
+            Assert.Throws<ObjectDisposedException>(() => writer.Write("\n"));
+        }
     }
 }

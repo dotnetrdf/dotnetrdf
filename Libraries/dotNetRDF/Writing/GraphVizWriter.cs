@@ -35,7 +35,7 @@ namespace VDS.RDF.Writing
     /// A Writer which generates GraphViz DOT Format files from an RDF Graph
     /// </summary>
     public class GraphVizWriter 
-        : IRdfWriter
+        : BaseRdfWriter
     {
 
 #if !NO_FILE
@@ -44,7 +44,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="g">Graph to save</param>
         /// <param name="filename">File to save to</param>
-        public void Save(IGraph g, string filename)
+        public override void Save(IGraph g, string filename)
         {
             // Open the Stream for the File
             StreamWriter output = new StreamWriter(File.OpenWrite(filename));
@@ -59,7 +59,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="g">Graph to save</param>
         /// <param name="output">Stream to save to</param>
-        public void Save(IGraph g, TextWriter output)
+        protected override void SaveInternal(IGraph g, TextWriter output)
         {
             // Start the Graph
             output.WriteLine("digraph G {");
@@ -74,8 +74,6 @@ namespace VDS.RDF.Writing
 
             // End the Graph
             output.WriteLine("}");
-
-            output.Close();
         }
 
         /// <summary>
@@ -240,7 +238,7 @@ namespace VDS.RDF.Writing
         /// Event that is raised if there is a potential problem with the RDF being output
         /// </summary>
         /// <remarks>Not used by this Writer</remarks>
-        public event RdfWriterWarning Warning;
+        public override event RdfWriterWarning Warning;
 
         /// <summary>
         /// Gets the String representation of the writer which is a description of the syntax it produces

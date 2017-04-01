@@ -68,21 +68,30 @@ namespace VDS.RDF.Writing
         /// <param name="output">Stream to save to</param>
         public void Save(IGraph g, TextWriter output)
         {
+            Save(g, output, false);
+        }
+
+        /// <inheritdoc/>
+        public void Save(IGraph g, TextWriter output, bool leaveOpen)
+        { 
             try
             {
                 HtmlWriterContext context = new HtmlWriterContext(g, output);
                 this.GenerateOutput(context);
-                output.Close();
+                if (!leaveOpen) output.Close();
             }
             catch
             {
-                try
+                if (!leaveOpen)
                 {
-                    output.Close();
-                }
-                catch
-                {
-                    // No Catch Actions
+                    try
+                    {
+                        output.Close();
+                    }
+                    catch
+                    {
+                        // No Catch Actions
+                    }
                 }
                 throw;
             }

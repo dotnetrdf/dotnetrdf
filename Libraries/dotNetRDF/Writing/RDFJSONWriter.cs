@@ -42,7 +42,7 @@ namespace VDS.RDF.Writing
     /// </p>
     /// </remarks>
     /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call the Save() method from multiple threads on different Graphs without issue</threadsafety>
-    public class RdfJsonWriter : IRdfWriter, IPrettyPrintingWriter
+    public class RdfJsonWriter : BaseRdfWriter, IPrettyPrintingWriter
     {
         private bool _prettyprint = true;
 
@@ -67,7 +67,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="g">Graph to save</param>
         /// <param name="filename">Filename to save to</param>
-        public void Save(IGraph g, string filename)
+        public override void Save(IGraph g, string filename)
         {
             using (var stream = File.Open(filename, FileMode.Create))
             {
@@ -81,29 +81,12 @@ namespace VDS.RDF.Writing
             /// </summary>
             /// <param name="g">Graph to save</param>
             /// <param name="output">Stream to save to</param>
-        public void Save(IGraph g, TextWriter output)
+        protected override void SaveInternal(IGraph g, TextWriter output)
         {
-            try
-            {
-                // Always issue a Warning
-                this.RaiseWarning("RDF/JSON does not contain any Namespace information.  If you read this serialized data back in at a later date you may not be able to reserialize it to Namespace reliant formats (like RDF/XML)");
+            // Always issue a Warning
+            this.RaiseWarning("RDF/JSON does not contain any Namespace information.  If you read this serialized data back in at a later date you may not be able to reserialize it to Namespace reliant formats (like RDF/XML)");
 
-                this.GenerateOutput(g, output);
-                output.Close();
-            }
-            catch
-            {
-                try
-                {
-                    // Close the Output Stream
-                    output.Close();
-                }
-                catch
-                {
-                    // No Catch actions here
-                }
-                throw;
-            }
+            this.GenerateOutput(g, output);
         }
 
         /// <summary>
@@ -303,7 +286,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Event which is raised when there is a non-fatal issue with the RDF being output
         /// </summary>
-        public event RdfWriterWarning Warning;
+        public override event RdfWriterWarning Warning;
 
         /// <summary>
         /// Gets the String representation of the writer which is a description of the syntax it produces

@@ -56,6 +56,16 @@ namespace VDS.RDF
         void Save(IGraph g, TextWriter output);
 
         /// <summary>
+        /// Method for saving a graph to a concrete RDF syntax via some arbitray <see cref="TextWriter"/>.
+        /// </summary>
+        /// <param name="g">The graph to save</param>
+        /// <param name="output">The <see cref="TextWriter"/> to save the graph to</param>
+        /// <param name="leaveOpen"><code>true</code> to leave the stream open when the method completes; <code>false</code> otherwise</param>
+        /// <exception cref="RdfException">Thrown if the RDF in the graph is not representable by the writer</exception>
+        /// <exception cref="IOException">Thrown if the writer is unable to write to the underlying storage of the <see cref="TextWriter">TextWriter</see> specified in the <paramref name="output"/></exception>
+        void Save(IGraph g, TextWriter output, bool leaveOpen);
+
+        /// <summary>
         /// Event which writers can raise to indicate possible ambiguities or issues in the syntax they are producing
         /// </summary>
         event RdfWriterWarning Warning;
