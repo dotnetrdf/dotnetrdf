@@ -89,7 +89,7 @@ namespace VDS.RDF.Web.Configuration.Update
                 defUpdateFile = ConfigurationLoader.ResolvePath(defUpdateFile);
                 if (File.Exists(defUpdateFile))
                 {
-                    using (StreamReader reader = new StreamReader(defUpdateFile))
+                    using (StreamReader reader = new StreamReader(new FileStream(defUpdateFile, FileMode.Open)))
                     {
                         this._defaultUpdate = reader.ReadToEnd();
                         reader.Close();

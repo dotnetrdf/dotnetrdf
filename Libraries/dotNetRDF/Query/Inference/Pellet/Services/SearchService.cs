@@ -30,7 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using Newtonsoft.Json.Linq;
-#if !NO_WEB
+#if !NO_WEB && !NETSTANDARD1_4
 using System.Web;
 #endif
 

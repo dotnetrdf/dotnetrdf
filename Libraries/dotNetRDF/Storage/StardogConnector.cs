@@ -39,7 +39,7 @@ using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Storage.Management;
 using VDS.RDF.Writing;
-#if !NO_WEB
+#if !NO_WEB && !NETSTANDARD1_4
 using System.Web;
 #endif
 

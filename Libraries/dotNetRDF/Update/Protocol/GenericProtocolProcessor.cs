@@ -24,7 +24,7 @@
 // </copyright>
 */
 
-#if !NO_ASP
+//#if !NO_ASP
 
 using System;
 using System.Collections.Generic;
@@ -374,4 +374,4 @@ namespace VDS.RDF.Update.Protocol
     }
 }
 
-#endif
+//#endif

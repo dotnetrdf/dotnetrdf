@@ -24,7 +24,7 @@
 // </copyright>
 */
 
-#if !NO_WEB && !NO_ASP
+#if !NO_WEB && !NO_ASP && !NETSTANDARD1_4
 
 using System;
 using System.IO;

@@ -153,7 +153,7 @@ namespace VDS.RDF.Web.Configuration
                 introFile = ConfigurationLoader.ResolvePath(introFile);
                 if (File.Exists(introFile))
                 {
-                    using (StreamReader reader = new StreamReader(introFile))
+                    using (StreamReader reader = new StreamReader(new FileStream(introFile, FileMode.Open)))
                     {
                         this._introText = reader.ReadToEnd();
                         reader.Close();
