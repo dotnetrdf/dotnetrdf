@@ -24,12 +24,13 @@
 // </copyright>
 */
 
-#if !NO_HTMLAGILITYPACK
+#if NO_HTMLAGILITYPACK
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HtmlAgilityPack;
+using AngleSharp;
+using AngleSharp.Dom.Html;
 
 namespace VDS.RDF.Parsing.Contexts
 {

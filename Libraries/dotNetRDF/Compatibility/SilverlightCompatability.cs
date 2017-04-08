@@ -29,7 +29,9 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
-#if !NO_HTMLAGILITYPACK
+#if NO_HTMLAGILITYPACK
+using AngleSharp;
+#else
 using HtmlAgilityPack;
 #endif
 

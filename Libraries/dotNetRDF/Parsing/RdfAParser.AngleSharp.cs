@@ -24,7 +24,7 @@
 // </copyright>
 */
 
-#if !NO_HTMLAGILITYPACK
+#if NO_HTMLAGILITYPACK
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -34,7 +34,7 @@ using System.Text.RegularExpressions;
 #if !NO_WEB
 using System.Web;
 #endif
-using HtmlAgilityPack;
+using AngleSharp;
 using VDS.RDF.Parsing.Contexts;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
