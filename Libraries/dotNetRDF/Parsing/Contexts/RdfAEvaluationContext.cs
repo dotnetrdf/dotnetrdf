@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-#if NO_HTMLAGILITYPACK
 using System;
 using System.Collections.Generic;
 
@@ -161,4 +160,3 @@ namespace VDS.RDF.Parsing.Contexts
         }
     }
 }
-#endif

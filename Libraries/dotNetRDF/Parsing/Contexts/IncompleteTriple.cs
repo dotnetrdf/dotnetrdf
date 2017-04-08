@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-#if NO_HTMLAGILITYPACK
-
 namespace VDS.RDF.Parsing.Contexts
 {
     /// <summary>
@@ -70,4 +68,3 @@ namespace VDS.RDF.Parsing.Contexts
         }
     }
 }
-#endif
