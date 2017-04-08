@@ -63,6 +63,7 @@
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.4' ">
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+	<PackageReference Include="AngleSharp" Version="0.9.9" />
     <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.1.0" />
     <PackageReference Include="System.Globalization.Extensions" Version="4.0.1" />
     <PackageReference Include="System.Net.Requests" Version="4.0.11" />
