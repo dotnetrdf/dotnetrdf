@@ -21,6 +21,7 @@ configuration: Release
 build_script:
   - dotnet build Libraries/dotNetRDF.Query.Spin
   - dotnet build Testing/Unittest
+  - dotnet build Testing/netcoretest
   - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF /p:Version=%GitVersion_NuGetVersion%
   - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF.Data.Virtuoso /p:Version=%GitVersion_NuGetVersion%
   - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF.Query.FullText /p:Version=%GitVersion_NuGetVersion%
@@ -31,6 +32,8 @@ test_script:
       dotnet test .\Testing\unittest\unittest.csproj -l "trx;LogFileName=output.trx" --filter category!=explicit --no-build | Out-File .\test.log
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
       dotnet test .\Testing\unittest\unittest.csproj -l "trx;LogFileName=fulltext.trx" --filter category=fulltext --no-build | Out-File .\fulltext.log
+      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
+      dotnet test .\Testing\netcoretest\netcoretest.csproj -l "trx;LogFileName=netcore.trx" --no-build | Out-File .\netcoretest.log
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
 
 after_test:
@@ -65,6 +68,11 @@ on_finish:
         Push-AppveyorArtifact .\Testing\unittest\TestResults\fulltext.trx
         Push-AppveyorArtifact .\fulltext.log
         $ws.UploadFile("https://ci.appveyor.com/api/testresults/mstest/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\Testing\unittest\TestResults\fulltext.trx ) )
+      }
+      if((Test-Path .\Testing\netcoretest\TestResults\netcore.trx)) {
+        Push-AppveyorArtifact .\Testing\netcoretest\TestResults\netcore.trx
+        Push-AppveyorArtifact .\netcoretest.log
+        $ws.UploadFile("https://ci.appveyor.com/api/testresults/mstest/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\Testing\netcoretest\TestResults\netcore.trx ) )
       }
 
 artifacts:
