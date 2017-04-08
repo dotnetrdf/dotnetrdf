@@ -244,7 +244,6 @@ namespace VDS.RDF.Parsing
             : base(new RdfJsonParser()) { }
     }
 
-#if !NO_HTMLAGILITYPACK
     /// <summary>
     /// Parser for loading GZipped RDFa
     /// </summary>
@@ -257,7 +256,6 @@ namespace VDS.RDF.Parsing
         public GZippedRdfAParser()
             : base(new RdfAParser()) { }
     }
-#endif
 
 }
 
