@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" version="XHTML+RDFa 1.0">
+	<head>
+		<title></title>
+	</head>
+	<body>
+<div xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns="http://www.w3.org/1999/xhtml" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:gr="http://purl.org/goodrelations/v1#" 
+     xmlns:vcard="http://www.w3.org/2006/vcard/ns#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+ 
+  <div about="#store" typeof="gr:LocationOfSalesOrServiceProvisioning">
+    <div property="rdfs:label" content="Pizzeria La Mamma"></div>
+    <div rel="vcard:adr">
+      <div typeof="vcard:Address">
+        <div property="vcard:country-name" content="Germany"></div>
+        <div property="vcard:locality" content="Munich"></div>
+        <div property="vcard:postal-code" content="85577"></div>
+        <div property="vcard:street-address" content="1234 Main Street"></div>
+      </div>
+    </div>
+    <div property="vcard:tel" content="+33 408 970-6104"></div>
+    <div rel="foaf:depiction" resource="http://www.pizza-la-mamma.com/image_or_logo.png"></div>
+    <div rel="vcard:geo">
+      <div>
+        <div property="vcard:latitude" content="48.08" datatype="xsd:float"></div>
+        <div property="vcard:longitude" content="11.64" datatype="xsd:float"></div>
+      </div>
+    </div>
+    <div rel="gr:hasOpeningHoursSpecification">
+      <div about="#mon_fri" typeof="gr:OpeningHoursSpecification">
+        <div property="gr:opens" content="08:00:00" datatype="xsd:time"></div>
+        <div property="gr:closes" content="18:00:00" datatype="xsd:time"></div>
+        <div rel="gr:hasOpeningHoursDayOfWeek" resource="http://purl.org/goodrelations/v1#Friday"></div>
+        <div rel="gr:hasOpeningHoursDayOfWeek" resource="http://purl.org/goodrelations/v1#Thursday"></div>
+        <div rel="gr:hasOpeningHoursDayOfWeek" resource="http://purl.org/goodrelations/v1#Wednesday"></div>
+        <div rel="gr:hasOpeningHoursDayOfWeek" resource="http://purl.org/goodrelations/v1#Tuesday"></div>
+        <div rel="gr:hasOpeningHoursDayOfWeek" resource="http://purl.org/goodrelations/v1#Monday"></div>
+      </div>
+    </div>
+    <div rel="gr:hasOpeningHoursSpecification">
+      <div about="#sat" typeof="gr:OpeningHoursSpecification">
+        <div property="gr:opens" content="08:30:00" datatype="xsd:time"></div>
+        <div property="gr:closes" content="14:00:00" datatype="xsd:time"></div>
+        <div rel="gr:hasOpeningHoursDayOfWeek" resource="http://purl.org/goodrelations/v1#Saturday"></div>
+      </div>
+    </div>
+    <div rel="foaf:page" resource=""></div>
+  </div>
+</div>
+
+
+	</body>
+</html>
