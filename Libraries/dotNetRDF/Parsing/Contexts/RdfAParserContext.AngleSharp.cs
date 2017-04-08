@@ -39,7 +39,7 @@ namespace VDS.RDF.Parsing.Contexts
     /// </summary>
     public class RdfAParserContext : BaseParserContext
     {
-        private HtmlDocument _document;
+        private IHtmlDocument _document;
         private RdfASyntax _syntax = RdfASyntax.RDFa_1_1;
         private bool _allowXmlBase = true;
         private IRdfAVocabulary _defaultVocabularly;
@@ -49,7 +49,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="g">Graph</param>
         /// <param name="document">XML Document</param>
-        public RdfAParserContext(IGraph g, HtmlDocument document)
+        public RdfAParserContext(IGraph g, IHtmlDocument document)
             : this(g, document, false) { }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="g">Graph</param>
         /// <param name="document">HTML Document</param>
         /// <param name="traceParsing">Whether to Trace Parsing</param>
-        public RdfAParserContext(IGraph g, HtmlDocument document, bool traceParsing)
+        public RdfAParserContext(IGraph g, IHtmlDocument document, bool traceParsing)
             : base(g, traceParsing) 
         {
             this._document = document;
@@ -70,7 +70,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="handler">RDF Handler to use</param>
         /// <param name="document">HTML Document</param>
         /// <param name="traceParsing">Whether to Trace Parsing</param>
-        public RdfAParserContext(IRdfHandler handler, HtmlDocument document, bool traceParsing)
+        public RdfAParserContext(IRdfHandler handler, IHtmlDocument document, bool traceParsing)
             : base(handler, traceParsing)
         {
             this._document = document;
@@ -81,13 +81,13 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="handler">RDF Handler to use</param>
         /// <param name="document">HTML Document</param>
-        public RdfAParserContext(IRdfHandler handler, HtmlDocument document)
+        public RdfAParserContext(IRdfHandler handler, IHtmlDocument document)
             : this(handler, document, false) { }
 
         /// <summary>
         /// Gets the HTML Document
         /// </summary>
-        public HtmlDocument Document
+        public IHtmlDocument Document
         {
             get
             {
