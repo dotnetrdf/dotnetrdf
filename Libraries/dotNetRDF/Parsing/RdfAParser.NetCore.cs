@@ -25,6 +25,7 @@
 */
 
 using AngleSharp.Dom;
+using AngleSharp.Dom.Html;
 using AngleSharp.Parser.Html;
 using System;
 using System.Collections.Generic;
@@ -153,7 +154,7 @@ namespace VDS.RDF.Parsing
                 var parser = new HtmlParser();
                 var doc = parser.Parse(input.ReadToEnd());
 
-                RdfAParserContext context = new RdfAParserContext(handler, doc);
+                var context = new RdfAParserContext<IHtmlDocument>(handler, doc);
                 this.Parse(context);
             }
             catch
@@ -183,10 +184,10 @@ namespace VDS.RDF.Parsing
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-            Load(handler, new StreamReader(File.Open(filename, FileMode.Open), Encoding.UTF8));
+            Load(handler, File.OpenText(filename));
         }
 
-        private void Parse(RdfAParserContext context)
+        private void Parse(RdfAParserContext<IHtmlDocument> context)
         {
             try
             {
@@ -202,10 +203,8 @@ namespace VDS.RDF.Parsing
 
                 // If there's a base element this permanently changes the Base URI
                 var baseEl = context.Document.QuerySelector("head > base");
-                //HtmlNode baseEl = context.Document.DocumentNode.SelectSingleNode("/html/head/base");
                 if (baseEl != null)
                 {
-                    //if (baseEl.Attributes.Contains("href"))
                     var uri = baseEl.GetAttribute("href");
                     if (!String.IsNullOrEmpty(uri))
                     {
@@ -303,7 +302,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private void ProcessElement(RdfAParserContext context, RdfAEvaluationContext evalContext, IElement currElement)
+        private void ProcessElement(RdfAParserContext<IHtmlDocument> context, RdfAEvaluationContext evalContext, IElement currElement)
         {
             bool recurse = true, skip = false;
             bool rel = false,
@@ -889,7 +888,7 @@ namespace VDS.RDF.Parsing
         /// <param name="evalContext">Evaluation Context</param>
         /// <param name="curie">CURIE</param>
         /// <returns></returns>
-        private INode ResolveCurie(RdfAParserContext context, RdfAEvaluationContext evalContext, String curie)
+        private INode ResolveCurie(RdfAParserContext<IHtmlDocument> context, RdfAEvaluationContext evalContext, String curie)
         {
             if (curie.StartsWith("_:"))
             {
@@ -937,7 +936,7 @@ namespace VDS.RDF.Parsing
         /// <param name="evalContext">Evaluation Context</param>
         /// <param name="uriref">URI/CURIE</param>
         /// <returns></returns>
-        private INode ResolveUriOrCurie(RdfAParserContext context, RdfAEvaluationContext evalContext, String uriref)
+        private INode ResolveUriOrCurie(RdfAParserContext<IHtmlDocument> context, RdfAEvaluationContext evalContext, String uriref)
         {
             try
             {
@@ -972,7 +971,7 @@ namespace VDS.RDF.Parsing
         /// <param name="evalContext">Evaluation Context</param>
         /// <param name="curie">URI/CURIE/Term</param>
         /// <returns></returns>
-        private INode ResolveTermOrCurie(RdfAParserContext context, RdfAEvaluationContext evalContext, String curie)
+        private INode ResolveTermOrCurie(RdfAParserContext<IHtmlDocument> context, RdfAEvaluationContext evalContext, String curie)
         {
             if (context.Syntax == RdfASyntax.RDFa_1_0)
             {
@@ -1056,7 +1055,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private INode ResolveTermOrCurieOrUri(RdfAParserContext context, RdfAEvaluationContext evalContext, String value)
+        private INode ResolveTermOrCurieOrUri(RdfAParserContext<IHtmlDocument> context, RdfAEvaluationContext evalContext, String value)
         {
             if (this.IsTerm(value))
             {
@@ -1082,7 +1081,7 @@ namespace VDS.RDF.Parsing
         /// <remarks>
         /// A complex attribute is any attribute which accepts multiple URIs, CURIEs or Terms
         /// </remarks>
-        private List<INode> ParseComplexAttribute(RdfAParserContext context, RdfAEvaluationContext evalContext, String value)
+        private List<INode> ParseComplexAttribute(RdfAParserContext<IHtmlDocument> context, RdfAEvaluationContext evalContext, String value)
         {
             List<INode> nodes = new List<INode>();
 
@@ -1120,7 +1119,7 @@ namespace VDS.RDF.Parsing
         /// <param name="evalContext">Evaluation Context</param>
         /// <param name="value">Attribute Value</param>
         /// <returns></returns>
-        private List<INode> ParseAttribute(RdfAParserContext context, RdfAEvaluationContext evalContext, String value)
+        private List<INode> ParseAttribute(RdfAParserContext<IHtmlDocument> context, RdfAEvaluationContext evalContext, String value)
         {
             List<INode> nodes = new List<INode>();
 
@@ -1151,7 +1150,7 @@ namespace VDS.RDF.Parsing
             return nodes;
         }
 
-        private void ParsePrefixAttribute(RdfAParserContext context, RdfAEvaluationContext evalContext, IAttr attr, String baseUri, Dictionary<string, Uri> hiddenPrefixes, List<String> inScopePrefixes)
+        private void ParsePrefixAttribute(RdfAParserContext<IHtmlDocument> context, RdfAEvaluationContext evalContext, IAttr attr, String baseUri, Dictionary<string, Uri> hiddenPrefixes, List<String> inScopePrefixes)
         {
             // Do nothing if the @prefix attribute is empty
             if (attr.Value.Equals(String.Empty)) return;
@@ -1234,7 +1233,7 @@ namespace VDS.RDF.Parsing
             } while (!canExit);
         }
 
-        private bool ParseProfileAttribute(RdfAParserContext context, RdfAEvaluationContext evalContext, IAttr attr)
+        private bool ParseProfileAttribute(RdfAParserContext<IHtmlDocument> context, RdfAEvaluationContext evalContext, IAttr attr)
         {
             String[] profiles;
             if (attr.Value.Contains(" "))
@@ -1325,7 +1324,7 @@ namespace VDS.RDF.Parsing
             return true;
         }
 
-        private void ParseVocabAttribute(RdfAParserContext context, RdfAEvaluationContext evalContext, IAttr attr)
+        private void ParseVocabAttribute(RdfAParserContext<IHtmlDocument> context, RdfAEvaluationContext evalContext, IAttr attr)
         {
             if (attr.Value.Equals(String.Empty))
             {
@@ -1340,21 +1339,8 @@ namespace VDS.RDF.Parsing
 
         private void GrabText(StringBuilder output, AngleSharp.Dom.INode n)
         {
-            // TextContent property includes contet of descendants
+            // TextContent property includes content of descendants
             output.Append(n.TextContent);
-            //switch (n.NodeType)
-            //{
-            //    case AngleSharp.Dom.NodeType.Document:
-            //    case AngleSharp.Dom.NodeType.Element:
-            //        foreach (var child in n.ChildNodes)
-            //        {
-            //            this.GrabText(output, child);
-            //        }
-            //        break;
-            //    case AngleSharp.Dom.NodeType.Text:
-            //        output.Append(n.InnerText);
-            //        break;
-            //}
         }
 
         private void ProcessXmlLiteral(RdfAEvaluationContext evalContext, AngleSharp.Dom.INode n, bool noDefaultNamespace)

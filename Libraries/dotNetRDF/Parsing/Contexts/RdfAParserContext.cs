@@ -28,17 +28,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AngleSharp;
-using AngleSharp.Dom.Html;
 
 namespace VDS.RDF.Parsing.Contexts
 {
     /// <summary>
     /// Parser Context for RDFa Parsers
     /// </summary>
-    public class RdfAParserContext : BaseParserContext
+    public class RdfAParserContext<THtmlDocument> : BaseParserContext
     {
-        private IHtmlDocument _document;
+        private THtmlDocument _document;
         private RdfASyntax _syntax = RdfASyntax.RDFa_1_1;
         private bool _allowXmlBase = true;
         private IRdfAVocabulary _defaultVocabularly;
@@ -48,7 +46,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="g">Graph</param>
         /// <param name="document">XML Document</param>
-        public RdfAParserContext(IGraph g, IHtmlDocument document)
+        public RdfAParserContext(IGraph g, THtmlDocument document)
             : this(g, document, false) { }
 
         /// <summary>
@@ -57,7 +55,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="g">Graph</param>
         /// <param name="document">HTML Document</param>
         /// <param name="traceParsing">Whether to Trace Parsing</param>
-        public RdfAParserContext(IGraph g, IHtmlDocument document, bool traceParsing)
+        public RdfAParserContext(IGraph g, THtmlDocument document, bool traceParsing)
             : base(g, traceParsing) 
         {
             this._document = document;
@@ -69,7 +67,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="handler">RDF Handler to use</param>
         /// <param name="document">HTML Document</param>
         /// <param name="traceParsing">Whether to Trace Parsing</param>
-        public RdfAParserContext(IRdfHandler handler, IHtmlDocument document, bool traceParsing)
+        public RdfAParserContext(IRdfHandler handler, THtmlDocument document, bool traceParsing)
             : base(handler, traceParsing)
         {
             this._document = document;
@@ -80,13 +78,13 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="handler">RDF Handler to use</param>
         /// <param name="document">HTML Document</param>
-        public RdfAParserContext(IRdfHandler handler, IHtmlDocument document)
+        public RdfAParserContext(IRdfHandler handler, THtmlDocument document)
             : this(handler, document, false) { }
 
         /// <summary>
         /// Gets the HTML Document
         /// </summary>
-        public IHtmlDocument Document
+        public THtmlDocument Document
         {
             get
             {
