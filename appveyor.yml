@@ -27,7 +27,9 @@ build_script:
   - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF.Query.Spin /p:Version=%GitVersion_NuGetVersion%
 
 test_script:
-  - dotnet xunit .\Testing\unittest\unittest.csproj -configuration %CONFIGURATION% > test.log
+  - cd Testing\unittest
+  - dotnet xunit -configuration %CONFIGURATION% > test.log
+  - cd ..\..\
 
 after_test:
   - cmd: msbuild Build\shfb\dotnetrdf.shfbproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /p:Configuration=%CONFIGURATION% /p:HelpFileVersion=%GitVersion_NuGetVersion%
