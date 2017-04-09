@@ -68,12 +68,10 @@ namespace VDS.RDF.Web
             this.TestSparqlWriterConneg("application/sparql-results+json", typeof(SparqlJsonWriter), "application/sparql-results+json");
         }
 
-#if !NO_HTMLAGILITYPACK // No support for writing SPARQL HTML results
         [Fact]
         public void WebConnegGetSparqlWriterWithAcceptHtml()
         {
             this.TestSparqlWriterConneg("text/html", typeof(SparqlHtmlWriter), "text/html");
         }
-#endif
     }
 }

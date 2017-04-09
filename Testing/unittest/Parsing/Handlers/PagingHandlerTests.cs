@@ -126,13 +126,11 @@ namespace VDS.RDF.Parsing.Handlers
             this.ParsingUsingPagingHandler("paging_handler_tests_temp.n3", new Notation3Parser());
         }
 
-#if !NO_HTMLAGILITYPACK
         [Fact]
         public void ParsingPagingHandlerRdfA()
         {
             this.ParsingUsingPagingHandler("paging_handler_tests_temp.html", new RdfAParser());
         }
-#endif
 
         [Fact]
         public void ParsingPagingHandlerRdfJson()

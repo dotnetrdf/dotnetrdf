@@ -205,9 +205,7 @@ namespace VDS.RDF.Writing
                 new CompressingTurtleWriter(TurtleSyntax.Original),
                 new CompressingTurtleWriter(TurtleSyntax.W3C),
                 new PrettyRdfXmlWriter(),
-#if !NO_HTMLAGILITYPACK
                 new HtmlWriter(),
-#endif
                 new Notation3Writer(),
                 new NTriplesWriter(NTriplesSyntax.Original),
                 new NTriplesWriter(NTriplesSyntax.Rdf11),
@@ -221,9 +219,7 @@ namespace VDS.RDF.Writing
                 new TurtleParser(TurtleSyntax.Original),
                 new TurtleParser(TurtleSyntax.W3C),
                 new RdfXmlParser(),
-#if !NO_HTMLAGILITYPACK
                 new RdfAParser(),
-#endif
                 new Notation3Parser(),
                 new NTriplesParser(NTriplesSyntax.Original),
                 new NTriplesParser(NTriplesSyntax.Rdf11),

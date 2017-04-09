@@ -31,6 +31,7 @@
     <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
     <CodeAnalysisRuleSet>..\..\dotnetrdf.ruleset</CodeAnalysisRuleSet>
     <RootNamespace>VDS.RDF</RootNamespace>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net40-client'">
@@ -48,7 +49,7 @@
     <EmbeddedResource Include="Configuration\configuration.ttl" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
-  
+    
   <ItemGroup>
     <EmbeddedResource Include="Query\Expressions\LeviathanFunctionLibrary.ttl" />
     <EmbeddedResource Include="Query\Optimisation\OptimiserStats.ttl" />
@@ -97,11 +98,11 @@
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.4' ">
-    <DefineConstants>$(DefineConstants);NO_SYSTEMCONFIGURATION;NO_PROXY;NO_XSL;NO_HTMLAGILITYPACK;NO_DATA;NO_WEB;NO_PROCESS;NO_URICACHE;NETCORE</DefineConstants>
+    <DefineConstants>$(DefineConstants);NO_SYSTEMCONFIGURATION;NO_PROXY;NO_XSL;NO_DATA;NO_WEB;NO_PROCESS;NO_URICACHE;NETCORE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.4' ">
-    <Compile Remove="Web\**\*.cs;Update\Protocol\*.cs;Compatibility\Portable\**\*.cs" />
+    <Compile Include="**\*.cs" Exclude="obj\**\*.cs;Web\**\*.cs;Update\Protocol\*.cs;Compatibility\Portable\**\*.cs;**\*.NetFull.cs" />
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net40' ">
@@ -109,7 +110,7 @@
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
-    <Compile Remove="Compatibility\**\*.cs" />
+    <Compile Include="**\*.cs" Exclude="obj\**\*.cs;Compatibility\**\*.cs;**\*.NetCore.cs" />
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net40-client' ">
@@ -117,7 +118,7 @@
   </PropertyGroup>
   
   <ItemGroup Condition=" '$(TargetFramework)' == 'net40-client' ">
-    <Compile Remove="Compatibility\Core\*.cs;Compatibility\Portable\**\*.cs" />
+    <Compile Include="**\*.cs" Exclude="obj\**\*.cs;Compatibility\Core\*.cs;Compatibility\Portable\**\*.cs;**\*.NetCore.cs" />
   </ItemGroup>
 
 </Project>

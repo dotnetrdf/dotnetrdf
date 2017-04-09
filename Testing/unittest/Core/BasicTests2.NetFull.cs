@@ -221,9 +221,7 @@ namespace VDS.RDF
                 Options.UriLoaderTimeout = 45000;
 
                 List<Uri> testUris = new List<Uri>() {
-#if !NO_HTMLAGILITYPACK // Resource returns RDFa
                     new Uri("http://www.bbc.co.uk/programmes/b0080bbs#programme"),
-#endif
                     new Uri("http://dbpedia.org/resource/Southampton"),
 #if !NO_FILE // file: urls not supported
                     new Uri("file:///resources\\MergePart1.ttl"),
