@@ -34,8 +34,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Handlers
 {
-
-    public class PagingHandlerTests
+    public partial class PagingHandlerTests
     {
         public void ParsingUsingPagingHandler(String tempFile, IRdfReader parser)
         {
@@ -127,14 +126,6 @@ namespace VDS.RDF.Parsing.Handlers
             this.ParsingUsingPagingHandler("paging_handler_tests_temp.n3", new Notation3Parser());
         }
 
-#if !NO_XMLENTITIES
-        [Fact]
-        public void ParsingPagingHandlerRdfXml()
-        {
-            this.ParsingUsingPagingHandler("paging_handler_tests_temp.rdf", new RdfXmlParser());
-        }
-#endif
-
 #if !NO_HTMLAGILITYPACK
         [Fact]
         public void ParsingPagingHandlerRdfA()
@@ -171,21 +162,11 @@ namespace VDS.RDF.Parsing.Handlers
             this.ParsingUsingPagingHandler2("paging_handler_tests_temp.n3", new Notation3Parser());
         }
 
-#if !NO_XMLENTITIES
-        [Fact]
-        public void ParsingPagingHandlerRdfXml2()
-        {
-            this.ParsingUsingPagingHandler2("paging_handler_tests_temp.rdf", new RdfXmlParser());
-        }
-#endif
-
-#if !NO_HTMLAGILITYPACK
         [Fact]
         public void ParsingPagingHandlerRdfA2()
         {
             this.ParsingUsingPagingHandler2("paging_handler_tests_temp.html", new RdfAParser());
         }
-#endif
 
         [Fact]
         public void ParsingPagingHandlerRdfJson2()
@@ -215,21 +196,11 @@ namespace VDS.RDF.Parsing.Handlers
             this.ParsingUsingPagingHandler3("paging_handler_tests_temp.n3", new Notation3Parser());
         }
 
-#if !NO_XMLENTITIES
-        [Fact]
-        public void ParsingPagingHandlerRdfXml3()
-        {
-            this.ParsingUsingPagingHandler3("paging_handler_tests_temp.rdf", new RdfXmlParser());
-        }
-#endif
-
-#if !NO_HTMLAGILITYPACK
         [Fact]
         public void ParsingPagingHandlerRdfA3()
         {
             this.ParsingUsingPagingHandler3("paging_handler_tests_temp.html", new RdfAParser());
         }
-#endif
 
         [Fact]
         public void ParsingPagingHandlerRdfJson3()

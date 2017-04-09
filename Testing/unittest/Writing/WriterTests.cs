@@ -37,11 +37,9 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
-
-    public class WriterTests
+    public partial class WriterTests
         : CompressionTests
     {
-
         private String prefix = "@prefix : <http://example.org>.\n";
         
         [Fact]
@@ -107,7 +105,6 @@ namespace VDS.RDF.Writing
             Assert.Equal(g, h);
         }
 
-#if !NO_HTMLAGILITYPACK
         [Fact]
         public void WritingHtmlWriter()
         {
@@ -134,9 +131,6 @@ namespace VDS.RDF.Writing
 
             Assert.Equal(g, h);
         }
-#endif
-
-#if !PORTABLE
 
         [Fact]
         public void WritingCollections()
@@ -155,8 +149,6 @@ namespace VDS.RDF.Writing
             ttlwriter.Save(g, Console.Out);
 #endif
         }
-
-#endif
 
         [Fact]
         public void WritingXmlAmpersandEscaping()
@@ -280,31 +272,6 @@ namespace VDS.RDF.Writing
                     Assert.Equal(g.BaseUri, h.BaseUri);
                 }
             }
-        }
-
-        [Fact]
-        public void WritingQNameValidation()
-        {
-            Graph g = new Graph();
-            g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
-            INode subj = g.CreateUriNode("ex:subject");
-            INode pred = g.CreateUriNode("ex:predicate");
-            List<INode> objects = new List<INode>()
-            {
-                g.CreateUriNode("ex:123"),
-                g.CreateBlankNode("a_blank_node"),
-                g.CreateBlankNode("_blank"),
-                g.CreateBlankNode("-blank"),
-                g.CreateBlankNode("123blank"),
-                g.CreateUriNode("ex:_object"),
-                g.CreateUriNode("ex:-object")
-            };
-            foreach (INode obj in objects)
-            {
-                g.Assert(subj, pred, obj);
-            }
-
-            this.CheckCompressionRoundTrip(g);
         }
 
         [Theory]

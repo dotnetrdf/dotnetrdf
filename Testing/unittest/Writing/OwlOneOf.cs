@@ -36,7 +36,6 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
-
     public class OwlOneOf
     {
         [Fact]
@@ -73,7 +72,7 @@ namespace VDS.RDF.Writing
             Console.WriteLine("Saved OK using PrettyRdfXmlWriter");
             Console.WriteLine();
 
-#if !NO_XMLENTITIES
+#if NET40
             //Now check that the Graphs are all equivalent
             Graph h = new Graph();
             h.LoadFromFile("owl-one-of.rdf");

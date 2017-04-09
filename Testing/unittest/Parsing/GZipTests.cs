@@ -23,8 +23,6 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#if !NO_COMPRESSION
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -35,8 +33,7 @@ using VDS.RDF.Query;
 
 namespace VDS.RDF.Parsing
 {
-
-    public class GZipTests
+    public partial class GZipTests
     {
         private IGraph _g;
         private SparqlResultSet _results;
@@ -195,172 +192,6 @@ namespace VDS.RDF.Parsing
                 Console.WriteLine(filename + " => " + realExt);
 
                 Assert.Equal(expectedExt, realExt);
-            }
-        }
-
-        [Fact]
-        public void ParsingGZipByFilenameManual1()
-        {
-            foreach (String filename in this._manualTestFiles)
-            {
-                Graph g = new Graph();
-
-                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
-                ext = ext.Substring(1);
-                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdf && d.SupportsFileExtension(ext)).FirstOrDefault();
-                Assert.NotNull(def);
-
-                IRdfReader reader = def.GetRdfParser();
-                reader.Load(g, filename);
-
-                Assert.Equal(this._g, g);
-            }
-        }
-
-        [Fact]
-        public void ParsingGZipByFilenameManual2()
-        {
-            foreach (String filename in this._manualTestFiles)
-            {
-                Graph g = new Graph();
-
-                IRdfReader reader = MimeTypesHelper.GetParserByFileExtension(MimeTypesHelper.GetTrueFileExtension(filename));
-                reader.Load(g, filename);
-
-                Assert.Equal(this._g, g);
-            }
-        }
-
-        [Fact]
-        public void ParsingGZipByFilenameManual3()
-        {
-            foreach (String filename in this._manualTestFiles)
-            {
-                Graph g = new Graph();
-                g.LoadFromFile(filename);
-
-                Assert.Equal(this._g, g);
-            }
-        }
-
-        [Fact]
-        public void ParsingGZipByStreamManual()
-        {
-            foreach (String filename in this._manualTestFiles)
-            {
-                Graph g = new Graph();
-
-                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
-                ext = ext.Substring(1);
-                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdf && d.SupportsFileExtension(ext)).FirstOrDefault();
-                Assert.NotNull(def);
-
-                IRdfReader reader = def.GetRdfParser();
-                reader.Load(g, File.OpenText(filename));
-
-                Assert.Equal(this._g, g);
-            }
-        }
-
-        [Fact]
-        public void ParsingGZipByGZipStreamManual()
-        {
-            foreach (String filename in this._manualTestFiles)
-            {
-                Graph g = new Graph();
-
-                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
-                ext = ext.Substring(1);
-                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdf && d.SupportsFileExtension(ext)).FirstOrDefault();
-                Assert.NotNull(def);
-
-                IRdfReader reader = def.GetRdfParser();
-                reader.Load(g, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
-
-                Assert.Equal(this._g, g);
-            }
-        }
-
-        [Fact]
-        public void ParsingGZipByFilenameAuto1()
-        {
-            foreach (String filename in this._autoTestFiles)
-            {
-                Graph g = new Graph();
-
-                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
-                ext = ext.Substring(1);
-                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdf && d.SupportsFileExtension(ext)).FirstOrDefault();
-                Assert.NotNull(def);
-
-                IRdfReader reader = def.GetRdfParser();
-                reader.Load(g, filename);
-
-                Assert.Equal(this._g, g);
-            }
-        }
-
-        [Fact]
-        public void ParsingGZipByFilenameAuto2()
-        {
-            foreach (String filename in this._autoTestFiles)
-            {
-                Graph g = new Graph();
-
-                IRdfReader reader = MimeTypesHelper.GetParserByFileExtension(MimeTypesHelper.GetTrueFileExtension(filename));
-                reader.Load(g, filename);
-
-                Assert.Equal(this._g, g);
-            }
-        }
-
-        [Fact]
-        public void ParsingGZipByFilenameAuto3()
-        {
-            foreach (String filename in this._autoTestFiles)
-            {
-                Graph g = new Graph();
-                g.LoadFromFile(filename);
-
-                Assert.Equal(this._g, g);
-            }
-        }
-
-        [Fact]
-        public void ParsingGZipByStreamAuto()
-        {
-            foreach (String filename in this._autoTestFiles)
-            {
-                Graph g = new Graph();
-
-                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
-                ext = ext.Substring(1);
-                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdf && d.SupportsFileExtension(ext)).FirstOrDefault();
-                Assert.NotNull(def);
-
-                IRdfReader reader = def.GetRdfParser();
-                reader.Load(g, File.OpenText(filename));
-
-                Assert.Equal(this._g, g);
-            }
-        }
-
-        [Fact]
-        public void ParsingGZipByGZipStreamAuto()
-        {
-            foreach (String filename in this._autoTestFiles)
-            {
-                Graph g = new Graph();
-
-                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
-                ext = ext.Substring(1);
-                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdf && d.SupportsFileExtension(ext)).FirstOrDefault();
-                Assert.NotNull(def);
-
-                IRdfReader reader = def.GetRdfParser();
-                reader.Load(g, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
-
-                Assert.Equal(this._g, g);
             }
         }
 
@@ -569,5 +400,3 @@ namespace VDS.RDF.Parsing
         }
     }
 }
-
-#endif
