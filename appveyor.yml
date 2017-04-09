@@ -28,7 +28,7 @@ build_script:
 
 test_script:
   - cd Testing\unittest
-  - dotnet xunit -configuration %CONFIGURATION% > test.log
+  - dotnet xunit -configuration %CONFIGURATION% -parallel none > test.log
   - cd ..\..\
 
 after_test:
