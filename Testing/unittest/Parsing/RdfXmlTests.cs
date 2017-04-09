@@ -128,15 +128,6 @@ namespace VDS.RDF.Parsing
         }
 
         [Fact]
-        public void ParsingRdfXmlElementUsesUndeclaredNamespaceDom()
-        {
-            Graph g = new Graph();
-            g.LoadFromFile(@"resources\missing-namespace-declarations.rdf", new RdfXmlParser(RdfXmlParserMode.DOM));
-            Assert.False(g.IsEmpty);
-            Assert.Equal(9, g.Triples.Count);
-        }
-
-        [Fact]
         public void ParsingRdfXmlElementUsesUndeclaredNamespaceStreaming()
         {
             Graph g = new Graph();

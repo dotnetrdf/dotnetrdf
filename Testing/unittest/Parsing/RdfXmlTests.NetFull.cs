@@ -121,5 +121,14 @@ namespace VDS.RDF.Parsing
             Assert.True(g.ContainsTriple(new Triple(unencodedNode, pred, g.CreateLiteralNode("false"))), "The unencoded node should have the property 'false' from the file");
 
         }
+
+        [Fact]
+        public void ParsingRdfXmlElementUsesUndeclaredNamespaceDom()
+        {
+            Graph g = new Graph();
+            g.LoadFromFile(@"resources\missing-namespace-declarations.rdf", new RdfXmlParser(RdfXmlParserMode.DOM));
+            Assert.False(g.IsEmpty);
+            Assert.Equal(9, g.Triples.Count);
+        }
     }
 }
