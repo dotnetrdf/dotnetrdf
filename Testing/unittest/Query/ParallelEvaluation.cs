@@ -24,14 +24,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Text;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
-using Xunit;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Expressions;
@@ -39,11 +35,11 @@ using VDS.RDF.Query.Expressions.Arithmetic;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Writing.Formatting;
+using Xunit;
 
 namespace VDS.RDF.Query
 {
-
-    public class ParallelEvaluation
+    public partial class ParallelEvaluation
     {
         private InMemoryDataset _dataset;
         private SparqlQueryParser _parser = new SparqlQueryParser();
@@ -122,25 +118,6 @@ namespace VDS.RDF.Query
             else
             {
                 Assert.True(false, "Query did not return a SPARQL Result Set for normal evaluation as expected");
-            }
-        }
-
-        [Fact]
-        public void SparqlParallelEvaluationJoin1()
-        {
-            this.TestQuery("SELECT * WHERE { ?s ?p ?o { ?x ?y ?z } }");
-        }
-
-        [Fact]
-        public void SparqlParallelEvaluationJoin2()
-        {
-            try
-            {
-                this.TestQuery("SELECT * WHERE { ?s ?p ?o { ?x ?y ?z } { ?a ?b ?c } }");
-            }
-            catch (OutOfMemoryException outEx)
-            {
-                TestTools.ReportError("Out of Memory", outEx);
             }
         }
 

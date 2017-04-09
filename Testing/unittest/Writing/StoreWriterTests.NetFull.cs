@@ -40,9 +40,31 @@ namespace VDS.RDF.Writing
         }
 
         [Fact]
+        public void WritingNQuadsSingleThreaded()
+        {
+            this.WritingNQuadsActual();
+        }
+
+        private void WritingNQuadsActual()
+        {
+            this.TestWriter(new NQuadsWriter(NQuadsSyntax.Original), new NQuadsParser(NQuadsSyntax.Original), true);
+        }
+
+        [Fact]
         public void WritingNQuadsMixed()
         {
             TestTools.TestInMTAThread(this.WritingNQuadsMixedActual);
+        }
+
+        [Fact]
+        public void WritingNQuadsMixedSingleThreaded()
+        {
+            this.WritingNQuadsMixedActual();
+        }
+
+        private void WritingNQuadsMixedActual()
+        {
+            this.TestWriter(new NQuadsWriter(NQuadsSyntax.Original), new NQuadsParser(NQuadsSyntax.Rdf11), true);
         }
 
         [Fact]
@@ -52,9 +74,31 @@ namespace VDS.RDF.Writing
         }
 
         [Fact]
+        public void WritingNQuadsMixedBadSingleThreaded()
+        {
+            Assert.Throws<RdfParseException>(() => this.WritingNQuadsMixedBadActual());
+        }
+
+        private void WritingNQuadsMixedBadActual()
+        {
+            this.TestWriter(new NQuadsWriter(NQuadsSyntax.Rdf11), new NQuadsParser(NQuadsSyntax.Original), true);
+        }
+
+        [Fact]
         public void WritingNQuads11()
         {
             TestTools.TestInMTAThread(this.WritingNQuads11Actual);
+        }
+
+        [Fact]
+        public void WritingNQuads11SingleThreaded()
+        {
+            this.WritingNQuads11Actual();
+        }
+
+        private void WritingNQuads11Actual()
+        {
+            this.TestWriter(new NQuadsWriter(NQuadsSyntax.Rdf11), new NQuadsParser(NQuadsSyntax.Rdf11), true);
         }
 
         [Fact]
@@ -64,9 +108,31 @@ namespace VDS.RDF.Writing
         }
 
         [Fact]
+        public void WritingTriGSingleThreaded()
+        {
+            this.WritingTriGActual();
+        }
+
+        private void WritingTriGActual()
+        {
+            this.TestWriter(new TriGWriter(), new TriGParser(), true);
+        }
+
+        [Fact]
         public void WritingTriGUncompressed()
         {
             TestTools.TestInMTAThread(this.WritingTriGUncompressedActual);
+        }
+
+        [Fact]
+        public void WritingTriGUncompressedSingleThreaded()
+        {
+            this.WritingTriGUncompressedActual();
+        }
+
+        private void WritingTriGUncompressedActual()
+        {
+            this.TestWriter(new TriGWriter(), new TriGParser(), true, WriterCompressionLevel.None);
         }
     }
 }
