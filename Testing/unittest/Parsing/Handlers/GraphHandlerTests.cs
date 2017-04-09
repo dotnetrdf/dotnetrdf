@@ -44,7 +44,9 @@ namespace VDS.RDF.Parsing.Handlers
         {
             try
             {
+#if NET40
                 Options.UriLoaderCaching = false;
+#endif
 
                 Graph g = new Graph();
                 UriLoader.Load(g, new Uri("http://wiki.rkbexplorer.com/id/void"));
@@ -56,7 +58,9 @@ namespace VDS.RDF.Parsing.Handlers
             }
             finally
             {
+#if NET40
                 Options.UriLoaderCaching = true;
+#endif
             }
         }
 
@@ -65,7 +69,9 @@ namespace VDS.RDF.Parsing.Handlers
         {
             try
             {
+#if NET40
                 Options.UriLoaderCaching = false;
+#endif
 
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
@@ -78,7 +84,9 @@ namespace VDS.RDF.Parsing.Handlers
             }
             finally
             {
+#if NET40
                 Options.UriLoaderCaching = true;
+#endif
             }
         }
 #endif
@@ -157,13 +165,11 @@ namespace VDS.RDF.Parsing.Handlers
         }
 #endif
 
-#if !NO_HTMLAGILITYPACK
         [Fact]
         public void ParsingGraphHandlerExplicitRdfA()
         {
             this.ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.html", new RdfAParser(), false);
         }
-#endif
 
         [Fact]
         public void ParsingGraphHandlerExplicitRdfJson()

@@ -38,8 +38,6 @@ using VDS.RDF.Query;
 
 namespace VDS.RDF.Writing.Serialization
 {
-#if !SILVERLIGHT
-
     public class ResultSerializationTests
     {
         private void TestXmlSerialization(SparqlResult r, bool fullEquality)
@@ -239,5 +237,4 @@ namespace VDS.RDF.Writing.Serialization
             this.TestDataContractSerialization(this.GetResults());
         }
     }
-#endif
 }

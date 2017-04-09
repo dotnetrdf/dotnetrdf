@@ -103,7 +103,7 @@ namespace VDS.RDF
 
             if (File.Exists(@"..\\resources\UnitTestConfig.properties"))
             {
-                using (StreamReader reader = new StreamReader(@"..\\resources\UnitTestConfig.properties"))
+                using (StreamReader reader = File.OpenText(@"..\\resources\UnitTestConfig.properties"))
                 {
                     do
                     {

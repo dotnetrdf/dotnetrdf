@@ -29,7 +29,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Net;
-using System.Web;
 using Xunit;
 using VDS.RDF.Writing;
 using VDS.RDF.Parsing;

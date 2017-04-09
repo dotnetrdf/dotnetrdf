@@ -31,8 +31,7 @@ using VDS.RDF.Writing;
 
 namespace VDS.RDF.Writing
 {
-
-    public class StoreWriterTests
+    public partial class StoreWriterTests
     {
         private void TestWriter(IStoreWriter writer, IStoreReader reader, bool useMultiThreaded, int compressionLevel)
         {
@@ -81,12 +80,6 @@ namespace VDS.RDF.Writing
         }
 
         [Fact]
-        public void WritingNQuads()
-        {
-            TestTools.TestInMTAThread(this.WritingNQuadsActual);
-        }
-
-        [Fact]
         public void WritingNQuadsSingleThreaded()
         {
             this.WritingNQuadsActual();
@@ -95,12 +88,6 @@ namespace VDS.RDF.Writing
         private void WritingNQuadsActual()
         {
             this.TestWriter(new NQuadsWriter(NQuadsSyntax.Original), new NQuadsParser(NQuadsSyntax.Original), true);
-        }
-
-        [Fact]
-        public void WritingNQuadsMixed()
-        {
-            TestTools.TestInMTAThread(this.WritingNQuadsMixedActual);
         }
 
         [Fact]
@@ -115,12 +102,6 @@ namespace VDS.RDF.Writing
         }
 
         [Fact]
-        public void WritingNQuadsMixedBad()
-        {
-            Assert.Throws<RdfParseException>(() => TestTools.TestInMTAThread(this.WritingNQuadsMixedBadActual));
-        }
-
-        [Fact]
         public void WritingNQuadsMixedBadSingleThreaded()
         {
             Assert.Throws<RdfParseException>(() => this.WritingNQuadsMixedBadActual());
@@ -129,12 +110,6 @@ namespace VDS.RDF.Writing
         private void WritingNQuadsMixedBadActual()
         {
             this.TestWriter(new NQuadsWriter(NQuadsSyntax.Rdf11), new NQuadsParser(NQuadsSyntax.Original), true);
-        }
-
-        [Fact]
-        public void WritingNQuads11()
-        {
-            TestTools.TestInMTAThread(this.WritingNQuads11Actual);
         }
 
         [Fact]
@@ -149,12 +124,6 @@ namespace VDS.RDF.Writing
         }
 
         [Fact]
-        public void WritingTriG()
-        {
-            TestTools.TestInMTAThread(this.WritingTriGActual);
-        }
-
-        [Fact]
         public void WritingTriGSingleThreaded()
         {
             this.WritingTriGActual();
@@ -163,12 +132,6 @@ namespace VDS.RDF.Writing
         private void WritingTriGActual()
         {
             this.TestWriter(new TriGWriter(), new TriGParser(), true);
-        }
-
-        [Fact]
-        public void WritingTriGUncompressed()
-        {
-            TestTools.TestInMTAThread(this.WritingTriGUncompressedActual);
         }
 
         [Fact]

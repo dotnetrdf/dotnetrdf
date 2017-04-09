@@ -78,6 +78,7 @@ namespace VDS.RDF.Query
             this.TestQNameUnescaping("ex:a%20space", "ex:a%20space");
         }
 
+#if NET40
         [Fact]
         public void SparqlQNameUnescapingPercentEncodingComplex()
         {
@@ -86,6 +87,7 @@ namespace VDS.RDF.Query
                 this.TestQNameUnescaping("ex:" + Uri.HexEscape((char)i), "ex:" + Uri.HexEscape((char)i));
             }
         }
+#endif
 
         [Fact]
         public void SparqlQNameUnescapingSpecialCharactersSimple()

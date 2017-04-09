@@ -39,8 +39,6 @@ using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Writing.Serialization
 {
-#if !SILVERLIGHT
-
     public class NodeSerializationTests
     {
         #region Methods that perform the actual test logic
@@ -328,5 +326,4 @@ namespace VDS.RDF.Writing.Serialization
 
         #endregion
     }
-#endif
 }

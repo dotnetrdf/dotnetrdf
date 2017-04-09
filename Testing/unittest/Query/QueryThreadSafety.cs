@@ -34,8 +34,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-
-    public class QueryThreadSafety
+    public partial class QueryThreadSafety
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
         private SparqlFormatter _formatter = new SparqlFormatter();
@@ -111,23 +110,6 @@ namespace VDS.RDF.Query
             query = "SELECT * WHERE { BIND(EXISTS { ?s ?p ?o } AS ?test) }";
             this.CheckThreadSafety(query, true);
 
-        }
-
-        [Fact]
-        public void SparqlQueryThreadSafeEvaluation()
-        {
-            TestTools.TestInMTAThread(this.SparqlQueryThreadSafeEvaluationActual);
-        }
-
-        [Fact]
-        public void SparqlQueryAndUpdateThreadSafeEvaluation()
-        {
-            for (int i = 1; i <= 10; i++)
-            {
-                Console.WriteLine("Run #" + i);
-                TestTools.TestInMTAThread(this.SparqlQueryAndUpdateThreadSafeEvaluationActual);
-                Console.WriteLine();
-            }
         }
 
         private void SparqlQueryThreadSafeEvaluationActual()

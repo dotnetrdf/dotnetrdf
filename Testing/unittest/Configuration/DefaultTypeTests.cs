@@ -32,8 +32,7 @@ using VDS.RDF.Configuration;
 
 namespace VDS.RDF.Configuration
 {
-
-    public class DefaultTypeTests
+    public partial class DefaultTypeTests
     {
         private void TestDefaultType(String typeUri, String expectedType)
         {
@@ -93,16 +92,6 @@ namespace VDS.RDF.Configuration
         public void ConfigurationDefaultTypeUserGroup()
         {
             this.TestDefaultType(ConfigurationLoader.ClassUserGroup, ConfigurationLoader.DefaultTypeUserGroup);
-        }
-
-        [Fact]
-        public void ConfigurationDefaultTypeProxy()
-        {
-#if NO_PROXY
-            this.TestDefaultType(ConfigurationLoader.ClassProxy, null);
-#else
-            this.TestDefaultType(ConfigurationLoader.ClassProxy, typeof(System.Net.WebProxy).AssemblyQualifiedName);
-#endif
         }
     }
 }

@@ -43,7 +43,6 @@ using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Query
 {
-
     public class SparqlTests2
     {
         private ISparqlDataset AsDataset(IInMemoryQueryableStore store)
@@ -1318,7 +1317,9 @@ WHERE
         {
             try
             {
+#if NET40
                 Options.UsePLinqEvaluation = false;
+#endif
 
                 TripleStore store = new TripleStore();
                 store.LoadFromFile(@"resources\core-416.trig");
@@ -1353,7 +1354,9 @@ WHERE
             }
             finally
             {
+#if NET40
                 Options.UsePLinqEvaluation = true;
+#endif
             }
         }
 
@@ -1362,7 +1365,9 @@ WHERE
         {
             try
             {
+#if NET40
                 Options.UsePLinqEvaluation = true;
+#endif
 
                 TripleStore store = new TripleStore();
                 store.LoadFromFile(@"resources\core-416.trig");
@@ -1398,7 +1403,9 @@ WHERE
             }
             finally
             {
+#if NET40
                 Options.UsePLinqEvaluation = true;
+#endif
             }
         }
 
@@ -1504,12 +1511,16 @@ WHERE
         {
             try
             {
+#if NET40
                 Options.UsePLinqEvaluation = false;
                 RunCore457("optional.rq");
+#endif
             }
             finally
             {
+#if NET40
                 Options.UsePLinqEvaluation = true;
+#endif
             }
         }
 
@@ -1530,12 +1541,16 @@ WHERE
         {
             try
             {
+#if NET40
                 Options.UsePLinqEvaluation = false;
+#endif
                 RunCore457("exists.rq");
             }
             finally
             {
+#if NET40
                 Options.UsePLinqEvaluation = true;
+#endif
             }
         }
 
@@ -1558,5 +1573,5 @@ WHERE
         }
 
 #endif
-    }
-}
+            }
+        }

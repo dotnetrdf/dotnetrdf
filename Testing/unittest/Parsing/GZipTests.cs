@@ -128,7 +128,7 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        writer.Save(this._results, new StreamWriter(filename));
+                        writer.Save(this._results, new StreamWriter(File.OpenWrite(filename)));
 
                         this._autoResultsTestFiles.Add(filename);
                     }
@@ -256,7 +256,7 @@ namespace VDS.RDF.Parsing
                 Assert.NotNull(def);
 
                 IRdfReader reader = def.GetRdfParser();
-                reader.Load(g, new StreamReader(filename));
+                reader.Load(g, File.OpenText(filename));
 
                 Assert.Equal(this._g, g);
             }
@@ -339,7 +339,7 @@ namespace VDS.RDF.Parsing
                 Assert.NotNull(def);
 
                 IRdfReader reader = def.GetRdfParser();
-                reader.Load(g, new StreamReader(filename));
+                reader.Load(g, File.OpenText(filename));
 
                 Assert.Equal(this._g, g);
             }
@@ -472,7 +472,7 @@ namespace VDS.RDF.Parsing
                 Assert.NotNull(def);
 
                 ISparqlResultsReader reader = def.GetSparqlResultsParser();
-                reader.Load(results, new StreamReader(filename));
+                reader.Load(results, File.OpenText(filename));
 
                 Assert.True(this._results.Equals(results), "Result Sets for file " + filename + " were not equal");
             }
@@ -543,7 +543,7 @@ namespace VDS.RDF.Parsing
                 Assert.NotNull(def);
 
                 ISparqlResultsReader reader = def.GetSparqlResultsParser();
-                reader.Load(results, new StreamReader(filename));
+                reader.Load(results, File.OpenText(filename));
 
                 Assert.True(this._results.Equals(results), "Result Sets for file " + filename + " were not equal");
             }
