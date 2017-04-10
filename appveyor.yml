@@ -29,9 +29,9 @@ build_script:
 test_script:
   - ps: |
       cd Testing\unittest
-      dotnet xunit -configuration $env.CONFIGURATION -notrait "Category=explicit" | Out-File test.log
+      dotnet xunit -configuration %CONFIGURATION% -notrait "Category=explicit" | Out-File test.log
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
-      dotnet xunit -configuration $env.CONFIGURATION -trait "Category=fulltext" | Out-File fulltext.log
+      dotnet xunit -configuration %CONFIGURATION% -trait "Category=fulltext" | Out-File fulltext.log
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
       cd ..\..\
 
