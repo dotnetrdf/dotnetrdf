@@ -27,9 +27,13 @@ build_script:
   - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF.Query.Spin /p:Version=%GitVersion_NuGetVersion%
 
 test_script:
-  - cd Testing\unittest
-  - dotnet xunit -configuration %CONFIGURATION% -parallel none > test.log
-  - cd ..\..\
+  - ps: |
+      cd Testing\unittest
+      dotnet xunit -configuration %CONFIGURATION% -notrait "Category=explicit"
+      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
+      dotnet xunit -configuration %CONFIGURATION% -trait "Category=fulltext"
+      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
+      cd ..\..\
 
 after_test:
   - cmd: msbuild Build\shfb\dotnetrdf.shfbproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /p:Configuration=%CONFIGURATION% /p:HelpFileVersion=%GitVersion_NuGetVersion%
