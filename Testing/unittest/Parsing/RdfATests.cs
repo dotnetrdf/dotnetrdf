@@ -30,8 +30,6 @@ using System.Text;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
-using System.Reflection;
-using System.IO;
 
 namespace VDS.RDF.Parsing
 {
@@ -66,7 +64,6 @@ namespace VDS.RDF.Parsing
 #if !NO_URICACHE
                 Options.UriLoaderCaching = false;
 #endif
-                var basePath = Path.GetDirectoryName(typeof(RdfATests).GetTypeInfo().Assembly.Location);
                 List<String> tests = new List<string>()
                 {
                     "gr1",
@@ -87,10 +84,10 @@ namespace VDS.RDF.Parsing
                     h.BaseUri = g.BaseUri;
 
                     Console.WriteLine("Graph A Warnings:");
-                    FileLoader.Load(g, Path.Combine(basePath, "resources",  $"{test}.xhtml"));
+                    FileLoader.Load(g, string.Format("resources\\{0}.xhtml", test));
                     Console.WriteLine();
                     Console.WriteLine("Graph B Warnings:");
-                    FileLoader.Load(h, Path.Combine(basePath, "resources", $"{test}b.xhtml"));
+                    FileLoader.Load(h, string.Format("resources\\{0}b.xhtml", test));
                     Console.WriteLine();
 
                     Console.WriteLine("Graph A (RDFa 1.0)");
