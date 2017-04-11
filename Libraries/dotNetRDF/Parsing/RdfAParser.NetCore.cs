@@ -68,7 +68,7 @@ namespace VDS.RDF.Parsing
 
         protected override bool HasAttribute(IElement element, string attributeName)
         {
-            return !element.HasAttribute(attributeName);
+            return element.HasAttribute(attributeName);
         }
 
         protected override string GetAttribute(IElement element, string attributeName)
