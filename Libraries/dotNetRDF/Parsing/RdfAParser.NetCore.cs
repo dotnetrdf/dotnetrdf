@@ -146,12 +146,12 @@ namespace VDS.RDF.Parsing
 
         protected override void GrabText(StringBuilder output, AngleSharp.Dom.INode node)
         {
-            output.Append(node.TextContent);
+            output.Append(node.TextContent.Trim());
         }
 
         protected override string GetInnerText(AngleSharp.Dom.INode node)
         {
-            return node.TextContent;
+            return node.TextContent.Trim();
         }
 
         protected override string GetInnerHtml(IElement element)
