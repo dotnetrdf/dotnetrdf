@@ -678,7 +678,6 @@ namespace VDS.RDF
         }
 #endif
 
-#if !NO_HTMLAGILITYPACK
         [Fact]
         public void MimeTypesGetDefinitionsByTypeRdfA1()
         {
@@ -856,7 +855,6 @@ namespace VDS.RDF
             Assert.Equal(typeof(GZippedRdfAParser), d.RdfParserType);
             Assert.Equal(typeof(GZippedRdfAWriter), d.RdfWriterType);
         }
-#endif
 
         [Fact]
         public void MimeTypesGetDefinitionsByTypeSparqlXml1()
@@ -1427,7 +1425,6 @@ namespace VDS.RDF
             Assert.IsType<RdfJsonParser>(parser);
         }
 
-#if !NO_HTMLAGILITYPACK
         [Fact]
         public void MimeTypesGetParserByTypeRdfA1()
         {
@@ -1441,7 +1438,6 @@ namespace VDS.RDF
             IRdfReader parser = MimeTypesHelper.GetParser("application/xhtml+xml");
             Assert.IsType<RdfAParser>(parser);
         }
-#endif
 
         [Fact]
         public void MimeTypesGetParserByTypeUnknown()
@@ -1599,7 +1595,6 @@ namespace VDS.RDF
         }
 #endif
 
-#if !NO_HTMLAGILITYPACK
         [Fact]
         public void MimeTypesGetParserByExtRdfA1()
         {
@@ -1683,7 +1678,6 @@ namespace VDS.RDF
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("xhtml.gz");
             Assert.IsType<GZippedRdfAParser>(parser);
         }
-#endif
 
         [Fact]
         public void MimeTypesGetWriterByTypeUnknown()
@@ -1811,7 +1805,6 @@ namespace VDS.RDF
             Assert.IsType<RdfJsonWriter>(writer);
         }
 
-#if !NO_HTMLAGILITYPACK
         [Fact]
         public void MimeTypesGetWriterByTypeRdfA1()
         {
@@ -1825,7 +1818,6 @@ namespace VDS.RDF
             IRdfWriter writer = MimeTypesHelper.GetWriter("application/xhtml+xml");
             Assert.IsType<HtmlWriter>(writer);
         }
-#endif
 
         [Fact]
         public void MimeTypesGetWriterByExtNTriples1()
@@ -1977,7 +1969,6 @@ namespace VDS.RDF
         }
 #endif
 
-#if !NO_HTMLAGILITYPACK
         [Fact]
         public void MimeTypesGetWriterByExtRdfA1()
         {
@@ -2066,7 +2057,6 @@ namespace VDS.RDF
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension("xhtml.gz");
             Assert.IsType<GZippedRdfAWriter>(parser);
         }
-#endif
 #endif
 
         [Fact]

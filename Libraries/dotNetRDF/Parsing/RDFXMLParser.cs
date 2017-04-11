@@ -70,12 +70,10 @@ namespace VDS.RDF.Parsing
     /// </summary>
     public enum RdfXmlParserMode
     {
-#if !NO_XMLDOM
         /// <summary>
-        /// Uses DOM Based parsing (not supported under Silverlight)
+        /// Uses DOM Based parsing (not fully supported under .NET Standard/Core)
         /// </summary>
         DOM,
-#endif
         /// <summary>
         /// Uses Streaming Based parsing (default)
         /// </summary>
@@ -206,7 +204,6 @@ namespace VDS.RDF.Parsing
             try
             {
                 // Silverlight only supports XmlReader not the full XmlDocument API
-#if !NO_XMLDOM
                 if (this._mode == RdfXmlParserMode.DOM)
                 {
                     // Load XML from Stream
@@ -219,12 +216,9 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-#endif
                     RdfXmlParserContext context = new RdfXmlParserContext(handler, input);
                     this.Parse(context);
-#if !NO_XMLDOM
                 }
-#endif
             }
             catch (XmlException xmlEx)
             {
@@ -235,11 +229,6 @@ namespace VDS.RDF.Parsing
             {
                 // Wrap in a RDF Parse Exception
                 throw new RdfParseException("Unable to Parse this RDF/XML due to an IO Exception, see Inner Exception for details of the IO exception that occurred", ioEx);
-            }
-            catch (Exception)
-            {
-                // Throw unexpected errors upwards as-is
-                throw;
             }
             finally
             {
@@ -254,7 +243,6 @@ namespace VDS.RDF.Parsing
             }
         }
 
-#if !NO_FILE
         /// <summary>
         /// Reads RDF/XML syntax from a file using a RDF Handler
         /// </summary>
@@ -266,9 +254,6 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
             this.Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
         }
-#endif
-
-#if !NO_XMLDOM
 
         /// <summary>
         /// Reads RDF/XML from the given XML Document
@@ -302,8 +287,6 @@ namespace VDS.RDF.Parsing
                 throw;
             }
         }
-
-#endif
 
         #endregion
 
@@ -1949,7 +1932,6 @@ namespace VDS.RDF.Parsing
         {
             Console.WriteLine("Production '" + production + "' called");
         }
-
 
         private void ProductionTracePartial(String production)
         {

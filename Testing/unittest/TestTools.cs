@@ -39,7 +39,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
 {
-    public class TestTools
+    public partial class TestTools
     {
         public static void ReportError(String title, Exception ex)
         {
@@ -254,16 +254,6 @@ namespace VDS.RDF
             Console.WriteLine(message);
         }
 
-        public static void TestInMTAThread(Action action)
-        {
-            Exception ex = null;
-            Thread t = new Thread(() => ThreadExecute(action, out ex));
-            t.SetApartmentState(ApartmentState.MTA);
-            t.Start();
-            t.Join();
-            if (ex != null) throw ex;
-        }
-
         /// <summary>
         /// Taken from StackOverflow: http://stackoverflow.com/questions/5983779/catch-exception-that-is-thrown-in-different-thread
         /// </summary>
@@ -316,21 +306,6 @@ namespace VDS.RDF
                     first = false;
                 }
                 Console.Write(item.ToString());
-            }
-        }
-
-        public static void ExecuteWithChangedCulture(CultureInfo cultureInfoOverride, Action test)
-        {
-            var currentCulture = Thread.CurrentThread.CurrentCulture;
-            Thread.CurrentThread.CurrentCulture = cultureInfoOverride;
-
-            try
-            {
-                test();
-            }
-            finally
-            {
-                Thread.CurrentThread.CurrentCulture = currentCulture;
             }
         }
 

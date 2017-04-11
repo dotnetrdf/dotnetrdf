@@ -35,8 +35,7 @@ using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Parsing
 {
-
-    public class BlockingTextReaderTests
+    public partial class BlockingTextReaderTests
     {
         private const String TestData = "abcdefghijklmnopqrstuvwxyz0123456789";
         private const String TestData2 = "abcdefghijklmnopqrstuvwxyz\n0123456789";
@@ -48,7 +47,7 @@ namespace VDS.RDF.Parsing
         public void ParsingTextReaderCreation1()
         {
             File.WriteAllText("ParsingTextReaderCreation1.txt", "ParsingTextReaderCreation1");
-            using (StreamReader stream = new StreamReader("ParsingTextReaderCreation1.txt"))
+            using (StreamReader stream = File.OpenText("ParsingTextReaderCreation1.txt"))
             {
                 ParsingTextReader reader = ParsingTextReader.Create(stream);
 #if PORTABLE
@@ -73,21 +72,6 @@ namespace VDS.RDF.Parsing
         }
 
         [Fact]
-        public void ParsingTextReaderCreation3()
-        {
-            using (WebClient client = new WebClient())
-            {
-                using (Stream stream = client.OpenRead(new Uri("http://www.dotnetrdf.org")))
-                {
-                    ParsingTextReader reader = ParsingTextReader.Create(stream);
-                    Assert.IsType<BlockingTextReader>(reader);
-                    stream.Close();
-                }
-                client.Dispose();
-            }
-        }
-
-        [Fact]
         public void ParsingTextReaderCreation4()
         {
             try
@@ -95,7 +79,7 @@ namespace VDS.RDF.Parsing
                 Options.ForceBlockingIO = true;
 
                 File.WriteAllText("ParsingTextReaderCreation4.txt", "ParsingTextReaderCreation1");
-                using (StreamReader stream = new StreamReader("ParsingTextReaderCreation4.txt"))
+                using (StreamReader stream = File.OpenText("ParsingTextReaderCreation4.txt"))
                 {
                     ParsingTextReader reader = ParsingTextReader.Create(stream);
                     Assert.IsType<BlockingTextReader>(reader);
@@ -513,9 +497,9 @@ namespace VDS.RDF.Parsing
         {
             if (!File.Exists("resources\\nio.ttl"))
             {
-                using (StreamWriter writer = new StreamWriter("resources\\nio.ttl"))
+                using (StreamWriter writer = File.CreateText("resources\\nio.ttl"))
                 {
-                    using (StreamReader reader = new StreamReader("resources\\dataset_50.ttl.gz"))
+                    using (StreamReader reader = File.OpenText("resources\\dataset_50.ttl.gz"))
                     {
                         String line = reader.ReadLine();
                         while (line != null)
@@ -544,7 +528,7 @@ namespace VDS.RDF.Parsing
                 timer.Reset();
 
                 //Test Blocking
-                BlockingTextReader blocking = ParsingTextReader.CreateBlocking(new StreamReader("resources\\nio.ttl"));
+                BlockingTextReader blocking = ParsingTextReader.CreateBlocking(File.OpenText("resources\\nio.ttl"));
                 timer.Start();
                 int totalBlocking = 0;
                 int read;
@@ -563,7 +547,7 @@ namespace VDS.RDF.Parsing
                 timer.Reset();
                 int totalNonBlocking = 0;
 
-                NonBlockingTextReader nonBlocking = ParsingTextReader.CreateNonBlocking(new StreamReader("resources\\nio.ttl"));
+                NonBlockingTextReader nonBlocking = ParsingTextReader.CreateNonBlocking(File.OpenText("resources\\nio.ttl"));
                 timer.Start();
                 while (!nonBlocking.EndOfStream)
                 {
@@ -598,7 +582,7 @@ namespace VDS.RDF.Parsing
                 timer.Reset();
 
                 //Test Blocking
-                BlockingTextReader blocking = ParsingTextReader.CreateBlocking(new StreamReader("resources\\nio.ttl"), 4096);
+                BlockingTextReader blocking = ParsingTextReader.CreateBlocking(File.OpenText("resources\\nio.ttl"), 4096);
                 timer.Start();
                 int totalBlocking = 0;
                 int read;
@@ -617,7 +601,7 @@ namespace VDS.RDF.Parsing
                 timer.Reset();
                 int totalNonBlocking = 0;
 
-                NonBlockingTextReader nonBlocking = ParsingTextReader.CreateNonBlocking(new StreamReader("resources\\nio.ttl"), 4096);
+                NonBlockingTextReader nonBlocking = ParsingTextReader.CreateNonBlocking(File.OpenText("resources\\nio.ttl"), 4096);
                 timer.Start();
                 while (!nonBlocking.EndOfStream)
                 {
@@ -655,7 +639,7 @@ namespace VDS.RDF.Parsing
                     timer.Reset();
 
                     //Test Blocking
-                    BlockingTextReader blocking = ParsingTextReader.CreateBlocking(new StreamReader("resources\\nio.ttl"), 4096);
+                    BlockingTextReader blocking = ParsingTextReader.CreateBlocking(File.OpenText("resources\\nio.ttl"), 4096);
                     timer.Start();
                     int totalBlocking = 0;
                     int read;
@@ -672,7 +656,7 @@ namespace VDS.RDF.Parsing
                     timer.Reset();
                     int totalNonBlocking = 0;
 
-                    NonBlockingTextReader nonBlocking = ParsingTextReader.CreateNonBlocking(new StreamReader("resources\\nio.ttl"), 4096);
+                    NonBlockingTextReader nonBlocking = ParsingTextReader.CreateNonBlocking(File.OpenText("resources\\nio.ttl"), 4096);
                     timer.Start();
                     while (!nonBlocking.EndOfStream)
                     {
@@ -709,7 +693,7 @@ namespace VDS.RDF.Parsing
                 timer.Reset();
 
                 //Test Blocking
-                BlockingTextReader blocking = ParsingTextReader.CreateBlocking(new JitterReader(new StreamReader("resources\\nio.ttl")));
+                BlockingTextReader blocking = ParsingTextReader.CreateBlocking(new JitterReader(File.OpenText("resources\\nio.ttl")));
                 timer.Start();
                 int totalBlocking = 0;
                 int read;
@@ -728,7 +712,7 @@ namespace VDS.RDF.Parsing
                 timer.Reset();
                 int totalNonBlocking = 0;
 
-                NonBlockingTextReader nonBlocking = ParsingTextReader.CreateNonBlocking(new JitterReader(new StreamReader("resources\\nio.ttl")));
+                NonBlockingTextReader nonBlocking = ParsingTextReader.CreateNonBlocking(new JitterReader(File.OpenText("resources\\nio.ttl")));
                 timer.Start();
                 while (!nonBlocking.EndOfStream)
                 {
@@ -763,7 +747,7 @@ namespace VDS.RDF.Parsing
                 timer.Reset();
 
                 //Test Blocking
-                BlockingTextReader blocking = ParsingTextReader.CreateBlocking(new JitterReader(new StreamReader("resources\\nio.ttl"), 50));
+                BlockingTextReader blocking = ParsingTextReader.CreateBlocking(new JitterReader(File.OpenText("resources\\nio.ttl"), 50));
                 timer.Start();
                 int totalBlocking = 0;
                 int read;
@@ -782,7 +766,7 @@ namespace VDS.RDF.Parsing
                 timer.Reset();
                 int totalNonBlocking = 0;
 
-                NonBlockingTextReader nonBlocking = ParsingTextReader.CreateNonBlocking(new JitterReader(new StreamReader("resources\\nio.ttl"), 50));
+                NonBlockingTextReader nonBlocking = ParsingTextReader.CreateNonBlocking(new JitterReader(File.OpenText("resources\\nio.ttl"), 50));
                 timer.Start();
                 while (!nonBlocking.EndOfStream)
                 {
@@ -830,10 +814,12 @@ namespace VDS.RDF.Parsing
             if (this._jitter > 100) this._jitter = 100;
         }
 
+#if NET40
         public override void Close()
         {
             this._reader.Close();
         }
+#endif
 
         protected override void Dispose(bool disposing)
         {

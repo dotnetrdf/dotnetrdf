@@ -28,10 +28,12 @@ build_script:
 
 test_script:
   - ps: |
-      dotnet test .\Testing\unittest\unittest.csproj -l "trx;LogFileName=output.trx" --filter category!=explicit --no-build | Out-File .\test.log
+      cd Testing\unittest
+      dotnet xunit -configuration %CONFIGURATION% -notrait "Category=explicit" | Out-File test.log
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
-      dotnet test .\Testing\unittest\unittest.csproj -l "trx;LogFileName=fulltext.trx" --filter category=fulltext --no-build | Out-File .\fulltext.log
+      dotnet xunit -configuration %CONFIGURATION% -trait "Category=fulltext" | Out-File fulltext.log
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
+      cd ..\..\
 
 after_test:
   - cmd: msbuild Build\shfb\dotnetrdf.shfbproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /p:Configuration=%CONFIGURATION% /p:HelpFileVersion=%GitVersion_NuGetVersion%
@@ -56,15 +58,11 @@ deploy:
 on_finish:
   - ps: |
       $ws = (New-Object 'System.Net.WebClient')
-      if((Test-Path .\Testing\unittest\TestResults\output.trx)) {    
-        Push-AppveyorArtifact .\Testing\unittest\TestResults\output.trx
+      if((Test-Path .\test.log)) {    
         Push-AppveyorArtifact .\test.log
-        $ws.UploadFile("https://ci.appveyor.com/api/testresults/mstest/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\Testing\unittest\TestResults\output.trx ) )
       }
-      if((Test-Path .\Testing\unittest\TestResults\fulltext.trx)) {
-        Push-AppveyorArtifact .\Testing\unittest\TestResults\fulltext.trx
+      if((Test-Path .\fulltext.log)) {    
         Push-AppveyorArtifact .\fulltext.log
-        $ws.UploadFile("https://ci.appveyor.com/api/testresults/mstest/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\Testing\unittest\TestResults\fulltext.trx ) )
       }
 
 artifacts:

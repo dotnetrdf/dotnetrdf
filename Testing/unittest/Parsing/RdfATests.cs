@@ -33,8 +33,6 @@ using VDS.RDF.Writing;
 
 namespace VDS.RDF.Parsing
 {
-#if !NO_HTMLAGILITYPACK
-
     public class RdfATests
     {
         [Fact]
@@ -63,7 +61,9 @@ namespace VDS.RDF.Parsing
         {
             try
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = false;
+#endif
                 List<String> tests = new List<string>()
                 {
                     "gr1",
@@ -102,7 +102,9 @@ namespace VDS.RDF.Parsing
             }
             finally
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = true;
+#endif
             }
         }
 
@@ -120,5 +122,4 @@ namespace VDS.RDF.Parsing
             Assert.Equal(1, g.Triples.Count);
         }
     }
-#endif
 }

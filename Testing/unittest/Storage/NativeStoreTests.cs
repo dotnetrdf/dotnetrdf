@@ -60,7 +60,7 @@ namespace VDS.RDF
             //Create our Native Managers
             List<IStorageProvider> managers = new List<IStorageProvider>() {
                 new InMemoryManager(),
-#if !NO_DATAEXTENSIONS
+#if NET40
                 VirtuosoTest.GetConnection()
 #endif
             };

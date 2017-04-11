@@ -34,8 +34,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Handlers
 {
-
-    public class CountHandlerTests
+    public partial class CountHandlerTests
     {
         private void ParsingUsingCountHandler(String tempFile, IRdfReader parser)
         {
@@ -68,21 +67,11 @@ namespace VDS.RDF.Parsing.Handlers
             this.ParsingUsingCountHandler("temp.n3", new Notation3Parser());
         }
 
-#if !NO_XMLENTITIES
-        [Fact]
-        public void ParsingCountHandlerRdfXml()
-        {
-            this.ParsingUsingCountHandler("test.rdf", new RdfXmlParser());
-        }
-#endif
-
-#if !NO_HTMLAGILITYPACK
         [Fact]
         public void ParsingCountHandlerRdfA()
         {
             this.ParsingUsingCountHandler("test.html", new RdfAParser());
         }
-#endif
 
         [Fact]
         public void ParsingCountHandlerRdfJson()

@@ -35,54 +35,8 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Handlers
 {
-
-    public class GraphHandlerTests
+    public partial class GraphHandlerTests
     {
-#if !NO_SYNC_HTTP
-        [Fact]
-        public void ParsingGraphHandlerImplicitBaseUriPropogation()
-        {
-            try
-            {
-                Options.UriLoaderCaching = false;
-
-                Graph g = new Graph();
-                UriLoader.Load(g, new Uri("http://wiki.rkbexplorer.com/id/void"));
-                NTriplesFormatter formatter = new NTriplesFormatter();
-                foreach (Triple t in g.Triples)
-                {
-                    Console.WriteLine(t.ToString());
-                }
-            }
-            finally
-            {
-                Options.UriLoaderCaching = true;
-            }
-        }
-
-        [Fact]
-        public void ParsingGraphHandlerImplicitBaseUriPropogation2()
-        {
-            try
-            {
-                Options.UriLoaderCaching = false;
-
-                Graph g = new Graph();
-                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-                UriLoader.Load(g, new Uri("http://wiki.rkbexplorer.com/id/void"));
-                NTriplesFormatter formatter = new NTriplesFormatter();
-                foreach (Triple t in g.Triples)
-                {
-                    Console.WriteLine(t.ToString());
-                }
-            }
-            finally
-            {
-                Options.UriLoaderCaching = true;
-            }
-        }
-#endif
-
         [Fact]
         public void ParsingGraphHandlerImplicitTurtle()
         {
@@ -149,21 +103,11 @@ namespace VDS.RDF.Parsing.Handlers
             this.ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.n3", new Notation3Parser(), true);
         }
 
-#if !NO_XMLENTITIES
-        [Fact]
-        public void ParsingGraphHandlerExplicitRdfXml()
-        {
-            this.ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.rdf", new RdfXmlParser(), true);
-        }
-#endif
-
-#if !NO_HTMLAGILITYPACK
         [Fact]
         public void ParsingGraphHandlerExplicitRdfA()
         {
             this.ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.html", new RdfAParser(), false);
         }
-#endif
 
         [Fact]
         public void ParsingGraphHandlerExplicitRdfJson()

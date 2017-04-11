@@ -125,7 +125,9 @@ namespace VDS.RDF.Parsing
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://dbpedia.org/resource/London");
             request.Accept = "application/rdf+xml";
             request.Method = "GET";
+#if NET40
             request.Timeout = 45000;
+#endif
 
             try
             {
@@ -151,7 +153,9 @@ namespace VDS.RDF.Parsing
             request = (HttpWebRequest)WebRequest.Create("http://dbpedia.org/data/London");
             request.Accept = "application/rdf+xml";
             request.Method = "GET";
+#if NET40
             request.Timeout = 45000;
+#endif
 
             try
             {

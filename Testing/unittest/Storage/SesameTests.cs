@@ -51,13 +51,17 @@ namespace VDS.RDF.Storage
         public SesameTests()
         {
             Options.HttpDebugging = true;
+#if NET40
             Options.UriLoaderCaching = false;
+#endif
         }
 
         public void Dispose()
         {
             Options.HttpDebugging = false;
+#if NET40
             Options.UriLoaderCaching = true;
+#endif
         }
 
         [SkippableFact]
@@ -484,7 +488,7 @@ DELETE WHERE
 
             // Insert the Data
             StringBuilder updates = new StringBuilder();
-            using (StreamReader reader = new StreamReader(@"..\\resources\core-374.ru"))
+            using (StreamReader reader = File.OpenText(@"..\\resources\core-374.ru"))
             {
                 updates.Append(reader.ReadToEnd());
                 reader.Close();

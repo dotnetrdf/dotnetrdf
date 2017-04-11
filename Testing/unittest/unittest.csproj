@@ -3,7 +3,7 @@
   <PropertyGroup>
     <AssemblyTitle>dotNetRDF.Test</AssemblyTitle>
     <VersionPrefix>1.0.13-pre6</VersionPrefix>
-    <TargetFramework>net452</TargetFramework>
+    <TargetFrameworks>netcoreapp1.1;net452</TargetFrameworks>
     <AssemblyName>dotNetRDF.Test</AssemblyName>
     <AssemblyOriginatorKeyFile>../../Build/dotNetRDF.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
@@ -21,25 +21,27 @@
     <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
     <CodeAnalysisRuleSet>..\..\dotnetrdf.ruleset</CodeAnalysisRuleSet>
     <RootNamespace>VDS.RDF</RootNamespace>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\dotNetRDF.Query.FullText\dotNetRDF.Query.FullText.csproj" />
-    <ProjectReference Include="..\..\Libraries\dotNetRDF.Data.Virtuoso\dotNetRDF.Data.Virtuoso.csproj" />
     <ProjectReference Include="..\..\Libraries\dotNetRDF\dotNetRDF.csproj" />
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="4.19.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
     <PackageReference Include="Moq" Version="4.7.1" />
-    <PackageReference Include="xunit" Version="2.2.0" />
-    <PackageReference Include="xunit.extensibility.execution" Version="2.2.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+    <PackageReference Include="xunit" Version="2.3.0-beta1-build3642" />
+    <PackageReference Include="xunit.extensibility.execution" Version="2.3.0-beta1-build3642" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.0-beta1-build1309" />
+    <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.0-beta1-build3642" />
  </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+    <ProjectReference Include="..\..\Libraries\dotNetRDF.Query.FullText\dotNetRDF.Query.FullText.csproj" />
+    <ProjectReference Include="..\..\Libraries\dotNetRDF.Data.Virtuoso\dotNetRDF.Data.Virtuoso.csproj" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Data" />
     <Reference Include="System" />
@@ -51,12 +53,23 @@
     <DefineConstants>$(DefineConstants);NET40</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
-    <Compile Remove="Compatibility\*.cs" />
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp1.1' ">
+    <DefineConstants>$(DefineConstants);NO_URICACHE;NO_SYSTEMCONFIGURATION</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="Query\SampleWeightings.n3;embedded.ttl" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
     <None Update="resources\**\*.*;resources\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+    <Compile Include="**\*.cs" Exclude="obj\**\*cs;**\*.NetCore.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp1.1' ">
+    <Compile Include="**\*.cs" Exclude="**\*.NetFull.cs;Storage\VirtuosoTest.cs;Query\FullText\*.cs;obj\**\*cs;Writing\Serialization\*.cs" />
   </ItemGroup>
 
   <ItemGroup>

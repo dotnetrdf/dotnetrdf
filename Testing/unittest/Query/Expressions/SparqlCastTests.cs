@@ -31,7 +31,6 @@ using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Expressions
 {
-
     public class SparqlCastTests : BaseTest
     {
         private INodeFactory _graph;

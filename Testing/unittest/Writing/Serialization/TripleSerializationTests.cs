@@ -38,8 +38,6 @@ using Xunit;
 
 namespace VDS.RDF.Writing.Serialization
 {
-#if !SILVERLIGHT
-
     public class TripleSerializationTests
     {
         [Fact]
@@ -98,5 +96,4 @@ namespace VDS.RDF.Writing.Serialization
             stream.Dispose();
         }
     }
-#endif
 }

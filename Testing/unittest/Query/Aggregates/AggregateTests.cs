@@ -30,20 +30,28 @@ using Xunit;
 
 namespace VDS.RDF.Query.Aggregates
 {
-
     public class AggregateTests : IDisposable
     {
         private CultureInfo _previousCulture;
 
         public AggregateTests()
         {
+#if NET40
             _previousCulture = Thread.CurrentThread.CurrentCulture;
             Thread.CurrentThread.CurrentCulture = new CultureInfo("pl-PL");
+#else
+            _previousCulture = CultureInfo.CurrentCulture;
+            CultureInfo.CurrentCulture = new CultureInfo("pl-PL");
+#endif
         }
 
         public void Dispose()
         {
+#if NET40
             Thread.CurrentThread.CurrentCulture = _previousCulture;
+#else
+            CultureInfo.CurrentCulture = _previousCulture;
+#endif
         }
 
         [Fact]

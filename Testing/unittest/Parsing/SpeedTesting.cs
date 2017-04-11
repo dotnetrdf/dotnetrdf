@@ -49,7 +49,7 @@ namespace VDS.RDF.Parsing
 
                 int padding = triples.ToString().Length;
 
-                using (StreamWriter writer = new StreamWriter(file))
+                using (StreamWriter writer = new StreamWriter(File.OpenWrite(file)))
                 {
                     for (int i = 1; i <= triples; i++)
                     {
@@ -159,7 +159,7 @@ namespace VDS.RDF.Parsing
 
                 watch.Start();
 #if PORTABLE
-                using (var input = new StreamReader("10thou.ttl"))
+                using (var input = File.OpenText("10thou.ttl"))
                 {
                     parser.Load(handler, input);
                 }
@@ -193,7 +193,7 @@ namespace VDS.RDF.Parsing
 
                 watch.Start();
 #if PORTABLE
-                using (var input = new StreamReader("100thou.ttl"))
+                using (var input = File.OpenText("100thou.ttl"))
                 {
                     parser.Load(handler, input);
                 }

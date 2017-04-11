@@ -38,8 +38,7 @@ namespace VDS.RDF.Parsing.Handlers
     /// <summary>
     /// Summary description for WriteToStoreHandlerTests
     /// </summary>
-
-    public class WriteToStoreHandlerTests
+    public partial class WriteToStoreHandlerTests
     {
         private readonly Uri TestGraphUri = new Uri("http://example.org/WriteToStoreHandlerTest");
         private readonly Uri TestBNodeUri = new Uri("http://example.org/WriteToStoreHandlerTest/BNodes");
@@ -127,7 +126,7 @@ namespace VDS.RDF.Parsing.Handlers
             //Do the parsing and thus the loading
             WriteToStoreHandler handler = new WriteToStoreHandler(manager, TestGraphUri);
             NQuadsParser parser = new NQuadsParser();
-            parser.Load(handler, new StreamReader("resources\\writetostore.nq"));
+            parser.Load(handler, File.OpenText("resources\\writetostore.nq"));
 
             //Load the expected Graphs
             Graph def = new Graph();
@@ -201,45 +200,6 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.Throws<ArgumentException>(() => new WriteToStoreHandler(new InMemoryManager(), null, 0));
         }
 
-#if !PORTABLE // No VirtuosoManager in PCL
-        [SkippableFact]
-        public void ParsingWriteToStoreHandlerVirtuoso()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestWriteToStoreHandler(virtuoso);
-        }
-#endif
-
-#if !NO_SYNC_HTTP // Require Sync interface for test
-        [SkippableFact]
-        public void ParsingWriteToStoreHandlerAllegroGraph()
-        {
-            AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
-            this.TestWriteToStoreHandler(agraph);
-        }
-#endif
-
-#if !NO_SYNC_HTTP // Test requires synchronous APIs
-        [SkippableFact]
-        public void ParsingWriteToStoreHandlerFuseki()
-        {
-            try
-            {
-#if !NO_URICACHE
-                Options.UriLoaderCaching = false;
-#endif
-                FusekiConnector fuseki = FusekiTest.GetConnection();
-                this.TestWriteToStoreHandler(fuseki);
-            }
-            finally
-            {
-#if !NO_URICACHE
-                Options.UriLoaderCaching = true;
-#endif
-            }
-        }
-#endif
-
         [SkippableFact]
         public void ParsingWriteToStoreHandlerInMemory()
         {
@@ -254,47 +214,11 @@ namespace VDS.RDF.Parsing.Handlers
             this.TestWriteToStoreDatasetsHandler(manager);
         }
 
-#if !PORTABLE // No VirtuousoManager in PCL
-        [SkippableFact]
-        public void ParsingWriteToStoreHandlerDatasetsVirtuoso()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestWriteToStoreDatasetsHandler(virtuoso);
-        }
-#endif
-
-#if !NO_SYNC_HTTP // Test requires synchronous APIs
-        [SkippableFact]
-        public void ParsingWriteToStoreHandlerBNodesAcrossBatchesAllegroGraph()
-        {
-            AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
-            this.TestWriteToStoreHandlerWithBNodes(agraph);
-        }
-#endif
-
-#if !NO_SYNC_HTTP
-        [SkippableFact]
-        public void ParsingWriteToStoreHandlerBNodesAcrossBatchesFuseki()
-        {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
-            this.TestWriteToStoreHandlerWithBNodes(fuseki);
-        }
-#endif
-
         [SkippableFact]
         public void ParsingWriteToStoreHandlerBNodesAcrossBatchesInMemory()
         {
             InMemoryManager manager = new InMemoryManager();
             this.TestWriteToStoreHandlerWithBNodes(manager);
         }
-
-#if !PORTABLE // No VirtuosoManager in PCL
-        [SkippableFact]
-        public void ParsingWriteToStoreHandlerBNodesAcrossBatchesVirtuoso()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestWriteToStoreHandlerWithBNodes(virtuoso);
-        }
-#endif
     }
 }
