@@ -1,4 +1,4 @@
-/*
+﻿/*
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
@@ -25,23 +25,23 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 
 namespace VDS.RDF
 {
-
     /// <summary>
-    /// Extension Methods for the Silverlight build to avoid having to do lots of #if SILVERLIGHT blocks
+    /// A collection of cross-target extensions to the string class
     /// </summary>
-    public static class SilverlightExtensions
+    public static class StringExtensions
     {
-        public static bool IsHexEncoding(String value, int index)
+        /// <summary>
+        /// Return true if the character sequence starting at the specifie offset is a URI hex-encoded character
+        /// </summary>
+        /// <param name="str">The input string</param>
+        /// <param name="index">The character offset from which to start the check for a hex-encoded character</param>
+        /// <returns></returns>
+        public static bool IsHexEncoding(this String str, int index)
         {
-            if (index + 2 >= value.Length) return false;
-            return value[0] == '%' && SparqlSpecsHelper.IsHex(value[1]) && SparqlSpecsHelper.IsHex(value[2]);
+            return Uri.IsHexEncoding(str, index);
         }
     }
 }

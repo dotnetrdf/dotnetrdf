@@ -110,7 +110,7 @@
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
-    <Compile Include="**\*.cs" Exclude="obj\**\*.cs;Compatibility\**\*.cs;**\*.NetCore.cs" />
+    <Compile Include="**\*.cs" Exclude="obj\**\*.cs;Compatibility\Core\*.cs;Compatibility\NO_WEB\*.cs;Compatibility\Portable\**\*.cs;**\*.NetCore.cs" />
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net40-client' ">
