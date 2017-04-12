@@ -77,7 +77,6 @@ namespace VDS.RDF.Configuration
                     endpoint = new SparqlRemoteUpdateEndpoint(UriFactory.Create(updateEndpointUri));
                     break;
 
-#if !SILVERLIGHT
                 case FederatedEndpoint:
                     IEnumerable<INode> endpoints = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint)))
                         .Concat(ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint))));
@@ -101,7 +100,6 @@ namespace VDS.RDF.Configuration
                         }
                     }
                     break;
-#endif
             }
 
             if (endpoint != null)
@@ -154,9 +152,7 @@ namespace VDS.RDF.Configuration
             {
                 case QueryEndpoint:
                 case UpdateEndpoint:
-#if !SILVERLIGHT
                 case FederatedEndpoint:
-#endif
                     return true;
                 default:
                     return false;

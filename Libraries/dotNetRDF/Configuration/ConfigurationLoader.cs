@@ -1451,9 +1451,7 @@ namespace VDS.RDF.Configuration
         /// </remarks>
         public static INode ResolveAppSetting(IGraph g, INode n)
         {
-#if SILVERLIGHT
-            return n;
-#elif NETCORE
+#if NETCORE
             // TODO: Could support looking up values using the .NET Core configuration API
             return n;
 #else

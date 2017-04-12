@@ -36,21 +36,18 @@ using VDS.RDF.Writing.Serialization;
 #if !NO_DATA
 using System.Data;
 #endif
-#if !SILVERLIGHT
-
-#endif
 
 namespace VDS.RDF
 {
     /// <summary>
     /// Abstract Base Implementation of the <see cref="IGraph">IGraph</see> interface
     /// </summary>
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
     [Serializable,XmlRoot(ElementName="graph")]
 #endif
     public abstract class BaseGraph 
         : IGraph
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
         ,ISerializable
 #endif
     {
@@ -74,7 +71,7 @@ namespace VDS.RDF
         protected BlankNodeMapper _bnodemapper;
 
         private TripleEventHandler TripleAddedHandler, TripleRemovedHandler;
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
         private GraphDeserializationInfo _dsInfo;
 #endif
 
@@ -104,7 +101,7 @@ namespace VDS.RDF
         protected BaseGraph()
             : this(new TreeIndexedTripleCollection()) { }
 
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
         /// <summary>
         /// Creates a Graph from the given Serialization Information
         /// </summary>
@@ -1080,7 +1077,7 @@ namespace VDS.RDF
             this.DetachEventHandlers(this._triples);
         }
 
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
 
         #region ISerializable Members
 

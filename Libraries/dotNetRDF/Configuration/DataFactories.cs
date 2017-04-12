@@ -228,19 +228,11 @@ namespace VDS.RDF.Configuration
             {
                 if (source.NodeType == NodeType.Uri)
                 {
-#if !SILVERLIGHT
                     UriLoader.Load(output, ((IUriNode)source).Uri);
-#else
-                    throw new PlatformNotSupportedException("Loading Data into a Graph from a remote URI is not currently supported under Silverlight/Windows Phone 7");
-#endif
                 }
                 else if (source.NodeType == NodeType.Literal)
                 {
-#if !SILVERLIGHT
                     UriLoader.Load(output, UriFactory.Create(((ILiteralNode)source).Value));
-#else
-                    throw new PlatformNotSupportedException("Loading Data into a Graph from a remote URI is not currently supported under Silverlight/Windows Phone 7");
-#endif
                 }
                 else
                 {
@@ -318,9 +310,7 @@ namespace VDS.RDF.Configuration
         : IObjectFactory
     {
         private const String TripleStore = "VDS.RDF.TripleStore",
-#if !SILVERLIGHT
                              WebDemandTripleStore = "VDS.RDF.WebDemandTripleStore",
-#endif
                              PersistentTripleStore = "VDS.RDF.PersistentTripleStore";
 
 
@@ -363,11 +353,9 @@ namespace VDS.RDF.Configuration
                     }
                     break;
 
-#if !SILVERLIGHT
                 case WebDemandTripleStore:
                     store = new WebDemandTripleStore();
                     break;
-#endif
 
                 case PersistentTripleStore:
                     subObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propStorageProvider);
@@ -473,11 +461,9 @@ namespace VDS.RDF.Configuration
             switch (t.FullName)
             {
                 case TripleStore:
-#if !SILVERLIGHT
                 case WebDemandTripleStore:
-#endif
                 case PersistentTripleStore:
-                     return true;
+                    return true;
                 default:
                     return false;
             }

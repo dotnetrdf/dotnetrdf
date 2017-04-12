@@ -293,11 +293,7 @@ namespace VDS.RDF.Configuration
                     {
                         try
                         {
-#if SILVERLIGHT
-                            loadMode = (SparqlConnectorLoadMethod)Enum.Parse(typeof(SparqlConnectorLoadMethod), loadModeRaw, false);
-#else
                             loadMode = (SparqlConnectorLoadMethod) Enum.Parse(typeof (SparqlConnectorLoadMethod), loadModeRaw);
-#endif
                         }
                         catch
                         {
@@ -353,11 +349,7 @@ namespace VDS.RDF.Configuration
                     {
                         try
                         {
-#if SILVERLIGHT
-                            loadMode = (SparqlConnectorLoadMethod)Enum.Parse(typeof(SparqlConnectorLoadMethod), loadModeRaw, false);
-#else
                             loadMode = (SparqlConnectorLoadMethod) Enum.Parse(typeof (SparqlConnectorLoadMethod), loadModeRaw);
-#endif
                         }
                         catch
                         {

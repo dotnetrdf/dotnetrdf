@@ -157,7 +157,6 @@ namespace VDS.RDF.Configuration
                     }
                     break;
 
-#if !SILVERLIGHT
                 case RemoteQueryProcessor:
                     INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint)));
                     if (endpointObj == null) return false;
@@ -181,7 +180,6 @@ namespace VDS.RDF.Configuration
 
                     processor = new PelletQueryProcessor(UriFactory.Create(server), kb);
                     break;
-#endif
             }
 
             obj = processor;

@@ -66,11 +66,7 @@ namespace VDS.RDF
                    && a.Host.Equals(b.Host, StringComparison.OrdinalIgnoreCase)
                    && a.Port.Equals(b.Port)
                    && a.UserInfo.Equals(b.UserInfo, StringComparison.Ordinal)
-#if !SILVERLIGHT
                    && a.PathAndQuery.Equals(b.PathAndQuery, StringComparison.Ordinal)
-#else
-                   && a.PathAndQuery().Equals(b.PathAndQuery(), StringComparison.Ordinal)
-#endif
                    && a.Fragment.Equals(b.Fragment, StringComparison.Ordinal);
         }
 
@@ -271,11 +267,7 @@ namespace VDS.RDF
                         c = a.Port.CompareTo(b.Port);
                         if (c == 0)
                         {
-#if !SILVERLIGHT
                             c = String.Compare(a.PathAndQuery, b.PathAndQuery, StringComparison.Ordinal);
-#else
-                            c = String.Compare(a.PathAndQuery(), b.PathAndQuery(), StringComparison.Ordinal);
-#endif
                             if (c == 0)
                             {
                                 c = String.Compare(a.Fragment, b.Fragment, StringComparison.Ordinal);

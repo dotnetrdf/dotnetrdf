@@ -323,7 +323,7 @@ namespace VDS.RDF
         /// </remarks>
         public abstract bool Equals(IVariableNode other);
 
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
 
         /// <summary>
         /// Gets the information for serialization
