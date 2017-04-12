@@ -315,15 +315,10 @@ namespace VDS.RDF
 
                     // Define NTriples
                     MimeTypeDefinition ntriples = new MimeTypeDefinition("NTriples", W3CFormatsNamespace + "N-Triples", NTriples, new String[] { DefaultNTriplesExtension }, typeof(NTriplesParser), null, null, typeof(NTriplesWriter), null, null);
-#if !SILVERLIGHT
                     ntriples.Encoding = Encoding.ASCII;
-#endif
                     _mimeTypes.Add(ntriples);
 #if !NO_COMPRESSION
                     MimeTypeDefinition ntriplesGZipped = new MimeTypeDefinition("GZipped NTriples", NTriples, new String[] { DefaultNTriplesExtension + "." + DefaultGZipExtension }, typeof(GZippedNTriplesParser), null, null, typeof(GZippedNTriplesWriter), null, null);
-#if !SILVERLIGHT
-                    ntriplesGZipped.Encoding = Encoding.ASCII;
-#endif
                     _mimeTypes.Add(ntriplesGZipped);
 #endif
 

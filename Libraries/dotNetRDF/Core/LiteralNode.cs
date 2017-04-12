@@ -36,7 +36,7 @@ namespace VDS.RDF
     /// <summary>
     /// Abstract Base Class for Literal Nodes
     /// </summary>
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
     [Serializable,XmlRoot(ElementName="literal")]
 #endif
     public abstract class BaseLiteralNode 
@@ -177,7 +177,7 @@ namespace VDS.RDF
         protected BaseLiteralNode()
             : base(null, NodeType.Literal) { }
 
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
         /// <summary>
         /// Deserialization Constructor
         /// </summary>
@@ -511,7 +511,7 @@ namespace VDS.RDF
             return this.CompareTo((ILiteralNode)other);
         }
 
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
 
         #region ISerializable Members
 
@@ -612,7 +612,7 @@ namespace VDS.RDF
     /// <summary>
     /// Class for representing Literal Nodes
     /// </summary>
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
     [Serializable,XmlRoot(ElementName="literal")]
 #endif
     public class LiteralNode
@@ -686,7 +686,7 @@ namespace VDS.RDF
         protected LiteralNode()
             : base() { }
 
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
         /// <summary>
         /// Deserialization Constructor
         /// </summary>
@@ -723,7 +723,7 @@ namespace VDS.RDF
     /// <summary>
     /// Class for representing Literal Nodes where the Literal values are not normalized
     /// </summary>
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
     [Serializable,XmlRoot(ElementName="literal")]
 #endif
     class NonNormalizedLiteralNode 
@@ -761,7 +761,7 @@ namespace VDS.RDF
         protected NonNormalizedLiteralNode()
             : base() { }
 
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
         /// <summary>
         /// Deserialization Constructor
         /// </summary>

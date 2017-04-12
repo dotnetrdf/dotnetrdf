@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-#if !SILVERLIGHT
-
 using System;
 using VDS.RDF.Nodes;
 
@@ -156,5 +154,3 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         }
     }
 }
-
-#endif

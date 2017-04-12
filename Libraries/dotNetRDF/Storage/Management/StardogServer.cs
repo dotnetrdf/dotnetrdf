@@ -235,14 +235,8 @@ namespace VDS.RDF.Storage.Management
                     // Create the request and write the JSON
                     HttpWebRequest request = this.CreateAdminRequest("databases", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
                     String boundary = StorageHelper.HttpMultipartBoundary;
-#if !SILVERLIGHT
                     byte[] boundaryBytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
                     byte[] terminatorBytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
-#else
-    // Should be safe to do this for Silverlight as everything here would be in the ASCII range anyway
-                    byte[] boundaryBytes = System.Text.Encoding.UTF8.GetBytes("\r\n--" + boundary + "\r\n");
-                    byte[] terminatorBytes = System.Text.Encoding.UTF8.GetBytes("\r\n--" + boundary + "--\r\n");
-#endif
                     request.ContentType = MimeTypesHelper.FormMultipart + "; boundary=" + boundary;
 
                     using (Stream stream = request.GetRequestStream())
@@ -448,14 +442,8 @@ namespace VDS.RDF.Storage.Management
                     // Create the request and write the JSON
                     HttpWebRequest request = this.CreateAdminRequest("databases", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
                     String boundary = StorageHelper.HttpMultipartBoundary;
-#if !SILVERLIGHT
                     byte[] boundaryBytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
                     byte[] terminatorBytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
-#else
-    // Should be safe to do this for Silverlight as everything here would be in the ASCII range anyway
-                    byte[] boundaryBytes = System.Text.Encoding.UTF8.GetBytes("\r\n--" + boundary + "\r\n");
-                    byte[] terminatorBytes = System.Text.Encoding.UTF8.GetBytes("\r\n--" + boundary + "--\r\n");
-#endif
                     request.ContentType = MimeTypesHelper.FormMultipart + "; boundary=" + boundary;
 
                     request.BeginGetRequestStream(r =>
@@ -604,7 +592,7 @@ namespace VDS.RDF.Storage.Management
             request = base.ApplyRequestOptions(request);
 
             // Add the special Stardog Headers
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
             request.Headers.Add("SD-Protocol", "1.0");
 #else
             request.Headers["SD-Protocol"] = "1.0";
@@ -616,7 +604,7 @@ namespace VDS.RDF.Storage.Management
                 if (Options.ForceHttpBasicAuth)
                 {
                     // Forcibly include a HTTP basic authentication header
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
                     string credentials = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(this._username + ":" + this._pwd));
                     request.Headers.Add("Authorization", "Basic " + credentials);
 #else
@@ -629,7 +617,7 @@ namespace VDS.RDF.Storage.Management
                     // Leave .Net to cope with HTTP auth challenge response
                     NetworkCredential credentials = new NetworkCredential(this._username, this._pwd);
                     request.Credentials = credentials;
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
                     request.PreAuthenticate = true;
 #endif
                 }

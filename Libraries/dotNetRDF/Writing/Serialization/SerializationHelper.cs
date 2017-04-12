@@ -24,7 +24,7 @@
 // </copyright>
 */
 
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
 using System;
 using System.Collections.Generic;
 using System.Linq;

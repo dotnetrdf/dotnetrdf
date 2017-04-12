@@ -204,7 +204,7 @@ namespace VDS.RDF.Storage
         /// <returns>HTTP Web Request with standard options applied</returns>
         protected HttpWebRequest ApplyRequestOptions(HttpWebRequest request)
         {
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
             if (this.Timeout > 0) request.Timeout = this.Timeout;
 #endif
 

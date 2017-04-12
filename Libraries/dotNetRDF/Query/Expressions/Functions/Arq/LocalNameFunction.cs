@@ -63,11 +63,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
                     }
                     else
                     {
-#if SILVERLIGHT
-                        return new StringNode(null, u.Uri.Segments().Last());
-#else
                         return new StringNode(null, u.Uri.Segments.Last());
-#endif
                     }
                 }
                 else

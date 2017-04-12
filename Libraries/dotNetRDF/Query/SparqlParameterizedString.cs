@@ -142,7 +142,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-#if NET40 || SILVERLIGHT || WINDOWS_PHONE
+#if NET40 || WINDOWS_PHONE
                 return String.Join("", _commandText);
 #else
                 return String.Join("", _commandText.ToArray());
@@ -701,7 +701,7 @@ namespace VDS.RDF.Query
                             {
                                 // Start variable or parameter capture
                                 _commandText.Add(currentSegment.ToString());
-#if NET40 || SILVERLIGHT || WINDOWS_PHONE
+#if NET40 || WINDOWS_PHONE
                                 currentSegment.Clear();
 #else
                                 currentSegment = new StringBuilder();
@@ -728,7 +728,7 @@ namespace VDS.RDF.Query
                                 // TODO should we check that the identifier is not empty, just to be sure ?
                                 String assignment = currentSegment.ToString();
                                 _commandText.Add(assignment);
-#if NET40 || SILVERLIGHT || WINDOWS_PHONE
+#if NET40 || WINDOWS_PHONE
                                 currentSegment.Clear();
 #else
                                 currentSegment = new StringBuilder();

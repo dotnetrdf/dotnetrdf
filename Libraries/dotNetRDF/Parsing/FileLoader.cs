@@ -331,11 +331,7 @@ namespace VDS.RDF.Parsing
 
         private static void ThrowNotFoundException(string filename)
         {
-#if SILVERLIGHT
-            throw new FileNotFoundException("Cannot read RDF from the File '" + filename + "' since it doesn't exist");
-#else
             throw new FileNotFoundException("Cannot read RDF from the File '" + Path.GetFullPath(filename) + "' since it doesn't exist", filename);
-#endif
         }
     }
 #endif

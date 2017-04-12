@@ -27,9 +27,6 @@
 using System;
 #if !WINDOWS_PHONE && !NETCORE && !NETCORE
 using System.ComponentModel;
-#if SILVERLIGHT
-using System.ComponentModel.DataAnnotations;
-#endif
 #endif
 
 namespace VDS.RDF.Storage.Management.Provisioning.Sesame
@@ -128,11 +125,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// Gets/Sets the sync delay
         /// </summary>
 #if !WINDOWS_PHONE && !NETCORE
-#if !SILVERLIGHT
         [Category("Sesame Configuration"), DisplayName("Sync Delay"), Description("Sets the sync delay for the store"), DefaultValue(0)]
-#else
-        [Category("Sesame Configuration"), Display(Name = "Sync Delay"), Description("Sets the sync delay for the store"), DefaultValue(0)]
-#endif
 #endif
         public int SyncDelay
         {
@@ -144,11 +137,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// Gets/Sets whether to enable direct type hierarchy inferencing
         /// </summary>
 #if !WINDOWS_PHONE && !NETCORE
-#if !SILVERLIGHT
         [Category("Sesame Reasoning"), DisplayName("Direct Type Hierarchy Inference"), Description("Enables/Disables Direct Type Hierarchy Inference"), DefaultValue(false)]
-#else
-        [Category("Sesame Reasoning"), Display(Name = "Direct Type Hierarchy Inference"), Description("Enables/Disables Direct Type Hierarchy Inference"), DefaultValue(false)]
-#endif
 #endif
         public bool DirectTypeHierarchyInferencing
         {
@@ -160,11 +149,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// Gets/Sets whether to enable RDF Schema Inferencing
         /// </summary>
 #if !WINDOWS_PHONE && !NETCORE
-#if !SILVERLIGHT
         [Category("Sesame Reasoning"), DisplayName("RDF Schema Inference"), Description("Enables/Disables RDF Schema inferencing"), DefaultValue(false)]
-#else
-        [Category("Sesame Reasoning"), Display(Name = "RDF Schema Inference"), Description("Enables/Disables RDF Schema inferencing"), DefaultValue(false)]
-#endif
 #endif
         public bool RdfSchemaInferencing
         {

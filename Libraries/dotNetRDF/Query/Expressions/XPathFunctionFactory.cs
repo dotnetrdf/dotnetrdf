@@ -434,7 +434,6 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath round() function");
                         }
                         break;
-#if !SILVERLIGHT
                     case XPathFunctionFactory.RoundHalfToEven:
                         if (args.Count == 1)
                         {
@@ -449,7 +448,6 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath round-half-to-even() function");
                         }
                         break;
-#endif
                     case XPathFunctionFactory.SecondsFromDateTime:
                         if (args.Count == 1)
                         {

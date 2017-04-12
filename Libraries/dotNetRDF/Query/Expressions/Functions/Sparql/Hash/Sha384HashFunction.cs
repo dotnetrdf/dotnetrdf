@@ -28,8 +28,6 @@ using System.Security.Cryptography;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
 {
-#if !SILVERLIGHT
-
     /// <summary>
     /// Represents the SPARQL SHA384() Function
     /// </summary>
@@ -76,6 +74,4 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
             return new Sha384HashFunction(transformer.Transform(this._expr));
         }
     }
-
-#endif
-    }
+}

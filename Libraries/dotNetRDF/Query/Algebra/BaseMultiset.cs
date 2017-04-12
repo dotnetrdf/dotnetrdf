@@ -121,7 +121,7 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
 
-#if NET40 && !SILVERLIGHT
+#if NET40
             if (Options.UsePLinqEvaluation)
             {
                 // Use a paralllel join
@@ -136,7 +136,7 @@ namespace VDS.RDF.Query.Algebra
                 {
                     this.EvalJoin(y, joinVars, values, nulls, joinedSet);
                 }
-#if NET40 && !SILVERLIGHT
+#if NET40
             }
 #endif
 
@@ -204,7 +204,7 @@ namespace VDS.RDF.Query.Algebra
             List<String> joinVars = this.Variables.Where(v => other.Variables.Contains(v)).ToList();
             if (joinVars.Count == 0)
             {
-#if NET40 && !SILVERLIGHT
+#if NET40
                 if (Options.UsePLinqEvaluation && expr.CanParallelise)
                 {
                     PartitionedMultiset partitionedSet = new PartitionedMultiset(this.Count, other.Count + 1);
@@ -243,7 +243,7 @@ namespace VDS.RDF.Query.Algebra
                     }
                     if (standalone && !matched) joinedSet.Add(x.Copy());
                 }
-#if NET40 && !SILVERLIGHT
+#if NET40
 #endif
             }
             else
@@ -287,7 +287,7 @@ namespace VDS.RDF.Query.Algebra
                 }
 
                 // Then do a pass over the LHS and work out the intersections
-#if NET40 && !SILVERLIGHT
+#if NET40
                 if (Options.UsePLinqEvaluation && expr.CanParallelise)
                 {
                     this.Sets.AsParallel().ForAll(x => EvalLeftJoin(x, other, joinVars, values, nulls, joinedSet, subcontext, expr));
@@ -300,14 +300,14 @@ namespace VDS.RDF.Query.Algebra
                     {
                         this.EvalLeftJoin(x, other, joinVars, values, nulls, joinedSet, subcontext, expr);
                     }
-#if NET40 && !SILVERLIGHT
+#if NET40
                 }
 #endif
             }
             return joinedSet;
         }
 
-#if NET40 && !SILVERLIGHT
+#if NET40
 
         private void EvalLeftJoinProduct(ISet x, BaseMultiset other, PartitionedMultiset partitionedSet, ISparqlExpression expr)
         {
@@ -707,7 +707,7 @@ namespace VDS.RDF.Query.Algebra
             if (other is NullMultiset) return other;
             if (other.IsEmpty) return new NullMultiset();
 
-#if NET40 && !SILVERLIGHT
+#if NET40
             if (Options.UsePLinqEvaluation)
             {
                 // Determine partition sizes so we can do a parallel product
@@ -738,12 +738,12 @@ namespace VDS.RDF.Query.Algebra
                     }
                 }
                 return productSet;
-#if NET40 && !SILVERLIGHT
+#if NET40
             }
 #endif
         }
 
-#if NET40 && !SILVERLIGHT
+#if NET40
 
         private void EvalProduct(ISet x, BaseMultiset other, PartitionedMultiset productSet)
         {

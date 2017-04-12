@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-#if !SILVERLIGHT
-
 using System;
 using VDS.RDF.Parsing;
 
@@ -82,5 +80,3 @@ namespace VDS.RDF
 
 
 }
-
-#endif

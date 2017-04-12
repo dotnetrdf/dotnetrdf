@@ -100,14 +100,10 @@ namespace VDS.RDF.Writing
         public void Save(ITripleStore store, String filename)
         {
             if (filename == null) throw new RdfOutputException("Cannot output to a null file");
-#if !SILVERLIGHT
             using (var writer = new StreamWriter(File.Open(filename, FileMode.Create), Encoding.ASCII))
             {
                 this.Save(store, writer);
             }
-#else
-            this.Save(store, new StreamWriter(File.OpenWrite(filename)));
-#endif
         }
 #endif
 
@@ -311,9 +307,7 @@ namespace VDS.RDF.Writing
             catch (ThreadAbortException)
             {
                 // We've been terminated, don't do anything
-#if !SILVERLIGHT
                 Thread.ResetAbort();
-#endif
             }
 #endif
             catch (Exception ex)

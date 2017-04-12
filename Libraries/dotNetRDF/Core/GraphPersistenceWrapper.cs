@@ -55,7 +55,7 @@ namespace VDS.RDF
     /// Note that the wrapper does not automatically dispose of the wrapped graph when the wrapper is Dispose, this is by design since disposing of the wrapped Graph can have unintended consequences
     /// </para>
     /// </remarks>
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
     [Serializable,XmlRoot(ElementName="graph")]
 #endif
     public class GraphPersistenceWrapper 
@@ -115,7 +115,7 @@ namespace VDS.RDF
             this._alwaysQueueActions = alwaysQueueActions;
         }
 
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
         /// <summary>
         /// Deserialization Constructor
         /// </summary>
@@ -1220,7 +1220,7 @@ namespace VDS.RDF
             this.Flush();
         }
 
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
 
         #region ISerializable Members
 

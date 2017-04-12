@@ -138,11 +138,7 @@ namespace VDS.RDF.Writing.Formatting
             }
             else
             {
-#if !SILVERLIGHT
                 qname = u.Segments.LastOrDefault();
-#else
-                qname = u.Segments().LastOrDefault();
-#endif
                 if (qname == null || !RdfXmlSpecsHelper.IsValidQName(qname)) throw new RdfOutputException(WriterErrorMessages.UnreducablePropertyURIUnserializable);
                 ns = u.AbsoluteUri.Substring(0, u.AbsoluteUri.Length - qname.Length);
             }

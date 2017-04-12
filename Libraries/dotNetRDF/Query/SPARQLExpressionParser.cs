@@ -691,11 +691,7 @@ namespace VDS.RDF.Query
                 case Token.LCASE:
                     return new LCaseFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.MD5:
-#if !SILVERLIGHT
                     return new MD5HashFunction(this.TryParseBrackettedExpression(tokens));
-#else
-                    throw new RdfParseException("MD5 function not supported on Silverlight/Windows Phone 7");
-#endif
                 case Token.MINUTES:
                     return new MinutesFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.MONTH:
@@ -738,17 +734,9 @@ namespace VDS.RDF.Query
                 case Token.SHA256:
                     return new Sha256HashFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.SHA384:
-#if !SILVERLIGHT
                     return new Sha384HashFunction(this.TryParseBrackettedExpression(tokens));
-#else
-                    throw new RdfParseException("SHA384 function not supported under Silverlight/Windows Phone 7");
-#endif
                 case Token.SHA512:
-#if !SILVERLIGHT
                     return new Sha512HashFunction(this.TryParseBrackettedExpression(tokens));
-#else
-                    throw new RdfParseException("SHA512 function not supported under Silverlight/Windows Phone 7");
-#endif
                 case Token.STR:
                     return new StrFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.STRAFTER:

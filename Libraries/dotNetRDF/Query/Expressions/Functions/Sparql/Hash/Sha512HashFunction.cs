@@ -29,8 +29,6 @@ using System.Security.Cryptography;
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
 {
 
-#if !SILVERLIGHT
-
     /// <summary>
     /// Represents the SPARQL SHA512() Function
     /// </summary>
@@ -78,5 +76,4 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
             return new Sha512HashFunction(transformer.Transform(this._expr));
         }
     }
-#endif
-    }
+}

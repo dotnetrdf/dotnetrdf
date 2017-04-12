@@ -33,12 +33,10 @@ using VDS.RDF.Update;
 
 namespace VDS.RDF.Update
 {
-
     public class UpdateTimeouts
     {
         private SparqlUpdateParser _parser = new SparqlUpdateParser();
 
-#if !SILVERLIGHT // LOAD not supported
         [Fact(Skip="Remote configuration not currently available")]
         public void SparqlUpdateTimeout()
         {
@@ -64,6 +62,5 @@ namespace VDS.RDF.Update
 
             }
         }
-#endif
     }
 }

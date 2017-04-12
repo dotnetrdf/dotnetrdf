@@ -529,11 +529,7 @@ namespace VDS.RDF.Writing
                             } 
                             else 
                             {
-#if !SILVERLIGHT
                                 context.HtmlWriter.WriteEncodedText(temp.Segments.Last());
-#else
-                                context.HtmlWriter.WriteEncodedText(temp.Segments().Last());
-#endif
                             }
                         }
                         context.HtmlWriter.RenderEndTag();
@@ -647,11 +643,7 @@ namespace VDS.RDF.Writing
                             }
                             else
                             {
-#if !SILVERLIGHT
                                 context.HtmlWriter.WriteEncodedText(temp.Segments.Last());
-#else
-                                context.HtmlWriter.WriteEncodedText(temp.Segments().Last());
-#endif                        
                             }
                         }
                         context.HtmlWriter.RenderEndTag();

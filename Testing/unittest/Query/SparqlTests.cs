@@ -145,7 +145,6 @@ namespace VDS.RDF.Query
             Assert.Equal("DESCRIBE <http://example.com/some@encoded/uri>", query.ToString());
         }
 
-#if !SILVERLIGHT // No SparqlRemoteEndpoint.QueryRaw() 
         [SkippableFact]
         public void SparqlDBPedia()
         {
@@ -183,7 +182,6 @@ namespace VDS.RDF.Query
                 Options.HttpDebugging = false;
             }
         }
-#endif
 
         [SkippableFact]
         public void SparqlRemoteVirtuosoWithSponging()
@@ -201,7 +199,6 @@ namespace VDS.RDF.Query
             Assert.False(g.IsEmpty, "Graph should not be empty");
         }
 
-#if !SILVERLIGHT // No SparqlRemoteEndpoint.QueryRaw()
         [SkippableFact]
         public void SparqlDbPediaDotIssue()
         {
@@ -263,7 +260,6 @@ where {
                 Options.HttpDebugging = false;
             }
         }
-#endif
 
         [Fact]
         public void SparqlResultSetEquality()

@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-#if !SILVERLIGHT
-
 using System;
 
 namespace VDS.RDF.Query.Datasets
@@ -66,5 +64,3 @@ namespace VDS.RDF.Query.Datasets
         }
     }
 }
-
-#endif

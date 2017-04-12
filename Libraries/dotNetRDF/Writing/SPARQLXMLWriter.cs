@@ -215,9 +215,6 @@ namespace VDS.RDF.Writing
             settings.ConformanceLevel = ConformanceLevel.Document;
             settings.Encoding = new UTF8Encoding(Options.UseBomForUtf8);
             settings.Indent = true;
-#if SILVERLIGHT
-            settings.NamespaceHandling = NamespaceHandling.OmitDuplicates;
-#endif
             settings.NewLineHandling = NewLineHandling.None;
             settings.OmitXmlDeclaration = false;
             return settings;

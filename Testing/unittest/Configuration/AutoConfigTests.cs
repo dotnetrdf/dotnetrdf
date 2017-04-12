@@ -173,7 +173,7 @@ namespace VDS.RDF.Configuration
             }
         }
 
-#if NET40 && !SILVERLIGHT
+#if NET40
         [Fact]
         public void ConfigurationStaticOptionsBooleanProperty()
         {

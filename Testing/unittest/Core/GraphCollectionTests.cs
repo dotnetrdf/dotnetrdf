@@ -111,7 +111,6 @@ namespace VDS.RDF
         }
 #endif
 
-#if !SILVERLIGHT
         [Fact(Skip="Remote configuration file is not currently available")]
         public void GraphCollectionWebDemand1()
         {
@@ -143,6 +142,5 @@ namespace VDS.RDF
             Assert.True(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
             Assert.NotEqual(g, store[g.BaseUri]);
         }
-#endif
     }
 }

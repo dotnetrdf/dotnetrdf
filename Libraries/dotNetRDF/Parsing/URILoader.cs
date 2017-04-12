@@ -138,7 +138,6 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        // #if !SILVERLIGHT
 #if !NO_SYNC_HTTP
 
         /// <summary>
@@ -186,11 +185,7 @@ namespace VDS.RDF.Parsing
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
             if (u == null) throw new RdfParseException("Cannot load RDF from a null URI");
-#if SILVERLIGHT
-            if (u.IsFile())
-#else
             if (u.IsFile)
-#endif
             {
 #if NO_FILE
                 throw new RdfParseException("Loading from a file:// URL requires the synchronous file loader which is not currently supported on your system");
@@ -266,11 +261,7 @@ namespace VDS.RDF.Parsing
             if (u == null) throw new RdfParseException("Cannot load RDF from a null URI");
             try
             {
-#if SILVERLIGHT
-                if (u.IsFile())
-#else
                 if (u.IsFile)
-#endif
                 {
 #if NO_FILE
                     throw new RdfParseException("Loading from a file:// URL requires the synchronous file loader which is not currently supported on your system");
@@ -360,7 +351,7 @@ namespace VDS.RDF.Parsing
 
                 // Use HTTP GET
                 httpRequest.Method = "GET";
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
                 httpRequest.Timeout = Options.UriLoaderTimeout;
 #endif
                 if (_userAgent != null && !_userAgent.Equals(String.Empty))
@@ -577,12 +568,7 @@ namespace VDS.RDF.Parsing
 
             try
             {
-#if SILVERLIGHT
-                if (u.IsFile())
-#else
                 if (u.IsFile)
-#endif
-
                 {
 #if NO_FILE
                     throw new RdfParseException("Loading from a file:// URL requires the synchronous file loader which is not currently supported on your system");
@@ -621,7 +607,7 @@ namespace VDS.RDF.Parsing
 
                 // Use HTTP GET
                 httpRequest.Method = "GET";
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
                 httpRequest.Timeout = Options.UriLoaderTimeout;
 #endif
                 if (_userAgent != null && !_userAgent.Equals(String.Empty))

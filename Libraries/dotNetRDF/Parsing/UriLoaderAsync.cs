@@ -60,11 +60,7 @@ namespace VDS.RDF.Parsing
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
             if (u == null) throw new RdfParseException("Cannot read RDF from a null URI");
 
-#if SILVERLIGHT
-            if (u.IsFile())
-#else
             if (u.IsFile)
-#endif
             {
                 // Invoke FileLoader instead
                 UriLoader.RaiseWarning("This is a file: URI so invoking the FileLoader instead");
@@ -150,11 +146,7 @@ namespace VDS.RDF.Parsing
             if (u == null) throw new RdfParseException("Cannot load RDF from a null URI");
             try
             {
-#if SILVERLIGHT
-                if (u.IsFile())
-#else
                 if (u.IsFile)
-#endif
                 {
                     // Invoke FileLoader instead
                     RaiseWarning("This is a file: URI so invoking the FileLoader instead");
@@ -201,7 +193,7 @@ namespace VDS.RDF.Parsing
 
                 // Use HTTP GET
                 request.Method = "GET";
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
                 request.Timeout = Options.UriLoaderTimeout;
 #endif
                 if (_userAgent != null && !_userAgent.Equals(String.Empty))
@@ -359,11 +351,7 @@ namespace VDS.RDF.Parsing
 
             try
             {
-#if SILVERLIGHT
-                if (u.IsFile())
-#else
                 if (u.IsFile)
-#endif
                 {
                     // Invoke FileLoader instead
                     RaiseWarning("This is a file: URI so invoking the FileLoader instead");
@@ -408,7 +396,7 @@ namespace VDS.RDF.Parsing
 
                 // Use HTTP GET
                 request.Method = "GET";
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
                 request.Timeout = Options.UriLoaderTimeout;
 #endif
                 if (_userAgent != null && !_userAgent.Equals(String.Empty))

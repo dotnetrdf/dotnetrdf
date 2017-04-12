@@ -151,7 +151,7 @@ namespace VDS.RDF.Query.Algebra
                 else
                 {
                     // Calculate the product applying the filter as we go
-#if NET40 && !SILVERLIGHT
+#if NET40
                     if (Options.UsePLinqEvaluation && this._expr.CanParallelise)
                     {
                         PartitionedMultiset partitionedSet;
@@ -203,7 +203,7 @@ namespace VDS.RDF.Query.Algebra
                         }
                         context.Binder = binder;
                         context.OutputMultiset = productSet;
-#if NET40 && !SILVERLIGHT
+#if NET40
                     }
 #endif
                 }
@@ -211,7 +211,7 @@ namespace VDS.RDF.Query.Algebra
             return context.OutputMultiset;
         }
 
-#if NET40 && !SILVERLIGHT
+#if NET40
 
         private void EvalFilteredProduct(SparqlEvaluationContext context, ISet x, BaseMultiset other, PartitionedMultiset partitionedSet)
         {

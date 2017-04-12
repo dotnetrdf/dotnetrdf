@@ -88,7 +88,7 @@ namespace VDS.RDF
         private static bool _validateIris = false;
         private static TokenQueueMode _defaultTokenQueueMode = TokenQueueMode.SynchronousBufferDuringParsing;
 
-#if NET40 && !SILVERLIGHT
+#if NET40
         private static bool _usePLinq = true;
 #endif
 
@@ -276,7 +276,7 @@ namespace VDS.RDF
             }
         }
 
-#if NET40 && !SILVERLIGHT
+#if NET40
 
         /// <summary>
         /// Gets/Sets whether the query engine will try to use PLinq where applicable to evaluate suitable SPARQL constructs in parallel

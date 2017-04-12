@@ -38,7 +38,7 @@ namespace VDS.RDF
     /// <summary>
     /// Abstract Base Class for URI Nodes
     /// </summary>
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
     [Serializable,XmlRoot(ElementName="uri")]
 #endif
     public abstract class BaseUriNode 
@@ -104,7 +104,7 @@ namespace VDS.RDF
         protected BaseUriNode()
             : base(null, NodeType.Uri) { }
 
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
 
         /// <summary>
         /// Deserialization Constructor
@@ -394,7 +394,7 @@ namespace VDS.RDF
             return this.CompareTo((IUriNode)other);
         }
 
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
 
         #region ISerializable Members
 
@@ -547,7 +547,7 @@ namespace VDS.RDF
     /// <summary>
     /// Class for representing URI Nodes
     /// </summary>
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
     [Serializable,XmlRoot(ElementName="uri")]
 #endif
     public class UriNode
@@ -578,7 +578,7 @@ namespace VDS.RDF
         protected UriNode()
             : base() { }
 
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
 
         /// <summary>
         /// Deserialization Constructor

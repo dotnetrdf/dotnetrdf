@@ -38,9 +38,6 @@ using VDS.RDF.Writing.Serialization;
 #if !NO_DATA
 using System.Data;
 #endif
-#if !SILVERLIGHT
-
-#endif
 
 namespace VDS.RDF.Query
 {
@@ -66,12 +63,12 @@ namespace VDS.RDF.Query
     /// <summary>
     /// Class for representing Sparql Result Sets
     /// </summary>
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
     [Serializable,XmlRoot(ElementName="resultSet")]
 #endif
     public sealed class SparqlResultSet 
         : IEnumerable<SparqlResult>, IDisposable
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
         , ISerializable, IXmlSerializable
 #endif
     {
@@ -89,7 +86,7 @@ namespace VDS.RDF.Query
         private bool _result = false;
         private SparqlResultsType _type = SparqlResultsType.Unknown;
 
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
         private ResultSetDeserializationInfo _dsInfo;
 #endif
 
@@ -160,7 +157,7 @@ namespace VDS.RDF.Query
             }
         }
 
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
         private SparqlResultSet(SerializationInfo info, StreamingContext context)
         {
             this._dsInfo = new ResultSetDeserializationInfo(info, context);
@@ -550,7 +547,7 @@ namespace VDS.RDF.Query
             this._result = false;
         }
 
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
 
         #region Serialization
 

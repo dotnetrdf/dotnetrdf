@@ -268,9 +268,6 @@ namespace VDS.RDF.Writing
             catch (ThreadAbortException)
             {
                 // We've been terminated, don't do anything
-#if !SILVERLIGHT
-                Thread.ResetAbort();
-#endif
             }
 #endif
             catch (Exception ex)

@@ -137,8 +137,6 @@ namespace VDS.RDF
         }
     }
 
-#if !SILVERLIGHT
-
     public class WebDemandTripleStoreTests
         : AbstractTripleStoreTests
     {
@@ -147,7 +145,6 @@ namespace VDS.RDF
             return new WebDemandTripleStore();
         }
     }
-#endif
 
 #if !NO_FILE
 

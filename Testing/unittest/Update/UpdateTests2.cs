@@ -107,7 +107,6 @@ namespace VDS.RDF.Update
             }
         }
 
-#if !SILVERLIGHT
         [SkippableFact]
         public void SparqlUpdateLoad()
         {
@@ -143,7 +142,6 @@ namespace VDS.RDF.Update
                 }
             }
         }
-#endif
 
         [Fact]
         public void SparqlUpdateModify()

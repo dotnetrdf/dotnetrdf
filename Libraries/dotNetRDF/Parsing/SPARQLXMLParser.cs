@@ -144,10 +144,8 @@ namespace VDS.RDF.Parsing
             XmlReaderSettings settings = new XmlReaderSettings();
 #if NETCORE
             settings.DtdProcessing = DtdProcessing.Ignore;
-#elif SILVERLIGHT || NET40
+#elif NET40
             settings.DtdProcessing = DtdProcessing.Parse;
-#else
-            settings.ProhibitDtd = false;
 #endif
             settings.ConformanceLevel = ConformanceLevel.Document;
             settings.IgnoreComments = true;

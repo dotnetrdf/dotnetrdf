@@ -46,7 +46,6 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// </summary>
         private const String ServerDescriptionFormat = "text/json";
 
-#if !SILVERLIGHT
         /// <summary>
         /// Creates a new connection to a Pellet Server
         /// </summary>
@@ -73,7 +72,6 @@ namespace VDS.RDF.Query.Inference.Pellet
 
             this.Discover();
         }
-#endif
 
         /// <summary>
         /// Connects to a Pellet Server instance asynchronously invoking the callback when the connection is ready
@@ -128,8 +126,6 @@ namespace VDS.RDF.Query.Inference.Pellet
             this.Discover(callback, state);
         }
 
-#if !SILVERLIGHT
-
         /// <summary>
         /// Discovers the Knowledge Bases on a Server
         /// </summary>
@@ -176,7 +172,6 @@ namespace VDS.RDF.Query.Inference.Pellet
             }
         }
 
-#endif
         /// <summary>
         /// Discovers the Knowledge Bases on a Server asynchronously
         /// </summary>

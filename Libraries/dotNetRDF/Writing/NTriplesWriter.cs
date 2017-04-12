@@ -98,15 +98,10 @@ namespace VDS.RDF.Writing
         /// <param name="filename">File to save to</param>
         public override void Save(IGraph g, string filename)
         {
-#if SILVERLIGHT
-            StreamWriter output = new StreamWriter(File.OpenWrite(filename));
-            this.Save(g, output);
-#else
             using (var writer = new StreamWriter(File.Open(filename, FileMode.Create), Encoding.ASCII))
             {
                 this.Save(g, writer);
             }
-#endif
         }
 #endif
 

@@ -380,9 +380,7 @@ namespace VDS.RDF.Query.Datasets
                 INode usingDataset = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingDataset));
                 INode innerDataset = context.Graph.CreateBlankNode();
 
-#if SILVERLIGHT
-                String assm = this.GetType().Assembly.FullName;
-#elif NETCORE
+#if NETCORE
                 String assm = typeof(WrapperDataset).GetTypeInfo().Assembly.FullName;
 #else
                 String assm = Assembly.GetAssembly(this.GetType()).FullName;

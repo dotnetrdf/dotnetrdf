@@ -517,7 +517,7 @@ namespace VDS.RDF.Query
                 System.Diagnostics.Debug.Write(indent);
                 System.Diagnostics.Debug.WriteLine(output);
             }
-#if !(SILVERLIGHT || NETCORE)
+#if !NETCORE
             if (this.HasFlag(ExplanationLevel.OutputToTrace))
             {
                 System.Diagnostics.Trace.Write(indent);
