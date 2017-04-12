@@ -442,13 +442,7 @@ namespace VDS.RDF.Parsing
         private XmlReaderSettings GetSettings()
         {
             XmlReaderSettings settings = new XmlReaderSettings();
-#if PORTABLE
-            settings.DtdProcessing = DtdProcessing.Ignore;
-#elif SILVERLIGHT
-            settings.DtdProcessing = DtdProcessing.Parse;
-#else
             settings.ProhibitDtd = false;
-#endif
             settings.ConformanceLevel = ConformanceLevel.Document;
             settings.IgnoreComments = true;
             settings.IgnoreProcessingInstructions = true;

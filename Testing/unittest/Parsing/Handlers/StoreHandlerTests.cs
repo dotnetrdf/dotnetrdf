@@ -125,7 +125,6 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.Equal(configOrig.Triples.Count + lvnOrig.Triples.Count, counter.TripleCount);
         }
 
-#if !PORTABLE
         [Fact]
         public void ParsingFileLoaderStoreHandlerCounting()
         {
@@ -142,7 +141,6 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.Equal(2, counter.GraphCount);
             Assert.Equal(configOrig.Triples.Count + lvnOrig.Triples.Count, counter.TripleCount);
         }
-#endif
 
 #if !NO_FILE // No FileLoader
         [Fact]

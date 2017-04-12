@@ -139,7 +139,6 @@ namespace VDS.RDF.Configuration
                         storageServer = new AllegroGraphServer(server, catalog);
                     }
                     break;
-#if !PORTABLE
                 case DatasetFile:
                     // Get the Filename and whether the loading should be done asynchronously
                     String file = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromFile)));
@@ -148,7 +147,6 @@ namespace VDS.RDF.Configuration
                     bool isAsync = ConfigurationLoader.GetConfigurationBoolean(g, objNode, propAsync, false);
                     storageProvider = new DatasetFileManager(file, isAsync);
                     break;
-#endif
 
                 case Dydra:
                     throw new DotNetRdfConfigurationException("DydraConnector is no longer supported by dotNetRDF and is considered obsolete");

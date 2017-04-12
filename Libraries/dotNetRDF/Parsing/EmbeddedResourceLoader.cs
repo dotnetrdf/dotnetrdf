@@ -182,9 +182,7 @@ namespace VDS.RDF.Parsing
                             using (StreamReader reader = new StreamReader(s))
                             {
                                 data = reader.ReadToEnd();
-#if !PORTABLE
                                 reader.Close();
-#endif
                             }
                             parser = StringParser.GetParser(data);
                             parser.Load(handler, new StringReader(data));
@@ -342,9 +340,7 @@ namespace VDS.RDF.Parsing
                                 using (StreamReader reader = new StreamReader(s))
                                 {
                                     data = reader.ReadToEnd();
-#if !PORTABLE
                                     reader.Close();
-#endif
                                 }
                                 parser = StringParser.GetDatasetParser(data);
                                 parser.Load(handler, new StringReader(data));
@@ -357,11 +353,7 @@ namespace VDS.RDF.Parsing
 
         private static string GetAssemblyName(Assembly asm)
         {
-#if PORTABLE
-            return asm.FullName;
-#else
             return asm.GetName().Name;
-#endif
         }
 
 

@@ -296,11 +296,7 @@ namespace VDS.RDF.Parsing
                         this.RaiseWarning("The @base directive is not valid in all versions of the TriG specification, your data may not be compatible with some older tools which do not support this version of TriG");
                         if (!context.Handler.HandleBaseUri(newBase)) ParserHelper.Stop();
                     }
-#if PORTABLE
-                    catch(FormatException)
-#else
                     catch (UriFormatException)
-#endif
                     {
                         throw ParserHelper.Error("The URI '" + baseUri.Value + "' given for the Base URI  is not a valid URI", baseUri);
                     }
@@ -327,11 +323,7 @@ namespace VDS.RDF.Parsing
                             context.Namespaces.AddNamespace(pre, u);
                             if (!context.Handler.HandleNamespace(pre, u)) ParserHelper.Stop();
                         }
-#if PORTABLE
-                        catch(FormatException)
-#else
                         catch (UriFormatException)
-#endif
                         {
                             throw ParserHelper.Error("The URI '" + uri.Value + "' given for the prefix '" + prefix.Value + "' is not a valid URI", uri);
                         }
@@ -379,11 +371,7 @@ namespace VDS.RDF.Parsing
                     // Ensure an absolute Uri
                     graphUri = new Uri(next.Value, UriKind.Absolute);
                 }
-#if PORTABLE
-                catch(FormatException)
-#else
                 catch (UriFormatException)
-#endif
                 {
                     throw ParserHelper.Error("The URI '" + next.Value + "' given as a Graph Name is not a valid Absolute URI", next);
                 }

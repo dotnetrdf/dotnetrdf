@@ -79,11 +79,7 @@ namespace VDS.RDF
         private static bool _uriLoaderCaching = true;
         private static int _uriLoaderTimeout = 15000;
         private static bool _utf8Bom = false;
-#if PORTABLE
-        private static bool _useDTDs = false; // Default to false because the PCL XML parser cannot handle entity declarations
-#else
         private static bool _useDTDs = true;
-#endif
         private static bool _multiThreadedWriting = false;
         private static bool _internUris = true;
         private static bool _rigorousQueryEvaluation = false, _strictOperators = false;

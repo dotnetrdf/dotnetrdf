@@ -36,10 +36,6 @@ namespace VDS.RDF.Query.Algebra
     /// </summary>
     public sealed class Set 
         : BaseSet, IEquatable<Set>
-#if PORTABLE
-        , IComparable<Set>,
-        IComparable
-#endif
     {
         private Dictionary<String, INode> _values;
 
@@ -249,29 +245,5 @@ namespace VDS.RDF.Query.Algebra
             return this._values.All(pair => other.ContainsVariable(pair.Key) && ((pair.Value == null && other[pair.Key] == null) || pair.Value.Equals(other[pair.Key])));
         }
 
-#if PORTABLE
-        // TODO: CORE-303 clean up - why is this necessary?
-
-        public int CompareTo(Set other)
-        {
-            foreach (var pair in _values.OrderBy(v => v.Key))
-            {
-                var otherValue = other[pair.Key];
-                if (otherValue == null) return 1;
-                var cmp = pair.Value.CompareTo(otherValue);
-                if (cmp != 0) return cmp;
-            }
-            return 0;
-        }
-
-        public int CompareTo(object other)
-        {
-            if (other is Set)
-            {
-                return CompareTo(other as Set);
-            }
-            return -1;
-        }
-#endif
     }
 }

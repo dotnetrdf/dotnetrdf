@@ -83,28 +83,12 @@ namespace VDS.RDF.Parsing.Suites
             this.CheckResults = false;
         }
 
-#if PORTABLE
-        private readonly string[] _portableIgnoreTests = new string[]
-            {
-                "resources\\rdfxml\\amp-in-url\\test001.rdf", // Has a DOCTYPE declaration which cannot be parsed in PCL
-                "resources\\rdfxml\\rdf-containers-syntax-vs-schema\\test005.rdf", // Has no root element -- note that this test is not run by the NET40 build either
-                "resources\\rdfxml\\xmlbase\\test012.rdf", // Has no root element -- again this test is not run byt the NET40 build
-                "resources\\rdfxml\\rdf-charmod-uris\\error001.rdf" // Tests for normalization but there is no support for this in PCL
-            };
-#endif
-
         [SkippableFact]
         public void ParsingSuiteRdfXmlStreaming()
         {
-#if PORTABLE
-            //Run manifests
-            this.RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && !f.Contains("error") && !_portableIgnoreTests.Contains(f), true);
-            this.RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && f.Contains("error") && !_portableIgnoreTests.Contains(f), false);
-#else
             //Run manifests
             this.RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && !f.Contains("error"), true);
             this.RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && f.Contains("error"), false);
-#endif
             if (this.Count == 0) Assert.True(false, "No tests found");
 
             Console.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed");

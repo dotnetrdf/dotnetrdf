@@ -142,7 +142,7 @@ namespace VDS.RDF.Parsing
         private XmlReaderSettings GetSettings()
         {
             XmlReaderSettings settings = new XmlReaderSettings();
-#if PORTABLE || NETCORE
+#if NETCORE
             settings.DtdProcessing = DtdProcessing.Ignore;
 #elif SILVERLIGHT || NET40
             settings.DtdProcessing = DtdProcessing.Parse;

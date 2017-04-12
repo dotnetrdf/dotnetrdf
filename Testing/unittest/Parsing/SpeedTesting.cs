@@ -158,14 +158,7 @@ namespace VDS.RDF.Parsing
                 TurtleParser parser = new TurtleParser();
 
                 watch.Start();
-#if PORTABLE
-                using (var input = File.OpenText("10thou.ttl"))
-                {
-                    parser.Load(handler, input);
-                }
-#else
                 parser.Load(handler, "10thou.ttl");
-#endif
                 watch.Stop();
 
                 Console.WriteLine(watch.Elapsed.ToString());
@@ -192,14 +185,7 @@ namespace VDS.RDF.Parsing
                 TurtleParser parser = new TurtleParser();
 
                 watch.Start();
-#if PORTABLE
-                using (var input = File.OpenText("100thou.ttl"))
-                {
-                    parser.Load(handler, input);
-                }
-#else
                 parser.Load(handler, "100thou.ttl");
-#endif
                 watch.Stop();
 
                 Console.WriteLine(watch.Elapsed.ToString());

@@ -52,11 +52,7 @@ namespace VDS.RDF
         {
             int count = MimeTypesHelper.Definitions.Count();
             Console.WriteLine(count + " Definitions registered");
-#if PORTABLE
-            Assert.Equal(16, count);
-#else
             Assert.Equal(30, count);
-#endif
         }
 
         [Fact]
@@ -64,22 +60,14 @@ namespace VDS.RDF
         {
             int count = MimeTypesHelper.GetDefinitions(MimeTypesHelper.Any).Count();
             Console.WriteLine(count + " Definitions registered");
-#if PORTABLE
-            Assert.Equal(16, count);
-#else
             Assert.Equal(30, count);
-#endif
         }
 
         [Fact]
         public void MimeTypesGetDefinitionsByTypeNotation3_1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/n3");
-#if PORTABLE
-            Assert.Equal(1, defs.Count());
-#else
             Assert.Equal(2, defs.Count());
-#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -98,11 +86,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByTypeNotation3_2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/rdf+n3");
-#if PORTABLE
-            Assert.Equal(1, defs.Count());
-#else
             Assert.Equal(2, defs.Count());
-#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -173,11 +157,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByTypeTurtle1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/turtle");
-#if PORTABLE
-            Assert.Equal(1, defs.Count());
-#else
             Assert.Equal(2, defs.Count());
-#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -196,11 +176,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByTypeTurtle2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/x-turtle");
-#if PORTABLE
-            Assert.Equal(1, defs.Count());
-#else
             Assert.Equal(2, defs.Count());
-#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -219,11 +195,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByTypeTurtle3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/turtle");
-#if PORTABLE
-            Assert.Equal(1, defs.Count());
-#else
             Assert.Equal(2, defs.Count());
-#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -296,11 +268,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByTypeNTriples1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/rdf-triples");
-#if PORTABLE
-            Assert.Equal(1, defs.Count());
-#else
             Assert.Equal(2, defs.Count());
-#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -319,11 +287,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByTypeNTriples2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/plain");
-#if PORTABLE
-            Assert.Equal(1, defs.Count());
-#else
             Assert.Equal(2, defs.Count());
-#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -342,11 +306,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByTypeNTriples3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/ntriples");
-#if PORTABLE
-            Assert.Equal(1, defs.Count());
-#else
             Assert.Equal(2, defs.Count());
-#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -365,11 +325,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByTypeNTriples4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/ntriples+turtle");
-#if PORTABLE
-            Assert.Equal(1, defs.Count());
-#else
             Assert.Equal(2, defs.Count());
-#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -388,11 +344,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByTypeNTriples5()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/x-ntriples");
-#if PORTABLE
-            Assert.Equal(1, defs.Count());
-#else
             Assert.Equal(2, defs.Count());
-#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -463,11 +415,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByTypeRdfXml1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/rdf+xml");
-#if PORTABLE
-            Assert.Equal(1, defs.Count());
-#else
             Assert.Equal(2, defs.Count());
-#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -486,11 +434,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByTypeRdfXml2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/xml");
-#if PORTABLE
-            Assert.Equal(1, defs.Count());
-#else
             Assert.Equal(2, defs.Count());
-#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -509,11 +453,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByTypeRdfXml3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/xml");
-#if PORTABLE
-            Assert.Equal(1, defs.Count());
-#else
             Assert.Equal(2, defs.Count());
-#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -584,11 +524,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByTypeRdfJson1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/json");
-#if PORTABLE
-            Assert.Equal(1, defs.Count());
-#else
             Assert.Equal(2, defs.Count());
-#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -607,11 +543,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByTypeRdfJson2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/json");
-#if PORTABLE
-            Assert.Equal(1, defs.Count());
-#else
             Assert.Equal(2, defs.Count());
-#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -860,11 +792,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByTypeSparqlXml1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/sparql-results+xml");
-#if PORTABLE
-            Assert.Equal(1, defs.Count());
-#else
             Assert.Equal(2, defs.Count());
-#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -935,11 +863,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByTypeSparqlJson1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/sparql-results+json");
-#if PORTABLE
-            Assert.Equal(1, defs.Count());
-#else
             Assert.Equal(2, defs.Count());
-#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -1012,11 +936,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByTypeSparqlCsv1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/csv");
-#if PORTABLE
-            Assert.Equal(1, defs.Count());
-#else
             Assert.Equal(2, defs.Count());
-#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -1035,11 +955,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByTypeSparqlCsv2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/comma-separated-values");
-#if PORTABLE
-            Assert.Equal(1, defs.Count());
-#else
             Assert.Equal(2, defs.Count());
-#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -1110,11 +1026,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByTypeSparqlTsv1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/tab-separated-values");
-#if PORTABLE
-            Assert.Equal(1, defs.Count());
-#else
             Assert.Equal(2, defs.Count());
-#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -1185,11 +1097,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByTypeCaseSensitivity1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("TEXT/TURTLE");
-#if PORTABLE
-            Assert.Equal(1, defs.Count());
-#else
             Assert.Equal(2, defs.Count());
-#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -1208,11 +1116,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByTypeCaseSensitivity2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("TEXT/turtle");
-#if PORTABLE
-            Assert.Equal(1, defs.Count());
-#else
             Assert.Equal(2, defs.Count());
-#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -1231,11 +1135,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByTypeCaseSensitivity3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("TeXt/TuRtLe");
-#if PORTABLE
-            Assert.Equal(1, defs.Count());
-#else
             Assert.Equal(2, defs.Count());
-#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -1278,11 +1178,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByTypeExtraParams1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/turtle; charset=utf-8");
-#if PORTABLE
-            Assert.Equal(1, defs.Count());
-#else
             Assert.Equal(2, defs.Count());
-#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -1301,11 +1197,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByTypeExtraParams2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/turtle; q=1.0");
-#if PORTABLE
-            Assert.Equal(1, defs.Count());
-#else
             Assert.Equal(2, defs.Count());
-#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();

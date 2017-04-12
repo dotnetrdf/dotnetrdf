@@ -89,7 +89,7 @@ namespace VDS.RDF.Storage
         {
             this._baseUri = baseUri;
             if (!this._baseUri.EndsWith("/")) this._baseUri += "/";
-#if PORTABLE || NETCORE
+#if NETCORE
             this._agraphBase = this._baseUri.Copy();
 #else
             this._agraphBase = String.Copy(this._baseUri);

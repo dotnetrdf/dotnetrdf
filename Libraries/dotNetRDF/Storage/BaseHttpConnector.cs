@@ -215,7 +215,7 @@ namespace VDS.RDF.Storage
             }
 #endif
 
-#if !(PORTABLE || NETCORE)
+#if !NETCORE
             // Disable Keep Alive since it can cause errors when carrying out high volumes of operations or when performing long running operations
             request.KeepAlive = false;
 #endif

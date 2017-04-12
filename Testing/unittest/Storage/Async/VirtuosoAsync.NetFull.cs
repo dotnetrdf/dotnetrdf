@@ -33,7 +33,6 @@ using VDS.RDF.Storage;
 #if !NO_DATAEXTENSIONS
 namespace VDS.RDF.Storage.Async
 {
-#if !PORTABLE // No Virtuoso support in PCL
 
     public class VirtuosoAsync
         : BaseAsyncTests
@@ -43,6 +42,5 @@ namespace VDS.RDF.Storage.Async
             return VirtuosoTest.GetConnection();
         }
     }
-#endif
 }
 #endif

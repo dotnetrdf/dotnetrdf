@@ -185,7 +185,6 @@ namespace VDS.RDF.Query
         }
 #endif
 
-#if !PORTABLE // No VirtuosoManager in PCL
         [SkippableFact]
         public void SparqlRemoteVirtuosoWithSponging()
         {
@@ -201,7 +200,6 @@ namespace VDS.RDF.Query
             TestTools.ShowGraph(g);
             Assert.False(g.IsEmpty, "Graph should not be empty");
         }
-#endif
 
 #if !SILVERLIGHT // No SparqlRemoteEndpoint.QueryRaw()
         [SkippableFact]

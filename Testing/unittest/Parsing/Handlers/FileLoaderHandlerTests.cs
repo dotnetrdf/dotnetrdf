@@ -49,11 +49,7 @@ namespace VDS.RDF.Parsing.Handlers
         public void ParsingFileLoaderGraphHandlerImplicitTurtle()
         {
             Graph g = new Graph();
-#if PORTABLE
-            g.LoadFromFile(TestDataFile);
-#else
             FileLoader.Load(g, TestDataFile);
-#endif
 
             TestTools.ShowGraph(g);
             Assert.False(g.IsEmpty, "Graph should not be empty");
@@ -64,14 +60,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             Graph g = new Graph();
             GraphHandler handler = new GraphHandler(g);
-#if PORTABLE
-            using (var input = File.OpenRead(TestDataFile))
-            {
-                StreamLoader.Load(handler, TestDataFile, input);
-            }
-#else
             FileLoader.Load(handler, TestDataFile);
-#endif
 
             TestTools.ShowGraph(g);
             Assert.False(g.IsEmpty, "Graph should not be empty");
@@ -83,14 +72,7 @@ namespace VDS.RDF.Parsing.Handlers
             Graph orig = new Graph();
             orig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             CountHandler handler = new CountHandler();
-#if PORTABLE
-            using (var input = File.OpenRead(TestDataFile))
-            {
-                StreamLoader.Load(handler, TestDataFile, input);
-            }
-#else
             FileLoader.Load(handler, TestDataFile);
-#endif
 
             Assert.Equal(orig.Triples.Count, handler.Count);
         }

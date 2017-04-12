@@ -77,7 +77,6 @@ namespace VDS.RDF.Parsing
             }
         }
 
-#if !PORTABLE
         [Fact]
         public void ParsingDataUri2()
         {
@@ -136,10 +135,8 @@ namespace VDS.RDF.Parsing
                     Console.WriteLine("OK");
                     Console.WriteLine("Content Length: " + response.ContentLength);
                     Console.WriteLine("Content Type: " + response.ContentType);
-#if !PORTABLE
                     Tools.HttpDebugRequest(request);
                     Tools.HttpDebugResponse(response);
-#endif
                 }
             }
             catch (WebException webEx)
@@ -197,16 +194,12 @@ namespace VDS.RDF.Parsing
             }
         }
 
-#endif
-
         private void SetUriLoaderCaching(bool cachingEnabled)
         {
 #if !NO_URICACHE
             Options.UriLoaderCaching = cachingEnabled;
 #endif
         }
-
-#if !PORTABLE
 
         [SkippableFact]
         public void ParsingUriLoaderDBPedia1()
@@ -288,8 +281,6 @@ namespace VDS.RDF.Parsing
             }
         }
 
-#endif
-
         [Fact]
         public void ParsingEmbeddedResourceInDotNetRdf()
         {
@@ -316,14 +307,9 @@ namespace VDS.RDF.Parsing
         public void ParsingEmbeddedResourceInExternalAssembly()
         {
             Graph g = new Graph();
-#if PORTABLE
-            EmbeddedResourceLoader.Load(g, "VDS.RDF.embedded.ttl, dotNetRDF.Portable.Test");
-#else
             EmbeddedResourceLoader.Load(g, "VDS.RDF.embedded.ttl, dotNetRDF.Test");
-#endif
 
             TestTools.ShowGraph(g);
-
             Assert.False(g.IsEmpty, "Graph should be non-empty");
         }
 
