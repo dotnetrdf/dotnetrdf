@@ -79,10 +79,10 @@ namespace VDS.RDF.Query.Spin.LibraryOntology
 
         public readonly static IUriNode PropertyRowCountFunction = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "rowCountFunction"));
 
-#if UNDEFINED
+/*
     public static bool exists(Model model) {
     	return model.Contains(SPR.Table, RDF.type, (INode)null);
     }
-#endif
+*/
     }
 }
