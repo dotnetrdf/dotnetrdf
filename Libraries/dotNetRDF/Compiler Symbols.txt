@@ -30,10 +30,6 @@ NO_DATA
 
 Compile without any System.Data dependency and without any SQL features.  Will exclude Microsoft SQL Server, MySQL and Virtuoso support and all classes that dependent on these features.  Using NO_STORAGE will also cause these features to be excluded
 
-NO_NORM
-
-Compile without any use of String.Normalize() - use in conjunction with profiles like SILVERLIGHT where it is not supported
-
 NO_PROCESS
 
 Compile without any use of System.Diagnostics.Process - use in conjunction with profiles like SILVERLIGHT where it is not supported

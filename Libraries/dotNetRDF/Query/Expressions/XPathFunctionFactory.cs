@@ -384,7 +384,6 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath normalize-space() function");
                         }
                         break;
-#if !NO_NORM
                     case XPathFunctionFactory.NormalizeUnicode:
                         if (args.Count == 1)
                         {
@@ -399,7 +398,6 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath normalize-space() function");
                         } 
                         break;
-#endif
                     case XPathFunctionFactory.Not:
                         if (args.Count == 1)
                         {

@@ -177,11 +177,7 @@ namespace VDS.RDF.Parsing
         /// <returns>True if the URIRef is encoded correctly</returns>
         public static bool IsValidUriRefEncoding(String uriref)
         {
-#if NO_NORM
-            return true;
-#else
             return uriref.IsNormalized();
-#endif
         }
 
         /// <summary>

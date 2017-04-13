@@ -72,13 +72,9 @@ namespace VDS.RDF
         {
             if (normalize)
             {
-#if !NO_NORM
-            this._value = literal.Normalize();
-#else
-            this._value = literal;
-#endif
-            } 
-            else 
+                this._value = literal.Normalize();
+            }
+            else
             {
                 this._value = literal;
             }
@@ -109,11 +105,7 @@ namespace VDS.RDF
         {
             if (normalize)
             {
-#if !NO_NORM
                 this._value = literal.Normalize();
-#else
-            this._value = literal;
-#endif
             }
             else
             {
@@ -155,11 +147,7 @@ namespace VDS.RDF
         {
             if (normalize)
             {
-#if !NO_NORM
                 this._value = literal.Normalize();
-#else
-            this._value = literal;
-#endif
             }
             else
             {
