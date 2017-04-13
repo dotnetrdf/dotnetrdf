@@ -38,10 +38,6 @@ NO_PROXY
 
 Compile without any use of WebProxy - use in conjunction with profiles like SILVERLIGHT where it is not supported
 
-NO_STOPWATCH
-
-Compile without any use of Stopwatch - use in conjunction with profiles like SILVERLIGHT where it is not supported
-
 NO_URICACHE
 
 Compile without the caching features of the UriLoader
