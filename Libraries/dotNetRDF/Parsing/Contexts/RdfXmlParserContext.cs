@@ -42,8 +42,6 @@ namespace VDS.RDF.Parsing.Contexts
         private IEventQueue<IRdfXmlEvent> _queue;
         private Dictionary<String, List<INode>> _usedIDs = new Dictionary<String, List<INode>>();
 
-#if !NO_XMLDOM
-
         /// <summary>
         /// Creates a new Parser Context
         /// </summary>
@@ -91,8 +89,6 @@ namespace VDS.RDF.Parsing.Contexts
                 ((IRdfXmlPreProcessingEventGenerator)this._queue.EventGenerator).GetAllEvents(this);
             }
         }
-
-#endif
 
         /// <summary>
         /// Creates a new Parser Context which uses Streaming parsing

@@ -24,7 +24,7 @@
 // </copyright>
 */
 
-#if !NO_XMLDOM && !NO_XSL
+#if !NO_XSL
 
 using System;
 using System.Collections.Generic;

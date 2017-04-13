@@ -50,10 +50,6 @@ NO_URICACHE
 
 Compile without the caching features of the UriLoader
 
-NO_XMLDOM
-
-Compile without any use of XmlDocument and the XML DOM API - use in conjunction with profiles like SILVERLIGHT where it is not supported but other XML APIs are supported
-
 NO_XSL
 
 Compile without any use of XSL APIs - use in conjunction with profiles like SILVERLIGHT where it is not supported

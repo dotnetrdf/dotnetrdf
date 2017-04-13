@@ -31,8 +31,6 @@ using VDS.RDF.Parsing.Contexts;
 
 namespace VDS.RDF.Parsing.Events.RdfXml
 {
-#if !NO_XMLDOM
-
     /// <summary>
     /// A DOM Based event generator for RDF/XML parser that uses System.Xml DOM to parse events
     /// </summary>
@@ -541,6 +539,4 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             }
         }
     }
-
-#endif
     }

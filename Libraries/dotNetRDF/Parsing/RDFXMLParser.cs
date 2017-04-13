@@ -1957,10 +1957,8 @@ namespace VDS.RDF.Parsing
         {
             switch (this._mode)
             {
-#if !NO_XMLDOM
                 case RdfXmlParserMode.DOM:
                     return "RDF/XML (DOM)";
-#endif
                 case RdfXmlParserMode.Streaming:
                 default:
                     return "RDF/XML (Streaming)";
