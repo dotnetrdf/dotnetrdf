@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-#if !NO_COMPRESSION
-
 using System;
 using System.IO;
 using System.IO.Compression;
@@ -258,5 +256,3 @@ namespace VDS.RDF.Parsing
     }
 
 }
-
-#endif
