@@ -275,8 +275,6 @@ namespace VDS.RDF.Configuration
 
         #region Graph Loading and Auto-Configuration
 
-#if !NO_SYNC_HTTP
-
         /// <summary>
         /// Loads a Configuration Graph and applies auto-configuration
         /// </summary>
@@ -299,8 +297,6 @@ namespace VDS.RDF.Configuration
             UriLoader.Load(g, u);
             return ConfigurationLoader.LoadCommon(g, g.CreateUriNode(u), autoConfigure);
         }
-
-#endif
 
         /// <summary>
         /// Loads a Configuration Graph and applies auto-configuration
@@ -391,7 +387,6 @@ namespace VDS.RDF.Configuration
                 Graph data = new Graph();
                 switch (importData.NodeType)
                 {
-#if !NO_SYNC_HTTP
                     case NodeType.Uri:
                         importData = ConfigurationLoader.ResolveAppSetting(g, importData);
                         if (!imported.Contains(importData))
@@ -400,7 +395,7 @@ namespace VDS.RDF.Configuration
                             imported.Add(importData);
                         }
                         break;
-#endif
+
                     case NodeType.Literal:
                         if (!imported.Contains(importData))
                         {
@@ -1502,8 +1497,6 @@ namespace VDS.RDF.Configuration
             _configGraph = LoadConfiguration(file, autoConfigure);
         }
 
-#if !NO_SYNC_HTTP
-
         /// <summary>
         /// Creates a new instance of <see cref="ConfigurationLoader" />, which
         /// loads an existing configuration graph from file and applies auto-configuration
@@ -1521,7 +1514,6 @@ namespace VDS.RDF.Configuration
         {
             _configGraph = LoadConfiguration(graphUri, autoConfigure);
         }
-#endif
 
         /// <summary>
         /// Loads the Object identified by the given blank node identifier as an object of the given type based on information from the Configuration Graph

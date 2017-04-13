@@ -51,8 +51,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             this._sparqlUri = this.Endpoint.Uri.Substring(0, this.Endpoint.Uri.IndexOf('{'));
         }
 
-#if !NO_SYNC_HTTP
-
         /// <summary>
         /// Makes a SPARQL Query against the Knowledge Base
         /// </summary>
@@ -110,8 +108,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                 response.Close();
             }
         }
-
-#endif
 
         /// <summary>
         /// Makes a SPARQL Query against the Knowledge Base

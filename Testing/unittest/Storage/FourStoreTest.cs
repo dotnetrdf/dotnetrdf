@@ -54,7 +54,6 @@ namespace VDS.RDF.Storage
             return new FourStoreConnector(TestConfigManager.GetSetting(TestConfigManager.FourStoreServer));
         }
 
-#if !NO_SYNC_HTTP // The tests here all use the synchronous API
         [SkippableFact]
 
         public void StorageFourStoreSaveGraph()
@@ -158,6 +157,5 @@ namespace VDS.RDF.Storage
             Assert.True(h.IsEmpty, "Graph should be empty after the DROP GRAPH update was issued");
             Assert.Equal(g, h);
         }
-#endif
     }
 }

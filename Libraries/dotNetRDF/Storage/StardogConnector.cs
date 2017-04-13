@@ -104,9 +104,7 @@ namespace VDS.RDF.Storage
     /// </remarks>
     public abstract class BaseStardogConnector
         : BaseAsyncHttpConnector, IAsyncQueryableStorage, IAsyncTransactionalStorage, IConfigurationSerializable
-#if !NO_SYNC_HTTP
-            , IQueryableStorage, ITransactionalStorage
-#endif
+        , IQueryableStorage, ITransactionalStorage
     {
         /// <summary>
         /// Constant for the default Anonymous user account and password used by Stardog if you have not supplied a shiro.ini file or otherwise disabled security
@@ -304,8 +302,6 @@ namespace VDS.RDF.Storage
         {
             get { return true; }
         }
-
-#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Gets the parent server
@@ -825,8 +821,6 @@ namespace VDS.RDF.Storage
                 throw StorageHelper.HandleError(ex, "listing Graphs from");
             }
         }
-
-#endif
 
         /// <summary>
         /// Gets the parent server
@@ -1893,8 +1887,6 @@ namespace VDS.RDF.Storage
 
         #region Stardog Transaction Support
 
-#if !NO_SYNC_HTTP
-
         protected virtual String BeginTransaction()
         {
             String tID = null;
@@ -2041,8 +2033,6 @@ namespace VDS.RDF.Storage
                 Monitor.Exit(this);
             }
         }
-
-#endif
 
         /// <summary>
         /// Begins a transaction asynchronously
@@ -2487,11 +2477,7 @@ namespace VDS.RDF.Storage
     /// A Stardog Connector for connecting to Stardog version 2.* servers
     /// </summary>
     public class StardogV2Connector
-        : StardogV1Connector,
-#if !NO_SYNC_HTTP
-            IUpdateableStorage,
-#endif
-            IAsyncUpdateableStorage
+        : StardogV1Connector, IUpdateableStorage, IAsyncUpdateableStorage
     {
         /// <summary>
         /// Creates a new connection to a Stardog Store
@@ -2634,8 +2620,6 @@ namespace VDS.RDF.Storage
             }
         }
 
-#if !NO_SYNC_HTTP
-
         /// <summary>
         /// Executes a SPARQL Update against the Stardog store
         /// </summary>
@@ -2676,8 +2660,6 @@ namespace VDS.RDF.Storage
                 throw StorageHelper.HandleHttpError(webEx, "executing a SPARQL update against");
             }
         }
-
-#endif
 
         /// <summary>
         /// Executes a SPARQL Update against the Stardog store
@@ -2778,9 +2760,7 @@ namespace VDS.RDF.Storage
     /// </summary>
     public class StardogV3Connector
         : StardogV2Connector,
-#if !NO_SYNC_HTTP
             IUpdateableStorage,
-#endif
             IAsyncUpdateableStorage
     {
         /// <summary>

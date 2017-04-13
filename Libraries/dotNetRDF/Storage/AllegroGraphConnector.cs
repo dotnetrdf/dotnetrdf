@@ -52,9 +52,7 @@ namespace VDS.RDF.Storage
     /// </remarks>
     public class AllegroGraphConnector
         : BaseSesameHttpProtocolConnector, IAsyncUpdateableStorage
-#if !NO_SYNC_HTTP
         , IUpdateableStorage
-#endif
     {
         private String _agraphBase;
         private readonly String _catalog;
@@ -176,8 +174,6 @@ namespace VDS.RDF.Storage
             }
         }
 
-#if !NO_SYNC_HTTP
-
         /// <summary>
         /// Makes a SPARQL Update request to the Allegro Graph server
         /// </summary>
@@ -217,8 +213,6 @@ namespace VDS.RDF.Storage
                 throw StorageHelper.HandleHttpError(webEx, "updating");
             }
         }
-
-#endif
 
         /// <summary>
         /// Makes a SPARQL Update request to the Allegro Graph server

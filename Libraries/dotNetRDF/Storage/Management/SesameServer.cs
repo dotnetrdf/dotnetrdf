@@ -47,9 +47,7 @@ namespace VDS.RDF.Storage.Management
     /// </summary>
     public class SesameServer
         : BaseHttpConnector, IAsyncStorageServer, IConfigurationSerializable
-#if !NO_SYNC_HTTP
         , IStorageServer
-#endif
     {
         /// <summary>
         /// System Repository ID
@@ -149,8 +147,6 @@ namespace VDS.RDF.Storage.Management
             }
         }
 
-
-#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Gets a default template for creating a store
@@ -312,8 +308,6 @@ namespace VDS.RDF.Storage.Management
                 throw StorageHelper.HandleHttpError(webEx, "listing Stores from");
             }
         }
-
-#endif
 
         /// <summary>
         /// Gets a default template for creating a store

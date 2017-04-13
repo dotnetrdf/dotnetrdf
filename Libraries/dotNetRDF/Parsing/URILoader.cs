@@ -138,8 +138,6 @@ namespace VDS.RDF.Parsing
             }
         }
 
-#if !NO_SYNC_HTTP
-
         /// <summary>
         /// Attempts to load a RDF Graph from the given URI into the given Graph
         /// </summary>
@@ -419,7 +417,7 @@ namespace VDS.RDF.Parsing
                             // i.e. if the Handler may trim the data in some way then we shouldn't cache the data returned
                             if (handler.AcceptsAll)
                             {
-                                handler = new MultiHandler(new IRdfHandler[] {handler, cacheHandler});
+                                handler = new MultiHandler(new IRdfHandler[] { handler, cacheHandler });
                             }
                             else
                             {
@@ -466,7 +464,7 @@ namespace VDS.RDF.Parsing
                 {
                     if (webEx.Response != null)
                     {
-                        if (((HttpWebResponse) webEx.Response).StatusCode == HttpStatusCode.NotModified)
+                        if (((HttpWebResponse)webEx.Response).StatusCode == HttpStatusCode.NotModified)
                         {
                             // If so then we need to load the Local Copy assuming it exists?
                             if (_cache.HasLocalCopy(u, false))
@@ -679,15 +677,13 @@ namespace VDS.RDF.Parsing
             UriLoader.Load(handler, u, (IStoreReader)null);
         }
 
-#endif
+        #region Warning Events
 
-                    #region Warning Events
-
-                    /// <summary>
-                    /// Raises warning messages
-                    /// </summary>
-                    /// <param name="message">Warning Message</param>
-                    static void RaiseWarning(String message)
+        /// <summary>
+        /// Raises warning messages
+        /// </summary>
+        /// <param name="message">Warning Message</param>
+        static void RaiseWarning(String message)
         {
             RdfReaderWarning d = Warning;
             if (d != null)

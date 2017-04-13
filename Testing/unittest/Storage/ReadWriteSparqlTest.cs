@@ -41,8 +41,6 @@ using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Storage
 {
-#if !NO_SYNC_HTTP // No ReadWriteSparqlConnector
-
     public class ReadWriteSparqlTests
     {
         private NTriplesFormatter _formatter = new NTriplesFormatter();
@@ -449,5 +447,4 @@ namespace VDS.RDF.Storage
             Assert.True(EqualityHelper.AreUrisEqual(connector.UpdateEndpoint.Uri, connector2.UpdateEndpoint.Uri));
         }
     }
-#endif
 }

@@ -421,7 +421,6 @@ SELECT * WHERE {
             cmds.ToString();
         }
 
-#if !NO_SYNC_HTTP // No SparqlConnector
         [SkippableFact]
         public void SparqlEndpointWithExtensions()
         {
@@ -449,7 +448,6 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
             Object results = endpoint.Query(testQuery);
             TestTools.ShowResults(results);
         }
-#endif
 
         [Fact]
         public void SparqlBNodeIDsInResults()

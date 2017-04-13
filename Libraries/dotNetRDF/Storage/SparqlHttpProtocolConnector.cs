@@ -51,10 +51,7 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class SparqlHttpProtocolConnector 
-        : BaseAsyncHttpConnector, IConfigurationSerializable, IAsyncStorageProvider
-#if !NO_SYNC_HTTP
-        , IStorageProvider
-#endif
+        : BaseAsyncHttpConnector, IConfigurationSerializable, IAsyncStorageProvider, IStorageProvider
     {
         /// <summary>
         /// URI of the Protocol Server
@@ -168,8 +165,6 @@ namespace VDS.RDF.Storage
                 return false;
             }
         }
-
-#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Loads a Graph from the Protocol Server
@@ -467,7 +462,6 @@ namespace VDS.RDF.Storage
                 }
             }
         }
-#endif
 
         /// <summary>
         /// Throws an exception as listing graphs in a SPARQL Graph Store HTTP Protocol does not support listing graphs

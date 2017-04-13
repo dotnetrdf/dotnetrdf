@@ -137,8 +137,6 @@ namespace VDS.RDF.Storage.Management
 
 #endif
 
-#if !NO_SYNC_HTTP
-
         /// <summary>
         /// Gets a default template for creating a new Store
         /// </summary>
@@ -285,8 +283,6 @@ namespace VDS.RDF.Storage.Management
 #endif
                 );
         }
-
-#endif
 
         /// <summary>
         /// Gets the List of Stores available  on the server within the current catalog asynchronously

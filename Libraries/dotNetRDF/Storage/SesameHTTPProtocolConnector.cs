@@ -55,9 +55,7 @@ namespace VDS.RDF.Storage
     /// </remarks>
     public abstract class BaseSesameHttpProtocolConnector
         : BaseAsyncHttpConnector, IAsyncQueryableStorage, IConfigurationSerializable
-#if !NO_SYNC_HTTP
-, IQueryableStorage
-#endif
+        , IQueryableStorage
     {
         /// <summary>
         /// Base Uri for the Store
@@ -256,8 +254,6 @@ namespace VDS.RDF.Storage
             }
         }
 
-#if !NO_SYNC_HTTP
-
         /// <summary>
         /// Gets the parent server
         /// </summary>
@@ -400,8 +396,6 @@ namespace VDS.RDF.Storage
             }
         }
 
-#endif
-
         /// <summary>
         /// Escapes a Query to avoid a character encoding issue when communicating a query to Sesame
         /// </summary>
@@ -445,8 +439,6 @@ namespace VDS.RDF.Storage
         {
             return new NTriplesWriter();
         }
-
-#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Loads a Graph from the Store
@@ -751,7 +743,6 @@ namespace VDS.RDF.Storage
             }
         }
 
-#endif
         /// <summary>
         /// Gets the parent server
         /// </summary>
@@ -1358,10 +1349,7 @@ namespace VDS.RDF.Storage
     /// Connector for connecting to a Store that supports the Sesame 2.0 HTTP Communication Protocol version 6 (i.e. includes SPARQL Update support)
     /// </summary>
     public class SesameHttpProtocolVersion6Connector
-        : SesameHttpProtocolVersion5Connector
-#if !NO_SYNC_HTTP
-, IUpdateableStorage
-#endif
+        : SesameHttpProtocolVersion5Connector, IUpdateableStorage
     {
         /// <summary>
         /// Creates a new connection to a Sesame HTTP Protocol supporting Store
@@ -1405,8 +1393,6 @@ namespace VDS.RDF.Storage
 
 #endif
 
-#if !NO_SYNC_HTTP
-
         /// <summary>
         /// Makes a SPARQL Update request to the Sesame server
         /// </summary>
@@ -1446,8 +1432,6 @@ namespace VDS.RDF.Storage
                 throw StorageHelper.HandleHttpError(webEx, "updating");
             }
         }
-
-#endif
 
         /// <summary>
         /// Makes a SPARQL Update request to the Sesame server

@@ -66,8 +66,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             }
         }
 
-#if !NO_SYNC_HTTP
-
         /// <summary>
         /// Gets a Graph explaining the result of the SPARQL Query
         /// </summary>
@@ -100,8 +98,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                 throw new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server", webEx);
             }
         }
-
-#endif
 
         /// <summary>
         /// Gets a Graph explaining the result of the SPARQL Query
@@ -174,8 +170,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         internal ExplainUnsatService(String name, JObject obj)
             : base(name, obj) { }
 
-#if !NO_SYNC_HTTP
-
         /// <summary>
         /// Gets a Graph explaining why a Class is unsatisfiable
         /// </summary>
@@ -189,8 +183,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
             return base.Explain(this._baseQuery.ToString());
         }
-
-#endif
 
         /// <summary>
         /// Gets a Graph explaining why a Class is unsatisfiable
@@ -225,8 +217,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         internal ExplainInstanceService(String name, JObject obj)
             : base(name, obj) { }
 
-#if !NO_SYNC_HTTP
-
         /// <summary>
         /// Gets a Graph explaining why an Instance is of the given Class
         /// </summary>
@@ -241,8 +231,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
             return base.Explain(this._baseQuery.ToString());
         }
-
-#endif
 
         /// <summary>
         /// Gets a Graph explaining why an Instance is of the given Class
@@ -278,8 +266,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         internal ExplainSubclassService(String name, JObject obj)
             : base(name, obj) { }
 
-#if !NO_SYNC_HTTP
-
         /// <summary>
         /// Gets a Graph explaining why the given Class is a subclass of the given Super Class
         /// </summary>
@@ -294,8 +280,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
             return base.Explain(this._baseQuery.ToString());
         }
-
-#endif
 
         /// <summary>
         /// Gets a Graph explaining why the given Class is a subclass of the given Super Class
@@ -331,8 +315,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         internal ExplainInconsistentService(String name, JObject obj)
             : base(name, obj) { }
 
-#if !NO_SYNC_HTTP
-
         /// <summary>
         /// Gets a Graph explaining why the Knowledge Base is inconsistent
         /// </summary>
@@ -341,8 +323,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         {
             return base.Explain(String.Empty);
         }
-
-#endif
 
         /// <summary>
         /// Gets a Graph explaining why the Knowledge Base is inconsistent
@@ -372,8 +352,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         internal ExplainPropertyService(String name, JObject obj)
             : base(name, obj) { }
 
-#if !NO_SYNC_HTTP
-
         /// <summary>
         /// Gets a Graph explaining why the given Triple was derived
         /// </summary>
@@ -398,8 +376,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         {
             return this.ExplainProperty(t.Subject, t.Predicate, t.Object);
         }
-
-#endif
 
         /// <summary>
         /// Gets a Graph explaining why the given Triple was derived

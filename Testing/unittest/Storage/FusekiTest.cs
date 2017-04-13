@@ -54,8 +54,6 @@ namespace VDS.RDF.Storage
             return new FusekiConnector(TestConfigManager.GetSetting(TestConfigManager.FusekiServer));
         }
 
-#if !NO_SYNC_HTTP
-
         [SkippableFact]
         public void StorageFusekiSaveGraph()
         {
@@ -495,7 +493,5 @@ namespace VDS.RDF.Storage
                 Options.HttpDebugging = false;
             }
         }
-
-#endif
     }
 }

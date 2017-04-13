@@ -270,8 +270,6 @@ namespace VDS.RDF.Query
 
         #region Query Methods
 
-#if !NO_SYNC_HTTP
-
         /// <summary>
         /// Makes a Query where the expected Result is a <see cref="SparqlResultSet">SparqlResultSet</see> i.e. SELECT and ASK Queries
         /// </summary>
@@ -554,8 +552,6 @@ namespace VDS.RDF.Query
 
             return httpResponse;
         }
-
-#endif
 
         /// <summary>
         /// Makes a Query asynchronously where the expected Result is a <see cref="SparqlResultSet">SparqlResultSet</see> i.e. SELECT and ASK Queries

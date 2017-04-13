@@ -78,14 +78,9 @@ namespace VDS.RDF.Configuration
         /// <returns></returns>
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
-#if !NO_SYNC_HTTP
             IStorageProvider storageProvider = null;
             IStorageServer storageServer = null;
             SparqlConnectorLoadMethod loadMode;
-#else
-            IAsyncStorageProvider storageProvider = null;
-            IAsyncStorageServer storageServer = null;
-#endif
             obj = null;
 
             String server, user, pwd, store, catalog, loadModeRaw;
@@ -205,8 +200,6 @@ namespace VDS.RDF.Configuration
                     }
                     break;
 
-#if !NO_SYNC_HTTP
-
                 case ReadOnly:
                     // Get the actual Manager we are wrapping
                     storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propStorageProvider);
@@ -235,8 +228,6 @@ namespace VDS.RDF.Configuration
                     }
                     break;
 
-#endif
-
                 case Sesame:
                 case SesameV5:
                 case SesameV6:
@@ -248,19 +239,11 @@ namespace VDS.RDF.Configuration
                     ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
                     if (user != null && pwd != null)
                     {
-#if !NO_SYNC_HTTP
                         storageProvider = (IStorageProvider) Activator.CreateInstance(targetType, new Object[] {server, store, user, pwd});
-#else
-                        storageProvider = (IAsyncStorageProvider)Activator.CreateInstance(targetType, new Object[] { server, store, user, pwd });
-#endif
                     }
                     else
                     {
-#if !NO_SYNC_HTTP
                         storageProvider = (IStorageProvider) Activator.CreateInstance(targetType, new Object[] {server, store});
-#else
-                        storageProvider = (IAsyncStorageProvider)Activator.CreateInstance(targetType, new Object[] { server, store });
-#endif
                     }
                     break;
 
@@ -279,8 +262,6 @@ namespace VDS.RDF.Configuration
                         storageServer = new SesameServer(server);
                     }
                     break;
-
-#if !NO_SYNC_HTTP
 
                 case Sparql:
                     // Get the Endpoint URI or the Endpoint
@@ -412,12 +393,8 @@ namespace VDS.RDF.Configuration
                     {
                         updateEndpoint = new SparqlRemoteUpdateEndpoint(UriFactory.Create(server));
                     }
-
                     storageProvider = new ReadWriteSparqlConnector(queryEndpoint, updateEndpoint, loadMode);
-
                     break;
-
-#endif
 
                 case SparqlHttpProtocol:
                     // Get the Service URI

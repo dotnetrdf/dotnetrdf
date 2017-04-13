@@ -56,9 +56,7 @@ namespace VDS.RDF.Storage
     /// </remarks>
     public class FourStoreConnector
         : BaseAsyncHttpConnector, IAsyncUpdateableStorage, IConfigurationSerializable
-#if !NO_SYNC_HTTP
         , IUpdateableStorage
-#endif
     {
         private String _baseUri;
         private SparqlRemoteEndpoint _endpoint;
@@ -215,8 +213,6 @@ namespace VDS.RDF.Storage
                 return true;
             }
         }
-
-#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Loads a Graph from the 4store instance
@@ -590,13 +586,12 @@ namespace VDS.RDF.Storage
             this._updateEndpoint.Update(sparqlUpdate);
         }
 
-#endif
-                /// <summary>
-                /// Saves a Graph to the Store asynchronously
-                /// </summary>
-                /// <param name="g">Graph to save</param>
-                /// <param name="callback">Callback</param>
-                /// <param name="state">State to pass to the callback</param>
+        /// <summary>
+        /// Saves a Graph to the Store asynchronously
+        /// </summary>
+        /// <param name="g">Graph to save</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public override void SaveGraph(IGraph g, AsyncStorageCallback callback, object state)
         {
             // Set up the Request

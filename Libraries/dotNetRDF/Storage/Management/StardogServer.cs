@@ -47,9 +47,7 @@ namespace VDS.RDF.Storage.Management
     /// </summary>
     public abstract class BaseStardogServer
         : BaseHttpConnector, IAsyncStorageServer, IConfigurationSerializable
-#if !NO_SYNC_HTTP
           , IStorageServer
-#endif
     {
         protected String _baseUri, _adminUri, _username, _pwd;
         protected bool _hasCredentials = false;
@@ -124,8 +122,6 @@ namespace VDS.RDF.Storage.Management
         {
             get { return IOBehaviour.StorageServer; }
         }
-
-#if !NO_SYNC_HTTP
 
         #region IStorageServer Members
 
@@ -310,8 +306,6 @@ namespace VDS.RDF.Storage.Management
         public abstract IStorageProvider GetStore(string storeID);
 
         #endregion
-
-#endif
 
         #region IAsyncStorageServer Members
 
@@ -896,8 +890,6 @@ namespace VDS.RDF.Storage.Management
 
 #endif
 
-#if !NO_SYNC_HTTP
-
         /// <summary>
         /// Gets a provider for the Store with the given ID
         /// </summary>
@@ -911,8 +903,6 @@ namespace VDS.RDF.Storage.Management
             return new StardogV1Connector(this._baseUri, storeID, this._username, this._pwd);
 #endif
         }
-
-#endif
 
         /// <summary>
         /// Gets a database from the server
@@ -983,8 +973,6 @@ namespace VDS.RDF.Storage.Management
 #endif
 
 
-#if !NO_SYNC_HTTP
-
         /// <summary>
         /// Gets a provider for the Store with the given ID
         /// </summary>
@@ -998,8 +986,6 @@ namespace VDS.RDF.Storage.Management
             return new StardogV2Connector(this._baseUri, storeID, this._username, this._pwd);
 #endif
         }
-
-#endif
 
         /// <summary>
         /// Gets a database from the server
@@ -1070,8 +1056,6 @@ namespace VDS.RDF.Storage.Management
 #endif
 
 
-#if !NO_SYNC_HTTP
-
         /// <summary>
         /// Gets a provider for the Store with the given ID
         /// </summary>
@@ -1085,8 +1069,6 @@ namespace VDS.RDF.Storage.Management
             return new StardogV3Connector(this._baseUri, storeID, this._username, this._pwd);
 #endif
         }
-
-#endif
 
         /// <summary>
         /// Gets a database from the server

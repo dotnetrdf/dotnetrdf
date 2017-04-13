@@ -51,9 +51,7 @@ namespace VDS.RDF.Storage
     /// </remarks>
     public class FusekiConnector 
         : SparqlHttpProtocolConnector, IAsyncUpdateableStorage, IConfigurationSerializable
-#if !NO_SYNC_HTTP
         , IUpdateableStorage
-#endif
     {
         private readonly SparqlFormatter _formatter = new SparqlFormatter();
         private readonly String _updateUri;
@@ -136,8 +134,6 @@ namespace VDS.RDF.Storage
                 return true;
             }
         }
-
-#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Gets the List of Graphs from the store
@@ -396,7 +392,6 @@ namespace VDS.RDF.Storage
                 throw StorageHelper.HandleHttpError(webEx, "updating");
             }
         }
-#endif
 
         /// <summary>
         /// Makes a SPARQL Query against the underlying store
