@@ -244,9 +244,7 @@ namespace VDS.RDF.Configuration
             // Processor Factories
             new QueryProcessorFactory(),
             new UpdateProcessorFactory(),
-#if !NO_WEB && !NO_ASP
             new ProtocolProcessorFactory(),
-#endif
             // User and Permission related Factories
             new UserGroupFactory(),
             new PermissionFactory(),

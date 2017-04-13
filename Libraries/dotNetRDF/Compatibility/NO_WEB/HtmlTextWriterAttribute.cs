@@ -24,7 +24,7 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Writing
+namespace System.Web.UI
 {
     /// <summary>
     /// HTML Attributes

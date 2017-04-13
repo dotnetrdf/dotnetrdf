@@ -25,10 +25,7 @@
 */
 
 using System;
-
-#if !NO_WEB
 using System.Web;
-#endif
 
 namespace VDS.RDF.Writing.Formatting
 {

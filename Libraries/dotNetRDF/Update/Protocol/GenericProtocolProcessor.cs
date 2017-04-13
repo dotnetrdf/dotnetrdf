@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-#if !NO_ASP
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -249,7 +247,7 @@ namespace VDS.RDF.Update.Protocol
                 {
                     // Send the Content Type we'd select based on the Accept header to the user
                     String ctype;
-                    IRdfWriter writer = MimeTypesHelper.GetWriter(HandlerHelper.GetAcceptTypes(context), out ctype);
+                    IRdfWriter writer = MimeTypesHelper.GetWriter(context.GetAcceptTypes(), out ctype);
                     context.Response.ContentType = ctype;
                 }
                 else
@@ -373,5 +371,3 @@ namespace VDS.RDF.Update.Protocol
         }
     }
 }
-
-#endif

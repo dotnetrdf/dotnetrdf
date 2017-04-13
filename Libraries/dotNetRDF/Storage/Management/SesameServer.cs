@@ -36,9 +36,7 @@ using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage.Management.Provisioning;
 using VDS.RDF.Storage.Management.Provisioning.Sesame;
 using VDS.RDF.Writing;
-#if !NO_WEB
 using System.Web;
-#endif
 
 namespace VDS.RDF.Storage.Management
 {

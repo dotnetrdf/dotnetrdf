@@ -18,10 +18,6 @@ Feature Symbols
 
 These symbols are used to disabled various features of the library, these are used in conjunction with a profile symbol to build a specific variant of the dotNetRDF library
 
-NO_ASP
-
-Compile without building the VDS.RDF.Web namespace which provides the ASP.Net integration.  Using NO_WEB will also cause these features to be excluded
-
 NO_DATA
 
 Compile without any System.Data dependency and without any SQL features.  Will exclude Microsoft SQL Server, MySQL and Virtuoso support and all classes that dependent on these features.

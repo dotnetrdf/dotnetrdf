@@ -33,9 +33,7 @@ using System.Text;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage.Management;
-#if !NO_WEB
 using System.Web;
-#endif
 
 namespace VDS.RDF.Storage
 {

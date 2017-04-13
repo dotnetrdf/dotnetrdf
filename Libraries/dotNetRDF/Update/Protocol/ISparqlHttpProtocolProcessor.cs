@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-#if !NO_ASP
-
 using VDS.RDF.Web;
 
 namespace VDS.RDF.Update.Protocol
@@ -83,5 +81,3 @@ namespace VDS.RDF.Update.Protocol
         void ProcessPatch(IHttpContext context);
     }
 }
-
-#endif

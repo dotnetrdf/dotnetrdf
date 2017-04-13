@@ -28,11 +28,9 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Web;
 using Newtonsoft.Json.Linq;
 using VDS.RDF.Parsing;
-#if !NO_WEB
-using System.Web;
-#endif
 
 namespace VDS.RDF.Query.Inference.Pellet.Services
 {
