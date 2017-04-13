@@ -187,9 +187,6 @@ namespace VDS.RDF.Parsing
             if (u == null) throw new RdfParseException("Cannot load RDF from a null URI");
             if (u.IsFile)
             {
-#if NO_FILE
-                throw new RdfParseException("Loading from a file:// URL requires the synchronous file loader which is not currently supported on your system");
-#else
                 // Invoke FileLoader instead
                 RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                 if (Path.DirectorySeparatorChar == '/')
@@ -201,7 +198,6 @@ namespace VDS.RDF.Parsing
                     FileLoader.Load(g, u.ToString().Substring(8), parser);
                 }
                 return;
-#endif
             }
             if (u.Scheme.Equals("data"))
             {
@@ -263,9 +259,6 @@ namespace VDS.RDF.Parsing
             {
                 if (u.IsFile)
                 {
-#if NO_FILE
-                    throw new RdfParseException("Loading from a file:// URL requires the synchronous file loader which is not currently supported on your system");
-#else
                     // Invoke FileLoader instead
                     RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                     if (Path.DirectorySeparatorChar == '/')
@@ -277,7 +270,6 @@ namespace VDS.RDF.Parsing
                         FileLoader.Load(handler, u.ToString().Substring(8), parser);
                     }
                     return;
-#endif
                 }
                 if (u.Scheme.Equals("data"))
                 {
@@ -570,9 +562,6 @@ namespace VDS.RDF.Parsing
             {
                 if (u.IsFile)
                 {
-#if NO_FILE
-                    throw new RdfParseException("Loading from a file:// URL requires the synchronous file loader which is not currently supported on your system");
-#else
                     // Invoke FileLoader instead
                     RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                     if (Path.DirectorySeparatorChar == '/')
@@ -584,7 +573,6 @@ namespace VDS.RDF.Parsing
                         FileLoader.Load(handler, u.AbsoluteUri.Substring(8), parser);
                     }
                     return;
-#endif
                 }
 
                 // Sanitise the URI to remove any Fragment ID

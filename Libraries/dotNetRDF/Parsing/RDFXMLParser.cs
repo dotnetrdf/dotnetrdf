@@ -150,7 +150,6 @@ namespace VDS.RDF.Parsing
             this.Load(new GraphHandler(g), input);
         }
 
-#if !NO_FILE
         /// <summary>
         /// Reads RDF/XML syntax from some File into the given Graph
         /// </summary>
@@ -166,7 +165,6 @@ namespace VDS.RDF.Parsing
             StreamReader input = new StreamReader(File.OpenRead(filename), Encoding.UTF8);
             this.Load(g, input);
         }
-#endif
 
         /// <summary>
         /// Reads RDF/XML syntax from some Stream using a RDF Handler

@@ -133,7 +133,6 @@ namespace VDS.RDF
         }
     }
 
-#if !NO_FILE
     /// <summary>
     /// A decorator for graph collection where graphs not in the underlying graph collection can be loaded on-demand from the Files on Disk as needed
     /// </summary>
@@ -181,5 +180,4 @@ namespace VDS.RDF
             }
         }
     }
-#endif
 }

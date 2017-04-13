@@ -137,7 +137,6 @@ namespace VDS.RDF.Parsing
             this.Load(new GraphHandler(g), input);
         }
 
-#if !NO_FILE
         /// <summary>
         /// Loads a Graph by reading Notation 3 syntax from the given file
         /// </summary>
@@ -152,7 +151,6 @@ namespace VDS.RDF.Parsing
                 this.Load(g, reader);
             }
         }
-#endif
 
         /// <summary>
         /// Loads RDF using a RDF handler by reading Notation 3 syntax from the given input
@@ -204,7 +202,6 @@ namespace VDS.RDF.Parsing
             }
         }
 
-#if !NO_FILE
         /// <summary>
         /// Loads RDF using a RDF handler by reading Notation 3 syntax from the given file
         /// </summary>
@@ -219,7 +216,6 @@ namespace VDS.RDF.Parsing
                 this.Load(handler, reader);
             }
         }
-#endif
 
         /// <summary>
         /// Internal method which does the parsing of the input

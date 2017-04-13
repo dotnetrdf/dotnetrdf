@@ -35,14 +35,12 @@ namespace VDS.RDF
     /// </summary>
     public interface ISparqlResultsWriter
     {
-#if !NO_FILE
         /// <summary>
         /// Saves the Result Set to the given File
         /// </summary>
         /// <param name="results">Result Set to save</param>
         /// <param name="filename">File to save to</param>
         void Save(SparqlResultSet results, String filename);
-#endif
 
         /// <summary>
         /// Saves the Result Set to the given Stream

@@ -63,7 +63,6 @@ namespace VDS.RDF.Parsing
             this.Load(new GraphHandler(g), input);
         }
 
-#if !NO_FILE
         /// <summary>
         /// Read RDF/Json Syntax from some File into a Graph
         /// </summary>
@@ -75,7 +74,6 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
             this.Load(new GraphHandler(g), filename);
         }
-#endif
 
         /// <summary>
         /// Read RDF/JSON Syntax from some Stream using a RDF Handler
@@ -128,7 +126,6 @@ namespace VDS.RDF.Parsing
             }
         }
 
-#if !NO_FILE
         /// <summary>
         /// Read RDF/JSON Syntax from a file using a RDF Handler
         /// </summary>
@@ -140,7 +137,6 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
             this.Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
         }
-#endif
 
         /// <summary>
         /// Internal top level Parse method which parses the Json

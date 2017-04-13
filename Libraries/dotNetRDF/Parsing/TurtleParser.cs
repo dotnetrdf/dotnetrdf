@@ -146,7 +146,6 @@ namespace VDS.RDF.Parsing
             this.Load(new GraphHandler(g), input);
         }
 
-#if !NO_FILE
         /// <summary>
         /// Loads a Graph by reading Turtle syntax from the given file
         /// </summary>
@@ -158,7 +157,6 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
             this.Load(g, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
         }
-#endif
 
         /// <summary>
         /// Loads RDF by reading Turtle syntax from the given input using a RDF Handler
@@ -212,7 +210,6 @@ namespace VDS.RDF.Parsing
             }
         }
 
-#if !NO_FILE
         /// <summary>
         /// Loads RDF by reading Turtle syntax from the given file using a RDF Handler
         /// </summary>
@@ -224,7 +221,6 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
             this.Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
         }
-#endif
 
         /// <summary>
         /// Internal method which does the parsing of the input

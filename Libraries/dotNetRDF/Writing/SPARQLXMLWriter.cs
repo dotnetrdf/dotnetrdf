@@ -43,7 +43,6 @@ namespace VDS.RDF.Writing
     public class SparqlXmlWriter : ISparqlResultsWriter
     {
 
-#if !NO_FILE
         /// <summary>
         /// Saves the Result Set to the given File in the Sparql Results XML Format
         /// </summary>
@@ -56,7 +55,6 @@ namespace VDS.RDF.Writing
                 this.Save(results, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
             }
         }
-#endif
 
 #if !NO_XMLDOM
 

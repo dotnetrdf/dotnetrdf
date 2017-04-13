@@ -117,7 +117,6 @@ _:b a dnr:GraphCollection ;
             Assert.Equal(typeof(ThreadSafeGraphCollection), collection.GetType());
         }
 
-#if !NO_FILE // No DiskDemandGraphCollection
         [Fact]
         public void ConfigurationLoadObjectGraphCollection3()
         {
@@ -135,7 +134,6 @@ _:b a dnr:GraphCollection ;
             Assert.NotNull(collection);
             Assert.Equal(typeof(DiskDemandGraphCollection), collection.GetType());
         }
-#endif
 
         [Fact]
         public void ConfigurationLoadObjectGraphCollection4()

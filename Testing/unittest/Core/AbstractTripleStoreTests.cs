@@ -146,8 +146,6 @@ namespace VDS.RDF
         }
     }
 
-#if !NO_FILE
-
     public class DiskDemandTripleStoreTests
         : AbstractTripleStoreTests
     {
@@ -156,5 +154,4 @@ namespace VDS.RDF
             return new DiskDemandTripleStore();
         }
     }
-#endif
 }

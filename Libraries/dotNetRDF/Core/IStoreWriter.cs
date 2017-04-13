@@ -34,14 +34,12 @@ namespace VDS.RDF
     /// </summary>
     public interface IStoreWriter
     {
-#if !NO_FILE
         /// <summary>
         /// Method for saving data to a Triple Store
         /// </summary>
         /// <param name="store">Triple Store</param>
         /// <param name="filename">File to save to</param>
         void Save(ITripleStore store, String filename);
-#endif
 
         /// <summary>
         /// Method for saving data to a Triple Store

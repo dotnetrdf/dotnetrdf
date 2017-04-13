@@ -1446,7 +1446,6 @@ namespace VDS.RDF
         }
     }
 
-#if !NO_FILE
     /// <summary>
     /// The File Graph Persistence Wrapper is a wrapper around antoher Graph that will be persisted to a file
     /// </summary>
@@ -1504,5 +1503,4 @@ namespace VDS.RDF
             this.SaveToFile(this._filename);
         }
     }
-#endif
 }

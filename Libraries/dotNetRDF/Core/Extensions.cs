@@ -1090,7 +1090,6 @@ namespace VDS.RDF
             processor.ProcessQuery(rdfHandler, resultsHandler, query);
         }
 
-#if !NO_FILE
         /// <summary>
         /// Loads RDF data from a file into a Graph
         /// </summary>
@@ -1133,7 +1132,6 @@ namespace VDS.RDF
         {
             FileLoader.Load(g, file);
         }
-#endif
 
         /// <summary>
         /// Loads RDF data from a URI into a Graph
@@ -1228,7 +1226,6 @@ namespace VDS.RDF
             EmbeddedResourceLoader.Load(g, resource, parser);
         }
 
-#if !NO_FILE
         /// <summary>
         /// Saves a Graph to a File
         /// </summary>
@@ -1257,7 +1254,7 @@ namespace VDS.RDF
             IRdfWriter writer = MimeTypesHelper.GetWriterByFileExtension(MimeTypesHelper.GetTrueFileExtension(file));
             writer.Save(g, file);
         }
-#endif
+
         public static void SaveToStream(this IGraph g, TextWriter streamWriter, IRdfWriter writer)
         {
             if (writer == null)
@@ -1279,7 +1276,6 @@ namespace VDS.RDF
     /// </summary>
     public static class TripleStoreExtensions
     {
-#if !NO_FILE
         /// <summary>
         /// Loads an RDF dataset from a file into a Triple Store
         /// </summary>
@@ -1306,7 +1302,6 @@ namespace VDS.RDF
         {
             FileLoader.Load(store, file);
         }
-#endif
 
         /// <summary>
         /// Loads an RDF dataset from a URI into a Triple Store
@@ -1389,7 +1384,6 @@ namespace VDS.RDF
             EmbeddedResourceLoader.Load(store, resource);
         }
 
-#if !NO_FILE
         /// <summary>
         /// Saves a Triple Store to a file
         /// </summary>
@@ -1418,7 +1412,6 @@ namespace VDS.RDF
             IStoreWriter writer = MimeTypesHelper.GetStoreWriterByFileExtension(MimeTypesHelper.GetTrueFileExtension(file));
             writer.Save(store, file);
         }
-#endif
     }
 
     /// <summary>

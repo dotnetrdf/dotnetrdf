@@ -91,7 +91,6 @@ namespace VDS.RDF.Writing
         /// </summary>
         public NQuadsSyntax Syntax { get; set; }
 
-#if !NO_FILE
         /// <summary>
         /// Saves a Store in NQuads format
         /// </summary>
@@ -105,7 +104,6 @@ namespace VDS.RDF.Writing
                 this.Save(store, writer);
             }
         }
-#endif
 
         /// <summary>
         /// Saves a Store in NQuads format

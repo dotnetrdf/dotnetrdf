@@ -67,7 +67,6 @@ namespace VDS.RDF.Writing
             }
         }
 
-#if !NO_FILE
         /// <summary>
         /// Saves the Graph to the given File as an XHTML Table with embedded RDFa
         /// </summary>
@@ -80,7 +79,6 @@ namespace VDS.RDF.Writing
                 this.Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
             }
         }
-#endif
 
         /// <summary>
         /// Saves the Result Set to the given Stream as an XHTML Table with embedded RDFa

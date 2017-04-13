@@ -113,7 +113,6 @@ namespace VDS.RDF.Configuration
                 }
             }
             
-#if !NO_FILE
             // Load from Files
             sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromFile)));
             foreach (INode source in sources)
@@ -127,7 +126,6 @@ namespace VDS.RDF.Configuration
                     throw new DotNetRdfConfigurationException("Unable to load data from a file for the Graph identified by the Node '" + objNode.ToString() + "' as one of the values for the dnr:fromFile property is not a Literal Node as required");
                 }
             }
-#endif
 
             // Load from Strings
             sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromString)));
@@ -406,7 +404,6 @@ namespace VDS.RDF.Configuration
                     }
                 }
 
-#if !NO_FILE
                 // Read from Files - we assume these files are Dataset Files
                 sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromFile)));
                 foreach (INode source in sources)
@@ -420,7 +417,6 @@ namespace VDS.RDF.Configuration
                         throw new DotNetRdfConfigurationException("Unable to load data from a file for the Triple Store identified by the Node '" + objNode.ToString() + "' as one of the values for the dnr:fromFile property is not a Literal Node as required");
                     }
                 }
-#endif
 
                 // Finally we'll apply any reasoners
                 if (store is IInferencingTripleStore)

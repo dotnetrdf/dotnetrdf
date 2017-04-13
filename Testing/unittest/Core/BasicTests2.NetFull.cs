@@ -223,9 +223,7 @@ namespace VDS.RDF
                 List<Uri> testUris = new List<Uri>() {
                     new Uri("http://www.bbc.co.uk/programmes/b0080bbs#programme"),
                     new Uri("http://dbpedia.org/resource/Southampton"),
-#if !NO_FILE // file: urls not supported
                     new Uri("file:///resources\\MergePart1.ttl"),
-#endif
                     new Uri("http://www.dotnetrdf.org/configuration#")
                 };
 

@@ -126,7 +126,6 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public NQuadsSyntax Syntax { get; set; }
 
-#if !NO_FILE
         /// <summary>
         /// Loads a RDF Dataset from the NQuads input into the given Triple Store
         /// </summary>
@@ -139,7 +138,6 @@ namespace VDS.RDF.Parsing
 
             this.Load(new StoreHandler(store), filename);
         }
-#endif
 
         /// <summary>
         /// Loads a RDF Dataset from the NQuads input into the given Triple Store
@@ -153,7 +151,6 @@ namespace VDS.RDF.Parsing
             this.Load(new StoreHandler(store), input);
         }
 
-#if !NO_FILE
         /// <summary>
         /// Loads a RDF Dataset from the NQuads input using a RDF Handler
         /// </summary>
@@ -180,7 +177,6 @@ namespace VDS.RDF.Parsing
 
             this.Load(handler, input);
         }
-#endif
 
         /// <summary>
         /// Loads a RDF Dataset from the NQuads input using a RDF Handler

@@ -59,7 +59,6 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             this._document.Load(input);
         }
 
-#if !NO_FILE
         /// <summary>
         /// Creates a new DOM Based event generator
         /// </summary>
@@ -69,7 +68,6 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             this._document = new XmlDocument();
             this._document.Load(File.OpenRead(file));
         }
-#endif
 
         /// <summary>
         /// Gets all events from the XML DOM

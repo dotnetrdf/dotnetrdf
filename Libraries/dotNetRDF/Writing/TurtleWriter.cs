@@ -106,7 +106,6 @@ namespace VDS.RDF.Writing
             }
         }
 
-#if !NO_FILE
         /// <summary>
         /// Saves a Graph to a File
         /// </summary>
@@ -119,13 +118,12 @@ namespace VDS.RDF.Writing
                 this.Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
             }
         }
-#endif
 
-            /// <summary>
-            /// Saves a Graph using an arbitrary <see cref="TextWriter">TextWriter</see>
-            /// </summary>
-            /// <param name="g">Graph to save</param>
-            /// <param name="output">Writer to save using</param>
+        /// <summary>
+        /// Saves a Graph using an arbitrary <see cref="TextWriter">TextWriter</see>
+        /// </summary>
+        /// <param name="g">Graph to save</param>
+        /// <param name="output">Writer to save using</param>
         protected override void SaveInternal(IGraph g, TextWriter output)
         {
             TurtleWriterContext context = new TurtleWriterContext(g, output, this._prettyprint, this._allowhispeed, this._syntax);

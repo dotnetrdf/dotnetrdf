@@ -55,7 +55,6 @@ namespace VDS.RDF.Writing
             }
         }
 
-#if !NO_FILE
         /// <summary>
         /// Saves a Graph to TSV format
         /// </summary>
@@ -68,13 +67,12 @@ namespace VDS.RDF.Writing
                 this.Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
             }
         }
-#endif
 
-            /// <summary>
-            /// Saves a Graph to TSV format
-            /// </summary>
-            /// <param name="g">Graph</param>
-            /// <param name="output">Writer to save to</param>
+        /// <summary>
+        /// Saves a Graph to TSV format
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="output">Writer to save to</param>
         protected override void SaveInternal(IGraph g, TextWriter output)
         {
             foreach (Triple t in g.Triples)
@@ -139,7 +137,6 @@ namespace VDS.RDF.Writing
             }
         }
 
-#if !NO_FILE
         /// <summary>
         /// Saves a Triple Store to TSV format
         /// </summary>
@@ -150,7 +147,6 @@ namespace VDS.RDF.Writing
             if (filename == null) throw new RdfOutputException("Cannot output to a null file");
             this.Save(store, new StreamWriter(File.OpenWrite(filename)));
         }
-#endif
 
         /// <summary>
         /// Saves a Triple Store to TSV format

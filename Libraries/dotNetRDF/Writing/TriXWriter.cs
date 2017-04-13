@@ -50,7 +50,6 @@ namespace VDS.RDF.Writing
             return settings;
         }
 
-#if !NO_FILE
         /// <summary>
         /// Saves a Store in TriX format
         /// </summary>
@@ -64,13 +63,12 @@ namespace VDS.RDF.Writing
                 this.Save(store, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
             }
         }
-#endif
 
-            /// <summary>
-            /// Saves a Store in TriX format
-            /// </summary>
-            /// <param name="store">Store to save</param>
-            /// <param name="output">Writer to save to</param>
+        /// <summary>
+        /// Saves a Store in TriX format
+        /// </summary>
+        /// <param name="store">Store to save</param>
+        /// <param name="output">Writer to save to</param>
         public void Save(ITripleStore store, TextWriter output)
         {
             if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");

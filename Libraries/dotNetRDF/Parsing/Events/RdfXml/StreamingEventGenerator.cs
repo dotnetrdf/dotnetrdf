@@ -94,7 +94,6 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             this._currentBaseUri = baseUri;
         }
 
-#if !NO_FILE
         /// <summary>
         /// Creates a new Streaming Event Generator
         /// </summary>
@@ -115,7 +114,6 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         {
             this._currentBaseUri = baseUri;
         }
-#endif
 
         /// <summary>
         /// Initialises the XML Reader settings

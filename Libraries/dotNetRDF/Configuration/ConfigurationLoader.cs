@@ -302,7 +302,6 @@ namespace VDS.RDF.Configuration
 
 #endif
 
-#if !NO_FILE
         /// <summary>
         /// Loads a Configuration Graph and applies auto-configuration
         /// </summary>
@@ -325,22 +324,6 @@ namespace VDS.RDF.Configuration
             FileLoader.Load(g, file);
             return ConfigurationLoader.LoadCommon(g, new INode[] { g.CreateLiteralNode(file), g.CreateLiteralNode(Path.GetFileName(file)) }, autoConfigure);
         }
-#else
-        public static IGraph LoadConfiguration(string filename, Uri baseUri, Stream inputStream)
-        {
-            return ConfigurationLoader.LoadConfiguration(filename, baseUri, inputStream, true);
-        }
-
-        public static IGraph LoadConfiguration(string filename, Uri  baseUri, Stream inputStream, bool autoConfigure)
-        {
-            Graph g = new Graph() {BaseUri = baseUri};
-            StreamLoader.Load(g, filename, inputStream);
-            return ConfigurationLoader.LoadCommon(g,
-                                                  new INode[]
-                                                      {g.CreateLiteralNode(filename), g.CreateLiteralNode(baseUri.ToSafeString())},
-                                                  autoConfigure);
-        }
-#endif
 
         /// <summary>
         /// Loads a Configuration Graph and applies auto-configuration
@@ -418,7 +401,6 @@ namespace VDS.RDF.Configuration
                         }
                         break;
 #endif
-#if !NO_FILE
                     case NodeType.Literal:
                         if (!imported.Contains(importData))
                         {
@@ -426,7 +408,7 @@ namespace VDS.RDF.Configuration
                             imported.Add(importData);
                         }
                         break;
-#endif
+
                     default:
                         throw new DotNetRdfConfigurationException("Invalid dnr:imports target " + importData.ToString() + ", dnr:imports may only be used to point to an object which is a URI/Literal.  If sing Silverlight only Literals are currently permitted.");
                 }
@@ -1502,7 +1484,6 @@ namespace VDS.RDF.Configuration
             _configGraph = configGraph;
         }
 
-#if !NO_FILE
         /// <summary>
         /// Creates a new instance of <see cref="ConfigurationLoader" />, which
         /// loads an existing configuration graph and applies auto-configuration
@@ -1520,7 +1501,6 @@ namespace VDS.RDF.Configuration
         {
             _configGraph = LoadConfiguration(file, autoConfigure);
         }
-#endif
 
 #if !NO_SYNC_HTTP
 

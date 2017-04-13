@@ -61,7 +61,6 @@ namespace VDS.RDF.Parsing
         public const String TriXNamespaceURI = "http://www.w3.org/2004/03/trix/trix-1/";
 
 
-#if !NO_FILE
         /// <summary>
         /// Loads the RDF Dataset from the TriX input into the given Triple Store
         /// </summary>
@@ -72,7 +71,6 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
             this.Load(store, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
         }
-#endif
 
         /// <summary>
         /// Loads the RDF Dataset from the TriX input into the given Triple Store
@@ -87,7 +85,6 @@ namespace VDS.RDF.Parsing
         }
 
 
-#if !NO_FILE
         /// <summary>
         /// Loads the RDF Dataset from the TriX input using a RDF Handler
         /// </summary>
@@ -98,7 +95,6 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
             this.Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
         }
-#endif
 
 #if !NO_XMLDOM
 

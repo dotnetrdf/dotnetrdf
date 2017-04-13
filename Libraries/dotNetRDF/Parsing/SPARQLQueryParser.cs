@@ -234,7 +234,6 @@ namespace VDS.RDF.Parsing
 
         #region Public Parser Methods
 
-#if !NO_FILE
         /// <summary>
         /// Parses a SPARQL Query from a File
         /// </summary>
@@ -246,7 +245,6 @@ namespace VDS.RDF.Parsing
             StreamReader reader = new StreamReader(File.OpenRead(queryFile), Encoding.UTF8);
             return this.ParseInternal(reader);
         }
-#endif
 
         /// <summary>
         /// Parses a SPARQL Query from an arbitrary Input Stream

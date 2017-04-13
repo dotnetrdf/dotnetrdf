@@ -90,7 +90,6 @@ namespace VDS.RDF.Writing
         /// </summary>
         public NTriplesSyntax Syntax { get; set; }
 
-#if !NO_FILE
         /// <summary>
         /// Saves the Graph in NTriples Syntax to the given stream
         /// </summary>
@@ -103,7 +102,6 @@ namespace VDS.RDF.Writing
                 this.Save(g, writer);
             }
         }
-#endif
 
         /// <summary>
         /// Saves the Graph in NTriples Syntax to the given stream
