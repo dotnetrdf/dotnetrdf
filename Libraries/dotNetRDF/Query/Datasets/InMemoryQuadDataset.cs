@@ -36,14 +36,10 @@ namespace VDS.RDF.Query.Datasets
     /// </summary>
     public class InMemoryQuadDataset
         : BaseTransactionalQuadDataset
-#if !NO_RWLOCK
         , IThreadSafeDataset
-#endif
     {
         private IInMemoryQueryableStore _store;
-#if !NO_RWLOCK
         private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
-#endif
 
         /// <summary>
         /// Creates a new in-memory dataset using the default in-memory <see cref="TripleStore">TripleStore</see> as the underlying storage
@@ -108,7 +104,6 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
-#if !NO_RWLOCK
         /// <summary>
         /// Gets the Lock used to ensure MRSW concurrency on the dataset when available
         /// </summary>
@@ -119,7 +114,6 @@ namespace VDS.RDF.Query.Datasets
                 return this._lock;
             }
         }
-#endif
 
         #region Graph Existence and Retrieval
 

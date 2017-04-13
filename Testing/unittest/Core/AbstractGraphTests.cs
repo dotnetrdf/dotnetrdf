@@ -104,8 +104,6 @@ namespace VDS.RDF
         }
     }
 
-#if !NO_RWLOCK // No ThreadSafeGraph
-
     public class GraphTests
         : AbstractGraphTests
     {
@@ -134,6 +132,5 @@ namespace VDS.RDF
             return new NonIndexedGraph();
         }
     }
-#endif
 
 }

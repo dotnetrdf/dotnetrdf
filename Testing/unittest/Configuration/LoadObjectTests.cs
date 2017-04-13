@@ -189,7 +189,6 @@ _:a a dnr:Graph ;
             Assert.Equal(typeof(Graph), result.GetType());
         }
 
-#if !NO_RWLOCK // No ThreadSafeGraph
         [Fact]
         public void ConfigurationLoadObjectGraphEmpty2()
         {
@@ -204,7 +203,6 @@ _:a a dnr:Graph ;
             Assert.NotNull(result);
             Assert.Equal(typeof(ThreadSafeGraph), result.GetType());
         }
-#endif
 
         [Fact]
         public void ConfigurationLoadObjectGraphEmpty3()

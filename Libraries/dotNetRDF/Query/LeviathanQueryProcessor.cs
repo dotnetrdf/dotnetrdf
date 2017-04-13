@@ -52,9 +52,7 @@ namespace VDS.RDF.Query
         : ISparqlQueryProcessor, ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext>
     {
         private ISparqlDataset _dataset;
-#if !NO_RWLOCK
         private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
-#endif
 
         /// <summary>
         /// Creates a new Leviathan Query Processor
@@ -126,12 +124,10 @@ namespace VDS.RDF.Query
             if (resultsHandler == null && (query.QueryType == SparqlQueryType.Ask || SparqlSpecsHelper.IsSelectQuery(query.QueryType))) throw new ArgumentNullException("resultsHandler", "Cannot use a null resultsHandler when the Query is an ASK/SELECT");
 
             // Handle the Thread Safety of the Query Evaluation
-#if !NO_RWLOCK
             ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
             try
             {
                 currLock.EnterReadLock();
-#endif
                 // Reset Query Timers
                 query.QueryExecutionTime = null;
 
@@ -270,13 +266,11 @@ namespace VDS.RDF.Query
                     if (defGraphOk) this._dataset.ResetDefaultGraph();
                     if (datasetOk) this._dataset.ResetActiveGraph();
                 }
-#if !NO_RWLOCK
             }
             finally
             {
                 currLock.ExitReadLock();
             }
-#endif
         }
 
         /// <summary>

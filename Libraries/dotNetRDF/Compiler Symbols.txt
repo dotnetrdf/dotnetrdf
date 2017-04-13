@@ -42,10 +42,6 @@ NO_PROXY
 
 Compile without any use of WebProxy - use in conjunction with profiles like SILVERLIGHT where it is not supported
 
-NO_RWLOCK
-
-Compile without any use of ReaderWriterLockSlim - use in conjunction with profiles like SILVERLIGHT where it is not supported.  Will cause all thread safe classes that depend on this to be excluded from the build
-
 NO_STOPWATCH
 
 Compile without any use of Stopwatch - use in conjunction with profiles like SILVERLIGHT where it is not supported

@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-#if !NO_RWLOCK
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -485,5 +483,3 @@ namespace VDS.RDF
             : base(new ThreadSafeTripleCollection()) { }
     }
 }
-
-#endif
