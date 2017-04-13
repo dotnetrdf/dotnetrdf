@@ -42,7 +42,7 @@ namespace VDS.RDF.Update.Protocol
         /// <summary>
         /// This is the Pattern that is used to check whether ?default is present in the querystring.  This is needed since IIS does not recognise ?default as being a valid querystring key unless it ends in a = which the specification does not mandate so cannot be assumed
         /// </summary>
-        internal const String DefaultParameterPattern = "^default$|^default&|&default&|&default$";
+        public const String DefaultParameterPattern = "^default$|^default&|&default&|&default$";
 
         /// <summary>
         /// Processes a GET operation

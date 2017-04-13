@@ -116,7 +116,7 @@ namespace VDS.RDF
         /// <summary>
         /// MIME Types for SPARQL Results XML
         /// </summary>
-        internal static string[] SparqlResultsXml = { "application/sparql-results+xml" };
+        public static string[] SparqlResultsXml = { "application/sparql-results+xml" };
 
         /// <summary>
         /// MIME Types for SPARQL Results JSON
