@@ -32,9 +32,6 @@ using System.Xml;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing;
-#if !NO_XSL
-using System.Xml.Xsl;
-#endif
 
 namespace VDS.RDF.Parsing
 {
