@@ -26,10 +26,6 @@ NO_DATA
 
 Compile without any System.Data dependency and without any SQL features.  Will exclude Microsoft SQL Server, MySQL and Virtuoso support and all classes that dependent on these features.
 
-NO_PROCESS
-
-Compile without any use of System.Diagnostics.Process - use in conjunction with profiles like SILVERLIGHT where it is not supported
-
 NO_PROXY
 
 Compile without any use of WebProxy - use in conjunction with profiles like SILVERLIGHT where it is not supported
