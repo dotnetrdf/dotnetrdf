@@ -102,7 +102,7 @@
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.4' ">
-    <Compile Include="**\*.cs" Exclude="obj\**\*.cs;Web\**\*.cs;Update\Protocol\*.cs;Compatibility\Portable\**\*.cs;**\*.NetFull.cs" />
+    <Compile Include="**\*.cs" Exclude="obj\**\*.cs;Web\**\*.cs;Update\Protocol\*.cs;**\*.NetFull.cs" />
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net40' ">
@@ -110,7 +110,7 @@
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
-    <Compile Include="**\*.cs" Exclude="obj\**\*.cs;Compatibility\Core\*.cs;Compatibility\NO_WEB\*.cs;Compatibility\Portable\**\*.cs;**\*.NetCore.cs" />
+    <Compile Include="**\*.cs" Exclude="obj\**\*.cs;Compatibility\Core\*.cs;Compatibility\NO_WEB\*.cs;**\*.NetCore.cs" />
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net40-client' ">
@@ -118,7 +118,7 @@
   </PropertyGroup>
   
   <ItemGroup Condition=" '$(TargetFramework)' == 'net40-client' ">
-    <Compile Include="**\*.cs" Exclude="obj\**\*.cs;Compatibility\Core\*.cs;Compatibility\Portable\**\*.cs;**\*.NetCore.cs" />
+    <Compile Include="**\*.cs" Exclude="obj\**\*.cs;Compatibility\Core\*.cs;**\*.NetCore.cs" />
   </ItemGroup>
 
 </Project>
