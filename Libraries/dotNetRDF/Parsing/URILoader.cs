@@ -48,7 +48,6 @@ namespace VDS.RDF.Parsing
         private static String _userAgent;
 
         #region URI Caching
-#if !NO_URICACHE
         private static IUriLoaderCache _cache = new UriLoaderCache();
 
         /// <summary>
@@ -120,7 +119,6 @@ namespace VDS.RDF.Parsing
             Uri temp = Tools.StripUriFragment(u);
             return _cache.HasLocalCopy(temp, false);
         }
-#endif
         #endregion
 
         /// <summary>
@@ -280,7 +278,6 @@ namespace VDS.RDF.Parsing
                 // Sanitise the URI to remove any Fragment ID
                 u = Tools.StripUriFragment(u);
 
-#if !NO_URICACHE
                 // Use Cache if possible
                 String etag = String.Empty;
                 String local = null;
@@ -312,7 +309,6 @@ namespace VDS.RDF.Parsing
                         }
                     }
                 }
-#endif
 
                 // Set-up the Request
                 HttpWebRequest httpRequest;
@@ -329,15 +325,13 @@ namespace VDS.RDF.Parsing
                     httpRequest.Accept = MimeTypesHelper.HttpAcceptHeader;
                 }
 
-#if !NO_URICACHE
                 if (Options.UriLoaderCaching)
                 {
                     if (!etag.Equals(String.Empty))
                     {
-                        httpRequest.Headers.Add(HttpRequestHeader.IfNoneMatch, etag);
+                        httpRequest.Headers[HttpRequestHeader.IfNoneMatch] = etag;
                     }
                 }
-#endif
 
                 // Use HTTP GET
                 httpRequest.Method = "GET";
@@ -359,7 +353,6 @@ namespace VDS.RDF.Parsing
                 {
                     Tools.HttpDebugResponse(httpResponse);
 
-#if !NO_URICACHE
                     if (Options.UriLoaderCaching)
                     {
                         // Are we using ETag based caching?
@@ -397,7 +390,6 @@ namespace VDS.RDF.Parsing
                             // If we didn't get a Not-Modified response then we'll continue and parse the new response
                         }
                     }
-#endif
 
                     // Get a Parser and Load the RDF
                     if (parser == null)
@@ -406,7 +398,6 @@ namespace VDS.RDF.Parsing
                         parser = MimeTypesHelper.GetParser(httpResponse.ContentType);
                     }
                     parser.Warning += RaiseWarning;
-#if !NO_URICACHE
                     // To do caching we ask the cache to give us a handler and then we tie it to
                     if (Options.UriLoaderCaching)
                     {
@@ -427,10 +418,7 @@ namespace VDS.RDF.Parsing
                     }
                     try
                     {
-#endif
                         parser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
-
-#if !NO_URICACHE
                     }
                     catch
                     {
@@ -444,7 +432,6 @@ namespace VDS.RDF.Parsing
                         }
                         throw;
                     }
-#endif
                 }
             }
             catch (UriFormatException uriEx)
@@ -459,7 +446,6 @@ namespace VDS.RDF.Parsing
                     Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                 }
 
-#if !NO_URICACHE
                 if (Options.UriLoaderCaching)
                 {
                     if (webEx.Response != null)
@@ -494,7 +480,6 @@ namespace VDS.RDF.Parsing
                         }
                     }
                 }
-#endif
 
                 // Some sort of HTTP Error occurred
                 throw new WebException("A HTTP Error occurred resolving the URI '" + u.AbsoluteUri + "'", webEx);

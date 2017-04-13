@@ -136,9 +136,7 @@ namespace VDS.RDF.Writing
         public void WritingCollections()
         {
             Graph g = new Graph();
-#if !NO_URICACHE
             Options.UriLoaderCaching = false;
-#endif
             UriLoader.Load(g, new Uri("http://www.wurvoc.org/vocabularies/om-1.6/Kelvin_scale"));
 
             CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter(WriterCompressionLevel.High);

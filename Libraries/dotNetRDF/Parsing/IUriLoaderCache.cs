@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-#if !NO_URICACHE
-
 using System;
 using System.Collections.Generic;
 using VDS.RDF.Parsing.Handlers;
@@ -125,5 +123,3 @@ namespace VDS.RDF.Parsing
         IRdfHandler ToCache(Uri requestUri, Uri responseUri, String etag);
     }
 }
-
-#endif

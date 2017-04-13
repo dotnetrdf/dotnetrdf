@@ -59,17 +59,13 @@ namespace VDS.RDF.Parsing.Handlers
         {
             try
             {
-#if !NO_URICACHE
                 Options.UriLoaderCaching = false;
-#endif
                 FusekiConnector fuseki = FusekiTest.GetConnection();
                 this.TestWriteToStoreHandler(fuseki);
             }
             finally
             {
-#if !NO_URICACHE
                 Options.UriLoaderCaching = true;
-#endif
             }
         }
 

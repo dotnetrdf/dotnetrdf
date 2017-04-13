@@ -437,9 +437,7 @@ namespace VDS.RDF.Storage
         /// <param name="cacheEnabled"></param>
         private void SetUriLoaderCaching(bool cacheEnabled)
         {
-#if !NO_URICACHE
             Options.UriLoaderCaching = cacheEnabled;
-#endif
         }
     }
 }

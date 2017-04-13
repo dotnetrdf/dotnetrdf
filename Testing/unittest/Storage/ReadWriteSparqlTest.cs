@@ -52,9 +52,7 @@ namespace VDS.RDF.Storage
 
         private void SetUriLoaderCaching(bool newValue)
         {
-#if !NO_URICACHE
             Options.UriLoaderCaching = newValue;
-#endif
         }
 
         [SkippableFact]

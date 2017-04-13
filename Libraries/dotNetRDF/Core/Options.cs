@@ -354,8 +354,6 @@ namespace VDS.RDF
             }
         }
 
-#if !NO_URICACHE
-
         /// <summary>
         /// Gets/Sets whether the <see cref="UriLoader">UriLoader</see> uses caching
         /// </summary>
@@ -370,7 +368,6 @@ namespace VDS.RDF
                 _uriLoaderCaching = value;
             }
         }
-#endif
 
         /// <summary>
         /// Gets/Sets the Timeout for URI Loader requests (Defaults to 15 seconds)

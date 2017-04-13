@@ -32,11 +32,10 @@ using Xunit;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.XunitExtensions;
+using System.Reflection;
 
 namespace VDS.RDF.Parsing
 {
-#if !NO_URICACHE
-
     public class CachingTests
     {
         private static Uri test = new Uri("http://www.dotnetrdf.org/configuration#");
@@ -61,7 +60,7 @@ namespace VDS.RDF.Parsing
             String original = UriLoader.CacheDirectory;
             try
             {
-                UriLoader.CacheDirectory = Environment.CurrentDirectory;
+                UriLoader.CacheDirectory = Path.GetDirectoryName(typeof(CachingTests).GetTypeInfo().Assembly.Location);
 
                 this.ParsingUriLoaderCache();
             }
@@ -122,5 +121,4 @@ namespace VDS.RDF.Parsing
             }
         }
     }
-#endif
 }
