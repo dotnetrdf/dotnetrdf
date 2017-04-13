@@ -98,7 +98,7 @@
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.4' ">
-    <DefineConstants>$(DefineConstants);NO_SYSTEMCONFIGURATION;NO_PROXY;NO_XSL;NO_DATA;NO_WEB;NO_PROCESS;NO_URICACHE;NETCORE</DefineConstants>
+    <DefineConstants>$(DefineConstants);NO_SYSTEMCONFIGURATION;NO_PROXY;NO_DATA;NO_WEB;NO_PROCESS;NO_URICACHE;NETCORE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.4' ">
