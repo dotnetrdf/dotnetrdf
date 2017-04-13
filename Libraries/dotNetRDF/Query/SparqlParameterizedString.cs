@@ -142,11 +142,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-#if NET40 || WINDOWS_PHONE
                 return String.Join("", _commandText);
-#else
-                return String.Join("", _commandText.ToArray());
-#endif
             }
             set
             {
@@ -701,11 +697,7 @@ namespace VDS.RDF.Query
                             {
                                 // Start variable or parameter capture
                                 _commandText.Add(currentSegment.ToString());
-#if NET40 || WINDOWS_PHONE
                                 currentSegment.Clear();
-#else
-                                currentSegment = new StringBuilder();
-#endif
                                 currentSegment.Append(c);
                                 // Capture the identifier
                                 bool hasRemainingChar = false;
@@ -728,11 +720,8 @@ namespace VDS.RDF.Query
                                 // TODO should we check that the identifier is not empty, just to be sure ?
                                 String assignment = currentSegment.ToString();
                                 _commandText.Add(assignment);
-#if NET40 || WINDOWS_PHONE
                                 currentSegment.Clear();
-#else
-                                currentSegment = new StringBuilder();
-#endif
+
                                 // Add the last character found (if any) to the new segment, since it is not part of the variable or parameter name
                                 if (hasRemainingChar) currentSegment.Append(value[i]);
 

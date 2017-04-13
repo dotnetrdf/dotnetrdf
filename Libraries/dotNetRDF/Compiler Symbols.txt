@@ -12,14 +12,6 @@ MONO
 
 Compile for Mono runtime
 
-SILVERLIGHT
-
-Compile for Silverlight runtime
-
-WINDOWS_PHONE
-
-Compile for Windows Phone 7 runtime, if you define this you should also define SILVERLIGHT
-
 
 Feature Symbols
 ---------------

@@ -98,9 +98,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// Gets the Database Type
         /// </summary>
         [Category("Index Options"), 
-#if !WINDOWS_PHONE && !NETCORE
          DisplayName("Index Type"),
-#endif
          Description("The type of the index structures used for the database")]
         public String DatabaseType
         {
@@ -113,9 +111,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultMinDifferentialIndexLimit), 
          Category("Index Options"), 
-#if !WINDOWS_PHONE && !NETCORE
          DisplayName("Differential Index Enabled Limit"), 
-#endif
          Description("The minimum size the Stardog database must be before differential indexes are used")]
         public int MinDifferentialIndexLimit
         {
@@ -128,9 +124,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultMaxDifferentialIndexLimit), 
          Category("Index Options"),
-#if !WINDOWS_PHONE && !NETCORE
          DisplayName("Differential Index Merge Limit"), 
-#endif
          Description("The maximum size in triples of the differential index before it is merged into the main index")]
         public int MaxDifferentialIndexLimit
         {
@@ -143,9 +137,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultCanonicaliseLiterals),
          Category("Index Options"),
-#if !WINDOWS_PHONE && !NETCORE
          DisplayName("Canonicalise Literals"),
-#endif
          Description("Sets whether literals are canonicalised before being indexed.  If enabled then literals will be transformed e.g. '1'^^xsd:byte => '1'^^xsd:integer, leave disabled to preserve data exactly as input")]
         public bool CanoncialiseLiterals
         {
@@ -158,9 +150,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultNamedGraphIndexing),
          Category("Index Options"),
-#if !WINDOWS_PHONE && !NETCORE
          DisplayName("Index Named Graphs"),
-#endif
          Description("Enables optimized index support for named graphs, improves query performance at the cost of load performance.  If your data is all in one graph or you infrequently query named graphs you may wish to disable this")]
         public bool IndexNamedGraphs
         {
@@ -173,9 +163,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultPersistIndex),
          Category("Index Options"),
-#if !WINDOWS_PHONE && !NETCORE
          DisplayName("Persistent Indexes"),
-#endif
          Description("Sets whether indexes are persistent")]
         public bool PersistIndexes
         {
@@ -188,9 +176,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultPersistIndexSync),
          Category("Index Options"),
-#if !WINDOWS_PHONE && !NETCORE
          DisplayName("Persist Indexes Synchronously"),
-#endif
          Description("Sets whether indexes are persisted synchronously or asynchronously")]
         public bool PersistIndexesSynchronously
         {
@@ -203,9 +189,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultAutoUpdateStats),
          Category("Index Options"),
-#if !WINDOWS_PHONE && !NETCORE
          DisplayName("Auto Update Statistics"),
-#endif
          Description("Sets whether statistics are automatically updated")]
         public bool AutoUpdateStatistics
         {
@@ -228,9 +212,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// Gets/Sets the active graphs for ICV
         /// </summary>
         [Category("Integrity Constraint Validation"),
-#if !WINDOWS_PHONE && !NETCORE
          DisplayName("Active Graphs"), 
-#endif
          Description("Sets the named graphs upon which integrity constraints are enforced")]
         public List<String> IcvActiveGraphs
         {
@@ -243,9 +225,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultIcvEnabled),
          Category("Integrity Constraint Validation"), 
-#if !WINDOWS_PHONE && !NETCORE
          DisplayName("Enabled"), 
-#endif
          Description("Enables integrity constraint validation for the database")]
         public bool IcvEnabled
         {
@@ -258,9 +238,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultIcvReasoningMode),
          Category("Integrity Constraint Validation"),
-#if !WINDOWS_PHONE && !NETCORE
          DisplayName("Reasoning Mode"), 
-#endif
          Description("Sets what reasoning mode is used during integrity constraint validation")]
         public StardogReasoningMode IcvReasoningMode
         {
@@ -284,9 +262,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultConsistencyChecking),
          Category("Reasoning Options"),
-#if !WINDOWS_PHONE && !NETCORE
          DisplayName("Automatic Consistency Checking"),
-#endif
          Description("Sets whether consistency checking is done with respect to transactions")]
         public bool ConsistencyChecking
         {
@@ -299,9 +275,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultPunning),
          Category("Reasoning Options"),
-#if !WINDOWS_PHONE && !NETCORE
          DisplayName("Enable Punning")
-#endif
         ]
         public bool EnablePunning
         {
@@ -313,9 +287,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// Gets/Sets the graphs that contain the schema (TBox) that are used for reasoning
         /// </summary>
         [Category("Reasoning Options"),
-#if !WINDOWS_PHONE && !NETCORE
          DisplayName("Schema Graphs"),
-#endif
          Description("Sets the graphs considered to contain the schema (TBox) used for reasoning")]
         public List<String> SchemaGraphs
         {
@@ -338,9 +310,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultFullTextSearch),
          Category("Search Options"),
-#if !WINDOWS_PHONE && !NETCORE
          DisplayName("Enable Full Text Search"),
-#endif
          Description("Enables full text search")]
         public bool FullTextSearch
         {
@@ -353,9 +323,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.SearchReIndexModeAsync),
          Category("Search Options"),
-#if !WINDOWS_PHONE && !NETCORE
          DisplayName("Search Re-index Mode"),
-#endif
          Description("Controls when search indexes are re-indexed, valid values are sync or async")]
         public String SearchReindexMode
         {
@@ -374,9 +342,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultDurableTransactions),
          Category("Transaction Options"),
-#if !WINDOWS_PHONE && !NETCORE
          DisplayName("Durable Transactions"),
-#endif
          Description("Enables durable transactions")]
         public bool DurableTransactions
         {
