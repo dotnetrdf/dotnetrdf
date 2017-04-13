@@ -30,7 +30,6 @@ using System.Text;
 using Xunit;
 using VDS.RDF.Storage;
 
-#if !NO_DATAEXTENSIONS
 namespace VDS.RDF.Storage.Async
 {
 
@@ -43,4 +42,3 @@ namespace VDS.RDF.Storage.Async
         }
     }
 }
-#endif
