@@ -24,7 +24,7 @@
 // </copyright>
 */
 
-#if !NO_DATA && !NO_STORAGE
+#if !NO_DATA
 
 using System;
 using System.Collections.Generic;
