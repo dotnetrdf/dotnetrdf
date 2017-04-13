@@ -22,13 +22,9 @@ NO_ASP
 
 Compile without building the VDS.RDF.Web namespace which provides the ASP.Net integration.  Using NO_WEB will also cause these features to be excluded
 
-NO_COMPRESSIOn
-
-Compile without using any System.IO.Compression dependencies.  Will exclude GZip related functionality
-
 NO_DATA
 
-Compile without any System.Data dependency and without any SQL features.  Will exclude Microsoft SQL Server, MySQL and Virtuoso support and all classes that dependent on these features.  Using NO_STORAGE will also cause these features to be excluded
+Compile without any System.Data dependency and without any SQL features.  Will exclude Microsoft SQL Server, MySQL and Virtuoso support and all classes that dependent on these features.
 
 NO_PROCESS
 
