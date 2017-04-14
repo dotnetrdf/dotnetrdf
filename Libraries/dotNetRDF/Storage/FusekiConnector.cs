@@ -79,14 +79,12 @@ namespace VDS.RDF.Storage
             this._queryUri = serviceUri.Substring(0, serviceUri.Length - 4) + "query";
         }
 
-#if !NO_PROXY
-
         /// <summary>
         /// Creates a new connection to a Fuseki Server
         /// </summary>
         /// <param name="serviceUri">The /data URI of the Fuseki Server</param>
         /// <param name="proxy">Proxy Server</param>
-        public FusekiConnector(Uri serviceUri, WebProxy proxy)
+        public FusekiConnector(Uri serviceUri, IWebProxy proxy)
             : this(serviceUri.ToSafeString(), proxy) { }
 
         /// <summary>
@@ -94,13 +92,11 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="serviceUri">The /data URI of the Fuseki Server</param>
         /// <param name="proxy">Proxy Server</param>
-        public FusekiConnector(String serviceUri, WebProxy proxy)
+        public FusekiConnector(String serviceUri, IWebProxy proxy)
             : this(serviceUri)
         {
             this.Proxy = proxy;
         }
-
-#endif
 
         /// <summary>
         /// Returns that Listing Graphs is supported

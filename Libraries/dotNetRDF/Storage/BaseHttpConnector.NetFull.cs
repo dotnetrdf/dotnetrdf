@@ -41,10 +41,10 @@ namespace VDS.RDF.Storage
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Does not actually implement any interface rather it provides common functionality around HTTP Proxying
-    /// </para>
-    /// <para>
-    /// If the library is compiled with the NO_PROXY symbol then this code adds no functionality
+    /// As .NET Core does not currently provide an implementaton of the System.Net.WebProxy class, this implementation
+    /// is restricted in functionality. Many of the methods it exposes will raise a PlatformNotSupported exception,
+    /// but are currently required to enable dependent classes to compile. As such it is strongly recommended that
+    /// developers targeting .NET Core should NOT plan on making any use of the proxy capabilities of this class.
     /// </para>
     /// </remarks>
     public abstract class BaseHttpConnector
@@ -57,8 +57,7 @@ namespace VDS.RDF.Storage
             this.Timeout = 30000;
         }
 
-#if !NO_PROXY
-        private WebProxy _proxy;
+        private IWebProxy _proxy;
 
         /// <summary>
         /// Sets a Proxy Server to be used
@@ -81,7 +80,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Gets/Sets a Proxy Server to be used
         /// </summary>
-        public WebProxy Proxy
+        public IWebProxy Proxy
         {
             get
             {
@@ -176,8 +175,6 @@ namespace VDS.RDF.Storage
             }
         }
 
-#endif
-
         /// <summary>
         /// Gets/Sets the HTTP Timeouts used specified in milliseconds
         /// </summary>
@@ -204,22 +201,13 @@ namespace VDS.RDF.Storage
         /// <returns>HTTP Web Request with standard options applied</returns>
         protected HttpWebRequest ApplyRequestOptions(HttpWebRequest request)
         {
-#if !NETCORE
             if (this.Timeout > 0) request.Timeout = this.Timeout;
-#endif
-
-#if !NO_PROXY
             if (this._proxy != null)
             {
                 request.Proxy = this._proxy;
             }
-#endif
-
-#if !NETCORE
             // Disable Keep Alive since it can cause errors when carrying out high volumes of operations or when performing long running operations
             request.KeepAlive = false;
-#endif
-
             return request;
         }
 
@@ -237,7 +225,6 @@ namespace VDS.RDF.Storage
                 context.Graph.Assert(new Triple(objNode, timeout, this.Timeout.ToLiteral(context.Graph)));
             }
 
-#if !NO_PROXY
             // Proxy configuration
             if (this._proxy == null) return;
             INode proxy = context.NextSubject;
@@ -250,13 +237,12 @@ namespace VDS.RDF.Storage
 
             context.Graph.Assert(new Triple(objNode, usesProxy, proxy));
             context.Graph.Assert(new Triple(proxy, rdfType, proxyType));
-            context.Graph.Assert(new Triple(proxy, server, context.Graph.CreateLiteralNode(this._proxy.Address.AbsoluteUri)));
+            context.Graph.Assert(new Triple(proxy, server, context.Graph.CreateLiteralNode((this._proxy as WebProxy).Address.AbsoluteUri)));
 
             if (!(this._proxy.Credentials is NetworkCredential)) return;
             NetworkCredential cred = (NetworkCredential)this._proxy.Credentials;
             context.Graph.Assert(new Triple(proxy, user, context.Graph.CreateLiteralNode(cred.UserName)));
             context.Graph.Assert(new Triple(proxy, pwd, context.Graph.CreateLiteralNode(cred.Password)));
-#endif
         }
     }
 

@@ -251,9 +251,8 @@ namespace VDS.RDF.Configuration
             new UserGroupFactory(),
             new PermissionFactory(),
             new CredentialsFactory(),
-#if !NO_PROXY
             new ProxyFactory(),
-#endif
+
             // SPARQL Extension related Factories
             new OptimiserFactory(),
             new ReasonerFactory(),
@@ -1403,10 +1402,10 @@ namespace VDS.RDF.Configuration
                     return typeof(System.Net.NetworkCredential).AssemblyQualifiedName;
                 case ClassUserGroup:
                     return DefaultTypeUserGroup;
-#if !NO_PROXY
                 case ClassProxy:
-                    return typeof(System.Net.WebProxy).AssemblyQualifiedName;
-#endif
+                    var proxyType = Type.GetType("System.Net.WebProxy", false);
+                    if (proxyType != null) return proxyType.AssemblyQualifiedName;
+                    return null;
                 default:
                     return null;
             }

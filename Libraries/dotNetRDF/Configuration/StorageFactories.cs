@@ -541,21 +541,19 @@ namespace VDS.RDF.Configuration
                 {
                     connector.Timeout = timeout;
                 }
-#if !NO_PROXY
                 INode proxyNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyProxy)));
                 if (proxyNode != null)
                 {
                     temp = ConfigurationLoader.LoadObject(g, proxyNode);
-                    if (temp is WebProxy)
+                    if (temp is IWebProxy)
                     {
-                        connector.Proxy = (WebProxy) temp;
+                        connector.Proxy = (IWebProxy) temp;
                     }
                     else
                     {
                         throw new DotNetRdfConfigurationException("Unable to load storage provider/server identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:proxy property pointed to an Object which could not be loaded as an object of the required type WebProxy");
                     }
                 }
-#endif
             }
 
             return (obj != null);

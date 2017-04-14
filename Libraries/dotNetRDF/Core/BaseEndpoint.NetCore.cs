@@ -42,10 +42,8 @@ namespace VDS.RDF
         private int _timeout = 30000;
         private String _httpMode = "GET";
         private NetworkCredential _credentials;
-#if !NO_PROXY
-        private WebProxy _proxy;
-        private bool _useCredentialsForProxy = false;
-#endif
+        private IWebProxy _proxy;
+        private bool _useCredentialsForProxy;
 
         /// <summary>
         /// Creates a new Base Endpoint
@@ -138,8 +136,6 @@ namespace VDS.RDF
 
         #region Credentials and Proxy Server
 
-#if !NO_PROXY
-
         /// <summary>
         /// Controls whether the Credentials set with the <see cref="BaseEndpoint.SetCredentials(String,String)">SetCredentials()</see> method or the <see cref="BaseEndpoint.Credentials">Credentials</see>are also used for a Proxy (if used)
         /// </summary>
@@ -151,11 +147,19 @@ namespace VDS.RDF
             }
             set
             {
-                this._useCredentialsForProxy = value;
+                throw new PlatformNotSupportedException("Web proxies are not supported in the .NET Core build");
             }
         }
 
-#endif
+        /// <summary>
+        /// Gets/Sets a Proxy Server to be used
+        /// </summary>
+        /// <exception cref="PlatformNotSupportedException">Raised if an attempt is made to set this property on the .NET Core platform. Proxies are not supported on this platform</exception>
+        public IWebProxy Proxy
+        {
+            get { return null; }
+            set { throw new PlatformNotSupportedException("Web proxies are not supported in the .NET Core build"); }
+        }
 
         /// <summary>
         /// Sets the HTTP Digest authentication credentials to be used
@@ -201,119 +205,6 @@ namespace VDS.RDF
             this._credentials = null;
         }
 
-#if !NO_PROXY
-
-        /// <summary>
-        /// Sets a Proxy Server to be used
-        /// </summary>
-        /// <param name="address">Proxy Address</param>
-        public void SetProxy(String address)
-        {
-            this._proxy = new WebProxy(address);
-        }
-
-        /// <summary>
-        /// Sets a Proxy Server to be used
-        /// </summary>
-        /// <param name="address">Proxy Address</param>
-        public void SetProxy(Uri address)
-        {
-            this._proxy = new WebProxy(address);
-        }
-
-        /// <summary>
-        /// Gets/Sets a Proxy Server to be used
-        /// </summary>
-        public WebProxy Proxy
-        {
-            get 
-            {
-                return this._proxy;
-            }
-            set
-            {
-                this._proxy = value;
-            }
-        }
-
-        /// <summary>
-        /// Clears any in-use credentials so subsequent requests will not use a proxy server
-        /// </summary>
-        public void ClearProxy()
-        {
-            this._proxy = null;
-        }
-
-        /// <summary>
-        /// Sets Credentials to be used for Proxy Server
-        /// </summary>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
-        public void SetProxyCredentials(String username, String password)
-        {
-            if (this._proxy != null)
-            {
-                this._proxy.Credentials = new NetworkCredential(username, password);
-            }
-            else
-            {
-                throw new InvalidOperationException("Cannot set Proxy Credentials when Proxy settings have not been provided");
-            }
-        }
-
-        /// <summary>
-        /// Sets Credentials to be used for Proxy Server
-        /// </summary>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
-        /// <param name="domain">Domain</param>
-        public void SetProxyCredentials(String username, String password, String domain)
-        {
-            if (this._proxy != null)
-            {
-                this._proxy.Credentials = new NetworkCredential(username, password, domain);
-            }
-            else
-            {
-                throw new InvalidOperationException("Cannot set Proxy Credentials when Proxy settings have not been provided");
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets Credentials to be used for Proxy Server
-        /// </summary>
-        public ICredentials ProxyCredentials
-        {
-            get
-            {
-                return this._proxy != null ? this._proxy.Credentials : null;
-            }
-            set
-            {
-                if (this._proxy != null)
-                {
-                    this._proxy.Credentials = value;
-                }
-                else
-                {
-                    throw new InvalidOperationException("Cannot set Proxy Credentials when Proxy settings have not been provided");
-                }
-            }
-        }
-
-        /// <summary>
-        /// Clears the in-use proxy credentials so subsequent requests still use the proxy server but without credentials
-        /// </summary>
-        public void ClearProxyCredentials()
-        {
-            if (this._proxy != null)
-            {
-                this._proxy.Credentials = null;
-            }
-        }
-
-#endif
-
         #endregion
 
         /// <summary>
@@ -322,11 +213,7 @@ namespace VDS.RDF
         /// <param name="context">Configuration Serialization Context</param>
         public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
-#if !NO_PROXY
-            if (this._credentials != null || this._proxy != null)
-#else
             if (this._credentials != null)
-#endif
             {
                 INode endpoint = context.NextSubject;
                 INode user = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUser));
@@ -337,38 +224,7 @@ namespace VDS.RDF
                     context.Graph.Assert(new Triple(endpoint, user, context.Graph.CreateLiteralNode(this._credentials.UserName)));
                     context.Graph.Assert(new Triple(endpoint, pwd, context.Graph.CreateLiteralNode(this._credentials.Password)));
 
-#if !NO_PROXY
-                    if (this._useCredentialsForProxy)
-                    {
-                        INode useCreds = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUseCredentialsForProxy));
-                        context.Graph.Assert(new Triple(endpoint, useCreds, this._useCredentialsForProxy.ToLiteral(context.Graph)));
-                    }
-#endif
                 }
-#if !NO_PROXY
-                if (this._proxy != null)
-                {
-                    INode proxy = context.NextSubject;
-                    INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-                    INode usesProxy = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyProxy));
-                    INode proxyType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassProxy));
-                    INode server = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer));
-
-                    context.Graph.Assert(new Triple(endpoint, usesProxy, proxy));
-                    context.Graph.Assert(new Triple(proxy, rdfType, proxyType));
-                    context.Graph.Assert(new Triple(proxy, server, context.Graph.CreateLiteralNode(this._proxy.Address.AbsoluteUri)));
-
-                    if (!this._useCredentialsForProxy && this._proxy.Credentials != null)
-                    {
-                        if (this._proxy.Credentials is NetworkCredential)
-                        {
-                            NetworkCredential cred = (NetworkCredential)this._proxy.Credentials;
-                            context.Graph.Assert(new Triple(proxy, user, context.Graph.CreateLiteralNode(cred.UserName)));
-                            context.Graph.Assert(new Triple(proxy, pwd, context.Graph.CreateLiteralNode(cred.Password)));
-                        }
-                    }
-                }
-#endif
             }            
         }
 
@@ -378,48 +234,21 @@ namespace VDS.RDF
         /// <param name="httpRequest">HTTP Request</param>
         protected void ApplyRequestOptions(HttpWebRequest httpRequest)
         {
-#if !NETCORE
-            if (this.Timeout > 0) httpRequest.Timeout = this.Timeout;
-#endif
-
             // Apply Credentials to request if necessary
             if (this.Credentials != null)
             {
                 if (Options.ForceHttpBasicAuth)
                 {
                     // Forcibly include a HTTP basic authentication header
-#if !NETCORE
-                    string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(this.Credentials.UserName + ":" + this.Credentials.Password));
-                    httpRequest.Headers.Add("Authorization", "Basic " + credentials);
-#else
                     string credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(this.Credentials.UserName + ":" + this.Credentials.Password));
                     httpRequest.Headers["Authorization"] = "Basic " + credentials;
-#endif
                 }
                 else
                 {
                     // Leave .Net to handle the HTTP auth challenge response itself
                     httpRequest.Credentials = this.Credentials;
-#if !NETCORE
-                    httpRequest.PreAuthenticate = true;
-#endif
                 }
             }
-
-#if !NO_PROXY
-            // Use a Proxy if required
-            if (this.Proxy == null) return;
-            httpRequest.Proxy = this.Proxy;
-            if (this.UseCredentialsForProxy)
-            {
-                httpRequest.Proxy.Credentials = this.Credentials;
-            }
-#endif
-
-#if !NETCORE
-            // Disable Keep Alive since it can cause errors when carrying out high volumes of operations or when performing long running operations
-            httpRequest.KeepAlive = false;
-#endif
 
             // Allow derived classes to provide further customisation
             this.ApplyCustomRequestOptions(httpRequest);

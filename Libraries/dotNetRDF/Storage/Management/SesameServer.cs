@@ -111,14 +111,12 @@ namespace VDS.RDF.Storage.Management
             this._hasCredentials = (!String.IsNullOrEmpty(username) && !String.IsNullOrEmpty(password));
         }
 
-#if !NO_PROXY
-
         /// <summary>
         /// Creates a new connection to a Sesame HTTP Protocol supporting Store
         /// </summary>
         /// <param name="baseUri">Base Uri of the Store</param>
         /// <param name="proxy">Proxy Server</param>
-        public SesameServer(String baseUri, WebProxy proxy)
+        public SesameServer(String baseUri, IWebProxy proxy)
             : this(baseUri, null, null, proxy) { }
 
         /// <summary>
@@ -128,13 +126,11 @@ namespace VDS.RDF.Storage.Management
         /// <param name="username">Username to use for requests that require authentication</param>
         /// <param name="password">Password to use for requests that require authentication</param>
         /// <param name="proxy">Proxy Server</param>
-        public SesameServer(String baseUri, String username, String password, WebProxy proxy)
+        public SesameServer(String baseUri, String username, String password, IWebProxy proxy)
             : this(baseUri, username, password)
         {
             this.Proxy = proxy;
         }
-
-#endif
 
         /// <summary>
         /// Gets the IO Behaviour of the server
@@ -248,11 +244,7 @@ namespace VDS.RDF.Storage.Management
         /// </remarks>
         public virtual IStorageProvider GetStore(string storeID)
         {
-#if !NO_PROXY
             return new SesameHttpProtocolConnector(this._baseUri, storeID, this._username, this._pwd, this.Proxy);
-#else
-            return new SesameHttpProtocolConnector(this._baseUri, storeID, this._username, this._pwd);
-#endif
         }
 
         /// <summary>
@@ -424,11 +416,7 @@ namespace VDS.RDF.Storage.Management
             try
             {
                 IAsyncStorageProvider provider;
-#if !NO_PROXY
                 provider = new SesameHttpProtocolConnector(this._baseUri, storeID, this._username, this._pwd, this.Proxy);
-#else
-                provider = new SesameHttpProtocolConnector(this._baseUri, storeID, this._username, this._pwd);
-#endif
                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, provider), state);
             }
             catch (Exception e)
@@ -585,11 +573,7 @@ namespace VDS.RDF.Storage.Management
         {
             if (this._sysConnection == null)
             {
-#if !NO_PROXY
                 this._sysConnection = new SesameHttpProtocolConnector(this._baseUri, SesameServer.SystemRepositoryID, this._username, this._pwd, this.Proxy);
-#else
-                this._sysConnection = new SesameHttpProtocolConnector(this._baseUri, SesameServer.SystemRepositoryID, this._username, this._pwd);
-#endif
             }
         }
 

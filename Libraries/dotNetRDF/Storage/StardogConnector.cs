@@ -181,8 +181,6 @@ namespace VDS.RDF.Storage
             this._server = new StardogV1Server(this._baseUri, this._username, this._pwd);
         }
 
-#if !NO_PROXY
-
         /// <summary>
         /// Creates a new connection to a Stardog Store
         /// </summary>
@@ -190,7 +188,7 @@ namespace VDS.RDF.Storage
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="reasoning">Reasoning Mode</param>
         /// <param name="proxy">Proxy Server</param>
-        protected BaseStardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, WebProxy proxy)
+        protected BaseStardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, IWebProxy proxy)
             : this(baseUri, kbID, reasoning, null, null, proxy)
         {
         }
@@ -205,7 +203,7 @@ namespace VDS.RDF.Storage
         /// <param name="reasoning">Reasoning Mode</param>
         /// <param name="proxy">Proxy Server</param>
         protected BaseStardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, String username,
-            String password, WebProxy proxy)
+            String password, IWebProxy proxy)
             : this(baseUri, kbID, reasoning, username, password)
         {
             this.Proxy = proxy;
@@ -217,7 +215,7 @@ namespace VDS.RDF.Storage
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="proxy">Proxy Server</param>
-        protected BaseStardogConnector(String baseUri, String kbID, WebProxy proxy)
+        protected BaseStardogConnector(String baseUri, String kbID, IWebProxy proxy)
             : this(baseUri, kbID, StardogReasoningMode.None, proxy)
         {
         }
@@ -230,12 +228,10 @@ namespace VDS.RDF.Storage
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
         /// <param name="proxy">Proxy Server</param>
-        protected BaseStardogConnector(String baseUri, String kbID, String username, String password, WebProxy proxy)
+        protected BaseStardogConnector(String baseUri, String kbID, String username, String password, IWebProxy proxy)
             : this(baseUri, kbID, StardogReasoningMode.None, username, password, proxy)
         {
         }
-
-#endif
 
         /// <summary>
         /// Gets the Base URI of the Stardog server
@@ -2417,8 +2413,6 @@ namespace VDS.RDF.Storage
         {
         }
 
-#if !NO_PROXY
-
         /// <summary>
         /// Creates a new connection to a Stardog Store
         /// </summary>
@@ -2426,7 +2420,7 @@ namespace VDS.RDF.Storage
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="reasoning">Reasoning Mode</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogV1Connector(String baseUri, String kbID, StardogReasoningMode reasoning, WebProxy proxy)
+        public StardogV1Connector(String baseUri, String kbID, StardogReasoningMode reasoning, IWebProxy proxy)
             : this(baseUri, kbID, reasoning, null, null, proxy)
         {
         }
@@ -2441,7 +2435,7 @@ namespace VDS.RDF.Storage
         /// <param name="reasoning">Reasoning Mode</param>
         /// <param name="proxy">Proxy Server</param>
         public StardogV1Connector(String baseUri, String kbID, StardogReasoningMode reasoning, String username,
-            String password, WebProxy proxy)
+            String password, IWebProxy proxy)
             : base(baseUri, kbID, reasoning, username, password, proxy)
         {
         }
@@ -2452,7 +2446,7 @@ namespace VDS.RDF.Storage
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogV1Connector(String baseUri, String kbID, WebProxy proxy)
+        public StardogV1Connector(String baseUri, String kbID, IWebProxy proxy)
             : this(baseUri, kbID, StardogReasoningMode.None, proxy)
         {
         }
@@ -2465,12 +2459,10 @@ namespace VDS.RDF.Storage
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogV1Connector(String baseUri, String kbID, String username, String password, WebProxy proxy)
+        public StardogV1Connector(String baseUri, String kbID, String username, String password, IWebProxy proxy)
             : this(baseUri, kbID, StardogReasoningMode.None, username, password, proxy)
         {
         }
-
-#endif
     }
 
     /// <summary>
@@ -2527,8 +2519,6 @@ namespace VDS.RDF.Storage
             this._server = new StardogV2Server(baseUri, username, password);
         }
 
-#if !NO_PROXY
-
         /// <summary>
         /// Creates a new connection to a Stardog Store
         /// </summary>
@@ -2536,7 +2526,7 @@ namespace VDS.RDF.Storage
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="reasoning">Reasoning Mode</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogV2Connector(String baseUri, String kbID, StardogReasoningMode reasoning, WebProxy proxy)
+        public StardogV2Connector(String baseUri, String kbID, StardogReasoningMode reasoning, IWebProxy proxy)
             : this(baseUri, kbID, reasoning, null, null, proxy)
         {
         }
@@ -2551,7 +2541,7 @@ namespace VDS.RDF.Storage
         /// <param name="reasoning">Reasoning Mode</param>
         /// <param name="proxy">Proxy Server</param>
         public StardogV2Connector(String baseUri, String kbID, StardogReasoningMode reasoning, String username,
-            String password, WebProxy proxy)
+            String password, IWebProxy proxy)
             : base(baseUri, kbID, reasoning, username, password, proxy)
         {
             this._server = new StardogV2Server(baseUri, username, password, proxy);
@@ -2563,7 +2553,7 @@ namespace VDS.RDF.Storage
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogV2Connector(String baseUri, String kbID, WebProxy proxy)
+        public StardogV2Connector(String baseUri, String kbID, IWebProxy proxy)
             : this(baseUri, kbID, StardogReasoningMode.None, proxy)
         {
         }
@@ -2576,12 +2566,10 @@ namespace VDS.RDF.Storage
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogV2Connector(String baseUri, String kbID, String username, String password, WebProxy proxy)
+        public StardogV2Connector(String baseUri, String kbID, String username, String password, IWebProxy proxy)
             : this(baseUri, kbID, StardogReasoningMode.None, username, password, proxy)
         {
         }
-
-#endif
 
         /// <summary>
         /// Adds Stardog specific request headers
@@ -2780,14 +2768,11 @@ namespace VDS.RDF.Storage
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
-        /// <param name="reasoning">Reasoning Mode</param>
         public StardogV3Connector(String baseUri, String kbID, String username, String password)
             : base(baseUri, kbID, StardogReasoningMode.DatabaseControlled, username, password)
         {
             this._server = new StardogV2Server(baseUri, username, password);
         }
-
-#if !NO_PROXY
 
         /// <summary>
         /// Creates a new connection to a Stardog Store
@@ -2795,7 +2780,7 @@ namespace VDS.RDF.Storage
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogV3Connector(String baseUri, String kbID, WebProxy proxy)
+        public StardogV3Connector(String baseUri, String kbID, IWebProxy proxy)
             : this(baseUri, kbID, null, null, proxy)
         {
         }
@@ -2808,13 +2793,11 @@ namespace VDS.RDF.Storage
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogV3Connector(String baseUri, String kbID, String username, String password, WebProxy proxy)
+        public StardogV3Connector(String baseUri, String kbID, String username, String password, IWebProxy proxy)
             : base(baseUri, kbID, StardogReasoningMode.DatabaseControlled, username, password, proxy)
         {
             this._server = new StardogV2Server(baseUri, username, password, proxy);
         }
-
-#endif
 
         public override StardogReasoningMode Reasoning
         {
@@ -2864,8 +2847,6 @@ namespace VDS.RDF.Storage
         {
         }
 
-#if !NO_PROXY
-
         /// <summary>
         /// Creates a new connection to a Stardog Store
         /// </summary>
@@ -2873,7 +2854,7 @@ namespace VDS.RDF.Storage
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="reasoning">Reasoning Mode</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogConnector(String baseUri, String kbID, WebProxy proxy)
+        public StardogConnector(String baseUri, String kbID, IWebProxy proxy)
             : this(baseUri, kbID, null, null, proxy)
         {
         }
@@ -2888,11 +2869,10 @@ namespace VDS.RDF.Storage
         /// <param name="reasoning">Reasoning Mode</param>
         /// <param name="proxy">Proxy Server</param>
         public StardogConnector(String baseUri, String kbID, String username,
-            String password, WebProxy proxy)
+            String password, IWebProxy proxy)
             : base(baseUri, kbID, username, password, proxy)
         {
         }
-
-#endif
+        
     }
 }
