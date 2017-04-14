@@ -1401,7 +1401,7 @@ namespace VDS.RDF.Configuration
                 case ClassUserGroup:
                     return DefaultTypeUserGroup;
                 case ClassProxy:
-                    var proxyType = Type.GetType("System.Net.WebProxy", false);
+                    var proxyType = Type.GetType("System.Net.WebProxy, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089", false);
                     if (proxyType != null) return proxyType.AssemblyQualifiedName;
                     return null;
                 default:
