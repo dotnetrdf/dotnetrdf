@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-#if !NO_ASP
-
 using System;
 using System.IO;
 using System.Linq;
@@ -44,7 +42,7 @@ namespace VDS.RDF.Update.Protocol
         /// <summary>
         /// This is the Pattern that is used to check whether ?default is present in the querystring.  This is needed since IIS does not recognise ?default as being a valid querystring key unless it ends in a = which the specification does not mandate so cannot be assumed
         /// </summary>
-        internal const String DefaultParameterPattern = "^default$|^default&|&default&|&default$";
+        public const String DefaultParameterPattern = "^default$|^default&|&default&|&default$";
 
         /// <summary>
         /// Processes a GET operation
@@ -233,7 +231,7 @@ namespace VDS.RDF.Update.Protocol
             String ctype;
 
             // Look up the MIME Type Definition - if none use GetWriter instead
-            MimeTypeDefinition definition = MimeTypesHelper.GetDefinitions(HandlerHelper.GetAcceptTypes(context)).FirstOrDefault(d => d.CanWriteRdf);
+            MimeTypeDefinition definition = MimeTypesHelper.GetDefinitions(context.GetAcceptTypes()).FirstOrDefault(d => d.CanWriteRdf);
             if (definition != null)
             {
                 writer = definition.GetRdfWriter();
@@ -241,7 +239,7 @@ namespace VDS.RDF.Update.Protocol
             }
             else
             {
-                writer = MimeTypesHelper.GetWriter(HandlerHelper.GetAcceptTypes(context), out ctype);
+                writer = MimeTypesHelper.GetWriter(context.GetAcceptTypes(), out ctype);
             }
 
             // Set up the Writer
@@ -283,5 +281,3 @@ namespace VDS.RDF.Update.Protocol
         protected abstract bool HasGraph(Uri graphUri);
     }
 }
-
-#endif

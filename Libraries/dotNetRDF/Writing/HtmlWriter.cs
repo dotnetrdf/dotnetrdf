@@ -30,9 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Writing.Contexts;
-#if !NO_WEB
 using System.Web.UI;
-#endif
 
 namespace VDS.RDF.Writing
 {
@@ -144,9 +142,7 @@ namespace VDS.RDF.Writing
             }
             // TODO: Add <meta> for charset?
             context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
             context.HtmlWriter.WriteLine();
-#endif
 
             // Start Body
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Body);
@@ -159,9 +155,7 @@ namespace VDS.RDF.Writing
                 context.HtmlWriter.WriteEncodedText(" - " + context.Graph.BaseUri.AbsoluteUri);
             }
             context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
             context.HtmlWriter.WriteLine();
-#endif
 
             // Create a Table for the Graph
             context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Width, "100%");
@@ -181,9 +175,7 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.RenderEndTag();
             context.HtmlWriter.RenderEndTag();
             context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
             context.HtmlWriter.WriteLine();
-#endif
 
             // Create a Table Body for the Triple
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Tbody);
@@ -201,9 +193,8 @@ namespace VDS.RDF.Writing
                 context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Rowspan, ts.Count().ToString());
 
                 context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Td);
-#if !NO_WEB
                 context.HtmlWriter.WriteLine();
-#endif
+      
                 // For each Subject add an anchor if it can be reduced to a QName
                 if (subj.NodeType == NodeType.Uri)
                 {
@@ -221,13 +212,9 @@ namespace VDS.RDF.Writing
                 }
 
                 this.GenerateNodeOutput(context, subj);
-#if !NO_WEB
                 context.HtmlWriter.WriteLine();
-#endif
                 context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
                 context.HtmlWriter.WriteLine();
-#endif
 
                 bool firstPred = true;
                 foreach (Triple t in ts)
@@ -244,17 +231,11 @@ namespace VDS.RDF.Writing
                     IEnumerable<Triple> predTriples = context.Graph.GetTriplesWithSubjectPredicate(t.Subject, t.Predicate);
                     context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Rowspan, predTriples.Count().ToString());
                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Td);
-#if !NO_WEB
                     context.HtmlWriter.WriteLine();
-#endif
                     this.GenerateNodeOutput(context, t.Predicate);
-#if !NO_WEB
                     context.HtmlWriter.WriteLine();
-#endif
                     context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
                     context.HtmlWriter.WriteLine();
-#endif
 
                     // Then we write out all the Objects
                     bool firstObj = true;
@@ -270,23 +251,15 @@ namespace VDS.RDF.Writing
 
                         // Object Column
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Td);
-#if !NO_WEB
                         context.HtmlWriter.WriteLine();
-#endif
                         this.GenerateNodeOutput(context, predTriple.Object, predTriple);
-#if !NO_WEB
                         context.HtmlWriter.WriteLine();
-#endif
                         context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
                         context.HtmlWriter.WriteLine();
-#endif
 
                         // End of Row
                         context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
                         context.HtmlWriter.WriteLine();
-#endif
                         firstObj = false;
 
                         triplesDone.Add(predTriple);

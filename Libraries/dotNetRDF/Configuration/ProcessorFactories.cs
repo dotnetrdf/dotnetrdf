@@ -319,8 +319,6 @@ namespace VDS.RDF.Configuration
         }
     }
 
-#if !NO_WEB && !NO_ASP
-
     /// <summary>
     /// Factory class for producing SPARQL Graph Store HTTP Protocol Processors from Configuration Graphs
     /// </summary>
@@ -407,8 +405,6 @@ namespace VDS.RDF.Configuration
                     }
                     break;
 
-#if !NO_WEB && !NO_ASP
-
                 case GenericProtocolProcessor:
                     INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propStorageProvider);
                     if (managerObj == null) return false;
@@ -423,7 +419,6 @@ namespace VDS.RDF.Configuration
                     }
                     break;
 
-#endif
             }
 
             obj = processor;
@@ -448,6 +443,4 @@ namespace VDS.RDF.Configuration
             }
         }
     }
-
-#endif
 }

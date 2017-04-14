@@ -31,9 +31,7 @@ using System.Security;
 using System.Text;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
-#if !NO_WEB
 using System.Web;
-#endif
 
 namespace VDS.RDF.Update
 {

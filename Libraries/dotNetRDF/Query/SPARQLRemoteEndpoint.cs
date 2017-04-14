@@ -31,12 +31,10 @@ using System.Linq;
 using System.Net;
 using System.Security;
 using System.Text;
+using System.Web;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
-#if !NO_WEB
-using System.Web;
-#endif
 
 namespace VDS.RDF.Query
 {

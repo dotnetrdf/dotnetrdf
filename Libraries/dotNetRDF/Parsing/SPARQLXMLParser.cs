@@ -26,13 +26,11 @@
 
 using System;
 using System.IO;
+using System.Web;
 using System.Xml;
 using VDS.RDF.Parsing.Contexts;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
-#if !NO_WEB
-using System.Web;
-#endif
 
 namespace VDS.RDF.Parsing
 {

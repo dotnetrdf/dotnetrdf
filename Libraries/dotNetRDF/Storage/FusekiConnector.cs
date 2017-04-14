@@ -35,9 +35,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
-#if !NO_WEB
 using System.Web;
-#endif
 
 namespace VDS.RDF.Storage
 {

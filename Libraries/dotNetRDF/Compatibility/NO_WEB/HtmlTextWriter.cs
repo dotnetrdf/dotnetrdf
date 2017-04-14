@@ -28,8 +28,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Web;
+using VDS.RDF;
+using VDS.RDF.Writing;
 
-namespace VDS.RDF.Writing
+namespace System.Web.UI
 {
     /// <summary>
     /// Custom implementation of <see cref="System.Web.UI.HtmlTextWriter">System.Web.UI.HtmlTextWriter</see> to replace it in builds where System.Web is not available

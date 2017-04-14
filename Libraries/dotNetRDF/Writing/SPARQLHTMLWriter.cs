@@ -29,9 +29,7 @@ using System.IO;
 using System.Text;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
-#if !NO_WEB
 using System.Web.UI;
-#endif
 
 namespace VDS.RDF.Writing
 {
@@ -149,9 +147,7 @@ namespace VDS.RDF.Writing
 
                 writer.RenderEndTag();
                 writer.RenderEndTag();
-#if !NO_WEB
                 writer.WriteLine();
-#endif
 
                 // Create a Table Body for the Results
                 writer.RenderBeginTag(HtmlTextWriterTag.Tbody);
@@ -257,9 +253,7 @@ namespace VDS.RDF.Writing
 
                     // End Row
                     writer.RenderEndTag();
-#if !NO_WEB
                     writer.WriteLine();
-#endif
                 }
 
                 // End Table Body

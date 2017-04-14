@@ -33,9 +33,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Contexts;
 using VDS.RDF.Writing.Formatting;
-#if !NO_WEB
 using System.Web.UI;
-#endif
 
 // TODO: Embed RDFa in the HTML Output
 
@@ -151,9 +149,7 @@ namespace VDS.RDF.Writing
                 context.HtmlWriter.RenderEndTag();
             }
             context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
             context.HtmlWriter.WriteLine();
-#endif
 
             // Start Body
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Body);
@@ -170,9 +166,7 @@ namespace VDS.RDF.Writing
                 context.HtmlWriter.WriteEncodedText(" - " + context.Graph.BaseUri.AbsoluteUri);
             }
             context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
             context.HtmlWriter.WriteLine();
-#endif
 
             // Show the Description of the Schema (if any)
             if (ontoNode != null)
@@ -200,9 +194,7 @@ namespace VDS.RDF.Writing
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
                                     context.HtmlWriter.Write(((ILiteralNode)descrip).Value);
                                     context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
                                     context.HtmlWriter.WriteLine();
-#endif
                                 }
                             }
 
@@ -235,9 +227,7 @@ namespace VDS.RDF.Writing
                                 if (author.NodeType == NodeType.Uri) context.HtmlWriter.RenderEndTag();
                                 context.HtmlWriter.RenderEndTag();
                                 context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
                                 context.HtmlWriter.WriteLine();
-#endif
                             }
 
                             // Show the Namespace information for the Schema
@@ -252,10 +242,7 @@ namespace VDS.RDF.Writing
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H4);
                                     context.HtmlWriter.WriteEncodedText("Preferred Namespace Definition");
                                     context.HtmlWriter.RenderEndTag();
-
-#if !NO_WEB
                                     context.HtmlWriter.WriteLine();
-#endif
 
                                     // Show human readable description of preferred Namespace Settings
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
@@ -275,9 +262,7 @@ namespace VDS.RDF.Writing
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H5);
                                     context.HtmlWriter.WriteEncodedText("RDF/XML Syntax");
                                     context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
                                     context.HtmlWriter.WriteLine();
-#endif
                                     context.HtmlWriter.AddStyleAttribute(HtmlTextWriterStyle.Width, "90%");
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Pre);
                                     int currIndent = context.HtmlWriter.Indent;
@@ -291,17 +276,13 @@ namespace VDS.RDF.Writing
                                     context.HtmlWriter.WriteEncodedText("</rdf:RDF>");
                                     context.HtmlWriter.Indent = currIndent;
                                     context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
                                     context.HtmlWriter.WriteLine();
-#endif
 
                                     // Turtle/N3 Syntax
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H5);
                                     context.HtmlWriter.WriteEncodedText("Turtle/N3 Syntax");
                                     context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
                                     context.HtmlWriter.WriteLine();
-#endif
                                     context.HtmlWriter.AddStyleAttribute(HtmlTextWriterStyle.Width, "90%");
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Pre);
                                     currIndent = context.HtmlWriter.Indent;
@@ -309,17 +290,13 @@ namespace VDS.RDF.Writing
                                     context.HtmlWriter.WriteEncodedText("@prefix " + prefix + ": <" + context.UriFormatter.FormatUri(context.QNameMapper.GetNamespaceUri(prefix)) + "> .");
                                     context.HtmlWriter.Indent = currIndent;
                                     context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
                                     context.HtmlWriter.WriteLine();
-#endif
 
                                     // SPARQL Syntax
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H5);
                                     context.HtmlWriter.WriteEncodedText("SPARQL Syntax");
                                     context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
                                     context.HtmlWriter.WriteLine();
-#endif
                                     context.HtmlWriter.AddStyleAttribute(HtmlTextWriterStyle.Width, "90%");
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Pre);
                                     currIndent = context.HtmlWriter.Indent;
@@ -327,9 +304,7 @@ namespace VDS.RDF.Writing
                                     context.HtmlWriter.WriteEncodedText("PREFIX " + prefix + ": <" + context.UriFormatter.FormatUri(context.QNameMapper.GetNamespaceUri(prefix)) + ">");
                                     context.HtmlWriter.Indent = currIndent;
                                     context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
                                     context.HtmlWriter.WriteLine();
-#endif
                                 }
                             }
                         }
@@ -357,16 +332,12 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H4);
             context.HtmlWriter.WriteEncodedText("Class and Property Summary");
             context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
             context.HtmlWriter.WriteLine();
-#endif
 
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
             context.HtmlWriter.WriteEncodedText("This Schema defines the following classes:");
             context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
             context.HtmlWriter.WriteLine();
-#endif
             context.HtmlWriter.AddStyleAttribute("width", "90%");
             context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassBox);
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
@@ -411,16 +382,12 @@ namespace VDS.RDF.Writing
             }
 
             context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
             context.HtmlWriter.WriteLine();
-#endif
 
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
             context.HtmlWriter.WriteEncodedText("This Schema defines the following properties:");
             context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
             context.HtmlWriter.WriteLine();
-#endif
             context.HtmlWriter.AddStyleAttribute("width", "90%");
             context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassBox);
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
@@ -465,17 +432,13 @@ namespace VDS.RDF.Writing
             }
 
             context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
             context.HtmlWriter.WriteLine();
-#endif
 
             // Show details for each class
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H3);
             context.HtmlWriter.WriteEncodedText("Classes");
             context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
             context.HtmlWriter.WriteLine();
-#endif
 
             // Now create the URI Nodes we need for the next stage of Output
             IUriNode rdfsDomain = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "domain"));
@@ -542,9 +505,8 @@ namespace VDS.RDF.Writing
                         }
                         context.HtmlWriter.WriteLine();
                         context.HtmlWriter.WriteBreak();
-#if !NO_WEB
                         context.HtmlWriter.WriteLine();
-#endif
+      
                         // Output further information about the class
                         IEnumerable<Triple> ts;
 
@@ -578,9 +540,7 @@ namespace VDS.RDF.Writing
 
                         // End the </div> for the Class
                         context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
                         context.HtmlWriter.WriteLine();
-#endif
                     }
                 }
                 else
@@ -597,9 +557,7 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H3);
             context.HtmlWriter.WriteEncodedText("Properties");
             context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
             context.HtmlWriter.WriteLine();
-#endif
 
             // Alter our previous getProperties query to get additional details
             getProperties.CommandText = "SELECT ?property (SAMPLE(?label) AS ?propertyLabel) (SAMPLE(?description) AS ?propertyDescription) WHERE { { ?property a rdf:Property } UNION { ?property a owl:ObjectProperty } UNION { ?property a owl:DatatypeProperty } FILTER(ISURI(?property)) OPTIONAL { ?property rdfs:label ?label } OPTIONAL { ?property rdfs:comment ?description } } GROUP BY ?property ORDER BY ?property";
@@ -656,9 +614,8 @@ namespace VDS.RDF.Writing
                         }
                         context.HtmlWriter.WriteLine();
                         context.HtmlWriter.WriteBreak();
-#if !NO_WEB
                         context.HtmlWriter.WriteLine();
-#endif
+
                         // Output further information about the property
                         IEnumerable<Triple> ts;
 
@@ -696,9 +653,7 @@ namespace VDS.RDF.Writing
 
                         // End the </div> for the Property
                         context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
                         context.HtmlWriter.WriteLine();
-#endif
                     }
                 }
                 else
@@ -750,9 +705,7 @@ namespace VDS.RDF.Writing
                     context.HtmlWriter.Write(' ');
                 }
                 context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
                 context.HtmlWriter.WriteLine();
-#endif
             }
         }
 

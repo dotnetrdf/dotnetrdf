@@ -72,6 +72,7 @@
     <PackageReference Include="System.Threading.Thread" Version="4.0.0" />
     <PackageReference Include="System.Xml.XmlDocument" Version="4.0.1" />
     <PackageReference Include="System.Xml.XmlSerializer" Version="4.0.11" />
+    <PackageReference Include="System.Collections.Specialized" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
@@ -98,11 +99,11 @@
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.4' ">
-    <DefineConstants>$(DefineConstants);NO_SYSTEMCONFIGURATION;NO_PROXY;NO_XSL;NO_DATA;NO_WEB;NO_PROCESS;NO_URICACHE;NETCORE</DefineConstants>
+    <DefineConstants>$(DefineConstants);NO_SYSTEMCONFIGURATION;NO_PROXY;NO_DATA;NO_PROCESS;NO_URICACHE;NETCORE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.4' ">
-    <Compile Include="**\*.cs" Exclude="obj\**\*.cs;Web\**\*.cs;Update\Protocol\*.cs;**\*.NetFull.cs" />
+    <Compile Include="**\*.cs" Exclude="obj\**\*.cs;**\*.NetFull.cs" />
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net40' ">
@@ -114,7 +115,7 @@
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net40-client' ">
-    <DefineConstants>$(DefineConstants);NET40;NO_WEB</DefineConstants>
+    <DefineConstants>$(DefineConstants);NET40</DefineConstants>
   </PropertyGroup>
   
   <ItemGroup Condition=" '$(TargetFramework)' == 'net40-client' ">

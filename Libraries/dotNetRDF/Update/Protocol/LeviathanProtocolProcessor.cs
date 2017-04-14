@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-#if !NO_ASP
-
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 
@@ -52,5 +50,3 @@ namespace VDS.RDF.Update.Protocol
             : base(new LeviathanQueryProcessor(dataset), new LeviathanUpdateProcessor(dataset)) { }
     }
 }
-
-#endif

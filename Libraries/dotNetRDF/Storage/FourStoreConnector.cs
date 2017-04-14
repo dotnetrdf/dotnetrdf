@@ -37,9 +37,7 @@ using VDS.RDF.Query;
 using VDS.RDF.Update;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
-#if !NO_WEB
 using System.Web;
-#endif
 
 namespace VDS.RDF.Storage
 {
