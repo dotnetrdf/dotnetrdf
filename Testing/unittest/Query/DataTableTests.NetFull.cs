@@ -32,6 +32,7 @@ using System.Text;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Data.DataTables;
 
 namespace VDS.RDF.Query
 {
@@ -168,7 +169,7 @@ namespace VDS.RDF.Query
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
 
-                DataTable table = (DataTable)rset;
+                DataTable table = rset.ToDataTable();
 
                 Assert.Equal(rset.Variables.Count(), table.Columns.Count);
                 Assert.Equal(rset.Count, table.Rows.Count);
@@ -204,7 +205,7 @@ namespace VDS.RDF.Query
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
 
-                DataTable table = (DataTable)rset;
+                DataTable table = rset.ToDataTable();
 
                 Assert.Equal(rset.Variables.Count(), table.Columns.Count);
                 Assert.Equal(rset.Count, table.Rows.Count);
@@ -240,7 +241,7 @@ namespace VDS.RDF.Query
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
 
-                DataTable table = (DataTable)rset;
+                DataTable table = rset.ToDataTable();
 
                 Assert.True(rset.ResultsType == SparqlResultsType.Boolean);
                 Assert.Equal(table.Columns.Count, 1);
@@ -278,7 +279,7 @@ namespace VDS.RDF.Query
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
 
-                DataTable table = (DataTable)rset;
+                DataTable table = rset.ToDataTable();
 
                 Assert.True(rset.ResultsType == SparqlResultsType.Boolean);
                 Assert.Equal(table.Columns.Count, 1);
@@ -306,7 +307,7 @@ namespace VDS.RDF.Query
         {
             SparqlResultSet rset = new SparqlResultSet(true);
 
-            DataTable table = (DataTable)rset;
+            DataTable table = rset.ToDataTable();
 
             Assert.True(rset.ResultsType == SparqlResultsType.Boolean);
             Assert.Equal(table.Columns.Count, 1);
@@ -329,7 +330,7 @@ namespace VDS.RDF.Query
         {
             SparqlResultSet rset = new SparqlResultSet(false);
 
-            DataTable table = (DataTable)rset;
+            DataTable table = rset.ToDataTable();
 
             Assert.True(rset.ResultsType == SparqlResultsType.Boolean);
             Assert.Equal(table.Columns.Count, 1);
@@ -353,7 +354,7 @@ namespace VDS.RDF.Query
             SparqlResultSet results = new SparqlResultSet();
             try
             {
-                DataTable table = (DataTable)results;
+                DataTable table = results.ToDataTable();
                 Assert.True(false, "Should have thrown an InvalidCastException");
             }
             catch (InvalidCastException ex)

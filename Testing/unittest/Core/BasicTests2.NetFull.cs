@@ -34,6 +34,7 @@ using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 using VDS.RDF.XunitExtensions;
+using VDS.RDF.Data.DataTables;
 
 namespace VDS.RDF
 {
@@ -261,7 +262,7 @@ namespace VDS.RDF
             Graph g = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
 
-            DataTable table = (DataTable)g;
+            DataTable table = g.ToDataTable();
 
             Assert.Equal(g.Triples.Count, table.Rows.Count);
             Assert.Equal(3, table.Columns.Count);
@@ -281,7 +282,7 @@ namespace VDS.RDF
         {
             Graph g = new Graph();
 
-            DataTable table = (DataTable)g;
+            DataTable table = g.ToDataTable();
 
             Assert.Equal(g.Triples.Count, table.Rows.Count);
             Assert.Equal(3, table.Columns.Count);
