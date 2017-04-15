@@ -24,12 +24,11 @@
 // </copyright>
 */
 
-#if !NO_DATA
-
 using System;
 using System.Data;
+using VDS.RDF.Parsing.Handlers;
 
-namespace VDS.RDF.Parsing.Handlers
+namespace VDS.RDF.Data.DataTables
 {
     /// <summary>
     /// RDF Handler which turns triples into rows in a Data Table
@@ -102,5 +101,3 @@ namespace VDS.RDF.Parsing.Handlers
         }
     }
 }
-
-#endif

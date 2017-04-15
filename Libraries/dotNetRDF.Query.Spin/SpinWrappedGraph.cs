@@ -330,11 +330,6 @@ namespace VDS.RDF.Query.Spin
             throw new NotImplementedException();
         }
 
-        public System.Data.DataTable ToDataTable()
-        {
-            throw new NotImplementedException();
-        }
-
         public Uri ResolveQName(string qname)
         {
             throw new NotImplementedException();

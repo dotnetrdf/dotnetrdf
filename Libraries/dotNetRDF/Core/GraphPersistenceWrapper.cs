@@ -34,9 +34,6 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
-#if !NO_DATA
-using System.Data;
-#endif
 
 namespace VDS.RDF
 {
@@ -818,19 +815,6 @@ namespace VDS.RDF
         {
             return this._g.ResolveQName(qname);
         }
-
-#if !NO_DATA
-
-        /// <summary>
-        /// Converts the wrapped graph into a DataTable
-        /// </summary>
-        /// <returns></returns>
-        public DataTable ToDataTable()
-        {
-            return this._g.ToDataTable();
-        }
-
-#endif
 
         #endregion
 

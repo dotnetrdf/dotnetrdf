@@ -82,7 +82,6 @@
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
     <PackageReference Include="HtmlAgilityPack" Version="1.4.9.5" />
     <Reference Include="System.Configuration" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
@@ -102,7 +101,7 @@
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.4' ">
-    <DefineConstants>$(DefineConstants);NO_PROXY;NO_DATA;NO_PROCESS;NO_URICACHE;NETCORE</DefineConstants>
+    <DefineConstants>$(DefineConstants);NO_PROXY;NO_PROCESS;NO_URICACHE;NETCORE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.4' ">
