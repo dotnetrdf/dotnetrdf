@@ -726,9 +726,9 @@ namespace VDS.RDF.Configuration
             }
         }
 
-#endregion
+        #endregion
 
-#region Object Loading
+        #region Object Loading
 
         /// <summary>
         /// Checks for circular references and throws an error if there is one
@@ -1448,9 +1448,9 @@ namespace VDS.RDF.Configuration
 #endif
         }
 
-#endregion
+        #endregion
 
-#region Instance methods
+        #region Instance methods
 
         private readonly IGraph _configGraph;
 
@@ -1568,7 +1568,7 @@ namespace VDS.RDF.Configuration
             return LoadObject(_configGraph, uriNode);
         }
 
-#endregion
+        #endregion
 
         /// <summary>
         /// Registers an Object Factory with the Configuration Loader
