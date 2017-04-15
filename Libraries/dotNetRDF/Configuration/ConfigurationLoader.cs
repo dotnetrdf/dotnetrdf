@@ -34,10 +34,6 @@ using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Operators;
 
-#if !NO_SYSTEMCONFIGURATION
-using SysConfig = System.Configuration;
-#endif
-
 namespace VDS.RDF.Configuration
 {
     /// <summary>
@@ -268,7 +264,20 @@ namespace VDS.RDF.Configuration
         /// </summary>
         private static IPathResolver _resolver = null;
 
+        /// <summary>
+        /// Gets or sets the provider of external settings
+        /// </summary>
+        /// <remarks>On .NET Framework defaults to a reader of &lt;appSettings&gt; configuration section</remarks>
+        public static ISettingsProvider SettingsProvider { get; set; }
+
         #endregion
+
+        static ConfigurationLoader()
+        {
+#if NET40
+            SettingsProvider = new ConfigurationManagerSettingsProvider();
+#endif
+        }
 
         #region Graph Loading and Auto-Configuration
 
@@ -1425,10 +1434,6 @@ namespace VDS.RDF.Configuration
         /// </remarks>
         public static INode ResolveAppSetting(IGraph g, INode n)
         {
-#if NETCORE
-            // TODO: Could support looking up values using the .NET Core configuration API
-            return n;
-#else
             if (n == null) return null;
             if (n.NodeType != NodeType.Uri) return n;
 
@@ -1437,15 +1442,16 @@ namespace VDS.RDF.Configuration
 
             String strUri = uri.AbsoluteUri;
             String key = strUri.Substring(strUri.IndexOf(':') + 1);
-            if (SysConfig.ConfigurationManager.AppSettings[key] == null)
+
+            var setting = SettingsProvider.GetSetting(key);
+            if (setting == null)
             {
                 return null;
             }
             else
             {
-                return g.CreateLiteralNode(SysConfig.ConfigurationManager.AppSettings[key]);
+                return g.CreateLiteralNode(setting);
             }
-#endif
         }
 
         #endregion

@@ -55,7 +55,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp1.1' ">
-    <DefineConstants>$(DefineConstants);NO_URICACHE;NO_SYSTEMCONFIGURATION</DefineConstants>
+    <DefineConstants>$(DefineConstants);NO_URICACHE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
