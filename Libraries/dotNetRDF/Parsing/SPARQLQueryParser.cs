@@ -234,7 +234,6 @@ namespace VDS.RDF.Parsing
 
         #region Public Parser Methods
 
-#if !NO_FILE
         /// <summary>
         /// Parses a SPARQL Query from a File
         /// </summary>
@@ -246,7 +245,6 @@ namespace VDS.RDF.Parsing
             StreamReader reader = new StreamReader(File.OpenRead(queryFile), Encoding.UTF8);
             return this.ParseInternal(reader);
         }
-#endif
 
         /// <summary>
         /// Parses a SPARQL Query from an arbitrary Input Stream
@@ -260,11 +258,7 @@ namespace VDS.RDF.Parsing
             // Issue a Warning if the Encoding of the Stream is not UTF-8
             if (!input.CurrentEncoding.Equals(Encoding.UTF8))
             {
-#if !SILVERLIGHT
                 this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
-#else
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
-#endif
             }
 
             return this.ParseInternal(input);

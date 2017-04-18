@@ -34,9 +34,6 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
-#if !NO_DATA
-using System.Data;
-#endif
 
 namespace VDS.RDF
 {
@@ -55,7 +52,7 @@ namespace VDS.RDF
     /// Note that the wrapper does not automatically dispose of the wrapped graph when the wrapper is Dispose, this is by design since disposing of the wrapped Graph can have unintended consequences
     /// </para>
     /// </remarks>
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
     [Serializable,XmlRoot(ElementName="graph")]
 #endif
     public class GraphPersistenceWrapper 
@@ -115,7 +112,7 @@ namespace VDS.RDF
             this._alwaysQueueActions = alwaysQueueActions;
         }
 
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
         /// <summary>
         /// Deserialization Constructor
         /// </summary>
@@ -819,19 +816,6 @@ namespace VDS.RDF
             return this._g.ResolveQName(qname);
         }
 
-#if !NO_DATA
-
-        /// <summary>
-        /// Converts the wrapped graph into a DataTable
-        /// </summary>
-        /// <returns></returns>
-        public DataTable ToDataTable()
-        {
-            return this._g.ToDataTable();
-        }
-
-#endif
-
         #endregion
 
         #region Event Handling
@@ -1220,7 +1204,7 @@ namespace VDS.RDF
             this.Flush();
         }
 
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
 
         #region ISerializable Members
 
@@ -1446,7 +1430,6 @@ namespace VDS.RDF
         }
     }
 
-#if !NO_FILE
     /// <summary>
     /// The File Graph Persistence Wrapper is a wrapper around antoher Graph that will be persisted to a file
     /// </summary>
@@ -1504,5 +1487,4 @@ namespace VDS.RDF
             this.SaveToFile(this._filename);
         }
     }
-#endif
 }

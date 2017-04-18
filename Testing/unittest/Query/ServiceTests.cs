@@ -34,8 +34,6 @@ using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Query
 {
-#if !SILVERLIGHT // SERVICE keyword not supported
-
     public class ServiceTests
     {
         [SkippableFact]
@@ -127,5 +125,4 @@ namespace VDS.RDF.Query
             }
         }
     }
-#endif
 }

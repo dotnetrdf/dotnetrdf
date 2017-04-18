@@ -33,24 +33,18 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Serialization;
-#if !NO_DATA
-using System.Data;
-#endif
-#if !SILVERLIGHT
-
-#endif
 
 namespace VDS.RDF
 {
     /// <summary>
     /// Abstract Base Implementation of the <see cref="IGraph">IGraph</see> interface
     /// </summary>
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
     [Serializable,XmlRoot(ElementName="graph")]
 #endif
     public abstract class BaseGraph 
         : IGraph
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
         ,ISerializable
 #endif
     {
@@ -74,7 +68,7 @@ namespace VDS.RDF
         protected BlankNodeMapper _bnodemapper;
 
         private TripleEventHandler TripleAddedHandler, TripleRemovedHandler;
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
         private GraphDeserializationInfo _dsInfo;
 #endif
 
@@ -104,7 +98,7 @@ namespace VDS.RDF
         protected BaseGraph()
             : this(new TreeIndexedTripleCollection()) { }
 
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
         /// <summary>
         /// Creates a Graph from the given Serialization Information
         /// </summary>
@@ -787,57 +781,6 @@ namespace VDS.RDF
 
         #endregion
 
-        #region Operators
-
-#if !NO_DATA
-
-        /// <summary>
-        /// Converts a Graph into a DataTable using the explicit cast operator defined by this class
-        /// </summary>
-        /// <returns>
-        /// A DataTable containing three Columns (Subject, Predicate and Object) all typed as <see cref="INode">INode</see> with a Row per Triple
-        /// </returns>
-        /// <remarks>
-        /// <strong>Warning:</strong> Not available under builds which remove the Data Storage layer from dotNetRDF e.g. Silverlight
-        /// </remarks>
-        public virtual DataTable ToDataTable()
-        {
-            return (DataTable)this;
-        }
-
-        /// <summary>
-        /// Casts a Graph to a DataTable with all Columns typed as <see cref="INode">INode</see> (Column Names are Subject, Predicate and Object
-        /// </summary>
-        /// <param name="g">Graph to convert</param>
-        /// <returns>
-        /// A DataTable containing three Columns (Subject, Predicate and Object) all typed as <see cref="INode">INode</see> with a Row per Triple
-        /// </returns>
-        /// <remarks>
-        /// <strong>Warning:</strong> Not available under builds which remove the Data Storage layer from dotNetRDF e.g. Silverlight
-        /// </remarks>
-        public static explicit operator DataTable(BaseGraph g)
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add(new DataColumn("Subject", typeof(INode)));
-            table.Columns.Add(new DataColumn("Predicate", typeof(INode)));
-            table.Columns.Add(new DataColumn("Object", typeof(INode)));
-
-            foreach (Triple t in g.Triples)
-            {
-                DataRow row = table.NewRow();
-                row["Subject"] = t.Subject;
-                row["Predicate"] = t.Predicate;
-                row["Object"] = t.Object;
-                table.Rows.Add(row);
-            }
-
-            return table;
-        }
-
-#endif
-
-        #endregion
-
         #region Events
 
         /// <summary>
@@ -1080,7 +1023,7 @@ namespace VDS.RDF
             this.DetachEventHandlers(this._triples);
         }
 
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
 
         #region ISerializable Members
 

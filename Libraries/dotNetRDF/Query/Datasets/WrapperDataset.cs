@@ -37,14 +37,9 @@ namespace VDS.RDF.Query.Datasets
     /// An abstract dataset wrapper that can be used to wrap another dataset and just modify some functionality i.e. provides a decorator over an existing dataset
     /// </summary>
     public abstract class WrapperDataset
-        : ISparqlDataset, IConfigurationSerializable
-#if !NO_RWLOCK
-        , IThreadSafeDataset
-#endif
+        : ISparqlDataset, IConfigurationSerializable, IThreadSafeDataset
     {
-#if !NO_RWLOCK
         private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
-#endif
 
         /// <summary>
         /// Underlying Dataset
@@ -61,7 +56,6 @@ namespace VDS.RDF.Query.Datasets
             this._dataset = dataset;
         }
 
-#if !NO_RWLOCK
         /// <summary>
         /// Gets the Lock used to ensure MRSW concurrency on the dataset when available
         /// </summary>
@@ -79,7 +73,6 @@ namespace VDS.RDF.Query.Datasets
                 }
             }
         }
-#endif
 
         /// <summary>
         /// Gets the underlying dataset
@@ -380,9 +373,7 @@ namespace VDS.RDF.Query.Datasets
                 INode usingDataset = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingDataset));
                 INode innerDataset = context.Graph.CreateBlankNode();
 
-#if SILVERLIGHT
-                String assm = this.GetType().Assembly.FullName;
-#elif NETCORE
+#if NETCORE
                 String assm = typeof(WrapperDataset).GetTypeInfo().Assembly.FullName;
 #else
                 String assm = Assembly.GetAssembly(this.GetType()).FullName;

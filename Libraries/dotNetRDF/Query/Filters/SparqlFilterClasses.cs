@@ -118,7 +118,7 @@ namespace VDS.RDF.Query.Filters
                 return;
             }
 
-#if NET40 && !SILVERLIGHT
+#if NET40
             // BOUND is always safe to parallelise
             if (Options.UsePLinqEvaluation)
             {
@@ -131,7 +131,7 @@ namespace VDS.RDF.Query.Filters
                 {
                     this.EvalFilter(context, id);
                 }
-#if NET40 && !SILVERLIGHT
+#if NET40
             }
 #endif
         }
@@ -208,7 +208,7 @@ namespace VDS.RDF.Query.Filters
             }
             else
             {
-#if NET40 && !SILVERLIGHT
+#if NET40
                 // Remember that not all expressions are safe to parallelise
                 if (Options.UsePLinqEvaluation && this._arg.CanParallelise)
                 {
@@ -221,7 +221,7 @@ namespace VDS.RDF.Query.Filters
                     {
                         this.EvalFilter(context, id);
                     }
-#if NET40 && !SILVERLIGHT
+#if NET40
                 }
 #endif
             }

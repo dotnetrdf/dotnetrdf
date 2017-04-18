@@ -154,11 +154,7 @@ namespace VDS.RDF.Update.Commands
             {
                 // Load from the URI
                 Graph g = new Graph();
-#if SILVERLIGHT
-                throw new PlatformNotSupportedException("The SPARQL LOAD command is not currently supported under Silverlight/Windows Phone 7");
-#else
                 UriLoader.Load(g, this._sourceUri);
-#endif
 
                 if (context.Data.HasGraph(this._graphUri))
                 {

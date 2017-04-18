@@ -61,7 +61,6 @@ namespace VDS.RDF.Writing
             }
         }
 
-#if !NO_FILE
         /// <summary>
         /// Saves a Graph in RDF/Json syntax to the given File
         /// </summary>
@@ -74,13 +73,12 @@ namespace VDS.RDF.Writing
                 this.Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
             }
         }
-#endif
 
-            /// <summary>
-            /// Saves a Graph to an arbitrary output stream
-            /// </summary>
-            /// <param name="g">Graph to save</param>
-            /// <param name="output">Stream to save to</param>
+        /// <summary>
+        /// Saves a Graph to an arbitrary output stream
+        /// </summary>
+        /// <param name="g">Graph to save</param>
+        /// <param name="output">Stream to save to</param>
         protected override void SaveInternal(IGraph g, TextWriter output)
         {
             // Always issue a Warning

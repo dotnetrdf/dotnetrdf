@@ -45,7 +45,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         internal ClassifyService(String name, JObject obj)
             : base(name, obj) { }
 
-#if !NO_SYNC_HTTP
         /// <summary>
         /// Extracts the Graph which comprises the class hierarchy
         /// </summary>
@@ -77,7 +76,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                 throw new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server", webEx);
             }
         }
-#endif
 
         /// <summary>
         /// Extracts the Graph which comprises the class hierarchy

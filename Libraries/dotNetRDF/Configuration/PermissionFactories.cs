@@ -168,11 +168,7 @@ namespace VDS.RDF.Configuration
                     String mode = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPermissionModel)));
                     if (mode != null)
                     {
-#if SILVERLIGHT
-                        result.PermissionModel = (PermissionModel)Enum.Parse(typeof(PermissionModel), mode, false);
-#else
                         result.PermissionModel = (PermissionModel)Enum.Parse(typeof(PermissionModel), mode);
-#endif
                     }
 
                     break;

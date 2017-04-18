@@ -38,8 +38,6 @@ namespace VDS.RDF.Parsing.Handlers
     public class UriLoaderHandlerTests
     {
 
-#if !PORTABLE
-
         [Fact(Skip = "Remote configuration is not currently available")]
         public void ParsingUriLoaderGraphHandlerImplicit()
         {
@@ -60,8 +58,6 @@ namespace VDS.RDF.Parsing.Handlers
             TestTools.ShowGraph(g);
             Assert.False(g.IsEmpty, "Graph should not be empty");
         }
-
-#endif
 
         [Fact]
         public void ParsingUriLoaderCountHandler()

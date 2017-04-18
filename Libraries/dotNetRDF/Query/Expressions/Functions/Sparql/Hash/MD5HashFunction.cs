@@ -26,7 +26,6 @@
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
 {
-#if !SILVERLIGHT
 
     /// <summary>
     /// Represents the SPARQL MD5() Function
@@ -71,5 +70,4 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
             return new MD5HashFunction(transformer.Transform(this._expr));
         }
     }
-#endif
 }

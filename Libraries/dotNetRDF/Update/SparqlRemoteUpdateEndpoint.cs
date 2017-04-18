@@ -31,9 +31,7 @@ using System.Security;
 using System.Text;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
-#if !NO_WEB
 using System.Web;
-#endif
 
 namespace VDS.RDF.Update
 {
@@ -86,8 +84,6 @@ namespace VDS.RDF.Update
                 }
             }
         }
-
-#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Makes an update request to the remote endpoint
@@ -155,8 +151,6 @@ namespace VDS.RDF.Update
                 throw new SparqlUpdateException("A HTTP Error occurred when trying to make the SPARQL Update", webEx);
             }
         }
-
-#endif
 
         /// <summary>
         /// Makes an update request asynchronously to the remote endpoint

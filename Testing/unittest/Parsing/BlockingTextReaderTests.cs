@@ -50,12 +50,7 @@ namespace VDS.RDF.Parsing
             using (StreamReader stream = File.OpenText("ParsingTextReaderCreation1.txt"))
             {
                 ParsingTextReader reader = ParsingTextReader.Create(stream);
-#if PORTABLE
-                // Portable class library uses blocking IO for file streams
-                Assert.IsType<BlockingTextReader>(reader);
-#else
                 Assert.IsType<NonBlockingTextReader>(reader);
-#endif
                 stream.Close();
             }
         }
@@ -409,12 +404,8 @@ namespace VDS.RDF.Parsing
 
         private void SetUriLoaderCaching(bool cachingEnabled)
         {
-#if !NO_URICACHE
             Options.UriLoaderCaching = cachingEnabled;
-#endif
         }
-
-#if !PORTABLE
 
         [Fact(Skip="Remote configuration is not currently available")]
         public void ParsingTextReaderBlockingNetworkStreamNotation3()
@@ -490,8 +481,6 @@ namespace VDS.RDF.Parsing
                 SetUriLoaderCaching(true);
             }
         }
-
-#endif
 
         private void EnsureNIOData()
         {

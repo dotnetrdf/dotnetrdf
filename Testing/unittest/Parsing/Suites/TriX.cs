@@ -36,9 +36,7 @@ using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Parsing.Suites
 {
-   
-
-    public class TriX
+    public partial class TriX
         : BaseDatasetParserSuite
     {
         public TriX()
@@ -47,27 +45,10 @@ namespace VDS.RDF.Parsing.Suites
             this.CheckResults = false;
         }
 
-#if NO_XSL
-        private readonly string[] _trixFilesRequiringStylesheet = new string[]
-            {
-                "resources\\trix\\curies.xml",
-                "resources\\trix\\datatypes.xml",
-                "resources\\trix\\multiple-stylesheets.xml"
-            };
-#endif
-
         [SkippableFact]
         public void ParsingSuiteTriX()
         {
-#if NO_XSL
-            //Run manifests
-            this.RunDirectory(f => Path.GetExtension(f).Equals(".xml") && !f.Contains("bad") && !_trixFilesRequiringStylesheet.Contains(f), true);
-            this.RunDirectory(f => Path.GetExtension(f).Equals(".xml") && f.Contains("bad") && !_trixFilesRequiringStylesheet.Contains(f), false);
-#else
-            //Run manifests
-            this.RunDirectory(f => Path.GetExtension(f).Equals(".xml") && !f.Contains("bad"), true);
-            this.RunDirectory(f => Path.GetExtension(f).Equals(".xml") && f.Contains("bad"), false);
-#endif
+            RunManifests();
 
             if (this.Count == 0) Assert.True(false, "No tests found");
 

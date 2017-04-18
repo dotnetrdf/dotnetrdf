@@ -113,7 +113,6 @@ namespace VDS.RDF.Configuration
                 }
             }
             
-#if !NO_FILE
             // Load from Files
             sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromFile)));
             foreach (INode source in sources)
@@ -127,7 +126,6 @@ namespace VDS.RDF.Configuration
                     throw new DotNetRdfConfigurationException("Unable to load data from a file for the Graph identified by the Node '" + objNode.ToString() + "' as one of the values for the dnr:fromFile property is not a Literal Node as required");
                 }
             }
-#endif
 
             // Load from Strings
             sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromString)));
@@ -228,19 +226,11 @@ namespace VDS.RDF.Configuration
             {
                 if (source.NodeType == NodeType.Uri)
                 {
-#if !SILVERLIGHT
                     UriLoader.Load(output, ((IUriNode)source).Uri);
-#else
-                    throw new PlatformNotSupportedException("Loading Data into a Graph from a remote URI is not currently supported under Silverlight/Windows Phone 7");
-#endif
                 }
                 else if (source.NodeType == NodeType.Literal)
                 {
-#if !SILVERLIGHT
                     UriLoader.Load(output, UriFactory.Create(((ILiteralNode)source).Value));
-#else
-                    throw new PlatformNotSupportedException("Loading Data into a Graph from a remote URI is not currently supported under Silverlight/Windows Phone 7");
-#endif
                 }
                 else
                 {
@@ -318,9 +308,7 @@ namespace VDS.RDF.Configuration
         : IObjectFactory
     {
         private const String TripleStore = "VDS.RDF.TripleStore",
-#if !SILVERLIGHT
                              WebDemandTripleStore = "VDS.RDF.WebDemandTripleStore",
-#endif
                              PersistentTripleStore = "VDS.RDF.PersistentTripleStore";
 
 
@@ -363,11 +351,9 @@ namespace VDS.RDF.Configuration
                     }
                     break;
 
-#if !SILVERLIGHT
                 case WebDemandTripleStore:
                     store = new WebDemandTripleStore();
                     break;
-#endif
 
                 case PersistentTripleStore:
                     subObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propStorageProvider);
@@ -418,7 +404,6 @@ namespace VDS.RDF.Configuration
                     }
                 }
 
-#if !NO_FILE
                 // Read from Files - we assume these files are Dataset Files
                 sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromFile)));
                 foreach (INode source in sources)
@@ -432,7 +417,6 @@ namespace VDS.RDF.Configuration
                         throw new DotNetRdfConfigurationException("Unable to load data from a file for the Triple Store identified by the Node '" + objNode.ToString() + "' as one of the values for the dnr:fromFile property is not a Literal Node as required");
                     }
                 }
-#endif
 
                 // Finally we'll apply any reasoners
                 if (store is IInferencingTripleStore)
@@ -473,11 +457,9 @@ namespace VDS.RDF.Configuration
             switch (t.FullName)
             {
                 case TripleStore:
-#if !SILVERLIGHT
                 case WebDemandTripleStore:
-#endif
                 case PersistentTripleStore:
-                     return true;
+                    return true;
                 default:
                     return false;
             }

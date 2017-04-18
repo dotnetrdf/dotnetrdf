@@ -29,8 +29,6 @@ using VDS.RDF.Query.Expressions.Functions.Sparql.Hash;
 
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
 {
-#if !SILVERLIGHT
-
     /// <summary>
     /// Represents the Leviathan lfn:md5hash() function
     /// </summary>
@@ -78,5 +76,4 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
             return new MD5HashFunction(transformer.Transform(this._expr));
         }
     }
-#endif
-    }
+}

@@ -31,8 +31,6 @@ using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.String
 {
-#if !NO_NORM
-
     /// <summary>
     /// Represents the XPath fn:normalize-unicode() function
     /// </summary>
@@ -151,6 +149,4 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             }
         }
     }
-
-#endif
 }

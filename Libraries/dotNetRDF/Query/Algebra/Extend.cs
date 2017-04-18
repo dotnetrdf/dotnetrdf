@@ -151,7 +151,7 @@ namespace VDS.RDF.Query.Algebra
 
                 context.InputMultiset = results;
                 context.OutputMultiset.AddVariable(this._var);
-#if NET40 && !SILVERLIGHT
+#if NET40
                 if (Options.UsePLinqEvaluation && this._expr.CanParallelise)
                 {
                     results.SetIDs.AsParallel().ForAll(id => EvalExtend(context, results, id));
@@ -163,7 +163,7 @@ namespace VDS.RDF.Query.Algebra
                     {
                         EvalExtend(context, results, id);
                     }
-#if NET40 && !SILVERLIGHT
+#if NET40
                 }
 #endif
             }

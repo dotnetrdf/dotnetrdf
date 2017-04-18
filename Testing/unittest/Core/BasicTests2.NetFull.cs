@@ -34,6 +34,7 @@ using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 using VDS.RDF.XunitExtensions;
+using VDS.RDF.Data.DataTables;
 
 namespace VDS.RDF
 {
@@ -48,9 +49,7 @@ namespace VDS.RDF
 
             try
             {
-#if !NO_URICACHE
                 Options.UriLoaderCaching = false;
-#endif
                 Console.WriteLine("Going to get two copies of a Graph from DBPedia and compare");
                 Console.WriteLine("Using the DBPedia Graph for Barack Obama");
 
@@ -114,9 +113,7 @@ namespace VDS.RDF
             }
             finally
             {
-#if !NO_URICACHE
                 Options.UriLoaderCaching = true;
-#endif
             }
         }
 
@@ -215,17 +212,13 @@ namespace VDS.RDF
             int defaultTimeout = Options.UriLoaderTimeout;
             try
             {
-#if !NO_URICACHE
                 Options.UriLoaderCaching = false;
-#endif
                 Options.UriLoaderTimeout = 45000;
 
                 List<Uri> testUris = new List<Uri>() {
                     new Uri("http://www.bbc.co.uk/programmes/b0080bbs#programme"),
                     new Uri("http://dbpedia.org/resource/Southampton"),
-#if !NO_FILE // file: urls not supported
                     new Uri("file:///resources\\MergePart1.ttl"),
-#endif
                     new Uri("http://www.dotnetrdf.org/configuration#")
                 };
 
@@ -258,9 +251,7 @@ namespace VDS.RDF
             }
             finally
             {
-#if !NO_URICACHE
                 Options.UriLoaderCaching = true;
-#endif
                 Options.UriLoaderTimeout = defaultTimeout;
             }
         }
@@ -271,7 +262,7 @@ namespace VDS.RDF
             Graph g = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
 
-            DataTable table = (DataTable)g;
+            DataTable table = g.ToDataTable();
 
             Assert.Equal(g.Triples.Count, table.Rows.Count);
             Assert.Equal(3, table.Columns.Count);
@@ -291,7 +282,7 @@ namespace VDS.RDF
         {
             Graph g = new Graph();
 
-            DataTable table = (DataTable)g;
+            DataTable table = g.ToDataTable();
 
             Assert.Equal(g.Triples.Count, table.Rows.Count);
             Assert.Equal(3, table.Columns.Count);

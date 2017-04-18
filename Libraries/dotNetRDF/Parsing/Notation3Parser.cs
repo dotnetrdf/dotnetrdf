@@ -137,7 +137,6 @@ namespace VDS.RDF.Parsing
             this.Load(new GraphHandler(g), input);
         }
 
-#if !NO_FILE
         /// <summary>
         /// Loads a Graph by reading Notation 3 syntax from the given file
         /// </summary>
@@ -152,7 +151,6 @@ namespace VDS.RDF.Parsing
                 this.Load(g, reader);
             }
         }
-#endif
 
         /// <summary>
         /// Loads RDF using a RDF handler by reading Notation 3 syntax from the given input
@@ -167,11 +165,7 @@ namespace VDS.RDF.Parsing
             // Issue a Warning if the Encoding of the Stream is not UTF-8
             if (!input.CurrentEncoding.Equals(Encoding.UTF8))
             {
-#if !SILVERLIGHT
                 this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
-#else
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
-#endif
             }
 
             this.Load(handler, (TextReader)input);
@@ -208,7 +202,6 @@ namespace VDS.RDF.Parsing
             }
         }
 
-#if !NO_FILE
         /// <summary>
         /// Loads RDF using a RDF handler by reading Notation 3 syntax from the given file
         /// </summary>
@@ -223,7 +216,6 @@ namespace VDS.RDF.Parsing
                 this.Load(handler, reader);
             }
         }
-#endif
 
         /// <summary>
         /// Internal method which does the parsing of the input

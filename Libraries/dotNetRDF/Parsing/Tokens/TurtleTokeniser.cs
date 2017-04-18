@@ -922,7 +922,7 @@ namespace VDS.RDF.Parsing.Tokens
                         {
                             this.ConsumeCharacter();
                         }
-#if PORTABLE || NETCORE
+#if NETCORE
                         if (this.Value.Equals("prefix", StringComparison.OrdinalIgnoreCase))
 #else
                         if (this.Value.Equals("prefix", StringComparison.InvariantCultureIgnoreCase))
@@ -943,7 +943,7 @@ namespace VDS.RDF.Parsing.Tokens
                         {
                             this.ConsumeCharacter();
                         }
-#if PORTABLE || NETCORE
+#if NETCORE
                         if (this.Value.Equals("base", StringComparison.OrdinalIgnoreCase))
 #else                        
                         if (this.Value.Equals("base", StringComparison.InvariantCultureIgnoreCase))

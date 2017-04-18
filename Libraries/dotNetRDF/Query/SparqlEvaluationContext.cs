@@ -43,11 +43,7 @@ namespace VDS.RDF.Query
         private ISparqlDataset _data;
         private SparqlQuery _query;
         private SparqlResultBinder _binder;
-#if !NO_STOPWATCH
         private Stopwatch _timer = new Stopwatch();
-#else
-        private DateTime _start, _end;
-#endif
         private Dictionary<String, Object> _functionContexts = new Dictionary<string, object>();
         private long _timeout;
 
@@ -231,11 +227,7 @@ namespace VDS.RDF.Query
         public void StartExecution()
         {
             this.CalculateTimeout();
-#if !NO_STOPWATCH
             this._timer.Start();
-#else
-            this._start = DateTime.Now;
-#endif
         }
 
         /// <summary>
@@ -243,11 +235,7 @@ namespace VDS.RDF.Query
         /// </summary>
         public void EndExecution()
         {
-#if !NO_STOPWATCH
             this._timer.Stop();
-#else
-            this._end = DateTime.Now;
-#endif
         }
 
         /// <summary>
@@ -258,20 +246,11 @@ namespace VDS.RDF.Query
         {
             if (this._timeout > 0)
             {
-#if !NO_STOPWATCH
                 if (this._timer.ElapsedMilliseconds > this._timeout)
                 {
                     this._timer.Stop();
                     throw new RdfQueryTimeoutException("Query Execution Time exceeded the Timeout of " + this._timeout + "ms, query aborted after " + this._timer.ElapsedMilliseconds + "ms");
                 }
-#else
-                TimeSpan elapsed = DateTime.Now - this._start;
-                if (elapsed.Milliseconds > this._timeout)
-                {
-                    this._end = DateTime.Now;
-                    throw new RdfQueryTimeoutException("Query Execution Time exceeded the Timeout of " + this._timeout + "ms, query aborted after " + elapsed.Milliseconds + "ms");
-                }
-#endif
             }
         }
 
@@ -327,12 +306,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-#if !NO_STOPWATCH
                 return this._timer.ElapsedMilliseconds;
-#else
-                if (this._end == null || this._end < this._start) this._end = DateTime.Now;
-                return (this._end - this._start).Milliseconds;
-#endif
             }
         }
 
@@ -343,12 +317,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-#if !NO_STOPWATCH
                 return this._timer.ElapsedTicks;
-#else
-                if (this._end == null || this._end < this._start) this._end = DateTime.Now;
-                return (this._end - this._start).Ticks;
-#endif
             }
         }
 

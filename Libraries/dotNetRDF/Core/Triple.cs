@@ -34,21 +34,17 @@ using System.Xml.Serialization;
 using VDS.RDF.Writing.Formatting;
 using VDS.RDF.Writing.Serialization;
 
-#if !SILVERLIGHT
-
-#endif
-
 namespace VDS.RDF
 {
     /// <summary>
     /// Class for representing RDF Triples in memory
     /// </summary>
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
     [Serializable,XmlRoot(ElementName="triple")]
 #endif
     public sealed class Triple
         : IComparable<Triple>
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
         , ISerializable, IXmlSerializable
 #endif
     {
@@ -152,7 +148,7 @@ namespace VDS.RDF
         private Triple()
         { }
 
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
         private Triple(SerializationInfo info, StreamingContext context)
         {
             this._subject = (INode)info.GetValue("s", typeof(INode));
@@ -477,7 +473,7 @@ namespace VDS.RDF
             }
         }
 
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
 
         #region ISerializable Members
 

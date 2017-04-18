@@ -57,11 +57,7 @@ namespace VDS.RDF.Parsing
             if (input is StreamReader)
             {
                 Stream s = ((StreamReader)input).BaseStream;
-#if PORTABLE
-                if (!Options.ForceBlockingIO && (s is MemoryStream))
-#else
                 if (!Options.ForceBlockingIO && (s is FileStream || s is MemoryStream))
-#endif
                 {
                     return new NonBlockingTextReader(input, bufferSize);
                 }
@@ -95,11 +91,7 @@ namespace VDS.RDF.Parsing
         /// <param name="bufferSize">Buffer Size</param>
         public static ParsingTextReader Create(Stream input, int bufferSize)
         {
-#if PORTABLE
-            if (!Options.ForceBlockingIO && (input is MemoryStream))
-#else
             if (!Options.ForceBlockingIO && (input is FileStream || input is MemoryStream))
-#endif
             {
                 return CreateNonBlocking(new StreamReader(input), bufferSize);
             }
@@ -358,7 +350,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-#if PORTABLE || NETCORE
+#if NETCORE
         public void Close()
         {
             // No-op as portable library version of TextReader has no Close() method

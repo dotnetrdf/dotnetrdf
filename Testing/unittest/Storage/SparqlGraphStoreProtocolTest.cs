@@ -53,8 +53,6 @@ namespace VDS.RDF.Storage
             return new SparqlHttpProtocolConnector(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri));
         }
 
-#if !NO_SYNC_HTTP
-
         [SkippableFact]
         public void StorageSparqlUniformHttpProtocolSaveGraph()
         {
@@ -216,7 +214,6 @@ namespace VDS.RDF.Storage
             }
         }
 
-#if !NO_SYNC_HTTP // There is currently no async version of HasGraph to delegate to
         [SkippableFact]
         public void StorageSparqlUniformHttpProtocolGraphExists()
         {
@@ -235,7 +232,6 @@ namespace VDS.RDF.Storage
                 SetUriLoaderCaching(true);
             }
         }
-#endif
 
         [SkippableFact]
         public void StorageSparqlUniformHttpProtocolDeleteGraph()
@@ -441,11 +437,7 @@ namespace VDS.RDF.Storage
         /// <param name="cacheEnabled"></param>
         private void SetUriLoaderCaching(bool cacheEnabled)
         {
-#if !NO_URICACHE
             Options.UriLoaderCaching = cacheEnabled;
-#endif
         }
-
-#endif
     }
 }

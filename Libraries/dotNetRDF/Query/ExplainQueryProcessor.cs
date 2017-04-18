@@ -514,14 +514,10 @@ namespace VDS.RDF.Query
             }
             if (this.HasFlag(ExplanationLevel.OutputToDebug))
             {
-#if !PORTABLE
                 System.Diagnostics.Debug.Write(indent);
                 System.Diagnostics.Debug.WriteLine(output);
-#else
-                System.Diagnostics.Debug.WriteLine(indent + output);
-#endif
             }
-#if !(SILVERLIGHT || NETCORE)
+#if !NETCORE
             if (this.HasFlag(ExplanationLevel.OutputToTrace))
             {
                 System.Diagnostics.Trace.Write(indent);

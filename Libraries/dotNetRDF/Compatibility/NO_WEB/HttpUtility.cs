@@ -28,10 +28,8 @@ using System;
 using System.Text;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF
+namespace System.Web
 {
-
-
     /// <summary>
     /// An implementation of HttpUtility for use with Silverlight builds which require it
     /// </summary>

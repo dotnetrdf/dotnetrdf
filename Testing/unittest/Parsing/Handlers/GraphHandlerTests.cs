@@ -63,14 +63,7 @@ namespace VDS.RDF.Parsing.Handlers
 
             Graph h = new Graph();
             GraphHandler handler = new GraphHandler(h);
-#if PORTABLE
-            using (var reader = new StreamReader(tempFile))
-            {
-                parser.Load(handler, reader);
-            }
-#else
             parser.Load(handler, tempFile);
-#endif
 
             NTriplesFormatter formatter = new NTriplesFormatter();
             foreach (Triple t in h.Triples)

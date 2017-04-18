@@ -33,9 +33,7 @@ using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing;
-#if !NO_WEB
 using System.Web;
-#endif
 
 namespace VDS.RDF.Storage
 {
@@ -51,10 +49,7 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class SparqlHttpProtocolConnector 
-        : BaseAsyncHttpConnector, IConfigurationSerializable, IAsyncStorageProvider
-#if !NO_SYNC_HTTP
-        , IStorageProvider
-#endif
+        : BaseAsyncHttpConnector, IConfigurationSerializable, IAsyncStorageProvider, IStorageProvider
     {
         /// <summary>
         /// URI of the Protocol Server
@@ -80,14 +75,12 @@ namespace VDS.RDF.Storage
         public SparqlHttpProtocolConnector(Uri serviceUri)
             : this(serviceUri.ToSafeString()) { }
 
-#if !NO_PROXY
-
         /// <summary>
         /// Creates a new SPARQL Graph Store HTTP Protocol Connector
         /// </summary>
         /// <param name="serviceUri">URI of the Protocol Server</param>
         /// <param name="proxy">Proxy Server</param>
-        public SparqlHttpProtocolConnector(String serviceUri, WebProxy proxy)
+        public SparqlHttpProtocolConnector(String serviceUri, IWebProxy proxy)
             : this(serviceUri)
         {
             this.Proxy = proxy;
@@ -98,10 +91,8 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="serviceUri">URI of the Protocol Server</param>
         /// <param name="proxy">Proxy Server</param>
-        public SparqlHttpProtocolConnector(Uri serviceUri, WebProxy proxy)
+        public SparqlHttpProtocolConnector(Uri serviceUri, IWebProxy proxy)
             : this(serviceUri.ToSafeString(), proxy) { }
-
-#endif
 
         /// <summary>
         /// Gets the IO Behaviour of SPARQL Graph Store protocol based stores
@@ -168,8 +159,6 @@ namespace VDS.RDF.Storage
                 return false;
             }
         }
-
-#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Loads a Graph from the Protocol Server
@@ -467,7 +456,6 @@ namespace VDS.RDF.Storage
                 }
             }
         }
-#endif
 
         /// <summary>
         /// Throws an exception as listing graphs in a SPARQL Graph Store HTTP Protocol does not support listing graphs

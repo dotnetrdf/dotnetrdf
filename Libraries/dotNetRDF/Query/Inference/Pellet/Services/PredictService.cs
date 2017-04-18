@@ -59,8 +59,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             }
         }
 
-#if !NO_SYNC_HTTP
-
         /// <summary>
         /// Gets the list of Predictions for the given Individual and Property
         /// </summary>
@@ -113,8 +111,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                 throw new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server", webEx);
             }
         }
-
-#endif
 
         /// <summary>
         /// Gets the list of Predictions for the given Individual and Property

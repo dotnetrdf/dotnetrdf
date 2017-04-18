@@ -37,9 +37,7 @@ using VDS.RDF.Query;
 using VDS.RDF.Update;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
-#if !NO_WEB
 using System.Web;
-#endif
 
 namespace VDS.RDF.Storage
 {
@@ -56,9 +54,7 @@ namespace VDS.RDF.Storage
     /// </remarks>
     public class FourStoreConnector
         : BaseAsyncHttpConnector, IAsyncUpdateableStorage, IConfigurationSerializable
-#if !NO_SYNC_HTTP
         , IUpdateableStorage
-#endif
     {
         private String _baseUri;
         private SparqlRemoteEndpoint _endpoint;
@@ -114,8 +110,6 @@ namespace VDS.RDF.Storage
             this._updatesEnabled = enableUpdateSupport;
         }
 
-#if !NO_PROXY
-
         /// <summary>
         /// Creates a new 4store connector which manages access to the services provided by a 4store server
         /// </summary>
@@ -124,7 +118,7 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// <strong>Note:</strong> As of the 0.4.0 release 4store support defaults to Triple Level updates enabled as all recent 4store releases have supported this.  You can still optionally disable this with the two argument version of the constructor
         /// </remarks>
-        public FourStoreConnector(String baseUri, WebProxy proxy)
+        public FourStoreConnector(String baseUri, IWebProxy proxy)
             : this(baseUri)
         {
             this.Proxy = proxy;
@@ -139,13 +133,11 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// If you enable Update support but are using a 4store instance that does not support Triple level updates then you will almost certainly experience errors while using the connector.
         /// </remarks>
-        public FourStoreConnector(String baseUri, bool enableUpdateSupport, WebProxy proxy)
+        public FourStoreConnector(String baseUri, bool enableUpdateSupport, IWebProxy proxy)
             : this(baseUri, enableUpdateSupport)
         {
             this.Proxy = proxy;
         }
-
-#endif
 
         /// <summary>
         /// Returns whether this connector has been instantiated with update support or not
@@ -215,8 +207,6 @@ namespace VDS.RDF.Storage
                 return true;
             }
         }
-
-#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Loads a Graph from the 4store instance
@@ -456,12 +446,9 @@ namespace VDS.RDF.Storage
         {
             try
             {
-#if !NO_PROXY
                 // Ensure Proxy Settings have been taken from the class
                 this._endpoint.Proxy = this.Proxy;
                 this._endpoint.UseCredentialsForProxy = false;
-#endif
-
                 HttpWebResponse response = this._endpoint.QueryRaw(sparqlQuery);
                 StreamReader data = new StreamReader(response.GetResponseStream());
                 try
@@ -590,13 +577,12 @@ namespace VDS.RDF.Storage
             this._updateEndpoint.Update(sparqlUpdate);
         }
 
-#endif
-                /// <summary>
-                /// Saves a Graph to the Store asynchronously
-                /// </summary>
-                /// <param name="g">Graph to save</param>
-                /// <param name="callback">Callback</param>
-                /// <param name="state">State to pass to the callback</param>
+        /// <summary>
+        /// Saves a Graph to the Store asynchronously
+        /// </summary>
+        /// <param name="g">Graph to save</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public override void SaveGraph(IGraph g, AsyncStorageCallback callback, object state)
         {
             // Set up the Request

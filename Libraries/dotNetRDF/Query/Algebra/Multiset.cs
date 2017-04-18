@@ -158,7 +158,7 @@ namespace VDS.RDF.Query.Algebra
         public override void Add(ISet s)
         {
             int id;
-#if NET40 && !SILVERLIGHT
+#if NET40
             if (Options.UsePLinqEvaluation)
             {
                 lock (this._sets)
@@ -188,7 +188,7 @@ namespace VDS.RDF.Query.Algebra
                 {
                     if (!this._variables.Contains(var)) this._variables.Add(var);
                 }
-#if NET40 && !SILVERLIGHT
+#if NET40
             }
 #endif
             this._cacheInvalid = true;
@@ -225,7 +225,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="id">Set ID</param>
         public override void Remove(int id)
         {
-#if NET40 && !SILVERLIGHT
+#if NET40
             lock (this._sets)
             {
 #endif
@@ -238,7 +238,7 @@ namespace VDS.RDF.Query.Algebra
                     }
                     this._cacheInvalid = true;
                 }
-#if NET40 && !SILVERLIGHT
+#if NET40
             }
 #endif
         }

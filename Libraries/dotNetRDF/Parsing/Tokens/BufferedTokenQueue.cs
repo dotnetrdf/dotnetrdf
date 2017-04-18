@@ -337,7 +337,6 @@ namespace VDS.RDF.Parsing.Tokens
         }
     }
 
-#if !PORTABLE
     /// <summary>
     /// An Asynchronous version of <see cref="BufferedTokenQueue">BufferedTokenQueue</see> which automatically Buffers as many Tokens as possible in a Background thread
     /// </summary>
@@ -496,19 +495,4 @@ namespace VDS.RDF.Parsing.Tokens
             this._finished = true;
         }
     }
-#else
-
-    /// <summary>
-    /// For the Portable Class Library, this class is entirely delegated through to
-    /// <see cref="BufferedTokenQueue"/>
-    /// </summary>
-    public class AsynchronousBufferedTokenQueue : BufferedTokenQueue
-    {
-        public AsynchronousBufferedTokenQueue() : base(){}
-        public AsynchronousBufferedTokenQueue(ITokeniser t) : base(t)
-        {
-        }
-    }
-
-#endif
 }

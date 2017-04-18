@@ -33,9 +33,7 @@ using System.Text;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage.Management;
-#if !NO_WEB
 using System.Web;
-#endif
 
 namespace VDS.RDF.Storage
 {
@@ -52,9 +50,7 @@ namespace VDS.RDF.Storage
     /// </remarks>
     public class AllegroGraphConnector
         : BaseSesameHttpProtocolConnector, IAsyncUpdateableStorage
-#if !NO_SYNC_HTTP
         , IUpdateableStorage
-#endif
     {
         private String _agraphBase;
         private readonly String _catalog;
@@ -89,7 +85,7 @@ namespace VDS.RDF.Storage
         {
             this._baseUri = baseUri;
             if (!this._baseUri.EndsWith("/")) this._baseUri += "/";
-#if PORTABLE || NETCORE
+#if NETCORE
             this._agraphBase = this._baseUri.Copy();
 #else
             this._agraphBase = String.Copy(this._baseUri);
@@ -115,8 +111,6 @@ namespace VDS.RDF.Storage
         public AllegroGraphConnector(String baseUri, String storeID, String username, String password)
             : this(baseUri, null, storeID, username, password) { }
 
-#if !NO_PROXY
-
         /// <summary>
         /// Creates a new Connection to an AllegroGraph store
         /// </summary>
@@ -124,7 +118,7 @@ namespace VDS.RDF.Storage
         /// <param name="catalogID">Catalog ID</param>
         /// <param name="storeID">Store ID</param>
         /// <param name="proxy">Proxy Server</param>
-        public AllegroGraphConnector(String baseUri, String catalogID, String storeID, WebProxy proxy)
+        public AllegroGraphConnector(String baseUri, String catalogID, String storeID, IWebProxy proxy)
             : this(baseUri, catalogID, storeID, null, null, proxy) { }
 
         /// <summary>
@@ -133,7 +127,7 @@ namespace VDS.RDF.Storage
         /// <param name="baseUri">Base Uri for the Store</param>
         /// <param name="storeID">Store ID</param>
         /// <param name="proxy">Proxy Server</param>
-        public AllegroGraphConnector(String baseUri, String storeID, WebProxy proxy)
+        public AllegroGraphConnector(String baseUri, String storeID, IWebProxy proxy)
             : this(baseUri, null, storeID, proxy) { }
 
         /// <summary>
@@ -145,7 +139,7 @@ namespace VDS.RDF.Storage
         /// <param name="username">Username for connecting to the Store</param>
         /// <param name="password">Password for connecting to the Store</param>
         /// <param name="proxy">Proxy Server</param>
-        public AllegroGraphConnector(String baseUri, String catalogID, String storeID, String username, String password, WebProxy proxy)
+        public AllegroGraphConnector(String baseUri, String catalogID, String storeID, String username, String password, IWebProxy proxy)
             : this(baseUri, catalogID, storeID, username, password)
         {
             this.Proxy = proxy;
@@ -159,10 +153,8 @@ namespace VDS.RDF.Storage
         /// <param name="username">Username for connecting to the Store</param>
         /// <param name="password">Password for connecting to the Store</param>
         /// <param name="proxy">Proxy Server</param>
-        public AllegroGraphConnector(String baseUri, String storeID, String username, String password, WebProxy proxy)
+        public AllegroGraphConnector(String baseUri, String storeID, String username, String password, IWebProxy proxy)
             : this(baseUri, null, storeID, username, password, proxy) { }
-
-#endif
 
         /// <summary>
         /// Gets the Catalog under which the repository you are connected to is located
@@ -175,8 +167,6 @@ namespace VDS.RDF.Storage
                 return (this._catalog != null ? this._catalog : "<ROOT>");
             }
         }
-
-#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Makes a SPARQL Update request to the Allegro Graph server
@@ -217,8 +207,6 @@ namespace VDS.RDF.Storage
                 throw StorageHelper.HandleHttpError(webEx, "updating");
             }
         }
-
-#endif
 
         /// <summary>
         /// Makes a SPARQL Update request to the Allegro Graph server

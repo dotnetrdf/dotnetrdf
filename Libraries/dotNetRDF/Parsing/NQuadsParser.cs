@@ -126,7 +126,6 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public NQuadsSyntax Syntax { get; set; }
 
-#if !NO_FILE
         /// <summary>
         /// Loads a RDF Dataset from the NQuads input into the given Triple Store
         /// </summary>
@@ -139,7 +138,6 @@ namespace VDS.RDF.Parsing
 
             this.Load(new StoreHandler(store), filename);
         }
-#endif
 
         /// <summary>
         /// Loads a RDF Dataset from the NQuads input into the given Triple Store
@@ -153,7 +151,6 @@ namespace VDS.RDF.Parsing
             this.Load(new StoreHandler(store), input);
         }
 
-#if !NO_FILE
         /// <summary>
         /// Loads a RDF Dataset from the NQuads input using a RDF Handler
         /// </summary>
@@ -170,12 +167,7 @@ namespace VDS.RDF.Parsing
             {
                 case NQuadsSyntax.Original:
                     // Original NQuads uses ASCII encoding
-#if !SILVERLIGHT
                     input = new StreamReader(File.OpenRead(filename), Encoding.ASCII);
-#else
-            input = new StreamReader(File.OpenRead(filename));
-            this.RaiseWarning("NQuads files are ASCII format but Silverlight does not support ASCII - will open as UTF-8 instead which may cause issues");
-#endif
                     break;
                 default:
                     // RDF 1.1 NQuads uses UTF-8 encoding
@@ -185,7 +177,6 @@ namespace VDS.RDF.Parsing
 
             this.Load(handler, input);
         }
-#endif
 
         /// <summary>
         /// Loads a RDF Dataset from the NQuads input using a RDF Handler
@@ -203,22 +194,16 @@ namespace VDS.RDF.Parsing
                 switch (this.Syntax)
                 {
                     case NQuadsSyntax.Original:
-#if !SILVERLIGHT
                         // Issue a Warning if the Encoding of the Stream is not ASCII
                         if (!((StreamReader) input).CurrentEncoding.Equals(Encoding.ASCII))
                         {
                             this.RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " + ((StreamReader) input).CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
                         }
-#endif
                         break;
                     default:
                         if (!((StreamReader) input).CurrentEncoding.Equals(Encoding.UTF8))
                         {
-#if SILVERLIGHT
-                            this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + ((StreamReader) input).CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
-#else
                             this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + ((StreamReader) input).CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
-#endif
                         }
                         break;
                 }
@@ -248,10 +233,6 @@ namespace VDS.RDF.Parsing
 
                 // Invoke the Parser
                 this.Parse(handler, tokens);
-            }
-            catch
-            {
-                throw;
             }
             finally
             {
@@ -520,11 +501,7 @@ namespace VDS.RDF.Parsing
                     throw new RdfParseException("NQuads does not permit relative URIs");
                 return n;
             }
-#if SILVERLIGHT
-            catch (FormatException uriEx)
-#else
             catch (UriFormatException uriEx)
-#endif
             {
                 throw new RdfParseException("Invalid URI encountered, see inner exception for details", uriEx);
             }

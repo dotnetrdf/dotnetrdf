@@ -55,14 +55,12 @@ namespace VDS.RDF
         /// <returns></returns>
         T Parse(TextReader input);
 
-#if !NO_FILE
         /// <summary>
         /// Parses an Object from a File
         /// </summary>
         /// <param name="file">Filename</param>
         /// <returns></returns>
         T ParseFromFile(String file);
-#endif
 
         /// <summary>
         /// Parses an Object from a String

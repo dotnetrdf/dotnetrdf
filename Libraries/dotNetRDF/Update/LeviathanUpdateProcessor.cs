@@ -48,9 +48,7 @@ namespace VDS.RDF.Update
         /// Dataset over which updates are applied
         /// </summary>
         protected ISparqlDataset _dataset;
-#if !NO_RWLOCK
         private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
-#endif
         private bool _autoCommit = true, _canCommit = true;
 
         /// <summary>
@@ -238,23 +236,15 @@ namespace VDS.RDF.Update
             if (this._autoCommit) this.Flush();
 
             // Then if possible attempt to get the lock and determine whether it needs releasing
-#if !NO_RWLOCK
             ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
-#endif
             bool mustRelease = false;
             try
             {
-#if !NO_RWLOCK
                 if (!currLock.IsWriteLockHeld)
                 {
                     currLock.EnterWriteLock();
                     mustRelease = true;
                 }
-#else
-                // If ReaderWriteLockSlim is not available use a Monitor instead
-                Monitor.Enter(this._dataset);
-                mustRelease = true;
-#endif
 
                 // Then based on the command type call the appropriate protected method
                 switch (cmd.CommandType)
@@ -320,11 +310,7 @@ namespace VDS.RDF.Update
                 // Release locks if necessary
                 if (mustRelease)
                 {
-#if !NO_RWLOCK
                     currLock.ExitWriteLock();
-#else
-                    Monitor.Exit(this._dataset);
-#endif
                 }
             }
          }
@@ -348,17 +334,10 @@ namespace VDS.RDF.Update
 
             // Remember to handle the Thread Safety
             // If the Dataset is Thread Safe use its own lock otherwise use our local lock
-#if !NO_RWLOCK
             ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
-#endif
             try
             {
-#if !NO_RWLOCK
                 currLock.EnterWriteLock();
-#else
-                // Have to make do with a Monitor if ReaderWriterLockSlim is not available
-                Monitor.Enter(this._dataset);
-#endif
 
                 // Regardless of the Transaction Mode we turn auto-commit off for a command set so that individual commands
                 // don't try and commit after each one is applied i.e. either we are in auto-commit mode and all the
@@ -413,11 +392,7 @@ namespace VDS.RDF.Update
             {
                 // Reset auto-commit setting and release our write lock
                 this._autoCommit = autoCommit;
-#if !NO_RWLOCK
                 currLock.ExitWriteLock();
-#else
-                Monitor.Exit(this._dataset);
-#endif
             }
         }
 

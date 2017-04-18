@@ -132,8 +132,6 @@ namespace VDS.RDF.Query
             }
         }
 
-#if !PORTABLE
-
         [SkippableFact]
         public void SparqlGroupByAssignmentExpression2()
         {
@@ -199,8 +197,6 @@ namespace VDS.RDF.Query
                 Assert.True(false, "Didn't get a Result Set as expected");
             }
         }
-
-#endif
 
         [Fact]
         public void SparqlGroupBySample()

@@ -33,7 +33,6 @@ using VDS.RDF.Query;
 using VDS.RDF.XunitExtensions;
 using VDS.RDF.Storage;
 
-#if !NO_SYNC_HTTP
 namespace VDS.RDF.Storage
 {
 
@@ -297,4 +296,3 @@ namespace VDS.RDF.Storage
         }
     }
 }
-#endif

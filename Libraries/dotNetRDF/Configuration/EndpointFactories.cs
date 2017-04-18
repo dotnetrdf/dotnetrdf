@@ -77,7 +77,6 @@ namespace VDS.RDF.Configuration
                     endpoint = new SparqlRemoteUpdateEndpoint(UriFactory.Create(updateEndpointUri));
                     break;
 
-#if !SILVERLIGHT
                 case FederatedEndpoint:
                     IEnumerable<INode> endpoints = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint)))
                         .Concat(ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint))));
@@ -101,7 +100,6 @@ namespace VDS.RDF.Configuration
                         }
                     }
                     break;
-#endif
             }
 
             if (endpoint != null)
@@ -114,15 +112,14 @@ namespace VDS.RDF.Configuration
                     endpoint.SetCredentials(user, pwd);
                 }
 
-#if !NO_PROXY
                 // Is there a Proxy Server specified
                 INode proxyNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyProxy)));
                 if (proxyNode != null)
                 {
                     Object proxy = ConfigurationLoader.LoadObject(g, proxyNode);
-                    if (proxy is WebProxy)
+                    if (proxy is IWebProxy)
                     {
-                        endpoint.Proxy = (WebProxy)proxy;
+                        endpoint.Proxy = (IWebProxy)proxy;
 
                         // Are we supposed to use the same credentials for the proxy as for the endpoint?
                         bool useCredentialsForProxy = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUseCredentialsForProxy)), false);
@@ -136,7 +133,6 @@ namespace VDS.RDF.Configuration
                         throw new DotNetRdfConfigurationException("Unable to load SPARQL Endpoint identified by the Node '" + objNode.ToString() + "' as the value for the dnr:proxy property points to an Object which cannot be loaded as an object of type WebProxy");
                     }
                 }
-#endif
             }
 
             obj = endpoint;
@@ -154,9 +150,7 @@ namespace VDS.RDF.Configuration
             {
                 case QueryEndpoint:
                 case UpdateEndpoint:
-#if !SILVERLIGHT
                 case FederatedEndpoint:
-#endif
                     return true;
                 default:
                     return false;

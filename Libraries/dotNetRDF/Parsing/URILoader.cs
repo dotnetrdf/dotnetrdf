@@ -48,7 +48,6 @@ namespace VDS.RDF.Parsing
         private static String _userAgent;
 
         #region URI Caching
-#if !NO_URICACHE
         private static IUriLoaderCache _cache = new UriLoaderCache();
 
         /// <summary>
@@ -120,7 +119,6 @@ namespace VDS.RDF.Parsing
             Uri temp = Tools.StripUriFragment(u);
             return _cache.HasLocalCopy(temp, false);
         }
-#endif
         #endregion
 
         /// <summary>
@@ -137,9 +135,6 @@ namespace VDS.RDF.Parsing
                 _userAgent = value;
             }
         }
-
-        // #if !SILVERLIGHT
-#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Attempts to load a RDF Graph from the given URI into the given Graph
@@ -186,15 +181,8 @@ namespace VDS.RDF.Parsing
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
             if (u == null) throw new RdfParseException("Cannot load RDF from a null URI");
-#if SILVERLIGHT
-            if (u.IsFile())
-#else
             if (u.IsFile)
-#endif
             {
-#if NO_FILE
-                throw new RdfParseException("Loading from a file:// URL requires the synchronous file loader which is not currently supported on your system");
-#else
                 // Invoke FileLoader instead
                 RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                 if (Path.DirectorySeparatorChar == '/')
@@ -206,7 +194,6 @@ namespace VDS.RDF.Parsing
                     FileLoader.Load(g, u.ToString().Substring(8), parser);
                 }
                 return;
-#endif
             }
             if (u.Scheme.Equals("data"))
             {
@@ -266,15 +253,8 @@ namespace VDS.RDF.Parsing
             if (u == null) throw new RdfParseException("Cannot load RDF from a null URI");
             try
             {
-#if SILVERLIGHT
-                if (u.IsFile())
-#else
                 if (u.IsFile)
-#endif
                 {
-#if NO_FILE
-                    throw new RdfParseException("Loading from a file:// URL requires the synchronous file loader which is not currently supported on your system");
-#else
                     // Invoke FileLoader instead
                     RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                     if (Path.DirectorySeparatorChar == '/')
@@ -286,7 +266,6 @@ namespace VDS.RDF.Parsing
                         FileLoader.Load(handler, u.ToString().Substring(8), parser);
                     }
                     return;
-#endif
                 }
                 if (u.Scheme.Equals("data"))
                 {
@@ -299,7 +278,6 @@ namespace VDS.RDF.Parsing
                 // Sanitise the URI to remove any Fragment ID
                 u = Tools.StripUriFragment(u);
 
-#if !NO_URICACHE
                 // Use Cache if possible
                 String etag = String.Empty;
                 String local = null;
@@ -331,7 +309,6 @@ namespace VDS.RDF.Parsing
                         }
                     }
                 }
-#endif
 
                 // Set-up the Request
                 HttpWebRequest httpRequest;
@@ -348,19 +325,17 @@ namespace VDS.RDF.Parsing
                     httpRequest.Accept = MimeTypesHelper.HttpAcceptHeader;
                 }
 
-#if !NO_URICACHE
                 if (Options.UriLoaderCaching)
                 {
                     if (!etag.Equals(String.Empty))
                     {
-                        httpRequest.Headers.Add(HttpRequestHeader.IfNoneMatch, etag);
+                        httpRequest.Headers[HttpRequestHeader.IfNoneMatch] = etag;
                     }
                 }
-#endif
 
                 // Use HTTP GET
                 httpRequest.Method = "GET";
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
                 httpRequest.Timeout = Options.UriLoaderTimeout;
 #endif
                 if (_userAgent != null && !_userAgent.Equals(String.Empty))
@@ -378,7 +353,6 @@ namespace VDS.RDF.Parsing
                 {
                     Tools.HttpDebugResponse(httpResponse);
 
-#if !NO_URICACHE
                     if (Options.UriLoaderCaching)
                     {
                         // Are we using ETag based caching?
@@ -416,7 +390,6 @@ namespace VDS.RDF.Parsing
                             // If we didn't get a Not-Modified response then we'll continue and parse the new response
                         }
                     }
-#endif
 
                     // Get a Parser and Load the RDF
                     if (parser == null)
@@ -425,7 +398,6 @@ namespace VDS.RDF.Parsing
                         parser = MimeTypesHelper.GetParser(httpResponse.ContentType);
                     }
                     parser.Warning += RaiseWarning;
-#if !NO_URICACHE
                     // To do caching we ask the cache to give us a handler and then we tie it to
                     if (Options.UriLoaderCaching)
                     {
@@ -436,7 +408,7 @@ namespace VDS.RDF.Parsing
                             // i.e. if the Handler may trim the data in some way then we shouldn't cache the data returned
                             if (handler.AcceptsAll)
                             {
-                                handler = new MultiHandler(new IRdfHandler[] {handler, cacheHandler});
+                                handler = new MultiHandler(new IRdfHandler[] { handler, cacheHandler });
                             }
                             else
                             {
@@ -446,10 +418,7 @@ namespace VDS.RDF.Parsing
                     }
                     try
                     {
-#endif
                         parser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
-
-#if !NO_URICACHE
                     }
                     catch
                     {
@@ -463,7 +432,6 @@ namespace VDS.RDF.Parsing
                         }
                         throw;
                     }
-#endif
                 }
             }
             catch (UriFormatException uriEx)
@@ -478,12 +446,11 @@ namespace VDS.RDF.Parsing
                     Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                 }
 
-#if !NO_URICACHE
                 if (Options.UriLoaderCaching)
                 {
                     if (webEx.Response != null)
                     {
-                        if (((HttpWebResponse) webEx.Response).StatusCode == HttpStatusCode.NotModified)
+                        if (((HttpWebResponse)webEx.Response).StatusCode == HttpStatusCode.NotModified)
                         {
                             // If so then we need to load the Local Copy assuming it exists?
                             if (_cache.HasLocalCopy(u, false))
@@ -513,7 +480,6 @@ namespace VDS.RDF.Parsing
                         }
                     }
                 }
-#endif
 
                 // Some sort of HTTP Error occurred
                 throw new WebException("A HTTP Error occurred resolving the URI '" + u.AbsoluteUri + "'", webEx);
@@ -577,16 +543,8 @@ namespace VDS.RDF.Parsing
 
             try
             {
-#if SILVERLIGHT
-                if (u.IsFile())
-#else
                 if (u.IsFile)
-#endif
-
                 {
-#if NO_FILE
-                    throw new RdfParseException("Loading from a file:// URL requires the synchronous file loader which is not currently supported on your system");
-#else
                     // Invoke FileLoader instead
                     RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                     if (Path.DirectorySeparatorChar == '/')
@@ -598,7 +556,6 @@ namespace VDS.RDF.Parsing
                         FileLoader.Load(handler, u.AbsoluteUri.Substring(8), parser);
                     }
                     return;
-#endif
                 }
 
                 // Sanitise the URI to remove any Fragment ID
@@ -621,7 +578,7 @@ namespace VDS.RDF.Parsing
 
                 // Use HTTP GET
                 httpRequest.Method = "GET";
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
                 httpRequest.Timeout = Options.UriLoaderTimeout;
 #endif
                 if (_userAgent != null && !_userAgent.Equals(String.Empty))
@@ -705,15 +662,13 @@ namespace VDS.RDF.Parsing
             UriLoader.Load(handler, u, (IStoreReader)null);
         }
 
-#endif
+        #region Warning Events
 
-                    #region Warning Events
-
-                    /// <summary>
-                    /// Raises warning messages
-                    /// </summary>
-                    /// <param name="message">Warning Message</param>
-                    static void RaiseWarning(String message)
+        /// <summary>
+        /// Raises warning messages
+        /// </summary>
+        /// <param name="message">Warning Message</param>
+        static void RaiseWarning(String message)
         {
             RdfReaderWarning d = Warning;
             if (d != null)

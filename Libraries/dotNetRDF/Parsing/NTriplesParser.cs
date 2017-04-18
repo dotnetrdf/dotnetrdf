@@ -146,7 +146,6 @@ namespace VDS.RDF.Parsing
             this.Load(new GraphHandler(g), input);
         }
 
-#if !NO_FILE
         /// <summary>
         /// Parses NTriples Syntax from the given File into Triples in the given Graph
         /// </summary>
@@ -165,12 +164,7 @@ namespace VDS.RDF.Parsing
             {
                 case NTriplesSyntax.Original:
                     // Original NTriples uses ASCII encoding
-#if !SILVERLIGHT
                     input = new StreamReader(File.OpenRead(filename), Encoding.ASCII);
-#else
-            input = new StreamReader(File.OpenRead(filename));
-            this.RaiseWarning("NTriples files are ASCII format but Silverlight does not support ASCII - will open as UTF-8 instead which may cause issues");
-#endif
                     break;
                 default:
                     // RDF 1.1 NTriples uses UTF-8 encoding
@@ -179,7 +173,6 @@ namespace VDS.RDF.Parsing
             }
             this.Load(g, input);
         }
-#endif
 
         /// <summary>
         /// Parses NTriples Syntax from the given Input Stream using a RDF Handler
@@ -195,22 +188,16 @@ namespace VDS.RDF.Parsing
             switch (this.Syntax)
             {
                 case NTriplesSyntax.Original:
-#if !SILVERLIGHT
                     // Issue a Warning if the Encoding of the Stream is not ASCII
                     if (!input.CurrentEncoding.Equals(Encoding.ASCII))
                     {
                         this.RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
                     }
-#endif
                     break;
                 default:
                     if (!input.CurrentEncoding.Equals(Encoding.UTF8))
                     {
-#if SILVERLIGHT
-                        this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
-#else
                         this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
-#endif
                     }
                     break;
             }
@@ -251,7 +238,6 @@ namespace VDS.RDF.Parsing
             }
         }
 
-#if !NO_FILE
         /// <summary>
         /// Parses NTriples Syntax from the given file using a RDF Handler
         /// </summary>
@@ -263,7 +249,6 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
             this.Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
         }
-#endif
 
         private void Parse(TokenisingParserContext context)
         {
@@ -456,11 +441,7 @@ namespace VDS.RDF.Parsing
                     throw new RdfParseException("NTriples does not permit relative URIs");
                 return n;
             }
-#if SILVERLIGHT
-            catch (FormatException uriEx)
-#else
             catch (UriFormatException uriEx)
-#endif
             {
                 throw new RdfParseException("Invalid URI encountered, see inner exception for details", uriEx);
             }

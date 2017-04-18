@@ -36,9 +36,7 @@ using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage.Management.Provisioning;
 using VDS.RDF.Storage.Management.Provisioning.Sesame;
 using VDS.RDF.Writing;
-#if !NO_WEB
 using System.Web;
-#endif
 
 namespace VDS.RDF.Storage.Management
 {
@@ -47,9 +45,7 @@ namespace VDS.RDF.Storage.Management
     /// </summary>
     public class SesameServer
         : BaseHttpConnector, IAsyncStorageServer, IConfigurationSerializable
-#if !NO_SYNC_HTTP
         , IStorageServer
-#endif
     {
         /// <summary>
         /// System Repository ID
@@ -113,14 +109,12 @@ namespace VDS.RDF.Storage.Management
             this._hasCredentials = (!String.IsNullOrEmpty(username) && !String.IsNullOrEmpty(password));
         }
 
-#if !NO_PROXY
-
         /// <summary>
         /// Creates a new connection to a Sesame HTTP Protocol supporting Store
         /// </summary>
         /// <param name="baseUri">Base Uri of the Store</param>
         /// <param name="proxy">Proxy Server</param>
-        public SesameServer(String baseUri, WebProxy proxy)
+        public SesameServer(String baseUri, IWebProxy proxy)
             : this(baseUri, null, null, proxy) { }
 
         /// <summary>
@@ -130,13 +124,11 @@ namespace VDS.RDF.Storage.Management
         /// <param name="username">Username to use for requests that require authentication</param>
         /// <param name="password">Password to use for requests that require authentication</param>
         /// <param name="proxy">Proxy Server</param>
-        public SesameServer(String baseUri, String username, String password, WebProxy proxy)
+        public SesameServer(String baseUri, String username, String password, IWebProxy proxy)
             : this(baseUri, username, password)
         {
             this.Proxy = proxy;
         }
-
-#endif
 
         /// <summary>
         /// Gets the IO Behaviour of the server
@@ -149,8 +141,6 @@ namespace VDS.RDF.Storage.Management
             }
         }
 
-
-#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Gets a default template for creating a store
@@ -252,11 +242,7 @@ namespace VDS.RDF.Storage.Management
         /// </remarks>
         public virtual IStorageProvider GetStore(string storeID)
         {
-#if !NO_PROXY
             return new SesameHttpProtocolConnector(this._baseUri, storeID, this._username, this._pwd, this.Proxy);
-#else
-            return new SesameHttpProtocolConnector(this._baseUri, storeID, this._username, this._pwd);
-#endif
         }
 
         /// <summary>
@@ -312,8 +298,6 @@ namespace VDS.RDF.Storage.Management
                 throw StorageHelper.HandleHttpError(webEx, "listing Stores from");
             }
         }
-
-#endif
 
         /// <summary>
         /// Gets a default template for creating a store
@@ -430,11 +414,7 @@ namespace VDS.RDF.Storage.Management
             try
             {
                 IAsyncStorageProvider provider;
-#if !NO_PROXY
                 provider = new SesameHttpProtocolConnector(this._baseUri, storeID, this._username, this._pwd, this.Proxy);
-#else
-                provider = new SesameHttpProtocolConnector(this._baseUri, storeID, this._username, this._pwd);
-#endif
                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, provider), state);
             }
             catch (Exception e)
@@ -562,7 +542,7 @@ namespace VDS.RDF.Storage.Management
                 if (Options.ForceHttpBasicAuth)
                 {
                     // Forcibly include a HTTP basic authentication header
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
                     string credentials = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(this._username + ":" + this._pwd));
                     request.Headers.Add("Authorization", "Basic " + credentials);
 #else
@@ -575,7 +555,7 @@ namespace VDS.RDF.Storage.Management
                     // Leave .Net to cope with HTTP auth challenge response
                     NetworkCredential credentials = new NetworkCredential(this._username, this._pwd);
                     request.Credentials = credentials;
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
                     request.PreAuthenticate = true;
 #endif
                 }
@@ -591,11 +571,7 @@ namespace VDS.RDF.Storage.Management
         {
             if (this._sysConnection == null)
             {
-#if !NO_PROXY
                 this._sysConnection = new SesameHttpProtocolConnector(this._baseUri, SesameServer.SystemRepositoryID, this._username, this._pwd, this.Proxy);
-#else
-                this._sysConnection = new SesameHttpProtocolConnector(this._baseUri, SesameServer.SystemRepositoryID, this._username, this._pwd);
-#endif
             }
         }
 

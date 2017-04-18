@@ -24,7 +24,7 @@
 // </copyright>
 */
 
-#if NET40 && !SILVERLIGHT
+#if NET40
 
 using System;
 using System.Collections.Generic;

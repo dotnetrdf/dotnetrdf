@@ -511,7 +511,6 @@ WHERE
             }
         }
 
-#if !NO_FILE
         [Fact]
         public void SparqlPropertyPathEvaluationCore395ExactQuery()
         {
@@ -617,6 +616,5 @@ select ?superclass where {
             Assert.Equal(1, rset.Count);
             Assert.Equal(g.CreateUriNode("Frame:Sheep"), rset[0]["prey"]);
         }
-#endif
     }
 }

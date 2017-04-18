@@ -26,10 +26,8 @@
 
 using System;
 using System.IO;
-using VDS.RDF.Writing.Formatting;
-#if !NO_WEB
 using System.Web.UI;
-#endif
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing.Contexts
 {

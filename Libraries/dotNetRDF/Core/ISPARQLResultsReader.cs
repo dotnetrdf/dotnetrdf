@@ -44,7 +44,6 @@ namespace VDS.RDF
         /// <remarks>Should throw an error if the Result Set is not empty</remarks>
         void Load(SparqlResultSet results, StreamReader input);
 
-#if !NO_FILE
         /// <summary>
         /// Loads a Result Set from the given File
         /// </summary>
@@ -53,7 +52,6 @@ namespace VDS.RDF
         /// <returns></returns>
         /// <remarks>Should throw an error if the Result Set is not empty</remarks>
         void Load(SparqlResultSet results, String filename);
-#endif
 
         /// <summary>
         /// Loads a Result Set from the given Input
@@ -71,14 +69,12 @@ namespace VDS.RDF
         /// <param name="input">Stream to read from</param>
         void Load(ISparqlResultsHandler handler, StreamReader input);
 
-#if !NO_FILE
         /// <summary>
         /// Loads a Result Set using a Results Handler from the given file
         /// </summary>
         /// <param name="handler">Results Handler</param>
         /// <param name="filename">File to read results from</param>
         void Load(ISparqlResultsHandler handler, String filename);
-#endif
 
         /// <summary>
         /// Loads a Result Set using a Results Handler from the given Input

@@ -45,8 +45,6 @@ namespace VDS.RDF.Storage
         private bool _ready = false;
         private String _filename;
 
-#if !PORTABLE
-
         /// <summary>
         /// Creates a new Dataset File Manager
         /// </summary>
@@ -88,35 +86,6 @@ namespace VDS.RDF.Storage
             }
         }
 
-#else
-        private delegate void AsyncLoadCaller(TextReader streamReader, IStoreReader reader);
-
-        private readonly AsyncLoadCaller _loadDelegate;
-        public DatasetFileManager()
-        {
-            _loadDelegate = new AsyncLoadCaller(Initialise);    
-        }
-        
-
-        public IAsyncResult BeginLoad(String sourceFileName, TextReader sourceReader, AsyncCallback callback, object state)
-        {
-            _filename = sourceFileName;
-            IStoreReader reader = MimeTypesHelper.GetStoreParserByFileExtension(MimeTypesHelper.GetTrueFileExtension(sourceFileName));
-            return _loadDelegate.BeginInvoke(sourceReader, reader, callback, state);
-        }
-
-        public void EndLoad(IAsyncResult result)
-        {
-            _loadDelegate.EndInvoke(result);
-        }
-
-        private void Initialise(TextReader streamReader, IStoreReader storeReader)
-        {
-            storeReader.Load(_store, streamReader);
-        }
-#endif
-
-        
         /// <summary>
         /// Makes a query against the in-memory copy of the Stores data
         /// </summary>

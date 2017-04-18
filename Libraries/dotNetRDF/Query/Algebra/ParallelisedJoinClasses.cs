@@ -386,9 +386,7 @@ namespace VDS.RDF.Query.Algebra
                 if (this._rhsResult == null)
                 {
                     if (this._rhsError != null) throw this._rhsError;
-#if !PORTABLE // No Thread.Sleep() in PCL
                     Thread.Sleep(10);
-#endif
                 }
                 if (this._rhsResult == null) throw new RdfQueryException("Unknown error in parallel join evaluation, RHS is reported completed without errors but no result is available");
 

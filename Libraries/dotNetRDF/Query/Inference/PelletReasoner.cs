@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-#if !SILVERLIGHT
-
 using System;
 using System.Collections.Generic;
 using VDS.RDF.Ontology;
@@ -249,5 +247,3 @@ namespace VDS.RDF.Query.Inference
 
     }
 }
-
-#endif

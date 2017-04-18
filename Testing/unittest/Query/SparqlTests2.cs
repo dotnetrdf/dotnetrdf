@@ -99,7 +99,7 @@ namespace VDS.RDF.Query
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet) results;
+                SparqlResultSet rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
                     Console.WriteLine(r.ToString());
@@ -134,7 +134,7 @@ namespace VDS.RDF.Query
                 Assert.IsAssignableFrom<SparqlResultSet>(results);
                 if (results is SparqlResultSet)
                 {
-                    SparqlResultSet rset = (SparqlResultSet) results;
+                    SparqlResultSet rset = (SparqlResultSet)results;
                     foreach (SparqlResult r in rset)
                     {
                         Console.WriteLine(r.ToString());
@@ -175,7 +175,7 @@ namespace VDS.RDF.Query
                 Assert.IsAssignableFrom<SparqlResultSet>(results);
                 if (results is SparqlResultSet)
                 {
-                    SparqlResultSet rset = (SparqlResultSet) results;
+                    SparqlResultSet rset = (SparqlResultSet)results;
                     foreach (SparqlResult r in rset)
                     {
                         Console.WriteLine(r.ToString());
@@ -215,7 +215,7 @@ namespace VDS.RDF.Query
                 Assert.IsAssignableFrom<SparqlResultSet>(results);
                 if (results is SparqlResultSet)
                 {
-                    SparqlResultSet rset = (SparqlResultSet) results;
+                    SparqlResultSet rset = (SparqlResultSet)results;
                     foreach (SparqlResult r in rset)
                     {
                         Console.WriteLine(r.ToString());
@@ -397,7 +397,7 @@ WHERE
             Console.WriteLine(algebra.ToString());
             Assert.IsAssignableFrom<Select>(algebra);
 
-            algebra = ((IUnaryOperator) algebra).InnerAlgebra;
+            algebra = ((IUnaryOperator)algebra).InnerAlgebra;
             Assert.IsAssignableFrom<Extend>(algebra);
         }
 
@@ -428,10 +428,10 @@ WHERE
             Console.WriteLine(algebra.ToString());
             Assert.IsAssignableFrom<Select>(algebra);
 
-            algebra = ((IUnaryOperator) algebra).InnerAlgebra;
+            algebra = ((IUnaryOperator)algebra).InnerAlgebra;
             Assert.IsAssignableFrom<Union>(algebra);
 
-            IUnion union = (Union) algebra;
+            IUnion union = (Union)algebra;
             ISparqlAlgebra lhs = union.Lhs;
             Assert.IsAssignableFrom<Extend>(lhs);
 
@@ -457,7 +457,7 @@ WHERE
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet) results;
+                SparqlResultSet rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
                     Console.WriteLine(r.ToString());
@@ -670,7 +670,7 @@ WHERE
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet) results;
+                SparqlResultSet rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
                     Console.WriteLine(r.ToString());
@@ -701,7 +701,7 @@ WHERE
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet) results;
+                SparqlResultSet rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
                     Console.WriteLine(r.ToString());
@@ -732,7 +732,7 @@ WHERE
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet) results;
+                SparqlResultSet rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
                     Console.WriteLine(r.ToString());
@@ -763,7 +763,7 @@ WHERE
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet) results;
+                SparqlResultSet rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
                     Console.WriteLine(r.ToString());
@@ -794,7 +794,7 @@ WHERE
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet) results;
+                SparqlResultSet rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
                     Console.WriteLine(r.ToString());
@@ -825,7 +825,7 @@ WHERE
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet) results;
+                SparqlResultSet rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
                     Console.WriteLine(r.ToString());
@@ -856,7 +856,7 @@ WHERE
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet) results;
+                SparqlResultSet rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
                     Console.WriteLine(r.ToString());
@@ -865,7 +865,6 @@ WHERE
             }
         }
 
-#if !NO_COMPRESSION
         [Fact]
         public void SparqlOrderByComplexLazyPerformance()
         {
@@ -895,7 +894,7 @@ WHERE
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet) results;
+                SparqlResultSet rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
                     Console.WriteLine(r.ToString());
@@ -912,7 +911,7 @@ WHERE
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet) results;
+                SparqlResultSet rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
                     Console.WriteLine(r.ToString());
@@ -921,7 +920,6 @@ WHERE
             }
             Options.AlgebraOptimisation = true;
         }
-#endif
 
         [Fact]
         public void SparqlOrderByComplexLazy2()
@@ -945,7 +943,7 @@ WHERE
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet) results;
+                SparqlResultSet rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
                     Console.WriteLine(r.ToString());
@@ -980,7 +978,7 @@ WHERE
                 Assert.IsAssignableFrom<SparqlResultSet>(results);
                 if (results is SparqlResultSet)
                 {
-                    SparqlResultSet rset = (SparqlResultSet) results;
+                    SparqlResultSet rset = (SparqlResultSet)results;
                     foreach (SparqlResult r in rset)
                     {
                         Console.WriteLine(r.ToString());
@@ -1020,7 +1018,7 @@ WHERE
                 Assert.IsAssignableFrom<SparqlResultSet>(results);
                 if (results is SparqlResultSet)
                 {
-                    SparqlResultSet rset = (SparqlResultSet) results;
+                    SparqlResultSet rset = (SparqlResultSet)results;
                     foreach (SparqlResult r in rset)
                     {
                         Console.WriteLine(r.ToString());
@@ -1063,7 +1061,7 @@ WHERE
                 Assert.IsAssignableFrom<SparqlResultSet>(results);
                 if (results is SparqlResultSet)
                 {
-                    SparqlResultSet rset = (SparqlResultSet) results;
+                    SparqlResultSet rset = (SparqlResultSet)results;
                     foreach (SparqlResult r in rset)
                     {
                         Console.WriteLine(r.ToString());
@@ -1103,7 +1101,7 @@ WHERE
                 Assert.IsAssignableFrom<SparqlResultSet>(results);
                 if (results is SparqlResultSet)
                 {
-                    SparqlResultSet rset = (SparqlResultSet) results;
+                    SparqlResultSet rset = (SparqlResultSet)results;
                     foreach (SparqlResult r in rset)
                     {
                         Console.WriteLine(r.ToString());
@@ -1116,8 +1114,6 @@ WHERE
                 this.ResetOptimiser();
             }
         }
-
-#if !PORTABLE
 
         [SkippableFact]
         public void SparqlFilterLazyDBPedia()
@@ -1152,7 +1148,7 @@ WHERE
                 Assert.IsAssignableFrom<SparqlResultSet>(results);
                 if (results is SparqlResultSet)
                 {
-                    SparqlResultSet rset = (SparqlResultSet) results;
+                    SparqlResultSet rset = (SparqlResultSet)results;
                     foreach (SparqlResult r in rset)
                     {
                         Console.WriteLine(r.ToString());
@@ -1198,7 +1194,7 @@ WHERE
                 Assert.IsAssignableFrom<SparqlResultSet>(results);
                 if (results is SparqlResultSet)
                 {
-                    SparqlResultSet rset = (SparqlResultSet) results;
+                    SparqlResultSet rset = (SparqlResultSet)results;
                     foreach (SparqlResult r in rset)
                     {
                         Console.WriteLine(r.ToString());
@@ -1209,7 +1205,7 @@ WHERE
                     Assert.IsAssignableFrom<SparqlResultSet>(results2);
                     if (results2 is SparqlResultSet)
                     {
-                        SparqlResultSet rset2 = (SparqlResultSet) results2;
+                        SparqlResultSet rset2 = (SparqlResultSet)results2;
                         foreach (SparqlResult r in rset2)
                         {
                             Console.WriteLine(r.ToString());
@@ -1223,8 +1219,6 @@ WHERE
                 this.ResetOptimiser();
             }
         }
-
-#endif
 
         [Fact]
         public void SparqlLazyLimitSimple1()
@@ -1310,8 +1304,6 @@ WHERE
             }
         }
 
-#if !PORTABLE
-
         [Fact]
         public void SparqlSubQueryGraphInteractionCore416_Serial()
         {
@@ -1350,7 +1342,7 @@ WHERE
                 }
 
                 Console.WriteLine("Total Execution Time: " + total);
-                Assert.True(total < new TimeSpan(0, 0, 1*(totalRuns/10)));
+                Assert.True(total < new TimeSpan(0, 0, 1 * (totalRuns / 10)));
             }
             finally
             {
@@ -1399,7 +1391,7 @@ WHERE
                 }
 
                 Console.WriteLine("Total Execution Time: " + total);
-                Assert.True(total < new TimeSpan(0, 0, 1*(totalRuns/10)));
+                Assert.True(total < new TimeSpan(0, 0, 1 * (totalRuns / 10)));
             }
             finally
             {
@@ -1506,7 +1498,7 @@ WHERE
         }
 
 
-        [Fact(Skip ="the query requires generating ~4.7 million solutions so is fundamentally unsolvable")]
+        [Fact(Skip = "the query requires generating ~4.7 million solutions so is fundamentally unsolvable")]
         public void SparqlGraphOptionalInteractionCore457_2()
         {
             try
@@ -1530,13 +1522,13 @@ WHERE
             RunCore457("optional2.rq");
         }
 
-        [Fact(Skip ="the query requires generating ~4.7 million solutions so is fundamentally unsolvable")]
+        [Fact(Skip = "the query requires generating ~4.7 million solutions so is fundamentally unsolvable")]
         public void SparqlGraphExistsInteractionCore457_1()
         {
             RunCore457("exists.rq");
         }
 
-        [Fact(Skip ="the query requires generating ~4.7 million solutions so is fundamentally unsolvable")]
+        [Fact(Skip = "the query requires generating ~4.7 million solutions so is fundamentally unsolvable")]
         public void SparqlGraphExistsInteractionCore457_2()
         {
             try
@@ -1566,12 +1558,10 @@ WHERE
             RunCore457("exists3.rq");
         }
 
-        [Fact(Skip="the query requires generating ~4.7 million solutions so is fundamentally unsolvable")]
+        [Fact(Skip = "the query requires generating ~4.7 million solutions so is fundamentally unsolvable")]
         public void SparqlGraphExistsInteractionCore457_5()
         {
             RunCore457("exists-limit.rq");
         }
-
-#endif
-            }
-        }
+    }
+}

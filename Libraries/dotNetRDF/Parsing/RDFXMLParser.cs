@@ -150,7 +150,6 @@ namespace VDS.RDF.Parsing
             this.Load(new GraphHandler(g), input);
         }
 
-#if !NO_FILE
         /// <summary>
         /// Reads RDF/XML syntax from some File into the given Graph
         /// </summary>
@@ -166,7 +165,6 @@ namespace VDS.RDF.Parsing
             StreamReader input = new StreamReader(File.OpenRead(filename), Encoding.UTF8);
             this.Load(g, input);
         }
-#endif
 
         /// <summary>
         /// Reads RDF/XML syntax from some Stream using a RDF Handler
@@ -181,11 +179,7 @@ namespace VDS.RDF.Parsing
             // Issue a Warning if the Encoding of the Stream is not UTF-8
             if (!input.CurrentEncoding.Equals(Encoding.UTF8))
             {
-#if !SILVERLIGHT
                 this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
-#else
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
-#endif
             }
 
             this.Load(handler, (TextReader)input);
@@ -1174,9 +1168,7 @@ namespace VDS.RDF.Parsing
             TypedLiteralEvent tlit = (TypedLiteralEvent)lit;
             // At the moment we're just going to ensure that we normalize it to Unicode Normal Form C
             String xmllit = tlit.Value;
-#if !NO_NORM
             xmllit = xmllit.Normalize();
-#endif
             obj = context.Handler.CreateLiteralNode(xmllit, UriFactory.Create(tlit.DataType));
 
             // Assert the Triple
@@ -1710,14 +1702,12 @@ namespace VDS.RDF.Parsing
                         // A Property Attribute
 
                         // Validate the Normalization of the Attribute Value
-#if !NO_NORM
                         if (!a.Value.IsNormalized())
                         {
                             throw ParserHelper.Error("Encountered a Property Attribute '" + a.QName + "' whose value was not correctly normalized in Unicode Normal Form C", "Empty Property Element", a);
                         }
                         else
                         {
-#endif
                             // Create the Predicate from the Attribute QName
                             pred = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(a.QName, context.Namespaces, null)));
 
@@ -1733,9 +1723,7 @@ namespace VDS.RDF.Parsing
 
                             // Assert the Property Triple
                             if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
-#if !NO_NORM
                         }
-#endif
                     }
                     else if (RdfXmlSpecsHelper.IsIDAttribute(a) || RdfXmlSpecsHelper.IsNodeIDAttribute(a) || RdfXmlSpecsHelper.IsResourceAttribute(a))
                     {
@@ -1963,10 +1951,8 @@ namespace VDS.RDF.Parsing
         {
             switch (this._mode)
             {
-#if !NO_XMLDOM
                 case RdfXmlParserMode.DOM:
                     return "RDF/XML (DOM)";
-#endif
                 case RdfXmlParserMode.Streaming:
                 default:
                     return "RDF/XML (Streaming)";

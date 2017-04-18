@@ -113,18 +113,7 @@ namespace VDS.RDF
             }
 
             // Eliminate any remaining Ground Triples from the parent Graph since these aren't relavant to whether we're a sub-graph
-#if SILVERLIGHT
-            for (int i = 0; i < this._parentTriples.Count; i++)
-            {
-                if (this._parentTriples[i].IsGroundTriple)
-                {
-                    this._parentTriples.RemoveAt(i);
-                    i--;
-                }
-            }
-#else
             this._parentTriples.RemoveAll(t => t.IsGroundTriple);
-#endif
 
             // If there are no Triples left in the parent Graph, all our Triples were Ground Triples and there are no Blank Nodes to map then we're a sub-graph
             if (this._parentTriples.Count == 0 && gtCount == subgraph.Triples.Count && subNodes.Count == 0) return true;

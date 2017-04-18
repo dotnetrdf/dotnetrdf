@@ -53,8 +53,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             }
         }
 
-#if !NO_SYNC_HTTP
-
         /// <summary>
         /// Gets a list of lists expressing clusters within the Knowledge Base
         /// </summary>
@@ -170,8 +168,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                 throw new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server", webEx);
             }
         }
-
-#endif
 
         /// <summary>
         /// Gets a list of lists expressing clusters within the Knowledge Base

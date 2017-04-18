@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-#if !NO_SYNC_HTTP
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -913,5 +911,3 @@ namespace VDS.RDF.Storage
         }
     }
 }
-
-#endif

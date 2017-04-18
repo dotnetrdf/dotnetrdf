@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-#if !NO_DATA && !NO_STORAGE
-
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -1575,5 +1573,3 @@ namespace VDS.RDF.Storage
         }
     }
 }
-
-#endif

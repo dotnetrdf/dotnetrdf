@@ -288,7 +288,6 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath ends-with() function");
                         }
                         break;
-#if !NO_WEB
                     case XPathFunctionFactory.EscapeHtmlURI:
                         if (args.Count == 1)
                         {
@@ -299,7 +298,6 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath escape-html-uri() function");
                         }
                         break;
-#endif
                     case XPathFunctionFactory.False:
                         if (args.Count == 0)
                         {
@@ -384,7 +382,6 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath normalize-space() function");
                         }
                         break;
-#if !NO_NORM
                     case XPathFunctionFactory.NormalizeUnicode:
                         if (args.Count == 1)
                         {
@@ -399,7 +396,6 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath normalize-space() function");
                         } 
                         break;
-#endif
                     case XPathFunctionFactory.Not:
                         if (args.Count == 1)
                         {
@@ -434,7 +430,6 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath round() function");
                         }
                         break;
-#if !SILVERLIGHT
                     case XPathFunctionFactory.RoundHalfToEven:
                         if (args.Count == 1)
                         {
@@ -449,7 +444,6 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath round-half-to-even() function");
                         }
                         break;
-#endif
                     case XPathFunctionFactory.SecondsFromDateTime:
                         if (args.Count == 1)
                         {

@@ -135,7 +135,6 @@ namespace VDS.RDF.Writing
             }
         }
 
-#if !NO_FILE
         /// <summary>
         /// Saves a Store in TriG (Turtle with Named Graphs) format
         /// </summary>
@@ -149,13 +148,12 @@ namespace VDS.RDF.Writing
                 this.Save(store, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
             }
         }
-#endif
 
-            /// <summary>
-            /// Saves a Store in TriG (Turtle with Named Graphs) format
-            /// </summary>
-            /// <param name="store">Store to save</param>
-            /// <param name="writer">Writer to save to</param>
+        /// <summary>
+        /// Saves a Store in TriG (Turtle with Named Graphs) format
+        /// </summary>
+        /// <param name="store">Store to save</param>
+        /// <param name="writer">Writer to save to</param>
         public void Save(ITripleStore store, TextWriter writer)
         {
             if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
@@ -491,13 +489,11 @@ namespace VDS.RDF.Writing
                     }
                 }
             }
-#if !(PORTABLE||NETCORE)  // PCL has no Thread.Abort() method or ThreadAbortException
+#if !NETCORE  // PCL has no Thread.Abort() method or ThreadAbortException
             catch (ThreadAbortException)
             {
                 // We've been terminated, don't do anything
-#if !SILVERLIGHT
                 Thread.ResetAbort();
-#endif
             }
 #endif
             catch (Exception ex)

@@ -83,7 +83,6 @@ namespace VDS.RDF.Parsing
             this.Load(new ResultSetHandler(results), input);
         }
 
-#if !NO_FILE
         /// <summary>
         /// Loads a SPARQL Result Set from RDF contained in the given File
         /// </summary>
@@ -97,7 +96,6 @@ namespace VDS.RDF.Parsing
             if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
             this.Load(new ResultSetHandler(results), filename);
         }
-#endif
 
         /// <summary>
         /// Loads a SPARQL Results from RDF contained in the given Input using a Results Handler
@@ -156,7 +154,6 @@ namespace VDS.RDF.Parsing
             this.Load(handler, (TextReader)input);
         }
 
-#if !NO_FILE
         /// <summary>
         /// Loads a SPARQL Results from RDF contained in the given file using a Results Handler
         /// </summary>
@@ -181,7 +178,6 @@ namespace VDS.RDF.Parsing
             }
             this.Parse(new SparqlRdfParserContext(g, handler));
         }
-#endif
 
         /// <summary>
         /// Internal method which actually parses the Result Set by traversing the RDF Graph appropriately

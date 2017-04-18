@@ -25,12 +25,7 @@
 */
 
 using System;
-#if !WINDOWS_PHONE && !NETCORE
 using System.ComponentModel;
-#if SILVERLIGHT
-using System.ComponentModel.DataAnnotations;
-#endif
-#endif
 
 namespace VDS.RDF.Storage.Management.Provisioning.Sesame
 {
@@ -129,13 +124,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// <summary>
         /// Gets/Sets the Indexing Mode
         /// </summary>
-#if !WINDOWS_PHONE && !NETCORE
-#if !SILVERLIGHT
         [Category("Sesame Configuration"), DisplayName("Triple Indexing Mode"), Description("Sets the indexing mode for the store"), DefaultValue(SesameNativeIndexMode.SPOC)]
-#else
-        [Category("Sesame Configuration"), Display(Name = "Triple Indexing Mode"), Description("Sets the indexing mode for the store"), DefaultValue(SesameNativeIndexMode.SPOC)]
-#endif
-#endif
         public SesameNativeIndexMode IndexMode
         {
             get;
@@ -145,13 +134,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// <summary>
         /// Gets/Sets whether to enable direct type hierarchy inferencing
         /// </summary>
-#if !WINDOWS_PHONE && !NETCORE
-#if !SILVERLIGHT
         [Category("Sesame Reasoning"), DisplayName("Direct Type Hierarchy Inference"), Description("Enables/Disables Direct Type Hierarchy Inference"), DefaultValue(false)]
-#else
-        [Category("Sesame Reasoning"), Display(Name = "Direct Type Hierarchy Inference"), Description("Enables/Disables Direct Type Hierarchy Inference"), DefaultValue(false)]
-#endif
-#endif
         public bool DirectTypeHierarchyInferencing
         {
             get;
@@ -161,13 +144,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// <summary>
         /// Gets/Sets whether to enable RDF Schema Inferencing
         /// </summary>
-#if !WINDOWS_PHONE && !NETCORE
-#if !SILVERLIGHT
         [Category("Sesame Reasoning"), DisplayName("RDF Schema Inference"), Description("Enables/Disables RDF Schema inferencing"), DefaultValue(false)]
-#else
-        [Category("Sesame Reasoning"), Display(Name = "RDF Schema Inference"), Description("Enables/Disables RDF Schema inferencing"), DefaultValue(false)]
-#endif
-#endif
         public bool RdfSchemaInferencing
         {
             get;

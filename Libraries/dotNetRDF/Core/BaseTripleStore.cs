@@ -148,13 +148,8 @@ namespace VDS.RDF
         public virtual bool AddFromUri(Uri graphUri, bool mergeIfExists)
         {
             Graph g = new Graph();
-#if !SILVERLIGHT
             UriLoader.Load(g, graphUri);
             return this._graphs.Add(g, mergeIfExists);
-#else
-            UriLoader.Load(g, graphUri, (gr, _) => { this._graphs.Add(gr, mergeIfExists); }, null);
-            return true;
-#endif
         }
 
         /// <summary>

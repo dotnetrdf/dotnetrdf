@@ -39,11 +39,7 @@ namespace VDS.RDF.Update
     {
         private ISparqlDataset _data;
         private SparqlUpdateCommandSet _commands;
-#if !NO_STOPWATCH
         private Stopwatch _timer = new Stopwatch();
-#else
-        private DateTime _start, _end;
-#endif
         private long _timeout;
 
         /// <summary>
@@ -127,12 +123,7 @@ namespace VDS.RDF.Update
         {
             get
             {
-#if !NO_STOPWATCH
-                return this._timer.ElapsedMilliseconds;
-#else
-                if (this._end == null || this._end < this._start) this._end = DateTime.Now;
-                return (this._end - this._start).Milliseconds;
-#endif
+               return this._timer.ElapsedMilliseconds;
             }
         }
 
@@ -143,12 +134,7 @@ namespace VDS.RDF.Update
         {
             get
             {
-#if !NO_STOPWATCH
                 return this._timer.ElapsedTicks;
-#else
-                if (this._end == null || this._end < this._start) this._end = DateTime.Now;
-                return (this._end - this._start).Ticks;
-#endif
             }
         }
 
@@ -235,20 +221,11 @@ namespace VDS.RDF.Update
         {
             if (this._timeout > 0)
             {
-#if !NO_STOPWATCH
                 if (this._timer.ElapsedMilliseconds > this._timeout)
                 {
                     this._timer.Stop();
                     throw new SparqlUpdateTimeoutException("Update Execution Time exceeded the Timeout of " + this._timeout + "ms, updates aborted after " + this._timer.ElapsedMilliseconds + "ms");
                 }
-#else
-                TimeSpan elapsed = DateTime.Now - this._start;
-                if (elapsed.Milliseconds > this._timeout)
-                {
-                    this._end = DateTime.Now;
-                    throw new SparqlUpdateTimeoutException("Update Execution Time exceeded the Timeout of " + this._timeout + "ms, updates aborted after " + elapsed.Milliseconds + "ms");
-                }
-#endif
             }
         }
 
@@ -258,11 +235,7 @@ namespace VDS.RDF.Update
         public void StartExecution()
         {
             this.CalculateTimeout();
-#if !NO_STOPWATCH
             this._timer.Start();
-#else
-            this._start = DateTime.Now;
-#endif
         }
 
         /// <summary>
@@ -270,11 +243,7 @@ namespace VDS.RDF.Update
         /// </summary>
         public void EndExecution()
         {
-#if !NO_STOPWATCH
             this._timer.Stop();
-#else
-            this._end = DateTime.Now;
-#endif
         }
     }
 }

@@ -58,8 +58,6 @@ namespace VDS.RDF.Parsing
             Assert.NotNull(g.BaseUri);
         }
 
-#if !PORTABLE
-
         [SkippableFact]
         public void ParsingBaseUriAssignmentUriLoader()
         {
@@ -84,8 +82,6 @@ namespace VDS.RDF.Parsing
                 Options.UriLoaderTimeout = defaultTimeout;
             }
         }
-
-#endif
 
         [Fact]
         public void ParsingBaseUriAssignmentRdfXml()

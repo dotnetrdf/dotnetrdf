@@ -28,8 +28,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Web;
+using VDS.RDF;
+using VDS.RDF.Writing;
 
-namespace VDS.RDF.Writing
+namespace System.Web.UI
 {
     /// <summary>
     /// Custom implementation of <see cref="System.Web.UI.HtmlTextWriter">System.Web.UI.HtmlTextWriter</see> to replace it in builds where System.Web is not available
@@ -213,7 +216,7 @@ namespace VDS.RDF.Writing
             this._styles.Add(new KeyValuePair<String, String>(this.GetStyleName(key), value));
         }
 
-#if PORTABLE || NETCORE
+#if NETCORE
         /// <summary>
         /// Close the writer
         /// </summary>
@@ -390,23 +393,16 @@ namespace VDS.RDF.Writing
             this._writer.Write(value);
         }
 
-#if PORTABLE
-        public void Write(string format, object arg0)
-#else
         /// <summary>
         /// Writes a formatted string
         /// </summary>
         /// <param name="format">String with format</param>
         /// <param name="arg0">Argument to insert into string</param>
         public override void Write(string format, object arg0)
-#endif
         {
             this._writer.Write(format, arg0);
         }
 
-#if PORTABLE
-        public void Write(string format, object arg0, object arg1)
-#else
         /// <summary>
         /// Writes a formatted string
         /// </summary>
@@ -414,7 +410,6 @@ namespace VDS.RDF.Writing
         /// <param name="arg0">Argument to insert into string</param>
         /// <param name="arg1">Argument to insert into string</param>
         public override void Write(string format, object arg0, object arg1)
-#endif
         {
             this._writer.Write(format, arg0, arg1);
         }
@@ -674,23 +669,16 @@ namespace VDS.RDF.Writing
             this._writer.WriteLine(value);
         }
 
-#if PORTABLE
-        public void WriteLine(string format, object arg0)
-#else
         /// <summary>
         /// Writes a formatted string followed by a new line
         /// </summary>
         /// <param name="format">String</param>
         /// <param name="arg0">Argument to insert into string</param>
         public override void WriteLine(string format, object arg0)
-#endif
         {
             this._writer.WriteLine(format, arg0);
         }
 
-#if PORTABLE
-        public void WriteLine(string format, object arg0, object arg1)
-#else
         /// <summary>
         /// Writes a formatted string followed by a new line
         /// </summary>
@@ -698,7 +686,6 @@ namespace VDS.RDF.Writing
         /// <param name="arg0">Argument to insert into string</param>
         /// <param name="arg1">Argument to insert into string</param>
         public override void WriteLine(string format, object arg0, object arg1)
-#endif
         {
             this._writer.WriteLine(format, arg0, arg1);
         }

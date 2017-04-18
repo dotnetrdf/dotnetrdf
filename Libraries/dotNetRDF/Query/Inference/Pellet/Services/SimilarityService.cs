@@ -60,8 +60,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             }
         }
 
-#if !NO_SYNC_HTTP
-
         /// <summary>
         /// Gets a list of key value pairs listing Similar Individuals and their Similarity scores
         /// </summary>
@@ -138,8 +136,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                 return g;
             }
         }
-
-#endif
 
         /// <summary>
         /// Gets a list of key value pairs listing Similar Individuals and their Similarity scores

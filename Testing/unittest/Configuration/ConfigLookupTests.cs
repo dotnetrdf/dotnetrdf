@@ -33,12 +33,19 @@ using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Configuration
 {
-
-    public class ConfigLookupTests
+    public class ConfigLookupTests : IDisposable
     {
+        private TestSettingsProvider _testSettings;
+
         public const String Prefixes = @"@prefix rdf: <" + NamespaceMapper.RDF + @"> .
 @prefix xsd: <"+ NamespaceMapper.XMLSCHEMA + @"> .
 @prefix dnr: <http://www.dotnetrdf.org/configuration#> .";
+
+        public ConfigLookupTests()
+        {
+            _testSettings = new TestSettingsProvider();
+            ConfigurationLoader.SettingsProvider = _testSettings;
+        }
 
         [Fact]
         public void ConfigurationLookupNode1()
@@ -70,7 +77,6 @@ _:a dnr:type <http://uri> .";
             Assert.True(EqualityHelper.AreUrisEqual(new Uri("http://uri"), ((IUriNode)value).Uri));
         }
 
-#if !NO_SYSTEMCONFIGURATION
         [Fact]
         public void ConfigurationLookupNode3()
         {
@@ -80,14 +86,13 @@ _:a dnr:type <appsetting:ConfigurationLookupNode3> .";
             Graph g = new Graph();
             g.LoadFromString(graph);
 
-            System.Configuration.ConfigurationManager.AppSettings["ConfigurationLookupNode3"] = "literal";
+            _testSettings.SettSetting("ConfigurationLookupNode3", "literal");
 
             INode value = ConfigurationLoader.GetConfigurationNode(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"));
 
             Assert.Equal(NodeType.Literal, value.NodeType);
             Assert.Equal("literal", ((ILiteralNode)value).Value);
         }
-#endif
 
         [Fact]
         public void ConfigurationLookupNode4()
@@ -214,14 +219,13 @@ _:a dnr:type ""not a boolean"" .";
             Assert.False(value);
         }
 
-#if !NO_SYSTEMCONFIGURATION
         [Fact]
         public void ConfigurationLookupBoolean5()
         {
             String graph = Prefixes + @"
 _:a dnr:type <appsetting:ConfigurationLookupBoolean5> .";
 
-            System.Configuration.ConfigurationManager.AppSettings["ConfigurationLookupBoolean5"] = "true";
+            _testSettings.SettSetting("ConfigurationLookupBoolean5", "true");
 
             Graph g = new Graph();
             g.LoadFromString(graph);
@@ -229,7 +233,6 @@ _:a dnr:type <appsetting:ConfigurationLookupBoolean5> .";
             bool value = ConfigurationLoader.GetConfigurationBoolean(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"), false);
             Assert.True(value);
         }
-#endif
 
         [Fact]
         public void ConfigurationLookupBoolean6()
@@ -283,14 +286,13 @@ _:a dnr:type ""not an integer"" .";
             Assert.Equal(0, value);
         }
 
-#if !NO_SYSTEMCONFIGURATION
         [Fact]
         public void ConfigurationLookupInt3()
         {
             String graph = Prefixes + @"
 _:a dnr:type <appsetting:ConfigurationLookupInt3> .";
 
-            System.Configuration.ConfigurationManager.AppSettings["ConfigurationLookupInt3"] = "123";
+            _testSettings.SettSetting("ConfigurationLookupInt3", "123");
 
             Graph g = new Graph();
             g.LoadFromString(graph);
@@ -298,7 +300,6 @@ _:a dnr:type <appsetting:ConfigurationLookupInt3> .";
             int value = ConfigurationLoader.GetConfigurationInt32(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"), 0);
             Assert.Equal(123, value);
         }
-#endif
 
         [Fact]
         public void ConfigurationLookupLong1()
@@ -326,14 +327,13 @@ _:a dnr:type ""not an integer"" .";
             Assert.Equal(0, value);
         }
 
-#if !NO_SYSTEMCONFIGURATION
         [Fact]
         public void ConfigurationLookupLong3()
         {
             String graph = Prefixes + @"
 _:a dnr:type <appsetting:ConfigurationLookupLong3> .";
 
-            System.Configuration.ConfigurationManager.AppSettings["ConfigurationLookupLong3"] = "123";
+            _testSettings.SettSetting("ConfigurationLookupLong3", "123");
 
             Graph g = new Graph();
             g.LoadFromString(graph);
@@ -341,7 +341,6 @@ _:a dnr:type <appsetting:ConfigurationLookupLong3> .";
             long value = ConfigurationLoader.GetConfigurationInt32(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"), 0);
             Assert.Equal(123, value);
         }
-#endif
 
         [Fact]
         public void ConfigurationLookupString1()
@@ -371,7 +370,6 @@ _:a dnr:type <http://uri> .";
             Assert.Null(value);
         }
 
-#if !NO_SYSTEMCONFIGURATION
         [Fact]
         public void ConfigurationLookupString3()
         {
@@ -381,13 +379,12 @@ _:a dnr:type <appsetting:ConfigurationLookupString3> .";
             Graph g = new Graph();
             g.LoadFromString(graph);
 
-            System.Configuration.ConfigurationManager.AppSettings["ConfigurationLookupString3"] = "literal";
+            _testSettings.SettSetting("ConfigurationLookupString3", "literal");
 
             String value = ConfigurationLoader.GetConfigurationString(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"));
 
             Assert.Equal("literal", value);
         }
-#endif
 
         [Fact]
         public void ConfigurationLookupString4()
@@ -425,7 +422,6 @@ _:a dnr:type <http://uri> .";
             Assert.Equal("http://uri/", value);
         }
 
-#if !NO_SYSTEMCONFIGURATION
         [Fact]
         public void ConfigurationLookupValue3()
         {
@@ -435,13 +431,12 @@ _:a dnr:type <appsetting:ConfigurationLookupString3> .";
             Graph g = new Graph();
             g.LoadFromString(graph);
 
-            System.Configuration.ConfigurationManager.AppSettings["ConfigurationLookupString3"] = "literal";
+            _testSettings.SettSetting("ConfigurationLookupString3", "literal");
 
             String value = ConfigurationLoader.GetConfigurationValue(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"));
 
             Assert.Equal("literal", value);
         }
-#endif
 
         [Fact]
         public void ConfigurationLookupValue4()
@@ -449,6 +444,36 @@ _:a dnr:type <appsetting:ConfigurationLookupString3> .";
             Graph g = new Graph();
             String value = ConfigurationLoader.GetConfigurationValue(g, g.CreateBlankNode("a"), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType)));
             Assert.Null(value);
+        }
+
+        private class TestSettingsProvider : ISettingsProvider
+        {
+            private readonly IDictionary<string, string> _dict = new Dictionary<string, string>();
+
+            public string GetSetting(string key)
+            {
+                if (_dict.ContainsKey(key) == false)
+                {
+                    return null;
+                }
+
+                return _dict[key];
+            }
+
+            public void SettSetting(string key, string value)
+            {
+                _dict[key] = value;
+            }
+        }
+
+        public void Dispose()
+        {
+            // revert the default value to not interfere with other tests
+#if NET40
+            ConfigurationLoader.SettingsProvider = new ConfigurationManagerSettingsProvider();
+#else
+            ConfigurationLoader.SettingsProvider = null;
+#endif
         }
     }
 }

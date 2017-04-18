@@ -61,20 +61,12 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
                     return a;
 
                 case SparqlNumericType.Decimal:
-#if !SILVERLIGHT
                     return new DecimalNode(null, Math.Round(a.AsDecimal(), MidpointRounding.AwayFromZero));
-#else
-                    return new DecimalNode(null, Math.Round(a.AsDecimal()));
-#endif
 
                 case SparqlNumericType.Float:
                     try
                     {
-#if !SILVERLIGHT
                         return new FloatNode(null, Convert.ToSingle(Math.Round(a.AsDouble(), MidpointRounding.AwayFromZero), CultureInfo.InvariantCulture));
-#else
-                        return new FloatNode(null, Convert.ToSingle(Math.Round(a.AsDouble()), CultureInfo.InvariantCulture));
-#endif
                     }
                     catch (RdfQueryException)
                     {
@@ -86,11 +78,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
                     }
 
                 case SparqlNumericType.Double:
-#if !SILVERLIGHT
                     return new DoubleNode(null, Math.Round(a.AsDouble(), MidpointRounding.AwayFromZero));
-#else
-                    return new DoubleNode(null, Math.Round(a.AsDouble()));
-#endif
 
                 default:
                     throw new RdfQueryException("Cannot evalute an Arithmetic Expression when the Numeric Type of the expression cannot be determined");

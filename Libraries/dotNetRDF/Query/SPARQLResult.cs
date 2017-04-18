@@ -37,21 +37,17 @@ using VDS.RDF.Query.Algebra;
 using VDS.RDF.Writing.Formatting;
 using VDS.RDF.Writing.Serialization;
 
-#if !SILVERLIGHT
-
-#endif
-
 namespace VDS.RDF.Query
 {
     /// <summary>
     /// Class for representing a Row of a Sparql Result Set
     /// </summary>
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
     [Serializable,XmlRoot(ElementName="result")]
 #endif
     public sealed class SparqlResult 
         : IEnumerable<KeyValuePair<String, INode>>
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
         , ISerializable, IXmlSerializable
 #endif
     {
@@ -91,7 +87,7 @@ namespace VDS.RDF.Query
             }
         }
 
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
         /// <summary>
         /// Deserialization only constructor
         /// </summary>
@@ -481,7 +477,7 @@ namespace VDS.RDF.Query
 
         #endregion
 
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
         #region Serialization
 
         /// <summary>

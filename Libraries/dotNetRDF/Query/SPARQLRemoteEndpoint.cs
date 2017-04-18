@@ -31,12 +31,10 @@ using System.Linq;
 using System.Net;
 using System.Security;
 using System.Text;
+using System.Web;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
-#if !NO_WEB
-using System.Web;
-#endif
 
 namespace VDS.RDF.Query
 {
@@ -269,8 +267,6 @@ namespace VDS.RDF.Query
         #endregion
 
         #region Query Methods
-
-#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Makes a Query where the expected Result is a <see cref="SparqlResultSet">SparqlResultSet</see> i.e. SELECT and ASK Queries
@@ -554,8 +550,6 @@ namespace VDS.RDF.Query
 
             return httpResponse;
         }
-
-#endif
 
         /// <summary>
         /// Makes a Query asynchronously where the expected Result is a <see cref="SparqlResultSet">SparqlResultSet</see> i.e. SELECT and ASK Queries

@@ -36,9 +36,7 @@ using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage.Management.Provisioning;
 using VDS.RDF.Storage.Management.Provisioning.Stardog;
-#if !NO_WEB
 using System.Web;
-#endif
 
 namespace VDS.RDF.Storage.Management
 {
@@ -47,9 +45,7 @@ namespace VDS.RDF.Storage.Management
     /// </summary>
     public abstract class BaseStardogServer
         : BaseHttpConnector, IAsyncStorageServer, IConfigurationSerializable
-#if !NO_SYNC_HTTP
           , IStorageServer
-#endif
     {
         protected String _baseUri, _adminUri, _username, _pwd;
         protected bool _hasCredentials = false;
@@ -90,14 +86,12 @@ namespace VDS.RDF.Storage.Management
             this._hasCredentials = (!String.IsNullOrEmpty(username) && !String.IsNullOrEmpty(password));
         }
 
-#if !NO_PROXY
-
         /// <summary>
         /// Creates a new connection to a Stardog Server
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="proxy">Proxy Server</param>
-        public BaseStardogServer(String baseUri, WebProxy proxy)
+        public BaseStardogServer(String baseUri, IWebProxy proxy)
             : this(baseUri, null, null, proxy)
         {
         }
@@ -109,13 +103,11 @@ namespace VDS.RDF.Storage.Management
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
         /// <param name="proxy">Proxy Server</param>
-        public BaseStardogServer(String baseUri, String username, String password, WebProxy proxy)
+        public BaseStardogServer(String baseUri, String username, String password, IWebProxy proxy)
             : this(baseUri, username, password)
         {
             this.Proxy = proxy;
         }
-
-#endif
 
         /// <summary>
         /// Gets the IO Behaviour of the server
@@ -124,8 +116,6 @@ namespace VDS.RDF.Storage.Management
         {
             get { return IOBehaviour.StorageServer; }
         }
-
-#if !NO_SYNC_HTTP
 
         #region IStorageServer Members
 
@@ -235,14 +225,8 @@ namespace VDS.RDF.Storage.Management
                     // Create the request and write the JSON
                     HttpWebRequest request = this.CreateAdminRequest("databases", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
                     String boundary = StorageHelper.HttpMultipartBoundary;
-#if !SILVERLIGHT
                     byte[] boundaryBytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
                     byte[] terminatorBytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
-#else
-    // Should be safe to do this for Silverlight as everything here would be in the ASCII range anyway
-                    byte[] boundaryBytes = System.Text.Encoding.UTF8.GetBytes("\r\n--" + boundary + "\r\n");
-                    byte[] terminatorBytes = System.Text.Encoding.UTF8.GetBytes("\r\n--" + boundary + "--\r\n");
-#endif
                     request.ContentType = MimeTypesHelper.FormMultipart + "; boundary=" + boundary;
 
                     using (Stream stream = request.GetRequestStream())
@@ -316,8 +300,6 @@ namespace VDS.RDF.Storage.Management
         public abstract IStorageProvider GetStore(string storeID);
 
         #endregion
-
-#endif
 
         #region IAsyncStorageServer Members
 
@@ -448,14 +430,8 @@ namespace VDS.RDF.Storage.Management
                     // Create the request and write the JSON
                     HttpWebRequest request = this.CreateAdminRequest("databases", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
                     String boundary = StorageHelper.HttpMultipartBoundary;
-#if !SILVERLIGHT
                     byte[] boundaryBytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
                     byte[] terminatorBytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
-#else
-    // Should be safe to do this for Silverlight as everything here would be in the ASCII range anyway
-                    byte[] boundaryBytes = System.Text.Encoding.UTF8.GetBytes("\r\n--" + boundary + "\r\n");
-                    byte[] terminatorBytes = System.Text.Encoding.UTF8.GetBytes("\r\n--" + boundary + "--\r\n");
-#endif
                     request.ContentType = MimeTypesHelper.FormMultipart + "; boundary=" + boundary;
 
                     request.BeginGetRequestStream(r =>
@@ -604,7 +580,7 @@ namespace VDS.RDF.Storage.Management
             request = base.ApplyRequestOptions(request);
 
             // Add the special Stardog Headers
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
             request.Headers.Add("SD-Protocol", "1.0");
 #else
             request.Headers["SD-Protocol"] = "1.0";
@@ -616,7 +592,7 @@ namespace VDS.RDF.Storage.Management
                 if (Options.ForceHttpBasicAuth)
                 {
                     // Forcibly include a HTTP basic authentication header
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
                     string credentials = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(this._username + ":" + this._pwd));
                     request.Headers.Add("Authorization", "Basic " + credentials);
 #else
@@ -629,7 +605,7 @@ namespace VDS.RDF.Storage.Management
                     // Leave .Net to cope with HTTP auth challenge response
                     NetworkCredential credentials = new NetworkCredential(this._username, this._pwd);
                     request.Credentials = credentials;
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
                     request.PreAuthenticate = true;
 #endif
                 }
@@ -813,11 +789,7 @@ namespace VDS.RDF.Storage.Management
                         Uri u = new Uri(uri);
                         return u.IsAbsoluteUri;
                     }
-#if PORTABLE
-                    catch(FormatException)
-#else
                     catch (UriFormatException)
-#endif
                     {
                         return false;
                     }
@@ -886,14 +858,12 @@ namespace VDS.RDF.Storage.Management
         {
         }
 
-#if !NO_PROXY
-
         /// <summary>
         /// Creates a new connection to a Stardog Server
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogV1Server(String baseUri, WebProxy proxy)
+        public StardogV1Server(String baseUri, IWebProxy proxy)
             : this(baseUri, null, null, proxy)
         {
         }
@@ -905,14 +875,11 @@ namespace VDS.RDF.Storage.Management
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogV1Server(String baseUri, String username, String password, WebProxy proxy)
+        public StardogV1Server(String baseUri, String username, String password, IWebProxy proxy)
             : base(baseUri, username, password, proxy)
         {
         }
-
-#endif
-
-#if !NO_SYNC_HTTP
+        
 
         /// <summary>
         /// Gets a provider for the Store with the given ID
@@ -921,14 +888,8 @@ namespace VDS.RDF.Storage.Management
         /// <returns></returns>
         public override IStorageProvider GetStore(string storeID)
         {
-#if !NO_PROXY
             return new StardogV1Connector(this._baseUri, storeID, this._username, this._pwd, this.Proxy);
-#else
-            return new StardogV1Connector(this._baseUri, storeID, this._username, this._pwd);
-#endif
         }
-
-#endif
 
         /// <summary>
         /// Gets a database from the server
@@ -938,11 +899,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="state">State to pass to the callback</param>
         public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
         {
-#if !NO_PROXY
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new StardogV1Connector(this._baseUri, storeID, this._username, this._pwd, this.Proxy)), state);
-#else
-            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new StardogV1Connector(this._baseUri, storeID, this._username, this._pwd)), state);
-#endif
         }
     }
 
@@ -972,14 +929,12 @@ namespace VDS.RDF.Storage.Management
         {
         }
 
-#if !NO_PROXY
-
         /// <summary>
         /// Creates a new connection to a Stardog Server
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogV2Server(String baseUri, WebProxy proxy)
+        public StardogV2Server(String baseUri, IWebProxy proxy)
             : this(baseUri, null, null, proxy)
         {
         }
@@ -991,15 +946,12 @@ namespace VDS.RDF.Storage.Management
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogV2Server(String baseUri, String username, String password, WebProxy proxy)
+        public StardogV2Server(String baseUri, String username, String password, IWebProxy proxy)
             : base(baseUri, username, password, proxy)
         {
         }
 
-#endif
 
-
-#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Gets a provider for the Store with the given ID
@@ -1008,14 +960,8 @@ namespace VDS.RDF.Storage.Management
         /// <returns></returns>
         public override IStorageProvider GetStore(string storeID)
         {
-#if !NO_PROXY
             return new StardogV2Connector(this._baseUri, storeID, this._username, this._pwd, this.Proxy);
-#else
-            return new StardogV2Connector(this._baseUri, storeID, this._username, this._pwd);
-#endif
         }
-
-#endif
 
         /// <summary>
         /// Gets a database from the server
@@ -1025,11 +971,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="state">State to pass to the callback</param>
         public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
         {
-#if !NO_PROXY
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new StardogV2Connector(this._baseUri, storeID, this._username, this._pwd, this.Proxy)), state);
-#else
-            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new StardogV2Connector(this._baseUri, storeID, this._username, this._pwd)), state);
-#endif
         }
     }
 
@@ -1059,14 +1001,12 @@ namespace VDS.RDF.Storage.Management
         {
         }
 
-#if !NO_PROXY
-
         /// <summary>
         /// Creates a new connection to a Stardog Server
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogV3Server(String baseUri, WebProxy proxy)
+        public StardogV3Server(String baseUri, IWebProxy proxy)
             : this(baseUri, null, null, proxy)
         {
         }
@@ -1078,15 +1018,11 @@ namespace VDS.RDF.Storage.Management
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogV3Server(String baseUri, String username, String password, WebProxy proxy)
+        public StardogV3Server(String baseUri, String username, String password, IWebProxy proxy)
             : base(baseUri, username, password, proxy)
         {
         }
-
-#endif
-
-
-#if !NO_SYNC_HTTP
+        
 
         /// <summary>
         /// Gets a provider for the Store with the given ID
@@ -1095,14 +1031,8 @@ namespace VDS.RDF.Storage.Management
         /// <returns></returns>
         public override IStorageProvider GetStore(string storeID)
         {
-#if !NO_PROXY
             return new StardogV3Connector(this._baseUri, storeID, this._username, this._pwd, this.Proxy);
-#else
-            return new StardogV3Connector(this._baseUri, storeID, this._username, this._pwd);
-#endif
         }
-
-#endif
 
         /// <summary>
         /// Gets a database from the server
@@ -1112,11 +1042,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="state">State to pass to the callback</param>
         public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
         {
-#if !NO_PROXY
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new StardogV3Connector(this._baseUri, storeID, this._username, this._pwd, this.Proxy)), state);
-#else
-            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new StardogV3Connector(this._baseUri, storeID, this._username, this._pwd)), state);
-#endif
         }
     }
 
@@ -1146,14 +1072,12 @@ namespace VDS.RDF.Storage.Management
         {
         }
 
-#if !NO_PROXY
-
         /// <summary>
         /// Creates a new connection to a Stardog Server
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogServer(String baseUri, WebProxy proxy)
+        public StardogServer(String baseUri, IWebProxy proxy)
             : this(baseUri, null, null, proxy)
         {
         }
@@ -1165,11 +1089,9 @@ namespace VDS.RDF.Storage.Management
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogServer(String baseUri, String username, String password, WebProxy proxy)
+        public StardogServer(String baseUri, String username, String password, IWebProxy proxy)
             : base(baseUri, username, password, proxy)
         {
         }
-
-#endif
     }
 }

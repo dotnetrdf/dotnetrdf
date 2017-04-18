@@ -36,7 +36,7 @@ namespace VDS.RDF
     /// Class for representing RDF Graphs
     /// </summary>
     /// <threadsafety instance="false">Safe for multi-threaded read-only access but unsafe if one/more threads may modify the Graph by using the <see cref="Graph.Assert(Triple)">Assert</see>, <see cref="Graph.Retract(Triple)">Retract</see> or <see cref="BaseGraph.Merge(IGraph)">Merge</see> methods</threadsafety>
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
     [Serializable,XmlRoot(ElementName="graph")]
 #endif
     public class Graph 
@@ -78,7 +78,7 @@ namespace VDS.RDF
             if (emptyNamespaceMap) this._nsmapper.Clear();
         }
 
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
         /// <summary>
         /// Deserialization Constructor
         /// </summary>

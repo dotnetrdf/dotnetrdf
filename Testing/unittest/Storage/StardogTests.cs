@@ -77,7 +77,6 @@ namespace VDS.RDF.Storage
             return (IStorageProvider) StardogTests.GetConnection();
         }
 
-#if !NO_SYNC_HTTP
         // Many of these tests require a synchronous API
         [SkippableFact]
         public void StorageStardogLoadDefaultGraph()
@@ -609,6 +608,5 @@ namespace VDS.RDF.Storage
         {
             Options.HttpDebugging = false;
         }
-#endif
     }
 }

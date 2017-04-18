@@ -130,7 +130,7 @@ namespace VDS.RDF.Query.Spin.LibraryOntology
         public readonly static IUriNode PropertyValue2 = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "value2"));
 
 
-#if UNDEFINED
+/*
         public static bool exists(Model model)
         {
             return model.Contains(model.Object(SPINMAP.BASE_URI), RDF.type, OWL.Ontology);
@@ -141,6 +141,6 @@ namespace VDS.RDF.Query.Spin.LibraryOntology
         {
             return NS_URI;
         }
-#endif
+*/
     }
 }

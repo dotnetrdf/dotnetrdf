@@ -160,11 +160,7 @@ namespace VDS.RDF
                 {
                     return new Uri(Tools.FixMalformedUriStrings(uriref), UriKind.Absolute).AbsoluteUri;
                 }
-#if PORTABLE
-                catch(FormatException)
-#else
                 catch (UriFormatException)
-#endif
                 {
                     throw new RdfParseException("Cannot resolve a Relative URI Reference since there is no in-scope Base URI!");
                 }
@@ -501,7 +497,7 @@ namespace VDS.RDF
             // Output the Response Uri and Headers
             Console.Error.WriteLine();
             Console.Error.WriteLine("HTTP Response from " + httpResponse.ResponseUri.AbsoluteUri);
-#if (SILVERLIGHT||NETCORE)
+#if NETCORE
             Console.Error.WriteLine("HTTP " + (int)httpResponse.StatusCode + " " + httpResponse.StatusDescription);
 #else
             Console.Error.WriteLine("HTTP/" + httpResponse.ProtocolVersion + " " + (int)httpResponse.StatusCode + " " + httpResponse.StatusDescription);

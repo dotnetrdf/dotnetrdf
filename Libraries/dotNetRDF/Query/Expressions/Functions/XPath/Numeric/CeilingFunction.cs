@@ -55,7 +55,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
 
             switch (a.NumericType)
             {
-#if !SILVERLIGHT
                 case SparqlNumericType.Integer:
                     try
                     {
@@ -72,10 +71,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
 
                 case SparqlNumericType.Decimal:
                     return new DecimalNode(null, Math.Ceiling(a.AsDecimal()));
-#else
-                case SparqlNumericType.Integer:
-                case SparqlNumericType.Decimal:
-#endif
 
                 case SparqlNumericType.Float:
                     try

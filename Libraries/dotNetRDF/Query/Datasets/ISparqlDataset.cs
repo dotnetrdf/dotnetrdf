@@ -315,8 +315,6 @@ namespace VDS.RDF.Query.Datasets
         void Discard();
     }
 
-#if !NO_RWLOCK
-
     /// <summary>
     /// Interface for SPARQL Datasets which also provide a Lock by which threading can be controlled
     /// </summary>
@@ -333,5 +331,4 @@ namespace VDS.RDF.Query.Datasets
             get;
         }
     }
-#endif
 }

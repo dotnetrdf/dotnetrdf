@@ -52,7 +52,6 @@ _:b a dnr:Graph ;
             Assert.Throws<DotNetRdfConfigurationException>(() => ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")));
         }
 
-#if !PORTABLE // No ConfigurationLoader.Load(string) method
         [Fact]
         public void ConfigurationImports1()
         {
@@ -78,9 +77,7 @@ _:a a dnr:Graph ;
             Assert.NotNull(result);
             Assert.Equal(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
         }
-#endif
 
-#if !PORTABLE // No ConfigurationLoader.Load(string) method
         [Fact]
         public void ConfigurationImports2()
         {
@@ -114,9 +111,7 @@ _:a a dnr:Graph ;
             Assert.NotNull(result);
             Assert.Equal(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
         }
-#endif
 
-#if !PORTABLE // No ConfigurationLoader.Load(string) method
         [Fact]
         public void ConfigurationImports3()
         {
@@ -148,9 +143,7 @@ _:a a dnr:Graph ;
             Assert.NotNull(result);
             Assert.Equal(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
         }
-#endif
 
-#if !PORTABLE // No ConfigurationLoader.Load(string) method
         [Fact]
         public void ConfigurationImports4()
         {
@@ -182,9 +175,7 @@ _:a a dnr:Graph ;
             Assert.NotNull(result);
             Assert.Equal(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
         }
-#endif
 
-#if !PORTABLE // No ConfigurationLoader.Load(string) method
         [Fact]
         public void ConfigurationImportsCircular1()
         {
@@ -197,6 +188,5 @@ _:a a dnr:Graph ;
             IGraph g = ConfigurationLoader.LoadConfiguration("ConfigurationImportsCircular1-a.ttl");
             Assert.Equal(2, g.Triples.Count);
         }
-#endif
     }
 }

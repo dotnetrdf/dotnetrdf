@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-#if !SILVERLIGHT
-
 using System;
 using VDS.RDF.Update.Commands;
 
@@ -214,5 +212,3 @@ namespace VDS.RDF.Update
         }
     }
 }
-
-#endif

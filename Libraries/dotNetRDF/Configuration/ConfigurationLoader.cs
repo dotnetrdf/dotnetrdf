@@ -34,10 +34,6 @@ using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Operators;
 
-#if !NO_SYSTEMCONFIGURATION
-using SysConfig = System.Configuration;
-#endif
-
 namespace VDS.RDF.Configuration
 {
     /// <summary>
@@ -244,16 +240,13 @@ namespace VDS.RDF.Configuration
             // Processor Factories
             new QueryProcessorFactory(),
             new UpdateProcessorFactory(),
-#if !NO_WEB && !NO_ASP
             new ProtocolProcessorFactory(),
-#endif
             // User and Permission related Factories
             new UserGroupFactory(),
             new PermissionFactory(),
             new CredentialsFactory(),
-#if !NO_PROXY
             new ProxyFactory(),
-#endif
+
             // SPARQL Extension related Factories
             new OptimiserFactory(),
             new ReasonerFactory(),
@@ -271,11 +264,22 @@ namespace VDS.RDF.Configuration
         /// </summary>
         private static IPathResolver _resolver = null;
 
+        /// <summary>
+        /// Gets or sets the provider of external settings
+        /// </summary>
+        /// <remarks>On .NET Framework defaults to a reader of &lt;appSettings&gt; configuration section</remarks>
+        public static ISettingsProvider SettingsProvider { get; set; }
+
         #endregion
 
-        #region Graph Loading and Auto-Configuration
+        static ConfigurationLoader()
+        {
+#if NET40
+            SettingsProvider = new ConfigurationManagerSettingsProvider();
+#endif
+        }
 
-#if !NO_SYNC_HTTP
+        #region Graph Loading and Auto-Configuration
 
         /// <summary>
         /// Loads a Configuration Graph and applies auto-configuration
@@ -300,9 +304,6 @@ namespace VDS.RDF.Configuration
             return ConfigurationLoader.LoadCommon(g, g.CreateUriNode(u), autoConfigure);
         }
 
-#endif
-
-#if !NO_FILE
         /// <summary>
         /// Loads a Configuration Graph and applies auto-configuration
         /// </summary>
@@ -325,22 +326,6 @@ namespace VDS.RDF.Configuration
             FileLoader.Load(g, file);
             return ConfigurationLoader.LoadCommon(g, new INode[] { g.CreateLiteralNode(file), g.CreateLiteralNode(Path.GetFileName(file)) }, autoConfigure);
         }
-#else
-        public static IGraph LoadConfiguration(string filename, Uri baseUri, Stream inputStream)
-        {
-            return ConfigurationLoader.LoadConfiguration(filename, baseUri, inputStream, true);
-        }
-
-        public static IGraph LoadConfiguration(string filename, Uri  baseUri, Stream inputStream, bool autoConfigure)
-        {
-            Graph g = new Graph() {BaseUri = baseUri};
-            StreamLoader.Load(g, filename, inputStream);
-            return ConfigurationLoader.LoadCommon(g,
-                                                  new INode[]
-                                                      {g.CreateLiteralNode(filename), g.CreateLiteralNode(baseUri.ToSafeString())},
-                                                  autoConfigure);
-        }
-#endif
 
         /// <summary>
         /// Loads a Configuration Graph and applies auto-configuration
@@ -408,7 +393,6 @@ namespace VDS.RDF.Configuration
                 Graph data = new Graph();
                 switch (importData.NodeType)
                 {
-#if !NO_SYNC_HTTP
                     case NodeType.Uri:
                         importData = ConfigurationLoader.ResolveAppSetting(g, importData);
                         if (!imported.Contains(importData))
@@ -417,8 +401,7 @@ namespace VDS.RDF.Configuration
                             imported.Add(importData);
                         }
                         break;
-#endif
-#if !NO_FILE
+
                     case NodeType.Literal:
                         if (!imported.Contains(importData))
                         {
@@ -426,7 +409,7 @@ namespace VDS.RDF.Configuration
                             imported.Add(importData);
                         }
                         break;
-#endif
+
                     default:
                         throw new DotNetRdfConfigurationException("Invalid dnr:imports target " + importData.ToString() + ", dnr:imports may only be used to point to an object which is a URI/Literal.  If sing Silverlight only Literals are currently permitted.");
                 }
@@ -752,9 +735,9 @@ namespace VDS.RDF.Configuration
             }
         }
 
-#endregion
+        #endregion
 
-#region Object Loading
+        #region Object Loading
 
         /// <summary>
         /// Checks for circular references and throws an error if there is one
@@ -1426,10 +1409,10 @@ namespace VDS.RDF.Configuration
                     return typeof(System.Net.NetworkCredential).AssemblyQualifiedName;
                 case ClassUserGroup:
                     return DefaultTypeUserGroup;
-#if !NO_PROXY
                 case ClassProxy:
-                    return typeof(System.Net.WebProxy).AssemblyQualifiedName;
-#endif
+                    var proxyType = Type.GetType("System.Net.WebProxy, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089", false);
+                    if (proxyType != null) return proxyType.AssemblyQualifiedName;
+                    return null;
                 default:
                     return null;
             }
@@ -1451,12 +1434,6 @@ namespace VDS.RDF.Configuration
         /// </remarks>
         public static INode ResolveAppSetting(IGraph g, INode n)
         {
-#if SILVERLIGHT
-            return n;
-#elif NETCORE
-            // TODO: Could support looking up values using the .NET Core configuration API
-            return n;
-#else
             if (n == null) return null;
             if (n.NodeType != NodeType.Uri) return n;
 
@@ -1465,20 +1442,21 @@ namespace VDS.RDF.Configuration
 
             String strUri = uri.AbsoluteUri;
             String key = strUri.Substring(strUri.IndexOf(':') + 1);
-            if (SysConfig.ConfigurationManager.AppSettings[key] == null)
+
+            var setting = SettingsProvider.GetSetting(key);
+            if (setting == null)
             {
                 return null;
             }
             else
             {
-                return g.CreateLiteralNode(SysConfig.ConfigurationManager.AppSettings[key]);
+                return g.CreateLiteralNode(setting);
             }
-#endif
         }
 
-#endregion
+        #endregion
 
-#region Instance methods
+        #region Instance methods
 
         private readonly IGraph _configGraph;
 
@@ -1504,7 +1482,6 @@ namespace VDS.RDF.Configuration
             _configGraph = configGraph;
         }
 
-#if !NO_FILE
         /// <summary>
         /// Creates a new instance of <see cref="ConfigurationLoader" />, which
         /// loads an existing configuration graph and applies auto-configuration
@@ -1522,9 +1499,6 @@ namespace VDS.RDF.Configuration
         {
             _configGraph = LoadConfiguration(file, autoConfigure);
         }
-#endif
-
-#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Creates a new instance of <see cref="ConfigurationLoader" />, which
@@ -1543,7 +1517,6 @@ namespace VDS.RDF.Configuration
         {
             _configGraph = LoadConfiguration(graphUri, autoConfigure);
         }
-#endif
 
         /// <summary>
         /// Loads the Object identified by the given blank node identifier as an object of the given type based on information from the Configuration Graph
@@ -1601,7 +1574,7 @@ namespace VDS.RDF.Configuration
             return LoadObject(_configGraph, uriNode);
         }
 
-#endregion
+        #endregion
 
         /// <summary>
         /// Registers an Object Factory with the Configuration Loader

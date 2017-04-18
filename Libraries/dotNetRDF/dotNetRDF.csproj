@@ -64,7 +64,7 @@
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.4' ">
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
-	<PackageReference Include="AngleSharp" Version="0.9.9" />
+    <PackageReference Include="AngleSharp" Version="0.9.9" />
     <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.1.0" />
     <PackageReference Include="System.Globalization.Extensions" Version="4.0.1" />
     <PackageReference Include="System.Net.Requests" Version="4.0.11" />
@@ -72,13 +72,16 @@
     <PackageReference Include="System.Threading.Thread" Version="4.0.0" />
     <PackageReference Include="System.Xml.XmlDocument" Version="4.0.1" />
     <PackageReference Include="System.Xml.XmlSerializer" Version="4.0.11" />
+    <PackageReference Include="System.Collections.Specialized" Version="4.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration">
+      <Version>1.1.1</Version>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
     <PackageReference Include="HtmlAgilityPack" Version="1.4.9.5" />
     <Reference Include="System.Configuration" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
@@ -98,11 +101,11 @@
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.4' ">
-    <DefineConstants>$(DefineConstants);NO_SYSTEMCONFIGURATION;NO_PROXY;NO_XSL;NO_DATA;NO_WEB;NO_PROCESS;NO_URICACHE;NETCORE</DefineConstants>
+    <DefineConstants>$(DefineConstants);NO_PROXY;NO_PROCESS;NO_URICACHE;NETCORE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.4' ">
-    <Compile Include="**\*.cs" Exclude="obj\**\*.cs;Web\**\*.cs;Update\Protocol\*.cs;Compatibility\Portable\**\*.cs;**\*.NetFull.cs" />
+    <Compile Include="**\*.cs" Exclude="obj\**\*.cs;**\*.NetFull.cs" />
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net40' ">
@@ -110,15 +113,15 @@
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
-    <Compile Include="**\*.cs" Exclude="obj\**\*.cs;Compatibility\**\*.cs;**\*.NetCore.cs" />
+    <Compile Include="**\*.cs" Exclude="obj\**\*.cs;Compatibility\Core\*.cs;Compatibility\NO_WEB\*.cs;**\*.NetCore.cs" />
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net40-client' ">
-    <DefineConstants>$(DefineConstants);NET40;NO_WEB</DefineConstants>
+    <DefineConstants>$(DefineConstants);NET40</DefineConstants>
   </PropertyGroup>
   
   <ItemGroup Condition=" '$(TargetFramework)' == 'net40-client' ">
-    <Compile Include="**\*.cs" Exclude="obj\**\*.cs;Compatibility\Core\*.cs;Compatibility\Portable\**\*.cs;**\*.NetCore.cs" />
+    <Compile Include="**\*.cs" Exclude="obj\**\*.cs;Compatibility\Core\*.cs;**\*.NetCore.cs" />
   </ItemGroup>
 
 </Project>

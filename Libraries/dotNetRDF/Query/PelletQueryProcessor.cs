@@ -66,8 +66,6 @@ namespace VDS.RDF.Query
             }
         }
 
-#if !SILVERLIGHT
-
         /// <summary>
         /// Creates a new Pellet Query Processor
         /// </summary>
@@ -76,16 +74,12 @@ namespace VDS.RDF.Query
         public PelletQueryProcessor(Uri serverUri, String kbName)
             : this(new PelletServer(serverUri), kbName) { }
 
-#endif
-
-        /// <summary>
         /// Processes a SPARQL Query
         /// </summary>
         /// <param name="query">SPARQL Query</param>
         /// <returns></returns>
         public object ProcessQuery(SparqlQuery query)
         {
-#if !SILVERLIGHT
             query.QueryExecutionTime = null;
             DateTime start = DateTime.Now;
             try
@@ -98,9 +92,6 @@ namespace VDS.RDF.Query
                 TimeSpan elapsed = (DateTime.Now - start);
                 query.QueryExecutionTime = (DateTime.Now - start);
             }
-#else
-            throw new NotSupportedException("Synchronous remote query is not supported under Silverlight/WP7 - please use one of the alternative overload of this methods which takes a callback");
-#endif
         }
 
         /// <summary>
@@ -111,7 +102,6 @@ namespace VDS.RDF.Query
         /// <param name="query">SPARQL Query</param>
         public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
-#if !SILVERLIGHT
             query.QueryExecutionTime = null;
             DateTime start = DateTime.Now;
             try
@@ -123,9 +113,6 @@ namespace VDS.RDF.Query
                 TimeSpan elapsed = (DateTime.Now - start);
                 query.QueryExecutionTime = (DateTime.Now - start);
             }
-#else
-            throw new NotSupportedException("Synchronous remote query is not supported under Silverlight/WP7 - please use one of the alternative overload of this methods which takes a callback");
-#endif
         }
 
         /// <summary>

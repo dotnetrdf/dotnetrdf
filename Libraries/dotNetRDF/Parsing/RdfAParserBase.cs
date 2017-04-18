@@ -30,9 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-#if NET40
 using System.Web;
-#endif
 using VDS.RDF.Parsing.Contexts;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
@@ -1268,11 +1266,7 @@ namespace VDS.RDF.Parsing
                     {
                         try
                         {
-#if !SILVERLIGHT
                             UriLoader.Load(g, UriFactory.Create(profile));
-#else
-                            throw new PlatformNotSupportedException("The @profile attribute is not currently supported under Silverlight/Windows Phone 7");
-#endif
                         }
                         catch
                         {

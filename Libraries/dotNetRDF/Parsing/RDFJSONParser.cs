@@ -63,7 +63,6 @@ namespace VDS.RDF.Parsing
             this.Load(new GraphHandler(g), input);
         }
 
-#if !NO_FILE
         /// <summary>
         /// Read RDF/Json Syntax from some File into a Graph
         /// </summary>
@@ -75,7 +74,6 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
             this.Load(new GraphHandler(g), filename);
         }
-#endif
 
         /// <summary>
         /// Read RDF/JSON Syntax from some Stream using a RDF Handler
@@ -90,11 +88,7 @@ namespace VDS.RDF.Parsing
             // Issue a Warning if the Encoding of the Stream is not UTF-8
             if (!input.CurrentEncoding.Equals(Encoding.UTF8))
             {
-#if !SILVERLIGHT
                 this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
-#else
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
-#endif
             }
 
             this.Load(handler, (TextReader)input);
@@ -132,7 +126,6 @@ namespace VDS.RDF.Parsing
             }
         }
 
-#if !NO_FILE
         /// <summary>
         /// Read RDF/JSON Syntax from a file using a RDF Handler
         /// </summary>
@@ -144,7 +137,6 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
             this.Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
         }
-#endif
 
         /// <summary>
         /// Internal top level Parse method which parses the Json

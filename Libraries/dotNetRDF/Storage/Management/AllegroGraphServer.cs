@@ -71,7 +71,7 @@ namespace VDS.RDF.Storage.Management
         {
             this._baseUri = baseUri;
             if (!this._baseUri.EndsWith("/")) this._baseUri += "/";
-#if PORTABLE || NETCORE
+#if NETCORE
             this._agraphBase = this._baseUri.Copy();
 #else
             this._agraphBase = String.Copy(this._baseUri);
@@ -92,15 +92,13 @@ namespace VDS.RDF.Storage.Management
         public AllegroGraphServer(String baseUri, String username, String password)
             : this(baseUri, null, username, password) { }
 
-#if !NO_PROXY
-
         /// <summary>
         /// Creates a new Connection to an AllegroGraph store
         /// </summary>
         /// <param name="baseUri">Base Uri for the Store</param>
         /// <param name="catalogID">Catalog ID</param>
         /// <param name="proxy">Proxy Server</param>
-        public AllegroGraphServer(String baseUri, String catalogID, WebProxy proxy)
+        public AllegroGraphServer(String baseUri, String catalogID, IWebProxy proxy)
             : this(baseUri, catalogID, null, null, proxy) { }
 
         /// <summary>
@@ -108,7 +106,7 @@ namespace VDS.RDF.Storage.Management
         /// </summary>
         /// <param name="baseUri">Base Uri for the Store</param>
         /// <param name="proxy">Proxy Server</param>
-        public AllegroGraphServer(String baseUri, WebProxy proxy)
+        public AllegroGraphServer(String baseUri, IWebProxy proxy)
             : this(baseUri, null, proxy) { }
 
         /// <summary>
@@ -119,7 +117,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="username">Username for connecting to the Store</param>
         /// <param name="password">Password for connecting to the Store</param>
         /// <param name="proxy">Proxy Server</param>
-        public AllegroGraphServer(String baseUri, String catalogID, String username, String password, WebProxy proxy)
+        public AllegroGraphServer(String baseUri, String catalogID, String username, String password, IWebProxy proxy)
             : this(baseUri, catalogID, username, password)
         {
             this.Proxy = proxy;
@@ -132,13 +130,9 @@ namespace VDS.RDF.Storage.Management
         /// <param name="username">Username for connecting to the Store</param>
         /// <param name="password">Password for connecting to the Store</param>
         /// <param name="proxy">Proxy Server</param>
-        public AllegroGraphServer(String baseUri,  String username, String password, WebProxy proxy)
+        public AllegroGraphServer(String baseUri,  String username, String password, IWebProxy proxy)
             : this(baseUri, null, username, password, proxy) { }
-
-#endif
-
-#if !NO_SYNC_HTTP
-
+        
         /// <summary>
         /// Gets a default template for creating a new Store
         /// </summary>
@@ -279,14 +273,8 @@ namespace VDS.RDF.Storage.Management
         public override IStorageProvider GetStore(String storeID)
         {
             // Otherwise return a new instance
-            return new AllegroGraphConnector(this._agraphBase, this._catalog, storeID, this._username, this._pwd
-#if !NO_PROXY
-                , this.Proxy
-#endif
-                );
+            return new AllegroGraphConnector(this._agraphBase, this._catalog, storeID, this._username, this._pwd, this.Proxy);
         }
-
-#endif
 
         /// <summary>
         /// Gets the List of Stores available  on the server within the current catalog asynchronously
@@ -508,11 +496,7 @@ namespace VDS.RDF.Storage.Management
         /// </remarks>
         public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
         {
-#if !NO_PROXY
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new AllegroGraphConnector(this._agraphBase, this._catalog, storeID, this._username, this._pwd, this.Proxy)), state);
-#else
-            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new AllegroGraphConnector(this._agraphBase, this._catalog, storeID, this._username, this._pwd)), state);
-#endif
         }
 
         /// <summary>

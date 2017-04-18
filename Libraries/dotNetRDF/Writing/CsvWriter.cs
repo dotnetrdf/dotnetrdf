@@ -55,8 +55,6 @@ namespace VDS.RDF.Writing
             }
         }
 
-
-#if !NO_FILE
         /// <summary>
         /// Saves a Graph to CSV format
         /// </summary>
@@ -69,7 +67,6 @@ namespace VDS.RDF.Writing
                 this.Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
             }
         }
-#endif
 
         /// <summary>
         /// Saves a Graph to CSV format
@@ -159,7 +156,6 @@ namespace VDS.RDF.Writing
             }
         }
 
-#if !NO_FILE
         /// <summary>
         /// Saves a Triple Store to CSV Format
         /// </summary>
@@ -170,7 +166,6 @@ namespace VDS.RDF.Writing
             if (filename == null) throw new RdfOutputException("Cannot write to a null file");
             this.Save(store, new StreamWriter(File.OpenWrite(filename)));
         }
-#endif
 
         /// <summary>
         /// Saves a Triple Store to CSV Format
@@ -264,13 +259,10 @@ namespace VDS.RDF.Writing
                     }
                 }
             }
-#if !(PORTABLE||NETCORE)
+#if !NETCORE
             catch (ThreadAbortException)
             {
                 // We've been terminated, don't do anything
-#if !SILVERLIGHT
-                Thread.ResetAbort();
-#endif
             }
 #endif
             catch (Exception ex)

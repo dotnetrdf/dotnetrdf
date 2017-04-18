@@ -52,17 +52,12 @@ namespace VDS.RDF.Parsing
             // Check Encoding
             if (input.CurrentEncoding != Encoding.UTF8)
             {
-#if !SILVERLIGHT
                 this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
-#else
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
-#endif
             }
 
             this.Load(results, (TextReader)input);
         }
 
-#if !NO_FILE
         /// <summary>
         /// Loads a Result Set from a File
         /// </summary>
@@ -73,7 +68,6 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot parse SPARQL Results from a null file");
             this.Load(results, new StreamReader(File.OpenRead(filename)));
         }
-#endif
 
         /// <summary>
         /// Loads a Result Set from an Input
@@ -99,17 +93,12 @@ namespace VDS.RDF.Parsing
             // Check Encoding
             if (input.CurrentEncoding != Encoding.UTF8)
             {
-#if !SILVERLIGHT
                 this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
-#else
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
-#endif
             }
 
             this.Load(handler, (TextReader)input);
         }
 
-#if !NO_FILE
         /// <summary>
         /// Loads a Result Set from a File using a Results Handler
         /// </summary>
@@ -120,7 +109,6 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot parse SPARQL Results from a null file");
             this.Load(handler, new StreamReader(File.OpenRead(filename)));
         }
-#endif
 
         /// <summary>
         /// Loads a Result Set from an Input using a Results Handler

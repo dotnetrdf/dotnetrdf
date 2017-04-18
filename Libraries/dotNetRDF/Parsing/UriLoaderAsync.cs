@@ -60,16 +60,8 @@ namespace VDS.RDF.Parsing
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
             if (u == null) throw new RdfParseException("Cannot read RDF from a null URI");
 
-#if SILVERLIGHT
-            if (u.IsFile())
-#else
             if (u.IsFile)
-#endif
             {
-#if PORTABLE
-                    throw new PlatformNotSupportedException("FileLoader is not supported by the Portable Class Library build");
-#else
-
                 // Invoke FileLoader instead
                 UriLoader.RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                 if (Path.DirectorySeparatorChar == '/')
@@ -83,7 +75,6 @@ namespace VDS.RDF.Parsing
                 // FileLoader.Load() will run synchronously so once this completes we can invoke the callback
                 callback(g, state);
                 return;
-#endif
             }
             if (u.Scheme.Equals("data"))
             {
@@ -155,15 +146,8 @@ namespace VDS.RDF.Parsing
             if (u == null) throw new RdfParseException("Cannot load RDF from a null URI");
             try
             {
-#if SILVERLIGHT
-                if (u.IsFile())
-#else
                 if (u.IsFile)
-#endif
                 {
-#if PORTABLE
-                    throw new PlatformNotSupportedException("FileLoader is not supported by the Portable Class Library build");
-#else
                     // Invoke FileLoader instead
                     RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                     if (Path.DirectorySeparatorChar == '/')
@@ -177,7 +161,6 @@ namespace VDS.RDF.Parsing
                     // FileLoader.Load() will run synchronously so once this completes we can invoke the callback
                     callback(handler, state);
                     return;
-#endif
                 }
                 if (u.Scheme.Equals("data"))
                 {
@@ -210,12 +193,12 @@ namespace VDS.RDF.Parsing
 
                 // Use HTTP GET
                 request.Method = "GET";
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
                 request.Timeout = Options.UriLoaderTimeout;
 #endif
                 if (_userAgent != null && !_userAgent.Equals(String.Empty))
                 {
-#if PORTABLE || NETCORE
+#if NETCORE
                     request.Headers[HttpRequestHeader.UserAgent] = _userAgent;
 #else
                     request.UserAgent = _userAgent;
@@ -269,11 +252,7 @@ namespace VDS.RDF.Parsing
                     callback(handler, new AsyncError(new RdfParseException("Unexpected error while loading the URI '" + u.AbsoluteUri + "' asynchronously, see inner exception for details", ex), state));
                 }
             }
-#if PORTABLE
-            catch(FormatException uriEx)
-#else
             catch (UriFormatException uriEx)
-#endif
             {
                 // URI Format Invalid
                 throw new RdfParseException("Unable to load from the given URI '" + u.AbsoluteUri + "' since it's format was invalid, see inner exception for details", uriEx);
@@ -372,15 +351,8 @@ namespace VDS.RDF.Parsing
 
             try
             {
-#if SILVERLIGHT
-                if (u.IsFile())
-#else
                 if (u.IsFile)
-#endif
                 {
-#if PORTABLE
-                    throw new PlatformNotSupportedException("FileLoader is not supported by the Portable Class Library build");
-#else
                     // Invoke FileLoader instead
                     RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                     if (Path.DirectorySeparatorChar == '/')
@@ -394,7 +366,6 @@ namespace VDS.RDF.Parsing
                     // FileLoader.Load() will run synchronously so once this completes we can invoke the callback
                     callback(handler, state);
                     return;
-#endif
                 }
                 if (u.Scheme.Equals("data"))
                 {
@@ -425,12 +396,12 @@ namespace VDS.RDF.Parsing
 
                 // Use HTTP GET
                 request.Method = "GET";
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
                 request.Timeout = Options.UriLoaderTimeout;
 #endif
                 if (_userAgent != null && !_userAgent.Equals(String.Empty))
                 {
-#if PORTABLE || NETCORE
+#if NETCORE
                     request.Headers[HttpRequestHeader.UserAgent] = _userAgent;
 #else
                     request.UserAgent = _userAgent;
@@ -509,11 +480,7 @@ namespace VDS.RDF.Parsing
                     callback(handler, new AsyncError(new RdfParseException("Unexpected error while loading the URI '" + u.AbsoluteUri + "' asynchronously, see inner exception for details", ex), state));
                 }
             }
-#if PORTABLE
-            catch(FormatException uriEx)
-#else
             catch (UriFormatException uriEx)
-#endif
             {
                 // Uri Format Invalid
                 throw new RdfException("Unable to load from the given URI '" + u.AbsoluteUri + "' since it's format was invalid, see inner exception for details", uriEx);

@@ -35,9 +35,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
-#if !NO_WEB
 using System.Web;
-#endif
 
 namespace VDS.RDF.Storage
 {
@@ -51,9 +49,7 @@ namespace VDS.RDF.Storage
     /// </remarks>
     public class FusekiConnector 
         : SparqlHttpProtocolConnector, IAsyncUpdateableStorage, IConfigurationSerializable
-#if !NO_SYNC_HTTP
         , IUpdateableStorage
-#endif
     {
         private readonly SparqlFormatter _formatter = new SparqlFormatter();
         private readonly String _updateUri;
@@ -81,14 +77,12 @@ namespace VDS.RDF.Storage
             this._queryUri = serviceUri.Substring(0, serviceUri.Length - 4) + "query";
         }
 
-#if !NO_PROXY
-
         /// <summary>
         /// Creates a new connection to a Fuseki Server
         /// </summary>
         /// <param name="serviceUri">The /data URI of the Fuseki Server</param>
         /// <param name="proxy">Proxy Server</param>
-        public FusekiConnector(Uri serviceUri, WebProxy proxy)
+        public FusekiConnector(Uri serviceUri, IWebProxy proxy)
             : this(serviceUri.ToSafeString(), proxy) { }
 
         /// <summary>
@@ -96,13 +90,11 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="serviceUri">The /data URI of the Fuseki Server</param>
         /// <param name="proxy">Proxy Server</param>
-        public FusekiConnector(String serviceUri, WebProxy proxy)
+        public FusekiConnector(String serviceUri, IWebProxy proxy)
             : this(serviceUri)
         {
             this.Proxy = proxy;
         }
-
-#endif
 
         /// <summary>
         /// Returns that Listing Graphs is supported
@@ -136,8 +128,6 @@ namespace VDS.RDF.Storage
                 return true;
             }
         }
-
-#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Gets the List of Graphs from the store
@@ -396,7 +386,6 @@ namespace VDS.RDF.Storage
                 throw StorageHelper.HandleHttpError(webEx, "updating");
             }
         }
-#endif
 
         /// <summary>
         /// Makes a SPARQL Query against the underlying store

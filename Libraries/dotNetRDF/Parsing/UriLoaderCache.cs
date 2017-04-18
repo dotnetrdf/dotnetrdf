@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-#if !NO_URICACHE
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -146,7 +144,7 @@ namespace VDS.RDF.Parsing
                 try
                 {
                     // Read in the existing ETags
-                    using (StreamReader reader = new StreamReader(this._etagFile, Encoding.UTF8))
+                    using (StreamReader reader = new StreamReader(File.Open(_etagFile, FileMode.Open, FileAccess.Read), Encoding.UTF8))
                     {
                         while (!reader.EndOfStream)
                         {
@@ -271,7 +269,7 @@ namespace VDS.RDF.Parsing
                     {
                         this._etags.Remove(u.GetEnhancedHashCode());
                         // If we did remove an ETag then we need to rewrite our ETag cache file
-                        using (StreamWriter writer = new StreamWriter(this._etagFile, false, Encoding.UTF8))
+                        using (StreamWriter writer = new StreamWriter(File.Open(_etagFile, FileMode.Create, FileAccess.Write), Encoding.UTF8))
                         {
                             foreach (KeyValuePair<int, String> etag in this._etags)
                             {
@@ -426,7 +424,7 @@ namespace VDS.RDF.Parsing
                     {
                         // Add a New ETag
                         this._etags.Add(id, etag);
-                        using (StreamWriter writer = new StreamWriter(this._etagFile, true, Encoding.UTF8))
+                        using (StreamWriter writer = new StreamWriter(File.Open(this._etagFile, FileMode.Append, FileAccess.Write), Encoding.UTF8))
                         {
                             writer.WriteLine(id + "\t" + etag);
                             writer.Close();
@@ -454,7 +452,7 @@ namespace VDS.RDF.Parsing
 
                         if (requireAdd)
                         {
-                            using (StreamWriter writer = new StreamWriter(this._etagFile, true, Encoding.UTF8))
+                            using (StreamWriter writer = new StreamWriter(File.Open(_etagFile, FileMode.Append, FileAccess.Write), Encoding.UTF8))
                             {
                                 writer.WriteLine(id + "\t" + etag);
                                 writer.Close();
@@ -467,12 +465,12 @@ namespace VDS.RDF.Parsing
                 if (this._canCacheGraphs)
                 {
                     String graph = Path.Combine(this._graphDir, requestUri.GetSha256Hash());
-                    handler = new WriteThroughHandler(this._formatterType, new StreamWriter(graph), true);
+                    handler = new WriteThroughHandler(_formatterType, new StreamWriter( File.Open(graph, FileMode.Append)));
 
                     if (cacheTwice)
                     {
                         graph = Path.Combine(this._graphDir, responseUri.GetSha256Hash());
-                        handler = new MultiHandler(new IRdfHandler[] { handler, new WriteThroughHandler(this._formatterType, new StreamWriter(graph), true) });
+                        handler = new MultiHandler(new IRdfHandler[] { handler, new WriteThroughHandler(_formatterType, new StreamWriter(File.Open(graph, FileMode.Append, FileAccess.Write)), true) });
                     }
                 }
             }
@@ -488,5 +486,3 @@ namespace VDS.RDF.Parsing
         }
     }
 }
-
-#endif

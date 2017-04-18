@@ -32,21 +32,18 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using VDS.RDF.Parsing;
-#if !NO_DATA
-using System.Data;
-#endif
 
 namespace VDS.RDF
 {
     /// <summary>
     /// Abstract decorator for Graphs to make it easier to layer functionality on top of existing implementations
     /// </summary>
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
     [Serializable, XmlRoot(ElementName="graph")]
 #endif
     public abstract class WrapperGraph 
         : IGraph
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
         , ISerializable
 #endif
     {
@@ -87,7 +84,7 @@ namespace VDS.RDF
             this.AttachEventHandlers();
         }      
 
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
 
         /// <summary>
         /// Deserialization Constructor
@@ -686,19 +683,6 @@ namespace VDS.RDF
             return this._g.ResolveQName(qname);
         }
 
-#if !NO_DATA
-
-        /// <summary>
-        /// Converts the wrapped graph into a DataTable
-        /// </summary>
-        /// <returns></returns>
-        public virtual DataTable ToDataTable()
-        {
-            return this._g.ToDataTable();
-        }
-
-#endif
-
         #endregion
 
         #region Event Handling
@@ -968,7 +952,7 @@ namespace VDS.RDF
             this._g.Dispose();
         }
 
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
 
         #region ISerializable Members
 

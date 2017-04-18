@@ -810,14 +810,14 @@ namespace VDS.RDF
                     List<Dictionary<INode, INode>> partialMappings = new List<Dictionary<INode, INode>>();
                     List<IGraph> partialMappingSources = new List<IGraph>();
                     Debug.WriteLine("Dividing and conquering on isolated sub-graph with " + lhs.Triples.Count + " triples...");
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
                     Debug.Indent();
 #endif
                     int i = 1;
                     foreach (IGraph rhs in possibles)
                     {
                         Debug.WriteLine("Testing possiblity " + i + " of " + possibles.Count);
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
                         Debug.Indent();
 #endif
                         Dictionary<INode, INode> partialMapping;
@@ -826,12 +826,12 @@ namespace VDS.RDF
                             partialMappings.Add(partialMapping);
                             partialMappingSources.Add(rhs);
                         }
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
                         Debug.Unindent();
 #endif
                         i++;
                     }
-#if !(SILVERLIGHT||NETCORE)
+#if !NETCORE
                     Debug.Unindent();
 #endif
                     Debug.WriteLine("Dividing and conquering done");

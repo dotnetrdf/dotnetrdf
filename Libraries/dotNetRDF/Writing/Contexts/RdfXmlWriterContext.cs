@@ -92,9 +92,6 @@ namespace VDS.RDF.Writing.Contexts
             settings.CloseOutput = true;
             settings.Encoding = new UTF8Encoding(Options.UseBomForUtf8);
             settings.Indent = this._prettyPrint;
-#if SILVERLIGHT
-            settings.NamespaceHandling = NamespaceHandling.OmitDuplicates;
-#endif
             settings.NewLineHandling = NewLineHandling.None;
             settings.OmitXmlDeclaration = false;
 

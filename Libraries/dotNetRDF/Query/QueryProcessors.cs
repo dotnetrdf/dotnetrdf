@@ -344,7 +344,6 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public object ProcessQuery(SparqlQuery query)
         {
-#if !SILVERLIGHT
             query.QueryExecutionTime = null;
             DateTime start = DateTime.Now;
             Object temp;
@@ -376,9 +375,6 @@ namespace VDS.RDF.Query
                 TimeSpan elapsed = (DateTime.Now - start);
                 query.QueryExecutionTime = elapsed;
             }
-#else
-            throw new NotSupportedException("Synchronous remote query is not supported under Silverlight/WP7 - please use one of the alternative overload of this methods which takes a callback");
-#endif
         }
 
         /// <summary>
@@ -389,7 +385,6 @@ namespace VDS.RDF.Query
         /// <param name="query">SPARQL Query</param>
         public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
-#if !SILVERLIGHT
             query.QueryExecutionTime = null;
             DateTime start = DateTime.Now;
             try
@@ -419,9 +414,6 @@ namespace VDS.RDF.Query
                 TimeSpan elapsed = (DateTime.Now - start);
                 query.QueryExecutionTime = elapsed;
             }
-#else
-            throw new NotSupportedException("Synchronous remote query is not supported under Silverlight/WP7 - please use one of the alternative overload of this methods which takes a callback");
-#endif
         }
 
         /// <summary>

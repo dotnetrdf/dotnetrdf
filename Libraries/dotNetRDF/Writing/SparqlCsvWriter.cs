@@ -41,7 +41,6 @@ namespace VDS.RDF.Writing
     {
         private CsvFormatter _formatter = new CsvFormatter();
 
-#if !NO_FILE
         /// <summary>
         /// Saves a SPARQL Result Set to CSV format
         /// </summary>
@@ -54,13 +53,12 @@ namespace VDS.RDF.Writing
                 this.Save(results, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
             }
         }
-#endif
 
-            /// <summary>
-            /// Saves a SPARQL Result Set to CSV format
-            /// </summary>
-            /// <param name="results">Result Set</param>
-            /// <param name="output">Writer to save to</param>
+        /// <summary>
+        /// Saves a SPARQL Result Set to CSV format
+        /// </summary>
+        /// <param name="results">Result Set</param>
+        /// <param name="output">Writer to save to</param>
         public void Save(SparqlResultSet results, TextWriter output)
         {
             try

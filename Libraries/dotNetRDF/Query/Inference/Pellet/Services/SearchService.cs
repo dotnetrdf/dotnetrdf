@@ -29,10 +29,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using Newtonsoft.Json.Linq;
-#if !NO_WEB
 using System.Web;
-#endif
+using Newtonsoft.Json.Linq;
 
 namespace VDS.RDF.Query.Inference.Pellet.Services
 {
@@ -54,8 +52,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         {
             this._searchUri = this.Endpoint.Uri.Substring(0, this.Endpoint.Uri.IndexOf('{'));
         }
-
-#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Gets the list of Search Results which match the given search term
@@ -118,8 +114,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                 throw new RdfReasoningException("Error occurred while parsing Search Results from the Search Service", ex);
             }
         }
-
-#endif
 
         /// <summary>
         /// Gets the list of Search Results which match the given search term

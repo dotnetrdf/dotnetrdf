@@ -212,9 +212,7 @@ namespace VDS.RDF
     public class ThreadSafeTripleCollection 
         : WrapperTripleCollection
     {
-#if !NO_RWLOCK
         private ReaderWriterLockSlim _lockManager = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
-#endif
 
         /// <summary>
         /// Creates a new thread safe triple collection which wraps a new instance of the default unindexed <see cref="TripleCollection"/>
@@ -234,11 +232,7 @@ namespace VDS.RDF
         /// </summary>
         protected void EnterWriteLock()
         {
-#if !NO_RWLOCK
             this._lockManager.EnterWriteLock();
-#else
-            Monitor.Enter(this._triples);
-#endif
         }
 
         /// <summary>
@@ -246,11 +240,7 @@ namespace VDS.RDF
         /// </summary>
         protected void ExitWriteLock()
         {
-#if !NO_RWLOCK
             this._lockManager.ExitWriteLock();
-#else
-            Monitor.Exit(this._triples);
-#endif
         }
 
         /// <summary>
@@ -258,11 +248,7 @@ namespace VDS.RDF
         /// </summary>
         protected void EnterReadLock()
         {
-#if !NO_RWLOCK
             this._lockManager.EnterReadLock();
-#else
-            Monitor.Enter(this._triples);
-#endif
         }
 
         /// <summary>
@@ -270,11 +256,7 @@ namespace VDS.RDF
         /// </summary>
         protected void ExitReadLock()
         {
-#if !NO_RWLOCK
             this._lockManager.ExitReadLock();
-#else
-            Monitor.Exit(this._triples);
-#endif
         }
 
         /// <summary>

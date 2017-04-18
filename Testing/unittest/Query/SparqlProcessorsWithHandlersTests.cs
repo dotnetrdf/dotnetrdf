@@ -39,8 +39,6 @@ using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Query
 {
-#if !SILVERLIGHT // No PelletTests class
-
     public class SparqlProcessorsWithHandlersTests
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
@@ -302,5 +300,4 @@ namespace VDS.RDF.Query
 
         #endregion
     }
-#endif
 }

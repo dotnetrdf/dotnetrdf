@@ -79,11 +79,7 @@ namespace VDS.RDF
         private static bool _uriLoaderCaching = true;
         private static int _uriLoaderTimeout = 15000;
         private static bool _utf8Bom = false;
-#if PORTABLE
-        private static bool _useDTDs = false; // Default to false because the PCL XML parser cannot handle entity declarations
-#else
         private static bool _useDTDs = true;
-#endif
         private static bool _multiThreadedWriting = false;
         private static bool _internUris = true;
         private static bool _rigorousQueryEvaluation = false, _strictOperators = false;
@@ -92,7 +88,7 @@ namespace VDS.RDF
         private static bool _validateIris = false;
         private static TokenQueueMode _defaultTokenQueueMode = TokenQueueMode.SynchronousBufferDuringParsing;
 
-#if NET40 && !SILVERLIGHT
+#if NET40
         private static bool _usePLinq = true;
 #endif
 
@@ -280,7 +276,7 @@ namespace VDS.RDF
             }
         }
 
-#if NET40 && !SILVERLIGHT
+#if NET40
 
         /// <summary>
         /// Gets/Sets whether the query engine will try to use PLinq where applicable to evaluate suitable SPARQL constructs in parallel
@@ -358,8 +354,6 @@ namespace VDS.RDF
             }
         }
 
-#if !NO_URICACHE
-
         /// <summary>
         /// Gets/Sets whether the <see cref="UriLoader">UriLoader</see> uses caching
         /// </summary>
@@ -374,7 +368,6 @@ namespace VDS.RDF
                 _uriLoaderCaching = value;
             }
         }
-#endif
 
         /// <summary>
         /// Gets/Sets the Timeout for URI Loader requests (Defaults to 15 seconds)

@@ -42,6 +42,8 @@
   <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
     <ProjectReference Include="..\..\Libraries\dotNetRDF.Query.FullText\dotNetRDF.Query.FullText.csproj" />
     <ProjectReference Include="..\..\Libraries\dotNetRDF.Data.Virtuoso\dotNetRDF.Data.Virtuoso.csproj" />
+    <ProjectReference Include="..\..\Libraries\dotNetRDF.Web\dotNetRDF.Web.csproj" />
+    <ProjectReference Include="..\..\Libraries\dotNetRDF.Data.DataTables\dotNetRDF.Data.DataTables.csproj" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Data" />
     <Reference Include="System" />
@@ -54,7 +56,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp1.1' ">
-    <DefineConstants>$(DefineConstants);NO_URICACHE;NO_SYSTEMCONFIGURATION</DefineConstants>
+    <DefineConstants>$(DefineConstants);NO_URICACHE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

@@ -78,14 +78,9 @@ namespace VDS.RDF.Configuration
         /// <returns></returns>
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
-#if !NO_SYNC_HTTP
             IStorageProvider storageProvider = null;
             IStorageServer storageServer = null;
             SparqlConnectorLoadMethod loadMode;
-#else
-            IAsyncStorageProvider storageProvider = null;
-            IAsyncStorageServer storageServer = null;
-#endif
             obj = null;
 
             String server, user, pwd, store, catalog, loadModeRaw;
@@ -139,7 +134,6 @@ namespace VDS.RDF.Configuration
                         storageServer = new AllegroGraphServer(server, catalog);
                     }
                     break;
-#if !PORTABLE
                 case DatasetFile:
                     // Get the Filename and whether the loading should be done asynchronously
                     String file = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromFile)));
@@ -148,7 +142,6 @@ namespace VDS.RDF.Configuration
                     bool isAsync = ConfigurationLoader.GetConfigurationBoolean(g, objNode, propAsync, false);
                     storageProvider = new DatasetFileManager(file, isAsync);
                     break;
-#endif
 
                 case Dydra:
                     throw new DotNetRdfConfigurationException("DydraConnector is no longer supported by dotNetRDF and is considered obsolete");
@@ -207,8 +200,6 @@ namespace VDS.RDF.Configuration
                     }
                     break;
 
-#if !NO_SYNC_HTTP
-
                 case ReadOnly:
                     // Get the actual Manager we are wrapping
                     storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propStorageProvider);
@@ -237,8 +228,6 @@ namespace VDS.RDF.Configuration
                     }
                     break;
 
-#endif
-
                 case Sesame:
                 case SesameV5:
                 case SesameV6:
@@ -250,19 +239,11 @@ namespace VDS.RDF.Configuration
                     ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
                     if (user != null && pwd != null)
                     {
-#if !NO_SYNC_HTTP
                         storageProvider = (IStorageProvider) Activator.CreateInstance(targetType, new Object[] {server, store, user, pwd});
-#else
-                        storageProvider = (IAsyncStorageProvider)Activator.CreateInstance(targetType, new Object[] { server, store, user, pwd });
-#endif
                     }
                     else
                     {
-#if !NO_SYNC_HTTP
                         storageProvider = (IStorageProvider) Activator.CreateInstance(targetType, new Object[] {server, store});
-#else
-                        storageProvider = (IAsyncStorageProvider)Activator.CreateInstance(targetType, new Object[] { server, store });
-#endif
                     }
                     break;
 
@@ -282,8 +263,6 @@ namespace VDS.RDF.Configuration
                     }
                     break;
 
-#if !NO_SYNC_HTTP
-
                 case Sparql:
                     // Get the Endpoint URI or the Endpoint
                     server = ConfigurationLoader.GetConfigurationString(g, objNode, new INode[] {g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri))});
@@ -295,11 +274,7 @@ namespace VDS.RDF.Configuration
                     {
                         try
                         {
-#if SILVERLIGHT
-                            loadMode = (SparqlConnectorLoadMethod)Enum.Parse(typeof(SparqlConnectorLoadMethod), loadModeRaw, false);
-#else
                             loadMode = (SparqlConnectorLoadMethod) Enum.Parse(typeof (SparqlConnectorLoadMethod), loadModeRaw);
-#endif
                         }
                         catch
                         {
@@ -355,11 +330,7 @@ namespace VDS.RDF.Configuration
                     {
                         try
                         {
-#if SILVERLIGHT
-                            loadMode = (SparqlConnectorLoadMethod)Enum.Parse(typeof(SparqlConnectorLoadMethod), loadModeRaw, false);
-#else
                             loadMode = (SparqlConnectorLoadMethod) Enum.Parse(typeof (SparqlConnectorLoadMethod), loadModeRaw);
-#endif
                         }
                         catch
                         {
@@ -422,12 +393,8 @@ namespace VDS.RDF.Configuration
                     {
                         updateEndpoint = new SparqlRemoteUpdateEndpoint(UriFactory.Create(server));
                     }
-
                     storageProvider = new ReadWriteSparqlConnector(queryEndpoint, updateEndpoint, loadMode);
-
                     break;
-
-#endif
 
                 case SparqlHttpProtocol:
                     // Get the Service URI
@@ -574,21 +541,19 @@ namespace VDS.RDF.Configuration
                 {
                     connector.Timeout = timeout;
                 }
-#if !NO_PROXY
                 INode proxyNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyProxy)));
                 if (proxyNode != null)
                 {
                     temp = ConfigurationLoader.LoadObject(g, proxyNode);
-                    if (temp is WebProxy)
+                    if (temp is IWebProxy)
                     {
-                        connector.Proxy = (WebProxy) temp;
+                        connector.Proxy = (IWebProxy) temp;
                     }
                     else
                     {
                         throw new DotNetRdfConfigurationException("Unable to load storage provider/server identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:proxy property pointed to an Object which could not be loaded as an object of the required type WebProxy");
                     }
                 }
-#endif
             }
 
             return (obj != null);

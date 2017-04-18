@@ -146,7 +146,6 @@ namespace VDS.RDF.Parsing
             this.Load(new GraphHandler(g), input);
         }
 
-#if !NO_FILE
         /// <summary>
         /// Loads a Graph by reading Turtle syntax from the given file
         /// </summary>
@@ -158,7 +157,6 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
             this.Load(g, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
         }
-#endif
 
         /// <summary>
         /// Loads RDF by reading Turtle syntax from the given input using a RDF Handler
@@ -173,11 +171,7 @@ namespace VDS.RDF.Parsing
             // Issue a Warning if the Encoding of the Stream is not UTF-8
             if (!input.CurrentEncoding.Equals(Encoding.UTF8))
             {
-#if !SILVERLIGHT
                 this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
-#else
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
-#endif
             }
 
             this.Load(handler, (TextReader)input);
@@ -216,7 +210,6 @@ namespace VDS.RDF.Parsing
             }
         }
 
-#if !NO_FILE
         /// <summary>
         /// Loads RDF by reading Turtle syntax from the given file using a RDF Handler
         /// </summary>
@@ -228,7 +221,6 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
             this.Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
         }
-#endif
 
         /// <summary>
         /// Internal method which does the parsing of the input

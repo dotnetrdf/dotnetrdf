@@ -145,7 +145,6 @@ namespace VDS.RDF.Query
             Assert.Equal("DESCRIBE <http://example.com/some@encoded/uri>", query.ToString());
         }
 
-#if !SILVERLIGHT // No SparqlRemoteEndpoint.QueryRaw() 
         [SkippableFact]
         public void SparqlDBPedia()
         {
@@ -183,9 +182,7 @@ namespace VDS.RDF.Query
                 Options.HttpDebugging = false;
             }
         }
-#endif
 
-#if !PORTABLE // No VirtuosoManager in PCL
         [SkippableFact]
         public void SparqlRemoteVirtuosoWithSponging()
         {
@@ -201,9 +198,7 @@ namespace VDS.RDF.Query
             TestTools.ShowGraph(g);
             Assert.False(g.IsEmpty, "Graph should not be empty");
         }
-#endif
 
-#if !SILVERLIGHT // No SparqlRemoteEndpoint.QueryRaw()
         [SkippableFact]
         public void SparqlDbPediaDotIssue()
         {
@@ -265,7 +260,6 @@ where {
                 Options.HttpDebugging = false;
             }
         }
-#endif
 
         [Fact]
         public void SparqlResultSetEquality()
@@ -427,7 +421,6 @@ SELECT * WHERE {
             cmds.ToString();
         }
 
-#if !NO_SYNC_HTTP // No SparqlConnector
         [SkippableFact]
         public void SparqlEndpointWithExtensions()
         {
@@ -455,7 +448,6 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
             Object results = endpoint.Query(testQuery);
             TestTools.ShowResults(results);
         }
-#endif
 
         [Fact]
         public void SparqlBNodeIDsInResults()

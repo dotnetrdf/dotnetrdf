@@ -436,11 +436,7 @@ namespace VDS.RDF
                 {
                     if (!this._graphs.Contains(this._inferenceGraphUri))
                     {
-#if !NO_RWLOCK
                         IGraph i = new ThreadSafeGraph();
-#else
-                        IGraph i = new Graph();
-#endif
                         i.BaseUri = this._inferenceGraphUri;
                         this._graphs.Add(i, true);
                     }

@@ -31,8 +31,6 @@ using VDS.RDF.Parsing.Contexts;
 
 namespace VDS.RDF.Parsing.Events.RdfXml
 {
-#if !NO_XMLDOM
-
     /// <summary>
     /// A DOM Based event generator for RDF/XML parser that uses System.Xml DOM to parse events
     /// </summary>
@@ -59,7 +57,6 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             this._document.Load(input);
         }
 
-#if !NO_FILE
         /// <summary>
         /// Creates a new DOM Based event generator
         /// </summary>
@@ -69,7 +66,6 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             this._document = new XmlDocument();
             this._document.Load(File.OpenRead(file));
         }
-#endif
 
         /// <summary>
         /// Gets all events from the XML DOM
@@ -543,6 +539,4 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             }
         }
     }
-
-#endif
     }

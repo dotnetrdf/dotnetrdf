@@ -24,11 +24,9 @@
 // </copyright>
 */
 
+using System.Web;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
-#if !NO_WEB
-using System.Web;
-#endif
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.String
 {
