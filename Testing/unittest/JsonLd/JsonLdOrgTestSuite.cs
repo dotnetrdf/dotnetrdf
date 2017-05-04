@@ -14,7 +14,7 @@ namespace VDS.RDF.JsonLd
         public void ExpandTests(string inputPath, string expectedOutputPath)
         {
             var processor = new JsonLdProcessor(new JsonLdProcessorOptions());
-            processor.BaseIri = new Uri(inputPath);
+            processor.BaseIri = new Uri("http://json-ld.org/test-suite/tests/" + Path.GetFileName(inputPath));
             var inputJson = File.ReadAllText(inputPath);
             var expectedOutputJson = File.ReadAllText(expectedOutputPath);
             var inputElement = JToken.Parse(inputJson);
