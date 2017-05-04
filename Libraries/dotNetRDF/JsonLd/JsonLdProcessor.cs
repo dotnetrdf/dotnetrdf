@@ -619,7 +619,7 @@ namespace VDS.RDF.JsonLd
             // 6 Otherwise, if document relative is true, set value to the result of resolving value against the base IRI. 
             else if (documentRelative)
             {
-                var iri = new Uri(activeContext.Base, value);
+                var iri = new Uri(activeContext.Base ?? BaseIri, value);
                 return iri.ToString();
             }
 
@@ -1008,7 +1008,7 @@ namespace VDS.RDF.JsonLd
                             throw new InvalidReverseValueException();
                         }
                         // 8.4.11.1 - Initialize expanded value to the result of using this algorithm recursively, passing active context, @reverse as active property, and value as element.
-                        expandedValue = Expand(activeContext, "@reverse", value);
+                        expandedValue = ExpandAlgorithm(activeContext, "@reverse", value);
                         // 8.4.11.2 - If expanded value contains an @reverse member, i.e., properties that are reversed twice...
                         var nestedReverseProperty = (expandedValue as JObject).Property("@reverse");
                         if (nestedReverseProperty != null)
