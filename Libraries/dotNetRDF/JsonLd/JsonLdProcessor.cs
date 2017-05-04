@@ -927,10 +927,9 @@ namespace VDS.RDF.JsonLd
                         // element, ensuring that expanded value is an array of one or more dictionaries.
                         expandedValue = Expand(activeContext, "@graph", value);
                         var array = expandedValue as JArray;
-                        if (array.Count < 1 || !array.All(x => x.Type == JTokenType.Object))
-                        {
-                            throw new InvalidGraphValueException();
-                        }
+                        // NOTE: The following line is supposed to ensure the array contains at least one dictionary,
+                        // but it causes a failure in the JSON-LD.org test suite on the test specifically for expanding an empty graph
+                        //if (array.Count == 0) { array.Add(new JObject());  }
                     }
 
                     // 8.4.6 - If expanded property is @value and value is not a scalar or null, an invalid value object value error has been detected and processing is aborted. Otherwise, set expanded value to value. If expanded value is null, set the @value member of result to null and continue with the next key from element. Null values need to be preserved in this case as the meaning of an @type member depends on the existence of an @value member. When the frame expansion flag is set, value may also be an empty dictionary or an array of scalar values. Expanded value will be null, or an array of one or more scalar values.
@@ -1190,7 +1189,7 @@ namespace VDS.RDF.JsonLd
                 // 8.8 - Otherwise, initialize expanded value to the result of using this algorithm recursively, passing term context as active context, key for active property, and value for element.
                 else
                 {
-                    expandedValue = Expand(activeContext, key, value);
+                    expandedValue = Expand(termContext, key, value);
                 }
                 // 8.9 - If expanded value is null, ignore key by continuing to the next key from element.
                 if (expandedValue == null)
