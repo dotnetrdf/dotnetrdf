@@ -775,9 +775,13 @@ namespace VDS.RDF.JsonLd
                     throw new InvalidLanguageTaggedValueException("A value object with an @language property must have a string value for the @value property.", result);
                 }
                 // 9.4 - Otherwise, if the result has an @type member and its value is not an IRI, an invalid typed value error has been detected and processing is aborted.
-                else if (typeProperty != null && !IsAbsoluteIri(typeProperty.Value<string>()))
+                else if (typeProperty != null)
                 {
-                    throw new InvalidTypedValueException("The value of the @type property of a value object must be an IRI", resultObject);
+                    var typeValue = typeProperty.Value;
+                    if (typeValue.Type != JTokenType.String || !IsAbsoluteIri(typeValue.Value<string>()))
+                    {
+                        throw new InvalidTypedValueException("The value of the @type property of a value object must be an IRI", resultObject);
+                    }
                 }
             }
             // 10 - Otherwise, if result contains the key @type and its associated value is not an array, set it to an array containing only the associated value.
@@ -893,8 +897,7 @@ namespace VDS.RDF.JsonLd
                     {
                         if (value.Type == JTokenType.String)
                         {
-                            expandedValue = new JArray(
-                                ExpandIri(activeContext, value.Value<string>(), true, true));
+                            expandedValue = ExpandIri(activeContext, value.Value<string>(), true, true);
                         }
                         else if (value.Type == JTokenType.Array)
                         {
