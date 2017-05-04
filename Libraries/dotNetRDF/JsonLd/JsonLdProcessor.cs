@@ -289,9 +289,10 @@ namespace VDS.RDF.JsonLd
 
             // 6 - If value is null or value is a JSON object containing the key-value pair @id-null, set the term definition in active context to null, set the value associated with defined's key term to true, and return.
             JObject value;
+            var idValue = v is JObject ? GetPropertyValue(activeContext, v as JObject, "@id") : null;
             if (v == null || 
-                v is JValue && (v as JValue)?.Type == JTokenType.Null ||
-                v is JObject && GetPropertyValue(activeContext, v as JObject, "@id").Type == JTokenType.Null)
+                (v is JValue && (v as JValue)?.Type == JTokenType.Null) ||
+                (idValue != null && idValue.Type == JTokenType.Null))
             {
                 activeContext.SetTerm(term, null);
                 defined[term] = true;
@@ -402,7 +403,7 @@ namespace VDS.RDF.JsonLd
             definition.Reverse = false;
 
             // 13 - If value contains the key @id and its value does not equal term:
-            var idValue = GetPropertyValue(activeContext, value, "@id");
+            idValue = GetPropertyValue(activeContext, value, "@id");
             if (idValue != null && !term.Equals(idValue.Value<string>()))
             {
                 // 13.1 - If the value associated with the @id key is not a string, an invalid IRI mapping error has been detected and processing is aborted.
@@ -431,12 +432,12 @@ namespace VDS.RDF.JsonLd
                 var prefix = term.Substring(0, ix);
                 var rest = term.Substring(ix + 1);
                 // 14.1 - If term is a compact IRI with a prefix that is a key in local context a dependency has been found. Use this algorithm recursively passing active context, local context, the prefix as term, and defined.
-                if (localContext.Property("prefix") != null)
+                if (localContext.Property(prefix) != null)
                 {
                     CreateTermDefinition(activeContext, localContext, prefix, defined);
                 }
                 // 14.2 - If term's prefix has a term definition in active context, set the IRI mapping of definition to the result of concatenating the value associated with the prefix's IRI mapping and the term's suffix.
-                var prefixTermDefinition = activeContext.GetTerm(term);
+                var prefixTermDefinition = activeContext.GetTerm(prefix);
                 if (prefixTermDefinition != null)
                 {
                     definition.IriMapping = prefixTermDefinition.IriMapping + rest;
