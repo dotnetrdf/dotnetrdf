@@ -1137,7 +1137,41 @@ namespace VDS.RDF.JsonLd
 
         public JToken ExpandValue(JsonLdContext activeContext, string activeProperty, JToken value)
         {
-            throw new NotImplementedException();
+            var activePropertyTermDefinition = activeContext.GetTerm(activeProperty);
+            var typeMapping = activePropertyTermDefinition?.TypeMapping;
+
+            // 1 - If the active property has a type mapping in active context that is @id, return a new JSON object containing a single key-value pair where the key is @id and the value is the result of using the IRI Expansion algorithm, passing active context, value, and true for document relative.
+            if (typeMapping != null && typeMapping == "@id") {
+                return new JObject(new JProperty("@id", ExpandIri(activeContext, value.Value<string>(), documentRelative: true));
+            }
+            // 2 - If active property has a type mapping in active context that is @vocab, return a new JSON object containing a single key-value pair where the key is @id and the value is the result of using the IRI Expansion algorithm, passing active context, value, true for vocab, and true for document relative.
+            if (typeMapping != null && typeMapping == "@vocab")
+            {
+                return new JObject(new JProperty("@id", ExpandIri(activeContext, value.Value<string>(), vocab:true, documentRelative: true));
+            }
+            // 3 - Otherwise, initialize result to a JSON object with an @value member whose value is set to value.
+            var result = new JObject(new JProperty("@value", value));
+            // 4 - If active property has a type mapping in active context, add an @type member to result and set its value to the value associated with the type mapping.
+            if (typeMapping != null)
+            {
+                result.Add(new JProperty("@type", typeMapping));
+            }
+            // 5 - Otherwise, if value is a string:
+            else if (value.Type == JTokenType.String)
+            {
+                // 5.1 - If a language mapping is associated with active property in active context, add an @language to result and set its value to the language code associated with the language mapping; unless the language mapping is set to null in which case no member is added.
+                if (activePropertyTermDefinition?.LanguageMapping != null)
+                {
+                    result.Add(new JProperty("@language", activePropertyTermDefinition.LanguageMapping));
+                }
+                // 5.2 - Otherwise, if the active context has a default language, add an @language to result and set its value to the default language.
+                else if (activeContext.Language != null)
+                {
+                    result.Add(new JProperty("@language", activeContext.Language));
+                }
+            }
+            // 6 - Return result.
+            return result;
         }
 
         private bool IsScalar(JToken token)
