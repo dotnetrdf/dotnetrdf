@@ -76,6 +76,7 @@ namespace VDS.RDF.JsonLd
         /// <param name="options">JSON-LD processing options</param>
         public JsonLdProcessor(JsonLdProcessorOptions options) {
             _options = options;
+            ProcessingMode = _options.Syntax;
         }
 
         /// <summary>
@@ -92,9 +93,9 @@ namespace VDS.RDF.JsonLd
             set { _base = value; }
         }
 
-        public JsonLdSyntax ProcessingMode
+        public JsonLdSyntax? ProcessingMode
         {
-            get { return _options.Syntax; }
+            get; set;
         }
 
         /// <summary>
@@ -108,76 +109,151 @@ namespace VDS.RDF.JsonLd
         {
             if (remoteContexts == null) remoteContexts = new List<Uri>();
 
-            // Initialize result to the result of cloning active context
+            // 1. Initialize result to the result of cloning active context
             var result = activeContext.Clone();
 
-            // If local context is not an array, set it to an array containing only local context.
-            JArray contexts = localContext as JArray ?? new JArray(localContext);
+            // 2. If local context is not an array, set it to an array containing only local context.
+            localContext = localContext as JArray ?? new JArray(localContext);
 
-            foreach (var context in contexts)
+            // 3. For each item context in local context:
+            foreach (var context in (localContext as JArray))
             {
-                if (context is JValue && (context as JValue).Type == JTokenType.Null)
+                // 3.1 If context is null, set result to a newly-initialized active context and continue with the next context. 
+                // The base IRI of the active context is set to the IRI of the currently being processed document 
+                // (which might be different from the currently being processed context), if available; 
+                // otherwise to null. If set, the base option of a JSON-LD API Implementation overrides the base IRI.
+                if (context.Type == JTokenType.Null)
                 {
-                    // If context is null, set result to a newly-initialized active context and continue with the next context. 
-                    // The base IRI of the active context is set to the IRI of the currently being processed document 
-                    // (which might be different from the currently being processed context), if available; 
-                    // otherwise to null. If set, the base option of a JSON-LD API Implementation overrides the base IRI.
                     result = new JsonLdContext
                     {
                         Base = BaseIri,
                     };
+                    continue;
                 }
-                else if (context is JValue && (context as JValue).Type == JTokenType.String)
+                // 3.2 If context is a string
+                if (context.Type == JTokenType.String)
                 {
                     result = ProcessContext(activeContext, (context as JValue).Value<string>(), remoteContexts);
+                    continue;
                 }
-                else
+                // 3.3 - If context is not a JSON object, an invalid local context error has been detected and processing is aborted.
+                if (context.Type != JTokenType.Object)
                 {
-                    var contextObject = context as JObject;
-                    if (contextObject == null) throw new InvalidLocalContextException();
-                    
-                    // If context has an @base key and remote contexts is empty, i.e., the currently being processed context is not a remote context
-                    var baseProperty = contextObject.Property("@base");
-                    if (baseProperty != null && remoteContexts.Count == 0)
+                    throw new InvalidLocalContextException("Local context must be a string, array of strings or JSON object");
+                }
+
+                var contextObject = context as JObject;
+                if (contextObject == null) throw new InvalidLocalContextException();
+
+                // 3.4 - If context has an @base key and remote contexts is empty, i.e., the currently being processed context is not a remote context
+                var baseProperty = contextObject.Property("@base");
+                if (baseProperty != null && remoteContexts.Count == 0)
+                {
+                    // 3.4.1 - If context has an @base key and remote contexts is empty, i.e., the currently being processed context is not a remote context:
+                    var value = baseProperty.Value;
+                    // 3.4.2 - If value is null, remove the base IRI of result.
+                    if (value == null)
                     {
-                        var value = baseProperty.Value;
-                        if (value == null)
+                        result.Base = null;
+                    }
+                    // 3.4.3 - Otherwise, if value is an absolute IRI, the base IRI of result is set to value.
+                    else if (IsAbsoluteIri(value))
+                    {
+                        result.Base = new Uri(value.Value<string>());
+                    }
+                    // 3.4.4 - Otherwise, if value is a relative IRI and the base IRI of result is not null, set the base IRI of result to the result of resolving value against the current base IRI of result.
+                    else if (IsRelativeIri(value))
+                    {
+                        if (result.Base != null)
                         {
-                            // If value is null, remove the base IRI of result.
-                            result.Base = null;
-                        }
-                        else if (IsAbsoluteIri(value))
-                        {
-                            // if value is an absolute IRI, the base IRI of result is set to value.
-                            result.Base = new Uri(value.Value<string>());
-                        }
-                        else if (IsRelativeIri(value))
-                        {
-                            // if value is a relative IRI and the base IRI of result is not null, set the base IRI of result to the result of resolving value against the current base IRI of result.
-                            if (result.Base != null)
-                            {
-                                result.Base = new Uri(result.Base, value.Value<string>());
-                            }
-                            else
-                            {
-                                // Otherwise, an invalid base IRI error has been detected and processing is aborted.
-                                throw new InvalidBaseIriException("Unable to resolve relative @base IRI as there is no current base IRI.");
-                            }
+                            result.Base = new Uri(result.Base, value.Value<string>());
                         }
                         else
                         {
                             // Otherwise, an invalid base IRI error has been detected and processing is aborted.
-                            throw new InvalidBaseIriException("The @base property must be an aboslute IRI, a relative IRI or null");
+                            throw new InvalidBaseIriException("Unable to resolve relative @base IRI as there is no current base IRI.");
                         }
                     }
-
-                    var versionProperty = contextObject.Property("@version");
-                    if (versionProperty != null)
+                    // 3.4.5 - Otherwise, an invalid base IRI error has been detected and processing is aborted.
+                    else
                     {
-                        var versionValue = versionProperty.Value.Value<string>();
-                        if (!"1.1".Equals(versionValue)) {
-                            throw new InvalidVersionValueException(versionValue);
+                        throw new InvalidBaseIriException("The @base property must be an aboslute IRI, a relative IRI or null");
+                    }
+                }
+
+                // 3.5 - If context has an @version key:
+                var versionProperty = contextObject.Property("@version");
+                if (versionProperty != null)
+                {
+                    // 3.5.1 - If the associated value is not 1.1, an invalid @version value has been detected, and processing is aborted.
+                    var versionValue = versionProperty.Value.Value<string>();
+                    if (!"1.1".Equals(versionValue))
+                    {
+                        throw new InvalidVersionValueException(versionValue);
+                    }
+                    // TODO: Set processing mode
+                    // 3.5.2: If processing mode is not set, and json-ld-1.1 is not a prefix of processing mode, a processing mode conflict error has been detected and processing is aborted.
+                    // 3.5.3: Set processing mode, to json-ld-1.1, if not already set.
+                }
+
+                // 3.6 - If context has an @vocab key:
+                var contextProperty = contextObject.Property("@vocab");
+                if (contextProperty != null)
+                {
+                    // 3.6.1 - Initialize value to the value associated with the @vocab key.
+                    var value = contextProperty.Value;
+                    // 3.6.2 - If value is null, remove any vocabulary mapping from result.
+                    if (value.Type == JTokenType.Null)
+                    {
+                        result.Vocab = null;
+                    }
+                    // 3.6.3 - Otherwise, if value is an absolute IRI or blank node identifier, the vocabulary mapping of result is set to value. If it is not an absolute IRI or blank node identifier, an invalid vocab mapping error has been detected and processing is aborted.
+                    else
+                    {
+                        var str = value.Value<string>();
+                        if (IsAbsoluteIri(str) || IsBlankNodeIdentifier(str))
+                        {
+                            result.Vocab = str;
                         }
+                        else
+                        {
+                            throw new InvalidVocabMappingException("The value of @vocab must be an absolute IRI or blank node identifier");
+                        }
+                    }
+                }
+
+                // 3.7 - If context has an @language key
+                var languageProperty = contextObject.Property("@language");
+                if (languageProperty != null)
+                {
+                    // 3.7.1 - Initialize value to the value associated with the @language key.
+                    var value = languageProperty.Value;
+                    // 3.7.2 - If value is null, remove any default language from result.
+                    if (value.Type == JTokenType.Null)
+                    {
+                        result.Language = null;
+                    }
+                    // 3.7.3 - Otherwise, if value is string, the default language of result is set to lowercased value. If it is not a string, an invalid default language error has been detected and processing is aborted.
+                    else if (value.Type == JTokenType.String)
+                    {
+                        result.Language = value.Value<string>().ToLowerInvariant();
+                    }
+                    else
+                    {
+                        throw new InvalidDefaultLanguageException("@language property value must be a JSON string or null.");
+                    }
+                }
+                // 3.8 - Set processing mode, to json-ld-1.0, if not already set.
+                if (this.ProcessingMode == null) this.ProcessingMode = JsonLdSyntax.JsonLd10;
+                // 3.9 - Create a JSON object defined to use to keep track of whether or not a term has already been defined or currently being defined during recursion.
+                var defined = new Dictionary<string, bool>();
+                // 3.10 - For each key-value pair in context where key is not @base, @vocab, or @language, invoke the Create Term Definition algorithm, passing result for active context, context for local context, key, and defined.
+                foreach (var property in contextObject.Properties())
+                {
+                    var key = property.Name;
+                    if(!(key.Equals("@base") || key.Equals("@vocab") || key.Equals("@language")))
+                    {
+                        CreateTermDefinition(result, contextObject, key, defined);
                     }
                 }
             }
@@ -189,20 +265,30 @@ namespace VDS.RDF.JsonLd
             if (defined == null) defined = new Dictionary<string, bool>();
             bool created;
 
+            // 1 - If defined contains the key term and the associated value is true (indicating that the term definition has already been created), return. Otherwise, if the value is false, a cyclic IRI mapping error has been detected and processing is aborted.
             if (defined.TryGetValue(term, out created))
             {
                 if (created) { return; }
                 throw new CyclicIriMappingException(term);
             }
 
+            // 2 - Set the value associated with defined's term key to false. This indicates that the term definition is now being created but is not yet complete.
             defined[term] = false;
 
-            if (IsKeyword(term)) throw new KeywordRedefinitionException(term);
+            // 3 - Since keywords cannot be overridden, term must not be a keyword. Otherwise, a keyword redefinition error has been detected and processing is aborted.
+            if (IsKeyword(term))
+            {
+                throw new KeywordRedefinitionException(term);
+            }
 
+            // 4 - Remove any existing term definition for term in active context.
             activeContext.RemoveTerm(term);
 
+            // 5 - Initialize value to a copy of the value associated with the key term in local context.
             var v = localContext[term];
-            
+
+            // 6 - If value is null or value is a JSON object containing the key-value pair @id-null, set the term definition in active context to null, set the value associated with defined's key term to true, and return.
+            JObject value;
             if (v == null || 
                 v is JValue && (v as JValue)?.Type == JTokenType.Null ||
                 v is JObject && GetPropertyValue(activeContext, v as JObject, "@id").Type == JTokenType.Null)
@@ -211,12 +297,12 @@ namespace VDS.RDF.JsonLd
                 defined[term] = true;
                 return;
             }
-
-            JObject value;
-            if (v.Type == JTokenType.String)
+            // 7 - Otherwise, if value is a string, convert it to a JSON object consisting of a single member whose key is @id and whose value is value.
+            else if (v.Type == JTokenType.String)
             {
                 value = new JObject(new JProperty("@id", v.Value<string>()));
             }
+            // 8 - Otherwise, value must be a JSON object, if not, an invalid term definition error has been detected and processing is aborted.
             else if (v.Type == JTokenType.Object)
             {
                 value = v.DeepClone() as JObject;
@@ -226,18 +312,23 @@ namespace VDS.RDF.JsonLd
                 throw new InvalidTermDefinitionException(term);
             }
 
+            // 9 - Create a new term definition, definition.
             var definition = new JsonLdTermDefinition();
-            var typeValue = GetPropertyValue(activeContext, value, "@type");
 
+            // 10 - If value contains the key @type:
+            var typeValue = GetPropertyValue(activeContext, value, "@type");
             if (typeValue != null)
             {
+                // 10.1 Initialize type to the value associated with the @type key, which must be a string. Otherwise, an invalid type mapping error has been detected and processing is aborted.
                 if (typeValue.Type != JTokenType.String)
                 {
                     throw new InvalidTypeMappingException($"Invalid type mapping for term {term}. The @type value must be a string, got {value.Type}");
                 }
+                // 10.2 - Set type to the result of using the IRI Expansion algorithm, passing active context, type for value, true for vocab, false for document relative, local context, and defined. If the expanded type is neither @id, nor @vocab, nor an absolute IRI, an invalid type mapping error has been detected and processing is aborted.
                 var type = ExpandIri(activeContext, typeValue.Value<string>(), true, false, localContext, defined);
                 if (type == "@id" || type == "@vocab" || IsAbsoluteIri(type))
                 {
+                    // 10.3 - Set the type mapping for definition to type.
                     definition.TypeMapping = type;
                 }
                 else
@@ -248,23 +339,31 @@ namespace VDS.RDF.JsonLd
 
             var reverseValue = GetPropertyValue(activeContext, value, "@reverse");
             var containerValue = GetPropertyValue(activeContext, value, "@container");
+            // 11 - If value contains the key @reverse:
             if (reverseValue != null)
             {
+                // 11.1 - If value contains @id or @nest, members, an invalid reverse property error has been detected and processing is aborted.
                 if (GetPropertyValue(activeContext, value, "@id") != null ||
                     GetPropertyValue(activeContext, value, "@nest") != null)
                 {
                     throw new InvalidReversePropertyException($"Invalid reverse property. The @reverse property cannot be combined with @id or @nest property on term {term}.");
                 }
+
+                // 11.2 - If the value associated with the @reverse key is not a string, an invalid IRI mapping error has been detected and processing is aborted.
                 if (reverseValue.Type != JTokenType.String)
                 {
                     throw new InvalidIriMappingException($"@reverse property value must be a string on term {term}");
                 }
+
+                // 11.3 - Otherwise, set the IRI mapping of definition to the result of using the IRI Expansion algorithm, passing active context, the value associated with the @reverse key for value, true for vocab, false for document relative, local context, and defined. If the result is neither an absolute IRI nor a blank node identifier, i.e., it contains no colon (:), an invalid IRI mapping error has been detected and processing is aborted.
                 var iriMapping = ExpandIri(activeContext, reverseValue.Value<string>(), true, false, localContext, defined);
                 if (!IsAbsoluteIri(iriMapping) && !IsBlankNodeIdentifier(iriMapping))
                 {
                     throw new InvalidIriMappingException($"@reverse property value must expand to an absolute IRI or blank node identifier. The @reverse property on term {term} expands to {iriMapping}.");
                 }
                 definition.IriMapping = iriMapping;
+
+                // 11.4 - If value contains an @container member, set the container mapping of definition to its value; if its value is neither @set, nor @index, nor null, an invalid reverse property error has been detected (reverse properties only support set- and index-containers) and processing is aborted.
                 if (containerValue != null) {
                     if (containerValue.Type == JTokenType.Null)
                     {
@@ -291,19 +390,27 @@ namespace VDS.RDF.JsonLd
                         throw new InvalidContainerMappingException($"Invalid @container property for term {term}. Property value must be a JSON string.");
                     }
                 }
+                // 11.5 - Set the reverse property flag of definition to true.
                 definition.Reverse = true;
+                // 11.6 - Set the term definition of term in active context to definition and the value associated with defined's key term to true and return.
                 activeContext.SetTerm(term, definition);
                 defined[term] = true;
                 return;
             }
+
+            // 12 - Set the reverse property flag of definition to false.
             definition.Reverse = false;
+
+            // 13 - If value contains the key @id and its value does not equal term:
             var idValue = GetPropertyValue(activeContext, value, "@id");
             if (idValue != null && !term.Equals(idValue.Value<string>()))
             {
+                // 13.1 - If the value associated with the @id key is not a string, an invalid IRI mapping error has been detected and processing is aborted.
                 if (idValue.Type != JTokenType.String)
                 {
                     throw new InvalidIriMappingException($"Invalid IRI Mapping. The value of the @id property of term {term} must be a string.");
                 }
+                // 13.2 - Otherwise, set the IRI mapping of definition to the result of using the IRI Expansion algorithm, passing active context, the value associated with the @id key for value, true for vocab, false for document relative, local context, and defined. If the resulting IRI mapping is neither a keyword, nor an absolute IRI, nor a blank node identifier, an invalid IRI mapping error has been detected and processing is aborted; if it equals @context, an invalid keyword alias error has been detected and processing is aborted.
                 var iriMapping = ExpandIri(activeContext, idValue.Value<string>(), true, false, localContext, defined);
                 if (!IsKeyword(iriMapping) &&
                     !IsAbsoluteIri(iriMapping) &&
@@ -317,25 +424,30 @@ namespace VDS.RDF.JsonLd
                 }
                 definition.IriMapping = iriMapping;
             }
+            // 14 - Otherwise if the term contains a colon (:):
             else if (term.Contains(":"))
             {
                 var ix = term.IndexOf(':');
                 var prefix = term.Substring(0, ix);
                 var rest = term.Substring(ix + 1);
+                // 14.1 - If term is a compact IRI with a prefix that is a key in local context a dependency has been found. Use this algorithm recursively passing active context, local context, the prefix as term, and defined.
                 if (localContext.Property("prefix") != null)
                 {
                     CreateTermDefinition(activeContext, localContext, prefix, defined);
                 }
+                // 14.2 - If term's prefix has a term definition in active context, set the IRI mapping of definition to the result of concatenating the value associated with the prefix's IRI mapping and the term's suffix.
                 var prefixTermDefinition = activeContext.GetTerm(term);
                 if (prefixTermDefinition != null)
                 {
                     definition.IriMapping = prefixTermDefinition.IriMapping + rest;
                 }
+                // 14.3 - Otherwise, term is an absolute IRI or blank node identifier. Set the IRI mapping of definition to term.
                 else
                 {
                     definition.IriMapping = term;
                 }
             }
+            // 15 - Otherwise, if active context has a vocabulary mapping, the IRI mapping of definition is set to the result of concatenating the value associated with the vocabulary mapping and term. If it does not have a vocabulary mapping, an invalid IRI mapping error been detected and processing is aborted.
             else if (activeContext.Vocab != null)
             {
                 definition.IriMapping = activeContext.Vocab.ToString() + term;
@@ -387,6 +499,8 @@ namespace VDS.RDF.JsonLd
             var languageValue = GetPropertyValue(activeContext, value, "@language");
             if (languageValue != null && typeValue == null)
             {
+                // 18.1 Initialize language to the value associated with the @language key, which must be either null or a string.Otherwise, an invalid language mapping error has been detected and processing is aborted.
+                // 18.2 If language is a string set it to lowercased language. Set the language mapping of definition to language.
                 if (languageValue.Type == JTokenType.Null)
                 {
                     definition.LanguageMapping = null;
@@ -401,13 +515,16 @@ namespace VDS.RDF.JsonLd
                 }
             }
 
+            // 19 - If value contains the key @nest:
             var nestValue = GetPropertyValue(activeContext, value, "@nest");
             if(nestValue != null)
             {
+                // 19.1 - If processingMode is json-ld-1.0, an invalid term definition has been detected and processing is aborted.
                 if (this.ProcessingMode == JsonLdSyntax.JsonLd10)
                 {
                     throw new InvalidTermDefinitionException($"Invalid Term Definition for term '{term}. Term definitions may not contain the @nest property when the processing mode is json-ld-1.0");
                 }
+                // 19.2 - Initialize nest to the value associated with the @nest key, which must be a string and must not be a keyword other than @nest. Otherwise, an invalid @nest value error has been detected and processing is aborted.
                 if (nestValue.Type != JTokenType.String)
                 {
                     throw new InvalidNestValueException($"Invalid Nest Value for term '{term}'. The value of the @nest property must be a string");
@@ -419,12 +536,14 @@ namespace VDS.RDF.JsonLd
                 }
             }
 
+            // 20 - If the value contains any key other than @id, @reverse, @container, @context, @nest, or @type, an invalid term definition error has been detected and processing is aborted.
             var unrecognizedKeys = value.Properties().Select(prop => prop.Name).Where(x => !TermDefinitionKeys.Contains(x)).ToList();
             if (unrecognizedKeys.Any())
             {
                 throw new InvalidTermDefinitionException($"Invalid Term Definition for term '{term}'. Term definition contains unrecognised property key(s) {String.Join(", ", unrecognizedKeys)}");
             }
 
+            // 21 - Set the term definition of term in active context to definition and set the value associated with defined's key term to true.
             activeContext.SetTerm(term, definition);
             defined[term] = true;
         }
@@ -1142,12 +1261,12 @@ namespace VDS.RDF.JsonLd
 
             // 1 - If the active property has a type mapping in active context that is @id, return a new JSON object containing a single key-value pair where the key is @id and the value is the result of using the IRI Expansion algorithm, passing active context, value, and true for document relative.
             if (typeMapping != null && typeMapping == "@id") {
-                return new JObject(new JProperty("@id", ExpandIri(activeContext, value.Value<string>(), documentRelative: true));
+                return new JObject(new JProperty("@id", ExpandIri(activeContext, value.Value<string>(), documentRelative: true)));
             }
             // 2 - If active property has a type mapping in active context that is @vocab, return a new JSON object containing a single key-value pair where the key is @id and the value is the result of using the IRI Expansion algorithm, passing active context, value, true for vocab, and true for document relative.
             if (typeMapping != null && typeMapping == "@vocab")
             {
-                return new JObject(new JProperty("@id", ExpandIri(activeContext, value.Value<string>(), vocab:true, documentRelative: true));
+                return new JObject(new JProperty("@id", ExpandIri(activeContext, value.Value<string>(), vocab:true, documentRelative: true)));
             }
             // 3 - Otherwise, initialize result to a JSON object with an @value member whose value is set to value.
             var result = new JObject(new JProperty("@value", value));

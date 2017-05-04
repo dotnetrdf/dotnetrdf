@@ -59,12 +59,12 @@ namespace VDS.RDF.JsonLd
         /// Get the default language code specified by this context
         /// </summary>
         /// <remarks>May be null</remarks>
-        public string Language { get; private set; }
+        public string Language { get; set; }
 
         /// <summary>
         /// Get the default vocabulary IRI
         /// </summary>
-        public Uri Vocab { get; private set; }
+        public string Vocab { get; set; }
 
         /// <summary>
         /// Get or set the version of the JSON-LD syntax specified by this context
@@ -88,6 +88,7 @@ namespace VDS.RDF.JsonLd
                 Base = this.Base,
                 Language = this.Language,
                 Version = this.Version,
+                Vocab = this.Vocab,
             };
             foreach(var termDefEntry in _termDefinitions)
             {
