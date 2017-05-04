@@ -81,7 +81,7 @@ namespace VDS.RDF.JsonLd
                 TypeMapping = this.TypeMapping,
                 LanguageMapping = this.LanguageMapping,
                 ContainerMapping = this.ContainerMapping,
-                LocalContext = this.LocalContext.DeepClone(), // TODO: Check if it correct to just directly clone the local context
+                LocalContext = this.LocalContext == null ? null : this.LocalContext.DeepClone(), // TODO: Check if it correct to just directly clone the local context
             };
             return clone;
         }
