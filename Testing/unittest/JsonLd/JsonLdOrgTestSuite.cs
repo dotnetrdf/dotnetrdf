@@ -22,7 +22,8 @@ namespace VDS.RDF.JsonLd
             var actualOutputElement = processor.Expand(new JsonLdContext(), null, inputElement);
             Assert.True(JToken.DeepEquals(actualOutputElement, expectedOutputElement),
                 String.Format(
-                "Actual output does not match expected output.\nExpected:\n{0}\n\nActual:\n{1}",
+                "Error processing expand test {0}.\nActual output does not match expected output.\nExpected:\n{1}\n\nActual:\n{2}",
+                Path.GetFileName(inputPath),
                 expectedOutputElement.ToString(),
                 actualOutputElement.ToString()));
         }

@@ -109,7 +109,7 @@ namespace VDS.RDF.JsonLd
 
         public JsonLdTermDefinition GetTerm(string term)
         {
-            return _termDefinitions[term];
+            return _termDefinitions.TryGetValue(term, out JsonLdTermDefinition ret) ? ret : null;
         }
 
         public bool TryGetTerm(string term, out JsonLdTermDefinition termDefinition)

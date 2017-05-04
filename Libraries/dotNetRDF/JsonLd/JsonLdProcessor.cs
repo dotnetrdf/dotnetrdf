@@ -626,7 +626,29 @@ namespace VDS.RDF.JsonLd
             return value;
         }
 
-        public JToken Expand(JsonLdContext activeContext, string activeProperty, JToken element)
+        public JArray Expand(JsonLdContext activeContext, string activeProperty, JToken element)
+        {
+            var result = ExpandAlgorithm(activeContext, activeProperty, element);
+
+            // If, after the above algorithm is run, the result is a JSON object that contains only an @graph key, set the result to the value of @graph's value. Otherwise, if the result is null, set it to an empty array. Finally, if the result is not an array, then set the result to an array containing only the result.
+
+            var resultObject = result as JObject;
+            if (resultObject != null && resultObject.Properties().Count() == 1 && resultObject.Property("@graph") != null)
+            {
+                result = resultObject["@graph"];
+            }
+            if (result == null || result.Type == JTokenType.Null)
+            {
+                result = new JArray();
+            }
+            if (result.Type != JTokenType.Array)
+            {
+                result = new JArray(result);
+            }
+            return result as JArray;
+        }
+
+        private JToken ExpandAlgorithm(JsonLdContext activeContext, string activeProperty, JToken element)
         {
             JToken result = null;
 
@@ -808,13 +830,13 @@ namespace VDS.RDF.JsonLd
 
         private void ExpandKeys(JsonLdContext activeContext, string activeProperty, JObject elementObject, JObject result)
         {
+            JArray nests = new JArray();
             // 8 - For each key and value in element, ordered lexicographically by key:
             foreach (var property in elementObject.Properties().OrderBy(p => p.Name))
             {
                 var key = property.Name;
                 var value = property.Value;
                 JToken expandedValue = null;
-                JArray nests = null;
 
                 // 8.1 - If key is @context, continue to the next key.
                 if (key.Equals("@context"))
@@ -1048,6 +1070,7 @@ namespace VDS.RDF.JsonLd
                             nests = new JArray();
                         }
                         nests.Add(key);
+                        continue;
                     }
 
                     // TODO: 8.4.13 - When the frame expansion flag is set, if expanded property is any other framing keyword (@explicit, @default, @embed, @explicit, @omitDefault, or @requireAll), set expanded value to the result of performing the Expansion Algorithm recursively, passing active context, active property, and value for element.
@@ -1076,7 +1099,7 @@ namespace VDS.RDF.JsonLd
 
                 // 8.6 - If key's container mapping in term context is @language and value is a JSON object then value is expanded from a language map as follows:
                 termDefinition = termContext.GetTerm(key);
-                if (termDefinition.ContainerMapping == JsonLdContainer.Language && value is JObject)
+                if (termDefinition?.ContainerMapping == JsonLdContainer.Language && value is JObject)
                 {
                     // 8.6.1 - Initialize expanded value to an empty array.
                     expandedValue = new JArray();
@@ -1103,9 +1126,9 @@ namespace VDS.RDF.JsonLd
                     }
                 }
                 // 8.7 - Otherwise, if key's container mapping in term context is @index, @type, or @id and value is a JSON object then value is expanded from an map as follows:                
-                else if ((termDefinition.ContainerMapping == JsonLdContainer.Index ||
-                    termDefinition.ContainerMapping == JsonLdContainer.Type ||
-                    termDefinition.ContainerMapping == JsonLdContainer.Id) &&
+                else if ((termDefinition?.ContainerMapping == JsonLdContainer.Index ||
+                    termDefinition?.ContainerMapping == JsonLdContainer.Type ||
+                    termDefinition?.ContainerMapping == JsonLdContainer.Id) &&
                     value is JObject)
                 {
                     // 8.7.1 - Initialize expanded value to an empty array.
@@ -1171,13 +1194,13 @@ namespace VDS.RDF.JsonLd
                     continue;
                 }
                 // 8.10 - If the container mapping associated to key in term context is @list and expanded value is not already a list object, convert expanded value to a list object by first setting it to an array containing only expanded value if it is not already an array, and then by setting it to a JSON object containing the key-value pair @list-expanded value.
-                if (termDefinition.ContainerMapping == JsonLdContainer.List && !IsListObject(value))
+                if (termDefinition?.ContainerMapping == JsonLdContainer.List && !IsListObject(value))
                 {
                     expandedValue = expandedValue is JArray ? expandedValue : new JArray(expandedValue);
                     expandedValue = new JObject(new JProperty("@list", expandedValue));
                 }
                 // 8.11 - Otherwise, if the term definition associated to key indicates that it is a reverse property
-                else if (termDefinition.Reverse)
+                else if (termDefinition != null &&  termDefinition.Reverse)
                 {
                     // 8.11.1 - If result has no @reverse member, create one and initialize its value to an empty JSON object.
                     if (result.Property("@reverse") == null)
@@ -1205,7 +1228,7 @@ namespace VDS.RDF.JsonLd
                     }
                 }
                 // 8.12 - Otherwise, if key is not a reverse property:
-                else if (!termDefinition.Reverse)
+                else if (termDefinition == null || !termDefinition.Reverse)
                 {
                     // 8.12.1 - If result does not have an expanded property member, create one and initialize its value to an empty array.
                     if (result.Property(expandedProperty) == null)
@@ -1213,33 +1236,43 @@ namespace VDS.RDF.JsonLd
                         result.Add(new JProperty(expandedProperty, new JArray()));
                     }
                     // 8.12.2 - Append expanded value to value of the expanded property member of result.
-                    (result[expandedProperty] as JArray).Add(expandedProperty);
+                    if (expandedValue is JArray)
+                    {
+                        foreach (var item in (expandedValue as JArray))
+                        {
+                            (result[expandedProperty] as JArray).Add(item);
+                        }
+                    }
+                    else
+                    {
+                        (result[expandedProperty] as JArray).Add(expandedValue);
+                    }
                 }
-                // 8.13 - For each key nesting-key in nests
-                foreach (var nestingKey in nests)
+            }
+            // 8.13 - For each key nesting-key in nests
+            foreach (var nestingKey in nests)
+            {
+                // 8.13.1 - Set nested values to the value of nesting-key in element, ensuring that it is an array.
+                var nestedValues = elementObject.GetValue(nestingKey.Value<string>());
+                if (!(nestedValues is JArray))
                 {
-                    // 8.13.1 - Set nested values to the value of nesting-key in element, ensuring that it is an array.
-                    var nestedValues = elementObject.GetValue(nestingKey.Value<string>());
-                    if (!(nestedValues is JArray))
-                    {
-                        nestedValues = new JArray(nestedValues);
-                    }
+                    nestedValues = new JArray(nestedValues);
+                }
 
-                    // 8.13.2 - For each nested value in nested values:
-                    foreach (var nestedValue in nestedValues)
+                // 8.13.2 - For each nested value in nested values:
+                foreach (var nestedValue in nestedValues)
+                {
+                    // If nested value is not a JSON object, or any key within nested value expands to @value, an invalid @nest value error has been detected and processing is aborted.
+                    if (!(nestedValue is JObject))
                     {
-                        // If nested value is not a JSON object, or any key within nested value expands to @value, an invalid @nest value error has been detected and processing is aborted.
-                        if (!(nestedValue is JObject))
-                        {
-                            throw new InvalidNestValueException("Nested value must be a JSON object");
-                        }
-                        if ((nestedValue as JObject).Properties().Any(p=>ExpandIri(activeContext, p.Name, true).Equals("@value")))
-                        {
-                            throw new InvalidNestValueException("Nested values may not contain keys that expand to @value");
-                        }
-                        // 8.13.2.2 - Recursively repeat step 7 using nested value for element.
-                        ExpandKeys(activeContext, activeProperty, nestedValue as JObject, result);
+                        throw new InvalidNestValueException("Nested value must be a JSON object");
                     }
+                    if ((nestedValue as JObject).Properties().Any(p => ExpandIri(activeContext, p.Name, true).Equals("@value")))
+                    {
+                        throw new InvalidNestValueException("Nested values may not contain keys that expand to @value");
+                    }
+                    // 8.13.2.2 - Recursively repeat step 7 using nested value for element.
+                    ExpandKeys(activeContext, activeProperty, nestedValue as JObject, result);
                 }
             }
         }
