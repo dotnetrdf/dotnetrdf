@@ -4,6 +4,7 @@ using System.Text;
 using System.IO;
 using Xunit;
 using Newtonsoft.Json.Linq;
+using System.Linq;
 
 namespace VDS.RDF.JsonLd
 {
@@ -11,10 +12,16 @@ namespace VDS.RDF.JsonLd
     {
         [Theory]
         [MemberData("ExpandTests", MemberType =typeof(JsonLdTestSuiteDataSource))]
-        public void ExpandTests(string inputPath, string expectedOutputPath)
+        public void ExpandTests(string inputPath, string expectedOutputPath, string baseIri, string processorMode)
         {
-            var processor = new JsonLdProcessor(new JsonLdProcessorOptions());
-            processor.BaseIri = new Uri("http://json-ld.org/test-suite/tests/" + Path.GetFileName(inputPath));
+            var processorOptions = new JsonLdProcessorOptions();
+            if (baseIri != null) processorOptions.Base = new Uri(baseIri);
+            if (processorMode != null) processorOptions.Syntax = processorMode.Equals("json-ld-1.1") ? JsonLdSyntax.JsonLd11 : JsonLdSyntax.JsonLd10;
+            var processor = new JsonLdProcessor(processorOptions);
+            if (processor.BaseIri == null)
+            {
+                processor.BaseIri = new Uri("http://json-ld.org/test-suite/tests/" + Path.GetFileName(inputPath));
+            }
             var inputJson = File.ReadAllText(inputPath);
             var expectedOutputJson = File.ReadAllText(expectedOutputPath);
             var inputElement = JToken.Parse(inputJson);
@@ -36,11 +43,42 @@ namespace VDS.RDF.JsonLd
             get
             {
                 var resourceDir = new DirectoryInfo("resources\\jsonld");
-                foreach(var inputFile in resourceDir.EnumerateFiles("expand-????-in.jsonld"))
+                var manifestPath = Path.Combine(resourceDir.FullName, "expand-manifest.jsonld");
+                var manifestJson = File.ReadAllText(manifestPath);
+                var manifest = JObject.Parse(manifestJson);
+                var sequence = manifest.Property("sequence").Value as JArray;
+                foreach(var testConfiguration in sequence.OfType<JObject>())
                 {
-                    var inputPath = inputFile.FullName;
-                    var outputPath = inputPath.Replace("-in.jsonld", "-out.jsonld");
-                    yield return new object[] { inputPath, outputPath };
+                    // For now ignore type as everything in this manifest is a positive test
+                    var input = testConfiguration.Property("input").Value.Value<string>();
+                    var expect = testConfiguration.Property("expect").Value.Value<string>();
+                    var optionsProperty = testConfiguration.Property("options");
+                    string baseIri = null, processorMode = null;
+                    if (optionsProperty != null)
+                    {
+                        var options = optionsProperty.Value as JObject;
+                        if (options != null)
+                        {
+                            foreach (var p in options.Properties())
+                            {
+                                switch (p.Name)
+                                {
+                                    case "base":
+                                        baseIri = p.Value.Value<string>();
+                                        break;
+                                    case "processingMode":
+                                        processorMode = p.Value.Value<string>();
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                    yield return new object[] {
+                        Path.Combine(resourceDir.FullName, input),
+                        Path.Combine(resourceDir.FullName, expect),
+                        baseIri,
+                        processorMode
+                    };
                 }
             }
         }
