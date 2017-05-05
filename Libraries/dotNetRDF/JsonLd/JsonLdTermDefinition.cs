@@ -52,11 +52,17 @@ namespace VDS.RDF.JsonLd
         /// <remarks>May be null. MUST be null if LanguageMapping is not null</remarks>
         public string TypeMapping { get; set; }
 
+        private string _languageMapping;
         /// <summary>
-        /// Gt or set the language mapping for this term definition
+        /// Get or set the language mapping for this term definition
         /// </summary>
         /// <remarks>May be null. MUST be null if TypeMapping is not null</remarks>
-        public string LanguageMapping { get; set; }
+        public string LanguageMapping {
+            get { return _languageMapping; }
+            set { _languageMapping = value; HasLanguageMapping = true; }
+        }
+
+        public bool HasLanguageMapping { get; private set; }
 
         /// <summary>
         /// Get or set the context specified for this term definition
@@ -80,6 +86,7 @@ namespace VDS.RDF.JsonLd
                 Reverse = this.Reverse,
                 TypeMapping = this.TypeMapping,
                 LanguageMapping = this.LanguageMapping,
+                HasLanguageMapping = this.HasLanguageMapping,
                 ContainerMapping = this.ContainerMapping,
                 LocalContext = this.LocalContext == null ? null : this.LocalContext.DeepClone(), // TODO: Check if it correct to just directly clone the local context
             };

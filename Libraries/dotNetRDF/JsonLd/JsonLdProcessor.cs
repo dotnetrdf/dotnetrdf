@@ -62,6 +62,7 @@ namespace VDS.RDF.JsonLd
             "@context",
             "@nest",
             "@type",
+            "@language",
         };
         private static readonly string[] ValueObjectKeys = new string[]
         {
@@ -152,7 +153,7 @@ namespace VDS.RDF.JsonLd
                     // 3.4.1 - If context has an @base key and remote contexts is empty, i.e., the currently being processed context is not a remote context:
                     var value = baseProperty.Value;
                     // 3.4.2 - If value is null, remove the base IRI of result.
-                    if (value == null)
+                    if (value.Type == JTokenType.Null)
                     {
                         result.Base = null;
                     }
@@ -177,7 +178,7 @@ namespace VDS.RDF.JsonLd
                     // 3.4.5 - Otherwise, an invalid base IRI error has been detected and processing is aborted.
                     else
                     {
-                        throw new InvalidBaseIriException("The @base property must be an aboslute IRI, a relative IRI or null");
+                        throw new InvalidBaseIriException("The @base property must be an absolute IRI, a relative IRI or null");
                     }
                 }
 
@@ -569,7 +570,7 @@ namespace VDS.RDF.JsonLd
             // 3. If vocab is true and the active context has a term definition for value, return the associated IRI mapping.
             if (vocab && activeContext.TryGetTerm(value, out JsonLdTermDefinition termDefinition))
             {
-                return termDefinition.IriMapping;
+                return termDefinition?.IriMapping;
             }
 
             // 4. If value contains a colon (:), it is either an absolute IRI, a compact IRI, or a blank node identifier:
@@ -619,8 +620,12 @@ namespace VDS.RDF.JsonLd
             // 6 Otherwise, if document relative is true, set value to the result of resolving value against the base IRI. 
             else if (documentRelative)
             {
-                var iri = new Uri(activeContext.Base ?? BaseIri, value);
-                return iri.ToString();
+                var baseIri = activeContext.HasBase ? activeContext.Base : BaseIri;
+                if (baseIri != null)
+                {
+                    var iri = new Uri(activeContext.Base ?? BaseIri, value);
+                    return iri.ToString();
+                }
             }
 
             // 7 Return value as is
@@ -631,7 +636,10 @@ namespace VDS.RDF.JsonLd
         {
             var result = ExpandAlgorithm(activeContext, activeProperty, element);
 
-            // If, after the above algorithm is run, the result is a JSON object that contains only an @graph key, set the result to the value of @graph's value. Otherwise, if the result is null, set it to an empty array. Finally, if the result is not an array, then set the result to an array containing only the result.
+            // If, after the above algorithm is run, the result is a JSON object that contains only an @graph key, 
+            // set the result to the value of @graph's value. 
+            // Otherwise, if the result is null, set it to an empty array. 
+            // Finally, if the result is not an array, then set the result to an array containing only the result.
 
             var resultObject = result as JObject;
             if (resultObject != null && resultObject.Properties().Count() == 1 && resultObject.Property("@graph") != null)
@@ -682,26 +690,34 @@ namespace VDS.RDF.JsonLd
                 foreach(var item in (element as JArray))
                 {
                     // 3.2.1 - Initialize expanded item to the result of using this algorithm recursively, passing active context, active property, and item as element.
-                    var expandedItem = Expand(activeContext, activeProperty, item);
-
-                    // 3.2.2 - If the active property is @list or its container mapping is set to @list, the expanded item must not be an array or a list object, otherwise a list of lists error has been detected and processing is aborted.
-                    if (activeProperty != null && 
-                        (activeProperty.Equals("@list") || 
-                        hasTermDefinition && activePropertyTermDefinition.ContainerMapping.Equals(JsonLdContainer.List))) {
-                        throw new ListOfListsException($"List of lists error at property {activeProperty}");
-                    }
-
-                    // 3.2.2 - If expanded item is an array, append each of its items to result. Otherwise, if expanded item is not null, append it to result.
-                    if (expandedItem.Type == JTokenType.Array)
+                    var expandedItem = ExpandAlgorithm(activeContext, activeProperty, item);
+                    if (expandedItem != null)
                     {
-                        foreach (var expandedItemItem in expandedItem as JArray)
+                        // 3.2.2 - If the active property is @list or its container mapping is set to @list, 
+                        // the expanded item must not be an array or a list object, 
+                        // otherwise a list of lists error has been detected and processing is aborted.
+                        if (activeProperty != null &&
+                            (activeProperty.Equals("@list") ||
+                            hasTermDefinition && activePropertyTermDefinition.ContainerMapping.Equals(JsonLdContainer.List)))
                         {
-                            resultArray.Add(expandedItemItem);
+                            if (IsListObject(expandedItem) || expandedItem.Type == JTokenType.Array)
+                            {
+                                throw new ListOfListsException($"List of lists error at property {activeProperty}");
+                            }
                         }
-                    }
-                    else
-                    {
-                        resultArray.Add(expandedItem);
+
+                        // 3.2.2 - If expanded item is an array, append each of its items to result. Otherwise, if expanded item is not null, append it to result.
+                        if (expandedItem != null && expandedItem.Type == JTokenType.Array)
+                        {
+                            foreach (var expandedItemItem in expandedItem as JArray)
+                            {
+                                resultArray.Add(expandedItemItem);
+                            }
+                        }
+                        else
+                        {
+                            resultArray.Add(expandedItem);
+                        }
                     }
                 }
 
@@ -722,7 +738,7 @@ namespace VDS.RDF.JsonLd
             }
 
             // 6 - For each key/value pair in element ordered lexicographically by key where key expands to @type using the IRI Expansion algorithm, passing active context, key for value, and true for vocab:
-            var typeProperties = elementObject.Properties().Where(property => ExpandIri(activeContext, property.Name, true).Equals("@type")).OrderBy(p => p.Name).ToList();
+            var typeProperties = elementObject.Properties().Where(property => "@type".Equals(ExpandIri(activeContext, property.Name, true))).OrderBy(p => p.Name).ToList();
             foreach(var property in typeProperties)
             {
                 // For each term which is a value of value, 
@@ -819,7 +835,7 @@ namespace VDS.RDF.JsonLd
             if (activeProperty == null || activeProperty.Equals("@graph"))
             {
                 // 13.1 - If result is an empty JSON object or contains the keys @value or @list, set result to null.
-                if (resultObject.Property("@value")!=null || resultObject.Property("@list") != null)
+                if (resultObject.Properties().Count() == 0 || resultObject.Property("@value")!=null || resultObject.Property("@list") != null)
                 {
                     result = null;
                 }
@@ -1014,7 +1030,7 @@ namespace VDS.RDF.JsonLd
                         if (nestedReverseProperty != null)
                         {
                             // ... execute for each of its property and item the following steps:
-                            foreach (var nestedProperty in (expandedValue as JObject).Properties())
+                            foreach (var nestedProperty in (nestedReverseProperty.Value as JObject).Properties())
                             {
                                 // 8.4.11.2.1 - If result does not have a property member, create one and set its value to an empty array.
                                 if (result.Property(nestedProperty.Name) == null)
@@ -1022,7 +1038,18 @@ namespace VDS.RDF.JsonLd
                                     result.Add(new JProperty(nestedProperty.Name, new JArray()));
                                 }
                                 // 8.4.11.2.2 - Append item to the value of the property member of result.
-                                (result.Property(nestedProperty.Name).Value as JArray).Add(nestedProperty.Value);
+                                var resultArray = result.Property(nestedProperty.Name).Value as JArray;
+                                if (nestedProperty.Value is JArray)
+                                {
+                                    foreach (var item in (nestedProperty.Value as JArray))
+                                    {
+                                        resultArray.Add(item);
+                                    }
+                                }
+                                else
+                                {
+                                    resultArray.Add(nestedProperty.Value);
+                                }
                             }
                         }
 
@@ -1122,9 +1149,12 @@ namespace VDS.RDF.JsonLd
                                 throw new InvalidLanguageMapValueException();
                             }
                             // 8.6.2.2.2 - Append a JSON object to expanded value that consists of two key-value pairs: (@value-item) and (@language-lowercased language), unless item is null.
-                            (expandedValue as JArray).Add(new JObject(
-                                new JProperty("@value", item),
-                                new JProperty("@language", language.ToLowerInvariant())));
+                            if (item.Type != JTokenType.Null)
+                            {
+                                (expandedValue as JArray).Add(new JObject(
+                                    new JProperty("@value", item),
+                                    new JProperty("@language", language.ToLowerInvariant())));
+                            }
                         }
                     }
                 }
@@ -1145,8 +1175,8 @@ namespace VDS.RDF.JsonLd
                         // 8.7.2.1 - If container mapping is @type, and index's term definition in term context has a local context, set map context to the result of the Context Processing algorithm, passing term context as active context and the value of the index's local context as local context. Otherwise, set map context to term context.
                         var mapContext = 
                             (termDefinition.ContainerMapping == JsonLdContainer.Type && 
-                             termDefinition?.LocalContext != null) ? 
-                             ProcessContext(activeContext, termDefinition.LocalContext) : 
+                             indexTermDefinition?.LocalContext != null) ? 
+                             ProcessContext(activeContext, indexTermDefinition.LocalContext) : 
                              termContext;
                         // 8.7.2.2 - If index value is not an array set it to an array containing only index value.
                         if (!(indexValue is JArray)) indexValue = new JArray(indexValue);
@@ -1174,7 +1204,7 @@ namespace VDS.RDF.JsonLd
                                 var existingTypes = item.GetValue("@type") as JArray;
                                 if (existingTypes != null)
                                 {
-                                    existingTypes.Add(expandedIndex);
+                                    existingTypes.Insert(0, expandedIndex);
                                 }
                                 else
                                 {
@@ -1316,9 +1346,12 @@ namespace VDS.RDF.JsonLd
             else if (value.Type == JTokenType.String)
             {
                 // 5.1 - If a language mapping is associated with active property in active context, add an @language to result and set its value to the language code associated with the language mapping; unless the language mapping is set to null in which case no member is added.
-                if (activePropertyTermDefinition?.LanguageMapping != null)
+                if (activePropertyTermDefinition!= null && activePropertyTermDefinition.HasLanguageMapping)
                 {
-                    result.Add(new JProperty("@language", activePropertyTermDefinition.LanguageMapping));
+                    if (activePropertyTermDefinition?.LanguageMapping != null)
+                    {
+                        result.Add(new JProperty("@language", activePropertyTermDefinition.LanguageMapping));
+                    }
                 }
                 // 5.2 - Otherwise, if the active context has a default language, add an @language to result and set its value to the default language.
                 else if (activeContext.Language != null)

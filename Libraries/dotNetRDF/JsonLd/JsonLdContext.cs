@@ -49,11 +49,17 @@ namespace VDS.RDF.JsonLd
             _termDefinitions = new Dictionary<string, JsonLdTermDefinition>();
         }
 
+        private Uri _base;
         /// <summary>
         /// Get or set the base IRI specified by this context
         /// </summary>
         /// <remarks>The value may be a relative or an absolute IRI or null</remarks>
-        public Uri Base { get; set; }
+        public Uri Base { get { return _base; } set { _base = value; HasBase = true; } }
+
+        /// <summary>
+        /// Returns true if the Base property of this context has been explicitly set.
+        /// </summary>
+        public bool HasBase { get; private set; }
 
         /// <summary>
         /// Get the default language code specified by this context
@@ -86,6 +92,7 @@ namespace VDS.RDF.JsonLd
             var clone = new JsonLdContext
             {
                 Base = this.Base,
+                HasBase = this.HasBase,
                 Language = this.Language,
                 Version = this.Version,
                 Vocab = this.Vocab,
