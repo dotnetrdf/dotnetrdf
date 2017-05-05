@@ -1189,7 +1189,7 @@ namespace VDS.RDF.JsonLd
                 // 8.8 - Otherwise, initialize expanded value to the result of using this algorithm recursively, passing term context as active context, key for active property, and value for element.
                 else
                 {
-                    expandedValue = Expand(termContext, key, value);
+                    expandedValue = ExpandAlgorithm(termContext, key, value);
                 }
                 // 8.9 - If expanded value is null, ignore key by continuing to the next key from element.
                 if (expandedValue == null)
