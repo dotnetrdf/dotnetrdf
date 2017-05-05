@@ -11,8 +11,8 @@ namespace VDS.RDF.JsonLd
     public class JsonLdOrgTestSuite
     {
         [Theory]
-        [MemberData("ExpandTests", MemberType =typeof(JsonLdTestSuiteDataSource))]
-        public void ExpandTests(string inputPath, string expectedOutputPath, string baseIri, string processorMode)
+        [MemberData("ExpandTests", MemberType = typeof(JsonLdTestSuiteDataSource))]
+        public void ExpandTests(string inputPath, string expectedOutputPath, string baseIri, string processorMode, string expandContextPath)
         {
             var processorOptions = new JsonLdProcessorOptions();
             if (baseIri != null) processorOptions.Base = new Uri(baseIri);
@@ -26,7 +26,19 @@ namespace VDS.RDF.JsonLd
             var expectedOutputJson = File.ReadAllText(expectedOutputPath);
             var inputElement = JToken.Parse(inputJson);
             var expectedOutputElement = JToken.Parse(expectedOutputJson);
-            var actualOutputElement = processor.Expand(new JsonLdContext(), null, inputElement);
+            var initialContext = new JsonLdContext();
+            if (expandContextPath != null)
+            {
+                var expandContextJson = File.ReadAllText(expandContextPath);
+                var expandContextObject = JObject.Parse(expandContextJson);
+                var expandContext = expandContextObject.Property("@context")?.Value as JObject;
+                if (expandContext != null)
+                {
+                    initialContext = processor.ProcessContext(initialContext, expandContext);
+                }
+            }
+            var actualOutputElement = processor.Expand(initialContext, null, inputElement);
+            //SortTypeArrays(actualOutputElement);
             Assert.True(JToken.DeepEquals(actualOutputElement, expectedOutputElement),
                 String.Format(
                 "Error processing expand test {0}.\nActual output does not match expected output.\nExpected:\n{1}\n\nActual:\n{2}",
@@ -35,6 +47,7 @@ namespace VDS.RDF.JsonLd
                 actualOutputElement.ToString()));
         }
     }
+
 
     public static class JsonLdTestSuiteDataSource
     {
@@ -52,8 +65,10 @@ namespace VDS.RDF.JsonLd
                     // For now ignore type as everything in this manifest is a positive test
                     var input = testConfiguration.Property("input").Value.Value<string>();
                     var expect = testConfiguration.Property("expect").Value.Value<string>();
-                    var optionsProperty = testConfiguration.Property("options");
-                    string baseIri = null, processorMode = null;
+                    var optionsProperty = testConfiguration.Property("option");
+                    string baseIri = null, 
+                        processorMode = null, 
+                        expandContext = null;
                     if (optionsProperty != null)
                     {
                         var options = optionsProperty.Value as JObject;
@@ -69,6 +84,9 @@ namespace VDS.RDF.JsonLd
                                     case "processingMode":
                                         processorMode = p.Value.Value<string>();
                                         break;
+                                    case "expandContext":
+                                        expandContext = Path.Combine(resourceDir.FullName, p.Value.Value<string>());
+                                        break;
                                 }
                             }
                         }
@@ -77,7 +95,8 @@ namespace VDS.RDF.JsonLd
                         Path.Combine(resourceDir.FullName, input),
                         Path.Combine(resourceDir.FullName, expect),
                         baseIri,
-                        processorMode
+                        processorMode,
+                        expandContext
                     };
                 }
             }
