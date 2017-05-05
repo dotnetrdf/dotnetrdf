@@ -807,7 +807,7 @@ namespace VDS.RDF.JsonLd
                 var setProperty = resultObject.Property("@set");
                 if (setProperty != null)
                 {
-                    result = setProperty.Value as JObject;
+                    result = setProperty.Value;
                 }
             }
             // 12 - If result contains only the key @language, set result to null.
@@ -997,7 +997,7 @@ namespace VDS.RDF.JsonLd
                     // 8.4.10 - If expanded property is @set, set expanded value to the result of using this algorithm recursively, passing active context, active property, and value for element.
                     if (expandedProperty.Equals("@set"))
                     {
-                        expandedValue = Expand(activeContext, activeProperty, value);
+                        expandedValue = ExpandAlgorithm(activeContext, activeProperty, value);
                     }
 
                     // 8.4.11 - If expanded property is @reverse and value is not a JSON object, an invalid @reverse value error has been detected and processing is aborted.
@@ -1203,7 +1203,8 @@ namespace VDS.RDF.JsonLd
                     expandedValue = new JObject(new JProperty("@list", expandedValue));
                 }
                 // 8.11 - Otherwise, if the term definition associated to key indicates that it is a reverse property
-                else if (termDefinition != null &&  termDefinition.Reverse)
+                // NOTE: Although the spec says "Otherwise" here, making this an else if means that the expandedValue set above would never get added to the result object (and this results in some test suite failures), so I think the spec is in error here
+                if (termDefinition != null &&  termDefinition.Reverse)
                 {
                     // 8.11.1 - If result has no @reverse member, create one and initialize its value to an empty JSON object.
                     if (result.Property("@reverse") == null)
