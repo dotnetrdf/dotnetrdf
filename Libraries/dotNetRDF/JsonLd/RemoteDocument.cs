@@ -24,38 +24,30 @@
 // </copyright>
 */
 
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace VDS.RDF.JsonLd
 {
     /// <summary>
-    /// A collection of options for setting up the JSON-LD processor
+    /// Class used to return information about a remote document or context
     /// </summary>
-    public class JsonLdProcessorOptions
+    public class RemoteDocument
     {
         /// <summary>
-        /// Overrides the base IRI of the document being processed
+        /// If available, the value of the HTTP Link Header [RFC5988] using the http://www.w3.org/ns/json-ld#context link relation in the response. 
         /// </summary>
-        public Uri Base { get; set; }
+        /// <remarks>If the response's content type is application/ld+json, the HTTP Link Header is ignored. 
+        /// If multiple HTTP Link Headers using the http://www.w3.org/ns/json-ld#context link relation are found, 
+        /// the Promise of the LoadDocumentCallback is rejected with a JsonLdError whose code is set to multiple context link headers.</remarks>
+        public string ContextUrl { get; set; }
 
         /// <summary>
-        /// Get or set the function to use to resolve an IRI reference to a document
-        /// into parsed JSON.
+        /// The final URL of the loaded document. This is important to handle HTTP redirects properly.
         /// </summary>
-        /// <remarks>If the function returns null or throws an exception, it will be assumed that dereferencing the IRI has failed</remarks>
-        public Func<Uri, RemoteDocument> Loader { get; set; }
+        public string DocumentUrl { get; set; }
 
         /// <summary>
-        /// Get or set the syntax version that the processor will use
+        /// The retrieved document. This can either be the raw payload or the already parsed document.
         /// </summary>
-        public JsonLdSyntax Syntax = JsonLdSyntax.JsonLd11;
-
-        /// <summary>
-        /// A context that is used to initialize the active context when expanding a document.
-        /// </summary>
-        public JToken ExpandContext;
+        /// <remarks>This property may be a JToken or a string. If it is a string, the string is parsed to a JToken</remarks>
+        public object Document { get; set; }
     }
 }

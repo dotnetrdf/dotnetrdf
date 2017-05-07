@@ -28,6 +28,8 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace VDS.RDF.JsonLd
 {
@@ -630,6 +632,121 @@ namespace VDS.RDF.JsonLd
 
             // 7 Return value as is
             return value;
+        }
+
+        public async Task<JArray> ExpandAsync(string input, JsonLdProcessorOptions options = null)
+        {
+            var parsedJson = await LoadJsonAsync(input, options);
+            return await ExpandAsync(parsedJson, input, options);
+        }
+
+        public async Task<JArray> ExpandAsync(JToken input, JsonLdProcessorOptions options = null)
+        {
+            if (input is JValue && (input as JValue).Type == JTokenType.String)
+            {
+                return await ExpandAsync((input as JValue).Value<string>(), options);
+            }
+            return await ExpandAsync(new RemoteDocument { Document = input}, null, options);
+        }
+
+        private async Task<JArray> ExpandAsync(RemoteDocument doc, string documentLocation, JsonLdProcessorOptions options = null) {
+            var activeContext = new JsonLdContext { Base = documentLocation == null ? null : new Uri(documentLocation) };
+            if (options.Base != null) activeContext.Base = options.Base;
+            if (options.ExpandContext != null)
+            {
+                var expandObject = options.ExpandContext as JObject;
+                if (expandObject != null)
+                {
+                    var contextProperty = expandObject.Property("@context");
+                    if (contextProperty != null)
+                    {
+                        activeContext = ProcessContext(activeContext, contextProperty);
+                    }
+                    else
+                    {
+                        activeContext = ProcessContext(activeContext, expandObject);
+                    }
+                }
+                else
+                {
+                    activeContext = ProcessContext(activeContext, options.ExpandContext);
+                }
+            }
+            if (doc.ContextUrl != null)
+            {
+                var contextDoc = await LoadJsonAsync(doc.ContextUrl, options);
+                if (contextDoc.Document is string)
+                {
+                    contextDoc.Document = JToken.Parse(contextDoc.Document as string);
+                }
+                activeContext = ProcessContext(activeContext, contextDoc.Document as JToken); 
+            }
+            if (doc.Document is string)
+            {
+                doc.Document = JToken.Parse(doc.Document as string);
+            }
+            return Expand(activeContext, null, doc.Document as JToken);
+        }
+
+        private async Task<RemoteDocument> LoadJsonAsync(string remoteRef, JsonLdProcessorOptions options)
+        {
+            if (options.Loader != null) return options.Loader(new Uri(remoteRef));
+            var client = new HttpClient();
+            var response = await client.GetAsync(remoteRef);
+            response.EnsureSuccessStatusCode();
+            if (response.Headers.GetValues("Content-Type").Any(x=>x.Contains("application/json") || x.Contains("application/ld+json") || x.Contains("+json")))
+            {
+                throw new JsonLdProcessorException("Loading document failed");
+            }
+            var responseString = await response.Content.ReadAsStringAsync();
+            string contextLink = null;
+
+            // If content type is application/ld+json the context link header is ignored
+            if (!response.Headers.GetValues("Content-Type").Any(x => x.Contains("application/ld+json")))
+            {
+                var contextLinks = ParseLinkHeaders(response.Headers.GetValues("Link")).Where(x => x.RelationTypes.Contains("http://www.w3.org/ns/json-ld#context")).Select(x => x.LinkValue).ToList();
+                if (contextLinks.Count > 1) throw new JsonLdProcessorException("Multiple context link headers");
+                contextLink = contextLinks.FirstOrDefault();
+            }
+
+            var ret = new RemoteDocument
+            {
+                ContextUrl = contextLink,
+                DocumentUrl = response.RequestMessage.RequestUri.ToString(),
+                Document = JToken.Parse(responseString),
+            };
+            return ret;
+        }
+
+        private IEnumerable<WebLink> ParseLinkHeaders(IEnumerable<string> linkHeaderValues)
+        {
+            foreach(var linkHeaderValue in linkHeaderValues)
+            {
+                var fields = linkHeaderValue.Split(';').Select(x => x.Trim());
+                var linkValue = fields.First().TrimStart('<').TrimEnd('>');
+                var relTypes = new List<string>();
+                foreach(var field in fields)
+                {
+                    var split = field.Split(new char[] { '=' }, 2);
+                    if (split.Length == 2)
+                    {
+                        var key = split[0].Trim();
+                        var value = split[1].Trim();
+                        if (key.Equals("rel"))
+                        {
+                            value = value.Trim('"');
+                            relTypes.AddRange(value.Split(' '));
+                        }
+                    }
+                }
+                yield return new WebLink { LinkValue = linkValue, RelationTypes = relTypes };
+            }
+        }
+
+        internal class WebLink
+        {
+            public string LinkValue { get; set; }
+            public List<string> RelationTypes { get; set; }
         }
 
         public JArray Expand(JsonLdContext activeContext, string activeProperty, JToken element)
@@ -1483,15 +1600,23 @@ namespace VDS.RDF.JsonLd
             {
                 try
                 {
-                    return _options.Loader(reference);
-                } catch(Exception ex)
+                    var remoteDoc = _options.Loader(reference);
+                    if (remoteDoc.Document is JToken) return remoteDoc.Document as JToken;
+                    if (remoteDoc.Document is string) return JToken.Parse(remoteDoc.Document as string);
+                    throw new LoadingRemoteContextFailedException($"Loader returned an unrecognised type of Document ({remoteDoc.Document.GetType().FullName}). Expected either JToken or string.");
+                }
+                catch (Exception ex)
                 {
                     throw new LoadingRemoteContextFailedException($"Could not load context from {reference}. Cause: {ex}", ex);
                 }
-            } else
+            }
+            else
             {
-                // TODO: implement default loader
-                throw new NotImplementedException();
+                // Invoke the default loader
+                var loaderTask = LoadJsonAsync(reference.ToString(), this._options);
+                var remoteDoc = loaderTask.Result;
+                if (remoteDoc == null) throw new LoadingRemoteContextFailedException($"Could not load JSON fomr {reference}.");
+                return remoteDoc.Document as JToken;
             }
         }
     }
