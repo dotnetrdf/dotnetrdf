@@ -15,36 +15,33 @@ namespace VDS.RDF.JsonLd
         public void ExpandTests(string inputPath, string expectedOutputPath, string baseIri, string processorMode, string expandContextPath)
         {
             var processorOptions = new JsonLdProcessorOptions();
-            if (baseIri != null) processorOptions.Base = new Uri(baseIri);
+            if (baseIri != null)
+            {
+                processorOptions.Base = new Uri(baseIri);
+            }
+            else
+            {
+                processorOptions.Base = new Uri("http://json-ld.org/test-suite/tests/" + Path.GetFileName(inputPath));
+            }
             if (processorMode != null) processorOptions.Syntax = processorMode.Equals("json-ld-1.1") ? JsonLdSyntax.JsonLd11 : JsonLdSyntax.JsonLd10;
             var processor = new JsonLdProcessor(processorOptions);
-            if (processor.BaseIri == null)
-            {
-                processor.BaseIri = new Uri("http://json-ld.org/test-suite/tests/" + Path.GetFileName(inputPath));
-            }
             var inputJson = File.ReadAllText(inputPath);
             var expectedOutputJson = File.ReadAllText(expectedOutputPath);
             var inputElement = JToken.Parse(inputJson);
             var expectedOutputElement = JToken.Parse(expectedOutputJson);
-            var initialContext = new JsonLdContext();
             if (expandContextPath != null)
             {
                 var expandContextJson = File.ReadAllText(expandContextPath);
-                var expandContextObject = JObject.Parse(expandContextJson);
-                var expandContext = expandContextObject.Property("@context")?.Value as JObject;
-                if (expandContext != null)
-                {
-                    initialContext = processor.ProcessContext(initialContext, expandContext);
-                }
+                processorOptions.ExpandContext = JObject.Parse(expandContextJson);
             }
-            var actualOutputElement = processor.Expand(initialContext, null, inputElement);
-            //SortTypeArrays(actualOutputElement);
+            
+            var actualOutputElement = processor.Expand(inputElement, processorOptions);
             Assert.True(JToken.DeepEquals(actualOutputElement, expectedOutputElement),
                 String.Format(
                 "Error processing expand test {0}.\nActual output does not match expected output.\nExpected:\n{1}\n\nActual:\n{2}",
                 Path.GetFileName(inputPath),
-                expectedOutputElement.ToString(),
-                actualOutputElement.ToString()));
+                expectedOutputElement,
+                actualOutputElement));
         }
     }
 

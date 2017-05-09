@@ -29,8 +29,17 @@ namespace VDS.RDF.JsonLd
 {
     public class JsonLdProcessorException : Exception
     {
-        public JsonLdProcessorException() { }
-        public JsonLdProcessorException(string message) : base(message) { }
-        public JsonLdProcessorException(string message, Exception innerException) : base(message, innerException) { }
+        public JsonLdErrorCode ErrorCode { get; private set; }
+
+        public JsonLdProcessorException(JsonLdErrorCode errorCode, string message) : base(message)
+        {
+            this.ErrorCode = errorCode;
+        }
+
+        public JsonLdProcessorException(JsonLdErrorCode errorCode, string message, Exception innerException) : base(
+            message, innerException)
+        {
+            this.ErrorCode = errorCode;
+        }
     }
 }

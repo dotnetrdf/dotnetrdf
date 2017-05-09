@@ -24,6 +24,8 @@
 // </copyright>
 */
 
+using System;
+
 namespace VDS.RDF.JsonLd
 {
     /// <summary>
@@ -37,12 +39,12 @@ namespace VDS.RDF.JsonLd
         /// <remarks>If the response's content type is application/ld+json, the HTTP Link Header is ignored. 
         /// If multiple HTTP Link Headers using the http://www.w3.org/ns/json-ld#context link relation are found, 
         /// the Promise of the LoadDocumentCallback is rejected with a JsonLdError whose code is set to multiple context link headers.</remarks>
-        public string ContextUrl { get; set; }
+        public Uri ContextUrl { get; set; }
 
         /// <summary>
         /// The final URL of the loaded document. This is important to handle HTTP redirects properly.
         /// </summary>
-        public string DocumentUrl { get; set; }
+        public Uri DocumentUrl { get; set; }
 
         /// <summary>
         /// The retrieved document. This can either be the raw payload or the already parsed document.

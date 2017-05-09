@@ -28,15 +28,13 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace VDS.RDF.JsonLd
 {
     /// <summary>
     /// Implements the core JSON-LD processing 
     /// </summary>
-    public class JsonLdProcessor
+    public partial class JsonLdProcessor
     {
         private Uri _base;
         private JsonLdProcessorOptions _options;
@@ -142,11 +140,9 @@ namespace VDS.RDF.JsonLd
                 // 3.3 - If context is not a JSON object, an invalid local context error has been detected and processing is aborted.
                 if (context.Type != JTokenType.Object)
                 {
-                    throw new InvalidLocalContextException("Local context must be a string, array of strings or JSON object");
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidLocalContext, "Local context must be a string, array of strings or JSON object");
                 }
-
                 var contextObject = context as JObject;
-                if (contextObject == null) throw new InvalidLocalContextException();
 
                 // 3.4 - If context has an @base key and remote contexts is empty, i.e., the currently being processed context is not a remote context
                 var baseProperty = contextObject.Property("@base");
@@ -174,13 +170,13 @@ namespace VDS.RDF.JsonLd
                         else
                         {
                             // Otherwise, an invalid base IRI error has been detected and processing is aborted.
-                            throw new InvalidBaseIriException("Unable to resolve relative @base IRI as there is no current base IRI.");
+                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidBaseIri, "Unable to resolve relative @base IRI as there is no current base IRI.");
                         }
                     }
                     // 3.4.5 - Otherwise, an invalid base IRI error has been detected and processing is aborted.
                     else
                     {
-                        throw new InvalidBaseIriException("The @base property must be an absolute IRI, a relative IRI or null");
+                        throw new JsonLdProcessorException(JsonLdErrorCode.InvalidBaseIri, "The @base property must be an absolute IRI, a relative IRI or null");
                     }
                 }
 
@@ -192,7 +188,7 @@ namespace VDS.RDF.JsonLd
                     var versionValue = versionProperty.Value.Value<string>();
                     if (!"1.1".Equals(versionValue))
                     {
-                        throw new InvalidVersionValueException(versionValue);
+                        throw new JsonLdProcessorException(JsonLdErrorCode.InvalidVersionValue, $"Found invalid value for @version property: {versionValue}.");
                     }
                     // TODO: Set processing mode
                     // 3.5.2: If processing mode is not set, and json-ld-1.1 is not a prefix of processing mode, a processing mode conflict error has been detected and processing is aborted.
@@ -220,7 +216,7 @@ namespace VDS.RDF.JsonLd
                         }
                         else
                         {
-                            throw new InvalidVocabMappingException("The value of @vocab must be an absolute IRI or blank node identifier");
+                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidVocabMapping, "The value of @vocab must be an absolute IRI or blank node identifier.");
                         }
                     }
                 }
@@ -243,7 +239,8 @@ namespace VDS.RDF.JsonLd
                     }
                     else
                     {
-                        throw new InvalidDefaultLanguageException("@language property value must be a JSON string or null.");
+                        throw new JsonLdProcessorException(JsonLdErrorCode.InvalidDefaultLanguage,
+                            "@language property value must be a JSON string or null.");
                     }
                 }
                 // 3.8 - Set processing mode, to json-ld-1.0, if not already set.
@@ -272,7 +269,7 @@ namespace VDS.RDF.JsonLd
             if (defined.TryGetValue(term, out created))
             {
                 if (created) { return; }
-                throw new CyclicIriMappingException(term);
+                throw new JsonLdProcessorException(JsonLdErrorCode.CyclicIriMapping, $"Cyclic IRI mapping detected while processing term {term}");
             }
 
             // 2 - Set the value associated with defined's term key to false. This indicates that the term definition is now being created but is not yet complete.
@@ -281,7 +278,7 @@ namespace VDS.RDF.JsonLd
             // 3 - Since keywords cannot be overridden, term must not be a keyword. Otherwise, a keyword redefinition error has been detected and processing is aborted.
             if (IsKeyword(term))
             {
-                throw new KeywordRedefinitionException(term);
+                throw new JsonLdProcessorException(JsonLdErrorCode.KeywordRedefinition, $"Cannot redefine JSON-LD keyword {term}.");
             }
 
             // 4 - Remove any existing term definition for term in active context.
@@ -313,7 +310,7 @@ namespace VDS.RDF.JsonLd
             }
             else
             {
-                throw new InvalidTermDefinitionException(term);
+                throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTermDefinition, $"Invalid term definition at {term}.");
             }
 
             // 9 - Create a new term definition, definition.
@@ -326,7 +323,7 @@ namespace VDS.RDF.JsonLd
                 // 10.1 Initialize type to the value associated with the @type key, which must be a string. Otherwise, an invalid type mapping error has been detected and processing is aborted.
                 if (typeValue.Type != JTokenType.String)
                 {
-                    throw new InvalidTypeMappingException($"Invalid type mapping for term {term}. The @type value must be a string, got {value.Type}");
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTypeMapping, $"Invalid type mapping for term {term}. The @type value must be a string, got {typeValue.Type}");
                 }
                 // 10.2 - Set type to the result of using the IRI Expansion algorithm, passing active context, type for value, true for vocab, false for document relative, local context, and defined. If the expanded type is neither @id, nor @vocab, nor an absolute IRI, an invalid type mapping error has been detected and processing is aborted.
                 var type = ExpandIri(activeContext, typeValue.Value<string>(), true, false, localContext, defined);
@@ -337,7 +334,7 @@ namespace VDS.RDF.JsonLd
                 }
                 else
                 {
-                    throw new InvalidTypeMappingException($"Invalid type mapping for term {term}. Expected @type value to expand to @id, @vocab or an absolute IRI. Unexpanded value was {typeValue.Value<string>()}, expanded value was {type}.");
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTypeMapping, $"Invalid type mapping for term {term}. Expected @type value to expand to @id, @vocab or an absolute IRI. Unexpanded value was {typeValue.Value<string>()}, expanded value was {type}.");
                 }
             }
 
@@ -350,20 +347,20 @@ namespace VDS.RDF.JsonLd
                 if (GetPropertyValue(activeContext, value, "@id") != null ||
                     GetPropertyValue(activeContext, value, "@nest") != null)
                 {
-                    throw new InvalidReversePropertyException($"Invalid reverse property. The @reverse property cannot be combined with @id or @nest property on term {term}.");
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidReverseProperty, $"Invalid reverse property. The @reverse property cannot be combined with @id or @nest property on term {term}.");
                 }
 
                 // 11.2 - If the value associated with the @reverse key is not a string, an invalid IRI mapping error has been detected and processing is aborted.
                 if (reverseValue.Type != JTokenType.String)
                 {
-                    throw new InvalidIriMappingException($"@reverse property value must be a string on term {term}");
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIriMapping, $"@reverse property value must be a string on term {term}");
                 }
 
                 // 11.3 - Otherwise, set the IRI mapping of definition to the result of using the IRI Expansion algorithm, passing active context, the value associated with the @reverse key for value, true for vocab, false for document relative, local context, and defined. If the result is neither an absolute IRI nor a blank node identifier, i.e., it contains no colon (:), an invalid IRI mapping error has been detected and processing is aborted.
                 var iriMapping = ExpandIri(activeContext, reverseValue.Value<string>(), true, false, localContext, defined);
                 if (!IsAbsoluteIri(iriMapping) && !IsBlankNodeIdentifier(iriMapping))
                 {
-                    throw new InvalidIriMappingException($"@reverse property value must expand to an absolute IRI or blank node identifier. The @reverse property on term {term} expands to {iriMapping}.");
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIriMapping, $"@reverse property value must expand to an absolute IRI or blank node identifier. The @reverse property on term {term} expands to {iriMapping}.");
                 }
                 definition.IriMapping = iriMapping;
 
@@ -386,12 +383,12 @@ namespace VDS.RDF.JsonLd
                         }
                         else
                         {
-                            throw new InvalidReversePropertyException($"Invalid reverse property for term {term}. Reverse properties only support set and index container types. ");
+                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidReverseProperty, $"Invalid reverse property for term {term}. Reverse properties only support set and index container types. ");
                         }
                     }
                     else
                     {
-                        throw new InvalidContainerMappingException($"Invalid @container property for term {term}. Property value must be a JSON string.");
+                        throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping, $"Invalid @container property for term {term}. Property value must be a JSON string.");
                     }
                 }
                 // 11.5 - Set the reverse property flag of definition to true.
@@ -412,7 +409,7 @@ namespace VDS.RDF.JsonLd
                 // 13.1 - If the value associated with the @id key is not a string, an invalid IRI mapping error has been detected and processing is aborted.
                 if (idValue.Type != JTokenType.String)
                 {
-                    throw new InvalidIriMappingException($"Invalid IRI Mapping. The value of the @id property of term {term} must be a string.");
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIriMapping, $"Invalid IRI Mapping. The value of the @id property of term {term} must be a string.");
                 }
                 // 13.2 - Otherwise, set the IRI mapping of definition to the result of using the IRI Expansion algorithm, passing active context, the value associated with the @id key for value, true for vocab, false for document relative, local context, and defined. If the resulting IRI mapping is neither a keyword, nor an absolute IRI, nor a blank node identifier, an invalid IRI mapping error has been detected and processing is aborted; if it equals @context, an invalid keyword alias error has been detected and processing is aborted.
                 var iriMapping = ExpandIri(activeContext, idValue.Value<string>(), true, false, localContext, defined);
@@ -420,11 +417,11 @@ namespace VDS.RDF.JsonLd
                     !IsAbsoluteIri(iriMapping) &&
                     !IsBlankNodeIdentifier(iriMapping))
                 {
-                    throw new InvalidIriMappingException($"Invalid IRI Mapping. The value of the @id property of term '{term}' must be a keyword, an absolute IRI or a blank node identifier. Got value {iriMapping}.");
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIriMapping, $"Invalid IRI Mapping. The value of the @id property of term '{term}' must be a keyword, an absolute IRI or a blank node identifier. Got value {iriMapping}.");
                 }
                 if ("@context".Equals(iriMapping))
                 {
-                    throw new InvalidKeywordAliasException($"Invalid keyword alias at term {term}.");
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidKeywordAlias, $"Invalid keyword alias at term {term}.");
                 }
                 definition.IriMapping = iriMapping;
             }
@@ -458,7 +455,7 @@ namespace VDS.RDF.JsonLd
             }
             else
             {
-                throw new InvalidIriMappingException($"Invalid IRI Mapping. The term '{term}' could not be processed as an IRI mapping");
+                throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIriMapping, $"Invalid IRI Mapping. The term '{term}' could not be processed as an IRI mapping");
             }
 
             // 16 - if value contains the key @container
@@ -469,7 +466,7 @@ namespace VDS.RDF.JsonLd
                     (definition.ContainerMapping == JsonLdContainer.Id ||
                     definition.ContainerMapping == JsonLdContainer.Type))
                 {
-                    throw new InvalidContainerMappingException("Invalid Container Mapping. @id and @type containers are not supported when the processing mode is json-ld-1.0");
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping, "Invalid Container Mapping. @id and @type containers are not supported when the processing mode is json-ld-1.0");
                 }
             }
 
@@ -480,7 +477,7 @@ namespace VDS.RDF.JsonLd
                 // 17.1 - If processingMode is json-ld-1.0, an invalid term definition has been detected and processing is aborted.
                 if (this.ProcessingMode == JsonLdSyntax.JsonLd10)
                 {
-                    throw new InvalidTermDefinitionException($"Invalid Term Definition for term '{term}'. The @context property is not supported on a term definition when the processing mode is json-ld-1.0");
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTermDefinition, $"Invalid Term Definition for term '{term}'. The @context property is not supported on a term definition when the processing mode is json-ld-1.0");
                 }
                 // 17.2 - Initialize context to the value associated with the @context key, which is treated as a local context.
                 var context = contextValue;
@@ -492,7 +489,7 @@ namespace VDS.RDF.JsonLd
                 }
                 catch (JsonLdProcessorException ex)
                 {
-                    throw new InvalidScopedContextException($"Invalid scoped context for term '{term}'. See inner exception for details of the scope processing error.", ex);
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidScopedContext, $"Invalid scoped context for term '{term}'. See inner exception for details of the scope processing error.", ex);
                 }
 
                 // 17.4 - Set the local context of definition to context.
@@ -515,7 +512,7 @@ namespace VDS.RDF.JsonLd
                 }
                 else
                 {
-                    throw new InvalidLanguageMappingException($"Invalid Language Mapping on term '{term}'. The value of the @language property must be either null or a string");
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidLanguageMapping, $"Invalid Language Mapping on term '{term}'. The value of the @language property must be either null or a string");
                 }
             }
 
@@ -526,17 +523,17 @@ namespace VDS.RDF.JsonLd
                 // 19.1 - If processingMode is json-ld-1.0, an invalid term definition has been detected and processing is aborted.
                 if (this.ProcessingMode == JsonLdSyntax.JsonLd10)
                 {
-                    throw new InvalidTermDefinitionException($"Invalid Term Definition for term '{term}. Term definitions may not contain the @nest property when the processing mode is json-ld-1.0");
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTermDefinition, $"Invalid Term Definition for term '{term}. Term definitions may not contain the @nest property when the processing mode is json-ld-1.0");
                 }
                 // 19.2 - Initialize nest to the value associated with the @nest key, which must be a string and must not be a keyword other than @nest. Otherwise, an invalid @nest value error has been detected and processing is aborted.
                 if (nestValue.Type != JTokenType.String)
                 {
-                    throw new InvalidNestValueException($"Invalid Nest Value for term '{term}'. The value of the @nest property must be a string");
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidNestValue, $"Invalid Nest Value for term '{term}'. The value of the @nest property must be a string");
                 }
                 var nest = nestValue.Value<string>();
                 if (IsKeyword(nest) && !"@nest".Equals(nest))
                 {
-                    throw new InvalidNestValueException($"Invalid Nest Value for term '{term}'. The value of the @nest property cannot be a JSON-LD keyword other than '@nest'");
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidNestValue, $"Invalid Nest Value for term '{term}'. The value of the @nest property cannot be a JSON-LD keyword other than '@nest'");
                 }
             }
 
@@ -544,7 +541,7 @@ namespace VDS.RDF.JsonLd
             var unrecognizedKeys = value.Properties().Select(prop => prop.Name).Where(x => !TermDefinitionKeys.Contains(x)).ToList();
             if (unrecognizedKeys.Any())
             {
-                throw new InvalidTermDefinitionException($"Invalid Term Definition for term '{term}'. Term definition contains unrecognised property key(s) {String.Join(", ", unrecognizedKeys)}");
+                throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTermDefinition, $"Invalid Term Definition for term '{term}'. Term definition contains unrecognised property key(s) {string.Join(", ", unrecognizedKeys)}");
             }
 
             // 21 - Set the term definition of term in active context to definition and set the value associated with defined's key term to true.
@@ -634,89 +631,7 @@ namespace VDS.RDF.JsonLd
             return value;
         }
 
-        public async Task<JArray> ExpandAsync(string input, JsonLdProcessorOptions options = null)
-        {
-            var parsedJson = await LoadJsonAsync(input, options);
-            return await ExpandAsync(parsedJson, input, options);
-        }
 
-        public async Task<JArray> ExpandAsync(JToken input, JsonLdProcessorOptions options = null)
-        {
-            if (input is JValue && (input as JValue).Type == JTokenType.String)
-            {
-                return await ExpandAsync((input as JValue).Value<string>(), options);
-            }
-            return await ExpandAsync(new RemoteDocument { Document = input}, null, options);
-        }
-
-        private async Task<JArray> ExpandAsync(RemoteDocument doc, string documentLocation, JsonLdProcessorOptions options = null) {
-            var activeContext = new JsonLdContext { Base = documentLocation == null ? null : new Uri(documentLocation) };
-            if (options.Base != null) activeContext.Base = options.Base;
-            if (options.ExpandContext != null)
-            {
-                var expandObject = options.ExpandContext as JObject;
-                if (expandObject != null)
-                {
-                    var contextProperty = expandObject.Property("@context");
-                    if (contextProperty != null)
-                    {
-                        activeContext = ProcessContext(activeContext, contextProperty);
-                    }
-                    else
-                    {
-                        activeContext = ProcessContext(activeContext, expandObject);
-                    }
-                }
-                else
-                {
-                    activeContext = ProcessContext(activeContext, options.ExpandContext);
-                }
-            }
-            if (doc.ContextUrl != null)
-            {
-                var contextDoc = await LoadJsonAsync(doc.ContextUrl, options);
-                if (contextDoc.Document is string)
-                {
-                    contextDoc.Document = JToken.Parse(contextDoc.Document as string);
-                }
-                activeContext = ProcessContext(activeContext, contextDoc.Document as JToken); 
-            }
-            if (doc.Document is string)
-            {
-                doc.Document = JToken.Parse(doc.Document as string);
-            }
-            return Expand(activeContext, null, doc.Document as JToken);
-        }
-
-        private async Task<RemoteDocument> LoadJsonAsync(string remoteRef, JsonLdProcessorOptions options)
-        {
-            if (options.Loader != null) return options.Loader(new Uri(remoteRef));
-            var client = new HttpClient();
-            var response = await client.GetAsync(remoteRef);
-            response.EnsureSuccessStatusCode();
-            if (response.Headers.GetValues("Content-Type").Any(x=>x.Contains("application/json") || x.Contains("application/ld+json") || x.Contains("+json")))
-            {
-                throw new JsonLdProcessorException("Loading document failed");
-            }
-            var responseString = await response.Content.ReadAsStringAsync();
-            string contextLink = null;
-
-            // If content type is application/ld+json the context link header is ignored
-            if (!response.Headers.GetValues("Content-Type").Any(x => x.Contains("application/ld+json")))
-            {
-                var contextLinks = ParseLinkHeaders(response.Headers.GetValues("Link")).Where(x => x.RelationTypes.Contains("http://www.w3.org/ns/json-ld#context")).Select(x => x.LinkValue).ToList();
-                if (contextLinks.Count > 1) throw new JsonLdProcessorException("Multiple context link headers");
-                contextLink = contextLinks.FirstOrDefault();
-            }
-
-            var ret = new RemoteDocument
-            {
-                ContextUrl = contextLink,
-                DocumentUrl = response.RequestMessage.RequestUri.ToString(),
-                Document = JToken.Parse(responseString),
-            };
-            return ret;
-        }
 
         private IEnumerable<WebLink> ParseLinkHeaders(IEnumerable<string> linkHeaderValues)
         {
@@ -819,7 +734,7 @@ namespace VDS.RDF.JsonLd
                         {
                             if (IsListObject(expandedItem) || expandedItem.Type == JTokenType.Array)
                             {
-                                throw new ListOfListsException($"List of lists error at property {activeProperty}");
+                                throw new JsonLdProcessorException(JsonLdErrorCode.ListOfLists, $"List of lists error at property {activeProperty}");
                             }
                         }
 
@@ -889,11 +804,11 @@ namespace VDS.RDF.JsonLd
                 // 9.1 - The result must not contain any keys other than @value, @language, @type, and @index. It must not contain both the @language key and the @type key. Otherwise, an invalid value object error has been detected and processing is aborted.
                 if (resultObject.Properties().Any(p => !ValueObjectKeys.Contains(p.Name)))
                 {
-                    throw new InvalidValueObjectException("A value object may not contain properties other than @value, @language, @type and @index after expansion.", resultObject);
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidValueObject, "A value object may not contain properties other than @value, @language, @type and @index after expansion.");
                 }
                 if (resultObject.Property("@type")!=null && resultObject.Property("@language") != null)
                 {
-                    throw new InvalidValueObjectException("A value object may not contain both @type and @language properties after expansion.", resultObject);
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidValueObject, "A value object may not contain both @type and @language properties after expansion.");
                 }
                 // 9.2 - If the value of result's @value key is null, then set result to null.
                 var valueProperty = resultObject.Property("@value");
@@ -905,7 +820,7 @@ namespace VDS.RDF.JsonLd
                 // 9.3 - Otherwise, if the value of result's @value member is not a string and result contains the key @language, an invalid language-tagged value error has been detected (only strings can be language-tagged) and processing is aborted.
                 else if (valueProperty.Value.Type != JTokenType.String && resultObject.Property("@language") != null)
                 {
-                    throw new InvalidLanguageTaggedValueException("A value object with an @language property must have a string value for the @value property.", result);
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidLanguageTaggedValue, $"A value object with an @language property must have a string value for the @value property. Found a {valueProperty.Value.Type}");
                 }
                 // 9.4 - Otherwise, if the result has an @type member and its value is not an IRI, an invalid typed value error has been detected and processing is aborted.
                 else if (typeProperty != null)
@@ -913,7 +828,7 @@ namespace VDS.RDF.JsonLd
                     var typeValue = typeProperty.Value;
                     if (typeValue.Type != JTokenType.String || !IsAbsoluteIri(typeValue.Value<string>()))
                     {
-                        throw new InvalidTypedValueException("The value of the @type property of a value object must be an IRI", resultObject);
+                        throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTypedValue, "The value of the @type property of a value object must be an IRI.");
                     }
                 }
             }
@@ -933,7 +848,7 @@ namespace VDS.RDF.JsonLd
                 var properties = resultObject.Properties().ToList();
                 if (properties.Count > 2 || properties.Any(p => !(p.Name.Equals("@set") || p.Name.Equals("@list") || (p.Name.Equals("@index")))))
                 {
-                    throw new InvalidSetOrListObject("Set and list objects may only contain either an @set or @list property and an @index property.", resultObject);
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidSetOrListObject, "Set and list objects may only contain either an @set or @list property and an @index property.");
                 }
 
                 // 11.2 - If result contains the key @set, then set result to the key's associated value.
@@ -998,13 +913,13 @@ namespace VDS.RDF.JsonLd
                     // 8.4.1 - If active property equals @reverse, an invalid reverse property map error has been detected and processing is aborted.
                     if ("@reverse".Equals(activeProperty))
                     {
-                        throw new InvalidReverseMapException();
+                        throw new JsonLdProcessorException(JsonLdErrorCode.InvalidReversePropertyMap, "Reverse property map cannot contain a keyword");
                     }
 
                     // 8.4.2 - If result has already an expanded property member, an colliding keywords error has been detected and processing is aborted.
                     if (result.Property(expandedProperty) != null)
                     {
-                        throw new CollidingKeywordsException($"Colliding Keywords: {expandedProperty}");
+                        throw new JsonLdProcessorException(JsonLdErrorCode.CollidingKeywords, $"Colliding Keywords: {expandedProperty}");
                     }
 
                     // 8.4.3 - If expanded property is @id...
@@ -1014,7 +929,7 @@ namespace VDS.RDF.JsonLd
                         if (value.Type != JTokenType.String)
                         {
                             // an invalid @id value error has been detected and processing is aborted.
-                            throw new InvalidIdValueException("Invalid @id value");
+                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIdValue, "Invalid @id value");
                         }
                         expandedValue = ExpandIri(activeContext, value.Value<string>(), documentRelative: true);
                         /* 
@@ -1039,7 +954,7 @@ namespace VDS.RDF.JsonLd
                             {
                                 if (item.Type != JTokenType.String)
                                 {
-                                    throw new InvalidTypeValueException("The value of the @type property must be a string or an array of strings");
+                                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTypeValue, "The value of the @type property must be a string or an array of strings");
                                 }
                                 array.Add(ExpandIri(activeContext, item.Value<string>(), true, true));
                             }
@@ -1048,7 +963,7 @@ namespace VDS.RDF.JsonLd
                         /* TODO: When the frame expansion flag is set, value may also be an empty dictionary. */
                         else
                         {
-                            throw new InvalidTypeValueException("The value of the @type property must be a string or an array of strings");
+                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTypeValue, "The value of the @type property must be a string or an array of strings");
                         }
                     }
 
@@ -1070,7 +985,7 @@ namespace VDS.RDF.JsonLd
                     {
                         if (!((value.Type == JTokenType.Null) || IsScalar(value)))
                         {
-                            throw new InvalidValueObjectException("The expanded value of @value must be a scalar or null", elementObject);
+                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidValueObject, "The expanded value of @value must be a scalar or null.");
                         }
                         expandedValue = value;
                         if (expandedValue == null || expandedValue.Type == JTokenType.Null)
@@ -1091,7 +1006,7 @@ namespace VDS.RDF.JsonLd
                         // TODO: When the frame expansion flag is set, value may also be an empty dictionary or an array of zero or strings. Expanded value will be an array of one or more string values converted to lower case.
                         else
                         {
-                            throw new InvalidLanguageTaggedStringException();
+                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidLanguageTaggedString, $"Invalid value for @language property in {activeProperty}. Expected a JSON string, got {value.Type}.");
                         }
                     }
 
@@ -1104,7 +1019,7 @@ namespace VDS.RDF.JsonLd
                         }
                         else
                         {
-                            throw new InvalidIndexValueException();
+                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIndexValue, $"Invalid @index value. Expected a JSON string, got {value.Type}");
                         }
                     }
 
@@ -1123,7 +1038,7 @@ namespace VDS.RDF.JsonLd
                         // 8.4.9.3 - If expanded value is a list object, a list of lists error has been detected and processing is aborted.
                         if (IsListObject(expandedValue))
                         {
-                            throw new ListOfListsException("The expanded value of an @list property must not be a list object");
+                            throw new JsonLdProcessorException(JsonLdErrorCode.ListOfLists, "The expanded value of an @list property must not be a list object");
                         }
                     }
 
@@ -1138,10 +1053,12 @@ namespace VDS.RDF.JsonLd
                     {
                         if (value.Type != JTokenType.Object)
                         {
-                            throw new InvalidReverseValueException();
+                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidReverseValue, $"The value of an @reverse property must be a JSON object. Found {value.Type}.");
                         }
+
                         // 8.4.11.1 - Initialize expanded value to the result of using this algorithm recursively, passing active context, @reverse as active property, and value as element.
                         expandedValue = ExpandAlgorithm(activeContext, "@reverse", value);
+                        
                         // 8.4.11.2 - If expanded value contains an @reverse member, i.e., properties that are reversed twice...
                         var nestedReverseProperty = (expandedValue as JObject).Property("@reverse");
                         if (nestedReverseProperty != null)
@@ -1192,7 +1109,8 @@ namespace VDS.RDF.JsonLd
                                     // 8.4.11.3.3.1.1 - If item is a value object or list object, an invalid reverse property value has been detected and processing is aborted.
                                     if (IsValueObject(item) || IsListObject(item))
                                     {
-                                        throw new InvalidReversePropertyValueException();
+                                        throw new JsonLdProcessorException(JsonLdErrorCode.InvalidReversePropertyValue,
+                                            "Reverse property value must not be a value object or list object.");
                                     }
                                     // 8.4.11.3.3.1.2 - If reverse map has no property member, create one and initialize its value to an empty array.
                                     if (reverseMap.Property(entry.Name) == null)
@@ -1263,7 +1181,7 @@ namespace VDS.RDF.JsonLd
                             // 8.6.2.2.1 - item must be a string or null, otherwise an invalid language map value error has been detected and processing is aborted.
                             if (!(item.Type == JTokenType.Null || item.Type == JTokenType.String))
                             {
-                                throw new InvalidLanguageMapValueException();
+                                throw new JsonLdProcessorException(JsonLdErrorCode.InvalidLanguageMapValue, $"Invalid value for language map at {activeProperty}. Expected null or JSON string, got {item.Type}");
                             }
                             // 8.6.2.2.2 - Append a JSON object to expanded value that consists of two key-value pairs: (@value-item) and (@language-lowercased language), unless item is null.
                             if (item.Type != JTokenType.Null)
@@ -1368,7 +1286,7 @@ namespace VDS.RDF.JsonLd
                         // 8.11.4.1 - If item is a value object or list object, an invalid reverse property value has been detected and processing is aborted.
                         if (IsValueObject(item) || IsListObject(item))
                         {
-                            throw new InvalidReversePropertyValueException();
+                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidReversePropertyValue, "Reverse property value must not be a value object or list object.");
                         }
                         // 8.11.4.2 - If reverse map has no expanded property member, create one and initialize its value to an empty array.
                         if (reverseMap.Property(expandedProperty) == null)
@@ -1416,11 +1334,11 @@ namespace VDS.RDF.JsonLd
                     // If nested value is not a JSON object, or any key within nested value expands to @value, an invalid @nest value error has been detected and processing is aborted.
                     if (!(nestedValue is JObject))
                     {
-                        throw new InvalidNestValueException("Nested value must be a JSON object");
+                        throw new JsonLdProcessorException(JsonLdErrorCode.InvalidNestValue, "Nested value must be a JSON object");
                     }
                     if ((nestedValue as JObject).Properties().Any(p => ExpandIri(activeContext, p.Name, true).Equals("@value")))
                     {
-                        throw new InvalidNestValueException("Nested values may not contain keys that expand to @value");
+                        throw new JsonLdProcessorException(JsonLdErrorCode.InvalidNestValue, "Nested values may not contain keys that expand to @value");
                     }
                     // 8.13.2.2 - Recursively repeat step 7 using nested value for element.
                     ExpandKeys(activeContext, activeProperty, nestedValue as JObject, result);
@@ -1504,9 +1422,10 @@ namespace VDS.RDF.JsonLd
                     case "@language":
                         return JsonLdContainer.Language;
                 }
-                throw new InvalidContainerMappingException($"Invalid Container Mapping. Unrecognised @container property value '{containerValue.Value<string>()}' for term '{term}'");
+                throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping, $"Invalid Container Mapping. Unrecognised @container property value '{containerValue.Value<string>()}' for term '{term}'");
             }
-            throw new InvalidContainerMappingException($"Invalid Container Mapping. The value of the @container property of term '{term}' must be a string.");
+            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping,
+                $"Invalid Container Mapping. The value of the @container property of term '{term}' must be a string.");
         }
 
         private bool IsAbsoluteIri(JToken token)
@@ -1572,7 +1491,8 @@ namespace VDS.RDF.JsonLd
             if (remoteContexts.Contains(contextIri))
             {
                 // If context is in the remote contexts array, a recursive context inclusion error has been detected and processing is aborted
-                throw new RecursiveContextInclusionException(contextIri, remoteContexts);
+                throw new JsonLdProcessorException(JsonLdErrorCode.RecursiveContextInclusion,
+                    $"Recursive context reference found. Current context IRI is {contextIri}. Visited remote contexts are: {string.Join(", ", remoteContexts)}.");
             }
             // add context to remote contexts
             remoteContexts.Add(contextIri);
@@ -1582,42 +1502,24 @@ namespace VDS.RDF.JsonLd
             if (dereferencedContext == null)
             {
                 // If context cannot be dereferenced, a loading remote context failed error has been detected and processing is aborted.
-                throw new LoadingRemoteContextFailedException($"Failed to load remote context {contextIri}.");
+                throw new JsonLdProcessorException(JsonLdErrorCode.LoadingRemoteContextFailed, $"Failed to load remote context {contextIri}.");
             }
             // If the dereferenced document has no top-level JSON object with an @context member, an invalid remote context has been detected and processing is aborted
             var dereferencedContextObject = dereferencedContext as JObject;
-            if (dereferencedContextObject == null) throw new InvalidRemoteContextException($"The remote resource at {contextIri} does not contain a top-level JSON object");
+            if (dereferencedContextObject == null)
+            {
+                throw new JsonLdProcessorException(JsonLdErrorCode.InvalidRemoteContext, $"The remote resource at {contextIri} does not contain a top-level JSON object");
+            }
             var contextProperty = dereferencedContextObject.Property("@context");
-            if (contextProperty == null) throw new InvalidRemoteContextException($"The remote resource at {contextIri} does not contain an @context property");
+            if (contextProperty == null)
+            {
+                throw new JsonLdProcessorException(JsonLdErrorCode.InvalidRemoteContext, $"The remote resource at {contextIri} does not contain an @context property");
+            }
 
             // Set result to the result of recursively calling this algorithm, passing result for active context, context for local context, and remote contexts.
             return ProcessContext(result, contextProperty.Value, remoteContexts);
         }
 
-        private JToken LoadReference(Uri reference)
-        {
-            if (_options.Loader != null)
-            {
-                try
-                {
-                    var remoteDoc = _options.Loader(reference);
-                    if (remoteDoc.Document is JToken) return remoteDoc.Document as JToken;
-                    if (remoteDoc.Document is string) return JToken.Parse(remoteDoc.Document as string);
-                    throw new LoadingRemoteContextFailedException($"Loader returned an unrecognised type of Document ({remoteDoc.Document.GetType().FullName}). Expected either JToken or string.");
-                }
-                catch (Exception ex)
-                {
-                    throw new LoadingRemoteContextFailedException($"Could not load context from {reference}. Cause: {ex}", ex);
-                }
-            }
-            else
-            {
-                // Invoke the default loader
-                var loaderTask = LoadJsonAsync(reference.ToString(), this._options);
-                var remoteDoc = loaderTask.Result;
-                if (remoteDoc == null) throw new LoadingRemoteContextFailedException($"Could not load JSON fomr {reference}.");
-                return remoteDoc.Document as JToken;
-            }
-        }
+        
     }
 }
