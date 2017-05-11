@@ -1346,16 +1346,6 @@ namespace VDS.RDF.JsonLd
             }
         }
 
-        private bool IsValueObject(JToken token)
-        {
-            return ((token as JObject)?.Property("@value")) != null;
-        }
-
-        private bool IsListObject(JToken token)
-        {
-            return ((token as JObject)?.Property("@list")) != null;
-        }
-
         public JToken ExpandValue(JsonLdContext activeContext, string activeProperty, JToken value)
         {
             var activePropertyTermDefinition = activeContext.GetTerm(activeProperty);
@@ -1398,11 +1388,6 @@ namespace VDS.RDF.JsonLd
             return result;
         }
 
-        private bool IsScalar(JToken token)
-        {
-            return !(token.Type == JTokenType.Array || token.Type == JTokenType.Object);
-        }
-
         private JsonLdContainer ValidateContainerMapping(string term, JToken containerValue)
         {
             if (containerValue.Type == JTokenType.String)
@@ -1426,6 +1411,21 @@ namespace VDS.RDF.JsonLd
             }
             throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping,
                 $"Invalid Container Mapping. The value of the @container property of term '{term}' must be a string.");
+        }
+
+        private bool IsValueObject(JToken token)
+        {
+            return ((token as JObject)?.Property("@value")) != null;
+        }
+
+        private bool IsListObject(JToken token)
+        {
+            return ((token as JObject)?.Property("@list")) != null;
+        }
+
+        private bool IsScalar(JToken token)
+        {
+            return !(token.Type == JTokenType.Array || token.Type == JTokenType.Object);
         }
 
         private bool IsAbsoluteIri(JToken token)
@@ -1474,52 +1474,5 @@ namespace VDS.RDF.JsonLd
             }
             return null;
         }
-
-        private JsonLdContext ProcessContext(JsonLdContext activeContext, JsonLdContext result, string contextRef, List<Uri> remoteContexts)
-        {
-            // Set context to the result of resolving value against the base IRI
-            Uri contextIri;
-            if (activeContext.Base != null)
-            {
-                contextIri = new Uri(activeContext.Base, contextRef);
-            }
-            else
-            {
-                contextIri = new Uri(contextRef, UriKind.Absolute);
-            }
-
-            if (remoteContexts.Contains(contextIri))
-            {
-                // If context is in the remote contexts array, a recursive context inclusion error has been detected and processing is aborted
-                throw new JsonLdProcessorException(JsonLdErrorCode.RecursiveContextInclusion,
-                    $"Recursive context reference found. Current context IRI is {contextIri}. Visited remote contexts are: {string.Join(", ", remoteContexts)}.");
-            }
-            // add context to remote contexts
-            remoteContexts.Add(contextIri);
-
-            // Dereference context
-            var dereferencedContext = LoadReference(contextIri);
-            if (dereferencedContext == null)
-            {
-                // If context cannot be dereferenced, a loading remote context failed error has been detected and processing is aborted.
-                throw new JsonLdProcessorException(JsonLdErrorCode.LoadingRemoteContextFailed, $"Failed to load remote context {contextIri}.");
-            }
-            // If the dereferenced document has no top-level JSON object with an @context member, an invalid remote context has been detected and processing is aborted
-            var dereferencedContextObject = dereferencedContext as JObject;
-            if (dereferencedContextObject == null)
-            {
-                throw new JsonLdProcessorException(JsonLdErrorCode.InvalidRemoteContext, $"The remote resource at {contextIri} does not contain a top-level JSON object");
-            }
-            var contextProperty = dereferencedContextObject.Property("@context");
-            if (contextProperty == null)
-            {
-                throw new JsonLdProcessorException(JsonLdErrorCode.InvalidRemoteContext, $"The remote resource at {contextIri} does not contain an @context property");
-            }
-
-            // Set result to the result of recursively calling this algorithm, passing result for active context, context for local context, and remote contexts.
-            return ProcessContext(result, contextProperty.Value, remoteContexts);
-        }
-
-        
     }
 }
