@@ -57,5 +57,11 @@ namespace VDS.RDF.JsonLd
         /// A context that is used to initialize the active context when expanding a document.
         /// </summary>
         public JToken ExpandContext;
+
+        /// <summary>
+        /// Flag indicating if arrays of one element should be replaced by the single value during compaction.
+        /// </summary>
+        /// <remarks>Defaults to <code>true</code></remarks>
+        public bool CompactArrays = true;
     }
 }

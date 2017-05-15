@@ -78,6 +78,11 @@ namespace VDS.RDF.JsonLd
         public JsonLdSyntax Version { get; private set; }
 
         /// <summary>
+        /// An enumeration of the terms defined by this context
+        /// </summary>
+        public IEnumerable<string> Terms => _termDefinitions.Keys;
+
+        /// <summary>
         /// Add a term definition to this context
         /// </summary>
         /// <param name="key"></param>

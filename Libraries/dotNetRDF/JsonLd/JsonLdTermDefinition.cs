@@ -75,6 +75,11 @@ namespace VDS.RDF.JsonLd
         public JsonLdContainer ContainerMapping { get; set; }
 
         /// <summary>
+        /// Get or set the nest property for this term definition
+        /// </summary>
+        public string Nest { get; set; }
+
+        /// <summary>
         /// Create a clone of this term defintion
         /// </summary>
         /// <returns></returns>
@@ -88,7 +93,8 @@ namespace VDS.RDF.JsonLd
                 LanguageMapping = this.LanguageMapping,
                 HasLanguageMapping = this.HasLanguageMapping,
                 ContainerMapping = this.ContainerMapping,
-                LocalContext = this.LocalContext == null ? null : this.LocalContext.DeepClone(), // TODO: Check if it correct to just directly clone the local context
+                Nest = this.Nest,
+                LocalContext = LocalContext?.DeepClone(), // TODO: Check if it correct to just directly clone the local context
             };
             return clone;
         }

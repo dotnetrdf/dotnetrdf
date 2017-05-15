@@ -28,6 +28,9 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using Newtonsoft.Json;
+using VDS.RDF.Parsing;
 
 namespace VDS.RDF.JsonLd
 {
@@ -535,6 +538,7 @@ namespace VDS.RDF.JsonLd
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidNestValue, $"Invalid Nest Value for term '{term}'. The value of the @nest property cannot be a JSON-LD keyword other than '@nest'");
                 }
+                definition.Nest = nest;
             }
 
             // 20 - If the value contains any key other than @id, @reverse, @container, @context, @nest, or @type, an invalid term definition error has been detected and processing is aborted.
@@ -1412,6 +1416,994 @@ namespace VDS.RDF.JsonLd
             throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping,
                 $"Invalid Container Mapping. The value of the @container property of term '{term}' must be a string.");
         }
+
+        /// <summary>
+        /// Run the Compaction algorithm
+        /// </summary>
+        /// <param name="input">The JSON-LD data to be compacted. Expected to be a JObject or JArray of JObject or a JString whose value is the IRI reference to a JSON-LD document to be retrieved</param>
+        /// <param name="context">The context to use for the compaction process. May be a JObject, JArray of JObject, JString or JArray of JString. String values are treated as IRI references to context documents to be retrieved</param>
+        /// <param name="options">Additional processor options</param>
+        /// <returns></returns>
+        public JObject Compact(JToken input, JToken context, JsonLdProcessorOptions options)
+        {
+            // Set expanded input to the result of using the expand method using input and options.
+            var expandedInput = Expand(input, options);
+            // If context is a dictionary having an @context member, set context to that member's value, otherwise to context.
+            var contextProperty = (context as JObject)?.Property("@context");
+            if (contextProperty != null)
+            {
+                context = contextProperty.Value;
+            }
+            // Set compacted output to the result of using the Compaction algorithm, passing context as active context, an empty dictionary as inverse context, null as property, expanded input as element, and if passed, the compactArrays flag in options.
+            var compactResult = CompactWrapper(context, new JObject(), null, expandedInput, options.CompactArrays);
+            return compactResult;
+        }
+
+        private JObject CompactWrapper(JToken context, JObject inverseContext, string activeProperty,
+            JToken element, bool compactArrays = true)
+        {
+            var activeContext = ProcessContext(new JsonLdContext(), context);
+            if (!inverseContext.Properties().Any()) inverseContext = CreateInverseContext(activeContext);
+            var algorithmResult = CompactAlgorithm(activeContext, inverseContext, activeProperty, element,
+                compactArrays);
+            // If, after the algorithm outlined above is run, the result result is an array, 
+            // replace it with a new dictionary with a single member whose key is the result of using the IRI Compaction algorithm, 
+            // passing active context, inverse context, and @graph as iri and whose value is the array result. 
+            // Finally, if a non-empty context has been passed, add an @context member to result and set its value to the passed context.
+            if (algorithmResult is JArray)
+            {
+                if ((algorithmResult as JArray).Count > 0)
+                {
+                    algorithmResult = new JObject(
+                        new JProperty(
+                            CompactIri(activeContext, inverseContext, "@graph", vocab: true), algorithmResult));
+                }
+                else
+                {
+                    algorithmResult = new JObject();
+                }
+            }
+            var contextArray = context as JArray;
+            var contextObject = context as JObject;
+            var contextString = context as JValue;
+            if (contextArray != null && contextArray.Count > 0 ||
+                contextObject != null && contextObject.Properties().Any() ||
+                contextString != null)
+            {
+                (algorithmResult as JObject).Add("@context", context);
+            }
+            return algorithmResult as JObject;
+        }
+
+        private JToken CompactAlgorithm(JsonLdContext activeContext, JObject inverseContext, string activeProperty,
+            JToken element, bool compactArrays = true)
+        {
+            JsonLdTermDefinition termDefinition = null;
+
+            // 1 - If the term definition for active property has a local context:
+            if (activeProperty != null)
+            {
+                termDefinition = activeContext.GetTerm(activeProperty);
+                if (termDefinition?.LocalContext != null)
+                {
+                    // 1.1 - Set active context to the result of the Context Processing algorithm, passing active context and the value of the active property's local context as local context.
+                    activeContext = ProcessContext(activeContext, termDefinition.LocalContext);
+                    // 1.2 - Set inverse context using the Inverse Context Creation algorithm using active context.
+                    inverseContext = CreateInverseContext(activeContext);
+                }
+            }
+            // 2 - If element is a scalar, it is already in its most compact form, so simply return element.
+            if (IsScalar(element)) return element;
+            // 3 - If element is an array:
+            var elArray = element as JArray;
+            JToken result;
+            if (elArray != null)
+            {
+                // 3.1 - Initialize result to an empty array.
+                result = new JArray();
+                var resultArray = (JArray) result;
+                // 3.2 - For each item in element:
+                foreach (var item in elArray)
+                {
+                    // 3.2.1 - Initialize compacted item to the result of using this algorithm recursively, passing active context, inverse context, active property, and item for element.
+                    var compactedItem = CompactAlgorithm(activeContext, inverseContext, activeProperty, item, compactArrays);
+                    // 3.2.2 - If compacted item is not null, then append it to result.
+                    if (compactedItem != null)
+                    {
+                        resultArray.Add(compactedItem);
+                    }
+                }
+                // 3.3 - If result contains only one item (it has a length of 1), active property has no container mapping in active context, and compactArrays is true, set result to its only item.
+                if (resultArray.Count == 1 &&
+                    (termDefinition == null || termDefinition.ContainerMapping == JsonLdContainer.Null) &&
+                    compactArrays)
+                {
+                    result = result[0];
+                }
+                return result;
+            }
+            // 4 - Otherwise element is a dictionary.
+            var elObject = element as JObject;
+            // 5 - If element has an @value or @id member and the result of using the Value Compaction algorithm, passing active context, inverse context, active property,and element as value is a scalar, return that result.
+            if (elObject.Property("@value") != null || elObject.Property("@id") != null)
+            {
+                var compactedValue = CompactValue(activeContext, inverseContext, activeProperty, elObject);
+                if (IsScalar(compactedValue)) return compactedValue;
+            }
+            // 6 - Initialize inside reverse to true if active property equals @reverse, otherwise to false.
+            var insideReverse = "@reverse".Equals(activeProperty);
+            // 7 - Initialize result to an empty dictionary.
+            result = new JObject();
+            var resultObject = (JObject) result;
+            // 8 - For each key expanded property and value expanded value in element, ordered lexicographically by expanded property:
+            foreach (var p in elObject.Properties().OrderBy(x=>x.Name))
+            {
+                var expandedProperty = p.Name;
+                var expandedValue = p.Value;
+                JToken compactedValue = null;
+                // 8.1 - If expanded property is @id or @type:
+                if (expandedProperty.Equals("@id") || expandedProperty.Equals("@type"))
+                {
+                    // 8.1.1 - If expanded value is a string, then initialize compacted value to the result of using the IRI Compaction algorithm, 
+                    // passing active context, inverse context, expanded value for iri, and true for vocab if expanded property is @type, false otherwise.
+                    if (expandedValue.Type == JTokenType.String)
+                    {
+                        compactedValue = new JValue(CompactIri(activeContext, inverseContext,
+                            expandedValue.Value<string>(), vocab: expandedProperty.Equals("@type")));
+                    }
+                    else
+                    // 8.1.2 - Otherwise, expanded value must be a @type array:
+                    {
+                        // 8.1.2.1 - Initialize compacted value to an empty array.
+                        compactedValue = new JArray();
+                        var valueArray = (JArray)compactedValue;
+                        // 8.1.2.2 - For each item expanded type in expanded value:
+                        foreach (var expandedType in (expandedValue as JArray))
+                        {
+                            // 8.1.2.2.1 - Set term to the result of of using the IRI Compaction algorithm, passing active context, inverse context, expanded type for iri, and true for vocab.
+                            var term = CompactIri(activeContext, inverseContext, expandedType.Value<string>(),
+                                vocab: true);
+                            // 8.1.2.2.2 - If the term definition for term has a local context:
+                            var td = activeContext.GetTerm(term);
+                            if (td?.LocalContext != null)
+                            {
+                                // 8.1.2.2.2.1 - Set active context to the result of the Context Processing algorithm, passing active context and the value of term's local context as local context.
+                                activeContext = ProcessContext(activeContext, td.LocalContext);
+                                // 8.1.2.2.2.2 - Set inverse context using the Inverse Context Creation algorithm using active context.
+                                inverseContext = CreateInverseContext(activeContext);
+                            }
+                            // 8.1.2.2.3 - Append term, to compacted value.
+                            valueArray.Add(term);
+                        }
+                        // 8.1.2.3 - If compacted value contains only one item (it has a length of 1), then set compacted value to its only item.
+                        if (valueArray.Count == 1)
+                        {
+                            compactedValue = valueArray[0];
+                        }
+                    }
+                    // 8.1.3 - Initialize alias to the result of using the IRI Compaction algorithm, passing active context, inverse context, expanded property for iri, and true for vocab.
+                    var alias = CompactIri(activeContext, inverseContext, expandedProperty, vocab: true);
+                    // 8.1.4 - Add a member alias to result whose value is set to compacted value and continue to the next expanded property.
+                    resultObject.Add(alias, compactedValue);
+                    continue;
+                }
+                // 8.2 - If expanded property is @reverse:
+                if (expandedProperty.Equals("@reverse"))
+                {
+                    // 8.2.1 - Initialize compacted value to the result of using this algorithm recursively, passing active context, inverse context, @reverse for active property, and expanded value for element.
+                    compactedValue = CompactAlgorithm(activeContext, inverseContext, "@reverse", expandedValue);
+                    // 8.2.2 - For each property and value in compacted value:
+                    foreach (var rp in (compactedValue as JObject).Properties().ToList())
+                    {
+                        var property = rp.Name;
+                        var value = rp.Value;
+                        // 8.2.2.1 - If the term definition for property in the active context indicates that property is a reverse property
+                        var td = activeContext.GetTerm(property);
+                        if (td!=null && td.Reverse)
+                        {
+                            // 8.2.2.1.1 - If the term definition for property in the active context has a container mapping of @set or compactArrays is false, and value is not an array, set value to a new array containing only value.
+                            if (td.ContainerMapping == JsonLdContainer.Set || !compactArrays)
+                            {
+                                if (value.Type != JTokenType.Array)
+                                {
+                                    value = new JArray(value);
+                                }
+                            }
+                            // 8.2.2.1.2 - If property is not a member of result, add one and set its value to value.
+                            if (resultObject.Property(property) == null)
+                            {
+                                resultObject.Add(property, value);
+                            }
+                            // 8.2.2.1.3 - Otherwise, if the value of the property member of result is not an array, set it to a new array containing only the value. Then append value to its value if value is not an array, otherwise append each of its items.
+                            else
+                            {
+                                var propertyValue = resultObject[property];
+                                if (propertyValue.Type != JTokenType.Array)
+                                {
+                                    propertyValue = new JArray(propertyValue);
+                                }
+                                if (value.Type == JTokenType.Array)
+                                {
+                                    foreach (var item in value)
+                                    {
+                                        (propertyValue as JArray).Add(item);
+                                    }
+                                }
+                                else
+                                {
+                                    (propertyValue as JArray).Add(value);
+                                }
+                            }
+                            // 8.2.2.1.4 - Remove the property member from compacted value.
+                            (compactedValue as JObject).Remove(property);
+                        }
+                    }
+                    // 8.2.3 - If compacted value has some remaining members, i.e., it is not an empty dictionary:
+                    if ((compactedValue as JObject).Properties().Any())
+                    {
+                        // 8.2.3.1 - Initialize alias to the result of using the IRI Compaction algorithm, passing active context, inverse context, @reverse for iri, and true for vocab.
+                        var alias = CompactIri(activeContext, inverseContext, "@reverse", vocab: true);
+                        // 8.2.3.2 - Set the value of the alias member of result to compacted value.
+                        resultObject.Add(alias, compactedValue);
+                    }
+                    // 8.2.4 - Continue with the next expanded property from element.
+                    continue;
+                }
+                // 8.3 - If expanded property is @index and active property has a container mapping in active context that is @index, then the compacted result will be inside of an @index container, drop the @index property by continuing to the next expanded property.
+                var activePropertyTermDefinition = activeProperty == null ? null : activeContext.GetTerm(activeProperty);
+                if (expandedProperty.Equals("@index") &&
+                    activePropertyTermDefinition != null &&
+                    activePropertyTermDefinition.ContainerMapping == JsonLdContainer.Index)
+                {
+                    continue;
+                }
+                // 8.4 - Otherwise, if expanded property is @index, @value, or @language:
+                else if (expandedProperty.Equals("@index") ||
+                         expandedProperty.Equals("@value") ||
+                         expandedProperty.Equals("@language"))
+                {
+                    // 8.4.1 - Initialize alias to the result of using the IRI Compaction algorithm, passing active context, inverse context, expanded property for iri, and true for vocab.
+                    var alias = CompactIri(activeContext, inverseContext, expandedProperty, vocab: true);
+                    // 8.4.2 - Add a member alias to result whose value is set to expanded value and continue with the next expanded property.
+                    resultObject.Add(alias, expandedValue);
+                    continue;
+                }
+                // 8.5 - If expanded value is an empty array:
+                if (expandedValue is JArray && (expandedValue as JArray).Count == 0)
+                {
+                    // 8.5.1 - Initialize item active property to the result of using the IRI Compaction algorithm, passing active context, inverse context, expanded property for iri, expanded value for value, true for vocab, and inside reverse.
+                    var itemActiveProperty = CompactIri(activeContext, inverseContext, expandedProperty, expandedValue,
+                        true, insideReverse);
+                    // 8.5.2 - If the term definition for item active property in the active context has a @nest member, that value (nest term) must be @nest, 
+                    // or a term definition in the active context that expands to @nest, otherwise an invalid @nest value error has been detected, and processing is aborted. 
+                    // If result does not have the key that equals nest term, initialize it to an empty JSON object (nest object). 
+                    // If nest object does not have the key that equals item active property, set this key's value in nest object to an empty array.
+                    // Otherwise, if the key's value is not an array, then set it to one containing only the value.
+                    var itemActivePropertyTermDefinition = activeContext.GetTerm(itemActiveProperty);
+                    if (itemActivePropertyTermDefinition != null && itemActivePropertyTermDefinition.Nest != null)
+                    {
+                        var nestTerm = ExpandIri(activeContext, itemActivePropertyTermDefinition.Nest);
+                        if (!"@nest".Equals(nestTerm))
+                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidNestValue,
+                                $"The @nest member for the term {itemActiveProperty} does not expand to '@nest'");
+                        if (resultObject.Property(nestTerm) == null)
+                        {
+                            resultObject.Add(nestTerm, new JObject());
+                        }
+                        var nestObject = resultObject[nestTerm] as JObject;
+                        if (nestObject.Property(itemActiveProperty) == null)
+                        {
+                            nestObject.Add(itemActiveProperty, new JArray());
+                        }
+                        else
+                        {
+                            var v = nestObject[itemActiveProperty];
+                            if (v.Type != JTokenType.Array)
+                            {
+                                nestObject[itemActiveProperty] = new JArray(v);
+                            }
+                        }
+                    }
+                    // 8.5.3 - Otherwise, if result does not have the key that equals item active property, set this key's value in result to an empty array. 
+                    // Otherwise, if the key's value is not an array, then set it to one containing only the value.
+                    else
+                    {
+                        if (resultObject.Property(itemActiveProperty) == null)
+                        {
+                            resultObject.Add(itemActiveProperty, new JArray());
+                        }
+                        else
+                        {
+                            var v = resultObject[itemActiveProperty];
+                            if (v.Type != JTokenType.Array)
+                            {
+                                resultObject[itemActiveProperty] = new JArray(v);
+                            }
+                        }
+                    }
+
+                }
+                // 8.6 - At this point, expanded value must be an array due to the Expansion algorithm. For each item expanded item in expanded value:
+                foreach (var expandedItem in (expandedValue as JArray))
+                {
+                    // 8.6.1 - Initialize item active property to the result of using the IRI Compaction algorithm, passing active context, inverse context, 
+                    // expanded property for iri, expanded item for value, true for vocab, and inside reverse.
+                    var itemActiveProperty = CompactIri(activeContext, inverseContext, expandedProperty, expandedItem, true,
+                        insideReverse);
+                    JObject nestResult;
+                    // 8.6.2 - If the term definition for item active property in the active context has a @nest member, 
+                    // that value (nest term) must be @nest, or a term definition in the active context that expands to @nest, 
+                    // otherwise an invalid @nest value error has been detected, and processing is aborted. 
+                    // Set nest result to the value of nest term in result, initializing it to a new dictionary, if necessary; otherwise set nest result to result.
+                    var itemActivePropertyTermDefinition = activeContext.GetTerm(itemActiveProperty);
+                    if (itemActivePropertyTermDefinition?.Nest != null)
+                    {
+                        var nestTerm = itemActivePropertyTermDefinition.Nest;
+                        var expandedNestTerm = ExpandIri(activeContext, itemActivePropertyTermDefinition.Nest, vocab:true);
+                        if (!"@nest".Equals(expandedNestTerm))
+                        {
+                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidNestValue,
+                                $"The {nestTerm} member for the term {itemActiveProperty} does not expand to '@nest'");
+                        }
+                        if (resultObject.Property(nestTerm) == null)
+                        {
+                            resultObject.Add(nestTerm, new JObject());
+                        }
+                        nestResult = resultObject[nestTerm] as JObject;
+                    }
+                    else
+                    {
+                        nestResult = resultObject;
+                    }
+                    // 8.6.3 - Initialize container to null. If there is a container mapping for item active property in active context, set container to its value.
+                    var container = itemActivePropertyTermDefinition == null
+                        ? JsonLdContainer.Null
+                        : itemActivePropertyTermDefinition.ContainerMapping;
+                    // 8.6.4 - Initialize compacted item to the result of using this algorithm recursively, passing active context, inverse context, item active property for active property, expanded item for element if it does not contain the key @list, otherwise pass the key's associated value for element.
+                    var listProperty = (expandedItem as JObject)?.Property("@list");
+                    var compactedItem = CompactAlgorithm(activeContext, inverseContext, itemActiveProperty,
+                        listProperty != null ? listProperty.Value : expandedItem);
+                    // 8.6.5 - If expanded item is a list object:
+                    if (IsListObject(expandedItem))
+                    {
+                        // 8.6.5.1 - If compacted item is not an array, then set it to an array containing only compacted item.
+                        if (!(compactedItem is JArray))
+                        {
+                            compactedItem = new JArray(compactedItem);
+                        }
+                        // 8.6.5.2 - If container is not @list:
+                        if (container != JsonLdContainer.List)
+                        {
+                            // 8.6.5.2.1 - Convert compacted item to a list object by setting it to a dictionary containing key-value pair where the key is the result of the IRI Compaction algorithm, passing active context, inverse context, @list for iri, and compacted item for value.
+                            compactedItem = new JObject(
+                                new JProperty(CompactIri(activeContext, inverseContext, "@list", vocab:true), compactedItem));
+                            // 8.6.5.2.2 - If expanded item contains the key @index, then add a key-value pair to compacted item where the key is the result of the IRI Compaction algorithm, passing active context, inverse context, @index as iri, and the value associated with the @index key in expanded item as value.
+                            var indexProperty = (expandedItem as JObject)?.Property("@index");
+                            if (indexProperty != null)
+                            {
+                                (compactedItem as JObject).Add(CompactIri(activeContext, inverseContext, "@index", vocab:true),
+                                    indexProperty.Value);
+                            }
+                        }
+                        // 8.6.5.3 - Otherwise, item active property must not be a key in nest result because there cannot be two list objects associated with an active property that has a container mapping; a compaction to list of lists error has been detected and processing is aborted.
+                        else
+                        {
+                            if (nestResult.Property(itemActiveProperty) != null)
+                            {
+                                throw new JsonLdProcessorException(JsonLdErrorCode.CompactionToListOfLists,
+                                    $"Compaction to list of lists at property {activeProperty}.{itemActiveProperty}");
+                            }
+                        }
+                    }
+                    // 8.6.6 - If container is @language, @index, @id, or @type:
+                    if (container == JsonLdContainer.Language ||
+                        container == JsonLdContainer.Index ||
+                        container == JsonLdContainer.Id ||
+                        container == JsonLdContainer.Type)
+                    {
+                        // 8.6.6.1 - If item active property is not a key in nest result, initialize it to an empty dictionary. Initialize map object to the value of item active property in nest result.
+                        if (nestResult.Property(itemActiveProperty) == null)
+                        {
+                            nestResult.Add(itemActiveProperty, new JObject());
+                        }
+                        var mapObject = nestResult[itemActiveProperty] as JObject;
+                        // 8.6.6.2 - Set compacted container to the result of calling the IRI Compaction algorithm passing active context, container as iri, and true for vocab.
+                        var compactedContainer = CompactIri(activeContext, inverseContext, ContainerAsString(container),
+                            vocab: true);
+                        // 8.6.6.3 - Initialize map key to the value associated with with the key that equals container in expanded item.
+                        var mapKey = (expandedItem[ContainerAsString(container)] as JValue)?.Value<string>();
+                        // 8.6.6.4 - If container is @language and compacted item contains the key @value, then set compacted item to the value associated with its @value key.
+                        if (container == JsonLdContainer.Language &&
+                            (compactedItem as JObject)?.Property("@value") != null)
+                        {
+                            compactedItem = (compactedItem as JObject)["@value"];
+                        }
+                        // 8.6.6.5 - If container is @id, set map key to the result of calling the IRI Compaction algorithm passing active context and the value associated with the key that equals compacted container in compacted item as iri.
+                        if (container == JsonLdContainer.Id)
+                        {
+                            mapKey = CompactIri(activeContext, inverseContext,
+                                compactedItem[compactedContainer].Value<string>());
+                            // KA: Not in spec, but I think implied/required to pass unit tests.
+                            (compactedItem as JObject).Remove(compactedContainer);
+                        }
+                        // 8.6.6.6 - If container is @type, set map key to the result of calling the IRI Compaction algorithm passing active context, 
+                        // the the first value associated with the key that equals compacted container in compacted item as iri, and true for vocab. 
+                        // If there are remaining values in compacted item for compacted container, set the value of compacted container in compacted 
+                        // value to those remaining values. Otherwise, remove that key-value pair from compacted item.
+                        if (container == JsonLdContainer.Type)
+                        {
+                            var types = compactedItem[compactedContainer];
+                            var firstType = types is JArray
+                                ? (types as JArray)[0].Value<string>()
+                                : types.Value<string>();
+                            mapKey = CompactIri(activeContext, inverseContext, firstType, vocab: true);
+
+                            var containerValues = compactedItem[compactedContainer];
+                            if (containerValues is JArray && (containerValues as JArray).Count > 1)
+                            {
+                                // TODO: Check - is this really compactedValue and not compactedItem that should be updated?
+                                //if (compactedValue == null) compactedValue = new JObject();
+                                //(compactedValue as JObject)[compactedContainer] =
+                                //    new JArray((containerValues as JArray).Skip(1));
+                                var remainingValues = new JArray((containerValues as JArray).Skip(1));
+                                if (compactArrays && remainingValues.Count == 1)
+                                {
+                                    compactedItem[compactedContainer] = remainingValues[0];
+                                }
+                                else
+                                {
+                                    compactedItem[compactedContainer] = remainingValues;
+                                }
+                            }
+                            else
+                            {
+                                (compactedItem as JObject).Remove(compactedContainer);
+                            }
+                        }
+
+                        // 8.6.6.7 - If map key is not a key in map object, then set this key's value in map object to compacted item. 
+                        // Otherwise, if the value is not an array, then set it to one containing only the value and then append compacted item to it.
+                        if (mapObject.Property(mapKey) == null)
+                        {
+                            mapObject.Add(mapKey, compactedItem);
+                        }
+                        else
+                        {
+                            if (mapObject[mapKey] is JArray)
+                            {
+                                (mapObject[mapKey] as JArray).Add(compactedItem);
+                            }
+                            else
+                            {
+                                mapObject[mapKey] = new JArray(mapObject[mapKey], compactedItem);
+                            }
+                        }
+                    }
+                    // 8.6.7 - Otherwise
+                    else
+                    {
+                        // 8.6.7.1 - If compactArrays is false, container is @set or @list, or expanded property is @list or @graph and compacted item is not an array, set it to a new array containing only compacted item.
+                        if (compactArrays == false || container == JsonLdContainer.Set ||
+                            container == JsonLdContainer.List ||
+                            "@list".Equals(expandedProperty) || "@graph".Equals(expandedProperty))
+                        {
+                            if (!(compactedItem is JArray))
+                            {
+                                compactedItem = new JArray(compactedItem);
+                            }
+                        }
+                        // 8.6.7.2 - If item active property is not a key in result then add the key - value pair, (item active property-compacted item), to nest result.
+                        if (nestResult.Property(itemActiveProperty) == null)
+                        {
+                            nestResult.Add(itemActiveProperty, compactedItem);
+                        }
+                        // 8.6.7.3 - Otherwise, if the value associated with the key that equals item active property in nest result is not an array, 
+                        // set it to a new array containing only the value. Then append compacted item to the value if compacted item is not an array, otherwise, concatenate it.
+                        else
+                        {
+                            if (!(nestResult[itemActiveProperty] is JArray))
+                            {
+                                nestResult[itemActiveProperty] = new JArray(nestResult[itemActiveProperty]);
+                            }
+                            if (compactedItem is JArray)
+                            {
+                                foreach (var item in (compactedItem as JArray))
+                                {
+                                    (nestResult[itemActiveProperty] as JArray).Add(item);
+                                }
+                            }
+                            else
+                            {
+                                (nestResult[itemActiveProperty] as JArray).Add(compactedItem);
+                            }
+                        }
+                    }
+                }
+            }
+            // 9 - Return result.
+            return result;
+        }
+
+        private static string ContainerAsString(JsonLdContainer container)
+        {
+            switch (container)
+            {
+                case JsonLdContainer.Type:
+                    return "@type";
+                case JsonLdContainer.Id:
+                    return "@id";
+                case JsonLdContainer.Index:
+                    return "@index";
+                case JsonLdContainer.Language:
+                    return "@language";
+                case JsonLdContainer.List:
+                    return "@list";
+                case JsonLdContainer.Set:
+                    return "@set";
+                default:
+                    return "@none";
+            }
+        }
+
+        private JObject CreateInverseContext(JsonLdContext activeContext)
+        {
+            // 1. Initialize result to an empty dictionary.
+            var result = new JObject();
+
+            // 2. Initialize default language to @none. If the active context has a default language, set default language to it.
+            var defaultLanguage = "@none";
+            if (activeContext.Language != null) defaultLanguage = activeContext.Language;
+
+            // 3. For each key term and value term definition in the active context, ordered by shortest term first (breaking ties by choosing the lexicographically least term):
+            foreach (var term in activeContext.Terms.OrderBy(t => t.Length).ThenBy(t => t))
+            {
+                var termDefinition = activeContext.GetTerm(term);
+                // 3.1 - If the term definition is null, term cannot be selected during compaction, so continue to the next term.
+                if (termDefinition == null)
+                {
+                    continue;
+                }
+                // 3.2 - Initialize container to @none. If there is a container mapping in term definition, set container to its associated value.
+                var container = ContainerAsString(termDefinition.ContainerMapping);
+                // 3.3 - Initialize iri to the value of the IRI mapping for the term definition.
+                var iri = termDefinition.IriMapping;
+                // 3.4 - If iri is not a key in result, add a key-value pair where the key is iri and the value is an empty dictionary to result.
+                if (result.Property(iri) == null)
+                {
+                    result.Add(iri, new JObject());
+                }
+                // 3.5 - Reference the value associated with the iri member in result using the variable container map.
+                var containerMap = result[iri] as JObject;
+                // 3.6 - If container map has no container member, create one and set its value to a new dictionary with two members. 
+                // The first member is @language and its value is a new empty dictionary, 
+                // the second member is @type and its value is a new empty dictionary.
+                if (containerMap.Property(container) == null)
+                {
+                    containerMap.Add(container, new JObject(
+                        new JProperty("@language", new JObject()),
+                        new JProperty("@type", new JObject())));
+                }
+                // 3.7 - Reference the value associated with the container member in container map using the variable type/language map.
+                var typeLanguageMap = containerMap[container] as JObject;
+                
+                // 3.8 - If the term definition indicates that the term represents a reverse property:
+                if (termDefinition.Reverse)
+                {
+                    // 3.8.1 - Reference the value associated with the @type member in type/language map using the variable type map.
+                    var typeMap = typeLanguageMap["@type"] as JObject;
+
+                    // 3.8.2 - If type map does not have an @reverse member, create one and set its value to the term being processed.
+                    if (typeMap.Property("@reverse") == null)
+                    {
+                        typeMap.Add("@reverse", term);
+                    }
+                }
+                // 3.9 - Otherwise, if term definition has a type mapping:
+                else if (termDefinition.TypeMapping != null)
+                {
+                    // 3.9.1 - Reference the value associated with the @type member in type/language map using the variable type map.
+                    var typeMap = typeLanguageMap["@type"] as JObject;
+
+                    // 3.9.2 - If type map does not have a member corresponding to the type mapping in term definition, create one and set its value to the term being processed.
+                    if (typeMap.Property(termDefinition.TypeMapping) == null)
+                    {
+                        typeMap.Add(termDefinition.TypeMapping, term);
+                    }
+                }
+                // 3.10 - Otherwise, if term definition has a language mapping (might be null):
+                else if (termDefinition.HasLanguageMapping)
+                {
+                    // 3.10.1 - Reference the value associated with the @language member in type/language map using the variable language map.
+                    var languageMap = typeLanguageMap["@language"] as JObject;
+                    // 3.10.2 - If the language mapping equals null, set language to @null; otherwise set it to the language code in language mapping.
+                    var language = termDefinition.LanguageMapping ?? "@null";
+                    // 3.10.3 - If language map does not have a language member, create one and set its value to the term being processed.
+                    if (languageMap.Property(language) == null)
+                    {
+                        languageMap.Add(language, term);
+                    }
+                }
+                // 3.11 - Otherwise
+                else
+                {
+                    // 3.11.1 - Reference the value associated with the @language member in type/language map using the variable language map.
+                    var languageMap = typeLanguageMap["@language"] as JObject;
+
+                    // 3.11.2 - If language map does not have a default language member, create one and set its value to the term being processed.
+                    if (languageMap.Property(defaultLanguage) == null)
+                    {
+                        languageMap.Add(defaultLanguage, term);
+                    }
+
+                    // 3.11.3 - If language map does not have an @none member, create one and set its value to the term being processed.
+                    if (languageMap.Property("@none") == null)
+                    {
+                        languageMap.Add("@none", term);
+                    }
+
+                    // 3.11.4 - Reference the value associated with the @type member in type / language map using the variable type map.
+                    var typeMap = typeLanguageMap["@type"] as JObject;
+
+                    // 3.11.5 - If type map does not have an @none member, create one and set its value to the term being processed.
+                    if (typeMap.Property("@none") == null)
+                    {
+                        typeMap.Add("@none", term);
+                    }
+                }
+            }
+            return result;
+        }
+
+        private string CompactIri(JsonLdContext activeContext, JObject inverseContext, string iri, JToken value = null,
+            bool vocab = false, bool reverse = false)
+        {
+            // 1 - If iri is null, return null.
+            if (iri == null) return null;
+            // 2 - If vocab is true and iri is a key in inverse context:
+            if (vocab && inverseContext.Property(iri) != null)
+            {
+                // 2.1 - Initialize default language to active context's default language, if it has one, otherwise to @none.
+                var defaultLanguage = activeContext.Language ?? "@none";
+
+                // 2.2 - Initialize containers to an empty array. This array will be used to keep track of an ordered list of preferred container mapping for a term, based on what is compatible with value.
+                var containers = new List<string>();
+
+                // 2.3 - Initialize type / language to @language, and type / language value to @null.These two variables will keep track of the preferred type mapping or language mapping for a term, based on what is compatible with value.
+                var typeLanguage = "@language";
+                var typeLanguageValue = "@null";
+
+                // 2.4 - If value is a dictionary, then for the keywords @index, @id, and @type, if value contains that keyword, append it to containers.
+                var valueObject = value as JObject;
+                if (valueObject != null)
+                {
+                    foreach (var keyword in new[] {"@index", "@id", "@type"})
+                    {
+                        if (valueObject.Property(keyword) != null)
+                        {
+                            containers.Add(keyword);
+                        }
+                    }
+                }
+
+                // 2.5 - If reverse is true, set type/ language to @type, type/ language value to @reverse, and append @set to containers.
+                if (reverse)
+                {
+                    typeLanguage = "@type";
+                    typeLanguageValue = "@reverse";
+                    containers.Add("@set");
+                }
+                // 2.6 - Otherwise, if value is a list object, then set type/language and type/language value to the most specific values that work for all items in the list as follows:
+                else if (IsListObject(value))
+                {
+                    // 2.6.1 - If @index is a not key in value, then append @list to containers.
+                    if (valueObject.Property("@index") == null)
+                    {
+                        containers.Add("@list");
+                    }
+                    // 2.6.2 - Initialize list to the array associated with the key @list in value.
+                    var list = valueObject["@list"] as JArray;
+                    // 2.6.3 - Initialize common type and common language to null.If list is empty, set common language to default language.
+                    string commonType = null, commonLanguage = null;
+                    if (list.Count == 0) commonLanguage = defaultLanguage;
+                    // 2.6.4 - For each item in list:
+                    foreach (var item in list)
+                    {
+                        // 2.6.4.1 - Initialize item language to @none and item type to @none.
+                        var itemLanguage = "@none";
+                        var itemType = "@none";
+                        // 2.6.4.2 - If item contains the key @value:
+                        var itemObject = item as JObject;
+                        if (itemObject?.Property("@value") != null)
+                        {
+                            // 2.6.4.2.1 - If item contains the key @language, then set item language to its associated value.
+                            if (itemObject.Property("@language") != null)
+                            {
+                                itemLanguage = itemObject["@language"].Value<string>();
+                            }
+                            // 2.6.4.2.2 - Otherwise, if item contains the key @type, set item type to its associated value.
+                            else if (itemObject.Property("@type") != null)
+                            {
+                                itemType = itemObject["@type"].Value<string>();
+                            }
+                            // 2.6.4.2.3 - Otherwise, set item language to @null.
+                            else
+                            {
+                                itemLanguage = "@null";
+                            }
+                        }
+                        // 2.6.4.3 - Otherwise, set item type to @id.
+                        else
+                        {
+                            itemType = "@id";
+                        }
+                        // 2.6.4.4 - If common language is null, set it to item language.
+                        if (commonLanguage == null)
+                        {
+                            commonLanguage = itemLanguage;
+                        }
+                        // 2.6.4.5 - Otherwise, if item language does not equal common language and item contains the key @value, then set common language to @none because list items have conflicting languages.
+                        else if (!commonLanguage.Equals(itemLanguage) && itemObject?.Property("@value") != null)
+                        {
+                            commonLanguage = "@none";
+                        }
+                        // 2.6.4.6 - If common type is null, set it to item type.
+                        if (commonType == null)
+                        {
+                            commonType = itemType;
+                        }
+                        // 2.6.4.7 - Otherwise, if item type does not equal common type, then set common type to @none because list items have conflicting types.
+                        else if (!commonType.Equals(itemType))
+                        {
+                            commonType = "@none";
+                        }
+                        // 2.6.4.8 - If common language is @none and common type is @none, then stop processing items in the list because it has been detected that there is no common language or type amongst the items.
+                        if (commonLanguage == "@none" && commonType == "@none")
+                        {
+                            break;
+                        }
+                    }
+                    // 2.6.5 - If common language is null, set it to @none.
+                    if (commonLanguage == null) commonLanguage = "@none";
+                    // 2.6.6 - If common type is null, set it to @none.
+                    if (commonType == null) commonType = "@none";
+                    // 2.6.7 - If common type is not @none then set type/language to @type and type/language value to common type.
+                    if (!commonType.Equals("@none"))
+                    {
+                        typeLanguage = "@type";
+                        typeLanguageValue = commonType;
+                    }
+                    // 2.6.8 - Otherwise, set type/language value to common language.
+                    else
+                    {
+                        typeLanguageValue = commonLanguage;
+                    }
+                }
+                // 2.7 - Otherwise:
+                else
+                {
+                    // 2.7.1 - If value is a value object:
+                    if (IsValueObject(value))
+                    {
+                        // 2.7.1.1 - If value contains the key @language and does not contain the key @index, then set type/language value to its associated value and append @language to containers.
+                        if (valueObject.Property("@language") != null && valueObject.Property("@index") == null)
+                        {
+                            typeLanguageValue = valueObject["@language"].Value<string>();
+                            containers.Add("@language");
+                        }
+                        // 2.7.1.2 - Otherwise, if value contains the key @type, then set type/language value to its associated value and set type/language to @type.
+                        else if (valueObject.Property("@type") != null)
+                        {
+                            typeLanguageValue = valueObject["@type"].Value<string>();
+                            typeLanguage = "@type";
+                        }
+                    }
+                    // 2.7.2 - Otherwise, set type/language to @type and set type/language value to @id.
+                    else
+                    {
+                        typeLanguage = "@type";
+                        typeLanguageValue = "@id";
+                    }
+                    // 2.7.3 - Append @set to containers.
+                    containers.Add("@set");
+                }
+                // 2.8 - Append @none to containers. This represents the non-existence of a container mapping, and it will be the last container mapping value to be checked as it is the most generic.
+                containers.Add("@none");
+                // 2.9 - If type/language value is null, set it to @null. This is the key under which null values are stored in the inverse context entry.
+                if (typeLanguageValue == null) typeLanguageValue = "@null";
+                // 2.10 - Initialize preferred values to an empty array. This array will indicate, in order, the preferred values for a term's type mapping or language mapping.
+                var preferredValues = new List<string>();
+                // 2.11 - If type/language value is @reverse, append @reverse to preferred values.
+                if (typeLanguageValue == "@reverse")
+                {
+                    preferredValues.Add("@reverse");
+                }
+                // 2.12 - If type/language value is @id or @reverse and value has an @id member:
+                if ((typeLanguageValue == "@id" || typeLanguageValue == "@reverse") &&
+                    valueObject?.Property("@id") != null)
+                {
+                    // 2.12.1 - If the result of using the IRI compaction algorithm, passing active context, inverse context, 
+                    // the value associated with the @id key in value for iri, true for vocab, and true for document relative 
+                    // has a term definition in the active context with an IRI mapping that equals the value associated with 
+                    // the @id key in value, then append @vocab, @id, and @none, in that order, to preferred values.
+                    var idValue = valueObject["@id"].Value<string>();
+                    var compactIriResult = CompactIri(activeContext, inverseContext, idValue, vocab:true);
+                    var termDefinition = activeContext.GetTerm(compactIriResult);
+                    if (idValue.Equals(termDefinition?.IriMapping))
+                    {
+                        preferredValues.Add("@vocab");
+                        preferredValues.Add("@id");
+                        preferredValues.Add("@none");
+                    }
+                    // 2.12.2 - Otherwise, append @id, @vocab, and @none, in that order, to preferred values.
+                    else
+                    {
+                        preferredValues.Add("@id");
+                        preferredValues.Add("@vocab");
+                        preferredValues.Add("@none");
+                    }
+                }
+                // 2.13 - Otherwise, append type/language value and @none, in that order, to preferred values.
+                else
+                {
+                    preferredValues.Add(typeLanguageValue);
+                    preferredValues.Add("@none");
+                }
+                // 2.14 - Initialize term to the result of the Term Selection algorithm, passing inverse context, iri, containers, type/language, and preferred values.
+                var term = SelectTerm(inverseContext, iri, containers, typeLanguage, preferredValues);
+                // 2.15 - If term is not null, return term.
+                if (term != null) return term;
+            }
+            // 3 - At this point, there is no simple term that iri can be compacted to. If vocab is true and active context has a vocabulary mapping:
+            if (vocab && activeContext.Vocab != null)
+            {
+                // 3.1 - If iri begins with the vocabulary mapping's value but is longer, then initialize suffix to the substring of iri that does not match. 
+                // If suffix does not have a term definition in active context, then return suffix.
+                if (iri.StartsWith(activeContext.Vocab) && iri.Length > activeContext.Vocab.Length)
+                {
+                    var suffix = iri.Substring(activeContext.Vocab.Length);
+                    if (activeContext.GetTerm(suffix) == null) return suffix;
+                }
+            }
+            // 4 - The iri could not be compacted using the active context's vocabulary mapping. 
+            // Try to create a compact IRI, starting by initializing compact IRI to null. 
+            // This variable will be used to tore the created compact IRI, if any.
+            string compactIri = null;
+            // 5 - For each key term and value term definition in the active context:
+            foreach (var term in activeContext.Terms)
+            {
+                // 5.1 - If the term contains a colon (:), then continue to the next term because terms with colons can't be used as prefixes.
+                if (term.Contains(":")) continue;
+                var termDefinition = activeContext.GetTerm(term);
+                // 5.2 - If the term definition is null, its IRI mapping equals iri, or its IRI mapping is not a substring at the beginning of iri, the term cannot be used 
+                // as a prefix because it is not a partial match with iri.Continue with the next term.
+                if (termDefinition == null) continue;
+                if (termDefinition.IriMapping == iri) continue;
+                if (!iri.StartsWith(termDefinition.IriMapping)) continue;
+                // 5.3 - Initialize candidate by concatenating term, a colon (:), and the substring of iri that follows after the value of the term definition's IRI mapping.
+                var candidate = term + ":" + iri.Substring(termDefinition.IriMapping.Length);
+                // 5.4 - If either compact IRI is null or candidate is shorter or the same length but lexicographically less than compact IRI 
+                // and candidate does not have a term definition in active context or if the term definition has an IRI mapping that equals iri 
+                // and value is null, set compact IRI to candidate.
+                if (compactIri == null ||
+                    compactIri.Length > candidate.Length ||
+                    (compactIri.Length == candidate.Length && candidate.CompareTo(compactIri) < 0))
+                {
+                    termDefinition = activeContext.GetTerm(candidate);
+                    if (termDefinition == null || (termDefinition.IriMapping.Equals(iri) && value == null))
+                    {
+                        compactIri = candidate;
+                    }
+                }
+            }
+            // 6 - If compact IRI is not null, return compact IRI.
+            if (compactIri != null) return compactIri;
+            // 7 - If vocab is false then transform iri to a relative IRI using the document's base IRI.
+            if (!vocab)
+            {
+                var baseIri = activeContext.HasBase ? activeContext.Base : _options.Base;
+                if (IsAbsoluteIri(iri) && baseIri != null)
+                {
+                    return baseIri.MakeRelativeUri(new Uri(iri)).ToString();
+                }
+            }
+            // 8 - Finally, return iri as is.
+            return iri;
+        }
+
+        private string SelectTerm(JObject inverseContext, string iri, List<string> containers, string typeLanguage, List<string> preferredValues)
+        {
+            // 1 - Initialize container map to the value associated with iri in the inverse context.
+            var containerMap = inverseContext[iri] as JObject;
+            // 2 - For each item container in containers:
+            foreach (var container in containers)
+            {
+                // 2.1 - If container is not a key in container map, then there is no term with a matching container mapping for it, so continue to the next container.
+                if (containerMap.Property(container) == null) continue;
+
+                // 2.2 - Initialize type/ language map to the value associated with the container member in container map.
+                var typeLanguageMap = containerMap[container];
+
+                // 2.3 - Initialize value map to the value associated with type / language member in type / language map.
+                var valueMap = typeLanguageMap[typeLanguage] as JObject;
+
+                // 2.4 - For each item in preferred values:
+                foreach (var item in preferredValues)
+                {
+                    // 2.4.1 - If item is not a key in value map, then there is no term with a matching type mapping or language mapping, so continue to the next item.
+                    if (valueMap.Property(item) == null) continue;
+                    // 2.4.2 - Otherwise, a matching term has been found, return the value associated with the item member in value map.
+                    return valueMap[item].Value<string>();
+                }
+            }
+            // 3 - No matching term has been found. Return null.
+            return null;
+        }
+
+        private JToken CompactValue(JsonLdContext activeContext, JObject inverseContext, string activeProperty,
+            JObject value)
+        {
+            var activeTermDefinition = activeProperty == null
+                ? new JsonLdTermDefinition()
+                : activeContext.GetTerm(activeProperty) ?? new JsonLdTermDefinition();
+            var indexProperty = value.Property("@index");
+
+            // 1 - Initialize number members to the number of members value contains.
+            var numberMembers = value.Properties().Count();
+
+            // 2 - If value has an @index member and the container mapping associated to active property is set to @index, decrease number members by 1.
+            if (indexProperty != null && activeTermDefinition.ContainerMapping == JsonLdContainer.Index)
+            {
+                numberMembers -= 1;
+            }
+            // 3 - If number members is greater than 2, return value as it cannot be compacted.
+            if (numberMembers > 2) return value;
+
+            // 4 - If value has an @id member:
+            var idProperty = value.Property("@id");
+            if (idProperty != null)
+            {
+                // 4.1 - If number members is 1 and the type mapping of active property is set to @id, return the result of using the IRI compaction algorithm, passing active context, inverse context, and the value of the @id member for iri.
+                if (numberMembers == 1 && "@id".Equals(activeTermDefinition.TypeMapping))
+                {
+                    return new JValue(CompactIri(activeContext, inverseContext, idProperty.Value.Value<string>()));
+                }
+                // 4.2 - Otherwise, if number members is 1 and the type mapping of active property is set to @vocab, return the result of using the IRI compaction algorithm, passing active context, inverse context, the value of the @id member for iri, and true for vocab.
+                else if (numberMembers == 1 && "@vocab".Equals(activeTermDefinition.TypeMapping))
+                {
+                    return new JValue(CompactIri(activeContext, inverseContext, idProperty.Value.Value<string>(),
+                        vocab: true));
+                }
+                // 4.3 - Otherwise, return value as is.
+                else
+                {
+                    return value;
+                }
+            }
+            // 5 - Otherwise, if value has an @type member whose value matches the type mapping of active property, return the value associated with the @value member of value.
+            else if (value.Property("@type") != null &&
+                     value["@type"].Value<string>().Equals(activeTermDefinition.TypeMapping))
+            {
+                return value["@value"];
+            }
+            // 6 - Otherwise, if value has an @language member whose value matches the language mapping of active property, return the value associated with the @value member of value.
+            // KA: Spec is not specific about this, but from the unit tests it seems that the "language mapping of active property" should take into account the default language in the active context
+            else if (value.Property("@language") != null &&
+                     value["@language"].Value<string>().Equals(activeTermDefinition.HasLanguageMapping  ? activeTermDefinition.LanguageMapping : activeContext.Language))
+            {
+                return value["@value"];
+            }
+            // 7 - Otherwise, if number members equals 1 and either the value of the @value member is not a string, or the active context has no default language, or the language mapping of active property is set to null,, return the value associated with the @value member.
+            else if (numberMembers == 1 &&
+                     (value["@value"].Type != JTokenType.String ||
+                      activeContext.Language == null ||
+                      (activeTermDefinition.HasLanguageMapping && activeTermDefinition.LanguageMapping == null)))
+            {
+                return value["@value"];
+            }
+            // 8 - Otherwise, return value as is.
+            return value;
+        }
+
 
         private bool IsValueObject(JToken token)
         {
