@@ -379,11 +379,16 @@ namespace VDS.RDF
             }
 
             // Use a Proxy if required
-            if (this.Proxy == null) return;
-            httpRequest.Proxy = this.Proxy;
+            if (this.Proxy != null)
+            {
+                httpRequest.Proxy = this.Proxy;
+            }
             if (this.UseCredentialsForProxy)
             {
-                httpRequest.Proxy.Credentials = this.Credentials;
+                if (httpRequest.Proxy != null)
+                {
+                    httpRequest.Proxy.Credentials = this.Credentials;
+                }
             }
 
             // Disable Keep Alive since it can cause errors when carrying out high volumes of operations or when performing long running operations
