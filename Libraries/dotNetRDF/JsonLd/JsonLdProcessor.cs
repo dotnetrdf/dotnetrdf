@@ -1924,6 +1924,78 @@ namespace VDS.RDF.JsonLd
             return result;
         }
 
+        /// <summary>
+        /// Flattens the given input and compacts it using the passed context according to the steps in the JSON-LD Flattening algorithm
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="context"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public JObject Flatten(JToken input, JToken context, JsonLdProcessorOptions options = null)
+        {
+            this._options = options;
+            // Set expanded input to the result of using the expand method using input and options.
+            var expandedInput = Expand(input, options);
+            // If context is a dictionary having an @context member, set context to that member's value, otherwise to context.
+            var contextObject = context as JObject;
+            if (contextObject?.Property("@context") != null)
+            {
+                context = contextObject["@context"];
+            }
+            // Initialize an empty identifier map and a counter (set to 0) to be used by the Generate Blank Node Identifier algorithm.
+            this._identifierMap = new Dictionary<string, string>();
+            this._counter = 0;
+            return FlattenWrapper(expandedInput, context, options?.CompactArrays ?? true);
+        }
+
+        private JToken FlattenWrapper(JArray element, JToken context, bool compactArrays = true)
+        {
+            // 1 = Initialize node map to a dictionary consisting of a single member whose key is @default and whose value is an empty dictionary.
+            var nodeMap = new JObject(new JProperty("@default", new JObject()));
+            // 2 - Perform the Node Map Generation algorithm, passing element and node map.
+            GenerateNodeMap(element, nodeMap);
+            // 3 - Initialize default graph to the value of the @default member of node map, which is a dictionary representing the default graph.
+            var defaultGraph = nodeMap["@default"] as JObject;
+            // 4 - For each key-value pair graph name-graph in node map where graph name is not @default, perform the following steps:
+            foreach (var p in nodeMap.Properties().Where(p => !p.Name.Equals("@default")))
+            {
+                var graphName = p.Name;
+                var graph = p.Value as JObject;
+                // 4.1 - If default graph does not have a graph name member, create one and initialize its value to a dictionary consisting of an @id member whose value is set to graph name.
+                if (defaultGraph.Property(graphName) == null)
+                {
+                    defaultGraph.Add(graphName, new JObject("@id", graphName));
+                }
+                // 4.2 - Reference the value associated with the graph name member in default graph using the variable entry.
+                var entry = defaultGraph[graphName] as JObject;
+                // 4.3 - Add an @graph member to entry and set it to an empty array.
+                entry["@graph"] = new JArray();
+                // 4.4 - For each id-node pair in graph ordered by id, add node to the @graph member of entry, unless the only member of node is @id.
+                foreach (var gp in graph.Properties().OrderBy(gp=>gp.Name))
+                {
+                    var node = gp.Value as JObject;
+                    ((JArray) entry["@graph"]).Add(node);
+                }
+            }
+            // 5 - Initialize an empty array flattened.
+            var flattened = new JArray();
+            // 6 - For each id-node pair in default graph ordered by id, add node to flattened, unless the only member of node is @id.
+            foreach (var p in defaultGraph.Properties().OrderBy(p => p.Name))
+            {
+                var node = p.Value as JObject;
+                if (node.Properties().Any(x => !x.Name.Equals("@id")))
+                {
+                    flattened.Add(node);
+                }
+            }
+            // 7 - If context is null, return flattened.
+            if (context == null) return flattened;
+            // 8 - Otherwise, return the result of compacting flattened according the Compaction algorithm passing context 
+            // ensuring that the compaction result has only the @graph keyword (or its alias) at the top-level other than @context, 
+            // even if the context is empty or if there is only one element to put in the @graph array. This ensures that the returned document has a deterministic structure.
+            var compactResult = Compact(flattened, context, _options);
+            return compactResult;
+        }
         private static string ContainerAsString(JsonLdContainer container)
         {
             switch (container)
