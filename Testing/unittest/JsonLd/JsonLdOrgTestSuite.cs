@@ -48,6 +48,26 @@ namespace VDS.RDF.JsonLd
                 $"Error processing compact test {Path.GetFileName(inputPath)}.\nActual output does not match expected output.\nExpected:\n{expectedOutputElement}\n\nActual:\n{actualOutputElement}");
         }
 
+        [Theory]
+        [MemberData("FlattenTests", MemberType = typeof(JsonLdTestSuiteDataSource))]
+        public void FlattenTests(string inputPath, string contextPath, string expectedOutputPath, string baseIri, string processorMode, string expandContextPath, bool compactArrays)
+        {
+            var processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
+                compactArrays);
+            var processor = new JsonLdProcessor(processorOptions);
+            var inputJson = File.ReadAllText(inputPath);
+            var contextJson = contextPath == null ? null : File.ReadAllText(contextPath);
+            var expectedOutputJson = File.ReadAllText(expectedOutputPath);
+            var inputElement = JToken.Parse(inputJson);
+            var contextElement = contextJson == null ? new JObject() : JToken.Parse(contextJson);
+            var expectedOutputElement = JToken.Parse(expectedOutputJson);
+
+            var actualOutputElement = processor.Flatten(inputElement, contextElement, processorOptions);
+            Assert.True(JToken.DeepEquals(actualOutputElement, expectedOutputElement),
+                $"Error processing flatten test {Path.GetFileName(inputPath)}.\nActual output does not match expected output.\nExpected:\n{expectedOutputElement}\n\nActual:\n{actualOutputElement}");
+        }
+
+
         private static JsonLdProcessorOptions MakeProcessorOptions(string inputPath, string baseIri, string processorMode,
             string expandContextPath, bool compactArrays)
         {
@@ -74,6 +94,8 @@ namespace VDS.RDF.JsonLd
         public static IEnumerable<object[]> ExpandTests => ProcessManifest("expand-manifest.jsonld");
 
         public static IEnumerable<object[]> CompactTests => ProcessManifest("compact-manifest.jsonld");
+
+        public static IEnumerable<object[]> FlattenTests => ProcessManifest("flatten-manifest.jsonld");
 
         private static IEnumerable<object[]> ProcessManifest(string manifestPath)
         {

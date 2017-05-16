@@ -74,6 +74,9 @@ namespace VDS.RDF.JsonLd
             "@type",
             "@index",
         };
+        private Dictionary<string, string> _identifierMap;
+        private int _counter;
+
         /// <summary>
         /// Create a new processor instance
         /// </summary>
@@ -1931,7 +1934,7 @@ namespace VDS.RDF.JsonLd
         /// <param name="context"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public JObject Flatten(JToken input, JToken context, JsonLdProcessorOptions options = null)
+        public JToken Flatten(JToken input, JToken context, JsonLdProcessorOptions options = null)
         {
             this._options = options;
             // Set expanded input to the result of using the expand method using input and options.
@@ -1943,12 +1946,12 @@ namespace VDS.RDF.JsonLd
                 context = contextObject["@context"];
             }
             // Initialize an empty identifier map and a counter (set to 0) to be used by the Generate Blank Node Identifier algorithm.
-            this._identifierMap = new Dictionary<string, string>();
-            this._counter = 0;
+            _identifierMap = new Dictionary<string, string>();
+            _counter = 0;
             return FlattenWrapper(expandedInput, context, options?.CompactArrays ?? true);
         }
 
-        private JToken FlattenWrapper(JArray element, JToken context, bool compactArrays = true)
+        private JToken FlattenWrapper(JToken element, JToken context, bool compactArrays = true)
         {
             // 1 = Initialize node map to a dictionary consisting of a single member whose key is @default and whose value is an empty dictionary.
             var nodeMap = new JObject(new JProperty("@default", new JObject()));
@@ -1964,7 +1967,7 @@ namespace VDS.RDF.JsonLd
                 // 4.1 - If default graph does not have a graph name member, create one and initialize its value to a dictionary consisting of an @id member whose value is set to graph name.
                 if (defaultGraph.Property(graphName) == null)
                 {
-                    defaultGraph.Add(graphName, new JObject("@id", graphName));
+                    defaultGraph.Add(graphName, new JObject(new JProperty("@id", graphName)));
                 }
                 // 4.2 - Reference the value associated with the graph name member in default graph using the variable entry.
                 var entry = defaultGraph[graphName] as JObject;
@@ -1990,12 +1993,262 @@ namespace VDS.RDF.JsonLd
             }
             // 7 - If context is null, return flattened.
             if (context == null) return flattened;
+            
             // 8 - Otherwise, return the result of compacting flattened according the Compaction algorithm passing context 
             // ensuring that the compaction result has only the @graph keyword (or its alias) at the top-level other than @context, 
             // even if the context is empty or if there is only one element to put in the @graph array. This ensures that the returned document has a deterministic structure.
             var compactResult = Compact(flattened, context, _options);
+
             return compactResult;
         }
+
+        private void GenerateNodeMap(JToken element, JObject nodeMap,
+            string activeGraph = "@default", JToken activeSubject = null,
+            string activeProperty = null, JObject list = null)
+        {
+            // 1 - If element is an array, process each item in element as follows and then return:
+            if (element is JArray)
+            {
+                foreach (var item in ((JArray) element))
+                {
+                    // 1.1 - Run this algorithm recursively by passing item for element, node map, active graph, active subject, active property, and list.
+                    GenerateNodeMap(item, nodeMap, activeGraph, activeSubject, activeProperty, list);
+                }
+                return;
+            }
+            // 2 - Otherwise element is a dictionary. 
+            // Reference the dictionary which is the value of the active graph member of node map using the variable graph. 
+            // If the active subject is null, set node to null otherwise reference the active subject member of graph using 
+            // the variable node.
+            var elementObject = element as JObject;
+            var graph = nodeMap[activeGraph] as JObject;
+            var node = activeSubject == null ? null : graph[activeSubject["@id"].Value<string>()] as JObject;
+            // 3 - If element has an @type member, perform for each item the following steps:
+            if (elementObject.Property("@type") != null)
+            {
+                // 3.1 - If item is a blank node identifier, replace it with a newly generated blank node identifier passing item for identifier.
+                var typeValue = elementObject["@type"] is JArray
+                    ? ((JArray) elementObject["@type"])[0]
+                    : elementObject["@type"];
+                if (IsBlankNodeIdentifier(typeValue.Value<string>()))
+                {
+                    elementObject["@type"] = GenerateBlankNodeIdentifier(typeValue.Value<string>());
+                }
+            }
+            // 4 - If element has an @value member, perform the following steps:
+            if (elementObject.Property("@value") != null)
+            {
+                // 4.1 - If list is null:
+                if (list == null)
+                {
+                    // 4.1.1 - If node does not have an active property member, create one and initialize its value to an array containing element.
+                    if (node.Property(activeProperty) == null)
+                    {
+                        node[activeProperty] = new JArray(element);
+                    }
+                    // 4.1.2 - Otherwise, compare element against every item in the array associated with the active property member of node. If there is no item equivalent to element, append element to the array. Two dictionaries are considered equal if they have equivalent key-value pairs.
+                    var existingItems = node[activeProperty] as JArray;
+                    if (!existingItems.Any(x => JToken.DeepEquals(x, element)))
+                    {
+                        existingItems.Add(element);
+                    }
+                }
+                else
+                {
+                    // 4.2 - Otherwise, append element to the @list member of list.
+                    var listArray = list["@list"] as JArray;
+                    listArray.Add(element);
+                }
+            }
+            // 5 - Otherwise, if element has an @list member, perform the following steps:
+            else if (elementObject.Property("@list") != null)
+            {
+                // 5.1 - Initialize a new dictionary result consisting of a single member @list whose value is initialized to an empty array.
+                var result = new JObject(new JProperty("@list", new JArray()));
+                // 5.2 - Recursively call this algorithm passing the value of element's @list member for element, active graph, active subject, active property, and result for list.
+                GenerateNodeMap(element["@list"], nodeMap, activeGraph, activeSubject, activeProperty, result);
+                // 5.3 - Append result to the value of the active property member of node.
+                (node[activeProperty] as JArray).Add(result);
+            }
+            // 6 - Otherwise element is a node object, perform the following steps:
+            else
+            {
+                string id;
+                // 6.1 - If element has an @id member, set id to its value and remove the member from element. If id is a blank node identifier, replace it with a newly generated blank node identifier passing id for identifier.
+                if (elementObject.Property("@id") != null)
+                {
+                    id = elementObject.Property("@id").Value.Value<string>();
+                    elementObject.Remove("@id");
+                    if (IsBlankNodeIdentifier(id))
+                    {
+                        var mappedIdentifier = GenerateBlankNodeIdentifier(id);
+                        id = mappedIdentifier;
+                    }
+                }
+                // 6.2 - Otherwise, set id to the result of the Generate Blank Node Identifier algorithm passing null for identifier.
+                else
+                {
+                    id = GenerateBlankNodeIdentifier(null);
+                }
+                // 6.3 - If graph does not contain a member id, create one and initialize its value to a dictionary consisting of a single member @id whose value is id.
+                if (graph.Property(id) == null)
+                {
+                    graph[id] = new JObject(new JProperty("@id", id));
+                }
+                // 6.4 - Reference the value of the id member of graph using the variable node.
+                node = graph[id] as JObject;
+                // 6.5 - If active subject is a dictionary, a reverse property relationship is being processed. Perform the following steps:
+                if (activeSubject is JObject)
+                {
+                    // 6.5.1 - If node does not have an active property member, create one and initialize its value to an array containing active subject.
+                    if (node.Property(activeProperty) == null)
+                    {
+                        node[activeProperty] = new JArray(activeSubject);
+                    }
+                    // 6.5.2 - Otherwise, compare active subject against every item in the array associated with the active property member of node. If there is no item equivalent to active subject, append active subject to the array. Two dictionaries are considered equal if they have equivalent key-value pairs.
+                    else
+                    {
+                        AppendUniqueElement(activeSubject, node[activeProperty] as JArray);
+                    }
+                }
+                // 6.6 - Otherwise, if active property is not null, perform the following steps:
+                else if (activeProperty != null)
+                {
+                    // 6.6.1 - Create a new dictionary reference consisting of a single member @id whose value is id.
+                    var reference = new JObject(new JProperty("@id", id));
+                    // 6.6.2 - If list is null:
+                    if (list == null)
+                    {
+                        // 6.6.2.1 - If node does not have an active property member, create one and initialize its value to an array containing reference.
+                        if (node.Property(activeProperty) == null)
+                        {
+                            node[activeProperty] = new JArray(reference);
+                        }
+                        // 6.6.2.2 - Otherwise, compare reference against every item in the array associated with the active property member of node. If there is no item equivalent to reference, append reference to the array. Two dictionaries are considered equal if they have equivalent key-value pairs.
+                        AppendUniqueElement(reference, node[activeProperty] as JArray);
+                    }
+                    else
+                    {
+                        // 6.6.3 - Otherwise, append element to the @list member of list.
+                        var listArray = list["@list"] as JArray;
+                        listArray.Add(element);
+                    }
+                }
+                // 6.7 - If element has an @type key, append each item of its associated array to the array associated with the @type key of node unless it is already in that array. Finally remove the @type member from element.
+                if (elementObject.Property("@type") != null)
+                {
+                    if (node.Property("@type") == null)
+                    {
+                        node["@type"] = new JArray();
+                    }
+                    if (elementObject["@type"] is JArray)
+                    {
+                        foreach (var item in elementObject["@type"] as JArray)
+                        {
+                            AppendUniqueElement(item, node["@type"] as JArray);
+                        }
+                    }
+                    else
+                    {
+                        AppendUniqueElement(elementObject["@type"], node["@type"] as JArray);
+                    }
+                    elementObject.Remove("@type");
+                }
+                // 6.8 - If element has an @index member, set the @index member of node to its value. If node has already an @index member with a different value, a conflicting indexes error has been detected and processing is aborted. Otherwise, continue by removing the @index member from element.
+                if (elementObject.Property("@index") != null)
+                {
+                    if (node.Property("@index") != null && !JToken.DeepEquals(elementObject["@index"], node["@index"]))
+                    {
+                        throw new JsonLdProcessorException(JsonLdErrorCode.ConflictingIndexes,
+                            $"Conflicting indexes for node with id {id}.");
+                    }
+                    node["@index"] = elementObject["@index"];
+                    elementObject.Remove("@index");
+                }
+                // 6.9 - If element has an @reverse member:
+                if (elementObject.Property("@reverse") != null)
+                {
+                    // 6.9.1 - Create a dictionary referenced node with a single member @id whose value is id.
+                    var referencedNode = new JObject(new JProperty("@id", id));
+                    // 6.9.2 - Set reverse map to the value of the @reverse member of element.
+                    var reverseMap = elementObject["@reverse"] as JObject;
+                    // 6.9.3 - For each key-value pair property-values in reverse map:
+                    foreach (var p in reverseMap.Properties())
+                    {
+                        var property = p.Name;
+                        var values = p.Value as JArray;
+                        // 6.9.3.1 - For each value of values:
+                        foreach (var value in values)
+                        {
+                            // 6.9.3.1.1 - Recursively invoke this algorithm passing value for element, node map, active graph, referenced node for active subject, and property for active property. Passing a dictionary for active subject indicates to the algorithm that a reverse property relationship is being processed.
+                            GenerateNodeMap(value, nodeMap, activeGraph, referencedNode, property);
+                        }
+                    }
+                    // 6.9.4 - Remove the @reverse member from element.
+                    elementObject.Remove("@reverse");
+                }
+                // 6.10 - If element has an @graph member, recursively invoke this algorithm passing the value of the @graph member for element, node map, and id for active graph before removing the @graph member from element.
+                if (elementObject.Property("@graph") != null)
+                {
+                    // KA: Ensure nodeMap contains a dictionary for the graph
+                    if (nodeMap.Property(id) == null)
+                    {
+                        nodeMap.Add(id, new JObject());
+                    }
+                    GenerateNodeMap(elementObject["@graph"], nodeMap, id);
+                    elementObject.Remove("@graph");
+                }
+                // 6.11 - Finally, for each key-value pair property-value in element ordered by property perform the following steps:
+                foreach (var p in elementObject.Properties().OrderBy(p => p.Name).ToList())
+                {
+                    var property = p.Name;
+                    var value = p.Value;
+                    // 6.11.1 - If property is a blank node identifier, replace it with a newly generated blank node identifier passing property for identifier.
+                    if (IsBlankNodeIdentifier(p.Name))
+                    {
+                        var mappedIdentifier = GenerateBlankNodeIdentifier(p.Name);
+                        elementObject[mappedIdentifier] = value;
+                        elementObject.Remove(property);
+                    }
+                    // 6.11.2 - If node does not have a property member, create one and initialize its value to an empty array.
+                    if (node.Property(property) == null)
+                    {
+                        node[property] = new JArray();
+                    }
+                    // 6.11.3 - Recursively invoke this algorithm passing value for element, node map, active graph, id for active subject, and property for active property.
+                    GenerateNodeMap(value, nodeMap, activeGraph, node, property);
+                }
+            }
+        }
+
+        private static void AppendUniqueElement(JToken element, JArray toArray)
+        {
+            if (!toArray.Any(x => JToken.DeepEquals(x, element)))
+            {
+                toArray.Add(element);
+            }
+        }
+
+        private string GenerateBlankNodeIdentifier(string identifier)
+        {
+            string mappedIdentifier;
+            // 1 - If identifier is not null and has an entry in the identifier map, return the mapped identifier.
+            if (identifier != null && _identifierMap.TryGetValue(identifier, out mappedIdentifier))
+            {
+                return mappedIdentifier;
+            }
+            // 2 - Otherwise, generate a new blank node identifier by concatenating the string _:b and counter.
+            // 3 - Increment counter by 1.
+            mappedIdentifier = "_b:" + _counter++;
+            // 4 - If identifier is not null, create a new entry for identifier in identifier map and set its value to the new blank node identifier.
+            if (identifier != null)
+            {
+                _identifierMap[identifier] = mappedIdentifier;
+            }
+            // 5 - Return the new blank node identifier.
+            return mappedIdentifier;
+        }
+
         private static string ContainerAsString(JsonLdContainer container)
         {
             switch (container)
