@@ -59,7 +59,7 @@ namespace VDS.RDF.JsonLd
             var contextJson = contextPath == null ? null : File.ReadAllText(contextPath);
             var expectedOutputJson = File.ReadAllText(expectedOutputPath);
             var inputElement = JToken.Parse(inputJson);
-            var contextElement = contextJson == null ? new JObject() : JToken.Parse(contextJson);
+            var contextElement = contextJson == null ? null : JToken.Parse(contextJson);
             var expectedOutputElement = JToken.Parse(expectedOutputJson);
 
             var actualOutputElement = processor.Flatten(inputElement, contextElement, processorOptions);

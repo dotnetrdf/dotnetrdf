@@ -1977,7 +1977,10 @@ namespace VDS.RDF.JsonLd
                 foreach (var gp in graph.Properties().OrderBy(gp=>gp.Name))
                 {
                     var node = gp.Value as JObject;
-                    ((JArray) entry["@graph"]).Add(node);
+                    if (node.Properties().Any(x => !x.Name.Equals("@id")))
+                    {
+                        ((JArray)entry["@graph"]).Add(node);
+                    }
                 }
             }
             // 5 - Initialize an empty array flattened.
@@ -2022,17 +2025,35 @@ namespace VDS.RDF.JsonLd
             // the variable node.
             var elementObject = element as JObject;
             var graph = nodeMap[activeGraph] as JObject;
-            var node = activeSubject == null ? null : graph[activeSubject["@id"].Value<string>()] as JObject;
-            // 3 - If element has an @type member, perform for each item the following steps:
-            if (elementObject.Property("@type") != null)
+            JObject node = null, activeSubjectNode = null;
+            if (activeSubject != null && activeSubject is JValue)
             {
-                // 3.1 - If item is a blank node identifier, replace it with a newly generated blank node identifier passing item for identifier.
-                var typeValue = elementObject["@type"] is JArray
-                    ? ((JArray) elementObject["@type"])[0]
-                    : elementObject["@type"];
-                if (IsBlankNodeIdentifier(typeValue.Value<string>()))
+                activeSubjectNode = node = graph[activeSubject.Value<string>()] as JObject;
+            }
+            // 3 - If element has an @type member, perform for each item the following steps:
+            var typeProperty = elementObject.Property("@type");
+            if (typeProperty != null)
+            {
+                var typeArray = typeProperty.Value as JArray;
+                if (typeArray != null)
                 {
-                    elementObject["@type"] = GenerateBlankNodeIdentifier(typeValue.Value<string>());
+                    // 3.1 - If item is a blank node identifier, replace it with a newly generated blank node identifier passing item for identifier.
+                    for (var ix = 0; ix < typeArray.Count; ix++)
+                    {
+                        var typeId = typeArray[ix].Value<string>();
+                        if (IsBlankNodeIdentifier(typeId))
+                        {
+                            typeArray[ix] = GenerateBlankNodeIdentifier(typeId);
+                        }
+                    }
+                }
+                else
+                {
+                    var typeId = typeProperty.Value.Value<string>();
+                    if (IsBlankNodeIdentifier(typeId))
+                    {
+                        elementObject["@type"] = GenerateBlankNodeIdentifier(typeId);
+                    }
                 }
             }
             // 4 - If element has an @value member, perform the following steps:
@@ -2120,18 +2141,18 @@ namespace VDS.RDF.JsonLd
                     if (list == null)
                     {
                         // 6.6.2.1 - If node does not have an active property member, create one and initialize its value to an array containing reference.
-                        if (node.Property(activeProperty) == null)
+                        if (activeSubjectNode.Property(activeProperty) == null)
                         {
-                            node[activeProperty] = new JArray(reference);
+                            activeSubjectNode[activeProperty] = new JArray(reference);
                         }
                         // 6.6.2.2 - Otherwise, compare reference against every item in the array associated with the active property member of node. If there is no item equivalent to reference, append reference to the array. Two dictionaries are considered equal if they have equivalent key-value pairs.
-                        AppendUniqueElement(reference, node[activeProperty] as JArray);
+                        AppendUniqueElement(reference, activeSubjectNode[activeProperty] as JArray);
                     }
                     else
                     {
                         // 6.6.3 - Otherwise, append element to the @list member of list.
                         var listArray = list["@list"] as JArray;
-                        listArray.Add(element);
+                        listArray.Add(reference); // KA: Should be reference rather than element (because reference has the @id member on it - confirmed in JSON-LD unit test flatten-0029)
                     }
                 }
                 // 6.7 - If element has an @type key, append each item of its associated array to the array associated with the @type key of node unless it is already in that array. Finally remove the @type member from element.
@@ -2204,11 +2225,9 @@ namespace VDS.RDF.JsonLd
                     var property = p.Name;
                     var value = p.Value;
                     // 6.11.1 - If property is a blank node identifier, replace it with a newly generated blank node identifier passing property for identifier.
-                    if (IsBlankNodeIdentifier(p.Name))
+                    if (IsBlankNodeIdentifier(property))
                     {
-                        var mappedIdentifier = GenerateBlankNodeIdentifier(p.Name);
-                        elementObject[mappedIdentifier] = value;
-                        elementObject.Remove(property);
+                        property = GenerateBlankNodeIdentifier(property);
                     }
                     // 6.11.2 - If node does not have a property member, create one and initialize its value to an empty array.
                     if (node.Property(property) == null)
@@ -2216,7 +2235,7 @@ namespace VDS.RDF.JsonLd
                         node[property] = new JArray();
                     }
                     // 6.11.3 - Recursively invoke this algorithm passing value for element, node map, active graph, id for active subject, and property for active property.
-                    GenerateNodeMap(value, nodeMap, activeGraph, node, property);
+                    GenerateNodeMap(value, nodeMap, activeGraph, id, property);
                 }
             }
         }
@@ -2239,7 +2258,7 @@ namespace VDS.RDF.JsonLd
             }
             // 2 - Otherwise, generate a new blank node identifier by concatenating the string _:b and counter.
             // 3 - Increment counter by 1.
-            mappedIdentifier = "_b:" + _counter++;
+            mappedIdentifier = "_:b" + _counter++;
             // 4 - If identifier is not null, create a new entry for identifier in identifier map and set its value to the new blank node identifier.
             if (identifier != null)
             {
