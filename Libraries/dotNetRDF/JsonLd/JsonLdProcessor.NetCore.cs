@@ -40,7 +40,7 @@ namespace VDS.RDF.JsonLd
         /// <param name="inputUrl"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public JArray Expand(Uri inputUrl, JsonLdProcessorOptions options = null)
+        public static JArray Expand(Uri inputUrl, JsonLdProcessorOptions options = null)
         {
             return ExpandAsync(inputUrl, options).Result;
         }
@@ -51,7 +51,7 @@ namespace VDS.RDF.JsonLd
         /// <param name="input">The parsed JSON to be expanded</param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public JArray Expand(JToken input, JsonLdProcessorOptions options = null)
+        public static JArray Expand(JToken input, JsonLdProcessorOptions options = null)
         {
             return ExpandAsync(input, options).Result;
         }
@@ -62,7 +62,7 @@ namespace VDS.RDF.JsonLd
         /// <param name="inputUrl"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public async Task<JArray> ExpandAsync(Uri inputUrl, JsonLdProcessorOptions options = null)
+        public static async Task<JArray> ExpandAsync(Uri inputUrl, JsonLdProcessorOptions options = null)
         {
             var parsedJson = await LoadJsonAsync(inputUrl, options);
             return await ExpandAsync(parsedJson, inputUrl, options);
@@ -76,7 +76,7 @@ namespace VDS.RDF.JsonLd
         /// <param name="options"></param>
         /// <returns></returns>
         /// <remarks>If <paramref name="input"/> is a string JValue, it will be treated as specifying the IRI of a JSON-LD resource to be retrieved and expanded. Otherwise the input should be either a JArray or a JObject.</remarks>
-        public async Task<JArray> ExpandAsync(JToken input, JsonLdProcessorOptions options = null)
+        public static async Task<JArray> ExpandAsync(JToken input, JsonLdProcessorOptions options = null)
         {
             if (input is JValue && (input as JValue).Type == JTokenType.String)
             {
@@ -85,11 +85,58 @@ namespace VDS.RDF.JsonLd
             return await ExpandAsync(new RemoteDocument {Document = input}, null, options);
         }
 
-        private async Task<JArray> ExpandAsync(RemoteDocument doc, Uri documentLocation,
+        /// <summary>
+        /// Run the Compaction algorithm asynchronously
+        /// </summary>
+        /// <param name="input">The JSON-LD data to be compacted. Expected to be a JObject or JArray of JObject or a JString whose value is the IRI reference to a JSON-LD document to be retrieved</param>
+        /// <param name="context">The context to use for the compaction process. May be a JObject, JArray of JObject, JString or JArray of JString. String values are treated as IRI references to context documents to be retrieved</param>
+        /// <param name="options">Additional processor options</param>
+        /// <returns></returns>
+        public static async Task<JObject> CompactAsync(JToken input, JToken context, JsonLdProcessorOptions options)
+        {
+            var processor = new JsonLdProcessor(options);
+
+            // Set expanded input to the result of using the expand method using input and options.
+            var expandedInput = await ExpandAsync(input, options);
+            // If context is a dictionary having an @context member, set context to that member's value, otherwise to context.
+            var contextProperty = (context as JObject)?.Property("@context");
+            if (contextProperty != null)
+            {
+                context = contextProperty.Value;
+            }
+            // Set compacted output to the result of using the Compaction algorithm, passing context as active context, an empty dictionary as inverse context, null as property, expanded input as element, and if passed, the compactArrays flag in options.
+            var compactResult = processor.CompactWrapper(context, new JObject(), null, expandedInput, options.CompactArrays);
+            return compactResult;
+        }
+
+        /// <summary>
+        /// Flattens the given input and compacts it using the passed context according to the steps in the JSON-LD Flattening algorithm.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="context"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public static async Task<JToken> FlattenAsync(JToken input, JToken context, JsonLdProcessorOptions options = null)
+        {
+            var processor = new JsonLdProcessor(options);
+
+            // Set expanded input to the result of using the expand method using input and options.
+            var expandedInput = await ExpandAsync(input, options);
+            // If context is a dictionary having an @context member, set context to that member's value, otherwise to context.
+            var contextObject = context as JObject;
+            if (contextObject?.Property("@context") != null)
+            {
+                context = contextObject["@context"];
+            }
+            return processor.FlattenWrapper(expandedInput, context, options?.CompactArrays ?? true);
+        }
+
+        private static async Task<JArray> ExpandAsync(RemoteDocument doc, Uri documentLocation,
             JsonLdProcessorOptions options = null)
         {
             var activeContext = new JsonLdContext {Base = documentLocation};
             if (options.Base != null) activeContext.Base = options.Base;
+            var processor = new JsonLdProcessor(options);
             if (options.ExpandContext != null)
             {
                 var expandObject = options.ExpandContext as JObject;
@@ -98,16 +145,16 @@ namespace VDS.RDF.JsonLd
                     var contextProperty = expandObject.Property("@context");
                     if (contextProperty != null)
                     {
-                        activeContext = ProcessContext(activeContext, contextProperty.Value);
+                        activeContext = processor.ProcessContext(activeContext, contextProperty.Value);
                     }
                     else
                     {
-                        activeContext = ProcessContext(activeContext, expandObject);
+                        activeContext = processor.ProcessContext(activeContext, expandObject);
                     }
                 }
                 else
                 {
-                    activeContext = ProcessContext(activeContext, options.ExpandContext);
+                    activeContext = processor.ProcessContext(activeContext, options.ExpandContext);
                 }
             }
             if (doc.ContextUrl != null)
@@ -117,16 +164,16 @@ namespace VDS.RDF.JsonLd
                 {
                     contextDoc.Document = JToken.Parse(contextDoc.Document as string);
                 }
-                activeContext = ProcessContext(activeContext, contextDoc.Document as JToken);
+                activeContext = processor.ProcessContext(activeContext, contextDoc.Document as JToken);
             }
             if (doc.Document is string)
             {
                 doc.Document = JToken.Parse(doc.Document as string);
             }
-            return Expand(activeContext, null, doc.Document as JToken);
+            return processor.Expand(activeContext, null, doc.Document as JToken);
         }
 
-        private async Task<RemoteDocument> LoadJsonAsync(Uri remoteRef, JsonLdProcessorOptions options)
+        private static async Task<RemoteDocument> LoadJsonAsync(Uri remoteRef, JsonLdProcessorOptions options)
         {
             if (options.Loader != null) return options.Loader(remoteRef);
             var client = new HttpClient();

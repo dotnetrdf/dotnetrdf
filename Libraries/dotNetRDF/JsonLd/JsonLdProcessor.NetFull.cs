@@ -34,13 +34,13 @@ namespace VDS.RDF.JsonLd
 
     public partial class JsonLdProcessor
     {
-        public JArray Expand(Uri contextUrl, JsonLdProcessorOptions options = null)
+        public static JArray Expand(Uri contextUrl, JsonLdProcessorOptions options = null)
         {
             var parsedJson = LoadJson(contextUrl, options);
             return Expand(parsedJson, contextUrl, options);
         }
 
-        public JArray Expand(JToken input, JsonLdProcessorOptions options = null)
+        public static JArray Expand(JToken input, JsonLdProcessorOptions options = null)
         {
             if (input is JValue && (input as JValue).Type == JTokenType.String)
             {
@@ -49,11 +49,12 @@ namespace VDS.RDF.JsonLd
             return Expand(new RemoteDocument { Document = input }, null, options);
         }
 
-        private JArray Expand(RemoteDocument doc, Uri documentLocation,
+        private static JArray Expand(RemoteDocument doc, Uri documentLocation,
             JsonLdProcessorOptions options = null)
         {
             var activeContext = new JsonLdContext { Base = documentLocation };
             if (options.Base != null) activeContext.Base = options.Base;
+            var processor = new JsonLdProcessor(options);
             if (options.ExpandContext != null)
             {
                 var expandObject = options.ExpandContext as JObject;
@@ -62,16 +63,16 @@ namespace VDS.RDF.JsonLd
                     var contextProperty = expandObject.Property("@context");
                     if (contextProperty != null)
                     {
-                        activeContext = ProcessContext(activeContext, contextProperty);
+                        activeContext = processor.ProcessContext(activeContext, contextProperty);
                     }
                     else
                     {
-                        activeContext = ProcessContext(activeContext, expandObject);
+                        activeContext = processor.ProcessContext(activeContext, expandObject);
                     }
                 }
                 else
                 {
-                    activeContext = ProcessContext(activeContext, options.ExpandContext);
+                    activeContext = processor.ProcessContext(activeContext, options.ExpandContext);
                 }
             }
             if (doc.ContextUrl != null)
@@ -81,16 +82,16 @@ namespace VDS.RDF.JsonLd
                 {
                     contextDoc.Document = JToken.Parse(contextDoc.Document as string);
                 }
-                activeContext = ProcessContext(activeContext, contextDoc.Document as JToken);
+                activeContext = processor.ProcessContext(activeContext, contextDoc.Document as JToken);
             }
             if (doc.Document is string)
             {
                 doc.Document = JToken.Parse(doc.Document as string);
             }
-            return Expand(activeContext, null, doc.Document as JToken);
+            return processor.Expand(activeContext, null, doc.Document as JToken);
         }
 
-        private RemoteDocument LoadJson(Uri remoteRef, JsonLdProcessorOptions options)
+        private static RemoteDocument LoadJson(Uri remoteRef, JsonLdProcessorOptions options)
         {
             if (options.Loader != null) return options.Loader(remoteRef);
             

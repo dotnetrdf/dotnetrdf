@@ -15,7 +15,6 @@ namespace VDS.RDF.JsonLd
         {
             var processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
                 compactArrays);
-            var processor = new JsonLdProcessor(processorOptions);
             var inputJson = File.ReadAllText(inputPath);
             var expectedOutputJson = File.ReadAllText(expectedOutputPath);
             var inputElement = JToken.Parse(inputJson);
@@ -24,7 +23,7 @@ namespace VDS.RDF.JsonLd
             // Expand tests should not have a context parameter
             Assert.Null(contextPath);
             
-            var actualOutputElement = processor.Expand(inputElement, processorOptions);
+            var actualOutputElement = JsonLdProcessor.Expand(inputElement, processorOptions);
             Assert.True(JToken.DeepEquals(actualOutputElement, expectedOutputElement),
                 $"Error processing expand test {Path.GetFileName(inputPath)}.\nActual output does not match expected output.\nExpected:\n{expectedOutputElement}\n\nActual:\n{actualOutputElement}");
         }
@@ -35,7 +34,6 @@ namespace VDS.RDF.JsonLd
         {
             var processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
                 compactArrays);
-            var processor = new JsonLdProcessor(processorOptions);
             var inputJson = File.ReadAllText(inputPath);
             var contextJson = contextPath == null ? null : File.ReadAllText(contextPath);
             var expectedOutputJson = File.ReadAllText(expectedOutputPath);
@@ -43,7 +41,7 @@ namespace VDS.RDF.JsonLd
             var contextElement = contextJson == null ? new JObject() : JToken.Parse(contextJson);
             var expectedOutputElement = JToken.Parse(expectedOutputJson);
 
-            var actualOutputElement = processor.Compact(inputElement, contextElement, processorOptions);
+            var actualOutputElement = JsonLdProcessor.Compact(inputElement, contextElement, processorOptions);
             Assert.True(JToken.DeepEquals(actualOutputElement, expectedOutputElement),
                 $"Error processing compact test {Path.GetFileName(inputPath)}.\nActual output does not match expected output.\nExpected:\n{expectedOutputElement}\n\nActual:\n{actualOutputElement}");
         }
@@ -54,7 +52,6 @@ namespace VDS.RDF.JsonLd
         {
             var processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
                 compactArrays);
-            var processor = new JsonLdProcessor(processorOptions);
             var inputJson = File.ReadAllText(inputPath);
             var contextJson = contextPath == null ? null : File.ReadAllText(contextPath);
             var expectedOutputJson = File.ReadAllText(expectedOutputPath);
@@ -62,7 +59,7 @@ namespace VDS.RDF.JsonLd
             var contextElement = contextJson == null ? null : JToken.Parse(contextJson);
             var expectedOutputElement = JToken.Parse(expectedOutputJson);
 
-            var actualOutputElement = processor.Flatten(inputElement, contextElement, processorOptions);
+            var actualOutputElement = JsonLdProcessor.Flatten(inputElement, contextElement, processorOptions);
             Assert.True(JToken.DeepEquals(actualOutputElement, expectedOutputElement),
                 $"Error processing flatten test {Path.GetFileName(inputPath)}.\nActual output does not match expected output.\nExpected:\n{expectedOutputElement}\n\nActual:\n{actualOutputElement}");
         }

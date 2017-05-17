@@ -28,9 +28,6 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using Newtonsoft.Json;
-using VDS.RDF.Parsing;
 
 namespace VDS.RDF.JsonLd
 {
@@ -81,9 +78,11 @@ namespace VDS.RDF.JsonLd
         /// Create a new processor instance
         /// </summary>
         /// <param name="options">JSON-LD processing options</param>
-        public JsonLdProcessor(JsonLdProcessorOptions options) {
+        private JsonLdProcessor(JsonLdProcessorOptions options) {
             _options = options;
             ProcessingMode = _options.Syntax;
+            _identifierMap = new Dictionary<string, string>();
+            _counter = 0;
         }
 
         /// <summary>
@@ -266,7 +265,7 @@ namespace VDS.RDF.JsonLd
             return result;
         }
 
-        public void CreateTermDefinition(JsonLdContext activeContext, JObject localContext, string term, Dictionary<string, bool> defined = null)
+        private void CreateTermDefinition(JsonLdContext activeContext, JObject localContext, string term, Dictionary<string, bool> defined = null)
         {
             if (defined == null) defined = new Dictionary<string, bool>();
             bool created;
@@ -638,9 +637,7 @@ namespace VDS.RDF.JsonLd
             return value;
         }
 
-
-
-        private IEnumerable<WebLink> ParseLinkHeaders(IEnumerable<string> linkHeaderValues)
+        private static IEnumerable<WebLink> ParseLinkHeaders(IEnumerable<string> linkHeaderValues)
         {
             foreach(var linkHeaderValue in linkHeaderValues)
             {
@@ -671,7 +668,7 @@ namespace VDS.RDF.JsonLd
             public List<string> RelationTypes { get; set; }
         }
 
-        public JArray Expand(JsonLdContext activeContext, string activeProperty, JToken element)
+        private JArray Expand(JsonLdContext activeContext, string activeProperty, JToken element)
         {
             var result = ExpandAlgorithm(activeContext, activeProperty, element);
 
@@ -1353,7 +1350,7 @@ namespace VDS.RDF.JsonLd
             }
         }
 
-        public JToken ExpandValue(JsonLdContext activeContext, string activeProperty, JToken value)
+        private JToken ExpandValue(JsonLdContext activeContext, string activeProperty, JToken value)
         {
             var activePropertyTermDefinition = activeContext.GetTerm(activeProperty);
             var typeMapping = activePropertyTermDefinition?.TypeMapping;
@@ -1427,8 +1424,10 @@ namespace VDS.RDF.JsonLd
         /// <param name="context">The context to use for the compaction process. May be a JObject, JArray of JObject, JString or JArray of JString. String values are treated as IRI references to context documents to be retrieved</param>
         /// <param name="options">Additional processor options</param>
         /// <returns></returns>
-        public JObject Compact(JToken input, JToken context, JsonLdProcessorOptions options)
+        public static JObject Compact(JToken input, JToken context, JsonLdProcessorOptions options)
         {
+            var processor = new JsonLdProcessor(options);
+
             // Set expanded input to the result of using the expand method using input and options.
             var expandedInput = Expand(input, options);
             // If context is a dictionary having an @context member, set context to that member's value, otherwise to context.
@@ -1438,7 +1437,7 @@ namespace VDS.RDF.JsonLd
                 context = contextProperty.Value;
             }
             // Set compacted output to the result of using the Compaction algorithm, passing context as active context, an empty dictionary as inverse context, null as property, expanded input as element, and if passed, the compactArrays flag in options.
-            var compactResult = CompactWrapper(context, new JObject(), null, expandedInput, options.CompactArrays);
+            var compactResult = processor.CompactWrapper(context, new JObject(), null, expandedInput, options.CompactArrays);
             return compactResult;
         }
 
@@ -1934,9 +1933,9 @@ namespace VDS.RDF.JsonLd
         /// <param name="context"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public JToken Flatten(JToken input, JToken context, JsonLdProcessorOptions options = null)
+        public static JToken Flatten(JToken input, JToken context, JsonLdProcessorOptions options = null)
         {
-            this._options = options;
+            var processor = new JsonLdProcessor(options);
             // Set expanded input to the result of using the expand method using input and options.
             var expandedInput = Expand(input, options);
             // If context is a dictionary having an @context member, set context to that member's value, otherwise to context.
@@ -1945,10 +1944,7 @@ namespace VDS.RDF.JsonLd
             {
                 context = contextObject["@context"];
             }
-            // Initialize an empty identifier map and a counter (set to 0) to be used by the Generate Blank Node Identifier algorithm.
-            _identifierMap = new Dictionary<string, string>();
-            _counter = 0;
-            return FlattenWrapper(expandedInput, context, options?.CompactArrays ?? true);
+            return processor.FlattenWrapper(expandedInput, context, options?.CompactArrays ?? true);
         }
 
         private JToken FlattenWrapper(JToken element, JToken context, bool compactArrays = true)
@@ -2102,8 +2098,7 @@ namespace VDS.RDF.JsonLd
                     elementObject.Remove("@id");
                     if (IsBlankNodeIdentifier(id))
                     {
-                        var mappedIdentifier = GenerateBlankNodeIdentifier(id);
-                        id = mappedIdentifier;
+                        id = GenerateBlankNodeIdentifier(id);
                     }
                 }
                 // 6.2 - Otherwise, set id to the result of the Generate Blank Node Identifier algorithm passing null for identifier.
