@@ -4,6 +4,9 @@ using System.IO;
 using Xunit;
 using Newtonsoft.Json.Linq;
 using System.Linq;
+using VDS.RDF.Parsing;
+using VDS.RDF.Writing;
+using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.JsonLd
 {
@@ -64,6 +67,70 @@ namespace VDS.RDF.JsonLd
                 $"Error processing flatten test {Path.GetFileName(inputPath)}.\nActual output does not match expected output.\nExpected:\n{expectedOutputElement}\n\nActual:\n{actualOutputElement}");
         }
 
+        [Theory]
+        [MemberData("ToRdfTests", MemberType =typeof(JsonLdTestSuiteDataSource))]
+        public void JsonLdParserTests(string inputPath, string contextPath, string expectedOutputPath, string baseIri, string processorMode, string expandContextPath, bool compactArrays)
+        {
+            var processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
+                compactArrays);
+            var contextJson = contextPath == null ? null : File.ReadAllText(contextPath);
+            var contextElement = contextJson == null ? null : JToken.Parse(contextJson);
+            var nqParser = new NQuadsParser(NQuadsSyntax.Rdf11);
+            var expectedStore = new TripleStore();
+            nqParser.Load(expectedStore, expectedOutputPath);
+            FixStringLiterals(expectedStore);
+            var jsonldParser = new JsonLdParser(processorOptions);
+            var actualStore = new TripleStore();
+            jsonldParser.Load(actualStore, inputPath);
+            Assert.True(expectedStore.Graphs.Count.Equals(actualStore.Graphs.Count), 
+                $"Test failed for input {Path.GetFileName(inputPath)}.\r\nActual graph count {actualStore.Graphs.Count} does not match expected graph count {expectedStore.Graphs.Count}.");
+            foreach(var expectGraph in expectedStore.Graphs)
+            {
+                Assert.True(actualStore.HasGraph(expectGraph.BaseUri), 
+                    $"Test failed for input {Path.GetFileName(inputPath)}.\r\nCould not find expected graph {expectGraph.BaseUri}");
+                var actualGraph = actualStore.Graphs[expectGraph.BaseUri];
+                var bNodeMapping = new Dictionary<INode, INode>();
+                var graphsEqual = actualGraph.Equals(expectGraph, out bNodeMapping);
+                if (!graphsEqual)
+                {
+                    var ser = new NQuadsWriter();
+                    string expectedLines = MakeNQuadsList(expectedStore);
+                    string actualLines = MakeNQuadsList(actualStore);
+                    Assert.True(graphsEqual,
+                        $"Test failed for input {Path.GetFileName(inputPath)}.\r\nGraph {expectGraph.BaseUri} differs in actual output from expected output.\r\nExpected:\r\n{expectedLines}\r\nActual:\r\n{actualLines}");
+                }
+            }
+        }
+
+        private static void FixStringLiterals(TripleStore store)
+        {
+            var xsdString = new Uri("http://www.w3.org/2001/XMLSchema#string");
+            foreach (var t in store.Triples.ToList())
+            {
+                var literalNode = t.Object as ILiteralNode;
+                if (literalNode != null && String.IsNullOrEmpty(literalNode.Language) && literalNode.DataType == null)
+                {
+                    var graphToUpdate = t.Graph;
+                    graphToUpdate.Retract(t);
+                    graphToUpdate.Assert(
+                        new Triple(t.Subject, t.Predicate,
+                        graphToUpdate.CreateLiteralNode(literalNode.Value, xsdString),
+                        graphToUpdate.BaseUri));
+                }
+            }
+        }
+
+        private static string MakeNQuadsList(TripleStore store)
+        {
+            var ser = new NQuadsWriter();
+            using (var expectedTextWriter = new System.IO.StringWriter())
+            {
+                ser.Save(store, expectedTextWriter);
+                var lines = expectedTextWriter.ToString().Split('\n').Select(x => x.Trim()).ToList();
+                lines.Sort();
+                return String.Join(Environment.NewLine, lines);
+            }
+        }
 
         private static JsonLdProcessorOptions MakeProcessorOptions(string inputPath, string baseIri, string processorMode,
             string expandContextPath, bool compactArrays)
@@ -83,6 +150,12 @@ namespace VDS.RDF.JsonLd
             processorOptions.CompactArrays = compactArrays;
             return processorOptions;
         }
+
+        [Fact]
+        public void TestDataSource()
+        {
+            Assert.Equal(111, JsonLdTestSuiteDataSource.ToRdfTests.Count());
+        }
     }
 
 
@@ -94,17 +167,26 @@ namespace VDS.RDF.JsonLd
 
         public static IEnumerable<object[]> FlattenTests => ProcessManifest("flatten-manifest.jsonld");
 
-        private static IEnumerable<object[]> ProcessManifest(string manifestPath)
+        public static IEnumerable<object[]> ToRdfTests => ProcessManifest("toRdf-manifest.jsonld", "toRdf-skip.txt");
+
+        private static IEnumerable<object[]> ProcessManifest(string manifestPath, string skipTestsPath = null)
         {
             var resourceDir = new DirectoryInfo("resources\\jsonld");
             manifestPath = Path.Combine(resourceDir.FullName, manifestPath);
             var manifestJson = File.ReadAllText(manifestPath);
             var manifest = JObject.Parse(manifestJson);
+            var skipTests = new List<string>();
+            if (skipTestsPath != null)
+            {
+                skipTestsPath = Path.Combine(resourceDir.FullName, skipTestsPath);
+                skipTests = File.ReadAllLines(skipTestsPath).ToList();
+            }
             var sequence = manifest.Property("sequence").Value as JArray;
             foreach (var testConfiguration in sequence.OfType<JObject>())
             {
                 // For now ignore type as everything in this manifest is a positive test
                 var input = testConfiguration.Property("input").Value.Value<string>();
+                if (skipTests.Contains(input)) continue;
                 var context = testConfiguration.Property("context")?.Value.Value<string>();
                 var expect = testConfiguration.Property("expect").Value.Value<string>();
                 var optionsProperty = testConfiguration.Property("option");

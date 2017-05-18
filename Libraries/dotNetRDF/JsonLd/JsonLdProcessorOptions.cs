@@ -63,5 +63,11 @@ namespace VDS.RDF.JsonLd
         /// </summary>
         /// <remarks>Defaults to <code>true</code></remarks>
         public bool CompactArrays = true;
+
+        /// <summary>
+        /// If set to true, the JSON-LD processor may emit blank nodes for triple predicates, otherwise they will be omitted.
+        /// </summary>
+        /// <remarks>Defaults to <code>true</code></remarks>
+        public bool ProduceGeneralizedRdf = true;
     }
 }

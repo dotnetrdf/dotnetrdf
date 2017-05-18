@@ -30,6 +30,9 @@ using Newtonsoft.Json;
 using VDS.RDF.Parsing.Handlers;
 using Newtonsoft.Json.Linq;
 using VDS.RDF.JsonLd;
+using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace VDS.RDF.Parsing
 {
@@ -97,7 +100,194 @@ namespace VDS.RDF.Parsing
         /// <inheritdoc/>
         public void Load(IRdfHandler handler, TextReader input)
         {
-            throw new NotImplementedException();
+            handler.StartRdf();
+            var rdfTypeNode = handler.CreateUriNode(new Uri(RdfNs + "type"));
+            try
+            {
+                JToken element;
+                using (var reader = new JsonTextReader(input))
+                {
+                    element = JToken.ReadFrom(reader);
+                }
+                var expandedElement = JsonLdProcessor.Expand(element, ParserOptions);
+                var nodeMap = JsonLdProcessor.GenerateNodeMap(expandedElement);
+                foreach (var p in nodeMap.Properties())
+                {
+                    var graphName = p.Name;
+                    var graph = p.Value as JObject;
+                    if (graph == null) continue;
+                    Uri graphIri;
+                    if (graphName == "@default")
+                    {
+                        graphIri = null;
+                    }
+                    else
+                    {
+                        if (!Uri.TryCreate(graphName, UriKind.Absolute, out graphIri)) continue;
+                    }
+                    foreach (var gp in graph.Properties())
+                    {
+                        var subject = gp.Name;
+                        var node = gp.Value as JObject;
+                        INode subjectNode;
+                        if (IsBlankNodeIdentifier(subject))
+                        {
+                            subjectNode = handler.CreateBlankNode(subject);
+                        }
+                        else
+                        {
+                            Uri subjectIri;
+                            if (!Uri.TryCreate(subject, UriKind.Absolute, out subjectIri)) continue;
+                            subjectNode = handler.CreateUriNode(subjectIri);
+                        }
+                        foreach (var np in node.Properties())
+                        {
+                            var property = np.Name;
+                            var values = np.Value as JArray;
+                            if (property.Equals("@type"))
+                            {
+                                foreach (var type in values)
+                                {
+                                    var typeNode = MakeNode(handler, type);
+                                    handler.HandleTriple(new Triple(subjectNode, rdfTypeNode, typeNode, graphIri));
+                                }
+                            }
+                            else if (JsonLdProcessor.IsKeyword(property))
+                            {
+                                continue;
+                            }
+                            else if (JsonLdProcessor.IsBlankNodeIdentifier(property) && !ParserOptions.ProduceGeneralizedRdf)
+                            {
+                                continue;
+                            }
+                            else if (JsonLdProcessor.IsRelativeIri(property))
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                foreach (var item in values)
+                                {
+                                    var predicateNode = MakeNode(handler, property);
+                                    var objectNode = MakeNode(handler, item);
+                                    if (objectNode != null)
+                                    {
+                                        handler.HandleTriple(new Triple(subjectNode, predicateNode, objectNode,
+                                            graphIri));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                handler.EndRdf(false);
+                throw;
+            }
+            handler.EndRdf(true);
+        }
+
+        private const string XsdNs = "http://www.w3.org/2001/XMLSchema#";
+        private const string RdfNs = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+        private static Regex ExponentialFormatMatcher = new Regex(@"(\d)0*E\+?0*");
+        private static Regex DateTimeSecondDecimalMatcher = new Regex(@"(:\d\d)\.0*(Z|\+|\-|^)");
+
+        private static INode MakeNode(IRdfHandler handler, JToken token, bool allowRelativeIri = false)
+        {
+            if (token is JValue)
+            {
+                var stringValue = token.Value<string>();
+                if (stringValue.StartsWith("_:"))
+                {
+                    return handler.CreateBlankNode(stringValue);
+                }
+                if (Uri.TryCreate(stringValue, allowRelativeIri ? UriKind.RelativeOrAbsolute : UriKind.Absolute, out Uri iri))
+                {
+                    return handler.CreateUriNode(iri);
+                }
+                return null;
+            }
+            else if (JsonLdProcessor.IsValueObject(token))
+            {
+                string literalValue = null;
+                var valueObject = token as JObject;
+                var value = valueObject["@value"];
+                var datatype = valueObject.Property("@type")?.Value.Value<string>();
+                var language = valueObject.Property("@language")?.Value.Value<string>();
+                if (value.Type == JTokenType.Boolean)
+                {
+                    literalValue = value.Value<bool>() ? "true" : "false";
+                    if (datatype == null) datatype = XsdNs + "boolean";
+                }
+                else if (value.Type == JTokenType.Float ||
+                    value.Type == JTokenType.Integer && datatype != null && datatype.Equals(XsdNs + "double"))
+                {
+                    literalValue = value.Value<double>().ToString("E15", CultureInfo.InvariantCulture);
+                    literalValue = ExponentialFormatMatcher.Replace(literalValue, "$1E");
+                    if (literalValue.EndsWith("E")) literalValue = literalValue + "0";
+                    if (datatype == null) datatype = XsdNs + "double";
+                }
+                else if (value.Type == JTokenType.Date)
+                {
+                    literalValue = value.Value<DateTime>().ToString("o");
+                    literalValue = DateTimeSecondDecimalMatcher.Replace(literalValue, "$1$2");
+                }
+                else if (value.Type == JTokenType.Integer ||
+                    value.Type == JTokenType.Float && datatype != null && datatype.Equals(XsdNs + "integer"))
+                {
+                    literalValue = value.Value<long>().ToString("D", CultureInfo.InvariantCulture);
+                    if (datatype == null) datatype = XsdNs + "integer";
+                }
+                else
+                {
+                    literalValue = value.Value<string>();
+                    if (datatype == null && language == null)
+                    {
+                        datatype = XsdNs + "string";
+                    }
+                }
+                return language == null ? handler.CreateLiteralNode(literalValue, new Uri(datatype)) : handler.CreateLiteralNode(literalValue, language);
+            }
+            else if (JsonLdProcessor.IsListObject(token))
+            {
+                var listArray = token["@list"] as JArray;
+                return MakeRdfList(handler, listArray);
+            }
+            else if((token as JObject)?.Property("@id")!=null)
+            {
+                // Must be a node object
+                var nodeObject = (JObject) token;
+                return MakeNode(handler, nodeObject["@id"]);
+            }
+            return null;
+        }
+
+        private static INode MakeRdfList(IRdfHandler handler, JArray list)
+        {
+            var rdfFirst = handler.CreateUriNode(new Uri(RdfNs + "first"));
+            var rdfRest = handler.CreateUriNode(new Uri(RdfNs + "rest"));
+            var rdfNil = handler.CreateUriNode(new Uri(RdfNs + "nil"));
+            if (list == null || list.Count == 0) return rdfNil;
+            var bNodes = list.Select(x => handler.CreateBlankNode()).ToList();
+            for(int ix = 0; ix < list.Count; ix++)
+            {
+                var subject = bNodes[ix];
+                var obj = MakeNode(handler, list[ix]);
+                if (obj != null)
+                {
+                    handler.HandleTriple(new Triple(subject, rdfFirst, obj));
+                }
+                var rest = (ix + 1 < list.Count) ? bNodes[ix + 1] : (INode)rdfNil;
+                handler.HandleTriple(new Triple(subject, rdfRest, rest));
+            }
+            return bNodes[0];
+        }
+
+        private static bool IsBlankNodeIdentifier(string id)
+        {
+            return id.StartsWith("_:");
         }
     }
 }

@@ -79,6 +79,7 @@ namespace VDS.RDF.JsonLd
         /// </summary>
         /// <param name="options">JSON-LD processing options</param>
         private JsonLdProcessor(JsonLdProcessorOptions options) {
+            if (options == null) options = new JsonLdProcessorOptions();
             _options = options;
             ProcessingMode = _options.Syntax;
             _identifierMap = new Dictionary<string, string>();
@@ -2001,6 +2002,20 @@ namespace VDS.RDF.JsonLd
             return compactResult;
         }
 
+        /// <summary>
+        /// Applies the Node Map Generation algorithm to the specified input.
+        /// </summary>
+        /// <param name="element">The element to be processed</param>
+        /// <param name="options">JSON-LD processor options</param>
+        /// <returns>The generated node map dictionary as a JObject instance</returns>
+        public static JObject GenerateNodeMap(JToken element, JsonLdProcessorOptions options = null)
+        {
+            var processor = new JsonLdProcessor(options);
+            var nodeMap = new JObject(new JProperty("@default", new JObject()));
+            processor.GenerateNodeMap(element, nodeMap);
+            return nodeMap;
+        }
+
         private void GenerateNodeMap(JToken element, JObject nodeMap,
             string activeGraph = "@default", JToken activeSubject = null,
             string activeProperty = null, JObject list = null)
@@ -2743,13 +2758,23 @@ namespace VDS.RDF.JsonLd
             return value;
         }
 
-
-        private bool IsValueObject(JToken token)
+        /// <summary>
+        /// Determine if a JSON token is a JSON-LD value object
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns>True of <paramref name="token"/> is a <see cref="JObject"/> with a <code>@value</code> property, false otherwise.</returns>
+        public static bool IsValueObject(JToken token)
         {
             return ((token as JObject)?.Property("@value")) != null;
         }
 
-        private bool IsListObject(JToken token)
+
+        /// <summary>
+        /// Determine if a JSON token is a JSON-LD list object
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns>True of <paramref name="token"/> is a <see cref="JObject"/> with a <code>@list</code> property, false otherwise.</returns>
+        public static bool IsListObject(JToken token)
         {
             return ((token as JObject)?.Property("@list")) != null;
         }
@@ -2780,17 +2805,32 @@ namespace VDS.RDF.JsonLd
             return IsRelativeIri(value.Value<string>());
         }
 
-        private bool IsRelativeIri(string value)
+        /// <summary>
+        /// Determine if the specified string is a relative IRI
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool IsRelativeIri(string value)
         {
             return Uri.TryCreate(value, UriKind.Relative, out Uri result);
         }
 
-        private bool IsKeyword(string value)
+        /// <summary>
+        /// Determine if the specified string is a JSON-LD keyword
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns>True if <paramref name="value"/> is a JSON-LD keyword, false otherwise</returns>
+        public static bool IsKeyword(string value)
         {
             return JsonLdKeywords.Contains(value);
         }
 
-        private bool IsBlankNodeIdentifier(string value)
+        /// <summary>
+        /// Determine if the specified string is a blank node identifier
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool IsBlankNodeIdentifier(string value)
         {
             return value.StartsWith("_:");
         }
