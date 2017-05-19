@@ -6,7 +6,6 @@ using Newtonsoft.Json.Linq;
 using System.Linq;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
-using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.JsonLd
 {
@@ -14,7 +13,8 @@ namespace VDS.RDF.JsonLd
     {
         [Theory]
         [MemberData("ExpandTests", MemberType = typeof(JsonLdTestSuiteDataSource))]
-        public void ExpandTests(string inputPath, string contextPath, string expectedOutputPath, string baseIri, string processorMode, string expandContextPath, bool compactArrays)
+        public void ExpandTests(string inputPath, string contextPath, string expectedOutputPath, string baseIri,
+            string processorMode, string expandContextPath, bool compactArrays)
         {
             var processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
                 compactArrays);
@@ -25,7 +25,7 @@ namespace VDS.RDF.JsonLd
 
             // Expand tests should not have a context parameter
             Assert.Null(contextPath);
-            
+
             var actualOutputElement = JsonLdProcessor.Expand(inputElement, processorOptions);
             Assert.True(JToken.DeepEquals(actualOutputElement, expectedOutputElement),
                 $"Error processing expand test {Path.GetFileName(inputPath)}.\nActual output does not match expected output.\nExpected:\n{expectedOutputElement}\n\nActual:\n{actualOutputElement}");
@@ -33,7 +33,8 @@ namespace VDS.RDF.JsonLd
 
         [Theory]
         [MemberData("CompactTests", MemberType = typeof(JsonLdTestSuiteDataSource))]
-        public void CompactTests(string inputPath, string contextPath, string expectedOutputPath, string baseIri, string processorMode, string expandContextPath, bool compactArrays)
+        public void CompactTests(string inputPath, string contextPath, string expectedOutputPath, string baseIri,
+            string processorMode, string expandContextPath, bool compactArrays)
         {
             var processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
                 compactArrays);
@@ -51,7 +52,8 @@ namespace VDS.RDF.JsonLd
 
         [Theory]
         [MemberData("FlattenTests", MemberType = typeof(JsonLdTestSuiteDataSource))]
-        public void FlattenTests(string inputPath, string contextPath, string expectedOutputPath, string baseIri, string processorMode, string expandContextPath, bool compactArrays)
+        public void FlattenTests(string inputPath, string contextPath, string expectedOutputPath, string baseIri,
+            string processorMode, string expandContextPath, bool compactArrays)
         {
             var processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
                 compactArrays);
@@ -68,8 +70,9 @@ namespace VDS.RDF.JsonLd
         }
 
         [Theory]
-        [MemberData("ToRdfTests", MemberType =typeof(JsonLdTestSuiteDataSource))]
-        public void JsonLdParserTests(string inputPath, string contextPath, string expectedOutputPath, string baseIri, string processorMode, string expandContextPath, bool compactArrays)
+        [MemberData("ToRdfTests", MemberType = typeof(JsonLdTestSuiteDataSource))]
+        public void JsonLdParserTests(string inputPath, string contextPath, string expectedOutputPath, string baseIri,
+            string processorMode, string expandContextPath, bool compactArrays)
         {
             var processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
                 compactArrays);
@@ -82,11 +85,11 @@ namespace VDS.RDF.JsonLd
             var jsonldParser = new JsonLdParser(processorOptions);
             var actualStore = new TripleStore();
             jsonldParser.Load(actualStore, inputPath);
-            Assert.True(expectedStore.Graphs.Count.Equals(actualStore.Graphs.Count), 
+            Assert.True(expectedStore.Graphs.Count.Equals(actualStore.Graphs.Count),
                 $"Test failed for input {Path.GetFileName(inputPath)}.\r\nActual graph count {actualStore.Graphs.Count} does not match expected graph count {expectedStore.Graphs.Count}.");
-            foreach(var expectGraph in expectedStore.Graphs)
+            foreach (var expectGraph in expectedStore.Graphs)
             {
-                Assert.True(actualStore.HasGraph(expectGraph.BaseUri), 
+                Assert.True(actualStore.HasGraph(expectGraph.BaseUri),
                     $"Test failed for input {Path.GetFileName(inputPath)}.\r\nCould not find expected graph {expectGraph.BaseUri}");
                 var actualGraph = actualStore.Graphs[expectGraph.BaseUri];
                 var bNodeMapping = new Dictionary<INode, INode>();
@@ -102,6 +105,71 @@ namespace VDS.RDF.JsonLd
             }
         }
 
+        [Theory]
+        [MemberData("FromRdfTests", MemberType = typeof(JsonLdTestSuiteDataSource))]
+        public void JsonLdWriterTests(string inputPath, string contextPath, string expectedOutputPath, string baseIri,
+            string processorMode, string expandContextPath, bool compactArrays)
+        {
+            var nqParser = new NQuadsParser(NQuadsSyntax.Rdf11);
+            var input = new TripleStore();
+            nqParser.Load(input, inputPath);
+            FixStringLiterals(input);
+            var expectedOutputJson = File.ReadAllText(expectedOutputPath);
+            var expectedOutput = JToken.Parse(expectedOutputJson);
+            var jsonLdWriter = new JsonLdWriter();
+            var actualOutput = jsonLdWriter.SerializeStore(input);
+            Assert.True(DeepEquals(expectedOutput, actualOutput, true),
+                $"Test failed for input {Path.GetFileName(inputPath)}\nExpected:\n{expectedOutput}\nActual:\n{actualOutput}");
+        }
+
+        private static bool DeepEquals(JToken token1, JToken token2, bool ignoreArrayOrder)
+        {
+            if (token1.Type != token2.Type) return false;
+            switch (token1.Type)
+            {
+                case JTokenType.Object:
+                    var o1 = token1 as JObject;
+                    var o2 = token2 as JObject;
+                    foreach (var p in o1.Properties())
+                    {
+                        if (o2[p.Name] == null) return false;
+                        if (!DeepEquals(o1[p.Name], o2[p.Name], ignoreArrayOrder)) return false;
+                    }
+                    if (o2.Properties().Any(p2 => o1.Property(p2.Name) == null)) return false;
+                    return true;
+                case JTokenType.Array:
+                    var a1 = token1 as JArray;
+                    var a2 = token2 as JArray;
+                    if (a1.Count != a2.Count) return false;
+                    if (!ignoreArrayOrder)
+                    {
+                        for (int i = 0; i < a1.Count; i++)
+                        {
+                            if (!DeepEquals(a1[i], a2[i], ignoreArrayOrder)) return false;
+                        }
+                        return true;
+                    }
+                    var unmatchedItems = (token2 as JArray).ToList();
+                    foreach (var item1 in a1)
+                    {
+                        if (unmatchedItems.Count == 0) return false;
+                        var match = unmatchedItems.FindIndex(x => DeepEquals(item1, x, ignoreArrayOrder));
+                        if (match >= 0)
+                        {
+                            unmatchedItems.RemoveAt(match);
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    return unmatchedItems.Count == 0;
+                default:
+                    return JToken.DeepEquals(token1, token2);
+            }
+        }
+
+
         private static void FixStringLiterals(TripleStore store)
         {
             var xsdString = new Uri("http://www.w3.org/2001/XMLSchema#string");
@@ -114,8 +182,8 @@ namespace VDS.RDF.JsonLd
                     graphToUpdate.Retract(t);
                     graphToUpdate.Assert(
                         new Triple(t.Subject, t.Predicate,
-                        graphToUpdate.CreateLiteralNode(literalNode.Value, xsdString),
-                        graphToUpdate.BaseUri));
+                            graphToUpdate.CreateLiteralNode(literalNode.Value, xsdString),
+                            graphToUpdate.BaseUri));
                 }
             }
         }
@@ -132,7 +200,8 @@ namespace VDS.RDF.JsonLd
             }
         }
 
-        private static JsonLdProcessorOptions MakeProcessorOptions(string inputPath, string baseIri, string processorMode,
+        private static JsonLdProcessorOptions MakeProcessorOptions(string inputPath, string baseIri,
+            string processorMode,
             string expandContextPath, bool compactArrays)
         {
             var processorOptions = new JsonLdProcessorOptions
@@ -141,7 +210,10 @@ namespace VDS.RDF.JsonLd
                     ? new Uri(baseIri)
                     : new Uri("http://json-ld.org/test-suite/tests/" + Path.GetFileName(inputPath))
             };
-            if (processorMode != null) processorOptions.Syntax = processorMode.Equals("json-ld-1.1") ? JsonLdSyntax.JsonLd11 : JsonLdSyntax.JsonLd10;
+            if (processorMode != null)
+                processorOptions.Syntax = processorMode.Equals("json-ld-1.1")
+                    ? JsonLdSyntax.JsonLd11
+                    : JsonLdSyntax.JsonLd10;
             if (expandContextPath != null)
             {
                 var expandContextJson = File.ReadAllText(expandContextPath);
@@ -168,6 +240,8 @@ namespace VDS.RDF.JsonLd
         public static IEnumerable<object[]> FlattenTests => ProcessManifest("flatten-manifest.jsonld");
 
         public static IEnumerable<object[]> ToRdfTests => ProcessManifest("toRdf-manifest.jsonld", "toRdf-skip.txt");
+
+        public static IEnumerable<object[]> FromRdfTests => ProcessManifest("fromRdf-manifest.jsonld");
 
         private static IEnumerable<object[]> ProcessManifest(string manifestPath, string skipTestsPath = null)
         {

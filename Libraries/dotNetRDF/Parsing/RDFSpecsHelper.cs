@@ -35,6 +35,10 @@ namespace VDS.RDF.Parsing
     public class RdfSpecsHelper
     {
         /// <summary>
+        /// URI for rdf:List
+        /// </summary>
+        public const string RdfList = "http://www.w3.org/1999/02/22-rdf-syntax-ns#List";
+        /// <summary>
         /// URI for rdf:first
         /// </summary>
         public const String RdfListFirst = "http://www.w3.org/1999/02/22-rdf-syntax-ns#first";
