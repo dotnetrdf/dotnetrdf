@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
+using VDS.RDF.JsonLd;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Writing
@@ -37,9 +38,9 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// Class for serializing a Triple Store in JSON-LD syntax
     /// </summary>
-    public class JsonLdWriter : IStoreWriter
+    public partial class JsonLdWriter : IStoreWriter
     {
-        private JsonLdWriterOptions _options;
+        private readonly JsonLdWriterOptions _options;
 
         /// <summary>
         /// Create a new serializer with default serialization options
@@ -59,14 +60,12 @@ namespace VDS.RDF.Writing
             _options = options;
         }
 
-        public void Save(ITripleStore store, string filename)
-        {
-            throw new NotImplementedException();
-        }
 
+        /// <inheritdoc/>
         public void Save(ITripleStore store, TextWriter output)
         {
-            throw new NotImplementedException();
+            var jsonArray = SerializeStore(store);
+            output.Write(jsonArray.ToString(_options.JsonFormatting));
         }
 
         /// <summary>
@@ -77,9 +76,9 @@ namespace VDS.RDF.Writing
         public JArray SerializeStore(ITripleStore store)
         {
             // 1 - Initialize default graph to an empty dictionary.
-            var defaultGraph = new Dictionary<string, JObject>();
+            var defaultGraph = new Dictionary<string, JObjectWithUsages>();
             // 2 - Initialize graph map to a dictionary consisting of a single member @default whose value references default graph.
-            var graphMap = new Dictionary<string, Dictionary<string, JObject>>{{"@default", defaultGraph}};
+            var graphMap = new Dictionary<string, Dictionary<string, JObjectWithUsages>>{{"@default", defaultGraph}};
             // 3 - Initialize node usages map to an empty dictionary.
             var nodeUsagesMap = new Dictionary<string, JArray>();
             // 4 - For each graph in RDF dataset:
@@ -91,7 +90,7 @@ namespace VDS.RDF.Writing
                 // 4.2 - If graph map has no name member, create one and set its value to an empty dictionary.
                 if (!graphMap.ContainsKey(name))
                 {
-                    graphMap.Add(name, new Dictionary<string, JObject>());
+                    graphMap.Add(name, new Dictionary<string, JObjectWithUsages>());
                 }
 
                 // 4.3 - If graph is not the default graph and default graph does not have a name member, create such a member and initialize its value to a new dictionary with a single member @id whose value is name.
@@ -99,7 +98,7 @@ namespace VDS.RDF.Writing
                 {
                     if (!defaultGraph.ContainsKey(name))
                     {
-                        defaultGraph.Add(name, new JObject(new JProperty("@id", name)));
+                        defaultGraph.Add(name, new JObjectWithUsages(new JProperty("@id", name)));
                     }
                 }
 
@@ -115,11 +114,11 @@ namespace VDS.RDF.Writing
                     // 4.5.1 - If node map does not have a subject member, create one and initialize its value to a new dictionary consisting of a single member @id whose value is set to subject.
                     if (!nodeMap.ContainsKey(subject))
                     {
-                        nodeMap.Add(subject, new JObject(new JProperty("@id", subject)));
+                        nodeMap.Add(subject, new JObjectWithUsages(new JProperty("@id", subject)));
                     }
 
                     // 4.5.2 - Reference the value of the subject member in node map using the variable node.
-                    var node = nodeMap[subject] as JObject;
+                    var node = nodeMap[subject];
 
                     // 4.5.3 - If object is an IRI or blank node identifier, and node map does not have an object member, 
                     // create one and initialize its value to a new dictionary consisting of a single member @id whose value is set to object.
@@ -128,7 +127,7 @@ namespace VDS.RDF.Writing
                         var obj = MakeNodeString(triple.Object);
                         if (!nodeMap.ContainsKey(obj))
                         {
-                            nodeMap.Add(obj, new JObject(new JProperty("@id", obj)));
+                            nodeMap.Add(obj, new JObjectWithUsages(new JProperty("@id", obj)));
                         }
                     }
 
@@ -172,19 +171,11 @@ namespace VDS.RDF.Writing
                             nodeUsagesMap.Add(obj, new JArray());
                         }
                         // 4.5.8.2
-                        AppendUniqueElement(node["@id"], nodeUsagesMap[obj] as JArray);
-                        // 4.8.5.3
-                        if ((nodeMap[obj] as JObject).Property("usages") == null)
-                        {
-                            (nodeMap[obj] as JObject).Add("usages", new JArray());
-                        }
+                        // AppendUniqueElement(node["@id"], nodeUsagesMap[obj] as JArray);
+                        // KA - looks like a bug in the spec, if we don't add duplicate entries then this map does not correctly detect when a list node is referred to by the same subject in different statements
+                        (nodeUsagesMap[obj]).Add(node["@id"]);
                         // 4.8.5.4
-                        var usages = nodeMap[obj]["usages"] as JArray;
-                        // 4.8.5.4
-                        usages.Add(new JObject(
-                            new JProperty("node", node["@id"].Value<string>()),
-                            new JProperty("property", predicate),
-                            new JProperty("value", value)));
+                        nodeMap[obj].Usages.Add(new Usage(node, predicate, value));
                     }
                 }
             }
@@ -204,16 +195,16 @@ namespace VDS.RDF.Writing
                 var nil = graphObject[RdfSpecsHelper.RdfListNil];
 
                 // 5.3 - For each item usage in the usages member of nil, perform the following steps:
-                var nilUsages = nil["usages"] as JArray;
+                var nilUsages = nil.Usages;
                 if (nilUsages != null)
                 {
                     foreach (var usage in nilUsages)
                     {
                         // 5.3.1 - Initialize node to the value of the value of the node member of usage, 
                         // property to the value of the property member of usage, and head to the value of the value member of usage.
-                        var node = usage["node"] as JObject;
-                        var property = usage["property"].Value<string>();
-                        var head = usage["value"] as JObject;
+                        var node = usage.Node;
+                        var property = usage.Property;
+                        var head = usage.Value as JObject;
                         // 5.3.2 - Initialize two empty arrays list and list nodes.
                         var list = new JArray();
                         var listNodes = new JArray();
@@ -230,11 +221,11 @@ namespace VDS.RDF.Writing
                             // 5.3.3.2 - Append the value of the @id member of node to the list nodes array.
                             listNodes.Add(node["@id"]);
                             // 5.4.4.3 - Initialize node usage to the only item of the usages member of node.
-                            var nodeUsage = (node["usages"] as JArray)[0];
+                            var nodeUsage = node.Usages[0];
                             // 5.4.4.4 - Set node to the value of the node member of node usage, property to the value of the property member of node usage, and head to the value of the value member of node usage.
-                            node = nodeUsage["node"] as JObject;
-                            property = nodeUsage["property"].Value<string>();
-                            head = nodeUsage["value"] as JObject;
+                            node = nodeUsage.Node;
+                            property = nodeUsage.Property;
+                            head = nodeUsage.Value as JObject;
                         }
                         // 5.3.4 - If property equals rdf:first, i.e., the detected list is nested inside another list
                         if (property.Equals(RdfSpecsHelper.RdfListFirst))
@@ -304,7 +295,7 @@ namespace VDS.RDF.Writing
             return result;
         }
 
-        private static bool IsWellFormedListNode(JObject node, string property, Dictionary<string, JArray> nodeUsagesMap)
+        private static bool IsWellFormedListNode(JObjectWithUsages node, string property, Dictionary<string, JArray> nodeUsagesMap)
         {
             // While property equals rdf:rest, the array value of the member of node usages map associated with the 
             // @id member of node has only one member, the value associated to the usages member of node has exactly 1 entry, 
@@ -316,21 +307,24 @@ namespace VDS.RDF.Writing
             var nodeId = node["@id"].Value<string>();
             if (nodeId == null) return false;
 
+            // Not mentioned in spec, but if node is not a blank node we should not merge it into a list array
+            if (!JsonLdProcessor.IsBlankNodeIdentifier(nodeId)) return false;
+
             var mapEntry = nodeUsagesMap[nodeId] as JArray;
             if (mapEntry == null || mapEntry.Count != 1) return false;
 
-            if (!(node["usages"] is JArray) || ((JArray) node["usages"]).Count != 1) return false;
+            if (node.Usages.Count != 1) return false;
 
             var first = node[RdfSpecsHelper.RdfListFirst] as JArray;
             var rest = node[RdfSpecsHelper.RdfListRest] as JArray;
             if (first == null || rest == null) return false;
             if (first.Count != 1 || rest.Count != 1) return false;
-            var type = node[RdfSpecsHelper.RdfType] as JArray;
+            var type = node["@type"] as JArray;
             if (type != null && (type.Count != 1 ||
-                                 type.Count == 1 && type[0].Value<string>().Equals(RdfSpecsHelper.RdfList)))
+                                 type.Count == 1 && !type[0].Value<string>().Equals(RdfSpecsHelper.RdfList)))
                 return false;
             var propCount = node.Properties().Count();
-            if (type == null && propCount != 4 || type != null && propCount != 5) return false;
+            if (type == null && propCount != 3 || type != null && propCount != 4) return false;
             return true;
 
         }
@@ -339,13 +333,13 @@ namespace VDS.RDF.Writing
         {
             // 1 - If value is an IRI or a blank node identifier, return a new dictionary consisting of a single member @id whose value is set to value.
             var uriNode = value as IUriNode;
-            if (uriNode != null) return new JObject(new JProperty("@id", uriNode.Uri.ToString()));
+            if (uriNode != null) return new JObject(new JProperty("@id", uriNode.Uri.OriginalString));
             var bNode = value as IBlankNode;
             if (bNode != null) return new JObject(new JProperty("@id", "_:" + bNode.InternalID));
             // 2 - Otherwise value is an RDF literal:
             var literal = value as ILiteralNode;
             // 2.1 - Initialize a new empty dictionary result.
-var result = new JObject();
+            var result = new JObject();
             // 2.2 - Initialize converted value to value.
             JToken convertedValue = new JValue(literal.Value);
             // 2.3 - Initialize type to null
@@ -389,6 +383,11 @@ var result = new JObject();
                         convertedValue = new JValue(double.Parse(literal.Value));
                     }
                 }
+                // KA: Step missing from spec - otherwise set type to the datatype IRI
+                else
+                {
+                    type = literal.DataType.ToString();
+                }
             }
             // 2.5 - Otherwise, if value is a language-tagged string add a member @language to result and set its value to the language tag of value.
             else if (!String.IsNullOrEmpty(literal.Language))
@@ -418,7 +417,7 @@ var result = new JObject();
             return IntegerLexicalRepresentation.IsMatch(literal);
         }
 
-        private static readonly Regex DoubleLexicalRepresentation = new Regex(@"^((\+|-)?([0-9]+(\.[0-9]*)?|\.[0-9]+)([Ee](\+|-)?[0-9]+)? |(\+|-)?INF|NaN)$");
+        private static readonly Regex DoubleLexicalRepresentation = new Regex(@"^((\+|-)?([0-9]+(\.[0-9]*)?|\.[0-9]+)([Ee](\+|-)?[0-9]+)?|(\+|-)?INF|NaN)$");
 
         private static bool IsWellFormedDouble(string literal)
         {
@@ -438,7 +437,7 @@ var result = new JObject();
             var uriNode = node as IUriNode;
             if (uriNode != null)
             {
-                return uriNode.Uri.ToString();
+                return uriNode.Uri.OriginalString;
             }
             var blankNode = node as IBlankNode;
             if (blankNode != null)
@@ -448,22 +447,26 @@ var result = new JObject();
             throw new ArgumentException("Node must be a blank node or URI node", nameof(node));
         }
 
+        /// <inheritdoc/>
         public event StoreWriterWarning Warning;
-    }
 
-    public class JsonLdWriterOptions
-    {
-        /// <summary>
-        /// If the this flag is set to true, RDF literals with a datatype IRI that equals xsd:integer or xsd:double are converted 
-        /// to a JSON numbers and RDF literals with a datatype IRI that equals xsd:boolean are converted to true or false based 
-        /// on their lexical form.
-        /// </summary>
-        public bool UseNativeTypes { get; set; }
+        private class JObjectWithUsages : JObject
+        {
+            public readonly List<Usage> Usages = new List<Usage>();
+            public JObjectWithUsages(params object[] content) : base(content) { }
+        }
 
-        /// <summary>
-        /// Unless this flag is set to true, rdf:type predicates will be serialized as @type as long as the 
-        /// associated object is either an IRI or blank node identifier.
-        /// </summary>
-        public bool UseRdfType { get; set; }
+        private class Usage
+        {
+            public Usage(JObjectWithUsages node, string property, JToken value)
+            {
+                Node = node;
+                Property = property;
+                Value = value;
+            }
+            public JObjectWithUsages Node { get; }
+            public string Property { get; }
+            public JToken Value { get; }
+        }
     }
 }

@@ -107,8 +107,7 @@ namespace VDS.RDF.JsonLd
 
         [Theory]
         [MemberData("FromRdfTests", MemberType = typeof(JsonLdTestSuiteDataSource))]
-        public void JsonLdWriterTests(string inputPath, string contextPath, string expectedOutputPath, string baseIri,
-            string processorMode, string expandContextPath, bool compactArrays)
+        public void JsonLdWriterTests(string inputPath, string contextPath, string expectedOutputPath, bool useNativeTypes, bool useRdfType)
         {
             var nqParser = new NQuadsParser(NQuadsSyntax.Rdf11);
             var input = new TripleStore();
@@ -116,15 +115,28 @@ namespace VDS.RDF.JsonLd
             FixStringLiterals(input);
             var expectedOutputJson = File.ReadAllText(expectedOutputPath);
             var expectedOutput = JToken.Parse(expectedOutputJson);
-            var jsonLdWriter = new JsonLdWriter();
+            var jsonLdWriter =
+                new JsonLdWriter(new JsonLdWriterOptions {UseNativeTypes = useNativeTypes, UseRdfType = useRdfType});
             var actualOutput = jsonLdWriter.SerializeStore(input);
-            Assert.True(DeepEquals(expectedOutput, actualOutput, true),
-                $"Test failed for input {Path.GetFileName(inputPath)}\nExpected:\n{expectedOutput}\nActual:\n{actualOutput}");
+            try
+            {
+                Assert.True(DeepEquals(expectedOutput, actualOutput, true, true),
+                    $"Test failed for input {Path.GetFileName(inputPath)}\nExpected:\n{expectedOutput}\nActual:\n{actualOutput}");
+            }
+            catch (DeepEqualityFailure ex)
+            {
+                Assert.True(false,
+                    $"Test failed for input {Path.GetFileName(inputPath)}\nExpected:\n{expectedOutput}\nActual:\n{actualOutput}\nMatch Failured: {ex}");
+            }
         }
 
-        private static bool DeepEquals(JToken token1, JToken token2, bool ignoreArrayOrder)
+        private static bool DeepEquals(JToken token1, JToken token2, bool ignoreArrayOrder, bool throwOnMismatch)
         {
-            if (token1.Type != token2.Type) return false;
+            if (token1.Type != token2.Type)
+            {
+                if (throwOnMismatch) throw new DeepEqualityFailure(token1, token2);
+                return false;
+            }
             switch (token1.Type)
             {
                 case JTokenType.Object:
@@ -132,34 +144,61 @@ namespace VDS.RDF.JsonLd
                     var o2 = token2 as JObject;
                     foreach (var p in o1.Properties())
                     {
-                        if (o2[p.Name] == null) return false;
-                        if (!DeepEquals(o1[p.Name], o2[p.Name], ignoreArrayOrder)) return false;
+                        if (o2[p.Name] == null)
+                        {
+                            if (throwOnMismatch) throw new DeepEqualityFailure(token1, token2);
+                            return false;
+                        }
+                        if (!DeepEquals(o1[p.Name], o2[p.Name], ignoreArrayOrder, throwOnMismatch))
+                        {
+                            if (throwOnMismatch) throw new DeepEqualityFailure(o1[p.Name], o2[p.Name]);
+                            return false;
+                        }
                     }
-                    if (o2.Properties().Any(p2 => o1.Property(p2.Name) == null)) return false;
+                    if (o2.Properties().Any(p2 => o1.Property(p2.Name) == null))
+                    {
+                        if (throwOnMismatch) throw new DeepEqualityFailure(token1, token2);
+                        return false;
+                    }
                     return true;
                 case JTokenType.Array:
                     var a1 = token1 as JArray;
                     var a2 = token2 as JArray;
-                    if (a1.Count != a2.Count) return false;
+                    if (a1.Count != a2.Count)
+                    {
+                        if (throwOnMismatch) throw new DeepEqualityFailure(token1, token2);
+                        return false;
+                    }
+
                     if (!ignoreArrayOrder)
                     {
                         for (int i = 0; i < a1.Count; i++)
                         {
-                            if (!DeepEquals(a1[i], a2[i], ignoreArrayOrder)) return false;
+                            if (!DeepEquals(a1[i], a2[i], ignoreArrayOrder, throwOnMismatch))
+                            {
+                                if (throwOnMismatch) throw new DeepEqualityFailure(token1, token2);
+                                return false;
+                            }
+
                         }
                         return true;
                     }
                     var unmatchedItems = (token2 as JArray).ToList();
                     foreach (var item1 in a1)
                     {
-                        if (unmatchedItems.Count == 0) return false;
-                        var match = unmatchedItems.FindIndex(x => DeepEquals(item1, x, ignoreArrayOrder));
+                        if (unmatchedItems.Count == 0)
+                        {
+                            if (throwOnMismatch) throw new DeepEqualityFailure(token1, token2);
+                            return false;
+                        }
+                        var match = unmatchedItems.FindIndex(x => DeepEquals(item1, x, ignoreArrayOrder, false));
                         if (match >= 0)
                         {
                             unmatchedItems.RemoveAt(match);
                         }
                         else
                         {
+                            if (throwOnMismatch) throw new DeepEqualityFailure(token1, token2);
                             return false;
                         }
                     }
@@ -169,6 +208,14 @@ namespace VDS.RDF.JsonLd
             }
         }
 
+        private class DeepEqualityFailure : Exception
+        {
+            public DeepEqualityFailure(JToken expected, JToken actual) : base(
+                $"DeepEquality failed at {expected.Path}.\nExpected: {expected}\nActual: {actual}")
+            {
+                
+            }
+        }
 
         private static void FixStringLiterals(TripleStore store)
         {
@@ -241,7 +288,7 @@ namespace VDS.RDF.JsonLd
 
         public static IEnumerable<object[]> ToRdfTests => ProcessManifest("toRdf-manifest.jsonld", "toRdf-skip.txt");
 
-        public static IEnumerable<object[]> FromRdfTests => ProcessManifest("fromRdf-manifest.jsonld");
+        public static IEnumerable<object[]> FromRdfTests => ProcessFromRdfManifest("fromRdf-manifest.jsonld");
 
         private static IEnumerable<object[]> ProcessManifest(string manifestPath, string skipTestsPath = null)
         {
@@ -298,6 +345,54 @@ namespace VDS.RDF.JsonLd
                     processorMode,
                     expandContext,
                     compactArrays
+                };
+            }
+        }
+
+        private static IEnumerable<object[]> ProcessFromRdfManifest(string manifestPath, string skipTestsPath = null)
+        {
+            var resourceDir = new DirectoryInfo("resources\\jsonld");
+            manifestPath = Path.Combine(resourceDir.FullName, manifestPath);
+            var manifestJson = File.ReadAllText(manifestPath);
+            var manifest = JObject.Parse(manifestJson);
+            var skipTests = new List<string>();
+            if (skipTestsPath != null)
+            {
+                skipTestsPath = Path.Combine(resourceDir.FullName, skipTestsPath);
+                skipTests = File.ReadAllLines(skipTestsPath).ToList();
+            }
+            var sequence = manifest.Property("sequence").Value as JArray;
+            foreach (var testConfiguration in sequence.OfType<JObject>())
+            {
+                // For now ignore type as everything in this manifest is a positive test
+                var input = testConfiguration.Property("input").Value.Value<string>();
+                if (skipTests.Contains(input)) continue;
+                var context = testConfiguration.Property("context")?.Value.Value<string>();
+                var expect = testConfiguration.Property("expect").Value.Value<string>();
+                var optionsProperty = testConfiguration.Property("option");
+                bool useNativeTypes = false, useRdfType = false;
+                var options = optionsProperty?.Value as JObject;
+                if (options != null)
+                {
+                    foreach (var p in options.Properties())
+                    {
+                        switch (p.Name)
+                        {
+                            case "useNativeTypes":
+                                useNativeTypes = p.Value.Value<bool>();
+                                break;
+                            case "useRdfType":
+                                useRdfType = p.Value.Value<bool>();
+                                break;
+                        }
+                    }
+                }
+                yield return new object[] {
+                    Path.Combine(resourceDir.FullName, input),
+                    context == null ? null:Path.Combine(resourceDir.FullName, context),
+                    Path.Combine(resourceDir.FullName, expect),
+                    useNativeTypes,
+                    useRdfType
                 };
             }
         }
