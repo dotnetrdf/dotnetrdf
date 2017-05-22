@@ -52,7 +52,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Create an instance of the parser configured to parser JSON-LD 1.1 with no pre-defined context
         /// </summary>
-        public JsonLdParser() : this(new JsonLdProcessorOptions { Syntax = JsonLdSyntax.JsonLd11 }) { }
+        public JsonLdParser() : this(new JsonLdProcessorOptions { ProcessingMode = JsonLdProcessingMode.JsonLd11}) { }
 
         /// <summary>
         /// Create an instace of the parser configured with the provided parser options

@@ -258,9 +258,9 @@ namespace VDS.RDF.JsonLd
                     : new Uri("http://json-ld.org/test-suite/tests/" + Path.GetFileName(inputPath))
             };
             if (processorMode != null)
-                processorOptions.Syntax = processorMode.Equals("json-ld-1.1")
-                    ? JsonLdSyntax.JsonLd11
-                    : JsonLdSyntax.JsonLd10;
+                processorOptions.ProcessingMode = processorMode.Equals("json-ld-1.1")
+                    ? JsonLdProcessingMode.JsonLd11
+                    : JsonLdProcessingMode.JsonLd10;
             if (expandContextPath != null)
             {
                 var expandContextJson = File.ReadAllText(expandContextPath);

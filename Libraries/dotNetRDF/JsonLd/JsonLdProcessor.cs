@@ -81,7 +81,7 @@ namespace VDS.RDF.JsonLd
         private JsonLdProcessor(JsonLdProcessorOptions options) {
             if (options == null) options = new JsonLdProcessorOptions();
             _options = options;
-            ProcessingMode = _options.Syntax;
+            ProcessingMode = _options.ProcessingMode;
             _identifierMap = new Dictionary<string, string>();
             _counter = 0;
         }
@@ -100,7 +100,10 @@ namespace VDS.RDF.JsonLd
             set { _base = value; }
         }
 
-        public JsonLdSyntax? ProcessingMode
+        /// <summary>
+        /// Get or set the current processing mode
+        /// </summary>
+        public JsonLdProcessingMode? ProcessingMode
         {
             get; set;
         }
@@ -250,7 +253,10 @@ namespace VDS.RDF.JsonLd
                     }
                 }
                 // 3.8 - Set processing mode, to json-ld-1.0, if not already set.
-                if (this.ProcessingMode == null) this.ProcessingMode = JsonLdSyntax.JsonLd10;
+                if (!ProcessingMode.HasValue)
+                {
+                    ProcessingMode = JsonLdProcessingMode.JsonLd10;
+                }
                 // 3.9 - Create a JSON object defined to use to keep track of whether or not a term has already been defined or currently being defined during recursion.
                 var defined = new Dictionary<string, bool>();
                 // 3.10 - For each key-value pair in context where key is not @base, @vocab, or @language, invoke the Create Term Definition algorithm, passing result for active context, context for local context, key, and defined.
@@ -468,7 +474,7 @@ namespace VDS.RDF.JsonLd
             if (containerValue != null)
             {
                 definition.ContainerMapping = ValidateContainerMapping(term, containerValue);
-                if (this.ProcessingMode == JsonLdSyntax.JsonLd10 &&
+                if (this.ProcessingMode == JsonLdProcessingMode.JsonLd10 &&
                     (definition.ContainerMapping == JsonLdContainer.Id ||
                     definition.ContainerMapping == JsonLdContainer.Type))
                 {
@@ -481,7 +487,7 @@ namespace VDS.RDF.JsonLd
             if (contextValue != null)
             {
                 // 17.1 - If processingMode is json-ld-1.0, an invalid term definition has been detected and processing is aborted.
-                if (this.ProcessingMode == JsonLdSyntax.JsonLd10)
+                if (this.ProcessingMode == JsonLdProcessingMode.JsonLd10)
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTermDefinition, $"Invalid Term Definition for term '{term}'. The @context property is not supported on a term definition when the processing mode is json-ld-1.0");
                 }
@@ -527,7 +533,7 @@ namespace VDS.RDF.JsonLd
             if(nestValue != null)
             {
                 // 19.1 - If processingMode is json-ld-1.0, an invalid term definition has been detected and processing is aborted.
-                if (this.ProcessingMode == JsonLdSyntax.JsonLd10)
+                if (this.ProcessingMode == JsonLdProcessingMode.JsonLd10)
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTermDefinition, $"Invalid Term Definition for term '{term}. Term definitions may not contain the @nest property when the processing mode is json-ld-1.0");
                 }

@@ -49,9 +49,10 @@ namespace VDS.RDF.JsonLd
         public Func<Uri, RemoteDocument> Loader { get; set; }
 
         /// <summary>
-        /// Get or set the syntax version that the processor will use
+        /// Get or set the syntax version that the processor will use.
         /// </summary>
-        public JsonLdSyntax Syntax = JsonLdSyntax.JsonLd11;
+        /// <remarks>Defaults to <see cref="JsonLdProcessingMode.JsonLd11"/></remarks>
+        public JsonLdProcessingMode? ProcessingMode = JsonLdProcessingMode.JsonLd11;
 
         /// <summary>
         /// A context that is used to initialize the active context when expanding a document.
