@@ -220,12 +220,14 @@ namespace VDS.RDF.Writing
                             list.Add((node[RdfSpecsHelper.RdfListFirst] as JArray)[0]);
                             // 5.3.3.2 - Append the value of the @id member of node to the list nodes array.
                             listNodes.Add(node["@id"]);
-                            // 5.4.4.3 - Initialize node usage to the only item of the usages member of node.
+                            // 5.3.3.3 - Initialize node usage to the only item of the usages member of node.
                             var nodeUsage = node.Usages[0];
-                            // 5.4.4.4 - Set node to the value of the node member of node usage, property to the value of the property member of node usage, and head to the value of the value member of node usage.
+                            // 5.3.3.4 - Set node to the value of the node member of node usage, property to the value of the property member of node usage, and head to the value of the value member of node usage.
                             node = nodeUsage.Node;
                             property = nodeUsage.Property;
                             head = nodeUsage.Value as JObject;
+                            // 5.3.3.5 - If the @id member of node is an IRI instead of a blank node identifier, exit the while loop.
+                            if (!JsonLdProcessor.IsBlankNodeIdentifier(node["@id"].Value<string>())) break;
                         }
                         // 5.3.4 - If property equals rdf:first, i.e., the detected list is nested inside another list
                         if (property.Equals(RdfSpecsHelper.RdfListFirst))
