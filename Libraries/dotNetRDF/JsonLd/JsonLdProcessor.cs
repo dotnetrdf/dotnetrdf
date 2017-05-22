@@ -55,6 +55,16 @@ namespace VDS.RDF.JsonLd
             "@nest",
             "@version",
         };
+
+        private static readonly string[] JsonLdFramingKeywords = new string[]
+        {
+            "@default",
+            "@embed",
+            "@explicit",
+            "@omitDefault",
+            "@requireAll",
+        };
+
         private static readonly string[] TermDefinitionKeys = new string[] {
             "@id",
             "@reverse",
@@ -199,9 +209,17 @@ namespace VDS.RDF.JsonLd
                     {
                         throw new JsonLdProcessorException(JsonLdErrorCode.InvalidVersionValue, $"Found invalid value for @version property: {versionValue}.");
                     }
-                    // TODO: Set processing mode
                     // 3.5.2: If processing mode is not set, and json-ld-1.1 is not a prefix of processing mode, a processing mode conflict error has been detected and processing is aborted.
+                    if (_options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
+                    {
+                        throw new JsonLdProcessorException(JsonLdErrorCode.ProcessingModeConflict,
+                            "Processing mode conflict. Processor options specify JSON-LD 1.0 processing mode, but encountered @version that requires JSON-LD 1.1 processing features");
+                    }
                     // 3.5.3: Set processing mode, to json-ld-1.1, if not already set.
+                    if (!_options.ProcessingMode.HasValue)
+                    {
+                        _options.ProcessingMode = JsonLdProcessingMode.JsonLd11;
+                    }
                 }
 
                 // 3.6 - If context has an @vocab key:
@@ -702,6 +720,8 @@ namespace VDS.RDF.JsonLd
 
         private JToken ExpandAlgorithm(JsonLdContext activeContext, string activeProperty, JToken element)
         {
+            var frameExpansion = _options.ProcessingMode == JsonLdProcessingMode.JsonLd11FrameExpansion;
+
             JToken result = null;
 
             // 1 - If element is null, return null.
@@ -808,7 +828,7 @@ namespace VDS.RDF.JsonLd
             var resultObject = result as JObject;
 
             // Implements step 8
-            ExpandKeys(activeContext, activeProperty, elementObject, resultObject);
+            ExpandKeys(activeContext, activeProperty, elementObject, resultObject, frameExpansion);
 
             // 9 - If result contains the key @value:
             if (resultObject.Property("@value") != null) {
@@ -892,7 +912,7 @@ namespace VDS.RDF.JsonLd
             return result;
         }
 
-        private void ExpandKeys(JsonLdContext activeContext, string activeProperty, JObject elementObject, JObject result)
+        private void ExpandKeys(JsonLdContext activeContext, string activeProperty, JObject elementObject, JObject result, bool frameExpansion)
         {
             JArray nests = new JArray();
             // 8 - For each key and value in element, ordered lexicographically by key:
@@ -933,22 +953,66 @@ namespace VDS.RDF.JsonLd
                         throw new JsonLdProcessorException(JsonLdErrorCode.CollidingKeywords, $"Colliding Keywords: {expandedProperty}");
                     }
 
-                    // 8.4.3 - If expanded property is @id...
+                    // 8.4.3 - If expanded property is @id and value is not a string, 
+                    // an invalid @id value error has been detected and processing is aborted.
+                    // Otherwise, set expanded value to the result of using the IRI Expansion algorithm, 
+                    // passing active context, value, and true for document relative. 
+                    // When the frame expansion flag is set, value may be an empty dictionary, 
+                    // or an array of one or more strings. Expanded value will be an array of one 
+                    // or more of these, with string values expanded using the IRI Expansion Algorithm.
+
                     if (expandedProperty.Equals("@id"))
                     {
-                        // .. and value is not a string,...
-                        if (value.Type != JTokenType.String)
+                        switch (value.Type)
                         {
-                            // an invalid @id value error has been detected and processing is aborted.
-                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIdValue, "Invalid @id value");
+                            case JTokenType.Object:
+                                if (frameExpansion && !(value as JObject).Properties().Any())
+                                {
+                                    expandedValue = new JArray(new JObject());
+                                }
+                                else
+                                {
+                                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIdValue,
+                                        "Invalid @id value");
+                                }
+                                break;
+                            case JTokenType.Array:
+                                if (frameExpansion)
+                                {
+                                    expandedValue = new JArray();
+                                    foreach (var item in (value as JArray))
+                                    {
+                                        if (item.Type != JTokenType.String)
+                                        {
+                                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIdValue,
+                                                "Invalid @id value");
+                                        }
+                                        (expandedValue as JArray).Add(ExpandIri(activeContext, item.Value<string>(),
+                                            documentRelative: true));
+                                    }
+                                }
+                                else
+                                {
+                                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIdValue,
+                                        "Invalid @id value");
+                                }
+                                break;
+                            case JTokenType.String:
+                                if (frameExpansion)
+                                {
+                                    expandedValue = new JArray(ExpandIri(activeContext, value.Value<string>(),
+                                        documentRelative: true));
+                                }
+                                else
+                                {
+                                    expandedValue = ExpandIri(activeContext, value.Value<string>(),
+                                        documentRelative: true);
+                                }
+                                break;
+                            default:
+                                throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIdValue,
+                                    "Invalid @id value");
                         }
-                        expandedValue = ExpandIri(activeContext, value.Value<string>(), documentRelative: true);
-                        /* 
-                         * TODO: When the frame expansion flag is set, value may be an empty dictionary, 
-                         * or an array of one or more strings. Expanded value will be an 
-                         * array of one or more of these, with string values expanded using 
-                         * the IRI Expansion Algorithm. 
-                         */
                     }
 
                     // 8.4.4 - If expanded property is @type
@@ -971,7 +1035,12 @@ namespace VDS.RDF.JsonLd
                             }
                             expandedValue = array;
                         }
-                        /* TODO: When the frame expansion flag is set, value may also be an empty dictionary. */
+                        /* When the frame expansion flag is set, value may also be an empty dictionary. */
+                        else if (value.Type == JTokenType.Object && frameExpansion &&
+                                   !((value as JObject).Properties().Any()))
+                        {
+                            expandedValue = new JObject();
+                        }
                         else
                         {
                             throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTypeValue, "The value of the @type property must be a string or an array of strings");
@@ -985,26 +1054,45 @@ namespace VDS.RDF.JsonLd
                         // passing active context, @graph for active property, and value for 
                         // element, ensuring that expanded value is an array of one or more dictionaries.
                         expandedValue = Expand(activeContext, "@graph", value);
-                        var array = expandedValue as JArray;
-                        // NOTE: The following line is supposed to ensure the array contains at least one dictionary,
+                        // NOTE: The following lines are supposed to ensure the array contains at least one dictionary,
                         // but it causes a failure in the JSON-LD.org test suite on the test specifically for expanding an empty graph
+                        // var array = expandedValue as JArray;
                         //if (array.Count == 0) { array.Add(new JObject());  }
                     }
 
                     // 8.4.6 - If expanded property is @value and value is not a scalar or null, an invalid value object value error has been detected and processing is aborted. Otherwise, set expanded value to value. If expanded value is null, set the @value member of result to null and continue with the next key from element. Null values need to be preserved in this case as the meaning of an @type member depends on the existence of an @value member. When the frame expansion flag is set, value may also be an empty dictionary or an array of scalar values. Expanded value will be null, or an array of one or more scalar values.
+                    // When the frame expansion flag is set, value may also be an empty dictionary or an array of scalar values. Expanded value will be null, or an array of one or more scalar values.
                     if (expandedProperty.Equals("@value"))
                     {
-                        if (!((value.Type == JTokenType.Null) || IsScalar(value)))
+                        if (!(value.Type == JTokenType.Null || IsScalar(value) ||
+                            (frameExpansion && value.Type == JTokenType.Array) ||
+                            (frameExpansion && value.Type == JTokenType.Object)))
                         {
                             throw new JsonLdProcessorException(JsonLdErrorCode.InvalidValueObject, "The expanded value of @value must be a scalar or null.");
                         }
                         expandedValue = value;
+                        if (expandedValue.Type == JTokenType.Object)
+                        {
+                            if ((expandedValue as JObject).Properties().Any())
+                            {
+                                throw new JsonLdProcessorException(JsonLdErrorCode.InvalidValueObject,
+                                    $"Expected an empty object when expanding @value at {value.Path}.");
+                            }
+                            expandedValue = null;
+                        }
+                        if (expandedValue.Type == JTokenType.Array)
+                        {
+                            if ((expandedValue as JArray).Any(item => !(item.Type == JTokenType.Null || IsScalar(item))))
+                            {
+                                throw new JsonLdProcessorException(JsonLdErrorCode.InvalidValueObject,
+                                    $"Expected array of scalar values when expanding @value at {value.Path}");
+                            }
+                        }
                         if (expandedValue == null || expandedValue.Type == JTokenType.Null)
                         {
                             result["@value"] = null;
                             continue;
                         }
-                        // TODO:    When the frame expansion flag is set, value may also be an empty dictionary or an array of scalar values. Expanded value will be null, or an array of one or more scalar values.
                     }
 
                     // 8.4.7 - If expanded property is @language and value is not a string, an invalid language-tagged string error has been detected and processing is aborted. Otherwise, set expanded value to lowercased value. When the frame expansion flag is set, value may also be an empty dictionary or an array of zero or strings. Expanded value will be an array of one or more string values converted to lower case.
@@ -1014,7 +1102,27 @@ namespace VDS.RDF.JsonLd
                         {
                             expandedValue = value.Value<string>().ToLowerInvariant();
                         }
-                        // TODO: When the frame expansion flag is set, value may also be an empty dictionary or an array of zero or strings. Expanded value will be an array of one or more string values converted to lower case.
+                        // When the frame expansion flag is set, value may also be an empty dictionary or an array of zero or strings. Expanded value will be an array of one or more string values converted to lower case.
+                        else if (value.Type == JTokenType.Array && frameExpansion)
+                        {
+                            expandedValue = new JArray();
+                            foreach (var item in value as JArray)
+                            {
+                                if (value.Type != JTokenType.String)
+                                {
+                                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidLanguageTaggedString, $"Invalid value for @language property in {activeProperty}. Expected a JSON string, got {item.Type}.");
+                                }
+                                (expandedValue as JArray).Add(item.Value<string>().ToLowerInvariant());
+                            }
+                        }
+                        else if (value.Type == JTokenType.Object && frameExpansion)
+                        {
+                            if ((value as JObject).Properties().Any())
+                            {
+                                throw new JsonLdProcessorException(JsonLdErrorCode.InvalidLanguageTaggedString, $"Invalid value for @language property in {activeProperty}. Expected an object value to have no properties.");
+                            }
+                            expandedValue = null; // KA: Not sure what the correct value is here, spec refers to an array of one or more strings, but there is nothing here to generate string values from.
+                        }
                         else
                         {
                             throw new JsonLdProcessorException(JsonLdErrorCode.InvalidLanguageTaggedString, $"Invalid value for @language property in {activeProperty}. Expected a JSON string, got {value.Type}.");
@@ -1149,8 +1257,11 @@ namespace VDS.RDF.JsonLd
                         continue;
                     }
 
-                    // TODO: 8.4.13 - When the frame expansion flag is set, if expanded property is any other framing keyword (@explicit, @default, @embed, @explicit, @omitDefault, or @requireAll), set expanded value to the result of performing the Expansion Algorithm recursively, passing active context, active property, and value for element.
-
+                    // 8.4.13 - When the frame expansion flag is set, if expanded property is any other framing keyword (@explicit, @default, @embed, @explicit, @omitDefault, or @requireAll), set expanded value to the result of performing the Expansion Algorithm recursively, passing active context, active property, and value for element.
+                    if (frameExpansion && JsonLdFramingKeywords.Contains(expandedProperty))
+                    {
+                        expandedValue = ExpandAlgorithm(activeContext, activeProperty, value);
+                    }
                     // 8.4.14 - Unless expanded value is null, set the expanded property member of result to expanded value.
                     if (expandedValue != null)
                     {
@@ -1352,7 +1463,7 @@ namespace VDS.RDF.JsonLd
                         throw new JsonLdProcessorException(JsonLdErrorCode.InvalidNestValue, "Nested values may not contain keys that expand to @value");
                     }
                     // 8.13.2.2 - Recursively repeat step 7 using nested value for element.
-                    ExpandKeys(activeContext, activeProperty, nestedValue as JObject, result);
+                    ExpandKeys(activeContext, activeProperty, nestedValue as JObject, result, frameExpansion);
                 }
             }
         }
