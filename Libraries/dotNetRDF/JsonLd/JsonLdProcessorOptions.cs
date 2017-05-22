@@ -70,5 +70,35 @@ namespace VDS.RDF.JsonLd
         /// </summary>
         /// <remarks>Defaults to <code>true</code></remarks>
         public bool ProduceGeneralizedRdf = true;
+
+        /// <summary>
+        /// Sets the value object embed flag used in the Framing Algorithm
+        /// </summary>
+        public JsonLdEmbed Embed = JsonLdEmbed.Last;
+
+        /// <summary>
+        /// Sets the value explicit inclusion flag used in the Framing Algorithm.
+        /// </summary>
+        public bool Explicit = false;
+        
+        /// <summary>
+        /// Sets the value omit default flag used in the Framing Algorithm
+        /// </summary>
+        public bool OmitDefault = false;
+        
+        /// <summary>
+        /// Sets the value require all flag used in the Framing Algorithm
+        /// </summary>
+        public bool RequireAll = false;
+        
+        /// <summary>
+        /// Instead of framing a merged graph, frame only the default graph.
+        /// </summary>
+        public bool FrameDefault = false;
+
+        /// <summary>
+        /// Removes @id from node objects where the value is a blank node identifier used only once within the document.
+        /// </summary>
+        public bool PruneBlankNodeIdentifiers = true;
     }
 }

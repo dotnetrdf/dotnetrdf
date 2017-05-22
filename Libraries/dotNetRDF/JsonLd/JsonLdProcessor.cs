@@ -2367,6 +2367,59 @@ namespace VDS.RDF.JsonLd
             }
         }
 
+        private static JObject MergeNodeMaps(JObject graphMap)
+        {
+            var result = new JObject();
+            foreach (var p in graphMap.Properties())
+            {
+                var graphName = p.Name;
+                var nodeMap = p.Value as JObject;
+                foreach (var np in nodeMap.Properties())
+                {
+                    var id = np.Name;
+                    var node = np.Value as JObject;
+                    var mergedNode = result[id] as JObject;
+                    if (mergedNode == null)
+                    {
+                        result[id] = mergedNode = new JObject(new JProperty("@id", id));
+                    }
+                    foreach (var nodeProperty in node.Properties())
+                    {
+                        if (IsKeyword(nodeProperty.Name))
+                        {
+                            mergedNode[nodeProperty.Name] = nodeProperty.Value.DeepClone();
+                        }
+                        else
+                        {
+
+                            MergeValues(mergedNode, nodeProperty.Name, nodeProperty.Value);
+                        }
+                    }
+                }
+
+            }
+            return result;
+        }
+
+        private static void MergeValues(JObject parent, string property, JToken values)
+        {
+            if (parent[property] == null)
+            {
+                parent[property] = new JArray();
+            }
+            var target = parent[property] as JArray;
+            if (values is JArray)
+            {
+                foreach (var item in (values as JArray))
+                {
+                    target.Add(item);
+                }
+            }
+            else
+            {
+                target.Add(values);
+            }
+        }
         private static void AppendUniqueElement(JToken element, JArray toArray)
         {
             if (!toArray.Any(x => JToken.DeepEquals(x, element)))
@@ -2875,6 +2928,500 @@ namespace VDS.RDF.JsonLd
             return value;
         }
 
+        public static JObject Frame(JToken input, JToken frame, JToken context, JsonLdProcessorOptions options)
+        {
+            options.ProcessingMode = JsonLdProcessingMode.JsonLd11;
+            var expandedInput = Expand(input, options);
+            options.ProcessingMode = JsonLdProcessingMode.JsonLd11FrameExpansion;
+            var expandedFrame = Expand(frame, options);
+            var frameProcessor = new JsonLdProcessor(options);
+            return frameProcessor.FrameAlgorithm(expandedInput, expandedFrame, context);
+        }
+
+        private JObject FrameAlgorithm(JToken expandedInput, JToken expandedFrame, JToken context)
+        {
+            // If an error is detected in the expanded frame, a invalid frame error has been detected and processing is aborted. Need more specifics as to what constitutes a valid frame.
+            ValidateFrame(expandedFrame);
+
+            // Set graph map to the result of performing the Node Map Generation algorithm on expanded input.
+            var graphMap = GenerateNodeMap(expandedInput, _options);
+
+            // If the frameDefault option is present with the value true, set graph name to @default. 
+            // Otherwise, create merged node map using the the Merge Node Maps algorithm with graph map and add merged node map as the value of @merged in graph map and set graph name to @merged.
+            var graphName = _options.FrameDefault ? "@default" : "@merged";
+            if (!_options.FrameDefault)
+            {
+                var mergedNodeMap = MergeNodeMaps(graphMap);
+                graphMap["@merged"] = mergedNodeMap;
+            }
+            var framingState = new FramingState(_options, graphMap, graphName);
+            var results = new JArray();
+            ProcessFrame(framingState, framingState.Subjects.Properties().Select(p => p.Name).ToList(), expandedFrame,
+                results, null);
+
+            // If the pruneBlankNodeIdentifiers is true, remove the @id member of each node object where the member value is a blank node identifier which appears only once in any property value within result.
+            if (_options.PruneBlankNodeIdentifiers)
+            {
+                PruneBlankNodeIdentifiers(results);
+            }
+
+            // Using result from the recursive algorithm, set compacted results to the result of using the compact method using results, context, and options.
+            var compactedResults = Compact(results, context, _options);
+
+            // If compacted results does not have a top-level @graph keyword, or if its value is not an array, modify compacted results to place the non @context properties of compacted results into a dictionary contained within the array value of @graph.
+            if (compactedResults["@graph"] == null)
+            {
+                var updatedResults = new JObject(
+                    new JProperty("@graph", new JArray(compactedResults)),
+                    new JProperty("@context"), compactedResults["@context"].DeepClone());
+                compactedResults["@context"].Remove();
+                compactedResults = updatedResults;
+            }
+
+            // Recursively, replace all key-value pairs in compacted results where the key is @preserve with the value from the key-pair. If the value from the key-pair is @null, replace the value with null. If, after replacement, an array contains only the value null remove the value, leaving an empty array.
+            ReplacePreservedValues(compactedResults);
+            return compactedResults;
+        }
+
+        private void ReplacePreservedValues(JToken token)
+        {
+            switch (token.Type)
+            {
+                case JTokenType.Object:
+                    var o = token as JObject;
+                    if (o["@preserve"] != null)
+                    {
+                        var parent = o.Parent;
+                        var preserveValue = o["@preserve"];
+                        if (preserveValue.Type == JTokenType.String && preserveValue.Value<string>().Equals("@null"))
+                        {
+                            o.Replace(null);
+                            if (parent is JArray && parent.All(x => x.Type == JTokenType.Null))
+                            {
+                                parent.Replace(new JArray());
+                            }
+                        }
+                        else
+                        {
+                            o.Replace(preserveValue);
+                        }
+                    }
+                    foreach (var p in o)
+                    {
+                        ReplacePreservedValues(p.Value);
+                    }
+                    break;
+                case JTokenType.Array:
+                    foreach (var item in (token as JArray))
+                    {
+                        ReplacePreservedValues(item);
+                    }
+                    break;
+            }
+        }
+        private void PruneBlankNodeIdentifiers(JToken token)
+        {
+            var objectMap = new Dictionary<string, BlankNodeMapEntry>();
+            GenerateBlankNodeMap(objectMap, token, null);
+            foreach (var mapEntry in objectMap)
+            {
+                if (!mapEntry.Value.IsReferenced)
+                {
+                    PruneBlankNodeIdentifier(mapEntry.Key, mapEntry.Value.IdProperty);
+                }
+            }
+        }
+
+        private static void PruneBlankNodeIdentifier(string id, JProperty toUpdate)
+        {
+            if (toUpdate.Value.Type == JTokenType.String)
+            {
+                toUpdate.Remove();
+            }
+            else if (toUpdate.Value is JArray)
+            {
+                foreach (var item in (JArray) toUpdate.Value)
+                {
+                    if (item.Value<string>().Equals(id))
+                    {
+                        item.Remove();
+                        break;
+                    }
+                }
+            }
+        }
+        private class BlankNodeMapEntry
+        {
+            public bool IsReferenced = true;
+            public JProperty IdProperty;
+        }
+
+        private void GenerateBlankNodeMap(Dictionary<string, BlankNodeMapEntry> objectMap, JToken token, JProperty activeProperty)
+        {
+            switch (token.Type)
+            {
+                case JTokenType.String:
+                    var str = token.Value<string>();
+                    if (IsBlankNodeIdentifier(str))
+                    {
+                        BlankNodeMapEntry mapEntry;
+                        if (!objectMap.TryGetValue(str, out mapEntry))
+                        {
+                            mapEntry = new BlankNodeMapEntry();
+                            objectMap[str] = mapEntry;
+                        }
+                        if (activeProperty.Name == "@id")
+                        {
+                            mapEntry.IdProperty = activeProperty;
+                        }
+                        else
+                        {
+                            mapEntry.IsReferenced = true;
+                        }
+                    }
+                    break;
+                case JTokenType.Array:
+                    foreach (var item in (token as JArray))
+                    {
+                        GenerateBlankNodeMap(objectMap, item, activeProperty);
+                    }
+                    break;
+                case JTokenType.Object:
+                    foreach (var p in (token as JObject).Properties())
+                    {
+                        if (p.Name == "@value") continue;
+                        GenerateBlankNodeMap(objectMap, p.Value, p);
+                    }
+                    break;
+            }
+        }
+
+        private void ProcessFrame(FramingState state, List<string> subjects, JToken frame, JToken parent,
+            string activeProperty)
+        {
+            // 1 - If frame is an array, set frame to the first member of the array, which must be a valid frame.
+            if (frame.Type == JTokenType.Array)
+            {
+                frame = (frame as JArray)[0];
+                ValidateFrame(frame);
+            }
+            var frameObject = frame as JObject;
+
+            // 2 - Initialize flags embed, explicit, and requireAll from object embed flag, explicit inclusion flag, and require all flag in state overriding from any property values for @embed, @explicit, and @requireAll in frame.
+            var embed = GetEmbedOption(frameObject, state.Embed);
+            var explicitFlag = GetBooleanOption(frameObject, "@explicit", state.ExplicitInclusion);
+            var requireAll = GetBooleanOption(frameObject, "@requireAll", state.RequireAll);
+
+            // 3 - Create a list of matched subjects by filtering subjects against frame using the Frame Matching algorithm with state, subjects, frame, and requireAll.
+            var matchedSubjects = MatchFrame(state, subjects, frameObject, requireAll);
+
+            // 4 - Set link the the value of link in state associated with graph name in state, creating a new empty dictionary, if necessary.
+            if (state.Link[state.GraphName] == null)
+            {
+                state.Link[state.GraphName] = new JObject();
+            }
+            var link = state.Link[state.GraphName] as JObject;
+
+            // 5 - For each id and associated node object node from the set of matched subjects, ordered by id:
+            foreach (var match in matchedSubjects)
+            {
+                var id = match.Id;
+                var node = match.Node;
+
+                // 5.1 - Initialize output to a new dictionary with @id and id and add output to link associated with id.
+                var output = new JObject(new JProperty("@id", id));
+                link[id] = output;
+
+                // 5.2 - If embed is @link and id is in link, node already exists in results. Add the associated node object from link to parent and do not perform additional processing for this node.
+                if (embed == JsonLdEmbed.Link && link[id] != null)
+                {
+                    FramingAppend(parent, node, activeProperty);
+                    continue;
+                }
+                // 5.3 - Otherwise, if embed is @never or if a circular reference would be created by an embed, add output to parent and do not perform additional processing for this node.
+                else if (embed == JsonLdEmbed.Never)
+                {
+                    FramingAppend(parent, output, activeProperty);
+                }
+                // 5.4 - Otherwise, if embed is @last, remove any existing embedded node from parent accociate with graph name in state. Requires sorting of subjects. We could consider @sample, to embed just the first matched node. With sorting, we could also consider @first.
+                else if (embed == JsonLdEmbed.Last)
+                {
+                    var parentObject = parent as JObject;
+                    if (parentObject != null)
+                    {
+                        parentObject.Remove(state.GraphName);
+                    }
+                }
+                // 5.5 - If embed is @last or @always
+                if (embed == JsonLdEmbed.Last || embed == JsonLdEmbed.Always)
+                {
+                    // 5.5.1 - If graph map in state has an entry for id:
+                    if (state.GraphMap[id] != null)
+                    {
+                        bool recurse = false;
+                        JObject subframe = null;
+                        // 5.5.1.1 - If frame does not have the key @graph, set recurse to true, unless graph name in state is @merged and set subframe to a new empty dictionary.
+                        if (frame["@graph"] == null)
+                        {
+                            recurse = !state.GraphName.Equals("@merged");
+                            subframe = new JObject();
+                        }
+                        // 5.5.1.2 - Otherwise, set subframe to the first entry for @graph in frame, or a new empty dictionary, if it does not exist, and set recurse to true, unless graph name in state is @merged or @default.
+                        else
+                        {
+                            var graphEntry = (frame["@graph"] as JArray);
+                            if (graphEntry == null)
+                            {
+                                graphEntry = new JArray(new JObject());
+                                frame["@graph"] = graphEntry;
+                            }
+                            subframe = graphEntry[0] as JObject;
+                            recurse = !(state.GraphName.Equals("@merged") || state.GraphName.Equals("@default"));
+                        }
+                        // 5.5.1.3 - If recurse is true:
+                        if (recurse)
+                        {
+                            // 5.5.1.3.1 - Push graph name from state onto graph stack in state.
+                            state.GraphStack.Push(state.GraphName);
+                            // 5.5.1.3.2 - Set the value of graph name in state to id.
+                            state.GraphName = id;
+                            // 5.5.1.3.3 - Invoke the recursive algorithm using state, the keys from the graph map in state associated with id as subjects, subframe as frame, output as parent, and @graph as active property.
+                            ProcessFrame(state,
+                                (state.GraphMap[state.GraphName] as JObject).Properties().Select(p => p.Name).ToList(),
+                                subframe, output, "@graph");
+                            // 5.5.1.3.4 - Pop the value from graph stack in state and set graph name in state back to that value.
+                            state.GraphName = state.GraphStack.Pop();
+                        }
+                    }
+                    // 5.5.2 - For each property and objects in node, ordered by property:
+                    foreach (var p in node.Properties())
+                    {
+                        var property = p.Name;
+                        var objects = p.Value as JArray;
+                        // 5.5.2.1 - If property is a keyword, add property and objects to output.
+                        if (IsKeyword(property))
+                        {
+                            output[property] = objects;
+                        }
+                        // 5.5.2.2 - Otherwise, if property is not in frame, and explicit is true, processors must not add any values for property to output, and the following steps are skipped.
+                        else if (frame[property] == null && explicitFlag)
+                        {
+                            continue;
+                        }
+                        // 5.5.2.3 - For each item in objects:
+                        foreach (var item in objects)
+                        {
+                            // 5.5.2.3.1 - If item is a dictionary with the property @list, 
+                            // then each listitem in the list is processed in sequence and 
+                            // added to a new list dictionary in output:
+                            if (IsListObject(item))
+                            {
+                                var list = new JObject();
+                                output[property] = list; // KA: Not sure what the correct key is for the list object
+                                foreach (var listItem in item["@list"] as JArray)
+                                {
+                                    // If listitem is a node reference, invoke the recursive algorithm using state, 
+                                    // the value of @id from listitem as the sole member of a new subjects array, 
+                                    // the first value from @list in frame as frame, list as parent, 
+                                    // and @list as active property. 
+                                    // If frame does not exist, create a new frame using a new dictionary 
+                                    // with properties for @embed, @explicit and @requireAll taken from embed, explicit and requireAll. 
+                                    if (IsNodeReference(listItem))
+                                    {
+                                        var listFrames = frame["@list"] as JArray;
+                                        var listFrame = listFrames?[0] as JObject;
+                                        if (listFrame == null)
+                                        {
+                                            listFrame = MakeFrameObject(embed, explicitFlag, requireAll);
+                                        }
+                                        ProcessFrame(state,
+                                            new List<string> {listItem["@id"].Value<string>()},
+                                            listFrame,
+                                            list,
+                                            "@list");
+                                    }
+                                    // 5.5.2.3.1.2 - Otherwise, append a copy of listitem to @list in list.
+                                    else
+                                    {
+                                        list.Add(listItem.DeepClone());
+                                    }
+                                }
+                            }
+                            // 5.5.2.3.2 - If item is a node reference, invoke the recursive algorithm using state, 
+                            // the value of @id from item as the sole member of a new subjects array, 
+                            // the first value from property in frame as frame, output as parent, and property as active property. 
+                            // If frame does not exist, create a new frame using a new dictionary with properties for @embed, @explicit and @requireAll taken from embed, explicit and requireAll.
+                            else if (IsNodeReference(item))
+                            {
+                                var newFrame = ((frame[property] as JArray)?[0]) as JObject ??
+                                               MakeFrameObject(embed, explicitFlag, requireAll);
+                                ProcessFrame(state,
+                                    new List<string> {item["@id"].Value<string>()},
+                                    newFrame,
+                                    output,
+                                    property);
+                            }
+                            // 5.5.2.3.3 - Otherwise, append a copy of item to active property in output.
+                            else
+                            {
+                                FramingAppend(output, item, activeProperty);
+                            }
+                        }
+                    }
+
+                    // 5.5.3 - For each non-keyword property and objects in frame that is not in output:
+                    foreach (var frameProperty in frameObject.Properties())
+                    {
+                        var property = frameProperty.Name;
+                        if (IsKeyword(property) || IsFramingKeyword(property)) continue;
+                        var objects = frameProperty.Value as JArray;
+                        // 5.5.3.1 - Let item be the first element in objects, which must be a frame object.
+                        var item = objects[0];
+                        ValidateFrame(item);
+                        // 5.5.3.2 - Set property frame to the first item in objects or a newly created frame object if value is objects. property frame must be a dictionary.
+                        var propertyFrame = objects[0] as JObject; // KA - ncomplete as I can't make sense of the spec algorithm here
+                        // 5.5.3.3 - Skip property and property frame if property frame contains @omitDefault with a value of true, or does not contain @omitDefault and the value of the omit default flag is true.
+                        var frameOmitDefault = propertyFrame.Property("@omitDefault");
+                        if (frameOmitDefault != null && frameOmitDefault.Value<bool>() ||
+                            frameOmitDefault == null && state.OmitDefault)
+                        {
+                            continue;
+                        }
+                        // 5.5.3.4 - Add property to output with a new dictionary having a property @preserve and a value that is a copy of the value of @default in frame if it exists, or the string @null otherwise.
+                        output[property] = new JObject("@preserve", frame["@default"] ?? "@null");
+                    }
+                    // 5.5.4 - If frame has the property @reverse, then for each reverse property and sub frame that are the values of @reverse in frame:
+                    if (frame["@reverse"] != null)
+                    {
+                        foreach(var rp in (frame["@reverse"] as JObject).Properties())
+                        {
+                            var reverseProperty = rp.Name;
+                            var subframe = rp.Value;
+                            // 5.5.4.1 - Create a @reverse property in output with a new dictionary reverse dict as its value.
+                            var reverseDict = new JObject();
+                            output["@reverse"] = reverseDict;
+                            // 5.5.4.2 - For each reverse id and node in the map of flattened subjects that has the property reverse property containing a node reference with an @id of id:
+                            foreach (var p in state.Subjects.Properties())
+                            {
+                                var n = p.Value as JObject;
+                                var reversePropertyValues = n[reverseProperty] as JArray;
+                                if (reversePropertyValues == null) continue;
+                                if (reversePropertyValues.Any(x => x.Value<string>().Equals(id)))
+                                {
+                                    // 5.5.4.2.1 - Add reverse property to reverse dict with a new empty array as its value.
+                                    var reverseId = p.Name;
+                                    if (reverseDict[reverseProperty] == null)
+                                        reverseDict[reverseProperty] = new JArray();
+                                    // 5.5.4.2.2 - Invoke the recursive algorithm using state, the reverse id as the sole member of a new subjects array, sub frame as frame, null as active property, and the array value of reverse property in reverse dict as parent.
+                                    ProcessFrame(state, 
+                                        new List<string> {reverseId}, 
+                                        subframe,
+                                        reverseDict[reverseProperty], 
+                                        null);
+                                }
+                            }
+                        }
+                    }
+                    // 5.5.5 - Once output has been set are required in the previous steps, add output to parent.
+                    FramingAppend(parent, output, activeProperty);
+                }
+            }
+        }
+
+        private static JObject MakeFrameObject(JsonLdEmbed embed, bool explicitFlag, bool requireAll)
+        {
+            JObject listFrame;
+            listFrame = new JObject(
+                new JProperty("@embed", JsonLdEmbedAsString(embed)),
+                new JProperty("@explicit", explicitFlag),
+                new JProperty("@requireAll", requireAll));
+            return listFrame;
+        }
+
+        private void FramingAppend(JToken parent, JToken child, string activeProperty)
+        {
+            if (parent is JArray)
+            {
+                (parent as JArray).Add(child);
+            }
+            else if (parent is JObject)
+            {
+                if (string.IsNullOrEmpty(activeProperty))
+                    throw new ArgumentException(
+                        "activeproperty must be a non-null value when the parent is a JSON object", nameof(activeProperty));
+                var array = parent[activeProperty] as JArray;
+                if (array == null)
+                {
+                    parent[activeProperty] = (array = new JArray());
+                }
+                array.Add(child);
+            }
+        }
+
+        private List<MatchedSubject> MatchFrame(FramingState state, IList<string> subjects, JObject frame,
+            bool requireAll)
+        {
+            throw new NotImplementedException();
+        }
+
+        private class MatchedSubject
+        {
+            public string Id { get; set; }
+            public JObject Node { get; set; }
+        }
+
+        private static JsonLdEmbed GetEmbedOption(JObject frame, JsonLdEmbed defaultValue)
+        {
+            if (frame["@embed"] != null)
+            {
+                switch (frame["@embed"].Value<string>().ToLowerInvariant())
+                {
+                    case "@always":
+                        return JsonLdEmbed.Always;
+                    case "@last":
+                        return JsonLdEmbed.Last;
+                    case "@link":
+                        return JsonLdEmbed.Link;
+                    case "@never":
+                        return JsonLdEmbed.Never;
+                    default:
+                        throw new JsonLdFramingException(JsonLdFramingErrorCode.InvalidEmbedValue,
+                            $"Invalid @embed value {frame["@embed"].Value<string>()}");
+                }
+            }
+            return defaultValue;
+        }
+
+        private static string JsonLdEmbedAsString(JsonLdEmbed embed)
+        {
+            switch (embed)
+            {
+                case JsonLdEmbed.Always:
+                    return "@always";
+                case JsonLdEmbed.Last:
+                    return "@last";
+                case JsonLdEmbed.Link:
+                    return "@link";
+                case JsonLdEmbed.Never:
+                    return "@never";
+                default:
+                    return null;
+            }
+        }
+        private bool GetBooleanOption(JObject frame, string property, bool defaultValue)
+        {
+            if (frame[property] != null)
+            {
+                return frame[property].Value<bool>();
+            }
+            return defaultValue;
+        }
+
+        private void ValidateFrame(JToken expandedFrame)
+        {
+            // TODO: Implement frame validation (not currently defined in spec) - throw an invalid frame error if validation fails
+            return;
+        }
         /// <summary>
         /// Determine if a JSON token is a JSON-LD value object
         /// </summary>
@@ -2943,6 +3490,16 @@ namespace VDS.RDF.JsonLd
         }
 
         /// <summary>
+        /// Determine if the specified string is a JSON-LD framing keyword
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool IsFramingKeyword(string value)
+        {
+            return JsonLdFramingKeywords.Contains(value);
+        }
+
+        /// <summary>
         /// Determine if the specified string is a blank node identifier
         /// </summary>
         /// <param name="value"></param>
@@ -2950,6 +3507,11 @@ namespace VDS.RDF.JsonLd
         public static bool IsBlankNodeIdentifier(string value)
         {
             return value.StartsWith("_:");
+        }
+
+        private static bool IsNodeReference(JToken token)
+        {
+            return (token as JObject)?.Property("@id") != null;
         }
 
         private JToken GetPropertyValue(JsonLdContext activeContext, JObject obj, string key)
