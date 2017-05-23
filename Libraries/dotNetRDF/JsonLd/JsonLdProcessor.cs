@@ -2928,13 +2928,15 @@ namespace VDS.RDF.JsonLd
             return value;
         }
 
-        public static JObject Frame(JToken input, JToken frame, JToken context, JsonLdProcessorOptions options)
+        public static JObject Frame(JToken input, JToken frame, JsonLdProcessorOptions options)
         {
-            options.ProcessingMode = JsonLdProcessingMode.JsonLd11;
-            var expandedInput = Expand(input, options);
             options.ProcessingMode = JsonLdProcessingMode.JsonLd11FrameExpansion;
             var expandedFrame = Expand(frame, options);
+            options.ProcessingMode = JsonLdProcessingMode.JsonLd11;
+            var expandedInput = Expand(input, options);
             var frameProcessor = new JsonLdProcessor(options);
+            var context = frame["@context"] ?? new JObject();
+            if (frame is JObject && frame["@graph"] != null) options.FrameDefault = true;
             return frameProcessor.FrameAlgorithm(expandedInput, expandedFrame, context);
         }
 
@@ -2971,10 +2973,14 @@ namespace VDS.RDF.JsonLd
             // If compacted results does not have a top-level @graph keyword, or if its value is not an array, modify compacted results to place the non @context properties of compacted results into a dictionary contained within the array value of @graph.
             if (compactedResults["@graph"] == null)
             {
+                var compactedResultContext = compactedResults["@context"];
+                compactedResults.Remove("@context");
                 var updatedResults = new JObject(
-                    new JProperty("@graph", new JArray(compactedResults)),
-                    new JProperty("@context"), compactedResults["@context"].DeepClone());
-                compactedResults["@context"].Remove();
+                    new JProperty("@graph", new JArray(compactedResults)));
+                if (compactedResultContext != null)
+                {
+                    updatedResults.Add("@context", compactedResultContext);
+                }
                 compactedResults = updatedResults;
             }
 
@@ -3125,8 +3131,8 @@ namespace VDS.RDF.JsonLd
             // 5 - For each id and associated node object node from the set of matched subjects, ordered by id:
             foreach (var match in matchedSubjects)
             {
-                var id = match.Id;
-                var node = match.Node;
+                var id = match.Key;
+                var node = match.Value;
 
                 // 5.1 - Initialize output to a new dictionary with @id and id and add output to link associated with id.
                 var output = new JObject(new JProperty("@id", id));
@@ -3194,14 +3200,18 @@ namespace VDS.RDF.JsonLd
                         }
                     }
                     // 5.5.2 - For each property and objects in node, ordered by property:
-                    foreach (var p in node.Properties())
+                    foreach (var p in node.Properties().OrderBy(p=>p.Name))
                     {
                         var property = p.Name;
+                        // Skip the @id property as it is already copied
+                        if (property.Equals("@id")) continue;
                         var objects = p.Value as JArray;
+                        
                         // 5.5.2.1 - If property is a keyword, add property and objects to output.
                         if (IsKeyword(property))
                         {
                             output[property] = objects;
+                            continue;
                         }
                         // 5.5.2.2 - Otherwise, if property is not in frame, and explicit is true, processors must not add any values for property to output, and the following steps are skipped.
                         else if (frame[property] == null && explicitFlag)
@@ -3264,7 +3274,7 @@ namespace VDS.RDF.JsonLd
                             // 5.5.2.3.3 - Otherwise, append a copy of item to active property in output.
                             else
                             {
-                                FramingAppend(output, item, activeProperty);
+                                FramingAppend(output, item, property);
                             }
                         }
                     }
@@ -3273,8 +3283,10 @@ namespace VDS.RDF.JsonLd
                     foreach (var frameProperty in frameObject.Properties())
                     {
                         var property = frameProperty.Name;
+                        if (output[property] != null) continue;
                         if (IsKeyword(property) || IsFramingKeyword(property)) continue;
                         var objects = frameProperty.Value as JArray;
+                        if (objects == null || objects.Count == 0) continue
                         // 5.5.3.1 - Let item be the first element in objects, which must be a frame object.
                         var item = objects[0];
                         ValidateFrame(item);
@@ -3288,7 +3300,7 @@ namespace VDS.RDF.JsonLd
                             continue;
                         }
                         // 5.5.3.4 - Add property to output with a new dictionary having a property @preserve and a value that is a copy of the value of @default in frame if it exists, or the string @null otherwise.
-                        output[property] = new JObject("@preserve", frame["@default"] ?? "@null");
+                        output[property] = new JObject(new JProperty("@preserve", frame["@default"] ?? "@null"));
                     }
                     // 5.5.4 - If frame has the property @reverse, then for each reverse property and sub frame that are the values of @reverse in frame:
                     if (frame["@reverse"] != null)
@@ -3306,7 +3318,7 @@ namespace VDS.RDF.JsonLd
                                 var n = p.Value as JObject;
                                 var reversePropertyValues = n[reverseProperty] as JArray;
                                 if (reversePropertyValues == null) continue;
-                                if (reversePropertyValues.Any(x => x.Value<string>().Equals(id)))
+                                if (reversePropertyValues.Any(x => x["@id"]?.Value<string>().Equals(id) == true))
                                 {
                                     // 5.5.4.2.1 - Add reverse property to reverse dict with a new empty array as its value.
                                     var reverseId = p.Name;
@@ -3342,13 +3354,20 @@ namespace VDS.RDF.JsonLd
         {
             if (parent is JArray)
             {
+                if (activeProperty != null)
+                {
+                    throw new ArgumentException("activeProperty must be null when parent is an array");
+                }
                 (parent as JArray).Add(child);
             }
             else if (parent is JObject)
             {
                 if (string.IsNullOrEmpty(activeProperty))
+                {
                     throw new ArgumentException(
-                        "activeproperty must be a non-null value when the parent is a JSON object", nameof(activeProperty));
+                        "activeproperty must be a non-null value when the parent is a JSON object",
+                        nameof(activeProperty));
+                }
                 var array = parent[activeProperty] as JArray;
                 if (array == null)
                 {
@@ -3358,10 +3377,202 @@ namespace VDS.RDF.JsonLd
             }
         }
 
-        private List<MatchedSubject> MatchFrame(FramingState state, IList<string> subjects, JObject frame,
+        private Dictionary<string, JObject> MatchFrame(FramingState state, IList<string> subjects, JObject frame,
             bool requireAll)
         {
-            throw new NotImplementedException();
+            var matches = new Dictionary<string, JObject>();
+
+            // Prepare frame lookups
+            var idMatches = frame["@id"] as JArray;
+            var typeMatches = frame["@type"] as JArray;
+            var propertyMatches = new Dictionary<string, JToken>();
+            foreach (var p in frame.Properties())
+            {
+                if (p.Name.Equals("@id") || p.Name.Equals("@type"))
+                {
+                    continue;
+                }
+                propertyMatches[p.Name] = p.Value as JArray;
+            }
+
+            // First match on the @id property if it is defined in frame
+            if (idMatches != null)
+            {
+                foreach (var id in idMatches.Select(v=>v.Value<string>()))
+                {
+                    var match = state.Subjects[id] as JObject;
+                    if (match != null) matches.Add(id, match);
+                }
+            }
+
+            foreach (var subject in subjects)
+            {
+                if (matches.ContainsKey(subject))
+                {
+                    // Already matched on @id
+                    continue;
+                }
+                var node = state.Subjects[subject] as JObject;
+                if (typeMatches != null)
+                {
+                    // Match on @type
+                    var nodeTypes = node["@type"] as JArray;
+                    if (nodeTypes != null)
+                    {
+                        if 
+                        (nodeTypes.Any(x => typeMatches.Any(y => y.Value<string>().Equals(x.Value<string>()))) ||
+                         IsWildcard(node["@type"]) && nodeTypes.Any() ||
+                         nodeTypes.Count == 0 && typeMatches.Count == 0)
+                        {
+                            // Matched on @type
+                            matches.Add(subject, node);
+                            continue;
+                        }
+                    }
+                }
+                if (propertyMatches.Count == 0)
+                {
+                    matches.Add(subject, node);
+                }
+                // If requireAll, start assuming that there is a match and break when disproven
+                // If !requireAll, start assuming that there is no match and break when disproven
+                bool match = requireAll;
+                bool hasNonDefaultMatch = false;
+                foreach (var pm in propertyMatches)
+                {
+                    var propertyMatch = MatchProperty(state, node, pm.Key, pm.Value, requireAll);
+                    if (propertyMatch == MatchType.NoMatch)
+                    {
+                        if (requireAll)
+                        {
+                            match = false;
+                            break;
+                        }
+                    } else if (propertyMatch == MatchType.Match)
+                    {
+                        hasNonDefaultMatch = true;
+                        if (!requireAll)
+                        {
+                            match = true;
+                            break;
+                        }
+                    }
+                    // A default match is inconclusive until the end of the loop
+                }
+                if (match && hasNonDefaultMatch)
+                {
+                    matches.Add(subject, node);
+                }
+            }
+            return matches;
+        }
+
+
+        private MatchType MatchProperty(FramingState state, JObject node, string property, JToken frameValue, bool requireAll)
+        {
+            var nodeValues = node[property] as JArray;
+            if (nodeValues == null || nodeValues.Count == 0)
+            {
+                if (frameValue is JObject && frameValue.Count() == 1 && frameValue["@default"] != null)
+                {
+                    return MatchType.DefaultMatch;
+                }
+            }
+            // Non-existant property cannot match frame
+            if (nodeValues == null) return MatchType.NoMatch;
+            var frameArray = frameValue as JArray;
+
+            // Frame specifies match none - nodeValues must be empty
+            if (frameArray != null && frameArray.Count == 0 && nodeValues.Count != 0) return MatchType.NoMatch;
+
+            var frameObject = frameValue as JObject;
+            // Frame specifies match wildcard - nodeValues must be non-empty
+            if (frameObject != null && frameObject.Count == 0 && nodeValues.Count > 0) return MatchType.Match;
+
+            if (frameArray != null && IsValueObject(frameArray[0]))
+            {
+                // frameArray is a value pattern array
+                foreach (var valuePattern in frameArray)
+                {
+                    foreach (var value in nodeValues)
+                    {
+                        if (ValuePatternMatch(valuePattern, value))
+                        {
+                            return MatchType.Match;
+                        }
+                    }
+                }
+                return MatchType.NoMatch;
+            }
+
+            if (frameArray != null)
+            {
+                // frameArray is a node pattern array
+                var valueSubjects = nodeValues.Where(x=>x["id"]!=null).Select(x => x["@id"].Value<string>()).ToList();
+                valueSubjects.Sort();
+
+                foreach (var subframe in frameArray)
+                {
+                    var matchedSubjects = MatchFrame(state, valueSubjects, subframe as JObject, requireAll);
+                    if (matchedSubjects.Any()) return MatchType.Match;
+                }
+            }
+
+            return MatchType.NoMatch;
+        }
+
+        private bool ValuePatternMatch(JToken valuePattern, JToken value)
+        {
+            var valuePatternObject = valuePattern as JObject;
+            var valueObject = value as JObject;
+            if (valuePatternObject == null || valueObject == null) return false;
+            if (valuePatternObject.Count == 0)
+            {
+                // Pattern is wildcard
+                return true;
+            }
+            var v1 = valueObject["@value"];
+            var t1 = valueObject["@type"];
+            var l1 = valueObject["@language"];
+            var v2 = valuePatternObject["@value"];
+            var t2 = valuePatternObject["@type"];
+            var l2 = valuePatternObject["@language"];
+            return ValuePatternTokenMatch(v2, v1) && ValuePatternTokenMatch(t2, t1) && ValuePatternTokenMatch(l2, l1);
+        }
+
+        private bool ValuePatternTokenMatch(JToken patternToken, JToken valueToken)
+        {
+            if (patternToken == null && valueToken == null) return true;
+            if (patternToken is JObject && ((JObject) patternToken).Count == 0)
+            {
+                // Pattern is a wildcard
+                return valueToken != null;
+            }
+            var patternTokenArray = patternToken as JArray;
+            if (patternTokenArray != null)
+            {
+                if (!patternTokenArray.Any())
+                {
+                    // Pattern is match none, value must be null
+                    return valueToken == null;
+                }
+                // Otherwise the value token must be in the pattern token array
+                return patternTokenArray.Any(x => JToken.DeepEquals(x, valueToken));
+            }
+            return false;
+        }
+
+        private enum MatchType
+        {
+            NoMatch,
+            Match,
+            DefaultMatch
+        }
+
+        private bool IsWildcard(JToken token)
+        {
+            var o = token as JObject;
+            return (o != null && o.Count == 0);
         }
 
         private class MatchedSubject

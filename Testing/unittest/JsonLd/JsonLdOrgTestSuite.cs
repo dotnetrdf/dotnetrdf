@@ -130,6 +130,23 @@ namespace VDS.RDF.JsonLd
             }
         }
 
+        [Theory]
+        [MemberData("FrameTests", MemberType = typeof(JsonLdTestSuiteDataSource))]
+        public void JsonLdFramingTests(string inputPath, string framePath, string expectedOutputPath,
+            bool pruneBlankNodeIdentifiers)
+        {
+            var inputJson = File.ReadAllText(inputPath);
+            var frameJson = File.ReadAllText(framePath);
+            var expectedOutputJson = File.ReadAllText(expectedOutputPath);
+            var options = new JsonLdProcessorOptions {PruneBlankNodeIdentifiers = pruneBlankNodeIdentifiers};
+            var inputElement = JToken.Parse(inputJson);
+            var frameElement = JToken.Parse(frameJson);
+            var expectedOutputElement = JToken.Parse(expectedOutputJson);
+            var actualOutput = JsonLdProcessor.Frame(inputElement, frameElement, options);
+            Assert.True(JToken.DeepEquals(expectedOutputElement, actualOutput),
+                $"Test failed for input {Path.GetFileName(inputPath)}\nExpected:\n{expectedOutputElement}\nActual:\n{actualOutput}");
+        }
+
         private static bool DeepEquals(JToken token1, JToken token2, bool ignoreArrayOrder, bool throwOnMismatch)
         {
             if (token1.Type != token2.Type)
@@ -290,6 +307,8 @@ namespace VDS.RDF.JsonLd
 
         public static IEnumerable<object[]> FromRdfTests => ProcessFromRdfManifest("fromRdf-manifest.jsonld");
 
+        public static IEnumerable<object[]> FrameTests => ProcessFrameManifest("frame-manifest.jsonld");
+
         private static IEnumerable<object[]> ProcessManifest(string manifestPath, string skipTestsPath = null)
         {
             var resourceDir = new DirectoryInfo("resources\\jsonld");
@@ -355,12 +374,7 @@ namespace VDS.RDF.JsonLd
             manifestPath = Path.Combine(resourceDir.FullName, manifestPath);
             var manifestJson = File.ReadAllText(manifestPath);
             var manifest = JObject.Parse(manifestJson);
-            var skipTests = new List<string>();
-            if (skipTestsPath != null)
-            {
-                skipTestsPath = Path.Combine(resourceDir.FullName, skipTestsPath);
-                skipTests = File.ReadAllLines(skipTestsPath).ToList();
-            }
+            var skipTests = ReadSkipTests(skipTestsPath, resourceDir);
             var sequence = manifest.Property("sequence").Value as JArray;
             foreach (var testConfiguration in sequence.OfType<JObject>())
             {
@@ -393,6 +407,56 @@ namespace VDS.RDF.JsonLd
                     Path.Combine(resourceDir.FullName, expect),
                     useNativeTypes,
                     useRdfType
+                };
+            }
+        }
+
+        private static List<string> ReadSkipTests(string skipTestsPath, DirectoryInfo resourceDir)
+        {
+            var skipTests = new List<string>();
+            if (skipTestsPath != null)
+            {
+                skipTestsPath = Path.Combine(resourceDir.FullName, skipTestsPath);
+                skipTests = File.ReadAllLines(skipTestsPath).ToList();
+            }
+            return skipTests;
+        }
+
+        private static IEnumerable<object[]> ProcessFrameManifest(string manifestPath, string skipTestsPath = null)
+        {
+            var resourceDir = new DirectoryInfo("resources\\jsonld");
+            var skipTests = ReadSkipTests(skipTestsPath, resourceDir);
+            manifestPath = Path.Combine(resourceDir.FullName, manifestPath);
+            var manifestJson = File.ReadAllText(manifestPath);
+            var manifest = JObject.Parse(manifestJson);
+            var sequence = manifest.Property("sequence").Value as JArray;
+            foreach (var testConfiguration in sequence.OfType<JObject>())
+            {
+                // For now ignore type as everything in this manifest is a positive test
+                var input = testConfiguration.Property("input").Value.Value<string>();
+                if (skipTests.Contains(input)) continue;
+                var frame = testConfiguration.Property("frame")?.Value.Value<string>();
+                var expect = testConfiguration.Property("expect").Value.Value<string>();
+                var optionsProperty = testConfiguration.Property("option");
+                bool pruneBlankNodeIdentifiers = false;
+                var options = optionsProperty?.Value as JObject;
+                if (options != null)
+                {
+                    foreach (var p in options.Properties())
+                    {
+                        switch (p.Name)
+                        {
+                            case "pruneBlankNodeIdentifiers":
+                                pruneBlankNodeIdentifiers = p.Value.Value<bool>();
+                                break;
+                        }
+                    }
+                }
+                yield return new object[] {
+                    Path.Combine(resourceDir.FullName, input),
+                    Path.Combine(resourceDir.FullName, frame),
+                    Path.Combine(resourceDir.FullName, expect),
+                    pruneBlankNodeIdentifiers
                 };
             }
         }
