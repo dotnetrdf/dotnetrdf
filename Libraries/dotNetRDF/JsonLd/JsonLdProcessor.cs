@@ -1273,7 +1273,7 @@ namespace VDS.RDF.JsonLd
                     // 8.4.13 - When the frame expansion flag is set, if expanded property is any other framing keyword (@explicit, @default, @embed, @explicit, @omitDefault, or @requireAll), set expanded value to the result of performing the Expansion Algorithm recursively, passing active context, active property, and value for element.
                     if (frameExpansion && JsonLdFramingKeywords.Contains(expandedProperty))
                     {
-                        expandedValue = ExpandAlgorithm(activeContext, activeProperty, value);
+                        expandedValue = ExpandAlgorithm(activeContext, expandedProperty, value);
                     }
                     // 8.4.14 - Unless expanded value is null, set the expanded property member of result to expanded value.
                     if (expandedValue != null)
