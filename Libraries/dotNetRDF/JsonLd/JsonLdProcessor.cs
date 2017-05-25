@@ -3000,7 +3000,8 @@ namespace VDS.RDF.JsonLd
             }
 
             // Recursively, replace all key-value pairs in compacted results where the key is @preserve with the value from the key-pair. If the value from the key-pair is @null, replace the value with null. If, after replacement, an array contains only the value null remove the value, leaving an empty array.
-            ReplacePreservedValues(compactedResults, _options.CompactArrays);
+            var jsonLdContext = ProcessContext(new JsonLdContext(), context);
+            ReplacePreservedValues(compactedResults, jsonLdContext, _options.CompactArrays);
             if (compactedResults["@graph"].Type != JTokenType.Array)
             {
                 compactedResults["@graph"] = new JArray(compactedResults["@graph"]);
@@ -3008,7 +3009,7 @@ namespace VDS.RDF.JsonLd
             return compactedResults;
         }
 
-        private void ReplacePreservedValues(JToken token, bool compactArrays)
+        private void ReplacePreservedValues(JToken token, JsonLdContext context, bool compactArrays)
         {
             switch (token.Type)
             {
@@ -3042,18 +3043,27 @@ namespace VDS.RDF.JsonLd
                     }
                     foreach (var p in o)
                     {
-                        ReplacePreservedValues(p.Value, compactArrays);
+                        ReplacePreservedValues(p.Value, context, compactArrays);
                     }
                     break;
                 case JTokenType.Array:
                     var a = token as JArray;
                     foreach (var item in a.ToList())
                     {
-                        ReplacePreservedValues(item, compactArrays);
+                        ReplacePreservedValues(item, context, compactArrays);
                     }
+                    
                     if (compactArrays && a.Count == 1)
                     {
-                        a.Replace(a[0]);
+                        var parentProperty = a.Parent as JProperty;
+                        if (parentProperty != null)
+                        {
+                            var termDefinition = context.GetTerm(parentProperty.Name);
+                            if (termDefinition == null || termDefinition.ContainerMapping == JsonLdContainer.Null)
+                            {
+                                a.Replace(a[0]);
+                            }
+                        }
                     }
                     break;
             }
@@ -3091,7 +3101,7 @@ namespace VDS.RDF.JsonLd
         }
         private class BlankNodeMapEntry
         {
-            public bool IsReferenced = true;
+            public bool IsReferenced;
             public JProperty IdProperty;
         }
 
