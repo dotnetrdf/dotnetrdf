@@ -3119,7 +3119,7 @@ namespace VDS.RDF.JsonLd
                             mapEntry = new BlankNodeMapEntry();
                             objectMap[str] = mapEntry;
                         }
-                        if (activeProperty.Name == "@id")
+                        if (activeProperty.Name == "@id" && mapEntry.IdProperty == null)
                         {
                             mapEntry.IdProperty = activeProperty;
                         }
@@ -3506,6 +3506,11 @@ namespace VDS.RDF.JsonLd
                 foreach (var pm in propertyMatches)
                 {
                     var propertyMatch = MatchProperty(state, node, pm.Key, pm.Value, requireAll);
+                    if (propertyMatch == MatchType.Abort)
+                    {
+                        match = false;
+                        break;
+                    }
                     if (propertyMatch == MatchType.NoMatch)
                     {
                         if (requireAll)
@@ -3548,11 +3553,12 @@ namespace VDS.RDF.JsonLd
             var frameArray = frameValue as JArray;
 
             // Frame specifies match none - nodeValues must be empty
-            if (frameArray != null && frameArray.Count == 0 && nodeValues.Count != 0) return MatchType.NoMatch;
+            if (frameArray != null && frameArray.Count == 0 && nodeValues.Count != 0) return MatchType.Abort;
 
-            var frameObject = frameValue as JObject;
             // Frame specifies match wildcard - nodeValues must be non-empty
-            if (frameObject != null && frameObject.Count == 0 && nodeValues.Count > 0) return MatchType.Match;
+            // var frameObject = frameValue as JObject;
+            // if (frameObject != null && frameObject.Count == 0 && nodeValues.Count > 0) return MatchType.Match;
+            if (frameArray != null && frameArray.Count == 1 && IsWildcard(frameArray[0]) && nodeValues.Count > 0) return MatchType.Match;
 
             if (frameArray != null && IsValueObject(frameArray[0]))
             {
@@ -3627,11 +3633,17 @@ namespace VDS.RDF.JsonLd
             return false;
         }
 
+        // Property match enumeration
         private enum MatchType
         {
+            // Basic non-match
             NoMatch,
+            // Basic match
             Match,
-            DefaultMatch
+            // Frame provides default value
+            DefaultMatch,
+            // No match and abort further matching for the node (when a frame specifies no match for a property and the node has some values)
+            Abort
         }
 
         private bool IsWildcard(JToken token)
