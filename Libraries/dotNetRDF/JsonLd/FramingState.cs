@@ -37,7 +37,7 @@ namespace VDS.RDF.JsonLd
         public bool OmitDefault { get; set; }
         public JObject GraphMap { get; set; }
         public string GraphName { get; set; }
-        public JObject Subjects { get; set; }
+        public JObject Subjects => GraphMap[GraphName] as JObject;
         public Stack<string> GraphStack { get; set; }
         public JObject Link { get; set; }
 
@@ -49,7 +49,6 @@ namespace VDS.RDF.JsonLd
             OmitDefault = options.OmitDefault;
             GraphMap = graphMap;
             GraphName = graphName;
-            Subjects = graphMap[graphName] as JObject;
             GraphStack = new Stack<string>();
             Link = new JObject();
         }

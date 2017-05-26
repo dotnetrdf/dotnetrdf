@@ -3060,7 +3060,10 @@ namespace VDS.RDF.JsonLd
                         if (parentProperty != null)
                         {
                             var termDefinition = context.GetTerm(parentProperty.Name);
-                            if (termDefinition == null || termDefinition.ContainerMapping == JsonLdContainer.Null)
+                            var expandedName = termDefinition?.TypeMapping ?? parentProperty.Name;
+                            if (expandedName != "@graph" && 
+                                expandedName != "@list" && 
+                                (termDefinition == null || termDefinition.ContainerMapping == JsonLdContainer.Null))
                             {
                                 a.Replace(a[0]);
                             }
