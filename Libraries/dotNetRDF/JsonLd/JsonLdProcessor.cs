@@ -1078,10 +1078,11 @@ namespace VDS.RDF.JsonLd
                     if (expandedProperty.Equals("@value"))
                     {
                         if (!(value.Type == JTokenType.Null || IsScalar(value) ||
-                            (frameExpansion && value.Type == JTokenType.Array) ||
-                            (frameExpansion && value.Type == JTokenType.Object)))
+                              (frameExpansion && value.Type == JTokenType.Array) ||
+                              (frameExpansion && value.Type == JTokenType.Object)))
                         {
-                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidValueObject, "The expanded value of @value must be a scalar or null.");
+                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidValueObject,
+                                "The expanded value of @value must be a scalar or null.");
                         }
                         expandedValue = value;
                         if (expandedValue.Type == JTokenType.Object)
@@ -1091,8 +1092,8 @@ namespace VDS.RDF.JsonLd
                                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidValueObject,
                                     $"Expected an empty object when expanding @value at {value.Path}.");
                             }
-                            expandedValue = null;
-                        } else if (expandedValue.Type == JTokenType.Array)
+                        }
+                        else if (expandedValue.Type == JTokenType.Array)
                         {
                             if ((expandedValue as JArray).Any(item => !(item.Type == JTokenType.Null || IsScalar(item)))
                             )
@@ -1134,7 +1135,7 @@ namespace VDS.RDF.JsonLd
                             {
                                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidLanguageTaggedString, $"Invalid value for @language property in {activeProperty}. Expected an object value to have no properties.");
                             }
-                            expandedValue = null; // KA: Not sure what the correct value is here, spec refers to an array of one or more strings, but there is nothing here to generate string values from.
+                            expandedValue = value;
                         }
                         else
                         {
@@ -3333,7 +3334,11 @@ namespace VDS.RDF.JsonLd
                             // 5.5.2.3.3 - Otherwise, append a copy of item to active property in output.
                             else
                             {
-                                FramingAppend(output, item, property);
+                                // KA - should only append if value pattern matches?
+                                if (frame[property] == null || frame[property][0]["@value"] == null || ValuePatternMatch(frame[property], item))
+                                {
+                                    FramingAppend(output, item, property);
+                                }
                             }
                         }
                     }
@@ -3610,6 +3615,7 @@ namespace VDS.RDF.JsonLd
 
         private bool ValuePatternMatch(JToken valuePattern, JToken value)
         {
+            if (valuePattern is JArray) valuePattern = ((JArray) valuePattern)[0];
             var valuePatternObject = valuePattern as JObject;
             var valueObject = value as JObject;
             if (valuePatternObject == null || valueObject == null) return false;
@@ -3646,7 +3652,8 @@ namespace VDS.RDF.JsonLd
                 // Otherwise the value token must be in the pattern token array
                 return patternTokenArray.Any(x => JToken.DeepEquals(x, valueToken));
             }
-            return false;
+            // Otherwise the pattern specifies a single value to match - just do a straight value match
+            return JToken.DeepEquals(patternToken, valueToken);
         }
 
         // Property match enumeration
