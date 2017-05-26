@@ -3451,10 +3451,7 @@ namespace VDS.RDF.JsonLd
             var propertyMatches = new Dictionary<string, JToken>();
             foreach (var p in frame.Properties())
             {
-                if (p.Name.Equals("@id") || p.Name.Equals("@type") || IsFramingKeyword(p.Name))
-                {
-                    continue;
-                }
+                if (IsKeyword(p.Name)) continue;
                 propertyMatches[p.Name] = p.Value as JArray;
             }
 
