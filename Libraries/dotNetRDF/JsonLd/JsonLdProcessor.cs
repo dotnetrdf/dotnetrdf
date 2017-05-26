@@ -3594,11 +3594,9 @@ namespace VDS.RDF.JsonLd
             }
 
             // frameArray is a node pattern array
-            var valueSubjects = nodeValues.Where(x=>x["id"]!=null).Select(x => x["@id"].Value<string>()).ToList();
+            var valueSubjects = nodeValues.Where(x=>x["@id"]!=null).Select(x => x["@id"].Value<string>()).ToList();
             if (valueSubjects.Any())
             {
-                valueSubjects.Sort();
-
                 foreach (var subframe in frameArray)
                 {
                     var matchedSubjects = MatchFrame(state, valueSubjects, subframe as JObject, requireAll);
