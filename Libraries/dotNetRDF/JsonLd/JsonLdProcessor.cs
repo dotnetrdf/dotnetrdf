@@ -3229,6 +3229,9 @@ namespace VDS.RDF.JsonLd
                             {
                                 graphEntry = new JArray(new JObject());
                                 frame["@graph"] = graphEntry;
+                            } else if (graphEntry.Count == 0)
+                            {
+                                graphEntry.Add(new JObject());
                             }
                             subframe = graphEntry[0] as JObject;
                             recurse = !(state.GraphName.Equals("@merged") || state.GraphName.Equals("@default"));
@@ -3342,7 +3345,11 @@ namespace VDS.RDF.JsonLd
                         if (output[property] != null) continue;
                         if (IsKeyword(property) || IsFramingKeyword(property)) continue;
                         var objects = frameProperty.Value as JArray;
-                        if (objects == null || objects.Count == 0) continue;
+                        if (objects == null || objects.Count == 0)
+                        {
+                            // Initialise as an array containing an empty frame
+                            objects = new JArray(new JObject());
+                        }
                         // 5.5.3.1 - Let item be the first element in objects, which must be a frame object.
                         var item = objects[0];
                         ValidateFrame(item);
@@ -3538,26 +3545,34 @@ namespace VDS.RDF.JsonLd
         private MatchType MatchProperty(FramingState state, JObject node, string property, JToken frameValue, bool requireAll)
         {
             var nodeValues = node[property] as JArray;
+            var frameArray = frameValue as JArray;
+            bool isMatchNone = false, isWildcard = false, hasDefault = false;
+            if (frameArray.Count == 0)
+            {
+                isMatchNone = true;
+            } else if (frameArray.Count == 1 && IsWildcard(frameArray[0]))
+            {
+                isWildcard = true;
+            }
+            else if (frameArray.Count == 1 && frameArray[0]["@default"] != null)
+            {
+                hasDefault = true;
+            }
             if (nodeValues == null || nodeValues.Count == 0)
             {
-                if (frameValue is JObject && frameValue.Count() == 1 && frameValue["@default"] != null)
-                {
-                    return MatchType.DefaultMatch;
-                }
+                if (hasDefault) return MatchType.DefaultMatch;
             }
+
             // Non-existant property cannot match frame
             if (nodeValues == null) return MatchType.NoMatch;
-            var frameArray = frameValue as JArray;
 
             // Frame specifies match none - nodeValues must be empty
-            if (frameArray != null && frameArray.Count == 0 && nodeValues.Count != 0) return MatchType.Abort;
+            if (isMatchNone && nodeValues.Count != 0) return MatchType.Abort;
 
             // Frame specifies match wildcard - nodeValues must be non-empty
-            // var frameObject = frameValue as JObject;
-            // if (frameObject != null && frameObject.Count == 0 && nodeValues.Count > 0) return MatchType.Match;
-            if (frameArray != null && frameArray.Count == 1 && IsWildcard(frameArray[0]) && nodeValues.Count > 0) return MatchType.Match;
+            if (isWildcard && nodeValues.Count > 0) return MatchType.Match;
 
-            if (frameArray != null && IsValueObject(frameArray[0]))
+            if (IsValueObject(frameArray[0]))
             {
                 // frameArray is a value pattern array
                 foreach (var valuePattern in frameArray)
@@ -3573,10 +3588,10 @@ namespace VDS.RDF.JsonLd
                 return MatchType.NoMatch;
             }
 
-            if (frameArray != null)
+            // frameArray is a node pattern array
+            var valueSubjects = nodeValues.Where(x=>x["id"]!=null).Select(x => x["@id"].Value<string>()).ToList();
+            if (valueSubjects.Any())
             {
-                // frameArray is a node pattern array
-                var valueSubjects = nodeValues.Where(x=>x["id"]!=null).Select(x => x["@id"].Value<string>()).ToList();
                 valueSubjects.Sort();
 
                 foreach (var subframe in frameArray)
@@ -3586,7 +3601,7 @@ namespace VDS.RDF.JsonLd
                 }
             }
 
-            return MatchType.NoMatch;
+            return hasDefault ? MatchType.Match : MatchType.NoMatch;
         }
 
         private bool ValuePatternMatch(JToken valuePattern, JToken value)
