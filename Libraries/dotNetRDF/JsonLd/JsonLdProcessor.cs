@@ -3494,13 +3494,14 @@ namespace VDS.RDF.JsonLd
                         {
                             // Matched on @type
                             matches.Add(subject, node);
-                            continue;
                         }
+                        continue;
                     }
-                    else if (typeMatches.Count == 0)
+                    if (typeMatches.Count == 0)
                     {
                         // Matched on @type = match none
                         matches.Add(subject, node);
+                        continue;
                     }
                 }
                 if (propertyMatches.Count == 0 && idMatches == null && typeMatches == null)
