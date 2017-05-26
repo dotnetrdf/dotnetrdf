@@ -3497,6 +3497,11 @@ namespace VDS.RDF.JsonLd
                             continue;
                         }
                     }
+                    else if (typeMatches.Count == 0)
+                    {
+                        // Matched on @type = match none
+                        matches.Add(subject, node);
+                    }
                 }
                 if (propertyMatches.Count == 0 && idMatches == null && typeMatches == null)
                 {
