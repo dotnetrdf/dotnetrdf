@@ -27,6 +27,7 @@
 using System;
 using System.IO;
 using System.IO.Compression;
+using VDS.RDF.JsonLd;
 using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Parsing
@@ -180,5 +181,22 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public GZippedTriXParser()
             : base(new TriXParser()) { }
+    }
+
+    /// <summary>
+    /// Parser for oading GZipped JSON-LD
+    /// </summary>
+    public class GZippedJsonLdParser : BaseGZipDatasetParser
+    {
+        /// <summary>
+        /// Creates a new GZipped JSON-LD parser
+        /// </summary>
+        public GZippedJsonLdParser():base(new JsonLdParser()) { }
+
+        /// <summary>
+        /// Creates a new GZipped JSON-LD parser with a specific set of <see cref="JsonLdProcessorOptions"/>.
+        /// </summary>
+        /// <param name="parserOptions">The options to pass to the underlying <see cref="JsonLdParser"/></param>
+        public GZippedJsonLdParser(JsonLdProcessorOptions parserOptions):base(new JsonLdParser(parserOptions)) { }
     }
 }

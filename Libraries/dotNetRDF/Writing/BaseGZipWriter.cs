@@ -197,4 +197,24 @@ namespace VDS.RDF.Writing
         public GZippedRdfAWriter()
             : base(new HtmlWriter()) { }
     }
+
+    public class GZippedJsonLdWriter : BaseGZipDatasetWriter
+    {
+        /// <summary>
+        /// Create a new GZippedJsonLdWriter
+        /// </summary>
+        public GZippedJsonLdWriter() : base(new JsonLdWriter())
+        {
+        }
+
+        /// <summary>
+        /// Create a new GZippedJsonLdWriter with a specific set of 
+        /// <see cref="JsonLdWriterOptions"/>
+        /// </summary>
+        /// <param name="writerOptions">The writer options to pass through
+        /// to the underlying <see cref="JsonLdWriter"/></param>
+        public GZippedJsonLdWriter(JsonLdWriterOptions writerOptions) : base(new JsonLdWriter(writerOptions))
+        {
+        }
+    }
 }

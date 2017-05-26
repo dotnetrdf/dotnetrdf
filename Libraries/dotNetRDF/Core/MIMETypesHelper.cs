@@ -109,6 +109,11 @@ namespace VDS.RDF
         internal static string[] Json = { "application/json", "text/json", "application/rdf+json" };
 
         /// <summary>
+        /// MIME types for JSON-LD
+        /// </summary>
+        internal static string[] JsonLd = {"application/ld+json"};
+
+        /// <summary>
         /// MIME Types for SPARQL Result Sets
         /// </summary>
         internal static string[] SparqlResults = { "application/sparql-results+xml", "application/sparql-results+json" };
@@ -173,6 +178,10 @@ namespace VDS.RDF
         /// Default File Extension for Json formats
         /// </summary>
         public const String DefaultJsonExtension = "json";
+        /// <summary>
+        /// Default file extension for JSON-LD formats
+        /// </summary>
+        public const string DefaultJdonLdExtension = "jsonld";
         /// <summary>
         /// Default File Extension for RDF/JSON
         /// </summary>
@@ -360,6 +369,10 @@ namespace VDS.RDF
                     // We define this after SPARQL Results JSON to ensure we favour the correct MIME type for it
                     _mimeTypes.Add(new MimeTypeDefinition("RDF/JSON", Json, new String[] { DefaultRdfJsonExtension, DefaultJsonExtension }, typeof(RdfJsonParser), null, typeof(SparqlJsonParser), typeof(RdfJsonWriter), null, typeof(SparqlJsonWriter)));
                     _mimeTypes.Add(new MimeTypeDefinition("GZipped RDF/JSON", Json, new String[] { DefaultRdfJsonExtension + "." + DefaultGZipExtension, DefaultJsonExtension + "." + DefaultGZipExtension }, typeof(GZippedRdfJsonParser), null, null, typeof(GZippedRdfJsonWriter), null, null));
+
+                    // Define JSON-LD
+                    _mimeTypes.Add(new MimeTypeDefinition("JSON-LD", JsonLd, new[] {DefaultJdonLdExtension, DefaultJsonExtension}, null, typeof(JsonLdParser), null, null, typeof(JsonLdWriter), null));
+                    _mimeTypes.Add(new MimeTypeDefinition("JSON-LD", JsonLd, new[] {DefaultJdonLdExtension + "." + DefaultGZipExtension, DefaultJsonExtension + "." + DefaultGZipExtension }, null, typeof(GZippedJsonLdParser), null, null, typeof(GZippedJsonLdWriter), null));
 
                     // Define CSV
                     _mimeTypes.Add(new MimeTypeDefinition("CSV", Csv, new String[] { DefaultCsvExtension }, null, null, typeof(SparqlCsvParser), typeof(CsvWriter), typeof(CsvStoreWriter), typeof(SparqlCsvWriter)));

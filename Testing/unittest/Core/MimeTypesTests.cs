@@ -52,7 +52,7 @@ namespace VDS.RDF
         {
             int count = MimeTypesHelper.Definitions.Count();
             Console.WriteLine(count + " Definitions registered");
-            Assert.Equal(30, count);
+            Assert.Equal(32, count);
         }
 
         [Fact]
@@ -60,7 +60,7 @@ namespace VDS.RDF
         {
             int count = MimeTypesHelper.GetDefinitions(MimeTypesHelper.Any).Count();
             Console.WriteLine(count + " Definitions registered");
-            Assert.Equal(30, count);
+            Assert.Equal(32, count);
         }
 
         [Fact]
@@ -1010,6 +1010,61 @@ namespace VDS.RDF
             MimeTypeDefinition d = defs.First();
             Assert.Equal(typeof(GZippedSparqlTsvParser), d.SparqlResultsParserType);
             Assert.Equal(typeof(GZippedSparqlTsvWriter), d.SparqlResultsWriterType);
+        }
+
+        [Fact]
+        public void MimeTypesGetDefinitionsByTypeJsonLd1()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/ld+json");
+            Assert.Equal(2, defs.Count());
+            AssertIsJsonLd(defs.First());
+            AssertIsGzippedJsonLd(defs.Last());
+        }
+
+        [Fact]
+        public void MimeTypesGetDefinitionsByExtJsonLd1()
+        {
+            var defs = MimeTypesHelper.GetDefinitionsByFileExtension("jsonld");
+            Assert.Equal(1, defs.Count());
+            AssertIsJsonLd(defs.First());
+        }
+
+        [Fact]
+        public void MimeTypesGetDefinitionsByExtJsonLd2()
+        {
+            var defs = MimeTypesHelper.GetDefinitionsByFileExtension(".jsonld");
+            Assert.Equal(1, defs.Count());
+            AssertIsJsonLd(defs.First());
+        }
+
+        [Fact]
+        public void MimeTypesGetDefinitionsByExtJsonLd3()
+        {
+            var defs = MimeTypesHelper.GetDefinitionsByFileExtension("jsonld.gz");
+            Assert.Equal(1, defs.Count());
+            AssertIsGzippedJsonLd(defs.First());
+        }
+
+        [Fact]
+        public void MimeTypesGetDefinitionsByExtJsonLd4()
+        {
+            var defs = MimeTypesHelper.GetDefinitionsByFileExtension(".jsonld.gz");
+            Assert.Equal(1, defs.Count());
+            AssertIsGzippedJsonLd(defs.First());
+        }
+
+        private void AssertIsJsonLd(MimeTypeDefinition d)
+        {
+            Assert.Null(d.RdfParserType);
+            Assert.Null(d.RdfWriterType);
+            Assert.Equal(typeof(JsonLdParser), d.RdfDatasetParserType);
+            Assert.Equal(typeof(JsonLdWriter), d.RdfDatasetWriterType);
+        }
+
+        private void AssertIsGzippedJsonLd(MimeTypeDefinition d)
+        {
+            Assert.Equal(typeof(GZippedJsonLdParser), d.RdfDatasetParserType);
+            Assert.Equal(typeof(GZippedJsonLdWriter), d.RdfDatasetWriterType);
         }
 
         [Fact]
