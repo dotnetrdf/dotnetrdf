@@ -132,7 +132,7 @@ namespace VDS.RDF.Parsing
                         INode subjectNode;
                         if (IsBlankNodeIdentifier(subject))
                         {
-                            subjectNode = handler.CreateBlankNode(subject);
+                            subjectNode = handler.CreateBlankNode(subject.Substring(2));
                         }
                         else
                         {
@@ -199,9 +199,9 @@ namespace VDS.RDF.Parsing
             if (token is JValue)
             {
                 var stringValue = token.Value<string>();
-                if (stringValue.StartsWith("_:"))
+                if (JsonLdProcessor.IsBlankNodeIdentifier(stringValue))
                 {
-                    return handler.CreateBlankNode(stringValue);
+                    return handler.CreateBlankNode(stringValue.Substring(2));
                 }
                 if (Uri.TryCreate(stringValue, allowRelativeIri ? UriKind.RelativeOrAbsolute : UriKind.Absolute, out Uri iri))
                 {
