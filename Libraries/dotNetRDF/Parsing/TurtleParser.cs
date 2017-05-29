@@ -44,7 +44,6 @@ namespace VDS.RDF.Parsing
         private bool _traceTokeniser = false;
         private TokenQueueMode _queueMode = Options.DefaultTokenQueueMode;
         private TurtleSyntax _syntax = TurtleSyntax.W3C;
-        private readonly Uri _defaultDatatype = new Uri(XmlSpecsHelper.XmlSchemaDataTypeString);
 
         /// <summary>
         /// Creates a new Turtle Parser
@@ -905,7 +904,7 @@ namespace VDS.RDF.Parsing
                     else
                     {
                         // Just an untyped Literal
-                        return context.Handler.CreateLiteralNode(lit.Value, _defaultDatatype);
+                        return context.Handler.CreateLiteralNode(lit.Value);
                     }
 
                 case Token.LITERALWITHDT:
