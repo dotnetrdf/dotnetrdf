@@ -63,7 +63,7 @@ namespace VDS.RDF.JsonLd
                     var contextProperty = expandObject.Property("@context");
                     if (contextProperty != null)
                     {
-                        activeContext = processor.ProcessContext(activeContext, contextProperty);
+                        activeContext = processor.ProcessContext(activeContext, contextProperty.Value);
                     }
                     else
                     {
