@@ -66,6 +66,8 @@ namespace VDS.RDF.Writing
         {
             var jsonArray = SerializeStore(store);
             output.Write(jsonArray.ToString(_options.JsonFormatting));
+            output.Flush();
+            output.Close();
         }
 
         /// <summary>
@@ -334,10 +336,14 @@ namespace VDS.RDF.Writing
         private JToken RdfToObject(INode value)
         {
             // 1 - If value is an IRI or a blank node identifier, return a new dictionary consisting of a single member @id whose value is set to value.
-            var uriNode = value as IUriNode;
-            if (uriNode != null) return new JObject(new JProperty("@id", uriNode.Uri.OriginalString));
-            var bNode = value as IBlankNode;
-            if (bNode != null) return new JObject(new JProperty("@id", "_:" + bNode.InternalID));
+            if (value is IUriNode uriNode)
+            {
+                return new JObject(new JProperty("@id", uriNode.Uri.OriginalString));
+            }
+            if (value is IBlankNode bNode)
+            {
+                return new JObject(new JProperty("@id", "_:" + bNode.InternalID));
+            }
             // 2 - Otherwise value is an RDF literal:
             var literal = value as ILiteralNode;
             // 2.1 - Initialize a new empty dictionary result.
