@@ -16,27 +16,19 @@ namespace VDS.RDF.JsonLd
         public void ExpandTests(string inputPath, string contextPath, string expectedOutputPath, string baseIri,
             string processorMode, string expandContextPath, bool compactArrays)
         {
-            try
-            {
-                var processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
-                    compactArrays);
-                var inputJson = File.ReadAllText(inputPath);
-                var expectedOutputJson = File.ReadAllText(expectedOutputPath);
-                var inputElement = JToken.Parse(inputJson);
-                var expectedOutputElement = JToken.Parse(expectedOutputJson);
+            var processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
+                compactArrays);
+            var inputJson = File.ReadAllText(inputPath);
+            var expectedOutputJson = File.ReadAllText(expectedOutputPath);
+            var inputElement = JToken.Parse(inputJson);
+            var expectedOutputElement = JToken.Parse(expectedOutputJson);
 
-                // Expand tests should not have a context parameter
-                Assert.Null(contextPath);
+            // Expand tests should not have a context parameter
+            Assert.Null(contextPath);
 
-                var actualOutputElement = JsonLdProcessor.Expand(inputElement, processorOptions);
-                Assert.True(JToken.DeepEquals(actualOutputElement, expectedOutputElement),
-                    $"Error processing expand test {Path.GetFileName(inputPath)}.\nActual output does not match expected output.\nExpected:\n{expectedOutputElement}\n\nActual:\n{actualOutputElement}");
-            }
-            catch (Exception ex)
-            {
-                Assert.True(false, $"Unexpected exception processing expand test {Path.GetFileName(inputPath)}. Cause: {ex}");
-                throw;
-            }
+            var actualOutputElement = JsonLdProcessor.Expand(inputElement, processorOptions);
+            Assert.True(JToken.DeepEquals(actualOutputElement, expectedOutputElement),
+                $"Error processing expand test {Path.GetFileName(inputPath)}.\nActual output does not match expected output.\nExpected:\n{expectedOutputElement}\n\nActual:\n{actualOutputElement}");
         }
 
         [Theory]
