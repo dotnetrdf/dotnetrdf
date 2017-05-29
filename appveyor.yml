@@ -16,7 +16,7 @@ before_build:
   - dotnet restore dotNetRDF.sln
   - ps: gitversion /l console /output buildserver /updateassemblyinfo
 
-configuration: Debug
+configuration: Release
 
 build_script:
   - dotnet build Libraries/dotNetRDF.Query.Spin
