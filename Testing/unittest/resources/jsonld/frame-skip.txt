@@ -1,0 +1,6 @@
+# These tests appear to fail to conform with the specification about graph processing.
+# The dotNetRDF output matches the output of the JSON-LD playground
+# I've opened an issue about this at https://github.com/json-ld/json-ld.org/issues/502
+frame-0048-in.jsonld
+frame-0049-in.jsonld
+frame-0050-in.jsonld

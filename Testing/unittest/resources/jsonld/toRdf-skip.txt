@@ -1,0 +1,18 @@
+﻿# The following tests fail due to the C# URI parser treating a single character scheme as a DOS drive letter
+toRdf-0120-in.jsonld
+toRdf-0121-in.jsonld
+toRdf-0122-in.jsonld
+toRdf-0123-in.jsonld
+toRdf-0124-in.jsonld
+toRdf-0125-in.jsonld
+toRdf-0126-in.jsonld
+
+# The following tests fail due to DNR not supporting a blank node identifier as a graph name
+toRdf-0117-in.jsonld
+toRdf-0061-in.jsonld
+toRdf-0114-in.jsonld
+toRdf-0115-in.jsonld
+toRdf-0060-in.jsonld
+
+# The following tests fail due to the DNR NQuads parser not supporting a blank node identifier as a predicate
+toRdf-0118-in.jsonld

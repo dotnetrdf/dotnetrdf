@@ -394,7 +394,9 @@ namespace VDS.RDF.Parsing
                     if (dtUri == null) throw Error("<typedLiteral> element does not have the required datatype attribute", reader);
 
                     reader.MoveToContent();
-                    return handler.CreateLiteralNode(reader.ReadInnerXml(), dtUri);
+                    // KA: Why ReadInnerXml here and not in other places?
+                    // return handler.CreateLiteralNode(reader.ReadInnerXml(), dtUri);
+                    return handler.CreateLiteralNode(reader.ReadElementContentAsString(), dtUri);
                 }
                 else
                 {

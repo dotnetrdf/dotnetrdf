@@ -49,6 +49,7 @@ namespace VDS.RDF.Parsing
             this._g = new Graph();
             this._g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             this._results = this._g.ExecuteQuery("SELECT * WHERE { ?s ?p ?o }") as SparqlResultSet;
+            NormalizeDatatypes(_g);
 
             foreach (MimeTypeDefinition def in MimeTypesHelper.Definitions)
             {
@@ -210,6 +211,7 @@ namespace VDS.RDF.Parsing
                 IStoreReader reader = def.GetRdfDatasetParser();
                 reader.Load(store, new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read)));
 
+                NormalizeDatatypes(store.Graphs.First());
                 Assert.Equal(this._g, store.Graphs.First());
             }
         }
@@ -248,6 +250,7 @@ namespace VDS.RDF.Parsing
                 IStoreReader reader = def.GetRdfDatasetParser();
                 reader.Load(store, new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read)));
 
+                NormalizeDatatypes(store.Graphs.First());
                 Assert.Equal(this._g, store.Graphs.First());
             }
         }
@@ -267,6 +270,7 @@ namespace VDS.RDF.Parsing
                 IStoreReader reader = def.GetRdfDatasetParser();
                 reader.Load(store, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
 
+                NormalizeDatatypes(store.Graphs.First());
                 Assert.Equal(this._g, store.Graphs.First());
             }
         }
@@ -396,6 +400,21 @@ namespace VDS.RDF.Parsing
                 reader.Load(results, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
 
                 Assert.True(this._results.Equals(results), "Result Sets for file " + filename + " were not equal");
+            }
+        }
+
+        private void NormalizeDatatypes(IGraph g)
+        {
+            var xsdString = new Uri(XmlSpecsHelper.XmlSchemaDataTypeString);
+            foreach (var t in g.Triples.Where(t => t.Object is ILiteralNode).ToList())
+            {
+                var lit = (ILiteralNode) t.Object;
+                if (lit.DataType == null && string.IsNullOrEmpty(lit.Language))
+                {
+                    // literal with no datatype should be xsd:string in the RDF 1.1 data model
+                    g.Retract(t);
+                    g.Assert(new Triple(t.Subject, t.Predicate, g.CreateLiteralNode(lit.Value, xsdString)));
+                }
             }
         }
     }
