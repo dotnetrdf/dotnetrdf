@@ -307,7 +307,7 @@ namespace VDS.RDF.JsonLd
 
         public static IEnumerable<object[]> FromRdfTests => ProcessFromRdfManifest("fromRdf-manifest.jsonld");
 
-        public static IEnumerable<object[]> FrameTests => ProcessFrameManifest("frame-manifest.jsonld", "frame-skip.txt");
+        public static IEnumerable<object[]> FrameTests => ProcessFrameManifest("frame-manifest.jsonld");
 
         private static IEnumerable<object[]> ProcessManifest(string manifestPath, string skipTestsPath = null)
         {
