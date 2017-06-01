@@ -3225,7 +3225,7 @@ namespace VDS.RDF.JsonLd
                             recurse = !state.GraphName.Equals("@merged");
                             subframe = new JObject();
                         }
-                        // 5.5.1.2 - Otherwise, set subframe to the first entry for @graph in frame, or a new empty dictionary, if it does not exist, and set recurse to true, unless graph name in state is @merged or @default.
+                        // 5.5.1.2 - Otherwise, set subframe to the first entry for @graph in frame, or a new empty dictionary, if it does not exist, and set recurse to true, unless id is @merged or @default.
                         else
                         {
                             var graphEntry = (frame["@graph"] as JArray);
@@ -3238,7 +3238,7 @@ namespace VDS.RDF.JsonLd
                                 graphEntry.Add(new JObject());
                             }
                             subframe = graphEntry[0] as JObject;
-                            recurse = !(state.GraphName.Equals("@merged") || state.GraphName.Equals("@default"));
+                            recurse = !(id.Equals("@merged") || id.Equals("@default"));
                         }
                         // 5.5.1.3 - If recurse is true:
                         if (recurse)
