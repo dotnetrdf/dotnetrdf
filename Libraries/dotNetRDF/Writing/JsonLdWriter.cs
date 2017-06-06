@@ -166,17 +166,18 @@ namespace VDS.RDF.Writing
                     // 4.5.8 - If object is a blank node identifier or IRI, it might represent the list node:
                     if (triple.Object is IBlankNode || triple.Object is IUriNode)
                     {
-                        // 4.5.8.1
+                        // 4.5.8.1 - If the object member of node usages map does not exist, initialize it to a new empty array.
                         var obj = MakeNodeString(triple.Object);
                         if (!nodeUsagesMap.ContainsKey(obj))
                         {
                             nodeUsagesMap.Add(obj, new JArray());
                         }
-                        // 4.5.8.2
-                        // AppendUniqueElement(node["@id"], nodeUsagesMap[obj] as JArray);
-                        // KA - looks like a bug in the spec, if we don't add duplicate entries then this map does not correctly detect when a list node is referred to by the same subject in different statements
+                        // 4.5.8.2 - Append the value of the @id member of node to the object member of node usages map.
                         (nodeUsagesMap[obj]).Add(node["@id"]);
-                        // 4.8.5.4
+
+                        // 4.8.5.3 - If the object member of node map has no usages member, create one and initialize it to an empty array.
+                        // 4.8.5.4 - Reference the usages member of the object member of node map using the variable usages.
+                        // 4.8.5.5 - Append a new dictionary consisting of three members, node, property, and value to the usages array. The node member is set to a reference to node, property to predicate, and value to a reference to value.
                         nodeMap[obj].Usages.Add(new Usage(node, predicate, value));
                     }
                 }
