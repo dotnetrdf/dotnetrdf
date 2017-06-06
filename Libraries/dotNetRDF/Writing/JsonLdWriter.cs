@@ -211,12 +211,13 @@ namespace VDS.RDF.Writing
                         // 5.3.2 - Initialize two empty arrays list and list nodes.
                         var list = new JArray();
                         var listNodes = new JArray();
-                        // 5.3.3 - While property equals rdf:rest, the array value of the member of node usages map associated with the 
-                        // @id member of node has only one member, the value associated to the usages member of node has exactly 1 entry, 
-                        // node has a rdf:first and rdf:rest property, both of which have as value an array consisting of a single element, 
-                        // and node has no other members apart from an optional @type member whose value is an array with a single item equal 
-                        // to rdf:List, node represents a well-formed list node. 
-                        // Perform the following steps to traverse the list backwards towards its head:
+                        // 5.3.3 - While property equals rdf:rest, the value of the @id member of node is a blank node identifier,
+                        // the array value of the member of node usages map associated with the @id member of node has only one 
+                        // member, the value associated to the usages member of node has exactly 1 entry, node has a rdf:first 
+                        // and rdf:rest property, both of which have as value an array consisting of a single element, and node 
+                        // has no other members apart from an optional @type member whose value is an array with a single item
+                        // equal to rdf:List, node represents a well-formed list node. Perform the following steps to traverse 
+                        // the list backwards towards its head:
                         while (IsWellFormedListNode(node, property, nodeUsagesMap))
                         {
                             // 5.3.3.1 - Append the only item of rdf:first member of node to the list array.
@@ -302,17 +303,16 @@ namespace VDS.RDF.Writing
 
         private static bool IsWellFormedListNode(JObjectWithUsages node, string property, Dictionary<string, JArray> nodeUsagesMap)
         {
-            // While property equals rdf:rest, the array value of the member of node usages map associated with the 
-            // @id member of node has only one member, the value associated to the usages member of node has exactly 1 entry, 
-            // node has a rdf:first and rdf:rest property, both of which have as value an array consisting of a single element, 
-            // and node has no other members apart from an optional @type member whose value is an array with a single item equal 
-            // to rdf:List, node represents a well-formed list node. 
+            // 5.3.3 - While property equals rdf:rest, the value of the @id member of node is a blank node identifier, 
+            // the array value of the member of node usages map associated with the @id member of node has only one member, 
+            // the value associated to the usages member of node has exactly 1 entry, node has a rdf:first and rdf: rest property, 
+            // both of which have as value an array consisting of a single element, and node has no other members apart from 
+            // an optional @type member whose value is an array with a single item equal to rdf: List, node represents a 
+            // well -formed list node.
 
             if (!RdfSpecsHelper.RdfListRest.Equals(property)) return false;
             var nodeId = node["@id"].Value<string>();
             if (nodeId == null) return false;
-
-            // Not mentioned in spec, but if node is not a blank node we should not merge it into a list array
             if (!JsonLdProcessor.IsBlankNodeIdentifier(nodeId)) return false;
 
             var mapEntry = nodeUsagesMap[nodeId] as JArray;
