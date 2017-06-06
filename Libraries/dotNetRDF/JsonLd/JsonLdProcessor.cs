@@ -2291,9 +2291,9 @@ namespace VDS.RDF.JsonLd
                     }
                     else
                     {
-                        // 6.6.3 - Otherwise, append element to the @list member of list.
+                        // 6.6.3 - Otherwise, append reference to the @list member of list.
                         var listArray = list["@list"] as JArray;
-                        listArray.Add(reference); // KA: Should be reference rather than element (because reference has the @id member on it - confirmed in JSON-LD unit test flatten-0029)
+                        listArray.Add(reference);
                     }
                 }
                 // 6.7 - If element has an @type key, append each item of its associated array to the array associated with the @type key of node unless it is already in that array. Finally remove the @type member from element.
