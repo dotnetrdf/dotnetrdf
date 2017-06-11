@@ -314,7 +314,7 @@ namespace VDS.RDF.Storage
         {
             Graph g = new Graph();
             SparqlResultSet results = new SparqlResultSet();
-            this.Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery);
+            this.Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery, false);
 
             if (results.ResultsType != SparqlResultsType.Unknown)
             {
@@ -325,6 +325,32 @@ namespace VDS.RDF.Storage
                 return g;
             }
         }
+
+        /// <summary>
+        /// Makes a SPARQL Query against the underlying Store using whatever reasoning mode is currently in-use
+        /// </summary>
+        /// <param name="sparqlQuery">Sparql Query</param>
+        /// <param name="reasoning"></param>
+        /// <returns></returns>
+        public virtual object Query(String sparqlQuery, bool reasoning)
+        {
+            Graph g = new Graph();
+            SparqlResultSet results = new SparqlResultSet();
+            this.Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery, reasoning);
+
+            if (results.ResultsType != SparqlResultsType.Unknown)
+            {
+                return results;
+            }
+            else
+            {
+                return g;
+            }
+        }
+
+
+
+
 
         /// <summary>
         /// Makes a SPARQL Query against the underlying Store using whatever reasoning mode is currently in-use processing the results using an appropriate handler from those provided
@@ -352,6 +378,87 @@ namespace VDS.RDF.Storage
                 if (sparqlQuery.Length < 2048)
                 {
                     queryParams.Add("query", sparqlQuery);
+                    request = this.CreateRequest(this._kb + tID + "/query", accept, "GET", queryParams);
+                }
+                else
+                {
+                    request = this.CreateRequest(this._kb + tID + "/query", accept, "POST", queryParams);
+
+                    // Build the Post Data and add to the Request Body
+                    request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
+                    StringBuilder postData = new StringBuilder();
+                    postData.Append("query=");
+                    postData.Append(HttpUtility.UrlEncode(sparqlQuery));
+                    using (StreamWriter writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding()))
+                    {
+                        writer.Write(postData);
+                        writer.Close();
+                    }
+                }
+
+                Tools.HttpDebugRequest(request);
+
+                // Get the Response and process based on the Content Type
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    Tools.HttpDebugResponse(response);
+
+                    StreamReader data = new StreamReader(response.GetResponseStream());
+                    String ctype = response.ContentType;
+                    try
+                    {
+                        // Is the Content Type referring to a Sparql Result Set format?
+                        ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype,
+                            Regex.IsMatch(sparqlQuery, "ASK", RegexOptions.IgnoreCase));
+                        resreader.Load(resultsHandler, data);
+                        response.Close();
+                    }
+                    catch (RdfParserSelectionException)
+                    {
+                        // If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
+
+                        // Is the Content Type referring to a RDF format?
+                        IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
+                        rdfreader.Load(rdfHandler, data);
+                        response.Close();
+                    }
+                }
+            }
+            catch (WebException webEx)
+            {
+                throw StorageHelper.HandleHttpQueryError(webEx);
+            }
+        }
+
+
+        /// <summary>
+        /// Makes a SPARQL Query against the underlying Store using whatever reasoning mode is currently in-use processing the results using an appropriate handler from those provided
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="reasoning"></param>
+        /// <returns></returns>
+        public virtual void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery, bool reasoning)
+        {
+            try
+            {
+                HttpWebRequest request;
+
+                String tID = (this._activeTrans == null) ? String.Empty : "/" + this._activeTrans;
+
+                // String accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
+                String accept =
+                    MimeTypesHelper.CustomHttpAcceptHeader(
+                        MimeTypesHelper.SparqlResultsXml.Concat(
+                            MimeTypesHelper.Definitions.Where(d => d.CanParseRdf).SelectMany(d => d.MimeTypes)));
+
+                // Create the Request
+                Dictionary<String, String> queryParams = new Dictionary<string, string>();
+                if (sparqlQuery.Length < 2048)
+                {
+                    queryParams.Add("query", sparqlQuery);
+                    queryParams.Add("reasoning", reasoning.ToString());
 
                     request = this.CreateRequest(this._kb + tID + "/query", accept, "GET", queryParams);
                 }
@@ -362,6 +469,11 @@ namespace VDS.RDF.Storage
                     // Build the Post Data and add to the Request Body
                     request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
                     StringBuilder postData = new StringBuilder();
+                    if (reasoning)
+                    {
+                        postData.Append("reasoning=");
+                        postData.Append(reasoning.ToString()+"&");
+                    }
                     postData.Append("query=");
                     postData.Append(HttpUtility.UrlEncode(sparqlQuery));
                     using (StreamWriter writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding()))
