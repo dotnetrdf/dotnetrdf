@@ -314,7 +314,7 @@ namespace VDS.RDF.Storage
         {
             Graph g = new Graph();
             SparqlResultSet results = new SparqlResultSet();
-            this.Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery, false);
+            this.Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery);
 
             if (results.ResultsType != SparqlResultsType.Unknown)
             {
