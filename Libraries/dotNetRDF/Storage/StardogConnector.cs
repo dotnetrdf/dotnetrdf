@@ -102,7 +102,7 @@ namespace VDS.RDF.Storage
     /// </remarks>
     public abstract class BaseStardogConnector
         : BaseAsyncHttpConnector, IAsyncQueryableStorage, IAsyncTransactionalStorage, IConfigurationSerializable
-        , IQueryableStorage, ITransactionalStorage
+        , IQueryableStorage, ITransactionalStorage, IReasoningQueryableStorage
     {
         /// <summary>
         /// Constant for the default Anonymous user account and password used by Stardog if you have not supplied a shiro.ini file or otherwise disabled security
@@ -327,7 +327,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Makes a SPARQL Query against the underlying Store using whatever reasoning mode is currently in-use
+        /// Makes a SPARQL Query against the underlying Store using whatever reasoning mode is currently in-use, the reasoning can be set by query
         /// </summary>
         /// <param name="sparqlQuery">Sparql Query</param>
         /// <param name="reasoning"></param>
@@ -432,7 +432,7 @@ namespace VDS.RDF.Storage
 
 
         /// <summary>
-        /// Makes a SPARQL Query against the underlying Store using whatever reasoning mode is currently in-use processing the results using an appropriate handler from those provided
+        /// Makes a SPARQL Query against the underlying Store using whatever reasoning mode is currently in-use processing the results using an appropriate handler from those provided, the reasoning can be set by query
         /// </summary>
         /// <param name="rdfHandler">RDF Handler</param>
         /// <param name="resultsHandler">Results Handler</param>
