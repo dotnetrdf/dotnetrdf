@@ -94,7 +94,7 @@ namespace VDS.RDF.Query
         private static Regex ValidParameterNamePattern = new Regex("^@?[\\w\\-_]+$", RegexOptions.IgnoreCase);
         private static Regex ValidVariableNamePattern = new Regex("^[?$]?[\\w\\-_]+$", RegexOptions.IgnoreCase);
 
-        private static Regex PreambleCapturePattern = new Regex("(BASE|PREFIX\\s+([\\w\\-_]+):)\\s*<([^>]+)>", RegexOptions.IgnoreCase);
+        private static Regex PreambleCapturePattern = new Regex("(BASE|PREFIX\\s+([\\w\\-_]*):)\\s*<([^>]+)>", RegexOptions.IgnoreCase);
 
         /// <summary>
         /// Creates a new empty parameterized String
