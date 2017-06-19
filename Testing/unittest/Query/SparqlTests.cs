@@ -692,24 +692,5 @@ WHERE
             Assert.NotNull(resultGraph);
             Assert.Equal(9, resultGraph.Triples.Count); // Returns 3 rather than 9
         }
-        [Fact]
-        public void SparqlParameterizedStringDefaultPrefixOrder()
-        {
-            // given
-            const string queryString = @"
-PREFIX : <http://id.ukpds.org/schema/>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-CONSTRUCT *
-WHERE {
-    ?s ?p ?o
-}";
-
-            // when
-            var query = new SparqlParameterizedString(queryString);
-
-            // then
-            query.Namespaces.Prefixes.Should().HaveCount(2);
-            query.Namespaces.GetNamespaceUri(string.Empty).Should().Be(new Uri("http://id.ukpds.org/schema/"));
-        }
     }
 }
