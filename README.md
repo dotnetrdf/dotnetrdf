@@ -81,12 +81,12 @@ was not consistent with the standard SVN layout prior to that.
 
 [1]: http://www.dotnetrdf.org
 
-[10]: http://www.dotnetrdf.org/content.asp?pageID=User%20Guide
-[11]: http://www.dotnetrdf.org/content.asp?pageID=Developer%20Guide
+[10]: https://github.com/dotnetrdf/dotnetrdf/wiki/UserGuide
+[11]: https://github.com/dotnetrdf/dotnetrdf/wiki/DeveloperGuide
 [12]: http://www.dotnetrdf.org/api/
 
 [20]: http://www.dotnetrdf.org/content.asp?pageID=Download%20dotNetRDF
-[21]: http://www.dotnetrdf.org/content.asp?pageID=Download%20dotnetRDF%20Source
+[21]: https://github.com/dotnetrdf/dotnetrdf
 
 [25]: http://www.dotnetrdf.org/content.asp?pageID=Download%20dotNetRDF%20Toolkit%20for%20Windows
 [26]: http://www.dotnetrdf.org/content.asp?pageID=Download%20dotNetRDF%20Toolkit%20Installer
@@ -94,7 +94,7 @@ was not consistent with the standard SVN layout prior to that.
 [30]: http://www.dotnetrdf.org/content.asp?pageID=Developers
 [31]: https://bitbucket.org/dotnetrdf/dotnetrdf/src/tip/Acknowledgments.txt?at=default
 
-[40]: http://dotnetrdf.org/tracker/Default.aspx
+[40]: https://github.com/dotnetrdf/dotnetrdf/issues
 
 [100]: https://bitbucket.org/dotnetrdf/dotnetrdf
 [101]: https://bitbucket.org/dotnetrdf/dotnetrdf/wiki
