@@ -1,0 +1,207 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.reasoningtest.com/stardog#"
+     xml:base="http://www.reasoningtest.com/stardog"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:test="http://www.reasoningtest.com/stardog#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:www="http://www.reasoningtest.com#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+    <owl:Ontology rdf:about="http://www.reasoningtest.com"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+ 
+
+    <!-- http://www.reasoningtest.com#hasLocation -->
+
+    <owl:ObjectProperty rdf:about="http://www.reasoningtest.com#hasLocation">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+        <owl:inverseOf rdf:resource="http://www.reasoningtest.com#isLocatedIn"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.reasoningtest.com#hasLocationBuilding -->
+
+    <owl:ObjectProperty rdf:about="http://www.reasoningtest.com#hasLocationBuilding">
+        <rdfs:subPropertyOf rdf:resource="http://www.reasoningtest.com#hasLocation"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.reasoningtest.com#hasLocationFloor -->
+
+    <owl:ObjectProperty rdf:about="http://www.reasoningtest.com#hasLocationFloor">
+        <rdfs:subPropertyOf rdf:resource="http://www.reasoningtest.com#hasLocation"/>
+        <owl:inverseOf rdf:resource="http://www.reasoningtest.com#isLocatedInBuilding"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.reasoningtest.com#hasLocationRoom -->
+
+    <owl:ObjectProperty rdf:about="http://www.reasoningtest.com#hasLocationRoom">
+        <rdfs:subPropertyOf rdf:resource="http://www.reasoningtest.com#hasLocation"/>
+        <owl:inverseOf rdf:resource="http://www.reasoningtest.com#isLocatedInFloor"/>
+    </owl:ObjectProperty>
+    
+
+
+    
+    
+
+    <!-- http://www.reasoningtest.com#isLocatedIn -->
+
+    <owl:ObjectProperty rdf:about="http://www.reasoningtest.com#isLocatedIn">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.reasoningtest.com#isLocatedInBuilding -->
+
+    <owl:ObjectProperty rdf:about="http://www.reasoningtest.com#isLocatedInBuilding">
+        <rdfs:subPropertyOf rdf:resource="http://www.reasoningtest.com#isLocatedIn"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.reasoningtest.com#isLocatedInFloor -->
+
+    <owl:ObjectProperty rdf:about="http://www.reasoningtest.com#isLocatedInFloor">
+        <rdfs:subPropertyOf rdf:resource="http://www.reasoningtest.com#isLocatedIn"/>
+    </owl:ObjectProperty>
+    
+
+
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.reasoningtest.com#Building -->
+
+    <owl:Class rdf:about="http://www.reasoningtest.com#Building">
+        <rdfs:subClassOf rdf:resource="http://www.reasoningtest.com#Location"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.reasoningtest.com#Floor -->
+
+    <owl:Class rdf:about="http://www.reasoningtest.com#Floor">
+        <rdfs:subClassOf rdf:resource="http://www.reasoningtest.com#Location"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.reasoningtest.com#Location -->
+
+    <owl:Class rdf:about="http://www.reasoningtest.com#Location"/>
+    
+
+
+    <!-- http://www.reasoningtest.com#Room -->
+
+    <owl:Class rdf:about="http://www.reasoningtest.com#Room">
+        <rdfs:subClassOf rdf:resource="http://www.reasoningtest.com#Location"/>
+    </owl:Class>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.reasoningtest.com#Building1 -->
+
+    <owl:NamedIndividual rdf:about="http://www.reasoningtest.com#Building1">
+        <rdf:type rdf:resource="http://www.reasoningtest.com#Building"/>
+        <www:hasLocationFloor rdf:resource="http://www.reasoningtest.com#Floor1"/>
+        <www:hasLocationFloor rdf:resource="http://www.reasoningtest.com#Floor2"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.reasoningtest.com#Floor1 -->
+
+    <owl:NamedIndividual rdf:about="http://www.reasoningtest.com#Floor1">
+        <rdf:type rdf:resource="http://www.reasoningtest.com#Floor"/>
+        <www:hasLocationRoom rdf:resource="http://www.reasoningtest.com#Room1"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.reasoningtest.com#Floor2 -->
+
+    <owl:NamedIndividual rdf:about="http://www.reasoningtest.com#Floor2">
+        <rdf:type rdf:resource="http://www.reasoningtest.com#Floor"/>
+        <www:hasLocationRoom rdf:resource="http://www.reasoningtest.com#Room2"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.reasoningtest.com#Room1 -->
+
+    <owl:NamedIndividual rdf:about="http://www.reasoningtest.com#Room1">
+        <rdf:type rdf:resource="http://www.reasoningtest.com#Room"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.reasoningtest.com#Room2 -->
+
+    <owl:NamedIndividual rdf:about="http://www.reasoningtest.com#Room2">
+        <rdf:type rdf:resource="http://www.reasoningtest.com#Room"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // General axioms
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="http://www.reasoningtest.com#Building"/>
+            <rdf:Description rdf:about="http://www.reasoningtest.com#Floor"/>
+            <rdf:Description rdf:about="http://www.reasoningtest.com#Room"/>
+        </owl:members>
+    </rdf:Description>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 4.2.6.20160910-2108) https://github.com/owlcs/owlapi -->
+

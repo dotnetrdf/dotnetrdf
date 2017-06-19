@@ -390,6 +390,77 @@ namespace VDS.RDF.Storage
                 "Reasoning should yield as many if not more results");
         }
 
+
+        [SkippableFact]
+        public void StorageStardogReasoningByQuery1()
+        {
+            StardogConnector stardog = StardogTests.GetConnection();
+            if (stardog.Reasoning == StardogReasoningMode.DatabaseControlled)
+            {
+                throw new SkipTestException(
+                    "Version of Stardog being tested does not support configuring reasoning mode at connection level");
+            }
+
+            Graph g = new Graph();
+            g.LoadFromFile("resources\\stardog-reasoning-test.rdf");
+            g.BaseUri = new Uri("http://www.reasoningtest.com/");
+            stardog.SaveGraph(g);
+
+            String query = "Select ?building where { ?building <http://www.reasoningtest.com#hasLocation> ?room.}";
+
+            Console.WriteLine(query);
+            Console.WriteLine();
+
+            SparqlResultSet resultsWithReasoning = stardog.Query(query, true) as SparqlResultSet;
+            Assert.NotNull(resultsWithReasoning);
+            if (resultsWithReasoning != null)
+            {
+                Console.WriteLine("Results With Reasoning");
+                TestTools.ShowResults(resultsWithReasoning);
+                Assert.True(true , "Reasoning By Query OK !");
+            }
+            else
+            {
+                Assert.True(false, "Did not get a SPARQL Result Set as expected");
+            }
+
+        }
+
+
+        [SkippableFact]
+        public void StorageStardogReasoningByQuery2()
+        {
+            StardogConnector stardog = StardogTests.GetConnection();
+            if (stardog.Reasoning == StardogReasoningMode.DatabaseControlled)
+            {
+                throw new SkipTestException(
+                    "Version of Stardog being tested does not support configuring reasoning mode at connection level");
+            }
+
+            Graph g = new Graph();
+            g.LoadFromFile("resources\\stardog-reasoning-test.rdf");
+            g.BaseUri = new Uri("http://www.reasoningtest.com/");
+            stardog.SaveGraph(g);
+
+            String query = "Select ?building where { ?building <http://www.reasoningtest.com#hasLocation> ?room.}"; 
+            Console.WriteLine(query);
+            Console.WriteLine();
+
+            SparqlResultSet resultsWithNoReasoning = stardog.Query(query, false) as SparqlResultSet;
+            Assert.Null(resultsWithNoReasoning);
+            if (resultsWithNoReasoning != null )
+            {
+                Console.WriteLine("Results With No Reasoning");
+                Assert.True(false, "There should not be any reasoning results !");
+            }
+            else
+            {
+                Assert.True(true, "No SPARQL Results returned ! Success.");
+            }
+
+        }
+
+
         [SkippableFact]
         public void StorageStardogReasoningMode()
         {
