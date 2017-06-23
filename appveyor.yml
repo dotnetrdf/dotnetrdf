@@ -53,7 +53,7 @@ deploy:
       secure: 2ZUF/Zi3+ivt8XoYlC4V7bbsVNOI+mPyZx1GDkBjnREvLNxn/SodKh1BpTC5dRpO
     on:
       appveyor_repo_tag: true 
-    artifact: /((?!Spin).)*/
+    artifact: /((?!Spin).)*.nupkg/
 
 on_finish:
   - ps: |
