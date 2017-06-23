@@ -50,7 +50,7 @@ deploy:
     artifact: Build\shfb\Help.zip, Build\shfb\Help\dotNetRDFApi.chm, /.*\.nupkg/
   - provider: NuGet
     api_key:
-      secure: 2ZUF/Zi3+ivt8XoYlC4V7bbsVNOI+mPyZx1GDkBjnREvLNxn/SodKh1BpTC5dRpO
+      secure: URqGK+AnkTfy7Q36+5K2kNv2qpaI4ZOzjnRGry8tMiOMCtuqrwJWW/jSaEGhchuo
     on:
       appveyor_repo_tag: true 
     artifact: /((?!Spin).)*.nupkg/
