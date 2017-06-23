@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
 
@@ -37,18 +38,18 @@ namespace VDS.RDF.Writing.Formatting
     public class NTriplesFormatter
         : BaseFormatter
     {
-        private readonly BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidStrictBlankNodeID);
+        private readonly BlankNodeOutputMapper _bnodeMapper;
 
         /// <summary>
         /// Set of characters which must be escaped in Literals
         /// </summary>
-        protected List<String[]> _litEscapes = new List<String[]>
+        private readonly List<string[]> _litEscapes = new List<string[]>
         { 
-            new String[] { @"\", @"\\" }, 
-            new String[] { "\"", "\\\"" },
-            new String[] { "\n", @"\n" },
-            new String[] { "\r", @"\r" },
-            new String[] { "\t", @"\t" }
+            new [] { @"\", @"\\" }, 
+            new [] { "\"", "\\\"" },
+            new [] { "\n", @"\n" },
+            new [] { "\r", @"\r" },
+            new [] { "\t", @"\t" }
         };
 
         /// <summary>
@@ -56,17 +57,17 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="syntax">NTriples syntax to output</param>
         /// <param name="formatName">Format Name</param>
-        public NTriplesFormatter(NTriplesSyntax syntax, String formatName)
+        public NTriplesFormatter(NTriplesSyntax syntax, string formatName)
             : base(formatName)
         {
-            this.Syntax = syntax;
-            switch (this.Syntax)
+            Syntax = syntax;
+            switch (Syntax)
             {
                 case NTriplesSyntax.Original:
-                    this._bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidStrictBlankNodeID);
+                    _bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidStrictBlankNodeID);
                     break;
                 default:
-                    this._bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidBlankNodeID);
+                    _bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidBlankNodeID);
                     break;
             }
         }
@@ -87,7 +88,7 @@ namespace VDS.RDF.Writing.Formatting
         /// Creates a new NTriples Formatter
         /// </summary>
         /// <param name="formatName">Format Name</param>
-        protected NTriplesFormatter(String formatName)
+        protected NTriplesFormatter(string formatName)
             : this(NTriplesSyntax.Original, formatName) { }
 
         private static String GetName()
@@ -119,13 +120,14 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         protected override string FormatUriNode(IUriNode u, TripleSegment? segment)
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append('<');
-            output.Append(this.FormatUri(u.Uri));
+            output.Append(FormatUri(u.Uri));
             output.Append('>');
             return output.ToString();
         }
 
+        
         /// <summary>
         /// Formats a Literal Node
         /// </summary>
@@ -134,15 +136,15 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         protected override string FormatLiteralNode(ILiteralNode l, TripleSegment? segment)
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
 
             output.Append('"');
-            string value = l.Value;
-            value = this.Escape(value, this._litEscapes);
-            output.Append(this.FormatChar(value.ToCharArray()));
+            var value = l.Value;
+            value = Escape(value, _litEscapes);
+            output.Append(FormatChar(value.ToCharArray()));
             output.Append('"');
 
-            if (!l.Language.Equals(String.Empty))
+            if (!l.Language.Equals(string.Empty))
             {
                 output.Append('@');
                 output.Append(l.Language.ToLower());
@@ -150,7 +152,7 @@ namespace VDS.RDF.Writing.Formatting
             else if (l.DataType != null)
             {
                 output.Append("^^<");
-                output.Append(this.FormatUri(l.DataType));
+                output.Append(FormatUri(l.DataType));
                 output.Append('>');
             }
 
@@ -165,7 +167,7 @@ namespace VDS.RDF.Writing.Formatting
         [Obsolete("This form of the FormatChar() method is considered obsolete as it is inefficient", false)]
         public override string FormatChar(char c)
         {
-            if (this.Syntax != NTriplesSyntax.Original) return base.FormatChar(c);
+            if (Syntax != NTriplesSyntax.Original) return base.FormatChar(c);
             if (c <= 127)
             {
                 // ASCII
@@ -182,7 +184,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns>String</returns>
         public override string FormatChar(char[] cs)
         {
-            if (this.Syntax != NTriplesSyntax.Original) return base.FormatChar(cs);
+            if (Syntax != NTriplesSyntax.Original) return base.FormatChar(cs);
 
             StringBuilder builder = new StringBuilder();
             int start = 0, length = 0;
@@ -218,19 +220,39 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         protected override string FormatBlankNode(IBlankNode b, TripleSegment? segment)
         {
-            return "_:" + this._bnodeMapper.GetOutputID(b.InternalID);
+            return "_:" + _bnodeMapper.GetOutputID(b.InternalID);
         }
 
-        /// <summary>
-        /// Formats a URI
-        /// </summary>
-        /// <param name="u">URI</param>
-        /// <returns></returns>
+        private static readonly char[] IriEscapeChars = { '<', '>', '"', '{', '}', '|', '^', '`', '\\' };
+
+        /// <inheritdoc/>
+        public override string FormatUri(Uri u)
+        {
+            if (!u.IsAbsoluteUri)
+            {
+                throw new ArgumentException("IRIs to be formatted by the NTriplesFormatter must be absolute IRIs");
+            }
+            return FormatUri(u.ToString());
+        }
+
+        /// <inheritdoc />
         public override string FormatUri(string u)
         {
-            String temp = base.FormatUri(u);
-            return this.FormatChar(temp.ToCharArray());
+            var output = new StringBuilder();
+            foreach (var c in u)
+            {
+                if (c <= 0x20 || c < 0x0061 && IriEscapeChars.Contains(c))
+                {
+                    output.AppendFormat("\\u{0:X4}", (ushort)c);
+                }
+                else
+                {
+                    output.Append(c);
+                }
+            }
+            return output.ToString();
         }
+
     }
 
     /// <summary>
