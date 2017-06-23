@@ -44,7 +44,7 @@ deploy:
   - provider: GitHub
     description: 'dotNetRDF $(GitVersion_SemVer)'
     auth_token:
-      secure: j1Qanb5R8lGcUc4Drk5Pjk1ra9domw0vA1pbILJBWPQ1r3XAIETCd9L8N6GN2NZbE/aYCEdHjr4VTjfNQB1bKTKcZ4Unux/XuyAwFrzjZHg=
+      secure: j3GoyDavErTD91EcSTfNBbQyTc7tqpp+klmmz85xC4fjbE8Gl2brFjr8t3/Zzwmk
     on:
       appveyor_repo_tag: true 
     artifact: Build\shfb\Help.zip, Build\shfb\Help\dotNetRDFApi.chm, /.*\.nupkg/
