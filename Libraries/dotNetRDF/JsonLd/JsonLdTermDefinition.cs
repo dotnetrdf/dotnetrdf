@@ -25,9 +25,6 @@
 */
 
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace VDS.RDF.JsonLd
 {
@@ -62,6 +59,9 @@ namespace VDS.RDF.JsonLd
             set { _languageMapping = value; HasLanguageMapping = true; }
         }
 
+        /// <summary>
+        /// Returns true if this term definition has a defined language mapping (including a defined null language mapping)
+        /// </summary>
         public bool HasLanguageMapping { get; private set; }
 
         /// <summary>
