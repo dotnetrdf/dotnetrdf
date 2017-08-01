@@ -24,40 +24,43 @@
 // </copyright>
 */
 
+using System;
+
 namespace VDS.RDF.JsonLd
 {
     /// <summary>
     /// Enumeration of the supported container mappings
     /// </summary>
+    [Flags]
     public enum JsonLdContainer
     {
         /// <summary>
         /// No container mapping
         /// </summary>
-        Null,
+        Null = 0x0,
         /// <summary>
         /// @list container mapping
         /// </summary>
-        List,
+        List = 0x1,
         /// <summary>
         /// @set container mapping
         /// </summary>
-        Set,
+        Set = 0x2,
         /// <summary>
         /// @index container mapping
         /// </summary>
-        Index,
+        Index = 0x4,
         /// <summary>
         /// @id container mapping
         /// </summary>
-        Id,
+        Id = 0x8,
         /// <summary>
         /// @type container mapping
         /// </summary>
-        Type,
+        Type = 0x10,
         /// <summary>
         /// @language container mapping
         /// </summary>
-        Language
+        Language = 0x20
     }
 }

@@ -493,8 +493,7 @@ namespace VDS.RDF.JsonLd
             {
                 definition.ContainerMapping = ValidateContainerMapping(term, containerValue);
                 if (this.ProcessingMode == JsonLdProcessingMode.JsonLd10 &&
-                    (definition.ContainerMapping == JsonLdContainer.Id ||
-                    definition.ContainerMapping == JsonLdContainer.Type))
+                    (definition.ContainerMapping & (JsonLdContainer.Id | JsonLdContainer.Type)) > 0)
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping, "Invalid Container Mapping. @id and @type containers are not supported when the processing mode is json-ld-1.0");
                 }
@@ -1300,7 +1299,7 @@ namespace VDS.RDF.JsonLd
 
                 // 8.6 - If key's container mapping in term context is @language and value is a JSON object then value is expanded from a language map as follows:
                 termDefinition = termContext.GetTerm(key);
-                if (termDefinition?.ContainerMapping == JsonLdContainer.Language && value is JObject)
+                if ((termDefinition.ContainerMapping & JsonLdContainer.Language) == JsonLdContainer.Language && value is JObject)
                 {
                     // 8.6.1 - Initialize expanded value to an empty array.
                     expandedValue = new JArray();
@@ -1330,9 +1329,7 @@ namespace VDS.RDF.JsonLd
                     }
                 }
                 // 8.7 - Otherwise, if key's container mapping in term context is @index, @type, or @id and value is a JSON object then value is expanded from an map as follows:                
-                else if ((termDefinition?.ContainerMapping == JsonLdContainer.Index ||
-                    termDefinition?.ContainerMapping == JsonLdContainer.Type ||
-                    termDefinition?.ContainerMapping == JsonLdContainer.Id) &&
+                else if ((termDefinition.ContainerMapping & (JsonLdContainer.Index|JsonLdContainer.Type|JsonLdContainer.Id))  > 0 && 
                     value is JObject)
                 {
                     // 8.7.1 - Initialize expanded value to an empty array.
@@ -1345,7 +1342,7 @@ namespace VDS.RDF.JsonLd
                         var indexTermDefinition = termContext.GetTerm(index);
                         // 8.7.2.1 - If container mapping is @type, and index's term definition in term context has a local context, set map context to the result of the Context Processing algorithm, passing term context as active context and the value of the index's local context as local context. Otherwise, set map context to term context.
                         var mapContext = 
-                            (termDefinition.ContainerMapping == JsonLdContainer.Type && 
+                            ((termDefinition.ContainerMapping & JsonLdContainer.Type) == JsonLdContainer.Type && 
                              indexTermDefinition?.LocalContext != null) ? 
                              ProcessContext(activeContext, indexTermDefinition.LocalContext) : 
                              termContext;
@@ -1526,27 +1523,41 @@ namespace VDS.RDF.JsonLd
 
         private JsonLdContainer ValidateContainerMapping(string term, JToken containerValue)
         {
-            if (containerValue.Type == JTokenType.String)
+            switch (containerValue.Type)
             {
-                switch (containerValue.Value<string>())
-                {
-                    case "@list":
-                        return JsonLdContainer.List;
-                    case "@set":
-                        return JsonLdContainer.Set;
-                    case "@index":
-                        return JsonLdContainer.Index;
-                    case "@id":
-                        return JsonLdContainer.Id;
-                    case "@type":
-                        return JsonLdContainer.Type;
-                    case "@language":
-                        return JsonLdContainer.Language;
-                }
-                throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping, $"Invalid Container Mapping. Unrecognised @container property value '{containerValue.Value<string>()}' for term '{term}'");
+                case JTokenType.String:
+                    var cv = ValidateContainerValue(term, containerValue.Value<string>());
+                    return cv;
+                case JTokenType.Array:
+                    var ret = containerValue.Select(item => ValidateContainerValue(term, item.Value<string>()))
+                        .Aggregate((x, y) => x | y);
+                    return ret;
+                default:
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping,
+                        $"Invalid Container Mapping. The value of the @container property of term '{term}' must be a string or array of string.");
             }
-            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping,
-                $"Invalid Container Mapping. The value of the @container property of term '{term}' must be a string.");
+        }
+
+        private static JsonLdContainer ValidateContainerValue(string term, string containerValue)
+        {
+            switch (containerValue)
+            {
+                case "@list":
+                    return JsonLdContainer.List;
+                case "@set":
+                    return JsonLdContainer.Set;
+                case "@index":
+                    return JsonLdContainer.Index;
+                case "@id":
+                    return JsonLdContainer.Id;
+                case "@type":
+                    return JsonLdContainer.Type;
+                case "@language":
+                    return JsonLdContainer.Language;
+                default:
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping,
+                        $"Invalid Container Mapping. Unrecognised @container property value '{containerValue}' for term '{term}'");
+            }
         }
 
         /// <summary>
