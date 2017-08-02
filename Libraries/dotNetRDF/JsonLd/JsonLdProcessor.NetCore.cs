@@ -185,7 +185,9 @@ namespace VDS.RDF.JsonLd
             var mediaType = response.Content.Headers.ContentType.MediaType;
             if (!(mediaType.Equals("application/json") || mediaType.EndsWith("+json")))
             {
-                throw new JsonLdProcessorException(JsonLdErrorCode.LoadingDocumentFailed, "Loading document failed from {remoteRef} - retrieved content type was not application/json, application/ld+json or */*+json.");
+                throw new JsonLdProcessorException(
+                    JsonLdErrorCode.LoadingDocumentFailed, 
+                    $"Loading document failed from {remoteRef} - retrieved content type ({mediaType}) was not application/json, application/ld+json or */*+json.");
             }
             var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             string contextLink = null;
@@ -196,7 +198,12 @@ namespace VDS.RDF.JsonLd
                 var contextLinks = ParseLinkHeaders(response.Headers.GetValues("Link"))
                     .Where(x => x.RelationTypes.Contains("http://www.w3.org/ns/json-ld#context"))
                     .Select(x => x.LinkValue).ToList();
-                if (contextLinks.Count > 1) throw new JsonLdProcessorException(JsonLdErrorCode.MultipleContextLinkHeaders, "Multiple context link headers");
+                if (contextLinks.Count > 1)
+                {
+                    throw new JsonLdProcessorException(
+                        JsonLdErrorCode.MultipleContextLinkHeaders, 
+                        "Multiple context link headers");
+                }
                 contextLink = contextLinks.FirstOrDefault();
             }
 
