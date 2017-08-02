@@ -153,7 +153,19 @@ namespace VDS.RDF.JsonLd
                 // 3.2 If context is a string
                 if (context.Type == JTokenType.String)
                 {
-                    result = ProcessContext(activeContext, (context as JValue).Value<string>(), remoteContexts);
+                    var contextStr = (context as JValue).Value<string>();
+                    var remoteUrl = new Uri(contextStr);
+                    if (remoteContexts.Contains(remoteUrl)) return activeContext;
+                    var remoteContext = LoadReference(remoteUrl) as JObject;
+                    remoteContexts.Add(remoteUrl);
+                    if (remoteContext != null)
+                    {
+                        if (remoteContext.Property("@context") != null)
+                        {
+                            remoteContext = remoteContext["@context"] as JObject;
+                        }
+                        result = ProcessContext(activeContext, remoteContext, remoteContexts);
+                    }
                     continue;
                 }
                 // 3.3 - If context is not a JSON object, an invalid local context error has been detected and processing is aborted.
