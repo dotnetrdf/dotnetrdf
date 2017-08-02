@@ -176,24 +176,34 @@ namespace VDS.RDF.JsonLd
         private static async Task<RemoteDocument> LoadJsonAsync(Uri remoteRef, JsonLdProcessorOptions options)
         {
             if (options.Loader != null) return options.Loader(remoteRef);
-            var client = new HttpClient();
-            var response = await client.GetAsync(remoteRef);
-            response.EnsureSuccessStatusCode();
-            if (response.Headers.GetValues("Content-Type")
-                .Any(x => x.Contains("application/json") || x.Contains("application/ld+json") || x.Contains("+json")))
+            var client = new HttpClient()
             {
-                throw new JsonLdProcessorException(JsonLdErrorCode.LoadingDocumentFailed, "Loading document failed from {remoteRef} - retrieved content type was not application/json, application/ld+json or */*+json.");
+                Timeout = TimeSpan.FromMilliseconds(Options.UriLoaderTimeout),
+            };
+            var response = await client.GetAsync(remoteRef).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            var mediaType = response.Content.Headers.ContentType.MediaType;
+            if (!(mediaType.Equals("application/json") || mediaType.EndsWith("+json")))
+            {
+                throw new JsonLdProcessorException(
+                    JsonLdErrorCode.LoadingDocumentFailed, 
+                    $"Loading document failed from {remoteRef} - retrieved content type ({mediaType}) was not application/json, application/ld+json or */*+json.");
             }
-            var responseString = await response.Content.ReadAsStringAsync();
+            var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             string contextLink = null;
 
             // If content type is application/ld+json the context link header is ignored
-            if (!response.Headers.GetValues("Content-Type").Any(x => x.Contains("application/ld+json")))
+            if (!mediaType.Equals("application/ld+json"))
             {
                 var contextLinks = ParseLinkHeaders(response.Headers.GetValues("Link"))
                     .Where(x => x.RelationTypes.Contains("http://www.w3.org/ns/json-ld#context"))
                     .Select(x => x.LinkValue).ToList();
-                if (contextLinks.Count > 1) throw new JsonLdProcessorException(JsonLdErrorCode.MultipleContextLinkHeaders, "Multiple context link headers");
+                if (contextLinks.Count > 1)
+                {
+                    throw new JsonLdProcessorException(
+                        JsonLdErrorCode.MultipleContextLinkHeaders, 
+                        "Multiple context link headers");
+                }
                 contextLink = contextLinks.FirstOrDefault();
             }
 

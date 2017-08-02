@@ -53,9 +53,9 @@ namespace VDS.RDF.JsonLd
             JsonLdProcessorOptions options = null)
         {
             var activeContext = new JsonLdContext { Base = documentLocation };
-            if (options.Base != null) activeContext.Base = options.Base;
+            if (options?.Base != null) activeContext.Base = options.Base;
             var processor = new JsonLdProcessor(options);
-            if (options.ExpandContext != null)
+            if (options?.ExpandContext != null)
             {
                 var expandObject = options.ExpandContext as JObject;
                 if (expandObject != null)
@@ -98,17 +98,20 @@ namespace VDS.RDF.JsonLd
             var client = new RedirectingWebClient();
             var responseString = client.DownloadString(remoteRef);
             var contentType = client.ResponseHeaders.GetValues("Content-Type");
-            if (contentType != null &&
-                contentType.Any(x => x.Contains("application/json") || x.Contains("application/ld+json") ||
-                                     x.Contains("+json")))
+            if (contentType == null ||
+                !contentType.Any(x => x.Contains("application/json") ||
+                                      x.Contains("application/ld+json") ||
+                                      x.Contains("+json")))
             {
-                throw new JsonLdProcessorException(JsonLdErrorCode.LoadingDocumentFailed, "Loading document failed from {remoteRef} - retrieved content type was not application/json, application/ld+json or */*+json.");
+                throw new JsonLdProcessorException(
+                    JsonLdErrorCode.LoadingDocumentFailed,
+                    $"Loading document failed from {remoteRef} - retrieved content type ({contentType}) was not application/json, application/ld+json or */*+json.");
             }
 
             string contextLink = null;
 
             // If content type is application/ld+json the context link header is ignored
-            if (contentType != null && !contentType.Any(x => x.Contains("application/ld+json")))
+            if (!contentType.Any(x => x.Contains("application/ld+json")))
             {
                 var contextLinks = ParseLinkHeaders(client.ResponseHeaders.GetValues("Link"))
                     .Where(x => x.RelationTypes.Contains("http://www.w3.org/ns/json-ld#context"))
