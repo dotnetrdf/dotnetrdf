@@ -19,8 +19,6 @@
     <PackageLicenseUrl>http://www.opensource.org/licenses/MIT</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/dotnetrdf/dotnetrdf</RepositoryUrl>
-    <NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard1.4' ">1.6.1</NetStandardImplicitPackageVersion>
-    <NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard2.0' ">2.0.1</NetStandardImplicitPackageVersion>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
@@ -57,6 +55,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" Version="1.6.0" />
     <PackageReference Include="VDS.Common" Version="1.9.0-*" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta001">
       <PrivateAssets>All</PrivateAssets>
@@ -71,12 +70,8 @@
     <PackageReference Include="System.Net.Requests" Version="4.0.11" />
     <PackageReference Include="System.Reflection.TypeExtensions" Version="4.1.0" />
     <PackageReference Include="System.Threading.Thread" Version="4.0.0" />
-    <PackageReference Include="System.Xml.XmlDocument" Version="4.0.1" />
-    <PackageReference Include="System.Xml.XmlSerializer" Version="4.0.11" />
     <PackageReference Include="System.Collections.Specialized" Version="4.3.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration">
-      <Version>1.1.1</Version>
-    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.1" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
@@ -87,12 +82,8 @@
     <PackageReference Include="System.Net.Requests" Version="4.0.11" />
     <PackageReference Include="System.Reflection.TypeExtensions" Version="4.1.0" />
     <PackageReference Include="System.Threading.Thread" Version="4.0.0" />
-    <PackageReference Include="System.Xml.XmlDocument" Version="4.0.1" />
-    <PackageReference Include="System.Xml.XmlSerializer" Version="4.0.11" />
     <PackageReference Include="System.Collections.Specialized" Version="4.3.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration">
-      <Version>1.1.1</Version>
-    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.1" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
