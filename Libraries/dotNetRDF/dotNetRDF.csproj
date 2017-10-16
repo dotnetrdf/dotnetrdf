@@ -67,22 +67,22 @@
     <PackageReference Include="AngleSharp" Version="0.9.9" />
     <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
     <PackageReference Include="System.Globalization.Extensions" Version="4.3.0" />
-    <PackageReference Include="System.Net.Requests" Version="4.0.11" />
-    <PackageReference Include="System.Reflection.TypeExtensions" Version="4.3.0" />
-    <PackageReference Include="System.Threading.Thread" Version="4.0.0" />
+    <PackageReference Include="System.Net.Requests" Version="4.3.0" />
+    <PackageReference Include="System.Reflection.TypeExtensions" Version="4.4.0" />
+    <PackageReference Include="System.Threading.Thread" Version="4.3.0" />
     <PackageReference Include="System.Collections.Specialized" Version="4.3.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.2" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
     <PackageReference Include="AngleSharp" Version="0.9.9" />
     <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
     <PackageReference Include="System.Globalization.Extensions" Version="4.3.0" />
-    <PackageReference Include="System.Net.Requests" Version="4.0.11" />
-    <PackageReference Include="System.Reflection.TypeExtensions" Version="4.3.0" />
-    <PackageReference Include="System.Threading.Thread" Version="4.0.0" />
+    <PackageReference Include="System.Net.Requests" Version="4.3.0" />
+    <PackageReference Include="System.Reflection.TypeExtensions" Version="4.4.0" />
+    <PackageReference Include="System.Threading.Thread" Version="4.3.0" />
     <PackageReference Include="System.Collections.Specialized" Version="4.3.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
