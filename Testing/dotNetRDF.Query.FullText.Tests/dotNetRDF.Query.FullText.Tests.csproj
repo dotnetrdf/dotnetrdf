@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net452</TargetFramework>
+    <RootNamespace>VDS.RDF.Query.FullText</RootNamespace>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>dotNetRDF.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\dotNetRDF.Query.FullText\dotNetRDF.Query.FullText.csproj" />
+    <ProjectReference Include="..\..\Libraries\dotNetRDF\dotNetRDF.csproj" />
+    <ProjectReference Include="..\dotNetRDF.Testing.Tools\dotNetRDF.Testing.Tools.csproj" />
+  </ItemGroup>
+
+</Project>

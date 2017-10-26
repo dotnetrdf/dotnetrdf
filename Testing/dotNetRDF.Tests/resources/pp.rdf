@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:owl="http://www.w3.org/2002/07/owl#">
+	<owl:Class rdf:about="http://ex.info/id/001">
+		<rdfs:label xml:lang="en">example data</rdfs:label>
+		<rdfs:subClassOf>
+		    <owl:Class>
+		        <owl:intersectionOf rdf:parseType="Collection">
+		            <rdf:Description rdf:about="http://ex.info/id/002"/>
+		            <rdf:Description rdf:about="http://ex.info/id/003"/>
+		            <owl:Restriction>
+		                <owl:onProperty rdf:resource="http://ex.info/id/004"/>
+		                <owl:someValuesFrom rdf:resource="http://ex.info/id/005"/>
+		            </owl:Restriction>
+		        </owl:intersectionOf>
+		    </owl:Class>
+		</rdfs:subClassOf>
+	</owl:Class>
+</rdf:RDF>

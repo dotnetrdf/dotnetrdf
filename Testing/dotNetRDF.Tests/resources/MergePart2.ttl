@@ -1,0 +1,14 @@
+﻿
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix ex: <http://example.org/b/>.
+
+ex:b rdf:type ex:thing.
+
+<http://example.org/a/a> rdf:type <http://example.org/a/thing>.
+
+_:1 rdf:type ex:thing;
+	<http://example.org/a/name> "Something".
+	
+_:2 <http://example.org/a/name> "Something".

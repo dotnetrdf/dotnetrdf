@@ -1,0 +1,18 @@
+﻿
+
+# TriG Example Document 4
+# Added by Rob Vesse to test use of syntactic sugar in TriG
+
+@prefix ex: <http://www.example.org/vocabulary#> .
+@prefix : <http://www.example.org/exampleDocument#> .
+
+:G1 = { [] a ex:BlankNode.
+		[ex:prop ex:test] a ex:BlankNode.
+		[ex:otherProp ex:test; ex:anotherProp ex:test] a ex:BlankNode.
+		ex:subject a [ex:name ex:SomeClass].
+		ex:subject2 a [ex:anotherName ex:AnotherClass; ex:version 1.45, 1.46].
+	  }
+	  
+:G2 { (ex:one ex:two ex:three) a ex:Collection.
+	  ex:someting ex:has (ex:four ex:five <http://somesite.org> 12456 42.45e7 true false [] [a ex:BlankNode]).
+	}

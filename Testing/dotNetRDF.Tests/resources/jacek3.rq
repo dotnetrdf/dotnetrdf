@@ -1,0 +1,19 @@
+﻿
+PREFIX p: <http://jacek.gajek.rpg/>
+
+SELECT ?exitName ?direction
+WHERE
+{
+  ?d p:name ?direction.
+
+
+  ?d a p:direction.
+  
+  ?theScene p:name "scene_karczma".
+  ?theScene ?d ?exit.
+  
+  ?exit p:name ?exitName.  
+  {
+    ?exit a p:scene .
+  }
+}

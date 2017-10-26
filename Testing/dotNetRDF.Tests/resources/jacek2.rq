@@ -1,0 +1,16 @@
+﻿PREFIX p: <http://jacek.gajek.rpg/>
+
+SELECT DISTINCT ?x
+WHERE
+{
+ ?p p:inverseOf ?q .
+ {
+ ?x ?p ?y .
+ ?y ?q ?x
+ } 
+ UNION
+ {
+  ?y ?p ?x .
+  ?x ?q ?y
+ }
+}

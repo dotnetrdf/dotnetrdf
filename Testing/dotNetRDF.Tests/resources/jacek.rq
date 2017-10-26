@@ -1,0 +1,15 @@
+﻿PREFIX p: <http://jacek.gajek.rpg/>
+
+SELECT DISTINCT ?x
+WHERE
+{
+  ?x a p:npc.
+  ?x p:in ?s.  
+  ?s a p:scene.
+  
+  ?p a p:player.
+  ?p p:hasName ?pname.
+  ?p p:in ?s.
+  
+  FILTER regex(?pname, "jacek", "i").
+}

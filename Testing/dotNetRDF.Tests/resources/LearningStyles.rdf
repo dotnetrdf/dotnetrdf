@@ -1,0 +1,2059 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:xsp="http://www.owl-ontologies.com/2005/08/07/xsp.owl#"
+    xmlns:swrlb="http://www.w3.org/2003/11/swrlb#"
+    xmlns:swrl="http://www.w3.org/2003/11/swrl#"
+    xmlns:protege="http://protege.stanford.edu/plugins/owl/protege#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns="http://www.semanticsage.home.lc/LearningStyles.owl#"
+  xml:base="http://www.semanticsage.home.lc/LearningStyles.owl" > 
+  <rdf:Description rdf:about="#Q6S22">
+    <belongsToQuiz rdf:resource="#Quiz_6"/>
+    <belongsToStudent rdf:resource="#MTech_22"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_25">
+    <hasQuizMarks rdf:resource="#Q6S25"/>
+    <hasQuizMarks rdf:resource="#Q5S25"/>
+    <attendsLessons rdf:resource="#Lesson_5"/>
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <undergoesEvaluation rdf:resource="#Quiz_5"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <hasQuizMarks rdf:resource="#Q2S25"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <hasQuizMarks rdf:resource="#Q1S25"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <attendsLessons rdf:resource="#Lesson_6"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <hasQuizMarks rdf:resource="#Q3S25"/>
+    <rdf:type rdf:resource="#MTech"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0079</hasS_ID>
+    <hasQuizMarks rdf:resource="#Q4S25"/>
+    <undergoesEvaluation rdf:resource="#Quiz_6"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q5S34">
+    <belongsToStudent rdf:resource="#MTech_34"/>
+    <belongsToQuiz rdf:resource="#Quiz_5"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S30">
+    <belongsToStudent rdf:resource="#MTech_30"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.33</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MS">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="#PG"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_13">
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <hasQuizMarks rdf:resource="#Q1S13"/>
+    <hasQuizMarks rdf:resource="#Q2S13"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <hasQuizMarks rdf:resource="#Q3S13"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <rdf:type rdf:resource="#MTech"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0043</hasS_ID>
+    <hasQuizMarks rdf:resource="#Q4S13"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q5S21">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_21"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_5"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S4">
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+    <belongsToStudent rdf:resource="#MTech_4"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">8.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S3">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">7.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_3"/>
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Lesson">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#VisualLS">
+    <rdf:type rdf:resource="#Styles"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#QuizMarks">
+    <rdfs:subClassOf rdf:resource="#Marks"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#hasL_ID">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#Lesson"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S6">
+    <belongsToStudent rdf:resource="#MTech_6"/>
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">3.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_8">
+    <undergoesEvaluation rdf:resource="#Quiz_6"/>
+    <attendsLessons rdf:resource="#Lesson_5"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0032</hasS_ID>
+    <hasQuizMarks rdf:resource="#Q6S8"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <hasQuizMarks rdf:resource="#Q1S8"/>
+    <hasQuizMarks rdf:resource="#Q4S8"/>
+    <hasQuizMarks rdf:resource="#Q5S8"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <undergoesEvaluation rdf:resource="#Quiz_5"/>
+    <hasQuizMarks rdf:resource="#Q2S8"/>
+    <hasQuizMarks rdf:resource="#Q3S8"/>
+    <attendsLessons rdf:resource="#Lesson_6"/>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <hasS_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NITISH VAISHY </hasS_Name>
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <rdf:type rdf:resource="#MTech"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q5S24">
+    <belongsToQuiz rdf:resource="#Quiz_5"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_24"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">2.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Lesson_8">
+    <hasEvaluation rdf:resource="#Quiz_8"/>
+    <hasLessonType rdf:resource="#VisualLessons"/>
+    <inRound rdf:datatype="http://www.w3.org/2001/XMLSchema#int">2</inRound>
+    <hasL_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">L_8</hasL_ID>
+    <rdf:type rdf:resource="#Lesson"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q5S2">
+    <belongsToQuiz rdf:resource="#Quiz_5"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_2"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S24">
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+    <belongsToStudent rdf:resource="#MTech_24"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">7.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S29">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_29"/>
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q6S6">
+    <belongsToQuiz rdf:resource="#Quiz_6"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_6"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Medicine">
+    <rdfs:subClassOf rdf:resource="#Student"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#hasEvaluation">
+    <rdfs:domain rdf:resource="#Lesson"/>
+    <owl:inverseOf rdf:resource="#isForLesson"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="#Evaluation"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Quiz">
+    <rdfs:subClassOf rdf:resource="#Evaluation"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q6S19">
+    <belongsToStudent rdf:resource="#MTech_19"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">7.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_6"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q5S8">
+    <belongsToQuiz rdf:resource="#Quiz_5"/>
+    <belongsToStudent rdf:resource="#MTech_8"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S18">
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">2.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_18"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S3">
+    <belongsToStudent rdf:resource="#MTech_3"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">7.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S2">
+    <belongsToStudent rdf:resource="#MTech_2"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S11">
+    <belongsToStudent rdf:resource="#MTech_11"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.33</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q5S27">
+    <belongsToStudent rdf:resource="#MTech_27"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_5"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S34">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_34"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_32">
+    <undergoesEvaluation rdf:resource="#Quiz_5"/>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <attendsLessons rdf:resource="#Lesson_6"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0099</hasS_ID>
+    <rdf:type rdf:resource="#MTech"/>
+    <hasQuizMarks rdf:resource="#Q4S32"/>
+    <hasQuizMarks rdf:resource="#Q5S32"/>
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <hasQuizMarks rdf:resource="#Q1S32"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <undergoesEvaluation rdf:resource="#Quiz_6"/>
+    <hasQuizMarks rdf:resource="#Q6S32"/>
+    <hasQuizMarks rdf:resource="#Q2S32"/>
+    <hasQuizMarks rdf:resource="#Q3S32"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <attendsLessons rdf:resource="#Lesson_5"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#hasQuizMarks">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="#QuizMarks"/>
+    <rdfs:domain rdf:resource="#Student"/>
+    <owl:inverseOf rdf:resource="#belongsToStudent"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q6S2">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_2"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_6"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S8">
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+    <belongsToStudent rdf:resource="#MTech_8"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">9.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Quiz_1">
+    <rdf:type rdf:resource="#Quiz"/>
+    <hasQ_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Q_1</hasQ_ID>
+    <isForLesson rdf:resource="#Lesson_1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S27">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+    <belongsToStudent rdf:resource="#MTech_27"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S26">
+    <belongsToStudent rdf:resource="#MTech_26"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S25">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_25"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S34">
+    <belongsToStudent rdf:resource="#MTech_34"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S12">
+    <belongsToStudent rdf:resource="#MTech_12"/>
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">2.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S33">
+    <belongsToStudent rdf:resource="#MTech_33"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">3.67</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S12">
+    <belongsToStudent rdf:resource="#MTech_12"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S9">
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_9"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">7.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_2">
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <hasQuizMarks rdf:resource="#Q6S2"/>
+    <hasQuizMarks rdf:resource="#Q3S2"/>
+    <undergoesEvaluation rdf:resource="#Quiz_5"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <hasS_Name xml:lang="en">VAMSI KRISHNA  V </hasS_Name>
+    <hasS_Age rdf:datatype="http://www.w3.org/2001/XMLSchema#int">22</hasS_Age>
+    <rdf:type rdf:resource="#MTech"/>
+    <hasQuizMarks rdf:resource="#Q2S2"/>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <haveGender rdf:resource="#Male"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0006</hasS_ID>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <hasQuizMarks rdf:resource="#Q5S2"/>
+    <attendsLessons rdf:resource="#Lesson_6"/>
+    <hasQuizMarks rdf:resource="#Q4S2"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <attendsLessons rdf:resource="#Lesson_5"/>
+    <undergoesEvaluation rdf:resource="#Quiz_6"/>
+    <hasQuizMarks rdf:resource="#Q1S2"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q5S6">
+    <belongsToQuiz rdf:resource="#Quiz_5"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">3.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_6"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S29">
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+    <belongsToStudent rdf:resource="#MTech_29"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_23">
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <hasQuizMarks rdf:resource="#Q3S23"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <hasQuizMarks rdf:resource="#Q4S23"/>
+    <hasQuizMarks rdf:resource="#Q1S23"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0070</hasS_ID>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <rdf:type rdf:resource="#MTech"/>
+    <hasQuizMarks rdf:resource="#Q2S23"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S31">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_31"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S23">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.17</hasValue>
+    <belongsToStudent rdf:resource="#MTech_23"/>
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech">
+    <rdfs:subClassOf rdf:resource="#PG"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S21">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+    <belongsToStudent rdf:resource="#MTech_21"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Quiz_3">
+    <hasQ_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Q_3</hasQ_ID>
+    <rdf:type rdf:resource="#Quiz"/>
+    <isForLesson rdf:resource="#Lesson_3"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S2">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">8.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+    <belongsToStudent rdf:resource="#MTech_2"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Quiz_8">
+    <isForLesson rdf:resource="#Lesson_8"/>
+    <hasQ_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Q_8</hasQ_ID>
+    <rdf:type rdf:resource="#Quiz"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q5S31">
+    <belongsToQuiz rdf:resource="#Quiz_5"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">3.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_31"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S28">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+    <belongsToStudent rdf:resource="#MTech_28"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">2.67</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S7">
+    <belongsToStudent rdf:resource="#MTech_7"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q5S19">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_5"/>
+    <belongsToStudent rdf:resource="#MTech_19"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">3.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S21">
+    <belongsToStudent rdf:resource="#MTech_21"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.17</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q5S26">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_26"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_5"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#hasQ_ID">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#Quiz"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Marks">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S27">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.5</hasValue>
+    <belongsToStudent rdf:resource="#MTech_27"/>
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#belongsToStudent">
+    <rdfs:domain rdf:resource="#QuizMarks"/>
+    <owl:inverseOf rdf:resource="#hasQuizMarks"/>
+    <rdfs:range rdf:resource="#Student"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S21">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_21"/>
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S20">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">3.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_20"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S15">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <belongsToStudent rdf:resource="#MTech_15"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Lesson_1">
+    <hasL_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">L_1</hasL_ID>
+    <inRound rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</inRound>
+    <rdf:type rdf:resource="#Lesson"/>
+    <hasEvaluation rdf:resource="#Quiz_1"/>
+    <hasLessonType rdf:resource="#VisualLessons"/>
+    <hasL_Title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Introduction to Web Services</hasL_Title>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S14">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_14"/>
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q5S28">
+    <belongsToQuiz rdf:resource="#Quiz_5"/>
+    <belongsToStudent rdf:resource="#MTech_28"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">8.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q6S8">
+    <belongsToQuiz rdf:resource="#Quiz_6"/>
+    <belongsToStudent rdf:resource="#MTech_8"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_22">
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <hasQuizMarks rdf:resource="#Q6S22"/>
+    <hasQuizMarks rdf:resource="#Q5S22"/>
+    <attendsLessons rdf:resource="#Lesson_5"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0067</hasS_ID>
+    <undergoesEvaluation rdf:resource="#Quiz_5"/>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <rdf:type rdf:resource="#MTech"/>
+    <hasQuizMarks rdf:resource="#Q1S22"/>
+    <hasQuizMarks rdf:resource="#Q3S22"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <attendsLessons rdf:resource="#Lesson_6"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <hasQuizMarks rdf:resource="#Q4S22"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <hasQuizMarks rdf:resource="#Q2S22"/>
+    <undergoesEvaluation rdf:resource="#Quiz_6"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S17">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_17"/>
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q6S27">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_27"/>
+    <belongsToQuiz rdf:resource="#Quiz_6"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Male">
+    <rdf:type rdf:resource="#Gender"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S18">
+    <belongsToStudent rdf:resource="#MTech_18"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_28">
+    <undergoesEvaluation rdf:resource="#Quiz_6"/>
+    <hasQuizMarks rdf:resource="#Q1S28"/>
+    <hasQuizMarks rdf:resource="#Q4S28"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0093</hasS_ID>
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <hasQuizMarks rdf:resource="#Q3S28"/>
+    <attendsLessons rdf:resource="#Lesson_6"/>
+    <hasQuizMarks rdf:resource="#Q2S28"/>
+    <attendsLessons rdf:resource="#Lesson_5"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <rdf:type rdf:resource="#MTech"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <hasQuizMarks rdf:resource="#Q6S28"/>
+    <undergoesEvaluation rdf:resource="#Quiz_5"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <hasQuizMarks rdf:resource="#Q5S28"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Lesson_5">
+    <rdf:type rdf:resource="#Lesson"/>
+    <inRound rdf:datatype="http://www.w3.org/2001/XMLSchema#int">2</inRound>
+    <hasLessonType rdf:resource="#VerbalLessons"/>
+    <hasL_Title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Basic of OWL</hasL_Title>
+    <hasL_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">L_5</hasL_ID>
+    <hasEvaluation rdf:resource="#Quiz_5"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q6S28">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_6"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_28"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Quiz_6">
+    <isForLesson rdf:resource="#Lesson_6"/>
+    <hasQ_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Q_6</hasQ_ID>
+    <rdf:type rdf:resource="#Quiz"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S7">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_7"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S17">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">7.17</hasValue>
+    <belongsToStudent rdf:resource="#MTech_17"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S24">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_24"/>
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S10">
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">7.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_10"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#isForLesson">
+    <rdfs:range rdf:resource="#Lesson"/>
+    <rdfs:domain rdf:resource="#Quiz"/>
+    <rdfs:subPropertyOf rdf:resource="#hasEvaluation"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#InverseFunctionalProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <owl:inverseOf rdf:resource="#hasEvaluation"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S28">
+    <belongsToStudent rdf:resource="#MTech_28"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q5S25">
+    <belongsToStudent rdf:resource="#MTech_25"/>
+    <belongsToQuiz rdf:resource="#Quiz_5"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_16">
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <rdf:type rdf:resource="#MTech"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <hasQuizMarks rdf:resource="#Q3S16"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0050</hasS_ID>
+    <hasQuizMarks rdf:resource="#Q4S16"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <hasQuizMarks rdf:resource="#Q2S16"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <hasQuizMarks rdf:resource="#Q1S16"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S5">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">7.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_5"/>
+    <belongsToQuiz rdf:resource="#Quiz_5"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Lesson_2">
+    <hasEvaluation rdf:resource="#Quiz_2"/>
+    <hasL_Title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Basics of RDF</hasL_Title>
+    <hasLessonType rdf:resource="#VerbalLessons"/>
+    <rdf:type rdf:resource="#Lesson"/>
+    <hasL_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">L_2</hasL_ID>
+    <inRound rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</inRound>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S11">
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <belongsToStudent rdf:resource="#MTech_11"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S16">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_16"/>
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">3.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S12">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+    <belongsToStudent rdf:resource="#MTech_12"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_6">
+    <hasQuizMarks rdf:resource="#Q4S6"/>
+    <attendsLessons rdf:resource="#Lesson_5"/>
+    <hasQuizMarks rdf:resource="#Q6S6"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <hasQuizMarks rdf:resource="#Q5S6"/>
+    <hasQuizMarks rdf:resource="#Q2S6"/>
+    <hasQuizMarks rdf:resource="#Q1S6"/>
+    <undergoesEvaluation rdf:resource="#Quiz_5"/>
+    <hasS_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GHETIA HIMANSHU MAGANLAL </hasS_Name>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <hasQuizMarks rdf:resource="#Q3S6"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0030</hasS_ID>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <attendsLessons rdf:resource="#Lesson_6"/>
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <undergoesEvaluation rdf:resource="#Quiz_6"/>
+    <rdf:type rdf:resource="#MTech"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#PG">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="#Engineering"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q5S4">
+    <belongsToStudent rdf:resource="#MTech_4"/>
+    <belongsToQuiz rdf:resource="#Quiz_5"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S34">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_34"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q6S31">
+    <belongsToStudent rdf:resource="#MTech_31"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_6"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">3.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S5">
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+    <belongsToStudent rdf:resource="#MTech_5"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">3.83</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S16">
+    <belongsToStudent rdf:resource="#MTech_16"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">7.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Student">
+    <rdfs:comment xml:lang="en">The class of students.</rdfs:comment>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S32">
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">9.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_32"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S11">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+    <belongsToStudent rdf:resource="#MTech_11"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S20">
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_20"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#VerbalLS">
+    <rdf:type rdf:resource="#Styles"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#hasL_Title">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="#Lesson"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S28">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_28"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S9">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">8.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+    <belongsToStudent rdf:resource="#MTech_9"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q6S32">
+    <belongsToStudent rdf:resource="#MTech_32"/>
+    <belongsToQuiz rdf:resource="#Quiz_6"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S22">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_22"/>
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S10">
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.17</hasValue>
+    <belongsToStudent rdf:resource="#MTech_10"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#hasS_Age">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdfs:domain rdf:resource="#Student"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Age in years.</rdfs:comment>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S20">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">7.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+    <belongsToStudent rdf:resource="#MTech_20"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S7">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_7"/>
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q6S34">
+    <belongsToStudent rdf:resource="#MTech_34"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_6"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#belongsToQuiz">
+    <rdfs:range rdf:resource="#Quiz"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S2">
+    <belongsToStudent rdf:resource="#MTech_2"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S16">
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+    <belongsToStudent rdf:resource="#MTech_16"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_18">
+    <hasQuizMarks rdf:resource="#Q2S18"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <rdf:type rdf:resource="#MTech"/>
+    <hasQuizMarks rdf:resource="#Q4S18"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <hasQuizMarks rdf:resource="#Q3S18"/>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0058</hasS_ID>
+    <hasQuizMarks rdf:resource="#Q1S18"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S10">
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_10"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S22">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_22"/>
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S26">
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_26"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S12">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_12"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S18">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_18"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S21">
+    <belongsToStudent rdf:resource="#MTech_21"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S14">
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_14"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S19">
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+    <belongsToStudent rdf:resource="#MTech_19"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S31">
+    <belongsToStudent rdf:resource="#MTech_31"/>
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S1">
+    <belongsToStudent rdf:resource="#MTech_1"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">1.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S19">
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_19"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="">
+    <owl:versionInfo xml:lang="en">1.0</owl:versionInfo>
+    <rdfs:comment xml:lang="en">This is the ontology for detecting the learning style of a student in an e-learning environment.</rdfs:comment>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SaGe Ontology</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q5S11">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_5"/>
+    <belongsToStudent rdf:resource="#MTech_11"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Gender">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q6S26">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_6"/>
+    <belongsToStudent rdf:resource="#MTech_26"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S29">
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_29"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Female">
+    <rdf:type rdf:resource="#Gender"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S7">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_7"/>
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.33</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S34">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">1.83</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_34"/>
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_12">
+    <enrollsIn rdf:resource="#Lesson_4"/>
+    <rdf:type rdf:resource="#MTech"/>
+    <enrollsIn rdf:resource="#Lesson_2"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <hasQuizMarks rdf:resource="#Q1S12"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <hasQuizMarks rdf:resource="#Q2S12"/>
+    <hasQuizMarks rdf:resource="#Q4S12"/>
+    <hasQuizMarks rdf:resource="#Q3S12"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <enrollsIn rdf:resource="#Lesson_1"/>
+    <enrollsIn rdf:resource="#Lesson_3"/>
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0041</hasS_ID>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Styles">
+    <rdfs:subClassOf rdf:resource="#LearningStyle"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Lesson_7">
+    <rdf:type rdf:resource="#Lesson"/>
+    <inRound rdf:datatype="http://www.w3.org/2001/XMLSchema#int">2</inRound>
+    <hasEvaluation rdf:resource="#Quiz_7"/>
+    <hasL_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">L_7</hasL_ID>
+    <hasLessonType rdf:resource="#VisualLessons"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S8">
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_8"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Lesson_6">
+    <inRound rdf:datatype="http://www.w3.org/2001/XMLSchema#int">2</inRound>
+    <hasL_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">L_6</hasL_ID>
+    <hasEvaluation rdf:resource="#Quiz_6"/>
+    <hasL_Title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RDF Syntax</hasL_Title>
+    <rdf:type rdf:resource="#Lesson"/>
+    <hasLessonType rdf:resource="#VerbalLessons"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#UG">
+    <rdfs:subClassOf rdf:resource="#Engineering"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q6S3">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_6"/>
+    <belongsToStudent rdf:resource="#MTech_3"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S23">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_23"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#VisualLessons">
+    <rdf:type rdf:resource="#LessonType"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q6S21">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">7.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_6"/>
+    <belongsToStudent rdf:resource="#MTech_21"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S33">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">7.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_33"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S16">
+    <belongsToStudent rdf:resource="#MTech_16"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.67</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S1">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_1"/>
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MSc">
+    <rdfs:subClassOf rdf:resource="#PG"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S8">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">2.17</hasValue>
+    <belongsToStudent rdf:resource="#MTech_8"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S26">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">2.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_26"/>
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S32">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">7.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_32"/>
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#LearningStyle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#hasLessonType">
+    <rdfs:domain rdf:resource="#Lesson"/>
+    <rdfs:range rdf:resource="#LessonType"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S9">
+    <belongsToStudent rdf:resource="#MTech_9"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">7.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q5S3">
+    <belongsToStudent rdf:resource="#MTech_3"/>
+    <belongsToQuiz rdf:resource="#Quiz_5"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S28">
+    <belongsToStudent rdf:resource="#MTech_28"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">7.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q5S9">
+    <belongsToStudent rdf:resource="#MTech_9"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_5"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q6S33">
+    <belongsToStudent rdf:resource="#MTech_33"/>
+    <belongsToQuiz rdf:resource="#Quiz_6"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q5S33">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">7.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_5"/>
+    <belongsToStudent rdf:resource="#MTech_33"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S5">
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+    <belongsToStudent rdf:resource="#MTech_5"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">9.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S4">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">3.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_4"/>
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S25">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+    <belongsToStudent rdf:resource="#MTech_25"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_24">
+    <hasQuizMarks rdf:resource="#Q4S24"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <hasQuizMarks rdf:resource="#Q6S24"/>
+    <undergoesEvaluation rdf:resource="#Quiz_6"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <hasQuizMarks rdf:resource="#Q1S24"/>
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <attendsLessons rdf:resource="#Lesson_5"/>
+    <rdf:type rdf:resource="#MTech"/>
+    <hasQuizMarks rdf:resource="#Q2S24"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <undergoesEvaluation rdf:resource="#Quiz_5"/>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <attendsLessons rdf:resource="#Lesson_6"/>
+    <hasQuizMarks rdf:resource="#Q5S24"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0078</hasS_ID>
+    <hasQuizMarks rdf:resource="#Q3S24"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S22">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.33</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_22"/>
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S14">
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+    <belongsToStudent rdf:resource="#MTech_14"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_7">
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <rdf:type rdf:resource="#MTech"/>
+    <hasS_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SANTOKI SHANTANU VITHALBHAI </hasS_Name>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <hasQuizMarks rdf:resource="#Q1S7"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <hasQuizMarks rdf:resource="#Q3S7"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <hasQuizMarks rdf:resource="#Q4S7"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0031</hasS_ID>
+    <hasQuizMarks rdf:resource="#Q2S7"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S32">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <belongsToStudent rdf:resource="#MTech_32"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#inRound">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdfs:domain rdf:resource="#Lesson"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_33">
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <hasQuizMarks rdf:resource="#Q5S33"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0105</hasS_ID>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <undergoesEvaluation rdf:resource="#Quiz_6"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <hasQuizMarks rdf:resource="#Q1S33"/>
+    <rdf:type rdf:resource="#MTech"/>
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <hasQuizMarks rdf:resource="#Q3S33"/>
+    <hasQuizMarks rdf:resource="#Q2S33"/>
+    <hasQuizMarks rdf:resource="#Q4S33"/>
+    <undergoesEvaluation rdf:resource="#Quiz_5"/>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <attendsLessons rdf:resource="#Lesson_5"/>
+    <attendsLessons rdf:resource="#Lesson_6"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <hasQuizMarks rdf:resource="#Q6S33"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S3">
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+    <belongsToStudent rdf:resource="#MTech_3"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">8.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_4">
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <hasQuizMarks rdf:resource="#Q6S4"/>
+    <undergoesEvaluation rdf:resource="#Quiz_6"/>
+    <hasQuizMarks rdf:resource="#Q4S4"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <hasQuizMarks rdf:resource="#Q5S4"/>
+    <hasQuizMarks rdf:resource="#Q3S4"/>
+    <hasQuizMarks rdf:resource="#Q1S4"/>
+    <rdf:type rdf:resource="#MTech"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <undergoesEvaluation rdf:resource="#Quiz_5"/>
+    <hasQuizMarks rdf:resource="#Q2S4"/>
+    <hasS_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SIDNALE MOHIT MAHAVIR </hasS_Name>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0024</hasS_ID>
+    <attendsLessons rdf:resource="#Lesson_6"/>
+    <attendsLessons rdf:resource="#Lesson_5"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S6">
+    <belongsToStudent rdf:resource="#MTech_6"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S4">
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S31">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_31"/>
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q6S11">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_6"/>
+    <belongsToStudent rdf:resource="#MTech_11"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S29">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+    <belongsToStudent rdf:resource="#MTech_29"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S23">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">7.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_23"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#hasS_Name">
+    <rdfs:domain rdf:resource="#Student"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S26">
+    <belongsToStudent rdf:resource="#MTech_26"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S3">
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.83</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_3"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_26">
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <hasQuizMarks rdf:resource="#Q6S26"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <hasQuizMarks rdf:resource="#Q5S26"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0083</hasS_ID>
+    <hasQuizMarks rdf:resource="#Q1S26"/>
+    <attendsLessons rdf:resource="#Lesson_6"/>
+    <hasQuizMarks rdf:resource="#Q4S26"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <attendsLessons rdf:resource="#Lesson_5"/>
+    <undergoesEvaluation rdf:resource="#Quiz_5"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <rdf:type rdf:resource="#MTech"/>
+    <hasQuizMarks rdf:resource="#Q3S26"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <undergoesEvaluation rdf:resource="#Quiz_6"/>
+    <hasQuizMarks rdf:resource="#Q2S26"/>
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S19">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">2.5</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_19"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_9">
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <rdf:type rdf:resource="#MTech"/>
+    <hasQuizMarks rdf:resource="#Q6S9"/>
+    <attendsLessons rdf:resource="#Lesson_6"/>
+    <hasQuizMarks rdf:resource="#Q2S9"/>
+    <attendsLessons rdf:resource="#Lesson_5"/>
+    <hasQuizMarks rdf:resource="#Q1S9"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0033</hasS_ID>
+    <undergoesEvaluation rdf:resource="#Quiz_6"/>
+    <hasQuizMarks rdf:resource="#Q3S9"/>
+    <undergoesEvaluation rdf:resource="#Quiz_5"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <hasQuizMarks rdf:resource="#Q5S9"/>
+    <hasQuizMarks rdf:resource="#Q4S9"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#attendsLessons">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="#enrollsIn"/>
+    <rdfs:range rdf:resource="#Lesson"/>
+    <rdfs:domain rdf:resource="#MTech"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S24">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <belongsToStudent rdf:resource="#MTech_24"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#enrollsIn">
+    <rdfs:domain rdf:resource="#Student"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="#Lesson"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_21">
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0061</hasS_ID>
+    <undergoesEvaluation rdf:resource="#Quiz_6"/>
+    <attendsLessons rdf:resource="#Lesson_5"/>
+    <hasQuizMarks rdf:resource="#Q5S21"/>
+    <undergoesEvaluation rdf:resource="#Quiz_5"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <hasQuizMarks rdf:resource="#Q3S21"/>
+    <hasQuizMarks rdf:resource="#Q1S21"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <rdf:type rdf:resource="#MTech"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <hasQuizMarks rdf:resource="#Q6S21"/>
+    <hasQuizMarks rdf:resource="#Q2S21"/>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <attendsLessons rdf:resource="#Lesson_6"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <hasQuizMarks rdf:resource="#Q4S21"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_1">
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <hasQuizMarks rdf:resource="#Q2S1"/>
+    <haveGender rdf:resource="#Male"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <hasQuizMarks rdf:resource="#Q3S1"/>
+    <hasQuizMarks rdf:resource="#Q4S1"/>
+    <hasQuizMarks rdf:resource="#Q1S1"/>
+    <hasS_Name xml:lang="en">AMALA VETHA SOPHIA.J</hasS_Name>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <rdf:type rdf:resource="#MTech"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0004</hasS_ID>
+    <hasS_Age rdf:datatype="http://www.w3.org/2001/XMLSchema#int">23</hasS_Age>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S1">
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">3.5</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S13">
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_13"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q6S5">
+    <belongsToQuiz rdf:resource="#Quiz_6"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">7.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_5"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S24">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">3.33</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+    <belongsToStudent rdf:resource="#MTech_24"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S15">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_15"/>
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#hasValue">
+    <rdfs:domain rdf:resource="#QuizMarks"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#VerbalLessons">
+    <rdf:type rdf:resource="#LessonType"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S30">
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_30"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S23">
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_23"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S2">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">3.33</hasValue>
+    <belongsToStudent rdf:resource="#MTech_2"/>
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_15">
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <hasQuizMarks rdf:resource="#Q3S15"/>
+    <hasQuizMarks rdf:resource="#Q4S15"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <hasQuizMarks rdf:resource="#Q2S15"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0049</hasS_ID>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <hasQuizMarks rdf:resource="#Q1S15"/>
+    <rdf:type rdf:resource="#MTech"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S19">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_19"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Quiz_4">
+    <rdf:type rdf:resource="#Quiz"/>
+    <isForLesson rdf:resource="#Lesson_4"/>
+    <hasQ_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Q_4</hasQ_ID>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_11">
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0035</hasS_ID>
+    <attendsLessons rdf:resource="#Lesson_5"/>
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <hasQuizMarks rdf:resource="#Q5S11"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <hasQuizMarks rdf:resource="#Q3S11"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <undergoesEvaluation rdf:resource="#Quiz_5"/>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <attendsLessons rdf:resource="#Lesson_6"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <hasQuizMarks rdf:resource="#Q1S11"/>
+    <hasQuizMarks rdf:resource="#Q4S11"/>
+    <rdf:type rdf:resource="#MTech"/>
+    <hasQuizMarks rdf:resource="#Q6S11"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <hasQuizMarks rdf:resource="#Q2S11"/>
+    <undergoesEvaluation rdf:resource="#Quiz_6"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q5S5">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">7.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_5"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_5"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#LessonType">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_17">
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <hasQuizMarks rdf:resource="#Q2S17"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <hasQuizMarks rdf:resource="#Q1S17"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <hasQuizMarks rdf:resource="#Q4S17"/>
+    <hasQuizMarks rdf:resource="#Q3S17"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0056</hasS_ID>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <rdf:type rdf:resource="#MTech"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S14">
+    <belongsToStudent rdf:resource="#MTech_14"/>
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.83</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Engineering">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:comment xml:lang="en">The class of engineering students.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="#Student"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S6">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <belongsToStudent rdf:resource="#MTech_6"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S4">
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+    <belongsToStudent rdf:resource="#MTech_4"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.17</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Evaluation">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_31">
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <hasQuizMarks rdf:resource="#Q5S31"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <attendsLessons rdf:resource="#Lesson_5"/>
+    <undergoesEvaluation rdf:resource="#Quiz_5"/>
+    <hasQuizMarks rdf:resource="#Q4S31"/>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <attendsLessons rdf:resource="#Lesson_6"/>
+    <hasQuizMarks rdf:resource="#Q3S31"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <hasQuizMarks rdf:resource="#Q6S31"/>
+    <hasQuizMarks rdf:resource="#Q1S31"/>
+    <hasQuizMarks rdf:resource="#Q2S31"/>
+    <undergoesEvaluation rdf:resource="#Quiz_6"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0096</hasS_ID>
+    <rdf:type rdf:resource="#MTech"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#hasMarks">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="#Evaluation"/>
+    <rdfs:range rdf:resource="#Marks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_34">
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0106</hasS_ID>
+    <hasQuizMarks rdf:resource="#Q6S34"/>
+    <hasQuizMarks rdf:resource="#Q3S34"/>
+    <undergoesEvaluation rdf:resource="#Quiz_5"/>
+    <hasQuizMarks rdf:resource="#Q5S34"/>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <attendsLessons rdf:resource="#Lesson_5"/>
+    <attendsLessons rdf:resource="#Lesson_6"/>
+    <rdf:type rdf:resource="#MTech"/>
+    <hasQuizMarks rdf:resource="#Q1S34"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <undergoesEvaluation rdf:resource="#Quiz_6"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <hasQuizMarks rdf:resource="#Q2S34"/>
+    <hasQuizMarks rdf:resource="#Q4S34"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S20">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+    <belongsToStudent rdf:resource="#MTech_20"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_5">
+    <hasQuizMarks rdf:resource="#Q3S5"/>
+    <undergoesEvaluation rdf:resource="#Quiz_5"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <hasQuizMarks rdf:resource="#Q6S5"/>
+    <hasS_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DALVI HRISHIKESH GAJANAN </hasS_Name>
+    <hasQuizMarks rdf:resource="#Q4S5"/>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <rdf:type rdf:resource="#MTech"/>
+    <hasQuizMarks rdf:resource="#Q5S5"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0025</hasS_ID>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <attendsLessons rdf:resource="#Lesson_5"/>
+    <hasQuizMarks rdf:resource="#Q2S5"/>
+    <hasQuizMarks rdf:resource="#Q1S5"/>
+    <attendsLessons rdf:resource="#Lesson_6"/>
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <undergoesEvaluation rdf:resource="#Quiz_6"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S25">
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">3.67</hasValue>
+    <belongsToStudent rdf:resource="#MTech_25"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S27">
+    <belongsToStudent rdf:resource="#MTech_27"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Lesson_4">
+    <rdf:type rdf:resource="#Lesson"/>
+    <hasLessonType rdf:resource="#VisualLessons"/>
+    <inRound rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</inRound>
+    <hasEvaluation rdf:resource="#Quiz_4"/>
+    <hasL_Title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Basics of FOAF</hasL_Title>
+    <hasL_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">L_4</hasL_ID>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Lesson_3">
+    <hasLessonType rdf:resource="#VerbalLessons"/>
+    <hasL_Title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">RDFS Schema</hasL_Title>
+    <hasEvaluation rdf:resource="#Quiz_3"/>
+    <hasL_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">L_3</hasL_ID>
+    <inRound rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</inRound>
+    <rdf:type rdf:resource="#Lesson"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S10">
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_10"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_3">
+    <hasS_Name xml:lang="en">RAWAT PARESH RAJENDRA </hasS_Name>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <undergoesEvaluation rdf:resource="#Quiz_5"/>
+    <hasQuizMarks rdf:resource="#Q4S3"/>
+    <hasQuizMarks rdf:resource="#Q5S3"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <haveGender rdf:resource="#Male"/>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <hasQuizMarks rdf:resource="#Q6S3"/>
+    <hasQuizMarks rdf:resource="#Q3S3"/>
+    <hasQuizMarks rdf:resource="#Q1S3"/>
+    <attendsLessons rdf:resource="#Lesson_6"/>
+    <attendsLessons rdf:resource="#Lesson_5"/>
+    <rdf:type rdf:resource="#MTech"/>
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0020</hasS_ID>
+    <undergoesEvaluation rdf:resource="#Quiz_6"/>
+    <hasQuizMarks rdf:resource="#Q2S3"/>
+    <hasS_Age rdf:datatype="http://www.w3.org/2001/XMLSchema#int">23</hasS_Age>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S13">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_13"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S33">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">3.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_33"/>
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q5S22">
+    <belongsToQuiz rdf:resource="#Quiz_5"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_22"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S13">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_13"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_19">
+    <undergoesEvaluation rdf:resource="#Quiz_6"/>
+    <hasQuizMarks rdf:resource="#Q4S19"/>
+    <undergoesEvaluation rdf:resource="#Quiz_5"/>
+    <hasQuizMarks rdf:resource="#Q5S19"/>
+    <rdf:type rdf:resource="#MTech"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <hasQuizMarks rdf:resource="#Q1S19"/>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <attendsLessons rdf:resource="#Lesson_6"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0059</hasS_ID>
+    <hasQuizMarks rdf:resource="#Q6S19"/>
+    <attendsLessons rdf:resource="#Lesson_5"/>
+    <hasQuizMarks rdf:resource="#Q2S19"/>
+    <hasQuizMarks rdf:resource="#Q3S19"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S30">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+    <belongsToStudent rdf:resource="#MTech_30"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">7.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_10">
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0034</hasS_ID>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <hasQuizMarks rdf:resource="#Q4S10"/>
+    <rdf:type rdf:resource="#MTech"/>
+    <hasQuizMarks rdf:resource="#Q3S10"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <hasQuizMarks rdf:resource="#Q2S10"/>
+    <hasQuizMarks rdf:resource="#Q1S10"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_30">
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <rdf:type rdf:resource="#MTech"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0095</hasS_ID>
+    <hasQuizMarks rdf:resource="#Q4S30"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <hasQuizMarks rdf:resource="#Q3S30"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <hasQuizMarks rdf:resource="#Q2S30"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <hasQuizMarks rdf:resource="#Q1S30"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S18">
+    <belongsToStudent rdf:resource="#MTech_18"/>
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">3.33</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_29">
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <rdf:type rdf:resource="#MTech"/>
+    <hasQuizMarks rdf:resource="#Q4S29"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <hasQuizMarks rdf:resource="#Q3S29"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <hasQuizMarks rdf:resource="#Q2S29"/>
+    <hasQuizMarks rdf:resource="#Q1S29"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0094</hasS_ID>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S25">
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+    <belongsToStudent rdf:resource="#MTech_25"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">7.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S6">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_6"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S17">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_17"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Quiz_2">
+    <isForLesson rdf:resource="#Lesson_2"/>
+    <hasQ_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Q_2</hasQ_ID>
+    <rdf:type rdf:resource="#Quiz"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q6S24">
+    <belongsToStudent rdf:resource="#MTech_24"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_6"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S8">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_8"/>
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S15">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_15"/>
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">4.33</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#PhD">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="#Engineering"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#hasS_ID">
+    <rdfs:domain rdf:resource="#Student"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S17">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+    <belongsToStudent rdf:resource="#MTech_17"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">7.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#undergoesEvaluation">
+    <rdfs:range rdf:resource="#Evaluation"/>
+    <rdfs:domain rdf:resource="#Student"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S31">
+    <belongsToStudent rdf:resource="#MTech_31"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">3.83</hasValue>
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S13">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_13"/>
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Quiz_7">
+    <hasQ_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Q_7</hasQ_ID>
+    <isForLesson rdf:resource="#Lesson_7"/>
+    <rdf:type rdf:resource="#Quiz"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_20">
+    <rdf:type rdf:resource="#MTech"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0060</hasS_ID>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <hasQuizMarks rdf:resource="#Q2S20"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <hasQuizMarks rdf:resource="#Q1S20"/>
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <hasQuizMarks rdf:resource="#Q4S20"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <hasQuizMarks rdf:resource="#Q3S20"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q6S9">
+    <belongsToStudent rdf:resource="#MTech_9"/>
+    <belongsToQuiz rdf:resource="#Quiz_6"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_14">
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <hasQuizMarks rdf:resource="#Q2S14"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0048</hasS_ID>
+    <hasQuizMarks rdf:resource="#Q3S14"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <hasQuizMarks rdf:resource="#Q4S14"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <hasQuizMarks rdf:resource="#Q1S14"/>
+    <rdf:type rdf:resource="#MTech"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S1">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_1"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S11">
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_11"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S9">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_9"/>
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.33</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q3S15">
+    <belongsToStudent rdf:resource="#MTech_15"/>
+    <belongsToQuiz rdf:resource="#Quiz_3"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">3.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S5">
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_5"/>
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#haveGender">
+    <rdfs:range rdf:resource="#Gender"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="#Student"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q6S25">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">7.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_25"/>
+    <belongsToQuiz rdf:resource="#Quiz_6"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q6S4">
+    <belongsToQuiz rdf:resource="#Quiz_6"/>
+    <belongsToStudent rdf:resource="#MTech_4"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q5S32">
+    <belongsToQuiz rdf:resource="#Quiz_5"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToStudent rdf:resource="#MTech_32"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#MTech_27">
+    <rdf:type rdf:resource="#MTech"/>
+    <hasQuizMarks rdf:resource="#Q2S27"/>
+    <attendsLessons rdf:resource="#Lesson_6"/>
+    <attendsLessons rdf:resource="#Lesson_5"/>
+    <hasQuizMarks rdf:resource="#Q6S27"/>
+    <attendsLessons rdf:resource="#Lesson_3"/>
+    <hasQuizMarks rdf:resource="#Q5S27"/>
+    <undergoesEvaluation rdf:resource="#Quiz_5"/>
+    <attendsLessons rdf:resource="#Lesson_2"/>
+    <hasQuizMarks rdf:resource="#Q1S27"/>
+    <hasQuizMarks rdf:resource="#Q4S27"/>
+    <undergoesEvaluation rdf:resource="#Quiz_3"/>
+    <undergoesEvaluation rdf:resource="#Quiz_6"/>
+    <undergoesEvaluation rdf:resource="#Quiz_1"/>
+    <undergoesEvaluation rdf:resource="#Quiz_4"/>
+    <hasS_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">12MCS0092</hasS_ID>
+    <hasQuizMarks rdf:resource="#Q3S27"/>
+    <attendsLessons rdf:resource="#Lesson_1"/>
+    <attendsLessons rdf:resource="#Lesson_4"/>
+    <undergoesEvaluation rdf:resource="#Quiz_2"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Quiz_5">
+    <isForLesson rdf:resource="#Lesson_5"/>
+    <rdf:type rdf:resource="#Quiz"/>
+    <hasQ_ID rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Q_5</hasQ_ID>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q4S33">
+    <belongsToQuiz rdf:resource="#Quiz_4"/>
+    <belongsToStudent rdf:resource="#MTech_33"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">6.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S27">
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <belongsToStudent rdf:resource="#MTech_27"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">8.0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q1S32">
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <belongsToQuiz rdf:resource="#Quiz_1"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">2.83</hasValue>
+    <belongsToStudent rdf:resource="#MTech_32"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S22">
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">9.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_22"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Q2S30">
+    <belongsToQuiz rdf:resource="#Quiz_2"/>
+    <rdf:type rdf:resource="#QuizMarks"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#float">5.0</hasValue>
+    <belongsToStudent rdf:resource="#MTech_30"/>
+  </rdf:Description>
+</rdf:RDF>
+
+<!-- Created with Protege (with OWL Plugin 3.4.8, Build 629)  http://protege.stanford.edu -->

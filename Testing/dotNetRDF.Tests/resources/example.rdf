@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:ex="http://example.org/stuff/1.0/">
+  <rdf:Description rdf:about="http://www.w3.org/TR/rdf-syntax-grammar">
+    <dc:title>RDF/XML Syntax Specification (Revised)</dc:title>
+    <dc:title xml:lang="en">RDF/XML Syntax Specification (Revised)</dc:title>
+    <dc:title xml:lang="en-US">RDF/XML Syntax Specification (Revised)</dc:title>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://example.org/buecher/baum" xml:lang="de">
+    <dc:title>Der Baum</dc:title>
+    <dc:description>Das Buch ist außergewöhnlich</dc:description>
+    <dc:title xml:lang="en">The Tree</dc:title>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://example.org/item01">
+    <ex:prop rdf:parseType="Literal"
+             xmlns:a="http://example.org/a#">
+      <a:Box required="true">
+        <a:widget size="10" />
+        <a:grommit id="23" />
+      </a:Box>
+    </ex:prop>
+  </rdf:Description>
+
+</rdf:RDF>

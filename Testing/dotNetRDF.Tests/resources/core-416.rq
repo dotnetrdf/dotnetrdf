@@ -1,0 +1,40 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX schema: <http://schema.org/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+SELECT ?s ?p ?o ?Gp0 ?p0
+WHERE 
+{ 
+	GRAPH ?Gp0 
+	{ 
+		?s ?p ?o .
+		?p0_sub schema:name ?name0_sub .
+		FILTER (CONTAINS(UCASE(?name0_sub),"W"^^xsd:string)) 
+		?p0	rdf:type schema:Product . 
+		{
+			SELECT DISTINCT ?p0_sub 
+			WHERE 
+			{
+				GRAPH ?Gp0_sub 
+				{ 
+					?p0_sub rdf:type schema:Product .
+					?p0_sub schema:name ?name0_sub .
+					FILTER (CONTAINS(UCASE(?name0_sub),"W"^^xsd:string)) 
+				} 
+				GRAPH <http://foo.com/productList/> 
+				{
+					?Gp0_sub foaf:primaryTopic ?p0_sub . 
+				} 
+			} 
+			ORDER BY ?p0_sub
+			LIMIT 2 
+		}
+		FILTER(?p0_sub=?p0) 
+	} 
+
+	GRAPH <http://foo.com/productList/> 
+	{ 
+		?Gp0 foaf:primaryTopic ?p0 . 
+	} 
+}

@@ -1,0 +1,16 @@
+﻿
+
+# TriG Bad Example Document 1
+# Unterminated long literal
+
+@prefix ex: <http://www.example.org/vocabulary#> .
+@prefix : <http://www.example.org/exampleDocument#> .
+
+:G1 = { ex:literal a """Unterminated
+long literal
+
+which goes on
+
+and		on	and			on
+
+but doesn't get terminated

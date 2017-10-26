@@ -1,0 +1,10 @@
+﻿@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix kin: <http://example.org/family#>.
+_:d  foaf:name   "Dave" .                         #t0
+_:d  foaf:surname "Reynolds" .                    #t1
+_:d  foaf:mbox   "dave@epimorphics.com" .         #t2
+_:j  foaf:name   "Joan" .                         #t3
+_:j  kin:motherOf _:d .                           #t4
+_:j  foaf:knows   _:b .                           #t5
+_:b  foaf:name    "Bill" .						   #t6

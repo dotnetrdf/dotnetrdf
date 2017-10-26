@@ -1,0 +1,2573 @@
+@prefix chado: <http://purl.org/net/chado/schema/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://purl.org/net/chado/schema/> rdf:type owl:Ontology ;
+    rdfs:comment "The Chado-in-OWL Ontology"@en ;
+    rdfs:comment "$Revision: 506 $ on $Date: 2009-03-09 23:27:11 +1100 (Mon, 09 Mar 2009) $"@en ;
+    rdfs:comment "This ontology is intended to be a faithful projection of the Chado relational schema to OWL. For more information on Chado see http://gmod.org/wiki/Chado."@en ;
+    .
+    
+
+# create table analysis ( -- @ENTITY
+chado:Analysis rdf:type owl:Class .
+
+#     analysis_id serial not null, -- @DATA
+chado:analysis_id rdf:type owl:DatatypeProperty .
+chado:Analysis rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:analysis_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Analysis rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:analysis_id; owl:allValuesFrom xsd:integer ] .
+
+#     name varchar(255), -- @DATA
+chado:name rdf:type owl:DatatypeProperty .
+chado:Analysis rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Analysis rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:allValuesFrom xsd:string ] .
+
+#     description text, -- @DATA
+chado:description rdf:type owl:DatatypeProperty .
+chado:Analysis rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Analysis rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:allValuesFrom xsd:string ] .
+
+#     program varchar(255) not null, -- @DATA
+chado:program rdf:type owl:DatatypeProperty .
+chado:Analysis rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:program; owl:cardinality "1"^^xsd:integer ] .
+chado:Analysis rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:program; owl:allValuesFrom xsd:string ] .
+
+#     programversion varchar(255) not null, -- @DATA
+chado:programversion rdf:type owl:DatatypeProperty .
+chado:Analysis rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:programversion; owl:cardinality "1"^^xsd:integer ] .
+chado:Analysis rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:programversion; owl:allValuesFrom xsd:string ] .
+
+#     algorithm varchar(255), -- @DATA
+chado:algorithm rdf:type owl:DatatypeProperty .
+chado:Analysis rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:algorithm; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Analysis rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:algorithm; owl:allValuesFrom xsd:string ] .
+
+#     sourcename varchar(255), -- @DATA
+chado:sourcename rdf:type owl:DatatypeProperty .
+chado:Analysis rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:sourcename; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Analysis rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:sourcename; owl:allValuesFrom xsd:string ] .
+
+#     sourceversion varchar(255), -- @DATA
+chado:sourceversion rdf:type owl:DatatypeProperty .
+chado:Analysis rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:sourceversion; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Analysis rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:sourceversion; owl:allValuesFrom xsd:string ] .
+
+#     sourceuri text, -- @DATA
+chado:sourceuri rdf:type owl:DatatypeProperty .
+chado:Analysis rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:sourceuri; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Analysis rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:sourceuri; owl:allValuesFrom xsd:string ] .
+
+#     foreign key (analysis_id) references analysis (analysis_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+# create table analysisfeature ( -- @NARY
+chado:Analysisfeature rdf:type owl:Class .
+
+#     analysisfeature_id serial not null, -- @DATA
+chado:analysisfeature_id rdf:type owl:DatatypeProperty .
+chado:Analysisfeature rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:analysisfeature_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Analysisfeature rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:analysisfeature_id; owl:allValuesFrom xsd:integer ] .
+
+#     feature_id int not null, -- @LINK
+chado:feature rdf:type owl:ObjectProperty .
+chado:Analysisfeature rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (feature_id) references feature (feature_id) on delete cascade INITIALLY DEFERRED,
+chado:Analysisfeature rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature; owl:allValuesFrom chado:Feature ] .
+
+#     analysis_id int not null, -- @LINK
+chado:analysis rdf:type owl:ObjectProperty .
+chado:Analysisfeature rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:analysis; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (analysis_id) references analysis (analysis_id) on delete cascade INITIALLY DEFERRED,
+chado:Analysisfeature rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:analysis; owl:allValuesFrom chado:Analysis ] .
+
+# create table contact ( -- @ENTITY
+chado:Contact rdf:type owl:Class .
+
+#     contact_id serial not null, -- @DATA
+chado:contact_id rdf:type owl:DatatypeProperty .
+chado:Contact rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:contact_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Contact rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:contact_id; owl:allValuesFrom xsd:integer ] .
+
+#     foreign key (type_id) references cvterm (cvterm_id),
+
+#     name varchar(255) not null, -- @DATA
+chado:name rdf:type owl:DatatypeProperty .
+chado:Contact rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:cardinality "1"^^xsd:integer ] .
+chado:Contact rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:allValuesFrom xsd:string ] .
+
+#     description varchar(255) null, -- @DATA
+chado:description rdf:type owl:DatatypeProperty .
+chado:Contact rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Contact rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:allValuesFrom xsd:string ] .
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (subject_id) references contact (contact_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (object_id) references contact (contact_id) on delete cascade INITIALLY DEFERRED,
+
+# create table cv ( -- @ENTITY
+chado:Cv rdf:type owl:Class .
+
+#     cv_id serial not null, -- @DATA
+chado:cv_id rdf:type owl:DatatypeProperty .
+chado:Cv rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:cv_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Cv rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:cv_id; owl:allValuesFrom xsd:integer ] .
+
+#     name varchar(255) not null, -- @DATA
+chado:name rdf:type owl:DatatypeProperty .
+chado:Cv rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:cardinality "1"^^xsd:integer ] .
+chado:Cv rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:allValuesFrom xsd:string ] .
+
+#    definition text, -- @DATA
+chado:definition rdf:type owl:DatatypeProperty .
+chado:Cv rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:definition; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Cv rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:definition; owl:allValuesFrom xsd:string ] .
+
+# create table cvterm ( -- @ENTITY
+chado:Cvterm rdf:type owl:Class .
+
+#     cvterm_id serial not null, -- @DATA
+chado:cvterm_id rdf:type owl:DatatypeProperty .
+chado:Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:cvterm_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:cvterm_id; owl:allValuesFrom xsd:integer ] .
+
+#     cv_id int not null, -- @LINK
+chado:cv rdf:type owl:ObjectProperty .
+chado:Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:cv; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (cv_id) references cv (cv_id) on delete cascade INITIALLY DEFERRED,
+chado:Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:cv; owl:allValuesFrom chado:Cv ] .
+
+#     name varchar(1024) not null, --@DATA
+chado:name rdf:type owl:DatatypeProperty .
+chado:Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:cardinality "1"^^xsd:integer ] .
+chado:Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:allValuesFrom xsd:string ] .
+
+#     definition text, -- @DATA
+chado:definition rdf:type owl:DatatypeProperty .
+chado:Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:definition; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:definition; owl:allValuesFrom xsd:string ] .
+
+#     dbxref_id int not null, -- @LINK
+chado:dbxref rdf:type owl:ObjectProperty .
+chado:Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:dbxref; owl:maxCardinality "1"^^xsd:integer ] .
+
+#     foreign key (dbxref_id) references dbxref (dbxref_id) on delete set null INITIALLY DEFERRED,
+chado:Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:dbxref; owl:allValuesFrom chado:Dbxref ] .
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (subject_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (object_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete set null INITIALLY DEFERRED,
+
+#     foreign key (subject_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (object_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (cv_id) references cv (cv_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (cvterm_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade  INITIALLY DEFERRED,
+
+# create table cvterm_dbxref ( -- @BINARY
+chado:cvterm_dbxref rdf:type owl:ObjectProperty .
+
+#     cvterm_id int not null, -- @SOURCE
+
+#     foreign key (cvterm_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+chado:cvterm_dbxref rdfs:domain chado:Cvterm .
+
+#     dbxref_id int not null, -- @TARGET
+
+#     foreign key (dbxref_id) references dbxref (dbxref_id) on delete cascade INITIALLY DEFERRED,
+chado:cvterm_dbxref rdfs:range chado:Dbxref .
+
+#     foreign key (cvterm_id) references cvterm (cvterm_id) on delete cascade, 
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade, 
+
+#     foreign key (dbxref_id) references dbxref (dbxref_id) INITIALLY DEFERRED,
+
+#     foreign key (type_id) references cvterm (cvterm_id) INITIALLY DEFERRED,
+
+# create table expression ( -- @ENTITY
+chado:Expression rdf:type owl:Class .
+
+#        expression_id serial not null, -- @DATA
+chado:expression_id rdf:type owl:DatatypeProperty .
+chado:Expression rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:expression_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Expression rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:expression_id; owl:allValuesFrom xsd:integer ] .
+
+#        uniquename text not null, -- @DATA
+chado:uniquename rdf:type owl:DatatypeProperty .
+chado:Expression rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:uniquename; owl:cardinality "1"^^xsd:integer ] .
+chado:Expression rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:uniquename; owl:allValuesFrom xsd:string ] .
+
+#        md5checksum character(32), -- @DATA
+chado:md5checksum rdf:type owl:DatatypeProperty .
+chado:Expression rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:md5checksum; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Expression rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:md5checksum; owl:allValuesFrom xsd:string ] .
+
+#        description text, -- @DATA
+chado:description rdf:type owl:DatatypeProperty .
+chado:Expression rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Expression rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:allValuesFrom xsd:string ] .
+
+#        foreign key (expression_id) references expression (expression_id) on delete cascade INITIALLY DEFERRED,
+
+#        foreign key (cvterm_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+#        foreign key (cvterm_type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (expression_cvterm_id) references expression_cvterm (expression_cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (expression_id) references expression (expression_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+# create table expression_pub ( -- @BINARY
+chado:expression_pub rdf:type owl:ObjectProperty .
+
+#        expression_id int not null, -- @SOURCE
+
+#        foreign key (expression_id) references expression (expression_id) on delete cascade INITIALLY DEFERRED,
+chado:expression_pub rdfs:domain chado:Expression .
+
+#        pub_id int not null, -- @TARGET
+
+#        foreign key (pub_id) references pub (pub_id) on delete cascade INITIALLY DEFERRED,
+chado:expression_pub rdfs:range chado:Pub .
+
+# create table feature_expression ( -- @NARY
+chado:Feature_Expression rdf:type owl:Class .
+
+#        feature_expression_id serial not null, -- @DATA
+chado:feature_expression_id rdf:type owl:DatatypeProperty .
+chado:Feature_Expression rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature_expression_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Feature_Expression rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature_expression_id; owl:allValuesFrom xsd:integer ] .
+
+#        expression_id int not null, -- @LINK
+chado:expression rdf:type owl:ObjectProperty .
+chado:Feature_Expression rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:expression; owl:cardinality "1"^^xsd:integer ] .
+
+#        foreign key (expression_id) references expression (expression_id) on delete cascade INITIALLY DEFERRED,
+chado:Feature_Expression rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:expression; owl:allValuesFrom chado:Expression ] .
+
+#        feature_id int not null, -- @LINK
+chado:feature rdf:type owl:ObjectProperty .
+chado:Feature_Expression rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature; owl:cardinality "1"^^xsd:integer ] .
+
+#        foreign key (feature_id) references feature (feature_id) on delete cascade INITIALLY DEFERRED,
+chado:Feature_Expression rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature; owl:allValuesFrom chado:Feature ] .
+
+#        pub_id int not null, -- @LINK
+chado:pub rdf:type owl:ObjectProperty .
+chado:Feature_Expression rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pub; owl:cardinality "1"^^xsd:integer ] .
+
+#        foreign key (pub_id) references pub (pub_id) on delete cascade INITIALLY DEFERRED,
+chado:Feature_Expression rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pub; owl:allValuesFrom chado:Pub ] .
+
+#        foreign key (feature_expression_id) references feature_expression (feature_expression_id) on delete cascade INITIALLY DEFERRED,
+
+#        foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+# create table eimage ( -- @ENTITY
+chado:Eimage rdf:type owl:Class .
+
+# 		eimage_id serial not null, -- @DATA
+chado:eimage_id rdf:type owl:DatatypeProperty .
+chado:Eimage rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:eimage_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Eimage rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:eimage_id; owl:allValuesFrom xsd:integer ] .
+
+#       eimage_data text, -- @DATA
+chado:eimage_data rdf:type owl:DatatypeProperty .
+chado:Eimage rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:eimage_data; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Eimage rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:eimage_data; owl:allValuesFrom xsd:string ] .
+
+#       eimage_type varchar(255) not null, -- @DATA
+chado:eimage_type rdf:type owl:DatatypeProperty .
+chado:Eimage rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:eimage_type; owl:cardinality "1"^^xsd:integer ] .
+chado:Eimage rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:eimage_type; owl:allValuesFrom xsd:string ] .
+
+#       image_uri varchar(255) -- @DATA
+chado:image_uri rdf:type owl:DatatypeProperty .
+chado:Eimage rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:image_uri; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Eimage rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:image_uri; owl:allValuesFrom xsd:string ] .
+
+# create table expression_image ( -- @BINARY
+chado:expression_image rdf:type owl:ObjectProperty .
+
+#        expression_id int not null, -- @SOURCE
+
+#        foreign key (expression_id) references expression (expression_id) on delete cascade INITIALLY DEFERRED,
+chado:expression_image rdfs:domain chado:Expression .
+
+#        eimage_id int not null, -- @TARGET
+
+#        foreign key (eimage_id) references eimage (eimage_id) on delete cascade INITIALLY DEFERRED,
+chado:expression_image rdfs:range chado:Eimage .
+
+# create table db ( -- @ENTITY
+chado:Db rdf:type owl:Class .
+
+#     db_id serial not null, -- @DATA
+chado:db_id rdf:type owl:DatatypeProperty .
+chado:Db rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:db_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Db rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:db_id; owl:allValuesFrom xsd:integer ] .
+
+#     name varchar(255) not null, -- @DATA
+chado:name rdf:type owl:DatatypeProperty .
+chado:Db rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:cardinality "1"^^xsd:integer ] .
+chado:Db rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:allValuesFrom xsd:string ] .
+
+# --    foreign key (contact_id) references contact (contact_id) on delete cascade INITIALLY DEFERRED,
+
+#     description varchar(255) null, -- @DATA
+chado:description rdf:type owl:DatatypeProperty .
+chado:Db rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Db rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:allValuesFrom xsd:string ] .
+
+#     urlprefix varchar(255) null, -- @DATA
+chado:urlprefix rdf:type owl:DatatypeProperty .
+chado:Db rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:urlprefix; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Db rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:urlprefix; owl:allValuesFrom xsd:string ] .
+
+#     url varchar(255) null, -- @DATA
+chado:url rdf:type owl:DatatypeProperty .
+chado:Db rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:url; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Db rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:url; owl:allValuesFrom xsd:string ] .
+
+# create table dbxref ( -- @ENTITY
+chado:Dbxref rdf:type owl:Class .
+
+#     dbxref_id serial not null, -- @DATA
+chado:dbxref_id rdf:type owl:DatatypeProperty .
+chado:Dbxref rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:dbxref_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Dbxref rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:dbxref_id; owl:allValuesFrom xsd:integer ] .
+
+#     db_id int not null, -- @LINK
+chado:db rdf:type owl:ObjectProperty .
+chado:Dbxref rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:db; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (db_id) references db (db_id) on delete cascade INITIALLY DEFERRED,
+chado:Dbxref rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:db; owl:allValuesFrom chado:Db ] .
+
+#     accession varchar(255) not null, -- @DATA
+chado:accession rdf:type owl:DatatypeProperty .
+chado:Dbxref rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:accession; owl:cardinality "1"^^xsd:integer ] .
+chado:Dbxref rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:accession; owl:allValuesFrom xsd:string ] .
+
+#     version varchar(255) not null default '', -- @DATA
+chado:version rdf:type owl:DatatypeProperty .
+chado:Dbxref rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:version; owl:cardinality "1"^^xsd:integer ] .
+chado:Dbxref rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:version; owl:allValuesFrom xsd:string ] .
+
+#     description text, -- @DATA
+chado:description rdf:type owl:DatatypeProperty .
+chado:Dbxref rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Dbxref rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:allValuesFrom xsd:string ] .
+
+# create table project ( -- @ENTITY
+chado:Project rdf:type owl:Class .
+
+#     project_id serial not null,  -- @DATA
+chado:project_id rdf:type owl:DatatypeProperty .
+chado:Project rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:project_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Project rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:project_id; owl:allValuesFrom xsd:integer ] .
+
+#     name varchar(255) not null, -- @DATA
+chado:name rdf:type owl:DatatypeProperty .
+chado:Project rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:cardinality "1"^^xsd:integer ] .
+chado:Project rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:allValuesFrom xsd:string ] .
+
+#     description varchar(255) not null, -- @DATA
+chado:description rdf:type owl:DatatypeProperty .
+chado:Project rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:cardinality "1"^^xsd:integer ] .
+chado:Project rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:allValuesFrom xsd:string ] .
+
+# create table genotype ( -- @ENTITY
+chado:Genotype rdf:type owl:Class .
+
+#     genotype_id serial not null, -- @DATA
+chado:genotype_id rdf:type owl:DatatypeProperty .
+chado:Genotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:genotype_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Genotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:genotype_id; owl:allValuesFrom xsd:integer ] .
+
+#     name text, -- @DATA
+chado:name rdf:type owl:DatatypeProperty .
+chado:Genotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Genotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:allValuesFrom xsd:string ] .
+
+#     uniquename text not null, -- @DATA      
+chado:uniquename rdf:type owl:DatatypeProperty .
+chado:Genotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:uniquename; owl:cardinality "1"^^xsd:integer ] .
+chado:Genotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:uniquename; owl:allValuesFrom xsd:string ] .
+
+#     description varchar(255), -- @DATA
+chado:description rdf:type owl:DatatypeProperty .
+chado:Genotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Genotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:allValuesFrom xsd:string ] .
+
+# create table feature_genotype ( -- @NARY
+chado:Feature_Genotype rdf:type owl:Class .
+
+#     feature_genotype_id serial not null, -- @DATA
+chado:feature_genotype_id rdf:type owl:DatatypeProperty .
+chado:Feature_Genotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature_genotype_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Feature_Genotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature_genotype_id; owl:allValuesFrom xsd:integer ] .
+
+#     feature_id int not null, -- @LINK
+chado:feature rdf:type owl:ObjectProperty .
+chado:Feature_Genotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (feature_id) references feature (feature_id) on delete cascade,
+chado:Feature_Genotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature; owl:allValuesFrom chado:Feature ] .
+
+#     genotype_id int not null, -- @LINK
+chado:genotype rdf:type owl:ObjectProperty .
+chado:Feature_Genotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:genotype; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (genotype_id) references genotype (genotype_id) on delete cascade,
+chado:Feature_Genotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:genotype; owl:allValuesFrom chado:Genotype ] .
+
+#     chromosome_id int, -- @LINK
+chado:chromosome rdf:type owl:ObjectProperty .
+chado:Feature_Genotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:chromosome; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (chromosome_id) references feature (feature_id) on delete set null,
+chado:Feature_Genotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:chromosome; owl:allValuesFrom chado:Feature ] .
+
+#     rank int not null, -- @DATA
+chado:rank rdf:type owl:DatatypeProperty .
+chado:Feature_Genotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:rank; owl:cardinality "1"^^xsd:integer ] .
+chado:Feature_Genotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:rank; owl:allValuesFrom xsd:integer ] .
+
+#     cgroup    int not null, -- @DATA
+chado:cgroup rdf:type owl:DatatypeProperty .
+chado:Feature_Genotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:cgroup; owl:cardinality "1"^^xsd:integer ] .
+chado:Feature_Genotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:cgroup; owl:allValuesFrom xsd:integer ] .
+
+#     cvterm_id int not null, -- @LINK
+chado:cvterm rdf:type owl:ObjectProperty .
+chado:Feature_Genotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:cvterm; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (cvterm_id) references cvterm (cvterm_id) on delete cascade,
+chado:Feature_Genotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:cvterm; owl:allValuesFrom chado:Cvterm ] .
+
+# create table environment ( -- @ENTITY
+chado:Environment rdf:type owl:Class .
+
+#     environment_id serial not NULL, -- @DATA
+chado:environment_id rdf:type owl:DatatypeProperty .
+chado:Environment rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:environment_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Environment rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:environment_id; owl:allValuesFrom xsd:integer ] .
+
+#     uniquename text not null, -- @DATA
+chado:uniquename rdf:type owl:DatatypeProperty .
+chado:Environment rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:uniquename; owl:cardinality "1"^^xsd:integer ] .
+chado:Environment rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:uniquename; owl:allValuesFrom xsd:string ] .
+
+#     description text, -- @DATA
+chado:description rdf:type owl:DatatypeProperty .
+chado:Environment rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Environment rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:allValuesFrom xsd:string ] .
+
+# create table environment_cvterm ( -- @BINARY
+chado:environment_cvterm rdf:type owl:ObjectProperty .
+
+#     environment_id int not null, -- @SOURCE
+
+#     foreign key (environment_id) references environment (environment_id) on delete cascade,
+chado:environment_cvterm rdfs:domain chado:Environment .
+
+#     cvterm_id int not null, -- @TARGET
+
+#     foreign key (cvterm_id) references cvterm (cvterm_id) on delete cascade,
+chado:environment_cvterm rdfs:range chado:Cvterm .
+
+# CREATE TABLE phenstatement ( -- @NARY
+chado:Phenstatement rdf:type owl:Class .
+
+#     phenstatement_id SERIAL NOT NULL, -- @DATA
+chado:phenstatement_id rdf:type owl:DatatypeProperty .
+chado:Phenstatement rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:phenstatement_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Phenstatement rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:phenstatement_id; owl:allValuesFrom xsd:integer ] .
+
+#     genotype_id INT NOT NULL, -- @LINK
+chado:genotype rdf:type owl:ObjectProperty .
+chado:Phenstatement rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:genotype; owl:cardinality "1"^^xsd:integer ] .
+
+#     FOREIGN KEY (genotype_id) REFERENCES genotype (genotype_id) ON DELETE CASCADE,
+chado:Phenstatement rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:genotype; owl:allValuesFrom chado:Genotype ] .
+
+#     environment_id INT NOT NULL, -- @LINK
+chado:environment rdf:type owl:ObjectProperty .
+chado:Phenstatement rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:environment; owl:cardinality "1"^^xsd:integer ] .
+
+#     FOREIGN KEY (environment_id) REFERENCES environment (environment_id) ON DELETE CASCADE,
+chado:Phenstatement rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:environment; owl:allValuesFrom chado:Environment ] .
+
+#     phenotype_id INT NOT NULL, -- @LINK
+chado:phenotype rdf:type owl:ObjectProperty .
+chado:Phenstatement rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:phenotype; owl:cardinality "1"^^xsd:integer ] .
+
+#     FOREIGN KEY (phenotype_id) REFERENCES phenotype (phenotype_id) ON DELETE CASCADE,
+chado:Phenstatement rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:phenotype; owl:allValuesFrom chado:Phenotype ] .
+
+#     type_id INT NOT NULL, -- @LINK
+chado:type rdf:type owl:ObjectProperty .
+chado:Phenstatement rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:type; owl:cardinality "1"^^xsd:integer ] .
+
+#     FOREIGN KEY (type_id) REFERENCES cvterm (cvterm_id) ON DELETE CASCADE,
+chado:Phenstatement rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:type; owl:allValuesFrom chado:Cvterm ] .
+
+#     pub_id INT NOT NULL, -- @LINK
+chado:pub rdf:type owl:ObjectProperty .
+chado:Phenstatement rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pub; owl:cardinality "1"^^xsd:integer ] .
+
+#     FOREIGN KEY (pub_id) REFERENCES pub (pub_id) ON DELETE CASCADE,
+chado:Phenstatement rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pub; owl:allValuesFrom chado:Pub ] .
+
+# CREATE TABLE phendesc ( -- @@NARY
+chado:Phendesc rdf:type owl:Class .
+
+#     phendesc_id SERIAL NOT NULL, -- @DATA
+chado:phendesc_id rdf:type owl:DatatypeProperty .
+chado:Phendesc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:phendesc_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Phendesc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:phendesc_id; owl:allValuesFrom xsd:integer ] .
+
+#     genotype_id INT NOT NULL, -- @LINK
+chado:genotype rdf:type owl:ObjectProperty .
+chado:Phendesc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:genotype; owl:cardinality "1"^^xsd:integer ] .
+
+#     FOREIGN KEY (genotype_id) REFERENCES genotype (genotype_id) ON DELETE CASCADE,
+chado:Phendesc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:genotype; owl:allValuesFrom chado:Genotype ] .
+
+#     environment_id INT NOT NULL, -- @LINK
+chado:environment rdf:type owl:ObjectProperty .
+chado:Phendesc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:environment; owl:cardinality "1"^^xsd:integer ] .
+
+#     FOREIGN KEY (environment_id) REFERENCES environment ( environment_id) ON DELETE CASCADE,
+chado:Phendesc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:environment; owl:allValuesFrom chado:Environment ] .
+
+#     description TEXT NOT NULL, -- @DATA
+chado:description rdf:type owl:DatatypeProperty .
+chado:Phendesc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:cardinality "1"^^xsd:integer ] .
+chado:Phendesc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:allValuesFrom xsd:string ] .
+
+#         FOREIGN KEY (type_id) REFERENCES cvterm (cvterm_id) ON DELETE CASCADE,
+
+#     pub_id INT NOT NULL, -- @LINK
+chado:pub rdf:type owl:ObjectProperty .
+chado:Phendesc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pub; owl:cardinality "1"^^xsd:integer ] .
+
+#     FOREIGN KEY (pub_id) REFERENCES pub (pub_id) ON DELETE CASCADE,
+chado:Phendesc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pub; owl:allValuesFrom chado:Pub ] .
+
+# CREATE TABLE phenotype_comparison ( -- @ENTITY
+chado:Phenotype_Comparison rdf:type owl:Class .
+
+#     phenotype_comparison_id SERIAL NOT NULL, -- @DATA
+chado:phenotype_comparison_id rdf:type owl:DatatypeProperty .
+chado:Phenotype_Comparison rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:phenotype_comparison_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Phenotype_Comparison rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:phenotype_comparison_id; owl:allValuesFrom xsd:integer ] .
+
+#     genotype1_id INT NOT NULL, -- @LINK
+chado:genotype1 rdf:type owl:ObjectProperty .
+chado:Phenotype_Comparison rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:genotype1; owl:cardinality "1"^^xsd:integer ] .
+
+#         FOREIGN KEY (genotype1_id) REFERENCES genotype (genotype_id) ON DELETE CASCADE,
+chado:Phenotype_Comparison rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:genotype1; owl:allValuesFrom chado:Genotype ] .
+
+#     environment1_id INT NOT NULL, -- @LINK
+chado:environment1 rdf:type owl:ObjectProperty .
+chado:Phenotype_Comparison rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:environment1; owl:cardinality "1"^^xsd:integer ] .
+
+#         FOREIGN KEY (environment1_id) REFERENCES environment (environment_id) ON DELETE CASCADE,
+chado:Phenotype_Comparison rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:environment1; owl:allValuesFrom chado:Environment ] .
+
+#     genotype2_id INT NOT NULL, -- @LINK
+chado:genotype2 rdf:type owl:ObjectProperty .
+chado:Phenotype_Comparison rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:genotype2; owl:cardinality "1"^^xsd:integer ] .
+
+#         FOREIGN KEY (genotype2_id) REFERENCES genotype (genotype_id) ON DELETE CASCADE,
+chado:Phenotype_Comparison rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:genotype2; owl:allValuesFrom chado:Genotype ] .
+
+#     environment2_id INT NOT NULL, -- @LINK
+chado:environment2 rdf:type owl:ObjectProperty .
+chado:Phenotype_Comparison rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:environment2; owl:cardinality "1"^^xsd:integer ] .
+
+#         FOREIGN KEY (environment2_id) REFERENCES environment (environment_id) ON DELETE CASCADE,
+chado:Phenotype_Comparison rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:environment2; owl:allValuesFrom chado:Environment ] .
+
+#     phenotype1_id INT NOT NULL, -- @LINK
+chado:phenotype1 rdf:type owl:ObjectProperty .
+chado:Phenotype_Comparison rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:phenotype1; owl:cardinality "1"^^xsd:integer ] .
+
+#         FOREIGN KEY (phenotype1_id) REFERENCES phenotype (phenotype_id) ON DELETE CASCADE,
+chado:Phenotype_Comparison rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:phenotype1; owl:allValuesFrom chado:Phenotype ] .
+
+#     phenotype2_id INT, -- @LINK
+chado:phenotype2 rdf:type owl:ObjectProperty .
+chado:Phenotype_Comparison rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:phenotype2; owl:cardinality "1"^^xsd:integer ] .
+
+#         FOREIGN KEY (phenotype2_id) REFERENCES phenotype (phenotype_id) ON DELETE CASCADE,
+chado:Phenotype_Comparison rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:phenotype2; owl:allValuesFrom chado:Phenotype ] .
+
+#     pub_id INT NOT NULL, -- @LINK
+chado:pub rdf:type owl:ObjectProperty .
+chado:Phenotype_Comparison rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pub; owl:cardinality "1"^^xsd:integer ] .
+
+#     FOREIGN KEY (pub_id) REFERENCES pub (pub_id) ON DELETE CASCADE,
+chado:Phenotype_Comparison rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pub; owl:allValuesFrom chado:Pub ] .
+
+#     organism_id INT NOT NULL, -- @LINK
+chado:organism rdf:type owl:ObjectProperty .
+chado:Phenotype_Comparison rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:organism; owl:cardinality "1"^^xsd:integer ] .
+
+#     FOREIGN KEY (organism_id) REFERENCES organism (organism_id) ON DELETE CASCADE,
+chado:Phenotype_Comparison rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:organism; owl:allValuesFrom chado:Organism ] .
+
+# CREATE TABLE phenotype_comparison_cvterm ( -- @NARY
+chado:Phenotype_Comparison_Cvterm rdf:type owl:Class .
+
+#     pub_id INT NOT NULL, -- @LINK
+chado:pub rdf:type owl:ObjectProperty .
+chado:Phenotype_Comparison_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pub; owl:cardinality "1"^^xsd:integer ] .
+
+#     phenotype_comparison_cvterm_id serial not null, -- @DATA
+chado:phenotype_comparison_cvterm_id rdf:type owl:DatatypeProperty .
+chado:Phenotype_Comparison_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:phenotype_comparison_cvterm_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Phenotype_Comparison_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:phenotype_comparison_cvterm_id; owl:allValuesFrom xsd:integer ] .
+
+#     phenotype_comparison_id int not null, -- @LINK
+chado:phenotype_comparison rdf:type owl:ObjectProperty .
+chado:Phenotype_Comparison_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:phenotype_comparison; owl:cardinality "1"^^xsd:integer ] .
+
+#     FOREIGN KEY (phenotype_comparison_id) references phenotype_comparison (phenotype_comparison_id) on delete cascade,
+chado:Phenotype_Comparison_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:phenotype_comparison; owl:allValuesFrom chado:Phenotype_Comparison ] .
+
+#     cvterm_id int not null, -- @LINK
+chado:cvterm rdf:type owl:ObjectProperty .
+chado:Phenotype_Comparison_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:cvterm; owl:cardinality "1"^^xsd:integer ] .
+
+#     FOREIGN KEY (cvterm_id) references cvterm (cvterm_id) on delete cascade,
+chado:Phenotype_Comparison_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:cvterm; owl:allValuesFrom chado:Cvterm ] .
+
+#     rank int not null default 0, -- @DATA
+chado:rank rdf:type owl:DatatypeProperty .
+chado:Phenotype_Comparison_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:rank; owl:cardinality "1"^^xsd:integer ] .
+chado:Phenotype_Comparison_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:rank; owl:allValuesFrom xsd:integer ] .
+
+# create table library ( -- @ENTITY
+chado:Library rdf:type owl:Class .
+
+#     library_id serial not null, -- @DATA
+chado:library_id rdf:type owl:DatatypeProperty .
+chado:Library rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:library_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Library rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:library_id; owl:allValuesFrom xsd:integer ] .
+
+#     organism_id int not null, -- @LINK
+chado:organism rdf:type owl:ObjectProperty .
+chado:Library rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:organism; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (organism_id) references organism (organism_id),
+chado:Library rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:organism; owl:allValuesFrom chado:Organism ] .
+
+#     name varchar(255), -- @DATA
+chado:name rdf:type owl:DatatypeProperty .
+chado:Library rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Library rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:allValuesFrom xsd:string ] .
+
+#     uniquename text not null, -- @DATA
+chado:uniquename rdf:type owl:DatatypeProperty .
+chado:Library rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:uniquename; owl:cardinality "1"^^xsd:integer ] .
+chado:Library rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:uniquename; owl:allValuesFrom xsd:string ] .
+
+#     foreign key (type_id) references cvterm (cvterm_id),
+
+# create table library_synonym ( -- @NARY
+chado:Library_Synonym rdf:type owl:Class .
+
+#     library_synonym_id serial not null, -- @DATA
+chado:library_synonym_id rdf:type owl:DatatypeProperty .
+chado:Library_Synonym rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:library_synonym_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Library_Synonym rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:library_synonym_id; owl:allValuesFrom xsd:integer ] .
+
+#     synonym_id int not null, -- @LINK
+chado:synonym rdf:type owl:ObjectProperty .
+chado:Library_Synonym rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:synonym; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (synonym_id) references synonym (synonym_id) on delete cascade INITIALLY DEFERRED,
+chado:Library_Synonym rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:synonym; owl:allValuesFrom chado:Synonym ] .
+
+#     library_id int not null, -- @LINK
+chado:library rdf:type owl:ObjectProperty .
+chado:Library_Synonym rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:library; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (library_id) references library (library_id) on delete cascade INITIALLY DEFERRED,
+chado:Library_Synonym rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:library; owl:allValuesFrom chado:Library ] .
+
+#     pub_id int not null, -- @LINK
+chado:pub rdf:type owl:ObjectProperty .
+chado:Library_Synonym rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pub; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (pub_id) references pub (pub_id) on delete cascade INITIALLY DEFERRED,
+chado:Library_Synonym rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pub; owl:allValuesFrom chado:Pub ] .
+
+# create table library_pub ( -- @BINARY
+chado:library_pub rdf:type owl:ObjectProperty .
+
+#     library_id int not null, -- @SOURCE
+
+#     foreign key (library_id) references library (library_id) on delete cascade INITIALLY DEFERRED,
+chado:library_pub rdfs:domain chado:Library .
+
+#     pub_id int not null, -- @TARGET
+
+#     foreign key (pub_id) references pub (pub_id) on delete cascade INITIALLY DEFERRED,
+chado:library_pub rdfs:range chado:Pub .
+
+#     foreign key (library_id) references library (library_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (type_id) references cvterm (cvterm_id),
+
+#     foreign key (libraryprop_id) references libraryprop (libraryprop_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (pub_id) references pub (pub_id) on delete cascade INITIALLY DEFERRED,
+
+# create table library_cvterm ( -- @NARY
+chado:Library_Cvterm rdf:type owl:Class .
+
+#     library_cvterm_id serial not null, -- @DATA
+chado:library_cvterm_id rdf:type owl:DatatypeProperty .
+chado:Library_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:library_cvterm_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Library_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:library_cvterm_id; owl:allValuesFrom xsd:integer ] .
+
+#     library_id int not null, -- @LINK
+chado:library rdf:type owl:ObjectProperty .
+chado:Library_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:library; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (library_id) references library (library_id) on delete cascade INITIALLY DEFERRED,
+chado:Library_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:library; owl:allValuesFrom chado:Library ] .
+
+#     cvterm_id int not null, -- @LINK
+chado:cvterm rdf:type owl:ObjectProperty .
+chado:Library_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:cvterm; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (cvterm_id) references cvterm (cvterm_id),
+chado:Library_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:cvterm; owl:allValuesFrom chado:Cvterm ] .
+
+#     pub_id int not null, -- @LINK
+chado:pub rdf:type owl:ObjectProperty .
+chado:Library_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pub; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (pub_id) references pub (pub_id),
+chado:Library_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pub; owl:allValuesFrom chado:Pub ] .
+
+# create table library_feature ( -- @BINARY
+chado:library_feature rdf:type owl:ObjectProperty .
+
+#     library_id int not null, -- @SOURCE
+
+#     foreign key (library_id) references library (library_id) on delete cascade INITIALLY DEFERRED,
+chado:library_feature rdfs:domain chado:Library .
+
+#     feature_id int not null, -- @TARGET
+
+#     foreign key (feature_id) references feature (feature_id) on delete cascade INITIALLY DEFERRED,
+chado:library_feature rdfs:range chado:Feature .
+
+# create table library_dbxref ( -- @BINARY
+chado:library_dbxref rdf:type owl:ObjectProperty .
+
+#     library_id int not null, -- @SOURCE
+
+#     foreign key (library_id) references library (library_id) on delete cascade INITIALLY DEFERRED,
+chado:library_dbxref rdfs:domain chado:Library .
+
+#     dbxref_id int not null, -- @TARGET
+
+#     foreign key (dbxref_id) references dbxref (dbxref_id) on delete cascade INITIALLY DEFERRED,
+chado:library_dbxref rdfs:range chado:Dbxref .
+
+#     foreign key (mageml_id) references mageml (mageml_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (tableinfo_id) references tableinfo (tableinfo_id) on delete cascade INITIALLY DEFERRED,
+
+# create table protocol ( -- @ENTITY
+chado:Protocol rdf:type owl:Class .
+
+#     protocol_id serial not null, -- @DATA
+chado:protocol_id rdf:type owl:DatatypeProperty .
+chado:Protocol rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:protocol_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Protocol rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:protocol_id; owl:allValuesFrom xsd:integer ] .
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+#     pub_id int null, -- @LINK
+chado:pub rdf:type owl:ObjectProperty .
+chado:Protocol rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pub; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (pub_id) references pub (pub_id) on delete set null INITIALLY DEFERRED,
+chado:Protocol rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pub; owl:allValuesFrom chado:Pub ] .
+
+#     dbxref_id int null, -- @LINK
+chado:dbxref rdf:type owl:ObjectProperty .
+chado:Protocol rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:dbxref; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (dbxref_id) references dbxref (dbxref_id) on delete set null INITIALLY DEFERRED,
+chado:Protocol rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:dbxref; owl:allValuesFrom chado:Dbxref ] .
+
+#     name text not null, -- @DATA
+chado:name rdf:type owl:DatatypeProperty .
+chado:Protocol rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:cardinality "1"^^xsd:integer ] .
+chado:Protocol rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:allValuesFrom xsd:string ] .
+
+#     uri text null, -- @DATA
+chado:uri rdf:type owl:DatatypeProperty .
+chado:Protocol rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:uri; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Protocol rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:uri; owl:allValuesFrom xsd:string ] .
+
+#     protocoldescription text null, -- @DATA
+chado:protocoldescription rdf:type owl:DatatypeProperty .
+chado:Protocol rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:protocoldescription; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Protocol rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:protocoldescription; owl:allValuesFrom xsd:string ] .
+
+#     hardwaredescription text null, -- @DATA
+chado:hardwaredescription rdf:type owl:DatatypeProperty .
+chado:Protocol rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:hardwaredescription; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Protocol rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:hardwaredescription; owl:allValuesFrom xsd:string ] .
+
+#     softwaredescription text null, -- @DATA
+chado:softwaredescription rdf:type owl:DatatypeProperty .
+chado:Protocol rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:softwaredescription; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Protocol rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:softwaredescription; owl:allValuesFrom xsd:string ] .
+
+# create table protocolparam ( -- @NARY
+chado:Protocolparam rdf:type owl:Class .
+
+#     protocolparam_id serial not null, -- @DATA
+chado:protocolparam_id rdf:type owl:DatatypeProperty .
+chado:Protocolparam rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:protocolparam_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Protocolparam rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:protocolparam_id; owl:allValuesFrom xsd:integer ] .
+
+#     protocol_id int not null, -- @LINK
+chado:protocol rdf:type owl:ObjectProperty .
+chado:Protocolparam rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:protocol; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (protocol_id) references protocol (protocol_id) on delete cascade INITIALLY DEFERRED,
+chado:Protocolparam rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:protocol; owl:allValuesFrom chado:Protocol ] .
+
+#     name text not null, -- @DATA
+chado:name rdf:type owl:DatatypeProperty .
+chado:Protocolparam rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:cardinality "1"^^xsd:integer ] .
+chado:Protocolparam rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:allValuesFrom xsd:string ] .
+
+#     datatype_id int null, -- @LINK
+chado:datatype rdf:type owl:ObjectProperty .
+chado:Protocolparam rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:datatype; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (datatype_id) references cvterm (cvterm_id) on delete set null INITIALLY DEFERRED,
+chado:Protocolparam rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:datatype; owl:allValuesFrom chado:Cvterm ] .
+
+#     unittype_id int null, -- @LINK
+chado:unittype rdf:type owl:ObjectProperty .
+chado:Protocolparam rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:unittype; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (unittype_id) references cvterm (cvterm_id) on delete set null INITIALLY DEFERRED,
+chado:Protocolparam rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:unittype; owl:allValuesFrom chado:Cvterm ] .
+
+#     value text null, -- @DATA
+chado:value rdf:type owl:DatatypeProperty .
+chado:Protocolparam rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:value; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Protocolparam rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:value; owl:allValuesFrom xsd:string ] .
+
+# create table channel ( -- @ENTITY
+chado:Channel rdf:type owl:Class .
+
+#     channel_id serial not null, -- @DATA
+chado:channel_id rdf:type owl:DatatypeProperty .
+chado:Channel rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:channel_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Channel rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:channel_id; owl:allValuesFrom xsd:integer ] .
+
+#     name text not null, -- @DATA
+chado:name rdf:type owl:DatatypeProperty .
+chado:Channel rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:cardinality "1"^^xsd:integer ] .
+chado:Channel rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:allValuesFrom xsd:string ] .
+
+#     definition text not null, -- @DATA
+chado:definition rdf:type owl:DatatypeProperty .
+chado:Channel rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:definition; owl:cardinality "1"^^xsd:integer ] .
+chado:Channel rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:definition; owl:allValuesFrom xsd:string ] .
+
+# create table arraydesign ( -- @ENTITY
+chado:Arraydesign rdf:type owl:Class .
+
+#     arraydesign_id serial not null, -- @DATA
+chado:arraydesign_id rdf:type owl:DatatypeProperty .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:arraydesign_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:arraydesign_id; owl:allValuesFrom xsd:integer ] .
+
+#     manufacturer_id int not null, -- @LINK
+chado:manufacturer rdf:type owl:ObjectProperty .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:manufacturer; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (manufacturer_id) references contact (contact_id) on delete cascade INITIALLY DEFERRED,
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:manufacturer; owl:allValuesFrom chado:Contact ] .
+
+#     platformtype_id int not null, -- @LINK
+chado:platformtype rdf:type owl:ObjectProperty .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:platformtype; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (platformtype_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:platformtype; owl:allValuesFrom chado:Cvterm ] .
+
+#     substratetype_id int null, -- @LINK
+chado:substratetype rdf:type owl:ObjectProperty .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:substratetype; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (substratetype_id) references cvterm (cvterm_id) on delete set null INITIALLY DEFERRED,
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:substratetype; owl:allValuesFrom chado:Cvterm ] .
+
+#     protocol_id int null, -- @LINK
+chado:protocol rdf:type owl:ObjectProperty .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:protocol; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (protocol_id) references protocol (protocol_id) on delete set null INITIALLY DEFERRED,
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:protocol; owl:allValuesFrom chado:Protocol ] .
+
+#     dbxref_id int null, -- @LINK
+chado:dbxref rdf:type owl:ObjectProperty .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:dbxref; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (dbxref_id) references dbxref (dbxref_id) on delete set null INITIALLY DEFERRED,
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:dbxref; owl:allValuesFrom chado:Dbxref ] .
+
+#     name text not null, -- @DATA
+chado:name rdf:type owl:DatatypeProperty .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:cardinality "1"^^xsd:integer ] .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:allValuesFrom xsd:string ] .
+
+#     version text null, -- @DATA
+chado:version rdf:type owl:DatatypeProperty .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:version; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:version; owl:allValuesFrom xsd:string ] .
+
+#     description text null, -- @DATA
+chado:description rdf:type owl:DatatypeProperty .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:allValuesFrom xsd:string ] .
+
+#     array_dimensions text null, -- @DATA
+chado:array_dimensions rdf:type owl:DatatypeProperty .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:array_dimensions; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:array_dimensions; owl:allValuesFrom xsd:string ] .
+
+#     element_dimensions text null, -- @DATA
+chado:element_dimensions rdf:type owl:DatatypeProperty .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:element_dimensions; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:element_dimensions; owl:allValuesFrom xsd:string ] .
+
+#     num_of_elements int null, -- @DATA
+chado:num_of_elements rdf:type owl:DatatypeProperty .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:num_of_elements; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:num_of_elements; owl:allValuesFrom xsd:integer ] .
+
+#     num_array_columns int null, -- @DATA
+chado:num_array_columns rdf:type owl:DatatypeProperty .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:num_array_columns; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:num_array_columns; owl:allValuesFrom xsd:integer ] .
+
+#     num_array_rows int null, -- @DATA
+chado:num_array_rows rdf:type owl:DatatypeProperty .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:num_array_rows; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:num_array_rows; owl:allValuesFrom xsd:integer ] .
+
+#     num_grid_columns int null, -- @DATA
+chado:num_grid_columns rdf:type owl:DatatypeProperty .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:num_grid_columns; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:num_grid_columns; owl:allValuesFrom xsd:integer ] .
+
+#     num_grid_rows int null, -- @DATA
+chado:num_grid_rows rdf:type owl:DatatypeProperty .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:num_grid_rows; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:num_grid_rows; owl:allValuesFrom xsd:integer ] .
+
+#     num_sub_columns int null, -- @DATA
+chado:num_sub_columns rdf:type owl:DatatypeProperty .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:num_sub_columns; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:num_sub_columns; owl:allValuesFrom xsd:integer ] .
+
+#     num_sub_rows int null, -- @DATA
+chado:num_sub_rows rdf:type owl:DatatypeProperty .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:num_sub_rows; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Arraydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:num_sub_rows; owl:allValuesFrom xsd:integer ] .
+
+#     foreign key (arraydesign_id) references arraydesign (arraydesign_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+# create table assay ( -- @ENTITY
+chado:Assay rdf:type owl:Class .
+
+#     assay_id serial not null, -- @DATA
+chado:assay_id rdf:type owl:DatatypeProperty .
+chado:Assay rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:assay_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Assay rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:assay_id; owl:allValuesFrom xsd:integer ] .
+
+#     arraydesign_id int not null, -- @LINK
+chado:arraydesign rdf:type owl:ObjectProperty .
+chado:Assay rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:arraydesign; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (arraydesign_id) references arraydesign (arraydesign_id) on delete cascade INITIALLY DEFERRED,
+chado:Assay rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:arraydesign; owl:allValuesFrom chado:Arraydesign ] .
+
+#     protocol_id int null, -- @LINK
+chado:protocol rdf:type owl:ObjectProperty .
+chado:Assay rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:protocol; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (protocol_id) references protocol (protocol_id) on delete set null INITIALLY DEFERRED,
+chado:Assay rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:protocol; owl:allValuesFrom chado:Protocol ] .
+
+#     arrayidentifier text null, -- @DATA
+chado:arrayidentifier rdf:type owl:DatatypeProperty .
+chado:Assay rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:arrayidentifier; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Assay rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:arrayidentifier; owl:allValuesFrom xsd:string ] .
+
+#     arraybatchidentifier text null, -- @DATA
+chado:arraybatchidentifier rdf:type owl:DatatypeProperty .
+chado:Assay rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:arraybatchidentifier; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Assay rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:arraybatchidentifier; owl:allValuesFrom xsd:string ] .
+
+#     operator_id int not null, -- @LINK
+chado:operator rdf:type owl:ObjectProperty .
+chado:Assay rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:operator; owl:maxCardinality "1"^^xsd:integer ] .
+
+#     foreign key (operator_id) references contact (contact_id) on delete cascade INITIALLY DEFERRED,
+chado:Assay rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:operator; owl:allValuesFrom chado:Contact ] .
+
+#     dbxref_id int null, -- @LINK
+chado:dbxref rdf:type owl:ObjectProperty .
+chado:Assay rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:dbxref; owl:maxCardinality "1"^^xsd:integer ] .
+
+#     foreign key (dbxref_id) references dbxref (dbxref_id) on delete set null INITIALLY DEFERRED,
+chado:Assay rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:dbxref; owl:allValuesFrom chado:Dbxref ] .
+
+#     name text null, -- @DATA
+chado:name rdf:type owl:DatatypeProperty .
+chado:Assay rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Assay rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:allValuesFrom xsd:string ] .
+
+#     description text null, -- @DATA
+chado:description rdf:type owl:DatatypeProperty .
+chado:Assay rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Assay rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:allValuesFrom xsd:string ] .
+
+#     foreign key (assay_id) references assay (assay_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+# create table assay_project ( -- @BINARY
+chado:assay_project rdf:type owl:ObjectProperty .
+
+#     assay_id int not null, -- @SOURCE
+
+#     foreign key (assay_id) references assay (assay_id) INITIALLY DEFERRED,
+chado:assay_project rdfs:domain chado:Assay .
+
+#     project_id int not null, -- @TARGET
+
+#     foreign key (project_id) references project (project_id) INITIALLY DEFERRED,
+chado:assay_project rdfs:range chado:Project .
+
+# create table biomaterial ( -- @ENTITY
+chado:Biomaterial rdf:type owl:Class .
+
+#     biomaterial_id serial not null, -- @DATA
+chado:biomaterial_id rdf:type owl:DatatypeProperty .
+chado:Biomaterial rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:biomaterial_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Biomaterial rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:biomaterial_id; owl:allValuesFrom xsd:integer ] .
+
+#     taxon_id int null, -- @LINK
+chado:taxon rdf:type owl:ObjectProperty .
+chado:Biomaterial rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:taxon; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (taxon_id) references organism (organism_id) on delete set null INITIALLY DEFERRED,
+chado:Biomaterial rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:taxon; owl:allValuesFrom chado:Organism ] .
+
+#     biosourceprovider_id int null, -- @LINK
+chado:biosourceprovider rdf:type owl:ObjectProperty .
+chado:Biomaterial rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:biosourceprovider; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (biosourceprovider_id) references contact (contact_id) on delete set null INITIALLY DEFERRED,
+chado:Biomaterial rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:biosourceprovider; owl:allValuesFrom chado:Contact ] .
+
+#     dbxref_id int null, -- @LINK
+chado:dbxref rdf:type owl:ObjectProperty .
+chado:Biomaterial rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:dbxref; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (dbxref_id) references dbxref (dbxref_id) on delete set null INITIALLY DEFERRED,
+chado:Biomaterial rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:dbxref; owl:allValuesFrom chado:Dbxref ] .
+
+#     name text null, -- @DATA
+chado:name rdf:type owl:DatatypeProperty .
+chado:Biomaterial rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Biomaterial rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:allValuesFrom xsd:string ] .
+
+#     description text null, -- @DATA
+chado:description rdf:type owl:DatatypeProperty .
+chado:Biomaterial rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Biomaterial rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:allValuesFrom xsd:string ] .
+
+#     foreign key (subject_id) references biomaterial (biomaterial_id) INITIALLY DEFERRED,
+
+#     foreign key (type_id) references cvterm (cvterm_id) INITIALLY DEFERRED,
+
+#     foreign key (object_id) references biomaterial (biomaterial_id) INITIALLY DEFERRED,
+
+#     foreign key (biomaterial_id) references biomaterial (biomaterial_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+# create table biomaterial_dbxref ( -- @BINARY
+chado:biomaterial_dbxref rdf:type owl:ObjectProperty .
+
+#     biomaterial_id int not null, -- @SOURCE
+
+#     foreign key (biomaterial_id) references biomaterial (biomaterial_id) on delete cascade INITIALLY DEFERRED,
+chado:biomaterial_dbxref rdfs:domain chado:Biomaterial .
+
+#     dbxref_id int not null, -- @TARGET
+
+#     foreign key (dbxref_id) references dbxref (dbxref_id) on delete cascade INITIALLY DEFERRED,
+chado:biomaterial_dbxref rdfs:range chado:Dbxref .
+
+# create table treatment ( -- @ENTITY
+chado:Treatment rdf:type owl:Class .
+
+#     treatment_id serial not null, -- @DATA
+chado:treatment_id rdf:type owl:DatatypeProperty .
+chado:Treatment rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:treatment_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Treatment rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:treatment_id; owl:allValuesFrom xsd:integer ] .
+
+#     rank int not null default 0, -- @DATA
+chado:rank rdf:type owl:DatatypeProperty .
+chado:Treatment rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:rank; owl:cardinality "1"^^xsd:integer ] .
+chado:Treatment rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:rank; owl:allValuesFrom xsd:integer ] .
+
+#     biomaterial_id int not null, -- @LINK
+chado:biomaterial rdf:type owl:ObjectProperty .
+chado:Treatment rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:biomaterial; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (biomaterial_id) references biomaterial (biomaterial_id) on delete cascade INITIALLY DEFERRED,
+chado:Treatment rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:biomaterial; owl:allValuesFrom chado:Biomaterial ] .
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+#     protocol_id int null, -- @LINK
+chado:protocol rdf:type owl:ObjectProperty .
+chado:Treatment rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:protocol; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (protocol_id) references protocol (protocol_id) on delete set null INITIALLY DEFERRED,
+chado:Treatment rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:protocol; owl:allValuesFrom chado:Protocol ] .
+
+# create table biomaterial_treatment ( -- @NARY
+chado:Biomaterial_Treatment rdf:type owl:Class .
+
+#     biomaterial_treatment_id serial not null, -- @DATA
+chado:biomaterial_treatment_id rdf:type owl:DatatypeProperty .
+chado:Biomaterial_Treatment rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:biomaterial_treatment_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Biomaterial_Treatment rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:biomaterial_treatment_id; owl:allValuesFrom xsd:integer ] .
+
+#     biomaterial_id int not null, -- @LINK
+chado:biomaterial rdf:type owl:ObjectProperty .
+chado:Biomaterial_Treatment rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:biomaterial; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (biomaterial_id) references biomaterial (biomaterial_id) on delete cascade INITIALLY DEFERRED,
+chado:Biomaterial_Treatment rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:biomaterial; owl:allValuesFrom chado:Biomaterial ] .
+
+#     treatment_id int not null, -- @LINK
+chado:treatment rdf:type owl:ObjectProperty .
+chado:Biomaterial_Treatment rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:treatment; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (treatment_id) references treatment (treatment_id) on delete cascade INITIALLY DEFERRED,
+chado:Biomaterial_Treatment rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:treatment; owl:allValuesFrom chado:Treatment ] .
+
+#     unittype_id int null, -- @LINK
+chado:unittype rdf:type owl:ObjectProperty .
+chado:Biomaterial_Treatment rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:unittype; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (unittype_id) references cvterm (cvterm_id) on delete set null INITIALLY DEFERRED,
+chado:Biomaterial_Treatment rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:unittype; owl:allValuesFrom chado:Cvterm ] .
+
+#     rank int not null default 0, -- @DATA
+chado:rank rdf:type owl:DatatypeProperty .
+chado:Biomaterial_Treatment rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:rank; owl:cardinality "1"^^xsd:integer ] .
+chado:Biomaterial_Treatment rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:rank; owl:allValuesFrom xsd:integer ] .
+
+# create table assay_biomaterial ( -- @NARY
+chado:Assay_Biomaterial rdf:type owl:Class .
+
+#     assay_biomaterial_id serial not null, -- @DATA
+chado:assay_biomaterial_id rdf:type owl:DatatypeProperty .
+chado:Assay_Biomaterial rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:assay_biomaterial_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Assay_Biomaterial rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:assay_biomaterial_id; owl:allValuesFrom xsd:integer ] .
+
+#     assay_id int not null, -- @LINK
+chado:assay rdf:type owl:ObjectProperty .
+chado:Assay_Biomaterial rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:assay; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (assay_id) references assay (assay_id) on delete cascade INITIALLY DEFERRED,
+chado:Assay_Biomaterial rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:assay; owl:allValuesFrom chado:Assay ] .
+
+#     biomaterial_id int not null, -- @LINK
+chado:biomaterial rdf:type owl:ObjectProperty .
+chado:Assay_Biomaterial rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:biomaterial; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (biomaterial_id) references biomaterial (biomaterial_id) on delete cascade INITIALLY DEFERRED,
+chado:Assay_Biomaterial rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:biomaterial; owl:allValuesFrom chado:Biomaterial ] .
+
+#     channel_id int null, -- @LINK
+chado:channel rdf:type owl:ObjectProperty .
+chado:Assay_Biomaterial rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:channel; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (channel_id) references channel (channel_id) on delete set null INITIALLY DEFERRED,
+chado:Assay_Biomaterial rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:channel; owl:allValuesFrom chado:Channel ] .
+
+#     rank int not null default 0, -- @DATA
+chado:rank rdf:type owl:DatatypeProperty .
+chado:Assay_Biomaterial rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:rank; owl:cardinality "1"^^xsd:integer ] .
+chado:Assay_Biomaterial rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:rank; owl:allValuesFrom xsd:integer ] .
+
+# create table acquisition ( -- @ENTITY
+chado:Acquisition rdf:type owl:Class .
+
+#     acquisition_id serial not null, -- @DATA
+chado:acquisition_id rdf:type owl:DatatypeProperty .
+chado:Acquisition rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:acquisition_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Acquisition rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:acquisition_id; owl:allValuesFrom xsd:integer ] .
+
+#     assay_id int not null, -- @LINK
+chado:assay rdf:type owl:ObjectProperty .
+chado:Acquisition rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:assay; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (assay_id) references  assay (assay_id) on delete cascade INITIALLY DEFERRED,
+chado:Acquisition rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:assay; owl:allValuesFrom chado:Assay ] .
+
+#     protocol_id int null, -- @LINK
+chado:protocol rdf:type owl:ObjectProperty .
+chado:Acquisition rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:protocol; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (protocol_id) references protocol (protocol_id) on delete set null INITIALLY DEFERRED,
+chado:Acquisition rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:protocol; owl:allValuesFrom chado:Protocol ] .
+
+#     channel_id int null, -- @LINK
+chado:channel rdf:type owl:ObjectProperty .
+chado:Acquisition rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:channel; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (channel_id) references channel (channel_id) on delete set null INITIALLY DEFERRED,
+chado:Acquisition rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:channel; owl:allValuesFrom chado:Channel ] .
+
+#     name text null, -- @DATA
+chado:name rdf:type owl:DatatypeProperty .
+chado:Acquisition rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Acquisition rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:allValuesFrom xsd:string ] .
+
+#     uri text null, -- @DATA
+chado:uri rdf:type owl:DatatypeProperty .
+chado:Acquisition rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:uri; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Acquisition rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:uri; owl:allValuesFrom xsd:string ] .
+
+#     foreign key (acquisition_id) references acquisition (acquisition_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (subject_id) references acquisition (acquisition_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (object_id) references acquisition (acquisition_id) on delete cascade INITIALLY DEFERRED,
+
+# create table quantification ( -- @ENTITY
+chado:Quantification rdf:type owl:Class .
+
+#     quantification_id serial not null, -- @DATA
+chado:quantification_id rdf:type owl:DatatypeProperty .
+chado:Quantification rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:quantification_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Quantification rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:quantification_id; owl:allValuesFrom xsd:integer ] .
+
+#     acquisition_id int not null, -- @LINK
+chado:acquisition rdf:type owl:ObjectProperty .
+chado:Quantification rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:acquisition; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (acquisition_id) references acquisition (acquisition_id) on delete cascade INITIALLY DEFERRED,
+chado:Quantification rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:acquisition; owl:allValuesFrom chado:Acquisition ] .
+
+#     operator_id int null, -- @LINK
+chado:operator rdf:type owl:ObjectProperty .
+chado:Quantification rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:operator; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (operator_id) references contact (contact_id) on delete set null INITIALLY DEFERRED,
+chado:Quantification rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:operator; owl:allValuesFrom chado:Contact ] .
+
+#     protocol_id int null, -- @LINK
+chado:protocol rdf:type owl:ObjectProperty .
+chado:Quantification rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:protocol; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (protocol_id) references protocol (protocol_id) on delete set null INITIALLY DEFERRED,
+chado:Quantification rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:protocol; owl:allValuesFrom chado:Protocol ] .
+
+#     analysis_id int not null, -- @LINK
+chado:analysis rdf:type owl:ObjectProperty .
+chado:Quantification rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:analysis; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (analysis_id) references analysis (analysis_id) on delete cascade INITIALLY DEFERRED,
+chado:Quantification rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:analysis; owl:allValuesFrom chado:Analysis ] .
+
+#     name text null, -- @DATA
+chado:name rdf:type owl:DatatypeProperty .
+chado:Quantification rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Quantification rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:allValuesFrom xsd:string ] .
+
+#     uri text null, -- @DATA
+chado:uri rdf:type owl:DatatypeProperty .
+chado:Quantification rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:uri; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Quantification rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:uri; owl:allValuesFrom xsd:string ] .
+
+#     foreign key (quantification_id) references quantification (quantification_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (subject_id) references quantification (quantification_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (object_id) references quantification (quantification_id) on delete cascade INITIALLY DEFERRED,
+
+# create table control ( -- @ENTITY
+chado:Control rdf:type owl:Class .
+
+#     control_id serial not null, -- @DATA
+chado:control_id rdf:type owl:DatatypeProperty .
+chado:Control rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:control_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Control rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:control_id; owl:allValuesFrom xsd:integer ] .
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+#     assay_id int not null, -- @LINK
+chado:assay rdf:type owl:ObjectProperty .
+chado:Control rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:assay; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (assay_id) references assay (assay_id) on delete cascade INITIALLY DEFERRED,
+chado:Control rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:assay; owl:allValuesFrom chado:Assay ] .
+
+#     foreign key (tableinfo_id) references tableinfo (tableinfo_id) on delete cascade INITIALLY DEFERRED,
+
+#     name text null, -- @DATA
+chado:name rdf:type owl:DatatypeProperty .
+chado:Control rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Control rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:allValuesFrom xsd:string ] .
+
+#     value text null, -- @DATA
+chado:value rdf:type owl:DatatypeProperty .
+chado:Control rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:value; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Control rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:value; owl:allValuesFrom xsd:string ] .
+
+# create table element ( -- @ENTITY
+chado:Element rdf:type owl:Class .
+
+#     element_id serial not null, -- @DATA
+chado:element_id rdf:type owl:DatatypeProperty .
+chado:Element rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:element_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Element rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:element_id; owl:allValuesFrom xsd:integer ] .
+
+#     feature_id int null, -- @LINK
+chado:feature rdf:type owl:ObjectProperty .
+chado:Element rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (feature_id) references feature (feature_id) on delete set null INITIALLY DEFERRED,
+chado:Element rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature; owl:allValuesFrom chado:Feature ] .
+
+#     arraydesign_id int not null, -- @LINK
+chado:arraydesign rdf:type owl:ObjectProperty .
+chado:Element rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:arraydesign; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (arraydesign_id) references arraydesign (arraydesign_id) on delete cascade INITIALLY DEFERRED,
+chado:Element rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:arraydesign; owl:allValuesFrom chado:Arraydesign ] .
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete set null INITIALLY DEFERRED,
+
+#     dbxref_id int null, -- @LINK
+chado:dbxref rdf:type owl:ObjectProperty .
+chado:Element rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:dbxref; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (dbxref_id) references dbxref (dbxref_id) on delete set null INITIALLY DEFERRED,
+chado:Element rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:dbxref; owl:allValuesFrom chado:Dbxref ] .
+
+# create table elementresult ( -- @ENTITY
+chado:Elementresult rdf:type owl:Class .
+
+#     elementresult_id serial not null, -- @DATA
+chado:elementresult_id rdf:type owl:DatatypeProperty .
+chado:Elementresult rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:elementresult_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Elementresult rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:elementresult_id; owl:allValuesFrom xsd:integer ] .
+
+#     element_id int not null, -- @LINK
+chado:element rdf:type owl:ObjectProperty .
+chado:Elementresult rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:element; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (element_id) references element (element_id) on delete cascade INITIALLY DEFERRED,
+chado:Elementresult rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:element; owl:allValuesFrom chado:Element ] .
+
+#     quantification_id int not null, -- @LINK
+chado:quantification rdf:type owl:ObjectProperty .
+chado:Elementresult rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:quantification; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (quantification_id) references quantification (quantification_id) on delete cascade INITIALLY DEFERRED,
+chado:Elementresult rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:quantification; owl:allValuesFrom chado:Quantification ] .
+
+#     foreign key (subject_id) references element (element_id) INITIALLY DEFERRED,
+
+#     foreign key (type_id) references cvterm (cvterm_id) INITIALLY DEFERRED,
+
+#     foreign key (object_id) references element (element_id) INITIALLY DEFERRED,
+
+#     foreign key (subject_id) references elementresult (elementresult_id) INITIALLY DEFERRED,
+
+#     foreign key (type_id) references cvterm (cvterm_id) INITIALLY DEFERRED,
+
+#     foreign key (object_id) references elementresult (elementresult_id) INITIALLY DEFERRED,
+
+# create table study ( -- @ENTITY
+chado:Study rdf:type owl:Class .
+
+#     study_id serial not null, -- @DATA
+chado:study_id rdf:type owl:DatatypeProperty .
+chado:Study rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:study_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Study rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:study_id; owl:allValuesFrom xsd:integer ] .
+
+#     contact_id int not null, -- @LINK
+chado:contact rdf:type owl:ObjectProperty .
+chado:Study rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:contact; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (contact_id) references contact (contact_id) on delete cascade INITIALLY DEFERRED,
+chado:Study rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:contact; owl:allValuesFrom chado:Contact ] .
+
+#     pub_id int null, -- @LINK
+chado:pub rdf:type owl:ObjectProperty .
+chado:Study rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pub; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (pub_id) references pub (pub_id) on delete set null INITIALLY DEFERRED,
+chado:Study rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pub; owl:allValuesFrom chado:Pub ] .
+
+#     dbxref_id int null, -- @LINK
+chado:dbxref rdf:type owl:ObjectProperty .
+chado:Study rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:dbxref; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (dbxref_id) references dbxref (dbxref_id) on delete set null INITIALLY DEFERRED,
+chado:Study rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:dbxref; owl:allValuesFrom chado:Dbxref ] .
+
+#     name text not null, -- @DATA
+chado:name rdf:type owl:DatatypeProperty .
+chado:Study rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:cardinality "1"^^xsd:integer ] .
+chado:Study rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:allValuesFrom xsd:string ] .
+
+#     description text null, -- @DATA
+chado:description rdf:type owl:DatatypeProperty .
+chado:Study rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Study rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:allValuesFrom xsd:string ] .
+
+# create table study_assay ( -- @BINARY
+chado:study_assay rdf:type owl:ObjectProperty .
+
+#     study_id int not null, -- @SOURCE
+
+#     foreign key (study_id) references study (study_id) on delete cascade INITIALLY DEFERRED,
+chado:study_assay rdfs:domain chado:Study .
+
+#     assay_id int not null, -- @TARGET
+
+#     foreign key (assay_id) references assay (assay_id) on delete cascade INITIALLY DEFERRED,
+chado:study_assay rdfs:range chado:Assay .
+
+# create table studydesign ( -- @ENTITY
+chado:Studydesign rdf:type owl:Class .
+
+#     studydesign_id serial not null, -- @DATA
+chado:studydesign_id rdf:type owl:DatatypeProperty .
+chado:Studydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:studydesign_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Studydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:studydesign_id; owl:allValuesFrom xsd:integer ] .
+
+#     study_id int not null, -- @LINK
+chado:study rdf:type owl:ObjectProperty .
+chado:Studydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:study; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (study_id) references study (study_id) on delete cascade INITIALLY DEFERRED,
+chado:Studydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:study; owl:allValuesFrom chado:Study ] .
+
+#     description text null -- @DATA
+chado:description rdf:type owl:DatatypeProperty .
+chado:Studydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Studydesign rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:allValuesFrom xsd:string ] .
+
+#     foreign key (studydesign_id) references studydesign (studydesign_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+# create table studyfactor ( -- @ENTITY
+chado:Studyfactor rdf:type owl:Class .
+
+#     studyfactor_id serial not null, -- @DATA
+chado:studyfactor_id rdf:type owl:DatatypeProperty .
+chado:Studyfactor rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:studyfactor_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Studyfactor rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:studyfactor_id; owl:allValuesFrom xsd:integer ] .
+
+#     studydesign_id int not null, -- @LINK
+chado:studydesign rdf:type owl:ObjectProperty .
+chado:Studyfactor rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:studydesign; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (studydesign_id) references studydesign (studydesign_id) on delete cascade INITIALLY DEFERRED,
+chado:Studyfactor rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:studydesign; owl:allValuesFrom chado:Studydesign ] .
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete set null INITIALLY DEFERRED,
+
+#     name text not null, -- @DATA
+chado:name rdf:type owl:DatatypeProperty .
+chado:Studyfactor rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:cardinality "1"^^xsd:integer ] .
+chado:Studyfactor rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:allValuesFrom xsd:string ] .
+
+#     description text null -- @DATA
+chado:description rdf:type owl:DatatypeProperty .
+chado:Studyfactor rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Studyfactor rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:allValuesFrom xsd:string ] .
+
+# create table studyfactorvalue ( -- @ENTITY
+chado:Studyfactorvalue rdf:type owl:Class .
+
+#     studyfactorvalue_id serial not null, -- @DATA
+chado:studyfactorvalue_id rdf:type owl:DatatypeProperty .
+chado:Studyfactorvalue rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:studyfactorvalue_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Studyfactorvalue rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:studyfactorvalue_id; owl:allValuesFrom xsd:integer ] .
+
+#     studyfactor_id int not null, -- @LINK
+chado:studyfactor rdf:type owl:ObjectProperty .
+chado:Studyfactorvalue rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:studyfactor; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (studyfactor_id) references studyfactor (studyfactor_id) on delete cascade INITIALLY DEFERRED,
+chado:Studyfactorvalue rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:studyfactor; owl:allValuesFrom chado:Studyfactor ] .
+
+#     assay_id int not null, -- @LINK
+chado:assay rdf:type owl:ObjectProperty .
+chado:Studyfactorvalue rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:assay; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (assay_id) references assay (assay_id) on delete cascade INITIALLY DEFERRED,
+chado:Studyfactorvalue rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:assay; owl:allValuesFrom chado:Assay ] .
+
+#     factorvalue text null, -- @DATA
+chado:factorvalue rdf:type owl:DatatypeProperty .
+chado:Studyfactorvalue rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:factorvalue; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Studyfactorvalue rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:factorvalue; owl:allValuesFrom xsd:string ] .
+
+#     name text null, -- @DATA
+chado:name rdf:type owl:DatatypeProperty .
+chado:Studyfactorvalue rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Studyfactorvalue rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:allValuesFrom xsd:string ] .
+
+#         foreign key (study_id) references study (study_id) on delete cascade,
+
+#         foreign key (type_id) references cvterm (cvterm_id) on delete cascade,  
+
+#     foreign key (studyprop_id) references studyprop(studyprop_id) on delete cascade,
+
+#     foreign key (feature_id) references feature (feature_id) on delete cascade,
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade,
+
+# create table featuremap ( -- @ENTITY
+chado:Featuremap rdf:type owl:Class .
+
+#     featuremap_id serial not null, -- @DATA
+chado:featuremap_id rdf:type owl:DatatypeProperty .
+chado:Featuremap rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:featuremap_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Featuremap rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:featuremap_id; owl:allValuesFrom xsd:integer ] .
+
+#     name varchar(255), -- @DATA
+chado:name rdf:type owl:DatatypeProperty .
+chado:Featuremap rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Featuremap rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:allValuesFrom xsd:string ] .
+
+#     description text, -- @DATA
+chado:description rdf:type owl:DatatypeProperty .
+chado:Featuremap rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Featuremap rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:allValuesFrom xsd:string ] .
+
+#     unittype_id int null, -- @LINK
+chado:unittype rdf:type owl:ObjectProperty .
+chado:Featuremap rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:unittype; owl:maxCardinality "1"^^xsd:integer ] .
+
+#     foreign key (unittype_id) references cvterm (cvterm_id) on delete set null INITIALLY DEFERRED,
+chado:Featuremap rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:unittype; owl:allValuesFrom chado:Cvterm ] .
+
+# create table featurerange ( -- @ENTITY
+chado:Featurerange rdf:type owl:Class .
+
+#     featurerange_id serial not null, -- @DATA
+chado:featurerange_id rdf:type owl:DatatypeProperty .
+chado:Featurerange rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:featurerange_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Featurerange rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:featurerange_id; owl:allValuesFrom xsd:integer ] .
+
+#     featuremap_id int not null, -- @LINK
+chado:featuremap rdf:type owl:ObjectProperty .
+chado:Featurerange rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:featuremap; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (featuremap_id) references featuremap (featuremap_id) on delete cascade INITIALLY DEFERRED,
+chado:Featurerange rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:featuremap; owl:allValuesFrom chado:Featuremap ] .
+
+#     feature_id int not null, -- @LINK
+chado:feature rdf:type owl:ObjectProperty .
+chado:Featurerange rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (feature_id) references feature (feature_id) on delete cascade INITIALLY DEFERRED,
+chado:Featurerange rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature; owl:allValuesFrom chado:Feature ] .
+
+#     leftstartf_id int not null, -- @LINK
+chado:leftstartf rdf:type owl:ObjectProperty .
+chado:Featurerange rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:leftstartf; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (leftstartf_id) references feature (feature_id) on delete cascade INITIALLY DEFERRED,
+chado:Featurerange rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:leftstartf; owl:allValuesFrom chado:Feature ] .
+
+#     leftendf_id int, -- @LINK
+chado:leftendf rdf:type owl:ObjectProperty .
+chado:Featurerange rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:leftendf; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (leftendf_id) references feature (feature_id) on delete set null INITIALLY DEFERRED,
+chado:Featurerange rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:leftendf; owl:allValuesFrom chado:Feature ] .
+
+#     rightstartf_id int, -- @LINK
+chado:rightstartf rdf:type owl:ObjectProperty .
+chado:Featurerange rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:rightstartf; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (rightstartf_id) references feature (feature_id) on delete set null INITIALLY DEFERRED,
+chado:Featurerange rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:rightstartf; owl:allValuesFrom chado:Feature ] .
+
+#     rightendf_id int not null, -- @LINK
+chado:rightendf rdf:type owl:ObjectProperty .
+chado:Featurerange rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:rightendf; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (rightendf_id) references feature (feature_id) on delete cascade INITIALLY DEFERRED,
+chado:Featurerange rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:rightendf; owl:allValuesFrom chado:Feature ] .
+
+#     rangestr varchar(255) -- @DATA
+chado:rangestr rdf:type owl:DatatypeProperty .
+chado:Featurerange rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:rangestr; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Featurerange rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:rangestr; owl:allValuesFrom xsd:string ] .
+
+# create table featurepos ( -- @ENTITY
+chado:Featurepos rdf:type owl:Class .
+
+#     featurepos_id serial not null, -- @DATA
+chado:featurepos_id rdf:type owl:DatatypeProperty .
+chado:Featurepos rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:featurepos_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Featurepos rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:featurepos_id; owl:allValuesFrom xsd:integer ] .
+
+#     foreign key (featuremap_id) references featuremap (featuremap_id) on delete cascade INITIALLY DEFERRED,
+
+#     feature_id int not null, -- @LINK
+chado:feature rdf:type owl:ObjectProperty .
+chado:Featurepos rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (feature_id) references feature (feature_id) on delete cascade INITIALLY DEFERRED,
+chado:Featurepos rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature; owl:allValuesFrom chado:Feature ] .
+
+#     map_feature_id int not null, -- @LINK
+chado:map_feature rdf:type owl:ObjectProperty .
+chado:Featurepos rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:map_feature; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (map_feature_id) references feature (feature_id) on delete cascade INITIALLY DEFERRED,
+chado:Featurepos rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:map_feature; owl:allValuesFrom chado:Feature ] .
+
+# create table featuremap_pub ( -- @BINARY
+chado:featuremap_pub rdf:type owl:ObjectProperty .
+
+#     featuremap_id int not null, -- @SOURCE
+
+#     foreign key (featuremap_id) references featuremap (featuremap_id) on delete cascade INITIALLY DEFERRED,
+chado:featuremap_pub rdfs:domain chado:Featuremap .
+
+#     pub_id int not null, -- @TARGET
+
+#     foreign key (pub_id) references pub (pub_id) on delete cascade INITIALLY DEFERRED
+chado:featuremap_pub rdfs:range chado:Pub .
+
+# create table organism ( -- @ENTITY
+chado:Organism rdf:type owl:Class .
+
+# 	organism_id serial not null, -- @DATA
+chado:organism_id rdf:type owl:DatatypeProperty .
+chado:Organism rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:organism_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Organism rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:organism_id; owl:allValuesFrom xsd:integer ] .
+
+# 	abbreviation varchar(255) null, -- @DATA
+chado:abbreviation rdf:type owl:DatatypeProperty .
+chado:Organism rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:abbreviation; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Organism rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:abbreviation; owl:allValuesFrom xsd:string ] .
+
+# 	genus varchar(255) not null, -- @DATA
+chado:genus rdf:type owl:DatatypeProperty .
+chado:Organism rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:genus; owl:cardinality "1"^^xsd:integer ] .
+chado:Organism rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:genus; owl:allValuesFrom xsd:string ] .
+
+# 	species varchar(255) not null, -- @DATA
+chado:species rdf:type owl:DatatypeProperty .
+chado:Organism rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:species; owl:cardinality "1"^^xsd:integer ] .
+chado:Organism rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:species; owl:allValuesFrom xsd:string ] .
+
+# 	common_name varchar(255) null, -- @DATA
+chado:common_name rdf:type owl:DatatypeProperty .
+chado:Organism rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:common_name; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Organism rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:common_name; owl:allValuesFrom xsd:string ] .
+
+# 	comment text null, -- @DATA
+chado:comment rdf:type owl:DatatypeProperty .
+chado:Organism rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:comment; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Organism rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:comment; owl:allValuesFrom xsd:string ] .
+
+# create table organism_dbxref ( -- @BINARY
+chado:organism_dbxref rdf:type owl:ObjectProperty .
+
+#     organism_id int not null, -- @SOURCE
+
+#     foreign key (organism_id) references organism (organism_id) on delete cascade INITIALLY DEFERRED,
+chado:organism_dbxref rdfs:domain chado:Organism .
+
+#     dbxref_id int not null, -- @TARGET
+
+#     foreign key (dbxref_id) references dbxref (dbxref_id) on delete cascade INITIALLY DEFERRED,
+chado:organism_dbxref rdfs:range chado:Dbxref .
+
+#     foreign key (organism_id) references organism (organism_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+# CREATE TABLE phenotype ( -- @NARY
+chado:Phenotype rdf:type owl:Class .
+
+#     phenotype_id SERIAL NOT NULL, -- @DATA
+chado:phenotype_id rdf:type owl:DatatypeProperty .
+chado:Phenotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:phenotype_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Phenotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:phenotype_id; owl:allValuesFrom xsd:integer ] .
+
+#     uniquename TEXT NOT NULL, -- @DATA
+chado:uniquename rdf:type owl:DatatypeProperty .
+chado:Phenotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:uniquename; owl:cardinality "1"^^xsd:integer ] .
+chado:Phenotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:uniquename; owl:allValuesFrom xsd:string ] .
+
+#     observable_id INT, -- @LINK
+chado:observable rdf:type owl:ObjectProperty .
+chado:Phenotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:observable; owl:cardinality "1"^^xsd:integer ] .
+
+#     FOREIGN KEY (observable_id) REFERENCES cvterm (cvterm_id) ON DELETE CASCADE,
+chado:Phenotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:observable; owl:allValuesFrom chado:Cvterm ] .
+
+#     attr_id INT, -- @LINK
+chado:attr rdf:type owl:ObjectProperty .
+chado:Phenotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:attr; owl:cardinality "1"^^xsd:integer ] .
+
+#     FOREIGN KEY (attr_id) REFERENCES cvterm (cvterm_id) ON DELETE SET NULL,
+chado:Phenotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:attr; owl:allValuesFrom chado:Cvterm ] .
+
+#     value TEXT, -- @DATA
+chado:value rdf:type owl:DatatypeProperty .
+chado:Phenotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:value; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Phenotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:value; owl:allValuesFrom xsd:string ] .
+
+#     cvalue_id INT, -- @LINK
+chado:cvalue rdf:type owl:ObjectProperty .
+chado:Phenotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:cvalue; owl:maxCardinality "1"^^xsd:integer ] .
+
+#     FOREIGN KEY (cvalue_id) REFERENCES cvterm (cvterm_id) ON DELETE SET NULL,
+chado:Phenotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:cvalue; owl:allValuesFrom chado:Cvterm ] .
+
+#     assay_id INT, -- @LINK
+chado:assay rdf:type owl:ObjectProperty .
+chado:Phenotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:assay; owl:maxCardinality "1"^^xsd:integer ] .
+
+#     FOREIGN KEY (assay_id) REFERENCES cvterm (cvterm_id) ON DELETE SET NULL,
+chado:Phenotype rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:assay; owl:allValuesFrom chado:Cvterm ] .
+
+# CREATE TABLE phenotype_cvterm ( -- @BINARY
+chado:phenotype_cvterm rdf:type owl:ObjectProperty .
+
+#     phenotype_id INT NOT NULL, -- @SOURCE
+
+#     FOREIGN KEY (phenotype_id) REFERENCES phenotype (phenotype_id) ON DELETE CASCADE,
+chado:phenotype_cvterm rdfs:domain chado:Phenotype .
+
+#     cvterm_id INT NOT NULL, -- @TARGET
+
+#     FOREIGN KEY (cvterm_id) REFERENCES cvterm (cvterm_id) ON DELETE CASCADE,
+chado:phenotype_cvterm rdfs:range chado:Cvterm .
+
+# CREATE TABLE feature_phenotype ( -- @BINARY
+chado:feature_phenotype rdf:type owl:ObjectProperty .
+
+#     feature_id INT NOT NULL, -- @SOURCE
+
+#     FOREIGN KEY (feature_id) REFERENCES feature (feature_id) ON DELETE CASCADE,
+chado:feature_phenotype rdfs:domain chado:Feature .
+
+#     phenotype_id INT NOT NULL, -- @TARGET
+
+#     FOREIGN KEY (phenotype_id) REFERENCES phenotype (phenotype_id) ON DELETE CASCADE,
+chado:feature_phenotype rdfs:range chado:Phenotype .
+
+# create table phylotree ( -- @ENTITY
+chado:Phylotree rdf:type owl:Class .
+
+# 	phylotree_id serial not null, -- @DATA
+chado:phylotree_id rdf:type owl:DatatypeProperty .
+chado:Phylotree rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:phylotree_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Phylotree rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:phylotree_id; owl:allValuesFrom xsd:integer ] .
+
+#    dbxref_id int not null, -- @LINK
+chado:dbxref rdf:type owl:ObjectProperty .
+chado:Phylotree rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:dbxref; owl:cardinality "1"^^xsd:integer ] .
+
+#    foreign key (dbxref_id) references dbxref (dbxref_id) on delete cascade,
+chado:Phylotree rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:dbxref; owl:allValuesFrom chado:Dbxref ] .
+
+# 	name varchar(255) null, -- @DATA
+chado:name rdf:type owl:DatatypeProperty .
+chado:Phylotree rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Phylotree rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:allValuesFrom xsd:string ] .
+
+# 	foreign key (type_id) references cvterm (cvterm_id) on delete cascade,
+
+# 	analysis_id int null, -- @LINK
+chado:analysis rdf:type owl:ObjectProperty .
+chado:Phylotree rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:analysis; owl:maxCardinality "1"^^xsd:integer ] .
+
+#    foreign key (analysis_id) references analysis (analysis_id) on delete cascade,
+chado:Phylotree rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:analysis; owl:allValuesFrom chado:Analysis ] .
+
+# 	comment text null, -- @DATA
+chado:comment rdf:type owl:DatatypeProperty .
+chado:Phylotree rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:comment; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Phylotree rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:comment; owl:allValuesFrom xsd:string ] .
+
+# create table phylotree_pub ( -- @BINARY
+chado:phylotree_pub rdf:type owl:ObjectProperty .
+
+#        phylotree_id int not null, -- @SOURCE
+
+#        foreign key (phylotree_id) references phylotree (phylotree_id) on delete cascade,
+chado:phylotree_pub rdfs:domain chado:Phylotree .
+
+#        pub_id int not null, -- @TARGET
+
+#        foreign key (pub_id) references pub (pub_id) on delete cascade,
+chado:phylotree_pub rdfs:range chado:Pub .
+
+# create table phylonode ( -- @ENTITY
+chado:Phylonode rdf:type owl:Class .
+
+#        phylonode_id serial not null, -- @DATA
+chado:phylonode_id rdf:type owl:DatatypeProperty .
+chado:Phylonode rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:phylonode_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Phylonode rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:phylonode_id; owl:allValuesFrom xsd:integer ] .
+
+#        phylotree_id int not null, -- @LINK
+chado:phylotree rdf:type owl:ObjectProperty .
+chado:Phylonode rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:phylotree; owl:cardinality "1"^^xsd:integer ] .
+
+#        foreign key (phylotree_id) references phylotree (phylotree_id) on delete cascade,
+chado:Phylonode rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:phylotree; owl:allValuesFrom chado:Phylotree ] .
+
+#        parent_phylonode_id int null, -- @LINK
+chado:parent_phylonode rdf:type owl:ObjectProperty .
+chado:Phylonode rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:parent_phylonode; owl:cardinality "1"^^xsd:integer ] .
+
+#        foreign key (parent_phylonode_id) references phylonode (phylonode_id) on delete cascade,
+chado:Phylonode rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:parent_phylonode; owl:allValuesFrom chado:Phylonode ] .
+
+#        left_idx int not null, -- @DATA
+chado:left_idx rdf:type owl:DatatypeProperty .
+chado:Phylonode rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:left_idx; owl:cardinality "1"^^xsd:integer ] .
+chado:Phylonode rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:left_idx; owl:allValuesFrom xsd:integer ] .
+
+#        right_idx int not null, -- @DATA
+chado:right_idx rdf:type owl:DatatypeProperty .
+chado:Phylonode rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:right_idx; owl:cardinality "1"^^xsd:integer ] .
+chado:Phylonode rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:right_idx; owl:allValuesFrom xsd:integer ] .
+
+#        feature_id int, -- @LINK
+chado:feature rdf:type owl:ObjectProperty .
+chado:Phylonode rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature; owl:cardinality "1"^^xsd:integer ] .
+
+#        foreign key (feature_id) references feature (feature_id) on delete cascade,
+chado:Phylonode rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature; owl:allValuesFrom chado:Feature ] .
+
+#        label varchar(255) null, -- @DATA
+chado:label rdf:type owl:DatatypeProperty .
+chado:Phylonode rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:label; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Phylonode rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:label; owl:allValuesFrom xsd:string ] .
+
+# create table phylonode_dbxref ( -- @BINARY
+chado:phylonode_dbxref rdf:type owl:ObjectProperty .
+
+#        phylonode_id int not null, -- @SOURCE
+
+#        foreign key (phylonode_id) references phylonode (phylonode_id) on delete cascade,
+chado:phylonode_dbxref rdfs:domain chado:Phylonode .
+
+#        dbxref_id int not null, -- @TARGET
+
+#        foreign key (dbxref_id) references dbxref (dbxref_id) on delete cascade,
+chado:phylonode_dbxref rdfs:range chado:Dbxref .
+
+# create table phylonode_pub ( -- @BINARY
+chado:phylonode_pub rdf:type owl:ObjectProperty .
+
+#        phylonode_id int not null, -- @SOURCE
+
+#        foreign key (phylonode_id) references phylonode (phylonode_id) on delete cascade,
+chado:phylonode_pub rdfs:domain chado:Phylonode .
+
+#        pub_id int not null, -- @TARGET
+
+#        foreign key (pub_id) references pub (pub_id) on delete cascade,
+chado:phylonode_pub rdfs:range chado:Pub .
+
+# create table phylonode_organism ( -- @BINARY
+chado:phylonode_organism rdf:type owl:ObjectProperty .
+
+#        phylonode_id int not null, -- @SOURCE
+
+#        foreign key (phylonode_id) references phylonode (phylonode_id) on delete cascade,
+chado:phylonode_organism rdfs:domain chado:Phylonode .
+
+#        organism_id int not null, -- @TARGET
+
+#        foreign key (organism_id) references organism (organism_id) on delete cascade,
+chado:phylonode_organism rdfs:range chado:Organism .
+
+#        foreign key (phylonode_id) references phylonode (phylonode_id) on delete cascade,
+
+#        foreign key (type_id) references cvterm (cvterm_id) on delete cascade,
+
+#        foreign key (subject_id) references phylonode (phylonode_id) on delete cascade,
+
+#        foreign key (object_id) references phylonode (phylonode_id) on delete cascade,
+
+#        foreign key (type_id) references cvterm (cvterm_id) on delete cascade,
+
+#        foreign key (phylotree_id) references phylotree (phylotree_id) on delete cascade,
+
+# create table pub ( -- @ENTITY
+chado:Pub rdf:type owl:Class .
+
+#     pub_id serial not null, -- @DATA
+chado:pub_id rdf:type owl:DatatypeProperty .
+chado:Pub rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pub_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Pub rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pub_id; owl:allValuesFrom xsd:integer ] .
+
+#     title text, -- @DATA
+chado:title rdf:type owl:DatatypeProperty .
+chado:Pub rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:title; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Pub rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:title; owl:allValuesFrom xsd:string ] .
+
+#     volumetitle text, -- @DATA
+chado:volumetitle rdf:type owl:DatatypeProperty .
+chado:Pub rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:volumetitle; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Pub rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:volumetitle; owl:allValuesFrom xsd:string ] .
+
+#     volume varchar(255), -- @DATA
+chado:volume rdf:type owl:DatatypeProperty .
+chado:Pub rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:volume; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Pub rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:volume; owl:allValuesFrom xsd:string ] .
+
+#     series_name varchar(255), -- @DATA
+chado:series_name rdf:type owl:DatatypeProperty .
+chado:Pub rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:series_name; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Pub rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:series_name; owl:allValuesFrom xsd:string ] .
+
+#     issue varchar(255), -- @DATA
+chado:issue rdf:type owl:DatatypeProperty .
+chado:Pub rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:issue; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Pub rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:issue; owl:allValuesFrom xsd:string ] .
+
+#     pyear varchar(255), -- @DATA
+chado:pyear rdf:type owl:DatatypeProperty .
+chado:Pub rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pyear; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Pub rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pyear; owl:allValuesFrom xsd:string ] .
+
+#     pages varchar(255), -- @DATA
+chado:pages rdf:type owl:DatatypeProperty .
+chado:Pub rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pages; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Pub rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pages; owl:allValuesFrom xsd:string ] .
+
+#     miniref varchar(255), -- @DATA
+chado:miniref rdf:type owl:DatatypeProperty .
+chado:Pub rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:miniref; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Pub rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:miniref; owl:allValuesFrom xsd:string ] .
+
+#     uniquename text not null, -- @DATA
+chado:uniquename rdf:type owl:DatatypeProperty .
+chado:Pub rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:uniquename; owl:cardinality "1"^^xsd:integer ] .
+chado:Pub rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:uniquename; owl:allValuesFrom xsd:string ] .
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+#     publisher varchar(255), -- @DATA
+chado:publisher rdf:type owl:DatatypeProperty .
+chado:Pub rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:publisher; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Pub rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:publisher; owl:allValuesFrom xsd:string ] .
+
+#     pubplace varchar(255), -- @DATA
+chado:pubplace rdf:type owl:DatatypeProperty .
+chado:Pub rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pubplace; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Pub rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pubplace; owl:allValuesFrom xsd:string ] .
+
+#     foreign key (subject_id) references pub (pub_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (object_id) references pub (pub_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+# create table pub_dbxref ( -- @BINARY
+chado:pub_dbxref rdf:type owl:ObjectProperty .
+
+#     pub_id int not null, -- @SOURCE
+
+#     foreign key (pub_id) references pub (pub_id) on delete cascade INITIALLY DEFERRED,
+chado:pub_dbxref rdfs:domain chado:Pub .
+
+#     dbxref_id int not null, -- @TARGET
+
+#     foreign key (dbxref_id) references dbxref (dbxref_id) on delete cascade INITIALLY DEFERRED,
+chado:pub_dbxref rdfs:range chado:Dbxref .
+
+# create table pubauthor ( -- @ENTITY
+chado:Pubauthor rdf:type owl:Class .
+
+#     pubauthor_id serial not null, -- @DATA
+chado:pubauthor_id rdf:type owl:DatatypeProperty .
+chado:Pubauthor rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pubauthor_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Pubauthor rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pubauthor_id; owl:allValuesFrom xsd:integer ] .
+
+#     pub_id int not null, -- @LINK
+chado:pub rdf:type owl:ObjectProperty .
+chado:Pubauthor rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pub; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (pub_id) references pub (pub_id) on delete cascade INITIALLY DEFERRED,
+chado:Pubauthor rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pub; owl:allValuesFrom chado:Pub ] .
+
+#     rank int not null, -- @DATA
+chado:rank rdf:type owl:DatatypeProperty .
+chado:Pubauthor rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:rank; owl:cardinality "1"^^xsd:integer ] .
+chado:Pubauthor rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:rank; owl:allValuesFrom xsd:integer ] .
+
+#     editor boolean default 'false', -- @DATA
+chado:editor rdf:type owl:DatatypeProperty .
+chado:Pubauthor rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:editor; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Pubauthor rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:editor; owl:allValuesFrom xsd:boolean ] .
+
+#     surname varchar(100) not null, -- @DATA
+chado:surname rdf:type owl:DatatypeProperty .
+chado:Pubauthor rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:surname; owl:cardinality "1"^^xsd:integer ] .
+chado:Pubauthor rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:surname; owl:allValuesFrom xsd:string ] .
+
+#     givennames varchar(100), -- @DATA
+chado:givennames rdf:type owl:DatatypeProperty .
+chado:Pubauthor rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:givennames; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Pubauthor rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:givennames; owl:allValuesFrom xsd:string ] .
+
+#     suffix varchar(100), -- @DATA
+chado:suffix rdf:type owl:DatatypeProperty .
+chado:Pubauthor rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:suffix; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Pubauthor rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:suffix; owl:allValuesFrom xsd:string ] .
+
+#     foreign key (pub_id) references pub (pub_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+# create table feature ( -- @ENTITY
+chado:Feature rdf:type owl:Class .
+
+#     feature_id serial not null, -- @DATA
+chado:feature_id rdf:type owl:DatatypeProperty .
+chado:Feature rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Feature rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature_id; owl:allValuesFrom xsd:integer ] .
+
+#     dbxref_id int, -- @LINK
+chado:dbxref rdf:type owl:ObjectProperty .
+chado:Feature rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:dbxref; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (dbxref_id) references dbxref (dbxref_id) on delete set null INITIALLY DEFERRED,
+chado:Feature rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:dbxref; owl:allValuesFrom chado:Dbxref ] .
+
+#     organism_id int not null, -- @LINK
+chado:organism rdf:type owl:ObjectProperty .
+chado:Feature rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:organism; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (organism_id) references organism (organism_id) on delete cascade INITIALLY DEFERRED,
+chado:Feature rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:organism; owl:allValuesFrom chado:Organism ] .
+
+#     name varchar(255), -- @DATA
+chado:name rdf:type owl:DatatypeProperty .
+chado:Feature rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Feature rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:allValuesFrom xsd:string ] .
+
+#     uniquename text not null, -- @DATA
+chado:uniquename rdf:type owl:DatatypeProperty .
+chado:Feature rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:uniquename; owl:cardinality "1"^^xsd:integer ] .
+chado:Feature rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:uniquename; owl:allValuesFrom xsd:string ] .
+
+#     residues text, -- @DATA
+chado:residues rdf:type owl:DatatypeProperty .
+chado:Feature rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:residues; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Feature rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:residues; owl:allValuesFrom xsd:string ] .
+
+#     seqlen int, -- @DATA
+chado:seqlen rdf:type owl:DatatypeProperty .
+chado:Feature rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:seqlen; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Feature rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:seqlen; owl:allValuesFrom xsd:integer ] .
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+#     is_analysis boolean not null default 'false', -- @DATA
+chado:is_analysis rdf:type owl:DatatypeProperty .
+chado:Feature rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:is_analysis; owl:cardinality "1"^^xsd:integer ] .
+chado:Feature rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:is_analysis; owl:allValuesFrom xsd:boolean ] .
+
+#     is_obsolete boolean not null default 'false', -- @DATA
+chado:is_obsolete rdf:type owl:DatatypeProperty .
+chado:Feature rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:is_obsolete; owl:cardinality "1"^^xsd:integer ] .
+chado:Feature rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:is_obsolete; owl:allValuesFrom xsd:boolean ] .
+
+# create table featureloc ( -- @ENTITY
+chado:Featureloc rdf:type owl:Class .
+
+#     featureloc_id serial not null, -- @DATA
+chado:featureloc_id rdf:type owl:DatatypeProperty .
+chado:Featureloc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:featureloc_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Featureloc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:featureloc_id; owl:allValuesFrom xsd:integer ] .
+
+#     feature_id int not null, -- @LINK
+chado:feature rdf:type owl:ObjectProperty .
+chado:Featureloc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (feature_id) references feature (feature_id) on delete cascade INITIALLY DEFERRED,
+chado:Featureloc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature; owl:allValuesFrom chado:Feature ] .
+
+#     srcfeature_id int, -- @LINK
+chado:srcfeature rdf:type owl:ObjectProperty .
+chado:Featureloc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:srcfeature; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (srcfeature_id) references feature (feature_id) on delete set null INITIALLY DEFERRED,
+chado:Featureloc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:srcfeature; owl:allValuesFrom chado:Feature ] .
+
+#     fmin int, -- @DATA
+chado:fmin rdf:type owl:DatatypeProperty .
+chado:Featureloc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:fmin; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Featureloc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:fmin; owl:allValuesFrom xsd:integer ] .
+
+#     fmax int, -- @DATA
+chado:fmax rdf:type owl:DatatypeProperty .
+chado:Featureloc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:fmax; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Featureloc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:fmax; owl:allValuesFrom xsd:integer ] .
+
+#     strand smallint, -- @DATA
+chado:strand rdf:type owl:DatatypeProperty .
+chado:Featureloc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:strand; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Featureloc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:strand; owl:allValuesFrom xsd:integer ] .
+
+#     phase int, -- @DATA
+chado:phase rdf:type owl:DatatypeProperty .
+chado:Featureloc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:phase; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Featureloc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:phase; owl:allValuesFrom xsd:integer ] .
+
+#     residue_info text, -- @DATA
+chado:residue_info rdf:type owl:DatatypeProperty .
+chado:Featureloc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:residue_info; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Featureloc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:residue_info; owl:allValuesFrom xsd:string ] .
+
+#     locgroup int not null default 0, -- @DATA
+chado:locgroup rdf:type owl:DatatypeProperty .
+chado:Featureloc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:locgroup; owl:cardinality "1"^^xsd:integer ] .
+chado:Featureloc rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:locgroup; owl:allValuesFrom xsd:integer ] .
+
+# create table featureloc_pub ( -- @BINARY
+chado:featureloc_pub rdf:type owl:ObjectProperty .
+
+#     featureloc_id int not null, -- @SOURCE
+
+#     foreign key (featureloc_id) references featureloc (featureloc_id) on delete cascade INITIALLY DEFERRED,
+chado:featureloc_pub rdfs:domain chado:Featureloc .
+
+#     pub_id int not null, -- @TARGET
+
+#     foreign key (pub_id) references pub (pub_id) on delete cascade INITIALLY DEFERRED,
+chado:featureloc_pub rdfs:range chado:Pub .
+
+# create table feature_pub ( -- @BINARY
+chado:feature_pub rdf:type owl:ObjectProperty .
+
+#     feature_id int not null, -- @SOURCE
+
+#     foreign key (feature_id) references feature (feature_id) on delete cascade INITIALLY DEFERRED,
+chado:feature_pub rdfs:domain chado:Feature .
+
+#     pub_id int not null, -- @TARGET
+
+#     foreign key (pub_id) references pub (pub_id) on delete cascade INITIALLY DEFERRED,
+chado:feature_pub rdfs:range chado:Pub .
+
+#     foreign key (feature_pub_id) references feature_pub (feature_pub_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (feature_id) references feature (feature_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (featureprop_id) references featureprop (featureprop_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (pub_id) references pub (pub_id) on delete cascade INITIALLY DEFERRED,
+
+# create table feature_dbxref ( -- @BINARY
+chado:feature_dbxref rdf:type owl:ObjectProperty .
+
+#     feature_id int not null, -- @SOURCE
+
+#     foreign key (feature_id) references feature (feature_id) on delete cascade INITIALLY DEFERRED,
+chado:feature_dbxref rdfs:domain chado:Feature .
+
+#     dbxref_id int not null, -- @TARGET
+
+#     foreign key (dbxref_id) references dbxref (dbxref_id) on delete cascade INITIALLY DEFERRED,
+chado:feature_dbxref rdfs:range chado:Dbxref .
+
+#     foreign key (subject_id) references feature (feature_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (object_id) references feature (feature_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+# 	foreign key (feature_relationship_id) references feature_relationship (feature_relationship_id) on delete cascade INITIALLY DEFERRED,
+
+# 	foreign key (pub_id) references pub (pub_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (feature_relationship_id) references feature_relationship (feature_relationship_id) on delete cascade,
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (feature_relationshipprop_id) references feature_relationshipprop (feature_relationshipprop_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (pub_id) references pub (pub_id) on delete cascade INITIALLY DEFERRED,
+
+# create table feature_cvterm ( -- @NARY
+chado:Feature_Cvterm rdf:type owl:Class .
+
+#     feature_cvterm_id serial not null, -- @DATA
+chado:feature_cvterm_id rdf:type owl:DatatypeProperty .
+chado:Feature_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature_cvterm_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Feature_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature_cvterm_id; owl:allValuesFrom xsd:integer ] .
+
+#     feature_id int not null, -- @LINK
+chado:feature rdf:type owl:ObjectProperty .
+chado:Feature_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (feature_id) references feature (feature_id) on delete cascade INITIALLY DEFERRED,
+chado:Feature_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature; owl:allValuesFrom chado:Feature ] .
+
+#     cvterm_id int not null, -- @LINK
+chado:cvterm rdf:type owl:ObjectProperty .
+chado:Feature_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:cvterm; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (cvterm_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+chado:Feature_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:cvterm; owl:allValuesFrom chado:Cvterm ] .
+
+#     pub_id int not null, -- @LINK
+chado:pub rdf:type owl:ObjectProperty .
+chado:Feature_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pub; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (pub_id) references pub (pub_id) on delete cascade INITIALLY DEFERRED,
+chado:Feature_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pub; owl:allValuesFrom chado:Pub ] .
+
+#     is_not boolean not null default false, -- @DATA
+chado:is_not rdf:type owl:DatatypeProperty .
+chado:Feature_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:is_not; owl:cardinality "1"^^xsd:integer ] .
+chado:Feature_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:is_not; owl:allValuesFrom xsd:boolean ] .
+
+#     foreign key (feature_cvterm_id) references feature_cvterm (feature_cvterm_id) on delete cascade,
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+# create table feature_cvterm_dbxref ( -- @BINARY
+chado:feature_cvterm_dbxref rdf:type owl:ObjectProperty .
+
+#     feature_cvterm_id int not null, -- @SOURCE
+
+#     foreign key (feature_cvterm_id) references feature_cvterm (feature_cvterm_id) on delete cascade,
+chado:feature_cvterm_dbxref rdfs:domain chado:Feature_Cvterm .
+
+#     dbxref_id int not null, -- @TARGET
+
+#     foreign key (dbxref_id) references dbxref (dbxref_id) on delete cascade INITIALLY DEFERRED,
+chado:feature_cvterm_dbxref rdfs:range chado:Dbxref .
+
+# create table feature_cvterm_pub ( -- @BINARY
+chado:feature_cvterm_pub rdf:type owl:ObjectProperty .
+
+#     feature_cvterm_id int not null, -- @SOURCE
+
+#     foreign key (feature_cvterm_id) references feature_cvterm (feature_cvterm_id) on delete cascade,
+chado:feature_cvterm_pub rdfs:domain chado:Feature_Cvterm .
+
+#     pub_id int not null, -- @TARGET
+
+#     foreign key (pub_id) references pub (pub_id) on delete cascade INITIALLY DEFERRED,
+chado:feature_cvterm_pub rdfs:range chado:Pub .
+
+# create table synonym ( -- @ENTITY
+chado:Synonym rdf:type owl:Class .
+
+#     synonym_id serial not null, -- @DATA
+chado:synonym_id rdf:type owl:DatatypeProperty .
+chado:Synonym rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:synonym_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Synonym rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:synonym_id; owl:allValuesFrom xsd:integer ] .
+
+#     name varchar(255) not null, -- @DATA
+chado:name rdf:type owl:DatatypeProperty .
+chado:Synonym rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:cardinality "1"^^xsd:integer ] .
+chado:Synonym rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:allValuesFrom xsd:string ] .
+
+#     foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+#     synonym_sgml varchar(255) not null, -- @DATA
+chado:synonym_sgml rdf:type owl:DatatypeProperty .
+chado:Synonym rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:synonym_sgml; owl:cardinality "1"^^xsd:integer ] .
+chado:Synonym rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:synonym_sgml; owl:allValuesFrom xsd:string ] .
+
+# create table feature_synonym ( -- @NARY
+chado:Feature_Synonym rdf:type owl:Class .
+
+#     feature_synonym_id serial not null, -- @DATA
+chado:feature_synonym_id rdf:type owl:DatatypeProperty .
+chado:Feature_Synonym rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature_synonym_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Feature_Synonym rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature_synonym_id; owl:allValuesFrom xsd:integer ] .
+
+#     synonym_id int not null, -- @LINK
+chado:synonym rdf:type owl:ObjectProperty .
+chado:Feature_Synonym rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:synonym; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (synonym_id) references synonym (synonym_id) on delete cascade INITIALLY DEFERRED,
+chado:Feature_Synonym rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:synonym; owl:allValuesFrom chado:Synonym ] .
+
+#     feature_id int not null, -- @LINK
+chado:feature rdf:type owl:ObjectProperty .
+chado:Feature_Synonym rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (feature_id) references feature (feature_id) on delete cascade INITIALLY DEFERRED,
+chado:Feature_Synonym rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:feature; owl:allValuesFrom chado:Feature ] .
+
+#     pub_id int not null, -- @LINK
+chado:pub rdf:type owl:ObjectProperty .
+chado:Feature_Synonym rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pub; owl:cardinality "1"^^xsd:integer ] .
+
+#     foreign key (pub_id) references pub (pub_id) on delete cascade INITIALLY DEFERRED,
+chado:Feature_Synonym rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pub; owl:allValuesFrom chado:Pub ] .
+
+#     is_current boolean not null default 'true', -- @DATA
+chado:is_current rdf:type owl:DatatypeProperty .
+chado:Feature_Synonym rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:is_current; owl:cardinality "1"^^xsd:integer ] .
+chado:Feature_Synonym rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:is_current; owl:allValuesFrom xsd:boolean ] .
+
+#     is_internal boolean not null default 'false', -- @DATA
+chado:is_internal rdf:type owl:DatatypeProperty .
+chado:Feature_Synonym rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:is_internal; owl:cardinality "1"^^xsd:integer ] .
+chado:Feature_Synonym rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:is_internal; owl:allValuesFrom xsd:boolean ] .
+
+# create table stock ( -- @ENTITY
+chado:Stock rdf:type owl:Class .
+
+#        stock_id serial not null, -- @DATA
+chado:stock_id rdf:type owl:DatatypeProperty .
+chado:Stock rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:stock_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Stock rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:stock_id; owl:allValuesFrom xsd:integer ] .
+
+#        dbxref_id int, -- @LINK
+chado:dbxref rdf:type owl:ObjectProperty .
+chado:Stock rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:dbxref; owl:cardinality "1"^^xsd:integer ] .
+
+#        foreign key (dbxref_id) references dbxref (dbxref_id) on delete set null INITIALLY DEFERRED,
+chado:Stock rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:dbxref; owl:allValuesFrom chado:Dbxref ] .
+
+#        organism_id int not null, -- @LINK
+chado:organism rdf:type owl:ObjectProperty .
+chado:Stock rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:organism; owl:cardinality "1"^^xsd:integer ] .
+
+#        foreign key (organism_id) references organism (organism_id) on delete cascade INITIALLY DEFERRED,
+chado:Stock rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:organism; owl:allValuesFrom chado:Organism ] .
+
+#        name varchar(255), -- @DATA
+chado:name rdf:type owl:DatatypeProperty .
+chado:Stock rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Stock rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:allValuesFrom xsd:string ] .
+
+#        uniquename text not null, -- @DATA
+chado:uniquename rdf:type owl:DatatypeProperty .
+chado:Stock rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:uniquename; owl:cardinality "1"^^xsd:integer ] .
+chado:Stock rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:uniquename; owl:allValuesFrom xsd:string ] .
+
+#        description text, -- @DATA
+chado:description rdf:type owl:DatatypeProperty .
+chado:Stock rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Stock rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:description; owl:allValuesFrom xsd:string ] .
+
+#        foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+# create table stock_pub ( -- @BINARY
+chado:stock_pub rdf:type owl:ObjectProperty .
+
+#        stock_id int not null, -- @SOURCE
+
+#        foreign key (stock_id) references stock (stock_id)  on delete cascade INITIALLY DEFERRED,
+chado:stock_pub rdfs:domain chado:Stock .
+
+#        pub_id int not null, -- @TARGET
+
+#        foreign key (pub_id) references pub (pub_id) on delete cascade INITIALLY DEFERRED,
+chado:stock_pub rdfs:range chado:Pub .
+
+#        foreign key (stock_id) references stock (stock_id) on delete cascade INITIALLY DEFERRED,
+
+#        foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+#      foreign key (stockprop_id) references stockprop (stockprop_id) on delete cascade INITIALLY DEFERRED,
+
+#      foreign key (pub_id) references pub (pub_id) on delete cascade INITIALLY DEFERRED,
+
+#        foreign key (subject_id) references stock (stock_id) on delete cascade INITIALLY DEFERRED,
+
+#        foreign key (object_id) references stock (stock_id) on delete cascade INITIALLY DEFERRED,
+
+#        foreign key (type_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+
+#       foreign key (stock_relationship_id) references stock_relationship (stock_relationship_id) on delete cascade INITIALLY DEFERRED,
+
+#       foreign key (pub_id) references pub (pub_id) on delete cascade INITIALLY DEFERRED,
+
+# create table stock_dbxref ( -- @BINARY
+chado:stock_dbxref rdf:type owl:ObjectProperty .
+
+#      stock_id int not null, -- @SOURCE
+
+#      foreign key (stock_id) references stock (stock_id) on delete cascade INITIALLY DEFERRED,
+chado:stock_dbxref rdfs:domain chado:Stock .
+
+#      dbxref_id int not null, -- @TARGET
+
+#      foreign key (dbxref_id) references dbxref (dbxref_id) on delete cascade INITIALLY DEFERRED,
+chado:stock_dbxref rdfs:range chado:Dbxref .
+
+# create table stock_cvterm ( -- @NARY
+chado:Stock_Cvterm rdf:type owl:Class .
+
+#      stock_cvterm_id serial not null, -- @DATA
+chado:stock_cvterm_id rdf:type owl:DatatypeProperty .
+chado:Stock_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:stock_cvterm_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Stock_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:stock_cvterm_id; owl:allValuesFrom xsd:integer ] .
+
+#      stock_id int not null, -- @LINK
+chado:stock rdf:type owl:ObjectProperty .
+chado:Stock_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:stock; owl:cardinality "1"^^xsd:integer ] .
+
+#      foreign key (stock_id) references stock (stock_id) on delete cascade INITIALLY DEFERRED,
+chado:Stock_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:stock; owl:allValuesFrom chado:Stock ] .
+
+#      cvterm_id int not null, -- @LINK
+chado:cvterm rdf:type owl:ObjectProperty .
+chado:Stock_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:cvterm; owl:cardinality "1"^^xsd:integer ] .
+
+#      foreign key (cvterm_id) references cvterm (cvterm_id) on delete cascade INITIALLY DEFERRED,
+chado:Stock_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:cvterm; owl:allValuesFrom chado:Cvterm ] .
+
+#      pub_id int not null, -- @LINK
+chado:pub rdf:type owl:ObjectProperty .
+chado:Stock_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pub; owl:cardinality "1"^^xsd:integer ] .
+
+#      foreign key (pub_id) references pub (pub_id) on delete cascade INITIALLY DEFERRED,
+chado:Stock_Cvterm rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:pub; owl:allValuesFrom chado:Pub ] .
+
+# create table stock_genotype ( -- @BINARY
+chado:stock_genotype rdf:type owl:ObjectProperty .
+
+#        stock_id int not null, -- @SOURCE
+
+#        foreign key (stock_id) references stock (stock_id) on delete cascade,
+chado:stock_genotype rdfs:domain chado:Stock .
+
+#        genotype_id int not null, -- @TARGET
+
+#        foreign key (genotype_id) references genotype (genotype_id) on delete cascade,
+chado:stock_genotype rdfs:range chado:Genotype .
+
+# create table stockcollection ( -- @ENTITY
+chado:Stockcollection rdf:type owl:Class .
+
+# 	stockcollection_id serial not null, -- @DATA
+chado:stockcollection_id rdf:type owl:DatatypeProperty .
+chado:Stockcollection rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:stockcollection_id; owl:cardinality "1"^^xsd:integer ] .
+chado:Stockcollection rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:stockcollection_id; owl:allValuesFrom xsd:integer ] .
+
+#         foreign key (type_id) references cvterm (cvterm_id) on delete cascade,
+
+#         contact_id int null, -- @LINK
+chado:contact rdf:type owl:ObjectProperty .
+chado:Stockcollection rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:contact; owl:cardinality "1"^^xsd:integer ] .
+
+#         foreign key (contact_id) references contact (contact_id) on delete set null INITIALLY DEFERRED,
+chado:Stockcollection rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:contact; owl:allValuesFrom chado:Contact ] .
+
+# 	name varchar(255), -- @DATA
+chado:name rdf:type owl:DatatypeProperty .
+chado:Stockcollection rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:maxCardinality "1"^^xsd:integer ] .
+chado:Stockcollection rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:name; owl:allValuesFrom xsd:string ] .
+
+# 	uniquename text not null, -- @DATA
+chado:uniquename rdf:type owl:DatatypeProperty .
+chado:Stockcollection rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:uniquename; owl:cardinality "1"^^xsd:integer ] .
+chado:Stockcollection rdfs:subClassOf [a owl:Restriction; owl:onProperty chado:uniquename; owl:allValuesFrom xsd:string ] .
+
+#     foreign key (stockcollection_id) references stockcollection (stockcollection_id) on delete cascade INITIALLY DEFERRED,
+
+#     foreign key (type_id) references cvterm (cvterm_id),
+
+# create table stockcollection_stock ( -- @BINARY
+chado:stockcollection_stock rdf:type owl:ObjectProperty .
+
+#     stockcollection_id int not null, -- @SOURCE
+
+#     foreign key (stockcollection_id) references stockcollection (stockcollection_id) on delete cascade INITIALLY DEFERRED,
+chado:stockcollection_stock rdfs:domain chado:Stockcollection .
+
+#     stock_id int not null, -- @TARGET
+
+#     foreign key (stock_id) references stock (stock_id) on delete cascade INITIALLY DEFERRED,
+chado:stockcollection_stock rdfs:range chado:Stock .

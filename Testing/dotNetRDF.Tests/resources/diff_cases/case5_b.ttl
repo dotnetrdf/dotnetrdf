@@ -1,0 +1,30 @@
+﻿@base <http://example.com/>.
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rr: <http://www.w3.org/ns/r2rml#>.
+
+<http://example.com/%E6%88%90%E5%88%86TriplesMap> a rr:TriplesMap;
+                                                  rr:logicalTable [rr:tableName "成分"];
+                                                  rr:predicateObjectMap [rr:predicateMap [rr:constant <http://example.com/%E6%88%90%E5%88%86#ref-%E6%A4%8D%E7%89%A9%E5%90%8D;%E4%BD%BF%E7%94%A8%E9%83%A8>] ; 
+                                                                         rr:objectMap [rr:template """http://example.com/植物/名={\"植物名\"};使用部={\"使用部\"}"""]],
+                                                                        [rr:predicateMap [rr:constant <http://example.com/%E6%88%90%E5%88%86#%E6%A4%8D%E7%89%A9%E5%90%8D>] ; 
+                                                                         rr:objectMap [rr:column "植物名"]],
+                                                                        [rr:predicateMap [rr:constant <http://example.com/%E6%88%90%E5%88%86#%E4%BD%BF%E7%94%A8%E9%83%A8>] ; 
+                                                                         rr:objectMap [rr:column "使用部"]],
+                                                                        [rr:predicateMap [rr:constant <http://example.com/%E6%88%90%E5%88%86#%E7%9A%BF>] ; 
+                                                                         rr:objectMap [rr:column "皿"]];
+                                                  rr:subjectMap [rr:class <http://example.com/%E6%88%90%E5%88%86> ; 
+                                                                 rr:termType rr:BlankNode ; 
+                                                                 rr:template """成分_{\"植物名\"}_{\"使用部\"}_{\"皿\"}"""].
+<http://example.com/%E6%A4%8D%E7%89%A9TriplesMap> a rr:TriplesMap;
+                                                  rr:logicalTable [rr:tableName "植物"];
+                                                  rr:predicateObjectMap [rr:predicateMap [rr:constant <http://example.com/%E6%A4%8D%E7%89%A9#%E5%90%8D>] ; 
+                                                                         rr:objectMap [rr:column "名"]],
+                                                                        [rr:predicateMap [rr:constant <http://example.com/%E6%A4%8D%E7%89%A9#%E4%BD%BF%E7%94%A8%E9%83%A8>] ; 
+                                                                         rr:objectMap [rr:column "使用部"]],
+                                                                        [rr:predicateMap [rr:constant <http://example.com/%E6%A4%8D%E7%89%A9#%E6%9D%A1%E4%BB%B6>] ; 
+                                                                         rr:objectMap [rr:column "条件"]];
+                                                  rr:subjectMap [rr:class <http://example.com/%E6%A4%8D%E7%89%A9> ; 
+                                                                 rr:template """http://example.com/植物/名={\"名\"};使用部={\"使用部\"}"""].

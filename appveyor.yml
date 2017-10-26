@@ -19,8 +19,7 @@ before_build:
 configuration: Release
 
 build_script:
-  - dotnet build Libraries/dotNetRDF.Query.Spin
-  - dotnet build Testing/Unittest
+  - dotnet build
   - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF /p:Version=%GitVersion_NuGetVersion%
   - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF.Data.DataTables /p:Version=%GitVersion_NuGetVersion%
   - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF.Data.Virtuoso /p:Version=%GitVersion_NuGetVersion%
@@ -30,12 +29,15 @@ build_script:
 
 test_script:
   - ps: |
-      cd Testing\unittest
+      cd Testing\dotNetRDF.Internals.Tests
+      dotnet xunit -configuration %CONFIGURATION% -notrait "Category=explicit" | Out-File internalstest.log
+      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
+      cd ..\dotNetRDF.Tests
       dotnet xunit -configuration %CONFIGURATION% -notrait "Category=explicit" | Out-File test.log
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
+      cd ..\dotNetRDF.Query.FullText.Tests
       dotnet xunit -configuration %CONFIGURATION% -trait "Category=fulltext" | Out-File fulltext.log
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
-      cd ..\..\
 
 after_test:
   - cmd: msbuild Build\shfb\dotnetrdf.shfbproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /p:Configuration=%CONFIGURATION% /p:HelpFileVersion=%GitVersion_NuGetVersion%
@@ -58,6 +60,9 @@ deploy:
 on_finish:
   - ps: |
       $ws = (New-Object 'System.Net.WebClient')
+      if((Test-Path .\internalstest.log)) {    
+        Push-AppveyorArtifact .\internalstest.log
+      }
       if((Test-Path .\test.log)) {    
         Push-AppveyorArtifact .\test.log
       }

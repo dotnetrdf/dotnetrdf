@@ -1,0 +1,54 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp1.1;net452</TargetFrameworks>
+
+    <IsPackable>false</IsPackable>
+
+    <SignAssembly>true</SignAssembly>
+
+    <AssemblyOriginatorKeyFile>dotNetRDF.snk</AssemblyOriginatorKeyFile>
+	<RootNamespace>VDS.RDF</RootNamespace>
+	<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="4.19.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
+    <PackageReference Include="Moq" Version="4.7.142" />
+    <PackageReference Include="xunit" Version="2.3.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.0" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Data" />
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+    <ProjectReference Include="..\..\Libraries\dotNetRDF.Query.FullText\dotNetRDF.Query.FullText.csproj" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\dotNetRDF\dotNetRDF.csproj" />
+    <ProjectReference Include="..\dotNetRDF.Testing.Tools\dotNetRDF.Testing.Tools.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+    <Compile Include="**\*.cs" Exclude="obj\**\*cs;**\*.NetCore.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp1.1' ">
+    <Compile Include="**\*.cs" Exclude="**\*.NetFull.cs;Storage\VirtuosoTest.cs;Query\FullText\*.cs;obj\**\*cs;Writing\Serialization\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net452'">
+    <PackageReference Include="Lucene.Net">
+      <Version>3.0.3</Version>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>

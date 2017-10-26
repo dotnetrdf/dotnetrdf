@@ -1,0 +1,14 @@
+@prefix : <http://example.org/#> .
+
+# A couple of valid Plain Literals
+
+:a :b  1.0e456 .
+:c :d  -2.4e3 .
+:e :f 45 .
+:g :h false .
+
+# Some invalid Plain Literals, these should cause the Parser to fail
+
+:i :j  1.0e4e6 . # Can't have multiple exponents
+:k :l  1e8 . # Must be decimal to have an exponent
+:m :n  fALSe . # Boolean Literals are case sensitive

@@ -1,0 +1,9 @@
+﻿PREFIX dc: <http://purl.org/dc/elements/1.1/> 
+PREFIX image: <http://www.eea.europa.eu/portal_types/Image#>
+
+SELECT ?image ?description
+WHERE 
+{ 
+  ?image a image:Image ;
+  		  dc:description ?description .
+}

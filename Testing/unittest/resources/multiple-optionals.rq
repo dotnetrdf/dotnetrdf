@@ -1,4 +1,0 @@
-﻿SELECT DISTINCT ?p ?v ?g ?c WHERE {  <http://Mary> ?p ?v .
-                                                               OPTIONAL { ?v a ?c } .
-                                                               OPTIONAL { GRAPH ?g {  <http://Mary> a ?v  } } .
-                                                               OPTIONAL { GRAPH ?g {  ?v a ?c  } } } 

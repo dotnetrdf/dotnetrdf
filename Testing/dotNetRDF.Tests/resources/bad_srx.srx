@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+  <head>
+    <variable name="g" />
+  </head>
+  <results>
+    <result>
+      <binding name="g" />
+      <result>
+        <binding name="g">
+          <uri>http://localhost:54321/facade/svc/12345_000/ABC/      Lines</uri>
+        </binding>
+      </result>
+      <result>
+        <binding name="g">
+          <uri>http://localhost:54321/facade/svc/12345_000/ABC/Lines</uri>
+        </binding>
+      </result>
+    </result>
+  </results>
+</sparql>
+

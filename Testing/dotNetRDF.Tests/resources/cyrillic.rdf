@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:prefix1="http://example.com/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+	<rdf:Description rdf:about="http://example.com/test1">
+		<prefix1:pred1>литерал</prefix1:pred1>
+	</rdf:Description>
+	<rdf:Description rdf:about="http://example.com/test2">
+		<prefix1:pred1>EnglishTest</prefix1:pred1>
+	</rdf:Description>
+</rdf:RDF>

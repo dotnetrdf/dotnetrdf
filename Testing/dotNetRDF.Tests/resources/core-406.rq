@@ -1,0 +1,9 @@
+﻿PREFIX ab: <http://learningsparql.com/ns/addressbook#>
+
+SELECT ?first ?last
+WHERE
+{
+  ?s ab:lastName ?last .
+  OPTIONAL { ?s ab:nick ?first . }
+  OPTIONAL { ?s ab:firstName ?first . }
+}

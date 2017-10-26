@@ -1,0 +1,21 @@
+﻿@prefix : <http://jacek.gajek.rpg/>.
+
+:karczma a :scene.
+:trakt a :scene.
+:trakt :north :karczma.
+
+:jacek a :player;
+:in :karczma;
+:hasName "Jacek".
+
+:karczmarz => :npc.
+:pies => :npc.
+:kot => :npc.
+
+:stefan a :karczmarz; a :npc ;
+:in :karczma;
+:hasName "Stefan".
+
+:julek a :pies; a :npc ;
+:in :karczma;
+:hasName "Julek".

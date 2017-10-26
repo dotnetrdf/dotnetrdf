@@ -1,0 +1,25 @@
+PREFIX  dc:   <http://purl.org/dc/elements/1.1/>
+PREFIX  exif: <http://www.w3.org/2003/12/exif/ns/>
+PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX  mmx:  <http://data.sciencemuseum.org.uk/def/ontology/>
+PREFIX  foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX  skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX  dcterms: <http://purl.org/dc/terms/>
+
+CONSTRUCT
+{
+  ?ass mmx:relatedArchiveDocument <http://id.sciencemuseum.org.uk/archivedocument/smad-110001337> .
+  ?ass rdf:type mmx:Asset .
+  ?ass dcterms:hasVersion ?ver .
+  ?ver ?pred2 ?obj2 .
+  ?ass ?p2 ?o2 .
+}
+WHERE
+{
+  ?ass mmx:relatedArchiveDocument <http://id.sciencemuseum.org.uk/archivedocument/smad-110001337> .
+  ?ass dcterms:hasVersion ?ver .
+  ?ver ?pred2 ?obj2 .
+  ?ass mmx:relatedArchiveDocument <http://id.sciencemuseum.org.uk/archivedocument/smad-110001337> .
+  ?ass ?p2 ?o2 .
+}

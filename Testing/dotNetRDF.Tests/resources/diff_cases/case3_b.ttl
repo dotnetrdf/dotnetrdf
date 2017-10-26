@@ -1,0 +1,50 @@
+@base <http://example.com/>.
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rr: <http://www.w3.org/ns/r2rml#>.
+
+<http://example.com/DEPTTriplesMap> a rr:TriplesMap;
+                                    rr:logicalTable [rr:tableName "DEPT"];
+                                    rr:predicateObjectMap [rr:predicateMap [rr:constant <http://example.com/DEPT#deptno>] ; 
+                                                           rr:objectMap [rr:column "deptno" ; 
+                                                                         rr:datatype xsd:integer]],
+                                                          [rr:predicateMap [rr:constant <http://example.com/DEPT#dname>] ; 
+                                                           rr:objectMap [rr:column "dname"]],
+                                                          [rr:predicateMap [rr:constant <http://example.com/DEPT#loc>] ; 
+                                                           rr:objectMap [rr:column "loc"]];
+                                    rr:subjectMap [rr:class <http://example.com/DEPT> ; 
+                                                   rr:termType rr:BlankNode ; 
+                                                   rr:template """DEPT_{\"deptno\"}"""].
+<http://example.com/EMPTriplesMap> a rr:TriplesMap;
+                                   rr:logicalTable [rr:tableName "EMP"];
+                                   rr:predicateObjectMap [rr:predicateMap [rr:constant <http://example.com/EMP#job>] ; 
+                                                          rr:objectMap [rr:column "job"]],
+                                                         [rr:predicateMap [rr:constant <http://example.com/EMP#etype>] ; 
+                                                          rr:objectMap [rr:column "etype"]],
+                                                         [rr:predicateMap [rr:constant <http://example.com/EMP#ref-deptno>] ; 
+                                                          rr:objectMap [rr:template """DEPT_{\"deptno\"}""" ; 
+                                                                        rr:termType rr:BlankNode]],
+                                                         [rr:predicateMap [rr:constant <http://example.com/EMP#empno>] ; 
+                                                          rr:objectMap [rr:column "empno" ; 
+                                                                        rr:datatype xsd:integer]],
+                                                         [rr:predicateMap [rr:constant <http://example.com/EMP#deptno>] ; 
+                                                          rr:objectMap [rr:column "deptno" ; 
+                                                                        rr:datatype xsd:integer]],
+                                                         [rr:predicateMap [rr:constant <http://example.com/EMP#ename>] ; 
+                                                          rr:objectMap [rr:column "ename"]];
+                                   rr:subjectMap [rr:class <http://example.com/EMP> ; 
+                                                  rr:template """http://example.com/EMP/empno={\"empno\"}"""].
+<http://example.com/LIKESTriplesMap> a rr:TriplesMap;
+                                     rr:logicalTable [rr:tableName "LIKES"];
+                                     rr:predicateObjectMap [rr:predicateMap [rr:constant <http://example.com/LIKES#id>] ; 
+                                                            rr:objectMap [rr:column "id" ; 
+                                                                          rr:datatype xsd:integer]],
+                                                           [rr:predicateMap [rr:constant <http://example.com/LIKES#likeType>] ; 
+                                                            rr:objectMap [rr:column "likeType"]],
+                                                           [rr:predicateMap [rr:constant <http://example.com/LIKES#likedObj>] ; 
+                                                            rr:objectMap [rr:column "likedObj"]];
+                                     rr:subjectMap [rr:class <http://example.com/LIKES> ; 
+                                                    rr:termType rr:BlankNode ; 
+                                                    rr:template """LIKES_{\"id\"}_{\"likeType\"}_{\"likedObj\"}"""].

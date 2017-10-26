@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    version="XHTML+RDFa 1.1" xml:lang="en">
+    
+    <head>
+		<title>Bad RDFa 1.1 Profile Attribute</title>
+		<base href="http://example.org/rdfaBadProfileTest" />
+	</head>
+	
+	<body>
+		<div about="#test" property="rdfs:comment">A @profile attribute pointing to an unresolvable profile should cause the entire DOM subtree to be ignored to avoid invalid Triples being generated</div>
+		<div profile="http://www.dotnetrdf.org/noSuchProfile" property="rdfs:comment">This is a Bad Triple which should not be generated since the profile document may redefine the rdfs: prefix but the parser cannot know this if it cannot retrieve the profile document</div>
+	</body>
+</html>
