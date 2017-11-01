@@ -37,7 +37,7 @@ test_script:
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
       cd ..\..\
 
-after_test:
+before_deploy:
   - cmd: msbuild Build\shfb\dotnetrdf.shfbproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /p:Configuration=%CONFIGURATION% /p:HelpFileVersion=%GitVersion_NuGetVersion%
       
 deploy:
