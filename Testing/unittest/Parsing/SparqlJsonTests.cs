@@ -363,7 +363,7 @@ namespace VDS.RDF.Parsing
 
             Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
             Assert.Equal(1, results.Count);
-            Assert.Equal(1, results.Variables.Count());
+            Assert.Single(results.Variables);
         }
 
         [Fact]
