@@ -35,6 +35,9 @@ test_script:
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
       dotnet xunit -configuration %CONFIGURATION% -trait "Category=fulltext" | Out-File fulltext.log
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
+      cd ..\dotNetRdf.MockServerTests
+      dotnet xunit -configuration %CONFIGURATION% -notrait "Category=explicit" | Out-File mockservertests.log
+      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
       cd ..\..\
 
 before_deploy:
@@ -63,6 +66,9 @@ on_finish:
       }
       if((Test-Path .\fulltext.log)) {    
         Push-AppveyorArtifact .\fulltext.log
+      }
+      if((Test-Path .\mockservertests.log)) {    
+        Push-AppveyorArtifact .\mockservertests.log
       }
 
 artifacts:
