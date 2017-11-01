@@ -32,14 +32,19 @@ namespace VDS.RDF.Parsing
     /// <summary>
     /// A subclass of <see cref="JsonTextReader">JsonTextReader</see> which automatically ignores all comments
     /// </summary>
-    class CommentIgnoringJsonTextReader 
+    internal class CommentIgnoringJsonTextReader 
         : JsonTextReader
     {
-        public CommentIgnoringJsonTextReader(ParsingTextReader reader)
-            : base(reader) { }
+        private CommentIgnoringJsonTextReader(ParsingTextReader reader)
+            : base(reader)
+        {
+            DateParseHandling = DateParseHandling.None;
+        }
 
-        public CommentIgnoringJsonTextReader(TextReader reader) 
-            : this(ParsingTextReader.Create(reader)) { }
+        public CommentIgnoringJsonTextReader(TextReader reader)
+            : this(ParsingTextReader.Create(reader))
+        {
+        }
 
         /// <summary>
         /// Reads the next non-comment Token if one is available
@@ -53,7 +58,7 @@ namespace VDS.RDF.Parsing
             if (result)
             {
                 // Keep reading next Token while Token is a Comment
-                while (base.TokenType == JsonToken.Comment)
+                while (TokenType == JsonToken.Comment)
                 {
                     result = base.Read();
 
