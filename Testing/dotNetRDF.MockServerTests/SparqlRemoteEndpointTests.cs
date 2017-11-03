@@ -154,32 +154,7 @@ namespace dotNetRDF.MockServerTests
             }
         }
 
-        /*
-        [SkippableFact]
-        public void SparqlRemoteEndpointLongUpdate()
-        {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
-            {
-                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
-            }
-
-            try
-            {
-                Options.HttpDebugging = true;
-
-                StringBuilder input = new StringBuilder();
-                input.AppendLine("LOAD <http://dbpedia.org/resource/Ilkeston>");
-                input.AppendLine(new String('#', 2048));
-
-                SparqlRemoteUpdateEndpoint endpoint = SparqlRemoteEndpointTests.GetUpdateEndpoint();
-                endpoint.Update(input.ToString());
-            }
-            finally
-            {
-                Options.HttpDebugging = false;
-            }
-        }
-        */
+        
 
         [Fact]
         public void ItInvokesAnIRdfHandler()
