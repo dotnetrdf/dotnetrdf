@@ -73,14 +73,14 @@ namespace dotNetRDF.MockServerTests
 
         private const string ConstructResults = "<http://example.org/s> <http://example.org/p> \"o\" .";
 
-        private void RegisterSelectQueryGetHandler()
+        private void RegisterSelectQueryGetHandler(string query = "SELECT * WHERE {?s ?p ?o}")
         {
             _server.Given(Request.Create()
                                  .WithPath("/sparql")
                                  .UsingGet()
                                  .WithParam(queryParams=>
                                                 queryParams.ContainsKey("query") && 
-                                                queryParams["query"].Any(q => HttpUtility.UrlDecode(q).Equals("SELECT * WHERE {?s ?p ?o}"))))
+                                                queryParams["query"].Any(q => HttpUtility.UrlDecode(q).StartsWith(query))))
                    .RespondWith(Response.Create()
                                         .WithBody(SparqlResultsXml, encoding:Encoding.UTF8)
                                         .WithHeader("Content-Type", MimeTypesHelper.SparqlResultsXml[0])
@@ -132,29 +132,54 @@ namespace dotNetRDF.MockServerTests
         [Fact]
         public void ItDefaultsToPostForLongQueries()
         {
-            try
-            {
-                RegisterSelectQueryPostHandler();
+            RegisterSelectQueryPostHandler();
 
-                var input = new StringBuilder();
-                input.AppendLine("SELECT * WHERE {?s ?p ?o}");
-                input.AppendLine(new string('#', 2048));
+            var input = new StringBuilder();
+            input.AppendLine("SELECT * WHERE {?s ?p ?o}");
+            input.AppendLine(new string('#', 2048));
 
-                var endpoint = GetQueryEndpoint();
-                var results = endpoint.QueryWithResultSet(input.ToString());
-                results.Should().HaveCount(1);
-                var sparqlLogEntries = _server.FindLogEntries(new RequestMessagePathMatcher("/sparql")).ToList();
-                sparqlLogEntries.Should().HaveCount(1);
-                sparqlLogEntries[0].RequestMessage.Method.Should().BeEquivalentTo("post");
-
-            }
-            finally
-            {
-                Options.HttpDebugging = false;
-            }
+            var endpoint = GetQueryEndpoint();
+            var results = endpoint.QueryWithResultSet(input.ToString());
+            results.Should().HaveCount(1);
+            var sparqlLogEntries = _server.FindLogEntries(new RequestMessagePathMatcher("/sparql")).ToList();
+            sparqlLogEntries.Should().HaveCount(1);
+            sparqlLogEntries[0].RequestMessage.Method.Should().BeEquivalentTo("post");
         }
 
-        
+        [Fact]
+        public void ItAllowsLongQueriesToBeForcedToUseGet()
+        {
+            RegisterSelectQueryGetHandler();
+            var endpoint = GetQueryEndpoint();
+            endpoint.HttpMode = "GET";
+
+            var input = new StringBuilder();
+            input.AppendLine("SELECT * WHERE {?s ?p ?o}");
+            input.AppendLine(new string('#', 2048));
+
+            var results = endpoint.QueryWithResultSet(input.ToString());
+            results.Should().NotBeNull().And.HaveCount(1);
+            var sparqlLogEntries = _server.FindLogEntries(new RequestMessagePathMatcher("/sparql")).ToList();
+            sparqlLogEntries.Should().HaveCount(1);
+            sparqlLogEntries[0].RequestMessage.Method.Should().BeEquivalentTo("get");
+        }
+
+        [Fact]
+        public void ItAllowsNonAsciCharactersToBeForcedToUseGet()
+        {
+            RegisterSelectQueryGetHandler("SELECT * WHERE {?s ?p \"\u6E0B\u8c37\u99c5\"}");
+            var endpoint = GetQueryEndpoint();
+            endpoint.HttpMode = "GET";
+
+            var input = new StringBuilder();
+            input.AppendLine("SELECT * WHERE {?s ?p \"\u6E0B\u8c37\u99c5\"}");
+
+            var results = endpoint.QueryWithResultSet(input.ToString());
+            results.Should().NotBeNull().And.HaveCount(1);
+            var sparqlLogEntries = _server.FindLogEntries(new RequestMessagePathMatcher("/sparql")).ToList();
+            sparqlLogEntries.Should().HaveCount(1);
+            sparqlLogEntries[0].RequestMessage.Method.Should().BeEquivalentTo("get");
+        }
 
         [Fact]
         public void ItInvokesAnIRdfHandler()
