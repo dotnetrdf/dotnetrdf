@@ -2954,6 +2954,13 @@ namespace VDS.RDF.JsonLd
             return value;
         }
 
+        /// <summary>
+        /// Applies the JSON-LD Framing algorithm to the specified input JSON object
+        /// </summary>
+        /// <param name="input">The RDF data to be framed as a JSON-LD document</param>
+        /// <param name="frame">The JSON-LD frame to be applied</param>
+        /// <param name="options">Processor options</param>
+        /// <returns>A JSON object representing the framed RDF data</returns>
         public static JObject Frame(JToken input, JToken frame, JsonLdProcessorOptions options)
         {
             options.ProcessingMode = JsonLdProcessingMode.JsonLd11FrameExpansion;

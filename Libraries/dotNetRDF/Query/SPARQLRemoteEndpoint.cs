@@ -448,38 +448,40 @@ namespace VDS.RDF.Query
             StringBuilder queryUri = new StringBuilder();
             queryUri.Append(this.Uri.AbsoluteUri);
             bool longQuery = true;
-            if (!this.HttpMode.Equals("POST") && sparqlQuery.Length <= LongQueryLength && sparqlQuery.IsAscii())
+            if (HttpMode.Equals("GET") || 
+                HttpMode.Equals("AUTO") && sparqlQuery.Length <= LongQueryLength && sparqlQuery.IsAscii())
             {
                 longQuery = false;
                 try
                 {
-                    queryUri.Append(!this.Uri.Query.Equals(String.Empty) ? "&query=" : "?query=");
+                    queryUri.Append(!this.Uri.Query.Equals(string.Empty) ? "&query=" : "?query=");
                     queryUri.Append(HttpUtility.UrlEncode(sparqlQuery));
 
                     // Add the Default Graph URIs
-                    foreach (String defaultGraph in this._defaultGraphUris)
+                    foreach (string defaultGraph in this._defaultGraphUris)
                     {
-                        if (defaultGraph.Equals(String.Empty)) continue;
+                        if (defaultGraph.Equals(string.Empty)) continue;
                         queryUri.Append("&default-graph-uri=");
                         queryUri.Append(HttpUtility.UrlEncode(defaultGraph));
                     }
                     // Add the Named Graph URIs
-                    foreach (String namedGraph in this._namedGraphUris)
+                    foreach (string namedGraph in this._namedGraphUris)
                     {
-                        if (namedGraph.Equals(String.Empty)) continue;
+                        if (namedGraph.Equals(string.Empty)) continue;
                         queryUri.Append("&named-graph-uri=");
                         queryUri.Append(HttpUtility.UrlEncode(namedGraph));
                     }
                 }
                 catch (UriFormatException)
                 {
+                    if (HttpMode.Equals("GET")) throw;
                     longQuery = true;
                 }
             }
 
             // Make the Query via HTTP
             HttpWebResponse httpResponse;
-            if (longQuery || queryUri.Length > 2048 || this.HttpMode == "POST")
+            if ( HttpMode.Equals("AUTO") && (longQuery || queryUri.Length > 2048) || HttpMode == "POST")
             {
                 // Long Uri/HTTP POST Mode so use POST
                 StringBuilder postData = new StringBuilder();
@@ -528,11 +530,11 @@ namespace VDS.RDF.Query
 
             // Use HTTP GET/POST according to user set preference
             httpRequest.Accept = accept;
-            if (!postData.Equals(String.Empty))
+            if (!postData.Equals(string.Empty))
             {
                 httpRequest.Method = "POST";
                 httpRequest.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
-                using (StreamWriter writer = new StreamWriter(httpRequest.GetRequestStream(), new UTF8Encoding(Options.UseBomForUtf8)))
+                using (var writer = new StreamWriter(httpRequest.GetRequestStream(), new UTF8Encoding(Options.UseBomForUtf8)))
                 {
                     writer.Write(postData);
                     writer.Close();
@@ -540,7 +542,14 @@ namespace VDS.RDF.Query
             }
             else
             {
-                httpRequest.Method = this.HttpMode;
+                if (HttpMode.Equals("AUTO"))
+                {
+                    httpRequest.Method = postData.Equals(string.Empty) ? "GET" : "POST";
+                }
+                else
+                {
+                    httpRequest.Method = HttpMode;
+                }
             }
             this.ApplyRequestOptions(httpRequest);
 
