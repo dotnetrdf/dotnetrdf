@@ -14,6 +14,10 @@ Change Summary:
 - The build process has been simplified and no longer relies on NAnt - a build can be done from the command line as `dotnet restore` followed by `dotnet build`
 - Added support for JSON-LD. The implementation is tracking the in-development JSON-LD 1.1 specification.
 - Added support for enabling/disabling reasoning on SPARQL queries over the Stardog connector. Thanks to @charbull for the PR.
+- The SparqlRemoteEndpoint class now always honours an explicitly set HttpMode value. By default, the mode is set to AUTO which continues to implement pre-2.0 behaviour, 
+  using GET unless the query string exceeds the internal query string length limit of 2048 characters or contains non-ASCII characters. From 2.0, if the user explicitly
+  sets HttpMode to GET or to POST, that method will be used regardless of query parameter length or content. Thanks to @reeset for the report. (#128)
+- Fixed an error in the configuration of the Newtonsoft JSON parser that caused the RdfJSONParser to fail when the JSON file contained literal values formatted as ISO 8601 date/time strings. (#130)
 
 1.0.13
 ------
