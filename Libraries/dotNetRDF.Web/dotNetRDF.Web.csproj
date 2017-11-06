@@ -1,14 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <Description>Provides a framework for building RDF-powered web applications and web APIs.</Description>
+    <Copyright>Copyright © dotNetRDF Project 2009-2017</Copyright>
     <AssemblyTitle>dotNetRDF.Web</AssemblyTitle>
     <VersionPrefix>1.0.13-pre6</VersionPrefix>
     <TargetFrameworks>net40</TargetFrameworks>
     <AssemblyName>dotNetRDF.Web</AssemblyName>
+    <Authors>RobVesse;tpluscode;kal_ahmed</Authors>
     <AssemblyOriginatorKeyFile>../../Build/dotNetRDF.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     <PackageId>dotNetRDF.Web</PackageId>
+    <PackageTags>RDF;Semantic;Web;SPARQL;RDF/XML;Turtle;Notation3;Web API</PackageTags>
+    <PackageIconUrl>http://www.w3.org/RDF/icons/rdf_w3c_icon.128.gif</PackageIconUrl>
+    <PackageProjectUrl>http://www.dotnetrdf.org</PackageProjectUrl>
+    <PackageLicenseUrl>http://www.opensource.org/licenses/MIT</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/dotnetrdf/dotnetrdf</RepositoryUrl>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
