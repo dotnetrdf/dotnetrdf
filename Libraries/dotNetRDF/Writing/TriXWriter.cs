@@ -38,15 +38,17 @@ namespace VDS.RDF.Writing
     public class TriXWriter
         : IStoreWriter
     {
-        private XmlWriterSettings GetSettings()
+        private XmlWriterSettings GetSettings(bool leaveOpen)
         {
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.CloseOutput = true;
-            settings.ConformanceLevel = ConformanceLevel.Document;
-            settings.Encoding = new UTF8Encoding(Options.UseBomForUtf8);
-            settings.Indent = true;
-            settings.NewLineHandling = NewLineHandling.None;
-            settings.OmitXmlDeclaration = false;
+            var settings = new XmlWriterSettings
+            {
+                CloseOutput = !leaveOpen,
+                ConformanceLevel = ConformanceLevel.Document,
+                Encoding = new UTF8Encoding(Options.UseBomForUtf8),
+                Indent = true,
+                NewLineHandling = NewLineHandling.None,
+                OmitXmlDeclaration = false,
+            };
             return settings;
         }
 
@@ -60,7 +62,7 @@ namespace VDS.RDF.Writing
             if (filename == null) throw new RdfOutputException("Cannot output to a null file");
             using (var stream = File.Open(filename, FileMode.Create))
             {
-                this.Save(store, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
+                Save(store, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)), false);
             }
         }
 
@@ -71,13 +73,24 @@ namespace VDS.RDF.Writing
         /// <param name="output">Writer to save to</param>
         public void Save(ITripleStore store, TextWriter output)
         {
+            Save(store, output , false);
+        }
+
+        /// <summary>
+        /// Saves a Store in TriX format
+        /// </summary>
+        /// <param name="store">Store to save</param>
+        /// <param name="output">Writer to save to</param>
+        /// <param name="leaveOpen">Boolean flag indicating if <paramref name="output"/> should be closed after the store is saved</param>
+        public void Save(ITripleStore store, TextWriter output, bool leaveOpen)
+        {
             if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
             if (output == null) throw new RdfOutputException("Cannot output to a null writer");
 
             try
             {
                 // Setup the XML document
-                XmlWriter writer = XmlWriter.Create(output, this.GetSettings());
+                var writer = XmlWriter.Create(output, GetSettings(leaveOpen));
                 writer.WriteStartDocument();
                 writer.WriteStartElement("TriX", TriXParser.TriXNamespaceURI);
                 writer.WriteStartAttribute("xmlns");
@@ -85,22 +98,28 @@ namespace VDS.RDF.Writing
                 writer.WriteEndAttribute();
 
                 // Output Graphs as XML <graph> elements
-                foreach (IGraph g in store.Graphs)
+                foreach (var g in store.Graphs)
                 {
-                    this.GraphToTriX(g, writer);
+                    GraphToTriX(g, writer);
                 }
 
                 // Save the XML to disk
                 writer.WriteEndDocument();
                 writer.Flush();
                 writer.Close();
-                output.Close();
+                if (!leaveOpen)
+                {
+                    output.Close();
+                }
             }
             catch
             {
                 try
                 {
-                    output.Close();
+                    if (!leaveOpen)
+                    {
+                        output.Close();
+                    }
                 }
                 catch
                 {

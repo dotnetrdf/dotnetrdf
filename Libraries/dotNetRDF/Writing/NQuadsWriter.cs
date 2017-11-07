@@ -96,12 +96,12 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="store">Store to save</param>
         /// <param name="filename">File to save to</param>
-        public void Save(ITripleStore store, String filename)
+        public void Save(ITripleStore store, string filename)
         {
             if (filename == null) throw new RdfOutputException("Cannot output to a null file");
             using (var writer = new StreamWriter(File.Open(filename, FileMode.Create), Encoding.ASCII))
             {
-                this.Save(store, writer);
+                Save(store, writer, false);
             }
         }
 
@@ -112,39 +112,53 @@ namespace VDS.RDF.Writing
         /// <param name="writer">Writer to save to</param>
         public void Save(ITripleStore store, TextWriter writer)
         {
+            Save(store, writer, false);
+        }
+
+        /// <summary>
+        /// Saves a Store in NQuads format
+        /// </summary>
+        /// <param name="store">Store to save</param>
+        /// <param name="writer">Writer to save to</param>
+        /// <param name="leaveOpen">Boolean flag indicating if <paramref name="writer"/> should be left open after the store is written</param>
+        public void Save(ITripleStore store, TextWriter writer, bool leaveOpen)
+        {
             if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
             if (writer == null) throw new RdfOutputException("Cannot output to a null writer");
 
-            ThreadedStoreWriterContext context = new ThreadedStoreWriterContext(store, writer, this.PrettyPrintMode, false);
+            var context = new ThreadedStoreWriterContext(store, writer, PrettyPrintMode, false);
             // Check there's something to do
             if (context.Store.Graphs.Count == 0)
             {
-                context.Output.Close();
+                if (!leaveOpen)
+                {
+                    context.Output.Close();
+                }
                 return;
             }
 
             try
             {
-                if (this.UseMultiThreadedWriting)
+                if (UseMultiThreadedWriting)
                 {
                     // Queue the Graphs to be written
-                    foreach (IGraph g in context.Store.Graphs)
+                    foreach (var g in context.Store.Graphs)
                     {
                         context.Add(g.BaseUri);
                     }
 
                     // Start making the async calls
-                    List<IAsyncResult> results = new List<IAsyncResult>();
-                    SaveGraphsDelegate d = new SaveGraphsDelegate(this.SaveGraphs);
-                    for (int i = 0; i < this._threads; i++)
+                    var results = new List<IAsyncResult>();
+                    var d = new SaveGraphsDelegate(SaveGraphs);
+                    for (var i = 0; i < _threads; i++)
                     {
                         results.Add(d.BeginInvoke(context, null, null));
                     }
 
                     // Wait for all the async calls to complete
                     WaitHandle.WaitAll(results.Select(r => r.AsyncWaitHandle).ToArray());
-                    RdfThreadedOutputException outputEx = new RdfThreadedOutputException(WriterErrorMessages.ThreadedOutputFailure("TSV"));
-                    foreach (IAsyncResult result in results)
+                    var outputEx = new RdfThreadedOutputException(WriterErrorMessages.ThreadedOutputFailure("TSV"));
+                    foreach (var result in results)
                     {
                         try
                         {
@@ -155,29 +169,35 @@ namespace VDS.RDF.Writing
                             outputEx.AddException(ex);
                         }
                     }
-                    context.Output.Close();
+                    if (!leaveOpen) context.Output.Close();
 
                     // If there were any errors we'll throw an RdfThreadedOutputException now
                     if (outputEx.InnerExceptions.Any()) throw outputEx;
                 }
                 else
                 {
-                    foreach (IGraph g in context.Store.Graphs)
+                    foreach (var g in context.Store.Graphs)
                     {
-                        NTriplesWriterContext graphContext = new NTriplesWriterContext(g, context.Output, NQuadsParser.AsNTriplesSyntax(this.Syntax));
-                        foreach (Triple t in g.Triples)
+                        var graphContext = new NTriplesWriterContext(g, context.Output, NQuadsParser.AsNTriplesSyntax(this.Syntax));
+                        foreach (var t in g.Triples)
                         {
                             context.Output.WriteLine(this.TripleToNQuads(graphContext, t, g.BaseUri));
                         }
                     }
-                    context.Output.Close();
+                    if (!leaveOpen)
+                    {
+                        context.Output.Close();
+                    }
                 }
             }
             catch
             {
                 try
                 {
-                    context.Output.Close();
+                    if (!leaveOpen)
+                    {
+                        context.Output.Close();
+                    }
                 }
                 catch
                 {
@@ -187,14 +207,14 @@ namespace VDS.RDF.Writing
             }
         }
 
-        private String GraphToNQuads(ThreadedStoreWriterContext globalContext, NTriplesWriterContext context)
+        private string GraphToNQuads(ThreadedStoreWriterContext globalContext, NTriplesWriterContext context)
         {
-            if (context.Graph.IsEmpty) return String.Empty;
+            if (context.Graph.IsEmpty) return string.Empty;
             if (context.PrettyPrint && context.Graph.BaseUri != null)
             {
                 context.Output.WriteLine("# Graph: " + context.Graph.BaseUri.AbsoluteUri);
             }
-            foreach (Triple t in context.Graph.Triples)
+            foreach (var t in context.Graph.Triples)
             {
                 context.Output.WriteLine(this.TripleToNQuads(context, t, context.Graph.BaseUri));
             }
@@ -210,9 +230,9 @@ namespace VDS.RDF.Writing
         /// <param name="t">Triple to convert</param>
         /// <param name="graphUri">Graph URI</param>
         /// <returns></returns>
-        private String TripleToNQuads(NTriplesWriterContext context, Triple t, Uri graphUri)
+        private string TripleToNQuads(NTriplesWriterContext context, Triple t, Uri graphUri)
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append(this.NodeToNTriples(context, t.Subject, TripleSegment.Subject));
             output.Append(" ");
             output.Append(this.NodeToNTriples(context, t.Predicate, TripleSegment.Predicate));
@@ -237,7 +257,7 @@ namespace VDS.RDF.Writing
         /// <param name="context">Writer Context</param>
         /// <param name="segment">Triple Segment being written</param>
         /// <returns></returns>
-        private String NodeToNTriples(NTriplesWriterContext context, INode n, TripleSegment segment)
+        private string NodeToNTriples(NTriplesWriterContext context, INode n, TripleSegment segment)
         {
             switch (n.NodeType)
             {
@@ -273,15 +293,14 @@ namespace VDS.RDF.Writing
         {
             try
             {
-                Uri u = null;
-                while (globalContext.TryGetNextUri(out u))
+                while (globalContext.TryGetNextUri(out var u))
                 {
                     // Get the Graph from the Store
-                    IGraph g = globalContext.Store.Graphs[u];
+                    var g = globalContext.Store.Graphs[u];
 
                     // Generate the Graph Output and add to Stream
-                    NTriplesWriterContext context = new NTriplesWriterContext(g, new System.IO.StringWriter(), NQuadsParser.AsNTriplesSyntax(this.Syntax), globalContext.PrettyPrint, globalContext.HighSpeedModePermitted);
-                    String graphContent = this.GraphToNQuads(globalContext, context);
+                    var context = new NTriplesWriterContext(g, new System.IO.StringWriter(), NQuadsParser.AsNTriplesSyntax(this.Syntax), globalContext.PrettyPrint, globalContext.HighSpeedModePermitted);
+                    var graphContent = this.GraphToNQuads(globalContext, context);
                     if (!graphContent.Equals(String.Empty))
                     {
                         try
@@ -323,13 +342,9 @@ namespace VDS.RDF.Writing
         /// Internal Helper method which raises the Warning event only if there is an Event Handler registered
         /// </summary>
         /// <param name="message">Warning Message</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
-            StoreWriterWarning d = this.Warning;
-            if (d != null)
-            {
-                d(message);
-            }
+            Warning?.Invoke(message);
         }
 
         /// <summary>

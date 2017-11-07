@@ -1,4 +1,4 @@
-/*
+﻿/*
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
@@ -24,41 +24,52 @@
 // </copyright>
 */
 
-using System;
 using System.IO;
 
-namespace VDS.RDF
-{    
+namespace VDS.RDF.Writing
+{
     /// <summary>
-    /// Interface to be implemented by Triple Store Writers
+    /// A convenience wrapper that allows a single graph to be written as the default
+    /// graph using a store writer.
     /// </summary>
-    public interface IStoreWriter
+    public class SingleGraphWriter: IRdfWriter
     {
-        /// <summary>
-        /// Method for saving data to a Triple Store
-        /// </summary>
-        /// <param name="store">Triple Store</param>
-        /// <param name="filename">File to save to</param>
-        void Save(ITripleStore store, string filename);
+        private readonly IStoreWriter _storeWriter;
 
         /// <summary>
-        /// Method for saving data to a Triple Store
+        /// Create a new writer instance that wraps the specified <see cref="IStoreWriter"/> instance.
         /// </summary>
-        /// <param name="store">Triple Store</param>
-        /// <param name="output">Write to save to</param>
-        void Save(ITripleStore store, TextWriter output);
+        /// <param name="storeWriter">The <see cref="IStoreWriter"/> instance that will do the writing</param>
+        public SingleGraphWriter(IStoreWriter storeWriter)
+        {
+            _storeWriter = storeWriter;
+            _storeWriter.Warning += RaiseGraphWriterWarning;
+        }
 
-        /// <summary>
-        /// Method for saving data to a Triple Store
-        /// </summary>
-        /// <param name="store">Triple Store</param>
-        /// <param name="output">Write to save to</param>
-        /// <param name="leaveOpen">Boolean flag indicating if the output writer should be left open by the writer when it completes</param>
-        void Save(ITripleStore store, TextWriter output, bool leaveOpen);
+        private void RaiseGraphWriterWarning(string message)
+        {
+            Warning?.Invoke(message);
+        }
 
-        /// <summary>
-        /// Event which writers can raise to indicate possible ambiguities or issues in the syntax they are producing
-        /// </summary>
-        event StoreWriterWarning Warning;
+        /// <inheritdoc />
+        public void Save(IGraph g, string filename)
+        {
+            _storeWriter.Save(g.AsTripleStore(), filename);
+        }
+
+        /// <inheritdoc />
+        public void Save(IGraph g, TextWriter output)
+        {
+            _storeWriter.Save(g.AsTripleStore(), output);
+        }
+
+        /// <inheritdoc />
+        public void Save(IGraph g, TextWriter output, bool leaveOpen)
+        {
+            _storeWriter.Save(g.AsTripleStore(), output, leaveOpen);
+        }
+
+        /// <inheritdoc/>
+        public event RdfWriterWarning Warning;
     }
 }

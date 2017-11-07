@@ -145,7 +145,7 @@ namespace VDS.RDF.Writing
             if (filename == null) throw new RdfOutputException("Cannot output to a null file");
             using (var stream = File.Open(filename, FileMode.Create))
             {
-                this.Save(store, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
+                Save(store, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)), false);
             }
         }
 
@@ -156,6 +156,17 @@ namespace VDS.RDF.Writing
         /// <param name="writer">Writer to save to</param>
         public void Save(ITripleStore store, TextWriter writer)
         {
+            Save(store, writer, false);
+        }
+
+        /// <summary>
+        /// Saves a Store in TriG (Turtle with Named Graphs) format
+        /// </summary>
+        /// <param name="store">Store to save</param>
+        /// <param name="writer">Writer to save to</param>
+        /// <param name="leaveOpen">Boolean flag indicating if <paramref name="writer"/> should be left open after the store is saved</param>
+        public void Save(ITripleStore store, TextWriter writer, bool leaveOpen)
+        {
             if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
             if (writer == null) throw new RdfOutputException("Cannot output to a null writer");
 
@@ -164,12 +175,15 @@ namespace VDS.RDF.Writing
             // Check there's something to do
             if (context.Store.Graphs.Count == 0)
             {
-                context.Output.Close();
+                if (!leaveOpen)
+                {
+                    context.Output.Close();
+                }
                 return;
             }
 
             // Write the Header of the File
-            foreach (IGraph g in context.Store.Graphs)
+            foreach (var g in context.Store.Graphs)
             {
                 context.NamespaceMap.Import(g.NamespaceMap);
             }
@@ -177,7 +191,7 @@ namespace VDS.RDF.Writing
             {
                 // Only add @prefix declarations if compression is enabled
                 context.QNameMapper = new ThreadSafeQNameOutputMapper(context.NamespaceMap);
-                foreach (String prefix in context.NamespaceMap.Prefixes)
+                foreach (string prefix in context.NamespaceMap.Prefixes)
                 {
                     if (TurtleSpecsHelper.IsValidQName(prefix + ":"))
                     {
@@ -224,7 +238,10 @@ namespace VDS.RDF.Writing
                     }
                 }
                 // Make sure to close the output
-                context.Output.Close();
+                if (!leaveOpen)
+                {
+                    context.Output.Close();
+                }
 
                 // If there were any errors we'll throw an RdfThreadedOutputException now
                 if (outputEx.InnerExceptions.Any()) throw outputEx;
@@ -249,14 +266,17 @@ namespace VDS.RDF.Writing
                     }
 
                     // Make sure to close the output
-                    context.Output.Close();
+                    if (!leaveOpen)
+                    {
+                        context.Output.Close();
+                    }
                 }
                 catch
                 {
                     try
                     {
                         // Close the output
-                        context.Output.Close();
+                        if (!leaveOpen) context.Output.Close();
                     }
                     catch
                     {

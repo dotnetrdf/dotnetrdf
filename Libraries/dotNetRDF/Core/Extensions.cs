@@ -35,6 +35,7 @@ using System.Xml;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
+using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
@@ -1249,21 +1250,68 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="g">Graph to save</param>
         /// <param name="file">File to save to</param>
+        /// <param name="writer">Writer to use</param>
+        public static void SaveToFile(this IGraph g, string file, IStoreWriter writer)
+        {
+            if (writer == null)
+            {
+                throw new ArgumentNullException(nameof(writer));
+            }
+            else
+            {
+                var graphWriter = new SingleGraphWriter(writer);
+                graphWriter.Save(g, file);
+            }
+        }
+
+        /// <summary>
+        /// Saves a Graph to a File
+        /// </summary>
+        /// <param name="g">Graph to save</param>
+        /// <param name="file">File to save to</param>
         public static void SaveToFile(this IGraph g, String file)
         {
             IRdfWriter writer = MimeTypesHelper.GetWriterByFileExtension(MimeTypesHelper.GetTrueFileExtension(file));
             writer.Save(g, file);
         }
 
+        /// <summary>
+        /// Saves a Graph to a stream
+        /// </summary>
+        /// <param name="g">Graph to save</param>
+        /// <param name="streamWriter">Stream to save to</param>
+        /// <param name="writer">Writer to use</param>
         public static void SaveToStream(this IGraph g, TextWriter streamWriter, IRdfWriter writer)
         {
             if (writer == null)
             {
-                throw new ArgumentNullException("writer");
+                throw new ArgumentNullException(nameof(writer));
             }
             writer.Save(g, streamWriter);
         }
 
+        /// <summary>
+        /// Saves a Graph to a stream
+        /// </summary>
+        /// <param name="g">Graph to save</param>
+        /// <param name="streamWriter">Stream to save to</param>
+        /// <param name="writer">Writer to use</param>
+        public static void SaveToStream(this IGraph g, TextWriter streamWriter, IStoreWriter writer)
+        {
+            if (writer == null)
+            {
+                throw new ArgumentNullException(nameof(writer));
+            }
+            var sgWriter = new SingleGraphWriter(writer);
+            sgWriter.Save(g, streamWriter);
+        }
+
+        /// <summary>
+        /// Save a graph to a stream, determining the type of writer to use by the output file name
+        /// </summary>
+        /// <param name="g">The graph to write</param>
+        /// <param name="filename">The output file name to use to determine the output format to write</param>
+        /// <param name="streamWriter">The stream to write to</param>
         public static void SaveToStream(this IGraph g, string filename, TextWriter streamWriter)
         {
             var writer = MimeTypesHelper.GetWriterByFileExtension(MimeTypesHelper.GetTrueFileExtension(filename));

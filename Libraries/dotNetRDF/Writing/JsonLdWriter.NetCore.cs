@@ -30,15 +30,15 @@ namespace VDS.RDF.Writing
 {
     public partial class JsonLdWriter
     {
-        /// <inheritdoc/>
-        public void Save(ITripleStore store, string filename)
-        {
-            var jsonArray = SerializeStore(store);
-            using (var writer = new StreamWriter(File.Open(filename, FileMode.CreateNew, FileAccess.Write),
-                Encoding.UTF8))
-            {
-                writer.Write(jsonArray);
-            }
-        }
+        ///// <inheritdoc/>
+        //public void Save(ITripleStore store, string filename)
+        //{
+        //    var jsonArray = SerializeStore(store);
+        //    using (var writer = new StreamWriter(File.Open(filename, FileMode.CreateNew, FileAccess.Write),
+        //        Encoding.UTF8))
+        //    {
+        //        writer.Write(jsonArray);
+        //    }
+        //}
     }
 }
