@@ -27,16 +27,16 @@ using System.IO;
 
 namespace VDS.RDF.Writing
 {
-    public partial class JsonLdWriter
-    {
-        /// <inheritdoc/>
-        public void Save(ITripleStore store, string filename)
-        {
-            var jsonArray = SerializeStore(store);
-            using (var textWriter = new StreamWriter(filename))
-            {
-                textWriter.Write(jsonArray.ToString(_options.JsonFormatting));
-            }
-        }
-    }
+    //public partial class JsonLdWriter
+    //{
+    //    /// <inheritdoc/>
+    //    public void Save(ITripleStore store, string filename)
+    //    {
+    //        var jsonArray = SerializeStore(store);
+    //        using (var textWriter = new StreamWriter(filename))
+    //        {
+    //            textWriter.Write(jsonArray.ToString(_options.JsonFormatting));
+    //        }
+    //    }
+    //}
 }

@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using VDS.RDF.JsonLd;
@@ -60,14 +61,33 @@ namespace VDS.RDF.Writing
             _options = options;
         }
 
+        /// <inheritdoc/>
+        public void Save(ITripleStore store, string filename)
+        {
+            var jsonArray = SerializeStore(store);
+            using (var writer = new StreamWriter(File.Open(filename, FileMode.CreateNew, FileAccess.Write),
+                Encoding.UTF8))
+            {
+                writer.Write(jsonArray);
+            }
+        }
 
         /// <inheritdoc/>
         public void Save(ITripleStore store, TextWriter output)
         {
+            Save(store, output, false);
+        }
+
+        /// <inheritdoc/>
+        public void Save(ITripleStore store, TextWriter output, bool leaveOpen)
+        {
             var jsonArray = SerializeStore(store);
             output.Write(jsonArray.ToString(_options.JsonFormatting));
             output.Flush();
-            output.Close();
+            if (!leaveOpen)
+            {
+                output.Close();
+            }
         }
 
         /// <summary>
