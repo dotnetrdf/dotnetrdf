@@ -5,30 +5,40 @@
 
 dotNetRDF is a powerful and flexible API for working with RDF and SPARQL in .NET environments.
 
-To get started with using dotNetRDF you may want to check out the following resources:
-
- - [User Guide][10] - Series of articles detailing how to use various features of the library
- - [Developer Guide][11] - Some advanced documentation
-
-## License
-
 dotNetRDF is licensed under the MIT License, see the LICENSE.txt file in this repository
 
-## Obtaining dotNetRDF
+## Getting Started
 
-dotNetRDF produces two main products:
+The easiest way to get dotNetRDF is via NuGet. We provide the following packages:
 
- - A Programmers API for working with RDF and SPARQL in code using .Net
- - A Toolkit which provides an assortment of GUI and command line tools for working with RDF and SPARQL on Windows platforms
+	- **dotNetRDF** - contains the core libraries. This includes support for reading and writing RDF; and for managing and querying RDF data in-memory.
+	- **dotNetRDF.Data.DataTables** - a package which integrates RDF data with System.Data.DataTable
+	- **dotNetRDF.Data.Virtuoso** - provides support for using OpenLink Virtuoso as a backend store with dotNetRDF.
+	- **dotNetRDF.Query.FullText** - provides a full-text query plugin for dotNetRDF's Leviathan SPARQL query engine. The text indexing is provided by Lucene.
+	- **dotNetRDF.Query.Spin** - provides an implementation of [SPIN](http://spinrdf.org/) using dotNetRDF's Leviathan SPARQL query engine.
+	- **dotNetRDF.Web** - provides a framework for hosting RDF data in an IIS web application. This includes implementations of the SPARQL Protocol and SPARQL Graph Store Protocol.
 
-The Programmers API requires .Net 4.0 or higher (builds are provided for a variety of different framework versions and profiles).
+We currently provide support for the following .NET frameworks:
 
-The Toolkit is now managed in a [separate repository](https://github.com/dotnetrdf/dotNetRDF.Toolkit). You can find more information
-and download links for the Toolkit at that location.
+	- .NET 4.0
+	- .NET 4.0 Client Profile
+	- .NET Standard 1.4
+	- .NET Standard 2.0
+	
+## Read The Docs!
 
-### NuGet Packages
+To get started with using dotNetRDF you may want to check out the following resources:
 
-If you are a developer who uses NuGet you can also obtain dotNetRDF via NuGet, simply search for dotNetRDF in the NuGet Package Gallery to see the available packages.
+ - [User Guide][https://github.com/dotnetrdf/dotnetrdf/wiki/UserGuide] - Series of articles detailing how to use various features of the library
+ - [Developer Guide][https://github.com/dotnetrdf/dotnetrdf/wiki/DeveloperGuide] - Some advanced documentation
+
+## Asking Questions and Reporting Bugs
+
+If you have a question about using dotNetRDF, please post it on [StackOverflow using the tag `dotnetrdf`](https://stackoverflow.com/questions/tagged/dotnetrdf).
+
+Bugs and feature requests can be submitted to our [issues list on GitHub](https://github.com/dotnetrdf/dotnetrdf/issues). When submitting a bug report, please
+include as much detail as possible. Code and/or data that reproduces the problem you are reporting will make it much more likely that your issue gets addressed 
+quickly.
 
 ## Developers
 
@@ -43,13 +53,9 @@ dotNetRDF is developed by the following people:
 dotNetRDF also benefits from many community contributors who contribute in the form of bug reports, patches, suggestions and other feedback, 
 please see the [Acknowledgements](https://github.com/dotnetrdf/dotnetrdf/blob/master/Acknowledgments.txt) file for a full list.
 
-## Reporting bugs and feature requests
+## Pull Requests
 
-Bugs and feature requests are tracked on our [Issues list on GitHub](https://github.com/dotnetrdf/dotnetrdf/issues)
+We are always pleased to receive pull requests that fix bugs or add features. 
+When fixing a bug, please make sure that it has been reported on the [issues list](https://github.com/dotnetrdf/dotnetrdf/issues) first.
+If you plan to work on a new feature for dotNetRDF, it would be good to raise that on the issues list before you commit too much time to it.
 
-[1]: http://www.dotnetrdf.org
-
-[10]: https://github.com/dotnetrdf/dotnetrdf/wiki/UserGuide
-[11]: https://github.com/dotnetrdf/dotnetrdf/wiki/DeveloperGuide
-
-[40]: https://github.com/dotnetrdf/dotnetrdf/issues
