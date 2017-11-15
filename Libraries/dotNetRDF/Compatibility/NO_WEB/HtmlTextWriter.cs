@@ -268,8 +268,16 @@ namespace System.Web.UI
                 this._writer.Write("\"");
                 this._styles.Clear();
             }
-            this._writer.WriteLine(">");
-            this._newline = true;
+            this._writer.Write(">");
+            if (tagName == "span")
+            {
+                this._newline = false;
+            }
+            else
+            {
+                this._writer.WriteLine();
+                this._newline = true;
+            }
             this._indent++;
         }
 
@@ -290,8 +298,11 @@ namespace System.Web.UI
             if (this._tags.Count > 0)
             {
                 if (this._indent > 0) this._indent--;
-                if (!this._newline) this._writer.WriteLine();
-                this._writer.Write(new String('\t', this._indent));
+                if (this._newline)
+                {
+                    this._writer.WriteLine();
+                    this._writer.Write(new String('\t', this._indent));
+                }
                 this._writer.WriteLine("</" + this._tags.Pop().ToLower() + ">");
                 this._newline = true;
             }
