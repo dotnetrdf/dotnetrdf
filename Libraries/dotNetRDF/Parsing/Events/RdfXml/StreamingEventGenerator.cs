@@ -122,9 +122,9 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         private XmlReaderSettings GetSettings()
         {
             XmlReaderSettings settings = new XmlReaderSettings();
-#if NETCORE
+#if NETCORE 
             settings.DtdProcessing = DtdProcessing.Ignore;
-#elif NET40
+#elif NET40 || NETSTANDARD2_0
             settings.DtdProcessing = DtdProcessing.Parse;
 #endif
             settings.ConformanceLevel = ConformanceLevel.Document;

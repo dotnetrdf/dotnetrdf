@@ -53,10 +53,12 @@ namespace VDS.RDF.Writing
             {
                 ((ICompressingWriter)writer).CompressionLevel = compressionLevel;
             }
+#if !NETCOREAPP2_0
             if (writer is IMultiThreadedWriter)
             {
                 ((IMultiThreadedWriter)writer).UseMultiThreadedWriting = useMultiThreaded;
             }
+#endif
             System.IO.StringWriter strWriter = new System.IO.StringWriter();
             writer.Save(store, strWriter);
 

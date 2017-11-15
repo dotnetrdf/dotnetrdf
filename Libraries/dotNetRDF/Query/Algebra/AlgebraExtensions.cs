@@ -26,7 +26,7 @@
 
 using System;
 using System.Linq;
-#if NET40 || NETCORE
+#if NET40 || NETSTANDARD1_4 || NETSTANDARD2_0
 using System.Threading.Tasks;
 #endif
 
@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Algebra
 #endif
             var stop = new StopToken();
             var t = (int)Math.Min(timeout, int.MaxValue);
-#if NET40 || NETCORE
+#if NET40 || NETSTANDARD1_4 || NETSTANDARD2_0
             var productTask = Task.Factory.StartNew(() => GenerateProduct(multiset, other, productSet, stop));
             if (!productTask.Wait(t))
             {
