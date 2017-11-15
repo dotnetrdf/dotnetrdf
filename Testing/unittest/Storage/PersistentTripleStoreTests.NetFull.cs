@@ -41,25 +41,12 @@ namespace VDS.RDF.Storage
 {
     public partial class PersistentTripleStoreTests
     {
-        #region Contains Tests
-
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiContains()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestContains(fuseki);
         }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreVirtuosoContains()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestContains(virtuoso);
-        }
-
-        #endregion
-
-        #region Get Graph Tests
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiGetGraph()
@@ -69,28 +56,10 @@ namespace VDS.RDF.Storage
         }
 
         [SkippableFact]
-        public void StoragePersistentTripleStoreVirtuosoGetGraph()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestGetGraph(virtuoso);
-        }
-
-        #endregion
-
-        #region Add Triples Tests
-
-        [SkippableFact]
         public void StoragePersistentTripleStoreFusekiAddTriplesFlushed()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestAddTriplesFlushed(fuseki);
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreVirtuosoAddTriplesFlushed()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestAddTriplesFlushed(virtuoso);
         }
 
         [SkippableFact]
@@ -100,16 +69,6 @@ namespace VDS.RDF.Storage
             this.TestAddTriplesDiscarded(fuseki);
         }
 
-        [SkippableFact]
-        public void StoragePersistentTripleStoreVirtuosoAddTriplesDiscarded()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestAddTriplesDiscarded(virtuoso);
-        }
-
-        #endregion
-
-        #region Remove Triples Tests
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiRemoveTriplesFlushed()
@@ -119,29 +78,12 @@ namespace VDS.RDF.Storage
         }
 
         [SkippableFact]
-        public void StoragePersistentTripleStoreVirtuosoRemoveTriplesFlushed()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestRemoveTriplesFlushed(virtuoso);
-        }
-
-        [SkippableFact]
         public void StoragePersistentTripleStoreFusekiRemoveTriplesDiscarded()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestRemoveTriplesDiscarded(fuseki);
         }
 
-        [SkippableFact]
-        public void StoragePersistentTripleStoreVirtuosoRemoveTriplesDiscarded()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestRemoveTriplesDiscarded(virtuoso);
-        }
-
-        #endregion
-
-        #region Add Graph Tests
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiAddGraphFlushed()
@@ -151,42 +93,18 @@ namespace VDS.RDF.Storage
         }
 
         [SkippableFact]
-        public void StoragePersistentTripleStoreVirtuosoAddGraphFlushed()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestAddGraphFlushed(virtuoso);
-        }
-
-        [SkippableFact]
         public void StoragePersistentTripleStoreFusekiAddGraphDiscarded()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestAddGraphDiscarded(fuseki);
         }
 
-        [SkippableFact]
-        public void StoragePersistentTripleStoreVirtuosoAddGraphDiscarded()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestAddGraphDiscarded(virtuoso);
-        }
-
-        #endregion
-
-        #region Remove Graph Tests
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiRemoveGraphFlushed()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestRemoveGraphFlushed(fuseki);
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreVirtuosoRemoveGraphFlushed()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestRemoveGraphFlushed(virtuoso);
         }
 
         [SkippableFact]
@@ -197,29 +115,12 @@ namespace VDS.RDF.Storage
         }
 
         [SkippableFact]
-        public void StoragePersistentTripleStoreVirtuosoRemoveGraphDiscarded()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestRemoveGraphDiscarded(virtuoso);
-        }
-
-        #endregion
-
-        #region Add then Remove Graph Sequencing Tests
-
-        [SkippableFact]
         public void StoragePersistentTripleStoreFusekiAddThenRemoveGraphFlushed()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestAddThenRemoveGraphFlushed(fuseki);
         }
 
-        [SkippableFact]
-        public void StoragePersistentTripleStoreVirtuosoAddThenRemoveGraphFlushed()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestAddThenRemoveGraphFlushed(virtuoso);
-        }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiAddThenRemoveGraphDiscarded()
@@ -229,28 +130,10 @@ namespace VDS.RDF.Storage
         }
 
         [SkippableFact]
-        public void StoragePersistentTripleStoreVirtuosoAddThenRemoveGraphDiscarded()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestAddThenRemoveGraphDiscarded(virtuoso);
-        }
-
-        #endregion
-
-        #region Remove then Add Graph Sequencing Tests
-
-        [SkippableFact]
         public void StoragePersistentTripleStoreFusekiRemoveThenAddGraphFlushed()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestRemoveThenAddGraphFlushed(fuseki);
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreVirtuosoRemoveThenAddGraphFlushed()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestRemoveThenAddGraphFlushed(virtuoso);
         }
 
         [SkippableFact]
@@ -261,17 +144,6 @@ namespace VDS.RDF.Storage
         }
 
         [SkippableFact]
-        public void StoragePersistentTripleStoreVirtuosoRemoveThenAddGraphDiscarded()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestRemoveThenAddGraphDiscarded(virtuoso);
-        }
-
-        #endregion
-
-        #region SPARQL Query Tests
-
-        [SkippableFact]
         public void StoragePersistentTripleStoreFusekiQueryUnsynced()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
@@ -279,24 +151,10 @@ namespace VDS.RDF.Storage
         }
 
         [SkippableFact]
-        public void StoragePersistentTripleStoreVirtuosoQueryUnsynced()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            Assert.Throws<RdfQueryException>(() => this.TestQueryUnsynced(virtuoso));
-        }
-
-        [SkippableFact]
         public void StoragePersistentTripleStoreFusekiQuerySelect()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestQuerySelect(fuseki, "SELECT * WHERE { ?s a ?type }");
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreVirtuosoQuerySelect()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestQuerySelect(virtuoso, "SELECT * WHERE { ?s a ?type }");
         }
 
         [SkippableFact]
@@ -308,25 +166,10 @@ namespace VDS.RDF.Storage
         }
 
         [SkippableFact]
-        public void StoragePersistentTripleStoreVirtuosoQueryAsk()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestQueryAsk(virtuoso, "ASK WHERE { ?s a ?type }", true);
-            this.TestQueryAsk(virtuoso, "ASK WHERE { ?s <http://example.org/noSuchThing> ?o }", false);
-        }
-
-        [SkippableFact]
         public void StoragePersistentTripleStoreFusekiQueryConstruct()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestQueryConstruct(fuseki, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreVirtuosoQueryConstruct()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestQueryConstruct(virtuoso, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
         }
 
         [SkippableFact]
@@ -337,28 +180,10 @@ namespace VDS.RDF.Storage
         }
 
         [SkippableFact]
-        public void StoragePersistentTripleStoreVirtuosoQueryDescribe()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestQueryDescribe(virtuoso, "DESCRIBE ?type WHERE { ?s a ?type } LIMIT 5");
-        }
-
-        #endregion
-
-        #region SPARQL Update Tests
-
-        [SkippableFact]
         public void StoragePersistentTripleStoreFusekiUpdateUnsynced()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             Assert.Throws<SparqlUpdateException>(() => this.TestUpdateUnsynced(fuseki));
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreVirtuosoUpdateUnsynced()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            Assert.Throws<SparqlUpdateException>(() => this.TestUpdateUnsynced(virtuoso));
         }
 
         [SkippableFact]
@@ -375,6 +200,148 @@ namespace VDS.RDF.Storage
             this.TestUpdate(fuseki);
         }
 
+#if !NO_VIRTUOSO
+        [SkippableFact]
+        public void StoragePersistentTripleStoreVirtuosoContains()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            this.TestContains(virtuoso);
+        }
+
+        [SkippableFact]
+        public void StoragePersistentTripleStoreVirtuosoGetGraph()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            this.TestGetGraph(virtuoso);
+        }
+
+        [SkippableFact]
+        public void StoragePersistentTripleStoreVirtuosoAddTriplesFlushed()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            this.TestAddTriplesFlushed(virtuoso);
+        }
+
+        [SkippableFact]
+        public void StoragePersistentTripleStoreVirtuosoAddTriplesDiscarded()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            this.TestAddTriplesDiscarded(virtuoso);
+        }
+
+        [SkippableFact]
+        public void StoragePersistentTripleStoreVirtuosoRemoveTriplesFlushed()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            this.TestRemoveTriplesFlushed(virtuoso);
+        }
+
+        [SkippableFact]
+        public void StoragePersistentTripleStoreVirtuosoRemoveTriplesDiscarded()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            this.TestRemoveTriplesDiscarded(virtuoso);
+        }
+
+        [SkippableFact]
+        public void StoragePersistentTripleStoreVirtuosoAddGraphFlushed()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            this.TestAddGraphFlushed(virtuoso);
+        }
+
+        [SkippableFact]
+        public void StoragePersistentTripleStoreVirtuosoAddGraphDiscarded()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            this.TestAddGraphDiscarded(virtuoso);
+        }
+
+        [SkippableFact]
+        public void StoragePersistentTripleStoreVirtuosoRemoveGraphFlushed()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            this.TestRemoveGraphFlushed(virtuoso);
+        }
+
+        [SkippableFact]
+        public void StoragePersistentTripleStoreVirtuosoRemoveGraphDiscarded()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            this.TestRemoveGraphDiscarded(virtuoso);
+        }
+
+        [SkippableFact]
+        public void StoragePersistentTripleStoreVirtuosoAddThenRemoveGraphFlushed()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            this.TestAddThenRemoveGraphFlushed(virtuoso);
+        }
+
+        [SkippableFact]
+        public void StoragePersistentTripleStoreVirtuosoAddThenRemoveGraphDiscarded()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            this.TestAddThenRemoveGraphDiscarded(virtuoso);
+        }
+
+        [SkippableFact]
+        public void StoragePersistentTripleStoreVirtuosoRemoveThenAddGraphFlushed()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            this.TestRemoveThenAddGraphFlushed(virtuoso);
+        }
+
+        [SkippableFact]
+        public void StoragePersistentTripleStoreVirtuosoRemoveThenAddGraphDiscarded()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            this.TestRemoveThenAddGraphDiscarded(virtuoso);
+        }
+
+        [SkippableFact]
+        public void StoragePersistentTripleStoreVirtuosoQueryUnsynced()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            Assert.Throws<RdfQueryException>(() => this.TestQueryUnsynced(virtuoso));
+        }
+
+        [SkippableFact]
+        public void StoragePersistentTripleStoreVirtuosoQuerySelect()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            this.TestQuerySelect(virtuoso, "SELECT * WHERE { ?s a ?type }");
+        }
+
+        [SkippableFact]
+        public void StoragePersistentTripleStoreVirtuosoQueryAsk()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            this.TestQueryAsk(virtuoso, "ASK WHERE { ?s a ?type }", true);
+            this.TestQueryAsk(virtuoso, "ASK WHERE { ?s <http://example.org/noSuchThing> ?o }", false);
+        }
+
+        [SkippableFact]
+        public void StoragePersistentTripleStoreVirtuosoQueryConstruct()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            this.TestQueryConstruct(virtuoso, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
+        }
+
+        [SkippableFact]
+        public void StoragePersistentTripleStoreVirtuosoQueryDescribe()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            this.TestQueryDescribe(virtuoso, "DESCRIBE ?type WHERE { ?s a ?type } LIMIT 5");
+        }
+
+        [SkippableFact]
+        public void StoragePersistentTripleStoreVirtuosoUpdateUnsynced()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            Assert.Throws<SparqlUpdateException>(() => this.TestUpdateUnsynced(virtuoso));
+        }
+
         [SkippableFact]
         public void StoragePersistentTripleStoreVirtuosoUpdate()
         {
@@ -382,6 +349,7 @@ namespace VDS.RDF.Storage
             this.TestUpdate(virtuoso);
         }
 
-        #endregion
+#endif
+
     }
 }
