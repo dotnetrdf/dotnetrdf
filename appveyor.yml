@@ -1,4 +1,4 @@
-image: Visual Studio 2017
+image: Previous Visual Studio 2017
 
 environment:
   SHFBROOT:  C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\
