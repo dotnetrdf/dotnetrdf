@@ -149,20 +149,28 @@ namespace VDS.RDF
 
         public static void ShowGraph(IGraph g)
         {
-            Console.Write("Graph URI: ");
-            if (g.BaseUri != null)
+            try
             {
-                Console.WriteLine(g.BaseUri.ToString());
+                Console.Write("Graph URI: ");
+                if (g.BaseUri != null)
+                {
+                    Console.WriteLine(g.BaseUri.ToString());
+                }
+                else
+                {
+                    Console.WriteLine("NULL");
+                }
+                Console.WriteLine(g.Triples.Count + " Triples");
+                NTriplesFormatter formatter = new NTriplesFormatter();
+                foreach (Triple t in g.Triples.ToList())
+                {
+                    Console.WriteLine(t.ToString(formatter));
+                }
             }
-            else
+            catch (ArgumentOutOfRangeException)
             {
-                Console.WriteLine("NULL");
-            }
-            Console.WriteLine(g.Triples.Count + " Triples");
-            NTriplesFormatter formatter = new NTriplesFormatter();
-            foreach (Triple t in g.Triples.ToList())
-            {
-                Console.WriteLine(t.ToString(formatter));
+                // Weird error that happens on the AppVeyor CI build
+                Console.WriteLine("ArgumentOutOfRangeException raused while formatting RDF graph");
             }
         }
 
