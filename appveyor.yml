@@ -19,8 +19,7 @@ before_build:
 configuration: Release
 
 build_script:
-  - dotnet build Libraries/dotNetRDF.Query.Spin
-  - dotnet build Testing/Unittest
+  - dotnet build -c Release dotNetRDF.sln
   - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF /p:Version=%GitVersion_NuGetVersion%
   - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF.Data.DataTables /p:Version=%GitVersion_NuGetVersion%
   - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF.Data.Virtuoso /p:Version=%GitVersion_NuGetVersion%
