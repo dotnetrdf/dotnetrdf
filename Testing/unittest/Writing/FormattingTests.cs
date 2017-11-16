@@ -170,7 +170,7 @@ namespace VDS.RDF.Writing
 
                 foreach (IGraph graph in graphs)
                 {
-                    Console.WriteLine("Testing Graph " + (graph.BaseUri != null ? graph.BaseUri.ToString() : String.Empty));
+                    //Console.WriteLine("Testing Graph " + (graph.BaseUri != null ? graph.BaseUri.ToString() : String.Empty));
                     StringBuilder output = new StringBuilder();
                     output.AppendLine(formatter.FormatGraphHeader(graph));
                     foreach (Triple t in graph.Triples)
