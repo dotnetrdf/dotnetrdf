@@ -43,9 +43,14 @@ namespace VDS.RDF.Parsing
             {
                 return "<NULL>";
             }
-            else
+            try
             {
                 return "<" + baseUri.ToString() + ">";
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                // Weird error happening only in CI build on appveyor
+                return "ArgumentOutOfRangeException raised while attempting to format URI";
             }
         }
 

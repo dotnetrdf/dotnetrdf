@@ -40,6 +40,7 @@ namespace VDS.RDF.Parsing.Handlers
     /// </summary>
     public partial class WriteToStoreHandlerTests
     {
+#if !NO_VIRTUOSO
         [SkippableFact]
         public void ParsingWriteToStoreHandlerVirtuoso()
         {
@@ -47,6 +48,20 @@ namespace VDS.RDF.Parsing.Handlers
             this.TestWriteToStoreHandler(virtuoso);
         }
 
+        [SkippableFact]
+        public void ParsingWriteToStoreHandlerDatasetsVirtuoso()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            this.TestWriteToStoreDatasetsHandler(virtuoso);
+        }
+
+        [SkippableFact]
+        public void ParsingWriteToStoreHandlerBNodesAcrossBatchesVirtuoso()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            this.TestWriteToStoreHandlerWithBNodes(virtuoso);
+        }
+#endif
         [SkippableFact]
         public void ParsingWriteToStoreHandlerAllegroGraph()
         {
@@ -70,13 +85,6 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         [SkippableFact]
-        public void ParsingWriteToStoreHandlerDatasetsVirtuoso()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestWriteToStoreDatasetsHandler(virtuoso);
-        }
-
-        [SkippableFact]
         public void ParsingWriteToStoreHandlerBNodesAcrossBatchesAllegroGraph()
         {
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
@@ -90,11 +98,5 @@ namespace VDS.RDF.Parsing.Handlers
             this.TestWriteToStoreHandlerWithBNodes(fuseki);
         }
 
-        [SkippableFact]
-        public void ParsingWriteToStoreHandlerBNodesAcrossBatchesVirtuoso()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestWriteToStoreHandlerWithBNodes(virtuoso);
-        }
     }
 }

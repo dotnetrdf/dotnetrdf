@@ -23,7 +23,7 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 */
-
+#if !NETSTANDARD2_0
 using System;
 using System.Text;
 using VDS.RDF.Parsing;
@@ -224,3 +224,4 @@ namespace System.Web
         }
     }
 }
+#endif
