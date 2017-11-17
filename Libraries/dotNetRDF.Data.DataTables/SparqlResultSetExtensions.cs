@@ -4,6 +4,9 @@ using VDS.RDF.Query;
 
 namespace VDS.RDF.Data.DataTables
 {
+    /// <summary>
+    /// Extends <see cref="SparqlResultSet"/> with a method to retrieve the results as a <see cref="DataTable"/>
+    /// </summary>
     public static class SparqlResultSetExtensions
     {
         /// <summary>
