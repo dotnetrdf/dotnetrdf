@@ -31,8 +31,7 @@ using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-    public class AttributeImpl : AbstractAttributeImpl, IAttribute
+    internal class AttributeImpl : AbstractAttributeImpl, IAttribute
     {
 
         public AttributeImpl(INode node, SpinProcessor spinModel)

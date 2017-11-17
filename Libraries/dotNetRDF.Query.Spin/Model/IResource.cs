@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Spin.Model
      * 
      * @author Holger Knublauch
      */
-    public interface IResource : INode
+    internal interface IResource : INode
     {
 
         INode getSource();

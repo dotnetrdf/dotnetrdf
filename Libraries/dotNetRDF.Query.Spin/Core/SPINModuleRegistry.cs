@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Spin.Core
      * 
      * @author Holger Knublauch
      */
-    public class SPINModuleRegistry
+    internal class SPINModuleRegistry
     {
 
         /**

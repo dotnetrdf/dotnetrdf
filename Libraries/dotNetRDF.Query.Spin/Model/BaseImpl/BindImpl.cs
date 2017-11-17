@@ -33,8 +33,7 @@ using VDS.RDF.Query.Spin.SparqlUtil;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-    public class BindImpl : ElementImpl, IBind
+    internal class BindImpl : ElementImpl, IBind
     {
 
         public BindImpl(INode node, SpinProcessor spinModel)

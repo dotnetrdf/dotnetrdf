@@ -35,7 +35,7 @@ namespace VDS.RDF.Query.Spin.Model
 {
 
 
-    public class SPINInstanceImpl : Resource, ISPINInstance
+    internal class SPINInstanceImpl : Resource, ISPINInstance
     {
 
         public SPINInstanceImpl(INode node, SpinProcessor spinModel)

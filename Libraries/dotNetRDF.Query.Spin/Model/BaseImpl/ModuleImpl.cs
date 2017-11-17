@@ -32,7 +32,7 @@ using VDS.RDF.Query.Spin.Util;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-    public class ModuleImpl : AbstractSPINResource, IModule
+    internal class ModuleImpl : AbstractSPINResource, IModule
     {
 
 

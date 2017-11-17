@@ -30,7 +30,7 @@ using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-    public abstract class ModuleCallImpl : AbstractSPINResource, IModuleCall
+    internal abstract class ModuleCallImpl : AbstractSPINResource, IModuleCall
     {
 
         public ModuleCallImpl(INode node, SpinProcessor spinModel)

@@ -33,7 +33,7 @@ namespace VDS.RDF.Query.Spin.Model
 {
 
 
-    public class TemplateCallImpl : ModuleCallImpl, ITemplateCall
+    internal class TemplateCallImpl : ModuleCallImpl, ITemplateCall
     {
 
         public TemplateCallImpl(INode node, SpinProcessor spinModel)

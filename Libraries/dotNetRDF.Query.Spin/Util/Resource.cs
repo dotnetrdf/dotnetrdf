@@ -39,7 +39,7 @@ namespace VDS.RDF.Query.Spin.Util
     /// <summary>
     /// A utility class that wraps dotNetRDF Nodes with the same interface as the Jena Resource classes
     /// </summary>
-    public class Resource : IResource, IComparable<IResource>, IEquatable<IResource>
+    internal class Resource : IResource, IComparable<IResource>, IEquatable<IResource>
     {
 
         #region "Basic resource wrapper implementation "

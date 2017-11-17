@@ -26,8 +26,7 @@
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-    public class TriplePatternImpl : TripleImpl, ITriplePattern
+    internal class TriplePatternImpl : TripleImpl, ITriplePattern
     {
 
         public TriplePatternImpl(INode node, SpinProcessor spinModel)

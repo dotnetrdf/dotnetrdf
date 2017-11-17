@@ -32,8 +32,7 @@ using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-    public class TemplateImpl : ModuleImpl, ITemplate
+    internal class TemplateImpl : ModuleImpl, ITemplate
     {
 
         public TemplateImpl(INode node, SpinProcessor spinModel)

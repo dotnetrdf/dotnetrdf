@@ -36,9 +36,7 @@ using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-
-    public abstract class QueryImpl : AbstractSPINResource, ISolutionModifierQuery
+    internal abstract class QueryImpl : AbstractSPINResource, ISolutionModifierQuery
     {
 
 

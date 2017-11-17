@@ -33,9 +33,7 @@ using VDS.RDF.Query.Spin.Util;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-
-    public abstract class AbstractSPINResource : Resource, IPrintable
+    internal abstract class AbstractSPINResource : Resource, IPrintable
     {
 
         /**

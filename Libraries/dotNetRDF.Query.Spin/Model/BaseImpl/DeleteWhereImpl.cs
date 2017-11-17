@@ -32,8 +32,7 @@ using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-    public class DeleteWhereImpl : UpdateImpl, IDeleteWhere
+    internal class DeleteWhereImpl : UpdateImpl, IDeleteWhere
     {
 
         public DeleteWhereImpl(INode node, SpinProcessor graph)

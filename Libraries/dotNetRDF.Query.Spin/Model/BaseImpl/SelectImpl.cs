@@ -34,9 +34,7 @@ using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-
-    public class SelectImpl : QueryImpl, ISelect
+    internal class SelectImpl : QueryImpl, ISelect
     {
 
         public SelectImpl(INode node, SpinProcessor spinModel)

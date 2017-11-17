@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Spin.Model
      */
     //@SuppressWarnings("deprecation")
 
-    public class SPINFactory
+    internal class SPINFactory
     {
 
         /**

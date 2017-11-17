@@ -31,8 +31,7 @@ using VDS.RDF.Query.Spin.Util;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-    public class ServiceImpl : ElementImpl, IService
+    internal class ServiceImpl : ElementImpl, IService
     {
 
         public ServiceImpl(INode node, SpinProcessor spinModel)

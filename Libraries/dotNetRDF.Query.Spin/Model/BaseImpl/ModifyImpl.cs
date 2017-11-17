@@ -35,8 +35,7 @@ using VDS.RDF.Query.Spin.SparqlUtil;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-    public class ModifyImpl : UpdateImpl, IModify
+    internal class ModifyImpl : UpdateImpl, IModify
     {
 
         public ModifyImpl(INode node, SpinProcessor graph)

@@ -36,9 +36,7 @@ using VDS.RDF.Query.Spin.Util;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-
-    public class ElementListImpl : ElementImpl, IElementList
+    internal class ElementListImpl : ElementImpl, IElementList
     {
 
         public ElementListImpl(INode node, SpinProcessor spinModel)

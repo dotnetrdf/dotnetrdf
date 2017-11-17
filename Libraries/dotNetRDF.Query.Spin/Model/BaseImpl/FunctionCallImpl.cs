@@ -36,9 +36,7 @@ using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-
-    public class FunctionCallImpl : ModuleCallImpl, IFunctionCall
+    internal class FunctionCallImpl : ModuleCallImpl, IFunctionCall
     {
 
         private static String SP_ARG = SP.PropertyArg.ToString();

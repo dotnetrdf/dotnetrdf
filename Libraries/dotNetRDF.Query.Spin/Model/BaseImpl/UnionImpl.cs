@@ -29,9 +29,7 @@ using VDS.RDF.Query.Spin.SparqlUtil;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-
-    public class UnionImpl : ElementImpl, IUnion
+    internal class UnionImpl : ElementImpl, IUnion
     {
 
         public UnionImpl(INode node, SpinProcessor spinModel)
