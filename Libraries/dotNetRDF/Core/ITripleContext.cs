@@ -69,7 +69,7 @@ namespace VDS.RDF
         /// </summary>
         public BasicTripleContext()
         {
-            this._properties = new Dictionary<string, object>();
+            _properties = new Dictionary<string, object>();
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool HasProperty(string name)
         {
-            return this._properties.ContainsKey(name);
+            return _properties.ContainsKey(name);
         }
 
         /// <summary>
@@ -92,10 +92,10 @@ namespace VDS.RDF
             get
             {
                 // Check if the Property exists
-                if (this._properties.ContainsKey(name))
+                if (_properties.ContainsKey(name))
                 {
                     // Return the Property
-                    return this._properties[name];
+                    return _properties[name];
                 }
                 else
                 {
@@ -106,15 +106,15 @@ namespace VDS.RDF
             set
             {
                 // Check if the Property exists
-                if (this._properties.ContainsKey(name))
+                if (_properties.ContainsKey(name))
                 {
                     // Update the Property
-                    this._properties[name] = value;
+                    _properties[name] = value;
                 }
                 else
                 {
                     // Define a new Property
-                    this._properties.Add(name, value);
+                    _properties.Add(name, value);
                 }
             }
         }

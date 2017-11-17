@@ -102,8 +102,8 @@ namespace VDS.RDF.Query
         /// <param name="result"></param>
         public SparqlResultSet(bool result)
         {
-            this._result = result;
-            this._type = SparqlResultsType.Boolean;
+            _result = result;
+            _type = SparqlResultsType.Boolean;
         }
 
         /// <summary>
@@ -127,29 +127,29 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public SparqlResultSet(SparqlEvaluationContext context)
         {
-            this._type = (context.Query.QueryType == SparqlQueryType.Ask) ? SparqlResultsType.Boolean : SparqlResultsType.VariableBindings;
+            _type = (context.Query.QueryType == SparqlQueryType.Ask) ? SparqlResultsType.Boolean : SparqlResultsType.VariableBindings;
             if (context.OutputMultiset is NullMultiset)
             {
-                this._result = false;
+                _result = false;
             }
             else if (context.OutputMultiset is IdentityMultiset)
             {
-                this._result = true;
+                _result = true;
                 foreach (String var in context.OutputMultiset.Variables)
                 {
-                    this._variables.Add(var);
+                    _variables.Add(var);
                 }
             }
             else
             {
-                this._result = true;
+                _result = true;
                 foreach (String var in context.OutputMultiset.Variables)
                 {
-                    this._variables.Add(var);
+                    _variables.Add(var);
                 }
                 foreach (ISet s in context.OutputMultiset.Sets)
                 {
-                    this.AddResult(new SparqlResult(s, context.OutputMultiset.Variables));
+                    AddResult(new SparqlResult(s, context.OutputMultiset.Variables));
                 }
             }
         }
@@ -157,13 +157,13 @@ namespace VDS.RDF.Query
 #if !NETCORE
         private SparqlResultSet(SerializationInfo info, StreamingContext context)
         {
-            this._dsInfo = new ResultSetDeserializationInfo(info, context);
+            _dsInfo = new ResultSetDeserializationInfo(info, context);
         }
 
         [OnDeserialized]
         private void OnDeserialized(StreamingContext context)
         {
-            if (this._dsInfo != null) this._dsInfo.Apply(this);
+            if (_dsInfo != null) _dsInfo.Apply(this);
         }
 
 #endif
@@ -177,7 +177,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._type;
+                return _type;
             }
         }
 
@@ -190,10 +190,10 @@ namespace VDS.RDF.Query
             get
             {
                 // If No Variables then must have been an ASK Query with an empty <head>
-                if (this._variables.Count == 0)
+                if (_variables.Count == 0)
                 {
                     // In this case the _result field contains the boolean result
-                    return this._result;
+                    return _result;
                 }
                 else
                 {
@@ -210,7 +210,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._results.Count;
+                return _results.Count;
             }
         }
 
@@ -223,14 +223,14 @@ namespace VDS.RDF.Query
         {
             get
             {
-                switch (this._type)
+                switch (_type)
                 {
                     case SparqlResultsType.Boolean:
                         return false;
                     case SparqlResultsType.Unknown:
                         return true;
                     case SparqlResultsType.VariableBindings:
-                        return this._results.Count == 0;
+                        return _results.Count == 0;
                     default:
                         return true;
                 }
@@ -244,7 +244,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._results;
+                return _results;
             }
         }
 
@@ -257,7 +257,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._results[index];
+                return _results[index];
             }
         }
 
@@ -271,7 +271,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return (from v in this._variables
+                return (from v in _variables
                         select v);
             }
         }
@@ -286,7 +286,7 @@ namespace VDS.RDF.Query
         /// </remarks>
         public void Trim()
         {
-            this._results.ForEach(r => r.Trim());
+            _results.ForEach(r => r.Trim());
         }
 
         #region Internal Methods for filling the ResultSet
@@ -295,35 +295,35 @@ namespace VDS.RDF.Query
         /// Adds a Variable to the Result Set
         /// </summary>
         /// <param name="var">Variable Name</param>
-        protected internal void AddVariable(String var)
+        internal void AddVariable(String var)
         {
-            if (!this._variables.Contains(var))
+            if (!_variables.Contains(var))
             {
-                this._variables.Add(var);
+                _variables.Add(var);
             }
-            this._type = SparqlResultsType.VariableBindings;
+            _type = SparqlResultsType.VariableBindings;
         }
 
         /// <summary>
         /// Adds a Result to the Result Set
         /// </summary>
         /// <param name="result">Result</param>
-        protected internal void AddResult(SparqlResult result)
+        internal void AddResult(SparqlResult result)
         {
-            if (this._type == SparqlResultsType.Boolean) throw new RdfException("Cannot add a Variable Binding Result to a Boolean Result Set");
-            this._results.Add(result);
-            this._type = SparqlResultsType.VariableBindings;
+            if (_type == SparqlResultsType.Boolean) throw new RdfException("Cannot add a Variable Binding Result to a Boolean Result Set");
+            _results.Add(result);
+            _type = SparqlResultsType.VariableBindings;
         }
 
         /// <summary>
         /// Sets the Boolean Result for the Result Set
         /// </summary>
         /// <param name="result">Boolean Result</param>
-        protected internal void SetResult(bool result)
+        internal void SetResult(bool result)
         {
-            if (this._type != SparqlResultsType.Unknown) throw new RdfException("Cannot set the Boolean Result value for this Result Set as its Result Type has already been set");
-            this._result = result;
-            if (this._type == SparqlResultsType.Unknown) this._type = SparqlResultsType.Boolean;
+            if (_type != SparqlResultsType.Unknown) throw new RdfException("Cannot set the Boolean Result value for this Result Set as its Result Type has already been set");
+            _result = result;
+            if (_type == SparqlResultsType.Unknown) _type = SparqlResultsType.Boolean;
         }
 
         #endregion
@@ -336,7 +336,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public IEnumerator<SparqlResult> GetEnumerator()
         {
-            return this._results.GetEnumerator();
+            return _results.GetEnumerator();
         }
 
         /// <summary>
@@ -345,7 +345,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return this._results.GetEnumerator();
+            return _results.GetEnumerator();
         }
 
         #endregion
@@ -362,29 +362,27 @@ namespace VDS.RDF.Query
         {
             if (obj == null) return false;
 
-            if (obj is SparqlResultSet)
+            if (obj is SparqlResultSet results)
             {
-                SparqlResultSet results = (SparqlResultSet)obj;
-
                 // Must contain same number of Results to be equal
-                if (this.Count != results.Count) return false;
+                if (Count != results.Count) return false;
 
                 // Must have same Boolean result to be equal
-                if (this.Result != results.Result) return false;
+                if (Result != results.Result) return false;
 
                 // Must contain the same set of variables
-                if (this.Variables.Count() != results.Variables.Count()) return false;
-                if (!this.Variables.All(v => results.Variables.Contains(v))) return false;
-                if (results.Variables.Any(v => !this._variables.Contains(v))) return false;
+                if (Variables.Count() != results.Variables.Count()) return false;
+                if (!Variables.All(v => results.Variables.Contains(v))) return false;
+                if (results.Variables.Any(v => !_variables.Contains(v))) return false;
 
                 // If both have no results then they are equal
-                if (this.Count == 0 && results.Count == 0) return true;
+                if (Count == 0 && results.Count == 0) return true;
 
                 // All Ground Results from the Result Set must appear in the Other Result Set
                 List<SparqlResult> otherResults = results.OrderByDescending(r => r.Variables.Count()).ToList();
                 List<SparqlResult> localResults = new List<SparqlResult>();
                 int grCount = 0;
-                foreach (SparqlResult result in this.Results.OrderByDescending(r => r.Variables.Count()))
+                foreach (SparqlResult result in Results.OrderByDescending(r => r.Variables.Count()))
                 {
                     if (result.IsGroundResult)
                     {
@@ -400,7 +398,7 @@ namespace VDS.RDF.Query
 
                 // If all the Results were ground results and we've emptied all the Results from the other Result Set
                 // then we were equal
-                if (this.Count == grCount && otherResults.Count == 0) return true;
+                if (Count == grCount && otherResults.Count == 0) return true;
 
                 // If the Other Results still contains Ground Results we're not equal
                 if (otherResults.Any(r => r.IsGroundResult)) return false;
@@ -408,7 +406,7 @@ namespace VDS.RDF.Query
                 // Create Graphs of the two sets of non-Ground Results
                 SparqlResultSet local = new SparqlResultSet();
                 SparqlResultSet other = new SparqlResultSet();
-                foreach (String var in this._variables)
+                foreach (String var in _variables)
                 {
                     local.AddVariable(var);
                     other.AddVariable(var);
@@ -444,7 +442,7 @@ namespace VDS.RDF.Query
         /// </remarks>
         public BaseTripleCollection ToTripleCollection(IGraph g)
         {
-            return this.ToTripleCollection(g, "s", "p", "o");
+            return ToTripleCollection(g, "s", "p", "o");
         }
 
         /// <summary>
@@ -462,7 +460,7 @@ namespace VDS.RDF.Query
         {
             BaseTripleCollection tripleCollection = new TreeIndexedTripleCollection();
 
-            foreach (SparqlResult r in this.Results)
+            foreach (SparqlResult r in Results)
             {
                 // Must have values available for all three variables
                 if (r.HasValue(subjVar) && r.HasValue(predVar) && r.HasValue(objVar))
@@ -483,9 +481,9 @@ namespace VDS.RDF.Query
         /// </summary>
         public void Dispose()
         {
-            this._results.Clear();
-            this._variables.Clear();
-            this._result = false;
+            _results.Clear();
+            _variables.Clear();
+            _result = false;
         }
 
 #if !NETCORE
@@ -499,9 +497,9 @@ namespace VDS.RDF.Query
         /// <param name="context">Streaming Context</param>
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("type", this._type);
-            info.AddValue("variables", this._variables);
-            info.AddValue("results", this._results);
+            info.AddValue("type", _type);
+            info.AddValue("variables", _variables);
+            info.AddValue("results", _results);
         }
 
         /// <summary>
@@ -519,17 +517,17 @@ namespace VDS.RDF.Query
         /// <param name="writer">XML Writer</param>
         public void WriteXml(XmlWriter writer)
         {
-            switch (this._type)
+            switch (_type)
             {
                 case SparqlResultsType.Boolean:
                     writer.WriteStartElement("boolean");
-                    writer.WriteValue(this._result);
+                    writer.WriteValue(_result);
                     writer.WriteEndElement();
                     break;
 
                 case SparqlResultsType.VariableBindings:
                     writer.WriteStartElement("variables");
-                    foreach (String var in this._variables)
+                    foreach (String var in _variables)
                     {
                         writer.WriteStartElement("variable");
                         writer.WriteValue(var);
@@ -537,7 +535,7 @@ namespace VDS.RDF.Query
                     }
                     writer.WriteEndElement();
                     writer.WriteStartElement("results");
-                    foreach (SparqlResult r in this._results)
+                    foreach (SparqlResult r in _results)
                     {
                         r.SerializeResult(writer);
                     }
@@ -559,17 +557,17 @@ namespace VDS.RDF.Query
             switch (reader.Name)
             {
                 case "boolean":
-                    this._type = SparqlResultsType.Boolean;
-                    this._result = reader.ReadElementContentAsBoolean();
+                    _type = SparqlResultsType.Boolean;
+                    _result = reader.ReadElementContentAsBoolean();
                     break;
 
                 case "variables":
-                    this._type = SparqlResultsType.VariableBindings;
-                    this._result = true;
+                    _type = SparqlResultsType.VariableBindings;
+                    _result = true;
                     reader.Read();
                     while (reader.Name.Equals("variable"))
                     {
-                        this._variables.Add(reader.ReadElementContentAsString());
+                        _variables.Add(reader.ReadElementContentAsString());
                     }
                     reader.Read();
                     if (reader.Name.Equals("results"))
@@ -577,7 +575,7 @@ namespace VDS.RDF.Query
                         reader.Read();
                         while (reader.Name.Equals("result"))
                         {
-                            this._results.Add(reader.DeserializeResult());
+                            _results.Add(reader.DeserializeResult());
                         }
                     }
                     else

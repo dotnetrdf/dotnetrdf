@@ -157,7 +157,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static void Load(IGraph g, Uri u)
         {
-            UriLoader.Load(g, u, null);
+            Load(g, u, null);
         }
 
         /// <summary>
@@ -206,7 +206,7 @@ namespace VDS.RDF.Parsing
             // Set Base Uri if necessary
             if (g.BaseUri == null && g.IsEmpty) g.BaseUri = u;
 
-            UriLoader.Load(new GraphHandler(g), u, parser);
+            Load(new GraphHandler(g), u, parser);
         }
 
         /// <summary>
@@ -227,7 +227,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static void Load(IRdfHandler handler, Uri u)
         {
-            UriLoader.Load(handler, u, (IRdfReader)null);
+            Load(handler, u, (IRdfReader)null);
         }
 
         /// <summary>
@@ -303,7 +303,7 @@ namespace VDS.RDF.Parsing
                                 // If we get an Exception we failed to access the file successfully
                                 _cache.RemoveETag(u);
                                 _cache.RemoveLocalCopy(u);
-                                UriLoader.Load(handler, u, parser);
+                                Load(handler, u, parser);
                             }
                             return;
                         }
@@ -374,7 +374,7 @@ namespace VDS.RDF.Parsing
                                         // If we get an Exception we failed to access the file successfully
                                         _cache.RemoveETag(u);
                                         _cache.RemoveLocalCopy(u);
-                                        UriLoader.Load(handler, u, parser);
+                                        Load(handler, u, parser);
                                     }
                                     return;
                                 }
@@ -383,7 +383,7 @@ namespace VDS.RDF.Parsing
                                     // If the local copy didn't exist then we need to redo the response without
                                     // the ETag as we've lost the cached copy somehow
                                     _cache.RemoveETag(u);
-                                    UriLoader.Load(handler, u, parser);
+                                    Load(handler, u, parser);
                                     return;
                                 }
                             }
@@ -465,7 +465,7 @@ namespace VDS.RDF.Parsing
                                     // If we get an Exception we failed to access the file successfully
                                     _cache.RemoveETag(u);
                                     _cache.RemoveLocalCopy(u);
-                                    UriLoader.Load(handler, u, parser);
+                                    Load(handler, u, parser);
                                 }
                                 return;
                             }
@@ -474,7 +474,7 @@ namespace VDS.RDF.Parsing
                                 // If the local copy didn't exist then we need to redo the response without
                                 // the ETag as we've lost the cached copy somehow
                                 _cache.RemoveETag(u);
-                                UriLoader.Load(handler, u, parser);
+                                Load(handler, u, parser);
                                 return;
                             }
                         }
@@ -504,7 +504,7 @@ namespace VDS.RDF.Parsing
         {
             if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Triple Store");
             if (u == null) throw new RdfParseException("Cannot read a RDF dataset from a null URI");
-            UriLoader.Load(new StoreHandler(store), u, parser);
+            Load(new StoreHandler(store), u, parser);
         }
 
         /// <summary>
@@ -519,7 +519,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static void Load(ITripleStore store, Uri u)
         {
-            UriLoader.Load(store, u, null);
+            Load(store, u, null);
         }
 
         /// <summary>
@@ -659,7 +659,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static void LoadDataset(IRdfHandler handler, Uri u)
         {
-            UriLoader.Load(handler, u, (IStoreReader)null);
+            Load(handler, u, (IStoreReader)null);
         }
 
         #region Warning Events

@@ -64,13 +64,13 @@ namespace VDS.RDF.Update.Commands
         {
             get
             {
-                if (this._usingUris == null)
+                if (_usingUris == null)
                 {
                     return Enumerable.Empty<Uri>();
                 }
                 else
                 {
-                    return this._usingUris;
+                    return _usingUris;
                 }
             }
         }
@@ -82,13 +82,13 @@ namespace VDS.RDF.Update.Commands
         {
             get
             {
-                if (this._usingNamedUris == null)
+                if (_usingNamedUris == null)
                 {
                     return Enumerable.Empty<Uri>();
                 }
                 else
                 {
-                    return this._usingNamedUris;
+                    return _usingNamedUris;
                 }
             }
         }
@@ -100,11 +100,11 @@ namespace VDS.RDF.Update.Commands
         {
             get
             {
-                return this._graphUri;
+                return _graphUri;
             }
             internal set
             {
-                this._graphUri = value;
+                _graphUri = value;
             }
         }
 
@@ -114,8 +114,8 @@ namespace VDS.RDF.Update.Commands
         /// <param name="u">URI</param>
         public void AddUsingUri(Uri u)
         {
-            if (this._usingUris == null) this._usingUris = new List<Uri>();
-            this._usingUris.Add(u);
+            if (_usingUris == null) _usingUris = new List<Uri>();
+            _usingUris.Add(u);
         }
 
         /// <summary>
@@ -124,8 +124,8 @@ namespace VDS.RDF.Update.Commands
         /// <param name="u">URI</param>
         public void AddUsingNamedUri(Uri u)
         {
-            if (this._usingNamedUris == null) this._usingNamedUris = new List<Uri>();
-            this._usingNamedUris.Add(u);
+            if (_usingNamedUris == null) _usingNamedUris = new List<Uri>();
+            _usingNamedUris.Add(u);
         }
 
         /// <summary>

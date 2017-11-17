@@ -149,7 +149,7 @@ namespace VDS.RDF.Query.Expressions
                                              NumericMax,
                                              NumericMin,
                                              Mode,
-                                             Median
+                                             Median,
                                          };
 
 
@@ -171,14 +171,14 @@ namespace VDS.RDF.Query.Expressions
             }
 
             String func = u.ToString();
-            if (func.StartsWith(LeviathanFunctionFactory.LeviathanFunctionsNamespace))
+            if (func.StartsWith(LeviathanFunctionsNamespace))
             {
-                func = func.Substring(LeviathanFunctionFactory.LeviathanFunctionsNamespace.Length);
+                func = func.Substring(LeviathanFunctionsNamespace.Length);
                 ISparqlExpression lvnFunc = null;
 
                 switch (func)
                 {
-                    case LeviathanFunctionFactory.All:
+                    case All:
                         if (args.Count == 1)
                         {
                             lvnFunc = new AggregateTerm(new AllAggregate(args.First()));
@@ -192,7 +192,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for Leviathan all() aggregate");
                         }
                         break;
-                    case LeviathanFunctionFactory.Any:
+                    case Any:
                         if (args.Count == 1)
                         {
                             lvnFunc = new AggregateTerm(new AnyAggregate(args.First()));
@@ -206,7 +206,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for Leviathan any() aggregate");
                         }
                         break;
-                    case LeviathanFunctionFactory.Cartesian:
+                    case Cartesian:
                         if (args.Count == 4)
                         {
                             lvnFunc = new CartesianFunction(args[0], args[1], args[2], args[3]);
@@ -220,7 +220,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for Leviathan cartesian() function");
                         }
                         break;
-                    case LeviathanFunctionFactory.Cube:
+                    case Cube:
                         if (args.Count == 1)
                         {
                             lvnFunc = new CubeFunction(args.First());
@@ -230,7 +230,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan cube() function");
                         }
                         break;
-                    case LeviathanFunctionFactory.DegreesToRadians:
+                    case DegreesToRadians:
                         if (args.Count == 1)
                         {
                             lvnFunc = new DegreesToRadiansFunction(args.First());
@@ -240,7 +240,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan degrees-to-radians() function");
                         }
                         break;
-                    case LeviathanFunctionFactory.E:
+                    case E:
                         if (args.Count == 1)
                         {
                             lvnFunc = new EFunction(args.First());
@@ -250,7 +250,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan e() function");
                         }
                         break;
-                    case LeviathanFunctionFactory.Factorial:
+                    case Factorial:
                         if (args.Count == 1)
                         {
                             lvnFunc = new FactorialFunction(args.First());
@@ -260,7 +260,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan factorial() function");
                         }
                         break;
-                    case LeviathanFunctionFactory.Ln:
+                    case Ln:
                         if (args.Count == 1)
                         {
                             lvnFunc = new LeviathanNaturalLogFunction(args.First());
@@ -270,7 +270,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan ln() function");
                         }
                         break;
-                    case LeviathanFunctionFactory.Log:
+                    case Log:
                         if (args.Count == 1)
                         {
                             lvnFunc = new LogFunction(args.First());
@@ -284,7 +284,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan log() function");
                         }
                         break;
-                    case LeviathanFunctionFactory.MD5Hash:
+                    case MD5Hash:
                         if (args.Count == 1)
                         {
                             lvnFunc = new MD5HashFunction(args.First());
@@ -294,7 +294,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan md5hash() function");
                         }
                         break;
-                    case LeviathanFunctionFactory.Median:
+                    case Median:
                         if (args.Count == 1)
                         {
                             lvnFunc = new AggregateTerm(new MedianAggregate(args.First()));
@@ -308,7 +308,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan median() aggregate");
                         }
                         break;
-                    case LeviathanFunctionFactory.Mode:
+                    case Mode:
                         if (args.Count == 1)
                         {
                             lvnFunc = new AggregateTerm(new ModeAggregate(args.First()));
@@ -322,7 +322,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan mode() aggregate");
                         }
                         break;
-                    case LeviathanFunctionFactory.None:
+                    case None:
                         if (args.Count == 1)
                         {
                             lvnFunc = new AggregateTerm(new NoneAggregate(args.First()));
@@ -336,7 +336,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan none() aggregate");
                         }
                         break;
-                    case LeviathanFunctionFactory.NumericMax:
+                    case NumericMax:
                         if (args.Count == 1)
                         {
                             lvnFunc = new AggregateTerm(new NumericMaxAggregate(args.First()));
@@ -350,7 +350,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan nmax() aggregate");
                         }
                         break;
-                    case LeviathanFunctionFactory.NumericMin:
+                    case NumericMin:
                         if (args.Count == 1)
                         {
                             lvnFunc = new AggregateTerm(new NumericMinAggregate(args.First()));
@@ -364,7 +364,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan nmin() aggregate");
                         }
                         break;
-                    case LeviathanFunctionFactory.Power:
+                    case Power:
                         if (args.Count == 1)
                         {
                             lvnFunc = new SquareFunction(args.First());
@@ -378,7 +378,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan pow() function");
                         }
                         break;
-                    case LeviathanFunctionFactory.Pythagoras:
+                    case Pythagoras:
                         if (args.Count == 2)
                         {
                             lvnFunc = new PythagoreanDistanceFunction(args.First(), args.Last());
@@ -388,7 +388,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan pythagoras() function");
                         }
                         break;
-                    case LeviathanFunctionFactory.RadiansToDegrees:
+                    case RadiansToDegrees:
                         if (args.Count == 1)
                         {
                             lvnFunc = new RadiansToDegreesFunction(args.First());
@@ -398,7 +398,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan radians-to-degrees() function");
                         }
                         break;
-                    case LeviathanFunctionFactory.Random:
+                    case Random:
                         if (args.Count == 0)
                         {
                             lvnFunc = new RandomFunction();
@@ -416,7 +416,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan rnd() function");
                         }
                         break;
-                    case LeviathanFunctionFactory.Reciprocal:
+                    case Reciprocal:
                         if (args.Count == 1)
                         {
                             lvnFunc = new ReciprocalFunction(args.First());
@@ -426,7 +426,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan reciprocal() function");
                         }
                         break;
-                    case LeviathanFunctionFactory.Root:
+                    case Root:
                         if (args.Count == 1)
                         {
                             lvnFunc = new SquareRootFunction(args.First());
@@ -440,7 +440,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan root() function");
                         }
                         break;
-                    case LeviathanFunctionFactory.Sha256Hash:
+                    case Sha256Hash:
                         if (args.Count == 1)
                         {
                             lvnFunc = new Sha256HashFunction(args.First());
@@ -450,7 +450,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan sha256hash() function");
                         }
                         break;
-                    case LeviathanFunctionFactory.Square:
+                    case Square:
                         if (args.Count == 1)
                         {
                             lvnFunc = new SquareFunction(args.First());
@@ -460,7 +460,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan sq() function");
                         }
                         break;
-                    case LeviathanFunctionFactory.SquareRoot:
+                    case SquareRoot:
                         if (args.Count == 1)
                         {
                             lvnFunc = new SquareRootFunction(args.First());
@@ -470,7 +470,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan sqrt() function");
                         }
                         break;
-                    case LeviathanFunctionFactory.Ten:
+                    case Ten:
                         if (args.Count == 1)
                         {
                             lvnFunc = new TenFunction(args.First());
@@ -480,66 +480,66 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan ten() function");
                         }
                         break;
-                    case LeviathanFunctionFactory.TrigCos:
-                    case LeviathanFunctionFactory.TrigCosInv:
+                    case TrigCos:
+                    case TrigCosInv:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new CosineFunction(args.First(), func.Equals(LeviathanFunctionFactory.TrigCosInv));
+                            lvnFunc = new CosineFunction(args.First(), func.Equals(TrigCosInv));
                         }
                         else
                         {
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan " + func + "() function");
                         }
                         break;
-                    case LeviathanFunctionFactory.TrigCosec:
-                    case LeviathanFunctionFactory.TrigCosecInv:
+                    case TrigCosec:
+                    case TrigCosecInv:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new CosecantFunction(args.First(), func.Equals(LeviathanFunctionFactory.TrigCosecInv));
+                            lvnFunc = new CosecantFunction(args.First(), func.Equals(TrigCosecInv));
                         }
                         else
                         {
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan " + func + "() function");
                         }
                         break;
-                    case LeviathanFunctionFactory.TrigCotan:
-                    case LeviathanFunctionFactory.TrigCotanInv:
+                    case TrigCotan:
+                    case TrigCotanInv:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new CotangentFunction(args.First(), func.Equals(LeviathanFunctionFactory.TrigCotanInv));
+                            lvnFunc = new CotangentFunction(args.First(), func.Equals(TrigCotanInv));
                         }
                         else
                         {
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan " + func + "() function");
                         }
                         break;
-                    case LeviathanFunctionFactory.TrigSec:
-                    case LeviathanFunctionFactory.TrigSecInv:
+                    case TrigSec:
+                    case TrigSecInv:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new SecantFunction(args.First(), func.Equals(LeviathanFunctionFactory.TrigSecInv));
+                            lvnFunc = new SecantFunction(args.First(), func.Equals(TrigSecInv));
                         }
                         else
                         {
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan " + func + "() function");
                         }
                         break;
-                    case LeviathanFunctionFactory.TrigSin:
-                    case LeviathanFunctionFactory.TrigSinInv:
+                    case TrigSin:
+                    case TrigSinInv:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new SineFunction(args.First(), func.Equals(LeviathanFunctionFactory.TrigSinInv));
+                            lvnFunc = new SineFunction(args.First(), func.Equals(TrigSinInv));
                         }
                         else
                         {
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan " + func + "() function");
                         }
                         break;
-                    case LeviathanFunctionFactory.TrigTan:
-                    case LeviathanFunctionFactory.TrigTanInv:
+                    case TrigTan:
+                    case TrigTanInv:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new TangentFunction(args.First(), func.Equals(LeviathanFunctionFactory.TrigTanInv));
+                            lvnFunc = new TangentFunction(args.First(), func.Equals(TrigTanInv));
                         }
                         else
                         {

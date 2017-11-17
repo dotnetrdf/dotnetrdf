@@ -57,7 +57,7 @@ namespace VDS.RDF.Update.Commands
         public BaseTransferCommand(SparqlUpdateCommandType type, Uri sourceUri, Uri destUri, bool silent)
             : this(type, sourceUri, destUri)
         {
-            this._silent = silent;
+            _silent = silent;
         }
 
         /// <summary>
@@ -69,8 +69,8 @@ namespace VDS.RDF.Update.Commands
         public BaseTransferCommand(SparqlUpdateCommandType type, Uri sourceUri, Uri destUri)
             : base(type)
         {
-            this._sourceUri = sourceUri;
-            this._destUri = destUri;
+            _sourceUri = sourceUri;
+            _destUri = destUri;
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace VDS.RDF.Update.Commands
         {
             get
             {
-                return this._sourceUri;
+                return _sourceUri;
             }
         }
 
@@ -91,7 +91,7 @@ namespace VDS.RDF.Update.Commands
         {
             get
             {
-                return this._destUri;
+                return _destUri;
             }
         }
 
@@ -102,7 +102,7 @@ namespace VDS.RDF.Update.Commands
         {
             get
             {
-                return this._silent;
+                return _silent;
             }
         }
 
@@ -126,11 +126,11 @@ namespace VDS.RDF.Update.Commands
         {
             if (graphUri == null)
             {
-                return (this._destUri == null || this._sourceUri == null);
+                return (_destUri == null || _sourceUri == null);
             }
             else
             {
-                return graphUri.AbsoluteUri.Equals(this._sourceUri.ToSafeString()) || graphUri.AbsoluteUri.Equals(this._destUri.ToSafeString());
+                return graphUri.AbsoluteUri.Equals(_sourceUri.ToSafeString()) || graphUri.AbsoluteUri.Equals(_destUri.ToSafeString());
             }
         }
 
@@ -141,7 +141,7 @@ namespace VDS.RDF.Update.Commands
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            switch (this.CommandType)
+            switch (CommandType)
             {
                 case SparqlUpdateCommandType.Add:
                     output.Append("ADD");
@@ -156,24 +156,24 @@ namespace VDS.RDF.Update.Commands
                     throw new RdfException("Cannot display the String for this Transfer command as it is not one of the valid transfer commands (ADD/COPY/MOVE)");
             }
 
-            if (this._silent) output.Append(" SILENT");
+            if (_silent) output.Append(" SILENT");
 
-            if (this._sourceUri == null)
+            if (_sourceUri == null)
             {
                 output.Append(" DEFAULT");
             }
             else
             {
-                output.Append(" GRAPH <" + this._sourceUri.AbsoluteUri.Replace(">", "\\>") + ">");
+                output.Append(" GRAPH <" + _sourceUri.AbsoluteUri.Replace(">", "\\>") + ">");
             }
             output.Append(" TO ");
-            if (this._destUri == null)
+            if (_destUri == null)
             {
                 output.Append(" DEFAULT");
             }
             else
             {
-                output.Append(" GRAPH <" + this._destUri.AbsoluteUri.Replace(">", "\\>") + ">");
+                output.Append(" GRAPH <" + _destUri.AbsoluteUri.Replace(">", "\\>") + ">");
             }
 
             return output.ToString();

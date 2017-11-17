@@ -49,13 +49,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         internal PredictService(String serviceName, JObject obj)
             : base(serviceName, obj)
         {
-            if (!this.Endpoint.Uri.EndsWith("predict/"))
+            if (!Endpoint.Uri.EndsWith("predict/"))
             {
-                this._predictUri = this.Endpoint.Uri.Substring(0, this.Endpoint.Uri.IndexOf("predict/") + 8);
+                _predictUri = Endpoint.Uri.Substring(0, Endpoint.Uri.IndexOf("predict/") + 8);
             }
             else
             {
-                this._predictUri = this.Endpoint.Uri;
+                _predictUri = Endpoint.Uri;
             }
         }
 
@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <returns></returns>
         public List<INode> Predict(String individual, String property)
         {
-            IGraph g = this.PredictRaw(individual, property);
+            IGraph g = PredictRaw(individual, property);
 
             List<INode> predictions = (from t in g.Triples
                                        select t.Object).Distinct().ToList();
@@ -83,11 +83,11 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <returns></returns>
         public IGraph PredictRaw(String individual, String property)
         {
-            String requestUri = this._predictUri + individual + "/" + property;
+            String requestUri = _predictUri + individual + "/" + property;
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
-            request.Method = this.Endpoint.HttpMethods.First();
-            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes.Where(t => !t.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
+            request.Method = Endpoint.HttpMethods.First();
+            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypes.Where(t => !t.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
 
             Tools.HttpDebugRequest(request);
 
@@ -124,7 +124,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// </remarks>
         public void Predict(String individual, String property, NodeListCallback callback, Object state)
         {
-            this.PredictRaw(individual, property, (g, s) =>
+            PredictRaw(individual, property, (g, s) =>
                 {
                     if (s is AsyncError)
                     {
@@ -152,11 +152,11 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// </remarks>
         public void PredictRaw(String individual, String property, GraphCallback callback, Object state)
         {
-            String requestUri = this._predictUri + individual + "/" + property;
+            String requestUri = _predictUri + individual + "/" + property;
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
-            request.Method = this.Endpoint.HttpMethods.First();
-            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes.Where(t => !t.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
+            request.Method = Endpoint.HttpMethods.First();
+            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypes.Where(t => !t.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
 
             Tools.HttpDebugRequest(request);
 

@@ -50,7 +50,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         protected override void StartResultsInternal()
         {
-            this._counter = 0;
+            _counter = 0;
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="result">Result</param>
         protected override void HandleBooleanResultInternal(bool result)
         {
-            this._counter = result ? 1 : 0;
+            _counter = result ? 1 : 0;
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleResultInternal(SparqlResult result)
         {
-            this._counter++;
+            _counter++;
             return true;
         }
 
@@ -93,7 +93,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             get
             {
-                return this._counter;
+                return _counter;
             }
         }
     }

@@ -164,22 +164,21 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Creates a new SPARQL Query
         /// </summary>
-        protected internal SparqlQuery()
+        internal SparqlQuery()
         {
-            this._vars = new List<SparqlVariable>();
-            this._nsmapper = new NamespaceMapper(true);
-            this._defaultGraphs = new List<Uri>();
-            this._namedGraphs = new List<Uri>();
+            _vars = new List<SparqlVariable>();
+            _nsmapper = new NamespaceMapper(true);
+            _defaultGraphs = new List<Uri>();
+            _namedGraphs = new List<Uri>();
         }
 
         /// <summary>
         /// Creates a new SPARQL Query
         /// </summary>
         /// <param name="subquery">Whether the Query is a Sub-query</param>
-        protected internal SparqlQuery(bool subquery)
-            : this()
+        internal SparqlQuery(bool subquery): this()
         {
-            this._subquery = subquery;
+            _subquery = subquery;
         }
 
         /// <summary>
@@ -189,30 +188,30 @@ namespace VDS.RDF.Query
         public SparqlQuery Copy()
         {
             SparqlQuery q = new SparqlQuery();
-            q._baseUri = this._baseUri;
-            q._defaultGraphs = new List<Uri>(this._defaultGraphs);
-            q._namedGraphs = new List<Uri>(this._namedGraphs);
-            q._nsmapper = new NamespaceMapper(this._nsmapper);
-            q._type = this._type;
-            q._specialType = this._specialType;
-            q._vars = new List<SparqlVariable>(this._vars);
-            q._describeVars = new List<IToken>(this._describeVars);
-            if(this._rootGraphPattern != null)
-                q._rootGraphPattern = new GraphPattern(this._rootGraphPattern);
-            q._orderBy = this._orderBy;
-            q._groupBy = this._groupBy;
-            q._having = this._having;
-            q._constructTemplate = this._constructTemplate;
-            q._bindings = this._bindings;
-            q._limit = this._limit;
-            q._offset = this._offset;
-            q._timeout = this._timeout;
-            q._partialResultsOnTimeout = this._partialResultsOnTimeout;
-            q._optimised = this._optimised;
-            q._describer = this._describer;
-            q._optimisers = new List<IAlgebraOptimiser>(this._optimisers);
-            q._exprFactories = new List<ISparqlCustomExpressionFactory>(this._exprFactories);
-            q._propFuncFactories = new List<IPropertyFunctionFactory>(this._propFuncFactories);
+            q._baseUri = _baseUri;
+            q._defaultGraphs = new List<Uri>(_defaultGraphs);
+            q._namedGraphs = new List<Uri>(_namedGraphs);
+            q._nsmapper = new NamespaceMapper(_nsmapper);
+            q._type = _type;
+            q._specialType = _specialType;
+            q._vars = new List<SparqlVariable>(_vars);
+            q._describeVars = new List<IToken>(_describeVars);
+            if(_rootGraphPattern != null)
+                q._rootGraphPattern = new GraphPattern(_rootGraphPattern);
+            q._orderBy = _orderBy;
+            q._groupBy = _groupBy;
+            q._having = _having;
+            q._constructTemplate = _constructTemplate;
+            q._bindings = _bindings;
+            q._limit = _limit;
+            q._offset = _offset;
+            q._timeout = _timeout;
+            q._partialResultsOnTimeout = _partialResultsOnTimeout;
+            q._optimised = _optimised;
+            q._describer = _describer;
+            q._optimisers = new List<IAlgebraOptimiser>(_optimisers);
+            q._exprFactories = new List<ISparqlCustomExpressionFactory>(_exprFactories);
+            q._propFuncFactories = new List<IPropertyFunctionFactory>(_propFuncFactories);
             return q;
         }
 
@@ -223,13 +222,10 @@ namespace VDS.RDF.Query
         /// </summary>
         public NamespaceMapper NamespaceMap
         {
-            get
-            {
-                return this._nsmapper;
-            }
+            get => _nsmapper;
             internal set
             {
-                if (value != null) this._nsmapper = value;
+                if (value != null) _nsmapper = value;
             }
         }
 
@@ -238,75 +234,39 @@ namespace VDS.RDF.Query
         /// </summary>
         public Uri BaseUri
         {
-            get
-            {
-                return this._baseUri;
-            }
-            set
-            {
-                this._baseUri = value;
-            }
+            get => _baseUri;
+            set => _baseUri = value;
         }
 
         /// <summary>
         /// Gets the Default Graph URIs for the Query
         /// </summary>
-        public IEnumerable<Uri> DefaultGraphs
-        {
-            get
-            {
-                return (from u in this._defaultGraphs
-                        select u);
-            }
-        }
+        public IEnumerable<Uri> DefaultGraphs => (from u in _defaultGraphs
+            select u);
 
         /// <summary>
         /// Gets the Named Graph URIs for the Query
         /// </summary>
-        public IEnumerable<Uri> NamedGraphs
-        {
-            get
-            {
-                return (from u in this._namedGraphs
-                        select u);
-            }
-        }
+        public IEnumerable<Uri> NamedGraphs => (from u in _namedGraphs
+            select u);
 
         /// <summary>
         /// Gets the Variables used in the Query
         /// </summary>
-        public IEnumerable<SparqlVariable> Variables
-        {
-            get
-            {
-                return this._vars;
-            }
-        }
+        public IEnumerable<SparqlVariable> Variables => _vars;
 
         /// <summary>
         /// Gets the Variables, QNames and URIs used in the Describe Query
         /// </summary>
-        public IEnumerable<IToken> DescribeVariables
-        {
-            get
-            {
-                return (from t in this._describeVars select t);
-            }
-        }
+        public IEnumerable<IToken> DescribeVariables => (from t in _describeVars select t);
 
         /// <summary>
         /// Gets the type of the Query
         /// </summary>
         public SparqlQueryType QueryType
         {
-            get
-            {
-                return this._type;
-            }
-            internal set
-            {
-                this._type = value;
-            }
+            get => _type;
+            internal set => _type = value;
         }
 
         /// <summary>
@@ -316,51 +276,51 @@ namespace VDS.RDF.Query
         {
             get
             {
-                if (this._specialType == SparqlSpecialQueryType.Unknown)
+                if (_specialType == SparqlSpecialQueryType.Unknown)
                 {
                     // Try and detect if Special Optimisations are possible
-                    if (this._rootGraphPattern != null)
+                    if (_rootGraphPattern != null)
                     {
-                        if (this._type == SparqlQueryType.Ask)
+                        if (_type == SparqlQueryType.Ask)
                         {
-                            if (this._rootGraphPattern.ChildGraphPatterns.Count == 0 &&
-                                this._rootGraphPattern.TriplePatterns.Count == 1 &&
-                                this._rootGraphPattern.TriplePatterns[0].IsAcceptAll &&
-                                !this._rootGraphPattern.IsFiltered)
+                            if (_rootGraphPattern.ChildGraphPatterns.Count == 0 &&
+                                _rootGraphPattern.TriplePatterns.Count == 1 &&
+                                _rootGraphPattern.TriplePatterns[0].IsAcceptAll &&
+                                !_rootGraphPattern.IsFiltered)
                             {
-                                this._specialType = SparqlSpecialQueryType.AskAnyTriples;
+                                _specialType = SparqlSpecialQueryType.AskAnyTriples;
                             }
                         }
-                        else if (this._type == SparqlQueryType.SelectDistinct)
+                        else if (_type == SparqlQueryType.SelectDistinct)
                         {
-                            if (this._defaultGraphs.Count == 0 &&
-                                this._namedGraphs.Count == 0 &&
-                                this._rootGraphPattern.TriplePatterns.Count == 0 &&
-                                this._rootGraphPattern.ChildGraphPatterns.Count == 1 &&
-                                this._rootGraphPattern.ChildGraphPatterns[0].TriplePatterns.Count == 1 &&
-                                this._rootGraphPattern.ChildGraphPatterns[0].IsGraph &&
-                                !this._rootGraphPattern.ChildGraphPatterns[0].IsFiltered &&
-                                this._rootGraphPattern.ChildGraphPatterns[0].GraphSpecifier.TokenType == Token.VARIABLE &&
-                                this._rootGraphPattern.ChildGraphPatterns[0].TriplePatterns[0].IsAcceptAll &&
-                                this._vars[0].IsResultVariable && 
-                                this._rootGraphPattern.ChildGraphPatterns[0].GraphSpecifier.Value.Substring(1).Equals(this._vars[0].Name) &&
-                                this._vars.Count(v => v.IsResultVariable) == 1)
+                            if (_defaultGraphs.Count == 0 &&
+                                _namedGraphs.Count == 0 &&
+                                _rootGraphPattern.TriplePatterns.Count == 0 &&
+                                _rootGraphPattern.ChildGraphPatterns.Count == 1 &&
+                                _rootGraphPattern.ChildGraphPatterns[0].TriplePatterns.Count == 1 &&
+                                _rootGraphPattern.ChildGraphPatterns[0].IsGraph &&
+                                !_rootGraphPattern.ChildGraphPatterns[0].IsFiltered &&
+                                _rootGraphPattern.ChildGraphPatterns[0].GraphSpecifier.TokenType == Token.VARIABLE &&
+                                _rootGraphPattern.ChildGraphPatterns[0].TriplePatterns[0].IsAcceptAll &&
+                                _vars[0].IsResultVariable && 
+                                _rootGraphPattern.ChildGraphPatterns[0].GraphSpecifier.Value.Substring(1).Equals(_vars[0].Name) &&
+                                _vars.Count(v => v.IsResultVariable) == 1)
                             {
-                                this._specialType = SparqlSpecialQueryType.DistinctGraphs;
+                                _specialType = SparqlSpecialQueryType.DistinctGraphs;
                             }
                         }
                         else
                         {
-                            this._specialType = SparqlSpecialQueryType.NotApplicable;
+                            _specialType = SparqlSpecialQueryType.NotApplicable;
                         }
                     }
                     else
                     {
-                        this._specialType =  SparqlSpecialQueryType.NotApplicable;
+                        _specialType =  SparqlSpecialQueryType.NotApplicable;
                     }
                 }
 
-                return this._specialType;
+                return _specialType;
             }
         }
 
@@ -369,14 +329,8 @@ namespace VDS.RDF.Query
         /// </summary>
         public GraphPattern RootGraphPattern
         {
-            get
-            {
-                return this._rootGraphPattern;
-            }
-            internal set
-            {
-                this._rootGraphPattern = value;
-            }
+            get => _rootGraphPattern;
+            internal set => _rootGraphPattern = value;
         }
 
         /// <summary>
@@ -384,14 +338,8 @@ namespace VDS.RDF.Query
         /// </summary>
         public GraphPattern ConstructTemplate
         {
-            get
-            {
-                return this._constructTemplate;
-            }
-            internal set
-            {
-                this._constructTemplate = value;
-            }
+            get => _constructTemplate;
+            internal set => _constructTemplate = value;
         }
 
         /// <summary>
@@ -399,14 +347,11 @@ namespace VDS.RDF.Query
         /// </summary>
         public ISparqlOrderBy OrderBy
         {
-            get
-            {
-                return this._orderBy;
-            }
+            get => _orderBy;
             internal set
             {
-                this._orderBy = value;
-                this._optimisableOrdering = null; //When ORDER BY gets set reset whether the Ordering is optimisable
+                _orderBy = value;
+                _optimisableOrdering = null; //When ORDER BY gets set reset whether the Ordering is optimisable
             }
         }
 
@@ -415,14 +360,8 @@ namespace VDS.RDF.Query
         /// </summary>
         public ISparqlGroupBy GroupBy
         {
-            get
-            {
-                return this._groupBy;
-            }
-            internal set
-            {
-                this._groupBy = value;
-            }
+            get => _groupBy;
+            internal set => _groupBy = value;
         }
 
         /// <summary>
@@ -430,14 +369,8 @@ namespace VDS.RDF.Query
         /// </summary>
         public ISparqlFilter Having
         {
-            get
-            {
-                return this._having;
-            }
-            internal set
-            {
-                this._having = value;
-            }
+            get => _having;
+            internal set => _having = value;
         }
 
         /// <summary>
@@ -445,14 +378,8 @@ namespace VDS.RDF.Query
         /// </summary>
         public BindingsPattern Bindings
         {
-            get
-            {
-                return this._bindings;
-            }
-            internal set
-            {
-                this._bindings = value;
-            }
+            get => _bindings;
+            internal set => _bindings = value;
         }
 
         /// <summary>
@@ -465,16 +392,13 @@ namespace VDS.RDF.Query
         {
             get
             {
-                if (this._describer == null)
+                if (_describer == null)
                 {
-                    this._describer = new ConciseBoundedDescription();
+                    _describer = new ConciseBoundedDescription();
                 }
-                return this._describer;
+                return _describer;
             }
-            set
-            {
-                this._describer = value;
-            }
+            set => _describer = value;
         }
 
         /// <summary>
@@ -482,19 +406,16 @@ namespace VDS.RDF.Query
         /// </summary>
         public IEnumerable<IAlgebraOptimiser> AlgebraOptimisers
         {
-            get
-            {
-                return this._optimisers;
-            }
+            get => _optimisers;
             set
             {
                 if (value != null)
                 {
-                    this._optimisers = value;
+                    _optimisers = value;
                 }
                 else
                 {
-                    this._optimisers = Enumerable.Empty<IAlgebraOptimiser>();
+                    _optimisers = Enumerable.Empty<IAlgebraOptimiser>();
                 }
             }
         }
@@ -504,19 +425,16 @@ namespace VDS.RDF.Query
         /// </summary>
         public IEnumerable<ISparqlCustomExpressionFactory> ExpressionFactories
         {
-            get
-            {
-                return this._exprFactories;
-            }
+            get => _exprFactories;
             set
             {
                 if (value != null)
                 {
-                    this._exprFactories = value;
+                    _exprFactories = value;
                 }
                 else
                 {
-                    this._exprFactories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
+                    _exprFactories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
                 }
             }
         }
@@ -526,19 +444,16 @@ namespace VDS.RDF.Query
         /// </summary>
         public IEnumerable<IPropertyFunctionFactory> PropertyFunctionFactories
         {
-            get
-            {
-                return this._propFuncFactories;
-            }
+            get => _propFuncFactories;
             set
             {
                 if (value != null)
                 {
-                    this._propFuncFactories = value;
+                    _propFuncFactories = value;
                 }
                 else
                 {
-                    this._propFuncFactories = Enumerable.Empty<IPropertyFunctionFactory>();
+                    _propFuncFactories = Enumerable.Empty<IPropertyFunctionFactory>();
                 }
             }
         }
@@ -549,19 +464,16 @@ namespace VDS.RDF.Query
         /// <remarks>Values less than zero are counted as -1 which indicates no limit</remarks>
         public int Limit
         {
-            get
-            {
-                return this._limit;
-            }
+            get => _limit;
             set
             {
                 if (value > -1)
                 {
-                    this._limit = value;
+                    _limit = value;
                 }
                 else
                 {
-                    this._limit = -1;
+                    _limit = -1;
                 }
             }
         }
@@ -572,19 +484,16 @@ namespace VDS.RDF.Query
         /// <remarks>Values less than zero are treated as 0 which indicates no offset</remarks>
         public int Offset
         {
-            get
-            {
-                return this._offset;
-            }
+            get => _offset;
             set
             {
                 if (value > 0)
                 {
-                    this._offset = value;
+                    _offset = value;
                 }
                 else
                 {
-                    this._offset = 0;
+                    _offset = 0;
                 }
             }
         }
@@ -599,14 +508,8 @@ namespace VDS.RDF.Query
         /// </remarks>
         public long Timeout
         {
-            get
-            {
-                return this._timeout;
-            }
-            set
-            {
-                this._timeout = Math.Max(value, 0);
-            }
+            get => _timeout;
+            set => _timeout = Math.Max(value, 0);
         }
 
         /// <summary>
@@ -619,15 +522,8 @@ namespace VDS.RDF.Query
         /// </remarks>
         public bool PartialResultsOnTimeout
         {
-            get
-            {
-                return this._partialResultsOnTimeout;
-            }
-            set
-            {
-                this._partialResultsOnTimeout = value;
-
-            }
+            get => _partialResultsOnTimeout;
+            set => _partialResultsOnTimeout = value;
         }
 
         /// <summary>
@@ -638,16 +534,13 @@ namespace VDS.RDF.Query
         {
             get
             {
-                if (!this._executionTime.HasValue)
+                if (!_executionTime.HasValue)
                 {
                     throw new InvalidOperationException("Cannot inspect the Query Time as the Query has not yet been processed");
                 }
-                return this._executionTime;
+                return _executionTime;
             }
-            set
-            {
-                this._executionTime = value;
-            }
+            set => _executionTime = value;
         }
 
         /// <summary>
@@ -657,7 +550,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return SparqlSpecsHelper.IsSelectQuery(this._type) && this._vars.Any(v => v.IsResultVariable && v.IsAggregate);
+                return SparqlSpecsHelper.IsSelectQuery(_type) && _vars.Any(v => v.IsResultVariable && v.IsAggregate);
             }
         }
 
@@ -667,24 +560,12 @@ namespace VDS.RDF.Query
         /// <remarks>
         /// This only indicates that an Optimiser has been applied.  You can always reoptimise the query using a different optimiser by using the relevant overload of the <see cref="SparqlQuery.Optimise()">Optimise()</see> method.
         /// </remarks>
-        public bool IsOptimised
-        {
-            get
-            {
-                return this._optimised;
-            }
-        }
+        public bool IsOptimised => _optimised;
 
         /// <summary>
         /// Gets whether this Query is a Sub-Query in another Query
         /// </summary>
-        public bool IsSubQuery
-        {
-            get
-            {
-                return this._subquery;
-            }
-        }
+        public bool IsSubQuery => _subquery;
 
         /// <summary>
         /// Gets whether a Query has a DISTINCT modifier
@@ -693,7 +574,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                switch (this._type)
+                switch (_type)
                 {
                     case SparqlQueryType.SelectAllDistinct:
                     case SparqlQueryType.SelectDistinct:
@@ -707,26 +588,13 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Gets whether the Query has a Solution Modifier (a GROUP BY, HAVING, ORDER BY, LIMIT or OFFSET)
         /// </summary>
-        public bool HasSolutionModifier
-        {
-            get
-            {
-                return this._groupBy != null || this._having != null || this._orderBy != null || this._limit >= 0 || this._offset > 0;
-            }
-        }
+        public bool HasSolutionModifier => _groupBy != null || _having != null || _orderBy != null || _limit >= 0 || _offset > 0;
 
-        private int _virtualCount = -1;
-        public int VirtualCount
-        {
-            get
-            {
-                return this._virtualCount;
-            }
-            internal set
-            {
-                this._virtualCount = value;
-            }
-        }
+        /// <summary>
+        /// The number of results that would be returned without any limit clause to a query or -1 if not supported. Defaults to the same value as the Count member
+        /// </summary>
+        public int VirtualCount { get; internal set; } = -1;
+
         #endregion
 
         #region Methods for setting up the Query (used by SparqlQueryParser)
@@ -735,9 +603,9 @@ namespace VDS.RDF.Query
         /// Adds a Variable to the Query
         /// </summary>
         /// <param name="name">Variable Name</param>
-        protected internal void AddVariable(String name)
+        internal void AddVariable(String name)
         {
-            this.AddVariable(name, false);
+            AddVariable(name, false);
         }
 
         /// <summary>
@@ -745,14 +613,14 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="name">Variable Name</param>
         /// <param name="isResultVar">Does the Variable occur in the Output Result Set/Graph</param>
-        protected internal void AddVariable(String name, bool isResultVar)
+        internal void AddVariable(String name, bool isResultVar)
         {
             String var = name.Substring(1);
-            if ((int)this._type >= (int)SparqlQueryType.SelectAll) isResultVar = true;
+            if ((int)_type >= (int)SparqlQueryType.SelectAll) isResultVar = true;
 
-            if (!this._vars.Any(v => v.Name.Equals(var)))
+            if (!_vars.Any(v => v.Name.Equals(var)))
             {
-                this._vars.Add(new SparqlVariable(var, isResultVar));
+                _vars.Add(new SparqlVariable(var, isResultVar));
             }
         }
 
@@ -760,11 +628,11 @@ namespace VDS.RDF.Query
         /// Adds a Variable to the Query
         /// </summary>
         /// <param name="var">Variable</param>
-        protected internal void AddVariable(SparqlVariable var)
+        internal void AddVariable(SparqlVariable var)
         {
-            if (!this._vars.Any(v => v.Name.Equals(var)))
+            if (!_vars.Any(v => v.Name.Equals(var)))
             {
-                this._vars.Add(var);
+                _vars.Add(var);
             }
             else
             {
@@ -776,9 +644,9 @@ namespace VDS.RDF.Query
         /// Adds a Describe Variable to the Query
         /// </summary>
         /// <param name="var">Variable/Uri/QName Token</param>
-        protected internal void AddDescribeVariable(IToken var)
+        internal void AddDescribeVariable(IToken var)
         {
-            this._describeVars.Add(var);
+            _describeVars.Add(var);
         }
 
         /// <summary>
@@ -787,9 +655,9 @@ namespace VDS.RDF.Query
         /// <param name="u">Graph URI</param>
         public void AddDefaultGraph(Uri u)
         {
-            if (!this._defaultGraphs.Contains(u))
+            if (!_defaultGraphs.Contains(u))
             {
-                this._defaultGraphs.Add(u);
+                _defaultGraphs.Add(u);
             }
         }
 
@@ -799,9 +667,9 @@ namespace VDS.RDF.Query
         /// <param name="u">Graph URI</param>
         public void AddNamedGraph(Uri u)
         {
-            if (!this._namedGraphs.Contains(u))
+            if (!_namedGraphs.Contains(u))
             {
-                this._namedGraphs.Add(u);
+                _namedGraphs.Add(u);
             }
         }
 
@@ -810,7 +678,7 @@ namespace VDS.RDF.Query
         /// </summary>
         public void ClearDefaultGraphs()
         {
-            this._defaultGraphs.Clear();
+            _defaultGraphs.Clear();
         }
 
         /// <summary>
@@ -818,7 +686,7 @@ namespace VDS.RDF.Query
         /// </summary>
         public void ClearNamedGraphs()
         {
-            this._namedGraphs.Clear();
+            _namedGraphs.Clear();
         }
 
         #endregion
@@ -833,7 +701,7 @@ namespace VDS.RDF.Query
         [Obsolete("This method is considered obsolete, you should create an ISparqlQueryProcessor instance and invoke the ProcessQuery() method instead",true)]
         public Object Evaluate(IInMemoryQueryableStore data)
         {
-            return this.Evaluate(new InMemoryDataset(data));
+            return Evaluate(new InMemoryDataset(data));
         }
 
         /// <summary>
@@ -845,7 +713,7 @@ namespace VDS.RDF.Query
         [Obsolete("This method is considered obsolete, you should create an ISparqlQueryProcessor instance and invoke the ProcessQuery() method instead",true)]
         public void Evaluate(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, IInMemoryQueryableStore data)
         {
-            this.Evaluate(rdfHandler, resultsHandler, new InMemoryDataset(data));
+            Evaluate(rdfHandler, resultsHandler, new InMemoryDataset(data));
         }
 
         /// <summary>
@@ -890,7 +758,7 @@ namespace VDS.RDF.Query
         /// </summary>
         public void Optimise()
         {
-            this.Optimise(SparqlOptimiser.QueryOptimiser);
+            Optimise(SparqlOptimiser.QueryOptimiser);
         }
 
         /// <summary>
@@ -900,12 +768,12 @@ namespace VDS.RDF.Query
         public void Optimise(IQueryOptimiser optimiser)
         {
             if (optimiser == null) throw new ArgumentNullException("Cannot optimise a Query using a null optimiser");
-            if (this._rootGraphPattern != null)
+            if (_rootGraphPattern != null)
             {
-                optimiser.Optimise(this._rootGraphPattern, Enumerable.Empty<String>());
+                optimiser.Optimise(_rootGraphPattern, Enumerable.Empty<String>());
             }
 
-            this._optimised = true;
+            _optimised = true;
         }
 
         /// <summary>
@@ -988,15 +856,15 @@ namespace VDS.RDF.Query
             StringBuilder from = new StringBuilder();
 
             // Output the Base and Prefix Directives if not a sub-query
-            if (!this._subquery)
+            if (!_subquery)
             {
-                if (this._baseUri != null)
+                if (_baseUri != null)
                 {
-                    output.AppendLine("BASE <" + this._baseUri.AbsoluteUri + ">");
+                    output.AppendLine("BASE <" + _baseUri.AbsoluteUri + ">");
                 }
-                foreach (String prefix in this._nsmapper.Prefixes)
+                foreach (String prefix in _nsmapper.Prefixes)
                 {
-                    output.AppendLine("PREFIX " + prefix + ": <" + this._nsmapper.GetNamespaceUri(prefix).AbsoluteUri + ">");
+                    output.AppendLine("PREFIX " + prefix + ": <" + _nsmapper.GetNamespaceUri(prefix).AbsoluteUri + ">");
                 }
                 if (output.Length > 0)
                 {
@@ -1004,18 +872,18 @@ namespace VDS.RDF.Query
                 }
 
                 // Build the String for the FROM clause
-                if (this._defaultGraphs.Count > 0 || this._namedGraphs.Count > 0) from.Append(' ');
-                foreach (Uri u in this._defaultGraphs.Where(u => u != null))
+                if (_defaultGraphs.Count > 0 || _namedGraphs.Count > 0) from.Append(' ');
+                foreach (Uri u in _defaultGraphs.Where(u => u != null))
                 {
                     from.AppendLine("FROM <" + u.AbsoluteUri + ">");
                 }
-                foreach (Uri u in this._namedGraphs.Where(u => u != null))
+                foreach (Uri u in _namedGraphs.Where(u => u != null))
                 {
                     from.AppendLine("FROM NAMED <" + u.AbsoluteUri + ">");
                 }
             }
 
-            switch (this._type)
+            switch (_type)
             {
                 case SparqlQueryType.Ask:
                     output.Append("ASK");
@@ -1032,8 +900,8 @@ namespace VDS.RDF.Query
 
                 case SparqlQueryType.Construct:
                     output.Append("CONSTRUCT ");
-                    output.Append(this._constructTemplate.ToString());
-                    if (this._constructTemplate.TriplePatterns.Count > 1)
+                    output.Append(_constructTemplate.ToString());
+                    if (_constructTemplate.TriplePatterns.Count > 1)
                     {
                         output.AppendLine();
                     }
@@ -1047,7 +915,7 @@ namespace VDS.RDF.Query
 
                 case SparqlQueryType.Describe:
                     output.Append("DESCRIBE ");
-                    foreach (IToken dvar in this._describeVars)
+                    foreach (IToken dvar in _describeVars)
                     {
                         switch (dvar.TokenType)
                         {
@@ -1062,7 +930,7 @@ namespace VDS.RDF.Query
                         }
                     }
                     output.Append(from.ToString());
-                    if (this._rootGraphPattern != null)
+                    if (_rootGraphPattern != null)
                     {
                         output.AppendLine("WHERE");
                     }
@@ -1071,7 +939,7 @@ namespace VDS.RDF.Query
                 case SparqlQueryType.DescribeAll:
                     output.Append("DESCRIBE * ");
                     output.Append(from.ToString());
-                    if (this._rootGraphPattern != null)
+                    if (_rootGraphPattern != null)
                     {
                         output.Append("WHERE");
                     }
@@ -1084,15 +952,15 @@ namespace VDS.RDF.Query
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
                     output.Append("SELECT ");
-                    if (this._type == SparqlQueryType.SelectAllDistinct || this._type == SparqlQueryType.SelectDistinct)
+                    if (_type == SparqlQueryType.SelectAllDistinct || _type == SparqlQueryType.SelectDistinct)
                     {
                         output.Append("DISTINCT ");
                     }
-                    else if (this._type == SparqlQueryType.SelectAllReduced || this._type == SparqlQueryType.SelectReduced)
+                    else if (_type == SparqlQueryType.SelectAllReduced || _type == SparqlQueryType.SelectReduced)
                     {
                         output.Append("REDUCED ");
                     }
-                    if ((int)this._type >= (int)SparqlQueryType.SelectAll)
+                    if ((int)_type >= (int)SparqlQueryType.SelectAll)
                     {
                         output.Append('*');
                         if (from.Length > 0) 
@@ -1107,7 +975,7 @@ namespace VDS.RDF.Query
                     }
                     else
                     {
-                        foreach (SparqlVariable var in this._vars)
+                        foreach (SparqlVariable var in _vars)
                         {
                             if (var.IsResultVariable)
                             {
@@ -1121,66 +989,66 @@ namespace VDS.RDF.Query
                     break;
             }
 
-            if (this._rootGraphPattern != null)
+            if (_rootGraphPattern != null)
             {
-                if (this._rootGraphPattern.IsEmpty && (int)this._type >= (int)SparqlQueryType.Select)
+                if (_rootGraphPattern.IsEmpty && (int)_type >= (int)SparqlQueryType.Select)
                 {
                     output.Remove(output.Length - 2, 2);
                     output.Append(" ");
-                    output.Append(this._rootGraphPattern.ToString());
+                    output.Append(_rootGraphPattern.ToString());
                 }
-                else if (this._rootGraphPattern.HasModifier)
+                else if (_rootGraphPattern.HasModifier)
                 {
                     output.AppendLine("{");
-                    output.AppendLine(this._rootGraphPattern.ToString());
+                    output.AppendLine(_rootGraphPattern.ToString());
                     output.AppendLine("}");
                 }
                 else
                 {
-                    output.AppendLine(this._rootGraphPattern.ToString());
+                    output.AppendLine(_rootGraphPattern.ToString());
                 }
             }
 
-            if (this._groupBy != null)
+            if (_groupBy != null)
             {
                 output.Append("GROUP BY ");
-                output.Append(this._groupBy.ToString());
+                output.Append(_groupBy.ToString());
                 output.Append(' ');
             }
-            if (this._having != null)
+            if (_having != null)
             {
                 output.Append("HAVING ");
-                String having = this._having.ToString();
+                String having = _having.ToString();
                 output.Append(having.Substring(7, having.Length - 8));
                 output.Append(' ');
             }
 
-            if (this._orderBy != null)
+            if (_orderBy != null)
             {
                 output.Append("ORDER BY ");
-                output.Append(this._orderBy.ToString());
+                output.Append(_orderBy.ToString());
             }
 
-            if (this._limit > -1)
+            if (_limit > -1)
             {
-                output.Append("LIMIT " + this._limit + " ");
+                output.Append("LIMIT " + _limit + " ");
             }
-            if (this._offset > 0)
+            if (_offset > 0)
             {
-                output.Append("OFFSET " + this._offset);
+                output.Append("OFFSET " + _offset);
             }
-            if (this._bindings != null)
+            if (_bindings != null)
             {
                 output.AppendLine();
-                output.AppendLine(this._bindings.ToString());
+                output.AppendLine(_bindings.ToString());
             }
 
             String preOutput = output.ToString();
-            if (this._nsmapper.Prefixes.Any())
+            if (_nsmapper.Prefixes.Any())
             {
-                foreach (String prefix in this._nsmapper.Prefixes)
+                foreach (String prefix in _nsmapper.Prefixes)
                 {
-                    String uri = this._nsmapper.GetNamespaceUri(prefix).AbsoluteUri;
+                    String uri = _nsmapper.GetNamespaceUri(prefix).AbsoluteUri;
                     if (preOutput.Contains("<" + uri))
                     {
                         preOutput = Regex.Replace(preOutput, "<" + uri + "([^/#>]+)>\\.", prefix + ":$1 .");
@@ -1200,22 +1068,22 @@ namespace VDS.RDF.Query
         {
             // Depending on how the query gets built we may not have had graph pattern optimization applied
             // which we should do here if query optimization is enabled
-            if (!this.IsOptimised && Options.QueryOptimisation)
+            if (!IsOptimised && Options.QueryOptimisation)
             {
-                this.Optimise();
+                Optimise();
             }
 
             // Firstly Transform the Root Graph Pattern to SPARQL Algebra
             ISparqlAlgebra algebra;
-            if (this._rootGraphPattern != null)
+            if (_rootGraphPattern != null)
             {
                 if (Options.AlgebraOptimisation)
                 {
                     // If using Algebra Optimisation may use a special algebra in some cases
-                    switch (this.SpecialType)
+                    switch (SpecialType)
                     {
                         case SparqlSpecialQueryType.DistinctGraphs:
-                            algebra = new SelectDistinctGraphs(this.Variables.First(v => v.IsResultVariable).Name);
+                            algebra = new SelectDistinctGraphs(Variables.First(v => v.IsResultVariable).Name);
                             break;
                         case SparqlSpecialQueryType.AskAnyTriples:
                             algebra = new AskAnyTriples();
@@ -1223,14 +1091,14 @@ namespace VDS.RDF.Query
                         case SparqlSpecialQueryType.NotApplicable:
                         default:
                             // If not just use the standard transform
-                            algebra = this._rootGraphPattern.ToAlgebra();
+                            algebra = _rootGraphPattern.ToAlgebra();
                             break;
                     }
                 }
                 else
                 {
                     // If not using Algebra Optimisation just use the standard transform
-                    algebra = this._rootGraphPattern.ToAlgebra();
+                    algebra = _rootGraphPattern.ToAlgebra();
                 }
             }
             else
@@ -1240,19 +1108,19 @@ namespace VDS.RDF.Query
             }
 
             // If we have a top level VALUES clause then we'll add it into the algebra here
-            if (this._bindings != null)
+            if (_bindings != null)
             {
-                algebra = Join.CreateJoin(algebra, new Bindings(this._bindings));
+                algebra = Join.CreateJoin(algebra, new Bindings(_bindings));
             }
 
             // Then we apply any optimisers followed by relevant solution modifiers
-            switch (this._type)
+            switch (_type)
             {
                 case SparqlQueryType.Ask:
                     // Apply Algebra Optimisation is enabled
                     if (Options.AlgebraOptimisation)
                     {
-                        algebra = this.ApplyAlgebraOptimisations(algebra);
+                        algebra = ApplyAlgebraOptimisations(algebra);
                     }
                     return new Ask(algebra);
 
@@ -1268,17 +1136,17 @@ namespace VDS.RDF.Query
                     // GROUP BY is the first thing applied
                     // This applies if there is a GROUP BY or if there are aggregates
                     // With no GROUP BY it produces a single group of all results
-                    if (this._groupBy != null || this._vars.Any(v => v.IsAggregate))
+                    if (_groupBy != null || _vars.Any(v => v.IsAggregate))
                     {
-                        algebra = new GroupBy(algebra, this._groupBy, this._vars.Where(v => v.IsAggregate));
+                        algebra = new GroupBy(algebra, _groupBy, _vars.Where(v => v.IsAggregate));
                     }
 
                     // Add HAVING clause immediately after the grouping
-                    if (this._having != null) algebra = new Having(algebra, this._having);
+                    if (_having != null) algebra = new Having(algebra, _having);
 
                     // After grouping we do projection
                     // We introduce an Extend for each Project Expression
-                    foreach (SparqlVariable var in this._vars)
+                    foreach (SparqlVariable var in _vars)
                     {
                         if (var.IsProjection)
                         {
@@ -1290,48 +1158,48 @@ namespace VDS.RDF.Query
                     // We do ordering before we do Select but after Project so we can order by any of
                     // the project expressions/aggregates and any variable in the results even if
                     // it won't be output as a result variable
-                    if (this._orderBy != null) algebra = new OrderBy(algebra, this._orderBy);
+                    if (_orderBy != null) algebra = new OrderBy(algebra, _orderBy);
 
                     // After Ordering we apply Select
                     // Select effectively trims the results so only result variables are left
                     // This doesn't apply to CONSTRUCT since any variable may be used in the Construct Template
                     // so we don't want to eliminate anything
-                    if (this._type != SparqlQueryType.Construct)
+                    if (_type != SparqlQueryType.Construct)
                     {
-                        switch (this._type)
+                        switch (_type)
                         {
                             case SparqlQueryType.Describe:
                             case SparqlQueryType.Select:
                             case SparqlQueryType.SelectDistinct:
                             case SparqlQueryType.SelectReduced:
-                                algebra = new Select(algebra, false, this.Variables.Where(v => v.IsResultVariable));
+                                algebra = new Select(algebra, false, Variables.Where(v => v.IsResultVariable));
                                 break;
                             default:
-                                algebra = new Select(algebra, true, this.Variables);
+                                algebra = new Select(algebra, true, Variables);
                                 break;
                         }
                     }
 
                     // If we have a Distinct/Reduced then we'll apply those after Selection
-                    if (this._type == SparqlQueryType.SelectAllDistinct || this._type == SparqlQueryType.SelectDistinct)
+                    if (_type == SparqlQueryType.SelectAllDistinct || _type == SparqlQueryType.SelectDistinct)
                     {
                         algebra = new Distinct(algebra);
                     }
-                    else if (this._type == SparqlQueryType.SelectAllReduced || this._type == SparqlQueryType.SelectReduced)
+                    else if (_type == SparqlQueryType.SelectAllReduced || _type == SparqlQueryType.SelectReduced)
                     {
                         algebra = new Reduced(algebra);
                     }
 
                     // Finally we can apply any limit and/or offset
-                    if (this._limit >= 0 || this._offset > 0)
+                    if (_limit >= 0 || _offset > 0)
                     {
-                        algebra = new Slice(algebra, this._limit, this._offset);
+                        algebra = new Slice(algebra, _limit, _offset);
                     }
 
                     // Apply Algebra Optimisation if enabled
                     if (Options.AlgebraOptimisation)
                     {
-                        algebra = this.ApplyAlgebraOptimisations(algebra);
+                        algebra = ApplyAlgebraOptimisations(algebra);
                     }
 
                     return algebra;
@@ -1351,7 +1219,7 @@ namespace VDS.RDF.Query
             try
             {
                 // Apply Local Optimisers
-                foreach (IAlgebraOptimiser opt in this._optimisers.Where(o => o.IsApplicable(this)))
+                foreach (IAlgebraOptimiser opt in _optimisers.Where(o => o.IsApplicable(this)))
                 {
                     try
                     {
@@ -1389,39 +1257,39 @@ namespace VDS.RDF.Query
         {
             get
             {
-                if (this._optimisableOrdering == null)
+                if (_optimisableOrdering == null)
                 {
-                    if (this._orderBy == null)
+                    if (_orderBy == null)
                     {
                         // If there's no ordering then of course it's optimisable
                         return true;
                     }
                     else
                     {
-                        if (this._orderBy.IsSimple)
+                        if (_orderBy.IsSimple)
                         {
                             // Is the first pattern a TriplePattern
                             // Do all the Variables occur in the first pattern
-                            if (this._rootGraphPattern != null)
+                            if (_rootGraphPattern != null)
                             {
-                                if (this._rootGraphPattern.TriplePatterns.Count > 0)
+                                if (_rootGraphPattern.TriplePatterns.Count > 0)
                                 {
-                                    if (this._rootGraphPattern.TriplePatterns[0].PatternType == TriplePatternType.Match)
+                                    if (_rootGraphPattern.TriplePatterns[0].PatternType == TriplePatternType.Match)
                                     {
                                         // If all the Ordering variables occur in the 1st Triple Pattern then we can optimise
-                                        this._optimisableOrdering = this._orderBy.Variables.All(v => this._rootGraphPattern.TriplePatterns[0].Variables.Contains(v));
+                                        _optimisableOrdering = _orderBy.Variables.All(v => _rootGraphPattern.TriplePatterns[0].Variables.Contains(v));
                                     }
                                     else
                                     {
                                         // Not a Triple Pattern as the first pattern in Root Graph Pattern then can't optimise
-                                        this._optimisableOrdering = false;
+                                        _optimisableOrdering = false;
                                     }
                                 }
                                 else
                                 {
                                     // Empty Root Graph Pattern => Optimisable
                                     // Like the No Root Graph Pattern case this is somewhat defunct
-                                    this._optimisableOrdering = true;
+                                    _optimisableOrdering = true;
                                 }
                             }
                             else
@@ -1429,17 +1297,17 @@ namespace VDS.RDF.Query
                                 // No Root Graph Pattern => Optimisable
                                 // Though this is somewhat defunct as Queries without a Root Graph Pattern should
                                 // never result in a call to this property
-                                this._optimisableOrdering = true;
+                                _optimisableOrdering = true;
                             }
                         }
                         else
                         {
                             // If the ordering is not simple then it's not optimisable
-                            this._optimisableOrdering = false;
+                            _optimisableOrdering = false;
                         }
                     }
                 }
-                return (bool)this._optimisableOrdering;
+                return (bool)_optimisableOrdering;
             }
         }
 
@@ -1459,12 +1327,6 @@ namespace VDS.RDF.Query
         /// </ul>
         /// </para>
         /// </remarks>
-        public bool UsesDefaultDataset
-        {
-            get
-            {
-                return !this._defaultGraphs.Any() && this._rootGraphPattern.UsesDefaultDataset;
-            }
-        }
+        public bool UsesDefaultDataset => !_defaultGraphs.Any() && _rootGraphPattern.UsesDefaultDataset;
     }
 }

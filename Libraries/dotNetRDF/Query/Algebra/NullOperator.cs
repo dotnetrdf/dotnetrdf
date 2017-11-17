@@ -48,7 +48,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="variables">Variables in the algebra that this null is replacing</param>
         public NullOperator(IEnumerable<String> variables)
         {
-            this._vars.AddRange(variables);
+            _vars.AddRange(variables);
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get 
             {
-                return this._vars;
+                return _vars;
             }
         }
 

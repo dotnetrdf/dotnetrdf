@@ -248,12 +248,14 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
+        /// <inheritdoc />
         public IQueryBuilder GroupBy(string variableName)
         {
             _buildGroups.Add(prefixes => new GroupByVariable(variableName));
             return this;
         }
 
+        /// <inheritdoc />
         public IQueryBuilder GroupBy(Func<INonAggregateExpressionBuilder, SparqlExpression> buildGroupingExpression)
         {
             _buildGroups.Add(prefixes =>
@@ -265,6 +267,7 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
+        /// <inheritdoc />
         public IQueryBuilder Having(Func<IExpressionBuilder, BooleanExpression> buildHavingConstraint)
         {
             _buildHavings.Add(prefixes => buildHavingConstraint(new ExpressionBuilder(prefixes)).Expression);
@@ -282,13 +285,14 @@ namespace VDS.RDF.Query.Builder
             });
         }
 
+        /// <inheritdoc />
         public SparqlQuery BuildQuery()
         {
-            SparqlQuery query = new SparqlQuery
+            var query = new SparqlQuery
             {
                 QueryType = _sparqlQueryType,
                 Limit = _queryLimit,
-                Offset = _queryOffset
+                Offset = _queryOffset,
             };
 
             switch (_sparqlQueryType)
@@ -400,6 +404,7 @@ namespace VDS.RDF.Query.Builder
             executableQuery.OrderBy = orderings.FirstOrDefault();
         }
 
+        /// <inheritdoc />
         public IAssignmentVariableNamePart<IQueryBuilder> Bind(Func<INonAggregateExpressionBuilder, SparqlExpression> buildAssignmentExpression)
         {
             return new BindAssignmentVariableNamePart(this, buildAssignmentExpression);

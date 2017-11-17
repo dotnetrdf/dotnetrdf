@@ -43,7 +43,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <param name="keyGenerator">Function that maps Node IDs to dictionary keys</param>
         public VirtualNodeCache(Func<TNodeID, TKey> keyGenerator)
         {
-            this._keyGenerator = keyGenerator;
+            _keyGenerator = keyGenerator;
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace VDS.RDF.Storage.Virtualisation
             get
             {
                 INode temp;
-                if (this._mapping.TryGetValue(this._keyGenerator(id), out temp))
+                if (_mapping.TryGetValue(_keyGenerator(id), out temp))
                 {
                     return temp;
                 }
@@ -67,14 +67,14 @@ namespace VDS.RDF.Storage.Virtualisation
             }
             set
             {
-                TKey key = this._keyGenerator(id);
-                if (this._mapping.ContainsKey(key))
+                TKey key = _keyGenerator(id);
+                if (_mapping.ContainsKey(key))
                 {
-                    this._mapping[key] = value;
+                    _mapping[key] = value;
                 }
                 else
                 {
-                    this._mapping.Add(key, value);
+                    _mapping.Add(key, value);
                 }
             }
         }

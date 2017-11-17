@@ -66,6 +66,10 @@ namespace VDS.RDF.Query.Builder.Expressions
 #pragma warning restore 1591
         }
 
+        /// <summary>
+        /// Returns the constant value of this expression formatted as a simple literal expression
+        /// </summary>
+        /// <returns>A new LiteralExpression whose value is the constant value of this epression</returns>
         public LiteralExpression ToSimpleLiteral()
         {
             ConstantTerm constant = (ConstantTerm) Expression;

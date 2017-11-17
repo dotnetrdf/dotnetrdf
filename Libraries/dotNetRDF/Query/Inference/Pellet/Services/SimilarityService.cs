@@ -50,13 +50,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         internal SimilarityService(String serviceName, JObject obj)
             : base(serviceName, obj)
         {
-            if (!this.Endpoint.Uri.EndsWith("similarity/"))
+            if (!Endpoint.Uri.EndsWith("similarity/"))
             {
-                this._similarityUri = this.Endpoint.Uri.Substring(0, this.Endpoint.Uri.IndexOf("similarity/") + 11);
+                _similarityUri = Endpoint.Uri.Substring(0, Endpoint.Uri.IndexOf("similarity/") + 11);
             }
             else
             {
-                this._similarityUri = this.Endpoint.Uri;
+                _similarityUri = Endpoint.Uri;
             }
         }
 
@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <returns></returns>
         public List<KeyValuePair<INode, double>> Similarity(int number, String individual)
         {
-            IGraph g = this.SimilarityRaw(number, individual);
+            IGraph g = SimilarityRaw(number, individual);
 
             List<KeyValuePair<INode, double>> similarities = new List<KeyValuePair<INode, double>>();
 
@@ -117,11 +117,11 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         {
             if (number < 1) throw new RdfReasoningException("Pellet Server requires the number of Similar Individuals to be at least 1");
 
-            String requestUri = this._similarityUri + number + "/" + individual;
+            String requestUri = _similarityUri + number + "/" + individual;
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
-            request.Method = this.Endpoint.HttpMethods.First();
-            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes.Where(t => !t.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
+            request.Method = Endpoint.HttpMethods.First();
+            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypes.Where(t => !t.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
 
             Tools.HttpDebugRequest(request);
 
@@ -149,7 +149,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// </remarks>
         public void Similarity(int number, String individual, PelletSimilarityServiceCallback callback, Object state)
         {
-            this.SimilarityRaw(number, individual, (g, s) =>
+            SimilarityRaw(number, individual, (g, s) =>
                 {
                     if (s is AsyncError)
                     {
@@ -198,11 +198,11 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         {
             if (number < 1) throw new RdfReasoningException("Pellet Server requires the number of Similar Individuals to be at least 1");
 
-            String requestUri = this._similarityUri + number + "/" + individual;
+            String requestUri = _similarityUri + number + "/" + individual;
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
-            request.Method = this.Endpoint.HttpMethods.First();
-            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes.Where(t => !t.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
+            request.Method = Endpoint.HttpMethods.First();
+            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypes.Where(t => !t.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
 
             Tools.HttpDebugRequest(request);
 

@@ -50,7 +50,7 @@ namespace VDS.RDF.Writing
         /// <param name="syntax">NTriples Syntax Mode</param>
         public NTriplesWriter(NTriplesSyntax syntax)
         {
-            this.Syntax = syntax;
+            Syntax = syntax;
         }
 
         /// <summary>
@@ -66,11 +66,11 @@ namespace VDS.RDF.Writing
         {
             get 
             {
-                return this._sort;
+                return _sort;
             }
             set
             {
-                this._sort = value;
+                _sort = value;
             }
         }
 
@@ -99,7 +99,7 @@ namespace VDS.RDF.Writing
         {
             using (var writer = new StreamWriter(File.Open(filename, FileMode.Create), Encoding.ASCII))
             {
-                this.Save(g, writer);
+                Save(g, writer);
             }
         }
 
@@ -110,13 +110,13 @@ namespace VDS.RDF.Writing
         /// <param name="output">Stream to save to</param>
         protected override void SaveInternal(IGraph g, TextWriter output)
         {
-            NTriplesWriterContext context = new NTriplesWriterContext(g, output, this.Syntax);
+            NTriplesWriterContext context = new NTriplesWriterContext(g, output, Syntax);
             List<Triple> ts = g.Triples.ToList();
-            if (this._sort) ts.Sort(new FullTripleComparer(new FastNodeComparer()));
+            if (_sort) ts.Sort(new FullTripleComparer(new FastNodeComparer()));
 
             foreach (Triple t in ts)
             {
-                output.WriteLine(this.TripleToNTriples(context, t));
+                output.WriteLine(TripleToNTriples(context, t));
             }
         }
 
@@ -129,11 +129,11 @@ namespace VDS.RDF.Writing
         private String TripleToNTriples(NTriplesWriterContext context, Triple t)
         {
             StringBuilder output = new StringBuilder();
-            output.Append(this.NodeToNTriples(context, t.Subject, TripleSegment.Subject));
+            output.Append(NodeToNTriples(context, t.Subject, TripleSegment.Subject));
             output.Append(" ");
-            output.Append(this.NodeToNTriples(context, t.Predicate, TripleSegment.Predicate));
+            output.Append(NodeToNTriples(context, t.Predicate, TripleSegment.Predicate));
             output.Append(" ");
-            output.Append(this.NodeToNTriples(context, t.Object, TripleSegment.Object));
+            output.Append(NodeToNTriples(context, t.Object, TripleSegment.Object));
             output.Append(" .");
 
             return output.ToString();
@@ -183,7 +183,7 @@ namespace VDS.RDF.Writing
         /// <param name="message">Warning Message</param>
         private void RaiseWarning(String message)
         {
-            RdfWriterWarning d = this.Warning;
+            RdfWriterWarning d = Warning;
             if (d != null)
             {
                 d(message);
@@ -196,7 +196,7 @@ namespace VDS.RDF.Writing
         /// <returns></returns>
         public override string ToString()
         {
-            return this.Syntax == NTriplesSyntax.Original ? "NTriples" : "NTriples (RDF 1.1)";
+            return Syntax == NTriplesSyntax.Original ? "NTriples" : "NTriples (RDF 1.1)";
         }
     }
 }

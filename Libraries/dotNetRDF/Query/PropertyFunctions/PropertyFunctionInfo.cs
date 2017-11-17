@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.PropertyFunctions
         /// <param name="u">Function URI</param>
         public PropertyFunctionInfo(Uri u)
         {
-            this._funcUri = u;
+            _funcUri = u;
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.PropertyFunctions
         {
             get
             {
-                return this._funcUri;
+                return _funcUri;
             }
         }
 
@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.PropertyFunctions
         {
             get
             {
-                return this._patterns;
+                return _patterns;
             }
         }
 
@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.PropertyFunctions
         {
             get
             {
-                return this._subjArgs;
+                return _subjArgs;
             }
         }
 
@@ -89,7 +89,7 @@ namespace VDS.RDF.Query.PropertyFunctions
         {
             get
             {
-                return this._objArgs;
+                return _objArgs;
             }
         }
     }

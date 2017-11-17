@@ -56,7 +56,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static void Load(IGraph g, String filename)
         {
-            FileLoader.Load(g, filename, null);
+            Load(g, filename, null);
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace VDS.RDF.Parsing
                 }
             }
 
-            FileLoader.Load(new GraphHandler(g), filename, parser);
+            Load(new GraphHandler(g), filename, parser);
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static void Load(IRdfHandler handler, String filename)
         {
-            FileLoader.Load(handler, filename, (IRdfReader)null);
+            Load(handler, filename, (IRdfReader)null);
         }
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace VDS.RDF.Parsing
         public static void Load(ITripleStore store, String filename, IStoreReader parser)
         {
             if (store == null) throw new RdfParseException("Cannot read a RDF Dataset into a null Store");
-            FileLoader.Load(new StoreHandler(store), filename, parser);
+            Load(new StoreHandler(store), filename, parser);
         }
 
         /// <summary>
@@ -208,7 +208,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static void Load(ITripleStore store, String filename)
         {
-            FileLoader.Load(store, filename, null);
+            Load(store, filename, null);
         }
 
         /// <summary>
@@ -289,7 +289,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static void LoadDataset(IRdfHandler handler, String filename)
         {
-            FileLoader.Load(handler, filename, (IStoreReader)null);
+            Load(handler, filename, (IStoreReader)null);
         }
 
         /// <summary>

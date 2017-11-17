@@ -57,7 +57,7 @@ namespace VDS.RDF.Query.Optimisation
         /// <param name="provider">Virtual RDF Provider</param>
         public VirtualAlgebraOptimiser(IVirtualRdfProvider<TNodeID, TGraphID> provider)
         {
-            this._provider = provider;
+            _provider = provider;
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace VDS.RDF.Query.Optimisation
                     ISparqlAlgebra result = new Bgp();
                     List<ITriplePattern> patterns = new List<ITriplePattern>();
                     List<ITriplePattern> ps = new List<ITriplePattern>(current.TriplePatterns.ToList());
-                    TNodeID nullID = this._provider.NullID;
+                    TNodeID nullID = _provider.NullID;
 
                     for (int i = 0; i < current.PatternCount; i++)
                     {
@@ -102,12 +102,12 @@ namespace VDS.RDF.Query.Optimisation
                             }
                             if (ps[i].PatternType == TriplePatternType.Filter)
                             {
-                                result = new Filter(result, new UnaryExpressionFilter(this.Transform(((IFilterPattern)ps[i]).Filter.Expression)));
+                                result = new Filter(result, new UnaryExpressionFilter(Transform(((IFilterPattern)ps[i]).Filter.Expression)));
                             }
                             else
                             {
                                 IAssignmentPattern bind = (IAssignmentPattern)ps[i];
-                                result = new Extend(result, this.Transform(bind.AssignExpression), bind.VariableName);
+                                result = new Extend(result, Transform(bind.AssignExpression), bind.VariableName);
                             }
                         }
                         else if (ps[i].PatternType == TriplePatternType.Match)
@@ -117,7 +117,7 @@ namespace VDS.RDF.Query.Optimisation
                             PatternItem subj, pred, obj;
                             if (tp.Subject is NodeMatchPattern)
                             {
-                                TNodeID id = this._provider.GetID(((NodeMatchPattern)tp.Subject).Node);
+                                TNodeID id = _provider.GetID(((NodeMatchPattern)tp.Subject).Node);
                                 if (id == null || id.Equals(nullID))
                                 {
                                     result = new NullOperator(current.Variables);
@@ -125,7 +125,7 @@ namespace VDS.RDF.Query.Optimisation
                                 }
                                 else
                                 {
-                                    subj = new NodeMatchPattern(this.CreateVirtualNode(id, ((NodeMatchPattern)tp.Subject).Node));
+                                    subj = new NodeMatchPattern(CreateVirtualNode(id, ((NodeMatchPattern)tp.Subject).Node));
                                 }
                             }
                             else
@@ -134,7 +134,7 @@ namespace VDS.RDF.Query.Optimisation
                             }
                             if (tp.Predicate is NodeMatchPattern)
                             {
-                                TNodeID id = this._provider.GetID(((NodeMatchPattern)tp.Predicate).Node);
+                                TNodeID id = _provider.GetID(((NodeMatchPattern)tp.Predicate).Node);
                                 if (id == null || id.Equals(nullID))
                                 {
                                     result = new NullOperator(current.Variables);
@@ -142,7 +142,7 @@ namespace VDS.RDF.Query.Optimisation
                                 }
                                 else
                                 {
-                                    pred = new NodeMatchPattern(this.CreateVirtualNode(id, ((NodeMatchPattern)tp.Predicate).Node));
+                                    pred = new NodeMatchPattern(CreateVirtualNode(id, ((NodeMatchPattern)tp.Predicate).Node));
                                 }
                             }
                             else
@@ -151,7 +151,7 @@ namespace VDS.RDF.Query.Optimisation
                             }
                             if (tp.Object is NodeMatchPattern)
                             {
-                                TNodeID id = this._provider.GetID(((NodeMatchPattern)tp.Object).Node);
+                                TNodeID id = _provider.GetID(((NodeMatchPattern)tp.Object).Node);
                                 if (id == null || id.Equals(nullID))
                                 {
                                     result = new NullOperator(current.Variables);
@@ -159,7 +159,7 @@ namespace VDS.RDF.Query.Optimisation
                                 }
                                 else
                                 {
-                                    obj = new NodeMatchPattern(this.CreateVirtualNode(id, ((NodeMatchPattern)tp.Object).Node));
+                                    obj = new NodeMatchPattern(CreateVirtualNode(id, ((NodeMatchPattern)tp.Object).Node));
                                 }
                             }
                             else
@@ -212,7 +212,7 @@ namespace VDS.RDF.Query.Optimisation
             {
                 if (expr.Type == SparqlExpressionType.Primary)
                 {
-                    return this.SubstitutePrimaryExpression(expr);
+                    return SubstitutePrimaryExpression(expr);
                 }
                 else
                 {
@@ -232,13 +232,13 @@ namespace VDS.RDF.Query.Optimisation
         /// <returns></returns>
         protected ISparqlExpression SubstitutePrimaryExpression(ISparqlExpression expr)
         {
-            if (expr.GetType().Equals(this._exprType))
+            if (expr.GetType().Equals(_exprType))
             {
                 ConstantTerm term = (ConstantTerm)expr;
                 INode curr = term.Evaluate(null, 0);
-                TNodeID id = this._provider.GetID(curr);
-                if (id == null || id.Equals(this._provider.NullID)) throw new RdfQueryException("Cannot transform the Expression to use Virtual Nodes");
-                INode virt = this.CreateVirtualNode(id, curr);
+                TNodeID id = _provider.GetID(curr);
+                if (id == null || id.Equals(_provider.NullID)) throw new RdfQueryException("Cannot transform the Expression to use Virtual Nodes");
+                INode virt = CreateVirtualNode(id, curr);
                 return new ConstantTerm(virt);
             }
             else
@@ -300,15 +300,15 @@ namespace VDS.RDF.Query.Optimisation
             switch (value.NodeType)
             {
                 case NodeType.Blank:
-                    return new SimpleVirtualBlankNode(null, id, this._provider, (IBlankNode)value);
+                    return new SimpleVirtualBlankNode(null, id, _provider, (IBlankNode)value);
                 case NodeType.GraphLiteral:
-                    return new SimpleVirtualGraphLiteralNode(null, id, this._provider, (IGraphLiteralNode)value);
+                    return new SimpleVirtualGraphLiteralNode(null, id, _provider, (IGraphLiteralNode)value);
                 case NodeType.Literal:
-                    return new SimpleVirtualLiteralNode(null, id, this._provider, (ILiteralNode)value);
+                    return new SimpleVirtualLiteralNode(null, id, _provider, (ILiteralNode)value);
                 case NodeType.Uri:
-                    return new SimpleVirtualUriNode(null, id, this._provider, (IUriNode)value);
+                    return new SimpleVirtualUriNode(null, id, _provider, (IUriNode)value);
                 case NodeType.Variable:
-                    return new SimpleVirtualVariableNode(null, id, this._provider, (IVariableNode)value);
+                    return new SimpleVirtualVariableNode(null, id, _provider, (IVariableNode)value);
                 default:
                     throw new RdfException("Cannot create Virtual Nodes from unknown Node Types");
             }

@@ -57,8 +57,8 @@ namespace VDS.RDF.Query.Algebra
             BaseMultiset initialInput = context.InputMultiset;
             int step = 0, prevCount = 0, skipCount = 0;
 
-            String subjVar = this.PathStart.VariableName;
-            String objVar = this.PathEnd.VariableName;
+            String subjVar = PathStart.VariableName;
+            String objVar = PathEnd.VariableName;
             bool bothTerms = (subjVar == null && objVar == null);
             bool reverse = false;
 
@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Algebra
                 // OR if there is no Ending Term or Bound Variable work forwards regardless
                 if (subjVar == null)
                 {
-                    paths.Add(((NodeMatchPattern)this.PathStart).Node.AsEnumerable().ToList());
+                    paths.Add(((NodeMatchPattern)PathStart).Node.AsEnumerable().ToList());
                 }
                 else if (context.InputMultiset.ContainsVariable(subjVar))
                 {
@@ -82,7 +82,7 @@ namespace VDS.RDF.Query.Algebra
                 // Work Backwards from Ending Term or Bound Variable
                 if (objVar == null)
                 {
-                    paths.Add(((NodeMatchPattern)this.PathEnd).Node.AsEnumerable().ToList());
+                    paths.Add(((NodeMatchPattern)PathEnd).Node.AsEnumerable().ToList());
                 }
                 else
                 {
@@ -95,7 +95,7 @@ namespace VDS.RDF.Query.Algebra
 
             if (paths.Count == 0)
             {
-                this.GetPathStarts(context, paths, reverse);
+                GetPathStarts(context, paths, reverse);
             }
 
             // Traverse the Paths
@@ -104,7 +104,7 @@ namespace VDS.RDF.Query.Algebra
                 prevCount = paths.Count;
                 foreach (List<INode> path in paths.Skip(skipCount).ToList())
                 {
-                    foreach (INode nextStep in this.EvaluateStep(context, path, reverse))
+                    foreach (INode nextStep in EvaluateStep(context, path, reverse))
                     {
                         List<INode> newPath = new List<INode>(path);
                         newPath.Add(nextStep);
@@ -137,7 +137,7 @@ namespace VDS.RDF.Query.Algebra
                     {
                         if (reverse)
                         {
-                            if (this.PathEnd.Accepts(context, path[0]) && this.PathStart.Accepts(context, path[path.Count - 1]))
+                            if (PathEnd.Accepts(context, path[0]) && PathStart.Accepts(context, path[path.Count - 1]))
                             {
                                 exit = true;
                                 break;
@@ -145,7 +145,7 @@ namespace VDS.RDF.Query.Algebra
                         }
                         else
                         {
-                            if (this.PathStart.Accepts(context, path[0]) && this.PathEnd.Accepts(context, path[path.Count - 1]))
+                            if (PathStart.Accepts(context, path[0]) && PathEnd.Accepts(context, path[path.Count - 1]))
                             {
                                 exit = true;
                                 break;
@@ -171,7 +171,7 @@ namespace VDS.RDF.Query.Algebra
                 {
                     if (reverse)
                     {
-                        if (this.PathEnd.Accepts(context, path[0]) && this.PathStart.Accepts(context, path[path.Count - 1]))
+                        if (PathEnd.Accepts(context, path[0]) && PathStart.Accepts(context, path[path.Count - 1]))
                         {
                             Set s = new Set();
                             if (!bothTerms)
@@ -191,7 +191,7 @@ namespace VDS.RDF.Query.Algebra
                     }
                     else
                     {
-                        if (this.PathStart.Accepts(context, path[0]) && this.PathEnd.Accepts(context, path[path.Count - 1]))
+                        if (PathStart.Accepts(context, path[0]) && PathEnd.Accepts(context, path[path.Count - 1]))
                         {
                             Set s = new Set();
                             if (!bothTerms)
@@ -235,7 +235,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "OneOrMorePath(" + this.PathStart.ToString() + ", " + this.Path.ToString() + ", " + this.PathEnd.ToString() + ")";
+            return "OneOrMorePath(" + PathStart.ToString() + ", " + Path.ToString() + ", " + PathEnd.ToString() + ")";
         }
 
         /// <summary>
@@ -245,7 +245,7 @@ namespace VDS.RDF.Query.Algebra
         public override GraphPattern ToGraphPattern()
         {
             GraphPattern gp = new GraphPattern();
-            PropertyPathPattern pp = new PropertyPathPattern(this.PathStart, new OneOrMore(this.Path), this.PathEnd);
+            PropertyPathPattern pp = new PropertyPathPattern(PathStart, new OneOrMore(Path), PathEnd);
             gp.AddTriplePattern(pp);
             return gp;
         }

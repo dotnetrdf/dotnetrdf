@@ -126,7 +126,7 @@ namespace VDS.RDF.Parsing
             "subsection",
             "start",
             "top",
-            "up"
+            "up",
         };
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public bool HasTerm(String term)
         {
-            return this._terms.Contains(term);
+            return _terms.Contains(term);
         }
 
         /// <summary>
@@ -188,7 +188,7 @@ namespace VDS.RDF.Parsing
         {
             get
             {
-                return (from t in this._terms
+                return (from t in _terms
                         select new KeyValuePair<String,String>(t, RdfAParser.XHtmlVocabNamespace + t));
             }
         }
@@ -243,7 +243,7 @@ namespace VDS.RDF.Parsing
         /// <param name="vocabUri">Vocabulary URI</param>
         public TermMappings(String vocabUri)
         {
-            this._vocabUri = vocabUri;
+            _vocabUri = vocabUri;
         }
 
         /// <summary>
@@ -254,9 +254,9 @@ namespace VDS.RDF.Parsing
         {
             foreach (KeyValuePair<String,String> term in vocab.Mappings)
             {
-                this.AddTerm(term.Key, term.Value);
+                AddTerm(term.Key, term.Value);
             }
-            this._vocabUri = vocab.VocabularyUri;
+            _vocabUri = vocab.VocabularyUri;
         }
 
         /// <summary>
@@ -267,13 +267,13 @@ namespace VDS.RDF.Parsing
         {
             foreach (KeyValuePair<String, String> term in vocab.Mappings)
             {
-                this.AddTerm(term.Key, term.Value);
+                AddTerm(term.Key, term.Value);
             }
             foreach (KeyValuePair<String, String> ns in vocab.Namespaces)
             {
-                this.AddNamespace(ns.Key, ns.Value);
+                AddNamespace(ns.Key, ns.Value);
             }
-            this._vocabUri = vocab.VocabularyUri;
+            _vocabUri = vocab.VocabularyUri;
         }
 
         /// <summary>
@@ -283,7 +283,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public bool HasTerm(String term)
         {
-            return this._terms.ContainsKey(term);
+            return _terms.ContainsKey(term);
         }
 
         /// <summary>
@@ -293,13 +293,13 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public string ResolveTerm(String term)
         {
-            if (this._terms.ContainsKey(term))
+            if (_terms.ContainsKey(term))
             {
-                return this._terms[term];
+                return _terms[term];
             }
-            else if (!this._vocabUri.Equals(String.Empty))
+            else if (!_vocabUri.Equals(String.Empty))
             {
-                return this._vocabUri + term;
+                return _vocabUri + term;
             }
             else
             {
@@ -315,13 +315,13 @@ namespace VDS.RDF.Parsing
         /// <param name="nsUri">Namespace URI</param>
         public void AddNamespace(String prefix, String nsUri)
         {
-            if (this._namespaces.ContainsKey(prefix))
+            if (_namespaces.ContainsKey(prefix))
             {
-                this._namespaces[prefix] = nsUri;
+                _namespaces[prefix] = nsUri;
             }
             else
             {
-                this._namespaces.Add(prefix, nsUri);
+                _namespaces.Add(prefix, nsUri);
             }
         }
 
@@ -332,13 +332,13 @@ namespace VDS.RDF.Parsing
         /// <param name="uri">URI</param>
         public void AddTerm(String term, String uri)
         {
-            if (this._terms.ContainsKey(term))
+            if (_terms.ContainsKey(term))
             {
-                this._terms[term] = uri;
+                _terms[term] = uri;
             }
             else
             {
-                this._terms.Add(term, uri);
+                _terms.Add(term, uri);
             }
         }
 
@@ -349,7 +349,7 @@ namespace VDS.RDF.Parsing
         {
             get
             {
-                return this._terms;
+                return _terms;
             }
         }
 
@@ -360,7 +360,7 @@ namespace VDS.RDF.Parsing
         {
             get
             {
-                return this._namespaces;
+                return _namespaces;
             }
         }
 
@@ -371,11 +371,11 @@ namespace VDS.RDF.Parsing
         {
             get
             {
-                return this._vocabUri;
+                return _vocabUri;
             }
             set
             {
-                this._vocabUri = value;
+                _vocabUri = value;
             }
         }
     }

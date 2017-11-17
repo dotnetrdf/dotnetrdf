@@ -53,14 +53,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         public CotangentFunction(ISparqlExpression expr, bool inverse)
             : base(expr)
         {
-            this._inverse = inverse;
-            if (this._inverse)
+            _inverse = inverse;
+            if (_inverse)
             {
-                this._func = _arccotangent;
+                _func = _arccotangent;
             }
             else
             {
-                this._func = _cotangent;
+                _func = _cotangent;
             }
         }
 
@@ -70,13 +70,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         /// <returns></returns>
         public override string ToString()
         {
-            if (this._inverse)
+            if (_inverse)
             {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCotanInv + ">(" + this._expr.ToString() + ")";
+                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCotanInv + ">(" + _expr.ToString() + ")";
             }
             else
             {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCotan + ">(" + this._expr.ToString() + ")";
+                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCotan + ">(" + _expr.ToString() + ")";
             }
         }
 
@@ -87,7 +87,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         {
             get
             {
-                if (this._inverse)
+                if (_inverse)
                 {
                     return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCotanInv;
                 }
@@ -105,7 +105,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new CotangentFunction(transformer.Transform(this._expr), this._inverse);
+            return new CotangentFunction(transformer.Transform(_expr), _inverse);
         }
     }
 }

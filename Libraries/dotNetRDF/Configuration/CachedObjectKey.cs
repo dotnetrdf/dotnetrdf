@@ -43,8 +43,8 @@ namespace VDS.RDF.Configuration
         /// <param name="g">Configuration Graph</param>
         public CachedObjectKey(INode objNode, IGraph g)
         {
-            this._n = objNode;
-            this._g = g;
+            _n = objNode;
+            _g = g;
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace VDS.RDF.Configuration
         {
             if (obj is CachedObjectKey)
             {
-                return this.Equals((CachedObjectKey)obj);
+                return Equals((CachedObjectKey)obj);
             }
             else
             {
@@ -80,7 +80,7 @@ namespace VDS.RDF.Configuration
         /// <returns></returns>
         public bool Equals(CachedObjectKey other)
         {
-            return ReferenceEquals(this._g, other._g) && this._n.Equals(other._n);
+            return ReferenceEquals(_g, other._g) && _n.Equals(other._n);
         }
     }
 }

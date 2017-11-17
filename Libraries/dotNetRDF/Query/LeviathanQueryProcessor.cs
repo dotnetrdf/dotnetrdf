@@ -67,15 +67,15 @@ namespace VDS.RDF.Query
         /// <param name="data">SPARQL Dataset</param>
         public LeviathanQueryProcessor(ISparqlDataset data)
         {
-            this._dataset = data;
+            _dataset = data;
 
-            if (!this._dataset.UsesUnionDefaultGraph)
+            if (!_dataset.UsesUnionDefaultGraph)
             {
-                if (!this._dataset.HasGraph(null))
+                if (!_dataset.HasGraph(null))
                 {
                     // Create the Default unnamed Graph if it doesn't exist and then Flush() the change
-                    this._dataset.AddGraph(new Graph());
-                    this._dataset.Flush();
+                    _dataset.AddGraph(new Graph());
+                    _dataset.Flush();
                 }
             }
         }
@@ -97,13 +97,13 @@ namespace VDS.RDF.Query
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
                     SparqlResultSet results = new SparqlResultSet();
-                    this.ProcessQuery(null, new ResultSetHandler(results), query);
+                    ProcessQuery(null, new ResultSetHandler(results), query);
                     return results;
                 case SparqlQueryType.Construct:
                 case SparqlQueryType.Describe:
                 case SparqlQueryType.DescribeAll:
                     IGraph g = new Graph();
-                    this.ProcessQuery(new GraphHandler(g), null, query);
+                    ProcessQuery(new GraphHandler(g), null, query);
                     return g;
                 default:
                     throw new RdfQueryException("Cannot process unknown query types");
@@ -124,7 +124,7 @@ namespace VDS.RDF.Query
             if (resultsHandler == null && (query.QueryType == SparqlQueryType.Ask || SparqlSpecsHelper.IsSelectQuery(query.QueryType))) throw new ArgumentNullException("resultsHandler", "Cannot use a null resultsHandler when the Query is an ASK/SELECT");
 
             // Handle the Thread Safety of the Query Evaluation
-            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+            ReaderWriterLockSlim currLock = (_dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)_dataset).Lock : _lock;
             try
             {
                 currLock.EnterReadLock();
@@ -142,21 +142,21 @@ namespace VDS.RDF.Query
                         // in case a dataset has any kind of load on demand behaviour
                         foreach (Uri defGraphUri in query.DefaultGraphs)
                         {
-                            this._dataset.HasGraph(defGraphUri);
+                            _dataset.HasGraph(defGraphUri);
                         }
-                        this._dataset.SetDefaultGraph(query.DefaultGraphs);
+                        _dataset.SetDefaultGraph(query.DefaultGraphs);
                         defGraphOk = true;
                     }
                     else if (query.NamedGraphs.Any())
                     {
                         // No FROM Clauses but one/more FROM NAMED means the Default Graph is the empty graph
-                        this._dataset.SetDefaultGraph(Enumerable.Empty<Uri>());
+                        _dataset.SetDefaultGraph(Enumerable.Empty<Uri>());
                     }
-                    this._dataset.SetActiveGraph(this._dataset.DefaultGraphUris);
+                    _dataset.SetActiveGraph(_dataset.DefaultGraphUris);
                     datasetOk = true;
 
                     // Convert to Algebra and execute the Query
-                    SparqlEvaluationContext context = this.GetContext(query);
+                    SparqlEvaluationContext context = GetContext(query);
                     BaseMultiset result;
                     try
                     {
@@ -263,8 +263,8 @@ namespace VDS.RDF.Query
                 }
                 finally
                 {
-                    if (defGraphOk) this._dataset.ResetDefaultGraph();
-                    if (datasetOk) this._dataset.ResetActiveGraph();
+                    if (defGraphOk) _dataset.ResetDefaultGraph();
+                    if (datasetOk) _dataset.ResetActiveGraph();
                 }
             }
             finally
@@ -295,7 +295,7 @@ namespace VDS.RDF.Query
         {
             Graph g = new Graph();
             SparqlResultSet rset = new SparqlResultSet();
-            ProcessQueryAsync d = new ProcessQueryAsync(this.ProcessQuery);
+            ProcessQueryAsync d = new ProcessQueryAsync(ProcessQuery);
             d.BeginInvoke(new GraphHandler(g), new ResultSetHandler(rset), query, r =>
             {
                 try
@@ -337,7 +337,7 @@ namespace VDS.RDF.Query
         /// </remarks>
         public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query, QueryCallback callback, Object state)
         {
-            ProcessQueryAsync d = new ProcessQueryAsync(this.ProcessQuery);
+            ProcessQueryAsync d = new ProcessQueryAsync(ProcessQuery);
             d.BeginInvoke(rdfHandler, resultsHandler, query, r =>
             {
                 try
@@ -362,7 +362,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         protected SparqlEvaluationContext GetContext()
         {
-            return this.GetContext(null);
+            return GetContext(null);
         }
 
         /// <summary>
@@ -372,7 +372,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         private SparqlEvaluationContext GetContext(SparqlQuery q)
         {
-            return new SparqlEvaluationContext(q, this._dataset, this.GetProcessorForContext());
+            return new SparqlEvaluationContext(q, _dataset, GetProcessorForContext());
         }
 
         /// <summary>
@@ -381,7 +381,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         private ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> GetProcessorForContext()
         {
-            if (this.GetType().Equals(typeof(LeviathanQueryProcessor)))
+            if (GetType().Equals(typeof(LeviathanQueryProcessor)))
             {
                 return null;
             }
@@ -402,116 +402,116 @@ namespace VDS.RDF.Query
         {
             if (algebra is Ask)
             {
-                return this.ProcessAsk((Ask)algebra, context);
+                return ProcessAsk((Ask)algebra, context);
             }
             else if (algebra is IBgp)
             {
-                return this.ProcessBgp((IBgp)algebra, context);
+                return ProcessBgp((IBgp)algebra, context);
             }
             else if (algebra is Bindings)
             {
-                return this.ProcessBindings((Bindings)algebra, context);
+                return ProcessBindings((Bindings)algebra, context);
             }
             else if (algebra is Distinct)
             {
-                return this.ProcessDistinct((Distinct)algebra, context);
+                return ProcessDistinct((Distinct)algebra, context);
             }
             else if (algebra is Extend)
             {
-                return this.ProcessExtend((Extend)algebra, context);
+                return ProcessExtend((Extend)algebra, context);
             }
             else if (algebra is IExistsJoin)
             {
-                return this.ProcessExistsJoin((IExistsJoin)algebra, context);
+                return ProcessExistsJoin((IExistsJoin)algebra, context);
             }
             else if (algebra is IFilter)
             {
-                return this.ProcessFilter((IFilter)algebra, context);
+                return ProcessFilter((IFilter)algebra, context);
             }
             else if (algebra is Algebra.Graph)
             {
-                return this.ProcessGraph((Algebra.Graph)algebra, context);
+                return ProcessGraph((Algebra.Graph)algebra, context);
             }
             else if (algebra is GroupBy)
             {
-                return this.ProcessGroupBy((GroupBy)algebra, context);
+                return ProcessGroupBy((GroupBy)algebra, context);
             }
             else if (algebra is Having)
             {
-                return this.ProcessHaving((Having)algebra, context);
+                return ProcessHaving((Having)algebra, context);
             }
             else if (algebra is IJoin)
             {
-                return this.ProcessJoin((IJoin)algebra, context);
+                return ProcessJoin((IJoin)algebra, context);
             }
             else if (algebra is ILeftJoin)
             {
-                return this.ProcessLeftJoin((ILeftJoin)algebra, context);
+                return ProcessLeftJoin((ILeftJoin)algebra, context);
             }
             else if (algebra is IMinus)
             {
-                return this.ProcessMinus((IMinus)algebra, context);
+                return ProcessMinus((IMinus)algebra, context);
             }
             else if (algebra is NegatedPropertySet)
             {
-                return this.ProcessNegatedPropertySet((NegatedPropertySet)algebra, context);
+                return ProcessNegatedPropertySet((NegatedPropertySet)algebra, context);
             }
             else if (algebra is NullOperator)
             {
-                return this.ProcessNullOperator((NullOperator)algebra, context);
+                return ProcessNullOperator((NullOperator)algebra, context);
             }
             else if (algebra is OneOrMorePath)
             {
-                return this.ProcessOneOrMorePath((OneOrMorePath)algebra, context);
+                return ProcessOneOrMorePath((OneOrMorePath)algebra, context);
             }
             else if (algebra is OrderBy)
             {
-                return this.ProcessOrderBy((OrderBy)algebra, context);
+                return ProcessOrderBy((OrderBy)algebra, context);
             }
             else if (algebra is PropertyPath)
             {
-                return this.ProcessPropertyPath((PropertyPath)algebra, context);
+                return ProcessPropertyPath((PropertyPath)algebra, context);
             }
             else if (algebra is Reduced)
             {
-                return this.ProcessReduced((Reduced)algebra, context);
+                return ProcessReduced((Reduced)algebra, context);
             }
             else if (algebra is Select)
             {
-                return this.ProcessSelect((Select)algebra, context);
+                return ProcessSelect((Select)algebra, context);
             }
             else if (algebra is SelectDistinctGraphs)
             {
-                return this.ProcessSelectDistinctGraphs((SelectDistinctGraphs)algebra, context);
+                return ProcessSelectDistinctGraphs((SelectDistinctGraphs)algebra, context);
             }
             else if (algebra is Service)
             {
-                return this.ProcessService((Service)algebra, context);
+                return ProcessService((Service)algebra, context);
             }
             else if (algebra is Slice)
             {
-                return this.ProcessSlice((Slice)algebra, context);
+                return ProcessSlice((Slice)algebra, context);
             }
             else if (algebra is SubQuery)
             {
-                return this.ProcessSubQuery((SubQuery)algebra, context);
+                return ProcessSubQuery((SubQuery)algebra, context);
             }
             else if (algebra is IUnion)
             {
-                return this.ProcessUnion((IUnion)algebra, context);
+                return ProcessUnion((IUnion)algebra, context);
             }
             else if (algebra is ZeroLengthPath)
             {
-                return this.ProcessZeroLengthPath((ZeroLengthPath)algebra, context);
+                return ProcessZeroLengthPath((ZeroLengthPath)algebra, context);
             }
             else if (algebra is ZeroOrMorePath)
             {
-                return this.ProcessZeroOrMorePath((ZeroOrMorePath)algebra, context);
+                return ProcessZeroOrMorePath((ZeroOrMorePath)algebra, context);
             }
             else
             {
                 // Unknown Algebra
-                return this.ProcessUnknownOperator(algebra, context);
+                return ProcessUnknownOperator(algebra, context);
             }
         }
 
@@ -522,7 +522,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public virtual BaseMultiset ProcessAsk(Ask ask, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return ask.Evaluate(context);
         }
 
@@ -533,7 +533,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public virtual BaseMultiset ProcessBgp(IBgp bgp, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return bgp.Evaluate(context);
         }
 
@@ -544,7 +544,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public virtual BaseMultiset ProcessBindings(Bindings b, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return b.Evaluate(context);
         }
 
@@ -555,7 +555,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public virtual BaseMultiset ProcessDistinct(Distinct distinct, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return distinct.Evaluate(context);
         }
 
@@ -566,7 +566,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public virtual BaseMultiset ProcessExtend(Extend extend, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return extend.Evaluate(context);
         }
 
@@ -577,7 +577,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public virtual BaseMultiset ProcessExistsJoin(IExistsJoin existsJoin, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return existsJoin.Evaluate(context);
         }
 
@@ -588,7 +588,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public virtual BaseMultiset ProcessFilter(IFilter filter, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return filter.Evaluate(context);
         }
 
@@ -599,7 +599,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public virtual BaseMultiset ProcessGraph(Algebra.Graph graph, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return graph.Evaluate(context);
         }
 
@@ -610,7 +610,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public virtual BaseMultiset ProcessGroupBy(GroupBy groupBy, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return groupBy.Evaluate(context);
         }
 
@@ -621,7 +621,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public virtual BaseMultiset ProcessHaving(Having having, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return having.Evaluate(context);
         }
 
@@ -632,7 +632,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public virtual BaseMultiset ProcessJoin(IJoin join, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return join.Evaluate(context);
         }
 
@@ -643,7 +643,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public virtual BaseMultiset ProcessLeftJoin(ILeftJoin leftJoin, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return leftJoin.Evaluate(context);
         }
 
@@ -654,7 +654,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public virtual BaseMultiset ProcessMinus(IMinus minus, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return minus.Evaluate(context);
         }
 
@@ -666,7 +666,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public virtual BaseMultiset ProcessNegatedPropertySet(NegatedPropertySet negPropSet, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return negPropSet.Evaluate(context);
         }
 
@@ -678,7 +678,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public virtual BaseMultiset ProcessNullOperator(NullOperator nullOp, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return nullOp.Evaluate(context);
         }
 
@@ -690,7 +690,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public virtual BaseMultiset ProcessOneOrMorePath(OneOrMorePath path, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return path.Evaluate(context);
         }
 
@@ -701,7 +701,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public virtual BaseMultiset ProcessOrderBy(OrderBy orderBy, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return orderBy.Evaluate(context);
         }
 
@@ -713,7 +713,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public virtual BaseMultiset ProcessPropertyPath(PropertyPath path, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return path.Evaluate(context);
         }
 
@@ -724,7 +724,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public virtual BaseMultiset ProcessReduced(Reduced reduced, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return reduced.Evaluate(context);
         }
 
@@ -735,7 +735,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public virtual BaseMultiset ProcessSelect(Select select, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return select.Evaluate(context);
         }
 
@@ -746,7 +746,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public virtual BaseMultiset ProcessSelectDistinctGraphs(SelectDistinctGraphs selDistGraphs, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return selDistGraphs.Evaluate(context);
         }
 
@@ -757,7 +757,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public virtual BaseMultiset ProcessService(Service service, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return service.Evaluate(context);
         }
 
@@ -768,7 +768,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public virtual BaseMultiset ProcessSlice(Slice slice, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return slice.Evaluate(context);
         }
 
@@ -780,7 +780,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public virtual BaseMultiset ProcessSubQuery(SubQuery subquery, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return subquery.Evaluate(context);
         }
 
@@ -791,7 +791,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public virtual BaseMultiset ProcessUnion(IUnion union, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return union.Evaluate(context);
         }
 
@@ -802,7 +802,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public virtual BaseMultiset ProcessUnknownOperator(ISparqlAlgebra algebra, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return algebra.Evaluate(context);
         }
 
@@ -814,7 +814,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public virtual BaseMultiset ProcessZeroLengthPath(ZeroLengthPath path, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return path.Evaluate(context);
         }
 
@@ -826,7 +826,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public virtual BaseMultiset ProcessZeroOrMorePath(ZeroOrMorePath path, SparqlEvaluationContext context)
         {
-            if (context == null) context = this.GetContext();
+            if (context == null) context = GetContext();
             return path.Evaluate(context);
         }
 

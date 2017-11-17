@@ -43,7 +43,7 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="name">Blank Node ID</param>
         public BlankNodePattern(String name)
         {
-            this._name = "_:" + name;
+            _name = "_:" + name;
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace VDS.RDF.Query.Patterns
         public BlankNodePattern(String name, bool rigorousEvaluation)
             : this(name)
         {
-            this.RigorousEvaluation = rigorousEvaluation;
+            RigorousEvaluation = rigorousEvaluation;
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._name;
+                return _name;
             }
         }
 
@@ -76,13 +76,13 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         protected internal override bool Accepts(SparqlEvaluationContext context, INode obj)
         {
-            if (Options.RigorousEvaluation || this.RigorousEvaluation)
+            if (Options.RigorousEvaluation || RigorousEvaluation)
             {
-                if (context.InputMultiset.ContainsVariable(this._name))
+                if (context.InputMultiset.ContainsVariable(_name))
                 {
-                    return context.InputMultiset.ContainsValue(this._name, obj);
+                    return context.InputMultiset.ContainsValue(_name, obj);
                 }
-                else if (this.Repeated)
+                else if (Repeated)
                 {
                     return true;
                 }
@@ -104,7 +104,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         protected internal override INode Construct(ConstructContext context)
         {
-            return context.GetBlankNode(this._name);
+            return context.GetBlankNode(_name);
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public override string ToString()
         {
-            return this._name;
+            return _name;
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._name;
+                return _name;
             }
         }
     }

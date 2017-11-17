@@ -75,7 +75,7 @@ namespace VDS.RDF.Parsing
             TokenQueueMode = Options.DefaultTokenQueueMode;
             TraceParsing = false;
             TraceTokeniser = false;
-            this.Syntax = syntax;
+            Syntax = syntax;
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace VDS.RDF.Parsing
         public NTriplesParser(TokenQueueMode qmode)
             : this()
         {
-            this.TokenQueueMode = qmode;
+            TokenQueueMode = qmode;
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace VDS.RDF.Parsing
         public NTriplesParser(NTriplesSyntax syntax, TokenQueueMode qmode)
             : this(syntax)
         {
-            this.TokenQueueMode = qmode;
+            TokenQueueMode = qmode;
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace VDS.RDF.Parsing
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
 
-            this.Load(new GraphHandler(g), input);
+            Load(new GraphHandler(g), input);
         }
 
         /// <summary>
@@ -143,7 +143,7 @@ namespace VDS.RDF.Parsing
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
 
-            this.Load(new GraphHandler(g), input);
+            Load(new GraphHandler(g), input);
         }
 
         /// <summary>
@@ -160,7 +160,7 @@ namespace VDS.RDF.Parsing
             // Can only open Streams as ASCII when not running under Silverlight as Silverlight has no ASCII support
             // However if we are parsing RDF 1.1 NTriples then we use UTF-8 anyway so that doesn't matter
             StreamReader input;
-            switch (this.Syntax)
+            switch (Syntax)
             {
                 case NTriplesSyntax.Original:
                     // Original NTriples uses ASCII encoding
@@ -171,7 +171,7 @@ namespace VDS.RDF.Parsing
                     input = new StreamReader(File.OpenRead(filename), Encoding.UTF8);
                     break;
             }
-            this.Load(g, input);
+            Load(g, input);
         }
 
         /// <summary>
@@ -185,24 +185,24 @@ namespace VDS.RDF.Parsing
             if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
 
             // Check for incorrect stream encoding and issue warning if appropriate
-            switch (this.Syntax)
+            switch (Syntax)
             {
                 case NTriplesSyntax.Original:
                     // Issue a Warning if the Encoding of the Stream is not ASCII
                     if (!input.CurrentEncoding.Equals(Encoding.ASCII))
                     {
-                        this.RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+                        RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
                     }
                     break;
                 default:
                     if (!input.CurrentEncoding.Equals(Encoding.UTF8))
                     {
-                        this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+                        RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
                     }
                     break;
             }
 
-            this.Load(handler, (TextReader) input);
+            Load(handler, (TextReader) input);
         }
 
         /// <summary>
@@ -217,8 +217,8 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                TokenisingParserContext context = new TokenisingParserContext(handler, new NTriplesTokeniser(input, this.Syntax), this.TokenQueueMode, this.TraceParsing, this.TraceTokeniser);
-                this.Parse(context);
+                TokenisingParserContext context = new TokenisingParserContext(handler, new NTriplesTokeniser(input, Syntax), TokenQueueMode, TraceParsing, TraceTokeniser);
+                Parse(context);
             }
             catch
             {
@@ -247,7 +247,7 @@ namespace VDS.RDF.Parsing
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-            this.Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
+            Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
         }
 
         private void Parse(TokenisingParserContext context)
@@ -278,7 +278,7 @@ namespace VDS.RDF.Parsing
                     }
                     if (next.TokenType == Token.EOF) break;
 
-                    this.TryParseTriple(context);
+                    TryParseTriple(context);
 
                     next = context.Tokens.Peek();
                 }
@@ -301,9 +301,9 @@ namespace VDS.RDF.Parsing
         private void TryParseTriple(TokenisingParserContext context)
         {
             // Get the Subject, Predicate and Object
-            INode subj = this.TryParseSubject(context);
-            INode pred = this.TryParsePredicate(context);
-            INode obj = this.TryParseObject(context);
+            INode subj = TryParseSubject(context);
+            INode pred = TryParsePredicate(context);
+            INode obj = TryParseObject(context);
 
             // Ensure we're terminated by a DOT
             TryParseLineTerminator(context);
@@ -478,10 +478,10 @@ namespace VDS.RDF.Parsing
         /// <param name="message">Warning Message</param>
         private void RaiseWarning(String message)
         {
-            if (this.Warning != null)
+            if (Warning != null)
             {
                 // Raise Event
-                this.Warning(message);
+                Warning(message);
             }
         }
 

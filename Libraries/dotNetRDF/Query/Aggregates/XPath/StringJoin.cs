@@ -54,7 +54,7 @@ namespace VDS.RDF.Query.Aggregates.XPath
         public StringJoinAggregate(ISparqlExpression expr)
             : this(expr, new ConstantTerm(new LiteralNode(null, String.Empty)))
         {
-            this._customSep = false;
+            _customSep = false;
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace VDS.RDF.Query.Aggregates.XPath
         public StringJoinAggregate(ISparqlExpression expr, ISparqlExpression sep)
             : base(expr)
         {
-            this._sep = sep;
+            _sep = sep;
         }
 
         /// <summary>
@@ -83,10 +83,10 @@ namespace VDS.RDF.Query.Aggregates.XPath
             {
                 try
                 {
-                    String temp = this.ValueInternal(context, ids[i]);
+                    String temp = ValueInternal(context, ids[i]);
 
                     // Apply DISTINCT modifer if required
-                    if (this._distinct)
+                    if (_distinct)
                     {
                         if (values.Contains(temp))
                         {
@@ -107,7 +107,7 @@ namespace VDS.RDF.Query.Aggregates.XPath
                 // Append Separator if required
                 if (i < ids.Count - 1)
                 {
-                    String sep = this.GetSeparator(context, ids[i]);
+                    String sep = GetSeparator(context, ids[i]);
                     output.Append(sep);
                 }
             }
@@ -123,7 +123,7 @@ namespace VDS.RDF.Query.Aggregates.XPath
         /// <returns></returns>
         protected virtual String ValueInternal(SparqlEvaluationContext context, int bindingID)
         {
-            IValuedNode temp = this._expr.Evaluate(context, bindingID);
+            IValuedNode temp = _expr.Evaluate(context, bindingID);
             if (temp == null) throw new RdfQueryException("Cannot do an XPath string-join on a null");
             if (temp.NodeType == NodeType.Literal)
             {
@@ -158,7 +158,7 @@ namespace VDS.RDF.Query.Aggregates.XPath
         /// <returns></returns>
         private String GetSeparator(SparqlEvaluationContext context, int bindingID)
         {
-            INode temp = this._sep.Evaluate(context, bindingID);
+            INode temp = _sep.Evaluate(context, bindingID);
             if (temp == null)
             {
                 return String.Empty;
@@ -199,11 +199,11 @@ namespace VDS.RDF.Query.Aggregates.XPath
             output.Append(XPathFunctionFactory.XPathFunctionsNamespace);
             output.Append(XPathFunctionFactory.StringJoin);
             output.Append(">(");
-            if (this._distinct) output.Append("DISTINCT ");
-            output.Append(this._expr.ToString());
-            if (this._customSep)
+            if (_distinct) output.Append("DISTINCT ");
+            output.Append(_expr.ToString());
+            if (_customSep)
             {
-                output.Append(this._sep.ToString());
+                output.Append(_sep.ToString());
             }
             output.Append(')');
             return output.ToString();

@@ -53,11 +53,11 @@ namespace VDS.RDF.Query.Grouping
         {
             get
             {
-                return this._child;
+                return _child;
             }
             set
             {
-                this._child = value;
+                _child = value;
             }
         }
 
@@ -107,11 +107,11 @@ namespace VDS.RDF.Query.Grouping
         {
             get
             {
-                return this._assignVariable;
+                return _assignVariable;
             }
             set
             {
-                this._assignVariable = value;
+                _assignVariable = value;
             }
         }
     }
@@ -130,7 +130,7 @@ namespace VDS.RDF.Query.Grouping
         /// <param name="name">Variable Name</param>
         public GroupByVariable(String name)
         {
-            this._name = name;
+            _name = name;
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace VDS.RDF.Query.Grouping
         public GroupByVariable(String name, String assignVariable)
             : this(name)
         {
-            this.AssignVariable = assignVariable;
+            AssignVariable = assignVariable;
         }
 
         /// <summary>
@@ -156,16 +156,16 @@ namespace VDS.RDF.Query.Grouping
 
             foreach (int id in context.Binder.BindingIDs)
             {
-                INode value = context.Binder.Value(this._name, id);
+                INode value = context.Binder.Value(_name, id);
 
                 if (value != null)
                 {
                     if (!groups.ContainsKey(value))
                     {
                         groups.Add(value, new BindingGroup());
-                        if (this.AssignVariable != null)
+                        if (AssignVariable != null)
                         {
-                            groups[value].AddAssignment(this.AssignVariable, value);
+                            groups[value].AddAssignment(AssignVariable, value);
                         }
                     }
 
@@ -181,15 +181,15 @@ namespace VDS.RDF.Query.Grouping
             if (nulls.Any())
             {
                 outGroups.Add(nulls);
-                if (this.AssignVariable != null) nulls.AddAssignment(this.AssignVariable, null);
+                if (AssignVariable != null) nulls.AddAssignment(AssignVariable, null);
             }
-            if (this._child == null)
+            if (_child == null)
             {
                 return outGroups;
             }
             else
             {
-                return this._child.Apply(context, outGroups);
+                return _child.Apply(context, outGroups);
             }
         }
 
@@ -210,16 +210,16 @@ namespace VDS.RDF.Query.Grouping
 
                 foreach (int id in group.BindingIDs)
                 {
-                    INode value = context.Binder.Value(this._name, id);
+                    INode value = context.Binder.Value(_name, id);
 
                     if (value != null)
                     {
                         if (!subgroups.ContainsKey(value))
                         {
                             subgroups.Add(value, new BindingGroup(group));
-                            if (this.AssignVariable != null)
+                            if (AssignVariable != null)
                             {
-                                subgroups[value].AddAssignment(this.AssignVariable, value);
+                                subgroups[value].AddAssignment(AssignVariable, value);
                             }
                         }
 
@@ -238,17 +238,17 @@ namespace VDS.RDF.Query.Grouping
                 if (nulls.Any())
                 {
                     outgroups.Add(nulls);
-                    if (this.AssignVariable != null) nulls.AddAssignment(this.AssignVariable, null);
+                    if (AssignVariable != null) nulls.AddAssignment(AssignVariable, null);
                 }
             }
 
-            if (this._child == null)
+            if (_child == null)
             {
                 return outgroups;
             }
             else
             {
-                return this._child.Apply(context, outgroups);
+                return _child.Apply(context, outgroups);
             }
         }
 
@@ -259,13 +259,13 @@ namespace VDS.RDF.Query.Grouping
         {
             get 
             {
-                if (this._child == null)
+                if (_child == null)
                 {
-                    return this._name.AsEnumerable<String>();
+                    return _name.AsEnumerable<String>();
                 }
                 else
                 {
-                    return this._child.Variables.Concat(this._name.AsEnumerable<String>());
+                    return _child.Variables.Concat(_name.AsEnumerable<String>());
                 }
             }
         }
@@ -278,10 +278,10 @@ namespace VDS.RDF.Query.Grouping
             get
             {
                 List<String> vars = new List<string>();
-                if (this.AssignVariable != null) vars.Add(this.AssignVariable);
-                vars.Add(this._name);
+                if (AssignVariable != null) vars.Add(AssignVariable);
+                vars.Add(_name);
 
-                if (this._child != null) vars.AddRange(this._child.ProjectableVariables);
+                if (_child != null) vars.AddRange(_child.ProjectableVariables);
                 return vars.Distinct();
             }
         }
@@ -293,7 +293,7 @@ namespace VDS.RDF.Query.Grouping
         {
             get 
             {
-                return new VariableTerm(this._name); 
+                return new VariableTerm(_name); 
             }
         }
 
@@ -304,23 +304,23 @@ namespace VDS.RDF.Query.Grouping
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            if (this.AssignVariable != null && !this.AssignVariable.Equals(this._name))
+            if (AssignVariable != null && !AssignVariable.Equals(_name))
             {
                 output.Append('(');
             }
             output.Append('?');
-            output.Append(this._name);
-            if (this.AssignVariable != null && !this.AssignVariable.Equals(this._name))
+            output.Append(_name);
+            if (AssignVariable != null && !AssignVariable.Equals(_name))
             {
                 output.Append(" AS ?");
-                output.Append(this.AssignVariable);
+                output.Append(AssignVariable);
                 output.Append(')');
             }
 
-            if (this._child != null)
+            if (_child != null)
             {
                 output.Append(' ');
-                output.Append(this._child.ToString());
+                output.Append(_child.ToString());
             }
 
             return output.ToString();
@@ -341,7 +341,7 @@ namespace VDS.RDF.Query.Grouping
         /// <param name="expr">Expression</param>
         public GroupByExpression(ISparqlExpression expr)
         {
-            this._expr = expr;
+            _expr = expr;
         }
 
         /// <summary>
@@ -359,16 +359,16 @@ namespace VDS.RDF.Query.Grouping
             {
                 try
                 {
-                    INode value = this._expr.Evaluate(context, id);
+                    INode value = _expr.Evaluate(context, id);
 
                     if (value != null)
                     {
                         if (!groups.ContainsKey(value))
                         {
                             groups.Add(value, new BindingGroup());
-                            if (this.AssignVariable != null)
+                            if (AssignVariable != null)
                             {
-                                groups[value].AddAssignment(this.AssignVariable, value);
+                                groups[value].AddAssignment(AssignVariable, value);
                             }
                         }
 
@@ -391,17 +391,17 @@ namespace VDS.RDF.Query.Grouping
             if (error.BindingIDs.Any())
             {
                 parentGroups.Add(error);
-                if (this.AssignVariable != null) error.AddAssignment(this.AssignVariable, null);
+                if (AssignVariable != null) error.AddAssignment(AssignVariable, null);
             }
             if (nulls.BindingIDs.Any())
             {
                 parentGroups.Add(nulls);
-                if (this.AssignVariable != null) nulls.AddAssignment(this.AssignVariable, null);
+                if (AssignVariable != null) nulls.AddAssignment(AssignVariable, null);
             }
 
-            if (this._child != null)
+            if (_child != null)
             {
-                return this._child.Apply(context, parentGroups);
+                return _child.Apply(context, parentGroups);
             }
             else
             {
@@ -429,16 +429,16 @@ namespace VDS.RDF.Query.Grouping
                 {
                     try
                     {
-                        INode value = this._expr.Evaluate(context, id);
+                        INode value = _expr.Evaluate(context, id);
 
                         if (value != null)
                         {
                             if (!subgroups.ContainsKey(value))
                             {
                                 subgroups.Add(value, new BindingGroup(group));
-                                if (this.AssignVariable != null)
+                                if (AssignVariable != null)
                                 {
-                                    subgroups[value].AddAssignment(this.AssignVariable, value);
+                                    subgroups[value].AddAssignment(AssignVariable, value);
                                 }
                             }
 
@@ -464,24 +464,24 @@ namespace VDS.RDF.Query.Grouping
                 if (error.BindingIDs.Any())
                 {
                     outgroups.Add(error);
-                    if (this.AssignVariable != null) error.AddAssignment(this.AssignVariable, null);
+                    if (AssignVariable != null) error.AddAssignment(AssignVariable, null);
                     error = new BindingGroup();
                 }
                 if (nulls.BindingIDs.Any())
                 {
                     outgroups.Add(nulls);
-                    if (this.AssignVariable != null) nulls.AddAssignment(this.AssignVariable, null);
+                    if (AssignVariable != null) nulls.AddAssignment(AssignVariable, null);
                     nulls = new BindingGroup();
                 }
             }
 
-            if (this._child == null)
+            if (_child == null)
             {
                 return outgroups;
             }
             else
             {
-                return this._child.Apply(context, outgroups);
+                return _child.Apply(context, outgroups);
             }
         }
 
@@ -492,13 +492,13 @@ namespace VDS.RDF.Query.Grouping
         {
             get
             {
-                if (this._child == null)
+                if (_child == null)
                 {
-                    return this._expr.Variables;
+                    return _expr.Variables;
                 }
                 else
                 {
-                    return this._expr.Variables.Concat(this._child.Variables);
+                    return _expr.Variables.Concat(_child.Variables);
                 }
             }
         }
@@ -511,13 +511,13 @@ namespace VDS.RDF.Query.Grouping
             get
             {
                 List<String> vars = new List<string>();
-                if (this.AssignVariable != null) vars.Add(this.AssignVariable);
-                if (this._expr is VariableTerm)
+                if (AssignVariable != null) vars.Add(AssignVariable);
+                if (_expr is VariableTerm)
                 {
-                    vars.AddRange(this._expr.Variables);
+                    vars.AddRange(_expr.Variables);
                 }
 
-                if (this._child != null) vars.AddRange(this._child.ProjectableVariables);
+                if (_child != null) vars.AddRange(_child.ProjectableVariables);
                 return vars.Distinct();
             }
         }
@@ -529,7 +529,7 @@ namespace VDS.RDF.Query.Grouping
         {
             get 
             {
-                return this._expr;
+                return _expr;
             }
         }
 
@@ -541,18 +541,18 @@ namespace VDS.RDF.Query.Grouping
         {
             StringBuilder output = new StringBuilder();
             output.Append('(');
-            output.Append(this._expr.ToString());
-            if (this.AssignVariable != null)
+            output.Append(_expr.ToString());
+            if (AssignVariable != null)
             {
                 output.Append(" AS ?");
-                output.Append(this.AssignVariable);
+                output.Append(AssignVariable);
             }
             output.Append(')');
 
-            if (this._child != null)
+            if (_child != null)
             {
                 output.Append(' ');
-                output.Append(this._child.ToString());
+                output.Append(_child.ToString());
             }
 
             return output.ToString();

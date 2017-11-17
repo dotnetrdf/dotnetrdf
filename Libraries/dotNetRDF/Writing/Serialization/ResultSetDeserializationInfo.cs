@@ -45,15 +45,15 @@ namespace VDS.RDF.Writing.Serialization
 
         public ResultSetDeserializationInfo(SerializationInfo info, StreamingContext context)
         {
-            this._type = (SparqlResultsType)info.GetValue("type", typeof(SparqlResultsType));
-            switch (this._type)
+            _type = (SparqlResultsType)info.GetValue("type", typeof(SparqlResultsType));
+            switch (_type)
             {
                 case SparqlResultsType.Boolean:
-                    this._r = info.GetBoolean("result");
+                    _r = info.GetBoolean("result");
                     break;
                 case SparqlResultsType.VariableBindings:
-                    this._vars = (List<String>)info.GetValue("variables", typeof(List<String>));
-                    this._results = (List<SparqlResult>)info.GetValue("results", typeof(List<SparqlResult>));
+                    _vars = (List<String>)info.GetValue("variables", typeof(List<String>));
+                    _results = (List<SparqlResult>)info.GetValue("results", typeof(List<SparqlResult>));
                     break;
                 default:
                     throw new RdfParseException("The type property of a serialized SparqlResultSet did not contain a valid value");
@@ -62,17 +62,17 @@ namespace VDS.RDF.Writing.Serialization
 
         public void Apply(SparqlResultSet results)
         {
-            switch (this._type)
+            switch (_type)
             {
                 case SparqlResultsType.Boolean:
-                    results.SetResult(this._r);
+                    results.SetResult(_r);
                     break;
                 case SparqlResultsType.VariableBindings:
-                    foreach (String var in this._vars)
+                    foreach (String var in _vars)
                     {
                         results.AddVariable(var);
                     }
-                    foreach (SparqlResult res in this._results)
+                    foreach (SparqlResult res in _results)
                     {
                         results.AddResult(res);
                     }

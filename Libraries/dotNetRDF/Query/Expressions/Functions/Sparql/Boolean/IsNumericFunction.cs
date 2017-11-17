@@ -49,7 +49,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            IValuedNode result = this._expr.Evaluate(context, bindingID);
+            IValuedNode result = _expr.Evaluate(context, bindingID);
             return new BooleanNode(null, result.NumericType != SparqlNumericType.NaN);
         }
 
@@ -81,7 +81,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordIsNumeric + "(" + this._expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordIsNumeric + "(" + _expr.ToString() + ")";
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new IsNumericFunction(transformer.Transform(this._expr));
+            return new IsNumericFunction(transformer.Transform(_expr));
         }
     }
 }

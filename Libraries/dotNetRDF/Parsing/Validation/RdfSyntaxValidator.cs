@@ -47,7 +47,7 @@ namespace VDS.RDF.Parsing.Validation
         /// <param name="parser">Parser</param>
         public RdfSyntaxValidator(IRdfReader parser)
         {
-            this._parser = parser;
+            _parser = parser;
         }
 
         /// <summary>
@@ -61,24 +61,24 @@ namespace VDS.RDF.Parsing.Validation
             try
             {
                 CountHandler handler = new CountHandler();
-                this._parser.Load(handler, new StringReader(data));
+                _parser.Load(handler, new StringReader(data));
 
-                message = "Valid RDF - " + handler.Count + " Triples - Parser: " + this._parser.GetType().Name;
+                message = "Valid RDF - " + handler.Count + " Triples - Parser: " + _parser.GetType().Name;
                 return new SyntaxValidationResults(true, message, handler);
             }
             catch (RdfParseException parseEx)
             {
-                message = "Invalid RDF - Parsing Error from Parser: " + this._parser.GetType().Name + " - " + parseEx.Message;
+                message = "Invalid RDF - Parsing Error from Parser: " + _parser.GetType().Name + " - " + parseEx.Message;
                 return new SyntaxValidationResults(message, parseEx);
             }
             catch (RdfException rdfEx)
             {
-                message = "Invalid RDF - RDF Error from Parser: " + this._parser.GetType().Name + " - " + rdfEx.Message;
+                message = "Invalid RDF - RDF Error from Parser: " + _parser.GetType().Name + " - " + rdfEx.Message;
                 return new SyntaxValidationResults(message, rdfEx);
             }
             catch (Exception ex)
             {
-                message = "Invalid RDF - Error from Parser: " + this._parser.GetType().Name + " - " + ex.Message;
+                message = "Invalid RDF - Error from Parser: " + _parser.GetType().Name + " - " + ex.Message;
                 return new SyntaxValidationResults(message, ex);
             }
         }
@@ -99,13 +99,13 @@ namespace VDS.RDF.Parsing.Validation
         public RdfStrictSyntaxValidator(IRdfReader parser)
             : base(parser)
         {
-            parser.Warning += this.OnWarning;
+            parser.Warning += OnWarning;
         }
 
         private void OnWarning(String message)
         {
-            this._gotWarning = true;
-            this._messages.Add(message);
+            _gotWarning = true;
+            _messages.Add(message);
         }
 
         /// <summary>
@@ -118,41 +118,41 @@ namespace VDS.RDF.Parsing.Validation
             String message;
             try
             {
-                this._gotWarning = false;
-                this._messages.Clear();
+                _gotWarning = false;
+                _messages.Clear();
                 CountHandler handler = new CountHandler();
-                this._parser.Load(handler, new StringReader(data));
+                _parser.Load(handler, new StringReader(data));
 
-                if (!this._gotWarning)
+                if (!_gotWarning)
                 {
-                    message = "Valid RDF - " + handler.Count + " Triples - Parser: " + this._parser.GetType().Name;
+                    message = "Valid RDF - " + handler.Count + " Triples - Parser: " + _parser.GetType().Name;
                     return new SyntaxValidationResults(true, message, handler);
                 }
                 else
                 {
-                    message = "Valid RDF with Warnings - " + handler.Count + " Triples - Parser: " + this._parser.GetType().Name + " - " + this._messages.Count + " Warnings";
+                    message = "Valid RDF with Warnings - " + handler.Count + " Triples - Parser: " + _parser.GetType().Name + " - " + _messages.Count + " Warnings";
                     int i = 1;
-                    foreach (String m in this._messages)
+                    foreach (String m in _messages)
                     {
                         message += "\n" + i + " - " + m;
                         i++;
                     }
-                    return new SyntaxValidationResults(false, message, handler, this._messages);
+                    return new SyntaxValidationResults(false, message, handler, _messages);
                 }
             }
             catch (RdfParseException parseEx)
             {
-                message = "Invalid RDF - Parsing Error from Parser: " + this._parser.GetType().Name + " - " + parseEx.Message;
+                message = "Invalid RDF - Parsing Error from Parser: " + _parser.GetType().Name + " - " + parseEx.Message;
                 return new SyntaxValidationResults(message, parseEx);
             }
             catch (RdfException rdfEx)
             {
-                message = "Invalid RDF - RDF Error from Parser: " + this._parser.GetType().Name + " - " + rdfEx.Message;
+                message = "Invalid RDF - RDF Error from Parser: " + _parser.GetType().Name + " - " + rdfEx.Message;
                 return new SyntaxValidationResults(message, rdfEx);
             }
             catch (Exception ex)
             {
-                message = "Invalid RDF - Error from Parser: " + this._parser.GetType().Name + " - " + ex.Message;
+                message = "Invalid RDF - Error from Parser: " + _parser.GetType().Name + " - " + ex.Message;
                 return new SyntaxValidationResults(message, ex);
             }
         }

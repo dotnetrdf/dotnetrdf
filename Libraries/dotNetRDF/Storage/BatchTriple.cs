@@ -44,8 +44,8 @@ namespace VDS.RDF.Storage
         /// <param name="graphID">Graph ID to store Triple for</param>
         public BatchTriple(Triple t, String graphID)
         {
-            this._t = t;
-            this._graphID = graphID;
+            _t = t;
+            _graphID = graphID;
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace VDS.RDF.Storage
         {
             get
             {
-                return this._t;
+                return _t;
             }
         }
 
@@ -66,7 +66,7 @@ namespace VDS.RDF.Storage
         {
             get
             {
-                return this._graphID;
+                return _graphID;
             }
         }
 
@@ -80,7 +80,7 @@ namespace VDS.RDF.Storage
             if (obj is BatchTriple)
             {
                 BatchTriple other = (BatchTriple)obj;
-                return this._graphID == other.GraphID && this._t.Equals(other.Triple);
+                return _graphID == other.GraphID && _t.Equals(other.Triple);
             }
             else
             {
@@ -94,7 +94,7 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public override int GetHashCode()
         {
-            return (this._graphID + this._t.GetHashCode()).GetHashCode();
+            return (_graphID + _t.GetHashCode()).GetHashCode();
         }
     }
 }

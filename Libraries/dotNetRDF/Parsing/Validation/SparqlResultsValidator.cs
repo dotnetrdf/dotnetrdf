@@ -42,7 +42,7 @@ namespace VDS.RDF.Parsing.Validation
         /// <param name="parser">SPARQL Results Parser</param>
         public SparqlResultsValidator(ISparqlResultsReader parser)
         {
-            this._parser = parser;
+            _parser = parser;
         }
 
         /// <summary>
@@ -57,23 +57,23 @@ namespace VDS.RDF.Parsing.Validation
             {
                 SparqlResultSet results = new SparqlResultSet();
                 StringParser.ParseResultSet(results, data);
-                message = "Valid SPARQL Results - " + results.Count + " Results - Parser: " + this._parser.GetType().Name;
+                message = "Valid SPARQL Results - " + results.Count + " Results - Parser: " + _parser.GetType().Name;
 
                 return new SyntaxValidationResults(true, message, results);
             }
             catch (RdfParseException parseEx)
             {
-                message = "Invalid SPARQL Results - Parsing Error from Parser: " + this._parser.GetType().Name + " - " + parseEx.Message;
+                message = "Invalid SPARQL Results - Parsing Error from Parser: " + _parser.GetType().Name + " - " + parseEx.Message;
                 return new SyntaxValidationResults(message, parseEx);
             }
             catch (RdfException rdfEx)
             {
-                message = "Invalid SPARQL Results - RDF Error from Parser: " + this._parser.GetType().Name + " - " + rdfEx.Message;
+                message = "Invalid SPARQL Results - RDF Error from Parser: " + _parser.GetType().Name + " - " + rdfEx.Message;
                 return new SyntaxValidationResults(message, rdfEx);
             }
             catch (Exception ex)
             {
-                message = "Invalid SPARQL Results - Error from Parser: " + this._parser.GetType().Name + " - " + ex.Message;
+                message = "Invalid SPARQL Results - Error from Parser: " + _parser.GetType().Name + " - " + ex.Message;
                 return new SyntaxValidationResults(message, ex);
             }
         }

@@ -135,8 +135,8 @@ namespace VDS.RDF
         /// <param name="state">State</param>
         public AsyncError(Exception ex, Object state)
         {
-            this.Error = ex;
-            this.State = state;
+            Error = ex;
+            State = state;
         }
 
         /// <summary>

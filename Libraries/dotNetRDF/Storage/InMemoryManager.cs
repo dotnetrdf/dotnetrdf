@@ -72,7 +72,7 @@ namespace VDS.RDF.Storage
         /// <param name="dataset">Dataset</param>
         public InMemoryManager(ISparqlDataset dataset)
         {
-            this._dataset = dataset;
+            _dataset = dataset;
         }
 
         #region IStorageProvider Members
@@ -84,7 +84,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Graph URI to load</param>
         public override void LoadGraph(IGraph g, Uri graphUri)
         {
-            this.LoadGraph(new GraphHandler(g), graphUri);
+            LoadGraph(new GraphHandler(g), graphUri);
         }
 
         /// <summary>
@@ -95,9 +95,9 @@ namespace VDS.RDF.Storage
         public override void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             IGraph g = null;
-            if (this._dataset.HasGraph(graphUri))
+            if (_dataset.HasGraph(graphUri))
             {
-                g = this._dataset[graphUri];
+                g = _dataset[graphUri];
             }
             handler.Apply(g);
         }
@@ -111,11 +111,11 @@ namespace VDS.RDF.Storage
         {
             if (graphUri == null || graphUri.Equals(String.Empty))
             {
-                this.LoadGraph(g, (Uri)null);
+                LoadGraph(g, (Uri)null);
             }
             else
             {
-                this.LoadGraph(g, UriFactory.Create(graphUri));
+                LoadGraph(g, UriFactory.Create(graphUri));
             }
         }
 
@@ -128,11 +128,11 @@ namespace VDS.RDF.Storage
         {
             if (graphUri == null || graphUri.Equals(String.Empty))
             {
-                this.LoadGraph(handler, (Uri)null);
+                LoadGraph(handler, (Uri)null);
             }
             else
             {
-                this.LoadGraph(handler, UriFactory.Create(graphUri));
+                LoadGraph(handler, UriFactory.Create(graphUri));
             }
         }
 
@@ -142,12 +142,12 @@ namespace VDS.RDF.Storage
         /// <param name="g">Graph</param>
         public override void SaveGraph(IGraph g)
         {
-            if (this._dataset.HasGraph(g.BaseUri))
+            if (_dataset.HasGraph(g.BaseUri))
             {
-                this._dataset.RemoveGraph(g.BaseUri);
+                _dataset.RemoveGraph(g.BaseUri);
             }
-            this._dataset.AddGraph(g);
-            this._dataset.Flush();
+            _dataset.AddGraph(g);
+            _dataset.Flush();
         }
 
         /// <summary>
@@ -169,21 +169,21 @@ namespace VDS.RDF.Storage
         /// <param name="removals">Triples to be removed</param>
         public override void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            if (!this._dataset.HasGraph(graphUri))
+            if (!_dataset.HasGraph(graphUri))
             {
                 Graph temp = new Graph();
                 temp.BaseUri = graphUri;
-                this._dataset.AddGraph(temp);
+                _dataset.AddGraph(temp);
             }
 
             if ((additions != null && additions.Any()) || (removals != null && removals.Any()))
             {
-                IGraph g = this._dataset.GetModifiableGraph(graphUri);
+                IGraph g = _dataset.GetModifiableGraph(graphUri);
                 if (additions != null && additions.Any()) g.Assert(additions.ToList());
                 if (removals != null && removals.Any()) g.Retract(removals.ToList());
             }
 
-            this._dataset.Flush();
+            _dataset.Flush();
         }
 
         /// <summary>
@@ -196,15 +196,15 @@ namespace VDS.RDF.Storage
         {
             if (graphUri == null)
             {
-                this.UpdateGraph((Uri)null, additions, removals);
+                UpdateGraph((Uri)null, additions, removals);
             }
             else if (graphUri.Equals(String.Empty))
             {
-                this.UpdateGraph((Uri)null, additions, removals);
+                UpdateGraph((Uri)null, additions, removals);
             }
             else
             {
-                this.UpdateGraph(UriFactory.Create(graphUri), additions, removals);
+                UpdateGraph(UriFactory.Create(graphUri), additions, removals);
             }
         }
 
@@ -227,15 +227,15 @@ namespace VDS.RDF.Storage
         {
             if (graphUri == null)
             {
-                IGraph g = this._dataset.GetModifiableGraph(graphUri);
+                IGraph g = _dataset.GetModifiableGraph(graphUri);
                 g.Clear();
                 g.Dispose();
             }
             else
             {
-                this._dataset.RemoveGraph(graphUri);
+                _dataset.RemoveGraph(graphUri);
             }
-            this._dataset.Flush();
+            _dataset.Flush();
         }
 
         /// <summary>
@@ -246,15 +246,15 @@ namespace VDS.RDF.Storage
         {
             if (graphUri == null)
             {
-                this.DeleteGraph((Uri)null);
+                DeleteGraph((Uri)null);
             }
             else if (graphUri.Equals(String.Empty))
             {
-                this.DeleteGraph((Uri)null);
+                DeleteGraph((Uri)null);
             }
             else
             {
-                this.DeleteGraph(UriFactory.Create(graphUri));
+                DeleteGraph(UriFactory.Create(graphUri));
             }
         }
 
@@ -275,7 +275,7 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public override IEnumerable<Uri> ListGraphs()
         {
-            return this._dataset.GraphUris;
+            return _dataset.GraphUris;
         }
 
         /// <summary>
@@ -318,11 +318,11 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public Object Query(String sparqlQuery)
         {
-            if (this._queryParser == null) this._queryParser = new SparqlQueryParser();
-            SparqlQuery q = this._queryParser.ParseFromString(sparqlQuery);
+            if (_queryParser == null) _queryParser = new SparqlQueryParser();
+            SparqlQuery q = _queryParser.ParseFromString(sparqlQuery);
 
-            if (this._queryProcessor == null) this._queryProcessor = new LeviathanQueryProcessor(this._dataset);
-            return this._queryProcessor.ProcessQuery(q);
+            if (_queryProcessor == null) _queryProcessor = new LeviathanQueryProcessor(_dataset);
+            return _queryProcessor.ProcessQuery(q);
         }
 
         /// <summary>
@@ -334,11 +334,11 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
-            if (this._queryParser == null) this._queryParser = new SparqlQueryParser();
-            SparqlQuery q = this._queryParser.ParseFromString(sparqlQuery);
+            if (_queryParser == null) _queryParser = new SparqlQueryParser();
+            SparqlQuery q = _queryParser.ParseFromString(sparqlQuery);
 
-            if (this._queryProcessor == null) this._queryProcessor = new LeviathanQueryProcessor(this._dataset);
-            this._queryProcessor.ProcessQuery(rdfHandler, resultsHandler, q);
+            if (_queryProcessor == null) _queryProcessor = new LeviathanQueryProcessor(_dataset);
+            _queryProcessor.ProcessQuery(rdfHandler, resultsHandler, q);
         }
 
         /// <summary>
@@ -347,11 +347,11 @@ namespace VDS.RDF.Storage
         /// <param name="sparqlUpdate">SPARQL Update</param>
         public void Update(String sparqlUpdate)
         {
-            if (this._updateParser == null) this._updateParser = new SparqlUpdateParser();
-            SparqlUpdateCommandSet cmds = this._updateParser.ParseFromString(sparqlUpdate);
+            if (_updateParser == null) _updateParser = new SparqlUpdateParser();
+            SparqlUpdateCommandSet cmds = _updateParser.ParseFromString(sparqlUpdate);
 
-            if (this._updateProcessor == null) this._updateProcessor = new LeviathanUpdateProcessor(this._dataset);
-            this._updateProcessor.ProcessCommandSet(cmds);
+            if (_updateProcessor == null) _updateProcessor = new LeviathanUpdateProcessor(_dataset);
+            _updateProcessor.ProcessCommandSet(cmds);
         }
 
         #endregion
@@ -402,7 +402,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         public override void Dispose()
         {
-            this._dataset.Flush();
+            _dataset.Flush();
         }
 
         #endregion
@@ -430,8 +430,8 @@ namespace VDS.RDF.Storage
             INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
 
             context.Graph.Assert(manager, rdfType, context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassStorageProvider)));
-            context.Graph.Assert(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().ToString()));
-            context.Graph.Assert(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString()));
+            context.Graph.Assert(manager, dnrType, context.Graph.CreateLiteralNode(GetType().ToString()));
+            context.Graph.Assert(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString()));
         }
 
         #endregion

@@ -60,7 +60,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IBlankNode CreateBlankNode(string nodeId)
         {
-            this._bnodeMap.CheckID(ref nodeId);
+            _bnodeMap.CheckID(ref nodeId);
             return new BlankNode(null, nodeId);
         }
 
@@ -141,7 +141,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public string GetNextBlankNodeID()
         {
-            return this._bnodeMap.GetNextID();
+            return _bnodeMap.GetNextID();
         }
 
         #endregion
@@ -171,15 +171,15 @@ namespace VDS.RDF
         {
             get
             {
-                if (this._store.HasGraph(graphUri))
+                if (_store.HasGraph(graphUri))
                 {
-                    return this._store[graphUri];
+                    return _store[graphUri];
                 }
                 else
                 {
                     Graph g = new Graph();
                     g.BaseUri = graphUri;
-                    this._store.Add(g);
+                    _store.Add(g);
                     return g;
                 }
             }
@@ -206,17 +206,17 @@ namespace VDS.RDF
         /// <returns></returns>
         public IGraph TryGetGraph(Uri graphUri, out bool created)
         {
-            if (this._store.HasGraph(graphUri))
+            if (_store.HasGraph(graphUri))
             {
                 created = false;
-                return this._store[graphUri];
+                return _store[graphUri];
             }
             else
             {
                 created = true;
                 Graph g = new Graph();
                 g.BaseUri = graphUri;
-                this._store.Add(g);
+                _store.Add(g);
                 return g;
             }
         }
@@ -226,7 +226,7 @@ namespace VDS.RDF
         /// </summary>
         public void Reset()
         {
-            foreach (IGraph g in this._store.Graphs)
+            foreach (IGraph g in _store.Graphs)
             {
                 g.Clear();
             }
@@ -254,47 +254,47 @@ namespace VDS.RDF
 
         public IBlankNode CreateBlankNode()
         {
-            return this._bnode;
+            return _bnode;
         }
 
         public IBlankNode CreateBlankNode(string nodeId)
         {
-            return this._bnode;
+            return _bnode;
         }
 
         public IGraphLiteralNode CreateGraphLiteralNode()
         {
-            return this._glit;
+            return _glit;
         }
 
         public IGraphLiteralNode CreateGraphLiteralNode(IGraph subgraph)
         {
-            return this._glit;
+            return _glit;
         }
 
         public ILiteralNode CreateLiteralNode(string literal, Uri datatype)
         {
-            return this._lit;
+            return _lit;
         }
 
         public ILiteralNode CreateLiteralNode(string literal)
         {
-            return this._lit;
+            return _lit;
         }
 
         public ILiteralNode CreateLiteralNode(string literal, string langspec)
         {
-            return this._lit;
+            return _lit;
         }
 
         public IUriNode CreateUriNode(Uri uri)
         {
-            return this._uri;
+            return _uri;
         }
 
         public IVariableNode CreateVariableNode(string varname)
         {
-            return this._var;
+            return _var;
         }
 
         public string GetNextBlankNodeID()

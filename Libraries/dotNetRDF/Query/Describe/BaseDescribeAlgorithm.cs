@@ -47,7 +47,7 @@ namespace VDS.RDF.Query.Describe
         public IGraph Describe(SparqlEvaluationContext context)
         {
             Graph g = new Graph();
-            this.Describe(new GraphHandler(g), context);
+            Describe(new GraphHandler(g), context);
             return g;
         }
 
@@ -76,11 +76,11 @@ namespace VDS.RDF.Query.Describe
                 }
 
                 // Get the Nodes needing describing
-                List<INode> nodes = this.GetNodes(handler, context);
+                List<INode> nodes = GetNodes(handler, context);
                 if (nodes.Count > 0)
                 {
                     // If there is at least 1 Node then start describing
-                    this.DescribeInternal(handler, context, nodes);
+                    DescribeInternal(handler, context, nodes);
                 }
 
                 handler.EndRdf(true);

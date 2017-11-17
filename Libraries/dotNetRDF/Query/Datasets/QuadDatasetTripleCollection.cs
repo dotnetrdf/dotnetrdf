@@ -41,38 +41,38 @@ namespace VDS.RDF.Query.Datasets
 
         public QuadDatasetTripleCollection(BaseQuadDataset dataset, Uri graphUri)
         {
-            this._dataset = dataset;
-            this._graphUri = graphUri;
+            _dataset = dataset;
+            _graphUri = graphUri;
         }
 
         protected internal override bool Add(Triple t)
         {
-            return this._dataset.AddQuad(this._graphUri, t);
+            return _dataset.AddQuad(_graphUri, t);
         }
 
         public override bool Contains(Triple t)
         {
-            return this._dataset.ContainsQuad(this._graphUri, t);
+            return _dataset.ContainsQuad(_graphUri, t);
         }
 
         public override int Count
         {
             get 
             {
-                return this._dataset.GetQuads(this._graphUri).Count();
+                return _dataset.GetQuads(_graphUri).Count();
             }
         }
 
         protected internal override bool Delete(Triple t)
         {
-            return this._dataset.RemoveQuad(this._graphUri, t);
+            return _dataset.RemoveQuad(_graphUri, t);
         }
 
         public override Triple this[Triple t]
         {
             get 
             {
-                if (this._dataset.ContainsQuad(this._graphUri, t))
+                if (_dataset.ContainsQuad(_graphUri, t))
                 {
                     return t;
                 }
@@ -87,7 +87,7 @@ namespace VDS.RDF.Query.Datasets
         {
             get 
             {
-                return this._dataset.GetQuads(this._graphUri).Select(t => t.Object).Distinct();
+                return _dataset.GetQuads(_graphUri).Select(t => t.Object).Distinct();
             }
         }
 
@@ -95,7 +95,7 @@ namespace VDS.RDF.Query.Datasets
         {
             get 
             {
-                return this._dataset.GetQuads(this._graphUri).Select(t => t.Predicate).Distinct();
+                return _dataset.GetQuads(_graphUri).Select(t => t.Predicate).Distinct();
             }
         }
 
@@ -103,7 +103,7 @@ namespace VDS.RDF.Query.Datasets
         {
             get 
             {
-                return this._dataset.GetQuads(this._graphUri).Select(t => t.Subject).Distinct(); 
+                return _dataset.GetQuads(_graphUri).Select(t => t.Subject).Distinct(); 
             }
         }
 
@@ -114,37 +114,37 @@ namespace VDS.RDF.Query.Datasets
 
         public override IEnumerator<Triple> GetEnumerator()
         {
-            return this._dataset.GetQuads(this._graphUri).GetEnumerator();
+            return _dataset.GetQuads(_graphUri).GetEnumerator();
         }
 
         public override IEnumerable<Triple> WithObject(INode obj)
         {
-            return this._dataset.GetQuadsWithObject(this._graphUri, obj);
+            return _dataset.GetQuadsWithObject(_graphUri, obj);
         }
 
         public override IEnumerable<Triple> WithPredicate(INode pred)
         {
-            return this._dataset.GetQuadsWithPredicate(this._graphUri, pred);
+            return _dataset.GetQuadsWithPredicate(_graphUri, pred);
         }
 
         public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
         {
-            return this._dataset.GetQuadsWithPredicateObject(this._graphUri, pred, obj);
+            return _dataset.GetQuadsWithPredicateObject(_graphUri, pred, obj);
         }
 
         public override IEnumerable<Triple> WithSubject(INode subj)
         {
-            return this._dataset.GetQuadsWithSubject(this._graphUri, subj);
+            return _dataset.GetQuadsWithSubject(_graphUri, subj);
         }
 
         public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
         {
-            return this._dataset.GetQuadsWithSubjectObject(this._graphUri, subj, obj);
+            return _dataset.GetQuadsWithSubjectObject(_graphUri, subj, obj);
         }
 
         public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
         {
-            return this._dataset.GetQuadsWithSubjectPredicate(this._graphUri, subj, pred);
+            return _dataset.GetQuadsWithSubjectPredicate(_graphUri, subj, pred);
         }
     }
 }

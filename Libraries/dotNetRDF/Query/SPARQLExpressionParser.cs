@@ -89,8 +89,8 @@ namespace VDS.RDF.Query
         /// <param name="allowAggregates">Whether Aggregates are allowed in Expressions</param>
         public SparqlExpressionParser(SparqlQueryParser parser, bool allowAggregates)
         {
-            this._parser = parser;
-            this._allowAggregates = allowAggregates;
+            _parser = parser;
+            _allowAggregates = allowAggregates;
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace VDS.RDF.Query
         {
             set
             {
-                this._baseUri = value;
+                _baseUri = value;
             }
         }
 
@@ -111,7 +111,7 @@ namespace VDS.RDF.Query
         {
             set
             {
-                this._nsmapper = value;
+                _nsmapper = value;
             }
         }
 
@@ -122,11 +122,11 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._allowAggregates;
+                return _allowAggregates;
             }
             set
             {
-                this._allowAggregates = value;
+                _allowAggregates = value;
             }
         }
 
@@ -137,11 +137,11 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._syntax;
+                return _syntax;
             }
             set
             {
-                this._syntax = value;
+                _syntax = value;
             }
         }
 
@@ -152,7 +152,7 @@ namespace VDS.RDF.Query
         {
             set
             {
-                this._parser = value;
+                _parser = value;
             }
         }
 
@@ -163,13 +163,13 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._factories;
+                return _factories;
             }
             set
             {
                 if (value != null)
                 {
-                    this._factories = value;
+                    _factories = value;
                 }
             }
         }
@@ -183,7 +183,7 @@ namespace VDS.RDF.Query
         {
             try
             {
-                return this.TryParseConditionalOrExpression(tokens);
+                return TryParseConditionalOrExpression(tokens);
             }
             catch (InvalidOperationException ex)
             {
@@ -195,7 +195,7 @@ namespace VDS.RDF.Query
         private ISparqlExpression TryParseConditionalOrExpression(Queue<IToken> tokens)
         {
             // Get the first Term in the Expression
-            ISparqlExpression firstTerm = this.TryParseConditionalAndExpression(tokens);
+            ISparqlExpression firstTerm = TryParseConditionalAndExpression(tokens);
 
             if (tokens.Count > 0) 
             {
@@ -203,7 +203,7 @@ namespace VDS.RDF.Query
                 IToken next = tokens.Dequeue();
                 if (next.TokenType == Token.OR) 
                 {
-                    return new OrExpression(firstTerm, this.TryParseConditionalOrExpression(tokens));
+                    return new OrExpression(firstTerm, TryParseConditionalOrExpression(tokens));
                 } 
                 else 
                 {
@@ -219,7 +219,7 @@ namespace VDS.RDF.Query
         private ISparqlExpression TryParseConditionalAndExpression(Queue<IToken> tokens)
         {
             // Get the first Term in the Expression
-            ISparqlExpression firstTerm = this.TryParseValueLogical(tokens);
+            ISparqlExpression firstTerm = TryParseValueLogical(tokens);
 
             if (tokens.Count > 0)
             {
@@ -228,7 +228,7 @@ namespace VDS.RDF.Query
                 if (next.TokenType == Token.AND)
                 {
                     tokens.Dequeue();
-                    return new AndExpression(firstTerm, this.TryParseConditionalAndExpression(tokens));
+                    return new AndExpression(firstTerm, TryParseConditionalAndExpression(tokens));
                 }
                 else
                 {
@@ -244,13 +244,13 @@ namespace VDS.RDF.Query
 
         private ISparqlExpression TryParseValueLogical(Queue<IToken> tokens)
         {
-            return this.TryParseRelationalExpression(tokens);
+            return TryParseRelationalExpression(tokens);
         }
 
         private ISparqlExpression TryParseRelationalExpression(Queue<IToken> tokens)
         {
             // Get the First Term of this Expression
-            ISparqlExpression firstTerm = this.TryParseNumericExpression(tokens);
+            ISparqlExpression firstTerm = TryParseNumericExpression(tokens);
 
             if (tokens.Count > 0)
             {
@@ -259,25 +259,25 @@ namespace VDS.RDF.Query
                 {
                     case Token.EQUALS:
                         tokens.Dequeue();
-                        return new EqualsExpression(firstTerm, this.TryParseNumericExpression(tokens));
+                        return new EqualsExpression(firstTerm, TryParseNumericExpression(tokens));
                     case Token.NOTEQUALS:
                         tokens.Dequeue();
-                        return new NotEqualsExpression(firstTerm, this.TryParseNumericExpression(tokens));
+                        return new NotEqualsExpression(firstTerm, TryParseNumericExpression(tokens));
                     case Token.LESSTHAN:
                         tokens.Dequeue();
-                        return new LessThanExpression(firstTerm, this.TryParseNumericExpression(tokens));
+                        return new LessThanExpression(firstTerm, TryParseNumericExpression(tokens));
                     case Token.GREATERTHAN:
                         tokens.Dequeue();
-                        return new GreaterThanExpression(firstTerm, this.TryParseNumericExpression(tokens));
+                        return new GreaterThanExpression(firstTerm, TryParseNumericExpression(tokens));
                     case Token.LESSTHANOREQUALTO:
                         tokens.Dequeue();
-                        return new LessThanOrEqualToExpression(firstTerm, this.TryParseNumericExpression(tokens));
+                        return new LessThanOrEqualToExpression(firstTerm, TryParseNumericExpression(tokens));
                     case Token.GREATERTHANOREQUALTO:
                         tokens.Dequeue();
-                        return new GreaterThanOrEqualToExpression(firstTerm, this.TryParseNumericExpression(tokens));
+                        return new GreaterThanOrEqualToExpression(firstTerm, TryParseNumericExpression(tokens));
                     case Token.IN:
                     case Token.NOTIN:
-                        return this.TryParseSetExpression(firstTerm, tokens);
+                        return TryParseSetExpression(firstTerm, tokens);
                     default:
                         return firstTerm;
                 }
@@ -290,13 +290,13 @@ namespace VDS.RDF.Query
 
         private ISparqlExpression TryParseNumericExpression(Queue<IToken> tokens)
         {
-            return this.TryParseAdditiveExpression(tokens);
+            return TryParseAdditiveExpression(tokens);
         }
 
         private ISparqlExpression TryParseAdditiveExpression(Queue<IToken> tokens)
         {
             // Get the First Term of this Expression
-            ISparqlExpression firstTerm = this.TryParseMultiplicativeExpression(tokens);
+            ISparqlExpression firstTerm = TryParseMultiplicativeExpression(tokens);
 
             if (tokens.Count > 0)
             {
@@ -305,13 +305,13 @@ namespace VDS.RDF.Query
                 {
                     case Token.PLUS:
                         tokens.Dequeue();
-                        return new AdditionExpression(firstTerm, this.TryParseMultiplicativeExpression(tokens));
+                        return new AdditionExpression(firstTerm, TryParseMultiplicativeExpression(tokens));
                     case Token.MINUS:
                         tokens.Dequeue();
-                        return new SubtractionExpression(firstTerm, this.TryParseMultiplicativeExpression(tokens));
+                        return new SubtractionExpression(firstTerm, TryParseMultiplicativeExpression(tokens));
                     case Token.PLAINLITERAL:
                         tokens.Dequeue();
-                        return new AdditionExpression(firstTerm, this.TryParseNumericLiteral(next, tokens, true));
+                        return new AdditionExpression(firstTerm, TryParseNumericLiteral(next, tokens, true));
                     default:
                         return firstTerm;
                 }
@@ -325,7 +325,7 @@ namespace VDS.RDF.Query
         private ISparqlExpression TryParseMultiplicativeExpression(Queue<IToken> tokens)
         {
             // Get the First Term of this Expression
-            ISparqlExpression firstTerm = this.TryParseUnaryExpression(tokens);
+            ISparqlExpression firstTerm = TryParseUnaryExpression(tokens);
 
             if (tokens.Count > 0)
             {
@@ -334,10 +334,10 @@ namespace VDS.RDF.Query
                 {
                     case Token.MULTIPLY:
                         tokens.Dequeue();
-                        return new MultiplicationExpression(firstTerm, this.TryParseUnaryExpression(tokens));
+                        return new MultiplicationExpression(firstTerm, TryParseUnaryExpression(tokens));
                     case Token.DIVIDE:
                         tokens.Dequeue();
-                        return new DivisionExpression(firstTerm, this.TryParseUnaryExpression(tokens));
+                        return new DivisionExpression(firstTerm, TryParseUnaryExpression(tokens));
                     default:
                         return firstTerm;
                 }
@@ -356,16 +356,16 @@ namespace VDS.RDF.Query
             {
                 case Token.NEGATION:
                     tokens.Dequeue();
-                    return new NotExpression(this.TryParsePrimaryExpression(tokens));
+                    return new NotExpression(TryParsePrimaryExpression(tokens));
                 case Token.PLUS:
                     // Semantically Unary Plus does nothing so no special expression class for it
                     tokens.Dequeue();
-                    return this.TryParsePrimaryExpression(tokens);
+                    return TryParsePrimaryExpression(tokens);
                 case Token.MINUS:
                     tokens.Dequeue();
-                    return new MinusExpression(this.TryParsePrimaryExpression(tokens));
+                    return new MinusExpression(TryParsePrimaryExpression(tokens));
                 default:
-                    return this.TryParsePrimaryExpression(tokens);
+                    return TryParsePrimaryExpression(tokens);
             }
         }
 
@@ -376,7 +376,7 @@ namespace VDS.RDF.Query
             switch (next.TokenType)
             {
                 case Token.LEFTBRACKET:
-                    return this.TryParseBrackettedExpression(tokens);
+                    return TryParseBrackettedExpression(tokens);
 
                 case Token.ABS:
                 case Token.BNODE:
@@ -434,8 +434,8 @@ namespace VDS.RDF.Query
                 case Token.URIFUNC:
                 case Token.UUID:
                 case Token.YEAR:
-                    if (this._syntax == SparqlQuerySyntax.Sparql_1_0 && SparqlSpecsHelper.IsFunctionKeyword11(next.Value)) throw Error("The function " + next.Value + " is not supported in SPARQL 1.0", next);
-                    return this.TryParseBuiltInCall(tokens);
+                    if (_syntax == SparqlQuerySyntax.Sparql_1_0 && SparqlSpecsHelper.IsFunctionKeyword11(next.Value)) throw Error("The function " + next.Value + " is not supported in SPARQL 1.0", next);
+                    return TryParseBuiltInCall(tokens);
 
                 case Token.AVG:
                 case Token.COUNT:
@@ -448,9 +448,9 @@ namespace VDS.RDF.Query
                 case Token.NMIN:
                 case Token.SAMPLE:
                 case Token.SUM:
-                    if (this._allowAggregates)
+                    if (_allowAggregates)
                     {
-                        return this.TryParseAggregateExpression(tokens);
+                        return TryParseAggregateExpression(tokens);
                     }
                     else
                     {
@@ -459,14 +459,14 @@ namespace VDS.RDF.Query
 
                 case Token.URI:
                 case Token.QNAME:
-                    return this.TryParseIriRefOrFunction(tokens);
+                    return TryParseIriRefOrFunction(tokens);
 
                 case Token.LITERAL:
                 case Token.LONGLITERAL:
-                    return this.TryParseRdfLiteral(tokens);
+                    return TryParseRdfLiteral(tokens);
                     
                 case Token.PLAINLITERAL:
-                    return this.TryParseBooleanOrNumericLiteral(tokens);
+                    return TryParseBooleanOrNumericLiteral(tokens);
 
                 case Token.VARIABLE:
                     tokens.Dequeue();
@@ -479,19 +479,19 @@ namespace VDS.RDF.Query
 
         private ISparqlExpression TryParseBrackettedExpression(Queue<IToken> tokens)
         {
-            return this.TryParseBrackettedExpression(tokens, true);
+            return TryParseBrackettedExpression(tokens, true);
         }
 
         private ISparqlExpression TryParseBrackettedExpression(Queue<IToken> tokens, bool requireOpeningLeftBracket)
         {
             bool temp = false;
-            return this.TryParseBrackettedExpression(tokens, requireOpeningLeftBracket, out temp);
+            return TryParseBrackettedExpression(tokens, requireOpeningLeftBracket, out temp);
         }
 
         private ISparqlExpression TryParseBrackettedExpression(Queue<IToken> tokens, bool requireOpeningLeftBracket, out bool commaTerminated)
         {
             bool temp = false;
-            return this.TryParseBrackettedExpression(tokens, requireOpeningLeftBracket, out commaTerminated, out temp);
+            return TryParseBrackettedExpression(tokens, requireOpeningLeftBracket, out commaTerminated, out temp);
         }
 
         private ISparqlExpression TryParseBrackettedExpression(Queue<IToken> tokens, bool requireOpeningLeftBracket, out bool commaTerminated, out bool semicolonTerminated)
@@ -563,7 +563,7 @@ namespace VDS.RDF.Query
             if (exprTerms.Count > 0)
             {
                 // Recurse to invoke self
-                return this.Parse(exprTerms);
+                return Parse(exprTerms);
             }
             else
             {
@@ -581,9 +581,9 @@ namespace VDS.RDF.Query
             switch (next.TokenType)
             {
                 case Token.ABS:
-                    return new AbsFunction(this.TryParseBrackettedExpression(tokens));
+                    return new AbsFunction(TryParseBrackettedExpression(tokens));
                 case Token.BNODE:
-                    return new BNodeFunction(this.TryParseBrackettedExpression(tokens));                
+                    return new BNodeFunction(TryParseBrackettedExpression(tokens));                
 
                 case Token.BOUND:
                     // Expect a Left Bracket, Variable and then a Right Bracket
@@ -615,25 +615,25 @@ namespace VDS.RDF.Query
                     }
 
                 case Token.CALL:
-                    if (this._syntax != SparqlQuerySyntax.Extended) throw Error("The CALL keyword is only valid when using SPARQL 1.1 Extended syntax", next);
+                    if (_syntax != SparqlQuerySyntax.Extended) throw Error("The CALL keyword is only valid when using SPARQL 1.1 Extended syntax", next);
                     args = new List<ISparqlExpression>();
                     do
                     {
-                        args.Add(this.TryParseBrackettedExpression(tokens, first, out comma));
+                        args.Add(TryParseBrackettedExpression(tokens, first, out comma));
                         first = false;
                     } while (comma);
 
                     return new CallFunction(args);
 
                 case Token.CEIL:
-                    return new CeilFunction(this.TryParseBrackettedExpression(tokens));
+                    return new CeilFunction(TryParseBrackettedExpression(tokens));
 
                 case Token.COALESCE:
                     // Get as many argument expressions as we can
                     args = new List<ISparqlExpression>();
                     do
                     {
-                        args.Add(this.TryParseBrackettedExpression(tokens, first, out comma));
+                        args.Add(TryParseBrackettedExpression(tokens, first, out comma));
                         first = false;
                     } while (comma);
 
@@ -644,79 +644,79 @@ namespace VDS.RDF.Query
                     args = new List<ISparqlExpression>();
                     do
                     {
-                        args.Add(this.TryParseBrackettedExpression(tokens, first, out comma));
+                        args.Add(TryParseBrackettedExpression(tokens, first, out comma));
                         first = false;
                     } while (comma);
 
                     return new ConcatFunction(args);
 
                 case Token.CONTAINS:
-                    return new ContainsFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
+                    return new ContainsFunction(TryParseBrackettedExpression(tokens), TryParseBrackettedExpression(tokens, false));
                 case Token.DATATYPEFUNC:
-                    if (this._syntax == SparqlQuerySyntax.Sparql_1_0)
+                    if (_syntax == SparqlQuerySyntax.Sparql_1_0)
                     {
-                        return new DataTypeFunction(this.TryParseBrackettedExpression(tokens));
+                        return new DataTypeFunction(TryParseBrackettedExpression(tokens));
                     }
                     else
                     {
-                        return new DataType11Function(this.TryParseBrackettedExpression(tokens));
+                        return new DataType11Function(TryParseBrackettedExpression(tokens));
                     }
                 case Token.DAY:
-                    return new DayFunction(this.TryParseBrackettedExpression(tokens));
+                    return new DayFunction(TryParseBrackettedExpression(tokens));
                 case Token.ENCODEFORURI:
-                    return new EncodeForUriFunction(this.TryParseBrackettedExpression(tokens));
+                    return new EncodeForUriFunction(TryParseBrackettedExpression(tokens));
                 case Token.FLOOR:
-                    return new FloorFunction(this.TryParseBrackettedExpression(tokens));
+                    return new FloorFunction(TryParseBrackettedExpression(tokens));
                 case Token.HOURS:
-                    return new HoursFunction(this.TryParseBrackettedExpression(tokens));
+                    return new HoursFunction(TryParseBrackettedExpression(tokens));
                 case Token.IF:
-                    return new IfElseFunction(this.TryParseBrackettedExpression(tokens, true, out comma), this.TryParseBrackettedExpression(tokens, false, out comma), this.TryParseBrackettedExpression(tokens, false, out comma));
+                    return new IfElseFunction(TryParseBrackettedExpression(tokens, true, out comma), TryParseBrackettedExpression(tokens, false, out comma), TryParseBrackettedExpression(tokens, false, out comma));
                 case Token.IRI:
                 case Token.URIFUNC:
-                    return new IriFunction(this.TryParseBrackettedExpression(tokens));
+                    return new IriFunction(TryParseBrackettedExpression(tokens));
                 case Token.ISBLANK:
-                    return new IsBlankFunction(this.TryParseBrackettedExpression(tokens));
+                    return new IsBlankFunction(TryParseBrackettedExpression(tokens));
                 case Token.ISIRI:
-                    return new IsIriFunction(this.TryParseBrackettedExpression(tokens));
+                    return new IsIriFunction(TryParseBrackettedExpression(tokens));
                 case Token.ISLITERAL:
-                    return new IsLiteralFunction(this.TryParseBrackettedExpression(tokens));
+                    return new IsLiteralFunction(TryParseBrackettedExpression(tokens));
                 case Token.ISNUMERIC:
-                    return new IsNumericFunction(this.TryParseBrackettedExpression(tokens));
+                    return new IsNumericFunction(TryParseBrackettedExpression(tokens));
                 case Token.ISURI:
-                    return new IsUriFunction(this.TryParseBrackettedExpression(tokens));
+                    return new IsUriFunction(TryParseBrackettedExpression(tokens));
                 case Token.LANG:
-                    return new LangFunction(this.TryParseBrackettedExpression(tokens));
+                    return new LangFunction(TryParseBrackettedExpression(tokens));
                 case Token.LANGMATCHES:
-                    return new LangMatchesFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
+                    return new LangMatchesFunction(TryParseBrackettedExpression(tokens), TryParseBrackettedExpression(tokens, false));
                 case Token.LCASE:
-                    return new LCaseFunction(this.TryParseBrackettedExpression(tokens));
+                    return new LCaseFunction(TryParseBrackettedExpression(tokens));
                 case Token.MD5:
-                    return new MD5HashFunction(this.TryParseBrackettedExpression(tokens));
+                    return new MD5HashFunction(TryParseBrackettedExpression(tokens));
                 case Token.MINUTES:
-                    return new MinutesFunction(this.TryParseBrackettedExpression(tokens));
+                    return new MinutesFunction(TryParseBrackettedExpression(tokens));
                 case Token.MONTH:
-                    return new MonthFunction(this.TryParseBrackettedExpression(tokens));
+                    return new MonthFunction(TryParseBrackettedExpression(tokens));
 
                 case Token.NOW:
                     // Expect a () after the Keyword Token
-                    this.TryParseNoArgs(tokens, "NOW");
+                    TryParseNoArgs(tokens, "NOW");
                     return new NowFunction();
 
                 case Token.RAND:
                     // Expect a () after the Keyword Token
-                    this.TryParseNoArgs(tokens, "RAND");
+                    TryParseNoArgs(tokens, "RAND");
                     return new RandFunction();
 
                 case Token.REGEX:
-                    return this.TryParseRegexExpression(tokens);
+                    return TryParseRegexExpression(tokens);
                 case Token.REPLACE:
                     // REPLACE may have 3/4 arguments
-                    strExpr = this.TryParseBrackettedExpression(tokens);
-                    ISparqlExpression patternExpr = this.TryParseBrackettedExpression(tokens, false);
-                    ISparqlExpression replaceExpr = this.TryParseBrackettedExpression(tokens, false, out comma);
+                    strExpr = TryParseBrackettedExpression(tokens);
+                    ISparqlExpression patternExpr = TryParseBrackettedExpression(tokens, false);
+                    ISparqlExpression replaceExpr = TryParseBrackettedExpression(tokens, false, out comma);
                     if (comma)
                     {
-                        ISparqlExpression opsExpr = this.TryParseBrackettedExpression(tokens, false);
+                        ISparqlExpression opsExpr = TryParseBrackettedExpression(tokens, false);
                         return new ReplaceFunction(strExpr, patternExpr, replaceExpr, opsExpr);
                     }
                     else
@@ -724,46 +724,46 @@ namespace VDS.RDF.Query
                         return new ReplaceFunction(strExpr, patternExpr, replaceExpr);
                     }
                 case Token.ROUND:
-                    return new RoundFunction(this.TryParseBrackettedExpression(tokens));
+                    return new RoundFunction(TryParseBrackettedExpression(tokens));
                 case Token.SAMETERM:
-                    return new SameTermFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
+                    return new SameTermFunction(TryParseBrackettedExpression(tokens), TryParseBrackettedExpression(tokens, false));
                 case Token.SECONDS:
-                    return new SecondsFunction(this.TryParseBrackettedExpression(tokens));
+                    return new SecondsFunction(TryParseBrackettedExpression(tokens));
                 case Token.SHA1:
-                    return new Sha1HashFunction(this.TryParseBrackettedExpression(tokens));
+                    return new Sha1HashFunction(TryParseBrackettedExpression(tokens));
                 case Token.SHA256:
-                    return new Sha256HashFunction(this.TryParseBrackettedExpression(tokens));
+                    return new Sha256HashFunction(TryParseBrackettedExpression(tokens));
                 case Token.SHA384:
-                    return new Sha384HashFunction(this.TryParseBrackettedExpression(tokens));
+                    return new Sha384HashFunction(TryParseBrackettedExpression(tokens));
                 case Token.SHA512:
-                    return new Sha512HashFunction(this.TryParseBrackettedExpression(tokens));
+                    return new Sha512HashFunction(TryParseBrackettedExpression(tokens));
                 case Token.STR:
-                    return new StrFunction(this.TryParseBrackettedExpression(tokens));
+                    return new StrFunction(TryParseBrackettedExpression(tokens));
                 case Token.STRAFTER:
-                    return new StrAfterFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
+                    return new StrAfterFunction(TryParseBrackettedExpression(tokens), TryParseBrackettedExpression(tokens, false));
                 case Token.STRBEFORE:
-                    return new StrBeforeFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
+                    return new StrBeforeFunction(TryParseBrackettedExpression(tokens), TryParseBrackettedExpression(tokens, false));
                 case Token.STRDT:
-                    return new StrDtFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
+                    return new StrDtFunction(TryParseBrackettedExpression(tokens), TryParseBrackettedExpression(tokens, false));
                 case Token.STRENDS:
-                    return new StrEndsFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
+                    return new StrEndsFunction(TryParseBrackettedExpression(tokens), TryParseBrackettedExpression(tokens, false));
                 case Token.STRLANG:
-                    return new StrLangFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
+                    return new StrLangFunction(TryParseBrackettedExpression(tokens), TryParseBrackettedExpression(tokens, false));
                 case Token.STRLEN:
-                    return new StrLenFunction(this.TryParseBrackettedExpression(tokens));
+                    return new StrLenFunction(TryParseBrackettedExpression(tokens));
                 case Token.STRSTARTS:
-                    return new StrStartsFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
+                    return new StrStartsFunction(TryParseBrackettedExpression(tokens), TryParseBrackettedExpression(tokens, false));
                 case Token.STRUUID:
-                    this.TryParseNoArgs(tokens, "STRUUID");
+                    TryParseNoArgs(tokens, "STRUUID");
                     return new StrUUIDFunction();
 
                 case Token.SUBSTR:
                     // SUBSTR may have 2/3 arguments
-                    strExpr = this.TryParseBrackettedExpression(tokens);
-                    ISparqlExpression startExpr = this.TryParseBrackettedExpression(tokens, false, out comma);
+                    strExpr = TryParseBrackettedExpression(tokens);
+                    ISparqlExpression startExpr = TryParseBrackettedExpression(tokens, false, out comma);
                     if (comma)
                     {
-                        ISparqlExpression lengthExpr = this.TryParseBrackettedExpression(tokens, false);
+                        ISparqlExpression lengthExpr = TryParseBrackettedExpression(tokens, false);
                         return new SubStrFunction(strExpr, startExpr, lengthExpr);
                     }
                     else
@@ -772,21 +772,21 @@ namespace VDS.RDF.Query
                     }
 
                 case Token.TIMEZONE:
-                    return new TimezoneFunction(this.TryParseBrackettedExpression(tokens));
+                    return new TimezoneFunction(TryParseBrackettedExpression(tokens));
                 case Token.TZ:
-                    return new TZFunction(this.TryParseBrackettedExpression(tokens));
+                    return new TZFunction(TryParseBrackettedExpression(tokens));
                 case Token.UCASE:
-                    return new UCaseFunction(this.TryParseBrackettedExpression(tokens));
+                    return new UCaseFunction(TryParseBrackettedExpression(tokens));
                 case Token.UUID:
-                    this.TryParseNoArgs(tokens, "UUID");
+                    TryParseNoArgs(tokens, "UUID");
                     return new UUIDFunction();
                 case Token.YEAR:
-                    return new YearFunction(this.TryParseBrackettedExpression(tokens));
+                    return new YearFunction(TryParseBrackettedExpression(tokens));
 
                 case Token.EXISTS:
                 case Token.NOTEXISTS:
-                    if (this._syntax == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("EXISTS/NOT EXISTS clauses are not supported in SPARQL 1.0");
-                    if (this._parser == null) throw new RdfParseException("Unable to parse an EXISTS/NOT EXISTS as there is no Query Parser to call into");
+                    if (_syntax == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("EXISTS/NOT EXISTS clauses are not supported in SPARQL 1.0");
+                    if (_parser == null) throw new RdfParseException("Unable to parse an EXISTS/NOT EXISTS as there is no Query Parser to call into");
 
                     // Gather Tokens for the Pattern
                     NonTokenisedTokenQueue temptokens = new NonTokenisedTokenQueue();
@@ -810,9 +810,9 @@ namespace VDS.RDF.Query
 
                     // Call back into the Query Parser to try and Parse the Graph Pattern for the Function
                     SparqlQueryParserContext tempcontext = new SparqlQueryParserContext(temptokens);
-                    tempcontext.Query.NamespaceMap.Import(this._nsmapper);
-                    tempcontext.Query.BaseUri = this._baseUri;
-                    return new ExistsFunction(this._parser.TryParseGraphPattern(tempcontext, true), mustExist);
+                    tempcontext.Query.NamespaceMap.Import(_nsmapper);
+                    tempcontext.Query.BaseUri = _baseUri;
+                    return new ExistsFunction(_parser.TryParseGraphPattern(tempcontext, true), mustExist);
 
                 default:
                     throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse a Built-in Function call", next);
@@ -832,13 +832,13 @@ namespace VDS.RDF.Query
             bool hasOptions = false;
 
             // Get Text and Pattern Expressions
-            ISparqlExpression textExpr = this.TryParseBrackettedExpression(tokens);
-            ISparqlExpression patternExpr = this.TryParseBrackettedExpression(tokens, false, out hasOptions);
+            ISparqlExpression textExpr = TryParseBrackettedExpression(tokens);
+            ISparqlExpression patternExpr = TryParseBrackettedExpression(tokens, false, out hasOptions);
 
             // Check whether we need to get an Options Expression
             if (hasOptions)
             {
-                ISparqlExpression optionExpr = this.TryParseBrackettedExpression(tokens, false);
+                ISparqlExpression optionExpr = TryParseBrackettedExpression(tokens, false);
                 return new RegexFunction(textExpr, patternExpr, optionExpr);
             }
             else
@@ -857,11 +857,11 @@ namespace VDS.RDF.Query
             if (first.TokenType == Token.QNAME)
             {
                 // Resolve QName
-                u = UriFactory.Create(Tools.ResolveQName(first.Value, this._nsmapper, this._baseUri));
+                u = UriFactory.Create(Tools.ResolveQName(first.Value, _nsmapper, _baseUri));
             }
             else
             {
-                u = UriFactory.Create(Tools.ResolveUri(first.Value, this._baseUri.ToSafeString()));
+                u = UriFactory.Create(Tools.ResolveUri(first.Value, _baseUri.ToSafeString()));
             }
             
             // Get the Argument List (if any)
@@ -872,11 +872,11 @@ namespace VDS.RDF.Query
                 {
                     bool comma = false, semicolon = false;
                     List<ISparqlExpression> args = new List<ISparqlExpression>();
-                    args.Add(this.TryParseBrackettedExpression(tokens, true, out comma, out semicolon));
+                    args.Add(TryParseBrackettedExpression(tokens, true, out comma, out semicolon));
 
                     while (comma && !semicolon)
                     {
-                        args.Add(this.TryParseBrackettedExpression(tokens, false, out comma, out semicolon));
+                        args.Add(TryParseBrackettedExpression(tokens, false, out comma, out semicolon));
                     }
 
                     // If there are no arguments (one null argument) then discard
@@ -886,15 +886,15 @@ namespace VDS.RDF.Query
                     Dictionary<String, ISparqlExpression> scalarArgs = null;
                     if (semicolon)
                     {
-                        if (this._syntax != SparqlQuerySyntax.Extended) throw new RdfParseException("Arguments List terminated by a Semicolon - Arbitrary Scalar Arguments for Extension Functions/Aggregates are not permitted in SPARQL 1.1");
-                        scalarArgs = this.TryParseScalarArguments(first, tokens);
+                        if (_syntax != SparqlQuerySyntax.Extended) throw new RdfParseException("Arguments List terminated by a Semicolon - Arbitrary Scalar Arguments for Extension Functions/Aggregates are not permitted in SPARQL 1.1");
+                        scalarArgs = TryParseScalarArguments(first, tokens);
                     }
 
                     // Return an Extension Function expression
-                    ISparqlExpression expr = SparqlExpressionFactory.CreateExpression(u, args, this._factories);
+                    ISparqlExpression expr = SparqlExpressionFactory.CreateExpression(u, args, _factories);
                     if (expr is AggregateTerm)
                     {
-                        if (!this._allowAggregates) throw new RdfParseException("Aggregate Expression '" + expr.ToString() + "' encountered but aggregates are not permitted in this Expression");
+                        if (!_allowAggregates) throw new RdfParseException("Aggregate Expression '" + expr.ToString() + "' encountered but aggregates are not permitted in this Expression");
                     }
                     return expr;
                 }
@@ -941,13 +941,13 @@ namespace VDS.RDF.Query
                     else
                     {
                         // Resolve the QName
-                        u = UriFactory.Create(Tools.ResolveQName(next.Value, this._nsmapper, this._baseUri));
+                        u = UriFactory.Create(Tools.ResolveQName(next.Value, _nsmapper, _baseUri));
                     }
 
                     if (SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(u) != SparqlNumericType.NaN)
                     {
                         // Should be a Number
-                        return this.TryParseNumericLiteral(dtlit, tokens, false);
+                        return TryParseNumericLiteral(dtlit, tokens, false);
                     }
                     else if (XmlSpecsHelper.XmlSchemaDataTypeBoolean.Equals(u.AbsoluteUri))
                     {
@@ -995,7 +995,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                return this.TryParseNumericLiteral(lit, tokens, true);
+                return TryParseNumericLiteral(lit, tokens, true);
             }
         }
 
@@ -1028,12 +1028,12 @@ namespace VDS.RDF.Query
                     String dtUri;
                     if (dt.StartsWith("<"))
                     {
-                        String baseUri = (this._baseUri == null) ? String.Empty : this._baseUri.AbsoluteUri;
+                        String baseUri = (_baseUri == null) ? String.Empty : _baseUri.AbsoluteUri;
                         dtUri = Tools.ResolveUri(dt.Substring(1, dt.Length - 2), baseUri);
                     }
                     else
                     {
-                        dtUri = Tools.ResolveQName(dt, this._nsmapper, this._baseUri);
+                        dtUri = Tools.ResolveQName(dt, _nsmapper, _baseUri);
                     }
 
                     // Try to return a numeric expression, enforce the need for a valid numeric value where relevant
@@ -1061,7 +1061,7 @@ namespace VDS.RDF.Query
                             LiteralWithDataTypeToken dtlit = new LiteralWithDataTypeToken(literal, datatype);
 
                             // Self-recurse to save replicating code
-                            return this.TryParseNumericLiteral(dtlit, tokens, true);
+                            return TryParseNumericLiteral(dtlit, tokens, true);
                         }
                     }
                     // Use Regex to see if it's a Integer/Decimal/Double
@@ -1090,7 +1090,7 @@ namespace VDS.RDF.Query
 
         private ISparqlExpression TryParseAggregateExpression(Queue<IToken> tokens)
         {
-            if (this._syntax == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("Aggregates are not permitted in SPARQL 1.0");
+            if (_syntax == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("Aggregates are not permitted in SPARQL 1.0");
 
             IToken agg = tokens.Dequeue();
             ISparqlExpression aggExpr = null;
@@ -1098,8 +1098,8 @@ namespace VDS.RDF.Query
             bool scalarArgs = false;
 
             // Turn off aggregate allowance since aggregates may not be nested
-            bool aggsAllowed = this._allowAggregates;
-            this._allowAggregates = false;
+            bool aggsAllowed = _allowAggregates;
+            _allowAggregates = false;
 
             // Expect a Left Bracket next
             IToken next = tokens.Dequeue();
@@ -1181,7 +1181,7 @@ namespace VDS.RDF.Query
                     } while (openBrackets > 0);
 
                     // Parse this expression and add to the list of expressions we're concatenating
-                    expressions.Add(this.Parse(subtokens));
+                    expressions.Add(Parse(subtokens));
 
                     // Once we've hit the ; for the scalar arguments then we can stop looking for expressions
                     if (scalarArgs) break;
@@ -1203,11 +1203,11 @@ namespace VDS.RDF.Query
             Dictionary<String, ISparqlExpression> scalarArguments = new Dictionary<string, ISparqlExpression>();
             if (scalarArgs)
             {
-                scalarArguments = this.TryParseScalarArguments(agg, tokens);
+                scalarArguments = TryParseScalarArguments(agg, tokens);
             }
 
             // Reset Aggregate Allowance
-            this._allowAggregates = aggsAllowed;
+            _allowAggregates = aggsAllowed;
 
             // Now we need to generate the actual expression
             switch (agg.TokenType)
@@ -1282,7 +1282,7 @@ namespace VDS.RDF.Query
 
                 case Token.MEDIAN:
                     // MEDIAN Aggregate
-                    if (this._syntax != SparqlQuerySyntax.Extended) throw new RdfParseException("The MEDIAN aggregate is only supported when the Syntax is set to Extended.");
+                    if (_syntax != SparqlQuerySyntax.Extended) throw new RdfParseException("The MEDIAN aggregate is only supported when the Syntax is set to Extended.");
                     if (aggExpr is VariableTerm)
                     {
                         return new AggregateTerm(new MedianAggregate((VariableTerm)aggExpr, distinct));
@@ -1305,7 +1305,7 @@ namespace VDS.RDF.Query
 
                 case Token.MODE:
                     // MODE Aggregate
-                    if (this._syntax != SparqlQuerySyntax.Extended) throw new RdfParseException("The MODE aggregate is only supported when the Syntax is set to Extended.");
+                    if (_syntax != SparqlQuerySyntax.Extended) throw new RdfParseException("The MODE aggregate is only supported when the Syntax is set to Extended.");
                     if (aggExpr is VariableTerm)
                     {
                         return new AggregateTerm(new ModeAggregate((VariableTerm)aggExpr, distinct));
@@ -1317,7 +1317,7 @@ namespace VDS.RDF.Query
 
                 case Token.NMAX:
                     // NMAX Aggregate
-                    if (this._syntax != SparqlQuerySyntax.Extended) throw new RdfParseException("The NMAX (Numeric Maximum) aggregate is only supported when the Syntax is set to Extended.  To achieve an equivalent result in SPARQL 1.0/1.1 apply a FILTER to your query so the aggregated variable is only literals of the desired numeric type");
+                    if (_syntax != SparqlQuerySyntax.Extended) throw new RdfParseException("The NMAX (Numeric Maximum) aggregate is only supported when the Syntax is set to Extended.  To achieve an equivalent result in SPARQL 1.0/1.1 apply a FILTER to your query so the aggregated variable is only literals of the desired numeric type");
                     if (aggExpr is VariableTerm)
                     {
                         return new AggregateTerm(new NumericMaxAggregate((VariableTerm)aggExpr, distinct));
@@ -1329,7 +1329,7 @@ namespace VDS.RDF.Query
 
                 case Token.NMIN:
                     // NMIN Aggregate
-                    if (this._syntax != SparqlQuerySyntax.Extended) throw new RdfParseException("The NMIN (Numeric Minimum) aggregate is only supported when the Syntax is set to Extended.  To achieve an equivalent result in SPARQL 1.0/1.1 apply a FILTER to your query so the aggregated variable is only literals of the desired numeric type");
+                    if (_syntax != SparqlQuerySyntax.Extended) throw new RdfParseException("The NMIN (Numeric Minimum) aggregate is only supported when the Syntax is set to Extended.  To achieve an equivalent result in SPARQL 1.0/1.1 apply a FILTER to your query so the aggregated variable is only literals of the desired numeric type");
                     if (aggExpr is VariableTerm)
                     {
                         return new AggregateTerm(new NumericMinAggregate((VariableTerm)aggExpr, distinct));
@@ -1390,16 +1390,16 @@ namespace VDS.RDF.Query
 
                     case Token.QNAME:
                     case Token.URI:
-                        if (this._syntax != SparqlQuerySyntax.Extended) throw new RdfParseException("Arbitrary Scalar Arguments for Aggregates are not permitted in SPARQL 1.1");
+                        if (_syntax != SparqlQuerySyntax.Extended) throw new RdfParseException("Arbitrary Scalar Arguments for Aggregates are not permitted in SPARQL 1.1");
 
                         // Resolve QName/URI
                         if (next.TokenType == Token.QNAME)
                         {
-                            argName = Tools.ResolveQName(next.Value, this._nsmapper, this._baseUri);
+                            argName = Tools.ResolveQName(next.Value, _nsmapper, _baseUri);
                         }
                         else
                         {
-                            argName = Tools.ResolveUri(next.Value, this._baseUri.ToSafeString());
+                            argName = Tools.ResolveUri(next.Value, _baseUri.ToSafeString());
                         }
                         break;
 
@@ -1448,11 +1448,11 @@ namespace VDS.RDF.Query
                 // Parse the Subtokens into the Argument Expression
                 if (scalarArguments.ContainsKey(argName))
                 {
-                    scalarArguments[argName] = this.Parse(subtokens);
+                    scalarArguments[argName] = Parse(subtokens);
                 }
                 else
                 {
-                    scalarArguments.Add(argName, this.Parse(subtokens));
+                    scalarArguments.Add(argName, Parse(subtokens));
                 }
             }
 
@@ -1478,10 +1478,10 @@ namespace VDS.RDF.Query
                 else
                 {
                     bool comma = false;
-                    expressions.Add(this.TryParseBrackettedExpression(tokens, false, out comma));
+                    expressions.Add(TryParseBrackettedExpression(tokens, false, out comma));
                     while (comma)
                     {
-                        expressions.Add(this.TryParseBrackettedExpression(tokens, false, out comma));
+                        expressions.Add(TryParseBrackettedExpression(tokens, false, out comma));
                     }
                 }
             }

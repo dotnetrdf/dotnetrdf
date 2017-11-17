@@ -51,7 +51,7 @@ namespace VDS.RDF.Writing.Formatting
         public string FormatResultSetHeader(IEnumerable<string> variables)
         {
             StringBuilder output = new StringBuilder();
-            output.AppendLine(this.GetBaseHeader());
+            output.AppendLine(GetBaseHeader());
             output.AppendLine("<head>");
             foreach (String var in variables)
             {
@@ -69,7 +69,7 @@ namespace VDS.RDF.Writing.Formatting
         public string FormatResultSetHeader()
         {
             StringBuilder output = new StringBuilder();
-            output.AppendLine(this.GetBaseHeader());
+            output.AppendLine(GetBaseHeader());
             output.AppendLine("<head />");
             output.Append("<results>");
             return output.ToString();

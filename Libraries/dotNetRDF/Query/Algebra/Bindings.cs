@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.Algebra
         public Bindings(BindingsPattern bindings)
         {
             if (bindings == null) throw new ArgumentNullException("bindings", "Bindings cannot be null");
-            this._bindings = bindings;
+            _bindings = bindings;
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            return this._mset ?? (this._mset = this._bindings.ToMultiset());
+            return _mset ?? (_mset = _bindings.ToMultiset());
         }
 
         /// <summary>
@@ -66,19 +66,19 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._bindings.Variables;
+                return _bindings.Variables;
             }
         }
 
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
         /// </summary>
-        public IEnumerable<String> FloatingVariables { get { return this._bindings.FloatingVariables; } }
+        public IEnumerable<String> FloatingVariables { get { return _bindings.FloatingVariables; } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
         /// </summary>
-        public IEnumerable<String> FixedVariables { get { return this._bindings.FixedVariables; } } 
+        public IEnumerable<String> FixedVariables { get { return _bindings.FixedVariables; } } 
 
         /// <summary>
         /// Gets the Bindings 
@@ -87,7 +87,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._bindings;
+                return _bindings;
             }
         }
 
@@ -106,7 +106,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            GraphPattern gp = this.ToGraphPattern();
+            GraphPattern gp = ToGraphPattern();
             SparqlQuery q = new SparqlQuery();
             q.RootGraphPattern = gp;
             return q;
@@ -119,7 +119,7 @@ namespace VDS.RDF.Query.Algebra
         public GraphPattern ToGraphPattern()
         {
             GraphPattern gp = new GraphPattern();
-            gp.AddInlineData(this._bindings);
+            gp.AddInlineData(_bindings);
             return gp;
         }
 

@@ -48,7 +48,7 @@ namespace VDS.RDF.Nodes
         public DecimalNode(IGraph g, decimal value, String lexicalValue)
             : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDecimal), SparqlNumericType.Decimal)
         {
-            this._value = value;
+            _value = value;
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace VDS.RDF.Nodes
         {
             try
             {
-                return Convert.ToInt64(this._value);
+                return Convert.ToInt64(_value);
             }
             catch
             {
@@ -81,7 +81,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public override decimal AsDecimal()
         {
-            return this._value;
+            return _value;
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace VDS.RDF.Nodes
         {
             try
             {
-                return Convert.ToSingle(this._value);
+                return Convert.ToSingle(_value);
             }
             catch
             {
@@ -108,7 +108,7 @@ namespace VDS.RDF.Nodes
         {
             try
             {
-                return Convert.ToDouble(this._value);
+                return Convert.ToDouble(_value);
             }
             catch
             {

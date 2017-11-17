@@ -46,8 +46,8 @@ namespace VDS.RDF.Query.Paths
         /// <param name="rhs">RHS Path</param>
         public BaseBinaryPath(ISparqlPath lhs, ISparqlPath rhs)
         {
-            this._lhs = lhs;
-            this._rhs = rhs;
+            _lhs = lhs;
+            _rhs = rhs;
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace VDS.RDF.Query.Paths
         {
             get
             {
-                return this._lhs;
+                return _lhs;
             }
         }
 
@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Paths
         {
             get
             {
-                return this._rhs;
+                return _rhs;
             }
         }
 

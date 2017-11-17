@@ -54,7 +54,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         protected BaseHttpConnector()
         {
-            this.Timeout = 30000;
+            Timeout = 30000;
         }
 
         private IWebProxy _proxy;
@@ -65,7 +65,7 @@ namespace VDS.RDF.Storage
         /// <param name="address">Proxy Address</param>
         public void SetProxy(String address)
         {
-            this._proxy = new WebProxy(address);
+            _proxy = new WebProxy(address);
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace VDS.RDF.Storage
         /// <param name="address">Proxy Address</param>
         public void SetProxy(Uri address)
         {
-            this._proxy = new WebProxy(address);
+            _proxy = new WebProxy(address);
         }
 
         /// <summary>
@@ -84,11 +84,11 @@ namespace VDS.RDF.Storage
         {
             get
             {
-                return this._proxy;
+                return _proxy;
             }
             set
             {
-                this._proxy = value;
+                _proxy = value;
             }
         }
 
@@ -97,7 +97,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         public void ClearProxy()
         {
-            this._proxy = null;
+            _proxy = null;
         }
 
         /// <summary>
@@ -107,9 +107,9 @@ namespace VDS.RDF.Storage
         /// <param name="password">Password</param>
         public void SetProxyCredentials(String username, String password)
         {
-            if (this._proxy != null)
+            if (_proxy != null)
             {
-                this._proxy.Credentials = new NetworkCredential(username, password);
+                _proxy.Credentials = new NetworkCredential(username, password);
             }
             else
             {
@@ -125,9 +125,9 @@ namespace VDS.RDF.Storage
         /// <param name="domain">Domain</param>
         public void SetProxyCredentials(String username, String password, String domain)
         {
-            if (this._proxy != null)
+            if (_proxy != null)
             {
-                this._proxy.Credentials = new NetworkCredential(username, password, domain);
+                _proxy.Credentials = new NetworkCredential(username, password, domain);
             }
             else
             {
@@ -142,9 +142,9 @@ namespace VDS.RDF.Storage
         {
             get
             {
-                if (this._proxy != null)
+                if (_proxy != null)
                 {
-                    return this._proxy.Credentials;
+                    return _proxy.Credentials;
                 }
                 else
                 {
@@ -153,9 +153,9 @@ namespace VDS.RDF.Storage
             }
             set
             {
-                if (this._proxy != null)
+                if (_proxy != null)
                 {
-                    this._proxy.Credentials = value;
+                    _proxy.Credentials = value;
                 }
                 else
                 {
@@ -169,9 +169,9 @@ namespace VDS.RDF.Storage
         /// </summary>
         public void ClearProxyCredentials()
         {
-            if (this._proxy != null)
+            if (_proxy != null)
             {
-                this._proxy.Credentials = null;
+                _proxy.Credentials = null;
             }
         }
 
@@ -201,10 +201,10 @@ namespace VDS.RDF.Storage
         /// <returns>HTTP Web Request with standard options applied</returns>
         protected HttpWebRequest ApplyRequestOptions(HttpWebRequest request)
         {
-            if (this.Timeout > 0) request.Timeout = this.Timeout;
-            if (this._proxy != null)
+            if (Timeout > 0) request.Timeout = Timeout;
+            if (_proxy != null)
             {
-                request.Proxy = this._proxy;
+                request.Proxy = _proxy;
             }
             // Disable Keep Alive since it can cause errors when carrying out high volumes of operations or when performing long running operations
             request.KeepAlive = false;
@@ -219,14 +219,14 @@ namespace VDS.RDF.Storage
         protected void SerializeStandardConfig(INode objNode, ConfigurationSerializationContext context)
         {
             // Timeout
-            if (this.Timeout > 0)
+            if (Timeout > 0)
             {
                 INode timeout = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyTimeout));
-                context.Graph.Assert(new Triple(objNode, timeout, this.Timeout.ToLiteral(context.Graph)));
+                context.Graph.Assert(new Triple(objNode, timeout, Timeout.ToLiteral(context.Graph)));
             }
 
             // Proxy configuration
-            if (this._proxy == null) return;
+            if (_proxy == null) return;
             INode proxy = context.NextSubject;
             INode usesProxy = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyProxy));
             INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
@@ -237,10 +237,10 @@ namespace VDS.RDF.Storage
 
             context.Graph.Assert(new Triple(objNode, usesProxy, proxy));
             context.Graph.Assert(new Triple(proxy, rdfType, proxyType));
-            context.Graph.Assert(new Triple(proxy, server, context.Graph.CreateLiteralNode((this._proxy as WebProxy).Address.AbsoluteUri)));
+            context.Graph.Assert(new Triple(proxy, server, context.Graph.CreateLiteralNode((_proxy as WebProxy).Address.AbsoluteUri)));
 
-            if (!(this._proxy.Credentials is NetworkCredential)) return;
-            NetworkCredential cred = (NetworkCredential)this._proxy.Credentials;
+            if (!(_proxy.Credentials is NetworkCredential)) return;
+            NetworkCredential cred = (NetworkCredential)_proxy.Credentials;
             context.Graph.Assert(new Triple(proxy, user, context.Graph.CreateLiteralNode(cred.UserName)));
             context.Graph.Assert(new Triple(proxy, pwd, context.Graph.CreateLiteralNode(cred.Password)));
         }
@@ -264,7 +264,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         protected BaseAsyncHttpConnector()
         {
-            this._d = new DoRequestSequenceDelgate(this.DoRequestSequence);
+            _d = new DoRequestSequenceDelgate(DoRequestSequence);
         }
 
         /// <summary>
@@ -298,7 +298,7 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback</param>
         public virtual void LoadGraph(IGraph g, Uri graphUri, AsyncStorageCallback callback, Object state)
         {
-            this.LoadGraph(g, graphUri.ToSafeString(), callback, state);
+            LoadGraph(g, graphUri.ToSafeString(), callback, state);
         }
 
         /// <summary>
@@ -310,7 +310,7 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback</param>
         public virtual void LoadGraph(IGraph g, String graphUri, AsyncStorageCallback callback, Object state)
         {
-            this.LoadGraph(new GraphHandler(g), graphUri, (sender, args, st) => callback(sender, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadGraph, g, args.Error), st), state);
+            LoadGraph(new GraphHandler(g), graphUri, (sender, args, st) => callback(sender, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadGraph, g, args.Error), st), state);
         }
 
         /// <summary>
@@ -322,7 +322,7 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback</param>
         public virtual void LoadGraph(IRdfHandler handler, Uri graphUri, AsyncStorageCallback callback, Object state)
         {
-            this.LoadGraph(handler, graphUri.ToSafeString(), callback, state);
+            LoadGraph(handler, graphUri.ToSafeString(), callback, state);
         }
 
         /// <summary>
@@ -447,7 +447,7 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback</param>
         public virtual void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, Object state)
         {
-            this.UpdateGraph(graphUri.ToSafeString(), additions, removals, callback, state);
+            UpdateGraph(graphUri.ToSafeString(), additions, removals, callback, state);
         }
 
         /// <summary>
@@ -458,7 +458,7 @@ namespace VDS.RDF.Storage
         /// <param name="removals">Triples to be removed</param>
         /// <param name="callback">Callback</param>
         /// <param name="state">State to pass to the callback</param>
-        public abstract void UpdateGraph(String graphUri, System.Collections.Generic.IEnumerable<Triple> additions, System.Collections.Generic.IEnumerable<Triple> removals, AsyncStorageCallback callback, Object state);
+        public abstract void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, Object state);
 
         /// <summary>
         /// Helper method for doing async update operations, callers just need to provide an appropriately prepared HTTP request and a RDF writer which will be used to write the data to the request body
@@ -522,7 +522,7 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback</param>
         public virtual void DeleteGraph(Uri graphUri, AsyncStorageCallback callback, Object state)
         {
-            this.DeleteGraph(graphUri.ToSafeString(), callback, state);
+            DeleteGraph(graphUri.ToSafeString(), callback, state);
         }
 
         /// <summary>
@@ -665,7 +665,7 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback</param>
         protected internal void MakeRequestSequence(IEnumerable<HttpWebRequest> requests, AsyncStorageCallback callback, Object state)
         {
-            this._d.BeginInvoke(requests, callback, state, this.MakeRequestSequenceCallback, callback);
+            _d.BeginInvoke(requests, callback, state, MakeRequestSequenceCallback, callback);
         }
 
         private void MakeRequestSequenceCallback(IAsyncResult r)
@@ -673,7 +673,7 @@ namespace VDS.RDF.Storage
             AsyncStorageCallback callback = r.AsyncState as AsyncStorageCallback;
             try
             {
-                this._d.EndInvoke(r);
+                _d.EndInvoke(r);
                 // callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.Unknown), null);
             }
             catch (Exception ex)

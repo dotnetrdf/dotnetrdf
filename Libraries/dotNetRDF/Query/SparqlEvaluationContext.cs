@@ -54,12 +54,12 @@ namespace VDS.RDF.Query
         /// <param name="data">Dataset</param>
         public SparqlEvaluationContext(SparqlQuery q, ISparqlDataset data)
         {
-            this._query = q;
-            this._data = data;
-            this._inputSet = new IdentityMultiset();
-            this._binder = new LeviathanResultBinder(this);
+            _query = q;
+            _data = data;
+            _inputSet = new IdentityMultiset();
+            _binder = new LeviathanResultBinder(this);
 
-            this.CalculateTimeout();
+            CalculateTimeout();
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace VDS.RDF.Query
         public SparqlEvaluationContext(SparqlQuery q, ISparqlDataset data, ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> processor)
             : this(q, data)
         {
-            this._processor = processor;
+            _processor = processor;
         }
 
         /// <summary>
@@ -80,36 +80,36 @@ namespace VDS.RDF.Query
         /// <param name="binder"></param>
         public SparqlEvaluationContext(SparqlResultBinder binder)
         {
-            this._binder = binder;
+            _binder = binder;
         }
 
         private void CalculateTimeout()
         {
-            if (this._query != null)
+            if (_query != null)
             {
-                if (this._query.Timeout > 0)
+                if (_query.Timeout > 0)
                 {
-                    if (Options.QueryExecutionTimeout == 0 || (this._query.Timeout <= Options.QueryExecutionTimeout && Options.QueryExecutionTimeout > 0))
+                    if (Options.QueryExecutionTimeout == 0 || (_query.Timeout <= Options.QueryExecutionTimeout && Options.QueryExecutionTimeout > 0))
                     {
                         // Query Timeout is used provided it is less than global timeout unless global timeout is zero
-                        this._timeout = this._query.Timeout;
+                        _timeout = _query.Timeout;
                     }
                     else
                     {
                         // Query Timeout cannot be set higher than global timeout
-                        this._timeout = Options.QueryExecutionTimeout;
+                        _timeout = Options.QueryExecutionTimeout;
                     }
                 }
                 else
                 {
                     // If Query Timeout set to zero (i.e. no timeout) then global timeout is used
-                    this._timeout = Options.QueryExecutionTimeout;
+                    _timeout = Options.QueryExecutionTimeout;
                 }
             }
             else
             {
                 // If no query then global timeout is used
-                this._timeout = Options.QueryExecutionTimeout;
+                _timeout = Options.QueryExecutionTimeout;
             }
         }
 
@@ -120,7 +120,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._query;
+                return _query;
             }
         }
 
@@ -131,7 +131,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._data;
+                return _data;
             }
         }
 
@@ -142,7 +142,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._processor;
+                return _processor;
             }
         }
 
@@ -153,11 +153,11 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._inputSet;
+                return _inputSet;
             }
             set
             {
-                this._inputSet = value;
+                _inputSet = value;
             }
         }
 
@@ -168,11 +168,11 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._outputSet;
+                return _outputSet;
             }
             set
             {
-                this._outputSet = value;
+                _outputSet = value;
             }
         }
 
@@ -183,11 +183,11 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._binder;
+                return _binder;
             }
             set
             {
-                this._binder = value;
+                _binder = value;
             }
         }
 
@@ -198,11 +198,11 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._trimTemporaries;
+                return _trimTemporaries;
             }
             set
             {
-                this._trimTemporaries = value;
+                _trimTemporaries = value;
             }
         }
 
@@ -226,8 +226,8 @@ namespace VDS.RDF.Query
         /// </summary>
         public void StartExecution()
         {
-            this.CalculateTimeout();
-            this._timer.Start();
+            CalculateTimeout();
+            _timer.Start();
         }
 
         /// <summary>
@@ -235,7 +235,7 @@ namespace VDS.RDF.Query
         /// </summary>
         public void EndExecution()
         {
-            this._timer.Stop();
+            _timer.Stop();
         }
 
         /// <summary>
@@ -244,12 +244,12 @@ namespace VDS.RDF.Query
         /// <exception cref="RdfQueryTimeoutException">Thrown if the Query has exceeded the Execution Timeout</exception>
         public void CheckTimeout()
         {
-            if (this._timeout > 0)
+            if (_timeout > 0)
             {
-                if (this._timer.ElapsedMilliseconds > this._timeout)
+                if (_timer.ElapsedMilliseconds > _timeout)
                 {
-                    this._timer.Stop();
-                    throw new RdfQueryTimeoutException("Query Execution Time exceeded the Timeout of " + this._timeout + "ms, query aborted after " + this._timer.ElapsedMilliseconds + "ms");
+                    _timer.Stop();
+                    throw new RdfQueryTimeoutException("Query Execution Time exceeded the Timeout of " + _timeout + "ms, query aborted after " + _timer.ElapsedMilliseconds + "ms");
                 }
             }
         }
@@ -264,13 +264,13 @@ namespace VDS.RDF.Query
         {
             get
             {
-                if (this._timeout <= 0)
+                if (_timeout <= 0)
                 {
                     return 0;
                 }
                 else
                 {
-                    long timeout = this._timeout - this.QueryTime;
+                    long timeout = _timeout - QueryTime;
                     if (timeout <= 0)
                     {
                         return 1;
@@ -295,7 +295,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._timeout;
+                return _timeout;
             }
         }
 
@@ -306,7 +306,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._timer.ElapsedMilliseconds;
+                return _timer.ElapsedMilliseconds;
             }
         }
 
@@ -317,7 +317,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._timer.ElapsedTicks;
+                return _timer.ElapsedTicks;
             }
         }
 
@@ -333,9 +333,9 @@ namespace VDS.RDF.Query
         {
             get
             {
-                if (this._functionContexts.ContainsKey(key))
+                if (_functionContexts.ContainsKey(key))
                 {
-                    return this._functionContexts[key];
+                    return _functionContexts[key];
                 }
                 else
                 {
@@ -344,13 +344,13 @@ namespace VDS.RDF.Query
             }
             set
             {
-                if (this._functionContexts.ContainsKey(key))
+                if (_functionContexts.ContainsKey(key))
                 {
-                    this._functionContexts[key] = value;
+                    _functionContexts[key] = value;
                 }
                 else
                 {
-                    this._functionContexts.Add(key, value);
+                    _functionContexts.Add(key, value);
                 }
             }
         }
@@ -362,13 +362,13 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public BaseMultiset Evaluate(ISparqlAlgebra algebra)
         {
-            if (this._processor == null)
+            if (_processor == null)
             {
                 return algebra.Evaluate(this);
             }
             else
             {
-                return this._processor.ProcessAlgebra(algebra, this);
+                return _processor.ProcessAlgebra(algebra, this);
             }
         }
     }

@@ -49,10 +49,10 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="expr">Expression which generates a value which will be assigned to the variable</param>
         public BindPattern(String var, ISparqlExpression expr)
         {
-            this._var = var;
-            this._expr = expr;
-            this._vars = this._var.AsEnumerable().Concat(this._expr.Variables).Distinct().ToList();
-            this._vars.Sort();
+            _var = var;
+            _expr = expr;
+            _vars = _var.AsEnumerable().Concat(_expr.Variables).Distinct().ToList();
+            _vars.Sort();
         }
 
         /// <summary>
@@ -67,36 +67,36 @@ namespace VDS.RDF.Query.Patterns
             }
             else if (context.InputMultiset is IdentityMultiset)
             {
-                context.OutputMultiset.AddVariable(this._var);
+                context.OutputMultiset.AddVariable(_var);
                 Set s = new Set();
                 try
                 {
-                    INode temp = this._expr.Evaluate(context, 0);
-                    s.Add(this._var, temp);
+                    INode temp = _expr.Evaluate(context, 0);
+                    s.Add(_var, temp);
                 }
                 catch
                 {
                     // No assignment if there's an error
-                    s.Add(this._var, null);
+                    s.Add(_var, null);
                 }
                 context.OutputMultiset.Add(s);
             }
             else
             {
-                if (context.InputMultiset.ContainsVariable(this._var))
+                if (context.InputMultiset.ContainsVariable(_var))
                 {
                     throw new RdfQueryException("Cannot use a BIND assigment to BIND to a variable that has previously been used in the Query");
                 }
 
-                context.OutputMultiset.AddVariable(this._var);
+                context.OutputMultiset.AddVariable(_var);
                 foreach (int id in context.InputMultiset.SetIDs.ToList())
                 {
                     ISet s = context.InputMultiset[id].Copy();
                     try
                     {
                         // Make a new assignment
-                        INode temp = this._expr.Evaluate(context, id);
-                        s.Add(this._var, temp);
+                        INode temp = _expr.Evaluate(context, id);
+                        s.Add(_var, temp);
                     }
                     catch
                     {
@@ -136,7 +136,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._expr;
+                return _expr;
             }
         }
 
@@ -147,7 +147,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._var;
+                return _var;
             }
         }
 
@@ -164,7 +164,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public override IEnumerable<string> FloatingVariables
         {
-            get { return this._var.AsEnumerable(); }
+            get { return _var.AsEnumerable(); }
         }
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._expr.UsesDefaultDataset();
+                return _expr.UsesDefaultDataset();
             }
         }
 
@@ -197,9 +197,9 @@ namespace VDS.RDF.Query.Patterns
         {
             StringBuilder output = new StringBuilder();
             output.Append("BIND(");
-            output.Append(this._expr.ToString());
+            output.Append(_expr.ToString());
             output.Append(" AS ?");
-            output.Append(this._var);
+            output.Append(_var);
             output.Append(")");
 
             return output.ToString();

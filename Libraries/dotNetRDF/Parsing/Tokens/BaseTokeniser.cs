@@ -86,7 +86,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="reader">TextReader to generator Tokens from</param>
         protected BaseTokeniser(TextReader reader)
         {
-            this._reader = reader;
+            _reader = reader;
         }
 
         /// <summary>
@@ -97,11 +97,11 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get
             {
-                return this._format;
+                return _format;
             }
             set
             {
-                this._format = value;
+                _format = value;
             }
         }
 
@@ -118,13 +118,13 @@ namespace VDS.RDF.Parsing.Tokens
         protected void StartNewToken()
         {
             // New Output Buffer
-            this._output = new StringBuilder();
+            _output = new StringBuilder();
 
             // Reset Start and End Position Counters
-            this._startline = this._currline;
-            this._endline = this._startline;
-            this._startpos = this._currpos;
-            this._endpos = this._currpos;
+            _startline = _currline;
+            _endline = _startline;
+            _startpos = _currpos;
+            _endpos = _currpos;
         }
 
         /// <summary>
@@ -133,14 +133,14 @@ namespace VDS.RDF.Parsing.Tokens
         /// <returns></returns>
         protected char Peek()
         {
-            if (this._tempChar.HasValue)
+            if (_tempChar.HasValue)
             {
-                char c = (char)this._tempChar;
+                char c = (char)_tempChar;
                 return c;
             }
             else
             {
-                return (char)this._reader.Peek();
+                return (char)_reader.Peek();
             }
         }
 
@@ -149,11 +149,11 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         protected void Backtrack()
         {
-            if (this._tempChar.HasValue) throw Error("Cannot backtrack more than one character");
-            if (this._output.Length == 0) throw Error("Cannot backtrack when no characters have been consumed");
+            if (_tempChar.HasValue) throw Error("Cannot backtrack more than one character");
+            if (_output.Length == 0) throw Error("Cannot backtrack when no characters have been consumed");
 
-            this._tempChar = this._output[this._output.Length - 1];
-            this._output.Remove(this._output.Length - 1, 1);            
+            _tempChar = _output[_output.Length - 1];
+            _output.Remove(_output.Length - 1, 1);            
         }
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get
             {
-                return this._output.ToString();
+                return _output.ToString();
             }
         }
 
@@ -174,7 +174,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get
             {
-                return this._output.Length;
+                return _output.Length;
             }
         }
 
@@ -185,7 +185,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get
             {
-                return this._currline;
+                return _currline;
             }
         }
 
@@ -196,7 +196,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get
             {
-                return this._currpos;
+                return _currpos;
             }
         }
 
@@ -207,7 +207,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get
             {
-                return this._startline;
+                return _startline;
             }
         }
 
@@ -218,7 +218,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get
             {
-                return this._startpos;
+                return _startpos;
             }
         }
 
@@ -229,7 +229,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get
             {
-                return this._endline;
+                return _endline;
             }
         }
 
@@ -240,7 +240,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get
             {
-                return this._endpos;
+                return _endpos;
             }
         }
 
@@ -251,11 +251,11 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get
             {
-                return this._lasttokentype;
+                return _lasttokentype;
             }
             set
             {
-                this._lasttokentype = value;
+                _lasttokentype = value;
             }
         }
 
@@ -266,7 +266,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get
             {
-                return this._tempChar.HasValue;
+                return _tempChar.HasValue;
             }
         }
 
@@ -276,24 +276,24 @@ namespace VDS.RDF.Parsing.Tokens
         /// <exception cref="RdfParseException">Thrown if the caller tries to read beyond the end of the Stream</exception>
         protected void ConsumeCharacter()
         {
-            if (this._tempChar.HasValue)
+            if (_tempChar.HasValue)
             {
-                char c = (char)this._tempChar;
-                this._tempChar = null;
-                this._output.Append(c);
+                char c = (char)_tempChar;
+                _tempChar = null;
+                _output.Append(c);
                 return;
             }
 
-            int temp = this._reader.Read();
+            int temp = _reader.Read();
             if (temp > -1)
             {
-                this._output.Append((char)temp);
-                this._currpos++;
-                this._endpos++;
+                _output.Append((char)temp);
+                _currpos++;
+                _endpos++;
             }
             else
             {
-                throw Error("Unexpected End of Stream while trying to tokenise from the following input:\n" + this._output.ToString());
+                throw Error("Unexpected End of Stream while trying to tokenise from the following input:\n" + _output.ToString());
             }
         }
 
@@ -309,14 +309,14 @@ namespace VDS.RDF.Parsing.Tokens
         {
             if (!allowEOF)
             {
-                this.ConsumeCharacter();
+                ConsumeCharacter();
                 return false;
             }
-            int temp = this._reader.Read();
+            int temp = _reader.Read();
             if (temp <= -1) return true;
-            this._output.Append((char) temp);
-            this._currpos++;
-            this._endpos++;
+            _output.Append((char) temp);
+            _currpos++;
+            _endpos++;
             return false;
         }
 
@@ -326,7 +326,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="asOutput">Whether the New Line should be added to the Output Buffer</param>
         protected void ConsumeNewLine(bool asOutput)
         {
-            this.ConsumeNewLine(asOutput, false);
+            ConsumeNewLine(asOutput, false);
         }
 
         /// <summary>
@@ -336,7 +336,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="allowEOF">Whether EOF is permitted instead of a New Line</param>
         protected void ConsumeNewLine(bool asOutput, bool allowEOF)
         {
-            int c = this._reader.Peek();
+            int c = _reader.Peek();
             if (c == -1)
             {
                 if (!allowEOF) throw UnexpectedEndOfInput(", expected a New Line");
@@ -349,22 +349,22 @@ namespace VDS.RDF.Parsing.Tokens
                 case '\n':
 
                     // Discard the White Space
-                    this._reader.Read();
-                    this._currpos = 1;
-                    this._currline++;
-                    this._endpos = this._currpos;
-                    this._endline++;
+                    _reader.Read();
+                    _currpos = 1;
+                    _currline++;
+                    _endpos = _currpos;
+                    _endline++;
 
                     // See if there's a \r to discard as well
-                    next = this.Peek();
+                    next = Peek();
                     if (next == '\r')
                     {
-                        this._reader.Read();
-                        if (asOutput) this._output.Append("\n\r");
+                        _reader.Read();
+                        if (asOutput) _output.Append("\n\r");
                     }
                     else if (asOutput)
                     {
-                        this._output.Append('\n');
+                        _output.Append('\n');
                     }
 
                     break;
@@ -372,22 +372,22 @@ namespace VDS.RDF.Parsing.Tokens
                 case '\r':
 
                     // Discard the White Space
-                    this._reader.Read();
-                    this._currpos = 1;
-                    this._currline++;
-                    this._endpos = this._currpos;
-                    this._endline++;
+                    _reader.Read();
+                    _currpos = 1;
+                    _currline++;
+                    _endpos = _currpos;
+                    _endline++;
 
                     // See if there's a \n to discard as well
-                    next = this.Peek();
+                    next = Peek();
                     if (next == '\n')
                     {
-                        this._reader.Read();
-                        if (asOutput) this._output.Append("\r\n");
+                        _reader.Read();
+                        if (asOutput) _output.Append("\r\n");
                     }
                     else if (asOutput)
                     {
-                        this._output.Append('\r');
+                        _output.Append('\r');
                     }
 
                     break;
@@ -405,23 +405,23 @@ namespace VDS.RDF.Parsing.Tokens
         /// <exception cref="RdfParseException">Thrown if the caller tries to read beyond the end of the Stream</exception>
         protected char SkipCharacter()
         {
-            if (this._tempChar.HasValue)
+            if (_tempChar.HasValue)
             {
-                char c = (char)this._tempChar;
-                this._tempChar = null;
+                char c = (char)_tempChar;
+                _tempChar = null;
                 return c;
             }
 
-            int temp = this._reader.Read();
+            int temp = _reader.Read();
             if (temp > -1)
             {
-                this._currpos++;
-                this._endpos++;
+                _currpos++;
+                _endpos++;
                 return (char)temp;
             }
             else
             {
-                throw Error("Unexpected End of Stream while trying to tokenise from the following input:\n" + this._output.ToString());
+                throw Error("Unexpected End of Stream while trying to tokenise from the following input:\n" + _output.ToString());
             }
         }
 
@@ -430,7 +430,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         protected void DiscardWhiteSpace()
         {
-            char next = this.Peek();
+            char next = Peek();
 
             while (Char.IsWhiteSpace(next))
             {
@@ -438,21 +438,21 @@ namespace VDS.RDF.Parsing.Tokens
                 {
                     case '\n':
                     case '\r':
-                        this.ConsumeNewLine(false);
+                        ConsumeNewLine(false);
                         break;
 
                     default:
                         // Discard and Increment Position Counters
-                        this.SkipCharacter();
-                        this._startpos++;
+                        SkipCharacter();
+                        _startpos++;
                         break;
                 }
 
                 // Get the Next Character
-                next = this.Peek();
+                next = Peek();
             }
 
-            this.StartNewToken();
+            StartNewToken();
         }
 
         /// <summary>
@@ -461,7 +461,7 @@ namespace VDS.RDF.Parsing.Tokens
         protected void HandleEscapes(TokeniserEscapeMode mode)
         {
             // Grab the first character which must be a \
-            char next = this.SkipCharacter();
+            char next = SkipCharacter();
 
             if (next != '\\') throw Error("HandleEscapes() was called but the first character was not a \\ as expected");
 
@@ -470,7 +470,7 @@ namespace VDS.RDF.Parsing.Tokens
 
             bool isLiteral = (mode == TokeniserEscapeMode.QuotedLiterals || mode == TokeniserEscapeMode.QuotedLiteralsAlternate || mode == TokeniserEscapeMode.QuotedLiteralsBoth);
 
-            next = this.Peek();
+            next = Peek();
             switch (next)
             {
                 case '\\':
@@ -478,7 +478,7 @@ namespace VDS.RDF.Parsing.Tokens
                     if (isLiteral || mode == TokeniserEscapeMode.PermissiveUri)
                     {
                         // Consume this one Backslash
-                        this.ConsumeCharacter();
+                        ConsumeCharacter();
                         return;
                     }
                     goto default;
@@ -487,7 +487,7 @@ namespace VDS.RDF.Parsing.Tokens
                     if (mode == TokeniserEscapeMode.QuotedLiterals || mode == TokeniserEscapeMode.QuotedLiteralsBoth)
                     {
                         // Consume and return
-                        this.ConsumeCharacter();
+                        ConsumeCharacter();
                         return;
                     }
                     goto default;
@@ -496,7 +496,7 @@ namespace VDS.RDF.Parsing.Tokens
                     if (mode == TokeniserEscapeMode.QuotedLiteralsAlternate || mode == TokeniserEscapeMode.QuotedLiteralsBoth)
                     {
                         // Consume and return
-                        this.ConsumeCharacter();
+                        ConsumeCharacter();
                         return;
                     }
                     goto default;
@@ -505,7 +505,7 @@ namespace VDS.RDF.Parsing.Tokens
                     if (mode == TokeniserEscapeMode.Uri)
                     {
                         // Consume and return
-                        this.ConsumeCharacter();
+                        ConsumeCharacter();
                         return;
                     }
                     goto default;
@@ -515,8 +515,8 @@ namespace VDS.RDF.Parsing.Tokens
                     if (isLiteral || mode == TokeniserEscapeMode.PermissiveUri)
                     {
                         // Discard and append a real New Line to the output
-                        this.SkipCharacter();
-                        this._output.Append('\n');
+                        SkipCharacter();
+                        _output.Append('\n');
                         return;
                     }
                     goto default;
@@ -526,8 +526,8 @@ namespace VDS.RDF.Parsing.Tokens
                     if (isLiteral || mode == TokeniserEscapeMode.PermissiveUri)
                     {
                         // Discard and append a real New Line to the output
-                        this.SkipCharacter();
-                        this._output.Append('\r');
+                        SkipCharacter();
+                        _output.Append('\r');
                         return;
                     }
                     goto default;
@@ -537,8 +537,8 @@ namespace VDS.RDF.Parsing.Tokens
                     if (isLiteral || mode == TokeniserEscapeMode.PermissiveUri)
                     {
                         // Discard and append a real Tab to the output
-                        this.SkipCharacter();
-                        this._output.Append('\t');
+                        SkipCharacter();
+                        _output.Append('\t');
                         return;
                     }
                     goto default;
@@ -548,8 +548,8 @@ namespace VDS.RDF.Parsing.Tokens
                     if (isLiteral)
                     {
                         // Discard and append a real backspace to the output
-                        this.SkipCharacter();
-                        this._output.Append('\b');
+                        SkipCharacter();
+                        _output.Append('\b');
                         return;
                     }
                     goto default;
@@ -559,8 +559,8 @@ namespace VDS.RDF.Parsing.Tokens
                     if (isLiteral)
                     {
                         // Discard and append a real form feed to the output
-                        this.SkipCharacter();
-                        this._output.Append('\f');
+                        SkipCharacter();
+                        _output.Append('\f');
                         return;
                     }
                     goto default;
@@ -568,47 +568,47 @@ namespace VDS.RDF.Parsing.Tokens
                 case 'u':
                     // Need to consume the u first
                     localOutput = new StringBuilder();
-                    this.SkipCharacter();
+                    SkipCharacter();
 
-                    next = this.Peek();
+                    next = Peek();
 
                     // Try to get Four Hex Digits
-                    while (localOutput.Length < 4 && this.IsHexDigit(next))
+                    while (localOutput.Length < 4 && IsHexDigit(next))
                     {
                         localOutput.Append(next);
-                        this.SkipCharacter();
-                        next = this.Peek();
+                        SkipCharacter();
+                        next = Peek();
                     }
 
                     // Did we get four Hex Digits
                     if (localOutput.Length != 4)
                     {
-                        throw Error("Unexpected Character (Code " + (int)next + "): " + next + " encountered while trying to parse Unicode Escape from Content:\n" + this._output.ToString() + "\nThe \\u Escape must be followed by four Hex Digits");
+                        throw Error("Unexpected Character (Code " + (int)next + "): " + next + " encountered while trying to parse Unicode Escape from Content:\n" + _output.ToString() + "\nThe \\u Escape must be followed by four Hex Digits");
                     }
-                    this._output.Append(UnicodeSpecsHelper.ConvertToChar(localOutput.ToString()));
+                    _output.Append(UnicodeSpecsHelper.ConvertToChar(localOutput.ToString()));
                     return;
 
                 case 'U':
                     // Need to consume the U first
                     localOutput = new StringBuilder();
-                    this.SkipCharacter();
+                    SkipCharacter();
 
-                    next = this.Peek();
+                    next = Peek();
 
                     // Try to get Eight Hex Digits
-                    while (localOutput.Length < 8 && this.IsHexDigit(next))
+                    while (localOutput.Length < 8 && IsHexDigit(next))
                     {
                         localOutput.Append(next);
-                        this.SkipCharacter();
-                        next = this.Peek();
+                        SkipCharacter();
+                        next = Peek();
                     }
 
                     // Did we get eight Hex Digits
                     if (localOutput.Length != 8)
                     {
-                        throw Error("Unexpected Character (Code " + (int)next + "): " + next + " encountered while trying to parse Unicode Escape from Content:\n" + this._output.ToString() + "\nThe \\U Escape must be followed by eight Hex Digits");
+                        throw Error("Unexpected Character (Code " + (int)next + "): " + next + " encountered while trying to parse Unicode Escape from Content:\n" + _output.ToString() + "\nThe \\U Escape must be followed by eight Hex Digits");
                     }
-                    this._output.Append(UnicodeSpecsHelper.ConvertToChars(localOutput.ToString()));
+                    _output.Append(UnicodeSpecsHelper.ConvertToChars(localOutput.ToString()));
                     return;
 
                 default:
@@ -627,14 +627,14 @@ namespace VDS.RDF.Parsing.Tokens
         protected void HandleComplexLocalNameEscapes()
         {
             // Grab the first character which must be a \ or %
-            char next = this.SkipCharacter();
+            char next = SkipCharacter();
 
             // Stuff for Unicode/Hex escapes
 
             if (next == '\\')
             {
                 // Backslash based escape
-                next = this.Peek();
+                next = Peek();
                 switch (next)
                 {
                     case '_':
@@ -658,8 +658,8 @@ namespace VDS.RDF.Parsing.Tokens
                     case '@':
                     case '%':
                         // Escapable Characters
-                        this._output.Append('\\');
-                        this.ConsumeCharacter();
+                        _output.Append('\\');
+                        ConsumeCharacter();
                         return;
 
                     case 'u':
@@ -677,12 +677,12 @@ namespace VDS.RDF.Parsing.Tokens
             StringBuilder localOutput = new StringBuilder();
             localOutput.Append(next);
 
-            next = this.Peek();
-            while (localOutput.Length < 3 && this.IsHexDigit(next))
+            next = Peek();
+            while (localOutput.Length < 3 && IsHexDigit(next))
             {
                 localOutput.Append(next);
-                this.SkipCharacter();
-                next = this.Peek();
+                SkipCharacter();
+                next = Peek();
             }
 
             // Did we get % followed by two hex digits
@@ -694,7 +694,7 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 throw Error("Invalid % encoded character encountered");
             }
-            this._output.Append(localOutput.ToString());
+            _output.Append(localOutput.ToString());
         }
 
 
@@ -739,14 +739,14 @@ namespace VDS.RDF.Parsing.Tokens
         /// <returns></returns>
         protected RdfParseException Error(String detail)
         {
-            this._reader.Close();
+            _reader.Close();
             if (detail.Contains("{0}"))
             {
-                return new RdfParseException("[Line " + this._currline + " Column " + this._currpos + "] " + String.Format(detail, this._format), this._currline, this._currpos);
+                return new RdfParseException("[Line " + _currline + " Column " + _currpos + "] " + String.Format(detail, _format), _currline, _currpos);
             }
             else
             {
-                return new RdfParseException("[Line " + this._currline + " Column " + this._currpos + "] " + detail, this._currline, this._currpos);
+                return new RdfParseException("[Line " + _currline + " Column " + _currpos + "] " + detail, _currline, _currpos);
             }
         }
 
@@ -775,13 +775,13 @@ namespace VDS.RDF.Parsing.Tokens
         protected RdfParseException UnexpectedEndOfInput(String expected)
         {
             StringBuilder error = new StringBuilder();
-            error.Append("[Line " + this._startline + " Column " + this._startpos + " to Line " + this._currline + " Column " + this._currpos + "] Unexpected end of input while trying to parse " + expected);
-            if (this.Value.Length > 0 && !this.Value.ToCharArray().All(c => Char.IsWhiteSpace(c)))
+            error.Append("[Line " + _startline + " Column " + _startpos + " to Line " + _currline + " Column " + _currpos + "] Unexpected end of input while trying to parse " + expected);
+            if (Value.Length > 0 && !Value.ToCharArray().All(c => Char.IsWhiteSpace(c)))
             {
                 error.AppendLine(" from content:");
-                error.Append(this.Value);
+                error.Append(Value);
             }
-            return new RdfParseException(error.ToString(), this._startline, this._currline, this._startpos, this._currpos);
+            return new RdfParseException(error.ToString(), _startline, _currline, _startpos, _currpos);
         }
 
         /// <summary>
@@ -792,13 +792,13 @@ namespace VDS.RDF.Parsing.Tokens
         protected RdfParseException UnexpectedNewLine(String expected)
         {
             StringBuilder error = new StringBuilder();
-            error.AppendLine("[Line " + this._startline + " Column " + this._startpos + " to Line " + this._currline + " Column " + this._currpos + "] Unexpected new line while trying to parse " + expected + " from content:");
-            if (this.Value.Length > 0 && !this.Value.ToCharArray().All(c => Char.IsWhiteSpace(c)))
+            error.AppendLine("[Line " + _startline + " Column " + _startpos + " to Line " + _currline + " Column " + _currpos + "] Unexpected new line while trying to parse " + expected + " from content:");
+            if (Value.Length > 0 && !Value.ToCharArray().All(c => Char.IsWhiteSpace(c)))
             {
                 error.AppendLine(" from content:");
-                error.Append(this.Value);
+                error.Append(Value);
             }
-            return new RdfParseException(error.ToString(), this._startline, this._currline, this._startpos, this._currpos);
+            return new RdfParseException(error.ToString(), _startline, _currline, _startpos, _currpos);
         }
 
         /// <summary>

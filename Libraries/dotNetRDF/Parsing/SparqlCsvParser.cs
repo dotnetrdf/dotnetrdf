@@ -52,10 +52,10 @@ namespace VDS.RDF.Parsing
             // Check Encoding
             if (input.CurrentEncoding != Encoding.UTF8)
             {
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+                RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
             }
 
-            this.Load(results, (TextReader)input);
+            Load(results, (TextReader)input);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace VDS.RDF.Parsing
         public void Load(SparqlResultSet results, string filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse SPARQL Results from a null file");
-            this.Load(results, new StreamReader(File.OpenRead(filename)));
+            Load(results, new StreamReader(File.OpenRead(filename)));
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace VDS.RDF.Parsing
         {
             if (results == null) throw new RdfParseException("Cannot parse SPARQL Results into a null Result Set");
             if (input == null) throw new RdfParseException("Cannot parse SPARQL Results from a null input stream");
-            this.Load(new ResultSetHandler(results), input);
+            Load(new ResultSetHandler(results), input);
         }
 
         /// <summary>
@@ -93,10 +93,10 @@ namespace VDS.RDF.Parsing
             // Check Encoding
             if (input.CurrentEncoding != Encoding.UTF8)
             {
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+                RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
             }
 
-            this.Load(handler, (TextReader)input);
+            Load(handler, (TextReader)input);
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace VDS.RDF.Parsing
         public void Load(ISparqlResultsHandler handler, string filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse SPARQL Results from a null file");
-            this.Load(handler, new StreamReader(File.OpenRead(filename)));
+            Load(handler, new StreamReader(File.OpenRead(filename)));
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace VDS.RDF.Parsing
             try
             {
                 TokenisingResultParserContext context = new TokenisingResultParserContext(handler, new CsvTokeniser(ParsingTextReader.Create(input)));
-                this.TryParseResults(context);
+                TryParseResults(context);
                 input.Close();
             }
             catch
@@ -151,13 +151,13 @@ namespace VDS.RDF.Parsing
                 if (context.Tokens.Peek().TokenType == Token.BOF) context.Tokens.Dequeue();
 
                 // Firstly parse the Header Row
-                this.TryParseHeaderRow(context);
+                TryParseHeaderRow(context);
 
                 // Then while not EOF try parse result rows
                 IToken next = context.Tokens.Peek();
                 while (next.TokenType != Token.EOF)
                 {
-                    this.TryParseResultRow(context);
+                    TryParseResultRow(context);
                     if (context.Tokens.LastTokenType == Token.EOF) break;
                 }
 
@@ -331,7 +331,7 @@ namespace VDS.RDF.Parsing
 
         private void RaiseWarning(String message)
         {
-            SparqlWarning d = this.Warning;
+            SparqlWarning d = Warning;
             if (d != null) d(message);
         }
 

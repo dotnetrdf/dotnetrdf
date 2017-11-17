@@ -57,9 +57,9 @@ namespace VDS.RDF.Parsing.Tokens
         public SparqlTokeniser(ParsingTextReader input, SparqlQuerySyntax syntax)
             : base(input)
         {
-            this._in = input;
-            this.Format = "SPARQL";
-            this._syntax = syntax;
+            _in = input;
+            Format = "SPARQL";
+            _syntax = syntax;
         }
 
         /// <summary>
@@ -78,65 +78,65 @@ namespace VDS.RDF.Parsing.Tokens
         public override IToken GetNextToken()
         {
             // Have we read anything yet?
-            if (this.LastTokenType == -1)
+            if (LastTokenType == -1)
             {
                 // Nothing read yet so produce a BOF Token
-                this.LastTokenType = Token.BOF;
+                LastTokenType = Token.BOF;
                 return new BOFToken();
             }
             else
             {
                 // Reading has started
 
-                this.StartNewToken();
+                StartNewToken();
 
                 try
                 {
-                    if (this.LastTokenType == Token.BOF && this._in.EndOfStream)
+                    if (LastTokenType == Token.BOF && _in.EndOfStream)
                     {
                         // Empty File
                         return new EOFToken(0, 0);
                     }
-                    else if (!this._queryKeywordSeen)
+                    else if (!_queryKeywordSeen)
                     {
                         // Expecting the Prologue/Keyword of the Query
-                        return this.TryGetPrologueOrQueryKeyword();
+                        return TryGetPrologueOrQueryKeyword();
                     }
-                    else if (this.LastTokenType == Token.HATHAT)
+                    else if (LastTokenType == Token.HATHAT)
                     {
                         // Should get a DataType
-                        return this.TryGetDataType();
+                        return TryGetDataType();
                     }
 
                     do
                     {
                         // Check for EOF
-                        if (this._in.EndOfStream)
+                        if (_in.EndOfStream)
                         {
-                            if (this.Length == 0)
+                            if (Length == 0)
                             {
                                 // We're at the End of the Stream and not part-way through reading a Token
-                                return new EOFToken(this.CurrentLine, this.CurrentPosition);
+                                return new EOFToken(CurrentLine, CurrentPosition);
                             }
                             else
                             {
                                 // We're at the End of the Stream and part-way through reading a Token
                                 // Raise an error
-                                throw Error("Unexpected End of File encountered while attempting to Parse Token from content\n" + this.Value);
+                                throw Error("Unexpected End of File encountered while attempting to Parse Token from content\n" + Value);
 
                             }
                         }
 
                         // Get the Next Character
-                        char next = this.Peek();
+                        char next = Peek();
 
                         // Always need to do a check for End of Stream after Peeking to handle empty files OK
-                        if (next == Char.MaxValue && this._in.EndOfStream)
+                        if (next == Char.MaxValue && _in.EndOfStream)
                         {
-                            if (this.Length == 0)
+                            if (Length == 0)
                             {
                                 // We're at the End of the Stream and not part-way through reading a Token
-                                return new EOFToken(this.CurrentLine, this.CurrentPosition);
+                                return new EOFToken(CurrentLine, CurrentPosition);
                             }
                             else
                             {
@@ -149,17 +149,17 @@ namespace VDS.RDF.Parsing.Tokens
                         if (Char.IsWhiteSpace(next))
                         {
                             // Discard White Space when not in a Token
-                            this.DiscardWhiteSpace();
+                            DiscardWhiteSpace();
                         }
                         else if (Char.IsLetter(next))
                         {
                             // Could be a Keyword or a QName
-                            return this.TryGetQNameOrKeyword();
+                            return TryGetQNameOrKeyword();
                         }
                         else if (Char.IsDigit(next))
                         {
                             // Must be a Numeric Literal
-                            return this.TryGetNumericLiteral();
+                            return TryGetNumericLiteral();
                         }
                         else
                         {
@@ -169,45 +169,45 @@ namespace VDS.RDF.Parsing.Tokens
 
                                 case '*':
                                     // All/Multiply Token
-                                    this.ConsumeCharacter();
-                                    if (this.LastTokenType == Token.SELECT || this.LastTokenType == Token.DISTINCT || this.LastTokenType == Token.REDUCED)
+                                    ConsumeCharacter();
+                                    if (LastTokenType == Token.SELECT || LastTokenType == Token.DISTINCT || LastTokenType == Token.REDUCED)
                                     {
-                                        this.LastTokenType = Token.ALL;
-                                        return new AllToken(this.CurrentLine, this.StartPosition);
+                                        LastTokenType = Token.ALL;
+                                        return new AllToken(CurrentLine, StartPosition);
                                     }
                                     else
                                     {
-                                        this.LastTokenType = Token.MULTIPLY;
-                                        return new MultiplyToken(this.CurrentLine, this.StartPosition);
+                                        LastTokenType = Token.MULTIPLY;
+                                        return new MultiplyToken(CurrentLine, StartPosition);
                                     }
 
                                 case '/':
                                     // Divide Token
-                                    this.ConsumeCharacter();
-                                    this.LastTokenType = Token.DIVIDE;
-                                    return new DivideToken(this.CurrentLine, this.StartPosition);
+                                    ConsumeCharacter();
+                                    LastTokenType = Token.DIVIDE;
+                                    return new DivideToken(CurrentLine, StartPosition);
 
                                 case '=':
                                     // Equals Token
-                                    this.ConsumeCharacter();
-                                    this.LastTokenType = Token.EQUALS;
-                                    return new EqualityToken(this.CurrentLine, this.StartPosition);
+                                    ConsumeCharacter();
+                                    LastTokenType = Token.EQUALS;
+                                    return new EqualityToken(CurrentLine, StartPosition);
 
                                 case '#':
                                     // Comment Token
-                                    return this.TryGetComment();
+                                    return TryGetComment();
 
                                 case '.':
                                     // Statement Terminator
-                                    this.ConsumeCharacter();
+                                    ConsumeCharacter();
 
                                     // Watch our for plain literals
-                                    if (!this._in.EndOfStream && Char.IsDigit(this.Peek()))
+                                    if (!_in.EndOfStream && Char.IsDigit(Peek()))
                                     {
-                                        IToken temp = this.TryGetNumericLiteral();
+                                        IToken temp = TryGetNumericLiteral();
                                         if (temp is PlainLiteralToken)
                                         {
-                                            this.LastTokenType = Token.PLAINLITERAL;
+                                            LastTokenType = Token.PLAINLITERAL;
                                             return temp;
                                         }
                                         else
@@ -218,103 +218,103 @@ namespace VDS.RDF.Parsing.Tokens
                                     else
                                     {
                                         // This should be the end of a directive
-                                        this.LastTokenType = Token.DOT;
-                                        return new DotToken(this.CurrentLine, this.StartPosition);
+                                        LastTokenType = Token.DOT;
+                                        return new DotToken(CurrentLine, StartPosition);
                                     }
 
                                 case ';':
                                     // Predicate Object List deliminator
-                                    this.ConsumeCharacter();
-                                    this.LastTokenType = Token.SEMICOLON;
-                                    return new SemicolonToken(this.CurrentLine, this.StartPosition);
+                                    ConsumeCharacter();
+                                    LastTokenType = Token.SEMICOLON;
+                                    return new SemicolonToken(CurrentLine, StartPosition);
 
                                 case ',':
                                     // Object List deleminator
-                                    this.ConsumeCharacter();
-                                    this.LastTokenType = Token.COMMA;
-                                    return new CommaToken(this.CurrentLine, this.StartPosition);
+                                    ConsumeCharacter();
+                                    LastTokenType = Token.COMMA;
+                                    return new CommaToken(CurrentLine, StartPosition);
 
                                 case '<':
                                     // Start of a Uri or a Less Than
-                                    return this.TryGetUri();
+                                    return TryGetUri();
 
                                 case '>':
                                     // Greater Than
-                                    this.ConsumeCharacter();
-                                    next = this.Peek();
+                                    ConsumeCharacter();
+                                    next = Peek();
                                     if (next == '=')
                                     {
                                         // Greater Than or Equal To
-                                        this.ConsumeCharacter();
-                                        this.LastTokenType = Token.GREATERTHANOREQUALTO;
-                                        return new GreaterThanOrEqualToToken(this.CurrentLine, this.StartPosition);
+                                        ConsumeCharacter();
+                                        LastTokenType = Token.GREATERTHANOREQUALTO;
+                                        return new GreaterThanOrEqualToToken(CurrentLine, StartPosition);
                                     }
                                     else
                                     {
                                         // Greater Than
-                                        this.LastTokenType = Token.GREATERTHAN;
-                                        return new GreaterThanToken(this.CurrentLine, this.StartPosition);
+                                        LastTokenType = Token.GREATERTHAN;
+                                        return new GreaterThanToken(CurrentLine, StartPosition);
                                     }
 
                                 case '"':
                                     // Start of a Literal
-                                    return this.TryGetLiteral('"');
+                                    return TryGetLiteral('"');
 
                                 case '\'':
                                     // Start of a Literal
-                                    return this.TryGetLiteral('\'');
+                                    return TryGetLiteral('\'');
 
                                 case '^':
                                     // DataType Specifier/Path Inverse
-                                    this.ConsumeCharacter();
-                                    next = this.Peek();
+                                    ConsumeCharacter();
+                                    next = Peek();
                                     if (next == '^')
                                     {
                                         // DataType specifier
-                                        this.ConsumeCharacter();
-                                        this.LastTokenType = Token.HATHAT;
-                                        return new HatHatToken(this.CurrentLine, this.StartPosition);
+                                        ConsumeCharacter();
+                                        LastTokenType = Token.HATHAT;
+                                        return new HatHatToken(CurrentLine, StartPosition);
                                     }
                                     else
                                     {
                                         // Path inverse
-                                        this.LastTokenType = Token.HAT;
-                                        return new HatToken(this.CurrentLine, this.StartPosition);
+                                        LastTokenType = Token.HAT;
+                                        return new HatToken(CurrentLine, StartPosition);
                                         // throw Error("Unexpected Character (Code " + (int)next + ") " + (char)next + " was encountered after a ^ character, expected a ^^ for a Data Type specifier");
                                     }
 
                                 case '+':
                                 case '-':
                                     // Start of a Numeric Literal
-                                    return this.TryGetNumericLiteral();
+                                    return TryGetNumericLiteral();
 
                                 case '!':
                                     // Logical Negation/Not Equals
-                                    this.ConsumeCharacter();
-                                    next = this.Peek();
+                                    ConsumeCharacter();
+                                    next = Peek();
                                     if (next == '=')
                                     {
                                         // Not Equals
-                                        this.ConsumeCharacter();
-                                        this.LastTokenType = Token.NOTEQUALS;
-                                        return new NotEqualsToken(this.CurrentLine, this.StartPosition);
+                                        ConsumeCharacter();
+                                        LastTokenType = Token.NOTEQUALS;
+                                        return new NotEqualsToken(CurrentLine, StartPosition);
                                     }
                                     else
                                     {
                                         // Logical Negation
-                                        this.LastTokenType = Token.NEGATION;
-                                        return new NegationToken(this.CurrentLine, this.StartPosition);
+                                        LastTokenType = Token.NEGATION;
+                                        return new NegationToken(CurrentLine, StartPosition);
                                     }
 
                                 case '&':
                                     // Logical and
-                                    this.ConsumeCharacter();
-                                    next = this.Peek();
+                                    ConsumeCharacter();
+                                    next = Peek();
                                     if (next == '&')
                                     {
-                                        this.ConsumeCharacter();
-                                        this.LastTokenType = Token.AND;
-                                        return new AndToken(this.CurrentLine, this.StartPosition);
+                                        ConsumeCharacter();
+                                        LastTokenType = Token.AND;
+                                        return new AndToken(CurrentLine, StartPosition);
                                     }
                                     else
                                     {
@@ -323,26 +323,26 @@ namespace VDS.RDF.Parsing.Tokens
 
                                 case '|':
                                     // Logical or/Path Alternative
-                                    this.ConsumeCharacter();
-                                    next = this.Peek();
+                                    ConsumeCharacter();
+                                    next = Peek();
                                     if (next == '|')
                                     {
                                         // Logical Or
-                                        this.ConsumeCharacter();
-                                        this.LastTokenType = Token.OR;
-                                        return new OrToken(this.CurrentLine, this.StartPosition);
+                                        ConsumeCharacter();
+                                        LastTokenType = Token.OR;
+                                        return new OrToken(CurrentLine, StartPosition);
                                     }
                                     else
                                     {
                                         // Path Alternative
-                                        this.LastTokenType = Token.BITWISEOR;
-                                        return new BitwiseOrToken(this.CurrentLine, this.StartPosition);
+                                        LastTokenType = Token.BITWISEOR;
+                                        return new BitwiseOrToken(CurrentLine, StartPosition);
                                         // throw Error("Unexpected Character (Code " + (int)next + ") " + (char)next + " was encountered while trying to parse a Logical Or operator");
                                     }
 
                                 case '@':
                                     // Lang Specifier
-                                    return this.TryGetLangSpec();
+                                    return TryGetLangSpec();
 
                                 #endregion
 
@@ -351,12 +351,12 @@ namespace VDS.RDF.Parsing.Tokens
                                 case '$':
                                 case '?':
                                     // Start of a Variable
-                                    return this.TryGetVariable();
+                                    return TryGetVariable();
 
                                 case ':':
                                 case '_':
                                     // A QName
-                                    return this.TryGetQName();
+                                    return TryGetQName();
 
                                 #endregion
 
@@ -364,39 +364,39 @@ namespace VDS.RDF.Parsing.Tokens
 
                                 case '{':
                                     // Left Bracket
-                                    this.ConsumeCharacter();
-                                    this.LastTokenType = Token.LEFTCURLYBRACKET;
-                                    return new LeftCurlyBracketToken(this.CurrentLine, this.StartPosition);
+                                    ConsumeCharacter();
+                                    LastTokenType = Token.LEFTCURLYBRACKET;
+                                    return new LeftCurlyBracketToken(CurrentLine, StartPosition);
 
                                 case '}':
                                     // Right Bracket
-                                    this.ConsumeCharacter();
-                                    this.LastTokenType = Token.RIGHTCURLYBRACKET;
-                                    return new RightCurlyBracketToken(this.CurrentLine, this.StartPosition);
+                                    ConsumeCharacter();
+                                    LastTokenType = Token.RIGHTCURLYBRACKET;
+                                    return new RightCurlyBracketToken(CurrentLine, StartPosition);
 
                                 case '(':
                                     // Left Bracket
-                                    this.ConsumeCharacter();
-                                    this.LastTokenType = Token.LEFTBRACKET;
-                                    return new LeftBracketToken(this.CurrentLine, this.StartPosition);
+                                    ConsumeCharacter();
+                                    LastTokenType = Token.LEFTBRACKET;
+                                    return new LeftBracketToken(CurrentLine, StartPosition);
 
                                 case ')':
                                     // Right Bracket
-                                    this.ConsumeCharacter();
-                                    this.LastTokenType = Token.RIGHTBRACKET;
-                                    return new RightBracketToken(this.CurrentLine, this.StartPosition);
+                                    ConsumeCharacter();
+                                    LastTokenType = Token.RIGHTBRACKET;
+                                    return new RightBracketToken(CurrentLine, StartPosition);
 
                                 case '[':
                                     // Left Bracket
-                                    this.ConsumeCharacter();
-                                    this.LastTokenType = Token.LEFTSQBRACKET;
-                                    return new LeftSquareBracketToken(this.CurrentLine, this.StartPosition);
+                                    ConsumeCharacter();
+                                    LastTokenType = Token.LEFTSQBRACKET;
+                                    return new LeftSquareBracketToken(CurrentLine, StartPosition);
 
                                 case ']':
                                     // Right Bracket
-                                    this.ConsumeCharacter();
-                                    this.LastTokenType = Token.RIGHTSQBRACKET;
-                                    return new RightSquareBracketToken(this.CurrentLine, this.StartPosition);
+                                    ConsumeCharacter();
+                                    LastTokenType = Token.RIGHTSQBRACKET;
+                                    return new RightSquareBracketToken(CurrentLine, StartPosition);
 
                                 #endregion
 
@@ -412,10 +412,10 @@ namespace VDS.RDF.Parsing.Tokens
                 catch (IOException)
                 {
                     // End Of Stream Check
-                    if (this._in.EndOfStream)
+                    if (_in.EndOfStream)
                     {
                         // At End of Stream so produce the EOFToken
-                        return new EOFToken(this.CurrentLine, this.CurrentPosition);
+                        return new EOFToken(CurrentLine, CurrentPosition);
                     }
                     else
                     {
@@ -429,34 +429,34 @@ namespace VDS.RDF.Parsing.Tokens
         private IToken TryGetComment()
         {
             // Consume the first character which must have been a #
-            this.ConsumeCharacter();
+            ConsumeCharacter();
 
             // Consume everything up till we hit the new line
-            char next = this.Peek();
+            char next = Peek();
             while (next != '\n' && next != '\r')
             {
-                if (this.ConsumeCharacter(true)) break;
-                next = this.Peek();
+                if (ConsumeCharacter(true)) break;
+                next = Peek();
             }
 
             // Create the Token, discard the new line and return
-            this.LastTokenType = Token.COMMENT;
-            CommentToken comment = new CommentToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
-            this.ConsumeNewLine(false, true);
+            LastTokenType = Token.COMMENT;
+            CommentToken comment = new CommentToken(Value, CurrentLine, StartPosition, EndPosition);
+            ConsumeNewLine(false, true);
             return comment;
         }
 
         private IToken TryGetPrologueOrQueryKeyword()
         {
-            char next = this.Peek();
+            char next = Peek();
 
             // Always need to do a check for End of Stream after Peeking to handle empty files OK
-            if (next == Char.MaxValue && this._in.EndOfStream)
+            if (next == Char.MaxValue && _in.EndOfStream)
             {
-                if (this.Length == 0)
+                if (Length == 0)
                 {
                     // We're at the End of the Stream and not part-way through reading a Token
-                    return new EOFToken(this.CurrentLine, this.CurrentPosition);
+                    return new EOFToken(CurrentLine, CurrentPosition);
                 }
                 else
                 {
@@ -469,25 +469,25 @@ namespace VDS.RDF.Parsing.Tokens
             // Discard leading White Space
             if (Char.IsWhiteSpace(next))
             {
-                this.DiscardWhiteSpace();
+                DiscardWhiteSpace();
             }
 
             // Get Characters that form the Token
             bool ok = true;
             do
             {
-                next = this.Peek();
+                next = Peek();
 
                 if (Char.IsWhiteSpace(next)) break;
 
                 switch (next)
                 {
                     case '#':
-                        return this.TryGetComment();
+                        return TryGetComment();
                     case '<':
-                        if (this.Length == 0)
+                        if (Length == 0)
                         {
-                            return this.TryGetUri();
+                            return TryGetUri();
                         }
                         ok = false;
                         break;
@@ -495,11 +495,11 @@ namespace VDS.RDF.Parsing.Tokens
                         ok = false;
                         break;
                     default:
-                        this.ConsumeCharacter();
+                        ConsumeCharacter();
                         break;
                 }
 
-                if (this._in.EndOfStream)
+                if (_in.EndOfStream)
                 {
                     // throw Error("Unexpected end of query while trying to Parse Query Prologue");
                     break;
@@ -507,18 +507,18 @@ namespace VDS.RDF.Parsing.Tokens
             } while (ok);
 
             // May need to do backtracking if there was no whitespace between query keyword and {
-            if (!this._queryKeywordSeen && this.Value.EndsWith("{"))
+            if (!_queryKeywordSeen && Value.EndsWith("{"))
             {
-                this.Backtrack();
+                Backtrack();
             }
 
             // Work out what type of Token we've got
-            String value = this.Value;
-            switch (this.LastTokenType)
+            String value = Value;
+            switch (LastTokenType)
             {
                 case Token.PREFIXDIRECTIVE:
                     // Expect to see a Prefix
-                    return this.TryGetPrefix();
+                    return TryGetPrefix();
 
                 case Token.URI:
                 case Token.DOT:
@@ -527,7 +527,7 @@ namespace VDS.RDF.Parsing.Tokens
                     // Expect a new BASE, PREFIX or Keyword after a Start of File/Previous Declaration
                     if (value.Equals(SparqlSpecsHelper.SparqlKeywordBase, StringComparison.OrdinalIgnoreCase))
                     {
-                        if (this._baseDeclared)
+                        if (_baseDeclared)
                         {
                             // Only one Base Declaration permitted
                             throw Error("Unexpected Base Declaration encountered, the Query Prologue may only contain one Base Declaration");
@@ -535,44 +535,44 @@ namespace VDS.RDF.Parsing.Tokens
                         else
                         {
                             // Got a Base Declaration
-                            this._baseDeclared = true;
-                            this.LastTokenType = Token.BASEDIRECTIVE;
-                            return new BaseDirectiveToken(this.CurrentLine, this.StartPosition);
+                            _baseDeclared = true;
+                            LastTokenType = Token.BASEDIRECTIVE;
+                            return new BaseDirectiveToken(CurrentLine, StartPosition);
                         }
                     }
                     else if (value.Equals(SparqlSpecsHelper.SparqlKeywordPrefix, StringComparison.OrdinalIgnoreCase))
                     {
                         // Got a Prefix Declaration
-                        this.LastTokenType = Token.PREFIXDIRECTIVE;
-                        return new PrefixDirectiveToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.PREFIXDIRECTIVE;
+                        return new PrefixDirectiveToken(CurrentLine, StartPosition);
                     }
                     else if (SparqlSpecsHelper.IsQueryKeyword(value))
                     {
                         // Which keyword did we get
-                        this._queryKeywordSeen = true;
+                        _queryKeywordSeen = true;
                         if (value.Equals(SparqlSpecsHelper.SparqlKeywordAsk, StringComparison.OrdinalIgnoreCase))
                         {
                             // Ask Keyword
-                            this.LastTokenType = Token.ASK;
-                            return new AskKeywordToken(this.CurrentLine, this.StartPosition);
+                            LastTokenType = Token.ASK;
+                            return new AskKeywordToken(CurrentLine, StartPosition);
                         }
                         else if (value.Equals(SparqlSpecsHelper.SparqlKeywordConstruct, StringComparison.OrdinalIgnoreCase))
                         {
                             // Construct Keyword
-                            this.LastTokenType = Token.CONSTRUCT;
-                            return new ConstructKeywordToken(this.CurrentLine, this.StartPosition);
+                            LastTokenType = Token.CONSTRUCT;
+                            return new ConstructKeywordToken(CurrentLine, StartPosition);
                         }
                         else if (value.Equals(SparqlSpecsHelper.SparqlKeywordDescribe, StringComparison.OrdinalIgnoreCase))
                         {
                             // Describe Keyword
-                            this.LastTokenType = Token.DESCRIBE;
-                            return new DescribeKeywordToken(this.CurrentLine, this.StartPosition);
+                            LastTokenType = Token.DESCRIBE;
+                            return new DescribeKeywordToken(CurrentLine, StartPosition);
                         }
                         else if (value.Equals(SparqlSpecsHelper.SparqlKeywordSelect, StringComparison.OrdinalIgnoreCase))
                         {
                             // Select Keyword
-                            this.LastTokenType = Token.SELECT;
-                            return new SelectKeywordToken(this.CurrentLine, this.StartPosition);
+                            LastTokenType = Token.SELECT;
+                            return new SelectKeywordToken(CurrentLine, StartPosition);
                         }
                         else
                         {
@@ -581,50 +581,50 @@ namespace VDS.RDF.Parsing.Tokens
                     }
                     else if (SparqlSpecsHelper.IsUpdateKeyword(value))
                     {
-                        this._queryKeywordSeen = true;
+                        _queryKeywordSeen = true;
                         value = value.ToUpper();
                         switch (value)
                         {
                             case SparqlSpecsHelper.SparqlKeywordAdd:
                                 // Add Keyword
-                                this.LastTokenType = Token.ADD;
-                                return new AddKeywordToken(this.CurrentLine, this.StartPosition);
+                                LastTokenType = Token.ADD;
+                                return new AddKeywordToken(CurrentLine, StartPosition);
                             case SparqlSpecsHelper.SparqlKeywordClear:
                                 // Clear Keyword
-                                this.LastTokenType = Token.CLEAR;
-                                return new ClearKeywordToken(this.CurrentLine, this.StartPosition);
+                                LastTokenType = Token.CLEAR;
+                                return new ClearKeywordToken(CurrentLine, StartPosition);
                             case SparqlSpecsHelper.SparqlKeywordCopy:
                                 // Copy Keyword
-                                this.LastTokenType = Token.COPY;
-                                return new CopyKeywordToken(this.CurrentLine, this.StartPosition);
+                                LastTokenType = Token.COPY;
+                                return new CopyKeywordToken(CurrentLine, StartPosition);
                             case SparqlSpecsHelper.SparqlKeywordCreate:
                                 // Create Keyword
-                                this.LastTokenType = Token.CREATE;
-                                return new CreateKeywordToken(this.CurrentLine, this.StartPosition);
+                                LastTokenType = Token.CREATE;
+                                return new CreateKeywordToken(CurrentLine, StartPosition);
                             case SparqlSpecsHelper.SparqlKeywordDelete:
                                 // Delete Keyword
-                                this.LastTokenType = Token.DELETE;
-                                return new DeleteKeywordToken(this.CurrentLine, this.StartPosition);
+                                LastTokenType = Token.DELETE;
+                                return new DeleteKeywordToken(CurrentLine, StartPosition);
                             case SparqlSpecsHelper.SparqlKeywordDrop:
                                 // Drop Keyword
-                                this.LastTokenType = Token.DROP;
-                                return new DropKeywordToken(this.CurrentLine, this.StartPosition);
+                                LastTokenType = Token.DROP;
+                                return new DropKeywordToken(CurrentLine, StartPosition);
                             case SparqlSpecsHelper.SparqlKeywordInsert:
                                 // Insert Keyword
-                                this.LastTokenType = Token.INSERT;
-                                return new InsertKeywordToken(this.CurrentLine, this.StartPosition);
+                                LastTokenType = Token.INSERT;
+                                return new InsertKeywordToken(CurrentLine, StartPosition);
                             case SparqlSpecsHelper.SparqlKeywordLoad:
                                 // Load Keyword
-                                this.LastTokenType = Token.LOAD;
-                                return new LoadKeywordToken(this.CurrentLine, this.StartPosition);
+                                LastTokenType = Token.LOAD;
+                                return new LoadKeywordToken(CurrentLine, StartPosition);
                             case SparqlSpecsHelper.SparqlKeywordMove:
                                 // Move Keyword
-                                this.LastTokenType = Token.MOVE;
-                                return new MoveKeywordToken(this.CurrentLine, this.StartPosition);
+                                LastTokenType = Token.MOVE;
+                                return new MoveKeywordToken(CurrentLine, StartPosition);
                             case SparqlSpecsHelper.SparqlKeywordWith:
                                 // With Keyword
-                                this.LastTokenType = Token.WITH;
-                                return new WithKeywordToken(this.CurrentLine, this.StartPosition);
+                                LastTokenType = Token.WITH;
+                                return new WithKeywordToken(CurrentLine, StartPosition);
                             default:
                                 throw Error("Unexpected Update Keyword '" + value + "' encountered while trying to parse the Query Prologue, expected an Update Keyword which can start an Update Command");
                         }
@@ -646,59 +646,59 @@ namespace VDS.RDF.Parsing.Tokens
             // this.DiscardWhiteSpace();
 
             // Get the Prefix Characters (unless we've already got them)
-            if (this.Length == 0)
+            if (Length == 0)
             {
-                char next = this.Peek();
+                char next = Peek();
                 while (!Char.IsWhiteSpace(next) && next != '<')
                 {
-                    this.ConsumeCharacter();
+                    ConsumeCharacter();
                     if (next == ':') break;
-                    next = this.Peek();
+                    next = Peek();
                 }
             }
-            if (!this.Value.EndsWith(":"))
+            if (!Value.EndsWith(":"))
             {
-                throw new RdfParseException("Didn't find expected : Character while attempting to parse Prefix at content:\n" + this.Value + "\nPrefixes must end in a Colon Character", this.StartLine, this.CurrentLine, this.StartPosition, this.CurrentPosition);
+                throw new RdfParseException("Didn't find expected : Character while attempting to parse Prefix at content:\n" + Value + "\nPrefixes must end in a Colon Character", StartLine, CurrentLine, StartPosition, CurrentPosition);
             }
-            if (!SparqlSpecsHelper.IsValidPrefix(this.Value))
+            if (!SparqlSpecsHelper.IsValidPrefix(Value))
             {
-                throw new RdfParseException("The value '" + this.Value + "' is not a valid Prefix in SPARQL", new PositionInfo(this.StartLine, this.CurrentLine, this.StartPosition, this.EndPosition));
+                throw new RdfParseException("The value '" + Value + "' is not a valid Prefix in SPARQL", new PositionInfo(StartLine, CurrentLine, StartPosition, EndPosition));
             }
 
             // Produce a PrefixToken
-            this.LastTokenType = Token.PREFIX;
-            return new PrefixToken(this.Value, this.CurrentLine, this.StartPosition, this.CurrentPosition);
+            LastTokenType = Token.PREFIX;
+            return new PrefixToken(Value, CurrentLine, StartPosition, CurrentPosition);
         }
 
         private IToken TryGetUri()
         {
             // Consume first thing which must be a <
-            this.ConsumeCharacter();
+            ConsumeCharacter();
 
-            char next = this.Peek();
+            char next = Peek();
             if (next == '=')
             {
                 // Might be a less than or equal to
-                this.ConsumeCharacter();
-                next = this.Peek();
+                ConsumeCharacter();
+                next = Peek();
                 if (Char.IsWhiteSpace(next))
                 {
                     // A Less Than or Equal To
-                    this.LastTokenType = Token.LESSTHANOREQUALTO;
-                    return new LessThanOrEqualToToken(this.CurrentLine, this.StartPosition);
+                    LastTokenType = Token.LESSTHANOREQUALTO;
+                    return new LessThanOrEqualToToken(CurrentLine, StartPosition);
                 }
                 else
                 {
                     // Ambigious
-                    this.ConsumeCharacter();
-                    throw Error("Ambigious syntax in string '" + this.Value + "', the Tokeniser is unable to determine whether a Less Than or a URI was intended");
+                    ConsumeCharacter();
+                    throw Error("Ambigious syntax in string '" + Value + "', the Tokeniser is unable to determine whether a Less Than or a URI was intended");
                 }
             }
             else if (Char.IsWhiteSpace(next))
             {
                 // Appears to be a Less Than
-                this.LastTokenType = Token.LESSTHAN;
-                return new LessThanToken(this.CurrentLine, this.StartPosition);
+                LastTokenType = Token.LESSTHAN;
+                return new LessThanToken(CurrentLine, StartPosition);
             }
             else
             {
@@ -708,32 +708,32 @@ namespace VDS.RDF.Parsing.Tokens
                     if (Char.IsWhiteSpace(next))
                     {
                         // White space is illegal in URIs
-                        throw Error("Illegal white space in URI '" + this.Value + "'");
+                        throw Error("Illegal white space in URI '" + Value + "'");
                     }
                     else if (next == '\\')
                     {
                         // Might be an escape for a >
-                        this.HandleEscapes(TokeniserEscapeMode.Uri);
+                        HandleEscapes(TokeniserEscapeMode.Uri);
                     }
                     else
                     {
-                        this.ConsumeCharacter();
+                        ConsumeCharacter();
                     }
 
-                    next = this.Peek();
+                    next = Peek();
                 }
                 // Consume the concluding >
-                this.ConsumeCharacter();
+                ConsumeCharacter();
 
-                this.LastTokenType = Token.URI;
-                return new UriToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
+                LastTokenType = Token.URI;
+                return new UriToken(Value, CurrentLine, StartPosition, EndPosition);
             }
 
         }
 
         private IToken TryGetQName()
         {
-            char next = this.Peek();
+            char next = Peek();
             bool colonoccurred = false;
 
             while (UnicodeSpecsHelper.IsLetterOrDigit(next) || UnicodeSpecsHelper.IsLetterModifier(next) || next == '_' || next == '-' || next == ':' || next == '.'  || next == '\\' || next == '%')
@@ -741,21 +741,21 @@ namespace VDS.RDF.Parsing.Tokens
                 if (next == '\\' || next == '%')
                 {
                     // Handle Escapes
-                    if (!colonoccurred || this._syntax == SparqlQuerySyntax.Sparql_1_0)
+                    if (!colonoccurred || _syntax == SparqlQuerySyntax.Sparql_1_0)
                     {
-                        this.HandleEscapes(TokeniserEscapeMode.QName);
+                        HandleEscapes(TokeniserEscapeMode.QName);
                     }
                     else
                     {
-                        this.HandleComplexLocalNameEscapes();
+                        HandleComplexLocalNameEscapes();
                     }
-                    next = this.Peek();
+                    next = Peek();
                     continue;
                 }
                 else
                 {
                     // Consume
-                    this.ConsumeCharacter();
+                    ConsumeCharacter();
                 }
 
                 if (next == ':')
@@ -763,57 +763,57 @@ namespace VDS.RDF.Parsing.Tokens
                     if (colonoccurred)
                     {
                         // Can't contain more than 1 Colon in SPARQL 1.0
-                        if (this._syntax == SparqlQuerySyntax.Sparql_1_0) throw Error("Unexpected Character (Code " + (int)next + " :\nThe Colon Character can only occur once in a QName");
+                        if (_syntax == SparqlQuerySyntax.Sparql_1_0) throw Error("Unexpected Character (Code " + (int)next + " :\nThe Colon Character can only occur once in a QName");
                     }
                     else
                     {
                         colonoccurred = true;
 
                         // Check it's not an assignment operator
-                        if (this.Value.Length == 1)
+                        if (Value.Length == 1)
                         {
-                            next = this.Peek();
+                            next = Peek();
                             if (next == '=')
                             {
-                                this.ConsumeCharacter();
-                                this.LastTokenType = Token.ASSIGNMENT;
-                                return new AssignmentToken(this.CurrentLine, this.StartPosition);
+                                ConsumeCharacter();
+                                LastTokenType = Token.ASSIGNMENT;
+                                return new AssignmentToken(CurrentLine, StartPosition);
                             }
                         }
                     }
                 }
 
-                next = this.Peek();
+                next = Peek();
             }
 
-            String value = this.Value;
+            String value = Value;
 
             // Backtrack if necessary
-            if (value.EndsWith(".") && (this._syntax == SparqlQuerySyntax.Sparql_1_0 || value[value.Length-2] != '\\'))
+            if (value.EndsWith(".") && (_syntax == SparqlQuerySyntax.Sparql_1_0 || value[value.Length-2] != '\\'))
             {
-                this.Backtrack();
+                Backtrack();
                 value = value.Substring(0, value.Length - 1);
             }
 
             if (value.Equals("a"))
             {
                 // Keyword 'a'
-                return new KeywordAToken(this.CurrentLine, this.StartPosition);
+                return new KeywordAToken(CurrentLine, StartPosition);
             }
             else if (value.Equals("true") || value.Equals("false"))
             {
                 // Boolean Literal
-                return new PlainLiteralToken(value, this.CurrentLine, this.StartPosition, this.EndPosition);
+                return new PlainLiteralToken(value, CurrentLine, StartPosition, EndPosition);
             }
             else if (value.StartsWith("_:"))
             {
                 if (!SparqlSpecsHelper.IsValidBNode(value)) throw Error("The value '" + value + "' is not valid as a Blank Node identifier");
 
                 // A Blank Node QName
-                this.LastTokenType = Token.BLANKNODEWITHID;
-                return new BlankNodeWithIDToken(value, this.CurrentLine, this.StartPosition, this.EndPosition);
+                LastTokenType = Token.BLANKNODEWITHID;
+                return new BlankNodeWithIDToken(value, CurrentLine, StartPosition, EndPosition);
             }
-            else if (!SparqlSpecsHelper.IsValidQName(value, this._syntax))
+            else if (!SparqlSpecsHelper.IsValidQName(value, _syntax))
             {
                 // Not a valid QName
                 throw Error("The value '" + value + "' is not valid as a QName");
@@ -821,14 +821,14 @@ namespace VDS.RDF.Parsing.Tokens
             else
             {
                 // Return the QName
-                this.LastTokenType = Token.QNAME;
-                return new QNameToken(SparqlSpecsHelper.UnescapeQName(value), this.CurrentLine, this.StartPosition, this.EndPosition);
+                LastTokenType = Token.QNAME;
+                return new QNameToken(SparqlSpecsHelper.UnescapeQName(value), CurrentLine, StartPosition, EndPosition);
             }
         }
 
         private IToken TryGetQNameOrKeyword()
         {
-            char next = this.Peek();
+            char next = Peek();
             bool colonoccurred = false;
             String value;
 
@@ -837,21 +837,21 @@ namespace VDS.RDF.Parsing.Tokens
                 if (next == '\\' || next == '%')
                 {
                     // Handle Escapes
-                    if (!colonoccurred || this._syntax == SparqlQuerySyntax.Sparql_1_0)
+                    if (!colonoccurred || _syntax == SparqlQuerySyntax.Sparql_1_0)
                     {
-                        this.HandleEscapes(TokeniserEscapeMode.QName);
+                        HandleEscapes(TokeniserEscapeMode.QName);
                     }
                     else
                     {
-                        this.HandleComplexLocalNameEscapes();
+                        HandleComplexLocalNameEscapes();
                     }
-                    next = this.Peek();
+                    next = Peek();
                     continue;
                 }
                 else
                 {
                     // Consume
-                    this.ConsumeCharacter();
+                    ConsumeCharacter();
                 }
 
                 if (next == ':')
@@ -859,7 +859,7 @@ namespace VDS.RDF.Parsing.Tokens
                     if (colonoccurred)
                     {
                         // Can't contain more than 1 Colon in SPARQL 1.0
-                        if (this._syntax == SparqlQuerySyntax.Sparql_1_0) throw Error("Unexpected Character (Code " + (int)next + " :\nThe Colon Character can only occur once in a QName");
+                        if (_syntax == SparqlQuerySyntax.Sparql_1_0) throw Error("Unexpected Character (Code " + (int)next + " :\nThe Colon Character can only occur once in a QName");
                     }
                     else
                     {
@@ -867,15 +867,15 @@ namespace VDS.RDF.Parsing.Tokens
                     }
                 }
 
-                next = this.Peek();
+                next = Peek();
             }
 
-            value = this.Value;
+            value = Value;
 
             // Backtrack if necessary
             if (value.EndsWith("."))
             {
-                this.Backtrack();
+                Backtrack();
                 value = value.Substring(0, value.Length - 1);
             }
 
@@ -886,485 +886,485 @@ namespace VDS.RDF.Parsing.Tokens
                 {
                     case SparqlSpecsHelper.SparqlKeywordAbs:
                         // Abs Function Keyword
-                        this.LastTokenType = Token.ABS;
-                        return new AbsKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.ABS;
+                        return new AbsKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordAdd:
                         // Add Update Keyword
-                        this.LastTokenType = Token.ADD;
-                        return new AddKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.ADD;
+                        return new AddKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordAll:
                         // All Keyword
-                        this.LastTokenType = Token.ALLWORD;
-                        return new AllKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.ALLWORD;
+                        return new AllKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordAs:
                         // As Alias Keyword
-                        this.LastTokenType = Token.AS;
-                        return new AsKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.AS;
+                        return new AsKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordAvg:
                         // Average Aggregate Keyword
-                        this.LastTokenType = Token.AVG;
-                        return new AvgKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.AVG;
+                        return new AvgKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordBind:
                         // Bind Keyword
-                        this.LastTokenType = Token.BIND;
-                        return new BindKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.BIND;
+                        return new BindKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordBindings:
                         // Bindings Keyword
-                        this.LastTokenType = Token.BINDINGS;
-                        return new BindingsKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.BINDINGS;
+                        return new BindingsKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordBNode:
                         // BNode Keyword
-                        this.LastTokenType = Token.BNODE;
-                        return new BNodeKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.BNODE;
+                        return new BNodeKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordBound:
                         // Bound Function Keyword
-                        this.LastTokenType = Token.BOUND;
-                        return new BoundKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.BOUND;
+                        return new BoundKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordCall:
                         // Call Function Keyword
-                        this.LastTokenType = Token.CALL;
-                        return new CallKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.CALL;
+                        return new CallKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordCeil:
                         // Ceil Function Keyword
-                        this.LastTokenType = Token.CEIL;
-                        return new CeilKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.CEIL;
+                        return new CeilKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordClear:
                         // Clear Keyword
-                        this.LastTokenType = Token.CLEAR;
-                        return new ClearKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.CLEAR;
+                        return new ClearKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordCopy:
                         // Copy Update Keyword
-                        this.LastTokenType = Token.COPY;
-                        return new CopyKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.COPY;
+                        return new CopyKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordCoalesce:
                         // COALESCE Function Keyword
-                        this.LastTokenType = Token.COALESCE;
-                        return new CoalesceKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.COALESCE;
+                        return new CoalesceKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordConcat:
                         // Concat Function Keyword
-                        this.LastTokenType = Token.CONCAT;
-                        return new ConcatKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.CONCAT;
+                        return new ConcatKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordCount:
                         // Count Aggregate Keyword
-                        this.LastTokenType = Token.COUNT;
-                        return new CountKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.COUNT;
+                        return new CountKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordCreate:
                         // Create Keyword
-                        this.LastTokenType = Token.CREATE;
-                        return new CreateKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.CREATE;
+                        return new CreateKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordData:
                         // Data Keyword
-                        this.LastTokenType = Token.DATA;
-                        return new DataKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.DATA;
+                        return new DataKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordDataType:
                         // Datatype Function Keyword
-                        this.LastTokenType = Token.DATATYPEFUNC;
-                        return new DataTypeKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.DATATYPEFUNC;
+                        return new DataTypeKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordDay:
                         // Day Function Keyword
-                        this.LastTokenType = Token.DAY;
-                        return new DayKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.DAY;
+                        return new DayKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordDefault:
                         // Default Keyword
-                        this.LastTokenType = Token.DEFAULT;
-                        return new DefaultKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.DEFAULT;
+                        return new DefaultKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordDelete:
                         // Delete Keyword
-                        this.LastTokenType = Token.DELETE;
-                        return new DeleteKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.DELETE;
+                        return new DeleteKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordDistinct:
                         // Distinct Keyword
-                        this.LastTokenType = Token.DISTINCT;
-                        return new DistinctKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.DISTINCT;
+                        return new DistinctKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordDrop:
                         // Drop Keyword
-                        this.LastTokenType = Token.DROP;
-                        return new DropKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.DROP;
+                        return new DropKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordEncodeForUri:
                         // EncodeForUri Function Keyword
-                        this.LastTokenType = Token.ENCODEFORURI;
-                        return new EncodeForUriKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.ENCODEFORURI;
+                        return new EncodeForUriKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordExists:
                         // Exists Keyword
-                        this.LastTokenType = Token.EXISTS;
-                        return new ExistsKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.EXISTS;
+                        return new ExistsKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordFilter:
                         // Filter Keyword
-                        this.LastTokenType = Token.FILTER;
-                        return new FilterKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.FILTER;
+                        return new FilterKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordFloor:
                         // Floor Function Keyword
-                        this.LastTokenType = Token.FLOOR;
-                        return new FloorKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.FLOOR;
+                        return new FloorKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordFrom:
                         // From Keyword
-                        this.LastTokenType = Token.FROM;
-                        return new FromKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.FROM;
+                        return new FromKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordGraph:
                         // Graph Keyword
-                        this.LastTokenType = Token.GRAPH;
-                        return new GraphKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.GRAPH;
+                        return new GraphKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordGroup:
                         // GROUP Keyword, must be followed by a BY Keyword to form a GROUP BY keyword
-                        if (this.GetExpectedKeyword(SparqlSpecsHelper.SparqlKeywordGroupBy))
+                        if (GetExpectedKeyword(SparqlSpecsHelper.SparqlKeywordGroupBy))
                         {
-                            this.LastTokenType = Token.GROUPBY;
-                            return new GroupByKeywordToken(this.CurrentLine, this.StartPosition);
+                            LastTokenType = Token.GROUPBY;
+                            return new GroupByKeywordToken(CurrentLine, StartPosition);
                         }
                         else
                         {
-                            throw Error("Unexpected content while attempting to parse an GROUP BY keyword from Content:\n" + this.Value);
+                            throw Error("Unexpected content while attempting to parse an GROUP BY keyword from Content:\n" + Value);
                         }
                     case SparqlSpecsHelper.SparqlKeywordGroupConcat:
                         // GROUP_CONCAT Keyword
-                        this.LastTokenType = Token.GROUPCONCAT;
-                        return new GroupConcatKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.GROUPCONCAT;
+                        return new GroupConcatKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordHaving:
                         // HAVING Keyword
-                        this.LastTokenType = Token.HAVING;
-                        return new HavingKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.HAVING;
+                        return new HavingKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordHours:
                         // Hours Function Keyword
-                        this.LastTokenType = Token.HOURS;
-                        return new HoursKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.HOURS;
+                        return new HoursKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordIf:
                         // IF Keyword
-                        this.LastTokenType = Token.IF;
-                        return new IfKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.IF;
+                        return new IfKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordIn:
                         // IN Keyword
-                        this.LastTokenType = Token.IN;
-                        return new InKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.IN;
+                        return new InKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordInsert:
                         // Insert Keyword
-                        this.LastTokenType = Token.INSERT;
-                        return new InsertKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.INSERT;
+                        return new InsertKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordInto:
                         // Into Keyword
-                        this.LastTokenType = Token.INTO;
-                        return new IntoKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.INTO;
+                        return new IntoKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordIri:
                         // IRI Function Keyword
-                        this.LastTokenType = Token.IRI;
-                        return new IriKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.IRI;
+                        return new IriKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordIsBlank:
                         // isBlank Function Keyword
-                        this.LastTokenType = Token.ISBLANK;
-                        return new IsBlankKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.ISBLANK;
+                        return new IsBlankKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordIsIri:
                         // isIRI Function Keyword
-                        this.LastTokenType = Token.ISIRI;
-                        return new IsIriKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.ISIRI;
+                        return new IsIriKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordIsLiteral:
                         // isLiteral Keyword
-                        this.LastTokenType = Token.ISLITERAL;
-                        return new IsLiteralKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.ISLITERAL;
+                        return new IsLiteralKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordIsNumeric:
                         // IsNumeric Function Keyword
-                        this.LastTokenType = Token.ISNUMERIC;
-                        return new IsNumericKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.ISNUMERIC;
+                        return new IsNumericKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordIsUri:
                         // isURI Keyword
-                        this.LastTokenType = Token.ISURI;
-                        return new IsUriKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.ISURI;
+                        return new IsUriKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordLang:
                         // Lang Keyword
-                        this.LastTokenType = Token.LANG;
-                        return new LangKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.LANG;
+                        return new LangKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordLangMatches:
                         // Lang Matches Keyword
-                        this.LastTokenType = Token.LANGMATCHES;
-                        return new LangMatchesKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.LANGMATCHES;
+                        return new LangMatchesKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordLCase:
                         // LCase Function Keyword
-                        this.LastTokenType = Token.LCASE;
-                        return new LCaseKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.LCASE;
+                        return new LCaseKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordLength:
                         // Length Keyword
-                        if (this._syntax != SparqlQuerySyntax.Extended) throw Error("The LENGTH keyword is only supported when syntax is set to Extended");
-                        this.LastTokenType = Token.LENGTH;
-                        return new LengthKeywordToken(this.CurrentLine, this.StartPosition);
+                        if (_syntax != SparqlQuerySyntax.Extended) throw Error("The LENGTH keyword is only supported when syntax is set to Extended");
+                        LastTokenType = Token.LENGTH;
+                        return new LengthKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordLet:
                         // Let Keyword
-                        this.LastTokenType = Token.LET;
-                        return new LetKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.LET;
+                        return new LetKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordLimit:
                         // Limit Keyword
-                        this.LastTokenType = Token.LIMIT;
-                        return new LimitKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.LIMIT;
+                        return new LimitKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordLoad:
                         // Load Keyword
-                        this.LastTokenType = Token.LOAD;
-                        return new LoadKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.LOAD;
+                        return new LoadKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordMax:
                         // Max Aggregate Keyword
-                        this.LastTokenType = Token.MAX;
-                        return new MaxKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.MAX;
+                        return new MaxKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordMD5:
                         // MD5 Function Keyword
-                        this.LastTokenType = Token.MD5;
-                        return new MD5KeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.MD5;
+                        return new MD5KeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordMedian:
                         // Median Aggregate Keyword
-                        this.LastTokenType = Token.MEDIAN;
-                        return new MedianKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.MEDIAN;
+                        return new MedianKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordMin:
                         // Min Aggregate Keyword
-                        this.LastTokenType = Token.MIN;
-                        return new MinKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.MIN;
+                        return new MinKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordMinus:
                         // Minus Keyword
-                        this.LastTokenType = Token.MINUS_P;
-                        return new MinusKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.MINUS_P;
+                        return new MinusKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordMinutes:
                         // Minutes Function Keyword
-                        this.LastTokenType = Token.MINUTES;
-                        return new MinutesKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.MINUTES;
+                        return new MinutesKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordMode:
                         // Mode Aggregate Keyword
-                        this.LastTokenType = Token.MODE;
-                        return new ModeKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.MODE;
+                        return new ModeKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordMonth:
                         // Month Function Keyword
-                        this.LastTokenType = Token.MONTH;
-                        return new MonthKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.MONTH;
+                        return new MonthKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordMove:
                         // Move Update Keyword
-                        this.LastTokenType = Token.MOVE;
-                        return new MoveKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.MOVE;
+                        return new MoveKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordNamed:
                         // Named Keyword
-                        this.LastTokenType = Token.NAMED;
-                        return new NamedKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.NAMED;
+                        return new NamedKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordNMax:
                         // Numeric Max Keyword
-                        this.LastTokenType = Token.NMAX;
-                        return new NumericMaxKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.NMAX;
+                        return new NumericMaxKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordNMin:
                         // Numeric Min Keyword
-                        this.LastTokenType = Token.NMIN;
-                        return new NumericMinKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.NMIN;
+                        return new NumericMinKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordNot:
                         // Not Keyword
                         // Must be followed by a EXISTS or an IN Keyword
-                        if (this.GetExpectedKeyword(SparqlSpecsHelper.SparqlKeywordNotExists))
+                        if (GetExpectedKeyword(SparqlSpecsHelper.SparqlKeywordNotExists))
                         {
                             // Not Exists Keyword
-                            this.LastTokenType = Token.NOTEXISTS;
-                            return new NotExistsKeywordToken(this.CurrentLine, this.StartPosition);
+                            LastTokenType = Token.NOTEXISTS;
+                            return new NotExistsKeywordToken(CurrentLine, StartPosition);
                         }
-                        else if (this.Value.Equals(SparqlSpecsHelper.SparqlKeywordNotIn, StringComparison.OrdinalIgnoreCase))
+                        else if (Value.Equals(SparqlSpecsHelper.SparqlKeywordNotIn, StringComparison.OrdinalIgnoreCase))
                         {
                             // Not In Keyword
-                            this.LastTokenType = Token.NOTIN;
-                            return new NotInKeywordToken(this.CurrentLine, this.StartPosition);
+                            LastTokenType = Token.NOTIN;
+                            return new NotInKeywordToken(CurrentLine, StartPosition);
                         }
                         else
                         {
-                            throw Error("Unexpected content while attempting to parse an NOT EXISTS/NOT IN keyword from Content:\n" + this.Value);
+                            throw Error("Unexpected content while attempting to parse an NOT EXISTS/NOT IN keyword from Content:\n" + Value);
                         }
                     case SparqlSpecsHelper.SparqlKeywordNow:
                         // Now Function Keyword
-                        this.LastTokenType = Token.NOW;
-                        return new NowKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.NOW;
+                        return new NowKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordOffset:
                         // Offset Keyword
-                        this.LastTokenType = Token.OFFSET;
-                        return new OffsetKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.OFFSET;
+                        return new OffsetKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordOptional:
                         // Optional Keyword
-                        this.LastTokenType = Token.OPTIONAL;
-                        return new OptionalKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.OPTIONAL;
+                        return new OptionalKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordOrder:
                         // Order Keyword
                         // Must be followed by a BY Keyword
-                        if (this.GetExpectedKeyword(SparqlSpecsHelper.SparqlKeywordOrderBy))
+                        if (GetExpectedKeyword(SparqlSpecsHelper.SparqlKeywordOrderBy))
                         {
                             // Order By Keyword
-                            this.LastTokenType = Token.ORDERBY;
-                            return new OrderByKeywordToken(this.CurrentLine, this.StartPosition);
+                            LastTokenType = Token.ORDERBY;
+                            return new OrderByKeywordToken(CurrentLine, StartPosition);
                         }
                         else
                         {
-                            throw Error("Unexpected content while attempting to parse an ORDER BY keyword from Content:\n" + this.Value);
+                            throw Error("Unexpected content while attempting to parse an ORDER BY keyword from Content:\n" + Value);
                         }
                     case SparqlSpecsHelper.SparqlKeywordRand:
                         // Rand Keyword
-                        this.LastTokenType = Token.RAND;
-                        return new RandKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.RAND;
+                        return new RandKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordReduced:
                         // Reduced Keyword
-                        this.LastTokenType = Token.REDUCED;
-                        return new ReducedKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.REDUCED;
+                        return new ReducedKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordRegex:
                         // Regex Keyword
-                        this.LastTokenType = Token.REGEX;
-                        return new RegexKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.REGEX;
+                        return new RegexKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordReplace:
                         // Replace Keyword
-                        this.LastTokenType = Token.REPLACE;
-                        return new ReplaceKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.REPLACE;
+                        return new ReplaceKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordRound:
                         // Round Function Keyword
-                        this.LastTokenType = Token.ROUND;
-                        return new RoundKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.ROUND;
+                        return new RoundKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordSameTerm:
                         // sameTerm Keyword
-                        this.LastTokenType = Token.SAMETERM;
-                        return new SameTermKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.SAMETERM;
+                        return new SameTermKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordSample:
                         // Sample Keyword
-                        this.LastTokenType = Token.SAMPLE;
-                        return new SampleKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.SAMPLE;
+                        return new SampleKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordSeconds:
                         // Seconds Keywords
-                        this.LastTokenType = Token.SECONDS;
-                        return new SecondsKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.SECONDS;
+                        return new SecondsKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordSeparator:
                         // Separator Keyword
-                        this.LastTokenType = Token.SEPARATOR;
-                        return new SeparatorKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.SEPARATOR;
+                        return new SeparatorKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordService:
                         // Service Keyword
-                        this.LastTokenType = Token.SERVICE;
-                        return new ServiceKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.SERVICE;
+                        return new ServiceKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordSha1:
                         // Sha1 Function Keyword
-                        this.LastTokenType = Token.SHA1;
-                        return new Sha1KeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.SHA1;
+                        return new Sha1KeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordSha256:
                         // Sha256 Function Keyword
-                        this.LastTokenType = Token.SHA256;
-                        return new Sha256KeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.SHA256;
+                        return new Sha256KeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordSha384:
                         // Sha384 Function Keyword
-                        this.LastTokenType = Token.SHA384;
-                        return new Sha384KeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.SHA384;
+                        return new Sha384KeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordSha512:
                         // Sha1 Function Keyword
-                        this.LastTokenType = Token.SHA512;
-                        return new Sha512KeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.SHA512;
+                        return new Sha512KeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordSilent:
                         // Silent Keyword
-                        this.LastTokenType = Token.SILENT;
-                        return new SilentKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.SILENT;
+                        return new SilentKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordStr:
                         // Str Keyword
-                        this.LastTokenType = Token.STR;
-                        return new StrKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.STR;
+                        return new StrKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordStrAfter:
                         // StrAfter Keyword
-                        this.LastTokenType = Token.STRAFTER;
-                        return new StrAfterKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.STRAFTER;
+                        return new StrAfterKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordStrBefore:
                         // StrBefore Keyword
-                        this.LastTokenType = Token.STRBEFORE;
-                        return new StrBeforeKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.STRBEFORE;
+                        return new StrBeforeKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordContains:
                         // StrContains Function Keyword
-                        this.LastTokenType = Token.CONTAINS;
-                        return new StrContainsKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.CONTAINS;
+                        return new StrContainsKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordStrDt:
                         // StrDt Keyword
-                        this.LastTokenType = Token.STRDT;
-                        return new StrDtKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.STRDT;
+                        return new StrDtKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordStrLang:
                         // StrLang Keyword
-                        this.LastTokenType = Token.STRLANG;
-                        return new StrLangKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.STRLANG;
+                        return new StrLangKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordStrLen:
                         // StrLen Function Keyword
-                        this.LastTokenType = Token.STRLEN;
-                        return new StrLenKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.STRLEN;
+                        return new StrLenKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordStrEnds:
                         // StrEnds Function Keyword
-                        this.LastTokenType = Token.STRENDS;
-                        return new StrEndsKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.STRENDS;
+                        return new StrEndsKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordStrStarts:
                         // StrStarts Function Keyword
-                        this.LastTokenType = Token.STRSTARTS;
-                        return new StrStartsKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.STRSTARTS;
+                        return new StrStartsKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordStrUUID:
                         // StrUUID Function Keyword
-                        this.LastTokenType = Token.STRUUID;
-                        return new StrUUIDKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.STRUUID;
+                        return new StrUUIDKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordSubStr:
                         // SubStr Function Keyword
-                        this.LastTokenType = Token.SUBSTR;
-                        return new SubStrKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.SUBSTR;
+                        return new SubStrKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordSum:
                         // Sum Keyword
-                        this.LastTokenType = Token.SUM;
-                        return new SumKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.SUM;
+                        return new SumKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordTimezone:
                         // Timezone Function Keyword
-                        this.LastTokenType = Token.TIMEZONE;
-                        return new TimezoneKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.TIMEZONE;
+                        return new TimezoneKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordTo:
                         // To Keyword
-                        this.LastTokenType = Token.TO;
-                        return new ToKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.TO;
+                        return new ToKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordTz:
                         // TZ Function Keyword
-                        this.LastTokenType = Token.TZ;
-                        return new TZKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.TZ;
+                        return new TZKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordUCase:
                         // UCase Function Keyword
-                        this.LastTokenType = Token.UCASE;
-                        return new UCaseKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.UCASE;
+                        return new UCaseKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordUndef:
                         // Undef Keyword
-                        this.LastTokenType = Token.UNDEF;
-                        return new UndefKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.UNDEF;
+                        return new UndefKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordUnion:
                         // Union Keyword
-                        this.LastTokenType = Token.UNION;
-                        return new UnionKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.UNION;
+                        return new UnionKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordUnsaid:
                         // Unsaid Keyword
-                        this.LastTokenType = Token.UNSAID;
-                        return new UnsaidKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.UNSAID;
+                        return new UnsaidKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordUri:
                         // Uri Keyword
-                        this.LastTokenType = Token.URIFUNC;
-                        return new UriKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.URIFUNC;
+                        return new UriKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordUUID:
                         // UUID Function Keyword
-                        this.LastTokenType = Token.UUID;
-                        return new UUIDKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.UUID;
+                        return new UUIDKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordUsing:
                         // Using Keyword
-                        this.LastTokenType = Token.USING;
-                        return new UsingKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.USING;
+                        return new UsingKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordValues:
                         // Values Kewyord
-                        this.LastTokenType = Token.VALUES;
-                        return new ValuesKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.VALUES;
+                        return new ValuesKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordWhere:
                         // Where Keyword
-                        this.LastTokenType = Token.WHERE;
-                        return new WhereKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.WHERE;
+                        return new WhereKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordWith:
                         // With Keyword
-                        this.LastTokenType = Token.WITH;
-                        return new WithKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.WITH;
+                        return new WithKeywordToken(CurrentLine, StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordYear:
                         // Year Function Keyword
-                        this.LastTokenType = Token.YEAR;
-                        return new YearKeywordToken(this.CurrentLine, this.StartPosition);
+                        LastTokenType = Token.YEAR;
+                        return new YearKeywordToken(CurrentLine, StartPosition);
                     default:
                         throw Error("Unexpected String '" + value + "' encountered while trying to parse a SPARQL Keyword");
                 }
             }
-            else if (!colonoccurred && this._queryKeywordSeen && SparqlSpecsHelper.IsQueryKeyword(value))
+            else if (!colonoccurred && _queryKeywordSeen && SparqlSpecsHelper.IsQueryKeyword(value))
             {
-                if (this._syntax == SparqlQuerySyntax.Sparql_1_0) throw Error("Unexpected String '" + value + "' encountered while trying to parse a SPARQL Keyword.  This appears to be an attempt to use a sub-query but sub-queries are not supported in SPARQL 1.0");
+                if (_syntax == SparqlQuerySyntax.Sparql_1_0) throw Error("Unexpected String '" + value + "' encountered while trying to parse a SPARQL Keyword.  This appears to be an attempt to use a sub-query but sub-queries are not supported in SPARQL 1.0");
 
                 if (value.Equals(SparqlSpecsHelper.SparqlKeywordSelect, StringComparison.OrdinalIgnoreCase))
                 {
                     // Select Keyword
-                    this.LastTokenType = Token.SELECT;
-                    return new SelectKeywordToken(this.CurrentLine, this.StartPosition);
+                    LastTokenType = Token.SELECT;
+                    return new SelectKeywordToken(CurrentLine, StartPosition);
                 }
                 else
                 {
@@ -1374,27 +1374,27 @@ namespace VDS.RDF.Parsing.Tokens
             }
             else if (value.Equals(SparqlSpecsHelper.SparqlKeywordAsc, StringComparison.OrdinalIgnoreCase))
             {
-                this.LastTokenType = Token.ASC;
-                return new AscKeywordToken(this.CurrentLine, this.StartPosition);
+                LastTokenType = Token.ASC;
+                return new AscKeywordToken(CurrentLine, StartPosition);
             }
             else if (value.Equals(SparqlSpecsHelper.SparqlKeywordDesc, StringComparison.OrdinalIgnoreCase))
             {
-                this.LastTokenType = Token.DESC;
-                return new DescKeywordToken(this.CurrentLine, this.StartPosition);
+                LastTokenType = Token.DESC;
+                return new DescKeywordToken(CurrentLine, StartPosition);
             }
             else if (value.Equals("a"))
             {
                 // Keyword 'a'
-                this.LastTokenType = Token.KEYWORDA;
-                return new KeywordAToken(this.CurrentLine, this.StartPosition);
+                LastTokenType = Token.KEYWORDA;
+                return new KeywordAToken(CurrentLine, StartPosition);
             }
             else if (value.Equals("true") || value.Equals("false"))
             {
                 // Boolean Literal
-                this.LastTokenType = Token.PLAINLITERAL;
-                return new PlainLiteralToken(value, this.CurrentLine, this.StartPosition, this.EndPosition);
+                LastTokenType = Token.PLAINLITERAL;
+                return new PlainLiteralToken(value, CurrentLine, StartPosition, EndPosition);
             }
-            else if (!SparqlSpecsHelper.IsValidQName(value, this._syntax))
+            else if (!SparqlSpecsHelper.IsValidQName(value, _syntax))
             {
                 // Not a valid QName
                 throw Error("The value '" + value + "' is not valid as a QName");
@@ -1402,20 +1402,20 @@ namespace VDS.RDF.Parsing.Tokens
             else
             {
                 // Return the QName
-                this.LastTokenType = Token.QNAME;
-                return new QNameToken(SparqlSpecsHelper.UnescapeQName(value), this.CurrentLine, this.StartPosition, this.EndPosition);
+                LastTokenType = Token.QNAME;
+                return new QNameToken(SparqlSpecsHelper.UnescapeQName(value), CurrentLine, StartPosition, EndPosition);
             }
         }
 
         private bool GetExpectedKeyword(String expectedKeyword)
         {
-            char next = this.Peek();
+            char next = Peek();
 
             // Consume white space
             while (Char.IsWhiteSpace(next))
             {
-                this.ConsumeCharacter();
-                next = this.Peek();
+                ConsumeCharacter();
+                next = Peek();
             }
 
             try 
@@ -1424,12 +1424,12 @@ namespace VDS.RDF.Parsing.Tokens
 
                 while (Char.IsLetter(next))
                 {
-                    this.ConsumeCharacter();
-                    next = this.Peek();
+                    ConsumeCharacter();
+                    next = Peek();
                 }
 
                 // Check this string is the expected keyword
-                String keyword = this.Value;
+                String keyword = Value;
                 return expectedKeyword.Equals(keyword, StringComparison.OrdinalIgnoreCase);
             } 
             catch 
@@ -1442,23 +1442,23 @@ namespace VDS.RDF.Parsing.Tokens
         private IToken TryGetLiteral(char quotechar)
         {
             // Consume first character which must be a " or '
-            this.ConsumeCharacter();
-            char next = this.Peek();
+            ConsumeCharacter();
+            char next = Peek();
 
             if (next == quotechar)
             {
                 // Might be a Long Literal or an Empty String
-                this.ConsumeCharacter();
-                next = this.Peek();
+                ConsumeCharacter();
+                next = Peek();
 
                 if (next == quotechar)
                 {
                     #region Long Literals
 
                     // Long Literal
-                    this.ConsumeCharacter();
+                    ConsumeCharacter();
 
-                    next = this.Peek();
+                    next = Peek();
                     while (true)
                     {
                         if (next == '\\')
@@ -1466,56 +1466,56 @@ namespace VDS.RDF.Parsing.Tokens
                             // Do Escape Processing
                             if (quotechar == '"')
                             {
-                                this.HandleEscapes(TokeniserEscapeMode.QuotedLiterals);
+                                HandleEscapes(TokeniserEscapeMode.QuotedLiterals);
                             }
                             else
                             {
-                                this.HandleEscapes(TokeniserEscapeMode.QuotedLiteralsAlternate);
+                                HandleEscapes(TokeniserEscapeMode.QuotedLiteralsAlternate);
                             }
                         }
                         else if (next == quotechar)
                         {
                             // Check to see whether we get three in a row
-                            this.ConsumeCharacter();
-                            next = this.Peek();
+                            ConsumeCharacter();
+                            next = Peek();
                             if (next == quotechar)
                             {
                                 // Got two in a row so far
-                                this.ConsumeCharacter();
-                                next = this.Peek();
+                                ConsumeCharacter();
+                                next = Peek();
                                 if (next == quotechar)
                                 {
                                     // Got three in a row
-                                    this.ConsumeCharacter();
-                                    this.LastTokenType = Token.LONGLITERAL;
+                                    ConsumeCharacter();
+                                    LastTokenType = Token.LONGLITERAL;
 
                                     // If there are any additional quotes immediatedly following this then
                                     // we want to consume them also
-                                    next = this.Peek();
+                                    next = Peek();
                                     while (next == quotechar)
                                     {
-                                        this.ConsumeCharacter();
-                                        next = this.Peek();
+                                        ConsumeCharacter();
+                                        next = Peek();
                                     }
 
-                                    return new LongLiteralToken(this.Value, this.StartLine, this.EndLine, this.StartPosition, this.EndPosition);
+                                    return new LongLiteralToken(Value, StartLine, EndLine, StartPosition, EndPosition);
                                 }
                             }
                         }
                         else if (next == '\n' || next == '\r')
                         {
-                            this.ConsumeNewLine(true);
+                            ConsumeNewLine(true);
                         }
-                        else if (this._in.EndOfStream)
+                        else if (_in.EndOfStream)
                         {
                             // Hit End of Stream unexpectedly
-                            throw Error("Unexpected End of File while trying to Parse a Long Literal from content:\n" + this.Value);
+                            throw Error("Unexpected End of File while trying to Parse a Long Literal from content:\n" + Value);
                         }
                         else
                         {
-                            this.ConsumeCharacter();
+                            ConsumeCharacter();
                         }
-                        next = this.Peek();
+                        next = Peek();
                     }
 
                     #endregion
@@ -1523,8 +1523,8 @@ namespace VDS.RDF.Parsing.Tokens
                 else 
                 {
                     // Empty String
-                    this.LastTokenType = Token.LITERAL;
-                    return new LiteralToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
+                    LastTokenType = Token.LITERAL;
+                    return new LiteralToken(Value, CurrentLine, StartPosition, EndPosition);
                 }
             }
             else
@@ -1539,33 +1539,33 @@ namespace VDS.RDF.Parsing.Tokens
                         // Do Escape Processing
                         if (quotechar == '"')
                         {
-                            this.HandleEscapes(TokeniserEscapeMode.QuotedLiterals);
+                            HandleEscapes(TokeniserEscapeMode.QuotedLiterals);
                         }
                         else
                         {
-                            this.HandleEscapes(TokeniserEscapeMode.QuotedLiteralsAlternate);
+                            HandleEscapes(TokeniserEscapeMode.QuotedLiteralsAlternate);
                         }
                     }
                     else if (next == '\n' || next == '\r')
                     {
                         // Illegal New Line
-                        throw Error("Unexpected New Line while trying to Parse a Quoted Literal from content:\n" + this.Value + "\nTo use New Lines you must use the Triple Quote Long Literal syntax");
+                        throw Error("Unexpected New Line while trying to Parse a Quoted Literal from content:\n" + Value + "\nTo use New Lines you must use the Triple Quote Long Literal syntax");
                     }
-                    else if (this._in.EndOfStream)
+                    else if (_in.EndOfStream)
                     {
                         // Hit End of Stream unexpectedly
-                        throw Error("Unexpected End of File while trying to Parse a Quoted Literal from content:\n" + this.Value);
+                        throw Error("Unexpected End of File while trying to Parse a Quoted Literal from content:\n" + Value);
                     } else {
-                        this.ConsumeCharacter();
+                        ConsumeCharacter();
                     }
-                    next = this.Peek();
+                    next = Peek();
                 }
                 // Consume the last character which must be a " or '
-                this.ConsumeCharacter();
+                ConsumeCharacter();
 
                 // Return the Literal
-                this.LastTokenType = Token.LITERAL;
-                return new LiteralToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
+                LastTokenType = Token.LITERAL;
+                return new LiteralToken(Value, CurrentLine, StartPosition, EndPosition);
 
                 #endregion
             }
@@ -1577,16 +1577,16 @@ namespace VDS.RDF.Parsing.Tokens
             bool expoccurred = false;
             bool negoccurred = false;
 
-            if (this.Length == 1) dotoccurred = true;
+            if (Length == 1) dotoccurred = true;
 
-            char next = this.Peek();
+            char next = Peek();
 
             while (Char.IsDigit(next) || next == '-' || next == '+' || next == 'e' || next == 'E' || (next == '.' && !dotoccurred))
             {
                 if (next == '+')
                 {
                     // Can only be first character in the numeric literal or come immediately after the 'e'
-                    if (this.Length > 0 && !this.Value.ToLower().EndsWith("e"))
+                    if (Length > 0 && !Value.ToLower().EndsWith("e"))
                     {
                         // throw Error("Unexpected Character (Code " + (int)next + ") +\nThe plus sign can only occur once at the Start of a Numeric Literal and once immediately after the exponent specifier, if this was intended as an additive operator please insert space to disambiguate this");
                         break;
@@ -1594,7 +1594,7 @@ namespace VDS.RDF.Parsing.Tokens
                 }
                 if (next == '-')
                 {
-                    if (negoccurred && !this.Value.ToLower().EndsWith("e"))
+                    if (negoccurred && !Value.ToLower().EndsWith("e"))
                     {
                         // Negative sign already seen
                         // throw Error("Unexpected Character (Code " + (int)next + ") -\nThe minus sign can only occur once at the Start of a Numeric Literal, if this was intended as a subtractive operator please insert space to disambiguate this");
@@ -1605,7 +1605,7 @@ namespace VDS.RDF.Parsing.Tokens
                         negoccurred = true;
 
                         // Check this is at the start of the string or immediately after the 'e'
-                        if (this.Length > 0 && !this.Value.ToLower().EndsWith("e"))
+                        if (Length > 0 && !Value.ToLower().EndsWith("e"))
                         {
                             throw Error("Unexpected Character (Code " + (int)next + ") -\nThe minus sign can only occur at the Start of a Numeric Literal and once immediately after the exponent specifier, if this was intended as a subtractive operator please insert space to disambiguate this");
                         }
@@ -1623,7 +1623,7 @@ namespace VDS.RDF.Parsing.Tokens
                         expoccurred = true;
 
                         // Check that it isn't the start of the string
-                        if (this.Length == 0)
+                        if (Length == 0)
                         {
                             throw Error("Unexpected Character (Code " + (int)next + " " + next + "\nThe Exponent specifier cannot occur at the start of a Numeric Literal");
                         }
@@ -1635,59 +1635,59 @@ namespace VDS.RDF.Parsing.Tokens
                 }
 
                 // Consume the Character
-                this.ConsumeCharacter();
+                ConsumeCharacter();
 
-                next = this.Peek();
+                next = Peek();
             }
 
             // If not SPARQL 1.0 then decimals can no longer end with a .
-            if (this._syntax != SparqlQuerySyntax.Sparql_1_0)
+            if (_syntax != SparqlQuerySyntax.Sparql_1_0)
             {
                 // Decimals can't end with a . so backtrack
-                if (this.Value.EndsWith(".")) this.Backtrack();
+                if (Value.EndsWith(".")) Backtrack();
             }
 
-            String value = this.Value;
+            String value = Value;
             if (value.Equals("+"))
             {
-                this.LastTokenType = Token.PLUS;
-                return new PlusToken(this.CurrentLine, this.StartPosition);
+                LastTokenType = Token.PLUS;
+                return new PlusToken(CurrentLine, StartPosition);
             }
             else if (value.Equals("-"))
             {
-                this.LastTokenType = Token.MINUS;
-                return new MinusToken(this.CurrentLine, this.StartPosition);
+                LastTokenType = Token.MINUS;
+                return new MinusToken(CurrentLine, StartPosition);
             }
             else if (!SparqlSpecsHelper.IsValidNumericLiteral(value))
             {
                 // Invalid Numeric Literal
-                throw Error("The format of the Numeric Literal '" + this.Value + "' is not valid!");
+                throw Error("The format of the Numeric Literal '" + Value + "' is not valid!");
             }
 
             // Return the Token
-            this.LastTokenType = Token.PLAINLITERAL;
-            return new PlainLiteralToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
+            LastTokenType = Token.PLAINLITERAL;
+            return new PlainLiteralToken(Value, CurrentLine, StartPosition, EndPosition);
         }
 
         private IToken TryGetDataType()
         {
             // Expect to either see a start of a Uri or QName
-            char next = this.Peek();
+            char next = Peek();
 
             if (next == '<')
             {
                 // Uri specified DataType
-                IToken temp = this.TryGetUri();
-                this.LastTokenType = Token.DATATYPE;
+                IToken temp = TryGetUri();
+                LastTokenType = Token.DATATYPE;
                 return new DataTypeToken("<" + temp.Value + ">", temp.StartLine, temp.StartPosition, temp.EndPosition);
             }
             else if (Char.IsLetter(next) || UnicodeSpecsHelper.IsLetter(next) || next == '_' || next == ':')
             {
                 // QName specified Data Type
-                IToken temp = this.TryGetQName();
+                IToken temp = TryGetQName();
                 if (temp.TokenType == Token.QNAME)
                 {
-                    this.LastTokenType = Token.DATATYPE;
+                    LastTokenType = Token.DATATYPE;
                     return new DataTypeToken(temp.Value, temp.StartLine, temp.StartPosition, temp.EndPosition);
                 }
                 else
@@ -1704,28 +1704,28 @@ namespace VDS.RDF.Parsing.Tokens
 
         private IToken TryGetLangSpec()
         {
-            if (this.LastTokenType == Token.LITERAL || this.LastTokenType == Token.LONGLITERAL)
+            if (LastTokenType == Token.LITERAL || LastTokenType == Token.LONGLITERAL)
             {
                 // Discard first character which will be the @
-                this.SkipCharacter();
-                this.StartNewToken();
+                SkipCharacter();
+                StartNewToken();
 
-                char next = this.Peek();
+                char next = Peek();
                 while (Char.IsLetterOrDigit(next) || next == '-') 
                 {
-                    this.ConsumeCharacter();
-                    next = this.Peek();
+                    ConsumeCharacter();
+                    next = Peek();
                 }
 
                 // Return the Language Specifier after validation
-                if (RdfSpecsHelper.IsValidLangSpecifier(this.Value))
+                if (RdfSpecsHelper.IsValidLangSpecifier(Value))
                 {
-                    this.LastTokenType = Token.LANGSPEC;
-                    return new LanguageSpecifierToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
+                    LastTokenType = Token.LANGSPEC;
+                    return new LanguageSpecifierToken(Value, CurrentLine, StartPosition, EndPosition);
                 }
                 else
                 {
-                    throw Error("Unexpected Content '" + this.Value + "' encountered, expected a valid Language Specifier");
+                    throw Error("Unexpected Content '" + Value + "' encountered, expected a valid Language Specifier");
                 }
             }
             else
@@ -1737,41 +1737,41 @@ namespace VDS.RDF.Parsing.Tokens
         private IToken TryGetVariable()
         {
             // Consume first Character which must be a ?/$
-            this.ConsumeCharacter();
+            ConsumeCharacter();
 
             // Consume other valid Characters
-            char next = this.Peek();
+            char next = Peek();
             while (Char.IsLetterOrDigit(next) || UnicodeSpecsHelper.IsLetterOrDigit(next) || next == '-' || next == '_' || next == '\\')
             {
                 if (next == '\\')
                 {
                     // Check its a valid Escape
-                    this.HandleEscapes(TokeniserEscapeMode.QName);
+                    HandleEscapes(TokeniserEscapeMode.QName);
                 } 
                 else 
                 {
-                    this.ConsumeCharacter();
+                    ConsumeCharacter();
                 }
-                next = this.Peek();
+                next = Peek();
             }
 
             // Validate
-            String value = this.Value;
+            String value = Value;
 
             if (value.EndsWith("."))
             {
-                this.Backtrack();
+                Backtrack();
                 value = value.Substring(0, value.Length - 1);
             }
 
             if (SparqlSpecsHelper.IsValidVarName(value))
             {
-                return new VariableToken(value, this.CurrentLine, this.StartPosition, this.EndPosition);
+                return new VariableToken(value, CurrentLine, StartPosition, EndPosition);
             }
             else if (value.Equals("?"))
             {
                 // Path Cardinality Modifier
-                return new QuestionToken(this.CurrentLine, this.StartPosition);
+                return new QuestionToken(CurrentLine, StartPosition);
             }
             else
             {

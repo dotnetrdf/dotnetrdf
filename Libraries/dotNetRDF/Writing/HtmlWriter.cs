@@ -57,11 +57,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._defaultNamespaces;
+                return _defaultNamespaces;
             }
             set
             {
-                this._defaultNamespaces = value;
+                _defaultNamespaces = value;
             }
         }
 
@@ -74,7 +74,7 @@ namespace VDS.RDF.Writing
         {
             using (var stream = File.Open(filename, FileMode.Create))
             {
-                this.Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
+                Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
             }
         }
 
@@ -88,13 +88,19 @@ namespace VDS.RDF.Writing
             Save(g, output, false);
         }
 
+        /// <summary>
+        /// Save the Graph to the given Stream as an XHTML Table with embedded RDFa
+        /// </summary>
+        /// <param name="g">Graph to save</param>
+        /// <param name="output">Stream to save to</param>
+        /// <param name="leaveOpen">Whether to leave <paramref name="output"/> open after writing the graph</param>
         public void Save(IGraph g, TextWriter output, bool leaveOpen)
         { 
             try
             {
-                g.NamespaceMap.Import(this._defaultNamespaces);
+                g.NamespaceMap.Import(_defaultNamespaces);
                 HtmlWriterContext context = new HtmlWriterContext(g, output);
-                this.GenerateOutput(context);
+                GenerateOutput(context);
                 if (!leaveOpen) output.Close();
             }
             catch
@@ -132,9 +138,9 @@ namespace VDS.RDF.Writing
                 context.HtmlWriter.WriteEncodedText(" - " + context.Graph.BaseUri.AbsoluteUri);
             }
             context.HtmlWriter.RenderEndTag();
-            if (!this.Stylesheet.Equals(String.Empty))
+            if (!Stylesheet.Equals(String.Empty))
             {
-                context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, this.Stylesheet);
+                context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, Stylesheet);
                 context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Type, "text/css");
                 context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Rel, "stylesheet");
                 context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Link);
@@ -211,7 +217,7 @@ namespace VDS.RDF.Writing
                     }
                 }
 
-                this.GenerateNodeOutput(context, subj);
+                GenerateNodeOutput(context, subj);
                 context.HtmlWriter.WriteLine();
                 context.HtmlWriter.RenderEndTag();
                 context.HtmlWriter.WriteLine();
@@ -232,7 +238,7 @@ namespace VDS.RDF.Writing
                     context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Rowspan, predTriples.Count().ToString());
                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Td);
                     context.HtmlWriter.WriteLine();
-                    this.GenerateNodeOutput(context, t.Predicate);
+                    GenerateNodeOutput(context, t.Predicate);
                     context.HtmlWriter.WriteLine();
                     context.HtmlWriter.RenderEndTag();
                     context.HtmlWriter.WriteLine();
@@ -252,7 +258,7 @@ namespace VDS.RDF.Writing
                         // Object Column
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Td);
                         context.HtmlWriter.WriteLine();
-                        this.GenerateNodeOutput(context, predTriple.Object, predTriple);
+                        GenerateNodeOutput(context, predTriple.Object, predTriple);
                         context.HtmlWriter.WriteLine();
                         context.HtmlWriter.RenderEndTag();
                         context.HtmlWriter.WriteLine();
@@ -287,7 +293,7 @@ namespace VDS.RDF.Writing
         /// <param name="n">Node</param>
         private void GenerateNodeOutput(HtmlWriterContext context, INode n)
         {
-            this.GenerateNodeOutput(context, n, null);
+            GenerateNodeOutput(context, n, null);
         }
 
         /// <summary>
@@ -317,7 +323,7 @@ namespace VDS.RDF.Writing
                     }
                     else
                     {
-                        this.RaiseWarning("Cannot serialize a Triple since the Subject is not a URI/Blank Node: " + t.Subject.ToString());
+                        RaiseWarning("Cannot serialize a Triple since the Subject is not a URI/Blank Node: " + t.Subject.ToString());
                     }
 
                     // Then if we can serialize this Triple we serialize the Predicate
@@ -334,7 +340,7 @@ namespace VDS.RDF.Writing
                         }
                         else
                         {
-                            this.RaiseWarning("Cannot serialize a Triple since the Predicate cannot be reduced to a QName: " + t.Predicate.ToString());
+                            RaiseWarning("Cannot serialize a Triple since the Predicate cannot be reduced to a QName: " + t.Predicate.ToString());
                             rdfASerializable = false;
                         }
 
@@ -353,7 +359,7 @@ namespace VDS.RDF.Writing
                                     context.HtmlWriter.AddAttribute("property", curie);
                                     break;
                                 default:
-                                    this.RaiseWarning("Cannot serialize a Triple since the Object is not a URI/Blank/Literal Node: " + t.Object.ToString());
+                                    RaiseWarning("Cannot serialize a Triple since the Object is not a URI/Blank/Literal Node: " + t.Object.ToString());
                                     rdfASerializable = false;
                                     break;
                             }
@@ -362,7 +368,7 @@ namespace VDS.RDF.Writing
                 }
                 else
                 {
-                    this.RaiseWarning("Cannot serialize a Triple since the Predicate is not a URI Node: " + t.Predicate.ToString());
+                    RaiseWarning("Cannot serialize a Triple since the Predicate is not a URI Node: " + t.Predicate.ToString());
                 }
             }
 
@@ -376,7 +382,7 @@ namespace VDS.RDF.Writing
                         context.HtmlWriter.AddAttribute("resource", "[" + n.ToString() + "]");
                     }
 
-                    context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassBlankNode);
+                    context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, CssClassBlankNode);
                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Span);
                     context.HtmlWriter.WriteEncodedText(n.ToString());
                     context.HtmlWriter.RenderEndTag();
@@ -399,7 +405,7 @@ namespace VDS.RDF.Writing
                             }
                         }
 
-                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassLiteral);
+                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, CssClassLiteral);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Span);
                         if (lit.DataType.AbsoluteUri.Equals(Parsing.RdfSpecsHelper.RdfXmlLiteral))
                         {
@@ -414,7 +420,7 @@ namespace VDS.RDF.Writing
                         // Output the Datatype
                         context.HtmlWriter.WriteEncodedText("^^");
                         context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, lit.DataType.AbsoluteUri);
-                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassDatatype);
+                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, CssClassDatatype);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
                         if (context.QNameMapper.ReduceToQName(lit.DataType.AbsoluteUri, out qname))
                         {
@@ -436,14 +442,14 @@ namespace VDS.RDF.Writing
                                 context.HtmlWriter.AddAttribute("xml:lang", lit.Language);
                             }
                         }
-                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassLiteral);
+                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, CssClassLiteral);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Span);
                         context.HtmlWriter.WriteEncodedText(lit.Value);
                         context.HtmlWriter.RenderEndTag();
                         if (!lit.Language.Equals(String.Empty))
                         {
                             context.HtmlWriter.WriteEncodedText("@");
-                            context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassLangSpec);
+                            context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, CssClassLangSpec);
                             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Span);
                             context.HtmlWriter.WriteEncodedText(lit.Language);
                             context.HtmlWriter.RenderEndTag();
@@ -456,15 +462,15 @@ namespace VDS.RDF.Writing
                     throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("HTML"));
 
                 case NodeType.Uri:
-                    if (rdfASerializable && !this.UriPrefix.Equals(String.Empty))
+                    if (rdfASerializable && !UriPrefix.Equals(String.Empty))
                     {
                         // If the URIs are being prefixed with something then we need to set the original
                         // URI in the resource attribute to generate the correct triple
                         context.HtmlWriter.AddAttribute("resource", n.ToString());
                     }
 
-                    context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassUri);
-                    context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, this.UriPrefix + n.ToString());
+                    context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, CssClassUri);
+                    context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, UriPrefix + n.ToString());
                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
                     if (context.QNameMapper.ReduceToQName(n.ToString(), out qname))
                     {
@@ -488,7 +494,7 @@ namespace VDS.RDF.Writing
         /// <param name="message">Warning Message</param>
         private void RaiseWarning(String message)
         {
-            RdfWriterWarning d = this.Warning;
+            RdfWriterWarning d = Warning;
             if (d != null)
             {
                 d(message);

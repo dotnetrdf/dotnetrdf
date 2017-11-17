@@ -60,7 +60,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <returns></returns>
         public bool Equals(SimpleVirtualBlankNode other)
         {
-            return this.Equals((IBlankNode)other);
+            return Equals((IBlankNode)other);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <returns></returns>
         public int CompareTo(SimpleVirtualBlankNode other)
         {
-            return this.CompareTo((IBlankNode)other);
+            return CompareTo((IBlankNode)other);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <returns></returns>
         public override INode CopyNode(IGraph target)
         {
-            return new SimpleVirtualBlankNode(target, this.VirtualID, this.Provider);
+            return new SimpleVirtualBlankNode(target, VirtualID, Provider);
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <returns></returns>
         public bool Equals(SimpleVirtualGraphLiteralNode other)
         {
-            return this.Equals((IGraphLiteralNode)other);
+            return Equals((IGraphLiteralNode)other);
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <returns></returns>
         public int CompareTo(SimpleVirtualGraphLiteralNode other)
         {
-            return this.CompareTo((IGraphLiteralNode)other);
+            return CompareTo((IGraphLiteralNode)other);
         }
 
         /// <summary>
@@ -146,13 +146,13 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <returns></returns>
         public override INode CopyNode(IGraph target)
         {
-            if (this._value != null)
+            if (_value != null)
             {
-                return new SimpleVirtualGraphLiteralNode(target, this.VirtualID, this.Provider, (IGraphLiteralNode)this._value);
+                return new SimpleVirtualGraphLiteralNode(target, VirtualID, Provider, (IGraphLiteralNode)_value);
             }
             else
             {
-                return new SimpleVirtualGraphLiteralNode(target, this.VirtualID, this.Provider);
+                return new SimpleVirtualGraphLiteralNode(target, VirtualID, Provider);
             }
         }
 
@@ -199,7 +199,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <returns></returns>
         public bool Equals(SimpleVirtualLiteralNode other)
         {
-            return this.Equals((ILiteralNode)other);
+            return Equals((ILiteralNode)other);
         }
 
         /// <summary>
@@ -209,7 +209,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <returns></returns>
         public int CompareTo(SimpleVirtualLiteralNode other)
         {
-            return this.CompareTo((ILiteralNode)other);
+            return CompareTo((ILiteralNode)other);
         }
 
         /// <summary>
@@ -219,13 +219,13 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <returns></returns>
         public override INode CopyNode(IGraph target)
         {
-            if (this._value != null)
+            if (_value != null)
             {
-                return new SimpleVirtualLiteralNode(target, this.VirtualID, this.Provider, (ILiteralNode)this._value);
+                return new SimpleVirtualLiteralNode(target, VirtualID, Provider, (ILiteralNode)_value);
             }
             else
             {
-                return new SimpleVirtualLiteralNode(target, this.VirtualID, this.Provider);
+                return new SimpleVirtualLiteralNode(target, VirtualID, Provider);
             }
         }
 
@@ -272,7 +272,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <returns></returns>
         public bool Equals(SimpleVirtualUriNode other)
         {
-            return this.Equals((IUriNode)other);
+            return Equals((IUriNode)other);
         }
 
         /// <summary>
@@ -282,7 +282,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <returns></returns>
         public int CompareTo(SimpleVirtualUriNode other)
         {
-            return this.CompareTo((IUriNode)other);
+            return CompareTo((IUriNode)other);
         }
 
         /// <summary>
@@ -292,13 +292,13 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <returns></returns>
         public override INode CopyNode(IGraph target)
         {
-            if (this._value != null)
+            if (_value != null)
             {
-                return new SimpleVirtualUriNode(target, this.VirtualID, this.Provider, (IUriNode)this._value);
+                return new SimpleVirtualUriNode(target, VirtualID, Provider, (IUriNode)_value);
             }
             else
             {
-                return new SimpleVirtualUriNode(target, this.VirtualID, this.Provider);
+                return new SimpleVirtualUriNode(target, VirtualID, Provider);
             }
         }
 
@@ -345,7 +345,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <returns></returns>
         public bool Equals(SimpleVirtualVariableNode other)
         {
-            return this.Equals((IVariableNode)other);
+            return Equals((IVariableNode)other);
         }
 
         /// <summary>
@@ -355,7 +355,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <returns></returns>
         public int CompareTo(SimpleVirtualVariableNode other)
         {
-            return this.CompareTo((IVariableNode)other);
+            return CompareTo((IVariableNode)other);
         }
 
         /// <summary>
@@ -365,13 +365,13 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <returns></returns>
         public override INode CopyNode(IGraph target)
         {
-            if (this._value != null)
+            if (_value != null)
             {
-                return new SimpleVirtualVariableNode(target, this.VirtualID, this.Provider, (IVariableNode)this._value);
+                return new SimpleVirtualVariableNode(target, VirtualID, Provider, (IVariableNode)_value);
             }
             else
             {
-                return new SimpleVirtualVariableNode(target, this.VirtualID, this.Provider);
+                return new SimpleVirtualVariableNode(target, VirtualID, Provider);
             }
         }
 

@@ -52,8 +52,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         /// <param name="set">Set</param>
         public BaseSetFunction(ISparqlExpression expr, IEnumerable<ISparqlExpression> set)
         {
-            this._expr = expr;
-            this._expressions.AddRange(set);
+            _expr = expr;
+            _expressions.AddRange(set);
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         {
             get
             {
-                return this._expr.Variables.Concat(from e in this._expressions
+                return _expr.Variables.Concat(from e in _expressions
                                                    from v in e.Variables
                                                    select v);
             }
@@ -103,7 +103,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         {
             get
             {
-                return this._expr.AsEnumerable<ISparqlExpression>().Concat(this._expressions);
+                return _expr.AsEnumerable<ISparqlExpression>().Concat(_expressions);
             }
         }
 
@@ -114,7 +114,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         {
             get
             {
-                return this._expr.CanParallelise;
+                return _expr.CanParallelise;
             }
         }
 

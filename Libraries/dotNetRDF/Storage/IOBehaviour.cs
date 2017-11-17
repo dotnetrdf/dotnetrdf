@@ -25,6 +25,7 @@
 */
 
 using System;
+using VDS.RDF.Storage.Management;
 
 namespace VDS.RDF.Storage
 {

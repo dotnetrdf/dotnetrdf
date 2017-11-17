@@ -52,8 +52,8 @@ namespace VDS.RDF.Parsing
         public BaseGZipResultsParser(ISparqlResultsReader parser)
         {
             if (parser == null) throw new ArgumentNullException("parser");
-            this._parser = parser;
-            this._parser.Warning += this.RaiseWarning;
+            _parser = parser;
+            _parser.Warning += RaiseWarning;
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace VDS.RDF.Parsing
         public void Load(SparqlResultSet results, StreamReader input)
         {
             if (results == null) throw new RdfParseException("Cannot parse SPARQL Results into a null Result Set");
-            this.Load(new ResultSetHandler(results), input);
+            Load(new ResultSetHandler(results), input);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace VDS.RDF.Parsing
         public void Load(SparqlResultSet results, TextReader input)
         {
             if (results == null) throw new RdfParseException("Cannot parse SPARQL Results into a null Result Set");
-            this.Load(new ResultSetHandler(results), input);
+            Load(new ResultSetHandler(results), input);
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace VDS.RDF.Parsing
         public void Load(SparqlResultSet results, string filename)
         {
             if (results == null) throw new RdfParseException("Cannot parse SPARQL Results into a null Result Set");
-            this.Load(new ResultSetHandler(results), filename);
+            Load(new ResultSetHandler(results), filename);
         }
 
         /// <summary>
@@ -101,13 +101,13 @@ namespace VDS.RDF.Parsing
 
             if (input.BaseStream is GZipStream)
             {
-                this._parser.Load(handler, input);
+                _parser.Load(handler, input);
             }
             else
             {
                 // Force the inner stream to be GZipped
                 input = new StreamReader(new GZipStream(input.BaseStream, CompressionMode.Decompress));
-                this._parser.Load(handler, input);
+                _parser.Load(handler, input);
             }
         }
 
@@ -120,7 +120,7 @@ namespace VDS.RDF.Parsing
         {
             if (input is StreamReader)
             {
-                this.Load(handler, (StreamReader)input);
+                Load(handler, (StreamReader)input);
             }
             else
             {
@@ -136,7 +136,7 @@ namespace VDS.RDF.Parsing
         public void Load(ISparqlResultsHandler handler, string filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse SPARQL Results from a null file");
-            this.Load(handler, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
+            Load(handler, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public override string ToString()
         {
-            return "GZipped " + this._parser.ToString();
+            return "GZipped " + _parser.ToString();
         }
 
         /// <summary>
@@ -154,7 +154,7 @@ namespace VDS.RDF.Parsing
         /// <param name="message">Warning message</param>
         private void RaiseWarning(String message)
         {
-            SparqlWarning d = this.Warning;
+            SparqlWarning d = Warning;
             if (d != null) d(message);
         }
 

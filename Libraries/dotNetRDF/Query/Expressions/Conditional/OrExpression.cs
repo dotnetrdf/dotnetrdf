@@ -54,7 +54,7 @@ namespace VDS.RDF.Query.Expressions.Conditional
             // Lazy Evaluation for efficiency
             try
             {
-                bool leftResult = this._leftExpr.Evaluate(context, bindingID).AsBoolean();
+                bool leftResult = _leftExpr.Evaluate(context, bindingID).AsBoolean();
                 if (leftResult)
                 {
                     // If the LHS is true it doesn't matter about any subsequent results
@@ -63,14 +63,14 @@ namespace VDS.RDF.Query.Expressions.Conditional
                 else
                 {
                     // If the LHS is false then we have to evaluate the RHS
-                    return new BooleanNode(null, this._rightExpr.Evaluate(context, bindingID).AsBoolean());
+                    return new BooleanNode(null, _rightExpr.Evaluate(context, bindingID).AsBoolean());
                 }
             }
             catch (Exception ex)
             {
                 // If there's an Error on the LHS we return true only if the RHS evaluates to true
                 // Otherwise we throw the Error
-                bool rightResult = this._rightExpr.Evaluate(context, bindingID).AsSafeBoolean();
+                bool rightResult = _rightExpr.Evaluate(context, bindingID).AsSafeBoolean();
                 if (rightResult)
                 {
                     return new BooleanNode(null, true);
@@ -97,22 +97,22 @@ namespace VDS.RDF.Query.Expressions.Conditional
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            if (this._leftExpr.Type == SparqlExpressionType.BinaryOperator)
+            if (_leftExpr.Type == SparqlExpressionType.BinaryOperator)
             {
-                output.Append("(" + this._leftExpr.ToString() + ")");
+                output.Append("(" + _leftExpr.ToString() + ")");
             }
             else
             {
-                output.Append(this._leftExpr.ToString());
+                output.Append(_leftExpr.ToString());
             }
             output.Append(" || ");
-            if (this._rightExpr.Type == SparqlExpressionType.BinaryOperator)
+            if (_rightExpr.Type == SparqlExpressionType.BinaryOperator)
             {
-                output.Append("(" + this._rightExpr.ToString() + ")");
+                output.Append("(" + _rightExpr.ToString() + ")");
             }
             else
             {
-                output.Append(this._rightExpr.ToString());
+                output.Append(_rightExpr.ToString());
             }
             return output.ToString();
         }
@@ -146,7 +146,7 @@ namespace VDS.RDF.Query.Expressions.Conditional
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new OrExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
+            return new OrExpression(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
         }
     }
 }

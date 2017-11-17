@@ -57,7 +57,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.StringLength + ">(" + this._expr.ToString() + ")";
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.StringLength + ">(" + _expr.ToString() + ")";
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new StringLengthFunction(transformer.Transform(this._expr));
+            return new StringLengthFunction(transformer.Transform(_expr));
         }
     }
 }

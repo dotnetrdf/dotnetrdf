@@ -73,8 +73,8 @@ namespace VDS.RDF.Storage
         {
             if (!serviceUri.ToString().EndsWith("/data")) throw new ArgumentException("This does not appear to be a valid Fuseki Server URI, you must provide the URI that ends with /data", "serviceUri");
 
-            this._updateUri = serviceUri.Substring(0, serviceUri.Length - 4) + "update";
-            this._queryUri = serviceUri.Substring(0, serviceUri.Length - 4) + "query";
+            _updateUri = serviceUri.Substring(0, serviceUri.Length - 4) + "update";
+            _queryUri = serviceUri.Substring(0, serviceUri.Length - 4) + "query";
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace VDS.RDF.Storage
         public FusekiConnector(String serviceUri, IWebProxy proxy)
             : this(serviceUri)
         {
-            this.Proxy = proxy;
+            Proxy = proxy;
         }
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                SparqlResultSet results = this.Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }") as SparqlResultSet;
+                SparqlResultSet results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }") as SparqlResultSet;
                 if (results != null)
                 {
                     List<Uri> uris = new List<Uri>();
@@ -179,7 +179,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                String graph = (graphUri != null && !graphUri.Equals(String.Empty)) ? "GRAPH <" + this._formatter.FormatUri(graphUri) + "> {" : String.Empty;
+                String graph = (graphUri != null && !graphUri.Equals(String.Empty)) ? "GRAPH <" + _formatter.FormatUri(graphUri) + "> {" : String.Empty;
                 StringBuilder update = new StringBuilder();
 
                 if (additions != null)
@@ -191,7 +191,7 @@ namespace VDS.RDF.Storage
 
                         foreach (Triple t in additions)
                         {
-                            update.AppendLine(this._formatter.Format(t));
+                            update.AppendLine(_formatter.Format(t));
                         }
 
                         if (!graph.Equals(String.Empty)) update.AppendLine("}");
@@ -210,7 +210,7 @@ namespace VDS.RDF.Storage
 
                         foreach (Triple t in removals)
                         {
-                            update.AppendLine(this._formatter.Format(t));
+                            update.AppendLine(_formatter.Format(t));
                         }
 
                         if (!graph.Equals(String.Empty)) update.AppendLine("}");
@@ -221,10 +221,10 @@ namespace VDS.RDF.Storage
                 if (update.Length > 0)
                 {
                     // Make the SPARQL Update Request
-                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._updateUri);
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_updateUri);
                     request.Method = "POST";
                     request.ContentType = "application/sparql-update";
-                    request = base.ApplyRequestOptions(request);
+                    request = ApplyRequestOptions(request);
 
                     Tools.HttpDebugRequest(request);
 
@@ -255,7 +255,7 @@ namespace VDS.RDF.Storage
         /// <param name="removals">Triples to be removed</param>
         public override void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            this.UpdateGraph(graphUri.ToSafeString(), additions, removals);
+            UpdateGraph(graphUri.ToSafeString(), additions, removals);
         }
 
         /// <summary>
@@ -267,7 +267,7 @@ namespace VDS.RDF.Storage
         {
             Graph g = new Graph();
             SparqlResultSet results = new SparqlResultSet();
-            this.Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery);
+            Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery);
 
             if (results.ResultsType != SparqlResultsType.Unknown)
             {
@@ -293,21 +293,21 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request;
 
                 // Create the Request
-                String queryUri = this._queryUri;
+                String queryUri = _queryUri;
                 if (sparqlQuery.Length < 2048)
                 {
                     queryUri += "?query=" + Uri.EscapeDataString(sparqlQuery);
                     request = (HttpWebRequest)WebRequest.Create(queryUri);
                     request.Method = "GET";
                     request.Accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
-                    request = base.ApplyRequestOptions(request);
+                    request = ApplyRequestOptions(request);
                 }
                 else
                 {
                     request = (HttpWebRequest)WebRequest.Create(queryUri);
                     request.Method = "POST";
                     request.Accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
-                    request = base.ApplyRequestOptions(request);
+                    request = ApplyRequestOptions(request);
 
                     // Build the Post Data and add to the Request Body
                     request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
@@ -363,10 +363,10 @@ namespace VDS.RDF.Storage
             try
             {
                 // Make the SPARQL Update Request
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._updateUri);
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_updateUri);
                 request.Method = "POST";
                 request.ContentType = "application/sparql-update";
-                request = base.ApplyRequestOptions(request);
+                request = ApplyRequestOptions(request);
 
                 StreamWriter writer = new StreamWriter(request.GetRequestStream());
                 writer.Write(sparqlUpdate);
@@ -398,7 +398,7 @@ namespace VDS.RDF.Storage
         {
             Graph g = new Graph();
             SparqlResultSet results = new SparqlResultSet();
-            this.Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery, (sender, args, st) =>
+            Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery, (sender, args, st) =>
             {
                 if (results.ResultsType != SparqlResultsType.Unknown)
                 {
@@ -427,12 +427,12 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request;
 
                 // Create the Request, always use POST for async for simplicity
-                String queryUri = this._queryUri;
+                String queryUri = _queryUri;
 
                 request = (HttpWebRequest)WebRequest.Create(queryUri);
                 request.Method = "POST";
                 request.Accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
-                request = base.ApplyRequestOptions(request);
+                request = ApplyRequestOptions(request);
 
                 // Build the Post Data and add to the Request Body
                 request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
@@ -522,10 +522,10 @@ namespace VDS.RDF.Storage
             try
             {
                 // Make the SPARQL Update Request
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._updateUri);
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_updateUri);
                 request.Method = "POST";
                 request.ContentType = "application/sparql-update";
-                request = base.ApplyRequestOptions(request);
+                request = ApplyRequestOptions(request);
 
                 request.BeginGetRequestStream(r =>
                     {
@@ -612,7 +612,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                String graph = (graphUri != null && !graphUri.Equals(String.Empty)) ? "GRAPH <" + this._formatter.FormatUri(graphUri) + "> {" : String.Empty;
+                String graph = (graphUri != null && !graphUri.Equals(String.Empty)) ? "GRAPH <" + _formatter.FormatUri(graphUri) + "> {" : String.Empty;
                 StringBuilder update = new StringBuilder();
 
                 if (additions != null)
@@ -624,7 +624,7 @@ namespace VDS.RDF.Storage
 
                         foreach (Triple t in additions)
                         {
-                            update.AppendLine(this._formatter.Format(t));
+                            update.AppendLine(_formatter.Format(t));
                         }
 
                         if (!graph.Equals(String.Empty)) update.AppendLine("}");
@@ -643,7 +643,7 @@ namespace VDS.RDF.Storage
 
                         foreach (Triple t in removals)
                         {
-                            update.AppendLine(this._formatter.Format(t));
+                            update.AppendLine(_formatter.Format(t));
                         }
 
                         if (!graph.Equals(String.Empty)) update.AppendLine("}");
@@ -653,7 +653,7 @@ namespace VDS.RDF.Storage
 
                 if (update.Length > 0)
                 {
-                    this.Update(update.ToString(), (sender, args, st) =>
+                    Update(update.ToString(), (sender, args, st) =>
                         {
                             if (args.WasSuccessful)
                             {
@@ -682,7 +682,7 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public override string ToString()
         {
-            return "[Fuseki] " + this._serviceUri;
+            return "[Fuseki] " + _serviceUri;
         }
 
         #region IConfigurationSerializable Members
@@ -701,9 +701,9 @@ namespace VDS.RDF.Storage
             INode server = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer));
 
             context.Graph.Assert(new Triple(manager, rdfType, genericManager));
-            context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString())));
-            context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
-            context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._serviceUri)));
+            context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString())));
+            context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(GetType().FullName)));
+            context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(_serviceUri)));
         }
 
         #endregion

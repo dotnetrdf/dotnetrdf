@@ -57,19 +57,19 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
                 IValuedNode temp = sepExpr.Evaluate(null, 0);
                 if (temp.NodeType == NodeType.Literal)
                 {
-                    this._separator = temp.AsString();
-                    this._fixedSeparator = true;
+                    _separator = temp.AsString();
+                    _fixedSeparator = true;
                 }
                 else
                 {
-                    this._sep = sepExpr;
+                    _sep = sepExpr;
                 }
             }
             else
             {
-                this._sep = sepExpr;
+                _sep = sepExpr;
             }
-            this._exprs.AddRange(expressions);
+            _exprs.AddRange(expressions);
         }
 
         /// <summary>
@@ -81,9 +81,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
             StringBuilder output = new StringBuilder();
-            for (int i = 0; i < this._exprs.Count; i++)
+            for (int i = 0; i < _exprs.Count; i++)
             {
-                IValuedNode temp = this._exprs[i].Evaluate(context, bindingID);
+                IValuedNode temp = _exprs[i].Evaluate(context, bindingID);
                 if (temp == null) throw new RdfQueryException("Cannot evaluate the ARQ string-join() function when an argument evaluates to a Null");
                 switch (temp.NodeType)
                 {
@@ -93,15 +93,15 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
                     default:
                         throw new RdfQueryException("Cannot evaluate the ARQ string-join() function when an argument is not a Literal Node");
                 }
-                if (i < this._exprs.Count - 1)
+                if (i < _exprs.Count - 1)
                 {
-                    if (this._fixedSeparator)
+                    if (_fixedSeparator)
                     {
-                        output.Append(this._separator);
+                        output.Append(_separator);
                     }
                     else
                     {
-                        IValuedNode sep = this._sep.Evaluate(context, bindingID);
+                        IValuedNode sep = _sep.Evaluate(context, bindingID);
                         if (sep == null) throw new RdfQueryException("Cannot evaluate the ARQ strjoin() function when the separator expression evaluates to a Null");
                         if (sep.NodeType == NodeType.Literal)
                         {
@@ -125,7 +125,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         {
             get
             {
-                return (from expr in this._exprs
+                return (from expr in _exprs
                         from v in expr.Variables
                         select v);
             }
@@ -142,12 +142,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             output.Append(ArqFunctionFactory.ArqFunctionsNamespace);
             output.Append(ArqFunctionFactory.StrJoin);
             output.Append(">(");
-            output.Append(this._sep.ToString());
+            output.Append(_sep.ToString());
             output.Append(",");
-            for (int i = 0; i < this._exprs.Count; i++)
+            for (int i = 0; i < _exprs.Count; i++)
             {
-                output.Append(this._exprs[i].ToString());
-                if (i < this._exprs.Count - 1) output.Append(',');
+                output.Append(_exprs[i].ToString());
+                if (i < _exprs.Count - 1) output.Append(',');
             }
             output.Append(")");
             return output.ToString();
@@ -182,7 +182,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         {
             get
             {
-                return this._sep.AsEnumerable().Concat(this._exprs);
+                return _sep.AsEnumerable().Concat(_exprs);
             }
         }
 
@@ -193,7 +193,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         {
             get
             {
-                return this._sep.CanParallelise && this._exprs.All(e => e.CanParallelise);
+                return _sep.CanParallelise && _exprs.All(e => e.CanParallelise);
             }
         }
 
@@ -204,7 +204,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new StringJoinFunction(transformer.Transform(this._sep), this._exprs.Select(e => transformer.Transform(e)));
+            return new StringJoinFunction(transformer.Transform(_sep), _exprs.Select(e => transformer.Transform(e)));
         }
     }
 }

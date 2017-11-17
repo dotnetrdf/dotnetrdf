@@ -53,9 +53,9 @@ namespace VDS.RDF
         {
             if (baseTriples == null) throw new ArgumentNullException("baseTriple");
             if (additionalTriples == null) throw new ArgumentNullException("additionalTriples");
-            this._collections.Add(baseTriples);
-            this._collections.Add(additionalTriples);
-            this._baseCollection = baseTriples;
+            _collections.Add(baseTriples);
+            _collections.Add(additionalTriples);
+            _baseCollection = baseTriples;
         }
 
         /// <summary>
@@ -66,9 +66,9 @@ namespace VDS.RDF
         public UnionTripleCollection(BaseTripleCollection baseTriples, IEnumerable<BaseTripleCollection> additionalTriples)
         {
             if (baseTriples == null) throw new ArgumentNullException("baseTriple");
-            this._collections.Add(baseTriples);
-            this._collections.AddRange(additionalTriples);
-            this._baseCollection = baseTriples;
+            _collections.Add(baseTriples);
+            _collections.AddRange(additionalTriples);
+            _baseCollection = baseTriples;
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace VDS.RDF
         /// <param name="t">Triple to add</param>
         protected internal override bool Add(Triple t)
         {
-            return this._baseCollection.Add(t);
+            return _baseCollection.Add(t);
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override bool Contains(Triple t)
         {
-            return this._collections.Any(c => c.Contains(t));
+            return _collections.Any(c => c.Contains(t));
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace VDS.RDF
         {
             get 
             {
-                return this._collections.Sum(c => c.Count);
+                return _collections.Sum(c => c.Count);
             }
         }
 
@@ -110,7 +110,7 @@ namespace VDS.RDF
         /// <param name="t">Triple to delete</param>
         protected internal override bool Delete(Triple t)
         {
-            return this._baseCollection.Delete(t);
+            return _baseCollection.Delete(t);
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace VDS.RDF
         {
             get 
             {
-                foreach (BaseTripleCollection c in this._collections)
+                foreach (BaseTripleCollection c in _collections)
                 {
                     if (c.Contains(t))
                     {
@@ -141,7 +141,7 @@ namespace VDS.RDF
         {
             get 
             {
-                return (from c in this._collections
+                return (from c in _collections
                         from o in c.ObjectNodes
                         select o);
             }
@@ -154,7 +154,7 @@ namespace VDS.RDF
         {
             get 
             {
-                return (from c in this._collections
+                return (from c in _collections
                         from p in c.PredicateNodes
                         select p); 
             }
@@ -167,7 +167,7 @@ namespace VDS.RDF
         {
             get 
             {
-                return (from c in this._collections
+                return (from c in _collections
                         from s in c.SubjectNodes
                         select s); 
             }
@@ -190,7 +190,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerator<Triple> GetEnumerator()
         {
-            return this._collections.SelectMany(c => c).GetEnumerator();
+            return _collections.SelectMany(c => c).GetEnumerator();
         }
     }
 }

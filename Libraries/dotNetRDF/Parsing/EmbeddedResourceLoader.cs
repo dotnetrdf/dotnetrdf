@@ -100,7 +100,7 @@ namespace VDS.RDF.Parsing
 #if NETCORE
                     LoadGraphInternal(handler, typeof(EmbeddedResourceLoader).GetTypeInfo().Assembly, resourceName, parser);
 #else
-                    EmbeddedResourceLoader.LoadGraphInternal(handler, Assembly.GetExecutingAssembly(), resourceName, parser);
+                    LoadGraphInternal(handler, Assembly.GetExecutingAssembly(), resourceName, parser);
 #endif
                 }
             }
@@ -263,7 +263,7 @@ namespace VDS.RDF.Parsing
                     LoadDatasetInternal(handler,
                         typeof(EmbeddedResourceLoader).GetTypeInfo().Assembly, resourceName, parser);
 #else
-                    EmbeddedResourceLoader.LoadDatasetInternal(handler, Assembly.GetExecutingAssembly(), resourceName, parser);
+                    LoadDatasetInternal(handler, Assembly.GetExecutingAssembly(), resourceName, parser);
 #endif
                 }
             }

@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordDay + "(" + this._expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordDay + "(" + _expr.ToString() + ")";
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new DayFunction(transformer.Transform(this._expr));
+            return new DayFunction(transformer.Transform(_expr));
         }
     }
 }

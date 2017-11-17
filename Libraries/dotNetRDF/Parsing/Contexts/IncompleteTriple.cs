@@ -41,8 +41,8 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="direction">Direction</param>
         public IncompleteTriple(INode pred, IncompleteTripleDirection direction)
         {
-            this._pred = pred;
-            this._dir = direction;
+            _pred = pred;
+            _dir = direction;
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._pred;
+                return _pred;
             }
         }
 
@@ -63,7 +63,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._dir;
+                return _dir;
             }
         }
     }

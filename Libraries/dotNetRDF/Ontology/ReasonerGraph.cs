@@ -56,9 +56,9 @@ namespace VDS.RDF.Ontology
         /// <param name="reasoner">Reasoner</param>
         public ReasonerGraph(IGraph g, IInferenceEngine reasoner)
         {
-            this._baseGraph = g;
-            this._reasoners.Add(reasoner);
-            this.Initialise();
+            _baseGraph = g;
+            _reasoners.Add(reasoner);
+            Initialise();
         }
 
         /// <summary>
@@ -68,9 +68,9 @@ namespace VDS.RDF.Ontology
         /// <param name="reasoners">Reasoner</param>
         public ReasonerGraph(IGraph g, IEnumerable<IInferenceEngine> reasoners)
         {
-            this._baseGraph = g;
-            this._reasoners.AddRange(reasoners);
-            this.Initialise();
+            _baseGraph = g;
+            _reasoners.AddRange(reasoners);
+            Initialise();
         }
 
         /// <summary>
@@ -79,12 +79,12 @@ namespace VDS.RDF.Ontology
         private void Initialise()
         {
             // Apply the reasoners
-            foreach (IInferenceEngine reasoner in this._reasoners)
+            foreach (IInferenceEngine reasoner in _reasoners)
             {
-                reasoner.Apply(this._baseGraph, this);
+                reasoner.Apply(_baseGraph, this);
             }
             // Set the Triple and Node Collections to be Union Collections
-            this._triples = new UnionTripleCollection(this._triples, this._baseGraph.Triples);
+            _triples = new UnionTripleCollection(_triples, _baseGraph.Triples);
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return this._baseGraph;
+                return _baseGraph;
             }
         }
     }

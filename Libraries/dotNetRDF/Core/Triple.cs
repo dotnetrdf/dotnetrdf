@@ -72,15 +72,15 @@ namespace VDS.RDF
             else
             {
                 // Set the Graph property from the Subject
-                this._g = subj.Graph;
+                _g = subj.Graph;
 
                 // Store the Three Nodes of the Triple
-                this._subject = subj;
-                this._predicate = pred;
-                this._object = obj;
+                _subject = subj;
+                _predicate = pred;
+                _object = obj;
 
                 // Compute Hash Code
-                this._hashcode = (this._subject.GetHashCode().ToString() + this._predicate.GetHashCode().ToString() + this._object.GetHashCode().ToString()).GetHashCode();
+                _hashcode = (_subject.GetHashCode().ToString() + _predicate.GetHashCode().ToString() + _object.GetHashCode().ToString()).GetHashCode();
             }
         }
 
@@ -96,7 +96,7 @@ namespace VDS.RDF
         public Triple(INode subj, INode pred, INode obj, IGraph g)
             : this(subj, pred, obj)
         {
-            this._g = g;
+            _g = g;
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace VDS.RDF
         public Triple(INode subj, INode pred, INode obj, ITripleContext context)
             : this(subj, pred, obj)
         {
-            this._context = context;
+            _context = context;
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace VDS.RDF
         public Triple(INode subj, INode pred, INode obj, Uri graphUri)
             : this(subj, pred, obj)
         {
-            this._u = graphUri;
+            _u = graphUri;
         }
 
         /// <summary>
@@ -142,7 +142,7 @@ namespace VDS.RDF
         public Triple(INode subj, INode pred, INode obj, ITripleContext context, Uri graphUri)
             : this(subj, pred, obj, graphUri)
         {
-            this._context = context;
+            _context = context;
         }
 
         private Triple()
@@ -151,12 +151,12 @@ namespace VDS.RDF
 #if !NETCORE
         private Triple(SerializationInfo info, StreamingContext context)
         {
-            this._subject = (INode)info.GetValue("s", typeof(INode));
-            this._predicate = (INode)info.GetValue("p", typeof(INode));
-            this._object = (INode)info.GetValue("o", typeof(INode));
+            _subject = (INode)info.GetValue("s", typeof(INode));
+            _predicate = (INode)info.GetValue("p", typeof(INode));
+            _object = (INode)info.GetValue("o", typeof(INode));
 
             // Compute Hash Code
-            this._hashcode = (this._subject.GetHashCode().ToString() + this._predicate.GetHashCode().ToString() + this._object.GetHashCode().ToString()).GetHashCode();
+            _hashcode = (_subject.GetHashCode().ToString() + _predicate.GetHashCode().ToString() + _object.GetHashCode().ToString()).GetHashCode();
         }
 #endif
 
@@ -201,7 +201,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._g;
+                return _g;
             }
         }
 
@@ -213,17 +213,17 @@ namespace VDS.RDF
         {
             get
             {
-                if (this._u != null)
+                if (_u != null)
                 {
-                    return this._u;
+                    return _u;
                 }
-                else if (this._g == null)
+                else if (_g == null)
                 {
                     return null;
                 }
                 else
                 {
-                    return this._g.BaseUri;
+                    return _g.BaseUri;
                 }
             }
         }
@@ -238,11 +238,11 @@ namespace VDS.RDF
         {
             get
             {
-                return this._context;
+                return _context;
             }
             set
             {
-                this._context = value;
+                _context = value;
             }
         }
 
@@ -256,7 +256,7 @@ namespace VDS.RDF
         {
             get
             {
-                return new List<INode> { this._subject, this._predicate, this._object };
+                return new List<INode> { _subject, _predicate, _object };
             }
         }
 
@@ -272,7 +272,7 @@ namespace VDS.RDF
         {
             get
             {
-                return (this._subject.NodeType != NodeType.Blank && this._predicate.NodeType != NodeType.Blank && this._object.NodeType != NodeType.Blank);
+                return (_subject.NodeType != NodeType.Blank && _predicate.NodeType != NodeType.Blank && _object.NodeType != NodeType.Blank);
             }
         }
 
@@ -283,7 +283,7 @@ namespace VDS.RDF
         /// <returns>True if the Triple contains the given Node</returns>
         public bool Involves(INode n)
         {
-            return (this._subject.Equals(n) || this._predicate.Equals(n) || this._object.Equals(n));
+            return (_subject.Equals(n) || _predicate.Equals(n) || _object.Equals(n));
         }
 
         /// <summary>
@@ -296,11 +296,11 @@ namespace VDS.RDF
             IUriNode temp = new UriNode(null, uri);
 
             // Does the Subject involve this Uri?
-            if (this._subject.Equals(temp)) return true;
+            if (_subject.Equals(temp)) return true;
             // Does the Predicate involve this Uri?
-            if (this._predicate.Equals(temp)) return true;
+            if (_predicate.Equals(temp)) return true;
             // Does the Object involve this Uri?
-            if (this._object.Equals(temp)) return true;
+            if (_object.Equals(temp)) return true;
             // Not Involved!
             return false;
         }
@@ -313,7 +313,7 @@ namespace VDS.RDF
         public bool HasSubject(INode n)
         {
             // return this._subject.GetHashCode().Equals(n.GetHashCode());
-            return this._subject.Equals(n);
+            return _subject.Equals(n);
         }
 
         /// <summary>
@@ -324,7 +324,7 @@ namespace VDS.RDF
         public bool HasPredicate(INode n)
         {
             // return this._predicate.GetHashCode().Equals(n.GetHashCode());
-            return this._predicate.Equals(n);
+            return _predicate.Equals(n);
         }
 
         /// <summary>
@@ -335,7 +335,7 @@ namespace VDS.RDF
         public bool HasObject(INode n)
         {
             // return this._object.GetHashCode().Equals(n.GetHashCode());
-            return this._object.Equals(n);
+            return _object.Equals(n);
         }
 
         /// <summary>
@@ -359,9 +359,9 @@ namespace VDS.RDF
                 // Subject, Predicate and Object must all be equal
                 // Either the Nodes must be directly equal or they must both be Blank Nodes with identical Node IDs
                 // Use lazy evaluation as far as possible
-                return (this._subject.Equals(temp.Subject) || (this._subject.NodeType == NodeType.Blank && temp.Subject.NodeType == NodeType.Blank && this._subject.ToString().Equals(temp.Subject.ToString())))
-                       && (this._predicate.Equals(temp.Predicate) || (this._predicate.NodeType == NodeType.Blank && temp.Predicate.NodeType == NodeType.Blank && this._predicate.ToString().Equals(temp.Predicate.ToString())))
-                       && (this._object.Equals(temp.Object) || (this._object.NodeType == NodeType.Blank && temp.Object.NodeType == NodeType.Blank && this._object.ToString().Equals(temp.Object.ToString())));
+                return (_subject.Equals(temp.Subject) || (_subject.NodeType == NodeType.Blank && temp.Subject.NodeType == NodeType.Blank && _subject.ToString().Equals(temp.Subject.ToString())))
+                       && (_predicate.Equals(temp.Predicate) || (_predicate.NodeType == NodeType.Blank && temp.Predicate.NodeType == NodeType.Blank && _predicate.ToString().Equals(temp.Predicate.ToString())))
+                       && (_object.Equals(temp.Object) || (_object.NodeType == NodeType.Blank && temp.Object.NodeType == NodeType.Blank && _object.ToString().Equals(temp.Object.ToString())));
 
              }
             else
@@ -385,7 +385,7 @@ namespace VDS.RDF
         /// </remarks>
         public override int GetHashCode()
         {
-            return this._hashcode;
+            return _hashcode;
         }
 
         /// <summary>
@@ -395,11 +395,11 @@ namespace VDS.RDF
         public override string ToString()
         {
             StringBuilder outString = new StringBuilder();
-            outString.Append(this._subject.ToString());
+            outString.Append(_subject.ToString());
             outString.Append(" , ");
-            outString.Append(this._predicate.ToString());
+            outString.Append(_predicate.ToString());
             outString.Append(" , ");
-            outString.Append(this._object.ToString());
+            outString.Append(_object.ToString());
 
             return outString.ToString();
         }
@@ -411,13 +411,13 @@ namespace VDS.RDF
         /// <returns></returns>
         public string ToString(bool compress)
         {
-            if (!compress || this._g == null)
+            if (!compress || _g == null)
             {
-                return this.ToString();
+                return ToString();
             }
             else
             {
-                TurtleFormatter formatter = new TurtleFormatter(this._g.NamespaceMap);
+                TurtleFormatter formatter = new TurtleFormatter(_g.NamespaceMap);
                 return formatter.Format(this);
             }
         }
@@ -451,15 +451,15 @@ namespace VDS.RDF
                 int s, p;
 
                 // Compare Subjects
-                s = this.Subject.CompareTo(other.Subject);
+                s = Subject.CompareTo(other.Subject);
                 if (s == 0)
                 {
                     // Compare Predicates
-                    p = this.Predicate.CompareTo(other.Predicate);
+                    p = Predicate.CompareTo(other.Predicate);
                     if (p == 0)
                     {
                         // Compare Objects
-                        return this.Object.CompareTo(other.Object);
+                        return Object.CompareTo(other.Object);
                     }
                     else
                     {
@@ -484,9 +484,9 @@ namespace VDS.RDF
         /// <param name="context">Streaming Context</param>
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("s", this._subject);
-            info.AddValue("p", this._predicate);
-            info.AddValue("o", this._object);
+            info.AddValue("s", _subject);
+            info.AddValue("p", _predicate);
+            info.AddValue("o", _object);
         }
 
         #endregion
@@ -509,12 +509,12 @@ namespace VDS.RDF
         public void ReadXml(XmlReader reader)
         {
             reader.Read();
-            this._subject = reader.DeserializeNode();
-            this._predicate = reader.DeserializeNode();
-            this._object = reader.DeserializeNode();
+            _subject = reader.DeserializeNode();
+            _predicate = reader.DeserializeNode();
+            _object = reader.DeserializeNode();
 
             // Compute Hash Code
-            this._hashcode = (this._subject.GetHashCode().ToString() + this._predicate.GetHashCode().ToString() + this._object.GetHashCode().ToString()).GetHashCode();
+            _hashcode = (_subject.GetHashCode().ToString() + _predicate.GetHashCode().ToString() + _object.GetHashCode().ToString()).GetHashCode();
         }
 
         /// <summary>
@@ -523,9 +523,9 @@ namespace VDS.RDF
         /// <param name="writer">XML Writer</param>
         public void WriteXml(XmlWriter writer)
         {
-            this._subject.SerializeNode(writer);
-            this._predicate.SerializeNode(writer);
-            this._object.SerializeNode(writer);
+            _subject.SerializeNode(writer);
+            _predicate.SerializeNode(writer);
+            _object.SerializeNode(writer);
         }
 
         #endregion

@@ -49,7 +49,7 @@ namespace VDS.RDF.Query.Expressions.Conditional
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            return new BooleanNode(null, !this._expr.Evaluate(context, bindingID).AsSafeBoolean());
+            return new BooleanNode(null, !_expr.Evaluate(context, bindingID).AsSafeBoolean());
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Expressions.Conditional
         /// <returns></returns>
         public override string ToString()
         {
-            return "!" + this._expr.ToString();
+            return "!" + _expr.ToString();
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace VDS.RDF.Query.Expressions.Conditional
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new NotExpression(transformer.Transform(this._expr));
+            return new NotExpression(transformer.Transform(_expr));
         }
     }
 }

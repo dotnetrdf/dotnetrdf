@@ -49,7 +49,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         public CountDistinctAggregate(VariableTerm expr)
             : base(expr)
         {
-            this._varname = expr.ToString().Substring(1);
+            _varname = expr.ToString().Substring(1);
         }
 
 
@@ -71,16 +71,16 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             int c;
             HashSet<IValuedNode> values = new HashSet<IValuedNode>();
 
-            if (this._varname != null)
+            if (_varname != null)
             {
                 // Ensure the COUNTed variable is in the Variables of the Results
-                if (!context.Binder.Variables.Contains(this._varname))
+                if (!context.Binder.Variables.Contains(_varname))
                 {
-                    throw new RdfQueryException("Cannot use the Variable " + this._expr.ToString() + " in a COUNT Aggregate since the Variable does not occur in a Graph Pattern");
+                    throw new RdfQueryException("Cannot use the Variable " + _expr.ToString() + " in a COUNT Aggregate since the Variable does not occur in a Graph Pattern");
                 }
 
                 // Just Count the number of results where the variable is bound
-                VariableTerm varExpr = (VariableTerm)this._expr;
+                VariableTerm varExpr = (VariableTerm)_expr;
 
                 foreach (int id in bindingIDs)
                 {
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
                 {
                     try
                     {
-                        IValuedNode temp = this._expr.Evaluate(context, id);
+                        IValuedNode temp = _expr.Evaluate(context, id);
                         if (temp != null)
                         {
                             values.Add(temp);
@@ -122,7 +122,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            output.Append("COUNT(DISTINCT " + this._expr.ToString() + ")");
+            output.Append("COUNT(DISTINCT " + _expr.ToString() + ")");
             return output.ToString();
         }
 

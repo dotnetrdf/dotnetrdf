@@ -53,11 +53,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._prettyprint;
+                return _prettyprint;
             }
             set
             {
-                this._prettyprint = value;
+                _prettyprint = value;
             }
         }
 
@@ -70,7 +70,7 @@ namespace VDS.RDF.Writing
         {
             using (var stream = File.Open(filename, FileMode.Create))
             {
-                this.Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
+                Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
             }
         }
 
@@ -82,9 +82,9 @@ namespace VDS.RDF.Writing
         protected override void SaveInternal(IGraph g, TextWriter output)
         {
             // Always issue a Warning
-            this.RaiseWarning("RDF/JSON does not contain any Namespace information.  If you read this serialized data back in at a later date you may not be able to reserialize it to Namespace reliant formats (like RDF/XML)");
+            RaiseWarning("RDF/JSON does not contain any Namespace information.  If you read this serialized data back in at a later date you may not be able to reserialize it to Namespace reliant formats (like RDF/XML)");
 
-            this.GenerateOutput(g, output);
+            GenerateOutput(g, output);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace VDS.RDF.Writing
 
             // Get the Writer and Configure Options
             JsonTextWriter writer = new JsonTextWriter(output);
-            if (this._prettyprint)
+            if (_prettyprint)
             {
                 writer.Formatting = Newtonsoft.Json.Formatting.Indented;
             }
@@ -275,9 +275,9 @@ namespace VDS.RDF.Writing
         /// <param name="message">Warning Message</param>
         private void RaiseWarning(String message)
         {
-            if (this.Warning != null)
+            if (Warning != null)
             {
-                this.Warning(message);
+                Warning(message);
             }
         }
 

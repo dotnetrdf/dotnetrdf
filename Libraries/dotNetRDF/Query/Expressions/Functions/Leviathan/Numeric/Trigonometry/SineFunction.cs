@@ -51,14 +51,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         public SineFunction(ISparqlExpression expr, bool inverse)
             : base(expr)
         {
-            this._inverse = inverse;
-            if (this._inverse)
+            _inverse = inverse;
+            if (_inverse)
             {
-                this._func = Math.Asin;
+                _func = Math.Asin;
             }
             else
             {
-                this._func = Math.Sin;
+                _func = Math.Sin;
             }
         }
 
@@ -68,13 +68,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         /// <returns></returns>
         public override string ToString()
         {
-            if (this._inverse)
+            if (_inverse)
             {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSinInv + ">(" + this._expr.ToString() + ")";
+                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSinInv + ">(" + _expr.ToString() + ")";
             }
             else
             {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSin + ">(" + this._expr.ToString() + ")";
+                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSin + ">(" + _expr.ToString() + ")";
             }
         }
 
@@ -85,7 +85,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         {
             get
             {
-                if (this._inverse)
+                if (_inverse)
                 {
                     return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSinInv;
                 }
@@ -103,7 +103,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new SineFunction(transformer.Transform(this._expr), this._inverse);
+            return new SineFunction(transformer.Transform(_expr), _inverse);
         }
     }
 }

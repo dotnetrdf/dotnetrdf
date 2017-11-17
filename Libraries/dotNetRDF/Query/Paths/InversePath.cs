@@ -47,7 +47,7 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public override string ToString()
         {
-            return "^ " + this._path.ToString();
+            return "^ " + _path.ToString();
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace VDS.RDF.Query.Paths
             context.End = tempSubj;
 
             // Then transform the path
-            context.AddTriplePattern(context.GetTriplePattern(context.Subject, this._path, context.Object));
+            context.AddTriplePattern(context.GetTriplePattern(context.Subject, _path, context.Object));
 
             // Then swap the Subject and Object back
             context.Subject = tempSubj;

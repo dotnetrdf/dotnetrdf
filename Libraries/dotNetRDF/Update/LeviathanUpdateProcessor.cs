@@ -64,12 +64,12 @@ namespace VDS.RDF.Update
         /// <param name="data">SPARQL Dataset</param>
         public LeviathanUpdateProcessor(ISparqlDataset data)
         {
-            this._dataset = data;
-            if (!this._dataset.HasGraph(null))
+            _dataset = data;
+            if (!_dataset.HasGraph(null))
             {
                 // Create the Default unnamed Graph if it doesn't exist and then Flush() the change
-                this._dataset.AddGraph(new Graph());
-                this._dataset.Flush();
+                _dataset.AddGraph(new Graph());
+                _dataset.Flush();
             }
         }
 
@@ -80,11 +80,11 @@ namespace VDS.RDF.Update
         {
             get
             {
-                return this._autoCommit;
+                return _autoCommit;
             }
             set
             {
-                this._autoCommit = value;
+                _autoCommit = value;
             }
         }
 
@@ -93,8 +93,8 @@ namespace VDS.RDF.Update
         /// </summary>
         public void Flush()
         {
-            if (!this._canCommit) throw new SparqlUpdateException("Unable to commit since one/more Commands executed in the current Transaction failed");
-            this._dataset.Flush();
+            if (!_canCommit) throw new SparqlUpdateException("Unable to commit since one/more Commands executed in the current Transaction failed");
+            _dataset.Flush();
         }
 
         /// <summary>
@@ -102,8 +102,8 @@ namespace VDS.RDF.Update
         /// </summary>
         public void Discard()
         {
-            this._dataset.Discard();
-            this._canCommit = true;
+            _dataset.Discard();
+            _canCommit = true;
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace VDS.RDF.Update
         /// <returns></returns>
         protected SparqlUpdateEvaluationContext GetContext(SparqlUpdateCommandSet cmds)
         {
-            return new SparqlUpdateEvaluationContext(cmds, this._dataset, this.GetQueryProcessor());
+            return new SparqlUpdateEvaluationContext(cmds, _dataset, GetQueryProcessor());
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace VDS.RDF.Update
         /// <returns></returns>
         protected SparqlUpdateEvaluationContext GetContext()
         {
-            return new SparqlUpdateEvaluationContext(this._dataset, this.GetQueryProcessor());
+            return new SparqlUpdateEvaluationContext(_dataset, GetQueryProcessor());
         }
 
         /// <summary>
@@ -143,7 +143,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Add Command</param>
         public void ProcessAddCommand(AddCommand cmd)
         {
-            this.ProcessAddCommandInternal(cmd, this.GetContext());
+            ProcessAddCommandInternal(cmd, GetContext());
         }
 
         /// <summary>
@@ -162,7 +162,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Clear Command</param>
         public void ProcessClearCommand(ClearCommand cmd)
         {
-            this.ProcessClearCommandInternal(cmd, this.GetContext());
+            ProcessClearCommandInternal(cmd, GetContext());
         }
 
         /// <summary>
@@ -181,7 +181,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Copy Command</param>
         public void ProcessCopyCommand(CopyCommand cmd)
         {
-            this.ProcessCopyCommandInternal(cmd, this.GetContext());
+            ProcessCopyCommandInternal(cmd, GetContext());
         }
 
         /// <summary>
@@ -200,7 +200,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Create Command</param>
         public void ProcessCreateCommand(CreateCommand cmd)
         {
-            this.ProcessCreateCommandInternal(cmd, this.GetContext());
+            ProcessCreateCommandInternal(cmd, GetContext());
         }
 
         /// <summary>
@@ -219,7 +219,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Command</param>
         public void ProcessCommand(SparqlUpdateCommand cmd)
         {
-            this.ProcessCommandInternal(cmd, this.GetContext());
+            ProcessCommandInternal(cmd, GetContext());
         }
 
         /// <summary>
@@ -233,10 +233,10 @@ namespace VDS.RDF.Update
         private void ProcessCommandInternal(SparqlUpdateCommand cmd, SparqlUpdateEvaluationContext context)
         {
             // If auto-committing then Flush() any existing Transaction first
-            if (this._autoCommit) this.Flush();
+            if (_autoCommit) Flush();
 
             // Then if possible attempt to get the lock and determine whether it needs releasing
-            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+            ReaderWriterLockSlim currLock = (_dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)_dataset).Lock : _lock;
             bool mustRelease = false;
             try
             {
@@ -250,58 +250,58 @@ namespace VDS.RDF.Update
                 switch (cmd.CommandType)
                 {
                     case SparqlUpdateCommandType.Add:
-                        this.ProcessAddCommandInternal((AddCommand)cmd, context);
+                        ProcessAddCommandInternal((AddCommand)cmd, context);
                         break;
                     case SparqlUpdateCommandType.Clear:
-                        this.ProcessClearCommandInternal((ClearCommand)cmd, context);
+                        ProcessClearCommandInternal((ClearCommand)cmd, context);
                         break;
                     case SparqlUpdateCommandType.Copy:
-                        this.ProcessCopyCommandInternal((CopyCommand)cmd, context);
+                        ProcessCopyCommandInternal((CopyCommand)cmd, context);
                         break;
                     case SparqlUpdateCommandType.Create:
-                        this.ProcessCreateCommandInternal((CreateCommand)cmd, context);
+                        ProcessCreateCommandInternal((CreateCommand)cmd, context);
                         break;
                     case SparqlUpdateCommandType.Delete:
-                        this.ProcessDeleteCommandInternal((DeleteCommand)cmd, context);
+                        ProcessDeleteCommandInternal((DeleteCommand)cmd, context);
                         break;
                     case SparqlUpdateCommandType.DeleteData:
-                        this.ProcessDeleteDataCommandInternal((DeleteDataCommand)cmd, context);
+                        ProcessDeleteDataCommandInternal((DeleteDataCommand)cmd, context);
                         break;
                     case SparqlUpdateCommandType.Drop:
-                        this.ProcessDropCommandInternal((DropCommand)cmd, context);
+                        ProcessDropCommandInternal((DropCommand)cmd, context);
                         break;
                     case SparqlUpdateCommandType.Insert:
-                        this.ProcessInsertCommandInternal((InsertCommand)cmd, context);
+                        ProcessInsertCommandInternal((InsertCommand)cmd, context);
                         break;
                     case SparqlUpdateCommandType.InsertData:
-                        this.ProcessInsertDataCommandInternal((InsertDataCommand)cmd, context);
+                        ProcessInsertDataCommandInternal((InsertDataCommand)cmd, context);
                         break;
                     case SparqlUpdateCommandType.Load:
-                        this.ProcessLoadCommandInternal((LoadCommand)cmd, context);
+                        ProcessLoadCommandInternal((LoadCommand)cmd, context);
                         break;
                     case SparqlUpdateCommandType.Modify:
-                        this.ProcessModifyCommandInternal((ModifyCommand)cmd, context);
+                        ProcessModifyCommandInternal((ModifyCommand)cmd, context);
                         break;
                     case SparqlUpdateCommandType.Move:
-                        this.ProcessMoveCommandInternal((MoveCommand)cmd, context);
+                        ProcessMoveCommandInternal((MoveCommand)cmd, context);
                         break;
                     default:
                         throw new SparqlUpdateException("Unknown Update Commands cannot be processed by the Leviathan Update Processor");
                 }
 
                 // If auto-committing flush after every command
-                if (this._autoCommit) this.Flush();
+                if (_autoCommit) Flush();
             }
             catch
             {
                 // If auto-committing discard if an error occurs, if not then mark the transaction as uncomittable
-                if (this._autoCommit)
+                if (_autoCommit)
                 {
-                    this.Discard();
+                    Discard();
                 }
                 else
                 {
-                    this._canCommit = false;
+                    _canCommit = false;
                 }
                 throw;
             }
@@ -327,14 +327,14 @@ namespace VDS.RDF.Update
             commands.UpdateExecutionTime = null;
 
             // Firstly check what Transaction mode we are running in
-            bool autoCommit = this._autoCommit;
+            bool autoCommit = _autoCommit;
 
             // Then create an Evaluation Context
-            SparqlUpdateEvaluationContext context = this.GetContext(commands);
+            SparqlUpdateEvaluationContext context = GetContext(commands);
 
             // Remember to handle the Thread Safety
             // If the Dataset is Thread Safe use its own lock otherwise use our local lock
-            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+            ReaderWriterLockSlim currLock = (_dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)_dataset).Lock : _lock;
             try
             {
                 currLock.EnterWriteLock();
@@ -343,19 +343,19 @@ namespace VDS.RDF.Update
                 // don't try and commit after each one is applied i.e. either we are in auto-commit mode and all the
                 // commands must be evaluated before flushing/discarding the changes OR we are not in auto-commit mode
                 // so turning it off doesn't matter as it is already turned off
-                this._autoCommit = false;
+                _autoCommit = false;
 
                 if (autoCommit)
                 {
                     // Do a Flush() before we start to ensure changes from any previous commands are persisted
-                    this._dataset.Flush();
+                    _dataset.Flush();
                 }
 
                 // Start the operation
                 context.StartExecution();
                 for (int i = 0; i < commands.CommandCount; i++)
                 {
-                    this.ProcessCommandInternal(commands[i], context);
+                    ProcessCommandInternal(commands[i], context);
 
                     // Check for Timeout
                     context.CheckTimeout();
@@ -364,7 +364,7 @@ namespace VDS.RDF.Update
                 if (autoCommit)
                 {
                     // Do a Flush() when command set completed successfully to persist the changes
-                    this._dataset.Flush();
+                    _dataset.Flush();
                 }
 
                 // Set Update Times
@@ -376,11 +376,11 @@ namespace VDS.RDF.Update
                 if (autoCommit)
                 {
                     // Do a Discard() when a command set fails to discard the changes
-                    this._dataset.Discard();
+                    _dataset.Discard();
                 }
                 else
                 {
-                    this._canCommit = false;
+                    _canCommit = false;
                 }
 
                 // Set Update Times
@@ -391,7 +391,7 @@ namespace VDS.RDF.Update
             finally
             {
                 // Reset auto-commit setting and release our write lock
-                this._autoCommit = autoCommit;
+                _autoCommit = autoCommit;
                 currLock.ExitWriteLock();
             }
         }
@@ -402,7 +402,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Delete Command</param>
         public void ProcessDeleteCommand(DeleteCommand cmd)
         {
-            this.ProcessDeleteCommandInternal(cmd, this.GetContext());
+            ProcessDeleteCommandInternal(cmd, GetContext());
         }
 
         /// <summary>
@@ -421,7 +421,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">DELETE Data Command</param>
         public void ProcessDeleteDataCommand(DeleteDataCommand cmd)
         {
-            this.ProcessDeleteDataCommandInternal(cmd, this.GetContext());
+            ProcessDeleteDataCommandInternal(cmd, GetContext());
         }
 
         /// <summary>
@@ -440,7 +440,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Drop Command</param>
         public void ProcessDropCommand(DropCommand cmd)
         {
-            this.ProcessDropCommandInternal(cmd, this.GetContext());
+            ProcessDropCommandInternal(cmd, GetContext());
         }
 
         /// <summary>
@@ -459,7 +459,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Insert Command</param>
         public void ProcessInsertCommand(InsertCommand cmd)
         {
-            this.ProcessInsertCommandInternal(cmd, this.GetContext());
+            ProcessInsertCommandInternal(cmd, GetContext());
         }
 
         /// <summary>
@@ -478,7 +478,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Insert Data Command</param>
         public void ProcessInsertDataCommand(InsertDataCommand cmd)
         {
-            this.ProcessInsertDataCommandInternal(cmd, this.GetContext());
+            ProcessInsertDataCommandInternal(cmd, GetContext());
         }
 
         /// <summary>
@@ -497,7 +497,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Load Command</param>
         public void ProcessLoadCommand(LoadCommand cmd)
         {
-            this.ProcessLoadCommandInternal(cmd, this.GetContext());
+            ProcessLoadCommandInternal(cmd, GetContext());
         }
 
         /// <summary>
@@ -516,7 +516,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Insert/Delete Command</param>
         public void ProcessModifyCommand(ModifyCommand cmd)
         {
-            this.ProcessModifyCommandInternal(cmd, this.GetContext());
+            ProcessModifyCommandInternal(cmd, GetContext());
         }
 
         /// <summary>
@@ -535,7 +535,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Move Command</param>
         public void ProcessMoveCommand(MoveCommand cmd)
         {
-            this.ProcessMoveCommandInternal(cmd, this.GetContext());
+            ProcessMoveCommandInternal(cmd, GetContext());
         }
 
         /// <summary>

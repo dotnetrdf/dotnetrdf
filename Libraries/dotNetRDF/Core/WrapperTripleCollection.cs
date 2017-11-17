@@ -53,19 +53,19 @@ namespace VDS.RDF
         public WrapperTripleCollection(BaseTripleCollection tripleCollection)
         {
             if (tripleCollection == null) throw new ArgumentNullException("tripleCollection");
-            this._triples = tripleCollection;
-            this._triples.TripleAdded += this.HandleTripleAdded;
-            this._triples.TripleRemoved += this.HandleTripleRemoved;
+            _triples = tripleCollection;
+            _triples.TripleAdded += HandleTripleAdded;
+            _triples.TripleRemoved += HandleTripleRemoved;
         }
 
         private void HandleTripleAdded(Object sender, TripleEventArgs args)
         {
-            this.RaiseTripleAdded(args.Triple);
+            RaiseTripleAdded(args.Triple);
         }
 
         private void HandleTripleRemoved(Object sender, TripleEventArgs args)
         {
-            this.RaiseTripleRemoved(args.Triple);
+            RaiseTripleRemoved(args.Triple);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace VDS.RDF
         /// <returns></returns>
         protected internal override bool Add(Triple t)
         {
-            return this._triples.Add(t);
+            return _triples.Add(t);
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override bool Contains(Triple t)
         {
-            return this._triples.Contains(t);
+            return _triples.Contains(t);
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._triples.Count; 
+                return _triples.Count; 
             }
         }
 
@@ -106,7 +106,7 @@ namespace VDS.RDF
         /// <returns></returns>
         protected internal override bool Delete(Triple t)
         {
-            return this._triples.Delete(t);
+            return _triples.Delete(t);
         }
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._triples[t];
+                return _triples[t];
             }
         }
 
@@ -129,7 +129,7 @@ namespace VDS.RDF
         {
             get 
             {
-                return this._triples.ObjectNodes;
+                return _triples.ObjectNodes;
             }
         }
 
@@ -140,7 +140,7 @@ namespace VDS.RDF
         {
             get 
             {
-                return this._triples.PredicateNodes; 
+                return _triples.PredicateNodes; 
             }
         }
 
@@ -151,7 +151,7 @@ namespace VDS.RDF
         {
             get 
             {
-                return this._triples.SubjectNodes;
+                return _triples.SubjectNodes;
             }
         }
 
@@ -160,7 +160,7 @@ namespace VDS.RDF
         /// </summary>
         public override void Dispose()
         {
-            this._triples.Dispose();
+            _triples.Dispose();
         }
 
         /// <summary>
@@ -169,7 +169,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerator<Triple> GetEnumerator()
         {
-            return this._triples.GetEnumerator();
+            return _triples.GetEnumerator();
         }
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithObject(INode obj)
         {
-            return this._triples.WithObject(obj);
+            return _triples.WithObject(obj);
         }
 
         /// <summary>
@@ -189,7 +189,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithPredicate(INode pred)
         {
-            return this._triples.WithPredicate(pred);
+            return _triples.WithPredicate(pred);
         }
 
         /// <summary>
@@ -200,7 +200,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
         {
-            return this._triples.WithPredicateObject(pred, obj);
+            return _triples.WithPredicateObject(pred, obj);
         }
 
         /// <summary>
@@ -210,7 +210,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubject(INode subj)
         {
-            return this._triples.WithSubject(subj);
+            return _triples.WithSubject(subj);
         }
 
         /// <summary>
@@ -221,7 +221,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
         {
-            return this._triples.WithSubjectObject(subj, obj);
+            return _triples.WithSubjectObject(subj, obj);
         }
 
         /// <summary>
@@ -232,7 +232,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
         {
-            return this._triples.WithSubjectPredicate(subj, pred);
+            return _triples.WithSubjectPredicate(subj, pred);
         }
     }
 }

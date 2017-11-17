@@ -45,7 +45,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="var">Variable to build the list from</param>
         public ListUrisHandler(String var)
         {
-            this._vars.Add(var);
+            _vars.Add(var);
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             foreach (String var in vars)
             {
-                this._vars.Add(var);
+                _vars.Add(var);
             }
         }
 
@@ -67,7 +67,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             get
             {
-                return this._uris;
+                return _uris;
             }
         }
 
@@ -76,7 +76,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         protected override void StartResultsInternal()
         {
-            this._uris = new List<Uri>();
+            _uris = new List<Uri>();
         }
 
         /// <summary>
@@ -108,12 +108,12 @@ namespace VDS.RDF.Parsing.Handlers
         {
             foreach (String var in result.Variables)
             {
-                if (this._vars.Contains(var) && result.HasValue(var))
+                if (_vars.Contains(var) && result.HasValue(var))
                 {
                     INode value = result[var];
                     if (value.NodeType == NodeType.Uri)
                     {
-                        this._uris.Add(((IUriNode)value).Uri);
+                        _uris.Add(((IUriNode)value).Uri);
                     }
                 }
             }
@@ -136,7 +136,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="var">Variable to build the list from</param>
         public ListStringsHandler(String var)
         {
-            this._vars.Add(var);
+            _vars.Add(var);
         }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             foreach (String var in vars)
             {
-                this._vars.Add(var);
+                _vars.Add(var);
             }
         }
 
@@ -158,7 +158,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             get
             {
-                return this._values;
+                return _values;
             }
         }
 
@@ -167,7 +167,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         protected override void StartResultsInternal()
         {
-            this._values = new List<string>();
+            _values = new List<string>();
         }
 
         /// <summary>
@@ -199,12 +199,12 @@ namespace VDS.RDF.Parsing.Handlers
         {
             foreach (String var in result.Variables)
             {
-                if (this._vars.Contains(var) && result.HasValue(var))
+                if (_vars.Contains(var) && result.HasValue(var))
                 {
                     INode value = result[var];
                     if (value.NodeType == NodeType.Literal)
                     {
-                        this._values.Add(((ILiteralNode)value).Value);
+                        _values.Add(((ILiteralNode)value).Value);
                     }
                 }
             }

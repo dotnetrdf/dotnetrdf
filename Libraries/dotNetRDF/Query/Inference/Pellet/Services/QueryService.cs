@@ -48,7 +48,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         internal QueryService(String name, JObject obj)
             : base(name, obj)
         {
-            this._sparqlUri = this.Endpoint.Uri.Substring(0, this.Endpoint.Uri.IndexOf('{'));
+            _sparqlUri = Endpoint.Uri.Substring(0, Endpoint.Uri.IndexOf('{'));
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <returns></returns>
         public Object Query(String sparqlQuery)
         {
-            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(UriFactory.Create(this._sparqlUri));
+            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(UriFactory.Create(_sparqlUri));
 
             using (HttpWebResponse response = endpoint.QueryRaw(sparqlQuery))
             {
@@ -91,7 +91,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="sparqlQuery">SPARQL Query</param>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
-            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(UriFactory.Create(this._sparqlUri));
+            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(UriFactory.Create(_sparqlUri));
 
             using (HttpWebResponse response = endpoint.QueryRaw(sparqlQuery))
             {
@@ -124,7 +124,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             Graph g = new Graph();
             SparqlResultSet results = new SparqlResultSet();
 
-            this.Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery, (gh, rh, s) =>
+            Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery, (gh, rh, s) =>
                 {
                     if (s is AsyncError)
                     {
@@ -161,7 +161,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(sparqlQuery);
 
-            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(UriFactory.Create(this._sparqlUri));
+            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(UriFactory.Create(_sparqlUri));
             switch (q.QueryType)
             {
                 case SparqlQueryType.Ask:

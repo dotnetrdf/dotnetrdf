@@ -51,7 +51,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="variables">Variables</param>
         public SetDistinctnessComparer(IEnumerable<String> variables)
         {
-            this._vars.AddRange(variables);
+            _vars.AddRange(variables);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Algebra
             // Only one null considered non-equal
             if (x == null || y == null) return false;
 
-            if (this._vars.Count == 0)
+            if (_vars.Count == 0)
             {
                 // If no specific variables then use standard ISet implementation of equality
                 // i.e. compare for equality across all variables in the sets
@@ -76,7 +76,7 @@ namespace VDS.RDF.Query.Algebra
             else
             {
                 // Otherwise compare for equality on specified variables
-                return this._vars.All(v => (x[v] == null && y[v] == null) || (x[v] != null && x[v].Equals(y[v])));
+                return _vars.All(v => (x[v] == null && y[v] == null) || (x[v] != null && x[v].Equals(y[v])));
             }
         }
 
@@ -89,14 +89,14 @@ namespace VDS.RDF.Query.Algebra
         {
             if (obj == null) return 0;
 
-            if (this._vars.Count == 0)
+            if (_vars.Count == 0)
             {
                 return obj.GetHashCode();
             }
             else
             {
                 StringBuilder output = new StringBuilder();
-                foreach (String var in this._vars)
+                foreach (String var in _vars)
                 {
                     output.Append("?" + var + " = " + obj[var].ToSafeString());
                     output.Append(" , ");

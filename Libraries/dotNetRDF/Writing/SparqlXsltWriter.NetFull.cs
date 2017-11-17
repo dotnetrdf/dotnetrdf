@@ -56,9 +56,9 @@ namespace VDS.RDF.Writing
         public SparqlXsltWriter(String stylesheetUri)
         {
             // Load the Transform
-            this._transform = new XslCompiledTransform();
+            _transform = new XslCompiledTransform();
             XsltSettings settings = new XsltSettings();
-            this._transform.Load(stylesheetUri, settings, null);
+            _transform.Load(stylesheetUri, settings, null);
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace VDS.RDF.Writing
         /// <param name="filename">File to save to</param>
         public override void Save(SparqlResultSet results, string filename)
         {
-            this.Save(results, new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8)));
+            Save(results, new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8)));
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace VDS.RDF.Writing
                 System.IO.StringWriter writer = new System.IO.StringWriter(temp);
                 base.Save(results, writer);
                 // this._transform.Transform(doc, null, XmlWriter.Create(output));
-                this._transform.Transform(XmlReader.Create(new StringReader(temp.ToString())), null, XmlWriter.Create(output));
+                _transform.Transform(XmlReader.Create(new StringReader(temp.ToString())), null, XmlWriter.Create(output));
 
                 output.Close();
             }

@@ -59,28 +59,28 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            this._funcContext = context[SparqlSpecsHelper.SparqlKeywordBNode] as BNodeFunctionContext;
+            _funcContext = context[SparqlSpecsHelper.SparqlKeywordBNode] as BNodeFunctionContext;
 
-            if (this._funcContext == null)
+            if (_funcContext == null)
             {
-                this._funcContext = new BNodeFunctionContext(context.InputMultiset.GetHashCode());
-                context[SparqlSpecsHelper.SparqlKeywordBNode] = this._funcContext;
+                _funcContext = new BNodeFunctionContext(context.InputMultiset.GetHashCode());
+                context[SparqlSpecsHelper.SparqlKeywordBNode] = _funcContext;
             }
-            else if (this._funcContext.CurrentInput != context.InputMultiset.GetHashCode())
+            else if (_funcContext.CurrentInput != context.InputMultiset.GetHashCode())
             {
                 // Clear the Context
-                this._funcContext.BlankNodes.Clear();
-                context[SparqlSpecsHelper.SparqlKeywordBNode] = this._funcContext;
+                _funcContext.BlankNodes.Clear();
+                context[SparqlSpecsHelper.SparqlKeywordBNode] = _funcContext;
             }
 
-            if (this._expr == null)
+            if (_expr == null)
             {
                 // If no argument then always a fresh BNode
-                return this._funcContext.Graph.CreateBlankNode().AsValuedNode();
+                return _funcContext.Graph.CreateBlankNode().AsValuedNode();
             }
             else
             {
-                INode temp = this._expr.Evaluate(context, bindingID);
+                INode temp = _expr.Evaluate(context, bindingID);
                 if (temp != null)
                 {
                     if (temp.NodeType == NodeType.Literal)
@@ -91,16 +91,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
                         {
                             if (lit.Language.Equals(string.Empty))
                             {
-                                if (!this._funcContext.BlankNodes.ContainsKey(bindingID))
+                                if (!_funcContext.BlankNodes.ContainsKey(bindingID))
                                 {
-                                    this._funcContext.BlankNodes.Add(bindingID, new Dictionary<string, INode>());
+                                    _funcContext.BlankNodes.Add(bindingID, new Dictionary<string, INode>());
                                 }
 
-                                if (!this._funcContext.BlankNodes[bindingID].ContainsKey(lit.Value))
+                                if (!_funcContext.BlankNodes[bindingID].ContainsKey(lit.Value))
                                 {
-                                    this._funcContext.BlankNodes[bindingID].Add(lit.Value, this._funcContext.Graph.CreateBlankNode());
+                                    _funcContext.BlankNodes[bindingID].Add(lit.Value, _funcContext.Graph.CreateBlankNode());
                                 }
-                                return this._funcContext.BlankNodes[bindingID][lit.Value].AsValuedNode();
+                                return _funcContext.BlankNodes[bindingID][lit.Value].AsValuedNode();
                             }
                             else
                             {
@@ -153,7 +153,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         {
             get
             {
-                if (this._expr == null) return Enumerable.Empty<string>();
+                if (_expr == null) return Enumerable.Empty<string>();
                 return base.Variables;
             }
         }
@@ -165,7 +165,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         {
             get
             {
-                if (this._expr == null) return Enumerable.Empty<ISparqlExpression>();
+                if (_expr == null) return Enumerable.Empty<ISparqlExpression>();
                 return base.Arguments;
             }
         }
@@ -187,7 +187,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordBNode + "(" + this._expr.ToSafeString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordBNode + "(" + _expr.ToSafeString() + ")";
         }
 
         /// <summary>
@@ -197,7 +197,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new BNodeFunction(transformer.Transform(this._expr));
+            return new BNodeFunction(transformer.Transform(_expr));
         }
     }
 
@@ -209,14 +209,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
 
         public BNodeFunctionContext(int currInput)
         {
-            this._currInput = currInput;
+            _currInput = currInput;
         }
 
         public int CurrentInput
         {
             get
             {
-                return this._currInput;
+                return _currInput;
             }
         }
 
@@ -224,7 +224,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         {
             get
             {
-                return this._g;
+                return _g;
             }
         }
 
@@ -232,11 +232,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         {
             get
             {
-                return this._bnodes;
+                return _bnodes;
             }
             set
             {
-                this._bnodes = value;
+                _bnodes = value;
             }
         }
     }

@@ -67,7 +67,7 @@ namespace VDS.RDF.Parsing
         public Notation3Parser(TokenQueueMode queueMode)
             : this()
         {
-            this._queueMode = queueMode;
+            _queueMode = queueMode;
         }
 
         /// <summary>
@@ -77,11 +77,11 @@ namespace VDS.RDF.Parsing
         {
             get
             {
-                return this._traceParsing;
+                return _traceParsing;
             }
             set
             {
-                this._traceParsing = value;
+                _traceParsing = value;
             }
         }
 
@@ -92,11 +92,11 @@ namespace VDS.RDF.Parsing
         {
             get
             {
-                return this._traceTokeniser;
+                return _traceTokeniser;
             }
             set
             {
-                this._traceTokeniser = value;
+                _traceTokeniser = value;
             }
         }
 
@@ -107,11 +107,11 @@ namespace VDS.RDF.Parsing
         {
             get
             {
-                return this._queueMode;
+                return _queueMode;
             }
             set
             {
-                this._queueMode = value;
+                _queueMode = value;
             }
         }
 
@@ -123,7 +123,7 @@ namespace VDS.RDF.Parsing
         public void Load(IGraph g, StreamReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-            this.Load(new GraphHandler(g), input);
+            Load(new GraphHandler(g), input);
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace VDS.RDF.Parsing
         public void Load(IGraph g, TextReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-            this.Load(new GraphHandler(g), input);
+            Load(new GraphHandler(g), input);
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
             using (var reader = new StreamReader(File.OpenRead(filename), Encoding.UTF8))
             {
-                this.Load(g, reader);
+                Load(g, reader);
             }
         }
 
@@ -165,10 +165,10 @@ namespace VDS.RDF.Parsing
             // Issue a Warning if the Encoding of the Stream is not UTF-8
             if (!input.CurrentEncoding.Equals(Encoding.UTF8))
             {
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+                RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
             }
 
-            this.Load(handler, (TextReader)input);
+            Load(handler, (TextReader)input);
         }
 
         /// <summary>
@@ -183,8 +183,8 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                Notation3ParserContext context = new Notation3ParserContext(handler, new Notation3Tokeniser(input), this._queueMode, this._traceParsing, this._traceTokeniser);
-                this.Parse(context);
+                Notation3ParserContext context = new Notation3ParserContext(handler, new Notation3Tokeniser(input), _queueMode, _traceParsing, _traceTokeniser);
+                Parse(context);
 
                 input.Close();
             }
@@ -213,7 +213,7 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
             using (var reader = new StreamReader(File.OpenRead(filename), Encoding.UTF8))
             {
-                this.Load(handler, reader);
+                Load(handler, reader);
             }
         }
 
@@ -244,15 +244,15 @@ namespace VDS.RDF.Parsing
                         case Token.BASEDIRECTIVE:
                         case Token.PREFIXDIRECTIVE:
                         case Token.KEYWORDDIRECTIVE:
-                            this.TryParseDirective(context);
+                            TryParseDirective(context);
                             break;
 
                         case Token.FORALL:
-                            this.TryParseForAll(context);
+                            TryParseForAll(context);
                             break;
 
                         case Token.FORSOME:
-                            this.TryParseForSome(context);
+                            TryParseForSome(context);
                             break;
 
                         case Token.COMMENT:
@@ -273,7 +273,7 @@ namespace VDS.RDF.Parsing
                         case Token.QNAME:
                         case Token.URI:
                             // Valid Subject of a Triple
-                            this.TryParseTriples(context);
+                            TryParseTriples(context);
                             break;
 
                         case Token.KEYWORDA:
@@ -483,7 +483,7 @@ namespace VDS.RDF.Parsing
                 }
             }
 
-            this.RaiseWarning("Parser does not know how to evaluate forSome Quantifiers");
+            RaiseWarning("Parser does not know how to evaluate forSome Quantifiers");
         }
 
         /// <summary>
@@ -523,7 +523,7 @@ namespace VDS.RDF.Parsing
                     else
                     {
                         subj = context.Handler.CreateBlankNode();
-                        this.TryParseCollection(context, subj);
+                        TryParseCollection(context, subj);
                     }
                     break;
 
@@ -538,7 +538,7 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        subj = this.TryParseGraphLiteral(context);
+                        subj = TryParseGraphLiteral(context);
                     }
                     break;
 
@@ -555,7 +555,7 @@ namespace VDS.RDF.Parsing
                     {
                         // Start of a Blank Node Collection
                         subj = context.Handler.CreateBlankNode();
-                        this.TryParsePredicateObjectList(context, subj, true);
+                        TryParsePredicateObjectList(context, subj, true);
                     }
                     break;
 
@@ -565,7 +565,7 @@ namespace VDS.RDF.Parsing
                 case Token.LONGLITERAL:
                 case Token.PLAINLITERAL:
                     // Literal Subjects valid in N3
-                    subj = this.TryParseLiteral(context, subjToken);
+                    subj = TryParseLiteral(context, subjToken);
                     break;
 
                 case Token.QNAME:
@@ -592,7 +592,7 @@ namespace VDS.RDF.Parsing
                 }
             }
 
-            this.TryParsePredicateObjectList(context, subj, false);
+            TryParsePredicateObjectList(context, subj, false);
         }
 
         /// <summary>
@@ -638,8 +638,8 @@ namespace VDS.RDF.Parsing
                     case Token.EXCLAMATION:
                     case Token.HAT:
                         // Path
-                        subj = this.TryParsePath(context, subj);
-                        this.TryParsePredicateObjectList(context, subj, bnodeList);
+                        subj = TryParsePath(context, subj);
+                        TryParsePredicateObjectList(context, subj, bnodeList);
                         return;
 
                     case Token.IMPLIEDBY:
@@ -670,7 +670,7 @@ namespace VDS.RDF.Parsing
                         else
                         {
                             pred = context.Handler.CreateBlankNode();
-                            this.TryParseCollection(context, pred);
+                            TryParseCollection(context, pred);
                         }
                         break;
 
@@ -691,7 +691,7 @@ namespace VDS.RDF.Parsing
                         {
                             // Start of a Blank Node Collection
                             pred = context.Handler.CreateBlankNode();
-                            this.TryParsePredicateObjectList(context, pred, true);
+                            TryParsePredicateObjectList(context, pred, true);
                         }
                         break;
 
@@ -749,7 +749,7 @@ namespace VDS.RDF.Parsing
 
                 }
 
-                this.TryParseObjectList(context, subj, pred, bnodeList, reverse);
+                TryParseObjectList(context, subj, pred, bnodeList, reverse);
                 if (context.Tokens.LastTokenType == Token.DOT && !bnodeList) return; //Dot terminates a normal Predicate Object list
                 if (context.Tokens.LastTokenType == Token.RIGHTSQBRACKET && bnodeList) return; //Trailing semicolon may terminate a Blank Node Predicate Object list
                 if (context.Tokens.LastTokenType == Token.SEMICOLON && context.Tokens.Peek().TokenType == Token.DOT)
@@ -824,8 +824,8 @@ namespace VDS.RDF.Parsing
                     case Token.EXCLAMATION:
                     case Token.HAT:
                         // Path
-                        pred = this.TryParsePath(context, pred);
-                        this.TryParseObjectList(context, subj, pred, bnodeList, reverse);
+                        pred = TryParsePath(context, pred);
+                        TryParseObjectList(context, subj, pred, bnodeList, reverse);
                         return;
 
                     case Token.LEFTBRACKET:
@@ -840,7 +840,7 @@ namespace VDS.RDF.Parsing
                         else
                         {
                             obj = context.Handler.CreateBlankNode();
-                            this.TryParseCollection(context, obj);
+                            TryParseCollection(context, obj);
                         }
                         break;
 
@@ -855,7 +855,7 @@ namespace VDS.RDF.Parsing
                         }
                         else
                         {
-                            obj = this.TryParseGraphLiteral(context);
+                            obj = TryParseGraphLiteral(context);
                         }
                         break;
 
@@ -872,7 +872,7 @@ namespace VDS.RDF.Parsing
                         {
                             // Start of a Blank Node Collection
                             obj = context.Handler.CreateBlankNode();
-                            this.TryParsePredicateObjectList(context, obj, true);
+                            TryParsePredicateObjectList(context, obj, true);
                         }
                         break;
 
@@ -881,7 +881,7 @@ namespace VDS.RDF.Parsing
                     case Token.LITERALWITHLANG:
                     case Token.LONGLITERAL:
                     case Token.PLAINLITERAL:
-                        obj = this.TryParseLiteral(context, objToken);
+                        obj = TryParseLiteral(context, objToken);
                         break;
 
                     case Token.RIGHTCURLYBRACKET:
@@ -944,7 +944,7 @@ namespace VDS.RDF.Parsing
                 if (next.TokenType == Token.EXCLAMATION || next.TokenType == Token.HAT)
                 {
                     context.Tokens.Dequeue();
-                    obj = this.TryParsePath(context, obj);
+                    obj = TryParsePath(context, obj);
                 }
 
                 // Assert the Triple
@@ -1030,7 +1030,7 @@ namespace VDS.RDF.Parsing
                         {
                             // Collection
                             obj = context.Handler.CreateBlankNode();
-                            this.TryParseCollection(context, obj);
+                            TryParseCollection(context, obj);
                         }
                         break;
 
@@ -1046,7 +1046,7 @@ namespace VDS.RDF.Parsing
                         else
                         {
                             // Graph Literal
-                            obj = this.TryParseGraphLiteral(context);
+                            obj = TryParseGraphLiteral(context);
                         }
                         break;
 
@@ -1063,7 +1063,7 @@ namespace VDS.RDF.Parsing
                         {
                             // Blank Node Collection
                             obj = context.Handler.CreateBlankNode();
-                            this.TryParsePredicateObjectList(context, obj, true);
+                            TryParsePredicateObjectList(context, obj, true);
                         }
                         break;
                     case Token.LITERAL:
@@ -1071,7 +1071,7 @@ namespace VDS.RDF.Parsing
                     case Token.LITERALWITHLANG:
                     case Token.LONGLITERAL:
                     case Token.PLAINLITERAL:
-                        obj = this.TryParseLiteral(context, next);
+                        obj = TryParseLiteral(context, next);
                         break;
 
                     case Token.RIGHTBRACKET:
@@ -1098,7 +1098,7 @@ namespace VDS.RDF.Parsing
                 if (next.TokenType == Token.EXCLAMATION || next.TokenType == Token.HAT)
                 {
                     context.Tokens.Dequeue();
-                    obj = this.TryParsePath(context, obj);
+                    obj = TryParsePath(context, obj);
                 }
 
                 // Assert the relevant Triples
@@ -1145,15 +1145,15 @@ namespace VDS.RDF.Parsing
                 next = context.Tokens.Peek();
                 if (next.TokenType == Token.FORALL)
                 {
-                    this.TryParseForAll(context);
+                    TryParseForAll(context);
                 }
                 else if (next.TokenType == Token.FORSOME)
                 {
-                    this.TryParseForSome(context);
+                    TryParseForSome(context);
                 }
                 else
                 {
-                    this.TryParseTriples(context);
+                    TryParseTriples(context);
                 }
 
                 // If we've just seen a Right Curly bracket we've been terminated
@@ -1207,7 +1207,7 @@ namespace VDS.RDF.Parsing
                     case Token.LONGLITERAL:
                     case Token.LITERALWITHDT:
                     case Token.LITERALWITHLANG:
-                        secondItem = this.TryParseLiteral(context, next);
+                        secondItem = TryParseLiteral(context, next);
                         break;
                     case Token.URI:
                         secondItem = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(next.Value, context.BaseUri.ToSafeString())));
@@ -1362,7 +1362,7 @@ namespace VDS.RDF.Parsing
         /// <param name="message"></param>
         private void RaiseWarning(String message)
         {
-            RdfReaderWarning d = this.Warning;
+            RdfReaderWarning d = Warning;
             if (d != null)
             {
                 d(message);

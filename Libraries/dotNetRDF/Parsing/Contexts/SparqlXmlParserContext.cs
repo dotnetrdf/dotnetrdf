@@ -48,7 +48,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             if (reader == null) throw new ArgumentNullException("reader");
 
-            this._reader = reader;
+            _reader = reader;
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._reader;
+                return _reader;
             }
         }
     }

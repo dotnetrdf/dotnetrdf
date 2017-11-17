@@ -48,7 +48,7 @@ namespace VDS.RDF.Writing.Contexts
         public TriGWriterContext(ITripleStore store, TextWriter output, bool prettyPrint, bool hiSpeedAllowed, int compressionLevel, bool n3compatability)
             : base(store, output, prettyPrint, hiSpeedAllowed)
         {
-            this._compressionLevel = compressionLevel;
+            _compressionLevel = compressionLevel;
         }
 
         /// <summary>
@@ -58,11 +58,11 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._compressionLevel;
+                return _compressionLevel;
             }
             set
             {
-                this._compressionLevel = value;
+                _compressionLevel = value;
             }
         }
 
@@ -73,11 +73,11 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._n3compatability;
+                return _n3compatability;
             }
             set
             {
-                this._n3compatability = value;
+                _n3compatability = value;
             }
         }
     }

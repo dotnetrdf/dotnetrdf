@@ -57,7 +57,7 @@ namespace VDS.RDF
         public Graph(bool emptyNamespaceMap)
             : this()
         {
-            if (emptyNamespaceMap) this._nsmapper.Clear();
+            if (emptyNamespaceMap) _nsmapper.Clear();
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace VDS.RDF
         public Graph(BaseTripleCollection tripleCollection, bool emptyNamespaceMap)
             : base(tripleCollection)
         {
-            if (emptyNamespaceMap) this._nsmapper.Clear();
+            if (emptyNamespaceMap) _nsmapper.Clear();
         }
 
 #if !NETCORE
@@ -99,9 +99,9 @@ namespace VDS.RDF
         public override bool Assert(Triple t)
         {
             // Add to Triples Collection
-            if (this._triples.Add(t))
+            if (_triples.Add(t))
             {
-                this.RaiseTripleAsserted(t);
+                RaiseTripleAsserted(t);
                 return true;
             }
             return false;
@@ -116,7 +116,7 @@ namespace VDS.RDF
             bool asserted = false;
             foreach (Triple t in ts)
             {
-                asserted = this.Assert(t) || asserted;
+                asserted = Assert(t) || asserted;
             }
             return asserted;
         }
@@ -128,9 +128,9 @@ namespace VDS.RDF
         /// <remarks>Current implementation may have some defunct Nodes left in the Graph as only the Triple is retracted</remarks>
         public override bool Retract(Triple t)
         {
-            if (this._triples.Delete(t))
+            if (_triples.Delete(t))
             {
-                this.RaiseTripleRetracted(t);
+                RaiseTripleRetracted(t);
                 return true;
             }
             return false;
@@ -145,7 +145,7 @@ namespace VDS.RDF
             bool retracted = false;
             foreach (Triple t in ts)
             {
-                retracted = this.Retract(t) || retracted;
+                retracted = Retract(t) || retracted;
             }
             return retracted;
         }
@@ -162,7 +162,7 @@ namespace VDS.RDF
         public override IUriNode GetUriNode(Uri uri)
         {
             IUriNode test = new UriNode(this, uri);
-            IEnumerable<IUriNode> us = from u in this.Nodes.UriNodes()
+            IEnumerable<IUriNode> us = from u in Nodes.UriNodes()
                                           where u.Equals(test)
                                           select u;
             return us.FirstOrDefault();
@@ -176,7 +176,7 @@ namespace VDS.RDF
         public override IUriNode GetUriNode(String qname)
         {
             IUriNode test = new UriNode(this, qname);
-            IEnumerable<IUriNode> us = from u in this.Nodes.UriNodes()
+            IEnumerable<IUriNode> us = from u in Nodes.UriNodes()
                                       where u.Equals(test)
                                       select u;
             return us.FirstOrDefault();
@@ -191,7 +191,7 @@ namespace VDS.RDF
         public override ILiteralNode GetLiteralNode(String literal)
         {
             ILiteralNode test = new LiteralNode(this, literal);
-            IEnumerable<ILiteralNode> ls = from l in this.Nodes.LiteralNodes()
+            IEnumerable<ILiteralNode> ls = from l in Nodes.LiteralNodes()
                                           where l.Equals(test)
                                           select l;
             return ls.FirstOrDefault();
@@ -206,7 +206,7 @@ namespace VDS.RDF
         public override ILiteralNode GetLiteralNode(String literal, String langspec)
         {
             ILiteralNode test = new LiteralNode(this, literal, langspec);
-            IEnumerable<ILiteralNode> ls = from l in this.Nodes.LiteralNodes()
+            IEnumerable<ILiteralNode> ls = from l in Nodes.LiteralNodes()
                                           where l.Equals(test)
                                           select l;
             return ls.FirstOrDefault();
@@ -221,7 +221,7 @@ namespace VDS.RDF
         public override ILiteralNode GetLiteralNode(String literal, Uri datatype)
         {
             ILiteralNode test = new LiteralNode(this, literal, datatype);
-            IEnumerable<ILiteralNode> ls = from l in this.Nodes.LiteralNodes()
+            IEnumerable<ILiteralNode> ls = from l in Nodes.LiteralNodes()
                                           where l.Equals(test)
                                           select l;
             return ls.FirstOrDefault();
@@ -234,7 +234,7 @@ namespace VDS.RDF
         /// <returns>Either the Blank Node or null if no Node with the given Identifier exists</returns>
         public override IBlankNode GetBlankNode(String nodeId)
         {
-            IEnumerable<IBlankNode> bs = from b in this.Nodes.BlankNodes()
+            IEnumerable<IBlankNode> bs = from b in Nodes.BlankNodes()
                                         where b.InternalID.Equals(nodeId)
                                         select b;
 
@@ -252,7 +252,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples</returns>
         public override IEnumerable<Triple> GetTriples(INode n)
         {
-            return this.GetTriplesWithSubject(n).Union(this.GetTriplesWithPredicate(n)).Union(this.GetTriplesWithObject(n));
+            return GetTriplesWithSubject(n).Union(GetTriplesWithPredicate(n)).Union(GetTriplesWithObject(n));
         }
 
         /// <summary>
@@ -273,7 +273,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples</returns>
         public override IEnumerable<Triple> GetTriplesWithSubject(INode n)
         {
-            return this._triples.WithSubject(n);
+            return _triples.WithSubject(n);
         }
 
         /// <summary>
@@ -283,7 +283,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples</returns>
         public override IEnumerable<Triple> GetTriplesWithSubject(Uri u)
         {
-            return this._triples.WithSubject(this.CreateUriNode(u));
+            return _triples.WithSubject(CreateUriNode(u));
         }
 
         /// <summary>
@@ -293,7 +293,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> GetTriplesWithPredicate(INode n)
         {
-            return this._triples.WithPredicate(n);
+            return _triples.WithPredicate(n);
         }
 
         /// <summary>
@@ -303,7 +303,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples</returns>
         public override IEnumerable<Triple> GetTriplesWithPredicate(Uri u)
         {
-            return this._triples.WithPredicate(this.CreateUriNode(u));
+            return _triples.WithPredicate(CreateUriNode(u));
         }
 
         /// <summary>
@@ -313,7 +313,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> GetTriplesWithObject(INode n)
         {
-            return this._triples.WithObject(n);
+            return _triples.WithObject(n);
         }
 
         /// <summary>
@@ -323,7 +323,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples</returns>
         public override IEnumerable<Triple> GetTriplesWithObject(Uri u)
         {
-            return this._triples.WithObject(this.CreateUriNode(u));
+            return _triples.WithObject(CreateUriNode(u));
         }
 
         /// <summary>
@@ -334,7 +334,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred)
         {
-            return this._triples.WithSubjectPredicate(subj, pred);
+            return _triples.WithSubjectPredicate(subj, pred);
         }
 
         /// <summary>
@@ -345,7 +345,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj)
         {
-            return this._triples.WithSubjectObject(subj, obj);
+            return _triples.WithSubjectObject(subj, obj);
         }
 
         /// <summary>
@@ -356,7 +356,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
         {
-            return this._triples.WithPredicateObject(pred, obj);
+            return _triples.WithPredicateObject(pred, obj);
         }
 
         #endregion

@@ -47,16 +47,38 @@ namespace VDS.RDF.Storage.Management
         : BaseHttpConnector, IAsyncStorageServer, IConfigurationSerializable
           , IStorageServer
     {
-        protected String _baseUri, _adminUri, _username, _pwd;
-        protected bool _hasCredentials = false;
+        /// <summary>
+        /// The base URI of the Stardog server
+        /// </summary>
+        protected readonly string BaseUri;
+
+        /// <summary>
+        /// The URI of the admin API
+        /// </summary>
+        protected readonly string AdminUri;
+
+        /// <summary>
+        /// The username to use for the connection
+        /// </summary>
+        protected readonly string Username;
+
+        /// <summary>
+        /// The password to use for the connection
+        /// </summary>
+        protected readonly string Password;
+        
+        /// <summary>
+        /// True if a user name and password are specified, false otherwise
+        /// </summary>
+        protected readonly bool HasCredentials = false;
 
         /// <summary>
         /// Available Stardog template types
         /// </summary>
-        private List<Type> _templateTypes = new List<Type>()
+        private readonly List<Type> _templateTypes = new List<Type>()
             {
                 typeof (StardogMemTemplate),
-                typeof (StardogDiskTemplate)
+                typeof (StardogDiskTemplate),
             };
 
         /// <summary>
@@ -77,13 +99,13 @@ namespace VDS.RDF.Storage.Management
         public BaseStardogServer(String baseUri, String username, String password)
             : base()
         {
-            this._baseUri = baseUri;
-            if (!this._baseUri.EndsWith("/")) this._baseUri += "/";
-            this._adminUri = this._baseUri + "admin/";
+            BaseUri = baseUri;
+            if (!BaseUri.EndsWith("/")) BaseUri += "/";
+            AdminUri = BaseUri + "admin/";
 
-            this._username = username;
-            this._pwd = password;
-            this._hasCredentials = (!String.IsNullOrEmpty(username) && !String.IsNullOrEmpty(password));
+            Username = username;
+            Password = password;
+            HasCredentials = (!String.IsNullOrEmpty(username) && !String.IsNullOrEmpty(password));
         }
 
         /// <summary>
@@ -106,7 +128,7 @@ namespace VDS.RDF.Storage.Management
         public BaseStardogServer(String baseUri, String username, String password, IWebProxy proxy)
             : this(baseUri, username, password)
         {
-            this.Proxy = proxy;
+            Proxy = proxy;
         }
 
         /// <summary>
@@ -126,7 +148,7 @@ namespace VDS.RDF.Storage.Management
         public virtual IEnumerable<string> ListStores()
         {
             // GET /admin/databases - application/json
-            HttpWebRequest request = this.CreateAdminRequest("databases", "application/json", "GET", new Dictionary<string, string>());
+            HttpWebRequest request = CreateAdminRequest("databases", "application/json", "GET", new Dictionary<string, string>());
             Tools.HttpDebugRequest(request);
 
             try
@@ -179,12 +201,11 @@ namespace VDS.RDF.Storage.Management
         {
             List<IStoreTemplate> templates = new List<IStoreTemplate>();
             Object[] args = new Object[] {id};
-            foreach (Type t in this._templateTypes)
+            foreach (Type t in _templateTypes)
             {
                 try
                 {
-                    IStoreTemplate template = Activator.CreateInstance(t, args) as IStoreTemplate;
-                    if (template != null) templates.Add(template);
+                    if (Activator.CreateInstance(t, args) is IStoreTemplate template) templates.Add(template);
                 }
                 catch
                 {
@@ -223,10 +244,10 @@ namespace VDS.RDF.Storage.Management
                     Console.WriteLine(jsonTemplate.ToString());
 
                     // Create the request and write the JSON
-                    HttpWebRequest request = this.CreateAdminRequest("databases", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
+                    HttpWebRequest request = CreateAdminRequest("databases", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
                     String boundary = StorageHelper.HttpMultipartBoundary;
-                    byte[] boundaryBytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
-                    byte[] terminatorBytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
+                    byte[] boundaryBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
+                    byte[] terminatorBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
                     request.ContentType = MimeTypesHelper.FormMultipart + "; boundary=" + boundary;
 
                     using (Stream stream = request.GetRequestStream())
@@ -235,7 +256,7 @@ namespace VDS.RDF.Storage.Management
                         stream.Write(boundaryBytes, 0, boundaryBytes.Length);
                         // Then the root Item
                         String templateItem = String.Format(StorageHelper.HttpMultipartContentTemplate, "root", jsonTemplate.ToString());
-                        byte[] itemBytes = System.Text.Encoding.UTF8.GetBytes(templateItem);
+                        byte[] itemBytes = Encoding.UTF8.GetBytes(templateItem);
                         stream.Write(itemBytes, 0, itemBytes.Length);
                         // Then terminating boundary
                         stream.Write(terminatorBytes, 0, terminatorBytes.Length);
@@ -272,7 +293,7 @@ namespace VDS.RDF.Storage.Management
         public virtual void DeleteStore(string storeID)
         {
             // DELETE /admin/databases/{db}
-            HttpWebRequest request = this.CreateAdminRequest("databases/" + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
+            HttpWebRequest request = CreateAdminRequest("databases/" + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
 
             Tools.HttpDebugRequest(request);
 
@@ -311,7 +332,7 @@ namespace VDS.RDF.Storage.Management
         public virtual void ListStores(AsyncStorageCallback callback, object state)
         {
             // GET /admin/databases - application/json
-            HttpWebRequest request = this.CreateAdminRequest("databases", "application/json", "GET", new Dictionary<string, string>());
+            HttpWebRequest request = CreateAdminRequest("databases", "application/json", "GET", new Dictionary<string, string>());
 
             Tools.HttpDebugRequest(request);
 
@@ -386,12 +407,11 @@ namespace VDS.RDF.Storage.Management
         {
             List<IStoreTemplate> templates = new List<IStoreTemplate>();
             Object[] args = new Object[] {id};
-            foreach (Type t in this._templateTypes)
+            foreach (Type t in _templateTypes)
             {
                 try
                 {
-                    IStoreTemplate template = Activator.CreateInstance(t, args) as IStoreTemplate;
-                    if (template != null) templates.Add(template);
+                    if (Activator.CreateInstance(t, args) is IStoreTemplate template) templates.Add(template);
                 }
                 catch
                 {
@@ -428,10 +448,10 @@ namespace VDS.RDF.Storage.Management
                     Console.WriteLine(jsonTemplate.ToString());
 
                     // Create the request and write the JSON
-                    HttpWebRequest request = this.CreateAdminRequest("databases", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
+                    HttpWebRequest request = CreateAdminRequest("databases", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
                     String boundary = StorageHelper.HttpMultipartBoundary;
-                    byte[] boundaryBytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
-                    byte[] terminatorBytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
+                    byte[] boundaryBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
+                    byte[] terminatorBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
                     request.ContentType = MimeTypesHelper.FormMultipart + "; boundary=" + boundary;
 
                     request.BeginGetRequestStream(r =>
@@ -444,7 +464,7 @@ namespace VDS.RDF.Storage.Management
                                     stream.Write(boundaryBytes, 0, boundaryBytes.Length);
                                     // Then the root Item
                                     String templateItem = String.Format(StorageHelper.HttpMultipartContentTemplate, "root", jsonTemplate.ToString());
-                                    byte[] itemBytes = System.Text.Encoding.UTF8.GetBytes(templateItem);
+                                    byte[] itemBytes = Encoding.UTF8.GetBytes(templateItem);
                                     stream.Write(itemBytes, 0, itemBytes.Length);
                                     // Then terminating boundary
                                     stream.Write(terminatorBytes, 0, terminatorBytes.Length);
@@ -511,7 +531,7 @@ namespace VDS.RDF.Storage.Management
         public virtual void DeleteStore(string storeID, AsyncStorageCallback callback, object state)
         {
             // DELETE /admin/databases/{db}
-            HttpWebRequest request = this.CreateAdminRequest("databases/" + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
+            HttpWebRequest request = CreateAdminRequest("databases/" + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
 
             Tools.HttpDebugRequest(request);
 
@@ -559,10 +579,18 @@ namespace VDS.RDF.Storage.Management
 
         #endregion
 
-        protected virtual HttpWebRequest CreateAdminRequest(String servicePath, String accept, String method, Dictionary<String, String> requestParams)
+        /// <summary>
+        /// Create a request to the Stardog server's Admin API
+        /// </summary>
+        /// <param name="servicePath">The admin API service path</param>
+        /// <param name="accept">Accept header content</param>
+        /// <param name="method">HTTP method to use</param>
+        /// <param name="requestParams">Additional request parameters</param>
+        /// <returns></returns>
+        protected virtual HttpWebRequest CreateAdminRequest(string servicePath, string accept, string method, Dictionary<String, String> requestParams)
         {
             // Build the Request Uri
-            String requestUri = this._adminUri + servicePath;
+            string requestUri = AdminUri + servicePath;
             if (requestParams.Count > 0)
             {
                 requestUri += "?";
@@ -577,7 +605,7 @@ namespace VDS.RDF.Storage.Management
             HttpWebRequest request = (HttpWebRequest) WebRequest.Create(requestUri);
             request.Accept = accept;
             request.Method = method;
-            request = base.ApplyRequestOptions(request);
+            request = ApplyRequestOptions(request);
 
             // Add the special Stardog Headers
 #if !NETCORE
@@ -587,23 +615,23 @@ namespace VDS.RDF.Storage.Management
 #endif
 
             // Add Credentials if needed
-            if (this._hasCredentials)
+            if (HasCredentials)
             {
                 if (Options.ForceHttpBasicAuth)
                 {
                     // Forcibly include a HTTP basic authentication header
 #if !NETCORE
-                    string credentials = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(this._username + ":" + this._pwd));
+                    string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(Username + ":" + Password));
                     request.Headers.Add("Authorization", "Basic " + credentials);
 #else
-                    string credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(this._username + ":" + this._pwd));
+                    string credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(this.Username + ":" + this.Password));
                     request.Headers["Authorization"] = "Basic " + credentials;
 #endif
                 }
                 else
                 {
                     // Leave .Net to cope with HTTP auth challenge response
-                    NetworkCredential credentials = new NetworkCredential(this._username, this._pwd);
+                    NetworkCredential credentials = new NetworkCredential(Username, Password);
                     request.Credentials = credentials;
 #if !NETCORE
                     request.PreAuthenticate = true;
@@ -636,19 +664,19 @@ namespace VDS.RDF.Storage.Management
             INode server = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer));
 
             context.Graph.Assert(new Triple(manager, rdfType, storageServer));
-            context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString())));
-            context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
-            context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._baseUri)));
+            context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString())));
+            context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(GetType().FullName)));
+            context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(BaseUri)));
 
-            if (this._username != null && this._pwd != null)
+            if (Username != null && Password != null)
             {
                 INode username = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUser));
                 INode pwd = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPassword));
-                context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(this._username)));
-                context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(this._pwd)));
+                context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(Username)));
+                context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(Password)));
             }
 
-            base.SerializeStandardConfig(manager, context);
+            SerializeStandardConfig(manager, context);
         }
 
         /// <summary>
@@ -888,7 +916,7 @@ namespace VDS.RDF.Storage.Management
         /// <returns></returns>
         public override IStorageProvider GetStore(string storeID)
         {
-            return new StardogV1Connector(this._baseUri, storeID, this._username, this._pwd, this.Proxy);
+            return new StardogV1Connector(BaseUri, storeID, Username, Password, Proxy);
         }
 
         /// <summary>
@@ -899,7 +927,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="state">State to pass to the callback</param>
         public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
         {
-            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new StardogV1Connector(this._baseUri, storeID, this._username, this._pwd, this.Proxy)), state);
+            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new StardogV1Connector(BaseUri, storeID, Username, Password, Proxy)), state);
         }
     }
 
@@ -960,7 +988,7 @@ namespace VDS.RDF.Storage.Management
         /// <returns></returns>
         public override IStorageProvider GetStore(string storeID)
         {
-            return new StardogV2Connector(this._baseUri, storeID, this._username, this._pwd, this.Proxy);
+            return new StardogV2Connector(BaseUri, storeID, Username, Password, Proxy);
         }
 
         /// <summary>
@@ -971,7 +999,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="state">State to pass to the callback</param>
         public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
         {
-            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new StardogV2Connector(this._baseUri, storeID, this._username, this._pwd, this.Proxy)), state);
+            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new StardogV2Connector(BaseUri, storeID, Username, Password, Proxy)), state);
         }
     }
 
@@ -1031,7 +1059,7 @@ namespace VDS.RDF.Storage.Management
         /// <returns></returns>
         public override IStorageProvider GetStore(string storeID)
         {
-            return new StardogV3Connector(this._baseUri, storeID, this._username, this._pwd, this.Proxy);
+            return new StardogV3Connector(BaseUri, storeID, Username, Password, Proxy);
         }
 
         /// <summary>
@@ -1042,7 +1070,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="state">State to pass to the callback</param>
         public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
         {
-            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new StardogV3Connector(this._baseUri, storeID, this._username, this._pwd, this.Proxy)), state);
+            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new StardogV3Connector(BaseUri, storeID, Username, Password, Proxy)), state);
         }
     }
 

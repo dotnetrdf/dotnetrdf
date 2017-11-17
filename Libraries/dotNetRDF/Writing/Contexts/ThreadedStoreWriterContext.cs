@@ -68,7 +68,7 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._nsmapper;
+                return _nsmapper;
             }
         }
 
@@ -82,11 +82,11 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._qnameMapper;
+                return _qnameMapper;
             }
             set
             {
-                this._qnameMapper = value;
+                _qnameMapper = value;
             }
         }
 
@@ -96,7 +96,7 @@ namespace VDS.RDF.Writing.Contexts
         /// <param name="u"></param>
         public void Add(Uri u)
         {
-            this._writeList.Enqueue(u);
+            _writeList.Enqueue(u);
         }
 
         /// <summary>
@@ -109,16 +109,16 @@ namespace VDS.RDF.Writing.Contexts
             bool ok = false;
             try
             {
-                Monitor.Enter(this._writeList);
-                if (this._writeList.Count > 0)
+                Monitor.Enter(_writeList);
+                if (_writeList.Count > 0)
                 {
-                    uri = this._writeList.Dequeue();
+                    uri = _writeList.Dequeue();
                     ok = true;
                 }
             }
             finally
             {
-                Monitor.Exit(this._writeList);
+                Monitor.Exit(_writeList);
             }
             return ok;
         }

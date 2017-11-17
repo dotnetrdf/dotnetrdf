@@ -62,11 +62,11 @@ namespace VDS.RDF.Query.Ordering
         {
             get
             {
-                return this._child;
+                return _child;
             }
             set
             {
-                this._child = value;
+                _child = value;
             }
         }
 
@@ -77,10 +77,10 @@ namespace VDS.RDF.Query.Ordering
         {
             set
             {
-                this._context = value;
-                if (this._child != null)
+                _context = value;
+                if (_child != null)
                 {
-                    this._child.Context = value;
+                    _child.Context = value;
                 }
             }
         }
@@ -92,17 +92,17 @@ namespace VDS.RDF.Query.Ordering
         {
             get
             {
-                return (this._modifier == -1);
+                return (_modifier == -1);
             }
             set
             {
                 if (value)
                 {
-                    this._modifier = -1;
+                    _modifier = -1;
                 }
                 else
                 {
-                    this._modifier = 1;
+                    _modifier = 1;
                 }
             }
         }
@@ -168,7 +168,7 @@ namespace VDS.RDF.Query.Ordering
         /// <param name="name">Variable to order upon</param>
         public OrderByVariable(String name)
         {
-            this._varname = name.TrimStart('?', '$');
+            _varname = name.TrimStart('?', '$');
         }
 
         /// <summary>
@@ -180,14 +180,14 @@ namespace VDS.RDF.Query.Ordering
         public override int Compare(ISet x, ISet y)
         {
             INode xval;
-            xval = x[this._varname];
+            xval = x[_varname];
             if (xval == null)
             {
-                if (y[this._varname] == null)
+                if (y[_varname] == null)
                 {
-                    if (this._child != null)
+                    if (_child != null)
                     {
-                        return this._child.Compare(x, y);
+                        return _child.Compare(x, y);
                     }
                     else
                     {
@@ -196,20 +196,20 @@ namespace VDS.RDF.Query.Ordering
                 }
                 else
                 {
-                    return this._modifier * -1;
+                    return _modifier * -1;
                 }
             }
             else
             {
-                int c = this._comparer.Compare(xval, y[this._varname]);
+                int c = _comparer.Compare(xval, y[_varname]);
 
-                if (c == 0 && this._child != null)
+                if (c == 0 && _child != null)
                 {
-                    return this._child.Compare(x, y);
+                    return _child.Compare(x, y);
                 }
                 else
                 {
-                    return this._modifier * c;
+                    return _modifier * c;
                 }
             }
         }
@@ -221,23 +221,23 @@ namespace VDS.RDF.Query.Ordering
         /// <returns></returns>
         public override IComparer<Triple> GetComparer(IMatchTriplePattern pattern)
         {
-            IComparer<Triple> child = (this._child == null) ? null : this._child.GetComparer(pattern);
+            IComparer<Triple> child = (_child == null) ? null : _child.GetComparer(pattern);
             Func<Triple, Triple, int> compareFunc = null;
-            if (this._varname.Equals(pattern.Subject.VariableName))
+            if (_varname.Equals(pattern.Subject.VariableName))
             {
-                compareFunc = (x, y) => this._comparer.Compare(x.Subject, y.Subject);
+                compareFunc = (x, y) => _comparer.Compare(x.Subject, y.Subject);
             }
-            else if (this._varname.Equals(pattern.Predicate.VariableName))
+            else if (_varname.Equals(pattern.Predicate.VariableName))
             {
-                compareFunc = (x, y) => this._comparer.Compare(x.Predicate, y.Predicate);
+                compareFunc = (x, y) => _comparer.Compare(x.Predicate, y.Predicate);
             }
-            else if (this._varname.Equals(pattern.Object.VariableName))
+            else if (_varname.Equals(pattern.Object.VariableName))
             {
-                compareFunc = (x, y) => this._comparer.Compare(x.Object, y.Object);
+                compareFunc = (x, y) => _comparer.Compare(x.Object, y.Object);
             }
 
             if (compareFunc == null) return null;
-            return new TripleComparer(compareFunc, this.Descending, child);
+            return new TripleComparer(compareFunc, Descending, child);
         }
 
         /// <summary>
@@ -247,11 +247,11 @@ namespace VDS.RDF.Query.Ordering
         {
             get 
             {
-                if (this._child != null)
+                if (_child != null)
                 {
                     // An ordering on a Variable is always simple so whether the Ordering is simple
                     // depends on whether the Child Ordering is simple
-                    return this._child.IsSimple;
+                    return _child.IsSimple;
                 }
                 else
                 {
@@ -268,13 +268,13 @@ namespace VDS.RDF.Query.Ordering
         {
             get 
             {
-                if (this._child != null)
+                if (_child != null)
                 {
-                    return this._varname.AsEnumerable<String>().Concat(this._child.Variables).Distinct();
+                    return _varname.AsEnumerable<String>().Concat(_child.Variables).Distinct();
                 }
                 else
                 {
-                    return this._varname.AsEnumerable<String>();
+                    return _varname.AsEnumerable<String>();
                 }
             }
         }
@@ -286,7 +286,7 @@ namespace VDS.RDF.Query.Ordering
         {
             get
             {
-                return new VariableTerm(this._varname); 
+                return new VariableTerm(_varname); 
             }
         }
 
@@ -297,7 +297,7 @@ namespace VDS.RDF.Query.Ordering
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            if (this._modifier == -1)
+            if (_modifier == -1)
             {
                 output.Append("DESC(");
             }
@@ -306,13 +306,13 @@ namespace VDS.RDF.Query.Ordering
                 output.Append("ASC(");
             }
             output.Append("?");
-            output.Append(this._varname);
+            output.Append(_varname);
             output.Append(")");
 
-            if (this._child != null)
+            if (_child != null)
             {
                 output.Append(" ");
-                output.Append(this._child.ToString());
+                output.Append(_child.ToString());
             }
             else
             {
@@ -338,7 +338,7 @@ namespace VDS.RDF.Query.Ordering
         /// <param name="expr">Expression to order by</param>
         public OrderByExpression(ISparqlExpression expr)
         {
-            this._expr = expr;
+            _expr = expr;
         }
 
         /// <summary>
@@ -349,7 +349,7 @@ namespace VDS.RDF.Query.Ordering
         /// <returns></returns>
         public override int Compare(ISet x, ISet y)
         {
-            if (this._context == null)
+            if (_context == null)
             {
                 return 0;
             }
@@ -362,52 +362,52 @@ namespace VDS.RDF.Query.Ordering
                 INode a, b;
                 try
                 {
-                    a = this._expr.Evaluate(this._context, x.ID);
+                    a = _expr.Evaluate(_context, x.ID);
 
                     try
                     {
-                        b = this._expr.Evaluate(this._context, y.ID);
+                        b = _expr.Evaluate(_context, y.ID);
                     }
                     catch
                     {
                         // If evaluating b errors consider this a NULL and rank a > b
-                        return this._modifier * 1;
+                        return _modifier * 1;
                     }
 
                     // If both give a value then compare
                     if (a != null)
                     {
-                        int c = this._comparer.Compare(a, b);
-                        if (c == 0 && this._child != null)
+                        int c = _comparer.Compare(a, b);
+                        if (c == 0 && _child != null)
                         {
-                            return this._child.Compare(x, y);
+                            return _child.Compare(x, y);
                         }
                         else
                         {
-                            return this._modifier * c;
+                            return _modifier * c;
                         }
                     }
                     else
                     {
                         // a is NULL so a < b
-                        return this._modifier * -1;
+                        return _modifier * -1;
                     }
                 }
                 catch
                 {
                     try
                     {
-                        b = this._expr.Evaluate(this._context, y.ID);
+                        b = _expr.Evaluate(_context, y.ID);
 
                         // If evaluating a errors but b evaluates correctly consider a to be NULL and rank a < b
-                        return this._modifier * -1;
+                        return _modifier * -1;
                     }
                     catch
                     {
                         // If both error then use child if any to evaluate, otherwise consider a = b
-                        if (this._child != null)
+                        if (_child != null)
                         {
-                            return this._child.Compare(x, y);
+                            return _child.Compare(x, y);
                         }
                         else
                         {
@@ -426,26 +426,26 @@ namespace VDS.RDF.Query.Ordering
         /// <returns></returns>
         public override IComparer<Triple> GetComparer(IMatchTriplePattern pattern)
         {
-            if (this._expr is VariableTerm)
+            if (_expr is VariableTerm)
             {
-                IComparer<Triple> child = (this._child == null) ? null : this._child.GetComparer(pattern);
+                IComparer<Triple> child = (_child == null) ? null : _child.GetComparer(pattern);
                 Func<Triple, Triple, int> compareFunc = null;
-                String var = this._expr.Variables.First();
+                String var = _expr.Variables.First();
                 if (var.Equals(pattern.Subject.VariableName))
                 {
-                    compareFunc = (x, y) => this._comparer.Compare(x.Subject, y.Subject);
+                    compareFunc = (x, y) => _comparer.Compare(x.Subject, y.Subject);
                 }
                 else if (var.Equals(pattern.Predicate.VariableName))
                 {
-                    compareFunc = (x, y) => this._comparer.Compare(x.Predicate, y.Predicate);
+                    compareFunc = (x, y) => _comparer.Compare(x.Predicate, y.Predicate);
                 }
                 else if (var.Equals(pattern.Object.VariableName))
                 {
-                    compareFunc = (x, y) => this._comparer.Compare(x.Object, y.Object);
+                    compareFunc = (x, y) => _comparer.Compare(x.Object, y.Object);
                 }
 
                 if (compareFunc == null) return null;
-                return new TripleComparer(compareFunc, this.Descending, child);
+                return new TripleComparer(compareFunc, Descending, child);
             }
             else
             {
@@ -460,13 +460,13 @@ namespace VDS.RDF.Query.Ordering
         {
             get 
             {
-                if (this._expr is VariableTerm)
+                if (_expr is VariableTerm)
                 {
                     // An Expression Ordering can be simple if that expression is a Variable Term
                     // and the Child Ordering (if any) is simple
-                    if (this._child != null)
+                    if (_child != null)
                     {
-                        return this._child.IsSimple;
+                        return _child.IsSimple;
                     }
                     else
                     {
@@ -487,13 +487,13 @@ namespace VDS.RDF.Query.Ordering
         {
             get
             {
-                if (this._child != null)
+                if (_child != null)
                 {
-                    return this._expr.Variables.Concat(this._child.Variables).Distinct();
+                    return _expr.Variables.Concat(_child.Variables).Distinct();
                 }
                 else
                 {
-                    return this._expr.Variables;
+                    return _expr.Variables;
                 }
             }
         }
@@ -505,7 +505,7 @@ namespace VDS.RDF.Query.Ordering
         {
             get
             {
-                return this._expr;
+                return _expr;
             }
         }
 
@@ -516,7 +516,7 @@ namespace VDS.RDF.Query.Ordering
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            if (this._modifier == -1)
+            if (_modifier == -1)
             {
                 output.Append("DESC(");
             }
@@ -524,13 +524,13 @@ namespace VDS.RDF.Query.Ordering
             {
                 output.Append("ASC(");
             }
-            output.Append(this._expr.ToString());
+            output.Append(_expr.ToString());
             output.Append(")");
 
-            if (this._child != null)
+            if (_child != null)
             {
                 output.Append(" ");
-                output.Append(this._child.ToString());
+                output.Append(_child.ToString());
             }
             else
             {

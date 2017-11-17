@@ -129,7 +129,7 @@ namespace VDS.RDF.Storage
         /// <param name="operation">Operation</param>
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation)
         {
-            this.Operation = operation;
+            Operation = operation;
         }
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace VDS.RDF.Storage
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, Exception ex)
             : this(operation)
         {
-            this.Error = ex;
+            Error = ex;
         }
 
         /// <summary>
@@ -160,7 +160,7 @@ namespace VDS.RDF.Storage
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, IGraph g, Exception e)
             : this(operation, e)
         {
-            this.Graph = g;
+            Graph = g;
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace VDS.RDF.Storage
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, Uri graphUri, Exception e)
             : this(operation, e)
         {
-            this.GraphUri = graphUri;
+            GraphUri = graphUri;
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace VDS.RDF.Storage
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, IEnumerable<Uri> graphUris)
             : this(operation)
         {
-            this.GraphUris = graphUris;
+            GraphUris = graphUris;
         }
 
         /// <summary>
@@ -211,7 +211,7 @@ namespace VDS.RDF.Storage
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, IRdfHandler handler, Exception e)
             : this(operation, e)
         {
-            this.RdfHandler = handler;
+            RdfHandler = handler;
         }
 
         /// <summary>
@@ -235,9 +235,9 @@ namespace VDS.RDF.Storage
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String query, IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, Exception e)
             : this(operation, e)
         {
-            this.SetData(query);
-            this.RdfHandler = rdfHandler;
-            this.ResultsHandler = resultsHandler;
+            SetData(query);
+            RdfHandler = rdfHandler;
+            ResultsHandler = resultsHandler;
         }
 
         /// <summary>
@@ -249,8 +249,8 @@ namespace VDS.RDF.Storage
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String query, Object queryResults)
             : this(operation, queryResults as IGraph)
         {
-            this.SetData(query);
-            this.QueryResults = queryResults;
+            SetData(query);
+            QueryResults = queryResults;
         }
 
         /// <summary>
@@ -263,8 +263,8 @@ namespace VDS.RDF.Storage
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String query, Object queryResults, Exception e)
             : this(operation, e)
         {
-            this.SetData(query);
-            this.QueryResults = queryResults;
+            SetData(query);
+            QueryResults = queryResults;
         }
 
         /// <summary>
@@ -284,7 +284,7 @@ namespace VDS.RDF.Storage
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String data, Exception e)
             : this(operation, e)
         {
-            this.SetData(data);
+            SetData(data);
         }
 
         /// <summary>
@@ -304,7 +304,7 @@ namespace VDS.RDF.Storage
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, IEnumerable<String> stores, Exception e)
             : this(operation, e)
         {
-            this.StoreIDs = stores;
+            StoreIDs = stores;
         }
 
         /// <summary>
@@ -317,7 +317,7 @@ namespace VDS.RDF.Storage
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String storeID, IAsyncStorageProvider provider, Exception e)
             : this(operation, storeID, e)
         {
-            this.StorageProvider = provider;
+            StorageProvider = provider;
         }
 
         /// <summary>
@@ -329,7 +329,7 @@ namespace VDS.RDF.Storage
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String storeID, IStoreTemplate template)
             : this(operation, storeID)
         {
-            this.Template = template;
+            Template = template;
         }
 
         /// <summary>
@@ -341,7 +341,7 @@ namespace VDS.RDF.Storage
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String storeID, IEnumerable<IStoreTemplate> templates)
             : this(operation, storeID)
         {
-            this.AvailableTemplates = templates;
+            AvailableTemplates = templates;
         }
 
         /// <summary>
@@ -350,21 +350,21 @@ namespace VDS.RDF.Storage
         /// <param name="data">Data</param>
         private void SetData(String data)
         {
-            switch (this.Operation)
+            switch (Operation)
             {
                 case AsyncStorageOperation.SparqlUpdate:
-                    this.Updates = data;
+                    Updates = data;
                     break;
                 case AsyncStorageOperation.SparqlQuery:
                 case AsyncStorageOperation.SparqlQueryWithHandler:
-                    this.Query = data;
+                    Query = data;
                     break;
 
                 case AsyncStorageOperation.CreateStore:
                 case AsyncStorageOperation.DeleteStore:
                 case AsyncStorageOperation.GetStore:
                 case AsyncStorageOperation.NewTemplate:
-                    this.StoreID = data;
+                    StoreID = data;
                     break;
             }
         }
@@ -376,7 +376,7 @@ namespace VDS.RDF.Storage
         {
             get
             {
-                return this.Error == null;
+                return Error == null;
             }
         }
 

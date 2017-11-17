@@ -52,10 +52,10 @@ namespace VDS.RDF.Query.Inference
         /// <param name="kbName">Knowledge Base name</param>
         public PelletReasoner(PelletServer server, String kbName)
         {
-            this._server = server;
-            if (this._server.HasKnowledgeBase(kbName))
+            _server = server;
+            if (_server.HasKnowledgeBase(kbName))
             {
-                this._kb = this._server.GetKnowledgeBase(kbName);
+                _kb = _server.GetKnowledgeBase(kbName);
             }
             else
             {
@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.Inference
         {
             get
             {
-                return this._kb;
+                return _kb;
             }
         }
 
@@ -89,7 +89,7 @@ namespace VDS.RDF.Query.Inference
         {
             get
             {
-                return this._server;
+                return _server;
             }
         }
 
@@ -101,9 +101,9 @@ namespace VDS.RDF.Query.Inference
         public object ExecuteQuery(string sparqlQuery)
         {
             Type svcType = typeof(QueryService);
-            if (this._kb.SupportsService(svcType))
+            if (_kb.SupportsService(svcType))
             {
-                QueryService svc = (QueryService)this._kb.GetService(svcType);
+                QueryService svc = (QueryService)_kb.GetService(svcType);
                 return svc.Query(sparqlQuery);
             }
             else
@@ -171,9 +171,9 @@ namespace VDS.RDF.Query.Inference
         public IEnumerable<Triple> Classify()
         {
             Type svcType = typeof(ClassifyService);
-            if (this._kb.SupportsService(svcType))
+            if (_kb.SupportsService(svcType))
             {
-                ClassifyService svc = (ClassifyService)this._kb.GetService(svcType);
+                ClassifyService svc = (ClassifyService)_kb.GetService(svcType);
                 return svc.Classify().Triples;
             }
             else
@@ -189,9 +189,9 @@ namespace VDS.RDF.Query.Inference
         public IEnumerable<Triple> Realize()
         {
             Type svcType = typeof(RealizeService);
-            if (this._kb.SupportsService(svcType))
+            if (_kb.SupportsService(svcType))
             {
-                RealizeService svc = (RealizeService)this._kb.GetService(svcType);
+                RealizeService svc = (RealizeService)_kb.GetService(svcType);
                 return svc.Realize().Triples;
             }
             else
@@ -207,9 +207,9 @@ namespace VDS.RDF.Query.Inference
         public bool IsConsistent()
         {
             Type svcType = typeof(ConsistencyService);
-            if (this._kb.SupportsService(svcType))
+            if (_kb.SupportsService(svcType))
             {
-                ConsistencyService svc = (ConsistencyService)this._kb.GetService(svcType);
+                ConsistencyService svc = (ConsistencyService)_kb.GetService(svcType);
                 return svc.IsConsistent();
             }
             else

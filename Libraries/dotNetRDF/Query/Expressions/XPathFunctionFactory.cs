@@ -150,9 +150,7 @@ namespace VDS.RDF.Query.Expressions
                                             TimezoneFromDateTime,
                                         };
 
-        private String[] AggregateUris = {
-                                             StringJoin
-                                         };
+        private String[] AggregateUris = {StringJoin};
 
         /// <summary>
         /// Argument Type Validator for validating that a Literal either has no datatype or is a String
@@ -185,14 +183,14 @@ namespace VDS.RDF.Query.Expressions
             }
 
             String func = u.AbsoluteUri;
-            if (func.StartsWith(XPathFunctionFactory.XPathFunctionsNamespace))
+            if (func.StartsWith(XPathFunctionsNamespace))
             {
-                func = func.Substring(XPathFunctionFactory.XPathFunctionsNamespace.Length);
+                func = func.Substring(XPathFunctionsNamespace.Length);
                 ISparqlExpression xpathFunc = null;
 
                 switch (func)
                 {
-                    case XPathFunctionFactory.Absolute:
+                    case Absolute:
                         if (args.Count == 1)
                         {
                             xpathFunc = new AbsFunction(args.First());
@@ -202,9 +200,9 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath abs() function");
                         }
                         break;
-                    case XPathFunctionFactory.AdjustDateTimeToTimezone:
+                    case AdjustDateTimeToTimezone:
                         throw new NotSupportedException("XPath adjust-dateTime-to-timezone() function is not supported");
-                    case XPathFunctionFactory.Boolean:
+                    case Boolean:
                         if (args.Count == 1)
                         {
                             xpathFunc = new BooleanFunction(args.First());
@@ -214,7 +212,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath boolean() function");
                         }
                         throw new NotSupportedException("XPath boolean() function is not supported");
-                    case XPathFunctionFactory.Ceiling:
+                    case Ceiling:
                         if (args.Count == 1)
                         {
                             xpathFunc = new CeilingFunction(args.First());
@@ -224,7 +222,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath ceiling() function");
                         }
                         break;
-                    case XPathFunctionFactory.Compare:
+                    case Compare:
                         if (args.Count == 2)
                         {
                             xpathFunc = new CompareFunction(args.First(), args.Last());
@@ -234,7 +232,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath compare() function");
                         }
                         break;
-                    case XPathFunctionFactory.Concat:
+                    case Concat:
                         if (args.Count == 2)
                         {
                             xpathFunc = new ConcatFunction(args.First(), args.Last());
@@ -248,7 +246,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath concat() function");
                         }
                         break;
-                    case XPathFunctionFactory.Contains:
+                    case Contains:
                         if (args.Count == 2)
                         {
                             xpathFunc = new ContainsFunction(args.First(), args.Last());
@@ -258,7 +256,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath contains() function");
                         }
                         break;
-                    case XPathFunctionFactory.DayFromDateTime:
+                    case DayFromDateTime:
                         if (args.Count == 1)
                         {
                             xpathFunc = new DayFromDateTimeFunction(args.First());
@@ -268,7 +266,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath day-from-dateTime() function");
                         }
                         break;
-                    case XPathFunctionFactory.EncodeForURI:
+                    case EncodeForURI:
                         if (args.Count == 1)
                         {
                             xpathFunc = new EncodeForUriFunction(args.First());
@@ -278,7 +276,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath encode-for-uri() function");
                         }
                         break;
-                    case XPathFunctionFactory.EndsWith:
+                    case EndsWith:
                         if (args.Count == 2)
                         {
                             xpathFunc = new EndsWithFunction(args.First(), args.Last());
@@ -288,7 +286,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath ends-with() function");
                         }
                         break;
-                    case XPathFunctionFactory.EscapeHtmlURI:
+                    case EscapeHtmlURI:
                         if (args.Count == 1)
                         {
                             xpathFunc = new EscapeHtmlUriFunction(args.First());
@@ -298,7 +296,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath escape-html-uri() function");
                         }
                         break;
-                    case XPathFunctionFactory.False:
+                    case False:
                         if (args.Count == 0)
                         {
                             xpathFunc = new ConstantTerm(new BooleanNode(null, false));
@@ -308,7 +306,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath false() function");
                         }
                         break;
-                    case XPathFunctionFactory.Floor:
+                    case Floor:
                         if (args.Count == 1)
                         {
                             xpathFunc = new FloorFunction(args.First());
@@ -318,7 +316,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath floor() function");
                         }
                         break;
-                    case XPathFunctionFactory.HoursFromDateTime:
+                    case HoursFromDateTime:
                         if (args.Count == 1)
                         {
                             xpathFunc = new HoursFromDateTimeFunction(args.First());
@@ -328,7 +326,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath hours-from-dateTime() function");
                         }
                         break;
-                    case XPathFunctionFactory.LowerCase:
+                    case LowerCase:
                         if (args.Count == 1)
                         {
                             xpathFunc = new LowerCaseFunction(args.First());
@@ -338,21 +336,21 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath lower-case() function");
                         }
                         break;
-                    case XPathFunctionFactory.Matches:
+                    case Matches:
                         if (args.Count == 2)
                         {
-                            xpathFunc = new VDS.RDF.Query.Expressions.Functions.Sparql.Boolean.RegexFunction(args.First(), args.Last());
+                            xpathFunc = new Functions.Sparql.Boolean.RegexFunction(args.First(), args.Last());
                         }
                         else if (args.Count == 3)
                         {
-                            xpathFunc = new VDS.RDF.Query.Expressions.Functions.Sparql.Boolean.RegexFunction(args.First(), args[1], args.Last());
+                            xpathFunc = new Functions.Sparql.Boolean.RegexFunction(args.First(), args[1], args.Last());
                         }
                         else
                         {
                             throw new RdfParseException("Incorrect number of arguments for the XPath matches() function");
                         }
                         break;
-                    case XPathFunctionFactory.MinutesFromDateTime:
+                    case MinutesFromDateTime:
                         if (args.Count == 1)
                         {
                             xpathFunc = new MinutesFromDateTimeFunction(args.First());
@@ -362,7 +360,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath minutes-from-dateTime() function");
                         }
                         break;
-                    case XPathFunctionFactory.MonthFromDateTime:
+                    case MonthFromDateTime:
                         if (args.Count == 1)
                         {
                             xpathFunc = new MonthFromDateTimeFunction(args.First());
@@ -372,7 +370,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath month-from-dateTime() function");
                         }
                         break;
-                    case XPathFunctionFactory.NormalizeSpace:
+                    case NormalizeSpace:
                         if (args.Count == 1)
                         {
                             xpathFunc = new NormalizeSpaceFunction(args.First());
@@ -382,7 +380,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath normalize-space() function");
                         }
                         break;
-                    case XPathFunctionFactory.NormalizeUnicode:
+                    case NormalizeUnicode:
                         if (args.Count == 1)
                         {
                             xpathFunc = new NormalizeUnicodeFunction(args.First());
@@ -396,7 +394,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath normalize-space() function");
                         } 
                         break;
-                    case XPathFunctionFactory.Not:
+                    case Not:
                         if (args.Count == 1)
                         {
                             xpathFunc = new NotExpression(args.First());
@@ -406,7 +404,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath not() function");
                         }
                         break;
-                    case XPathFunctionFactory.Replace:
+                    case Replace:
                         if (args.Count == 3)
                         {
                             xpathFunc = new ReplaceFunction(args.First(), args[1], args.Last());
@@ -420,7 +418,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath replace() function");
                         }
                         break;
-                    case XPathFunctionFactory.Round:
+                    case Round:
                         if (args.Count == 1)
                         {
                             xpathFunc = new RoundFunction(args.First());
@@ -430,7 +428,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath round() function");
                         }
                         break;
-                    case XPathFunctionFactory.RoundHalfToEven:
+                    case RoundHalfToEven:
                         if (args.Count == 1)
                         {
                             xpathFunc = new RoundHalfToEvenFunction(args.First());
@@ -444,7 +442,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath round-half-to-even() function");
                         }
                         break;
-                    case XPathFunctionFactory.SecondsFromDateTime:
+                    case SecondsFromDateTime:
                         if (args.Count == 1)
                         {
                             xpathFunc = new SecondsFromDateTimeFunction(args.First());
@@ -454,7 +452,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath seconds-from-dateTime() function");
                         }
                         break;
-                    case XPathFunctionFactory.StartsWith:
+                    case StartsWith:
                         if (args.Count == 2)
                         {
                             xpathFunc = new StartsWithFunction(args.First(), args.Last());
@@ -464,7 +462,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath starts-with() function");
                         }
                         break;
-                    case XPathFunctionFactory.StringJoin:
+                    case StringJoin:
                         if (args.Count == 1)
                         {
                             xpathFunc = new AggregateTerm(new StringJoinAggregate(args.First()));
@@ -478,7 +476,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath string-join() function");
                         }
                         break;
-                    case XPathFunctionFactory.StringLength:
+                    case StringLength:
                         if (args.Count == 1)
                         {
                             xpathFunc = new StringLengthFunction(args.First());
@@ -488,7 +486,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath string-length() function");
                         }
                         break;
-                    case XPathFunctionFactory.Substring:
+                    case Substring:
                         if (args.Count == 2)
                         {
                             xpathFunc = new SubstringFunction(args.First(), args.Last());
@@ -502,7 +500,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath substring() function");
                         }
                         break;
-                    case XPathFunctionFactory.SubstringAfter:
+                    case SubstringAfter:
                         if (args.Count == 2)
                         {
                             xpathFunc = new SubstringAfterFunction(args.First(), args.Last());
@@ -512,7 +510,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath substring-after() function");
                         }
                         break;
-                    case XPathFunctionFactory.SubstringBefore:
+                    case SubstringBefore:
                         if (args.Count == 2)
                         {
                             xpathFunc = new SubstringBeforeFunction(args.First(), args.Last());
@@ -522,7 +520,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath substring-before() function");
                         }
                         break;
-                    case XPathFunctionFactory.TimezoneFromDateTime:
+                    case TimezoneFromDateTime:
                         if (args.Count == 1)
                         {
                             xpathFunc = new TimezoneFromDateTimeFunction(args.First());
@@ -532,9 +530,9 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath timezone-from-dateTime() function");
                         }
                         break;
-                    case XPathFunctionFactory.Translate:
+                    case Translate:
                         throw new NotSupportedException("XPath translate() function is not supported");
-                    case XPathFunctionFactory.True:
+                    case True:
                         if (args.Count == 0)
                         {
                             xpathFunc = new ConstantTerm(new BooleanNode(null, true));
@@ -544,7 +542,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath true() function");
                         }
                         break;
-                    case XPathFunctionFactory.UpperCase:
+                    case UpperCase:
                         if (args.Count == 1)
                         {
                             xpathFunc = new UpperCaseFunction(args.First());
@@ -554,7 +552,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the XPath upper-case() function");
                         }
                         break;
-                    case XPathFunctionFactory.YearFromDateTime:
+                    case YearFromDateTime:
                         if (args.Count == 1)
                         {
                             xpathFunc = new YearFromDateTimeFunction(args.First());

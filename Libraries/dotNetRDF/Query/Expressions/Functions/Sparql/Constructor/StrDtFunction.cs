@@ -51,8 +51,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            INode s = this._leftExpr.Evaluate(context, bindingID);
-            INode dt = this._rightExpr.Evaluate(context, bindingID);
+            INode s = _leftExpr.Evaluate(context, bindingID);
+            INode dt = _rightExpr.Evaluate(context, bindingID);
 
             if (s != null)
             {
@@ -108,7 +108,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         /// <returns></returns>
         public override string ToString()
         {
-            return "STRDT(" + this._leftExpr.ToString() + ", " + this._rightExpr.ToString() + ")";
+            return "STRDT(" + _leftExpr.ToString() + ", " + _rightExpr.ToString() + ")";
         }
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new StrDtFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
+            return new StrDtFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
         }
     }
 }

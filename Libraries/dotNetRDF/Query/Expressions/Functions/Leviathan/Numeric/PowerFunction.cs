@@ -51,9 +51,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            IValuedNode arg = this._leftExpr.Evaluate(context, bindingID);
+            IValuedNode arg = _leftExpr.Evaluate(context, bindingID);
             if (arg == null) throw new RdfQueryException("Cannot raise a null to a power");
-            IValuedNode pow = this._rightExpr.Evaluate(context, bindingID);
+            IValuedNode pow = _rightExpr.Evaluate(context, bindingID);
             if (pow == null) throw new RdfQueryException("Cannot raise to a null power");
 
             if (arg.NumericType == SparqlNumericType.NaN || pow.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot raise to a power when one/both arguments are non-numeric");
@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Power + ">(" + this._leftExpr.ToString() + "," + this._rightExpr.ToString() + ")";
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Power + ">(" + _leftExpr.ToString() + "," + _rightExpr.ToString() + ")";
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new PowerFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
+            return new PowerFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
         }
     }
 }

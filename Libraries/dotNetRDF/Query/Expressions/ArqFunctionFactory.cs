@@ -90,7 +90,7 @@ namespace VDS.RDF.Query.Expressions
                                             Substring,
                                             StrJoin,
                                             Sha1Sum,
-                                            Now
+                                            Now,
                                         };
 
         /// <summary>
@@ -111,14 +111,14 @@ namespace VDS.RDF.Query.Expressions
             }
 
             String func = u.AbsoluteUri;
-            if (func.StartsWith(ArqFunctionFactory.ArqFunctionsNamespace))
+            if (func.StartsWith(ArqFunctionsNamespace))
             {
-                func = func.Substring(ArqFunctionFactory.ArqFunctionsNamespace.Length);
+                func = func.Substring(ArqFunctionsNamespace.Length);
                 ISparqlExpression arqFunc = null;
 
                 switch (func)
                 {
-                    case ArqFunctionFactory.BNode:
+                    case BNode:
                         if (args.Count == 1)
                         {
                             arqFunc = new BNodeFunction(args.First());
@@ -128,7 +128,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the ARQ bnode() function");
                         }
                         break;
-                    case ArqFunctionFactory.E:
+                    case E:
                         if (args.Count == 0)
                         {
                             arqFunc = new EFunction();
@@ -138,7 +138,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the ARQ e() function");
                         }
                         break;
-                    case ArqFunctionFactory.LocalName:
+                    case LocalName:
                         if (args.Count == 1)
                         {
                             arqFunc = new LocalNameFunction(args.First());
@@ -148,7 +148,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the ARQ localname() function");
                         }
                         break;
-                    case ArqFunctionFactory.Max:
+                    case Max:
                         if (args.Count == 2)
                         {
                             arqFunc = new MaxFunction(args.First(), args.Last());
@@ -158,7 +158,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the ARQ max() function");
                         }
                         break;
-                    case ArqFunctionFactory.Min:
+                    case Min:
                         if (args.Count == 2)
                         {
                             arqFunc = new MinFunction(args.First(), args.Last());
@@ -168,7 +168,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the ARQ min() function");
                         }
                         break;
-                    case ArqFunctionFactory.Namespace:
+                    case Namespace:
                         if (args.Count == 1)
                         {
                             arqFunc = new NamespaceFunction(args.First());
@@ -178,7 +178,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the ARQ namespace() function");
                         }
                         break;
-                    case ArqFunctionFactory.Now:
+                    case Now:
                         if (args.Count == 0)
                         {
                             arqFunc = new NowFunction();
@@ -188,7 +188,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the ARQ now() function");
                         }
                         break;
-                    case ArqFunctionFactory.Pi:
+                    case Pi:
                         if (args.Count == 0)
                         {
                             arqFunc = new PiFunction();
@@ -198,7 +198,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the ARQ pi() function");
                         }
                         break;
-                    case ArqFunctionFactory.Sha1Sum:
+                    case Sha1Sum:
                         if (args.Count == 1)
                         {
                             arqFunc = new Sha1Function(args.First());
@@ -208,7 +208,7 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the ARQ sha1sum() function");
                         }
                         break;
-                    case ArqFunctionFactory.StrJoin:
+                    case StrJoin:
                         if (args.Count >= 2)
                         {
                             arqFunc = new StringJoinFunction(args.First(), args.Skip(1));
@@ -218,8 +218,8 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the ARQ strjoing() function");
                         }
                         break;
-                    case ArqFunctionFactory.Substr:
-                    case ArqFunctionFactory.Substring:
+                    case Substr:
+                    case Substring:
                         if (args.Count == 2)
                         {
                             arqFunc = new SubstringFunction(args.First(), args.Last());

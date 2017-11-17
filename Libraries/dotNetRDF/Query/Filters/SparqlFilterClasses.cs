@@ -53,7 +53,7 @@ namespace VDS.RDF.Query.Filters
         /// <param name="arg">Argument to the Filter</param>
         public BaseUnaryFilter(ISparqlExpression arg)
         {
-            this._arg = arg;
+            _arg = arg;
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Filters
         {
             get
             {
-                return this._arg.Variables;
+                return _arg.Variables;
             }
         }
 
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Filters
         {
             get
             {
-                return this._arg;
+                return _arg;
             }
         }
     }
@@ -126,12 +126,15 @@ namespace VDS.RDF.Query.Filters
             }
             else
             {
-#endif
                 foreach (int id in context.InputMultiset.SetIDs.ToList())
                 {
-                    this.EvalFilter(context, id);
+                    EvalFilter(context, id);
                 }
-#if NET40
+            }
+#else
+            foreach (int id in context.InputMultiset.SetIDs.ToList())
+            {
+                EvalFilter(context, id);
             }
 #endif
         }
@@ -140,7 +143,7 @@ namespace VDS.RDF.Query.Filters
         {
             try
             {
-                if (this._arg.Evaluate(context, id) == null)
+                if (_arg.Evaluate(context, id) == null)
                 {
                     context.InputMultiset.Remove(id);
                 }
@@ -157,7 +160,7 @@ namespace VDS.RDF.Query.Filters
         /// <returns></returns>
         public override string ToString()
         {
-            return "FILTER(BOUND(" + this._arg.ToString() + ")) ";
+            return "FILTER(BOUND(" + _arg.ToString() + ")) ";
         }
     }
 
@@ -183,13 +186,13 @@ namespace VDS.RDF.Query.Filters
 
             if (context.InputMultiset is IdentityMultiset)
             {
-                if (!this.Variables.Any())
+                if (!Variables.Any())
                 {
                     // If the Filter has no variables and is applied to an Identity Multiset then if the
                     // Filter Expression evaluates to False then the Null Multiset is returned
                     try
                     {
-                        if (!this._arg.Evaluate(context, 0).AsSafeBoolean())
+                        if (!_arg.Evaluate(context, 0).AsSafeBoolean())
                         {
                             context.InputMultiset = new NullMultiset();
                         }
@@ -219,7 +222,7 @@ namespace VDS.RDF.Query.Filters
 #endif
                     foreach (int id in context.InputMultiset.SetIDs.ToList())
                     {
-                        this.EvalFilter(context, id);
+                        EvalFilter(context, id);
                     }
 #if NET40
                 }
@@ -231,7 +234,7 @@ namespace VDS.RDF.Query.Filters
         {
             try
             {
-                if (!this._arg.Evaluate(context, id).AsSafeBoolean())
+                if (!_arg.Evaluate(context, id).AsSafeBoolean())
                 {
                     context.InputMultiset.Remove(id);
                 }
@@ -248,7 +251,7 @@ namespace VDS.RDF.Query.Filters
         /// <returns></returns>
         public override string ToString()
         {
-            return "FILTER(" + this._arg.ToString() + ") ";
+            return "FILTER(" + _arg.ToString() + ") ";
         }
     }
 
@@ -266,8 +269,8 @@ namespace VDS.RDF.Query.Filters
         /// <param name="second">Second Filter</param>
         public ChainFilter(ISparqlFilter first, ISparqlFilter second)
         {
-            this._filters.Add(first);
-            this._filters.Add(second);
+            _filters.Add(first);
+            _filters.Add(second);
         }
 
         /// <summary>
@@ -276,7 +279,7 @@ namespace VDS.RDF.Query.Filters
         /// <param name="filters">Filters</param>
         public ChainFilter(IEnumerable<ISparqlFilter> filters)
         {
-            this._filters.AddRange(filters);
+            _filters.AddRange(filters);
         }
 
         /// <summary>
@@ -286,8 +289,8 @@ namespace VDS.RDF.Query.Filters
         /// <param name="rest">Additional Filters</param>
         public ChainFilter(ISparqlFilter first, IEnumerable<ISparqlFilter> rest)
         {
-            this._filters.Add(first);
-            this._filters.AddRange(rest);
+            _filters.Add(first);
+            _filters.AddRange(rest);
         }
 
         /// <summary>
@@ -298,7 +301,7 @@ namespace VDS.RDF.Query.Filters
         {
             if (context.InputMultiset is NullMultiset) return;
 
-            foreach (ISparqlFilter filter in this._filters)
+            foreach (ISparqlFilter filter in _filters)
             {
                 filter.Evaluate(context);
             }
@@ -310,7 +313,7 @@ namespace VDS.RDF.Query.Filters
         /// <param name="filter">A Filter to add</param>
         protected internal void Add(ISparqlFilter filter)
         {
-            this._filters.Add(filter);
+            _filters.Add(filter);
         }
 
         /// <summary>
@@ -320,7 +323,7 @@ namespace VDS.RDF.Query.Filters
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            foreach (ISparqlFilter filter in this._filters)
+            foreach (ISparqlFilter filter in _filters)
             {
                 output.Append(filter.ToString() + " ");
             }
@@ -334,7 +337,7 @@ namespace VDS.RDF.Query.Filters
         {
             get
             {
-                return (from f in this._filters
+                return (from f in _filters
                         from v in f.Variables
                         select v);
             }
@@ -351,18 +354,18 @@ namespace VDS.RDF.Query.Filters
             get
             {
                 ISparqlExpression expr = new ConstantTerm(new BooleanNode(null, true));
-                if (this._filters.Count == 1)
+                if (_filters.Count == 1)
                 {
-                    expr = this._filters[0].Expression;
+                    expr = _filters[0].Expression;
                 }
-                else if (this._filters.Count >= 2)
+                else if (_filters.Count >= 2)
                 {
-                    expr = new AndExpression(this._filters[0].Expression, this._filters[1].Expression);
-                    if (this._filters.Count > 2)
+                    expr = new AndExpression(_filters[0].Expression, _filters[1].Expression);
+                    if (_filters.Count > 2)
                     {
-                        for (int i = 2; i < this._filters.Count; i++)
+                        for (int i = 2; i < _filters.Count; i++)
                         {
-                            expr = new AndExpression(expr, this._filters[i].Expression);
+                            expr = new AndExpression(expr, _filters[i].Expression);
                         }
                     }
                 }

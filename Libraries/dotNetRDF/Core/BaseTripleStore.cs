@@ -54,17 +54,17 @@ namespace VDS.RDF
         protected BaseTripleStore(BaseGraphCollection graphCollection)
         {
             if (graphCollection == null) throw new ArgumentNullException("graphCollection", "Graph Collection must be an non-null instance of a class which derives from BaseGraphCollection");
-            this._graphs = graphCollection;
+            _graphs = graphCollection;
 
-            this.GraphAddedHandler = new GraphEventHandler(this.OnGraphAdded);
-            this.GraphRemovedHandler = new GraphEventHandler(this.OnGraphRemoved);
-            this.GraphChangedHandler = new GraphEventHandler(this.OnGraphChanged);
-            this.GraphMergedHandler = new GraphEventHandler(this.OnGraphMerged);
-            this.GraphClearedHandler = new GraphEventHandler(this.OnGraphCleared);
+            GraphAddedHandler = new GraphEventHandler(OnGraphAdded);
+            GraphRemovedHandler = new GraphEventHandler(OnGraphRemoved);
+            GraphChangedHandler = new GraphEventHandler(OnGraphChanged);
+            GraphMergedHandler = new GraphEventHandler(OnGraphMerged);
+            GraphClearedHandler = new GraphEventHandler(OnGraphCleared);
 
             // Attach Handlers to the Graph Collection
-            this._graphs.GraphAdded += this.GraphAddedHandler;
-            this._graphs.GraphRemoved += this.GraphRemovedHandler;
+            _graphs.GraphAdded += GraphAddedHandler;
+            _graphs.GraphRemoved += GraphRemovedHandler;
         }
 
         #region Properties
@@ -77,7 +77,7 @@ namespace VDS.RDF
             get
             {
                 // Empty if there are no Graphs in the Store
-                return (this._graphs.Count == 0);
+                return (_graphs.Count == 0);
             }
         }
 
@@ -88,7 +88,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._graphs;
+                return _graphs;
             }
         }
 
@@ -99,7 +99,7 @@ namespace VDS.RDF
         {
             get
             {
-                return (from g in this._graphs
+                return (from g in _graphs
                         from t in g.Triples
                         select t);
             }
@@ -115,7 +115,7 @@ namespace VDS.RDF
         /// <param name="g">Graph to add</param>
         public virtual bool Add(IGraph g)
         {
-            return this._graphs.Add(g, false);
+            return _graphs.Add(g, false);
         }
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace VDS.RDF
         /// <param name="mergeIfExists">Whether the Graph should be merged with an existing Graph with the same Base Uri</param>
         public virtual bool Add(IGraph g, bool mergeIfExists)
         {
-            return this._graphs.Add(g, mergeIfExists);
+            return _graphs.Add(g, mergeIfExists);
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace VDS.RDF
         /// <param name="graphUri">Uri of the Graph to load</param>
         public virtual bool AddFromUri(Uri graphUri)
         {
-            return this.AddFromUri(graphUri, false);
+            return AddFromUri(graphUri, false);
         }
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace VDS.RDF
         {
             Graph g = new Graph();
             UriLoader.Load(g, graphUri);
-            return this._graphs.Add(g, mergeIfExists);
+            return _graphs.Add(g, mergeIfExists);
         }
 
         /// <summary>
@@ -158,7 +158,7 @@ namespace VDS.RDF
         /// <param name="graphUri">Uri of the Graph to Remove</param>
         public virtual bool Remove(Uri graphUri)
         {
-            return this._graphs.Remove(graphUri);
+            return _graphs.Remove(graphUri);
         }
 
         #endregion
@@ -172,7 +172,7 @@ namespace VDS.RDF
         /// <returns>True if the Graph exists in the Triple Store</returns>
         public bool HasGraph(Uri graphUri)
         {
-            return this._graphs.Contains(graphUri);
+            return _graphs.Contains(graphUri);
         }
 
         /// <summary>
@@ -184,7 +184,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._graphs[graphUri];
+                return _graphs[graphUri];
             }
         }
 
@@ -223,12 +223,12 @@ namespace VDS.RDF
         /// <param name="g">Graph</param>
         protected void RaiseGraphAdded(IGraph g)
         {
-            TripleStoreEventHandler d = this.GraphAdded;
+            TripleStoreEventHandler d = GraphAdded;
             if (d != null)
             {
                 d(this, new TripleStoreEventArgs(this, g));
             }
-            this.AttachEventHandlers(g);
+            AttachEventHandlers(g);
         }
 
         /// <summary>
@@ -237,12 +237,12 @@ namespace VDS.RDF
         /// <param name="args">Graph Event Arguments</param>
         protected void RaiseGraphAdded(GraphEventArgs args)
         {
-            TripleStoreEventHandler d = this.GraphAdded;
+            TripleStoreEventHandler d = GraphAdded;
             if (d != null)
             {
                 d(this, new TripleStoreEventArgs(this, args));
             }
-            this.AttachEventHandlers(args.Graph);
+            AttachEventHandlers(args.Graph);
         }
 
         /// <summary>
@@ -253,7 +253,7 @@ namespace VDS.RDF
         /// <remarks>Override this method if your Triple Store implementation wishes to take additional actions when a Graph is added to the Store</remarks>
         protected virtual void OnGraphAdded(Object sender, GraphEventArgs args)
         {
-            this.RaiseGraphAdded(args);
+            RaiseGraphAdded(args);
         }
 
         /// <summary>
@@ -262,12 +262,12 @@ namespace VDS.RDF
         /// <param name="g">Graph</param>
         protected void RaiseGraphRemoved(IGraph g)
         {
-            TripleStoreEventHandler d = this.GraphRemoved;
+            TripleStoreEventHandler d = GraphRemoved;
             if (d != null)
             {
                 d(this, new TripleStoreEventArgs(this, g));
             }
-            this.DetachEventHandlers(g);
+            DetachEventHandlers(g);
         }
 
         /// <summary>
@@ -276,12 +276,12 @@ namespace VDS.RDF
         /// <param name="args">Graph Event Arguments</param>
         protected void RaiseGraphRemoved(GraphEventArgs args)
         {
-            TripleStoreEventHandler d = this.GraphRemoved;
+            TripleStoreEventHandler d = GraphRemoved;
             if (d != null)
             {
                 d(this, new TripleStoreEventArgs(this, args));
             }
-            this.DetachEventHandlers(args.Graph);
+            DetachEventHandlers(args.Graph);
         }
 
         /// <summary>
@@ -291,7 +291,7 @@ namespace VDS.RDF
         /// <param name="args">Graph Event Arguments</param>
         protected virtual void OnGraphRemoved(Object sender, GraphEventArgs args)
         {
-            this.RaiseGraphRemoved(args);
+            RaiseGraphRemoved(args);
         }
 
         /// <summary>
@@ -300,7 +300,7 @@ namespace VDS.RDF
         /// <param name="args">Graph Event Arguments</param>
         protected void RaiseGraphChanged(GraphEventArgs args)
         {
-            TripleStoreEventHandler d = this.GraphChanged;
+            TripleStoreEventHandler d = GraphChanged;
             if (d != null)
             {
                 d(this, new TripleStoreEventArgs(this, args));
@@ -314,7 +314,7 @@ namespace VDS.RDF
         /// <param name="args">Graph Event Arguments</param>
         protected virtual void OnGraphChanged(Object sender, GraphEventArgs args)
         {
-            this.RaiseGraphChanged(args);
+            RaiseGraphChanged(args);
         }
 
         /// <summary>
@@ -323,7 +323,7 @@ namespace VDS.RDF
         /// <param name="g">Graph</param>
         protected void RaiseGraphChanged(IGraph g)
         {
-            TripleStoreEventHandler d = this.GraphChanged;
+            TripleStoreEventHandler d = GraphChanged;
             if (d != null)
             {
                 d(this, new TripleStoreEventArgs(this, g));
@@ -336,7 +336,7 @@ namespace VDS.RDF
         /// <param name="args">Graph Event Arguments</param>
         protected void RaiseGraphCleared(GraphEventArgs args)
         {
-            TripleStoreEventHandler d = this.GraphCleared;
+            TripleStoreEventHandler d = GraphCleared;
             if (d != null)
             {
                 d(this, new TripleStoreEventArgs(this, args));
@@ -350,7 +350,7 @@ namespace VDS.RDF
         /// <param name="args">Graph Event Arguments</param>
         protected virtual void OnGraphCleared(Object sender, GraphEventArgs args)
         {
-            this.RaiseGraphCleared(args);
+            RaiseGraphCleared(args);
         }
 
         /// <summary>
@@ -359,7 +359,7 @@ namespace VDS.RDF
         /// <param name="args">Graph Event Arguments</param>
         protected void RaiseGraphMerged(GraphEventArgs args)
         {
-            TripleStoreEventHandler d = this.GraphMerged;
+            TripleStoreEventHandler d = GraphMerged;
             if (d != null)
             {
                 d(this, new TripleStoreEventArgs(this, args));
@@ -373,7 +373,7 @@ namespace VDS.RDF
         /// <param name="args">Graph Event Arguments</param>
         protected virtual void OnGraphMerged(Object sender, GraphEventArgs args)
         {
-            this.RaiseGraphMerged(args);
+            RaiseGraphMerged(args);
         }
 
         /// <summary>
@@ -382,9 +382,9 @@ namespace VDS.RDF
         /// <param name="g">Graph</param>
         protected void AttachEventHandlers(IGraph g)
         {
-            g.Changed += this.GraphChangedHandler;
-            g.Cleared += this.GraphClearedHandler;
-            g.Merged += this.GraphMergedHandler;
+            g.Changed += GraphChangedHandler;
+            g.Cleared += GraphClearedHandler;
+            g.Merged += GraphMergedHandler;
         }
 
         /// <summary>
@@ -393,9 +393,9 @@ namespace VDS.RDF
         /// <param name="g"></param>
         protected void DetachEventHandlers(IGraph g)
         {
-            g.Changed -= this.GraphChangedHandler;
-            g.Cleared -= this.GraphClearedHandler;
-            g.Merged -= this.GraphMergedHandler;
+            g.Changed -= GraphChangedHandler;
+            g.Cleared -= GraphClearedHandler;
+            g.Merged -= GraphMergedHandler;
         }
 
         #endregion

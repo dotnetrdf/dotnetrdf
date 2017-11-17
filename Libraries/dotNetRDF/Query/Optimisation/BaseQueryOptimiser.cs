@@ -58,10 +58,10 @@ namespace VDS.RDF.Query.Optimisation
                                          select v).Distinct().ToList();
 
             // Start by sorting the Triple Patterns in the list according to the ranking function
-            gp.TriplePatterns.Sort(this.GetRankingComparer());
+            gp.TriplePatterns.Sort(GetRankingComparer());
 
             // Apply reordering unless an optimiser has chosen to disable it
-            if (this.ShouldReorder)
+            if (ShouldReorder)
             {
                 if (gp.TriplePatterns.Count > 0)
                 {
@@ -85,7 +85,7 @@ namespace VDS.RDF.Query.Optimisation
                                 }
                                 else if (currVariables.IsDisjoint(gp.TriplePatterns[i].Variables))
                                 {
-                                    this.TryReorderPatterns(gp, currVariables.ToList(), i + 1, i);
+                                    TryReorderPatterns(gp, currVariables.ToList(), i + 1, i);
                                     gp.TriplePatterns[i].Variables.ForEach(v => currVariables.Add(v));
                                 }
                                 else
@@ -100,19 +100,19 @@ namespace VDS.RDF.Query.Optimisation
                         // Optimise this Graph Pattern based on previously occurring variables
                         if (gp.TriplePatterns.Count > 1 && !gp.TriplePatterns[0].Variables.Any(v => variables.Contains(v)) && variables.Intersect(ourVariables).Any())
                         {
-                            this.TryReorderPatterns(gp, variables.ToList(), 1, 0);
+                            TryReorderPatterns(gp, variables.ToList(), 1, 0);
                         }
                         else if (gp.TriplePatterns.Count > 2)
                         {
                             // In the case where there are more than 2 patterns then we can try and reorder these
                             // in order to further optimise the pattern
-                            this.TryReorderPatterns(gp, gp.TriplePatterns[0].Variables, 2, 1);
+                            TryReorderPatterns(gp, gp.TriplePatterns[0].Variables, 2, 1);
                         }
                     }
                 }
             }
 
-            if (this.ShouldPlaceAssignments)
+            if (ShouldPlaceAssignments)
             {
                 // First we need to place Assignments (LETs) in appropriate places within the Pattern
                 // This happens before Filter placement since Filters may use variables assigned to in LETs
@@ -136,7 +136,7 @@ namespace VDS.RDF.Query.Optimisation
                         int i = 0;
                         while (i < ps.Count)
                         {
-                            if (this.TryPlaceAssignment(gp, ps[i]))
+                            if (TryPlaceAssignment(gp, ps[i]))
                             {
                                 // Remove from Unplaced Assignments since it's been successfully placed in the Triple Patterns
                                 // Don't increment the counter since the next Assignment is now at the index we're already at
@@ -159,7 +159,7 @@ namespace VDS.RDF.Query.Optimisation
             // }
 
 
-            if (this.ShouldPlaceFilters)
+            if (ShouldPlaceFilters)
             {
                 // Then we need to place the Filters in appropriate places within the Pattern
                 if (gp.UnplacedFilters.Any())
@@ -171,7 +171,7 @@ namespace VDS.RDF.Query.Optimisation
                     }
                     else
                     {
-                        if (this.ShouldSplitFilters)
+                        if (ShouldSplitFilters)
                         {
                             // See whether we can split any/all of the Unplaced Filters
                             List<ISparqlFilter> fs = gp.UnplacedFilters.ToList();
@@ -195,7 +195,7 @@ namespace VDS.RDF.Query.Optimisation
 
                         foreach (ISparqlFilter f in gp.UnplacedFilters.ToList())
                         {
-                            this.TryPlaceFilter(gp, f);
+                            TryPlaceFilter(gp, f);
                         }
                     }
                 }

@@ -69,8 +69,8 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         public SesameMemTemplate(String id)
             : base(id, "Sesame Memory", "A Sesame memory store is stored fully in-memory and may be persisted to/from disk") 
         {
-            this.Persist = true;
-            this.SyncDelay = 0;
+            Persist = true;
+            SyncDelay = 0;
         }
 
         /// <summary>
@@ -79,21 +79,21 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// <returns></returns>
         public override IGraph GetTemplateGraph()
         {
-            IGraph g = this.GetBaseTemplateGraph();
+            IGraph g = GetBaseTemplateGraph();
             INode impl = g.CreateBlankNode();
-            g.Assert(this.ContextNode, g.CreateUriNode("rep:repositoryImpl"), impl);
+            g.Assert(ContextNode, g.CreateUriNode("rep:repositoryImpl"), impl);
             g.Assert(impl, g.CreateUriNode("rep:repositoryType"), g.CreateLiteralNode("openrdf:SailRepository"));
             INode sailImpl = g.CreateBlankNode();
             g.Assert(impl, g.CreateUriNode("sr:sailImpl"), sailImpl);
 
-            if (this.DirectTypeHierarchyInferencing)
+            if (DirectTypeHierarchyInferencing)
             {
                 INode sailDelegate = g.CreateBlankNode();
                 g.Assert(sailImpl, g.CreateUriNode("sail:sailType"), g.CreateLiteralNode("openrdf:DirectTypeHierarchyInferencer"));
                 g.Assert(sailImpl, g.CreateUriNode("sail:delegate"), sailDelegate);
                 sailImpl = sailDelegate;
             }
-            if (this.RdfSchemaInferencing)
+            if (RdfSchemaInferencing)
             {
                 INode sailDelegate = g.CreateBlankNode();
                 g.Assert(sailImpl, g.CreateUriNode("sail:sailType"), g.CreateLiteralNode("openrdf:ForwardChainingRDFSInferencer"));
@@ -101,8 +101,8 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
                 sailImpl = sailDelegate;
             }
             g.Assert(sailImpl, g.CreateUriNode("sail:sailType"), g.CreateLiteralNode("openrdf:MemoryStore"));
-            g.Assert(sailImpl, g.CreateUriNode("ms:persist"), this.Persist.ToLiteral(g));
-            g.Assert(sailImpl, g.CreateUriNode("ms:syncDelay"), this.SyncDelay.ToLiteral(g));
+            g.Assert(sailImpl, g.CreateUriNode("ms:persist"), Persist.ToLiteral(g));
+            g.Assert(sailImpl, g.CreateUriNode("ms:syncDelay"), SyncDelay.ToLiteral(g));
 
             return g;
         }

@@ -49,8 +49,8 @@ namespace VDS.RDF.Update.Commands
         public InsertDataCommand(GraphPattern pattern)
             : base(SparqlUpdateCommandType.InsertData) 
         {
-            if (!this.IsValidDataPattern(pattern, true)) throw new SparqlUpdateException("Cannot create a INSERT DATA command where any of the Triple Patterns are not concrete triples (variables are not permitted) or a GRAPH clause has nested Graph Patterns");
-            this._pattern = pattern;
+            if (!IsValidDataPattern(pattern, true)) throw new SparqlUpdateException("Cannot create a INSERT DATA command where any of the Triple Patterns are not concrete triples (variables are not permitted) or a GRAPH clause has nested Graph Patterns");
+            _pattern = pattern;
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace VDS.RDF.Update.Commands
         {
             get
             {
-                return this._pattern;
+                return _pattern;
             }
         }
 
@@ -95,13 +95,13 @@ namespace VDS.RDF.Update.Commands
         {
             get
             {
-                if (!this._pattern.HasChildGraphPatterns)
+                if (!_pattern.HasChildGraphPatterns)
                 {
                     return true;
                 }
                 List<String> affectedUris = new List<string>();
-                affectedUris.Add(this._pattern.IsGraph ? this._pattern.GraphSpecifier.Value : null);
-                affectedUris.AddRange(from p in this._pattern.ChildGraphPatterns
+                affectedUris.Add(_pattern.IsGraph ? _pattern.GraphSpecifier.Value : null);
+                affectedUris.AddRange(from p in _pattern.ChildGraphPatterns
                     where p.IsGraph
                     select p.GraphSpecifier.Value);
 
@@ -117,10 +117,10 @@ namespace VDS.RDF.Update.Commands
         public override bool AffectsGraph(Uri graphUri)
         {
             List<String> affectedUris = new List<string>();
-            affectedUris.Add(this._pattern.IsGraph ? this._pattern.GraphSpecifier.Value : String.Empty);
-            if (this._pattern.HasChildGraphPatterns)
+            affectedUris.Add(_pattern.IsGraph ? _pattern.GraphSpecifier.Value : String.Empty);
+            if (_pattern.HasChildGraphPatterns)
             {
-                affectedUris.AddRange(from p in this._pattern.ChildGraphPatterns
+                affectedUris.AddRange(from p in _pattern.ChildGraphPatterns
                                       where p.IsGraph
                                       select p.GraphSpecifier.Value);
             }
@@ -137,18 +137,18 @@ namespace VDS.RDF.Update.Commands
         {
             // Split the Pattern into the set of Graph Patterns
             List<GraphPattern> patterns = new List<GraphPattern>();
-            if (this._pattern.IsGraph)
+            if (_pattern.IsGraph)
             {
-                patterns.Add(this._pattern);
+                patterns.Add(_pattern);
             }
-            else if (this._pattern.TriplePatterns.Count > 0 || this._pattern.HasChildGraphPatterns)
+            else if (_pattern.TriplePatterns.Count > 0 || _pattern.HasChildGraphPatterns)
             {
-                if (this._pattern.TriplePatterns.Count > 0)
+                if (_pattern.TriplePatterns.Count > 0)
                 {
                     patterns.Add(new GraphPattern());
-                    this._pattern.TriplePatterns.ForEach(tp => patterns[0].AddTriplePattern(tp));
+                    _pattern.TriplePatterns.ForEach(tp => patterns[0].AddTriplePattern(tp));
                 }
-                this._pattern.ChildGraphPatterns.ForEach(gp => patterns.Add(gp));
+                _pattern.ChildGraphPatterns.ForEach(gp => patterns.Add(gp));
             }
             else
             {
@@ -159,7 +159,7 @@ namespace VDS.RDF.Update.Commands
             ConstructContext constructContext = new ConstructContext(null, null, false);
             foreach (GraphPattern pattern in patterns)
             {
-                if (!this.IsValidDataPattern(pattern, false)) throw new SparqlUpdateException("Cannot evaluate a INSERT DATA command where any of the Triple Patterns are not concrete triples (variables are not permitted) or any of the GRAPH clauses have nested Graph Patterns");
+                if (!IsValidDataPattern(pattern, false)) throw new SparqlUpdateException("Cannot evaluate a INSERT DATA command where any of the Triple Patterns are not concrete triples (variables are not permitted) or any of the GRAPH clauses have nested Graph Patterns");
 
                 // Get the Target Graph
                 IGraph target;
@@ -222,9 +222,9 @@ namespace VDS.RDF.Update.Commands
         {
             StringBuilder output = new StringBuilder();
             output.AppendLine("INSERT DATA");
-            if (this._pattern.IsGraph) output.AppendLine("{");
-            output.AppendLine(this._pattern.ToString());
-            if (this._pattern.IsGraph) output.AppendLine("}");
+            if (_pattern.IsGraph) output.AppendLine("{");
+            output.AppendLine(_pattern.ToString());
+            if (_pattern.IsGraph) output.AppendLine("}");
             return output.ToString();
         }
     }

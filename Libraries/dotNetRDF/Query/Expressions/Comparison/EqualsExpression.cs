@@ -50,8 +50,8 @@ namespace VDS.RDF.Query.Expressions.Comparison
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            IValuedNode x = this._leftExpr.Evaluate(context, bindingID);
-            IValuedNode y = this._rightExpr.Evaluate(context, bindingID);
+            IValuedNode x = _leftExpr.Evaluate(context, bindingID);
+            IValuedNode y = _rightExpr.Evaluate(context, bindingID);
 
             return new BooleanNode(null, SparqlSpecsHelper.Equality(x, y));
         }
@@ -63,22 +63,22 @@ namespace VDS.RDF.Query.Expressions.Comparison
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            if (this._leftExpr.Type == SparqlExpressionType.BinaryOperator)
+            if (_leftExpr.Type == SparqlExpressionType.BinaryOperator)
             {
-                output.Append("(" + this._leftExpr.ToString() + ")");
+                output.Append("(" + _leftExpr.ToString() + ")");
             }
             else
             {
-                output.Append(this._leftExpr.ToString());
+                output.Append(_leftExpr.ToString());
             }
             output.Append(" = ");
-            if (this._rightExpr.Type == SparqlExpressionType.BinaryOperator)
+            if (_rightExpr.Type == SparqlExpressionType.BinaryOperator)
             {
-                output.Append("(" + this._rightExpr.ToString() + ")");
+                output.Append("(" + _rightExpr.ToString() + ")");
             }
             else
             {
-                output.Append(this._rightExpr.ToString());
+                output.Append(_rightExpr.ToString());
             }
             return output.ToString();
         }
@@ -112,7 +112,7 @@ namespace VDS.RDF.Query.Expressions.Comparison
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new EqualsExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
+            return new EqualsExpression(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
         }
     }
 }

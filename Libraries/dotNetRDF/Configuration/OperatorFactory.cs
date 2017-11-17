@@ -71,7 +71,7 @@ namespace VDS.RDF.Configuration
         /// <returns></returns>
         public bool CanLoadObject(Type t)
         {
-            return t.GetInterfaces().Contains(this._opType) && t.GetConstructors().Any(c => c.GetParameters().Length == 0 && c.IsPublic);
+            return t.GetInterfaces().Contains(_opType) && t.GetConstructors().Any(c => c.GetParameters().Length == 0 && c.IsPublic);
         }
     }
 }

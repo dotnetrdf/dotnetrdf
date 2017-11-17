@@ -42,8 +42,8 @@ namespace VDS.RDF.Query.Paths
         /// <param name="current">Current Point on the Path</param>
         public PotentialPath(INode start, INode current)
         {
-            this._start = start;
-            this._current = current;
+            _start = start;
+            _current = current;
         }
 
         /// <summary>
@@ -52,12 +52,12 @@ namespace VDS.RDF.Query.Paths
         /// <param name="p">Potentuak Path</param>
         public PotentialPath(PotentialPath p)
         {
-            this._start = p.Start;
-            this._current = p.Current;
-            this._complete = p.IsComplete;
-            this._deadend = p.IsDeadEnd;
-            this._partial = p.IsPartial;
-            this._length = p.Length;
+            _start = p.Start;
+            _current = p.Current;
+            _complete = p.IsComplete;
+            _deadend = p.IsDeadEnd;
+            _partial = p.IsPartial;
+            _length = p.Length;
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Paths
         {
             get
             {
-                return this._start;
+                return _start;
             }
         }
 
@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.Paths
         {
             get
             {
-                return this._current;
+                return _current;
             }
         }
 
@@ -89,11 +89,11 @@ namespace VDS.RDF.Query.Paths
         {
             get
             {
-                return this._complete;
+                return _complete;
             }
             set
             {
-                if (value) this._complete = value;
+                if (value) _complete = value;
             }
         }
 
@@ -109,11 +109,11 @@ namespace VDS.RDF.Query.Paths
         {
             get
             {
-                return this._deadend;
+                return _deadend;
             }
             set
             {
-                if (value) this._deadend = value;
+                if (value) _deadend = value;
             }
         }
 
@@ -127,11 +127,11 @@ namespace VDS.RDF.Query.Paths
         {
             get
             {
-                return this._partial;
+                return _partial;
             }
             set
             {
-                this._partial = value;
+                _partial = value;
             }
         }
 
@@ -142,11 +142,11 @@ namespace VDS.RDF.Query.Paths
         {
             get
             {
-                return this._length;
+                return _length;
             }
             set
             {
-                this._length = value;
+                _length = value;
             }
         }
 
@@ -156,7 +156,7 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public override int GetHashCode()
         {
-            return Tools.CombineHashCodes(this._start, this._current);
+            return Tools.CombineHashCodes(_start, _current);
         }
 
         /// <summary>
@@ -169,7 +169,7 @@ namespace VDS.RDF.Query.Paths
             if (obj is PotentialPath)
             {
                 PotentialPath other = (PotentialPath)obj;
-                return (this._start.Equals(other.Start) && this._current.Equals(other.Current));
+                return (_start.Equals(other.Start) && _current.Equals(other.Current));
             }
             else
             {
@@ -183,7 +183,7 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public override string ToString()
         {
-            return this._start.ToString() + " -> " + this._current.ToString();
+            return _start.ToString() + " -> " + _current.ToString();
         }
     }
 }

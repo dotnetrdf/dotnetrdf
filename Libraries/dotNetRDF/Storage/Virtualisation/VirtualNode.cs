@@ -661,6 +661,15 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <returns>The comparison result.</returns>
         public abstract int CompareVirtualId(TNodeID other);
 
+        /// <summary>
+        /// Attempt to compare this node with another node
+        /// </summary>
+        /// <param name="other">The node to compare to</param>
+        /// <param name="comparisonResult">The comparison result</param>
+        /// <returns>True if the comparison could be performed, false otherwise</returns>
+        /// <remarks>This node can only be compared to <paramref name="other"/> if <paramref name="other"/>
+        /// is a <see cref="IVirtualNode{TNodeID,TGraphID}"/> from the same 
+        /// <see cref="IVirtualRdfProvider{TNodeID,TGraphID}"/> as this node.</remarks>
         public bool TryCompareVirtualId(INode other, out int comparisonResult)
         {
             if (other is IVirtualNode<TNodeID, TGraphID>)

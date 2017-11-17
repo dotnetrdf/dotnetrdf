@@ -51,10 +51,10 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="inverse">Whether this is a set of Inverse Negated Properties</param>
         public NegatedPropertySet(PatternItem start, PatternItem end, IEnumerable<Property> properties, bool inverse)
         {
-            this._start = start;
-            this._end = end;
-            this._properties.AddRange(properties.Select(p => p.Predicate));
-            this._inverse = inverse;
+            _start = start;
+            _end = end;
+            _properties.AddRange(properties.Select(p => p.Predicate));
+            _inverse = inverse;
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._start;
+                return _start;
             }
         }
 
@@ -84,7 +84,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._end;
+                return _end;
             }
         }
 
@@ -95,7 +95,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._properties;
+                return _properties;
             }
         }
 
@@ -106,7 +106,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._inverse;
+                return _inverse;
             }
         }
 
@@ -118,8 +118,8 @@ namespace VDS.RDF.Query.Algebra
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             IEnumerable<Triple> ts;
-            String subjVar = this._start.VariableName;
-            String objVar = this._end.VariableName;
+            String subjVar = _start.VariableName;
+            String objVar = _end.VariableName;
             if (subjVar != null && context.InputMultiset.ContainsVariable(subjVar))
             {
                 if (objVar != null && context.InputMultiset.ContainsVariable(objVar))
@@ -152,7 +152,7 @@ namespace VDS.RDF.Query.Algebra
             context.OutputMultiset = new Multiset();
 
             // Q: Should this not go at the start of evaluation?
-            if (this._inverse)
+            if (_inverse)
             {
                 String temp = objVar;
                 objVar = subjVar;
@@ -160,7 +160,7 @@ namespace VDS.RDF.Query.Algebra
             }
             foreach (Triple t in ts)
             {
-                if (!this._properties.Contains(t.Predicate))
+                if (!_properties.Contains(t.Predicate))
                 {
                     Set s = new Set();
                     if (subjVar != null) s.Add(subjVar, t.Subject);
@@ -191,20 +191,20 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                if (this._start.VariableName != null)
+                if (_start.VariableName != null)
                 {
-                    if (this._end.VariableName != null)
+                    if (_end.VariableName != null)
                     {
-                        return this._start.VariableName.AsEnumerable().Concat(this._end.VariableName.AsEnumerable());
+                        return _start.VariableName.AsEnumerable().Concat(_end.VariableName.AsEnumerable());
                     }
                     else
                     {
-                        return this._start.VariableName.AsEnumerable();
+                        return _start.VariableName.AsEnumerable();
                     }
                 }
-                else if (this._end.VariableName != null)
+                else if (_end.VariableName != null)
                 {
-                    return this._end.VariableName.AsEnumerable();
+                    return _end.VariableName.AsEnumerable();
                 }
                 else
                 {
@@ -218,7 +218,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public IEnumerable<String> FixedVariables
         {
-            get { return this.Variables; }
+            get { return Variables; }
         }
 
         /// <summary>
@@ -236,7 +236,7 @@ namespace VDS.RDF.Query.Algebra
         public SparqlQuery ToQuery()
         {
             SparqlQuery q = new SparqlQuery();
-            q.RootGraphPattern = this.ToGraphPattern();
+            q.RootGraphPattern = ToGraphPattern();
             return q;
         }
 
@@ -248,13 +248,13 @@ namespace VDS.RDF.Query.Algebra
         {
             GraphPattern gp = new GraphPattern();
             PropertyPathPattern pp;
-            if (this._inverse)
+            if (_inverse)
             {
-                pp = new PropertyPathPattern(this.PathStart, new NegatedSet(Enumerable.Empty<Property>(), this._properties.Select(p => new Property(p))), this.PathEnd);
+                pp = new PropertyPathPattern(PathStart, new NegatedSet(Enumerable.Empty<Property>(), _properties.Select(p => new Property(p))), PathEnd);
             }
             else
             {
-                pp = new PropertyPathPattern(this.PathStart, new NegatedSet(this._properties.Select(p => new Property(p)), Enumerable.Empty<Property>()), this.PathEnd);
+                pp = new PropertyPathPattern(PathStart, new NegatedSet(_properties.Select(p => new Property(p)), Enumerable.Empty<Property>()), PathEnd);
             }
             gp.AddTriplePattern(pp);
             return gp;
@@ -268,18 +268,18 @@ namespace VDS.RDF.Query.Algebra
         {
             StringBuilder output = new StringBuilder();
             output.Append("NegatedPropertySet(");
-            output.Append(this._start.ToString());
+            output.Append(_start.ToString());
             output.Append(", {");
-            for (int i = 0; i < this._properties.Count; i++)
+            for (int i = 0; i < _properties.Count; i++)
             {
-                output.Append(this._properties[i].ToString());
-                if (i < this._properties.Count - 1)
+                output.Append(_properties[i].ToString());
+                if (i < _properties.Count - 1)
                 {
                     output.Append(", ");
                 }
             }
             output.Append("}, ");
-            output.Append(this._end.ToString());
+            output.Append(_end.ToString());
             output.Append(')');
 
             return output.ToString();

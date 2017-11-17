@@ -47,9 +47,9 @@ namespace VDS.RDF.Update.Commands
             : base(SparqlUpdateCommandType.Load) 
         {
             if (sourceUri == null) throw new ArgumentNullException("sourceUri");
-            this._sourceUri = sourceUri;
-            this._graphUri = graphUri;
-            this._silent = silent;
+            _sourceUri = sourceUri;
+            _graphUri = graphUri;
+            _silent = silent;
         }
 
         /// <summary>
@@ -93,11 +93,11 @@ namespace VDS.RDF.Update.Commands
         /// <returns></returns>
         public override bool AffectsGraph(Uri graphUri)
         {
-            if (this._graphUri == null)
+            if (_graphUri == null)
             {
                 return true;
             }
-            return this._graphUri.AbsoluteUri.Equals(graphUri.ToSafeString());
+            return _graphUri.AbsoluteUri.Equals(graphUri.ToSafeString());
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace VDS.RDF.Update.Commands
         {
             get
             {
-                return this._sourceUri;
+                return _sourceUri;
             }
         }
 
@@ -118,7 +118,7 @@ namespace VDS.RDF.Update.Commands
         {
             get
             {
-                return this._graphUri;
+                return _graphUri;
             }
         }
 
@@ -129,7 +129,7 @@ namespace VDS.RDF.Update.Commands
         {
             get
             {
-                return this._silent;
+                return _silent;
             }
         }
 
@@ -154,23 +154,23 @@ namespace VDS.RDF.Update.Commands
             {
                 // Load from the URI
                 Graph g = new Graph();
-                UriLoader.Load(g, this._sourceUri);
+                UriLoader.Load(g, _sourceUri);
 
-                if (context.Data.HasGraph(this._graphUri))
+                if (context.Data.HasGraph(_graphUri))
                 {
                     // Merge the Data into the existing Graph
-                    context.Data.GetModifiableGraph(this._graphUri).Merge(g);
+                    context.Data.GetModifiableGraph(_graphUri).Merge(g);
                 }
                 else
                 {
                     // Add New Graph to the Dataset
-                    g.BaseUri = this._graphUri;
+                    g.BaseUri = _graphUri;
                     context.Data.AddGraph(g);
                 }
             }
             catch
             {
-                if (!this._silent) throw;
+                if (!_silent) throw;
             }
         }
 
@@ -189,14 +189,14 @@ namespace VDS.RDF.Update.Commands
         /// <returns></returns>
         public override string ToString()
         {
-            String silent = (this._silent) ? "SILENT " : String.Empty;
-            if (this._graphUri == null)
+            String silent = (_silent) ? "SILENT " : String.Empty;
+            if (_graphUri == null)
             {
-                return "LOAD " + silent + "<" + this._sourceUri.AbsoluteUri.Replace(">", "\\>") + ">";
+                return "LOAD " + silent + "<" + _sourceUri.AbsoluteUri.Replace(">", "\\>") + ">";
             }
             else
             {
-                return "LOAD " + silent + "<" + this._sourceUri.AbsoluteUri.Replace(">", "\\>") + "> INTO <" + this._graphUri.AbsoluteUri.Replace(">", "\\>") + ">";
+                return "LOAD " + silent + "<" + _sourceUri.AbsoluteUri.Replace(">", "\\>") + "> INTO <" + _graphUri.AbsoluteUri.Replace(">", "\\>") + ">";
             }
         }
     }

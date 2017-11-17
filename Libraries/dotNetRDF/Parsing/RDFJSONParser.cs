@@ -48,7 +48,7 @@ namespace VDS.RDF.Parsing
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
 
-            this.Load(new GraphHandler(g), input);
+            Load(new GraphHandler(g), input);
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace VDS.RDF.Parsing
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
 
-            this.Load(new GraphHandler(g), input);
+            Load(new GraphHandler(g), input);
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace VDS.RDF.Parsing
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-            this.Load(new GraphHandler(g), filename);
+            Load(new GraphHandler(g), filename);
         }
 
         /// <summary>
@@ -88,10 +88,10 @@ namespace VDS.RDF.Parsing
             // Issue a Warning if the Encoding of the Stream is not UTF-8
             if (!input.CurrentEncoding.Equals(Encoding.UTF8))
             {
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+                RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
             }
 
-            this.Load(handler, (TextReader)input);
+            Load(handler, (TextReader)input);
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                this.Parse(handler, input);
+                Parse(handler, input);
             }
             catch
             {
@@ -135,7 +135,7 @@ namespace VDS.RDF.Parsing
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-            this.Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
+            Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
         }
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace VDS.RDF.Parsing
             try
             {
                 context.Handler.StartRdf();
-                this.ParseGraphObject(context);
+                ParseGraphObject(context);
                 context.Handler.EndRdf(true);
             }
             catch (RdfParsingTerminatedException)
@@ -177,7 +177,7 @@ namespace VDS.RDF.Parsing
             {
                 if (context.Input.TokenType == JsonToken.StartObject)
                 {
-                    this.ParseTriples(context);
+                    ParseTriples(context);
 
                     // When we get control back we should have already read the last token which should be an End Object
                     // We ignore any content which is beyond the end of the initial object
@@ -222,7 +222,7 @@ namespace VDS.RDF.Parsing
                             subjNode = context.Handler.CreateUriNode(UriFactory.Create(subjValue));
                         }
 
-                        this.ParsePredicateObjectList(context, subjNode);
+                        ParsePredicateObjectList(context, subjNode);
                     }
                     else
                     {
@@ -259,7 +259,7 @@ namespace VDS.RDF.Parsing
                             String predValue = context.Input.Value.ToString();
                             INode predNode = context.Handler.CreateUriNode(UriFactory.Create(predValue));
 
-                            this.ParseObjectList(context, subj, predNode);
+                            ParseObjectList(context, subj, predNode);
                         }
                         else
                         {
@@ -298,7 +298,7 @@ namespace VDS.RDF.Parsing
                     while (context.Input.TokenType != JsonToken.EndArray)
                     {
                         // Try to parse an 'Object' Object!!
-                        this.ParseObject(context, subj, pred);
+                        ParseObject(context, subj, pred);
                     }
                 }
                 else
@@ -477,7 +477,7 @@ namespace VDS.RDF.Parsing
         /// <param name="message">Warning Message</param>
         private void RaiseWarning(String message)
         {
-            RdfReaderWarning d = this.Warning;
+            RdfReaderWarning d = Warning;
             if (d != null)
             {
                 d(message);

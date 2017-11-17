@@ -51,14 +51,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         public TangentFunction(ISparqlExpression expr, bool inverse)
             : base(expr)
         {
-            this._inverse = inverse;
-            if (this._inverse)
+            _inverse = inverse;
+            if (_inverse)
             {
-                this._func = Math.Atan;
+                _func = Math.Atan;
             }
             else
             {
-                this._func = Math.Tan;
+                _func = Math.Tan;
             }
         }
 
@@ -68,13 +68,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         /// <returns></returns>
         public override string ToString()
         {
-            if (this._inverse)
+            if (_inverse)
             {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigTanInv + ">(" + this._expr.ToString() + ")";
+                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigTanInv + ">(" + _expr.ToString() + ")";
             }
             else
             {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigTan + ">(" + this._expr.ToString() + ")";
+                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigTan + ">(" + _expr.ToString() + ")";
             }
         }
 
@@ -85,7 +85,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         {
             get
             {
-                if (this._inverse)
+                if (_inverse)
                 {
                     return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigTanInv;
                 }
@@ -103,7 +103,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new TangentFunction(transformer.Transform(this._expr), this._inverse);
+            return new TangentFunction(transformer.Transform(_expr), _inverse);
         }
     }
 }

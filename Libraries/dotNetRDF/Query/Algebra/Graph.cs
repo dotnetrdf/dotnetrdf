@@ -49,8 +49,8 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="graphSpecifier">Graph Specifier</param>
         public Graph(ISparqlAlgebra pattern, IToken graphSpecifier)
         {
-            this._pattern = pattern;
-            this._graphSpecifier = graphSpecifier;
+            _pattern = pattern;
+            _graphSpecifier = graphSpecifier;
         }
 
         /// <summary>
@@ -68,13 +68,13 @@ namespace VDS.RDF.Query.Algebra
                 List<String> activeGraphs = new List<string>();
 
                 // Get the URIs of Graphs that should be evaluated over
-                if (this._graphSpecifier.TokenType != Token.VARIABLE)
+                if (_graphSpecifier.TokenType != Token.VARIABLE)
                 {
-                    switch (this._graphSpecifier.TokenType)
+                    switch (_graphSpecifier.TokenType)
                     {
                         case Token.URI:
                         case Token.QNAME:
-                            Uri activeGraphUri = UriFactory.Create(Tools.ResolveUriOrQName(this._graphSpecifier, context.Query.NamespaceMap, context.Query.BaseUri));
+                            Uri activeGraphUri = UriFactory.Create(Tools.ResolveUriOrQName(_graphSpecifier, context.Query.NamespaceMap, context.Query.BaseUri));
                             if (context.Data.HasGraph(activeGraphUri))
                             {
                                 // If the Graph is explicitly specified and there are FROM/FROM NAMED present then the Graph 
@@ -105,12 +105,12 @@ namespace VDS.RDF.Query.Algebra
                             }
                             break;
                         default:
-                            throw new RdfQueryException("Cannot use a '" + this._graphSpecifier.GetType().ToString() + "' Token to specify the Graph for a GRAPH clause");
+                            throw new RdfQueryException("Cannot use a '" + _graphSpecifier.GetType().ToString() + "' Token to specify the Graph for a GRAPH clause");
                     }
                 }
                 else
                 {
-                    String gvar = this._graphSpecifier.Value.Substring(1);
+                    String gvar = _graphSpecifier.Value.Substring(1);
 
                     // Watch out for the case in which the Graph Variable is not bound for all Sets in which case
                     // we still need to operate over all Graphs
@@ -179,7 +179,7 @@ namespace VDS.RDF.Query.Algebra
                     datasetOk = true;
 
                     // Evaluate for the current Active Graph
-                    BaseMultiset result = context.Evaluate(this._pattern);
+                    BaseMultiset result = context.Evaluate(_pattern);
 
                     // Merge the Results into our overall Results
                     if (result is NullMultiset)
@@ -189,12 +189,12 @@ namespace VDS.RDF.Query.Algebra
                     else if (result is IdentityMultiset)
                     {
                         // Adds a single row to the results
-                        if (this._graphSpecifier.TokenType == Token.VARIABLE)
+                        if (_graphSpecifier.TokenType == Token.VARIABLE)
                         {
                             // Include graph variable if not yet bound
                             INode currGraph = new UriNode(null, currGraphUri);
                             Set s = new Set();
-                            s.Add(this._graphSpecifier.Value.Substring(1), currGraph);
+                            s.Add(_graphSpecifier.Value.Substring(1), currGraph);
                             finalResult.Add(s);
                         }
                         else
@@ -206,9 +206,9 @@ namespace VDS.RDF.Query.Algebra
                     {
                         // If the Graph Specifier is a Variable then we must either bind the
                         // variable or eliminate solutions which have an incorrect value for it
-                        if (this._graphSpecifier.TokenType == Token.VARIABLE)
+                        if (_graphSpecifier.TokenType == Token.VARIABLE)
                         {
-                            String gvar = this._graphSpecifier.Value.Substring(1);
+                            String gvar = _graphSpecifier.Value.Substring(1);
                             INode currGraph = new UriNode(null, currGraphUri);
                             foreach (int id in result.SetIDs.ToList())
                             {
@@ -254,25 +254,26 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                if (this._graphSpecifier.TokenType != Token.VARIABLE) return this._pattern.Variables.Distinct();
+                if (_graphSpecifier.TokenType != Token.VARIABLE) return _pattern.Variables.Distinct();
 
                 // Include graph variable
-                String graphVar = ((VariableToken) this._graphSpecifier).Value.Substring(1);
-                return this._pattern.Variables.Concat(graphVar.AsEnumerable()).Distinct();
+                String graphVar = ((VariableToken) _graphSpecifier).Value.Substring(1);
+                return _pattern.Variables.Concat(graphVar.AsEnumerable()).Distinct();
             }
         }
 
+        /// <inheritdoc />
         public IEnumerable<String> FloatingVariables
         {
             get
             {
-                if (this._graphSpecifier.TokenType != Token.VARIABLE) return this._pattern.FloatingVariables;
+                if (_graphSpecifier.TokenType != Token.VARIABLE) return _pattern.FloatingVariables;
 
                 // May need to add graph variable to floating variables if it isn't fixed
                 // Stricly speaking the graph variable should always be fixed but non-standard implementations may treat the default graph as a named graph with a null URI
-                String graphVar = ((VariableToken) this._graphSpecifier).Value.Substring(1);
-                HashSet<String> fixedVars = new HashSet<string>(this.FixedVariables);
-                return fixedVars.Contains(graphVar) ? this._pattern.FloatingVariables : this._pattern.FloatingVariables.Concat(graphVar.AsEnumerable()).Distinct();
+                String graphVar = ((VariableToken) _graphSpecifier).Value.Substring(1);
+                HashSet<String> fixedVars = new HashSet<string>(FixedVariables);
+                return fixedVars.Contains(graphVar) ? _pattern.FloatingVariables : _pattern.FloatingVariables.Concat(graphVar.AsEnumerable()).Distinct();
             }
         }
 
@@ -281,7 +282,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public IEnumerable<String> FixedVariables
         {
-            get { return this._pattern.FixedVariables; }
+            get { return _pattern.FixedVariables; }
         }
 
         /// <summary>
@@ -289,7 +290,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public IToken GraphSpecifier
         {
-            get { return this._graphSpecifier; }
+            get { return _graphSpecifier; }
         }
 
         /// <summary>
@@ -297,7 +298,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public ISparqlAlgebra InnerAlgebra
         {
-            get { return this._pattern; }
+            get { return _pattern; }
         }
 
         /// <summary>
@@ -306,7 +307,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Graph(" + this._graphSpecifier.Value + ", " + this._pattern.ToString() + ")";
+            return "Graph(" + _graphSpecifier.Value + ", " + _pattern.ToString() + ")";
         }
 
         /// <summary>
@@ -316,7 +317,7 @@ namespace VDS.RDF.Query.Algebra
         public SparqlQuery ToQuery()
         {
             SparqlQuery q = new SparqlQuery();
-            q.RootGraphPattern = this.ToGraphPattern();
+            q.RootGraphPattern = ToGraphPattern();
             q.Optimise();
             return q;
         }
@@ -327,11 +328,11 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            GraphPattern p = this._pattern.ToGraphPattern();
+            GraphPattern p = _pattern.ToGraphPattern();
             if (!p.IsGraph)
             {
                 p.IsGraph = true;
-                p.GraphSpecifier = this._graphSpecifier;
+                p.GraphSpecifier = _graphSpecifier;
             }
             return p;
         }
@@ -343,14 +344,20 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new Graph(optimiser.Optimise(this._pattern), this._graphSpecifier);
+            return new Graph(optimiser.Optimise(_pattern), _graphSpecifier);
         }
 
+        /// <summary>
+        /// Creates a Graph instance by applying a graph specifier to an algebra
+        /// </summary>
+        /// <param name="algebra">The algebra to be constrained</param>
+        /// <param name="graphSpecifier">A token specifying the graph constraint</param>
+        /// <returns>A Graph instance representing the application of the graph constraint to the algebra</returns>
         public static ISparqlAlgebra ApplyGraph(ISparqlAlgebra algebra, IToken graphSpecifier)
         {
             if (!(algebra is Graph)) return new Graph(algebra, graphSpecifier);
 
-            Graph other = (Graph) algebra;
+            var other = (Graph) algebra;
             if (other.GraphSpecifier.TokenType == graphSpecifier.TokenType && other.GraphSpecifier.Value.Equals(graphSpecifier.Value))
             {
                 // We already have the appropriate graph specifier applied to us so reapplying it is unecessary

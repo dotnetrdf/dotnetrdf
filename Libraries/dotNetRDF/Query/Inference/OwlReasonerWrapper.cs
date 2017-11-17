@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Inference
         /// <param name="reasoner">OWL Reasoner</param>
         public StaticOwlReasonerWrapper(IOwlReasoner reasoner)
         {
-            this._reasoner = reasoner;
+            _reasoner = reasoner;
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace VDS.RDF.Query.Inference
         /// <param name="g">Graph</param>
         public virtual void Apply(IGraph g)
         {
-            this.Apply(g, g);
+            Apply(g, g);
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace VDS.RDF.Query.Inference
         /// <param name="output">Output Graph</param>
         public virtual void Apply(IGraph input, IGraph output)
         {
-            output.Assert(this._reasoner.Extract(OwlHelper.OwlExtractMode.AllStatements));
+            output.Assert(_reasoner.Extract(OwlHelper.OwlExtractMode.AllStatements));
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace VDS.RDF.Query.Inference
         /// <param name="g">Graph to initialise with</param>
         public void Initialise(IGraph g)
         {
-            this._reasoner.Add(g);
+            _reasoner.Add(g);
         }
     }
 
@@ -95,7 +95,7 @@ namespace VDS.RDF.Query.Inference
         /// <param name="g">Graph</param>
         public override void Apply(IGraph g)
         {
-            this.Apply(g, g);
+            Apply(g, g);
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace VDS.RDF.Query.Inference
         /// <param name="output">Output Graph</param>
         public override void Apply(IGraph input, IGraph output)
         {
-            this.Initialise(input);
+            Initialise(input);
             base.Apply(input, output);
         }
     }

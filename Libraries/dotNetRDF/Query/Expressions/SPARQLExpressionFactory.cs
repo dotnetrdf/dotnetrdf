@@ -49,12 +49,12 @@ namespace VDS.RDF.Query.Expressions
         /// <remarks>
         /// All the standard function libraries (XPath, Leviathan and ARQ) included in dotNetRDF are automatically registered
         /// </remarks>
-        private static List<ISparqlCustomExpressionFactory> _customFactories = new List<ISparqlCustomExpressionFactory>() 
+        private static readonly List<ISparqlCustomExpressionFactory> CustomFactories = new List<ISparqlCustomExpressionFactory>() 
         {
             new SparqlBuiltInFunctionFactory(),
             new XPathFunctionFactory(),
             new LeviathanFunctionFactory(),
-            new ArqFunctionFactory()
+            new ArqFunctionFactory(),
         };
 
         /// <summary>
@@ -153,7 +153,7 @@ namespace VDS.RDF.Query.Expressions
             {
                 // Try to use the Global Custom Factories to generate the Expression
                 ISparqlExpression expr = null;
-                foreach (ISparqlCustomExpressionFactory customFactory in _customFactories)
+                foreach (ISparqlCustomExpressionFactory customFactory in CustomFactories)
                 {
                     if (customFactory.TryCreateExpression(u, args, scalarArgs, out expr))
                     {
@@ -197,9 +197,9 @@ namespace VDS.RDF.Query.Expressions
         public static void AddCustomFactory(ISparqlCustomExpressionFactory factory)
         {
             // Only register the factory if it is not already registered
-            if (!_customFactories.Any(f => f.GetType().Equals(factory.GetType())))
+            if (!CustomFactories.Any(f => f.GetType().Equals(factory.GetType())))
             {
-                _customFactories.Add(factory);
+                CustomFactories.Add(factory);
             }
         }
 
@@ -210,7 +210,7 @@ namespace VDS.RDF.Query.Expressions
         {
             get
             {
-                return _customFactories;
+                return CustomFactories;
             }
         }
     }

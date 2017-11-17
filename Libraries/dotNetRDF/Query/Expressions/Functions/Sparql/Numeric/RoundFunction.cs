@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordRound + "(" + this._expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordRound + "(" + _expr.ToString() + ")";
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new RoundFunction(transformer.Transform(this._expr));
+            return new RoundFunction(transformer.Transform(_expr));
         }
     }
 }

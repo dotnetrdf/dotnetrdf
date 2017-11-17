@@ -48,14 +48,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <summary>
         /// Gets the functor for the expression
         /// </summary>
-        public override string Functor
-        {
-            get 
-            {
-                return SparqlSpecsHelper.SparqlKeywordUUID;
-            }
-        }
+        public override string Functor => SparqlSpecsHelper.SparqlKeywordUUID;
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordUUID + "()";
@@ -81,14 +76,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <summary>
         /// Gets the functor for the expression
         /// </summary>
-        public override string Functor
-        {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordStrUUID;
-            }
-        }
+        public override string Functor => SparqlSpecsHelper.SparqlKeywordStrUUID;
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordStrUUID + "()";

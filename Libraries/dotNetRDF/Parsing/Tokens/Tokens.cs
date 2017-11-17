@@ -560,7 +560,7 @@ namespace VDS.RDF.Parsing.Tokens
         public LiteralWithLanguageSpecifierToken(IToken lit, LanguageSpecifierToken lang)
             : base(Token.LITERALWITHLANG, lit.Value, lit.StartLine, lit.EndLine, lit.StartPosition, lit.EndPosition)
         {
-            this._lang = lang.Value;
+            _lang = lang.Value;
         }
 
         /// <summary>
@@ -570,7 +570,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get
             {
-                return this._lang;
+                return _lang;
             }
         }
 
@@ -590,7 +590,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="dt">DataType Token</param>
         public LiteralWithDataTypeToken(IToken lit, DataTypeToken dt) : base(Token.LITERALWITHDT, lit.Value, lit.StartLine, lit.EndLine, lit.StartPosition, lit.EndPosition)
         {
-            this._datatype = dt.Value;
+            _datatype = dt.Value;
         }
 
         /// <summary>
@@ -600,7 +600,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get
             {
-                return this._datatype;
+                return _datatype;
             }
         }
     }
@@ -677,7 +677,7 @@ namespace VDS.RDF.Parsing.Tokens
         public BlankNodeCollectionToken(Stack<IToken> contents, int startline, int endline, int start, int end)
             : base(Token.BLANKNODECOLLECTION, "", startline, endline, start, end)
         {
-            this._contents = contents;
+            _contents = contents;
         }
 
         /// <summary>
@@ -687,7 +687,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get
             {
-                return this._contents;
+                return _contents;
             }
         }
     }

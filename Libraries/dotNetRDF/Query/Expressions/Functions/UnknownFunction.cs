@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <param name="funcUri">Function URI</param>
         public UnknownFunction(Uri funcUri)
         {
-            this._funcUri = funcUri;
+            _funcUri = funcUri;
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         public UnknownFunction(Uri funcUri, ISparqlExpression expr)
             : this(funcUri)
         {
-            this._args.Add(expr);
+            _args.Add(expr);
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         public UnknownFunction(Uri funcUri, IEnumerable<ISparqlExpression> exprs)
             : this(funcUri)
         {
-            this._args.AddRange(exprs);
+            _args.AddRange(exprs);
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             get 
             {
-                return (from arg in this._args
+                return (from arg in _args
                         from v in arg.Variables
                         select v).Distinct();
             }
@@ -119,7 +119,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             get 
             {
-                return this._funcUri.ToString(); 
+                return _funcUri.ToString(); 
             }
         }
 
@@ -130,7 +130,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             get
             {
-                return this._args; 
+                return _args; 
             }
         }
 
@@ -141,7 +141,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             get
             {
-                return this._args.All(a => a.CanParallelise);
+                return _args.All(a => a.CanParallelise);
             }
         }
 
@@ -153,14 +153,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             StringBuilder output = new StringBuilder();
             output.Append('<');
-            output.Append(this._funcUri.AbsoluteUri.Replace(">", "\\>"));
+            output.Append(_funcUri.AbsoluteUri.Replace(">", "\\>"));
             output.Append('>');
             output.Append('(');
-            for (int i = 0; i < this._args.Count; i++)
+            for (int i = 0; i < _args.Count; i++)
             {
-                output.Append(this._args[i].ToString());
+                output.Append(_args[i].ToString());
 
-                if (i < this._args.Count - 1)
+                if (i < _args.Count - 1)
                 {
                     output.Append(", ");
                 }
@@ -176,7 +176,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new UnknownFunction(this._funcUri, this._args.Select(e => transformer.Transform(e)));
+            return new UnknownFunction(_funcUri, _args.Select(e => transformer.Transform(e)));
         }
     }
 }

@@ -74,7 +74,7 @@ namespace VDS.RDF.Query.Paths
         public FixedCardinality(ISparqlPath path, int n)
             : base(path)
         {
-            this._n = n;
+            _n = n;
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace VDS.RDF.Query.Paths
         {
             get 
             {
-                return this._n; 
+                return _n; 
             }
         }
 
@@ -95,7 +95,7 @@ namespace VDS.RDF.Query.Paths
         {
             get 
             {
-                return this._n; 
+                return _n; 
             }
         }
 
@@ -106,22 +106,22 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
-            if (this._n > 0)
+            if (_n > 0)
             {
                 // Generate a Triple Pattern for each step in the cardinality
-                for (int i = 0; i < this._n; i++)
+                for (int i = 0; i < _n; i++)
                 {
                     context.Object = context.GetNextTemporaryVariable();
 
-                    if (i < this._n - 1 || !context.Top)
+                    if (i < _n - 1 || !context.Top)
                     {
-                        context.AddTriplePattern(context.GetTriplePattern(context.Subject, this._path, context.Object));
+                        context.AddTriplePattern(context.GetTriplePattern(context.Subject, _path, context.Object));
                         context.Subject = context.Object;
                     }
                     else
                     {
                         context.ResetObject();
-                        context.AddTriplePattern(context.GetTriplePattern(context.Subject, this._path, context.Object));
+                        context.AddTriplePattern(context.GetTriplePattern(context.Subject, _path, context.Object));
                     }
                 }
 
@@ -129,7 +129,7 @@ namespace VDS.RDF.Query.Paths
             }
             else
             {
-                return new ZeroLengthPath(context.Subject, context.Object, this._path);
+                return new ZeroLengthPath(context.Subject, context.Object, _path);
             }
         }
 
@@ -139,7 +139,7 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public override string ToString()
         {
-            return this._path.ToString() + "{" + this._n + "}";
+            return _path.ToString() + "{" + _n + "}";
         }
     }
 
@@ -183,7 +183,7 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public override string ToString()
         {
-            return this._path.ToString() + "*";
+            return _path.ToString() + "*";
         }
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
-            return new ZeroOrMorePath(context.Subject, context.Object, this._path);
+            return new ZeroOrMorePath(context.Subject, context.Object, _path);
         }
     }
 
@@ -238,7 +238,7 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public override string ToString()
         {
-            return this._path.ToString() + "?";
+            return _path.ToString() + "?";
         }
 
         /// <summary>
@@ -250,8 +250,8 @@ namespace VDS.RDF.Query.Paths
         {
             PathTransformContext lhsContext = new PathTransformContext(context);
             PathTransformContext rhsContext = new PathTransformContext(context);
-            ISparqlAlgebra lhs = new ZeroLengthPath(lhsContext.Subject, lhsContext.Object, this._path);
-            ISparqlAlgebra rhs = this._path.ToAlgebra(rhsContext);
+            ISparqlAlgebra lhs = new ZeroLengthPath(lhsContext.Subject, lhsContext.Object, _path);
+            ISparqlAlgebra rhs = _path.ToAlgebra(rhsContext);
 
             return new Distinct(new Union(lhs, rhs));
         }
@@ -298,7 +298,7 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public override string ToString()
         {
-            return this._path.ToString() + "+";
+            return _path.ToString() + "+";
         }
 
         /// <summary>
@@ -308,7 +308,7 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
-            return new OneOrMorePath(context.Subject, context.Object, this._path);
+            return new OneOrMorePath(context.Subject, context.Object, _path);
         }
     }
 
@@ -327,7 +327,7 @@ namespace VDS.RDF.Query.Paths
         public NOrMore(ISparqlPath path, int n)
             : base(path) 
         {
-            this._n = n;
+            _n = n;
         }
 
         /// <summary>
@@ -348,7 +348,7 @@ namespace VDS.RDF.Query.Paths
         {
             get 
             {
-                return this._n;
+                return _n;
             }
         }
 
@@ -358,7 +358,7 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public override string ToString()
         {
-            return this._path.ToString() + "{" + this._n + ",}";
+            return _path.ToString() + "{" + _n + ",}";
         }
 
         /// <summary>
@@ -369,8 +369,8 @@ namespace VDS.RDF.Query.Paths
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
             PatternItem tempVar = context.GetNextTemporaryVariable();
-            context.AddTriplePattern(new PropertyPathPattern(context.Subject, new FixedCardinality(this._path, this._n), tempVar));
-            context.AddTriplePattern(new PropertyPathPattern(tempVar, new ZeroOrMore(this._path), context.Object));
+            context.AddTriplePattern(new PropertyPathPattern(context.Subject, new FixedCardinality(_path, _n), tempVar));
+            context.AddTriplePattern(new PropertyPathPattern(tempVar, new ZeroOrMore(_path), context.Object));
             return context.ToAlgebra();
         }
     }
@@ -390,7 +390,7 @@ namespace VDS.RDF.Query.Paths
         public ZeroToN(ISparqlPath path, int n)
             : base(path) 
         {
-            this._n = n;
+            _n = n;
         }
 
         /// <summary>
@@ -400,7 +400,7 @@ namespace VDS.RDF.Query.Paths
         {
             get 
             {
-                return this._n;
+                return _n;
             }
         }
 
@@ -421,7 +421,7 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public override string ToString()
         {
-            return this._path.ToString() + "{," + this._n + "}";
+            return _path.ToString() + "{," + _n + "}";
         }
 
         /// <summary>
@@ -431,7 +431,7 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
-            context.AddTriplePattern(new PropertyPathPattern(context.Subject, new NToM(this._path, 0, this._n), context.Object));
+            context.AddTriplePattern(new PropertyPathPattern(context.Subject, new NToM(_path, 0, _n), context.Object));
             return context.ToAlgebra();
         }
     }
@@ -452,8 +452,8 @@ namespace VDS.RDF.Query.Paths
         public NToM(ISparqlPath path, int n, int m)
             : base(path)
         {
-            this._n = n;
-            this._m = m;
+            _n = n;
+            _m = m;
         }
 
         /// <summary>
@@ -463,7 +463,7 @@ namespace VDS.RDF.Query.Paths
         {
             get 
             {
-                return this._m; 
+                return _m; 
             }
         }
 
@@ -474,7 +474,7 @@ namespace VDS.RDF.Query.Paths
         {
             get 
             {
-                return this._n;
+                return _n;
             }
         }
 
@@ -484,7 +484,7 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public override string ToString()
         {
-            return this._path.ToString() + "{" + this._n + "," + this._m + "}";
+            return _path.ToString() + "{" + _n + "," + _m + "}";
         }
 
         /// <summary>
@@ -495,11 +495,11 @@ namespace VDS.RDF.Query.Paths
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
             ISparqlAlgebra complex = null;
-            int i = this._n;
-            while (i <= this._m)
+            int i = _n;
+            while (i <= _m)
             {
                 PathTransformContext tempContext = new PathTransformContext(context);
-                tempContext.AddTriplePattern(new PropertyPathPattern(context.Subject, new FixedCardinality(this._path, i), context.Object));
+                tempContext.AddTriplePattern(new PropertyPathPattern(context.Subject, new FixedCardinality(_path, i), context.Object));
                 if (complex == null)
                 {
                     complex = tempContext.ToAlgebra();

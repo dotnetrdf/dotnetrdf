@@ -55,7 +55,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="tokeniser">Tokeniser</param>
         public TokenQueue(ITokeniser tokeniser)
         {
-            this._tokeniser = tokeniser;
+            _tokeniser = tokeniser;
         }
 
         /// <summary>
@@ -64,8 +64,8 @@ namespace VDS.RDF.Parsing.Tokens
         /// <returns>First Token in the Queue</returns>
         public override IToken Dequeue()
         {
-            this._lasttokentype = this._tokens.Peek().TokenType;
-            return this._tokens.Dequeue();
+            _lasttokentype = _tokens.Peek().TokenType;
+            return _tokens.Dequeue();
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="t">Token to add</param>
         public override void Enqueue(IToken t)
         {
-            this._tokens.Enqueue(t);
+            _tokens.Enqueue(t);
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <returns>First Token in the Queue</returns>
         public override IToken Peek()
         {
-            return this._tokens.Peek();
+            return _tokens.Peek();
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         public override void Clear()
         {
-            this._tokens.Clear();
+            _tokens.Clear();
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get 
             {
-                return this._tokens.Count;
+                return _tokens.Count;
             }
         }
 
@@ -114,16 +114,16 @@ namespace VDS.RDF.Parsing.Tokens
             IToken t;
             do
             {
-                t = this._tokeniser.GetNextToken();
+                t = _tokeniser.GetNextToken();
                 // We discard comments at this stage
                 if (t.TokenType != Token.COMMENT)
                 {
-                    this._tokens.Enqueue(t);
+                    _tokens.Enqueue(t);
                 }
 
-                if (this._tracing)
+                if (_tracing)
                 {
-                    this.PrintTrace(t);
+                    PrintTrace(t);
                 }
             } while (t.TokenType != Token.EOF);
         }
@@ -135,7 +135,7 @@ namespace VDS.RDF.Parsing.Tokens
         public override void InitialiseBuffer(int amount)
         {
             // This Queue doesn't care about the Buffer amount
-            this.InitialiseBuffer();
+            InitialiseBuffer();
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get 
             {
-                return this._tokens;
+                return _tokens;
             }
         }
 
@@ -185,11 +185,11 @@ namespace VDS.RDF.Parsing.Tokens
             // Discard Comments
             do
             {
-                temp = this._tokens.Dequeue();
-                if (this._tracing) this.PrintTrace(temp);
+                temp = _tokens.Dequeue();
+                if (_tracing) PrintTrace(temp);
             } while (temp.TokenType == Token.COMMENT);
 
-            this._lasttokentype = temp.TokenType;
+            _lasttokentype = temp.TokenType;
             return temp;
         }
 
@@ -200,12 +200,12 @@ namespace VDS.RDF.Parsing.Tokens
         public override IToken Peek()
         {
             // Discard Comments
-            while (this._tokens.Peek().TokenType == Token.COMMENT)
+            while (_tokens.Peek().TokenType == Token.COMMENT)
             {
-                this._tokens.Dequeue();
+                _tokens.Dequeue();
             }
 
-            return this._tokens.Peek();
+            return _tokens.Peek();
         }
 
         /// <summary>
@@ -234,7 +234,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="tokeniser">Tokeniser to Buffer</param>
         public BufferedTokenQueue(ITokeniser tokeniser)
         {
-            this._tokeniser = tokeniser;
+            _tokeniser = tokeniser;
         }
 
         /// <summary>
@@ -251,7 +251,7 @@ namespace VDS.RDF.Parsing.Tokens
         public override IToken Dequeue()
         {
             // Is there anything already buffered?
-            if (this._tokens.Count > 0)
+            if (_tokens.Count > 0)
             {
                 // Return first thing in the Buffer
                 return base.Dequeue();
@@ -259,7 +259,7 @@ namespace VDS.RDF.Parsing.Tokens
             else
             {
                 // Buffer something from the Tokeniser
-                this.BufferInternal();
+                BufferInternal();
 
                 // Return first thing in the Buffer
                 return base.Dequeue();
@@ -273,18 +273,18 @@ namespace VDS.RDF.Parsing.Tokens
         public override IToken Peek()
         {
             // Is there anything already buffered?
-            if (this._tokens.Count > 0)
+            if (_tokens.Count > 0)
             {
                 // Return first thing in the Buffer
-                return this._tokens.Peek();
+                return _tokens.Peek();
             }
             else
             {
                 // Buffer something from the Tokeniser
-                this.BufferInternal();
+                BufferInternal();
 
                 // Return first thing in the Buffer
-                return this._tokens.Peek();
+                return _tokens.Peek();
             }
         }
 
@@ -294,7 +294,7 @@ namespace VDS.RDF.Parsing.Tokens
         public override void InitialiseBuffer()
         {
             // Buffer by the Default Amount
-            this.BufferInternal();
+            BufferInternal();
         }
 
         /// <summary>
@@ -306,9 +306,9 @@ namespace VDS.RDF.Parsing.Tokens
         {
             if (amount > 0)
             {
-                this._bufferAmount = amount;
+                _bufferAmount = amount;
             }
-            this.BufferInternal();
+            BufferInternal();
         }
 
         /// <summary>
@@ -321,19 +321,19 @@ namespace VDS.RDF.Parsing.Tokens
             int i = 0;
             do
             {
-                t = this._tokeniser.GetNextToken();
+                t = _tokeniser.GetNextToken();
                 // Ensure that we discard Comments
                 if (t.TokenType != Token.COMMENT)
                 {
-                    this._tokens.Enqueue(t);
+                    _tokens.Enqueue(t);
                     i++;
                 }
 
-                if (this._tracing)
+                if (_tracing)
                 {
-                    this.PrintTrace(t);
+                    PrintTrace(t);
                 }
-            } while (t.TokenType != Token.EOF && i < this._bufferAmount);
+            } while (t.TokenType != Token.EOF && i < _bufferAmount);
         }
     }
 
@@ -374,36 +374,36 @@ namespace VDS.RDF.Parsing.Tokens
         /// <returns>Token at the front of the Queue</returns>
         public override IToken Dequeue()
         {
-            if (this._tokens.Count > 0)
+            if (_tokens.Count > 0)
             {
                 try
                 {
-                    Monitor.Enter(this._tokens);
+                    Monitor.Enter(_tokens);
                     return base.Dequeue();
                 }
                 finally
                 {
-                    Monitor.Exit(this._tokens);
+                    Monitor.Exit(_tokens);
                 }
             }
             else
             {
-                if (!this._finished)
+                if (!_finished)
                 {
                     // Wait for something to be Tokenised
-                    while (this._tokens.Count == 0)
+                    while (_tokens.Count == 0)
                     {
                         Thread.Sleep(50);
                     }
                 }
                 try
                 {
-                    Monitor.Enter(this._tokens);
+                    Monitor.Enter(_tokens);
                     return base.Dequeue();
                 }
                 finally
                 {
-                    Monitor.Exit(this._tokens);
+                    Monitor.Exit(_tokens);
                 }
             }
         }
@@ -414,36 +414,36 @@ namespace VDS.RDF.Parsing.Tokens
         /// <returns>Token at the front of the Queue</returns>
         public override IToken Peek()
         {
-            if (this._tokens.Count > 0)
+            if (_tokens.Count > 0)
             {
                 try
                 {
-                    Monitor.Enter(this._tokens);
+                    Monitor.Enter(_tokens);
                     return base.Peek();
                 }
                 finally
                 {
-                    Monitor.Enter(this._tokens);
+                    Monitor.Enter(_tokens);
                 }
             }
             else
             {
-                if (!this._finished)
+                if (!_finished)
                 {
                     // Wait for something to be Tokenised
-                    while (this._tokens.Count == 0)
+                    while (_tokens.Count == 0)
                     {
                         Thread.Sleep(50);
                     }
                 }
                 try
                 {
-                    Monitor.Enter(this._tokens);
+                    Monitor.Enter(_tokens);
                     return base.Peek();
                 }
                 finally
                 {
-                    Monitor.Enter(this._tokens);
+                    Monitor.Enter(_tokens);
                 }
             }
         }
@@ -453,12 +453,12 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         protected override void BufferInternal()
         {
-            if (!this._started)
+            if (!_started)
             {
-                this._bgbuffer = new Thread(new ThreadStart(BufferBackground));
-                this._bgbuffer.IsBackground = true;
-                this._started = true;
-                this._bgbuffer.Start();
+                _bgbuffer = new Thread(new ThreadStart(BufferBackground));
+                _bgbuffer.IsBackground = true;
+                _started = true;
+                _bgbuffer.Start();
             }
         }
 
@@ -472,27 +472,27 @@ namespace VDS.RDF.Parsing.Tokens
             int i = 0;
             do
             {
-                t = this._tokeniser.GetNextToken();
+                t = _tokeniser.GetNextToken();
                 try
                 {
-                    Monitor.Enter(this._tokens);
+                    Monitor.Enter(_tokens);
                     if (t.TokenType != Token.COMMENT)
                     {
-                        this._tokens.Enqueue(t);
+                        _tokens.Enqueue(t);
                         i++;
                     }
                 }
                 finally
                 {
-                    Monitor.Exit(this._tokens);
+                    Monitor.Exit(_tokens);
                 }
 
-                if (this._tracing)
+                if (_tracing)
                 {
-                    this.PrintTrace(t);
+                    PrintTrace(t);
                 }
             } while (t.TokenType != Token.EOF);
-            this._finished = true;
+            _finished = true;
         }
     }
 }

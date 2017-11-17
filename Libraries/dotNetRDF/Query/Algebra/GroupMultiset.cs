@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="contents">Multiset which contains the sets that are being grouped</param>
         public GroupMultiset(BaseMultiset contents)
         {
-            this._contents = contents;
+            _contents = contents;
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._groups.Values;
+                return _groups.Values;
             }
         }
 
@@ -65,7 +65,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public IEnumerable<int> GroupSetIDs(int id)
         {
-            return this._groups[id].BindingIDs;
+            return _groups[id].BindingIDs;
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BindingGroup Group(int id)
         {
-            return this._groups[id];
+            return _groups[id];
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace VDS.RDF.Query.Algebra
                 s.Add(assignment.Key, assignment.Value);
             }
             base.Add(s);
-            this._groups.Add(s.ID, group);
+            _groups.Add(s.ID, group);
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._contents;
+                return _contents;
             }
         }
     }

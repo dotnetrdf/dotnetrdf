@@ -55,10 +55,10 @@ namespace VDS.RDF
         protected internal BaseGraphLiteralNode(IGraph g, IGraph subgraph)
             : base(g, NodeType.GraphLiteral)
         {
-            this._subgraph = subgraph;
+            _subgraph = subgraph;
 
             // Compute Hash Code
-            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
+            _hashcode = (_nodetype + ToString()).GetHashCode();
         }
 
         /// <summary>
@@ -68,10 +68,10 @@ namespace VDS.RDF
         protected internal BaseGraphLiteralNode(IGraph g)
             : base(g, NodeType.GraphLiteral)
         {
-            this._subgraph = new Graph();
+            _subgraph = new Graph();
 
             // Compute Hash Code
-            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
+            _hashcode = (_nodetype + ToString()).GetHashCode();
         }
 
 #if !NETCORE
@@ -83,9 +83,9 @@ namespace VDS.RDF
         protected BaseGraphLiteralNode(SerializationInfo info, StreamingContext context)
             : base(null, NodeType.GraphLiteral)
         {
-            this._subgraph = (IGraph)info.GetValue("subgraph", typeof(Graph));
+            _subgraph = (IGraph)info.GetValue("subgraph", typeof(Graph));
             // Compute Hash Code
-            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
+            _hashcode = (_nodetype + ToString()).GetHashCode();
         }
 #endif
 
@@ -102,7 +102,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._subgraph;
+                return _subgraph;
             }
         }
 
@@ -119,7 +119,7 @@ namespace VDS.RDF
 
             if (obj is INode)
             {
-                return this.Equals((INode)obj);
+                return Equals((INode)obj);
             }
             else
             {
@@ -212,7 +212,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool Equals(BaseGraphLiteralNode other)
         {
-            return this.Equals((IGraphLiteralNode)other);
+            return Equals((IGraphLiteralNode)other);
         }
 
         /// <summary>
@@ -227,7 +227,7 @@ namespace VDS.RDF
             output.Append("{");
 
             // Add all the Triples in the Subgraph
-            foreach (Triple t in this._subgraph.Triples)
+            foreach (Triple t in _subgraph.Triples)
             {
                 output.Append(t.ToString());
             }
@@ -340,7 +340,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public int CompareTo(BaseGraphLiteralNode other)
         {
-            return this.CompareTo((IGraphLiteralNode)other);
+            return CompareTo((IGraphLiteralNode)other);
         }
 
 #if !NETCORE
@@ -353,7 +353,7 @@ namespace VDS.RDF
         /// <param name="context">Streaming Context</param>
         public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("subgraph", this._subgraph);
+            info.AddValue("subgraph", _subgraph);
         }
 
         /// <summary>
@@ -363,9 +363,9 @@ namespace VDS.RDF
         public sealed override void ReadXml(XmlReader reader)
         {
             reader.Read();
-            this._subgraph = reader.DeserializeGraph();
+            _subgraph = reader.DeserializeGraph();
             // Compute Hash Code
-            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
+            _hashcode = (_nodetype + ToString()).GetHashCode();
         }
 
         /// <summary>
@@ -374,7 +374,7 @@ namespace VDS.RDF
         /// <param name="writer">XML Writer</param>
         public sealed override void WriteXml(XmlWriter writer)
         {
-            this._subgraph.SerializeGraph(writer);
+            _subgraph.SerializeGraph(writer);
         }
 
         #endregion
@@ -537,7 +537,7 @@ namespace VDS.RDF
         /// </remarks>
         public int CompareTo(GraphLiteralNode other)
         {
-            return this.CompareTo((IGraphLiteralNode)other);
+            return CompareTo((IGraphLiteralNode)other);
         }
 
         /// <summary>

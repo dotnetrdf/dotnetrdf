@@ -55,8 +55,8 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <returns></returns>
         public NamespaceMapper GetNamespaces()
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Endpoint.Uri);
-            request.Method = this.Endpoint.HttpMethods.First();
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Endpoint.Uri);
+            request.Method = Endpoint.HttpMethods.First();
             request.Accept = "text/json";
 
             Tools.HttpDebugRequest(request);
@@ -104,8 +104,8 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// </remarks>
         public void GetNamespaces(NamespaceCallback callback, Object state)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Endpoint.Uri);
-            request.Method = this.Endpoint.HttpMethods.First();
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Endpoint.Uri);
+            request.Method = Endpoint.HttpMethods.First();
             request.Accept = "text/json";
 
             Tools.HttpDebugRequest(request);

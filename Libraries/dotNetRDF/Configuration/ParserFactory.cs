@@ -36,11 +36,10 @@ namespace VDS.RDF.Configuration
     public class ParserFactory 
         : IObjectFactory
     {
-        private Type[] _parserTypes = new Type[]
-        {
+        private readonly Type[] _parserTypes = {
             typeof(IRdfReader),
             typeof(IStoreReader),
-            typeof(ISparqlResultsReader)
+            typeof(ISparqlResultsReader),
         };
 
         /// <summary>
@@ -74,7 +73,7 @@ namespace VDS.RDF.Configuration
         public bool CanLoadObject(Type t)
         {
             // We can load any object which implements any parser interface and has a public unparameterized constructor
-            if (t.GetInterfaces().Any(i => this._parserTypes.Contains(i)))
+            if (t.GetInterfaces().Any(i => _parserTypes.Contains(i)))
             {
                 ConstructorInfo c = t.GetConstructor(new Type[0]);
                 if (c != null)
@@ -95,11 +94,10 @@ namespace VDS.RDF.Configuration
     /// </summary>
     public class WriterFactory : IObjectFactory
     {
-        private Type[] _writerTypes = new Type[]
-        {
+        private readonly Type[] _writerTypes = {
             typeof(IRdfWriter),
             typeof(IStoreWriter),
-            typeof(ISparqlResultsWriter)
+            typeof(ISparqlResultsWriter),
         };
 
         /// <summary>
@@ -133,7 +131,7 @@ namespace VDS.RDF.Configuration
         public bool CanLoadObject(Type t)
         {
             // We can load any object which implements any writer interface and has a public unparameterized constructor
-            if (t.GetInterfaces().Any(i => this._writerTypes.Contains(i)))
+            if (t.GetInterfaces().Any(i => _writerTypes.Contains(i)))
             {
                 ConstructorInfo c = t.GetConstructor(new Type[0]);
                 if (c != null)

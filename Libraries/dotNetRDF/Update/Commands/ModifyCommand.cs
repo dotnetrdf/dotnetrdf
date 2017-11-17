@@ -55,12 +55,12 @@ namespace VDS.RDF.Update.Commands
         public ModifyCommand(GraphPattern deletions, GraphPattern insertions, GraphPattern where, Uri graphUri)
             : base(SparqlUpdateCommandType.Modify)
         {
-            if (!this.IsValidDeletePattern(deletions, true)) throw new SparqlUpdateException("Cannot create a DELETE command where any of the Triple Patterns are not constructable triple patterns (Blank Node Variables are not permitted) or a GRAPH clause has nested Graph Patterns");
+            if (!IsValidDeletePattern(deletions, true)) throw new SparqlUpdateException("Cannot create a DELETE command where any of the Triple Patterns are not constructable triple patterns (Blank Node Variables are not permitted) or a GRAPH clause has nested Graph Patterns");
 
-            this._deletePattern = deletions;
-            this._insertPattern = insertions;
-            this._wherePattern = where;
-            this._graphUri = graphUri;
+            _deletePattern = deletions;
+            _insertPattern = insertions;
+            _wherePattern = where;
+            _graphUri = graphUri;
         }
 
         /// <summary>
@@ -80,21 +80,21 @@ namespace VDS.RDF.Update.Commands
             get
             {
                 List<String> affectedUris = new List<string>();
-                if (this.TargetUri != null)
+                if (TargetUri != null)
                 {
-                    affectedUris.Add(this.TargetUri.AbsoluteUri);
+                    affectedUris.Add(TargetUri.AbsoluteUri);
                 }
-                if (this._deletePattern.IsGraph) affectedUris.Add(this._deletePattern.GraphSpecifier.Value);
-                if (this._deletePattern.HasChildGraphPatterns)
+                if (_deletePattern.IsGraph) affectedUris.Add(_deletePattern.GraphSpecifier.Value);
+                if (_deletePattern.HasChildGraphPatterns)
                 {
-                    affectedUris.AddRange(from p in this._deletePattern.ChildGraphPatterns
+                    affectedUris.AddRange(from p in _deletePattern.ChildGraphPatterns
                                           where p.IsGraph
                                           select p.GraphSpecifier.Value);
                 }
-                if (this._insertPattern.IsGraph) affectedUris.Add(this._insertPattern.GraphSpecifier.Value);
-                if (this._insertPattern.HasChildGraphPatterns)
+                if (_insertPattern.IsGraph) affectedUris.Add(_insertPattern.GraphSpecifier.Value);
+                if (_insertPattern.HasChildGraphPatterns)
                 {
-                    affectedUris.AddRange(from p in this._insertPattern.ChildGraphPatterns
+                    affectedUris.AddRange(from p in _insertPattern.ChildGraphPatterns
                                           where p.IsGraph
                                           select p.GraphSpecifier.Value);
                 }
@@ -111,18 +111,18 @@ namespace VDS.RDF.Update.Commands
         public override bool AffectsGraph(Uri graphUri)
         {
             List<String> affectedUris = new List<string>();
-            affectedUris.Add(this.TargetUri != null ? this.TargetUri.AbsoluteUri : String.Empty);
-            if (this._deletePattern.IsGraph) affectedUris.Add(this._deletePattern.GraphSpecifier.Value);
-            if (this._deletePattern.HasChildGraphPatterns)
+            affectedUris.Add(TargetUri != null ? TargetUri.AbsoluteUri : String.Empty);
+            if (_deletePattern.IsGraph) affectedUris.Add(_deletePattern.GraphSpecifier.Value);
+            if (_deletePattern.HasChildGraphPatterns)
             {
-                affectedUris.AddRange(from p in this._deletePattern.ChildGraphPatterns
+                affectedUris.AddRange(from p in _deletePattern.ChildGraphPatterns
                                       where p.IsGraph
                                       select p.GraphSpecifier.Value);
             }
-            if (this._insertPattern.IsGraph) affectedUris.Add(this._insertPattern.GraphSpecifier.Value);
-            if (this._insertPattern.HasChildGraphPatterns)
+            if (_insertPattern.IsGraph) affectedUris.Add(_insertPattern.GraphSpecifier.Value);
+            if (_insertPattern.HasChildGraphPatterns)
             {
-                affectedUris.AddRange(from p in this._insertPattern.ChildGraphPatterns
+                affectedUris.AddRange(from p in _insertPattern.ChildGraphPatterns
                                       where p.IsGraph
                                       select p.GraphSpecifier.Value);
             }
@@ -138,7 +138,7 @@ namespace VDS.RDF.Update.Commands
         {
             get
             {
-                return this._graphUri;
+                return _graphUri;
             }
         }
 
@@ -149,7 +149,7 @@ namespace VDS.RDF.Update.Commands
         {
             get
             {
-                return this._deletePattern;
+                return _deletePattern;
             }
         }
 
@@ -160,7 +160,7 @@ namespace VDS.RDF.Update.Commands
         {
             get
             {
-                return this._insertPattern;
+                return _insertPattern;
             }
         }
 
@@ -171,7 +171,7 @@ namespace VDS.RDF.Update.Commands
         {
             get
             {
-                return this._wherePattern;
+                return _wherePattern;
             }
         }
 
@@ -180,7 +180,7 @@ namespace VDS.RDF.Update.Commands
         /// </summary>
         public override void Optimise(IQueryOptimiser optimiser)
         {
-            this._wherePattern.Optimise(optimiser);
+            _wherePattern.Optimise(optimiser);
         }
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace VDS.RDF.Update.Commands
             try
             {
                 // First evaluate the WHERE pattern to get the affected bindings
-                ISparqlAlgebra where = this._wherePattern.ToAlgebra();
+                ISparqlAlgebra where = _wherePattern.ToAlgebra();
                 if (context.Commands != null)
                 {
                     where = context.Commands.ApplyAlgebraOptimisers(where);
@@ -204,11 +204,11 @@ namespace VDS.RDF.Update.Commands
                 // Set Active Graph for the WHERE
                 // Don't bother if there are USING URIs as these would override any Active Graph we set here
                 // so we can save ourselves the effort of doing this
-                if (!this.UsingUris.Any())
+                if (!UsingUris.Any())
                 {
-                    if (this._graphUri != null)
+                    if (_graphUri != null)
                     {
-                        context.Data.SetActiveGraph(this._graphUri);
+                        context.Data.SetActiveGraph(_graphUri);
                         defGraphOk = true;
                     }
                     else
@@ -223,24 +223,24 @@ namespace VDS.RDF.Update.Commands
                 // URIs available to it which it gets from the Query property of the Context
                 // object
                 SparqlQuery query = new SparqlQuery();
-                foreach (Uri u in this.UsingUris)
+                foreach (Uri u in UsingUris)
                 {
                     query.AddDefaultGraph(u);
                 }
-                foreach (Uri u in this.UsingNamedUris)
+                foreach (Uri u in UsingNamedUris)
                 {
                     query.AddNamedGraph(u);
                 }
                 SparqlEvaluationContext queryContext = new SparqlEvaluationContext(query, context.Data, context.QueryProcessor);
-                if (this.UsingUris.Any())
+                if (UsingUris.Any())
                 {
                     // If there are USING URIs set the Active Graph to be formed of the Graphs with those URIs
-                    context.Data.SetActiveGraph(this._usingUris);
+                    context.Data.SetActiveGraph(_usingUris);
                     datasetOk = true;
                 }
                 BaseMultiset results = queryContext.Evaluate(where);
                 if (results is IdentityMultiset) results = new SingletonMultiset(results.Variables);
-                if (this.UsingUris.Any())
+                if (UsingUris.Any())
                 {
                     // If there are USING URIs reset the Active Graph afterwards
                     // Also flag the dataset as no longer being OK as this flag is used in the finally 
@@ -259,9 +259,9 @@ namespace VDS.RDF.Update.Commands
 
                 // Get the Graph to which we are deleting and inserting
                 IGraph g;
-                if (context.Data.HasGraph(this._graphUri))
+                if (context.Data.HasGraph(_graphUri))
                 {
-                    g = context.Data.GetModifiableGraph(this._graphUri);
+                    g = context.Data.GetModifiableGraph(_graphUri);
                 }
                 else
                 {
@@ -278,7 +278,7 @@ namespace VDS.RDF.Update.Commands
                         if (g != null)
                         {
                             ConstructContext constructContext = new ConstructContext(g, s, true);
-                            foreach (IConstructTriplePattern p in this._deletePattern.TriplePatterns.OfType<IConstructTriplePattern>())
+                            foreach (IConstructTriplePattern p in _deletePattern.TriplePatterns.OfType<IConstructTriplePattern>())
                             {
                                 try
                                 {
@@ -300,7 +300,7 @@ namespace VDS.RDF.Update.Commands
                     }
 
                     // Triples from GRAPH clauses
-                    foreach (GraphPattern gp in this._deletePattern.ChildGraphPatterns)
+                    foreach (GraphPattern gp in _deletePattern.ChildGraphPatterns)
                     {
                         deletedTriples.Clear();
                         try
@@ -377,7 +377,7 @@ namespace VDS.RDF.Update.Commands
                     try
                     {
                         ConstructContext constructContext = new ConstructContext(g, s, true);
-                        foreach (IConstructTriplePattern p in this._insertPattern.TriplePatterns.OfType<IConstructTriplePattern>())
+                        foreach (IConstructTriplePattern p in _insertPattern.TriplePatterns.OfType<IConstructTriplePattern>())
                         {
                             try
                             {
@@ -398,7 +398,7 @@ namespace VDS.RDF.Update.Commands
                     }
 
                     // Triples from GRAPH clauses
-                    foreach (GraphPattern gp in this._insertPattern.ChildGraphPatterns)
+                    foreach (GraphPattern gp in _insertPattern.ChildGraphPatterns)
                     {
                         insertedTriples.Clear();
                         try
@@ -506,32 +506,32 @@ namespace VDS.RDF.Update.Commands
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            if (this._graphUri != null)
+            if (_graphUri != null)
             {
                 output.Append("WITH <");
-                output.Append(this._graphUri.AbsoluteUri.Replace(">", "\\>"));
+                output.Append(_graphUri.AbsoluteUri.Replace(">", "\\>"));
                 output.AppendLine(">");
             }
             output.AppendLine("DELETE");
-            output.AppendLine(this._deletePattern.ToString());
+            output.AppendLine(_deletePattern.ToString());
             output.AppendLine("INSERT");
-            output.AppendLine(this._insertPattern.ToString());
-            if (this._usingUris != null)
+            output.AppendLine(_insertPattern.ToString());
+            if (_usingUris != null)
             {
-                foreach (Uri u in this._usingUris)
+                foreach (Uri u in _usingUris)
                 {
                     output.AppendLine("USING <" + u.AbsoluteUri.Replace(">", "\\>") + ">");
                 }
             }
-            if (this._usingNamedUris != null)
+            if (_usingNamedUris != null)
             {
-                foreach (Uri u in this._usingNamedUris)
+                foreach (Uri u in _usingNamedUris)
                 {
                     output.AppendLine("USING NAMED <" + u.AbsoluteUri.Replace(">", "\\>") + ">");
                 }
             }
             output.AppendLine("WHERE");
-            output.AppendLine(this._wherePattern.ToString());
+            output.AppendLine(_wherePattern.ToString());
             return output.ToString();
         }
     }

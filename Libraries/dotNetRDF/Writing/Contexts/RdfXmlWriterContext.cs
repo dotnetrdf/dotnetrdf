@@ -75,10 +75,10 @@ namespace VDS.RDF.Writing.Contexts
         /// <param name="output">Output destination</param>
         public RdfXmlWriterContext(IGraph g, TextWriter output)
         {
-            this._g = g;
-            this._output = output;
-            this._writer = XmlWriter.Create(this._output, this.GetSettings());
-            this._nsmapper.Import(this._g.NamespaceMap);
+            _g = g;
+            _output = output;
+            _writer = XmlWriter.Create(_output, GetSettings());
+            _nsmapper.Import(_g.NamespaceMap);
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace VDS.RDF.Writing.Contexts
             settings.ConformanceLevel = ConformanceLevel.Document;
             settings.CloseOutput = true;
             settings.Encoding = new UTF8Encoding(Options.UseBomForUtf8);
-            settings.Indent = this._prettyPrint;
+            settings.Indent = _prettyPrint;
             settings.NewLineHandling = NewLineHandling.None;
             settings.OmitXmlDeclaration = false;
 
@@ -105,7 +105,7 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._g;
+                return _g;
             }
         }
 
@@ -116,7 +116,7 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._output;
+                return _output;
             }
         }
 
@@ -127,7 +127,7 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._writer;
+                return _writer;
             }
         }
 
@@ -138,11 +138,11 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._prettyPrint;
+                return _prettyPrint;
             }
             set
             {
-                this._prettyPrint = value;
+                _prettyPrint = value;
             }
         }
 
@@ -189,7 +189,7 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._nsmapper;
+                return _nsmapper;
             }
         }
 
@@ -200,7 +200,7 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._bnodeMapper;
+                return _bnodeMapper;
             }
         }
 
@@ -232,11 +232,11 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._compressionLevel;
+                return _compressionLevel;
             }
             set
             {
-                this._compressionLevel = value;
+                _compressionLevel = value;
             }
         }
 
@@ -247,11 +247,11 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._nextNamespaceID;
+                return _nextNamespaceID;
             }
             set
             {
-                this._nextNamespaceID = value;
+                _nextNamespaceID = value;
             }
         }
 
@@ -262,11 +262,11 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._useDTD;
+                return _useDTD;
             }
             set
             {
-                this._useDTD = value;
+                _useDTD = value;
             }
         }
 
@@ -277,11 +277,11 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._useAttributes;
+                return _useAttributes;
             }
             set
             {
-                this._useAttributes = value;
+                _useAttributes = value;
             }
         }
 
@@ -292,7 +292,7 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._collections;
+                return _collections;
             }
         }
 
@@ -303,7 +303,7 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._triplesDone;
+                return _triplesDone;
             }
         }
     }

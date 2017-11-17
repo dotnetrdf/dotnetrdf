@@ -51,8 +51,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            IValuedNode a = this._leftExpr.Evaluate(context, bindingID);
-            IValuedNode b = this._rightExpr.Evaluate(context, bindingID);
+            IValuedNode a = _leftExpr.Evaluate(context, bindingID);
+            IValuedNode b = _rightExpr.Evaluate(context, bindingID);
 
             SparqlNumericType type = (SparqlNumericType)Math.Max((int)a.NumericType, (int)b.NumericType);
 
@@ -77,7 +77,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Max + ">(" + this._leftExpr.ToString() + ", " + this._rightExpr.ToString() + ")";
+            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Max + ">(" + _leftExpr.ToString() + ", " + _rightExpr.ToString() + ")";
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new MaxFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
+            return new MaxFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
         }
     }
 }

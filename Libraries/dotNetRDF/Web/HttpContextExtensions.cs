@@ -28,6 +28,9 @@ using System;
 
 namespace VDS.RDF.Web
 {
+    /// <summary>
+    /// Utility extension methods for the <see cref="IHttpContext"/> class
+    /// </summary>
     public static class HttpContextExtensions
     {
         /// <summary>
@@ -35,33 +38,22 @@ namespace VDS.RDF.Web
         /// </summary>
         /// <param name="context">HTTP Context</param>
         /// <returns></returns>
-        /// <remarks>
-        /// <para>
-        /// This method was added in 0.4.1 to allow for the <see cref="NegotiateByFileExtension">NegotiateByFileExtension</see> module to work properly.  Essentially the module may rewrite the <strong>Accept</strong> header of the HTTP request but this will not be visible directly via the <em>AcceptTypes</em> property of the HTTP request as that is fixed at the time the HTTP request is parsed and enters the ASP.Net pipeline.  This method checks whether the <strong>Accept</strong> header is present and if it has been modified from the <em>AcceptTypes</em> property uses the header instead of the property
-        /// </para>
-        /// </remarks>
-        public static String[] GetAcceptTypes(this IHttpContext context)
+        public static string[] GetAcceptTypes(this IHttpContext context)
         {
-            String accept = context.Request.Headers["Accept"];
-            if (accept != null && !accept.Equals(String.Empty))
+            var accept = context.Request.Headers["Accept"];
+            if (accept != null && !accept.Equals(string.Empty))
             {
                 // If Accept Header is not null or empty then check to see if it matches up with the AcceptTypes
                 // array
-                String[] acceptTypes = accept.Split(',');
-                if (Array.Equals(acceptTypes, context.Request.AcceptTypes))
+                var acceptTypes = accept.Split(',');
+                if (Equals(acceptTypes, context.Request.AcceptTypes))
                 {
                     return context.Request.AcceptTypes;
                 }
-                else
-                {
-                    return acceptTypes;
-                }
+                return acceptTypes;
             }
-            else
-            {
-                // Otherwise use full accept header
-                return context.Request.AcceptTypes;
-            }
+            // Otherwise use full accept header
+            return context.Request.AcceptTypes;
         }
     }
 }

@@ -70,7 +70,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public string AsString()
         {
-            return this.Value;
+            return Value;
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace VDS.RDF.Nodes
         {
             get
             {
-                return (this.DataType != null ? this.DataType.AbsoluteUri : String.Empty);
+                return (DataType != null ? DataType.AbsoluteUri : String.Empty);
             }
         }
 

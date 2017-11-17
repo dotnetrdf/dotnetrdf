@@ -51,9 +51,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            IValuedNode x = this._leftExpr.Evaluate(context, bindingID);
+            IValuedNode x = _leftExpr.Evaluate(context, bindingID);
             if (x == null) throw new RdfQueryException("Cannot calculate distance of a null");
-            IValuedNode y = this._rightExpr.Evaluate(context, bindingID);
+            IValuedNode y = _rightExpr.Evaluate(context, bindingID);
             if (y == null) throw new RdfQueryException("Cannot calculate distance of a null");
 
             if (x.NumericType == SparqlNumericType.NaN || y.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot calculate distance when one/both arguments are non-numeric");
@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Pythagoras + ">(" + this._leftExpr.ToString() + "," + this._rightExpr.ToString() + ")";
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Pythagoras + ">(" + _leftExpr.ToString() + "," + _rightExpr.ToString() + ")";
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new PythagoreanDistanceFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
+            return new PythagoreanDistanceFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
         }
     }
 }

@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Algebra
         public LazyBgp(ITriplePattern p)
         {
             if (!IsLazilyEvaluablePattern(p)) throw new ArgumentException("Triple Pattern instance must be a Triple Pattern or a Subquery, BIND or FILTER Pattern", "p");
-            this._triplePatterns.Add(p);
+            _triplePatterns.Add(p);
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Algebra
         public LazyBgp(IEnumerable<ITriplePattern> ps)
         {
             if (!ps.All(p => IsLazilyEvaluablePattern(p))) throw new ArgumentException("Triple Pattern instances must all be Triple Patterns or Subquery, BIND, FILTER Patterns", "ps");
-            this._triplePatterns.AddRange(ps);
+            _triplePatterns.AddRange(ps);
         }
 
         /// <summary>
@@ -79,8 +79,8 @@ namespace VDS.RDF.Query.Algebra
         public LazyBgp(ITriplePattern p, int requiredResults)
         {
             if (!IsLazilyEvaluablePattern(p)) throw new ArgumentException("Triple Pattern instance must be a Triple Pattern, BIND or FILTER Pattern", "p");
-            this._requiredResults = requiredResults;
-            this._triplePatterns.Add(p);
+            _requiredResults = requiredResults;
+            _triplePatterns.Add(p);
         }
 
         /// <summary>
@@ -91,8 +91,8 @@ namespace VDS.RDF.Query.Algebra
         public LazyBgp(IEnumerable<ITriplePattern> ps, int requiredResults)
         {
             if (!ps.All(p => IsLazilyEvaluablePattern(p))) throw new ArgumentException("Triple Pattern instances must all be Triple Patterns, BIND or FILTER Patterns", "ps");
-            this._requiredResults = requiredResults;
-            this._triplePatterns.AddRange(ps);
+            _requiredResults = requiredResults;
+            _triplePatterns.AddRange(ps);
         }
 
         private bool IsLazilyEvaluablePattern(ITriplePattern p)
@@ -109,17 +109,17 @@ namespace VDS.RDF.Query.Algebra
         {
             bool halt;
             BaseMultiset results = null;
-            int origRequired = this._requiredResults;
+            int origRequired = _requiredResults;
 
             // May need to detect the actual amount of required results if not specified at instantation
-            if (this._requiredResults < 0)
+            if (_requiredResults < 0)
             {
                 if (context.Query != null)
                 {
                     if (context.Query.HasDistinctModifier || (context.Query.OrderBy != null && !context.Query.IsOptimisableOrderBy) || context.Query.GroupBy != null || context.Query.Having != null || context.Query.Bindings != null)
                     {
                         // If there's an DISTINCT/ORDER BY/GROUP BY/HAVING/BINDINGS present then can't do Lazy evaluation
-                        this._requiredResults = -1;
+                        _requiredResults = -1;
                     }
                     else
                     {
@@ -128,24 +128,24 @@ namespace VDS.RDF.Query.Algebra
                         if (limit >= 0 && offset >= 0)
                         {
                             // If there is a Limit and Offset specified then the required results is the LIMIT+OFFSET
-                            this._requiredResults = limit + offset;
+                            _requiredResults = limit + offset;
                         }
                         else if (limit >= 0)
                         {
                             // If there is just a Limit specified then the required results is the LIMIT
-                            this._requiredResults = limit;
+                            _requiredResults = limit;
                         }
                         else
                         {
                             // In any other case required results is everything i.e. -1
-                            this._requiredResults = -1;
+                            _requiredResults = -1;
                         }
                     }
-                    Debug.WriteLine("Lazy Evaluation - Number of required results is " + this._requiredResults);
+                    Debug.WriteLine("Lazy Evaluation - Number of required results is " + _requiredResults);
                 }
             }
 
-            switch (this._requiredResults)
+            switch (_requiredResults)
             {
                 case -1:
                     // If required results is everything just use normal evaluation as otherwise 
@@ -157,14 +157,14 @@ namespace VDS.RDF.Query.Algebra
                     break;
                 default:
                     // Do streaming evaluation
-                    if (this._requiredResults != 0)
+                    if (_requiredResults != 0)
                     {
-                        results = this.StreamingEvaluate(context, 0, out halt);
+                        results = StreamingEvaluate(context, 0, out halt);
                         if (results is Multiset && results.IsEmpty) results = new NullMultiset();
                     }
                     break;
             }
-            this._requiredResults = origRequired;
+            _requiredResults = origRequired;
 
             context.OutputMultiset = results;
             context.OutputMultiset.Trim();
@@ -179,7 +179,7 @@ namespace VDS.RDF.Query.Algebra
             halt = false;
 
             // Handle Empty BGPs
-            if (pattern == 0 && this._triplePatterns.Count == 0)
+            if (pattern == 0 && _triplePatterns.Count == 0)
             {
                 context.OutputMultiset = new IdentityMultiset();
                 return context.OutputMultiset;
@@ -188,9 +188,9 @@ namespace VDS.RDF.Query.Algebra
             BaseMultiset initialInput, localOutput, results = null;
 
             // Determine whether the Pattern modifies the existing Input rather than joining to it
-            bool modifies = (this._triplePatterns[pattern].PatternType == TriplePatternType.Filter);
-            bool extended = (pattern > 0 && this._triplePatterns[pattern - 1].PatternType == TriplePatternType.BindAssignment);
-            bool modified = (pattern > 0 && this._triplePatterns[pattern - 1].PatternType == TriplePatternType.Filter);
+            bool modifies = (_triplePatterns[pattern].PatternType == TriplePatternType.Filter);
+            bool extended = (pattern > 0 && _triplePatterns[pattern - 1].PatternType == TriplePatternType.BindAssignment);
+            bool modified = (pattern > 0 && _triplePatterns[pattern - 1].PatternType == TriplePatternType.Filter);
 
             // Set up the Input and Output Multiset appropriately
             switch (pattern)
@@ -242,7 +242,7 @@ namespace VDS.RDF.Query.Algebra
             context.OutputMultiset = localOutput;
 
             // Get the Triple Pattern we're evaluating
-            ITriplePattern temp = this._triplePatterns[pattern];
+            ITriplePattern temp = _triplePatterns[pattern];
             int resultsFound = 0;
             int prevResults = -1;
 
@@ -294,12 +294,12 @@ namespace VDS.RDF.Query.Algebra
                     }
                 }
                 // Recurse unless we're the last pattern
-                if (pattern < this._triplePatterns.Count - 1)
+                if (pattern < _triplePatterns.Count - 1)
                 {
-                    results = this.StreamingEvaluate(context, pattern + 1, out halt);
+                    results = StreamingEvaluate(context, pattern + 1, out halt);
 
                     // If recursion leads to a halt then we halt and return immediately
-                    if (halt && results.Count >= this._requiredResults && this._requiredResults != -1)
+                    if (halt && results.Count >= _requiredResults && _requiredResults != -1)
                     {
                         return results;
                     }
@@ -357,7 +357,7 @@ namespace VDS.RDF.Query.Algebra
                     }
 
                     // If not reached required number of results continue
-                    if (results.Count >= this._requiredResults && this._requiredResults != -1)
+                    if (results.Count >= _requiredResults && _requiredResults != -1)
                     {
                         context.OutputMultiset = results;
                         return context.OutputMultiset;
@@ -378,10 +378,10 @@ namespace VDS.RDF.Query.Algebra
                         // Has Variables but disjoint from input => not in scope so gets ignored
 
                         // Do we recurse or not?
-                        if (pattern < this._triplePatterns.Count - 1)
+                        if (pattern < _triplePatterns.Count - 1)
                         {
                             // Recurse and return
-                            results = this.StreamingEvaluate(context, pattern + 1, out halt);
+                            results = StreamingEvaluate(context, pattern + 1, out halt);
                             return results;
                         }
                         else
@@ -397,10 +397,10 @@ namespace VDS.RDF.Query.Algebra
                         {
                             if (filterExpr.Evaluate(context, 0).AsSafeBoolean())
                             {
-                                if (pattern < this._triplePatterns.Count - 1)
+                                if (pattern < _triplePatterns.Count - 1)
                                 {
                                     // Recurse and return
-                                    results = this.StreamingEvaluate(context, pattern + 1, out halt);
+                                    results = StreamingEvaluate(context, pattern + 1, out halt);
                                     return results;
                                 }
                                 else
@@ -442,12 +442,12 @@ namespace VDS.RDF.Query.Algebra
 
                     // Decide whether to recurse or not
                     resultsFound = context.OutputMultiset.Count;
-                    if (pattern < this._triplePatterns.Count - 1)
+                    if (pattern < _triplePatterns.Count - 1)
                     {
                         // Recurse then return
                         // We can never decide whether to recurse again at this point as we are not capable of deciding
                         // which solutions should be dumped (that is the job of an earlier pattern in the BGP)
-                        results = this.StreamingEvaluate(context, pattern + 1, out halt);
+                        results = StreamingEvaluate(context, pattern + 1, out halt);
 
                         return results;
                     }
@@ -496,10 +496,10 @@ namespace VDS.RDF.Query.Algebra
 
                     // Decide whether to recurse or not
                     resultsFound = context.OutputMultiset.Count;
-                    if (pattern < this._triplePatterns.Count - 1)
+                    if (pattern < _triplePatterns.Count - 1)
                     {
                         // Recurse then return
-                        results = this.StreamingEvaluate(context, pattern + 1, out halt);
+                        results = StreamingEvaluate(context, pattern + 1, out halt);
                         return results;
                     }
                     else
@@ -553,7 +553,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "LazyBgp(" + this._requiredResults + ")";
+            return "LazyBgp(" + _requiredResults + ")";
         }
     }
 
@@ -577,8 +577,8 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="rhs">RHS Pattern</param>
         public LazyUnion(ISparqlAlgebra lhs, ISparqlAlgebra rhs)
         {
-            this._lhs = lhs;
-            this._rhs = rhs;
+            _lhs = lhs;
+            _rhs = rhs;
         }
 
         /// <summary>
@@ -589,8 +589,8 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="requiredResults">The number of results that the Union should attempt to return</param>
         public LazyUnion(ISparqlAlgebra lhs, ISparqlAlgebra rhs, int requiredResults)
         {
-            this._lhs = lhs;
-            this._rhs = rhs;
+            _lhs = lhs;
+            _rhs = rhs;
         }
 
         /// <summary>
@@ -601,17 +601,17 @@ namespace VDS.RDF.Query.Algebra
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             BaseMultiset initialInput = context.InputMultiset;
-            if (this._lhs is Extend || this._rhs is Extend) initialInput = new IdentityMultiset();
+            if (_lhs is Extend || _rhs is Extend) initialInput = new IdentityMultiset();
 
             context.InputMultiset = initialInput;
-            BaseMultiset lhsResult = context.Evaluate(this._lhs); //this._lhs.Evaluate(context);
+            BaseMultiset lhsResult = context.Evaluate(_lhs); //this._lhs.Evaluate(context);
             context.CheckTimeout();
 
-            if (lhsResult.Count >= this._requiredResults || this._requiredResults == -1)
+            if (lhsResult.Count >= _requiredResults || _requiredResults == -1)
             {
                 // Only evaluate the RHS if the LHS didn't yield sufficient results
                 context.InputMultiset = initialInput;
-                BaseMultiset rhsResult = context.Evaluate(this._rhs); //this._rhs.Evaluate(context);
+                BaseMultiset rhsResult = context.Evaluate(_rhs); //this._rhs.Evaluate(context);
                 context.CheckTimeout();
 
                 context.OutputMultiset = lhsResult.Union(rhsResult);
@@ -631,7 +631,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public IEnumerable<String> Variables
         {
-            get { return (this._lhs.Variables.Concat(this._rhs.Variables)).Distinct(); }
+            get { return (_lhs.Variables.Concat(_rhs.Variables)).Distinct(); }
         }
 
         /// <summary>
@@ -642,8 +642,8 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 // Floating variables are those not fixed
-                HashSet<String> fixedVars = new HashSet<string>(this.FixedVariables);
-                return this.Variables.Where(v => !fixedVars.Contains(v));
+                HashSet<String> fixedVars = new HashSet<string>(FixedVariables);
+                return Variables.Where(v => !fixedVars.Contains(v));
             }
         }
 
@@ -655,7 +655,7 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 // Fixed variables are those fixed on both sides
-                return this._lhs.FixedVariables.Intersect(this._rhs.FixedVariables);
+                return _lhs.FixedVariables.Intersect(_rhs.FixedVariables);
             }
         }
 
@@ -664,7 +664,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public ISparqlAlgebra Lhs
         {
-            get { return this._lhs; }
+            get { return _lhs; }
         }
 
         /// <summary>
@@ -672,7 +672,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public ISparqlAlgebra Rhs
         {
-            get { return this._rhs; }
+            get { return _rhs; }
         }
 
         /// <summary>
@@ -681,7 +681,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "LazyUnion(" + this._lhs.ToString() + ", " + this._rhs.ToString() + ")";
+            return "LazyUnion(" + _lhs.ToString() + ", " + _rhs.ToString() + ")";
         }
 
         /// <summary>
@@ -691,7 +691,7 @@ namespace VDS.RDF.Query.Algebra
         public SparqlQuery ToQuery()
         {
             SparqlQuery q = new SparqlQuery();
-            q.RootGraphPattern = this.ToGraphPattern();
+            q.RootGraphPattern = ToGraphPattern();
             q.Optimise();
             return q;
         }
@@ -704,8 +704,8 @@ namespace VDS.RDF.Query.Algebra
         {
             GraphPattern p = new GraphPattern();
             p.IsUnion = true;
-            p.AddGraphPattern(this._lhs.ToGraphPattern());
-            p.AddGraphPattern(this._rhs.ToGraphPattern());
+            p.AddGraphPattern(_lhs.ToGraphPattern());
+            p.AddGraphPattern(_rhs.ToGraphPattern());
             return p;
         }
 
@@ -716,7 +716,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new LazyUnion(optimiser.Optimise(this._lhs), optimiser.Optimise(this._rhs));
+            return new LazyUnion(optimiser.Optimise(_lhs), optimiser.Optimise(_rhs));
         }
 
         /// <summary>
@@ -726,7 +726,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser)
         {
-            return new LazyUnion(optimiser.Optimise(this._lhs), this._rhs);
+            return new LazyUnion(optimiser.Optimise(_lhs), _rhs);
         }
 
         /// <summary>
@@ -736,7 +736,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra TransformRhs(IAlgebraOptimiser optimiser)
         {
-            return new LazyUnion(this._lhs, optimiser.Optimise(this._rhs));
+            return new LazyUnion(_lhs, optimiser.Optimise(_rhs));
         }
     }
 }

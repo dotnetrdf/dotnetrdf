@@ -43,7 +43,7 @@ namespace VDS.RDF.Parsing.Validation
         /// <param name="parser">Dataset Parser</param>
         public RdfDatasetSyntaxValidator(IStoreReader parser)
         {
-            this._parser = parser;
+            _parser = parser;
         }
 
         /// <summary>
@@ -57,24 +57,24 @@ namespace VDS.RDF.Parsing.Validation
             try
             {
                 StoreCountHandler handler = new StoreCountHandler();
-                this._parser.Load(handler, new StringReader(data));
+                _parser.Load(handler, new StringReader(data));
 
-                message = "Valid RDF Dataset - " + handler.GraphCount + " Graphs with " + handler.TripleCount + " Triples - Parser: " + this._parser.GetType().Name;
+                message = "Valid RDF Dataset - " + handler.GraphCount + " Graphs with " + handler.TripleCount + " Triples - Parser: " + _parser.GetType().Name;
                 return new SyntaxValidationResults(true, message, handler);
             }
             catch (RdfParseException parseEx)
             {
-                message = "Invalid RDF Dataset - Parsing Error from Parser: " + this._parser.GetType().Name + " - " + parseEx.Message;
+                message = "Invalid RDF Dataset - Parsing Error from Parser: " + _parser.GetType().Name + " - " + parseEx.Message;
                 return new SyntaxValidationResults(message, parseEx);
             }
             catch (RdfException rdfEx)
             {
-                message = "Invalid RDF Dataset - RDF Error from Parser: " + this._parser.GetType().Name + " - " + rdfEx.Message;
+                message = "Invalid RDF Dataset - RDF Error from Parser: " + _parser.GetType().Name + " - " + rdfEx.Message;
                 return new SyntaxValidationResults(message, rdfEx);
             }
             catch (Exception ex)
             {
-                message = "Invalid RDF Dataset - Error from Parser: " + this._parser.GetType().Name + " - " + ex.Message;
+                message = "Invalid RDF Dataset - Error from Parser: " + _parser.GetType().Name + " - " + ex.Message;
                 return new SyntaxValidationResults(message, ex);
             }
         }

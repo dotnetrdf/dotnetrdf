@@ -57,7 +57,7 @@ namespace VDS.RDF.Query.Algebra
         public AskBgp(ITriplePattern p)
         {
             if (!IsAskEvaluablePattern(p)) throw new ArgumentException("Triple Pattern instance must be a Triple Pattern or a FILTER Pattern", "p");
-            this._triplePatterns.Add(p);
+            _triplePatterns.Add(p);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Algebra
         public AskBgp(IEnumerable<ITriplePattern> ps)
         {
             if (!ps.All(p => IsAskEvaluablePattern(p))) throw new ArgumentException("Triple Pattern instances must all be Triple Patterns or FILTER Patterns", "ps");
-            this._triplePatterns.AddRange(ps);
+            _triplePatterns.AddRange(ps);
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._triplePatterns.Count;
+                return _triplePatterns.Count;
             }
         }
 
@@ -98,7 +98,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._triplePatterns;
+                return _triplePatterns;
             }
         }
 
@@ -109,7 +109,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return (from tp in this._triplePatterns
+                return (from tp in _triplePatterns
                         from v in tp.Variables
                         select v).Distinct();
             }
@@ -122,7 +122,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return (from tp in this._triplePatterns
+                return (from tp in _triplePatterns
                         from v in tp.FixedVariables
                         select v).Distinct();
             }
@@ -136,10 +136,10 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 // Floating variables are those declared as floating by triple patterns minus those that are declared as fixed by the triple patterns
-                IEnumerable<String> floating = from tp in this._triplePatterns
+                IEnumerable<String> floating = from tp in _triplePatterns
                                                from v in tp.FloatingVariables
                                                select v;
-                HashSet<String> fixedVars = new HashSet<string>(this.FixedVariables);
+                HashSet<String> fixedVars = new HashSet<string>(FixedVariables);
                 return floating.Where(v => !fixedVars.Contains(v)).Distinct();
             }
         }
@@ -151,7 +151,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return (this._triplePatterns.Count == 0);
+                return (_triplePatterns.Count == 0);
             }
         }
 
@@ -164,7 +164,7 @@ namespace VDS.RDF.Query.Algebra
         {
             bool halt;
             context.CheckTimeout();
-            BaseMultiset results = this.StreamingEvaluate(context, 0, out halt);
+            BaseMultiset results = StreamingEvaluate(context, 0, out halt);
             if (results is Multiset && results.IsEmpty) results = new NullMultiset();
             context.CheckTimeout();
 
@@ -178,7 +178,7 @@ namespace VDS.RDF.Query.Algebra
             halt = false;
 
             // Handle Empty BGPs
-            if (pattern == 0 && this._triplePatterns.Count == 0)
+            if (pattern == 0 && _triplePatterns.Count == 0)
             {
                 context.OutputMultiset = new IdentityMultiset();
                 return context.OutputMultiset;
@@ -220,7 +220,7 @@ namespace VDS.RDF.Query.Algebra
             context.OutputMultiset = localOutput;
 
             // Get the Triple Pattern we're evaluating
-            ITriplePattern temp = this._triplePatterns[pattern];
+            ITriplePattern temp = _triplePatterns[pattern];
             int resultsFound = 0;
 
             if (temp.PatternType == TriplePatternType.Match)
@@ -238,9 +238,9 @@ namespace VDS.RDF.Query.Algebra
                         context.OutputMultiset.Add(tp.CreateResult(t));
 
                         // Recurse unless we're the last pattern
-                        if (pattern < this._triplePatterns.Count - 1)
+                        if (pattern < _triplePatterns.Count - 1)
                         {
-                            results = this.StreamingEvaluate(context, pattern + 1, out halt);
+                            results = StreamingEvaluate(context, pattern + 1, out halt);
 
                             // If recursion leads to a halt then we halt and return immediately
                             if (halt) return results;
@@ -315,9 +315,9 @@ namespace VDS.RDF.Query.Algebra
                                 context.OutputMultiset.Add(context.InputMultiset[id].Copy());
 
                                 // Recurse unless we're the last pattern
-                                if (pattern < this._triplePatterns.Count - 1)
+                                if (pattern < _triplePatterns.Count - 1)
                                 {
-                                    results = this.StreamingEvaluate(context, pattern + 1, out halt);
+                                    results = StreamingEvaluate(context, pattern + 1, out halt);
 
                                     // If recursion leads to a halt then we halt and return immediately
                                     if (halt) return results;
@@ -380,7 +380,7 @@ namespace VDS.RDF.Query.Algebra
         public SparqlQuery ToQuery()
         {
             SparqlQuery q = new SparqlQuery();
-            q.RootGraphPattern = this.ToGraphPattern();
+            q.RootGraphPattern = ToGraphPattern();
             q.Optimise();
             return q;
         }
@@ -392,7 +392,7 @@ namespace VDS.RDF.Query.Algebra
         public GraphPattern ToGraphPattern()
         {
             GraphPattern p = new GraphPattern();
-            foreach (ITriplePattern tp in this._triplePatterns)
+            foreach (ITriplePattern tp in _triplePatterns)
             {
                 p.AddTriplePattern(tp);
             }
@@ -419,8 +419,8 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="rhs">RHS Pattern</param>
         public AskUnion(ISparqlAlgebra lhs, ISparqlAlgebra rhs)
         {
-            this._lhs = lhs;
-            this._rhs = rhs;
+            _lhs = lhs;
+            _rhs = rhs;
         }
 
         /// <summary>
@@ -431,17 +431,17 @@ namespace VDS.RDF.Query.Algebra
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             BaseMultiset initialInput = context.InputMultiset;
-            if (this._lhs is Extend || this._rhs is Extend) initialInput = new IdentityMultiset();
+            if (_lhs is Extend || _rhs is Extend) initialInput = new IdentityMultiset();
 
             context.InputMultiset = initialInput;
-            BaseMultiset lhsResult = context.Evaluate(this._lhs);//this._lhs.Evaluate(context);
+            BaseMultiset lhsResult = context.Evaluate(_lhs);//this._lhs.Evaluate(context);
             context.CheckTimeout();
 
             if (lhsResult.IsEmpty)
             {
                 // Only evaluate the RHS if the LHS was empty
                 context.InputMultiset = initialInput;
-                BaseMultiset rhsResult = context.Evaluate(this._rhs);//this._rhs.Evaluate(context);
+                BaseMultiset rhsResult = context.Evaluate(_rhs);//this._rhs.Evaluate(context);
                 context.CheckTimeout();
 
                 context.OutputMultiset = lhsResult.Union(rhsResult);
@@ -463,7 +463,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return (this._lhs.Variables.Concat(this._rhs.Variables)).Distinct();
+                return (_lhs.Variables.Concat(_rhs.Variables)).Distinct();
             }
         }
 
@@ -475,8 +475,8 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 // Floating variables are those not fixed
-                HashSet<String> fixedVars = new HashSet<string>(this.FixedVariables);
-                return this.Variables.Where(v => !fixedVars.Contains(v));
+                HashSet<String> fixedVars = new HashSet<string>(FixedVariables);
+                return Variables.Where(v => !fixedVars.Contains(v));
             }
         }
 
@@ -488,7 +488,7 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 // Fixed variables are those fixed on both sides
-                return this._lhs.FixedVariables.Intersect(this._rhs.FixedVariables);
+                return _lhs.FixedVariables.Intersect(_rhs.FixedVariables);
             }
         }
 
@@ -499,7 +499,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._lhs;
+                return _lhs;
             }
         }
 
@@ -510,7 +510,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._rhs;
+                return _rhs;
             }
         }
 
@@ -520,7 +520,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "AskUnion(" + this._lhs.ToString() + ", " + this._rhs.ToString() + ")";
+            return "AskUnion(" + _lhs.ToString() + ", " + _rhs.ToString() + ")";
         }
 
         /// <summary>
@@ -530,7 +530,7 @@ namespace VDS.RDF.Query.Algebra
         public SparqlQuery ToQuery()
         {
             SparqlQuery q = new SparqlQuery();
-            q.RootGraphPattern = this.ToGraphPattern();
+            q.RootGraphPattern = ToGraphPattern();
             q.Optimise();
             return q;
         }
@@ -543,8 +543,8 @@ namespace VDS.RDF.Query.Algebra
         {
             GraphPattern p = new GraphPattern();
             p.IsUnion = true;
-            p.AddGraphPattern(this._lhs.ToGraphPattern());
-            p.AddGraphPattern(this._rhs.ToGraphPattern());
+            p.AddGraphPattern(_lhs.ToGraphPattern());
+            p.AddGraphPattern(_rhs.ToGraphPattern());
             return p;
         }
 
@@ -555,7 +555,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new AskUnion(optimiser.Optimise(this._lhs), optimiser.Optimise(this._rhs));
+            return new AskUnion(optimiser.Optimise(_lhs), optimiser.Optimise(_rhs));
         }
 
         /// <summary>
@@ -565,7 +565,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser)
         {
-            return new AskUnion(optimiser.Optimise(this._lhs), this._rhs);
+            return new AskUnion(optimiser.Optimise(_lhs), _rhs);
         }
 
         /// <summary>
@@ -575,7 +575,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra TransformRhs(IAlgebraOptimiser optimiser)
         {
-            return new AskUnion(this._lhs, optimiser.Optimise(this._rhs));
+            return new AskUnion(_lhs, optimiser.Optimise(_rhs));
         }
     }
 }

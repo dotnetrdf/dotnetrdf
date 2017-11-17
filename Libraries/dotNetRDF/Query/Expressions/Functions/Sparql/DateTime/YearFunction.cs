@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordYear + "(" + this._expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordYear + "(" + _expr.ToString() + ")";
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new YearFunction(transformer.Transform(this._expr));
+            return new YearFunction(transformer.Transform(_expr));
         }
     }
 }

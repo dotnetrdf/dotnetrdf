@@ -53,8 +53,8 @@ namespace VDS.RDF.Ontology
         public Individual(INode resource, IGraph graph)
             : base(resource, graph) 
         {
-            this.IntialiseClasses();
-            if (this._classes.Count == 0) throw new RdfOntologyException("Cannot create an individual when the given resource has no types associated with it");
+            IntialiseClasses();
+            if (_classes.Count == 0) throw new RdfOntologyException("Cannot create an individual when the given resource has no types associated with it");
         }
 
         /// <summary>
@@ -69,9 +69,9 @@ namespace VDS.RDF.Ontology
         public Individual(INode resource, INode resourceClass, IGraph graph)
             : base(resource, graph)
         {
-            this.AddResourceProperty(OntologyHelper.PropertyType, resourceClass, true);
-            this.IntialiseClasses();
-            if (this._classes.Count == 0) throw new RdfOntologyException("Failed to create a new individual");
+            AddResourceProperty(OntologyHelper.PropertyType, resourceClass, true);
+            IntialiseClasses();
+            if (_classes.Count == 0) throw new RdfOntologyException("Failed to create a new individual");
         }
 
         /// <summary>
@@ -79,11 +79,11 @@ namespace VDS.RDF.Ontology
         /// </summary>
         private void IntialiseClasses() 
         {
-            IUriNode rdfType = this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyType));
-            foreach (Triple t in this._graph.GetTriplesWithSubjectPredicate(this._resource, rdfType))
+            IUriNode rdfType = _graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyType));
+            foreach (Triple t in _graph.GetTriplesWithSubjectPredicate(_resource, rdfType))
             {
-                OntologyClass c = new OntologyClass(t.Object, this._graph);
-                this._classes.Add(c);
+                OntologyClass c = new OntologyClass(t.Object, _graph);
+                _classes.Add(c);
             }
         }
 
@@ -94,7 +94,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return this._classes;
+                return _classes;
             }
         }
 
@@ -105,7 +105,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool HasClass(OntologyClass @class)
         {
-            return this._classes.Any(c => c.Equals(@class));
+            return _classes.Any(c => c.Equals(@class));
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool HasClass(INode @class)
         {
-            return this._classes.Any(c => c.Resource.Equals(@class));
+            return _classes.Any(c => c.Resource.Equals(@class));
         }
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool HasClass(Uri @class)
         {
-            return this.HasClass(this._graph.CreateUriNode(@class));
+            return HasClass(_graph.CreateUriNode(@class));
         }
 
     }

@@ -50,10 +50,10 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            IValuedNode temp = this._expr.Evaluate(context, bindingID);
+            IValuedNode temp = _expr.Evaluate(context, bindingID);
             if (temp != null)
             {
-                return this.ValueInternal(temp.AsDateTimeOffset());
+                return ValueInternal(temp.AsDateTimeOffset());
             }
             else
             {

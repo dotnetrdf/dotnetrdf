@@ -46,7 +46,7 @@ namespace VDS.RDF
             : this()
         {
             // Call Contains() which will try to load the Graph if it exists in the Store
-            if (!this._graphs.Contains(defaultGraphUri))
+            if (!_graphs.Contains(defaultGraphUri))
             {
                 throw new RdfException("Cannot load the requested Default Graph since a valid Graph with that URI could not be retrieved from the Web");
             }
@@ -63,7 +63,7 @@ namespace VDS.RDF
             {
                 Graph g = new Graph();
                 FileLoader.Load(g, defaultGraphFile);
-                this._graphs.Add(g, false);
+                _graphs.Add(g, false);
             }
             catch (Exception)
             {

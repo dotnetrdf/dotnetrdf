@@ -59,9 +59,9 @@ namespace VDS.RDF.Parsing.Handlers
             : base(handler)
         {
             if (handler == null) throw new ArgumentNullException("handler");
-            this._handler = handler;
-            this._limit = Math.Max(-1, limit);
-            this._offset = Math.Max(0, offset);
+            _handler = handler;
+            _limit = Math.Max(-1, limit);
+            _offset = Math.Max(0, offset);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             get
             {
-                return this._handler.AsEnumerable();
+                return _handler.AsEnumerable();
             }
         }
 
@@ -88,8 +88,8 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         protected override void StartRdfInternal()
         {
-            this._handler.StartRdf();
-            this._counter = 0;
+            _handler.StartRdf();
+            _counter = 0;
         }
 
         /// <summary>
@@ -98,8 +98,8 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="ok">Indicated whether parsing completed without error</param>
         protected override void EndRdfInternal(bool ok)
         {
-            this._handler.EndRdf(ok);
-            this._counter = 0;
+            _handler.EndRdf(ok);
+            _counter = 0;
         }
 
         /// <summary>
@@ -113,17 +113,17 @@ namespace VDS.RDF.Parsing.Handlers
         protected override bool HandleTripleInternal(Triple t)
         {
             // If the Limit is zero stop parsing immediately
-            if (this._limit == 0) return false;
+            if (_limit == 0) return false;
 
-            this._counter++;
-            if (this._limit > 0)
+            _counter++;
+            if (_limit > 0)
             {
                 // Limit greater than zero means get a maximum of limit triples after the offset
-                if (this._counter > this._offset && this._counter <= this._limit + this._offset)
+                if (_counter > _offset && _counter <= _limit + _offset)
                 {
-                    return this._handler.HandleTriple(t);
+                    return _handler.HandleTriple(t);
                 }
-                else if (this._counter > this._limit + this._offset)
+                else if (_counter > _limit + _offset)
                 {
                     // Stop parsing when we've reached the limit
                     return false;
@@ -136,9 +136,9 @@ namespace VDS.RDF.Parsing.Handlers
             else
             {
                 // Limit less than zero means get all triples after the offset
-                if (this._counter > this._offset)
+                if (_counter > _offset)
                 {
-                    return this._handler.HandleTriple(t);
+                    return _handler.HandleTriple(t);
                 }
                 else
                 {
@@ -155,7 +155,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
-            return this._handler.HandleNamespace(prefix, namespaceUri);
+            return _handler.HandleNamespace(prefix, namespaceUri);
         }
 
         /// <summary>
@@ -164,7 +164,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="baseUri">Base URI</param>
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
-            return this._handler.HandleBaseUri(baseUri);
+            return _handler.HandleBaseUri(baseUri);
         }
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             get 
             {
-                return this._limit < 0;
+                return _limit < 0;
             }
         }
     }

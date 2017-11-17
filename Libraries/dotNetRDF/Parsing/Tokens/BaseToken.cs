@@ -55,12 +55,12 @@ namespace VDS.RDF.Parsing.Tokens
         /// <remarks>All the derived classes use this Constructor to fill in the basic values of a Token</remarks>
         protected internal BaseToken(int tokenType, String value, int startLine, int endLine, int startPos, int endPos)
         {
-            this._tokentype = tokenType;
-            this._value = value;
-            this._startline = startLine;
-            this._endline = endLine;
-            this._startpos = startPos;
-            this._endpos = endPos;
+            _tokentype = tokenType;
+            _value = value;
+            _startline = startLine;
+            _endline = endLine;
+            _startpos = startPos;
+            _endpos = endPos;
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get 
             {
-                return this._tokentype;
+                return _tokentype;
             }
         }
 
@@ -81,7 +81,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get
             {
-                return this._value;
+                return _value;
             }
         }
 
@@ -92,7 +92,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get 
             {
-                return this._startline;
+                return _startline;
             }
         }
 
@@ -103,7 +103,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get 
             {
-                return this._endline;
+                return _endline;
             }
         }
 
@@ -114,7 +114,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get 
             {
-                return this._startpos;
+                return _startpos;
             }
         }
 
@@ -125,7 +125,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get 
             {
-                return this._endpos; 
+                return _endpos; 
             }
         }
 
@@ -136,7 +136,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get
             {
-                return this._value.Length;
+                return _value.Length;
             }
         }
 
@@ -146,7 +146,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <returns></returns>
         public override string ToString()
         {
-            return this.GetType().ToString() + " " + this._value;
+            return GetType().ToString() + " " + _value;
         }
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <returns></returns>
         public override int GetHashCode()
         {
-            return this.ToString().GetHashCode();
+            return ToString().GetHashCode();
         }
     }
 }

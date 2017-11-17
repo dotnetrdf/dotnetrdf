@@ -48,7 +48,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         public GroupConcatAggregate(ISparqlExpression expr, bool distinct)
             : base(expr, new ConstantTerm(new LiteralNode(null, " ")))
         {
-            this._distinct = distinct;
+            _distinct = distinct;
         }
 
         /// <summary>
@@ -67,8 +67,8 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         public GroupConcatAggregate(ISparqlExpression expr, ISparqlExpression sepExpr, bool distinct)
             : base(expr, sepExpr)
         {
-            this._distinct = distinct;
-            this._customSeparator = true;
+            _distinct = distinct;
+            _customSeparator = true;
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         public GroupConcatAggregate(ISparqlExpression expr, ISparqlExpression sepExpr)
             : base(expr, sepExpr)
         {
-            this._customSeparator = true;
+            _customSeparator = true;
         }
 
         /// <summary>
@@ -102,12 +102,12 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         {
             StringBuilder output = new StringBuilder();
             output.Append("GROUP_CONCAT(");
-            if (this._distinct) output.Append("DISTINCT ");
-            output.Append(this._expr.ToString());
-            if (this._customSeparator)
+            if (_distinct) output.Append("DISTINCT ");
+            output.Append(_expr.ToString());
+            if (_customSeparator)
             {
                 output.Append(" ; SEPARATOR = ");
-                output.Append(this._sep.ToString());
+                output.Append(_sep.ToString());
             }
             output.Append(")");
             return output.ToString();
@@ -121,7 +121,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         /// <returns></returns>
         protected override string ValueInternal(SparqlEvaluationContext context, int bindingID)
         {
-            IValuedNode temp = this._expr.Evaluate(context, bindingID);
+            IValuedNode temp = _expr.Evaluate(context, bindingID);
             if (temp == null) throw new RdfQueryException("Cannot do an XPath string-join on a null");
             switch (temp.NodeType)
             {

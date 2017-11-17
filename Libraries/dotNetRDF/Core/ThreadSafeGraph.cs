@@ -74,12 +74,12 @@ namespace VDS.RDF
         {
             try
             {
-                this._lockManager.EnterWriteLock();
+                _lockManager.EnterWriteLock();
                 return base.Assert(t);
             }
             finally
             {
-                this._lockManager.ExitWriteLock();
+                _lockManager.ExitWriteLock();
             }
         }
 
@@ -91,12 +91,12 @@ namespace VDS.RDF
         {
             try
             {
-                this._lockManager.EnterWriteLock();
+                _lockManager.EnterWriteLock();
                 return base.Assert(ts);
             }
             finally
             {
-                this._lockManager.ExitWriteLock();
+                _lockManager.ExitWriteLock();
             }
         }
 
@@ -109,12 +109,12 @@ namespace VDS.RDF
         {
             try
             {
-                this._lockManager.EnterWriteLock();
+                _lockManager.EnterWriteLock();
                 return base.Retract(t);
             }
             finally
             {
-                this._lockManager.ExitWriteLock();
+                _lockManager.ExitWriteLock();
             }
         }
 
@@ -126,12 +126,12 @@ namespace VDS.RDF
         {
             try
             {
-                this._lockManager.EnterWriteLock();
+                _lockManager.EnterWriteLock();
                 return base.Retract(ts);
             }
             finally
             {
-                this._lockManager.ExitWriteLock();
+                _lockManager.ExitWriteLock();
             }
         }
 
@@ -146,12 +146,12 @@ namespace VDS.RDF
             String id = String.Empty;
             try 
             {
-                this._lockManager.EnterWriteLock();
+                _lockManager.EnterWriteLock();
                 id = base.GetNextBlankNodeID();
             }
             finally 
             {
-                this._lockManager.ExitWriteLock();
+                _lockManager.ExitWriteLock();
                 if (id.Equals(String.Empty))
                 {
                     throw new RdfException("Unable to generate a new Blank Node ID due to a Threading issue");
@@ -166,7 +166,7 @@ namespace VDS.RDF
         public override void Dispose()
         {
             base.Dispose();
-            this._lockManager.Dispose();
+            _lockManager.Dispose();
         }
 
         #region Node Selection
@@ -181,12 +181,12 @@ namespace VDS.RDF
             IBlankNode b = null;
             try
             {
-                this._lockManager.EnterReadLock();
+                _lockManager.EnterReadLock();
                 b = base.GetBlankNode(nodeId);
             }
             finally
             {
-                this._lockManager.ExitReadLock();
+                _lockManager.ExitReadLock();
             }
             return b;
         }
@@ -202,12 +202,12 @@ namespace VDS.RDF
             ILiteralNode l = null;
             try
             {
-                this._lockManager.EnterReadLock();
+                _lockManager.EnterReadLock();
                 l = base.GetLiteralNode(literal);
             }
             finally
             {
-                this._lockManager.ExitReadLock();
+                _lockManager.ExitReadLock();
             }
             return l;
         }
@@ -223,12 +223,12 @@ namespace VDS.RDF
             ILiteralNode l = null;
             try
             {
-                this._lockManager.EnterReadLock();
+                _lockManager.EnterReadLock();
                 l = base.GetLiteralNode(literal, langspec);
             }
             finally
             {
-                this._lockManager.ExitReadLock();
+                _lockManager.ExitReadLock();
             }
             return l;
         }
@@ -244,12 +244,12 @@ namespace VDS.RDF
             ILiteralNode l = null;
             try
             {
-                this._lockManager.EnterReadLock();
+                _lockManager.EnterReadLock();
                 l = base.GetLiteralNode(literal, datatype);
             }
             finally
             {
-                this._lockManager.ExitReadLock();
+                _lockManager.ExitReadLock();
             }
             return l;
         }
@@ -264,12 +264,12 @@ namespace VDS.RDF
             IUriNode u = null;
             try
             {
-                this._lockManager.EnterReadLock();
+                _lockManager.EnterReadLock();
                 u = base.GetUriNode(qname);
             }
             finally
             {
-                this._lockManager.ExitReadLock();
+                _lockManager.ExitReadLock();
             }
             return u;
         }
@@ -284,12 +284,12 @@ namespace VDS.RDF
             IUriNode u = null;
             try
             {
-                this._lockManager.EnterReadLock();
+                _lockManager.EnterReadLock();
                 u = base.GetUriNode(uri);
             }
             finally
             {
-                this._lockManager.ExitReadLock();
+                _lockManager.ExitReadLock();
             }
             return u;
         }
@@ -308,12 +308,12 @@ namespace VDS.RDF
             List<Triple> triples = new List<Triple>();
             try
             {
-                this._lockManager.EnterReadLock();
+                _lockManager.EnterReadLock();
                 triples = base.GetTriples(n).ToList();
             }
             finally
             {
-                this._lockManager.ExitReadLock();
+                _lockManager.ExitReadLock();
             }
             return triples;
         }
@@ -328,12 +328,12 @@ namespace VDS.RDF
             List<Triple> triples = new List<Triple>();
             try
             {
-                this._lockManager.EnterReadLock();
+                _lockManager.EnterReadLock();
                 triples = base.GetTriples(uri).ToList();
             }
             finally
             {
-                this._lockManager.ExitReadLock();
+                _lockManager.ExitReadLock();
             }
             return triples;
         }
@@ -348,12 +348,12 @@ namespace VDS.RDF
             List<Triple> triples = new List<Triple>();
             try
             {
-                this._lockManager.EnterReadLock();
+                _lockManager.EnterReadLock();
                 triples = base.GetTriplesWithObject(n).ToList();
             }
             finally
             {
-                this._lockManager.ExitReadLock();
+                _lockManager.ExitReadLock();
             }
             return triples;
         }
@@ -368,12 +368,12 @@ namespace VDS.RDF
             List<Triple> triples = new List<Triple>();
             try
             {
-                this._lockManager.EnterReadLock();
+                _lockManager.EnterReadLock();
                 triples = base.GetTriplesWithObject(u).ToList();
             }
             finally
             {
-                this._lockManager.ExitReadLock();
+                _lockManager.ExitReadLock();
             }
             return triples;
         }
@@ -388,12 +388,12 @@ namespace VDS.RDF
             List<Triple> triples = new List<Triple>();
             try
             {
-                this._lockManager.EnterReadLock();
+                _lockManager.EnterReadLock();
                 triples = base.GetTriplesWithPredicate(n).ToList();
             }
             finally
             {
-                this._lockManager.ExitReadLock();
+                _lockManager.ExitReadLock();
             }
             return triples;
         }
@@ -408,12 +408,12 @@ namespace VDS.RDF
             List<Triple> triples = new List<Triple>();
             try
             {
-                this._lockManager.EnterReadLock();
+                _lockManager.EnterReadLock();
                 triples = base.GetTriplesWithPredicate(u).ToList();
             }
             finally
             {
-                this._lockManager.ExitReadLock();
+                _lockManager.ExitReadLock();
             }
             return triples;
         }
@@ -428,12 +428,12 @@ namespace VDS.RDF
             List<Triple> triples = new List<Triple>();
             try
             {
-                this._lockManager.EnterReadLock();
+                _lockManager.EnterReadLock();
                 triples = base.GetTriplesWithSubject(n).ToList();
             }
             finally
             {
-                this._lockManager.ExitReadLock();
+                _lockManager.ExitReadLock();
             }
             return triples;
         }
@@ -448,12 +448,12 @@ namespace VDS.RDF
             List<Triple> triples = new List<Triple>();
             try
             {
-                this._lockManager.EnterReadLock();
+                _lockManager.EnterReadLock();
                 triples = base.GetTriplesWithSubject(u).ToList();
             }
             finally
             {
-                this._lockManager.ExitReadLock();
+                _lockManager.ExitReadLock();
             }
             return triples;
         }

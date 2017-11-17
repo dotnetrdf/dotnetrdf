@@ -48,7 +48,7 @@ namespace VDS.RDF.Query.Expressions
         /// <param name="expr">Expression</param>
         public BaseUnaryExpression(ISparqlExpression expr)
         {
-            this._expr = expr;
+            _expr = expr;
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Expressions
         {
             get
             {
-                return this._expr.Variables;
+                return _expr.Variables;
             }
         }
 
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query.Expressions
         {
             get
             {
-                return this._expr.AsEnumerable();
+                return _expr.AsEnumerable();
             }
         }
 
@@ -110,7 +110,7 @@ namespace VDS.RDF.Query.Expressions
         {
             get
             {
-                return this._expr.CanParallelise;
+                return _expr.CanParallelise;
             }
         }
 
@@ -140,8 +140,8 @@ namespace VDS.RDF.Query.Expressions
         /// <param name="rightExpr">Right Expression</param>
         public BaseBinaryExpression(ISparqlExpression leftExpr, ISparqlExpression rightExpr)
         {
-            this._leftExpr = leftExpr;
-            this._rightExpr = rightExpr;
+            _leftExpr = leftExpr;
+            _rightExpr = rightExpr;
         }
 
         /// <summary>
@@ -165,7 +165,7 @@ namespace VDS.RDF.Query.Expressions
         {
             get
             {
-                return this._leftExpr.Variables.Concat(this._rightExpr.Variables);
+                return _leftExpr.Variables.Concat(_rightExpr.Variables);
             }
         }
 
@@ -192,7 +192,7 @@ namespace VDS.RDF.Query.Expressions
         {
             get
             {
-                return new ISparqlExpression[] { this._leftExpr, this._rightExpr };
+                return new ISparqlExpression[] { _leftExpr, _rightExpr };
             }
         }
 
@@ -203,7 +203,7 @@ namespace VDS.RDF.Query.Expressions
         {
             get
             {
-                return this._leftExpr.CanParallelise && this._rightExpr.CanParallelise;
+                return _leftExpr.CanParallelise && _rightExpr.CanParallelise;
             }
         }
 

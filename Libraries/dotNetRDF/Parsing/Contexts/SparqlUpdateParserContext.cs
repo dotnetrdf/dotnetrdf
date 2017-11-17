@@ -89,7 +89,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._commandSet;
+                return _commandSet;
             }
         }
 
@@ -100,7 +100,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._exprParser;
+                return _exprParser;
             }
         }
 
@@ -111,7 +111,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._pathParser;
+                return _pathParser;
             }
         }
 
@@ -122,7 +122,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._queryParser;
+                return _queryParser;
             }
         }
 
@@ -133,7 +133,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._commandSet.NamespaceMap;
+                return _commandSet.NamespaceMap;
             }
         }
 
@@ -144,13 +144,13 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._factories;
+                return _factories;
             }
             set
             {
                 if (value != null)
                 {
-                    this._factories = value;
+                    _factories = value;
                 }
             }
         }
@@ -162,7 +162,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._dataBNodes;
+                return _dataBNodes;
             }
         }
     }

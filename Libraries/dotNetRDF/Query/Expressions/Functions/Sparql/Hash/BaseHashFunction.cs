@@ -47,7 +47,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         public BaseHashFunction(ISparqlExpression expr, HashAlgorithm hash)
             : base(expr)
         {
-            this._crypto = hash;
+            _crypto = hash;
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            IValuedNode temp = this._expr.Evaluate(context, bindingID);
+            IValuedNode temp = _expr.Evaluate(context, bindingID);
             if (temp != null)
             {
                 switch (temp.NodeType)
@@ -68,9 +68,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
                     case NodeType.GraphLiteral:
                         throw new RdfQueryException("Cannot calculate the Hash of a Graph Literal");
                     case NodeType.Literal:
-                        return new StringNode(null, this.Hash(((ILiteralNode)temp).Value));
+                        return new StringNode(null, Hash(((ILiteralNode)temp).Value));
                     case NodeType.Uri:
-                        return new StringNode(null, this.Hash(temp.AsString()));
+                        return new StringNode(null, Hash(temp.AsString()));
                     default:
                         throw new RdfQueryException("Cannot calculate the Hash of an Unknown Node Type");
                 }
@@ -92,7 +92,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
             StringBuilder output = new StringBuilder();
 
             inputBytes = Encoding.UTF8.GetBytes(input);
-            hashBytes = this._crypto.ComputeHash(inputBytes);
+            hashBytes = _crypto.ComputeHash(inputBytes);
 
             for (int i = 0; i < hashBytes.Length; i++)
             {

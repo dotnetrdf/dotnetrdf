@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
             {
                 try
                 {
-                    if (this._expr.Evaluate(context, id).AsSafeBoolean())
+                    if (_expr.Evaluate(context, id).AsSafeBoolean())
                     {
                         // As soon as we see a true we can return false
                         return new BooleanNode(null, false);
@@ -94,8 +94,8 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
             output.Append(LeviathanFunctionFactory.LeviathanFunctionsNamespace);
             output.Append(LeviathanFunctionFactory.None);
             output.Append(">(");
-            if (this._distinct) output.Append("DISTINCT ");
-            output.Append(this._expr.ToString());
+            if (_distinct) output.Append("DISTINCT ");
+            output.Append(_expr.ToString());
             output.Append(')');
             return output.ToString();
         }

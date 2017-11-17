@@ -49,12 +49,12 @@ namespace VDS.RDF.Ontology
             : base(resource, graph)
         {
             // Assert the rdf:type owl:Ontology triple
-            this._graph.Assert(new Triple(resource, this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyType)), this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.OwlOntology))));
+            _graph.Assert(new Triple(resource, _graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyType)), _graph.CreateUriNode(UriFactory.Create(OntologyHelper.OwlOntology))));
 
-            this.IntialiseProperty(OntologyHelper.PropertyBackwardCompatibleWith, false);
-            this.IntialiseProperty(OntologyHelper.PropertyIncompatibleWith, false);
-            this.IntialiseProperty(OntologyHelper.PropertyPriorVersion, false);
-            this.IntialiseProperty(OntologyHelper.PropertyImports, false);
+            IntialiseProperty(OntologyHelper.PropertyBackwardCompatibleWith, false);
+            IntialiseProperty(OntologyHelper.PropertyIncompatibleWith, false);
+            IntialiseProperty(OntologyHelper.PropertyPriorVersion, false);
+            IntialiseProperty(OntologyHelper.PropertyImports, false);
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddBackwardsCompatibleWith(INode resource)
         {
-            return this.AddResourceProperty(OntologyHelper.PropertyBackwardCompatibleWith, resource.CopyNode(this._graph), true);
+            return AddResourceProperty(OntologyHelper.PropertyBackwardCompatibleWith, resource.CopyNode(_graph), true);
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddBackwardsCompatibleWith(Uri resource)
         {
-            return this.AddBackwardsCompatibleWith(this._graph.CreateUriNode(resource));
+            return AddBackwardsCompatibleWith(_graph.CreateUriNode(resource));
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddBackwardsCompatibleWith(OntologyResource resource)
         {
-            return this.AddBackwardsCompatibleWith(resource.Resource);
+            return AddBackwardsCompatibleWith(resource.Resource);
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool ClearBackwardsCompatibleWith()
         {
-            return this.ClearResourceProperty(OntologyHelper.PropertyBackwardCompatibleWith, true);
+            return ClearResourceProperty(OntologyHelper.PropertyBackwardCompatibleWith, true);
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveBackwardsCompatibleWith(INode resource)
         {
-            return this.RemoveResourceProperty(OntologyHelper.PropertyBackwardCompatibleWith, resource.CopyNode(this._graph), true);
+            return RemoveResourceProperty(OntologyHelper.PropertyBackwardCompatibleWith, resource.CopyNode(_graph), true);
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveBackwardsCompatibleWith(Uri resource)
         {
-            return this.RemoveBackwardsCompatibleWith(this._graph.CreateUriNode(resource));
+            return RemoveBackwardsCompatibleWith(_graph.CreateUriNode(resource));
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveBackwardsCompatibleWith(OntologyResource resource)
         {
-            return this.RemoveBackwardsCompatibleWith(resource.Resource);
+            return RemoveBackwardsCompatibleWith(resource.Resource);
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddIncompatibleWith(INode resource)
         {
-            return this.AddResourceProperty(OntologyHelper.PropertyIncompatibleWith, resource.CopyNode(this._graph), true);
+            return AddResourceProperty(OntologyHelper.PropertyIncompatibleWith, resource.CopyNode(_graph), true);
         }
 
         /// <summary>
@@ -143,7 +143,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddIncompatibleWith(Uri resource)
         {
-            return this.AddIncompatibleWith(this._graph.CreateUriNode(resource));
+            return AddIncompatibleWith(_graph.CreateUriNode(resource));
         }
 
         /// <summary>
@@ -153,7 +153,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddIncompatibleWith(OntologyResource resource)
         {
-            return this.AddIncompatibleWith(resource.Resource);
+            return AddIncompatibleWith(resource.Resource);
         }
 
         /// <summary>
@@ -162,7 +162,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool ClearIncompatibleWith()
         {
-            return this.ClearResourceProperty(OntologyHelper.PropertyIncompatibleWith, true);
+            return ClearResourceProperty(OntologyHelper.PropertyIncompatibleWith, true);
         }
 
         /// <summary>
@@ -172,7 +172,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveIncompatibleWith(INode resource)
         {
-            return this.RemoveResourceProperty(OntologyHelper.PropertyIncompatibleWith, resource.CopyNode(this._graph), true);
+            return RemoveResourceProperty(OntologyHelper.PropertyIncompatibleWith, resource.CopyNode(_graph), true);
         }
 
         /// <summary>
@@ -182,7 +182,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveIncompatibleWith(Uri resource)
         {
-            return this.RemoveIncompatibleWith(this._graph.CreateUriNode(resource));
+            return RemoveIncompatibleWith(_graph.CreateUriNode(resource));
         }
 
         /// <summary>
@@ -192,7 +192,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveIncompatibleWith(OntologyResource resource)
         {
-            return this.RemoveIncompatibleWith(resource.Resource);
+            return RemoveIncompatibleWith(resource.Resource);
         }
 
         /// <summary>
@@ -202,7 +202,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddImports(INode resource)
         {
-            return this.AddResourceProperty(OntologyHelper.PropertyImports, resource.CopyNode(this._graph), true);
+            return AddResourceProperty(OntologyHelper.PropertyImports, resource.CopyNode(_graph), true);
         }
 
         /// <summary>
@@ -212,7 +212,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddImports(Uri resource)
         {
-            return this.AddImports(this._graph.CreateUriNode(resource));
+            return AddImports(_graph.CreateUriNode(resource));
         }
 
         /// <summary>
@@ -222,7 +222,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddImports(OntologyResource resource)
         {
-            return this.AddImports(resource.Resource);
+            return AddImports(resource.Resource);
         }
 
         /// <summary>
@@ -231,7 +231,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool ClearImports()
         {
-            return this.ClearResourceProperty(OntologyHelper.PropertyImports, true);
+            return ClearResourceProperty(OntologyHelper.PropertyImports, true);
         }
 
         /// <summary>
@@ -241,7 +241,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveImports(INode resource)
         {
-            return this.RemoveResourceProperty(OntologyHelper.PropertyImports, resource.CopyNode(this._graph), true);
+            return RemoveResourceProperty(OntologyHelper.PropertyImports, resource.CopyNode(_graph), true);
         }
 
         /// <summary>
@@ -251,7 +251,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveImports(Uri resource)
         {
-            return this.RemoveImports(this._graph.CreateUriNode(resource));
+            return RemoveImports(_graph.CreateUriNode(resource));
         }
 
         /// <summary>
@@ -261,7 +261,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveImports(OntologyResource resource)
         {
-            return this.RemoveImports(resource.Resource);
+            return RemoveImports(resource.Resource);
         }
 
         /// <summary>
@@ -271,7 +271,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddPriorVersion(INode resource)
         {
-            return this.AddResourceProperty(OntologyHelper.PropertyPriorVersion, resource.CopyNode(this._graph), true);
+            return AddResourceProperty(OntologyHelper.PropertyPriorVersion, resource.CopyNode(_graph), true);
         }
 
         /// <summary>
@@ -281,7 +281,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddPriorVersion(Uri resource)
         {
-            return this.AddPriorVersion(this._graph.CreateUriNode(resource));
+            return AddPriorVersion(_graph.CreateUriNode(resource));
         }
 
         /// <summary>
@@ -291,7 +291,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddPriorVersion(OntologyResource resource)
         {
-            return this.AddPriorVersion(resource.Resource);
+            return AddPriorVersion(resource.Resource);
         }
 
         /// <summary>
@@ -300,7 +300,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool ClearPriorVersions()
         {
-            return this.ClearResourceProperty(OntologyHelper.PropertyPriorVersion, true);
+            return ClearResourceProperty(OntologyHelper.PropertyPriorVersion, true);
         }
 
         /// <summary>
@@ -310,7 +310,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemovePriorVersion(INode resource)
         {
-            return this.RemoveResourceProperty(OntologyHelper.PropertyPriorVersion, resource.CopyNode(this._graph), true);
+            return RemoveResourceProperty(OntologyHelper.PropertyPriorVersion, resource.CopyNode(_graph), true);
         }
 
         /// <summary>
@@ -320,7 +320,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemovePriorVersion(Uri resource)
         {
-            return this.RemovePriorVersion(this._graph.CreateUriNode(resource));
+            return RemovePriorVersion(_graph.CreateUriNode(resource));
         }
 
         /// <summary>
@@ -330,7 +330,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemovePriorVersion(OntologyResource resource)
         {
-            return this.RemovePriorVersion(resource.Resource);
+            return RemovePriorVersion(resource.Resource);
         }
 
         /// <summary>
@@ -340,7 +340,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return this.GetResourceProperty(OntologyHelper.PropertyBackwardCompatibleWith).Select(r => new Ontology(r, this._graph));
+                return GetResourceProperty(OntologyHelper.PropertyBackwardCompatibleWith).Select(r => new Ontology(r, _graph));
             }
         }
 
@@ -351,7 +351,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return this.GetResourceProperty(OntologyHelper.PropertyIncompatibleWith).Select(r => new Ontology(r, this._graph));
+                return GetResourceProperty(OntologyHelper.PropertyIncompatibleWith).Select(r => new Ontology(r, _graph));
             }
         }
 
@@ -362,7 +362,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return this.GetResourceProperty(OntologyHelper.PropertyImports).Select(r => new Ontology(r, this._graph));
+                return GetResourceProperty(OntologyHelper.PropertyImports).Select(r => new Ontology(r, _graph));
             }
         }
 
@@ -373,7 +373,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return this.GetResourceProperty(OntologyHelper.PropertyPriorVersion).Select(r => new Ontology(r, this._graph));
+                return GetResourceProperty(OntologyHelper.PropertyPriorVersion).Select(r => new Ontology(r, _graph));
             }
         }
     }

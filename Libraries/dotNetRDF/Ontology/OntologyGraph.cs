@@ -46,7 +46,7 @@ namespace VDS.RDF.Ontology
         /// </summary>
         public OntologyGraph() 
         {
-            this.NamespaceMap.AddNamespace("owl", UriFactory.Create(NamespaceMapper.OWL));
+            NamespaceMap.AddNamespace("owl", UriFactory.Create(NamespaceMapper.OWL));
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public virtual OntologyResource CreateOntologyResource(Uri resource)
         {
-            return this.CreateOntologyResource(this.CreateUriNode(resource));
+            return CreateOntologyResource(CreateUriNode(resource));
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public virtual OntologyResource CreateOntologyResource()
         {
-            return new OntologyResource(this.CreateBlankNode(), this);
+            return new OntologyResource(CreateBlankNode(), this);
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public virtual OntologyClass CreateOntologyClass(Uri resource)
         {
-            return this.CreateOntologyClass(this.CreateUriNode(resource));
+            return CreateOntologyClass(CreateUriNode(resource));
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public virtual OntologyClass CreateOntologyClass()
         {
-            return new OntologyClass(this.CreateBlankNode(), this);
+            return new OntologyClass(CreateBlankNode(), this);
         }
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public virtual OntologyProperty CreateOntologyProperty(Uri resource)
         {
-            return this.CreateOntologyProperty(this.CreateUriNode(resource));
+            return CreateOntologyProperty(CreateUriNode(resource));
         }
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public virtual Individual CreateIndividual(Uri resource)
         {
-            return this.CreateIndividual(this.CreateUriNode(resource));
+            return CreateIndividual(CreateUriNode(resource));
         }
 
         /// <summary>
@@ -166,7 +166,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public virtual Individual CreateIndividual(Uri resource, Uri @class)
         {
-            return this.CreateIndividual(this.CreateUriNode(resource), this.CreateUriNode(@class));
+            return CreateIndividual(CreateUriNode(resource), CreateUriNode(@class));
         }
 
         /// <summary>
@@ -176,7 +176,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return this.GetClasses(this.CreateUriNode(UriFactory.Create(OntologyHelper.OwlClass)));
+                return GetClasses(CreateUriNode(UriFactory.Create(OntologyHelper.OwlClass)));
             }
         }
 
@@ -187,7 +187,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return this.GetClasses(this.CreateUriNode(UriFactory.Create(OntologyHelper.RdfsClass)));
+                return GetClasses(CreateUriNode(UriFactory.Create(OntologyHelper.RdfsClass)));
             }
         }
 
@@ -198,7 +198,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return this.RdfClasses.Concat(this.OwlClasses);
+                return RdfClasses.Concat(OwlClasses);
             }
         }
 
@@ -209,9 +209,9 @@ namespace VDS.RDF.Ontology
         /// <returns>Enumeration of classes</returns>
         public IEnumerable<OntologyClass> GetClasses(INode classType)
         {
-            INode rdfType = this.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            return (from t in this.GetTriplesWithPredicateObject(rdfType, classType)
-                    select this.CreateOntologyClass(t.Subject));
+            INode rdfType = CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            return (from t in GetTriplesWithPredicateObject(rdfType, classType)
+                    select CreateOntologyClass(t.Subject));
         }
 
         /// <summary>
@@ -221,7 +221,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return this.GetProperties(this.CreateUriNode(UriFactory.Create(OntologyHelper.RdfProperty)));
+                return GetProperties(CreateUriNode(UriFactory.Create(OntologyHelper.RdfProperty)));
             }
         }
 
@@ -232,7 +232,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return this.GetProperties(this.CreateUriNode(UriFactory.Create(OntologyHelper.OwlObjectProperty)));
+                return GetProperties(CreateUriNode(UriFactory.Create(OntologyHelper.OwlObjectProperty)));
             }
         }
 
@@ -243,7 +243,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return this.GetProperties(this.CreateUriNode(UriFactory.Create(OntologyHelper.OwlDatatypeProperty)));
+                return GetProperties(CreateUriNode(UriFactory.Create(OntologyHelper.OwlDatatypeProperty)));
             }
         }
 
@@ -254,7 +254,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return this.GetProperties(this.CreateUriNode(UriFactory.Create(OntologyHelper.OwlAnnotationProperty)));
+                return GetProperties(CreateUriNode(UriFactory.Create(OntologyHelper.OwlAnnotationProperty)));
             }
         }
 
@@ -265,7 +265,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return this.OwlAnnotationProperties.Concat(this.OwlDatatypeProperties).Concat(this.OwlObjectProperties);
+                return OwlAnnotationProperties.Concat(OwlDatatypeProperties).Concat(OwlObjectProperties);
             }
         }
 
@@ -276,7 +276,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return this.RdfProperties.Concat(this.OwlAnnotationProperties).Concat(this.OwlDatatypeProperties).Concat(this.OwlObjectProperties);
+                return RdfProperties.Concat(OwlAnnotationProperties).Concat(OwlDatatypeProperties).Concat(OwlObjectProperties);
             }
         }
 
@@ -287,9 +287,9 @@ namespace VDS.RDF.Ontology
         /// <returns>Enumeration of properties</returns>
         public IEnumerable<OntologyProperty> GetProperties(INode propertyType)
         {
-            INode rdfType = this.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            return (from t in this.GetTriplesWithPredicateObject(rdfType, propertyType)
-                    select this.CreateOntologyProperty(t.Subject));
+            INode rdfType = CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            return (from t in GetTriplesWithPredicateObject(rdfType, propertyType)
+                    select CreateOntologyProperty(t.Subject));
         }
     }
 }

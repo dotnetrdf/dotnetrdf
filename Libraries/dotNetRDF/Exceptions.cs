@@ -151,11 +151,11 @@ namespace VDS.RDF.Parsing
         {
             if (t != null)
             {
-                this._hasPositionInfo = true;
-                this._startLine = t.StartLine;
-                this._endLine = t.EndLine;
-                this._startPos = t.StartPosition;
-                this._endPos = t.EndPosition;
+                _hasPositionInfo = true;
+                _startLine = t.StartLine;
+                _endLine = t.EndLine;
+                _startPos = t.StartPosition;
+                _endPos = t.EndPosition;
             }
         }
 
@@ -169,9 +169,9 @@ namespace VDS.RDF.Parsing
         public RdfParseException(String errorMsg, int line, int pos, Exception cause)
             : base(errorMsg, cause)
         {
-            this._hasPositionInfo = true;
-            this._startLine = this._endLine = line;
-            this._startPos = this._endPos = pos;
+            _hasPositionInfo = true;
+            _startLine = _endLine = line;
+            _startPos = _endPos = pos;
         }
 
         /// <summary>
@@ -194,7 +194,7 @@ namespace VDS.RDF.Parsing
         public RdfParseException(String errorMsg, int line, int startPos, int endPos, Exception cause)
             : this(errorMsg, line, startPos, cause)
         {
-            this._endPos = endPos;
+            _endPos = endPos;
         }
 
         /// <summary>
@@ -219,8 +219,8 @@ namespace VDS.RDF.Parsing
         public RdfParseException(String errorMsg, int startLine, int endLine, int startPos, int endPos, Exception cause)
             : this(errorMsg, startLine, startPos, cause)
         {
-            this._endLine = endLine;
-            this._endPos = endPos;
+            _endLine = endLine;
+            _endPos = endPos;
         }
 
         /// <summary>
@@ -258,7 +258,7 @@ namespace VDS.RDF.Parsing
         {
             get
             {
-                return this._hasPositionInfo;
+                return _hasPositionInfo;
             }
         }
 
@@ -269,7 +269,7 @@ namespace VDS.RDF.Parsing
         {
             get
             {
-                return (this._hasPositionInfo) ? this._startLine : -1;
+                return (_hasPositionInfo) ? _startLine : -1;
             }
         }
 
@@ -280,7 +280,7 @@ namespace VDS.RDF.Parsing
         {
             get
             {
-                return (this._hasPositionInfo) ? this._endLine : -1;
+                return (_hasPositionInfo) ? _endLine : -1;
             }
         }
 
@@ -291,7 +291,7 @@ namespace VDS.RDF.Parsing
         {
             get
             {
-                return (this._hasPositionInfo) ? this._startPos : -1;
+                return (_hasPositionInfo) ? _startPos : -1;
             }
         }
 
@@ -302,7 +302,7 @@ namespace VDS.RDF.Parsing
         {
             get
             {
-                return (this._hasPositionInfo) ? this._endPos : -1;
+                return (_hasPositionInfo) ? _endPos : -1;
             }
         }
     }
@@ -332,7 +332,7 @@ namespace VDS.RDF.Parsing
         /// <param name="ex">Exception</param>
         public void AddException(Exception ex)
         {
-            this._exceptions.Add(ex);
+            _exceptions.Add(ex);
         }
 
         /// <summary>
@@ -342,7 +342,7 @@ namespace VDS.RDF.Parsing
         {
             get
             {
-                return this._exceptions;
+                return _exceptions;
             }
         }
     }
@@ -678,7 +678,7 @@ namespace VDS.RDF.Writing
         /// <param name="ex">Exception</param>
         public void AddException(Exception ex)
         {
-            this._exceptions.Add(ex);
+            _exceptions.Add(ex);
         }
 
         /// <summary>
@@ -688,7 +688,7 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._exceptions;
+                return _exceptions;
             }
         }
     }

@@ -201,7 +201,7 @@ namespace VDS.RDF.Storage
         public void LoadGraph(IGraph g, string graphUri, AsyncStorageCallback callback, object state)
         {
             Uri u = (String.IsNullOrEmpty(graphUri) ? null : UriFactory.Create(graphUri));
-            this.LoadGraph(g, u, callback, state);
+            LoadGraph(g, u, callback, state);
         }
 
         /// <summary>
@@ -226,7 +226,7 @@ namespace VDS.RDF.Storage
         public void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback, object state)
         {
             Uri u = (String.IsNullOrEmpty(graphUri) ? null : UriFactory.Create(graphUri));
-            this.LoadGraph(handler, u, callback, state);
+            LoadGraph(handler, u, callback, state);
         }
 
         /// <summary>
@@ -264,7 +264,7 @@ namespace VDS.RDF.Storage
         public void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state)
         {
             Uri u = (String.IsNullOrEmpty(graphUri) ? null : UriFactory.Create(graphUri));
-            this.UpdateGraph(u, additions, removals, callback, state);
+            UpdateGraph(u, additions, removals, callback, state);
         }
 
         /// <summary>
@@ -287,7 +287,7 @@ namespace VDS.RDF.Storage
         public void DeleteGraph(string graphUri, AsyncStorageCallback callback, object state)
         {
             Uri u = (String.IsNullOrEmpty(graphUri) ? null : UriFactory.Create(graphUri));
-            this.DeleteGraph(u, callback, state);
+            DeleteGraph(u, callback, state);
         }
 
         /// <summary>

@@ -51,12 +51,12 @@ namespace VDS.RDF.Writing.Formatting
         public QNameFormatter(String formatName, QNameOutputMapper qnameMapper)
             : base(formatName)
         {
-            this._qnameMapper = qnameMapper;
-            foreach (String prefix in this._qnameMapper.Prefixes.ToList())
+            _qnameMapper = qnameMapper;
+            foreach (String prefix in _qnameMapper.Prefixes.ToList())
             {
-                if (!this.IsValidQName(prefix + ":"))
+                if (!IsValidQName(prefix + ":"))
                 {
-                    this._qnameMapper.RemoveNamespace(prefix);
+                    _qnameMapper.RemoveNamespace(prefix);
                 }
             }
         }
@@ -70,7 +70,7 @@ namespace VDS.RDF.Writing.Formatting
         public QNameFormatter(String formatName, QNameOutputMapper qnameMapper, bool allowAKeyword)
             : this(formatName, qnameMapper)
         {
-            this._allowAKeyword = allowAKeyword;
+            _allowAKeyword = allowAKeyword;
         }
 
         /// <summary>
@@ -94,27 +94,27 @@ namespace VDS.RDF.Writing.Formatting
             StringBuilder output = new StringBuilder();
             String qname;
 
-            if (this._allowAKeyword && segment == TripleSegment.Predicate && u.Uri.AbsoluteUri.Equals(RdfSpecsHelper.RdfType))
+            if (_allowAKeyword && segment == TripleSegment.Predicate && u.Uri.AbsoluteUri.Equals(RdfSpecsHelper.RdfType))
             {
                 output.Append('a');
             }
-            else if (this._qnameMapper.ReduceToQName(u.Uri.AbsoluteUri, out qname))
+            else if (_qnameMapper.ReduceToQName(u.Uri.AbsoluteUri, out qname))
             {
-                if (this.IsValidQName(qname))
+                if (IsValidQName(qname))
                 {
                     output.Append(qname);
                 }
                 else
                 {
                     output.Append('<');
-                    output.Append(this.FormatUri(u.Uri));
+                    output.Append(FormatUri(u.Uri));
                     output.Append('>');
                 }
             }
             else
             {
                 output.Append('<');
-                output.Append(this.FormatUri(u.Uri));
+                output.Append(FormatUri(u.Uri));
                 output.Append('>');
             }
             return output.ToString();

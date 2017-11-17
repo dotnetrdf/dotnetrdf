@@ -76,7 +76,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordUCase + "(" + this._expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordUCase + "(" + _expr.ToString() + ")";
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new UCaseFunction(transformer.Transform(this._expr));
+            return new UCaseFunction(transformer.Transform(_expr));
         }
 
     }

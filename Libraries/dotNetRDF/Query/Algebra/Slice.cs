@@ -48,7 +48,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="pattern">Pattern</param>
         public Slice(ISparqlAlgebra pattern)
         {
-            this._pattern = pattern;
+            _pattern = pattern;
         }
 
         /// <summary>
@@ -60,9 +60,9 @@ namespace VDS.RDF.Query.Algebra
         public Slice(ISparqlAlgebra pattern, int limit, int offset)
             : this(pattern)
         {
-            this._limit = Math.Max(-1, limit);
-            this._offset = Math.Max(0, offset);
-            this._detectSettings = false;
+            _limit = Math.Max(-1, limit);
+            _offset = Math.Max(0, offset);
+            _detectSettings = false;
         }
 
         /// <summary>
@@ -73,8 +73,8 @@ namespace VDS.RDF.Query.Algebra
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             // Detect the Offset and Limit from the Query if required
-            int limit = this._limit, offset = this._offset;
-            if (this._detectSettings)
+            int limit = _limit, offset = _offset;
+            if (_detectSettings)
             {
                 if (context.Query != null)
                 {
@@ -106,7 +106,7 @@ namespace VDS.RDF.Query.Algebra
                 // Otherwise we have a limit/offset to apply
 
                 // Firstly evaluate the inner algebra
-                context.InputMultiset = context.Evaluate(this._pattern);
+                context.InputMultiset = context.Evaluate(_pattern);
                 context.InputMultiset.VirtualCount = context.InputMultiset.Count;
                 // Then apply the offset
                 if (offset > 0)
@@ -153,19 +153,19 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._pattern.Variables.Distinct();
+                return _pattern.Variables.Distinct();
             }
         }
 
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
         /// </summary>
-        public IEnumerable<String> FloatingVariables { get { return this._pattern.FloatingVariables; } }
+        public IEnumerable<String> FloatingVariables { get { return _pattern.FloatingVariables; } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
         /// </summary>
-        public IEnumerable<String> FixedVariables { get { return this._pattern.FixedVariables; } }
+        public IEnumerable<String> FixedVariables { get { return _pattern.FixedVariables; } }
 
         /// <summary>
         /// Gets the Limit in use (-1 indicates no Limit)
@@ -174,7 +174,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._limit;
+                return _limit;
             }
         }
 
@@ -185,7 +185,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._offset;
+                return _offset;
             }
         }
 
@@ -196,7 +196,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._detectSettings;
+                return _detectSettings;
             }
         }
 
@@ -207,7 +207,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._pattern;
+                return _pattern;
             }
         }
 
@@ -217,7 +217,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Slice(" + this._pattern.ToString() + ", LIMIT " + this._limit + ", OFFSET " + this._offset + ")";
+            return "Slice(" + _pattern.ToString() + ", LIMIT " + _limit + ", OFFSET " + _offset + ")";
         }
 
         /// <summary>
@@ -226,9 +226,9 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            SparqlQuery q = this._pattern.ToQuery();
-            q.Limit = this._limit;
-            q.Offset = this._offset;
+            SparqlQuery q = _pattern.ToQuery();
+            q.Limit = _limit;
+            q.Offset = _offset;
             return q;
         }
 
@@ -249,7 +249,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new Slice(optimiser.Optimise(this._pattern), this._limit, this._offset);
+            return new Slice(optimiser.Optimise(_pattern), _limit, _offset);
         }
     }
 }

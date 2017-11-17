@@ -49,11 +49,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._namespaces;
+                return _namespaces;
             }
             set
             {
-                this._namespaces = value;
+                _namespaces = value;
             }
         }
 
@@ -67,7 +67,7 @@ namespace VDS.RDF.Writing
         {
             using (var stream = File.Open(filename, FileMode.Create))
             {
-                this.Save(results, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
+                Save(results, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
             }
         }
 
@@ -80,7 +80,7 @@ namespace VDS.RDF.Writing
         {
             try
             {
-                this.GenerateOutput(results, output);
+                GenerateOutput(results, output);
                 output.Close();
             }
             catch
@@ -105,7 +105,7 @@ namespace VDS.RDF.Writing
         private void GenerateOutput(SparqlResultSet results, TextWriter output)
         {
             HtmlTextWriter writer = new HtmlTextWriter(output);
-            QNameOutputMapper qnameMapper = new QNameOutputMapper(this._namespaces != null ? this._namespaces : new NamespaceMapper(true));
+            QNameOutputMapper qnameMapper = new QNameOutputMapper(_namespaces != null ? _namespaces : new NamespaceMapper(true));
 
             // Page Header
             writer.Write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
@@ -114,9 +114,9 @@ namespace VDS.RDF.Writing
             writer.RenderBeginTag(HtmlTextWriterTag.Title);
             writer.WriteEncodedText("SPARQL Query Results");
             writer.RenderEndTag();
-            if (!this.Stylesheet.Equals(String.Empty))
+            if (!Stylesheet.Equals(String.Empty))
             {
-                writer.AddAttribute(HtmlTextWriterAttribute.Href, this.Stylesheet);
+                writer.AddAttribute(HtmlTextWriterAttribute.Href, Stylesheet);
                 writer.AddAttribute(HtmlTextWriterAttribute.Type, "text/css");
                 writer.AddAttribute(HtmlTextWriterAttribute.Rel, "stylesheet");
                 writer.RenderBeginTag(HtmlTextWriterTag.Link);
@@ -172,7 +172,7 @@ namespace VDS.RDF.Writing
                                 switch (value.NodeType)
                                 {
                                     case NodeType.Blank:
-                                        writer.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassBlankNode);
+                                        writer.AddAttribute(HtmlTextWriterAttribute.Class, CssClassBlankNode);
                                         writer.RenderBeginTag(HtmlTextWriterTag.Span);
                                         writer.WriteEncodedText(value.ToString());
                                         writer.RenderEndTag();
@@ -180,15 +180,15 @@ namespace VDS.RDF.Writing
 
                                     case NodeType.Literal:
                                         ILiteralNode lit = (ILiteralNode)value;
-                                        writer.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassLiteral);
+                                        writer.AddAttribute(HtmlTextWriterAttribute.Class, CssClassLiteral);
                                         writer.RenderBeginTag(HtmlTextWriterTag.Span);
                                         if (lit.DataType != null)
                                         {
                                             writer.WriteEncodedText(lit.Value);
                                             writer.RenderEndTag();
                                             writer.WriteEncodedText("^^");
-                                            writer.AddAttribute(HtmlTextWriterAttribute.Href, this._formatter.FormatUri(lit.DataType.AbsoluteUri));
-                                            writer.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassDatatype);
+                                            writer.AddAttribute(HtmlTextWriterAttribute.Href, _formatter.FormatUri(lit.DataType.AbsoluteUri));
+                                            writer.AddAttribute(HtmlTextWriterAttribute.Class, CssClassDatatype);
                                             writer.RenderBeginTag(HtmlTextWriterTag.A);
                                             writer.WriteEncodedText(lit.DataType.ToString());
                                             writer.RenderEndTag();
@@ -200,7 +200,7 @@ namespace VDS.RDF.Writing
                                             {
                                                 writer.RenderEndTag();
                                                 writer.WriteEncodedText("@");
-                                                writer.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassLangSpec);
+                                                writer.AddAttribute(HtmlTextWriterAttribute.Class, CssClassLangSpec);
                                                 writer.RenderBeginTag(HtmlTextWriterTag.Span);
                                                 writer.WriteEncodedText(lit.Language);
                                                 writer.RenderEndTag();
@@ -217,8 +217,8 @@ namespace VDS.RDF.Writing
                                         throw new RdfOutputException("Result Sets which contain Graph Literal Nodes cannot be serialized in the HTML Format");
 
                                     case NodeType.Uri:
-                                        writer.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassUri);
-                                        writer.AddAttribute(HtmlTextWriterAttribute.Href, this._formatter.FormatUri(this.UriPrefix + value.ToString()));
+                                        writer.AddAttribute(HtmlTextWriterAttribute.Class, CssClassUri);
+                                        writer.AddAttribute(HtmlTextWriterAttribute.Href, _formatter.FormatUri(UriPrefix + value.ToString()));
                                         writer.RenderBeginTag(HtmlTextWriterTag.A);
 
                                         String qname;
@@ -284,7 +284,7 @@ namespace VDS.RDF.Writing
         /// <param name="message">Warning Message</param>
         private void RaiseWarning(String message)
         {
-            SparqlWarning d = this.Warning;
+            SparqlWarning d = Warning;
             if (d != null)
             {
                 d(message);

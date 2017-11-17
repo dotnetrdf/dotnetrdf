@@ -47,8 +47,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <param name="startsExpr">Starts Expression</param>
         public StrAfterFunction(ISparqlExpression stringExpr, ISparqlExpression startsExpr)
         {
-            this._stringExpr = stringExpr;
-            this._startsExpr = startsExpr;
+            _stringExpr = stringExpr;
+            _startsExpr = startsExpr;
         }
 
         /// <summary>
@@ -59,10 +59,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            ILiteralNode input = this.CheckArgument(this._stringExpr, context, bindingID);
-            ILiteralNode starts = this.CheckArgument(this._startsExpr, context, bindingID);
+            ILiteralNode input = CheckArgument(_stringExpr, context, bindingID);
+            ILiteralNode starts = CheckArgument(_startsExpr, context, bindingID);
 
-            if (!this.IsValidArgumentPair(input, starts)) throw new RdfQueryException("The Literals provided as arguments to this SPARQL String function are not of valid forms (see SPARQL spec for acceptable combinations)");
+            if (!IsValidArgumentPair(input, starts)) throw new RdfQueryException("The Literals provided as arguments to this SPARQL String function are not of valid forms (see SPARQL spec for acceptable combinations)");
 
             Uri datatype = input.DataType;//(input.DataType != null ? input.DataType : starts.DataType);
             string lang = input.Language;//(!input.Language.Equals(string.Empty) ? input.Language : starts.Language);
@@ -104,7 +104,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 
         private ILiteralNode CheckArgument(ISparqlExpression expr, SparqlEvaluationContext context, int bindingID)
         {
-            return this.CheckArgument(expr, context, bindingID, XPathFunctionFactory.AcceptStringArguments);
+            return CheckArgument(expr, context, bindingID, XPathFunctionFactory.AcceptStringArguments);
         }
 
         private ILiteralNode CheckArgument(ISparqlExpression expr, SparqlEvaluationContext context, int bindingID, Func<Uri, bool> argumentTypeValidator)
@@ -226,7 +226,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         {
             get
             {
-                return this._startsExpr.Variables.Concat(this._stringExpr.Variables);
+                return _startsExpr.Variables.Concat(_stringExpr.Variables);
             }
         }
 
@@ -259,7 +259,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         {
             get
             {
-                return new ISparqlExpression[] { this._stringExpr, this._startsExpr };
+                return new ISparqlExpression[] { _stringExpr, _startsExpr };
             }
         }
 
@@ -270,7 +270,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         {
             get
             {
-                return this._stringExpr.CanParallelise && this._stringExpr.CanParallelise;
+                return _stringExpr.CanParallelise && _stringExpr.CanParallelise;
             }
         }
 
@@ -281,7 +281,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new StrAfterFunction(transformer.Transform(this._stringExpr), transformer.Transform(this._startsExpr));
+            return new StrAfterFunction(transformer.Transform(_stringExpr), transformer.Transform(_startsExpr));
         }
 
         /// <summary>
@@ -290,7 +290,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordStrAfter + "(" + this._stringExpr.ToString() + ", " + this._startsExpr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordStrAfter + "(" + _stringExpr.ToString() + ", " + _startsExpr.ToString() + ")";
         }
     }
 }

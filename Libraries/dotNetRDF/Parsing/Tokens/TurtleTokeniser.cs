@@ -75,9 +75,9 @@ namespace VDS.RDF.Parsing.Tokens
         public TurtleTokeniser(ParsingTextReader input, TurtleSyntax syntax)
             : base(input)
         {
-            this._in = input;
-            this.Format = "Turtle";
-            this._syntax = syntax;
+            _in = input;
+            Format = "Turtle";
+            _syntax = syntax;
         }
 
         /// <summary>
@@ -96,10 +96,10 @@ namespace VDS.RDF.Parsing.Tokens
         public override IToken GetNextToken()
         {
             // Have we read anything yet?
-            if (this.LastTokenType == -1)
+            if (LastTokenType == -1)
             {
                 // Nothing read yet so produce a BOF Token
-                this.LastTokenType = Token.BOF;
+                LastTokenType = Token.BOF;
                 return new BOFToken();
             }
             else
@@ -107,7 +107,7 @@ namespace VDS.RDF.Parsing.Tokens
                 // Reading has started
 
                 // Reset Start and End Position Counters
-                this.StartNewToken();
+                StartNewToken();
 
                 #region Use Specific Tokenisers Section
 
@@ -115,12 +115,12 @@ namespace VDS.RDF.Parsing.Tokens
                 // Need to use a Try Catch here as the specific functions will throw errors if the required Token can't be found
                 try
                 {
-                    switch (this.LastTokenType)
+                    switch (LastTokenType)
                     {
                         case Token.AT:
-                            return this.TryGetDirectiveToken();
+                            return TryGetDirectiveToken();
                         case Token.BOF:
-                            if (this._in.EndOfStream)
+                            if (_in.EndOfStream)
                             {
                                 // Empty File
                                 return new EOFToken(0, 0);
@@ -128,7 +128,7 @@ namespace VDS.RDF.Parsing.Tokens
                             break;
 
                         case Token.PREFIXDIRECTIVE:
-                            return this.TryGetPrefixToken();
+                            return TryGetPrefixToken();
 
                         default:
                             break;
@@ -158,12 +158,12 @@ namespace VDS.RDF.Parsing.Tokens
                     do
                     {
                         // Check for EOF
-                        if (this._in.EndOfStream && !this.HasBacktracked)
+                        if (_in.EndOfStream && !HasBacktracked)
                         {
-                            if (this.Length == 0)
+                            if (Length == 0)
                             {
                                 // We're at the End of the Stream and not part-way through reading a Token
-                                return new EOFToken(this.CurrentLine, this.CurrentPosition);
+                                return new EOFToken(CurrentLine, CurrentPosition);
                             }
                             else
                             {
@@ -174,15 +174,15 @@ namespace VDS.RDF.Parsing.Tokens
                         }
 
                         // Get the Next Character
-                        char next = this.Peek();
+                        char next = Peek();
 
                         // Always need to do a check for End of Stream after Peeking to handle empty files OK
-                        if (next == Char.MaxValue && this._in.EndOfStream)
+                        if (next == Char.MaxValue && _in.EndOfStream)
                         {
-                            if (this.Length == 0)
+                            if (Length == 0)
                             {
                                 // We're at the End of the Stream and not part-way through reading a Token
-                                return new EOFToken(this.CurrentLine, this.CurrentPosition);
+                                return new EOFToken(CurrentLine, CurrentPosition);
                             }
                             else
                             {
@@ -202,13 +202,13 @@ namespace VDS.RDF.Parsing.Tokens
                             else if (!UnicodeSpecsHelper.IsLetterModifier(next))
                             {
                                 // Have to assume start of a QName
-                                return this.TryGetQNameToken();                                
+                                return TryGetQNameToken();                                
                             }
                         }
                         else if (Char.IsDigit(next) && !anycharallowed)
                         {
                             // Must be a plain literal
-                            return this.TryGetNumericLiteralToken();
+                            return TryGetNumericLiteralToken();
                         }
                         else
                         {
@@ -222,14 +222,14 @@ namespace VDS.RDF.Parsing.Tokens
                                 case '@':
                                     if (!anycharallowed)
                                     {
-                                        if (this.LastTokenType == Token.LITERAL || this.LastTokenType == Token.LONGLITERAL)
+                                        if (LastTokenType == Token.LITERAL || LastTokenType == Token.LONGLITERAL)
                                         {
                                             // Should be a Language Specifier
-                                            this.SkipCharacter();
-                                            this.StartNewToken();
-                                            return this.TryGetLanguageSpecToken();
+                                            SkipCharacter();
+                                            StartNewToken();
+                                            return TryGetLanguageSpecToken();
                                         }
-                                        else if (this.LastTokenType == Token.PLAINLITERAL)
+                                        else if (LastTokenType == Token.PLAINLITERAL)
                                         {
                                             // Can't specify Language on a Plain Literal
                                             throw Error("Unexpected @ Character after a Plain Literal, Language cannot be specified for Plain Literals!");
@@ -237,9 +237,9 @@ namespace VDS.RDF.Parsing.Tokens
                                         else
                                         {
                                             // This should be the start of a directive
-                                            this.LastTokenType = Token.AT;
-                                            this.ConsumeCharacter();
-                                            return new ATToken(this.CurrentLine, this.StartPosition);
+                                            LastTokenType = Token.AT;
+                                            ConsumeCharacter();
+                                            return new ATToken(CurrentLine, StartPosition);
                                         }
                                     }
                                     break;
@@ -250,19 +250,19 @@ namespace VDS.RDF.Parsing.Tokens
                                 case '^':
                                     if (!anycharallowed)
                                     {
-                                        if (this.LastTokenType == Token.LITERAL || this.LastTokenType == Token.LONGLITERAL)
+                                        if (LastTokenType == Token.LITERAL || LastTokenType == Token.LONGLITERAL)
                                         {
                                             // Discard this and look at the next Character
-                                            this.SkipCharacter();
-                                            next = this.Peek();
+                                            SkipCharacter();
+                                            next = Peek();
 
                                             // Next character must be a ^ or we'll error
                                             if (next == '^')
                                             {
                                                 // Discard this as well
-                                                this.SkipCharacter();
-                                                this.StartNewToken();
-                                                return this.TryGetDataTypeToken();
+                                                SkipCharacter();
+                                                StartNewToken();
+                                                return TryGetDataTypeToken();
                                             }
                                             else
                                             {
@@ -270,7 +270,7 @@ namespace VDS.RDF.Parsing.Tokens
                                             }
 
                                         }
-                                        else if (this.LastTokenType == Token.PLAINLITERAL)
+                                        else if (LastTokenType == Token.PLAINLITERAL)
                                         {
                                             // Can't specify datatype on a Plain Literal
                                             throw Error("Unexpected ^ Character after a Plain Literal, Data Type cannot be specified for Plain Literals!");
@@ -286,7 +286,7 @@ namespace VDS.RDF.Parsing.Tokens
                                     if (!anycharallowed)
                                     {
                                         // Start of a Comment
-                                        return this.TryGetCommentToken();
+                                        return TryGetCommentToken();
                                     }
                                     break;
 
@@ -297,18 +297,18 @@ namespace VDS.RDF.Parsing.Tokens
                                 case '.':
                                     if (!anycharallowed)
                                     {
-                                        this.ConsumeCharacter();
+                                        ConsumeCharacter();
 
                                         // Watch out for plain literals
-                                        if (!this._in.EndOfStream && Char.IsDigit(this.Peek()))
+                                        if (!_in.EndOfStream && Char.IsDigit(Peek()))
                                         {
-                                            return this.TryGetNumericLiteralToken();
+                                            return TryGetNumericLiteralToken();
                                         }
                                         else
                                         {
                                             // This should be the end of a directive
-                                            this.LastTokenType = Token.DOT;
-                                            return new DotToken(this.CurrentLine, this.StartPosition);
+                                            LastTokenType = Token.DOT;
+                                            return new DotToken(CurrentLine, StartPosition);
                                         }
                                     }
                                     break;
@@ -317,9 +317,9 @@ namespace VDS.RDF.Parsing.Tokens
                                     if (!anycharallowed)
                                     {
                                         // This should be the terminator of a Triple where a new Predicate and Object will be given on the subsequent line
-                                        this.LastTokenType = Token.SEMICOLON;
-                                        this.ConsumeCharacter();
-                                        return new SemicolonToken(this.CurrentLine, this.StartPosition);
+                                        LastTokenType = Token.SEMICOLON;
+                                        ConsumeCharacter();
+                                        return new SemicolonToken(CurrentLine, StartPosition);
                                     }
                                     break;
 
@@ -327,9 +327,9 @@ namespace VDS.RDF.Parsing.Tokens
                                     if (!anycharallowed)
                                     {
                                         // This should be the terminator of a Triple where a new Object will be given on the subsequent line
-                                        this.LastTokenType = Token.COMMA;
-                                        this.ConsumeCharacter();
-                                        return new CommaToken(this.CurrentLine, this.StartPosition);
+                                        LastTokenType = Token.COMMA;
+                                        ConsumeCharacter();
+                                        return new CommaToken(CurrentLine, StartPosition);
                                     }
                                     break;
 
@@ -341,7 +341,7 @@ namespace VDS.RDF.Parsing.Tokens
                                     if (!anycharallowed)
                                     {
                                         // Start of a String Literal
-                                        this.StartNewToken();
+                                        StartNewToken();
                                         anycharallowed = true;
                                         whitespaceignored = false;
                                         whitespaceallowed = true;
@@ -351,8 +351,8 @@ namespace VDS.RDF.Parsing.Tokens
                                     {
                                         // Could be the end of a Long Literal
 
-                                        this.ConsumeCharacter();
-                                        next = this.Peek();
+                                        ConsumeCharacter();
+                                        next = Peek();
 
                                         if (next != '"')
                                         {
@@ -362,25 +362,25 @@ namespace VDS.RDF.Parsing.Tokens
                                         else
                                         {
                                             // Got Two Quote Marks in a row
-                                            this.ConsumeCharacter();
-                                            next = this.Peek();
+                                            ConsumeCharacter();
+                                            next = Peek();
 
                                             // Did we get the Third?
                                             if (next == '"')
                                             {
                                                 // End of Long Literal
-                                                this.ConsumeCharacter();
-                                                this.LastTokenType = Token.LONGLITERAL;
+                                                ConsumeCharacter();
+                                                LastTokenType = Token.LONGLITERAL;
 
                                                 // If there are any additional quotes immediatedly following this then
                                                 // we want to consume them also
-                                                next = this.Peek();
+                                                next = Peek();
                                                 if (next == '"')
                                                 {
                                                     throw Error("Too many \" characters encountered at the end of a long literal - ensure that you have escaped quotes in a long literal to avoid this error");
                                                 }
 
-                                                return new LongLiteralToken(this.Value, this.StartLine, this.EndLine, this.StartPosition, this.EndPosition);
+                                                return new LongLiteralToken(Value, StartLine, EndLine, StartPosition, EndPosition);
                                             }
                                             else
                                             {
@@ -393,10 +393,10 @@ namespace VDS.RDF.Parsing.Tokens
                                     {
                                         // See if this is a Triple Quote for Long Literals
                                         // OR if it's the Empty String
-                                        if (this.Length == 1 && this.Value.StartsWith("\""))
+                                        if (Length == 1 && Value.StartsWith("\""))
                                         {
-                                            this.ConsumeCharacter();
-                                            next = this.Peek();
+                                            ConsumeCharacter();
+                                            next = Peek();
 
                                             if (next == '"')
                                             {
@@ -408,28 +408,28 @@ namespace VDS.RDF.Parsing.Tokens
                                             else if (Char.IsWhiteSpace(next) || next == '.' || next == ';' || next == ',' || next == '^' || next == '@')
                                             {
                                                 // Empty String
-                                                this.LastTokenType = Token.LITERAL;
-                                                return new LiteralToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
+                                                LastTokenType = Token.LITERAL;
+                                                return new LiteralToken(Value, CurrentLine, StartPosition, EndPosition);
                                             }
                                         }
                                         else
                                         {
                                             // Assume End of String Literal
-                                            this.ConsumeCharacter();
-                                            this.LastTokenType = Token.LITERAL;
+                                            ConsumeCharacter();
+                                            LastTokenType = Token.LITERAL;
 
-                                            return new LiteralToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
+                                            return new LiteralToken(Value, CurrentLine, StartPosition, EndPosition);
                                         }
                                     }
                                     break;
 
                                 case '\'':
-                                    if (this._syntax == TurtleSyntax.W3C)
+                                    if (_syntax == TurtleSyntax.W3C)
                                     {
                                         if (!anycharallowed)
                                         {
                                             // Start of a String Literal
-                                            this.StartNewToken();
+                                            StartNewToken();
                                             anycharallowed = true;
                                             whitespaceignored = false;
                                             whitespaceallowed = true;
@@ -439,8 +439,8 @@ namespace VDS.RDF.Parsing.Tokens
                                         {
                                             // Could be the end of a Long Literal
 
-                                            this.ConsumeCharacter();
-                                            next = this.Peek();
+                                            ConsumeCharacter();
+                                            next = Peek();
 
                                             if (next != '\'')
                                             {
@@ -450,25 +450,25 @@ namespace VDS.RDF.Parsing.Tokens
                                             else
                                             {
                                                 // Got Two Quote Marks in a row
-                                                this.ConsumeCharacter();
-                                                next = this.Peek();
+                                                ConsumeCharacter();
+                                                next = Peek();
 
                                                 // Did we get the Third?
                                                 if (next == '\'')
                                                 {
                                                     // End of Long Literal
-                                                    this.ConsumeCharacter();
-                                                    this.LastTokenType = Token.LONGLITERAL;
+                                                    ConsumeCharacter();
+                                                    LastTokenType = Token.LONGLITERAL;
 
                                                     // If there are any additional quotes immediatedly following this then
                                                     // we want to consume them also
-                                                    next = this.Peek();
+                                                    next = Peek();
                                                     if (next == '\'')
                                                     {
                                                         throw Error("Too many \' characters encountered at the end of a long literal - ensure that you have escaped quotes in a long literal to avoid this error");
                                                     }
 
-                                                    return new LongLiteralToken(this.Value, this.StartLine, this.EndLine, this.StartPosition, this.EndPosition);
+                                                    return new LongLiteralToken(Value, StartLine, EndLine, StartPosition, EndPosition);
                                                 }
                                                 else
                                                 {
@@ -481,10 +481,10 @@ namespace VDS.RDF.Parsing.Tokens
                                         {
                                             // See if this is a Triple Quote for Long Literals
                                             // OR if it's the Empty String
-                                            if (this.Length == 1 && this.Value.StartsWith("'"))
+                                            if (Length == 1 && Value.StartsWith("'"))
                                             {
-                                                this.ConsumeCharacter();
-                                                next = this.Peek();
+                                                ConsumeCharacter();
+                                                next = Peek();
 
                                                 if (next == '\'')
                                                 {
@@ -496,17 +496,17 @@ namespace VDS.RDF.Parsing.Tokens
                                                 else if (Char.IsWhiteSpace(next) || next == '.' || next == ';' || next == ',' || next == '^' || next == '@')
                                                 {
                                                     // Empty String
-                                                    this.LastTokenType = Token.LITERAL;
-                                                    return new LiteralToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
+                                                    LastTokenType = Token.LITERAL;
+                                                    return new LiteralToken(Value, CurrentLine, StartPosition, EndPosition);
                                                 }
                                             }
                                             else
                                             {
                                                 // Assume End of String Literal
-                                                this.ConsumeCharacter();
-                                                this.LastTokenType = Token.LITERAL;
+                                                ConsumeCharacter();
+                                                LastTokenType = Token.LITERAL;
 
-                                                return new LiteralToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
+                                                return new LiteralToken(Value, CurrentLine, StartPosition, EndPosition);
                                             }
                                         }
                                         break;
@@ -525,9 +525,9 @@ namespace VDS.RDF.Parsing.Tokens
                                     if (!anycharallowed)
                                     {
                                         // This should be the start of a collection
-                                        this.LastTokenType = Token.LEFTBRACKET;
-                                        this.ConsumeCharacter();
-                                        return new LeftBracketToken(this.CurrentLine, this.StartPosition);
+                                        LastTokenType = Token.LEFTBRACKET;
+                                        ConsumeCharacter();
+                                        return new LeftBracketToken(CurrentLine, StartPosition);
                                     }
                                     break;
 
@@ -535,9 +535,9 @@ namespace VDS.RDF.Parsing.Tokens
                                     if (!anycharallowed)
                                     {
                                         // This should be the end of a directive
-                                        this.LastTokenType = Token.RIGHTBRACKET;
-                                        this.ConsumeCharacter();
-                                        return new RightBracketToken(this.CurrentLine, this.StartPosition);
+                                        LastTokenType = Token.RIGHTBRACKET;
+                                        ConsumeCharacter();
+                                        return new RightBracketToken(CurrentLine, StartPosition);
                                     }
                                     break;
 
@@ -545,9 +545,9 @@ namespace VDS.RDF.Parsing.Tokens
                                     if (!anycharallowed)
                                     {
                                         // This should be the start of a Blank Node
-                                        this.LastTokenType = Token.LEFTSQBRACKET;
-                                        this.ConsumeCharacter();
-                                        return new LeftSquareBracketToken(this.CurrentLine, this.StartPosition);
+                                        LastTokenType = Token.LEFTSQBRACKET;
+                                        ConsumeCharacter();
+                                        return new LeftSquareBracketToken(CurrentLine, StartPosition);
                                     }
                                     break;
 
@@ -555,9 +555,9 @@ namespace VDS.RDF.Parsing.Tokens
                                     if (!anycharallowed)
                                     {
                                         // This should be the start of a Blank Node
-                                        this.LastTokenType = Token.RIGHTSQBRACKET;
-                                        this.ConsumeCharacter();
-                                        return new RightSquareBracketToken(this.CurrentLine, this.StartPosition);
+                                        LastTokenType = Token.RIGHTSQBRACKET;
+                                        ConsumeCharacter();
+                                        return new RightSquareBracketToken(CurrentLine, StartPosition);
                                     }
                                     break;
 
@@ -578,7 +578,7 @@ namespace VDS.RDF.Parsing.Tokens
                                     if (!anycharallowed)
                                     {
                                         // Start of a Blank Node QName
-                                        IToken temp = this.TryGetQNameToken();
+                                        IToken temp = TryGetQNameToken();
                                         if (temp is BlankNodeToken || temp is BlankNodeWithIDToken)
                                         {
                                             return temp;
@@ -597,7 +597,7 @@ namespace VDS.RDF.Parsing.Tokens
                                     if (!anycharallowed)
                                     {
                                         // Start of a Default Namespace QName
-                                        IToken temp = this.TryGetQNameToken();
+                                        IToken temp = TryGetQNameToken();
                                         if (temp is QNameToken)
                                         {
                                             return temp;
@@ -619,8 +619,8 @@ namespace VDS.RDF.Parsing.Tokens
                                         // This is invalid syntax of some kind
                                         // Want to work out what kind though
 
-                                        this.SkipCharacter();
-                                        next = this.Peek();
+                                        SkipCharacter();
+                                        next = Peek();
 
                                         if (Char.IsWhiteSpace(next))
                                         {
@@ -647,15 +647,15 @@ namespace VDS.RDF.Parsing.Tokens
                                 case '-':
                                     if (!anycharallowed)
                                     {
-                                        this.ConsumeCharacter();
-                                        return this.TryGetNumericLiteralToken();
+                                        ConsumeCharacter();
+                                        return TryGetNumericLiteralToken();
                                     }
                                     break;
                                 case '+':
                                     if (!anycharallowed)
                                     {
-                                        this.ConsumeCharacter();
-                                        return this.TryGetNumericLiteralToken();
+                                        ConsumeCharacter();
+                                        return TryGetNumericLiteralToken();
                                     }
                                     break;
 
@@ -670,17 +670,17 @@ namespace VDS.RDF.Parsing.Tokens
 
                                         if (rightangleallowed)
                                         {
-                                            this.HandleEscapes(this._syntax == TurtleSyntax.Original ? TokeniserEscapeMode.QuotedLiterals : TokeniserEscapeMode.QuotedLiteralsBoth);
+                                            HandleEscapes(_syntax == TurtleSyntax.Original ? TokeniserEscapeMode.QuotedLiterals : TokeniserEscapeMode.QuotedLiteralsBoth);
                                         }
                                         else
                                         {
-                                            switch (this._syntax)
+                                            switch (_syntax)
                                             {
                                                 case TurtleSyntax.Original:
-                                                    this.HandleEscapes(TokeniserEscapeMode.PermissiveUri);
+                                                    HandleEscapes(TokeniserEscapeMode.PermissiveUri);
                                                     break;
                                                 default:
-                                                    this.HandleEscapes(TokeniserEscapeMode.Uri);
+                                                    HandleEscapes(TokeniserEscapeMode.Uri);
                                                     break;
                                             }
                                         }
@@ -702,11 +702,11 @@ namespace VDS.RDF.Parsing.Tokens
                                     // New Line
                                     if (newlineallowed)
                                     {
-                                        this.ConsumeNewLine(true);
+                                        ConsumeNewLine(true);
                                     }
                                     else if (whitespaceignored)
                                     {
-                                        this.ConsumeNewLine(false);
+                                        ConsumeNewLine(false);
                                     }
                                     else
                                     {
@@ -719,11 +719,11 @@ namespace VDS.RDF.Parsing.Tokens
                                     // New Line
                                     if (newlineallowed)
                                     {
-                                        this.ConsumeNewLine(true);
+                                        ConsumeNewLine(true);
                                     }
                                     else if (whitespaceignored)
                                     {
-                                        this.ConsumeNewLine(false);
+                                        ConsumeNewLine(false);
                                     }
                                     else
                                     {
@@ -737,7 +737,7 @@ namespace VDS.RDF.Parsing.Tokens
 
                                 case ' ':
                                 case '\t':
-                                    if (this._syntax != TurtleSyntax.Original && next == ' ' && !rightangleallowed)
+                                    if (_syntax != TurtleSyntax.Original && next == ' ' && !rightangleallowed)
                                     {
                                         throw Error("Illegal white space in URI");
                                     }
@@ -748,7 +748,7 @@ namespace VDS.RDF.Parsing.Tokens
                                     else if (whitespaceignored)
                                     {
                                         // Discard the White Space
-                                        this.SkipCharacter();
+                                        SkipCharacter();
                                         continue;
                                     }
                                     else
@@ -766,20 +766,20 @@ namespace VDS.RDF.Parsing.Tokens
                                     // Start of a Uri Token
                                     if (!anycharallowed)
                                     {
-                                        this.StartNewToken();
+                                        StartNewToken();
                                         anycharallowed = true;
                                         rightangleallowed = false;
 
-                                        this.ConsumeCharacter();
-                                        next = this.Peek();
+                                        ConsumeCharacter();
+                                        next = Peek();
 
                                         // Check if we get a = or a > next
                                         // Want to ensure we don't get an invalid use of <= or an Empty Uri
                                         if (next == '=')
                                         {
                                             // This means we have an attempt to use <=
-                                            this.ConsumeCharacter();
-                                            next = this.Peek();
+                                            ConsumeCharacter();
+                                            next = Peek();
 
                                             // Need to confirm that white space follows the <= so it's a distinct token
                                             if (Char.IsWhiteSpace(next))
@@ -791,8 +791,8 @@ namespace VDS.RDF.Parsing.Tokens
                                         else if (next == '>')
                                         {
                                             // Have an Empty Uri
-                                            this.ConsumeCharacter();
-                                            return new UriToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
+                                            ConsumeCharacter();
+                                            return new UriToken(Value, CurrentLine, StartPosition, EndPosition);
                                         }
                                     }
                                     break;
@@ -802,12 +802,12 @@ namespace VDS.RDF.Parsing.Tokens
                                     if (!rightangleallowed)
                                     {
                                         // Should be end of a Uri
-                                        this.LastTokenType = Token.URI;
-                                        this.ConsumeCharacter();
+                                        LastTokenType = Token.URI;
+                                        ConsumeCharacter();
 
                                         // Produce the Token
-                                        if (Options.ValidateIris && this._syntax == TurtleSyntax.W3C && !IriSpecsHelper.IsIri(this.Value.Substring(1, this.Length - 2))) throw Error("Illegal IRI " + this.Value + " encountered");
-                                        return new UriToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
+                                        if (Options.ValidateIris && _syntax == TurtleSyntax.W3C && !IriSpecsHelper.IsIri(Value.Substring(1, Length - 2))) throw Error("Illegal IRI " + Value + " encountered");
+                                        return new UriToken(Value, CurrentLine, StartPosition, EndPosition);
                                     }
                                     else if (!anycharallowed)
                                     {
@@ -824,14 +824,14 @@ namespace VDS.RDF.Parsing.Tokens
                                 case 'B':
                                     if (!anycharallowed)
                                     {
-                                        return this.TryGetDirectiveToken();
+                                        return TryGetDirectiveToken();
                                     }
                                     break;
                                 case 'p':
                                 case 'P':
                                     if (!anycharallowed)
                                     {
-                                        return this.TryGetDirectiveToken();
+                                        return TryGetDirectiveToken();
                                     }
                                     break;
 
@@ -856,17 +856,17 @@ namespace VDS.RDF.Parsing.Tokens
                         }
 
                         // Read in the Character to the Buffer and Increment Position Counters
-                        this.ConsumeCharacter();
+                        ConsumeCharacter();
 
                     } while (true);
                 }
                 catch (IOException)
                 {
                     // End Of Stream Check
-                    if (this._in.EndOfStream)
+                    if (_in.EndOfStream)
                     {
                         // At End of Stream so produce the EOFToken
-                        return new EOFToken(this.CurrentLine, this.CurrentPosition);
+                        return new EOFToken(CurrentLine, CurrentPosition);
                     }
                     else
                     {
@@ -884,7 +884,7 @@ namespace VDS.RDF.Parsing.Tokens
         private IToken TryGetDirectiveToken()
         {
             // Buffers
-            char next = this.Peek();
+            char next = Peek();
 
             // Which directive do we expect?
             // 1 = Prefix, 2 = Base
@@ -918,44 +918,44 @@ namespace VDS.RDF.Parsing.Tokens
                         break;
                     case 1:
                         // Expecting a Prefix Directive
-                        while (this.Length < 6)
+                        while (Length < 6)
                         {
-                            this.ConsumeCharacter();
+                            ConsumeCharacter();
                         }
 #if NETCORE
                         if (this.Value.Equals("prefix", StringComparison.OrdinalIgnoreCase))
 #else
-                        if (this.Value.Equals("prefix", StringComparison.InvariantCultureIgnoreCase))
+                        if (Value.Equals("prefix", StringComparison.InvariantCultureIgnoreCase))
 #endif
                         {
                             // Got a Prefix Directive
-                            this.LastTokenType = Token.PREFIXDIRECTIVE;
-                            return new PrefixDirectiveToken(this.CurrentLine, this.StartPosition);
+                            LastTokenType = Token.PREFIXDIRECTIVE;
+                            return new PrefixDirectiveToken(CurrentLine, StartPosition);
                         }
                         else
                         {
                             // Not what we expected so Error
-                            throw Error("Expected a Prefix Directive and got '" + this.Value + "'");
+                            throw Error("Expected a Prefix Directive and got '" + Value + "'");
                         }
                     case 2:
                         // Expecting a Base Directive
-                        while (this.Length < 4)
+                        while (Length < 4)
                         {
-                            this.ConsumeCharacter();
+                            ConsumeCharacter();
                         }
 #if NETCORE
                         if (this.Value.Equals("base", StringComparison.OrdinalIgnoreCase))
 #else                        
-                        if (this.Value.Equals("base", StringComparison.InvariantCultureIgnoreCase))
+                        if (Value.Equals("base", StringComparison.InvariantCultureIgnoreCase))
 #endif
                         {
                             // Got a Base Directive
-                            this.LastTokenType = Token.BASEDIRECTIVE;
-                            return new BaseDirectiveToken(this.CurrentLine, this.StartPosition);
+                            LastTokenType = Token.BASEDIRECTIVE;
+                            return new BaseDirectiveToken(CurrentLine, StartPosition);
                         }
                         else
                         {
-                            throw Error("Expected a Base Directive and got '" + this.Value + "'");
+                            throw Error("Expected a Base Directive and got '" + Value + "'");
                         }
                     default:
                         throw Error("Unknown Parsing Error in TurtleTokeniser.TryGetDirectiveToken()");
@@ -971,7 +971,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <returns></returns>
         private IToken TryGetPrefixToken()
         {
-            char next = this.Peek();
+            char next = Peek();
 
             // Drop leading white space
             while (Char.IsWhiteSpace(next))
@@ -983,31 +983,31 @@ namespace VDS.RDF.Parsing.Tokens
                 }
 
                 // Discard unecessary White Space
-                this.SkipCharacter();
-                next = this.Peek();
+                SkipCharacter();
+                next = Peek();
             }
 
-            this.StartNewToken();
+            StartNewToken();
 
             // Get the Prefix Characters
             while (!Char.IsWhiteSpace(next) && next != '<')
             {
-                this.ConsumeCharacter();
+                ConsumeCharacter();
                 if (next == ':') break;
-                next = this.Peek();
+                next = Peek();
             }
-            if (!this.Value.EndsWith(":"))
+            if (!Value.EndsWith(":"))
             {
-                throw new RdfParseException("Didn't find expected : Character while attempting to parse Prefix at content:\n" + this.Value + "\nPrefixes must end in a Colon Character", this.StartLine, this.CurrentLine, this.StartPosition, this.CurrentPosition);
+                throw new RdfParseException("Didn't find expected : Character while attempting to parse Prefix at content:\n" + Value + "\nPrefixes must end in a Colon Character", StartLine, CurrentLine, StartPosition, CurrentPosition);
             }
-            if (!TurtleSpecsHelper.IsValidPrefix(this.Value, this._syntax))
+            if (!TurtleSpecsHelper.IsValidPrefix(Value, _syntax))
             {
-                throw new RdfParseException("The value '" + this.Value + "' is not a valid Prefix in Turtle", new PositionInfo(this.StartLine, this.CurrentLine, this.StartPosition, this.EndPosition));
+                throw new RdfParseException("The value '" + Value + "' is not a valid Prefix in Turtle", new PositionInfo(StartLine, CurrentLine, StartPosition, EndPosition));
             }
 
             // Produce a PrefixToken
-            this.LastTokenType = Token.PREFIX;
-            return new PrefixToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
+            LastTokenType = Token.PREFIX;
+            return new PrefixToken(Value, CurrentLine, StartPosition, EndPosition);
         }
 
         /// <summary>
@@ -1017,23 +1017,23 @@ namespace VDS.RDF.Parsing.Tokens
         /// <remarks>In fact this function may return a number of Tokens depending on the characters it finds.  It may find a QName, Plain Literal, Blank Node QName (with ID) or Keyword.  QName &amp; Keyword Validation is carried out by this function</remarks>
         private IToken TryGetQNameToken()
         {
-            char next = this.Peek();
+            char next = Peek();
             bool colonoccurred = false;
-            StringComparison comparison = (this._syntax == TurtleSyntax.Original ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
+            StringComparison comparison = (_syntax == TurtleSyntax.Original ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
 
-            this.StartNewToken();
+            StartNewToken();
 
             // Grab all the Characters in the QName
-            while (!Char.IsWhiteSpace(next) && next != ';' && next != ',' && next != '(' && next != ')' && next != '[' && next != ']' && next != '#' && (next != '.' || this._syntax == TurtleSyntax.W3C))
+            while (!Char.IsWhiteSpace(next) && next != ';' && next != ',' && next != '(' && next != ')' && next != '[' && next != ']' && next != '#' && (next != '.' || _syntax == TurtleSyntax.W3C))
             {
                 // Can't have more than one Colon in a QName unless we're using the W3C syntax
                 if (next == ':' && !colonoccurred)
                 {
                     colonoccurred = true;
                 }
-                else if (next == ':' && this._syntax == TurtleSyntax.Original) 
+                else if (next == ':' && _syntax == TurtleSyntax.Original) 
                 {
-                    throw Error("Unexpected additional Colon Character while trying to parse a QName from content:\n" + this.Value + "\nQNames can only contain 1 Colon character");
+                    throw Error("Unexpected additional Colon Character while trying to parse a QName from content:\n" + Value + "\nQNames can only contain 1 Colon character");
                 }
 
                 // A Backslash allow for unicode escapes in QNames or reserved name escapes in local names
@@ -1042,30 +1042,30 @@ namespace VDS.RDF.Parsing.Tokens
                     if (colonoccurred)
                     {
                         // If we are in local name portion complex escapes apply
-                        this.HandleComplexLocalNameEscapes();
+                        HandleComplexLocalNameEscapes();
                     }
                     else
                     {
                         // Prior to first colon only standard escapes apply
-                        this.HandleEscapes(TokeniserEscapeMode.QName);
+                        HandleEscapes(TokeniserEscapeMode.QName);
                     }
                     // If escape is handled characters have already been consumed so must continue to avoid double consumption
-                    next = this.Peek();
+                    next = Peek();
                     continue;
                 }
 
-                this.ConsumeCharacter();
-                next = this.Peek();
-                if (this._in.EndOfStream) break;
+                ConsumeCharacter();
+                next = Peek();
+                if (_in.EndOfStream) break;
             }
 
             // If it ends in a trailing . then we need to backtrack
-            if (this.Value.EndsWith(".")) this.Backtrack();
+            if (Value.EndsWith(".")) Backtrack();
 
             if (colonoccurred)
             {
                 // A QName must contain a Colon at some point
-                String qname = this.Value;
+                String qname = Value;
 
                 // Was this a Blank Node
                 if (qname.StartsWith("_:"))
@@ -1074,12 +1074,12 @@ namespace VDS.RDF.Parsing.Tokens
                     if (qname.Length == 2)
                     {
                         // No ID
-                        return new BlankNodeToken(this.CurrentLine, this.StartPosition);
+                        return new BlankNodeToken(CurrentLine, StartPosition);
                     }
                     else
                     {
                         // User specified ID
-                        return new BlankNodeWithIDToken(qname, this.CurrentLine, this.StartPosition, this.EndPosition);
+                        return new BlankNodeWithIDToken(qname, CurrentLine, StartPosition, EndPosition);
                     }
                 }
                 else if (qname.StartsWith("-"))
@@ -1094,27 +1094,27 @@ namespace VDS.RDF.Parsing.Tokens
                 }
                 else
                 {
-                    if (!TurtleSpecsHelper.IsValidQName(qname, this._syntax))
+                    if (!TurtleSpecsHelper.IsValidQName(qname, _syntax))
                     {
                         throw Error("The QName " + qname + " is not valid in Turtle");
                     }
 
                     // Normal QName
-                    this.LastTokenType = Token.QNAME;
-                    return new QNameToken(qname, this.CurrentLine, this.StartPosition, this.EndPosition);
+                    LastTokenType = Token.QNAME;
+                    return new QNameToken(qname, CurrentLine, StartPosition, EndPosition);
                 }
             }
             else
             {
                 // If we don't see a Colon then have to assume a Plain Literal
                 // BUT we also need to check it's not a keyword
-                String value = this.Value;
+                String value = Value;
 
                 if (value.Equals("a"))
                 {
                     // The 'a' Keyword
-                    this.LastTokenType = Token.KEYWORDA;
-                    return new KeywordAToken(this.CurrentLine, this.StartPosition);
+                    LastTokenType = Token.KEYWORDA;
+                    return new KeywordAToken(CurrentLine, StartPosition);
                 }
                 else if (value.Equals("is"))
                 {
@@ -1128,23 +1128,23 @@ namespace VDS.RDF.Parsing.Tokens
                 }
                 else if (value.Equals("base", StringComparison.OrdinalIgnoreCase))
                 {
-                    this.LastTokenType = Token.BASEDIRECTIVE;
-                    return new BaseDirectiveToken(this.CurrentLine, this.StartPosition);
+                    LastTokenType = Token.BASEDIRECTIVE;
+                    return new BaseDirectiveToken(CurrentLine, StartPosition);
                 }
                 else if (value.Equals("prefix", StringComparison.OrdinalIgnoreCase))
                 {
-                    this.LastTokenType = Token.PREFIXDIRECTIVE;
-                    return new PrefixDirectiveToken(this.CurrentLine, this.StartPosition);
+                    LastTokenType = Token.PREFIXDIRECTIVE;
+                    return new PrefixDirectiveToken(CurrentLine, StartPosition);
                 }
                 else
                 {
                     // Must be a Plain Literal
-                    if (!TurtleSpecsHelper.IsValidPlainLiteral(value, this._syntax))
+                    if (!TurtleSpecsHelper.IsValidPlainLiteral(value, _syntax))
                     {
                         throw Error("The value of the Plain Literal '" + value + "' is not valid in Turtle.  Turtle supports Boolean, Integer, Decimal and Double Plain Literals");
                     }
-                    this.LastTokenType = Token.PLAINLITERAL;
-                    return new PlainLiteralToken(value, this.CurrentLine, this.StartPosition, this.EndPosition);
+                    LastTokenType = Token.PLAINLITERAL;
+                    return new PlainLiteralToken(value, CurrentLine, StartPosition, EndPosition);
                 }
             }
         }
@@ -1155,9 +1155,9 @@ namespace VDS.RDF.Parsing.Tokens
             bool signoccurred = false;
             bool expoccurred = false;
 
-            if (this.Length == 1)
+            if (Length == 1)
             {
-                switch (this.Value[0])
+                switch (Value[0])
                 {
                     case '.':
                         dotoccurred = true;
@@ -1174,11 +1174,11 @@ namespace VDS.RDF.Parsing.Tokens
             }
             else
             {
-                this.StartNewToken();
+                StartNewToken();
             }
 
             // Find acceptable characters
-            char next = this.Peek();
+            char next = Peek();
             bool exit = false;
             while (Char.IsDigit(next) || next == '.' || next == '+' || next == '-' || next == 'e' || next == 'E')
             {
@@ -1193,8 +1193,8 @@ namespace VDS.RDF.Parsing.Tokens
                     case '-':
                         // Seeing another sign is illegal if one has already been seen
                         if (signoccurred) throw Error("Unexpected additional sign (" + next + ") character while trying to parse a signed numeric literal");
-                        if (this.Length != 0 && !expoccurred) throw Error("Unexpected sign (" + next + ") character while trying to parse a numeric literal, sign may only occur at the start of the literal or immediately after an exponent");
-                        if (expoccurred && this.Value[this.Length - 1] != 'e' && this.Value[this.Length - 1] != 'E') throw Error("Unexpected sign (" + next + ") character, sign may only occur at the start of the literal or immediatedly after an exponent");
+                        if (Length != 0 && !expoccurred) throw Error("Unexpected sign (" + next + ") character while trying to parse a numeric literal, sign may only occur at the start of the literal or immediately after an exponent");
+                        if (expoccurred && Value[Length - 1] != 'e' && Value[Length - 1] != 'E') throw Error("Unexpected sign (" + next + ") character, sign may only occur at the start of the literal or immediatedly after an exponent");
                         signoccurred = true;
                         break;
                     case 'e':
@@ -1208,22 +1208,22 @@ namespace VDS.RDF.Parsing.Tokens
 
                 if (exit) break;
 
-                this.ConsumeCharacter();
-                next = this.Peek();
-                if (this._in.EndOfStream) break;
+                ConsumeCharacter();
+                next = Peek();
+                if (_in.EndOfStream) break;
             }
 
             // Backtrack if we get a trailing .
-            if (this.Value.EndsWith(".")) this.Backtrack();
+            if (Value.EndsWith(".")) Backtrack();
             
-            if (TurtleSpecsHelper.IsValidPlainLiteral(this.Value, this._syntax))
+            if (TurtleSpecsHelper.IsValidPlainLiteral(Value, _syntax))
             {
-                this.LastTokenType = Token.PLAINLITERAL;
-                return new PlainLiteralToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
+                LastTokenType = Token.PLAINLITERAL;
+                return new PlainLiteralToken(Value, CurrentLine, StartPosition, EndPosition);
             }
             else
             {
-                throw Error("The numeric literal " + this.Value + " is not valid in Turtle");
+                throw Error("The numeric literal " + Value + " is not valid in Turtle");
             }
         }
 
@@ -1233,30 +1233,30 @@ namespace VDS.RDF.Parsing.Tokens
         /// <returns></returns>
         private IToken TryGetLanguageSpecToken()
         {
-            char next = this.Peek();
+            char next = Peek();
 
             // Consume Letter Characters
             while (Char.IsLetterOrDigit(next) || next == '-')
             {
-                this.ConsumeCharacter();
-                next = this.Peek();
+                ConsumeCharacter();
+                next = Peek();
             }
 
-            if (this.Length == 0)
+            if (Length == 0)
             {
                 // Empty output so no Language Specifier
                 throw UnexpectedCharacter(next, "Language Specifier for preceding Literal Token");
             }
             else
             {
-                if (RdfSpecsHelper.IsValidLangSpecifier(this.Value))
+                if (RdfSpecsHelper.IsValidLangSpecifier(Value))
                 {
-                    this.LastTokenType = Token.LANGSPEC;
-                    return new LanguageSpecifierToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
+                    LastTokenType = Token.LANGSPEC;
+                    return new LanguageSpecifierToken(Value, CurrentLine, StartPosition, EndPosition);
                 }
                 else
                 {
-                    throw Error("Unexpected Content '" + this.Value + "' encountered, expected a valid Language Specifier");
+                    throw Error("Unexpected Content '" + Value + "' encountered, expected a valid Language Specifier");
                 }
             }
         }
@@ -1267,20 +1267,20 @@ namespace VDS.RDF.Parsing.Tokens
         /// <returns></returns>
         private IToken TryGetDataTypeToken()
         {
-            char next = this.Peek();
+            char next = Peek();
 
             if (next == '<')
             {
                 // DataType is specified by a Uri
-                this.ConsumeCharacter();
-                next = this.Peek();
+                ConsumeCharacter();
+                next = Peek();
 
                 // Get Characters while they're valid
                 while (next != '>' && next != '\n' && next != '\r')
                 {
                     // Append to output
-                    this.ConsumeCharacter();
-                    next = this.Peek();
+                    ConsumeCharacter();
+                    next = Peek();
                 }
 
                 // Check we didn't hit an illegal character
@@ -1291,15 +1291,15 @@ namespace VDS.RDF.Parsing.Tokens
                 else
                 {
                     // Get the final >
-                    this.ConsumeCharacter();
+                    ConsumeCharacter();
                 }
 
-                return new DataTypeToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
+                return new DataTypeToken(Value, CurrentLine, StartPosition, EndPosition);
             }
             else
             {
                 // DataType is specified by a QName
-                IToken temp = this.TryGetQNameToken();
+                IToken temp = TryGetQNameToken();
                 if (temp is QNameToken)
                 {
                     // Turn into a DataTypeToken
@@ -1320,18 +1320,18 @@ namespace VDS.RDF.Parsing.Tokens
         /// <returns></returns>
         private IToken TryGetCommentToken()
         {
-            char next = this.Peek();
+            char next = Peek();
 
             // Grab characters until we hit the new line
             while (next != '\n' && next != '\r')
             {
-                if (this.ConsumeCharacter(true)) break;
-                next = this.Peek();
+                if (ConsumeCharacter(true)) break;
+                next = Peek();
             }
 
             // Discard New line and reset position
-            CommentToken comment = new CommentToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
-            this.ConsumeNewLine(false, true);
+            CommentToken comment = new CommentToken(Value, CurrentLine, StartPosition, EndPosition);
+            ConsumeNewLine(false, true);
             return comment;
         }
     }

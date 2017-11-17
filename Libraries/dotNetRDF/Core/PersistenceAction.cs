@@ -44,8 +44,8 @@ namespace VDS.RDF
         public TriplePersistenceAction(Triple t, bool toDelete)
         {
             if (t == null) throw new ArgumentNullException("t");
-            this._t = t;
-            this._delete = toDelete;
+            _t = t;
+            _delete = toDelete;
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._t;
+                return _t;
             }
         }
 
@@ -73,7 +73,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._delete;
+                return _delete;
             }
         }
     }
@@ -120,8 +120,8 @@ namespace VDS.RDF
         /// <param name="action">Action Type</param>
         public GraphPersistenceAction(ITransactionalGraph g, GraphPersistenceActionType action)
         {
-            this._g = g;
-            this._action = action;
+            _g = g;
+            _action = action;
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._g;
+                return _g;
             }
         }
 
@@ -142,7 +142,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._action;
+                return _action;
             }
         }
     }
@@ -161,7 +161,7 @@ namespace VDS.RDF
         /// <param name="graphAction">Graph Action</param>
         public TripleStorePersistenceAction(GraphPersistenceAction graphAction)
         {
-            this._graphAction = graphAction;
+            _graphAction = graphAction;
         }
 
         /// <summary>
@@ -170,7 +170,7 @@ namespace VDS.RDF
         /// <param name="tripleAction">Triple Action</param>
         public TripleStorePersistenceAction(TriplePersistenceAction tripleAction)
         {
-            this._tripleAction = tripleAction;
+            _tripleAction = tripleAction;
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._graphAction != null;
+                return _graphAction != null;
             }
         }
 
@@ -191,7 +191,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._tripleAction != null;
+                return _tripleAction != null;
             }
         }
 
@@ -202,7 +202,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._graphAction;
+                return _graphAction;
             }
         }
 
@@ -213,7 +213,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._tripleAction;
+                return _tripleAction;
             }
         }
     }

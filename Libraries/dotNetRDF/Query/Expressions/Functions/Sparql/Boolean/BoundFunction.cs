@@ -51,7 +51,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            return new BooleanNode(null, this._expr.Evaluate(context, bindingID) != null);
+            return new BooleanNode(null, _expr.Evaluate(context, bindingID) != null);
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override string ToString()
         {
-            return "BOUND(" + this._expr.ToString() + ")";
+            return "BOUND(" + _expr.ToString() + ")";
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new BoundFunction((VariableTerm)transformer.Transform(this._expr));
+            return new BoundFunction((VariableTerm)transformer.Transform(_expr));
         }
     }
 }

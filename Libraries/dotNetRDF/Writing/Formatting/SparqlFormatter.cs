@@ -99,7 +99,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         public override string FormatNamespace(string prefix, Uri namespaceUri)
         {
-            return "PREFIX " + prefix + ": <" + this.FormatUri(namespaceUri) + ">";
+            return "PREFIX " + prefix + ": <" + FormatUri(namespaceUri) + ">";
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         public override string FormatBaseUri(Uri u)
         {
-            return "BASE <" + this.FormatUri(u) + ">";
+            return "BASE <" + FormatUri(u) + ">";
         }
 
         #region Query Formatting
@@ -125,7 +125,7 @@ namespace VDS.RDF.Writing.Formatting
 
             try
             {
-                this._tempBaseUri = query.BaseUri;
+                _tempBaseUri = query.BaseUri;
                 StringBuilder output = new StringBuilder();
 
                 // Base and Prefix Declarations if not a sub-query
@@ -133,15 +133,15 @@ namespace VDS.RDF.Writing.Formatting
                 {
                     if (query.BaseUri != null)
                     {
-                        output.AppendLine("BASE <" + this.FormatUri(query.BaseUri.AbsoluteUri) + ">");
+                        output.AppendLine("BASE <" + FormatUri(query.BaseUri.AbsoluteUri) + ">");
                     }
-                    foreach (String prefix in this._qnameMapper.Prefixes)
+                    foreach (String prefix in _qnameMapper.Prefixes)
                     {
-                        output.AppendLine("PREFIX " + prefix + ": <" + this.FormatUri(this._qnameMapper.GetNamespaceUri(prefix).AbsoluteUri) + ">");
+                        output.AppendLine("PREFIX " + prefix + ": <" + FormatUri(_qnameMapper.GetNamespaceUri(prefix).AbsoluteUri) + ">");
                     }
 
                     // Use a Blank Line to separate Prologue from Query where necessary
-                    if (query.BaseUri != null || this._qnameMapper.Prefixes.Any())
+                    if (query.BaseUri != null || _qnameMapper.Prefixes.Any())
                     {
                         output.AppendLine();
                     }
@@ -157,12 +157,12 @@ namespace VDS.RDF.Writing.Formatting
                     case SparqlQueryType.Construct:
                         output.AppendLine("CONSTRUCT");
                         // Add in the Construct Pattern
-                        output.AppendLine(this.Format(query.ConstructTemplate));
+                        output.AppendLine(Format(query.ConstructTemplate));
                         break;
 
                     case SparqlQueryType.Describe:
                         output.Append("DESCRIBE ");
-                        output.AppendLine(this.FormatDescribeVariablesList(query));
+                        output.AppendLine(FormatDescribeVariablesList(query));
                         break;
 
                     case SparqlQueryType.DescribeAll:
@@ -171,7 +171,7 @@ namespace VDS.RDF.Writing.Formatting
 
                     case SparqlQueryType.Select:
                         output.Append("SELECT ");
-                        output.AppendLine(this.FormatVariablesList(query.Variables));
+                        output.AppendLine(FormatVariablesList(query.Variables));
                         break;
 
                     case SparqlQueryType.SelectAll:
@@ -188,12 +188,12 @@ namespace VDS.RDF.Writing.Formatting
 
                     case SparqlQueryType.SelectDistinct:
                         output.Append("SELECT DISTINCT ");
-                        output.AppendLine(this.FormatVariablesList(query.Variables));
+                        output.AppendLine(FormatVariablesList(query.Variables));
                         break;
 
                     case SparqlQueryType.SelectReduced:
                         output.Append("SELECT REDUCED ");
-                        output.AppendLine(this.FormatVariablesList(query.Variables));
+                        output.AppendLine(FormatVariablesList(query.Variables));
                         break;
 
                     default:
@@ -205,11 +205,11 @@ namespace VDS.RDF.Writing.Formatting
                 {
                     foreach (Uri u in query.DefaultGraphs)
                     {
-                        output.AppendLine("FROM <" + this.FormatUri(u) + ">");
+                        output.AppendLine("FROM <" + FormatUri(u) + ">");
                     }
                     foreach (Uri u in query.NamedGraphs)
                     {
-                        output.AppendLine("FROM NAMED <" + this.FormatUri(u) + ">");
+                        output.AppendLine("FROM NAMED <" + FormatUri(u) + ">");
                     }
                 }
 
@@ -231,7 +231,7 @@ namespace VDS.RDF.Writing.Formatting
                         {
                             output.AppendLine("{");
                         }
-                        output.AppendLine(this.Format(query.RootGraphPattern));
+                        output.AppendLine(Format(query.RootGraphPattern));
                         if (query.RootGraphPattern.HasModifier)
                         {
                             output.AppendLine("}");
@@ -243,7 +243,7 @@ namespace VDS.RDF.Writing.Formatting
                 if (query.GroupBy != null)
                 {
                     output.Append("GROUP BY ");
-                    output.AppendLine(this.FormatGroupBy(query.GroupBy));
+                    output.AppendLine(FormatGroupBy(query.GroupBy));
                 }
 
                 // Then a HAVING
@@ -251,7 +251,7 @@ namespace VDS.RDF.Writing.Formatting
                 {
                     output.Append("HAVING ");
                     output.Append('(');
-                    output.Append(this.FormatExpression(query.Having.Expression));
+                    output.Append(FormatExpression(query.Having.Expression));
                     output.AppendLine(")");
                 }
 
@@ -259,7 +259,7 @@ namespace VDS.RDF.Writing.Formatting
                 if (query.OrderBy != null)
                 {
                     output.Append("ORDER BY ");
-                    output.AppendLine(this.FormatOrderBy(query.OrderBy));
+                    output.AppendLine(FormatOrderBy(query.OrderBy));
                 }
 
                 // Then LIMIT and OFFSET
@@ -269,14 +269,14 @@ namespace VDS.RDF.Writing.Formatting
                 // Finally BINDINGS
                 if (query.Bindings != null)
                 {
-                    output.AppendLine(this.FormatInlineData(query.Bindings));
+                    output.AppendLine(FormatInlineData(query.Bindings));
                 }
 
                 return output.ToString();
             }
             finally
             {
-                this._tempBaseUri = null;
+                _tempBaseUri = null;
             }
         }
 
@@ -298,7 +298,7 @@ namespace VDS.RDF.Writing.Formatting
                     GraphPattern cgp = gp.ChildGraphPatterns[i];
                     if (cgp.HasModifier)
                     {
-                        String formatted = this.Format(cgp);
+                        String formatted = Format(cgp);
                         formatted = formatted.TrimEnd(new char[] { '\n', '\r' });
                         if (formatted.Contains("\n"))
                         {
@@ -313,7 +313,7 @@ namespace VDS.RDF.Writing.Formatting
                     }
                     else
                     {
-                        output.AppendLine(this.Format(cgp));
+                        output.AppendLine(Format(cgp));
                     }
                     if (i < gp.ChildGraphPatterns.Count - 1)
                     {
@@ -339,7 +339,7 @@ namespace VDS.RDF.Writing.Formatting
                     case Token.QNAME:
                         try
                         {
-                            String uri = Tools.ResolveQName(gp.GraphSpecifier.Value, this._qnameMapper, this._tempBaseUri);
+                            String uri = Tools.ResolveQName(gp.GraphSpecifier.Value, _qnameMapper, _tempBaseUri);
                             // If the QName resolves OK in the context of the Namespace Map we're using to format this then we
                             // can print the QName as-is
                             output.Append(gp.GraphSpecifier.Value);
@@ -353,7 +353,7 @@ namespace VDS.RDF.Writing.Formatting
 
                     case Token.URI:
                         output.Append('<');
-                        output.Append(this.FormatUri(gp.GraphSpecifier.Value));
+                        output.Append(FormatUri(gp.GraphSpecifier.Value));
                         output.Append('>');
                         break;
 
@@ -367,7 +367,7 @@ namespace VDS.RDF.Writing.Formatting
             else if (gp.IsSubQuery)
             {
                 output.AppendLine("{");
-                output.AppendLineIndented(this.Format(((ISubQueryPattern)gp.TriplePatterns[0]).SubQuery), 2);
+                output.AppendLineIndented(Format(((ISubQueryPattern)gp.TriplePatterns[0]).SubQuery), 2);
                 output.AppendLine("}");
                 return output.ToString();
             }
@@ -393,24 +393,24 @@ namespace VDS.RDF.Writing.Formatting
                 output.AppendLine("{");
                 foreach (ITriplePattern tp in gp.TriplePatterns)
                 {
-                    output.AppendLineIndented(this.Format(tp), 2);
+                    output.AppendLineIndented(Format(tp), 2);
                 }
                 foreach (IAssignmentPattern ap in gp.UnplacedAssignments)
                 {
-                    output.AppendLineIndented(this.Format(ap), 2);
+                    output.AppendLineIndented(Format(ap), 2);
                 }
                 if (gp.HasInlineData)
                 {
-                    output.AppendLineIndented(this.FormatInlineData(gp.InlineData), 2);
+                    output.AppendLineIndented(FormatInlineData(gp.InlineData), 2);
                 }
                 foreach (GraphPattern child in gp.ChildGraphPatterns)
                 {
-                    output.AppendLineIndented(this.Format(child), 2);
+                    output.AppendLineIndented(Format(child), 2);
                 }
                 foreach (ISparqlFilter fp in gp.UnplacedFilters)
                 {
                     output.AppendIndented("FILTER(", 2);
-                    output.Append(this.FormatExpression(fp.Expression));
+                    output.Append(FormatExpression(fp.Expression));
                     output.AppendLine(")");
                 }
                 output.Append("}");
@@ -422,21 +422,21 @@ namespace VDS.RDF.Writing.Formatting
                     if (gp.HasInlineData)
                     {
                         output.AppendLineIndented("{", 2);
-                        output.AppendLineIndented(this.FormatInlineData(gp.InlineData), 4);
-                        output.AppendLineIndented("FILTER (" + this.FormatExpression(gp.Filter.Expression) + ")", 4);
+                        output.AppendLineIndented(FormatInlineData(gp.InlineData), 4);
+                        output.AppendLineIndented("FILTER (" + FormatExpression(gp.Filter.Expression) + ")", 4);
                         output.AppendLineIndented("}", 2);
                     }
                     else
                     {
                         output.AppendIndented("{ FILTER(", 2);
-                        output.Append(this.FormatExpression(gp.Filter.Expression));
+                        output.Append(FormatExpression(gp.Filter.Expression));
                         output.AppendLine(") }");
                     }
                 }
                 else if (gp.HasInlineData)
                 {
                     output.AppendLineIndented("{", 2);
-                    output.AppendLineIndented(this.FormatInlineData(gp.InlineData), 4);
+                    output.AppendLineIndented(FormatInlineData(gp.InlineData), 4);
                     output.AppendLineIndented("}", 2);
                 }
                 else
@@ -447,14 +447,14 @@ namespace VDS.RDF.Writing.Formatting
             else if (gp.HasInlineData)
             {
                 output.AppendLineIndented("{", 2);
-                output.AppendLineIndented(this.Format(gp.TriplePatterns[0]), 4);
-                output.AppendLineIndented(this.FormatInlineData(gp.InlineData), 4);
+                output.AppendLineIndented(Format(gp.TriplePatterns[0]), 4);
+                output.AppendLineIndented(FormatInlineData(gp.InlineData), 4);
                 output.AppendLineIndented("}", 2);
             }
             else
             {
                 output.Append("{ ");
-                output.Append(this.Format(gp.TriplePatterns[0]));
+                output.Append(Format(gp.TriplePatterns[0]));
                 output.Append(" }");
             }
 
@@ -473,32 +473,32 @@ namespace VDS.RDF.Writing.Formatting
             {
                 case TriplePatternType.Match:
                     IMatchTriplePattern match = (IMatchTriplePattern)tp;
-                    output.Append(this.Format(match.Subject, TripleSegment.Subject));
+                    output.Append(Format(match.Subject, TripleSegment.Subject));
                     output.Append(' ');
-                    output.Append(this.Format(match.Predicate, TripleSegment.Predicate));
+                    output.Append(Format(match.Predicate, TripleSegment.Predicate));
                     output.Append(' ');
-                    output.Append(this.Format(match.Object, TripleSegment.Object));
+                    output.Append(Format(match.Object, TripleSegment.Object));
                     output.Append(" .");
                     break;
                 case TriplePatternType.Filter:
                     IFilterPattern filter = (IFilterPattern)tp;
                     output.Append("FILTER(");
-                    output.Append(this.FormatExpression(filter.Filter.Expression));
+                    output.Append(FormatExpression(filter.Filter.Expression));
                     output.Append(")");
                     break;
                 case TriplePatternType.SubQuery:
                     ISubQueryPattern subquery = (ISubQueryPattern)tp;
                     output.AppendLine("{");
-                    output.AppendLineIndented(this.Format(subquery.SubQuery), 2);
+                    output.AppendLineIndented(Format(subquery.SubQuery), 2);
                     output.AppendLine("}");
                     break;
                 case TriplePatternType.Path:
                     IPropertyPathPattern path = (IPropertyPathPattern)tp;
-                    output.Append(this.Format(path.Subject, TripleSegment.Subject));
+                    output.Append(Format(path.Subject, TripleSegment.Subject));
                     output.Append(' ');
-                    output.Append(this.FormatPath(path.Path));
+                    output.Append(FormatPath(path.Path));
                     output.Append(' ');
-                    output.Append(this.Format(path.Object, TripleSegment.Object));
+                    output.Append(Format(path.Object, TripleSegment.Object));
                     output.Append(" .");
                     break;
                 case TriplePatternType.LetAssignment:
@@ -506,13 +506,13 @@ namespace VDS.RDF.Writing.Formatting
                     output.Append("LET(?");
                     output.Append(let.VariableName);
                     output.Append(" := ");
-                    output.Append(this.FormatExpression(let.AssignExpression));
+                    output.Append(FormatExpression(let.AssignExpression));
                     output.Append(")");
                     break;
                 case TriplePatternType.BindAssignment:
                     IAssignmentPattern bind = (IAssignmentPattern)tp;
                     output.Append("BIND (");
-                    output.Append(this.FormatExpression(bind.AssignExpression));
+                    output.Append(FormatExpression(bind.AssignExpression));
                     output.Append(" AS ?");
                     output.Append(bind.VariableName);
                     output.Append(")");
@@ -524,31 +524,31 @@ namespace VDS.RDF.Writing.Formatting
                         output.Append("( ");
                         foreach (PatternItem arg in propFunc.SubjectArgs)
                         {
-                            output.Append(this.Format(arg, TripleSegment.Subject));
+                            output.Append(Format(arg, TripleSegment.Subject));
                             output.Append(' ');
                         }
                         output.Append(')');
                     }
                     else
                     {
-                        output.Append(this.Format(propFunc.SubjectArgs.First(), TripleSegment.Subject));
+                        output.Append(Format(propFunc.SubjectArgs.First(), TripleSegment.Subject));
                     }
                     output.Append(" <");
-                    output.Append(this.FormatUri(propFunc.PropertyFunction.FunctionUri));
+                    output.Append(FormatUri(propFunc.PropertyFunction.FunctionUri));
                     output.Append("> ");
                     if (propFunc.ObjectArgs.Count() > 1)
                     {
                         output.Append("( ");
                         foreach (PatternItem arg in propFunc.ObjectArgs)
                         {
-                            output.Append(this.Format(arg, TripleSegment.Object));
+                            output.Append(Format(arg, TripleSegment.Object));
                             output.Append(' ');
                         }
                         output.Append(')');
                     }
                     else
                     {
-                        output.Append(this.Format(propFunc.ObjectArgs.First(), TripleSegment.Object));
+                        output.Append(Format(propFunc.ObjectArgs.First(), TripleSegment.Object));
                     }
                     output.Append(" .");
                     break;
@@ -574,7 +574,7 @@ namespace VDS.RDF.Writing.Formatting
             else if (item is NodeMatchPattern)
             {
                 NodeMatchPattern match = (NodeMatchPattern)item;
-                return this.Format(match.Node, segment);
+                return Format(match.Node, segment);
             }
             else if (item is FixedBlankNodePattern)
             {
@@ -616,7 +616,7 @@ namespace VDS.RDF.Writing.Formatting
                 {
                     onLine += 2;
                     output.Append('(');
-                    output.Append(this.FormatAggregate(v.Aggregate));
+                    output.Append(FormatAggregate(v.Aggregate));
                     output.Append(" AS ?");
                     output.Append(v.Name);
                     output.Append(')');
@@ -625,7 +625,7 @@ namespace VDS.RDF.Writing.Formatting
                 {
                     onLine += 3;
                     output.Append('(');
-                    output.Append(this.FormatExpression(v.Projection));
+                    output.Append(FormatExpression(v.Projection));
                     output.Append(" AS ?");
                     output.Append(v.Name);
                     output.Append(')');
@@ -674,7 +674,7 @@ namespace VDS.RDF.Writing.Formatting
                         break;
                     case Token.URI:
                         output.Append('<');
-                        output.Append(this.FormatUri(t.Value));
+                        output.Append(FormatUri(t.Value));
                         output.Append('>');
                         onLine += 3;
                         break;
@@ -682,7 +682,7 @@ namespace VDS.RDF.Writing.Formatting
                         // If the QName has the same Namespace URI in this Formatter as in the Query then format
                         // as a QName otherwise expand to a full URI
                         String prefix = t.Value.Substring(0, t.Value.IndexOf(':'));
-                        if (this._qnameMapper.HasNamespace(prefix) && q.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri.Equals(this._qnameMapper.GetNamespaceUri(prefix).AbsoluteUri))
+                        if (_qnameMapper.HasNamespace(prefix) && q.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri.Equals(_qnameMapper.GetNamespaceUri(prefix).AbsoluteUri))
                         {
                             output.AppendLine(t.Value);
                             onLine += 2;
@@ -690,7 +690,7 @@ namespace VDS.RDF.Writing.Formatting
                         else if (q.NamespaceMap.HasNamespace(prefix))
                         {
                             output.Append('<');
-                            output.Append(this.FormatUri(Tools.ResolveQName(t.Value, q.NamespaceMap, q.BaseUri)));
+                            output.Append(FormatUri(Tools.ResolveQName(t.Value, q.NamespaceMap, q.BaseUri)));
                             output.Append('>');
                             onLine += 3;
                         }
@@ -733,7 +733,7 @@ namespace VDS.RDF.Writing.Formatting
                         if (expr is AggregateTerm)
                         {
                             AggregateTerm agg = (AggregateTerm)expr;
-                            output.Append(this.FormatAggregate(agg.Aggregate));
+                            output.Append(FormatAggregate(agg.Aggregate));
                         }
                         else
                         {
@@ -750,12 +750,12 @@ namespace VDS.RDF.Writing.Formatting
                         if (lhs.Type == SparqlExpressionType.BinaryOperator)
                         {
                             output.Append('(');
-                            output.Append(this.FormatExpression(lhs));
+                            output.Append(FormatExpression(lhs));
                             output.Append(')');
                         }
                         else
                         {
-                            output.Append(this.FormatExpression(lhs));
+                            output.Append(FormatExpression(lhs));
                         }
                         output.Append(' ');
                         output.Append(expr.Functor);
@@ -763,12 +763,12 @@ namespace VDS.RDF.Writing.Formatting
                         if (rhs.Type == SparqlExpressionType.BinaryOperator)
                         {
                             output.Append('(');
-                            output.Append(this.FormatExpression(rhs));
+                            output.Append(FormatExpression(rhs));
                             output.Append(')');
                         }
                         else
                         {
-                            output.Append(this.FormatExpression(rhs));
+                            output.Append(FormatExpression(rhs));
                         }
                         break;
 
@@ -781,14 +781,14 @@ namespace VDS.RDF.Writing.Formatting
                         else
                         {
                             String funcQname;
-                            if (this._qnameMapper.ReduceToQName(expr.Functor, out funcQname))
+                            if (_qnameMapper.ReduceToQName(expr.Functor, out funcQname))
                             {
                                 output.Append(funcQname);
                             }
                             else
                             {
                                 output.Append('<');
-                                output.Append(this.FormatUri(expr.Functor));
+                                output.Append(FormatUri(expr.Functor));
                                 output.Append('>');
                             }
                         }
@@ -798,7 +798,7 @@ namespace VDS.RDF.Writing.Formatting
                         List<ISparqlExpression> args = expr.Arguments.ToList();
                         for (int i = 0; i < args.Count; i++)
                         {
-                            output.Append(this.FormatExpression(args[i]));
+                            output.Append(FormatExpression(args[i]));
                             if (i < args.Count - 1)
                             {
                                 output.Append(", ");
@@ -815,7 +815,7 @@ namespace VDS.RDF.Writing.Formatting
                         if (gArgs.Count > 1) throw new RdfOutputException("Error Formatting SPARQL Expression - Expressions of type GraphOperator are only allowed a single argument");
                         for (int i = 0; i < gArgs.Count; i++)
                         {
-                            output.Append(this.FormatExpression(gArgs[i]));
+                            output.Append(FormatExpression(gArgs[i]));
                             if (i < gArgs.Count - 1)
                             {
                                 output.Append(", ");
@@ -828,12 +828,12 @@ namespace VDS.RDF.Writing.Formatting
                         if (expr is ConstantTerm)
                         {
                             ConstantTerm nodeTerm = (ConstantTerm)expr;
-                            output.Append(this.Format(nodeTerm.Evaluate(null, 0)));
+                            output.Append(Format(nodeTerm.Evaluate(null, 0)));
                         }
                         else if (expr is GraphPatternTerm)
                         {
                             GraphPatternTerm gp = (GraphPatternTerm)expr;
-                            output.Append(this.Format(gp.Pattern));
+                            output.Append(Format(gp.Pattern));
                         }
                         else
                         {
@@ -843,7 +843,7 @@ namespace VDS.RDF.Writing.Formatting
 
                     case SparqlExpressionType.SetOperator:
                         // Add First Argument and Set Operator
-                        output.Append(this.FormatExpression(expr.Arguments.First()));
+                        output.Append(FormatExpression(expr.Arguments.First()));
                         output.Append(' ');
                         output.Append(expr.Functor);
 
@@ -852,7 +852,7 @@ namespace VDS.RDF.Writing.Formatting
                         List<ISparqlExpression> set = expr.Arguments.Skip(1).ToList();
                         for (int i = 0; i < set.Count; i++)
                         {
-                            output.Append(this.FormatExpression(set[i]));
+                            output.Append(FormatExpression(set[i]));
                             if (i < set.Count - 1)
                             {
                                 output.Append(", ");
@@ -864,7 +864,7 @@ namespace VDS.RDF.Writing.Formatting
                     case SparqlExpressionType.UnaryOperator:
                         // Just Functor then Expression
                         output.Append(expr.Functor);
-                        output.Append(this.FormatExpression(expr.Arguments.First()));
+                        output.Append(FormatExpression(expr.Arguments.First()));
                         break;
                 }
             }
@@ -895,14 +895,14 @@ namespace VDS.RDF.Writing.Formatting
             else
             {
                 String aggQName;
-                if (this._qnameMapper.ReduceToQName(agg.Functor, out aggQName))
+                if (_qnameMapper.ReduceToQName(agg.Functor, out aggQName))
                 {
                     output.Append(aggQName);
                 }
                 else
                 {
                     output.Append('<');
-                    output.Append(this.FormatUri(agg.Functor));
+                    output.Append(FormatUri(agg.Functor));
                     output.Append('>');
                 }
             }
@@ -911,7 +911,7 @@ namespace VDS.RDF.Writing.Formatting
             List<ISparqlExpression> args = agg.Arguments.ToList();
             for (int i = 0; i < args.Count; i++)
             {
-                output.Append(this.FormatExpression(args[i]));
+                output.Append(FormatExpression(args[i]));
                 if (i < args.Count - 1 && !(args[i] is DistinctModifier))
                 {
                     output.Append(", ");
@@ -935,16 +935,16 @@ namespace VDS.RDF.Writing.Formatting
             {
                 AlternativePath alt = (AlternativePath)path;
                 output.Append('(');
-                output.Append(this.FormatPath(alt.LhsPath));
+                output.Append(FormatPath(alt.LhsPath));
                 output.Append(" | ");
-                output.Append(this.FormatPath(alt.RhsPath));
+                output.Append(FormatPath(alt.RhsPath));
                 output.Append(')');
             }
             else if (path is FixedCardinality)
             {
                 FixedCardinality card = (FixedCardinality)path;
                 if (card.Path is BaseBinaryPath) output.Append('(');
-                output.Append(this.FormatPath(card.Path));
+                output.Append(FormatPath(card.Path));
                 if (card.Path is BaseBinaryPath) output.Append(')');
                 output.Append('{');
                 output.Append(card.MaxCardinality);
@@ -955,14 +955,14 @@ namespace VDS.RDF.Writing.Formatting
                 InversePath inv = (InversePath)path;
                 output.Append('^');
                 if (inv.Path is BaseBinaryPath) output.Append('(');
-                output.Append(this.FormatPath(inv.Path));
+                output.Append(FormatPath(inv.Path));
                 if (inv.Path is BaseBinaryPath) output.Append(')');
             }
             else if (path is NOrMore)
             {
                 NOrMore nOrMore = (NOrMore)path;
                 if (nOrMore.Path is BaseBinaryPath) output.Append('(');
-                output.Append(this.FormatPath(nOrMore.Path));
+                output.Append(FormatPath(nOrMore.Path));
                 if (nOrMore.Path is BaseBinaryPath) output.Append(')');
                 output.Append('{');
                 output.Append(nOrMore.MinCardinality);
@@ -972,7 +972,7 @@ namespace VDS.RDF.Writing.Formatting
             {
                 NToM nToM = (NToM)path;
                 if (nToM.Path is BaseBinaryPath) output.Append('(');
-                output.Append(this.FormatPath(nToM.Path));
+                output.Append(FormatPath(nToM.Path));
                 if (nToM.Path is BaseBinaryPath) output.Append(')');
                 output.Append('{');
                 output.Append(nToM.MinCardinality);
@@ -984,27 +984,27 @@ namespace VDS.RDF.Writing.Formatting
             {
                 OneOrMore oneOrMore = (OneOrMore)path;
                 if (oneOrMore.Path is BaseBinaryPath) output.Append('(');
-                output.Append(this.FormatPath(oneOrMore.Path));
+                output.Append(FormatPath(oneOrMore.Path));
                 if (oneOrMore.Path is BaseBinaryPath) output.Append(')');
                 output.Append('+');
             }
             else if (path is Property)
             {
                 Property prop = (Property)path;
-                output.Append(this.Format(prop.Predicate, TripleSegment.Predicate));
+                output.Append(Format(prop.Predicate, TripleSegment.Predicate));
             }
             else if (path is SequencePath)
             {
                 SequencePath seq = (SequencePath)path;
-                output.Append(this.FormatPath(seq.LhsPath));
+                output.Append(FormatPath(seq.LhsPath));
                 output.Append(" / ");
-                output.Append(this.FormatPath(seq.RhsPath));
+                output.Append(FormatPath(seq.RhsPath));
             }
             else if (path is ZeroOrMore)
             {
                 ZeroOrMore zeroOrMore = (ZeroOrMore)path;
                 if (zeroOrMore.Path is BaseBinaryPath) output.Append('(');
-                output.Append(this.FormatPath(zeroOrMore.Path));
+                output.Append(FormatPath(zeroOrMore.Path));
                 if (zeroOrMore.Path is BaseBinaryPath) output.Append(')');
                 output.Append('*');
             }
@@ -1012,7 +1012,7 @@ namespace VDS.RDF.Writing.Formatting
             {
                 ZeroOrOne zeroOrOne = (ZeroOrOne)path;
                 if (zeroOrOne.Path is BaseBinaryPath) output.Append('(');
-                output.Append(this.FormatPath(zeroOrOne.Path));
+                output.Append(FormatPath(zeroOrOne.Path));
                 if (zeroOrOne.Path is BaseBinaryPath) output.Append(')');
                 output.Append('?');
             }
@@ -1020,7 +1020,7 @@ namespace VDS.RDF.Writing.Formatting
             {
                 ZeroToN zeroToN = (ZeroToN)path;
                 if (zeroToN.Path is BaseBinaryPath) output.Append('(');
-                output.Append(this.FormatPath(zeroToN.Path));
+                output.Append(FormatPath(zeroToN.Path));
                 if (zeroToN.Path is BaseBinaryPath) output.Append(')');
                 output.Append("{,");
                 output.Append(zeroToN.MaxCardinality);
@@ -1033,12 +1033,12 @@ namespace VDS.RDF.Writing.Formatting
                 if (negSet.Properties.Count() + negSet.InverseProperties.Count() > 1) output.Append('(');
                 foreach (Property p in negSet.Properties)
                 {
-                    output.Append(this.FormatPath(p));
+                    output.Append(FormatPath(p));
                     output.Append(" | ");
                 }
                 foreach (Property p in negSet.InverseProperties)
                 {
-                    output.Append(this.FormatPath(p));
+                    output.Append(FormatPath(p));
                     output.Append(" | ");
                 }
                 output.Remove(output.Length - 3, 3);
@@ -1067,7 +1067,7 @@ namespace VDS.RDF.Writing.Formatting
             {
                 output.Append('(');
             }
-            output.Append(this.FormatExpression(groupBy.Expression));
+            output.Append(FormatExpression(groupBy.Expression));
             if (isAssignment)
             {
                 output.Append(" AS ?");
@@ -1078,7 +1078,7 @@ namespace VDS.RDF.Writing.Formatting
             if (groupBy.Child != null)
             {
                 output.Append(' ');
-                output.Append(this.FormatGroupBy(groupBy.Child));
+                output.Append(FormatGroupBy(groupBy.Child));
             }
 
             return output.ToString();
@@ -1096,20 +1096,20 @@ namespace VDS.RDF.Writing.Formatting
             if (orderBy.Descending)
             {
                 output.Append("DESC(");
-                output.Append(this.FormatExpression(orderBy.Expression));
+                output.Append(FormatExpression(orderBy.Expression));
                 output.Append(')');
             }
             else 
             {
                 output.Append("ASC(");
-                output.Append(this.FormatExpression(orderBy.Expression));
+                output.Append(FormatExpression(orderBy.Expression));
                 output.Append(')');
             }
 
             if (orderBy.Child != null)
             {
                 output.Append(' ');
-                output.Append(this.FormatOrderBy(orderBy.Child));
+                output.Append(FormatOrderBy(orderBy.Child));
             }
 
             return output.ToString();
@@ -1166,7 +1166,7 @@ namespace VDS.RDF.Writing.Formatting
                     }
                     else
                     {
-                        output.Append(this.Format(tuple[var], null));
+                        output.Append(Format(tuple[var], null));
                     }
                 }
                 if (multipleTuples)

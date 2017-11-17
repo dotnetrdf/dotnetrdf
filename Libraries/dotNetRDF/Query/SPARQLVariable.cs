@@ -47,13 +47,13 @@ namespace VDS.RDF.Query
         /// <param name="name">Variable Name</param>
         /// <param name="isResultVar">Does this Variable appear in the Result Set?</param>
         public SparqlVariable(String name, bool isResultVar) {
-            this._name = name;
-            this._isResultVar = isResultVar;
+            _name = name;
+            _isResultVar = isResultVar;
 
             // Strip leading ?/$ if present
-            if (this._name.StartsWith("?") || this._name.StartsWith("$"))
+            if (_name.StartsWith("?") || _name.StartsWith("$"))
             {
-                this._name = this._name.Substring(1);
+                _name = _name.Substring(1);
             }
         }
 
@@ -73,7 +73,7 @@ namespace VDS.RDF.Query
         public SparqlVariable(String name, ISparqlAggregate aggregate)
             : this(name, true)
         {
-            this._aggregate = aggregate;
+            _aggregate = aggregate;
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace VDS.RDF.Query
         public SparqlVariable(String name, ISparqlExpression expr)
             : this(name, true)
         {
-            this._expr = expr;
+            _expr = expr;
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._name;
+                return _name;
             }
         }
 
@@ -105,7 +105,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._isResultVar;
+                return _isResultVar;
             }
         }
 
@@ -116,7 +116,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return (this._aggregate != null);
+                return (_aggregate != null);
             }
         }
 
@@ -127,7 +127,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return (this._expr != null);
+                return (_expr != null);
             }
         }
 
@@ -138,7 +138,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._aggregate;
+                return _aggregate;
             }
         }
 
@@ -149,7 +149,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._expr;
+                return _expr;
             }
         }
         
@@ -160,23 +160,23 @@ namespace VDS.RDF.Query
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            if (this._aggregate != null)
+            if (_aggregate != null)
             {
                 output.Append('(');
-                output.Append(this._aggregate.ToString());
-                output.Append(" AS ?" + this._name);
+                output.Append(_aggregate.ToString());
+                output.Append(" AS ?" + _name);
                 output.Append(')');
             }
-            else if (this._expr != null)
+            else if (_expr != null)
             {
                 output.Append('(');
-                output.Append(this._expr.ToString());
-                output.Append(" AS ?" + this._name);
+                output.Append(_expr.ToString());
+                output.Append(" AS ?" + _name);
                 output.Append(')');
             }
             else
             {
-                output.Append("?" + this._name);
+                output.Append("?" + _name);
             }
             return output.ToString();
         }

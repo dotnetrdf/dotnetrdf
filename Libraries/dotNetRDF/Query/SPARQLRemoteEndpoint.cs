@@ -75,7 +75,7 @@ namespace VDS.RDF.Query
         public SparqlRemoteEndpoint(Uri endpointUri, String defaultGraphUri)
             : this(endpointUri)
         {
-            this._defaultGraphUris.Add(defaultGraphUri);
+            _defaultGraphUris.Add(defaultGraphUri);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace VDS.RDF.Query
         {
             if (defaultGraphUri != null)
             {
-                this._defaultGraphUris.Add(defaultGraphUri.AbsoluteUri);
+                _defaultGraphUris.Add(defaultGraphUri.AbsoluteUri);
             }
         }
 
@@ -101,7 +101,7 @@ namespace VDS.RDF.Query
         public SparqlRemoteEndpoint(Uri endpointUri, String defaultGraphUri, IEnumerable<String> namedGraphUris)
             : this(endpointUri, defaultGraphUri)
         {
-            this._namedGraphUris.AddRange(namedGraphUris);
+            _namedGraphUris.AddRange(namedGraphUris);
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace VDS.RDF.Query
         public SparqlRemoteEndpoint(Uri endpointUri, Uri defaultGraphUri, IEnumerable<String> namedGraphUris)
             : this(endpointUri, defaultGraphUri)
         {
-            this._namedGraphUris.AddRange(namedGraphUris);
+            _namedGraphUris.AddRange(namedGraphUris);
         }
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace VDS.RDF.Query
         public SparqlRemoteEndpoint(Uri endpointUri, Uri defaultGraphUri, IEnumerable<Uri> namedGraphUris)
             : this(endpointUri, defaultGraphUri)
         {
-            this._namedGraphUris.AddRange(namedGraphUris.Where(u => u != null).Select(u => u.AbsoluteUri));
+            _namedGraphUris.AddRange(namedGraphUris.Where(u => u != null).Select(u => u.AbsoluteUri));
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace VDS.RDF.Query
         public SparqlRemoteEndpoint(Uri endpointUri, IEnumerable<String> defaultGraphUris)
             : this(endpointUri)
         {
-            this._defaultGraphUris.AddRange(defaultGraphUris);
+            _defaultGraphUris.AddRange(defaultGraphUris);
         }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace VDS.RDF.Query
         public SparqlRemoteEndpoint(Uri endpointUri, IEnumerable<Uri> defaultGraphUris)
             : this(endpointUri)
         {
-            this._defaultGraphUris.AddRange(defaultGraphUris.Where(u => u != null).Select(u => u.AbsoluteUri));
+            _defaultGraphUris.AddRange(defaultGraphUris.Where(u => u != null).Select(u => u.AbsoluteUri));
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace VDS.RDF.Query
         public SparqlRemoteEndpoint(Uri endpointUri, IEnumerable<String> defaultGraphUris, IEnumerable<String> namedGraphUris)
             : this(endpointUri, defaultGraphUris)
         {
-            this._namedGraphUris.AddRange(namedGraphUris);
+            _namedGraphUris.AddRange(namedGraphUris);
         }
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace VDS.RDF.Query
         public SparqlRemoteEndpoint(Uri endpointUri, IEnumerable<String> defaultGraphUris, IEnumerable<Uri> namedGraphUris)
             : this(endpointUri, defaultGraphUris)
         {
-            this._namedGraphUris.AddRange(namedGraphUris.Where(u => u != null).Select(u => u.AbsoluteUri));
+            _namedGraphUris.AddRange(namedGraphUris.Where(u => u != null).Select(u => u.AbsoluteUri));
         }
 
         /// <summary>
@@ -183,7 +183,7 @@ namespace VDS.RDF.Query
         public SparqlRemoteEndpoint(Uri endpointUri, IEnumerable<Uri> defaultGraphUris, IEnumerable<String> namedGraphUris)
             : this(endpointUri, defaultGraphUris)
         {
-            this._namedGraphUris.AddRange(namedGraphUris);
+            _namedGraphUris.AddRange(namedGraphUris);
         }
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace VDS.RDF.Query
         public SparqlRemoteEndpoint(Uri endpointUri, IEnumerable<Uri> defaultGraphUris, IEnumerable<Uri> namedGraphUris)
             : this(endpointUri, defaultGraphUris)
         {
-            this._namedGraphUris.AddRange(namedGraphUris.Where(u => u != null).Select(u => u.AbsoluteUri));
+            _namedGraphUris.AddRange(namedGraphUris.Where(u => u != null).Select(u => u.AbsoluteUri));
         }
 
         #endregion
@@ -209,7 +209,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._defaultGraphUris;
+                return _defaultGraphUris;
             }
         }
 
@@ -220,7 +220,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._namedGraphUris;
+                return _namedGraphUris;
             }
         }
 
@@ -236,11 +236,11 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return (this._resultsAccept != null ? this._resultsAccept : MimeTypesHelper.HttpSparqlAcceptHeader);
+                return (_resultsAccept != null ? _resultsAccept : MimeTypesHelper.HttpSparqlAcceptHeader);
             }
             set
             {
-                this._resultsAccept = value;
+                _resultsAccept = value;
             }
         }
 
@@ -256,11 +256,11 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return (this._rdfAccept != null ? this._rdfAccept : MimeTypesHelper.HttpAcceptHeader);
+                return (_rdfAccept != null ? _rdfAccept : MimeTypesHelper.HttpAcceptHeader);
             }
             set
             {
-                this._rdfAccept = value;
+                _rdfAccept = value;
             }
         }
 
@@ -277,7 +277,7 @@ namespace VDS.RDF.Query
         {
             // Ready a ResultSet then invoke the other overload
             SparqlResultSet results = new SparqlResultSet();
-            this.QueryWithResultSet(new ResultSetHandler(results), sparqlQuery);
+            QueryWithResultSet(new ResultSetHandler(results), sparqlQuery);
             return results;
         }
 
@@ -291,7 +291,7 @@ namespace VDS.RDF.Query
             try
             {
                 // Make the Query
-                HttpWebResponse httpResponse = this.QueryInternal(sparqlQuery, this.ResultsAcceptHeader);
+                HttpWebResponse httpResponse = QueryInternal(sparqlQuery, ResultsAcceptHeader);
 
                 // Parse into a ResultSet based on Content Type
                 String ctype = httpResponse.ContentType;
@@ -328,8 +328,8 @@ namespace VDS.RDF.Query
         {
             // Set up an Empty Graph then invoke the other overload
             Graph g = new Graph();
-            g.BaseUri = this.Uri;
-            this.QueryWithResultGraph(new GraphHandler(g), sparqlQuery);
+            g.BaseUri = Uri;
+            QueryWithResultGraph(new GraphHandler(g), sparqlQuery);
             return g;
         }
 
@@ -343,7 +343,7 @@ namespace VDS.RDF.Query
             try
             {
                 // Make the Query
-                using (HttpWebResponse httpResponse = this.QueryInternal(sparqlQuery, this.RdfAcceptHeader))
+                using (HttpWebResponse httpResponse = QueryInternal(sparqlQuery, RdfAcceptHeader))
                 {
                     // Parse into a Graph based on Content Type
                     String ctype = httpResponse.ContentType;
@@ -376,7 +376,7 @@ namespace VDS.RDF.Query
             {
                 // Make the Query
                 // HACK: Changed to an accept all for the time being to ensure works OK with DBPedia and Virtuoso
-                return this.QueryInternal(sparqlQuery, MimeTypesHelper.Any);
+                return QueryInternal(sparqlQuery, MimeTypesHelper.Any);
             }
             catch (WebException webEx)
             {
@@ -397,7 +397,7 @@ namespace VDS.RDF.Query
             try
             {
                 // Make the Query
-                return this.QueryInternal(sparqlQuery, MimeTypesHelper.CustomHttpAcceptHeader(mimeTypes));
+                return QueryInternal(sparqlQuery, MimeTypesHelper.CustomHttpAcceptHeader(mimeTypes));
             }
             catch (WebException webEx)
             {
@@ -446,7 +446,7 @@ namespace VDS.RDF.Query
 
             // Build the Query Uri
             StringBuilder queryUri = new StringBuilder();
-            queryUri.Append(this.Uri.AbsoluteUri);
+            queryUri.Append(Uri.AbsoluteUri);
             bool longQuery = true;
             if (HttpMode.Equals("GET") || 
                 HttpMode.Equals("AUTO") && sparqlQuery.Length <= LongQueryLength && sparqlQuery.IsAscii())
@@ -454,18 +454,18 @@ namespace VDS.RDF.Query
                 longQuery = false;
                 try
                 {
-                    queryUri.Append(!this.Uri.Query.Equals(string.Empty) ? "&query=" : "?query=");
+                    queryUri.Append(!Uri.Query.Equals(string.Empty) ? "&query=" : "?query=");
                     queryUri.Append(HttpUtility.UrlEncode(sparqlQuery));
 
                     // Add the Default Graph URIs
-                    foreach (string defaultGraph in this._defaultGraphUris)
+                    foreach (string defaultGraph in _defaultGraphUris)
                     {
                         if (defaultGraph.Equals(string.Empty)) continue;
                         queryUri.Append("&default-graph-uri=");
                         queryUri.Append(HttpUtility.UrlEncode(defaultGraph));
                     }
                     // Add the Named Graph URIs
-                    foreach (string namedGraph in this._namedGraphUris)
+                    foreach (string namedGraph in _namedGraphUris)
                     {
                         if (namedGraph.Equals(string.Empty)) continue;
                         queryUri.Append("&named-graph-uri=");
@@ -489,26 +489,26 @@ namespace VDS.RDF.Query
                 postData.Append(HttpUtility.UrlEncode(sparqlQuery));
 
                 // Add the Default Graph URI(s)
-                foreach (String defaultGraph in this._defaultGraphUris)
+                foreach (String defaultGraph in _defaultGraphUris)
                 {
                     if (defaultGraph.Equals(String.Empty)) continue;
                     postData.Append("&default-graph-uri=");
                     postData.Append(HttpUtility.UrlEncode(defaultGraph));
                 }
                 // Add the Named Graph URI(s)
-                foreach (String namedGraph in this._namedGraphUris)
+                foreach (String namedGraph in _namedGraphUris)
                 {
                     if (namedGraph.Equals(String.Empty)) continue;
                     postData.Append("&named-graph-uri=");
                     postData.Append(HttpUtility.UrlEncode(namedGraph));
                 }
 
-                httpResponse = this.ExecuteQuery(this.Uri, postData.ToString(), acceptHeader);
+                httpResponse = ExecuteQuery(Uri, postData.ToString(), acceptHeader);
             }
             else
             {
                 // Make the query normally via GET
-                httpResponse = this.ExecuteQuery(UriFactory.Create(queryUri.ToString()), String.Empty, acceptHeader);
+                httpResponse = ExecuteQuery(UriFactory.Create(queryUri.ToString()), String.Empty, acceptHeader);
             }
 
             return httpResponse;
@@ -551,7 +551,7 @@ namespace VDS.RDF.Query
                     httpRequest.Method = HttpMode;
                 }
             }
-            this.ApplyRequestOptions(httpRequest);
+            ApplyRequestOptions(httpRequest);
 
             Tools.HttpDebugRequest(httpRequest);
             HttpWebResponse httpResponse = (HttpWebResponse)httpRequest.GetResponse();
@@ -568,11 +568,11 @@ namespace VDS.RDF.Query
         /// <param name="state">State to pass to the callback</param>
         public void QueryWithResultSet(String query, SparqlResultsCallback callback, Object state)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Uri);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Uri);
             request.Method = "POST";
             request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
-            request.Accept = this.ResultsAcceptHeader;
-            this.ApplyRequestOptions(request);
+            request.Accept = ResultsAcceptHeader;
+            ApplyRequestOptions(request);
             Tools.HttpDebugRequest(request);
 
             try
@@ -587,12 +587,12 @@ namespace VDS.RDF.Query
                                 writer.Write("query=");
                                 writer.Write(HttpUtility.UrlEncode(query));
 
-                                foreach (String u in this.DefaultGraphs)
+                                foreach (String u in DefaultGraphs)
                                 {
                                     writer.Write("&default-graph-uri=");
                                     writer.Write(HttpUtility.UrlEncode(u));
                                 }
-                                foreach (String u in this.NamedGraphs)
+                                foreach (String u in NamedGraphs)
                                 {
                                     writer.Write("&named-graph-uri=");
                                     writer.Write(HttpUtility.UrlEncode(u));
@@ -662,11 +662,11 @@ namespace VDS.RDF.Query
         /// <param name="state">State to pass to the callback</param>
         public void QueryWithResultSet(ISparqlResultsHandler handler, String query, QueryCallback callback, Object state)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Uri);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Uri);
             request.Method = "POST";
             request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
-            request.Accept = this.RdfAcceptHeader;
-            this.ApplyRequestOptions(request);
+            request.Accept = RdfAcceptHeader;
+            ApplyRequestOptions(request);
             Tools.HttpDebugRequest(request);
 
             try
@@ -681,12 +681,12 @@ namespace VDS.RDF.Query
                                 writer.Write("query=");
                                 writer.Write(HttpUtility.UrlEncode(query));
 
-                                foreach (String u in this.DefaultGraphs)
+                                foreach (String u in DefaultGraphs)
                                 {
                                     writer.Write("&default-graph-uri=");
                                     writer.Write(HttpUtility.UrlEncode(u));
                                 }
-                                foreach (String u in this.NamedGraphs)
+                                foreach (String u in NamedGraphs)
                                 {
                                     writer.Write("&named-graph-uri=");
                                     writer.Write(HttpUtility.UrlEncode(u));
@@ -749,11 +749,11 @@ namespace VDS.RDF.Query
         /// <param name="state">State to pass to the callback</param>
         public void QueryWithResultGraph(String query, GraphCallback callback, Object state)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Uri);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Uri);
             request.Method = "POST";
             request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
-            request.Accept = this.RdfAcceptHeader;
-            this.ApplyRequestOptions(request);
+            request.Accept = RdfAcceptHeader;
+            ApplyRequestOptions(request);
             Tools.HttpDebugRequest(request);
 
             try
@@ -768,12 +768,12 @@ namespace VDS.RDF.Query
                                 writer.Write("query=");
                                 writer.Write(HttpUtility.UrlEncode(query));
 
-                                foreach (String u in this.DefaultGraphs)
+                                foreach (String u in DefaultGraphs)
                                 {
                                     writer.Write("&default-graph-uri=");
                                     writer.Write(HttpUtility.UrlEncode(u));
                                 }
-                                foreach (String u in this.NamedGraphs)
+                                foreach (String u in NamedGraphs)
                                 {
                                     writer.Write("&named-graph-uri=");
                                     writer.Write(HttpUtility.UrlEncode(u));
@@ -840,11 +840,11 @@ namespace VDS.RDF.Query
         /// <param name="state">State to pass to the callback</param>
         public void QueryWithResultGraph(IRdfHandler handler, String query, QueryCallback callback, Object state)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Uri);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Uri);
             request.Method = "POST";
             request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
-            request.Accept = this.ResultsAcceptHeader;
-            this.ApplyRequestOptions(request);
+            request.Accept = ResultsAcceptHeader;
+            ApplyRequestOptions(request);
             Tools.HttpDebugRequest(request);
 
             request.BeginGetRequestStream(result =>
@@ -857,12 +857,12 @@ namespace VDS.RDF.Query
                         writer.Write("query=");
                         writer.Write(HttpUtility.UrlEncode(query));
 
-                        foreach (String u in this.DefaultGraphs)
+                        foreach (String u in DefaultGraphs)
                         {
                             writer.Write("&default-graph-uri=");
                             writer.Write(HttpUtility.UrlEncode(u));
                         }
-                        foreach (String u in this.NamedGraphs)
+                        foreach (String u in NamedGraphs)
                         {
                             writer.Write("&named-graph-uri=");
                             writer.Write(HttpUtility.UrlEncode(u));
@@ -930,14 +930,14 @@ namespace VDS.RDF.Query
             INode namedGraphUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri));
 
             context.Graph.Assert(new Triple(endpoint, rdfType, endpointClass));
-            context.Graph.Assert(new Triple(endpoint, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
-            context.Graph.Assert(new Triple(endpoint, endpointUri, context.Graph.CreateUriNode(this.Uri)));
+            context.Graph.Assert(new Triple(endpoint, dnrType, context.Graph.CreateLiteralNode(GetType().FullName)));
+            context.Graph.Assert(new Triple(endpoint, endpointUri, context.Graph.CreateUriNode(Uri)));
 
-            foreach (String u in this._defaultGraphUris)
+            foreach (String u in _defaultGraphUris)
             {
                 context.Graph.Assert(new Triple(endpoint, defGraphUri, context.Graph.CreateUriNode(UriFactory.Create(u))));
             }
-            foreach (String u in this._namedGraphUris)
+            foreach (String u in _namedGraphUris)
             {
                 context.Graph.Assert(new Triple(endpoint, namedGraphUri, context.Graph.CreateUriNode(UriFactory.Create(u))));
             }

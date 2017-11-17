@@ -55,13 +55,13 @@ namespace VDS.RDF
         {
             if (varname.StartsWith("?") || varname.StartsWith("$"))
             {
-                this._var = varname.Substring(1);
+                _var = varname.Substring(1);
             }
             else
             {
-                this._var = varname;
+                _var = varname;
             }
-            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
+            _hashcode = (_nodetype + ToString()).GetHashCode();
         }
 
         /// <summary>
@@ -80,8 +80,8 @@ namespace VDS.RDF
         protected BaseVariableNode(SerializationInfo info, StreamingContext context)
             : base(null, NodeType.Variable)
         {
-            this._var = info.GetString("name");
-            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
+            _var = info.GetString("name");
+            _hashcode = (_nodetype + ToString()).GetHashCode();
         }
 
 #endif
@@ -93,7 +93,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._var;
+                return _var;
             }
         }
 
@@ -184,7 +184,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool Equals(BaseVariableNode other)
         {
-            return this.Equals((IVariableNode)other);
+            return Equals((IVariableNode)other);
         }
 
         /// <summary>
@@ -200,7 +200,7 @@ namespace VDS.RDF
 
             if (obj is INode)
             {
-                return this.Equals((INode)obj);
+                return Equals((INode)obj);
             }
             else
             {
@@ -215,7 +215,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override string ToString()
         {
-            return "?" + this._var;
+            return "?" + _var;
         }
 
         /// <summary>
@@ -234,7 +234,7 @@ namespace VDS.RDF
             }
             else if (other.NodeType == NodeType.Variable)
             {
-                return this.CompareTo((IVariableNode)other);
+                return CompareTo((IVariableNode)other);
             }
             else
             {
@@ -354,7 +354,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public int CompareTo(BaseVariableNode other)
         {
-            return this.CompareTo((IVariableNode)other);
+            return CompareTo((IVariableNode)other);
         }
 
 #if !NETCORE
@@ -366,7 +366,7 @@ namespace VDS.RDF
         /// <param name="context">Streaming Context</param>
         public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("name", this._var);
+            info.AddValue("name", _var);
         }
 
         /// <summary>
@@ -375,8 +375,8 @@ namespace VDS.RDF
         /// <param name="reader">XML Reader</param>
         public sealed override void ReadXml(XmlReader reader)
         {
-            this._var = reader.ReadElementContentAsString();
-            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
+            _var = reader.ReadElementContentAsString();
+            _hashcode = (_nodetype + ToString()).GetHashCode();
         }
 
         /// <summary>
@@ -385,7 +385,7 @@ namespace VDS.RDF
         /// <param name="writer">XML Writer</param>
         public sealed override void WriteXml(XmlWriter writer)
         {
-            writer.WriteValue(this._var);
+            writer.WriteValue(_var);
         }
 
 #endif

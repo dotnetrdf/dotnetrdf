@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            INode result = this._expr.Evaluate(context, bindingID);
+            INode result = _expr.Evaluate(context, bindingID);
             if (result == null)
             {
                 throw new RdfQueryException("Cannot return the Data Type URI of a NULL");
@@ -89,7 +89,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override string ToString()
         {
-            return "DATATYPE(" + this._expr.ToString() + ")";
+            return "DATATYPE(" + _expr.ToString() + ")";
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new DataTypeFunction(transformer.Transform(this._expr));
+            return new DataTypeFunction(transformer.Transform(_expr));
         }
     }
 
@@ -149,7 +149,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            INode result = this._expr.Evaluate(context, bindingID);
+            INode result = _expr.Evaluate(context, bindingID);
             if (result == null)
             {
                 throw new RdfQueryException("Cannot return the Data Type URI of a NULL");

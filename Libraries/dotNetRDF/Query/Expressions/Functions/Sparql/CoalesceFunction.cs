@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         /// <param name="expressions">Argument expressions</param>
         public CoalesceFunction(IEnumerable<ISparqlExpression> expressions)
         {
-            this._expressions.AddRange(expressions);
+            _expressions.AddRange(expressions);
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            foreach (ISparqlExpression expr in this._expressions)
+            foreach (ISparqlExpression expr in _expressions)
             {
                 try
                 {
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         {
             get 
             {
-                return (from e in this._expressions
+                return (from e in _expressions
                         from v in e.Variables
                         select v);
             }
@@ -100,10 +100,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         {
             StringBuilder output = new StringBuilder();
             output.Append("COALESCE(");
-            for (int i = 0; i < this._expressions.Count; i++)
+            for (int i = 0; i < _expressions.Count; i++)
             {
-                output.Append(this._expressions[i].ToString());
-                if (i < this._expressions.Count - 1)
+                output.Append(_expressions[i].ToString());
+                if (i < _expressions.Count - 1)
                 {
                     output.Append(", ");
                 }
@@ -141,7 +141,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         {
             get
             {
-                return this._expressions;
+                return _expressions;
             }
         }
 
@@ -152,7 +152,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         {
             get
             {
-                return this._expressions.All(e => e.CanParallelise);
+                return _expressions.All(e => e.CanParallelise);
             }
         }
 
@@ -163,7 +163,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new CoalesceFunction(this._expressions.Select(e => transformer.Transform(e)));
+            return new CoalesceFunction(_expressions.Select(e => transformer.Transform(e)));
         }
     }
 }

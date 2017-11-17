@@ -47,8 +47,8 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="baseUri">Base URI</param>
         public RdfAEvaluationContext(Uri baseUri)
         {
-            this._baseUri = baseUri;
-            this._nsmapper.AddNamespace(String.Empty, UriFactory.Create(RdfAParser.XHtmlVocabNamespace));
+            _baseUri = baseUri;
+            _nsmapper.AddNamespace(String.Empty, UriFactory.Create(RdfAParser.XHtmlVocabNamespace));
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace VDS.RDF.Parsing.Contexts
         public RdfAEvaluationContext(Uri baseUri, NamespaceMapper nsmap)
             : this(baseUri)
         {
-            this._nsmapper = nsmap;
+            _nsmapper = nsmap;
         }
 
         /// <summary>
@@ -69,11 +69,11 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._baseUri;
+                return _baseUri;
             }
             set
             {
-                this._baseUri = value;
+                _baseUri = value;
             }
         }
 
@@ -84,11 +84,11 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._parentSubj;
+                return _parentSubj;
             }
             set
             {
-                this._parentSubj = value;
+                _parentSubj = value;
             }
         }
 
@@ -99,11 +99,11 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._parentObj;
+                return _parentObj;
             }
             set
             {
-                this._parentObj = value;
+                _parentObj = value;
             }
         }
 
@@ -114,7 +114,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._nsmapper;
+                return _nsmapper;
             }
         }
 
@@ -125,11 +125,11 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._lang;
+                return _lang;
             }
             set
             {
-                this._lang = value;
+                _lang = value;
             }
         }
 
@@ -140,7 +140,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._incompleteTriples;
+                return _incompleteTriples;
             }
         }
 
@@ -151,11 +151,11 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._localVocabularly;
+                return _localVocabularly;
             }
             set
             {
-                this._localVocabularly = value;
+                _localVocabularly = value;
             }
         }
     }

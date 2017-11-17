@@ -37,7 +37,7 @@ namespace VDS.RDF.Writing
     public class CsvWriter 
         : BaseRdfWriter, IFormatterBasedWriter
     {
-        private CsvFormatter _formatter = new CsvFormatter();
+        private readonly CsvFormatter _formatter = new CsvFormatter();
 
         /// <summary>
         /// Gets the type of the Triple Formatter used by the writer
@@ -59,7 +59,7 @@ namespace VDS.RDF.Writing
         {
             using (var stream = File.Open(filename, FileMode.Create))
             {
-                this.Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
+                Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
             }
         }
 
@@ -72,11 +72,11 @@ namespace VDS.RDF.Writing
         {
             foreach (Triple t in g.Triples)
             {
-                this.GenerateNodeOutput(output, t.Subject, TripleSegment.Subject);
+                GenerateNodeOutput(output, t.Subject, TripleSegment.Subject);
                 output.Write(',');
-                this.GenerateNodeOutput(output, t.Predicate, TripleSegment.Predicate);
+                GenerateNodeOutput(output, t.Predicate, TripleSegment.Predicate);
                 output.Write(',');
-                this.GenerateNodeOutput(output, t.Object, TripleSegment.Object);
+                GenerateNodeOutput(output, t.Object, TripleSegment.Object);
                 output.Write("\r\n");
             }
         }
@@ -94,7 +94,7 @@ namespace VDS.RDF.Writing
                 case NodeType.Blank:
                     if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.BlankPredicatesUnserializable("CSV"));
 
-                    output.Write(this._formatter.Format(n));
+                    output.Write(_formatter.Format(n));
                     break;
 
                 case NodeType.GraphLiteral:
@@ -104,11 +104,11 @@ namespace VDS.RDF.Writing
                     if (segment == TripleSegment.Subject) throw new RdfOutputException(WriterErrorMessages.LiteralSubjectsUnserializable("CSV"));
                     if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.LiteralPredicatesUnserializable("CSV"));
 
-                    output.Write(this._formatter.Format(n));
+                    output.Write(_formatter.Format(n));
                     break;
 
                 case NodeType.Uri:
-                    output.Write(this._formatter.Format(n));
+                    output.Write(_formatter.Format(n));
                     break;
 
                 default:

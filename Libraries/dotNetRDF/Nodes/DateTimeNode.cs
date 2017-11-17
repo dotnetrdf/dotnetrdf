@@ -51,8 +51,8 @@ namespace VDS.RDF.Nodes
         protected DateTimeNode(IGraph g, DateTimeOffset value, String lexicalValue, Uri datatype)
             : base(g, lexicalValue, datatype)
         {
-            this._value = value.UtcDateTime;
-            this._offsetValue = value;
+            _value = value.UtcDateTime;
+            _offsetValue = value;
         }
 
         /// <summary>
@@ -65,8 +65,8 @@ namespace VDS.RDF.Nodes
         protected DateTimeNode(IGraph g, DateTime value, String lexicalValue, Uri datatype)
             : base(g, lexicalValue, datatype)
         {
-            this._value = value;
-            this._offsetValue = null;
+            _value = value;
+            _offsetValue = null;
         }
 
         /// <summary>
@@ -142,8 +142,8 @@ namespace VDS.RDF.Nodes
         public DateTimeNode(IGraph g, DateTime value, DateTimeOffset offsetValue, String lexicalValue, Uri datatype)
             : base(g, lexicalValue, datatype)
         {
-            this._value = value;
-            this._offsetValue = offsetValue;
+            _value = value;
+            _offsetValue = offsetValue;
         }
 
         /// <summary>
@@ -190,7 +190,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public string AsString()
         {
-            return this.Value;
+            return Value;
         }
 
         /// <summary>
@@ -244,7 +244,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public DateTime AsDateTime()
         {
-            return this._value;
+            return _value;
         }
 
         /// <summary>
@@ -253,18 +253,18 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public DateTimeOffset AsDateTimeOffset()
         {
-            if (this._offsetValue.HasValue)
+            if (_offsetValue.HasValue)
             {
-                return this._offsetValue.Value;
+                return _offsetValue.Value;
             }
             else
             {
                 // Create the offset
                 DateTimeOffset offset;
-                this._offsetValue = DateTimeOffset.TryParse(this.Value, null, DateTimeStyles.AssumeUniversal, out offset)
+                _offsetValue = DateTimeOffset.TryParse(Value, null, DateTimeStyles.AssumeUniversal, out offset)
                                         ? offset
-                                        : new DateTimeOffset(this._value);
-                return this._offsetValue.Value;
+                                        : new DateTimeOffset(_value);
+                return _offsetValue.Value;
             }
         }
 
@@ -284,7 +284,7 @@ namespace VDS.RDF.Nodes
         {
             get
             {
-                return this.DataType.AbsoluteUri;
+                return DataType.AbsoluteUri;
             }
         }
 

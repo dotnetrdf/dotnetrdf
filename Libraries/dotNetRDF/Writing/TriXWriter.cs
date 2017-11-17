@@ -156,9 +156,9 @@ namespace VDS.RDF.Writing
             {
                 writer.WriteStartElement("triple");
 
-                this.NodeToTriX(t.Subject, writer);
-                this.NodeToTriX(t.Predicate, writer);
-                this.NodeToTriX(t.Object, writer);
+                NodeToTriX(t.Subject, writer);
+                NodeToTriX(t.Predicate, writer);
+                NodeToTriX(t.Object, writer);
 
                 // </triple>
                 writer.WriteEndElement();
@@ -229,13 +229,13 @@ namespace VDS.RDF.Writing
         /// <param name="message">Warning Message</param>
         private void RaiseWarning(String message)
         {
-            if (this.Warning == null)
+            if (Warning == null)
             {
                 // Do Nothing
             }
             else
             {
-                this.Warning(message);
+                Warning(message);
             }
         }
 

@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         public RoundHalfToEvenFunction(ISparqlExpression expr, ISparqlExpression precision)
             : this(expr)
         {
-            this._precision = precision;
+            _precision = precision;
         }
 
         /// <summary>
@@ -63,13 +63,13 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            IValuedNode a = this._expr.Evaluate(context, bindingID);
+            IValuedNode a = _expr.Evaluate(context, bindingID);
             if (a == null) throw new RdfQueryException("Cannot calculate an arithmetic expression on a null");
 
             int p = 0;
-            if (this._precision != null)
+            if (_precision != null)
             {
-                IValuedNode precision = this._precision.Evaluate(context, bindingID);
+                IValuedNode precision = _precision.Evaluate(context, bindingID);
                 if (precision == null) throw new RdfQueryException("Cannot use a null precision for rounding");
                 try
                 {
@@ -118,7 +118,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.RoundHalfToEven + ">(" + this._expr.ToString() + ")";
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.RoundHalfToEven + ">(" + _expr.ToString() + ")";
         }
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new RoundHalfToEvenFunction(transformer.Transform(this._expr));
+            return new RoundHalfToEvenFunction(transformer.Transform(_expr));
         }
     }
 }

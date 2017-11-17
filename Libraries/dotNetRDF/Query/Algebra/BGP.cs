@@ -38,6 +38,9 @@ namespace VDS.RDF.Query.Algebra
     public class Bgp
         : IBgp
     {
+        /// <summary>
+        /// The ordered list of triple patterns that are contained in this BGP
+        /// </summary>
         protected readonly List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
 
         /// <summary>
@@ -51,7 +54,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="p">Triple Pattern</param>
         public Bgp(ITriplePattern p)
         {
-            this._triplePatterns.Add(p);
+            _triplePatterns.Add(p);
         }
 
         /// <summary>
@@ -60,7 +63,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="ps">Triple Patterns</param>
         public Bgp(IEnumerable<ITriplePattern> ps)
         {
-            this._triplePatterns.AddRange(ps);
+            _triplePatterns.AddRange(ps);
         }
 
         /// <summary>
@@ -68,7 +71,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public int PatternCount
         {
-            get { return this._triplePatterns.Count; }
+            get { return _triplePatterns.Count; }
         }
 
         /// <summary>
@@ -76,7 +79,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public IEnumerable<ITriplePattern> TriplePatterns
         {
-            get { return this._triplePatterns; }
+            get { return _triplePatterns; }
         }
 
         /// <summary>
@@ -86,18 +89,18 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public virtual BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            if (this._triplePatterns.Count > 0)
+            if (_triplePatterns.Count > 0)
             {
-                for (int i = 0; i < this._triplePatterns.Count; i++)
+                for (int i = 0; i < _triplePatterns.Count; i++)
                 {
                     if (i == 0)
                     {
                         // If the 1st thing in a BGP is a BIND/LET/FILTER the Input becomes the Identity Multiset
-                        if (this._triplePatterns[i].PatternType == TriplePatternType.Filter || this._triplePatterns[i].PatternType == TriplePatternType.BindAssignment || this._triplePatterns[i].PatternType == TriplePatternType.LetAssignment)
+                        if (_triplePatterns[i].PatternType == TriplePatternType.Filter || _triplePatterns[i].PatternType == TriplePatternType.BindAssignment || _triplePatterns[i].PatternType == TriplePatternType.LetAssignment)
                         {
-                            if (this._triplePatterns[i].PatternType == TriplePatternType.BindAssignment)
+                            if (_triplePatterns[i].PatternType == TriplePatternType.BindAssignment)
                             {
-                                if (context.InputMultiset.ContainsVariable(((IAssignmentPattern) this._triplePatterns[i]).VariableName)) throw new RdfQueryException("Cannot use a BIND assigment to BIND to a variable that has previously been declared");
+                                if (context.InputMultiset.ContainsVariable(((IAssignmentPattern) _triplePatterns[i]).VariableName)) throw new RdfQueryException("Cannot use a BIND assigment to BIND to a variable that has previously been declared");
                             }
                             else
                             {
@@ -109,7 +112,7 @@ namespace VDS.RDF.Query.Algebra
                     // Create a new Output Multiset
                     context.OutputMultiset = new Multiset();
 
-                    this._triplePatterns[i].Evaluate(context);
+                    _triplePatterns[i].Evaluate(context);
 
                     // If at any point we've got an Empty Multiset as our Output then we terminate BGP execution
                     if (context.OutputMultiset.IsEmpty) break;
@@ -163,7 +166,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return (from tp in this._triplePatterns
+                return (from tp in _triplePatterns
                     from v in tp.Variables
                     select v).Distinct();
             }
@@ -176,7 +179,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return (from tp in this._triplePatterns
+                return (from tp in _triplePatterns
                     from v in tp.FixedVariables
                     select v).Distinct();
             }
@@ -190,10 +193,10 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 // Floating variables are those declared as floating by triple patterns minus those that are declared as fixed by the triple patterns
-                IEnumerable<String> floating = from tp in this._triplePatterns
+                IEnumerable<String> floating = from tp in _triplePatterns
                     from v in tp.FloatingVariables
                     select v;
-                HashSet<String> fixedVars = new HashSet<string>(this.FixedVariables);
+                HashSet<String> fixedVars = new HashSet<string>(FixedVariables);
                 return floating.Where(v => !fixedVars.Contains(v)).Distinct();
             }
         }
@@ -203,7 +206,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public bool IsEmpty
         {
-            get { return (this._triplePatterns.Count == 0); }
+            get { return (_triplePatterns.Count == 0); }
         }
 
         /// <summary>
@@ -212,19 +215,19 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            switch (this._triplePatterns.Count)
+            switch (_triplePatterns.Count)
             {
                 case 0:
                     return "BGP()";
                 case 1:
-                    return "BGP(" + this._triplePatterns[0].ToString() + ")";
+                    return "BGP(" + _triplePatterns[0].ToString() + ")";
                 default:
                     StringBuilder builder = new StringBuilder();
                     builder.Append("BGP(");
-                    for (int i = 0; i < this._triplePatterns.Count; i++)
+                    for (int i = 0; i < _triplePatterns.Count; i++)
                     {
-                        builder.Append(this._triplePatterns[i].ToString());
-                        if (i < this._triplePatterns.Count - 1) builder.Append(", ");
+                        builder.Append(_triplePatterns[i].ToString());
+                        if (i < _triplePatterns.Count - 1) builder.Append(", ");
                     }
                     builder.Append(")");
                     return builder.ToString();
@@ -237,8 +240,10 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public virtual SparqlQuery ToQuery()
         {
-            SparqlQuery q = new SparqlQuery();
-            q.RootGraphPattern = this.ToGraphPattern();
+            var q = new SparqlQuery
+            {
+                RootGraphPattern = ToGraphPattern(),
+            };
             q.Optimise();
             return q;
         }
@@ -250,7 +255,7 @@ namespace VDS.RDF.Query.Algebra
         public virtual GraphPattern ToGraphPattern()
         {
             GraphPattern p = new GraphPattern();
-            foreach (ITriplePattern tp in this._triplePatterns)
+            foreach (ITriplePattern tp in _triplePatterns)
             {
                 p.AddTriplePattern(tp);
             }

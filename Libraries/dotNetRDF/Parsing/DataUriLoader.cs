@@ -60,7 +60,7 @@ namespace VDS.RDF.Parsing
         {
             if (u == null) throw new RdfParseException("Cannot load RDF from a null URI");
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-            DataUriLoader.Load(new GraphHandler(g), u);
+            Load(new GraphHandler(g), u);
         }
 
         /// <summary>

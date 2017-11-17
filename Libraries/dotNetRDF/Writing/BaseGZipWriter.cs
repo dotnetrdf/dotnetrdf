@@ -47,11 +47,11 @@ namespace VDS.RDF.Writing
         /// Creates a new GZipped writer
         /// </summary>
         /// <param name="writer">Underlying writer</param>
-        public BaseGZipWriter(IRdfWriter writer)
+        /// <exception cref="ArgumentNullException">raised if <paramref name="writer"/> is null</exception>
+        protected BaseGZipWriter(IRdfWriter writer)
         {
-            if (writer == null) throw new ArgumentNullException("writer");
-            this._writer = writer;
-            this._writer.Warning += this.RaiseWarning;
+            _writer = writer ?? throw new ArgumentNullException(nameof(writer));
+            _writer.Warning += RaiseWarning;
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace VDS.RDF.Writing
         public override void Save(IGraph g, string filename)
         {
             if (filename == null) throw new RdfOutputException("Cannot write RDF to a null file");
-            this.Save(g, new StreamWriter(new GZipStream(new FileStream(filename, FileMode.OpenOrCreate, FileAccess.Write), CompressionMode.Compress)));
+            Save(g, new StreamWriter(new GZipStream(new FileStream(filename, FileMode.OpenOrCreate, FileAccess.Write), CompressionMode.Compress)));
         }
 
 
@@ -74,19 +74,18 @@ namespace VDS.RDF.Writing
         protected override void SaveInternal(IGraph g, TextWriter output)
         {
             if (g == null) throw new RdfOutputException("Cannot write RDF from a null Graph");
+            // Check for inner GZipStream and re-wrap if required
 
-            if (output is StreamWriter)
+            if (output is StreamWriter streamOutput)
             {
-                // Check for inner GZipStream and re-wrap if required
-                StreamWriter streamOutput = (StreamWriter)output;
                 if (streamOutput.BaseStream is GZipStream)
                 {
-                    this._writer.Save(g, streamOutput);
+                    _writer.Save(g, streamOutput);
                 }
                 else
                 {
                     streamOutput = new StreamWriter(new GZipStream(streamOutput.BaseStream, CompressionMode.Compress));
-                    this._writer.Save(g, streamOutput);
+                    _writer.Save(g, streamOutput);
                 }
             }
             else
@@ -99,10 +98,9 @@ namespace VDS.RDF.Writing
         /// Helper method for raising warning events
         /// </summary>
         /// <param name="message">Warning message</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
-            RdfWriterWarning d = this.Warning;
-            if (d != null) d(message);
+            Warning?.Invoke(message);
         }
 
         /// <summary>
@@ -116,7 +114,7 @@ namespace VDS.RDF.Writing
         /// <returns></returns>
         public override string ToString()
         {
-            return "GZipped " + this._writer.ToString();
+            return "GZipped " + _writer.ToString();
         }
     }
 
@@ -198,6 +196,9 @@ namespace VDS.RDF.Writing
             : base(new HtmlWriter()) { }
     }
 
+    /// <summary>
+    /// Writer for GZipped JSON-LD
+    /// </summary>
     public class GZippedJsonLdWriter : BaseGZipDatasetWriter
     {
         /// <summary>

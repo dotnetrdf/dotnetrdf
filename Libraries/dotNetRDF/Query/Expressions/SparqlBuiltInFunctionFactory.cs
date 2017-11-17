@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Expressions
             String func = u.ToString();
             if (func.StartsWith(SparqlFunctionsNamespace))
             {
-                func = func.Substring(SparqlBuiltInFunctionFactory.SparqlFunctionsNamespace.Length);
+                func = func.Substring(SparqlFunctionsNamespace.Length);
                 func = func.ToUpper();
 
                 // If any Scalar Arguments are present then can't be a SPARQL Function UNLESS it is

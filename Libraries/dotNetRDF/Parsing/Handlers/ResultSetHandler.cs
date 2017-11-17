@@ -44,7 +44,7 @@ namespace VDS.RDF.Parsing.Handlers
         public ResultSetHandler(SparqlResultSet results)
         {
             if (results == null) throw new ArgumentNullException("results");
-            this._results = results;
+            _results = results;
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace VDS.RDF.Parsing.Handlers
         protected override void StartResultsInternal()
         {
             // Ensure Empty Result Set
-            if (!this._results.IsEmpty || this._results.ResultsType != SparqlResultsType.Unknown)
+            if (!_results.IsEmpty || _results.ResultsType != SparqlResultsType.Unknown)
             {
                 throw new RdfParseException("Cannot start Results Handling into a non-empty Result Set");
             }
@@ -65,7 +65,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="result">Result</param>
         protected override void HandleBooleanResultInternal(bool result)
         {
-            this._results.SetResult(result);
+            _results.SetResult(result);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleVariableInternal(string var)
         {
-            this._results.AddVariable(var);
+            _results.AddVariable(var);
             return true;
         }
 
@@ -86,7 +86,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleResultInternal(SparqlResult result)
         {
-            this._results.AddResult(result);
+            _results.AddResult(result);
             return true;
         }
     }

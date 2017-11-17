@@ -51,9 +51,9 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <returns></returns>
         public ITripleStore Validate()
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Endpoint.Uri);
-            request.Method = this.Endpoint.HttpMethods.First();
-            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes, MimeTypesHelper.SupportedRdfDatasetMimeTypes);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Endpoint.Uri);
+            request.Method = Endpoint.HttpMethods.First();
+            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypes, MimeTypesHelper.SupportedRdfDatasetMimeTypes);
 
             Tools.HttpDebugRequest(request);
 
@@ -87,9 +87,9 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// </remarks>
         public void Validate(TripleStoreCallback callback, Object state)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Endpoint.Uri);
-            request.Method = this.Endpoint.HttpMethods.First();
-            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes, MimeTypesHelper.SupportedRdfDatasetMimeTypes);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Endpoint.Uri);
+            request.Method = Endpoint.HttpMethods.First();
+            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypes, MimeTypesHelper.SupportedRdfDatasetMimeTypes);
 
             Tools.HttpDebugRequest(request);
 

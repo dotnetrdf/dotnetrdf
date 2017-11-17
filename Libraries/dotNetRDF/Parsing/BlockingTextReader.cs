@@ -193,12 +193,13 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="reader"></param>
         /// <param name="bufferSize"></param>
+        /// <exception cref="ArgumentException">raised if <paramref name="bufferSize"/> is less than 1</exception>
+        /// <exception cref="ArgumentNullException">raised if <paramref name="reader"/> is null</exception>
         protected BufferedTextReader(TextReader reader, int bufferSize)
         {
-            if (reader == null) throw new ArgumentNullException("reader", "Cannot read from a null TextReader");
-            if (bufferSize < 1) throw new ArgumentException("bufferSize must be >= 1", "bufferSize");
-            this._reader = reader;
-            this._buffer = new char[bufferSize];
+            if (bufferSize < 1) throw new ArgumentException("bufferSize must be >= 1", nameof(bufferSize));
+            _reader = reader ?? throw new ArgumentNullException(nameof(reader), "Cannot read from a null TextReader");
+            _buffer = new char[bufferSize];
         }
 
         /// <summary>
@@ -221,12 +222,12 @@ namespace VDS.RDF.Parsing
             if (count < 0) throw new ArgumentException("count", "Count must be >= 0");
             if ((buffer.Length - index) < count) throw new ArgumentException("Buffer too small");
 
-            if (this._bufferAmount == -1 || this._pos >= this._bufferAmount)
+            if (_bufferAmount == -1 || _pos >= _bufferAmount)
             {
-                if (!this._finished)
+                if (!_finished)
                 {
-                    this.FillBuffer();
-                    if (this.EndOfStream) return 0;
+                    FillBuffer();
+                    if (EndOfStream) return 0;
                 }
                 else
                 {
@@ -234,12 +235,12 @@ namespace VDS.RDF.Parsing
                 }
             }
 
-            this._pos = Math.Max(0, this._pos);
-            if (count <= this._bufferAmount - this._pos)
+            _pos = Math.Max(0, _pos);
+            if (count <= _bufferAmount - _pos)
             {
                 // If we have sufficient things buffered to fufill the request just copy the relevant stuff across
-                Array.Copy(this._buffer, this._pos, buffer, index, count);
-                this._pos += count;
+                Array.Copy(_buffer, _pos, buffer, index, count);
+                _pos += count;
                 return count;
             }
             else
@@ -247,29 +248,29 @@ namespace VDS.RDF.Parsing
                 int copied = 0;
                 while (copied < count)
                 {
-                    int available = this._bufferAmount - this._pos;
+                    int available = _bufferAmount - _pos;
                     if (count < copied + available)
                     {
                         // We can finish fufilling this request this round
                         int toCopy = Math.Min(available, count - copied);
-                        Array.Copy(this._buffer, this._pos, buffer, index + copied, toCopy);
+                        Array.Copy(_buffer, _pos, buffer, index + copied, toCopy);
                         copied += toCopy;
-                        this._pos += toCopy;
+                        _pos += toCopy;
                         return copied;
                     }
                     else
                     {
                         // Copy everything we currently have available
-                        Array.Copy(this._buffer, this._pos, buffer, index + copied, available);
+                        Array.Copy(_buffer, _pos, buffer, index + copied, available);
                         copied += available;
-                        this._pos = this._bufferAmount;
+                        _pos = _bufferAmount;
 
-                        if (!this._finished)
+                        if (!_finished)
                         {
                             // If we haven't reached the end of the input refill our buffer and continue
-                            this.FillBuffer();
-                            if (this.EndOfStream) return copied;
-                            this._pos = 0;
+                            FillBuffer();
+                            if (EndOfStream) return copied;
+                            _pos = 0;
                         }
                         else
                         {
@@ -291,7 +292,7 @@ namespace VDS.RDF.Parsing
         /// <returns>Number of characters read</returns>
         public override int Read(char[] buffer, int index, int count)
         {
-            return this.ReadBlock(buffer, index, count);
+            return ReadBlock(buffer, index, count);
         }
 
         /// <summary>
@@ -300,12 +301,12 @@ namespace VDS.RDF.Parsing
         /// <returns>Character read or -1 if at end of input</returns>
         public override int Read()
         {
-            if (this._bufferAmount == -1 || this._pos >= this._bufferAmount - 1)
+            if (_bufferAmount == -1 || _pos >= _bufferAmount - 1)
             {
-                if (!this._finished)
+                if (!_finished)
                 {
-                    this.FillBuffer();
-                    if (this.EndOfStream) return -1;
+                    FillBuffer();
+                    if (EndOfStream) return -1;
                 }
                 else
                 {
@@ -313,8 +314,8 @@ namespace VDS.RDF.Parsing
                 }
             }
 
-            this._pos++;
-            return (int)this._buffer[this._pos];
+            _pos++;
+            return (int)_buffer[_pos];
         }
 
         /// <summary>
@@ -323,12 +324,12 @@ namespace VDS.RDF.Parsing
         /// <returns>Character peeked or -1 if at end of input</returns>
         public override int Peek()
         {
-            if (this._bufferAmount == -1 || this._pos >= this._bufferAmount - 1)
+            if (_bufferAmount == -1 || _pos >= _bufferAmount - 1)
             {
-                if (!this._finished)
+                if (!_finished)
                 {
-                    this.FillBuffer();
-                    if (this.EndOfStream) return -1;
+                    FillBuffer();
+                    if (EndOfStream) return -1;
                 }
                 else
                 {
@@ -336,7 +337,7 @@ namespace VDS.RDF.Parsing
                 }
             }
 
-            return (int)this._buffer[this._pos + 1];
+            return (int)_buffer[_pos + 1];
         }
 
         /// <summary>
@@ -346,14 +347,17 @@ namespace VDS.RDF.Parsing
         {
             get
             {
-                return this._finished && (this._pos >= this._bufferAmount - 1);
+                return _finished && (_pos >= _bufferAmount - 1);
             }
         }
 
 #if NETCORE
+        /// <summary>
+        /// Closes the reader and the underlying reader
+        /// </summary>
         public void Close()
         {
-            // No-op as portable library version of TextReader has no Close() method
+            // No-op as .NET Standard library version of TextReader has no Close() method
         }
 #else
         /// <summary>
@@ -361,7 +365,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public override void Close()
         {
-            this._reader.Close();
+            _reader.Close();
         }
 #endif
 
@@ -372,8 +376,8 @@ namespace VDS.RDF.Parsing
         protected override void Dispose(bool disposing)
         {
             if (disposing) GC.SuppressFinalize(this);
-            this.Close();
-            this._reader.Dispose();
+            Close();
+            _reader.Dispose();
             base.Dispose(disposing);
         }
     }
@@ -424,15 +428,15 @@ namespace VDS.RDF.Parsing
         /// </summary>
         protected override void FillBuffer()
         {
-            this._pos = -1;
-            if (this._finished)
+            _pos = -1;
+            if (_finished)
             {
-                this._bufferAmount = 0;
+                _bufferAmount = 0;
             }
             else
             {
-                this._bufferAmount = this._reader.ReadBlock(this._buffer, 0, this._buffer.Length);
-                if (this._bufferAmount == 0 || this._bufferAmount < this._buffer.Length) this._finished = true;
+                _bufferAmount = _reader.ReadBlock(_buffer, 0, _buffer.Length);
+                if (_bufferAmount == 0 || _bufferAmount < _buffer.Length) _finished = true;
             }
         }
     }
@@ -463,15 +467,15 @@ namespace VDS.RDF.Parsing
         /// </summary>
         protected override void FillBuffer()
         {
-            this._pos = -1;
-            if (this._finished)
+            _pos = -1;
+            if (_finished)
             {
-                this._bufferAmount = 0;
+                _bufferAmount = 0;
             }
             else
             {
-                this._bufferAmount = this._reader.Read(this._buffer, 0, this._buffer.Length);
-                if (this._bufferAmount == 0) this._finished = true;
+                _bufferAmount = _reader.Read(_buffer, 0, _buffer.Length);
+                if (_bufferAmount == 0) _finished = true;
             }
         }
     }

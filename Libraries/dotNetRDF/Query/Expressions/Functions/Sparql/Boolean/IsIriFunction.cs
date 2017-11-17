@@ -49,7 +49,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            INode result = this._expr.Evaluate(context, bindingID);
+            INode result = _expr.Evaluate(context, bindingID);
             if (result == null)
             {
                 return new BooleanNode(null, false);
@@ -66,7 +66,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override string ToString()
         {
-            return "ISIRI(" + this._expr.ToString() + ")";
+            return "ISIRI(" + _expr.ToString() + ")";
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new IsIriFunction(transformer.Transform(this._expr));
+            return new IsIriFunction(transformer.Transform(_expr));
         }
     }
 
@@ -121,7 +121,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override string ToString()
         {
-            return "ISURI(" + this._expr.ToString() + ")";
+            return "ISURI(" + _expr.ToString() + ")";
         }
 
         /// <summary>
@@ -142,7 +142,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new IsUriFunction(transformer.Transform(this._expr));
+            return new IsUriFunction(transformer.Transform(_expr));
         }
     }
 }

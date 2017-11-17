@@ -57,49 +57,49 @@ namespace VDS.RDF.Ontology
             // UriNode rdfType = graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyType));
             // graph.Assert(new Triple(resource, rdfType, graph.CreateUriNode(new Uri(OntologyHelper.RdfsClass))));
 
-            this.IntialiseProperty(OntologyHelper.PropertySubClassOf, false);
-            this.IntialiseProperty(OntologyHelper.PropertyEquivalentClass, false);
-            this.IntialiseProperty(OntologyHelper.PropertyDisjointWith, false);
+            IntialiseProperty(OntologyHelper.PropertySubClassOf, false);
+            IntialiseProperty(OntologyHelper.PropertyEquivalentClass, false);
+            IntialiseProperty(OntologyHelper.PropertyDisjointWith, false);
 
             // Find derived classes
-            IUriNode subClassOf = this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySubClassOf));
-            this._resourceProperties.Add(PropertyDerivedClass, new List<INode>());
-            this._resourceProperties.Add(PropertyDirectSubClass, new List<INode>());
-            foreach (Triple t in this._graph.GetTriplesWithPredicateObject(subClassOf, this._resource))
+            IUriNode subClassOf = _graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySubClassOf));
+            _resourceProperties.Add(PropertyDerivedClass, new List<INode>());
+            _resourceProperties.Add(PropertyDirectSubClass, new List<INode>());
+            foreach (Triple t in _graph.GetTriplesWithPredicateObject(subClassOf, _resource))
             {
-                if (!this._resourceProperties[PropertyDerivedClass].Contains(t.Subject)) this._resourceProperties[PropertyDerivedClass].Add(t.Subject);
-                if (!this._resourceProperties[PropertyDirectSubClass].Contains(t.Subject)) this._resourceProperties[PropertyDirectSubClass].Add(t.Subject);
+                if (!_resourceProperties[PropertyDerivedClass].Contains(t.Subject)) _resourceProperties[PropertyDerivedClass].Add(t.Subject);
+                if (!_resourceProperties[PropertyDirectSubClass].Contains(t.Subject)) _resourceProperties[PropertyDirectSubClass].Add(t.Subject);
             }
             int c = 0; 
             do
             {
-                c = this._resourceProperties[PropertyDerivedClass].Count;
-                foreach (INode n in this._resourceProperties[PropertyDerivedClass].ToList())
+                c = _resourceProperties[PropertyDerivedClass].Count;
+                foreach (INode n in _resourceProperties[PropertyDerivedClass].ToList())
                 {
-                    foreach (Triple t in this._graph.GetTriplesWithPredicateObject(subClassOf, n))
+                    foreach (Triple t in _graph.GetTriplesWithPredicateObject(subClassOf, n))
                     {
-                        if (!this._resourceProperties[PropertyDerivedClass].Contains(t.Subject)) this._resourceProperties[PropertyDerivedClass].Add(t.Subject);
+                        if (!_resourceProperties[PropertyDerivedClass].Contains(t.Subject)) _resourceProperties[PropertyDerivedClass].Add(t.Subject);
                     }
                 }
-            } while (c < this._resourceProperties[PropertyDerivedClass].Count);
+            } while (c < _resourceProperties[PropertyDerivedClass].Count);
 
             // Find additional super classes
-            this._resourceProperties.Add(PropertyDirectSuperClass, new List<INode>());
-            if (this._resourceProperties.ContainsKey(OntologyHelper.PropertySubClassOf))
+            _resourceProperties.Add(PropertyDirectSuperClass, new List<INode>());
+            if (_resourceProperties.ContainsKey(OntologyHelper.PropertySubClassOf))
             {
-                this._resourceProperties[PropertyDirectSuperClass].AddRange(this._resourceProperties[OntologyHelper.PropertySubClassOf]);
+                _resourceProperties[PropertyDirectSuperClass].AddRange(_resourceProperties[OntologyHelper.PropertySubClassOf]);
 
                 do
                 {
-                    c = this._resourceProperties[OntologyHelper.PropertySubClassOf].Count;
-                    foreach (INode n in this._resourceProperties[OntologyHelper.PropertySubClassOf].ToList())
+                    c = _resourceProperties[OntologyHelper.PropertySubClassOf].Count;
+                    foreach (INode n in _resourceProperties[OntologyHelper.PropertySubClassOf].ToList())
                     {
-                        foreach (Triple t in this._graph.GetTriplesWithSubjectPredicate(n, subClassOf))
+                        foreach (Triple t in _graph.GetTriplesWithSubjectPredicate(n, subClassOf))
                         {
-                            if (!this._resourceProperties[OntologyHelper.PropertySubClassOf].Contains(t.Object)) this._resourceProperties[OntologyHelper.PropertySubClassOf].Add(t.Object);
+                            if (!_resourceProperties[OntologyHelper.PropertySubClassOf].Contains(t.Object)) _resourceProperties[OntologyHelper.PropertySubClassOf].Add(t.Object);
                         }
                     }
-                } while (c < this._resourceProperties[OntologyHelper.PropertySubClassOf].Count);
+                } while (c < _resourceProperties[OntologyHelper.PropertySubClassOf].Count);
             }
         }
 
@@ -110,7 +110,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddSubClass(INode resource)
         {
-            return this.AddResourceProperty(PropertyDerivedClass, resource.CopyNode(this._graph), false);
+            return AddResourceProperty(PropertyDerivedClass, resource.CopyNode(_graph), false);
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddSubClass(Uri resource)
         {
-            return this.AddSubClass(this._graph.CreateUriNode(resource));
+            return AddSubClass(_graph.CreateUriNode(resource));
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddSubClass(OntologyResource resource)
         {
-            return this.AddSuperClass(resource.Resource);
+            return AddSuperClass(resource.Resource);
         }
 
         /// <summary>
@@ -143,8 +143,8 @@ namespace VDS.RDF.Ontology
         /// </remarks>
         public bool AddSubClass(OntologyClass @class)
         {
-            bool a = this.AddSubClass(@class.Resource);
-            bool b = @class.AddSuperClass(this._resource);
+            bool a = AddSubClass(@class.Resource);
+            bool b = @class.AddSuperClass(_resource);
             return (a || b);
         }
 
@@ -154,8 +154,8 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool ClearSubClasses()
         {
-            this._graph.Retract(this._graph.GetTriplesWithPredicateObject(this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySubClassOf)), this._resource).ToList());
-            return this.ClearResourceProperty(PropertyDerivedClass, false);
+            _graph.Retract(_graph.GetTriplesWithPredicateObject(_graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySubClassOf)), _resource).ToList());
+            return ClearResourceProperty(PropertyDerivedClass, false);
         }
 
         /// <summary>
@@ -165,7 +165,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveSubClass(INode resource)
         {
-            return this.RemoveResourceProperty(PropertyDerivedClass, resource.CopyNode(this._graph), false);
+            return RemoveResourceProperty(PropertyDerivedClass, resource.CopyNode(_graph), false);
         }
 
         /// <summary>
@@ -175,7 +175,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveSubClass(Uri resource)
         {
-            return this.RemoveSubClass(this._graph.CreateUriNode(resource));
+            return RemoveSubClass(_graph.CreateUriNode(resource));
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveSubClass(OntologyResource resource)
         {
-            return this.RemoveSubClass(resource.Resource);
+            return RemoveSubClass(resource.Resource);
         }
 
         /// <summary>
@@ -198,8 +198,8 @@ namespace VDS.RDF.Ontology
         /// </remarks>
         public bool RemoveSubClass(OntologyClass @class)
         {
-            bool a = this.RemoveSubClass(@class.Resource);
-            bool b = @class.RemoveSuperClass(this._resource);
+            bool a = RemoveSubClass(@class.Resource);
+            bool b = @class.RemoveSuperClass(_resource);
             return (a || b);
         }
 
@@ -210,7 +210,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddSuperClass(INode resource)
         {
-            return this.AddResourceProperty(OntologyHelper.PropertySubClassOf, resource.CopyNode(this._graph), true);
+            return AddResourceProperty(OntologyHelper.PropertySubClassOf, resource.CopyNode(_graph), true);
         }
 
         /// <summary>
@@ -220,7 +220,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddSuperClass(Uri resource)
         {
-            return this.AddSuperClass(this._graph.CreateUriNode(resource));
+            return AddSuperClass(_graph.CreateUriNode(resource));
         }
 
         /// <summary>
@@ -230,7 +230,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddSuperClass(OntologyResource resource)
         {
-            return this.AddSuperClass(resource.Resource);
+            return AddSuperClass(resource.Resource);
         }
 
         /// <summary>
@@ -243,8 +243,8 @@ namespace VDS.RDF.Ontology
         /// </remarks>
         public bool AddSuperClass(OntologyClass @class)
         {
-            bool a = this.AddSuperClass(@class.Resource);
-            bool b = @class.AddSubClass(this._resource);
+            bool a = AddSuperClass(@class.Resource);
+            bool b = @class.AddSubClass(_resource);
             return (a || b);
         }
 
@@ -254,8 +254,8 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool ClearSuperClasses()
         {
-            this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySubClassOf))).ToList());
-            return this.ClearResourceProperty(OntologyHelper.PropertySubClassOf, true);
+            _graph.Retract(_graph.GetTriplesWithSubjectPredicate(_resource, _graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySubClassOf))).ToList());
+            return ClearResourceProperty(OntologyHelper.PropertySubClassOf, true);
         }
 
         /// <summary>
@@ -265,7 +265,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveSuperClass(INode resource)
         {
-            return this.RemoveResourceProperty(OntologyHelper.PropertySubClassOf, resource.CopyNode(this._graph), true);
+            return RemoveResourceProperty(OntologyHelper.PropertySubClassOf, resource.CopyNode(_graph), true);
         }
 
         /// <summary>
@@ -275,7 +275,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveSuperClass(Uri resource)
         {
-            return this.RemoveSuperClass(this._graph.CreateUriNode(resource));
+            return RemoveSuperClass(_graph.CreateUriNode(resource));
         }
 
         /// <summary>
@@ -285,7 +285,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveSuperClass(OntologyResource resource)
         {
-            return this.RemoveSuperClass(resource.Resource);
+            return RemoveSuperClass(resource.Resource);
         }
 
         /// <summary>
@@ -298,8 +298,8 @@ namespace VDS.RDF.Ontology
         /// </remarks>
         public bool RemoveSuperClass(OntologyClass @class)
         {
-            bool a = this.RemoveSuperClass(@class.Resource);
-            bool b = @class.RemoveSubClass(this._resource);
+            bool a = RemoveSuperClass(@class.Resource);
+            bool b = @class.RemoveSubClass(_resource);
             return (a || b);
         }
 
@@ -310,7 +310,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddEquivalentClass(INode resource)
         {
-            return this.AddResourceProperty(OntologyHelper.PropertyEquivalentClass, resource.CopyNode(this._graph), true);
+            return AddResourceProperty(OntologyHelper.PropertyEquivalentClass, resource.CopyNode(_graph), true);
         }
 
         /// <summary>
@@ -320,7 +320,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddEquivalentClass(Uri resource)
         {
-            return this.AddEquivalentClass(this._graph.CreateUriNode(resource));
+            return AddEquivalentClass(_graph.CreateUriNode(resource));
         }
 
         /// <summary>
@@ -330,7 +330,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddEquivalentClass(OntologyResource resource)
         {
-            return this.AddEquivalentClass(resource.Resource);
+            return AddEquivalentClass(resource.Resource);
         }
 
         /// <summary>
@@ -343,8 +343,8 @@ namespace VDS.RDF.Ontology
         /// </remarks>
         public bool AddEquivalentClass(OntologyClass @class)
         {
-            bool a = this.AddEquivalentClass(@class.Resource);
-            bool b = @class.AddEquivalentClass(this._resource);
+            bool a = AddEquivalentClass(@class.Resource);
+            bool b = @class.AddEquivalentClass(_resource);
             return (a || b);
         }
 
@@ -354,10 +354,10 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool ClearEquivalentClasses()
         {
-            INode equivClass = this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyEquivalentClass));
-            this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, equivClass).ToList());
-            this._graph.Retract(this._graph.GetTriplesWithPredicateObject(equivClass, this._resource).ToList());
-            return this.ClearResourceProperty(OntologyHelper.PropertyEquivalentClass, true);
+            INode equivClass = _graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyEquivalentClass));
+            _graph.Retract(_graph.GetTriplesWithSubjectPredicate(_resource, equivClass).ToList());
+            _graph.Retract(_graph.GetTriplesWithPredicateObject(equivClass, _resource).ToList());
+            return ClearResourceProperty(OntologyHelper.PropertyEquivalentClass, true);
         }
 
         /// <summary>
@@ -367,7 +367,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveEquivalentClass(INode resource)
         {
-            return this.RemoveResourceProperty(OntologyHelper.PropertyEquivalentClass, resource.CopyNode(this._graph), true);
+            return RemoveResourceProperty(OntologyHelper.PropertyEquivalentClass, resource.CopyNode(_graph), true);
         }
 
         /// <summary>
@@ -377,7 +377,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveEquivalentClass(Uri resource)
         {
-            return this.RemoveEquivalentClass(this._graph.CreateUriNode(resource));
+            return RemoveEquivalentClass(_graph.CreateUriNode(resource));
         }
 
         /// <summary>
@@ -387,7 +387,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveEquivalentClass(OntologyResource resource)
         {
-            return this.RemoveEquivalentClass(resource.Resource);
+            return RemoveEquivalentClass(resource.Resource);
         }
 
         /// <summary>
@@ -397,8 +397,8 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveEquivalentClass(OntologyClass @class)
         {
-            bool a = this.RemoveEquivalentClass(@class.Resource);
-            bool b = @class.RemoveEquivalentClass(this._resource);
+            bool a = RemoveEquivalentClass(@class.Resource);
+            bool b = @class.RemoveEquivalentClass(_resource);
             return (a || b);
         }
 
@@ -409,7 +409,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddDisjointClass(INode resource)
         {
-            return this.AddResourceProperty(OntologyHelper.PropertyDisjointWith, resource.CopyNode(this._graph), true);
+            return AddResourceProperty(OntologyHelper.PropertyDisjointWith, resource.CopyNode(_graph), true);
         }
 
         /// <summary>
@@ -419,7 +419,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddDisjointClass(Uri resource)
         {
-            return this.AddDisjointClass(this._graph.CreateUriNode(resource));
+            return AddDisjointClass(_graph.CreateUriNode(resource));
         }
 
         /// <summary>
@@ -429,7 +429,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddDisjointClass(OntologyResource resource)
         {
-            return this.AddDisjointClass(resource.Resource);
+            return AddDisjointClass(resource.Resource);
         }
 
         /// <summary>
@@ -442,8 +442,8 @@ namespace VDS.RDF.Ontology
         /// </remarks>
         public bool AddDisjointClass(OntologyClass @class)
         {
-            bool a = this.AddDisjointClass(@class.Resource);
-            bool b = @class.AddDisjointClass(this._resource);
+            bool a = AddDisjointClass(@class.Resource);
+            bool b = @class.AddDisjointClass(_resource);
             return (a || b);
         }
 
@@ -453,10 +453,10 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool ClearDisjointClasses()
         {
-            INode disjointClass = this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyDisjointWith));
-            this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, disjointClass).ToList());
-            this._graph.Retract(this._graph.GetTriplesWithPredicateObject(disjointClass, this._resource).ToList());
-            return this.ClearResourceProperty(OntologyHelper.PropertyDisjointWith, true);
+            INode disjointClass = _graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyDisjointWith));
+            _graph.Retract(_graph.GetTriplesWithSubjectPredicate(_resource, disjointClass).ToList());
+            _graph.Retract(_graph.GetTriplesWithPredicateObject(disjointClass, _resource).ToList());
+            return ClearResourceProperty(OntologyHelper.PropertyDisjointWith, true);
         }
 
         /// <summary>
@@ -466,7 +466,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveDisjointClass(INode resource)
         {
-            return this.RemoveResourceProperty(OntologyHelper.PropertyDisjointWith, resource.CopyNode(this._graph), true);
+            return RemoveResourceProperty(OntologyHelper.PropertyDisjointWith, resource.CopyNode(_graph), true);
         }
 
         /// <summary>
@@ -476,7 +476,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveDisjointClass(Uri resource)
         {
-            return this.RemoveDisjointClass(this._graph.CreateUriNode(resource));
+            return RemoveDisjointClass(_graph.CreateUriNode(resource));
         }
 
         /// <summary>
@@ -486,7 +486,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveDisjointClass(OntologyResource resource)
         {
-            return this.RemoveDisjointClass(resource.Resource);
+            return RemoveDisjointClass(resource.Resource);
         }
 
         /// <summary>
@@ -499,8 +499,8 @@ namespace VDS.RDF.Ontology
         /// </remarks>
         public bool RemoveDisjointClass(OntologyClass @class)
         {
-            bool a = this.RemoveDisjointClass(@class.Resource);
-            bool b = @class.RemoveDisjointClass(this._resource);
+            bool a = RemoveDisjointClass(@class.Resource);
+            bool b = @class.RemoveDisjointClass(_resource);
             return (a || b);
         }
 
@@ -511,7 +511,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return this.GetResourceProperty(PropertyDerivedClass).Select(c => new OntologyClass(c, this._graph));
+                return GetResourceProperty(PropertyDerivedClass).Select(c => new OntologyClass(c, _graph));
             }
         }
 
@@ -522,7 +522,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return this.GetResourceProperty(PropertyDirectSubClass).Select(c => new OntologyClass(c, this._graph));
+                return GetResourceProperty(PropertyDirectSubClass).Select(c => new OntologyClass(c, _graph));
             }
         }
 
@@ -533,9 +533,9 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return (from c in this.GetResourceProperty(PropertyDerivedClass)
-                        where !this.GetResourceProperty(PropertyDirectSubClass).Contains(c)
-                        select new OntologyClass(c, this._graph));
+                return (from c in GetResourceProperty(PropertyDerivedClass)
+                        where !GetResourceProperty(PropertyDirectSubClass).Contains(c)
+                        select new OntologyClass(c, _graph));
             }
         }
 
@@ -546,7 +546,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return this.GetResourceProperty(OntologyHelper.PropertySubClassOf).Select(c => new OntologyClass(c, this._graph));
+                return GetResourceProperty(OntologyHelper.PropertySubClassOf).Select(c => new OntologyClass(c, _graph));
             }
         }
 
@@ -557,7 +557,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return this.GetResourceProperty(PropertyDirectSuperClass).Select(c => new OntologyClass(c, this._graph));
+                return GetResourceProperty(PropertyDirectSuperClass).Select(c => new OntologyClass(c, _graph));
             }
         }
 
@@ -568,9 +568,9 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return (from c in this.GetResourceProperty(OntologyHelper.PropertySubClassOf)
-                        where !this.GetResourceProperty(PropertyDirectSuperClass).Contains(c)
-                        select new OntologyClass(c, this._graph));
+                return (from c in GetResourceProperty(OntologyHelper.PropertySubClassOf)
+                        where !GetResourceProperty(PropertyDirectSuperClass).Contains(c)
+                        select new OntologyClass(c, _graph));
             }
         }
 
@@ -581,10 +581,10 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return this.GetResourceProperty(PropertyDirectSuperClass)
-                       .Select(c => new OntologyClass(c, this._graph))
+                return GetResourceProperty(PropertyDirectSuperClass)
+                       .Select(c => new OntologyClass(c, _graph))
                        .SelectMany(c => c.DirectSubClasses)
-                       .Where(c => !c.Resource.Equals(this._resource)).Distinct();
+                       .Where(c => !c.Resource.Equals(_resource)).Distinct();
             }
         }
 
@@ -595,7 +595,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return this.GetResourceProperty(OntologyHelper.PropertyEquivalentClass).Select(c => new OntologyClass(c, this._graph));
+                return GetResourceProperty(OntologyHelper.PropertyEquivalentClass).Select(c => new OntologyClass(c, _graph));
             }
         }
 
@@ -606,7 +606,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return this.GetResourceProperty(OntologyHelper.PropertyDisjointWith).Select(c => new OntologyClass(c, this._graph));
+                return GetResourceProperty(OntologyHelper.PropertyDisjointWith).Select(c => new OntologyClass(c, _graph));
             }
         }
 
@@ -617,8 +617,8 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return (from t in this._graph.GetTriplesWithPredicateObject(this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyType)), this._resource)
-                        select new OntologyResource(t.Subject, this._graph));
+                return (from t in _graph.GetTriplesWithPredicateObject(_graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyType)), _resource)
+                        select new OntologyResource(t.Subject, _graph));
             }
         }
 
@@ -629,9 +629,9 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                INode domain = this._graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "domain"));
-                return (from t in this._graph.GetTriplesWithPredicateObject(domain, this._resource)
-                        select new OntologyProperty(t.Subject, this._graph));
+                INode domain = _graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "domain"));
+                return (from t in _graph.GetTriplesWithPredicateObject(domain, _resource)
+                        select new OntologyProperty(t.Subject, _graph));
             }
         }
 
@@ -642,9 +642,9 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                INode range = this._graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "range"));
-                return (from t in this._graph.GetTriplesWithPredicateObject(range, this._resource)
-                        select new OntologyProperty(t.Subject, this._graph));
+                INode range = _graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "range"));
+                return (from t in _graph.GetTriplesWithPredicateObject(range, _resource)
+                        select new OntologyProperty(t.Subject, _graph));
             }
         }
 
@@ -655,7 +655,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return !this.SuperClasses.Any();
+                return !SuperClasses.Any();
             }
         }
 
@@ -666,7 +666,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return !this.SubClasses.Any();
+                return !SubClasses.Any();
             }
         }
 
@@ -677,7 +677,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public Individual CreateIndividual(Uri resource)
         {
-            return new Individual(this._graph.CreateUriNode(resource), this._resource, this._graph);
+            return new Individual(_graph.CreateUriNode(resource), _resource, _graph);
         }
 
         /// <summary>
@@ -692,7 +692,7 @@ namespace VDS.RDF.Ontology
             if (obj is OntologyClass)
             {
                 OntologyClass other = (OntologyClass)obj;
-                return other.Resource.Equals(this._resource) && ReferenceEquals(other.Graph, this._graph);
+                return other.Resource.Equals(_resource) && ReferenceEquals(other.Graph, _graph);
             }
             else
             {

@@ -59,7 +59,7 @@ namespace VDS.RDF.Query.Optimisation
 
                     // See if the Filtered Product style optimization applies instead
                     int splitPoint = -1;
-                    if (f.SparqlFilter.Expression.CanParallelise && this.IsDisjointOperation(f.InnerAlgebra, f.SparqlFilter.Expression.Variables.ToList(), out splitPoint))
+                    if (f.SparqlFilter.Expression.CanParallelise && IsDisjointOperation(f.InnerAlgebra, f.SparqlFilter.Expression.Variables.ToList(), out splitPoint))
                     {
                         if (splitPoint > -1)
                         {

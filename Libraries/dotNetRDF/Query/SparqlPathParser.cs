@@ -115,7 +115,7 @@ namespace VDS.RDF.Parsing
                             {
                                 throw new RdfParseException("Path Groups can only follow path sequencing tokens", next);
                             }
-                                break;
+                            break;
 
                         case Token.LEFTCURLYBRACKET:
                             // Explicit cardinality modifiers
@@ -238,25 +238,25 @@ namespace VDS.RDF.Parsing
                 }
             }
 
-            ISparqlPath path = this.TryParsePath(context, tokens);
+            ISparqlPath path = TryParsePath(context, tokens);
             return path;
         }
 
         private ISparqlPath TryParsePath(SparqlQueryParserContext context, Queue<IToken> tokens)
         {
-            return this.TryParsePathAlternative(context, tokens);
+            return TryParsePathAlternative(context, tokens);
         }
 
         private ISparqlPath TryParsePathAlternative(SparqlQueryParserContext context, Queue<IToken> tokens)
         {
-            ISparqlPath path = this.TryParsePathSequence(context, tokens);
+            ISparqlPath path = TryParsePathSequence(context, tokens);
             IToken next;
             while (tokens.Count > 0)
             {
                 next = tokens.Dequeue();
                 if (next.TokenType == Token.BITWISEOR)
                 {
-                    path = new AlternativePath(path, this.TryParsePathSequence(context, tokens));
+                    path = new AlternativePath(path, TryParsePathSequence(context, tokens));
                 }
                 else
                 {
@@ -269,7 +269,7 @@ namespace VDS.RDF.Parsing
 
         private ISparqlPath TryParsePathSequence(SparqlQueryParserContext context, Queue<IToken> tokens)
         {
-            ISparqlPath path = this.TryParsePathEltOrInverse(context, tokens);
+            ISparqlPath path = TryParsePathEltOrInverse(context, tokens);
             IToken next;
             while (tokens.Count > 0)
             {
@@ -278,11 +278,11 @@ namespace VDS.RDF.Parsing
                 {
                     case Token.DIVIDE:
                         tokens.Dequeue();
-                        path = new SequencePath(path, this.TryParsePathEltOrInverse(context, tokens));
+                        path = new SequencePath(path, TryParsePathEltOrInverse(context, tokens));
                         break;
                     case Token.HAT:
                         tokens.Dequeue();
-                        path = new SequencePath(path, new InversePath(this.TryParsePathElt(context, tokens)));
+                        path = new SequencePath(path, new InversePath(TryParsePathElt(context, tokens)));
                         break;
                     default:
                         return path;
@@ -298,17 +298,17 @@ namespace VDS.RDF.Parsing
             if (next.TokenType == Token.HAT)
             {
                 tokens.Dequeue();
-                return new InversePath(this.TryParsePathElt(context, tokens));
+                return new InversePath(TryParsePathElt(context, tokens));
             }
             else
             {
-                return this.TryParsePathElt(context, tokens);
+                return TryParsePathElt(context, tokens);
             }
         }
 
         private ISparqlPath TryParsePathElt(SparqlQueryParserContext context, Queue<IToken> tokens)
         {
-            return this.TryParsePathPrimary(context, tokens);
+            return TryParsePathPrimary(context, tokens);
         }
 
         private ISparqlPath TryParsePathPrimary(SparqlQueryParserContext context, Queue<IToken> tokens)
@@ -343,11 +343,11 @@ namespace VDS.RDF.Parsing
                         if (openBrackets > 0) subtokens.Enqueue(next);
                     } while (openBrackets > 0);
 
-                    path = this.TryParsePath(context, subtokens);
+                    path = TryParsePath(context, subtokens);
                     break;
 
                 case Token.NEGATION:
-                    path = this.TryParseNegatedPropertySet(context, tokens);
+                    path = TryParseNegatedPropertySet(context, tokens);
                     break;
 
                 default:
@@ -364,7 +364,7 @@ namespace VDS.RDF.Parsing
                     case Token.PLUS:
                     case Token.QUESTION:
                     case Token.LEFTCURLYBRACKET:
-                        path = this.TryParsePathMod(context, tokens, path);
+                        path = TryParsePathMod(context, tokens, path);
                         break;
                 }
             }
@@ -500,7 +500,7 @@ namespace VDS.RDF.Parsing
                 case Token.URI:
                 case Token.KEYWORDA:
                 case Token.HAT:
-                    p = this.TryParsePathOneInPropertySet(context, tokens, out inverse);
+                    p = TryParsePathOneInPropertySet(context, tokens, out inverse);
                     if (inverse)
                     {
                         return new NegatedSet(Enumerable.Empty<Property>(), p.AsEnumerable());
@@ -519,7 +519,7 @@ namespace VDS.RDF.Parsing
                     while (next.TokenType != Token.RIGHTBRACKET)
                     {
                         // Parse the next item in the set
-                        p = this.TryParsePathOneInPropertySet(context, tokens, out inverse);
+                        p = TryParsePathOneInPropertySet(context, tokens, out inverse);
                         if (inverse)
                         {
                             inverses.Add(p);

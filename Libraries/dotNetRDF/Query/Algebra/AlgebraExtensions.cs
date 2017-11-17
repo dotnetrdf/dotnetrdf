@@ -57,8 +57,8 @@ namespace VDS.RDF.Query.Algebra
             }
 
             // Otherwise Invoke using an Async call
-            BaseMultiset productSet;
 #if NET40
+            BaseMultiset productSet;
             if (Options.UsePLinqEvaluation)
             {
                 if (multiset.Count >= other.Count)
@@ -72,11 +72,12 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-#endif
                 productSet = new Multiset();
-#if NET40
             }
+#else
+            var productSet = new Multiset();
 #endif
+
             var stop = new StopToken();
             var t = (int)Math.Min(timeout, int.MaxValue);
 #if NET40 || NETSTANDARD1_4 || NETSTANDARD2_0
@@ -185,11 +186,11 @@ namespace VDS.RDF.Query.Algebra
         {
             get 
             {
-                return this._stop;
+                return _stop;
             }
             set 
             {
-                if (!this._stop) this._stop = value;
+                if (!_stop) _stop = value;
             }
         }
     }

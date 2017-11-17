@@ -50,10 +50,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <param name="y2">Expression for Y Coordinate of 2nd point</param>
         public CartesianFunction(ISparqlExpression x1, ISparqlExpression y1, ISparqlExpression x2, ISparqlExpression y2)
         {
-            this._x1 = x1;
-            this._y1 = y1;
-            this._x2 = x2;
-            this._y2 = y2;
+            _x1 = x1;
+            _y1 = y1;
+            _x2 = x2;
+            _y2 = y2;
         }
 
         /// <summary>
@@ -67,13 +67,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <param name="z2">Expression for Z Coordinate of 2nd point</param>
         public CartesianFunction(ISparqlExpression x1, ISparqlExpression y1, ISparqlExpression z1, ISparqlExpression x2, ISparqlExpression y2, ISparqlExpression z2)
         {
-            this._x1 = x1;
-            this._y1 = y1;
-            this._z1 = z1;
-            this._x2 = x2;
-            this._y2 = y2;
-            this._z2 = z2;
-            this._3d = true;
+            _x1 = x1;
+            _y1 = y1;
+            _z1 = z1;
+            _x2 = x2;
+            _y2 = y2;
+            _z2 = z2;
+            _3d = true;
         }
 
 
@@ -86,13 +86,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
             // Validate that all expressions are numeric expression
-            if (this._3d)
+            if (_3d)
             {
-                return this.CartesianDistance3D(context, bindingID);
+                return CartesianDistance3D(context, bindingID);
             }
             else
             {
-                return this.CartesianDistance2D(context, bindingID);
+                return CartesianDistance2D(context, bindingID);
             }
         }
 
@@ -104,13 +104,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         private IValuedNode CartesianDistance2D(SparqlEvaluationContext context, int bindingID)
         {
-            IValuedNode x1 = this._x1.Evaluate(context, bindingID);
+            IValuedNode x1 = _x1.Evaluate(context, bindingID);
             if (x1 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-            IValuedNode y1 = this._y1.Evaluate(context, bindingID);
+            IValuedNode y1 = _y1.Evaluate(context, bindingID);
             if (y1 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-            IValuedNode x2 = this._x2.Evaluate(context, bindingID);
+            IValuedNode x2 = _x2.Evaluate(context, bindingID);
             if (x2 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-            IValuedNode y2 = this._y2.Evaluate(context, bindingID);
+            IValuedNode y2 = _y2.Evaluate(context, bindingID);
             if (y2 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
 
             double dX = x2.AsDouble() - x1.AsDouble();
@@ -127,17 +127,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         private IValuedNode CartesianDistance3D(SparqlEvaluationContext context, int bindingID)
         {
-            IValuedNode x1 = this._x1.Evaluate(context, bindingID);
+            IValuedNode x1 = _x1.Evaluate(context, bindingID);
             if (x1 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-            IValuedNode y1 = this._y1.Evaluate(context, bindingID);
+            IValuedNode y1 = _y1.Evaluate(context, bindingID);
             if (y1 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-            IValuedNode z1 = this._z1.Evaluate(context, bindingID);
+            IValuedNode z1 = _z1.Evaluate(context, bindingID);
             if (z1 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-            IValuedNode x2 = this._x2.Evaluate(context, bindingID);
+            IValuedNode x2 = _x2.Evaluate(context, bindingID);
             if (x2 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-            IValuedNode y2 = this._y2.Evaluate(context, bindingID);
+            IValuedNode y2 = _y2.Evaluate(context, bindingID);
             if (y2 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-            IValuedNode z2 = this._z2.Evaluate(context, bindingID);
+            IValuedNode z2 = _z2.Evaluate(context, bindingID);
             if (z2 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
 
             double dX = x2.AsDouble() - x1.AsDouble();
@@ -154,13 +154,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         {
             get
             {
-                if (this._3d)
+                if (_3d)
                 {
-                    return this._x1.Variables.Concat(this._y1.Variables).Concat(this._z1.Variables).Concat(this._x2.Variables).Concat(this._y2.Variables).Concat(this._z2.Variables);
+                    return _x1.Variables.Concat(_y1.Variables).Concat(_z1.Variables).Concat(_x2.Variables).Concat(_y2.Variables).Concat(_z2.Variables);
                 }
                 else
                 {
-                    return this._x1.Variables.Concat(this._y1.Variables).Concat(this._x2.Variables).Concat(this._y2.Variables);
+                    return _x1.Variables.Concat(_y1.Variables).Concat(_x2.Variables).Concat(_y2.Variables);
                 }
             }
         }
@@ -173,22 +173,22 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         {
             StringBuilder output = new StringBuilder();
             output.Append("<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Cartesian + ">(");
-            output.Append(this._x1.ToString());
+            output.Append(_x1.ToString());
             output.Append(',');
-            output.Append(this._y1.ToString());
+            output.Append(_y1.ToString());
             output.Append(',');
-            if (this._3d)
+            if (_3d)
             {
-                output.Append(this._z1.ToString());
+                output.Append(_z1.ToString());
                 output.Append(',');
             }
-            output.Append(this._x2.ToString());
+            output.Append(_x2.ToString());
             output.Append(',');
-            output.Append(this._y2.ToString());
-            if (this._3d)
+            output.Append(_y2.ToString());
+            if (_3d)
             {
                 output.Append(',');
-                output.Append(this._z2.ToString());
+                output.Append(_z2.ToString());
             }
             output.Append(')');
             return output.ToString();
@@ -223,13 +223,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         {
             get 
             {
-                if (this._3d)
+                if (_3d)
                 {
-                    return new ISparqlExpression[] { this._x1, this._y1, this._z1, this._x2, this._y2, this._z2 };
+                    return new ISparqlExpression[] { _x1, _y1, _z1, _x2, _y2, _z2 };
                 }
                 else
                 {
-                    return new ISparqlExpression[] { this._x1, this._y1, this._x2, this._y2 };
+                    return new ISparqlExpression[] { _x1, _y1, _x2, _y2 };
                 }
             }
         }
@@ -241,13 +241,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         {
             get
             {
-                if (this._3d)
+                if (_3d)
                 {
-                    return this._x1.CanParallelise && this._y1.CanParallelise && this._z1.CanParallelise && this._x1.CanParallelise && this._y2.CanParallelise && this._z2.CanParallelise;
+                    return _x1.CanParallelise && _y1.CanParallelise && _z1.CanParallelise && _x1.CanParallelise && _y2.CanParallelise && _z2.CanParallelise;
                 }
                 else
                 {
-                    return this._x1.CanParallelise && this._y1.CanParallelise && this._x2.CanParallelise && this._y2.CanParallelise;
+                    return _x1.CanParallelise && _y1.CanParallelise && _x2.CanParallelise && _y2.CanParallelise;
                 }
             }
         }
@@ -259,13 +259,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            if (this._3d)
+            if (_3d)
             {
-                return new CartesianFunction(transformer.Transform(this._x1), transformer.Transform(this._y1), transformer.Transform(this._z1), transformer.Transform(this._x2), transformer.Transform(this._y2), transformer.Transform(this._z2));
+                return new CartesianFunction(transformer.Transform(_x1), transformer.Transform(_y1), transformer.Transform(_z1), transformer.Transform(_x2), transformer.Transform(_y2), transformer.Transform(_z2));
             }
             else
             {
-                return new CartesianFunction(transformer.Transform(this._x1), transformer.Transform(this._y1), transformer.Transform(this._x2), transformer.Transform(this._y2));
+                return new CartesianFunction(transformer.Transform(_x1), transformer.Transform(_y1), transformer.Transform(_x2), transformer.Transform(_y2));
             }
         }
     }

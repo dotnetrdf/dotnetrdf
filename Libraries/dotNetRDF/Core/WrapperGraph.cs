@@ -60,16 +60,16 @@ namespace VDS.RDF
         /// </summary>
         protected WrapperGraph()
         {
-            this._g = new Graph();
+            _g = new Graph();
 
             // Create Event Handlers and attach to relevant events so the wrapper propogates events upwards
-            this.TripleAssertedHandler = new TripleEventHandler(this.OnTripleAsserted);
-            this.TripleRetractedHandler = new TripleEventHandler(this.OnTripleRetracted);
-            this.GraphChangedHandler = new GraphEventHandler(this.OnChanged);
-            this.GraphClearedHandler = new GraphEventHandler(this.OnCleared);
-            this.GraphMergedHandler = new GraphEventHandler(this.OnMerged);
-            this.GraphClearRequestedHandler = new CancellableGraphEventHandler(this.OnClearRequested);
-            this.GraphMergeRequestedHandler = new CancellableGraphEventHandler(this.OnMergeRequested);
+            TripleAssertedHandler = new TripleEventHandler(OnTripleAsserted);
+            TripleRetractedHandler = new TripleEventHandler(OnTripleRetracted);
+            GraphChangedHandler = new GraphEventHandler(OnChanged);
+            GraphClearedHandler = new GraphEventHandler(OnCleared);
+            GraphMergedHandler = new GraphEventHandler(OnMerged);
+            GraphClearRequestedHandler = new CancellableGraphEventHandler(OnClearRequested);
+            GraphMergeRequestedHandler = new CancellableGraphEventHandler(OnMergeRequested);
         }
 
         /// <summary>
@@ -80,8 +80,8 @@ namespace VDS.RDF
             : this()
         {
             if (g == null) throw new ArgumentNullException("graph", "Wrapped Graph cannot be null");
-            this._g = g;
-            this.AttachEventHandlers();
+            _g = g;
+            AttachEventHandlers();
         }      
 
 #if !NETCORE
@@ -97,8 +97,8 @@ namespace VDS.RDF
             String graphType = info.GetString("graphType");
             Type t = Type.GetType(graphType);
             if (t == null) throw new ArgumentException("Invalid serialization information, graph type '" + graphType + "' is not available in your environment");
-            this._g = (IGraph)info.GetValue("innerGraph", t);
-            this.AttachEventHandlers();
+            _g = (IGraph)info.GetValue("innerGraph", t);
+            AttachEventHandlers();
         }
 
 #endif
@@ -112,11 +112,11 @@ namespace VDS.RDF
         {
             get
             {
-                return this._g.BaseUri;
+                return _g.BaseUri;
             }
             set
             {
-                this._g.BaseUri = value;
+                _g.BaseUri = value;
             }
         }
 
@@ -127,7 +127,7 @@ namespace VDS.RDF
         {
             get 
             { 
-                return this._g.IsEmpty; 
+                return _g.IsEmpty; 
             }
         }
 
@@ -138,7 +138,7 @@ namespace VDS.RDF
         {
             get
             { 
-                return this._g.NamespaceMap; 
+                return _g.NamespaceMap; 
             }
         }
 
@@ -149,7 +149,7 @@ namespace VDS.RDF
         {
             get 
             { 
-                return this._g.Nodes; 
+                return _g.Nodes; 
             }
         }
 
@@ -160,7 +160,7 @@ namespace VDS.RDF
         {
             get 
             {
-                return this._g.Triples; 
+                return _g.Triples; 
             }
         }
 
@@ -170,7 +170,7 @@ namespace VDS.RDF
         /// <param name="t">Triple</param>
         public virtual bool Assert(Triple t)
         {
-            return this._g.Assert(t.CopyTriple(this._g));
+            return _g.Assert(t.CopyTriple(_g));
         }
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace VDS.RDF
         /// <param name="ts">Triples</param>
         public virtual bool Assert(IEnumerable<Triple> ts)
         {
-            return this._g.Assert(ts.Select(t => t.CopyTriple(this._g)));
+            return _g.Assert(ts.Select(t => t.CopyTriple(_g)));
         }
 
         /// <summary>
@@ -188,7 +188,7 @@ namespace VDS.RDF
         /// <param name="t">Triple</param>
         public virtual bool Retract(Triple t)
         {
-            return this._g.Retract(t);
+            return _g.Retract(t);
         }
 
         /// <summary>
@@ -197,7 +197,7 @@ namespace VDS.RDF
         /// <param name="ts">Triples</param>
         public virtual bool Retract(IEnumerable<Triple> ts)
         {
-            return this._g.Retract(ts);
+            return _g.Retract(ts);
         }
 
         /// <summary>
@@ -205,7 +205,7 @@ namespace VDS.RDF
         /// </summary>
         public virtual void Clear()
         {
-            this._g.Clear();
+            _g.Clear();
         }
 
         /// <summary>
@@ -215,7 +215,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IBlankNode CreateBlankNode(string nodeId)
         {
-            return this._g.CreateBlankNode(nodeId);
+            return _g.CreateBlankNode(nodeId);
         }
 
         /// <summary>
@@ -224,7 +224,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IBlankNode CreateBlankNode()
         {
-            return this._g.CreateBlankNode();
+            return _g.CreateBlankNode();
         }
 
         /// <summary>
@@ -233,7 +233,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual string GetNextBlankNodeID()
         {
-            return this._g.GetNextBlankNodeID();
+            return _g.GetNextBlankNodeID();
         }
 
         /// <summary>
@@ -243,7 +243,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IGraphLiteralNode CreateGraphLiteralNode(IGraph subgraph)
         {
-            return this._g.CreateGraphLiteralNode(subgraph);
+            return _g.CreateGraphLiteralNode(subgraph);
         }
 
         /// <summary>
@@ -252,7 +252,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IGraphLiteralNode CreateGraphLiteralNode()
         {
-            return this._g.CreateGraphLiteralNode();
+            return _g.CreateGraphLiteralNode();
         }
 
         /// <summary>
@@ -262,7 +262,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual ILiteralNode CreateLiteralNode(string literal)
         {
-            return this._g.CreateLiteralNode(literal);
+            return _g.CreateLiteralNode(literal);
         }
 
         /// <summary>
@@ -273,7 +273,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual ILiteralNode CreateLiteralNode(string literal, Uri datatype)
         {
-            return this._g.CreateLiteralNode(literal, datatype);
+            return _g.CreateLiteralNode(literal, datatype);
         }
 
         /// <summary>
@@ -284,7 +284,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual ILiteralNode CreateLiteralNode(string literal, string langspec)
         {
-            return this._g.CreateLiteralNode(literal, langspec);
+            return _g.CreateLiteralNode(literal, langspec);
         }
 
         /// <summary>
@@ -293,7 +293,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IUriNode CreateUriNode()
         {
-            return this._g.CreateUriNode();
+            return _g.CreateUriNode();
         }
 
         /// <summary>
@@ -303,7 +303,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IUriNode CreateUriNode(string qname)
         {
-            return this._g.CreateUriNode(qname);
+            return _g.CreateUriNode(qname);
         }
 
         /// <summary>
@@ -313,7 +313,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IUriNode CreateUriNode(Uri uri)
         {
-            return this._g.CreateUriNode(uri);
+            return _g.CreateUriNode(uri);
         }
 
         /// <summary>
@@ -323,7 +323,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IVariableNode CreateVariableNode(String varname)
         {
-            return this._g.CreateVariableNode(varname);
+            return _g.CreateVariableNode(varname);
         }
 
         /// <summary>
@@ -333,7 +333,7 @@ namespace VDS.RDF
         /// <returns>The Node if it exists or null</returns>
         public virtual IBlankNode GetBlankNode(string nodeId)
         {
-            return this._g.GetBlankNode(nodeId);
+            return _g.GetBlankNode(nodeId);
         }
 
         /// <summary>
@@ -344,7 +344,7 @@ namespace VDS.RDF
         /// <returns>The Node if it exists or null</returns>
         public virtual ILiteralNode GetLiteralNode(string literal, string langspec)
         {
-            return this._g.GetLiteralNode(literal, langspec);
+            return _g.GetLiteralNode(literal, langspec);
         }
 
         /// <summary>
@@ -354,7 +354,7 @@ namespace VDS.RDF
         /// <returns>The Node if it exists or null</returns>
         public virtual ILiteralNode GetLiteralNode(string literal)
         {
-            return this._g.GetLiteralNode(literal);
+            return _g.GetLiteralNode(literal);
         }
 
         /// <summary>
@@ -365,7 +365,7 @@ namespace VDS.RDF
         /// <returns>The Node if it exists or null otherwise</returns>
         public virtual ILiteralNode GetLiteralNode(string literal, Uri datatype)
         {
-            return this._g.GetLiteralNode(literal, datatype);
+            return _g.GetLiteralNode(literal, datatype);
         }
 
         /// <summary>
@@ -375,7 +375,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples</returns>
         public virtual IEnumerable<Triple> GetTriples(Uri uri)
         {
-            return this._g.GetTriples(uri);
+            return _g.GetTriples(uri);
         }
 
         /// <summary>
@@ -385,7 +385,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples</returns>
         public virtual IEnumerable<Triple> GetTriples(INode n)
         {
-            return this._g.GetTriples(n);
+            return _g.GetTriples(n);
         }
 
         /// <summary>
@@ -395,7 +395,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples</returns>
         public virtual IEnumerable<Triple> GetTriplesWithObject(Uri u)
         {
-            return this._g.GetTriplesWithObject(u);
+            return _g.GetTriplesWithObject(u);
         }
 
         /// <summary>
@@ -405,7 +405,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithObject(INode n)
         {
-            return this._g.GetTriplesWithObject(n);
+            return _g.GetTriplesWithObject(n);
         }
 
         /// <summary>
@@ -415,7 +415,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithPredicate(INode n)
         {
-            return this._g.GetTriplesWithPredicate(n);
+            return _g.GetTriplesWithPredicate(n);
         }
 
         /// <summary>
@@ -425,7 +425,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples</returns>
         public virtual IEnumerable<Triple> GetTriplesWithPredicate(Uri u)
         {
-            return this._g.GetTriplesWithPredicate(u);
+            return _g.GetTriplesWithPredicate(u);
         }
 
         /// <summary>
@@ -435,7 +435,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples</returns>
         public virtual IEnumerable<Triple> GetTriplesWithSubject(INode n)
         {
-            return this._g.GetTriplesWithSubject(n);
+            return _g.GetTriplesWithSubject(n);
         }
 
         /// <summary>
@@ -445,7 +445,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples</returns>
         public virtual IEnumerable<Triple> GetTriplesWithSubject(Uri u)
         {
-            return this._g.GetTriplesWithSubject(u);
+            return _g.GetTriplesWithSubject(u);
         }
 
         /// <summary>
@@ -456,7 +456,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred)
         {
-            return this._g.GetTriplesWithSubjectPredicate(subj, pred);
+            return _g.GetTriplesWithSubjectPredicate(subj, pred);
         }
 
         /// <summary>
@@ -467,7 +467,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj)
         {
-            return this._g.GetTriplesWithSubjectObject(subj, obj);
+            return _g.GetTriplesWithSubjectObject(subj, obj);
         }
 
         /// <summary>
@@ -478,7 +478,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
         {
-            return this._g.GetTriplesWithPredicateObject(pred, obj);
+            return _g.GetTriplesWithPredicateObject(pred, obj);
         }
 
         /// <summary>
@@ -488,7 +488,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IUriNode GetUriNode(string qname)
         {
-            return this._g.GetUriNode(qname);
+            return _g.GetUriNode(qname);
         }
 
         /// <summary>
@@ -498,7 +498,7 @@ namespace VDS.RDF
         /// <returns>Either the UriNode Or null if no Node with the given Uri exists</returns>
         public virtual IUriNode GetUriNode(Uri uri)
         {
-            return this._g.GetUriNode(uri);
+            return _g.GetUriNode(uri);
         }
 
         /// <summary>
@@ -508,7 +508,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual bool ContainsTriple(Triple t)
         {
-            return this._g.ContainsTriple(t);
+            return _g.ContainsTriple(t);
         }
 
         /// <summary>
@@ -518,7 +518,7 @@ namespace VDS.RDF
         /// <remarks>The Graph on which you invoke this method will preserve its Blank Node IDs while the Blank Nodes from the Graph being merged in will be given new IDs as required in the scope of this Graph.</remarks>
         public virtual void Merge(IGraph g)
         {
-            this._g.Merge(g);
+            _g.Merge(g);
         }
 
         /// <summary>
@@ -536,7 +536,7 @@ namespace VDS.RDF
         /// </remarks>
         public virtual void Merge(IGraph g, bool keepOriginalGraphUri)
         {
-            this._g.Merge(g, keepOriginalGraphUri);
+            _g.Merge(g, keepOriginalGraphUri);
         }
 
         /// <summary>
@@ -557,7 +557,7 @@ namespace VDS.RDF
             if (obj is IGraph)
             {
                 Dictionary<INode, INode> temp;
-                return this.Equals((IGraph)obj, out temp);
+                return Equals((IGraph)obj, out temp);
             }
             else
             {
@@ -613,7 +613,7 @@ namespace VDS.RDF
         /// </remarks>
         public virtual bool Equals(IGraph g, out Dictionary<INode, INode> mapping)
         {
-            return this._g.Equals(g, out mapping);
+            return _g.Equals(g, out mapping);
         }
 
         /// <summary>
@@ -623,7 +623,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual bool IsSubGraphOf(IGraph g)
         {
-            return this._g.IsSubGraphOf(g);
+            return _g.IsSubGraphOf(g);
         }
 
         /// <summary>
@@ -634,7 +634,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual bool IsSubGraphOf(IGraph g, out Dictionary<INode, INode> mapping)
         {
-            return this._g.IsSubGraphOf(g, out mapping);
+            return _g.IsSubGraphOf(g, out mapping);
         }
 
         /// <summary>
@@ -644,7 +644,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual bool HasSubGraph(IGraph g)
         {
-            return this._g.HasSubGraph(g);
+            return _g.HasSubGraph(g);
         }
 
         /// <summary>
@@ -655,7 +655,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual bool HasSubGraph(IGraph g, out Dictionary<INode, INode> mapping)
         {
-            return this._g.HasSubGraph(g, out mapping);
+            return _g.HasSubGraph(g, out mapping);
         }
 
         /// <summary>
@@ -670,7 +670,7 @@ namespace VDS.RDF
         /// </remarks>
         public virtual GraphDiffReport Difference(IGraph g)
         {
-            return this._g.Difference(g);
+            return _g.Difference(g);
         }
 
         /// <summary>
@@ -680,7 +680,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual Uri ResolveQName(string qname)
         {
-            return this._g.ResolveQName(qname);
+            return _g.ResolveQName(qname);
         }
 
         #endregion
@@ -729,7 +729,7 @@ namespace VDS.RDF
         /// <param name="args">Triple Event Arguments</param>
         protected virtual void OnTripleAsserted(Object sender, TripleEventArgs args)
         {
-            this.RaiseTripleAsserted(args);
+            RaiseTripleAsserted(args);
         }
 
         /// <summary>
@@ -738,13 +738,13 @@ namespace VDS.RDF
         /// <param name="args">Triple Event Arguments</param>
         protected void RaiseTripleAsserted(TripleEventArgs args)
         {
-            TripleEventHandler d = this.TripleAsserted;
+            TripleEventHandler d = TripleAsserted;
             args.Graph = this;
             if (d != null)
             {
                 d(this, args);
             }
-            this.RaiseGraphChanged(args);
+            RaiseGraphChanged(args);
         }
 
         /// <summary>
@@ -753,8 +753,8 @@ namespace VDS.RDF
         /// <param name="t">Triple</param>
         protected void RaiseTripleAsserted(Triple t)
         {
-            TripleEventHandler d = this.TripleAsserted;
-            GraphEventHandler e = this.Changed;
+            TripleEventHandler d = TripleAsserted;
+            GraphEventHandler e = Changed;
             if (d != null || e != null)
             {
                 TripleEventArgs args = new TripleEventArgs(t, this);
@@ -770,7 +770,7 @@ namespace VDS.RDF
         /// <param name="args">Triple Event Arguments</param>
         protected virtual void OnTripleRetracted(Object sender, TripleEventArgs args)
         {
-            this.RaiseTripleRetracted(args);
+            RaiseTripleRetracted(args);
         }
 
         /// <summary>
@@ -779,13 +779,13 @@ namespace VDS.RDF
         /// <param name="args"></param>
         protected void RaiseTripleRetracted(TripleEventArgs args)
         {
-            TripleEventHandler d = this.TripleRetracted;
+            TripleEventHandler d = TripleRetracted;
             args.Graph = this;
             if (d != null)
             {
                 d(this, args);
             }
-            this.RaiseGraphChanged(args);
+            RaiseGraphChanged(args);
         }
 
         /// <summary>
@@ -794,8 +794,8 @@ namespace VDS.RDF
         /// <param name="t">Triple</param>
         protected void RaiseTripleRetracted(Triple t)
         {
-            TripleEventHandler d = this.TripleRetracted;
-            GraphEventHandler e = this.Changed;
+            TripleEventHandler d = TripleRetracted;
+            GraphEventHandler e = Changed;
             if (d != null || e != null)
             {
                 TripleEventArgs args = new TripleEventArgs(t, this, false);
@@ -811,7 +811,7 @@ namespace VDS.RDF
         /// <param name="args">Arguments</param>
         protected virtual void OnChanged(Object sender, GraphEventArgs args)
         {
-            this.RaiseGraphChanged(args.TripleEvent);
+            RaiseGraphChanged(args.TripleEvent);
         }
 
         /// <summary>
@@ -820,7 +820,7 @@ namespace VDS.RDF
         /// <param name="args">Triple Event Arguments</param>
         protected void RaiseGraphChanged(TripleEventArgs args)
         {
-            GraphEventHandler d = this.Changed;
+            GraphEventHandler d = Changed;
             if (d != null)
             {
                 d(this, new GraphEventArgs(this, args));
@@ -832,7 +832,7 @@ namespace VDS.RDF
         /// </summary>
         protected void RaiseGraphChanged()
         {
-            GraphEventHandler d = this.Changed;
+            GraphEventHandler d = Changed;
             if (d != null)
             {
                 d(this, new GraphEventArgs(this));
@@ -846,7 +846,7 @@ namespace VDS.RDF
         /// <param name="args">Arguments</param>
         protected virtual void OnClearRequested(Object sender, CancellableGraphEventArgs args)
         {
-            this.RaiseClearRequested(args);
+            RaiseClearRequested(args);
         }
 
         /// <summary>
@@ -855,7 +855,7 @@ namespace VDS.RDF
         /// <returns>True if the operation can continue, false if it should be aborted</returns>
         protected void RaiseClearRequested(CancellableGraphEventArgs args)
         {
-            CancellableGraphEventHandler d = this.ClearRequested;
+            CancellableGraphEventHandler d = ClearRequested;
             if (d != null)
             {
                 d(this, args);
@@ -869,7 +869,7 @@ namespace VDS.RDF
         /// <param name="args">Arguments</param>
         protected virtual void OnCleared(Object sender, GraphEventArgs args)
         {
-            this.RaiseCleared();
+            RaiseCleared();
         }
 
         /// <summary>
@@ -877,7 +877,7 @@ namespace VDS.RDF
         /// </summary>
         protected void RaiseCleared()
         {
-            GraphEventHandler d = this.Cleared;
+            GraphEventHandler d = Cleared;
             if (d != null)
             {
                 d(this, new GraphEventArgs(this));
@@ -891,7 +891,7 @@ namespace VDS.RDF
         /// <param name="args">Arguments</param>
         protected virtual void OnMergeRequested(Object sender, CancellableGraphEventArgs args)
         {
-            this.RaiseMergeRequested(args);
+            RaiseMergeRequested(args);
         }
 
         /// <summary>
@@ -900,7 +900,7 @@ namespace VDS.RDF
         /// <returns>True if the operation can continue, false if it should be aborted</returns>
         protected void RaiseMergeRequested(CancellableGraphEventArgs args)
         {
-            CancellableGraphEventHandler d = this.MergeRequested;
+            CancellableGraphEventHandler d = MergeRequested;
             if (d != null)
             {
                 d(this, args);
@@ -914,7 +914,7 @@ namespace VDS.RDF
         /// <param name="args">Arguments</param>
         protected virtual void OnMerged(Object sender, GraphEventArgs args)
         {
-            this.RaiseMerged();
+            RaiseMerged();
         }
 
         /// <summary>
@@ -922,7 +922,7 @@ namespace VDS.RDF
         /// </summary>
         protected void RaiseMerged()
         {
-            GraphEventHandler d = this.Merged;
+            GraphEventHandler d = Merged;
             if (d != null)
             {
                 d(this, new GraphEventArgs(this));
@@ -935,11 +935,11 @@ namespace VDS.RDF
         protected void AttachEventHandlers()
         {
             // Wire up handlers for all the Graph level events
-            this._g.Cleared += this.GraphClearedHandler;
-            this._g.Changed += this.GraphChangedHandler;
-            this._g.Merged += this.GraphMergedHandler;
-            this._g.TripleAsserted += this.TripleAssertedHandler;
-            this._g.TripleRetracted += this.TripleRetractedHandler;
+            _g.Cleared += GraphClearedHandler;
+            _g.Changed += GraphChangedHandler;
+            _g.Merged += GraphMergedHandler;
+            _g.TripleAsserted += TripleAssertedHandler;
+            _g.TripleRetracted += TripleRetractedHandler;
         }
 
         #endregion
@@ -949,7 +949,7 @@ namespace VDS.RDF
         /// </summary>
         public virtual void Dispose()
         {
-            this._g.Dispose();
+            _g.Dispose();
         }
 
 #if !NETCORE
@@ -963,8 +963,8 @@ namespace VDS.RDF
         /// <param name="context">Streaming Context</param>
         public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("graphType", this._g.GetType().AssemblyQualifiedName);
-            info.AddValue("innerGraph", this._g, typeof(IGraph));
+            info.AddValue("graphType", _g.GetType().AssemblyQualifiedName);
+            info.AddValue("innerGraph", _g, typeof(IGraph));
         }
 
         #endregion
@@ -999,8 +999,8 @@ namespace VDS.RDF
                 {
                     reader.Read();
                     Object temp = graphDeserializer.Deserialize(reader);
-                    this._g.Merge((IGraph)temp);
-                    this.AttachEventHandlers();
+                    _g.Merge((IGraph)temp);
+                    AttachEventHandlers();
                     reader.Read();
                 }
                 else
@@ -1020,10 +1020,10 @@ namespace VDS.RDF
         /// <param name="writer">XML Writer</param>
         public virtual void WriteXml(XmlWriter writer)
         {
-            XmlSerializer graphSerializer = new XmlSerializer(this._g.GetType());
-            writer.WriteAttributeString("graphType", this._g.GetType().AssemblyQualifiedName);
+            XmlSerializer graphSerializer = new XmlSerializer(_g.GetType());
+            writer.WriteAttributeString("graphType", _g.GetType().AssemblyQualifiedName);
             writer.WriteStartElement("innerGraph");
-            graphSerializer.Serialize(writer, this._g);
+            graphSerializer.Serialize(writer, _g);
             writer.WriteEndElement();
         }
 

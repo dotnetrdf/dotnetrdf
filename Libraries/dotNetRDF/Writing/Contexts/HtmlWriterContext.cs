@@ -46,11 +46,11 @@ namespace VDS.RDF.Writing.Contexts
         public HtmlWriterContext(IGraph g, TextWriter writer)
             : base(g, writer) 
         {
-            this._writer = new HtmlTextWriter(writer);
+            _writer = new HtmlTextWriter(writer);
             // Have to remove the Empty Prefix since this is reserved in (X)HTML+RDFa for the (X)HTML namespace
-            this._qnameMapper.RemoveNamespace(String.Empty);
+            _qnameMapper.RemoveNamespace(String.Empty);
 
-            this._uriFormatter = new HtmlFormatter();
+            _uriFormatter = new HtmlFormatter();
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._writer;
+                return _writer;
             }
         }
     }

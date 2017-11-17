@@ -61,7 +61,7 @@ namespace VDS.RDF.Writing
         /// <param name="syntax">Turtle Syntax</param>
         public TurtleWriter(TurtleSyntax syntax)
         {
-            this._syntax = syntax;
+            _syntax = syntax;
         }
 
         /// <summary>
@@ -71,11 +71,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._prettyprint;
+                return _prettyprint;
             }
             set
             {
-                this._prettyprint = value;
+                _prettyprint = value;
             }
         }
 
@@ -87,11 +87,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._allowhispeed;
+                return _allowhispeed;
             }
             set
             {
-                this._allowhispeed = value;
+                _allowhispeed = value;
             }
         }
 
@@ -102,7 +102,7 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return (this._syntax == TurtleSyntax.Original ? typeof(TurtleFormatter) : typeof(TurtleW3CFormatter));
+                return (_syntax == TurtleSyntax.Original ? typeof(TurtleFormatter) : typeof(TurtleW3CFormatter));
             }
         }
 
@@ -115,7 +115,7 @@ namespace VDS.RDF.Writing
         {
             using (var stream = File.Open(filename, FileMode.Create))
             {
-                this.Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
+                Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
             }
         }
 
@@ -126,8 +126,8 @@ namespace VDS.RDF.Writing
         /// <param name="output">Writer to save using</param>
         protected override void SaveInternal(IGraph g, TextWriter output)
         {
-            TurtleWriterContext context = new TurtleWriterContext(g, output, this._prettyprint, this._allowhispeed, this._syntax);
-            this.GenerateOutput(context);
+            TurtleWriterContext context = new TurtleWriterContext(g, output, _prettyprint, _allowhispeed, _syntax);
+            GenerateOutput(context);
         }
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace VDS.RDF.Writing
             // Write Prefixes
             foreach (String prefix in context.Graph.NamespaceMap.Prefixes)
             {
-                if (TurtleSpecsHelper.IsValidQName(prefix + ":", this._syntax))
+                if (TurtleSpecsHelper.IsValidQName(prefix + ":", _syntax))
                 {
                     context.Output.Write("@prefix " + prefix + ": <");
                     String nsUri = context.UriFormatter.FormatUri(context.Graph.NamespaceMap.GetNamespaceUri(prefix));
@@ -165,15 +165,15 @@ namespace VDS.RDF.Writing
             {
                 // High Speed Writing Mode
                 // Writes everything as individual Triples
-                this.RaiseWarning("High Speed Write Mode in use - minimal syntax compressions will be used");
+                RaiseWarning("High Speed Write Mode in use - minimal syntax compressions will be used");
                 context.NodeFormatter = new UncompressedTurtleFormatter();
                 foreach (Triple t in context.Graph.Triples)
                 {
-                    context.Output.Write(this.GenerateNodeOutput(context, t.Subject, TripleSegment.Subject));
+                    context.Output.Write(GenerateNodeOutput(context, t.Subject, TripleSegment.Subject));
                     context.Output.Write(" ");
-                    context.Output.Write(this.GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate));
+                    context.Output.Write(GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate));
                     context.Output.Write(" ");
-                    context.Output.Write(this.GenerateNodeOutput(context, t.Object, TripleSegment.Object));
+                    context.Output.Write(GenerateNodeOutput(context, t.Object, TripleSegment.Object));
                     context.Output.WriteLine(".");
                 }
             }
@@ -199,14 +199,14 @@ namespace VDS.RDF.Writing
                         if (lastSubj != null) context.Output.WriteLine(".");
 
                         // Start a new set of Triples
-                        temp = this.GenerateNodeOutput(context, t.Subject, TripleSegment.Subject);
+                        temp = GenerateNodeOutput(context, t.Subject, TripleSegment.Subject);
                         context.Output.Write(temp);
                         context.Output.Write(" ");
                         subjIndent = temp.Length + 1;
                         lastSubj = t.Subject;
 
                         // Write the first Predicate
-                        temp = this.GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate);
+                        temp = GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate);
                         context.Output.Write(temp);
                         context.Output.Write(" ");
                         predIndent = temp.Length + 1;
@@ -220,7 +220,7 @@ namespace VDS.RDF.Writing
                         if (context.PrettyPrint) context.Output.Write(new String(' ', subjIndent));
 
                         // Write the next Predicate
-                        temp = this.GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate);
+                        temp = GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate);
                         context.Output.Write(temp);
                         context.Output.Write(" ");
                         predIndent = temp.Length + 1;
@@ -235,7 +235,7 @@ namespace VDS.RDF.Writing
                     }
 
                     // Write the Object
-                    context.Output.Write(this.GenerateNodeOutput(context, t.Object, TripleSegment.Object));
+                    context.Output.Write(GenerateNodeOutput(context, t.Object, TripleSegment.Object));
                 }
 
                 // Terminate Triples
@@ -280,7 +280,7 @@ namespace VDS.RDF.Writing
         /// <param name="message">Warning Message</param>
         private void RaiseWarning(String message)
         {
-            RdfWriterWarning d = this.Warning;
+            RdfWriterWarning d = Warning;
             if (d != null)
             {
                 d(message);
@@ -298,7 +298,7 @@ namespace VDS.RDF.Writing
         /// <returns></returns>
         public override string ToString()
         {
-            return "Turtle" + (this._syntax == TurtleSyntax.Original ? "" : " (W3C)");
+            return "Turtle" + (_syntax == TurtleSyntax.Original ? "" : " (W3C)");
         }
     }
 }

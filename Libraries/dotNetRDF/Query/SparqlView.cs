@@ -68,11 +68,11 @@ namespace VDS.RDF.Query
         protected BaseSparqlView(String sparqlQuery, ITripleStore store)
         {
             SparqlQueryParser parser = new SparqlQueryParser();
-            this._q = parser.ParseFromString(sparqlQuery);
-            this._store = store;
+            _q = parser.ParseFromString(sparqlQuery);
+            _store = store;
 
-            this._async = new UpdateViewDelegate(this.UpdateViewInternal);
-            this.Initialise();
+            _async = new UpdateViewDelegate(UpdateViewInternal);
+            Initialise();
         }
 
         /// <summary>
@@ -90,11 +90,11 @@ namespace VDS.RDF.Query
         /// <param name="store">Triple Store to query</param>
         protected BaseSparqlView(SparqlQuery sparqlQuery, ITripleStore store)
         {
-            this._q = sparqlQuery;
-            this._store = store;
+            _q = sparqlQuery;
+            _store = store;
 
-            this._async = new UpdateViewDelegate(this.UpdateViewInternal);
-            this.Initialise();
+            _async = new UpdateViewDelegate(UpdateViewInternal);
+            Initialise();
         }
 
         /// <summary>
@@ -102,33 +102,33 @@ namespace VDS.RDF.Query
         /// </summary>
         private void Initialise()
         {
-            if (this._q.QueryType == SparqlQueryType.Ask)
+            if (_q.QueryType == SparqlQueryType.Ask)
             {
                 throw new RdfQueryException("Cannot create a SPARQL View based on an ASK Query");
             }
 
             // Does this Query operate over specific Graphs?
-            if (this._q.DefaultGraphs.Any() || this._q.NamedGraphs.Any())
+            if (_q.DefaultGraphs.Any() || _q.NamedGraphs.Any())
             {
-                this._graphs = new HashSet<string>();
-                foreach (Uri u in this._q.DefaultGraphs)
+                _graphs = new HashSet<string>();
+                foreach (Uri u in _q.DefaultGraphs)
                 {
-                    this._graphs.Add(u.ToSafeString());
+                    _graphs.Add(u.ToSafeString());
                 }
-                foreach (Uri u in this._q.NamedGraphs)
+                foreach (Uri u in _q.NamedGraphs)
                 {
-                    this._graphs.Add(u.ToSafeString());
+                    _graphs.Add(u.ToSafeString());
                 }
             }
 
             // Attach a Handler to the Store's Graph Added, Removed and Changed events
-            this._store.GraphChanged += this.OnGraphChanged;
-            this._store.GraphAdded += this.OnGraphAdded;
-            this._store.GraphRemoved += this.OnGraphRemoved;
-            this._store.GraphMerged += this.OnGraphMerged;
+            _store.GraphChanged += OnGraphChanged;
+            _store.GraphAdded += OnGraphAdded;
+            _store.GraphRemoved += OnGraphRemoved;
+            _store.GraphMerged += OnGraphMerged;
 
             // Fill the Graph with the results of the Query
-            this.UpdateViewInternal();
+            UpdateViewInternal();
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace VDS.RDF.Query
         /// </summary>
         private void InvalidateView()
         {
-            this._async.BeginInvoke(new AsyncCallback(this.InvalidateViewCompleted), null);
+            _async.BeginInvoke(new AsyncCallback(InvalidateViewCompleted), null);
         }
 
         /// <summary>
@@ -147,19 +147,19 @@ namespace VDS.RDF.Query
         {
             try
             {
-                this._async.EndInvoke(result);
+                _async.EndInvoke(result);
 
                 // If we've been further invalidated then need to re-query
-                if (this._requiresInvalidate)
+                if (_requiresInvalidate)
                 {
-                    this.InvalidateView();
-                    this._requiresInvalidate = false;
+                    InvalidateView();
+                    _requiresInvalidate = false;
                 }
             }
             catch (Exception ex)
             {
                 // Ignore errors
-                this.LastError = new RdfQueryException("Unable to complete update of SPARQL View, see inner exception for details", ex);
+                LastError = new RdfQueryException("Unable to complete update of SPARQL View, see inner exception for details", ex);
             }
         }
 
@@ -170,10 +170,10 @@ namespace VDS.RDF.Query
         /// </summary>
         public void UpdateView()
         {
-            lock (this._lock)
+            lock (_lock)
             {
-                this.UpdateViewInternal();
-                if (this.LastError != null) throw this.LastError;
+                UpdateViewInternal();
+                if (LastError != null) throw LastError;
             }
         }
 
@@ -189,11 +189,11 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._lastError;
+                return _lastError;
             }
             protected set
             {
-                this._lastError = value;
+                _lastError = value;
             }
         }
 
@@ -207,17 +207,17 @@ namespace VDS.RDF.Query
                     // Ignore Changes to self
                     if (ReferenceEquals(g, this)) return;
 
-                    if (this._graphs == null)
+                    if (_graphs == null)
                     {
                         // No specific Graphs so any change causes an invalidation
-                        this.InvalidateView();
+                        InvalidateView();
                     }
                     else
                     {
                         // If specific Graphs only invalidate when those Graphs change
-                        if (this._graphs.Contains(g.BaseUri.ToSafeString()))
+                        if (_graphs.Contains(g.BaseUri.ToSafeString()))
                         {
-                            this.InvalidateView();
+                            InvalidateView();
                         }
                     }
                 }
@@ -234,17 +234,17 @@ namespace VDS.RDF.Query
                     // Ignore merges to self
                     if (ReferenceEquals(g, this)) return;
 
-                    if (this._graphs == null)
+                    if (_graphs == null)
                     {
                         // No specific Graphs so any change causes an invalidation
-                        this.InvalidateView();
+                        InvalidateView();
                     }
                     else
                     {
                         // If specific Graphs only invalidate when those Graphs change
-                        if (this._graphs.Contains(g.BaseUri.ToSafeString()))
+                        if (_graphs.Contains(g.BaseUri.ToSafeString()))
                         {
-                            this.InvalidateView();
+                            InvalidateView();
                         }
                     }
                 }
@@ -261,17 +261,17 @@ namespace VDS.RDF.Query
                     // Ignore Changes to self
                     if (ReferenceEquals(g, this)) return;
 
-                    if (this._graphs == null)
+                    if (_graphs == null)
                     {
                         // No specific Graphs so any change causes an invalidation
-                        this.InvalidateView();
+                        InvalidateView();
                     }
                     else
                     {
                         // If specific Graphs only invalidate when those Graphs change
-                        if (this._graphs.Contains(g.BaseUri.ToSafeString()))
+                        if (_graphs.Contains(g.BaseUri.ToSafeString()))
                         {
-                            this.InvalidateView();
+                            InvalidateView();
                         }
                     }
                 }
@@ -288,17 +288,17 @@ namespace VDS.RDF.Query
                     // Ignore Changes to self
                     if (ReferenceEquals(g, this)) return;
 
-                    if (this._graphs == null)
+                    if (_graphs == null)
                     {
                         // No specific Graphs so any change causes an invalidation
-                        this.InvalidateView();
+                        InvalidateView();
                     }
                     else
                     {
                         // If specific Graphs only invalidate when those Graphs change
-                        if (this._graphs.Contains(g.BaseUri.ToSafeString()))
+                        if (_graphs.Contains(g.BaseUri.ToSafeString()))
                         {
-                            this.InvalidateView();
+                            InvalidateView();
                         }
                     }
                 }
@@ -344,35 +344,35 @@ namespace VDS.RDF.Query
         {
             try
             {
-                Object results = ((IInMemoryQueryableStore)this._store).ExecuteQuery(this._q);
-                if (results is IGraph)
+                var processor = new LeviathanQueryProcessor((IInMemoryQueryableStore)_store);
+                var results = processor.ProcessQuery(_q);
+                if (results is IGraph g)
                 {
                     // Note that we replace the existing triple collection with an entirely new one as otherwise nasty race conditions can happen
                     // This does mean that while the update is occurring the user may be viewing a stale graph
-                    this.DetachEventHandlers(this._triples);
-                    IGraph g = (IGraph)results;
+                    DetachEventHandlers(_triples);
                     TreeIndexedTripleCollection triples = new TreeIndexedTripleCollection();
                     foreach (Triple t in g.Triples)
                     {
                         triples.Add(t.CopyTriple(this));
                     }
-                    this._triples = triples;
-                    this.AttachEventHandlers(this._triples);
+                    _triples = triples;
+                    AttachEventHandlers(_triples);
                 }
                 else
                 {
                     // Note that we replace the existing triple collection with an entirely new one as otherwise nasty race conditions can happen
                     // This does mean that while the update is occurring the user may be viewing a stale graph
-                    this.DetachEventHandlers(this._triples);
-                    this._triples = ((SparqlResultSet)results).ToTripleCollection(this);
-                    this.AttachEventHandlers(this._triples);
+                    DetachEventHandlers(_triples);
+                    _triples = ((SparqlResultSet)results).ToTripleCollection(this);
+                    AttachEventHandlers(_triples);
                 }
-                this.LastError = null;
-                this.RaiseGraphChanged();
+                LastError = null;
+                RaiseGraphChanged();
             }
             catch (RdfQueryException queryEx)
             {
-                this.LastError = new RdfQueryException("Unable to Update a SPARQL View as an error occurred in processing the Query - see Inner Exception for details", queryEx);
+                LastError = new RdfQueryException("Unable to Update a SPARQL View as an error occurred in processing the Query - see Inner Exception for details", queryEx);
             }
         }
     }
@@ -414,29 +414,29 @@ namespace VDS.RDF.Query
         {
             try
             {
-                Object results = ((INativelyQueryableStore)this._store).ExecuteQuery(this._q.ToString());
+                Object results = ((INativelyQueryableStore)_store).ExecuteQuery(_q.ToString());
                 if (results is IGraph)
                 {
-                    this.DetachEventHandlers(this._triples);
+                    DetachEventHandlers(_triples);
                     IGraph g = (IGraph)results;
                     foreach (Triple t in g.Triples)
                     {
-                        this._triples.Add(t.CopyTriple(this));
+                        _triples.Add(t.CopyTriple(this));
                     }
-                    this.AttachEventHandlers(this._triples);
+                    AttachEventHandlers(_triples);
                 }
                 else
                 {
-                    this.DetachEventHandlers(this._triples);
-                    this._triples = ((SparqlResultSet)results).ToTripleCollection(this);
-                    this.AttachEventHandlers(this._triples);
+                    DetachEventHandlers(_triples);
+                    _triples = ((SparqlResultSet)results).ToTripleCollection(this);
+                    AttachEventHandlers(_triples);
                 }
-                this.LastError = null;
-                this.RaiseGraphChanged();
+                LastError = null;
+                RaiseGraphChanged();
             }
             catch (RdfQueryException queryEx)
             {
-                this.LastError = new RdfQueryException("Unable to Update a SPARQL View as an error occurred in processing the Query - see Inner Exception for details", queryEx);
+                LastError = new RdfQueryException("Unable to Update a SPARQL View as an error occurred in processing the Query - see Inner Exception for details", queryEx);
             }
         }
     }

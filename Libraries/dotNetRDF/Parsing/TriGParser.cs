@@ -58,7 +58,7 @@ namespace VDS.RDF.Parsing
         /// <param name="syntax">Syntax</param>
         public TriGParser(TriGSyntax syntax)
         {
-            this._syntax = syntax;
+            _syntax = syntax;
         }
 
         /// <summary>
@@ -68,11 +68,11 @@ namespace VDS.RDF.Parsing
         {
             get
             {
-                return this._tracetokeniser;
+                return _tracetokeniser;
             }
             set
             {
-                this._tracetokeniser = value;
+                _tracetokeniser = value;
             }
         }
 
@@ -83,11 +83,11 @@ namespace VDS.RDF.Parsing
         {
             get
             {
-                return this._syntax;
+                return _syntax;
             }
             set
             {
-                this._syntax = value;
+                _syntax = value;
             }
         }
 
@@ -98,11 +98,11 @@ namespace VDS.RDF.Parsing
         {
             get
             {
-                return this._queueMode;
+                return _queueMode;
             }
             set
             {
-                this._queueMode = value;
+                _queueMode = value;
             }
         }
 
@@ -114,7 +114,7 @@ namespace VDS.RDF.Parsing
         public void Load(ITripleStore store, String filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
-            this.Load(store, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
+            Load(store, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace VDS.RDF.Parsing
         {
             if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
             if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
-            this.Load(new StoreHandler(store), input);
+            Load(new StoreHandler(store), input);
         }
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace VDS.RDF.Parsing
         public void Load(IRdfHandler handler, String filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
-            this.Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
+            Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
         }
 
         /// <summary>
@@ -153,9 +153,9 @@ namespace VDS.RDF.Parsing
             try
             {
                 // Create the Parser Context and Invoke the Parser
-                TriGParserContext context = new TriGParserContext(handler, new TriGTokeniser(input, this._syntax), this._queueMode, false, this._tracetokeniser);
-                context.Syntax = this._syntax;
-                this.Parse(context);
+                TriGParserContext context = new TriGParserContext(handler, new TriGTokeniser(input, _syntax), _queueMode, false, _tracetokeniser);
+                context.Syntax = _syntax;
+                Parse(context);
             }
             catch
             {
@@ -206,7 +206,7 @@ namespace VDS.RDF.Parsing
                         case Token.BASEDIRECTIVE:
                         case Token.PREFIXDIRECTIVE:
                             // Parse a Directive
-                            this.TryParseDirective(context);
+                            TryParseDirective(context);
                             break;
 
                         case Token.QNAME:
@@ -221,7 +221,7 @@ namespace VDS.RDF.Parsing
                                 Uri extBase = context.BaseUri;
                                 INamespaceMapper nsmap = new NamespaceMapper(context.Namespaces);
 
-                                this.TryParseGraph(context);
+                                TryParseGraph(context);
 
                                 // After we parse the Graph restore the state
                                 if (!context.Handler.HandleBaseUri(extBase)) ParserHelper.Stop();
@@ -236,7 +236,7 @@ namespace VDS.RDF.Parsing
                             else
                             {
                                 // With the old syntax declarations are file scoped so no need to worry about graph scoping
-                                this.TryParseGraph(context);
+                                TryParseGraph(context);
                             }
                             break;
 
@@ -266,7 +266,7 @@ namespace VDS.RDF.Parsing
         private void TryParseDirective(TriGParserContext context)
         {
             IToken directive = context.Tokens.Dequeue();
-            this.TryParseDirective(context, directive);
+            TryParseDirective(context, directive);
         }
 
         /// <summary>
@@ -289,7 +289,7 @@ namespace VDS.RDF.Parsing
                     {
                         Uri newBase = new Uri(Tools.ResolveUri(baseUri.Value, context.BaseUri.ToSafeString()));
                         context.BaseUri = newBase;
-                        this.RaiseWarning("The @base directive is not valid in all versions of the TriG specification, your data may not be compatible with some older tools which do not support this version of TriG");
+                        RaiseWarning("The @base directive is not valid in all versions of the TriG specification, your data may not be compatible with some older tools which do not support this version of TriG");
                         if (!context.Handler.HandleBaseUri(newBase)) ParserHelper.Stop();
                     }
                     catch (UriFormatException)
@@ -407,7 +407,7 @@ namespace VDS.RDF.Parsing
                 else
                 {
                     // Parse Graph Contents
-                    this.TryParseTriples(context, graphUri);
+                    TryParseTriples(context, graphUri);
                 }
             }
             else
@@ -464,7 +464,7 @@ namespace VDS.RDF.Parsing
                             subjNode = context.Handler.CreateBlankNode();
 
                             // Do an extra call to TryParsePredicateObjectList to parse the Blank Node Collection
-                            this.TryParsePredicateObjectList(context, graphUri, subjNode);
+                            TryParsePredicateObjectList(context, graphUri, subjNode);
                         }
                         break;
 
@@ -483,7 +483,7 @@ namespace VDS.RDF.Parsing
                         {
                             // Collection
                             subjNode = context.Handler.CreateBlankNode();
-                            this.TryParseCollection(context, graphUri, subjNode);
+                            TryParseCollection(context, graphUri, subjNode);
                         }
                         break;
 
@@ -492,7 +492,7 @@ namespace VDS.RDF.Parsing
                         if (context.Syntax == TriGSyntax.Original) throw ParserHelper.Error("@base/@prefix directives are not permitted to occur inside a Graph in this version of TriG, later versions of TriG support this feature and may be enabled by changing your syntax setting when you create a TriG Parser", subj);
 
                         // Parse the directive then continue
-                        this.TryParseDirective(context, subj);
+                        TryParseDirective(context, subj);
                         continue;
 
                     case Token.EOF:
@@ -504,7 +504,7 @@ namespace VDS.RDF.Parsing
                 }
 
                 // Parse the Predicate Object List
-                this.TryParsePredicateObjectList(context, graphUri, subjNode);
+                TryParsePredicateObjectList(context, graphUri, subjNode);
 
                 // Expect a Dot to Terminate
                 if (context.Tokens.LastTokenType != Token.DOT && context.Tokens.LastTokenType != Token.RIGHTCURLYBRACKET)
@@ -592,7 +592,7 @@ namespace VDS.RDF.Parsing
                 ok = true;
 
                 // Parse the Object List
-                this.TryParseObjectList(context, graphUri, subj, predNode);
+                TryParseObjectList(context, graphUri, subj, predNode);
 
                 // Return if we hit the Dot Token/Right Curly Bracket/Right Square Bracket
                 if (context.Tokens.LastTokenType == Token.DOT ||
@@ -702,7 +702,7 @@ namespace VDS.RDF.Parsing
                             objNode = context.Handler.CreateBlankNode();
 
                             // Do an extra call to TryParsePredicateObjectList to parse the Blank Node Collection
-                            this.TryParsePredicateObjectList(context, graphUri, objNode);
+                            TryParsePredicateObjectList(context, graphUri, objNode);
                         }
                         break;
 
@@ -729,7 +729,7 @@ namespace VDS.RDF.Parsing
                         {
                             // Collection
                             objNode = context.Handler.CreateBlankNode();
-                            this.TryParseCollection(context, graphUri, objNode);
+                            TryParseCollection(context, graphUri, objNode);
                         }
                         break;
 
@@ -830,7 +830,7 @@ namespace VDS.RDF.Parsing
                         else
                         {
                             // Blank Node Collection
-                            this.TryParsePredicateObjectList(context, graphUri, item);
+                            TryParsePredicateObjectList(context, graphUri, item);
                         }
                         break;
 
@@ -847,7 +847,7 @@ namespace VDS.RDF.Parsing
                         {
                             // Collection
                             item = context.Handler.CreateBlankNode();
-                            this.TryParseCollection(context, graphUri, item);
+                            TryParseCollection(context, graphUri, item);
                         }
                         break;
 
@@ -891,7 +891,7 @@ namespace VDS.RDF.Parsing
         /// <param name="message">Warning message</param>
         private void RaiseWarning(String message)
         {
-            StoreReaderWarning d = this.Warning;
+            StoreReaderWarning d = Warning;
             if (d != null)
             {
                 d(message);

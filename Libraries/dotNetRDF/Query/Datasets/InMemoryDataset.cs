@@ -77,11 +77,11 @@ namespace VDS.RDF.Query.Datasets
             : base(unionDefaultGraph)
         {
             if (store == null) throw new ArgumentNullException("store");
-            this._store = store;
+            _store = store;
 
-            if (!this._store.HasGraph(null))
+            if (!_store.HasGraph(null))
             {
-                this._store.Add(new Graph());
+                _store.Add(new Graph());
             }
         }
 
@@ -94,13 +94,13 @@ namespace VDS.RDF.Query.Datasets
             : base(defaultGraphUri)
         {
             if (store == null) throw new ArgumentNullException("store");
-            this._store = store;
+            _store = store;
 
-            if (!this._store.HasGraph(defaultGraphUri))
+            if (!_store.HasGraph(defaultGraphUri))
             {
                 Graph g = new Graph();
                 g.BaseUri = defaultGraphUri;
-                this._store.Add(g);
+                _store.Add(g);
             }
         }
 
@@ -111,7 +111,7 @@ namespace VDS.RDF.Query.Datasets
         {
             get
             {
-                return this._lock;
+                return _lock;
             }
         }
 
@@ -123,7 +123,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="g">Graph</param>
         protected override bool AddGraphInternal(IGraph g)
         {
-            return this._store.Add(g, true);
+            return _store.Add(g, true);
         }
 
         /// <summary>
@@ -134,16 +134,16 @@ namespace VDS.RDF.Query.Datasets
         {
             if (graphUri == null)
             {
-                if (this._store.HasGraph(null))
+                if (_store.HasGraph(null))
                 {
-                    this._store.Graphs[null].Clear();
+                    _store.Graphs[null].Clear();
                     return true;
                 }
                 return false;
             }
             else
             {
-                return this._store.Remove(graphUri);
+                return _store.Remove(graphUri);
             }
         }
 
@@ -154,7 +154,7 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         protected override bool HasGraphInternal(Uri graphUri)
         {
-            return this._store.HasGraph(graphUri);
+            return _store.HasGraph(graphUri);
         }
 
         /// <summary>
@@ -164,7 +164,7 @@ namespace VDS.RDF.Query.Datasets
         {
             get 
             {
-                return this._store.Graphs; 
+                return _store.Graphs; 
             }
         }
 
@@ -175,7 +175,7 @@ namespace VDS.RDF.Query.Datasets
         {
             get 
             {
-                return (from g in this._store.Graphs
+                return (from g in _store.Graphs
                         select g.BaseUri);
             }
         }
@@ -192,7 +192,7 @@ namespace VDS.RDF.Query.Datasets
         /// </remarks>
         protected override IGraph GetGraphInternal(Uri graphUri)
         {
-            return this._store[graphUri];
+            return _store[graphUri];
         }
 
         /// <summary>
@@ -216,7 +216,7 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         protected override bool ContainsTripleInternal(Triple t)
         {
-            return this._store.Contains(t);
+            return _store.Contains(t);
         }
 
         /// <summary>
@@ -225,7 +225,7 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         protected override IEnumerable<Triple> GetAllTriples()
         {
-            return this._store.Triples;
+            return _store.Triples;
         }
 
         /// <summary>
@@ -235,7 +235,7 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         protected override IEnumerable<Triple> GetTriplesWithSubjectInternal(INode subj)
         {
-            return (from g in this.Graphs
+            return (from g in Graphs
                     from t in g.GetTriplesWithSubject(subj)
                     select t);
         }
@@ -247,7 +247,7 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         protected override IEnumerable<Triple> GetTriplesWithPredicateInternal(INode pred)
         {
-            return (from g in this.Graphs
+            return (from g in Graphs
                     from t in g.GetTriplesWithPredicate(pred)
                     select t);
         }
@@ -259,7 +259,7 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         protected override IEnumerable<Triple> GetTriplesWithObjectInternal(INode obj)
         {
-            return (from g in this.Graphs
+            return (from g in Graphs
                     from t in g.GetTriplesWithObject(obj)
                     select t);
         }
@@ -272,7 +272,7 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         protected override IEnumerable<Triple> GetTriplesWithSubjectPredicateInternal(INode subj, INode pred)
         {
-            return (from g in this.Graphs
+            return (from g in Graphs
                     from t in g.GetTriplesWithSubjectPredicate(subj, pred)
                     select t);
         }
@@ -285,7 +285,7 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         protected override IEnumerable<Triple> GetTriplesWithSubjectObjectInternal(INode subj, INode obj)
         {
-            return (from g in this.Graphs
+            return (from g in Graphs
                     from t in g.GetTriplesWithSubjectObject(subj, obj)
                     select t);
         }
@@ -298,7 +298,7 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         protected override IEnumerable<Triple> GetTriplesWithPredicateObjectInternal(INode pred, INode obj)
         {
-            return (from g in this.Graphs
+            return (from g in Graphs
                     from t in g.GetTriplesWithPredicateObject(pred, obj)
                     select t);
         }
@@ -310,9 +310,9 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         protected override void FlushInternal()
         {
-            if (this._store is ITransactionalStore)
+            if (_store is ITransactionalStore)
             {
-                ((ITransactionalStore)this._store).Flush();
+                ((ITransactionalStore)_store).Flush();
             }
         }
     }

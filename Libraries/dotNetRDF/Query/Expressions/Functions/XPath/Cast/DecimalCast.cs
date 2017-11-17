@@ -53,7 +53,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            IValuedNode n = this._expr.Evaluate(context, bindingID);//.CoerceToDecimal();
+            IValuedNode n = _expr.Evaluate(context, bindingID);//.CoerceToDecimal();
 
             if (n == null)
             {
@@ -135,7 +135,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XmlSpecsHelper.XmlSchemaDataTypeDecimal + ">(" + this._expr.ToString() + ")";
+            return "<" + XmlSpecsHelper.XmlSchemaDataTypeDecimal + ">(" + _expr.ToString() + ")";
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new DecimalCast(transformer.Transform(this._expr));
+            return new DecimalCast(transformer.Transform(_expr));
         }
     }
 }

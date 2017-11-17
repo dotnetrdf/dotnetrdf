@@ -59,20 +59,20 @@ namespace VDS.RDF.Update.Commands
         {
             try
             {
-                if (context.Data.HasGraph(this._sourceUri))
+                if (context.Data.HasGraph(_sourceUri))
                 {
                     // Get the Source Graph
-                    IGraph source = context.Data.GetModifiableGraph(this._sourceUri);
+                    IGraph source = context.Data.GetModifiableGraph(_sourceUri);
 
                     // Get the Destination Graph
                     IGraph dest;
-                    if (!context.Data.HasGraph(this._destUri))
+                    if (!context.Data.HasGraph(_destUri))
                     {
                         dest = new Graph();
-                        dest.BaseUri = this._destUri;
+                        dest.BaseUri = _destUri;
                         context.Data.AddGraph(dest);
                     }
-                    dest = context.Data.GetModifiableGraph(this._destUri);
+                    dest = context.Data.GetModifiableGraph(_destUri);
 
                     // Move data from the Source into the Destination
                     dest.Merge(source);
@@ -80,11 +80,11 @@ namespace VDS.RDF.Update.Commands
                 else
                 {
                     // Only show error if not Silent
-                    if (!this._silent)
+                    if (!_silent)
                     {
-                        if (this._sourceUri != null)
+                        if (_sourceUri != null)
                         {
-                            throw new SparqlUpdateException("Cannot ADD from Graph <" + this._sourceUri.AbsoluteUri + "> as it does not exist");
+                            throw new SparqlUpdateException("Cannot ADD from Graph <" + _sourceUri.AbsoluteUri + "> as it does not exist");
                         }
                         else
                         {
@@ -97,7 +97,7 @@ namespace VDS.RDF.Update.Commands
             catch
             {
                 // If not silent throw the exception upwards
-                if (!this._silent) throw;
+                if (!_silent) throw;
             }
         }
 

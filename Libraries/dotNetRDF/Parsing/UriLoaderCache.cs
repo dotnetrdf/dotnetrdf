@@ -65,13 +65,13 @@ namespace VDS.RDF.Parsing
         {
             if (Directory.Exists(dir))
             {
-                this._cacheDir = dir;
+                _cacheDir = dir;
             }
             else
             {
                 throw new DirectoryNotFoundException("Cannot use a non-existent directory as the cache directory");
             }
-            this.Initialise();
+            Initialise();
         }
 
         /// <summary>
@@ -84,11 +84,11 @@ namespace VDS.RDF.Parsing
         {
             get
             {
-                return this._cacheDuration;
+                return _cacheDuration;
             }
             set
             {
-                this._cacheDuration = value;
+                _cacheDuration = value;
             }
         }
 
@@ -99,18 +99,18 @@ namespace VDS.RDF.Parsing
         {
             get
             {
-                return this._cacheDir;
+                return _cacheDir;
             }
             set
             {
-                if (!this._cacheDir.Equals(value))
+                if (!_cacheDir.Equals(value))
                 {
-                    this._cacheDir = value;
+                    _cacheDir = value;
 
                     // Reinitialise to set up the Graphs as required
-                    this._canCacheETag = false;
-                    this._canCacheGraphs = false;
-                    this.Initialise();
+                    _canCacheETag = false;
+                    _canCacheGraphs = false;
+                    Initialise();
                 }
             }
         }
@@ -120,13 +120,13 @@ namespace VDS.RDF.Parsing
         /// </summary>
         private void Initialise()
         {
-            this._graphDir = Path.Combine(this._cacheDir, "dotnetrdf-graphs\\");
-            if (!Directory.Exists(this._graphDir))
+            _graphDir = Path.Combine(_cacheDir, "dotnetrdf-graphs\\");
+            if (!Directory.Exists(_graphDir))
             {
                 try
                 {
-                    Directory.CreateDirectory(this._graphDir);
-                    this._canCacheGraphs = true;
+                    Directory.CreateDirectory(_graphDir);
+                    _canCacheGraphs = true;
                 }
                 catch
                 {
@@ -135,11 +135,11 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                this._canCacheGraphs = true;
+                _canCacheGraphs = true;
             }
 
-            this._etagFile = Path.Combine(this._cacheDir, "dotnetrdf-etags.txt");
-            if (File.Exists(this._etagFile))
+            _etagFile = Path.Combine(_cacheDir, "dotnetrdf-etags.txt");
+            if (File.Exists(_etagFile))
             {
                 try
                 {
@@ -155,9 +155,9 @@ namespace VDS.RDF.Parsing
                                 int i = Int32.Parse(data[0]);
                                 String etag = data[1];
 
-                                if (!this._etags.ContainsKey(i))
+                                if (!_etags.ContainsKey(i))
                                 {
-                                    this._etags.Add(i, etag);
+                                    _etags.Add(i, etag);
                                 }
                             }
                             catch
@@ -166,7 +166,7 @@ namespace VDS.RDF.Parsing
                             }
                         }
                     }
-                    this._canCacheETag = true;
+                    _canCacheETag = true;
                 }
                 catch
                 {
@@ -178,8 +178,8 @@ namespace VDS.RDF.Parsing
                 // Try and create ETags Cache File
                 try
                 {
-                    File.Create(this._etagFile);
-                    this._canCacheETag = true;
+                    File.Create(_etagFile);
+                    _canCacheETag = true;
                 }
                 catch
                 {
@@ -194,16 +194,16 @@ namespace VDS.RDF.Parsing
         public void Clear()
         {
             // Clear the ETag Cache
-            this._etags.Clear();
-            if (this._canCacheETag && File.Exists(this._etagFile))
+            _etags.Clear();
+            if (_canCacheETag && File.Exists(_etagFile))
             {
-                File.WriteAllText(this._etagFile, String.Empty, Encoding.UTF8);
+                File.WriteAllText(_etagFile, String.Empty, Encoding.UTF8);
             }
 
             // Clear the Graphs Cache
-            if (this._canCacheGraphs && Directory.Exists(this._graphDir))
+            if (_canCacheGraphs && Directory.Exists(_graphDir))
             {
-                foreach (String file in Directory.GetFiles(this._graphDir))
+                foreach (String file in Directory.GetFiles(_graphDir))
                 {
                     File.Delete(file);
                 }
@@ -217,10 +217,10 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public bool HasETag(Uri u)
         {
-            if (this._canCacheETag)
+            if (_canCacheETag)
             {
-                if (this._nocache.Contains(u.GetSha256Hash())) return false;
-                return this._etags.ContainsKey(u.GetEnhancedHashCode()) && this.HasLocalCopy(u, false);
+                if (_nocache.Contains(u.GetSha256Hash())) return false;
+                return _etags.ContainsKey(u.GetEnhancedHashCode()) && HasLocalCopy(u, false);
             }
             else
             {
@@ -236,13 +236,13 @@ namespace VDS.RDF.Parsing
         /// <exception cref="KeyNotFoundException">Thrown if there is no ETag for the given URI</exception>
         public String GetETag(Uri u)
         {
-            if (this._canCacheETag)
+            if (_canCacheETag)
             {
-                if (this._nocache.Contains(u.GetSha256Hash())) throw new KeyNotFoundException("No ETag was found for the URI " + u.AbsoluteUri);
+                if (_nocache.Contains(u.GetSha256Hash())) throw new KeyNotFoundException("No ETag was found for the URI " + u.AbsoluteUri);
                 int id = u.GetEnhancedHashCode();
-                if (this._etags.ContainsKey(id))
+                if (_etags.ContainsKey(id))
                 {
-                    return this._etags[id];
+                    return _etags[id];
                 }
                 else
                 {
@@ -263,15 +263,15 @@ namespace VDS.RDF.Parsing
         {
             try
             {
-                if (this._canCacheETag)
+                if (_canCacheETag)
                 {
-                    if (this._etags.ContainsKey(u.GetEnhancedHashCode()))
+                    if (_etags.ContainsKey(u.GetEnhancedHashCode()))
                     {
-                        this._etags.Remove(u.GetEnhancedHashCode());
+                        _etags.Remove(u.GetEnhancedHashCode());
                         // If we did remove an ETag then we need to rewrite our ETag cache file
                         using (StreamWriter writer = new StreamWriter(File.Open(_etagFile, FileMode.Create, FileAccess.Write), Encoding.UTF8))
                         {
-                            foreach (KeyValuePair<int, String> etag in this._etags)
+                            foreach (KeyValuePair<int, String> etag in _etags)
                             {
                                 writer.WriteLine(etag.Key + "\t" + etag.Value);
                             }
@@ -296,7 +296,7 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                String graph = Path.Combine(this._graphDir, u.GetSha256Hash());
+                String graph = Path.Combine(_graphDir, u.GetSha256Hash());
                 if (File.Exists(graph))
                 {
                     File.Delete(graph);
@@ -305,7 +305,7 @@ namespace VDS.RDF.Parsing
             catch
             {
                 // If error add to the list of uncachable URIs
-                this._nocache.Add(u.GetSha256Hash());
+                _nocache.Add(u.GetSha256Hash());
             }
         }
 
@@ -319,11 +319,11 @@ namespace VDS.RDF.Parsing
         {
             try
             {
-                if (this._canCacheGraphs)
+                if (_canCacheGraphs)
                 {
-                    if (this._nocache.Contains(u.GetSha256Hash())) return false;
+                    if (_nocache.Contains(u.GetSha256Hash())) return false;
 
-                    String graph = Path.Combine(this._graphDir, u.GetSha256Hash());
+                    String graph = Path.Combine(_graphDir, u.GetSha256Hash());
                     if (File.Exists(graph))
                     {
                         if (requireFreshness)
@@ -331,7 +331,7 @@ namespace VDS.RDF.Parsing
                             // Check the freshness of the local copy
                             DateTime created = File.GetCreationTime(graph);
                             TimeSpan freshness = DateTime.Now - created;
-                            if (freshness > this._cacheDuration)
+                            if (freshness > _cacheDuration)
                             {
                                 // Local copy has expired
                                 File.Delete(graph);
@@ -374,11 +374,11 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public String GetLocalCopy(Uri u)
         {
-            if (this._canCacheGraphs)
+            if (_canCacheGraphs)
             {
-                if (this._nocache.Contains(u.GetSha256Hash())) return null;
+                if (_nocache.Contains(u.GetSha256Hash())) return null;
 
-                String graph = Path.Combine(this._graphDir, u.GetSha256Hash());
+                String graph = Path.Combine(_graphDir, u.GetSha256Hash());
                 if (File.Exists(graph))
                 {
                     return graph;
@@ -402,16 +402,16 @@ namespace VDS.RDF.Parsing
                 bool cacheTwice = !requestUri.AbsoluteUri.Equals(responseUri.AbsoluteUri, StringComparison.OrdinalIgnoreCase);
 
                 // Cache the ETag if present
-                if (this._canCacheETag && etag != null && !etag.Equals(String.Empty))
+                if (_canCacheETag && etag != null && !etag.Equals(String.Empty))
                 {
                     int id = requestUri.GetEnhancedHashCode();
                     bool requireAdd = false;
-                    if (this._etags.ContainsKey(id))
+                    if (_etags.ContainsKey(id))
                     {
-                        if (!this._etags[id].Equals(etag))
+                        if (!_etags[id].Equals(etag))
                         {
                             // If the ETag has changed remove it and then re-add it
-                            this.RemoveETag(requestUri);
+                            RemoveETag(requestUri);
                             requireAdd = true;
                         }
                     }
@@ -423,8 +423,8 @@ namespace VDS.RDF.Parsing
                     if (requireAdd)
                     {
                         // Add a New ETag
-                        this._etags.Add(id, etag);
-                        using (StreamWriter writer = new StreamWriter(File.Open(this._etagFile, FileMode.Append, FileAccess.Write), Encoding.UTF8))
+                        _etags.Add(id, etag);
+                        using (StreamWriter writer = new StreamWriter(File.Open(_etagFile, FileMode.Append, FileAccess.Write), Encoding.UTF8))
                         {
                             writer.WriteLine(id + "\t" + etag);
                             writer.Close();
@@ -436,12 +436,12 @@ namespace VDS.RDF.Parsing
                     {
                         id = responseUri.GetEnhancedHashCode();
                         requireAdd = false;
-                        if (this._etags.ContainsKey(id))
+                        if (_etags.ContainsKey(id))
                         {
-                            if (!this._etags[id].Equals(etag))
+                            if (!_etags[id].Equals(etag))
                             {
                                 // If the ETag has changed remove it and then re-add it
-                                this.RemoveETag(responseUri);
+                                RemoveETag(responseUri);
                                 requireAdd = true;
                             }
                         }
@@ -462,14 +462,14 @@ namespace VDS.RDF.Parsing
                 }
 
                 // Then if we are caching Graphs return WriteThroughHandlers to do the caching for us
-                if (this._canCacheGraphs)
+                if (_canCacheGraphs)
                 {
-                    String graph = Path.Combine(this._graphDir, requestUri.GetSha256Hash());
+                    String graph = Path.Combine(_graphDir, requestUri.GetSha256Hash());
                     handler = new WriteThroughHandler(_formatterType, new StreamWriter( File.Open(graph, FileMode.Append)));
 
                     if (cacheTwice)
                     {
-                        graph = Path.Combine(this._graphDir, responseUri.GetSha256Hash());
+                        graph = Path.Combine(_graphDir, responseUri.GetSha256Hash());
                         handler = new MultiHandler(new IRdfHandler[] { handler, new WriteThroughHandler(_formatterType, new StreamWriter(File.Open(graph, FileMode.Append, FileAccess.Write)), true) });
                     }
                 }

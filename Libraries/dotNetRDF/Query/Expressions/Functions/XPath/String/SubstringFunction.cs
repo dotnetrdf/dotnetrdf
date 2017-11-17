@@ -56,9 +56,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="lengthExpr">Length</param>
         public SubstringFunction(ISparqlExpression stringExpr, ISparqlExpression startExpr, ISparqlExpression lengthExpr)
         {
-            this._expr = stringExpr;
-            this._start = startExpr;
-            this._length = lengthExpr;
+            _expr = stringExpr;
+            _start = startExpr;
+            _length = lengthExpr;
         }
 
         /// <summary>
@@ -69,12 +69,12 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            ILiteralNode input = (ILiteralNode)this.CheckArgument(this._expr, context, bindingID);
-            IValuedNode start = this.CheckArgument(this._start, context, bindingID, XPathFunctionFactory.AcceptNumericArguments);
+            ILiteralNode input = (ILiteralNode)CheckArgument(_expr, context, bindingID);
+            IValuedNode start = CheckArgument(_start, context, bindingID, XPathFunctionFactory.AcceptNumericArguments);
 
-            if (this._length != null)
+            if (_length != null)
             {
-                IValuedNode length = this.CheckArgument(this._length, context, bindingID, XPathFunctionFactory.AcceptNumericArguments);
+                IValuedNode length = CheckArgument(_length, context, bindingID, XPathFunctionFactory.AcceptNumericArguments);
 
                 if (input.Value.Equals(string.Empty)) return new StringNode(null, string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
 
@@ -119,7 +119,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
 
         private IValuedNode CheckArgument(ISparqlExpression expr, SparqlEvaluationContext context, int bindingID)
         {
-            return this.CheckArgument(expr, context, bindingID, XPathFunctionFactory.AcceptStringArguments);
+            return CheckArgument(expr, context, bindingID, XPathFunctionFactory.AcceptStringArguments);
         }
 
         private IValuedNode CheckArgument(ISparqlExpression expr, SparqlEvaluationContext context, int bindingID, Func<Uri, bool> argumentTypeValidator)
@@ -170,13 +170,13 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             get
             {
-                if (this._length != null)
+                if (_length != null)
                 {
-                    return this._expr.Variables.Concat(this._start.Variables).Concat(this._length.Variables);
+                    return _expr.Variables.Concat(_start.Variables).Concat(_length.Variables);
                 }
                 else
                 {
-                    return this._expr.Variables.Concat(this._start.Variables);
+                    return _expr.Variables.Concat(_start.Variables);
                 }
             }
         }
@@ -187,13 +187,13 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public override string ToString()
         {
-            if (this._length != null)
+            if (_length != null)
             {
-                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring + ">(" + this._expr.ToString() + "," + this._start.ToString() + "," + this._length.ToString() + ")";
+                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring + ">(" + _expr.ToString() + "," + _start.ToString() + "," + _length.ToString() + ")";
             }
             else
             {
-                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring + ">(" + this._expr.ToString() + "," + this._start.ToString() + ")";
+                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring + ">(" + _expr.ToString() + "," + _start.ToString() + ")";
             }
         }
 
@@ -226,13 +226,13 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             get
             {
-                if (this._length != null)
+                if (_length != null)
                 {
-                    return new ISparqlExpression[] { this._expr, this._start, this._length };
+                    return new ISparqlExpression[] { _expr, _start, _length };
                 }
                 else
                 {
-                    return new ISparqlExpression[] { this._expr, this._start };
+                    return new ISparqlExpression[] { _expr, _start };
                 }
             }
         }
@@ -244,7 +244,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             get
             {
-                return this._expr.CanParallelise && this._start.CanParallelise && (this._length == null || this._length.CanParallelise);
+                return _expr.CanParallelise && _start.CanParallelise && (_length == null || _length.CanParallelise);
             }
         }
 
@@ -255,13 +255,13 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            if (this._length != null)
+            if (_length != null)
             {
-                return new SubstringFunction(transformer.Transform(this._expr), transformer.Transform(this._start), transformer.Transform(this._length));
+                return new SubstringFunction(transformer.Transform(_expr), transformer.Transform(_start), transformer.Transform(_length));
             }
             else
             {
-                return new SubstringFunction(transformer.Transform(this._expr), transformer.Transform(this._start));
+                return new SubstringFunction(transformer.Transform(_expr), transformer.Transform(_start));
             }
         }
     }

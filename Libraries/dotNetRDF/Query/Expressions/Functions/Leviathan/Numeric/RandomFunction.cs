@@ -53,7 +53,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         public RandomFunction(ISparqlExpression max)
             : base(new ConstantTerm(new DoubleNode(null, 0)), max)
         {
-            this._args = 1;
+            _args = 1;
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         public RandomFunction(ISparqlExpression min, ISparqlExpression max)
             : base(min, max)
         {
-            this._args = 2;
+            _args = 2;
         }
 
         /// <summary>
@@ -75,9 +75,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            IValuedNode min = this._leftExpr.Evaluate(context, bindingID);
+            IValuedNode min = _leftExpr.Evaluate(context, bindingID);
             if (min == null) throw new RdfQueryException("Cannot randomize with a null minimum");
-            IValuedNode max = this._rightExpr.Evaluate(context, bindingID);
+            IValuedNode max = _rightExpr.Evaluate(context, bindingID);
             if (max == null) throw new RdfQueryException("Cannot randomize with a null maximum");
 
             if (min.NumericType == SparqlNumericType.NaN || max.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot randomize when one/both arguments are non-numeric");
@@ -87,7 +87,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
 
             if (x > y) throw new RdfQueryException("Cannot generate a random number in the given range since the minumum is greater than the maximum");
             double range = y - x;
-            double rnd = this._rnd.NextDouble() * range;
+            double rnd = _rnd.NextDouble() * range;
             rnd += x;
             return new DoubleNode(null, rnd);
         }
@@ -104,15 +104,15 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             output.Append(LeviathanFunctionFactory.LeviathanFunctionsNamespace);
             output.Append(LeviathanFunctionFactory.Random);
             output.Append(">(");
-            switch (this._args)
+            switch (_args)
             {
                 case 1:
-                    output.Append(this._rightExpr.ToString());
+                    output.Append(_rightExpr.ToString());
                     break;
                 case 2:
-                    output.Append(this._leftExpr.ToString());
+                    output.Append(_leftExpr.ToString());
                     output.Append(',');
-                    output.Append(this._rightExpr.ToString());
+                    output.Append(_rightExpr.ToString());
                     break;
             }
             output.Append(')');
@@ -148,7 +148,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new RandomFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
+            return new RandomFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
         }
     }
 }

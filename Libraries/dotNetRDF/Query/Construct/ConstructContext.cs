@@ -58,10 +58,10 @@ namespace VDS.RDF.Query.Construct
         /// </remarks>
         public ConstructContext(IGraph g, ISet s, bool preserveBNodes)
         {
-            this._g = g;
-            this._factory = (this._g != null ? (INodeFactory)this._g : _globalFactory.Value);
-            this._s = s;
-            this._preserveBNodes = preserveBNodes;
+            _g = g;
+            _factory = (_g != null ? (INodeFactory)_g : _globalFactory.Value);
+            _s = s;
+            _preserveBNodes = preserveBNodes;
         }
 
         /// <summary>
@@ -77,9 +77,9 @@ namespace VDS.RDF.Query.Construct
         /// </remarks>
         public ConstructContext(INodeFactory factory, ISet s, bool preserveBNodes)
         {
-            this._factory = (factory != null ? factory : _globalFactory.Value);
-            this._s = s;
-            this._preserveBNodes = preserveBNodes;
+            _factory = (factory != null ? factory : _globalFactory.Value);
+            _s = s;
+            _preserveBNodes = preserveBNodes;
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace VDS.RDF.Query.Construct
         {
             get
             {
-                return this._s;
+                return _s;
             }
         }
 
@@ -100,7 +100,7 @@ namespace VDS.RDF.Query.Construct
         {
             get
             {
-                return this._g;
+                return _g;
             }
         }
 
@@ -108,7 +108,7 @@ namespace VDS.RDF.Query.Construct
         {
             get
             {
-                return this._factory;
+                return _factory;
             }
         }
 
@@ -119,7 +119,7 @@ namespace VDS.RDF.Query.Construct
         {
             get
             {
-                return this._preserveBNodes;
+                return _preserveBNodes;
             }
         }
 
@@ -135,28 +135,28 @@ namespace VDS.RDF.Query.Construct
         /// </remarks>
         public INode GetBlankNode(String id)
         {
-            if (this._bnodeMap == null) this._bnodeMap = new Dictionary<string, INode>();
+            if (_bnodeMap == null) _bnodeMap = new Dictionary<string, INode>();
 
-            if (this._bnodeMap.ContainsKey(id)) return this._bnodeMap[id];
+            if (_bnodeMap.ContainsKey(id)) return _bnodeMap[id];
 
             INode temp;
-            if (this._g != null)
+            if (_g != null)
             {
-                temp = this._g.CreateBlankNode();
+                temp = _g.CreateBlankNode();
             }
-            else if (this._factory != null)
+            else if (_factory != null)
             {
-                temp = this._factory.CreateBlankNode();
+                temp = _factory.CreateBlankNode();
             }
-            else if (this._s != null)
+            else if (_s != null)
             {
-                temp = new BlankNode(this._g, id.Substring(2) + this._s.ID);
+                temp = new BlankNode(_g, id.Substring(2) + _s.ID);
             }
             else
             {
-                temp = new BlankNode(this._g, id.Substring(2));
+                temp = new BlankNode(_g, id.Substring(2));
             }
-            this._bnodeMap.Add(id, temp);
+            _bnodeMap.Add(id, temp);
             return temp;
         }
 
@@ -172,52 +172,52 @@ namespace VDS.RDF.Query.Construct
         /// </remarks>
         public INode GetNode(INode n)
         {
-            if (this._nodeMap == null) this._nodeMap = new MultiDictionary<INode,INode>(new FastVirtualNodeComparer());
+            if (_nodeMap == null) _nodeMap = new MultiDictionary<INode,INode>(new FastVirtualNodeComparer());
 
-            if (this._nodeMap.ContainsKey(n)) return this._nodeMap[n];
+            if (_nodeMap.ContainsKey(n)) return _nodeMap[n];
 
             INode temp;
             switch (n.NodeType)
             {
                 case NodeType.Blank:
-                    temp = this.GetBlankNode(((IBlankNode)n).InternalID);
+                    temp = GetBlankNode(((IBlankNode)n).InternalID);
                     break;
 
                 case NodeType.Variable:
                     IVariableNode v = (IVariableNode)n;
-                    temp = this._factory.CreateVariableNode(v.VariableName);
+                    temp = _factory.CreateVariableNode(v.VariableName);
                     break;
 
                 case NodeType.GraphLiteral:
                     IGraphLiteralNode g = (IGraphLiteralNode)n;
-                    temp = this._factory.CreateGraphLiteralNode(g.SubGraph);
+                    temp = _factory.CreateGraphLiteralNode(g.SubGraph);
                     break;
 
                 case NodeType.Uri:
                     IUriNode u = (IUriNode)n;
-                    temp = this._factory.CreateUriNode(u.Uri);
+                    temp = _factory.CreateUriNode(u.Uri);
                     break;
 
                 case NodeType.Literal:
                     ILiteralNode l = (ILiteralNode)n;
                     if (l.DataType != null)
                     {
-                        temp = this._factory.CreateLiteralNode(l.Value, l.DataType);
+                        temp = _factory.CreateLiteralNode(l.Value, l.DataType);
                     } 
                     else if (!l.Language.Equals(String.Empty))
                     {
-                        temp = this._factory.CreateLiteralNode(l.Value, l.Language);
+                        temp = _factory.CreateLiteralNode(l.Value, l.Language);
                     } 
                     else
                     {
-                        temp = this._factory.CreateLiteralNode(l.Value);
+                        temp = _factory.CreateLiteralNode(l.Value);
                     }
                     break;
                 
                 default:
                     throw new RdfQueryException("Cannot construct unknown Node Types");
             }
-            this._nodeMap.Add(n, temp);
+            _nodeMap.Add(n, temp);
             return temp;
         }
     }

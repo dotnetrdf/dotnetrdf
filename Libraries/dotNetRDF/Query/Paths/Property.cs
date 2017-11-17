@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.Paths
         /// <param name="predicate">Predicate</param>
         public Property(INode predicate)
         {
-            this._predicate = predicate;
+            _predicate = predicate;
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Paths
         {
             get
             {
-                return this._predicate;
+                return _predicate;
             }
         }
 
@@ -89,12 +89,12 @@ namespace VDS.RDF.Query.Paths
                             if (context.IsReversed)
                             {
                                 // If the Path is currently reversed then we'll look at triples with the given Predicate-Object pair
-                                ts = context.SparqlContext.Data.GetTriplesWithPredicateObject(this._predicate, n);
+                                ts = context.SparqlContext.Data.GetTriplesWithPredicateObject(_predicate, n);
                             }
                             else
                             {
                                 // For normal forward paths we'll look at triples with the given Subject-Predicate pair
-                                ts = context.SparqlContext.Data.GetTriplesWithSubjectPredicate(n, this._predicate);
+                                ts = context.SparqlContext.Data.GetTriplesWithSubjectPredicate(n, _predicate);
                             }
 
                             // Bind path as appropriate
@@ -116,7 +116,7 @@ namespace VDS.RDF.Query.Paths
                     else
                     {
                         // Path starts from an as yet unbound Variable
-                        ts = context.SparqlContext.Data.GetTriplesWithPredicate(this._predicate);
+                        ts = context.SparqlContext.Data.GetTriplesWithPredicate(_predicate);
 
                         // Bind paths as appropriate
                         foreach (Triple t in ts)
@@ -141,12 +141,12 @@ namespace VDS.RDF.Query.Paths
                     if (context.IsReversed)
                     {
                         // If the Path is currently reversed then we'll look at triples with the given Predicate-Object pair
-                        ts = context.SparqlContext.Data.GetTriplesWithPredicateObject(this._predicate, fixedSubj);
+                        ts = context.SparqlContext.Data.GetTriplesWithPredicateObject(_predicate, fixedSubj);
                     }
                     else
                     {
                         // For normal forward paths we'll look at triples with the given Subject-Predicate pair
-                        ts = context.SparqlContext.Data.GetTriplesWithSubjectPredicate(fixedSubj, this._predicate);
+                        ts = context.SparqlContext.Data.GetTriplesWithSubjectPredicate(fixedSubj, _predicate);
                     }
 
                     // Map each Triple as a Path
@@ -174,7 +174,7 @@ namespace VDS.RDF.Query.Paths
                 if (context.PermitsNewPaths)
                 {
                     // Introduce new paths based on the predicate at this stage
-                    ts = context.SparqlContext.Data.GetTriplesWithPredicate(this._predicate);
+                    ts = context.SparqlContext.Data.GetTriplesWithPredicate(_predicate);
                     foreach (Triple t in ts)
                     {
                         PotentialPath p;
@@ -205,11 +205,11 @@ namespace VDS.RDF.Query.Paths
 
                     if (context.IsReversed)
                     {
-                        ts = context.SparqlContext.Data.GetTriplesWithPredicateObject(this._predicate, p.Current);
+                        ts = context.SparqlContext.Data.GetTriplesWithPredicateObject(_predicate, p.Current);
                     }
                     else
                     {
-                        ts = context.SparqlContext.Data.GetTriplesWithSubjectPredicate(p.Current, this._predicate);
+                        ts = context.SparqlContext.Data.GetTriplesWithSubjectPredicate(p.Current, _predicate);
                     }
 
                     // int c = 0;
@@ -306,10 +306,10 @@ namespace VDS.RDF.Query.Paths
         {
             StringBuilder output = new StringBuilder();
 
-            switch (this._predicate.NodeType)
+            switch (_predicate.NodeType)
             {
                 case NodeType.Literal:
-                    ILiteralNode lit = (ILiteralNode)this._predicate;
+                    ILiteralNode lit = (ILiteralNode)_predicate;
                     bool longlit = (lit.Value.Contains('\n') || lit.Value.Contains('\r') || lit.Value.Contains('"'));
 
                     if (longlit)
@@ -347,14 +347,14 @@ namespace VDS.RDF.Query.Paths
                     break;
 
                 case NodeType.Uri:
-                    IUriNode uri = (IUriNode)this._predicate;
+                    IUriNode uri = (IUriNode)_predicate;
                     output.Append('<');
-                    output.Append(this._predicate.ToString());
+                    output.Append(_predicate.ToString());
                     output.Append('>');
                     break;
 
                 default:
-                    output.Append(this._predicate.ToString());
+                    output.Append(_predicate.ToString());
                     break;
             }
 

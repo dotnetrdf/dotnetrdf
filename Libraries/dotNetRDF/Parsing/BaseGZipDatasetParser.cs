@@ -52,8 +52,8 @@ namespace VDS.RDF.Parsing
         public BaseGZipDatasetParser(IStoreReader parser)
         {
             if (parser == null) throw new ArgumentNullException("parser");
-            this._parser = parser;
-            this._parser.Warning += this.RaiseWarning;
+            _parser = parser;
+            _parser.Warning += RaiseWarning;
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace VDS.RDF.Parsing
         public void Load(ITripleStore store, String filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
-            this.Load(store, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
+            Load(store, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace VDS.RDF.Parsing
         {
             if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
             if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
-            this.Load(new StoreHandler(store), input);
+            Load(new StoreHandler(store), input);
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace VDS.RDF.Parsing
         public void Load(IRdfHandler handler, String filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
-            this.Load(handler, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
+            Load(handler, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
         }
 
         /// <summary>
@@ -105,12 +105,12 @@ namespace VDS.RDF.Parsing
                 StreamReader reader = (StreamReader)input;
                 if (reader.BaseStream is GZipStream)
                 {
-                    this._parser.Load(handler, input);
+                    _parser.Load(handler, input);
                 }
                 else
                 {
                     // Force the inner stream to be GZipped
-                    this._parser.Load(handler, new StreamReader(new GZipStream(reader.BaseStream, CompressionMode.Decompress)));
+                    _parser.Load(handler, new StreamReader(new GZipStream(reader.BaseStream, CompressionMode.Decompress)));
                 }
             }
             else
@@ -130,7 +130,7 @@ namespace VDS.RDF.Parsing
         /// <param name="message">Warning Message</param>
         private void RaiseWarning(String message)
         {
-            StoreReaderWarning d = this.Warning;
+            StoreReaderWarning d = Warning;
             if (d != null) d(message);
         }
 
@@ -140,7 +140,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public override string ToString()
         {
-            return "GZipped " + this._parser.ToString();
+            return "GZipped " + _parser.ToString();
         }
     }
 

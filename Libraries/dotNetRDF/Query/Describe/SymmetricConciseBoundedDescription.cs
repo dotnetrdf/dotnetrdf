@@ -65,7 +65,7 @@ namespace VDS.RDF.Query.Describe
                     {
                         if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Object);
                     }
-                    if (!handler.HandleTriple(this.RewriteDescribeBNodes(t, bnodeMapping, handler))) ParserHelper.Stop();
+                    if (!handler.HandleTriple(RewriteDescribeBNodes(t, bnodeMapping, handler))) ParserHelper.Stop();
                 }
                 // Get Triples where the Node is the Object
                 foreach (Triple t in context.Data.GetTriplesWithObject(n).ToList())
@@ -74,7 +74,7 @@ namespace VDS.RDF.Query.Describe
                     {
                         if (!expandedBNodes.Contains(t.Subject)) bnodes.Enqueue(t.Subject);
                     }
-                    if (!handler.HandleTriple(this.RewriteDescribeBNodes(t, bnodeMapping, handler))) ParserHelper.Stop();
+                    if (!handler.HandleTriple(RewriteDescribeBNodes(t, bnodeMapping, handler))) ParserHelper.Stop();
                 }
 
                 // Compute the Blank Node Closure for this Subject
@@ -90,7 +90,7 @@ namespace VDS.RDF.Query.Describe
                         {
                             if (!expandedBNodes.Contains(t2.Object)) bnodes.Enqueue(t2.Object);
                         }
-                        if (!handler.HandleTriple(this.RewriteDescribeBNodes(t2, bnodeMapping, handler))) ParserHelper.Stop();
+                        if (!handler.HandleTriple(RewriteDescribeBNodes(t2, bnodeMapping, handler))) ParserHelper.Stop();
                     }
                     foreach (Triple t2 in context.Data.GetTriplesWithObject(bsubj).ToList())
                     {
@@ -98,7 +98,7 @@ namespace VDS.RDF.Query.Describe
                         {
                             if (!expandedBNodes.Contains(t2.Subject)) bnodes.Enqueue(t2.Subject);
                         }
-                        if (!handler.HandleTriple(this.RewriteDescribeBNodes(t2, bnodeMapping, handler))) ParserHelper.Stop();
+                        if (!handler.HandleTriple(RewriteDescribeBNodes(t2, bnodeMapping, handler))) ParserHelper.Stop();
                     }
                 }
             }

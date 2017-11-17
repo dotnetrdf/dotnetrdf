@@ -47,10 +47,10 @@ namespace VDS.RDF.Query.Paths
         /// <param name="end">Object that is the end of the Path</param>
         public PathTransformContext(PatternItem start, PatternItem end)
         {
-            this._start = start;
-            this._currSubj = start;
-            this._end = end;
-            this._currObj = end;
+            _start = start;
+            _currSubj = start;
+            _end = end;
+            _currObj = end;
         }
 
         /// <summary>
@@ -59,11 +59,11 @@ namespace VDS.RDF.Query.Paths
         /// <param name="context">Context</param>
         public PathTransformContext(PathTransformContext context)
         {
-            this._start = context._start;
-            this._end = context._end;
-            this._currSubj = context._currSubj;
-            this._currObj = context._currObj;
-            this._nextID = context._nextID;
+            _start = context._start;
+            _end = context._end;
+            _currSubj = context._currSubj;
+            _currObj = context._currObj;
+            _nextID = context._nextID;
         }
 
         /// <summary>
@@ -72,9 +72,9 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public ISparqlAlgebra ToAlgebra()
         {
-            if (this._patterns.Count > 0)
+            if (_patterns.Count > 0)
             {
-                return new Bgp(this._patterns);
+                return new Bgp(_patterns);
             }
             else
             {
@@ -88,8 +88,8 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public BlankNodePattern GetNextTemporaryVariable()
         {
-            this._nextID++;
-            return new BlankNodePattern("sparql-path-autos-" + this._nextID);
+            _nextID++;
+            return new BlankNodePattern("sparql-path-autos-" + _nextID);
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace VDS.RDF.Query.Paths
         /// <param name="p">Triple Pattern</param>
         public void AddTriplePattern(ITriplePattern p)
         {
-            this._patterns.Add(p);
+            _patterns.Add(p);
         }
 
         /// <summary>
@@ -108,11 +108,11 @@ namespace VDS.RDF.Query.Paths
         {
             get
             {
-                return this._nextID;
+                return _nextID;
             }
             set
             {
-                this._nextID = value;
+                _nextID = value;
             }
         }
 
@@ -123,11 +123,11 @@ namespace VDS.RDF.Query.Paths
         {
             get
             {
-                return this._currSubj;
+                return _currSubj;
             }
             set
             {
-                this._currSubj = value;
+                _currSubj = value;
             }
         }
 
@@ -138,11 +138,11 @@ namespace VDS.RDF.Query.Paths
         {
             get
             {
-                return this._currObj;
+                return _currObj;
             }
             set
             {
-                this._currObj = value;
+                _currObj = value;
             }
         }
 
@@ -153,11 +153,11 @@ namespace VDS.RDF.Query.Paths
         {
             get
             {
-                return this._end;
+                return _end;
             }
             set
             {
-                this._end = value;
+                _end = value;
             }
         }
 
@@ -166,7 +166,7 @@ namespace VDS.RDF.Query.Paths
         /// </summary>
         public void ResetObject()
         {
-            this._currObj = this._end;
+            _currObj = _end;
         }
 
         /// <summary>
@@ -176,11 +176,11 @@ namespace VDS.RDF.Query.Paths
         {
             get
             {
-                return this._top;
+                return _top;
             }
             set
             {
-                this._top = value;
+                _top = value;
             }
         }
 

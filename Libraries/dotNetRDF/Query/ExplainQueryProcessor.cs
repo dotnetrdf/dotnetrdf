@@ -220,8 +220,8 @@ namespace VDS.RDF.Query
         private ExplainQueryProcessor(ExplainDataset dataset)
             : base(dataset)
         {
-            this._depthCounter = new ThreadIsolatedValue<int>(() => 0);
-            this._startTimes = new ThreadIsolatedReference<Stack<DateTime>>(() => new Stack<DateTime>());
+            _depthCounter = new ThreadIsolatedValue<int>(() => 0);
+            _startTimes = new ThreadIsolatedReference<Stack<DateTime>>(() => new Stack<DateTime>());
             dataset.Processor = this;
         }
 
@@ -233,7 +233,7 @@ namespace VDS.RDF.Query
         public ExplainQueryProcessor(ISparqlDataset dataset, ExplanationLevel level)
             : this(dataset)
         {
-            this._level = level;
+            _level = level;
         }
 
         /// <summary>
@@ -256,8 +256,8 @@ namespace VDS.RDF.Query
         /// </summary>
         public ExplanationLevel ExplanationLevel
         {
-            get { return this._level; }
-            set { this._level = value; }
+            get { return _level; }
+            set { _level = value; }
         }
 
         /// <summary>
@@ -267,7 +267,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         internal bool HasFlag(ExplanationLevel flag)
         {
-            return ((this._level & flag) == flag);
+            return ((_level & flag) == flag);
         }
 
         /// <summary>
@@ -279,15 +279,15 @@ namespace VDS.RDF.Query
         {
             if (algebra is IBgp)
             {
-                this.PrintBgpAnalysis((IBgp) algebra);
+                PrintBgpAnalysis((IBgp) algebra);
             }
             else if (algebra is IAbstractJoin)
             {
-                this.PrintJoinAnalysis((IAbstractJoin) algebra);
+                PrintJoinAnalysis((IAbstractJoin) algebra);
             }
             else if (algebra is Algebra.Graph)
             {
-                this.PrintGraphAnalysis((Algebra.Graph) algebra, context);
+                PrintGraphAnalysis((Algebra.Graph) algebra, context);
             }
         }
 
@@ -297,12 +297,12 @@ namespace VDS.RDF.Query
         /// <param name="bgp">Analysis</param>
         private void PrintBgpAnalysis(IBgp bgp)
         {
-            if (!this.HasFlag(ExplanationLevel.AnalyseBgps)) return;
+            if (!HasFlag(ExplanationLevel.AnalyseBgps)) return;
 
             List<ITriplePattern> ps = bgp.TriplePatterns.ToList();
             if (ps.Count == 0)
             {
-                this.PrintExplanations("Empty BGP");
+                PrintExplanations("Empty BGP");
             }
             else
             {
@@ -351,7 +351,7 @@ namespace VDS.RDF.Query
                     }
 
                     // Print the actual Triple Pattern
-                    output.Append(this._formatter.Format(ps[i]));
+                    output.Append(_formatter.Format(ps[i]));
 
                     // Update variables seen so far unless a FILTER which cannot introduce new variables
                     if (ps[i].PatternType != TriplePatternType.Filter)
@@ -362,7 +362,7 @@ namespace VDS.RDF.Query
                         }
                     }
 
-                    this.PrintExplanations(output);
+                    PrintExplanations(output);
                 }
             }
         }
@@ -373,7 +373,7 @@ namespace VDS.RDF.Query
         /// <param name="join">Join</param>
         private void PrintJoinAnalysis(IAbstractJoin join)
         {
-            if (!this.HasFlag(ExplanationLevel.AnalyseJoins)) return;
+            if (!HasFlag(ExplanationLevel.AnalyseJoins)) return;
 
             HashSet<String> joinVars = new HashSet<string>(join.Lhs.Variables.Intersect<String>(join.Rhs.Variables));
             StringBuilder vars = new StringBuilder();
@@ -389,29 +389,29 @@ namespace VDS.RDF.Query
             {
                 if (joinVars.Count == 0)
                 {
-                    this.PrintExplanations("RHS of Minus is disjoint so has no effect and will not be evaluated");
+                    PrintExplanations("RHS of Minus is disjoint so has no effect and will not be evaluated");
                 }
                 else
                 {
-                    this.PrintExplanations("Minus on " + vars.ToString());
+                    PrintExplanations("Minus on " + vars.ToString());
                 }
             }
             else
             {
                 if (joinVars.Count == 0)
                 {
-                    this.PrintExplanations("Cross Product");
+                    PrintExplanations("Cross Product");
                 }
                 else
                 {
-                    this.PrintExplanations("Join on " + vars.ToString());
+                    PrintExplanations("Join on " + vars.ToString());
                 }
             }
         }
 
         private void PrintGraphAnalysis(Algebra.Graph graph, SparqlEvaluationContext context)
         {
-            if (!this.HasFlag(ExplanationLevel.AnalyseNamedGraphs)) return;
+            if (!HasFlag(ExplanationLevel.AnalyseNamedGraphs)) return;
 
             switch (graph.GraphSpecifier.TokenType)
             {
@@ -419,7 +419,7 @@ namespace VDS.RDF.Query
                 case Token.URI:
                     // Only a single active graph
                     Uri activeGraphUri = UriFactory.Create(Tools.ResolveUriOrQName(graph.GraphSpecifier, context.Query.NamespaceMap, context.Query.BaseUri));
-                    this.PrintExplanations("Graph clause accesses single named graph " + activeGraphUri.AbsoluteUri);
+                    PrintExplanations("Graph clause accesses single named graph " + activeGraphUri.AbsoluteUri);
                     break;
                 case Token.VARIABLE:
                     // Potentially many active graphs
@@ -446,26 +446,26 @@ namespace VDS.RDF.Query
                         // Worth explaining that the graph variable is partially bound
                         if (context.InputMultiset.ContainsVariable(gvar))
                         {
-                            this.PrintExplanations("Graph clause uses variable ?" + gvar + " to specify named graphs, this variable is only partially bound at this point in the query so can't be use to restrict list of named graphs to access");
+                            PrintExplanations("Graph clause uses variable ?" + gvar + " to specify named graphs, this variable is only partially bound at this point in the query so can't be use to restrict list of named graphs to access");
                         }
 
                         // Nothing yet bound to the Graph Variable so the Query is over all the named Graphs
                         if (context.Query != null && context.Query.NamedGraphs.Any())
                         {
                             // Query specifies one/more named Graphs
-                            this.PrintExplanations("Graph clause uses variable ?" + gvar + " which is restricted to graphs specified by the queries FROM NAMED clause(s)");
+                            PrintExplanations("Graph clause uses variable ?" + gvar + " which is restricted to graphs specified by the queries FROM NAMED clause(s)");
                             activeGraphs.AddRange(context.Query.NamedGraphs.Select(u => u.AbsoluteUri));
                         }
                         else if (context.Query != null && context.Query.DefaultGraphs.Any() && !context.Query.NamedGraphs.Any())
                         {
                             // Gives null since the query dataset does not include any named graphs
-                            this.PrintExplanations("Graph clause uses variable ?" + gvar + " which will match no graphs because the queries dataset description does not include any named graphs i.e. there where FROM clauses but no FROM NAMED clauses");
+                            PrintExplanations("Graph clause uses variable ?" + gvar + " which will match no graphs because the queries dataset description does not include any named graphs i.e. there where FROM clauses but no FROM NAMED clauses");
                             return;
                         }
                         else
                         {
                             // Query is over entire dataset/default Graph since no named Graphs are explicitly specified
-                            this.PrintExplanations("Graph clause uses variable ?" + gvar + " which accesses all named graphs provided by the dataset");
+                            PrintExplanations("Graph clause uses variable ?" + gvar + " which accesses all named graphs provided by the dataset");
                             activeGraphs.AddRange(context.Data.GraphUris.Select(u => u.ToSafeString()));
                         }
                     }
@@ -473,10 +473,10 @@ namespace VDS.RDF.Query
                     // Remove all duplicates from Active Graphs to avoid duplicate results
                     activeGraphs = activeGraphs.Distinct().ToList();
                     activeGraphs.RemoveAll(x => x == null);
-                    this.PrintExplanations("Graph clause will access the following " + activeGraphs.Count + " graphs:");
+                    PrintExplanations("Graph clause will access the following " + activeGraphs.Count + " graphs:");
                     foreach (String uri in activeGraphs)
                     {
-                        this.PrintExplanations(uri);
+                        PrintExplanations(uri);
                     }
 
                     break;
@@ -492,7 +492,7 @@ namespace VDS.RDF.Query
         /// <param name="output">StringBuilder to output to</param>
         internal void PrintExplanations(StringBuilder output)
         {
-            this.PrintExplanations(output.ToString());
+            PrintExplanations(output.ToString());
         }
 
         /// <summary>
@@ -501,24 +501,24 @@ namespace VDS.RDF.Query
         /// <param name="output">String to output</param>
         internal void PrintExplanations(String output)
         {
-            String indent = new string(' ', Math.Max(this._depthCounter.Value-1, 1) * 2);
-            if (this.HasFlag(ExplanationLevel.OutputToConsoleStdErr))
+            String indent = new string(' ', Math.Max(_depthCounter.Value-1, 1) * 2);
+            if (HasFlag(ExplanationLevel.OutputToConsoleStdErr))
             {
                 Console.Error.Write(indent);
                 Console.Error.WriteLine(output);
             }
-            if (this.HasFlag(ExplanationLevel.OutputToConsoleStdOut))
+            if (HasFlag(ExplanationLevel.OutputToConsoleStdOut))
             {
                 Console.Write(indent);
                 Console.WriteLine(output);
             }
-            if (this.HasFlag(ExplanationLevel.OutputToDebug))
+            if (HasFlag(ExplanationLevel.OutputToDebug))
             {
                 System.Diagnostics.Debug.Write(indent);
                 System.Diagnostics.Debug.WriteLine(output);
             }
 #if !NETCORE
-            if (this.HasFlag(ExplanationLevel.OutputToTrace))
+            if (HasFlag(ExplanationLevel.OutputToTrace))
             {
                 System.Diagnostics.Trace.Write(indent);
                 System.Diagnostics.Trace.WriteLine(output);
@@ -533,17 +533,17 @@ namespace VDS.RDF.Query
         /// <param name="context">Context</param>
         private void ExplainEvaluationStart(ISparqlAlgebra algebra, SparqlEvaluationContext context)
         {
-            if (this._level == ExplanationLevel.None) return;
+            if (_level == ExplanationLevel.None) return;
 
-            this._depthCounter.Value++;
+            _depthCounter.Value++;
 
             StringBuilder output = new StringBuilder();
-            if (this.HasFlag(ExplanationLevel.ShowThreadID)) output.Append("[Thread ID " + Thread.CurrentThread.ManagedThreadId + "] ");
-            if (this.HasFlag(ExplanationLevel.ShowDepth)) output.Append("Depth " + this._depthCounter.Value + " ");
-            if (this.HasFlag(ExplanationLevel.ShowOperator)) output.Append(algebra.GetType().FullName + " ");
-            if (this.HasFlag(ExplanationLevel.ShowAction)) output.Append("Start");
+            if (HasFlag(ExplanationLevel.ShowThreadID)) output.Append("[Thread ID " + Thread.CurrentThread.ManagedThreadId + "] ");
+            if (HasFlag(ExplanationLevel.ShowDepth)) output.Append("Depth " + _depthCounter.Value + " ");
+            if (HasFlag(ExplanationLevel.ShowOperator)) output.Append(algebra.GetType().FullName + " ");
+            if (HasFlag(ExplanationLevel.ShowAction)) output.Append("Start");
 
-            this.PrintExplanations(output);
+            PrintExplanations(output);
         }
 
         /// <summary>
@@ -554,15 +554,15 @@ namespace VDS.RDF.Query
         /// <param name="action">Action</param>
         private void ExplainEvaluationAction(ISparqlAlgebra algebra, SparqlEvaluationContext context, String action)
         {
-            if (this._level == ExplanationLevel.None) return;
+            if (_level == ExplanationLevel.None) return;
 
             StringBuilder output = new StringBuilder();
-            if (this.HasFlag(ExplanationLevel.ShowThreadID)) output.Append("[Thread ID " + Thread.CurrentThread.ManagedThreadId + "] ");
-            if (this.HasFlag(ExplanationLevel.ShowDepth)) output.Append("Depth " + this._depthCounter.Value + " ");
-            if (this.HasFlag(ExplanationLevel.ShowOperator)) output.Append(algebra.GetType().FullName + " ");
-            if (this.HasFlag(ExplanationLevel.ShowAction)) output.Append(action);
+            if (HasFlag(ExplanationLevel.ShowThreadID)) output.Append("[Thread ID " + Thread.CurrentThread.ManagedThreadId + "] ");
+            if (HasFlag(ExplanationLevel.ShowDepth)) output.Append("Depth " + _depthCounter.Value + " ");
+            if (HasFlag(ExplanationLevel.ShowOperator)) output.Append(algebra.GetType().FullName + " ");
+            if (HasFlag(ExplanationLevel.ShowAction)) output.Append(action);
 
-            this.PrintExplanations(output);
+            PrintExplanations(output);
         }
 
         /// <summary>
@@ -572,17 +572,17 @@ namespace VDS.RDF.Query
         /// <param name="context">Context</param>
         private void ExplainEvaluationEnd(ISparqlAlgebra algebra, SparqlEvaluationContext context)
         {
-            if (this._level == ExplanationLevel.None) return;
+            if (_level == ExplanationLevel.None) return;
 
-            this._depthCounter.Value--;
+            _depthCounter.Value--;
 
             StringBuilder output = new StringBuilder();
-            if (this.HasFlag(ExplanationLevel.ShowThreadID)) output.Append("[Thread ID " + Thread.CurrentThread.ManagedThreadId + "] ");
-            if (this.HasFlag(ExplanationLevel.ShowDepth)) output.Append("Depth " + this._depthCounter.Value + " ");
-            if (this.HasFlag(ExplanationLevel.ShowOperator)) output.Append(algebra.GetType().FullName + " ");
-            if (this.HasFlag(ExplanationLevel.ShowAction)) output.Append("End");
+            if (HasFlag(ExplanationLevel.ShowThreadID)) output.Append("[Thread ID " + Thread.CurrentThread.ManagedThreadId + "] ");
+            if (HasFlag(ExplanationLevel.ShowDepth)) output.Append("Depth " + _depthCounter.Value + " ");
+            if (HasFlag(ExplanationLevel.ShowOperator)) output.Append(algebra.GetType().FullName + " ");
+            if (HasFlag(ExplanationLevel.ShowAction)) output.Append("End");
 
-            this.PrintExplanations(output);
+            PrintExplanations(output);
         }
 
         /// <summary>
@@ -597,20 +597,20 @@ namespace VDS.RDF.Query
             where T : ISparqlAlgebra
         {
             // If explanation is disabled just evaluate and return
-            if (this._level == ExplanationLevel.None) return evaluator(algebra, context);
+            if (_level == ExplanationLevel.None) return evaluator(algebra, context);
 
             // Print the basic evaluation start information
-            this.ExplainEvaluationStart(algebra, context);
+            ExplainEvaluationStart(algebra, context);
 
             // Print analysis (if enabled)
-            this.PrintAnalysis(algebra, context);
+            PrintAnalysis(algebra, context);
 
             // Start Timing (if enabled)
-            if (this.HasFlag(ExplanationLevel.ShowTimings)) this._startTimes.Value.Push(DateTime.Now);
+            if (HasFlag(ExplanationLevel.ShowTimings)) _startTimes.Value.Push(DateTime.Now);
 
             // Do the actual Evaluation
             BaseMultiset results; // = evaluator(algebra, context);
-            if (this.HasFlag(ExplanationLevel.Simulate))
+            if (HasFlag(ExplanationLevel.Simulate))
             {
                 results = (algebra is ITerminalOperator) ? new SingletonMultiset(algebra.Variables) : evaluator(algebra, context);
             }
@@ -620,15 +620,15 @@ namespace VDS.RDF.Query
             }
 
             // End Timing and Print (if enabled)
-            if (this.HasFlag(ExplanationLevel.ShowTimings))
+            if (HasFlag(ExplanationLevel.ShowTimings))
             {
-                DateTime start = this._startTimes.Value.Pop();
+                DateTime start = _startTimes.Value.Pop();
                 TimeSpan elapsed = DateTime.Now - start;
                 // this.PrintExplanations("Took " + elapsed.ToString());
-                this.ExplainEvaluationAction(algebra, context, "Took " + elapsed.ToString());
+                ExplainEvaluationAction(algebra, context, "Took " + elapsed.ToString());
             }
             // Show Intermediate Result Count (if enabled)
-            if (this.HasFlag(ExplanationLevel.ShowIntermediateResultCount))
+            if (HasFlag(ExplanationLevel.ShowIntermediateResultCount))
             {
                 String result;
                 if (results is NullMultiset)
@@ -643,11 +643,11 @@ namespace VDS.RDF.Query
                 {
                     result = results.Count + " Results(s)";
                 }
-                this.ExplainEvaluationAction(algebra, context, result);
+                ExplainEvaluationAction(algebra, context, result);
             }
 
             // Print the basic evaluation end information
-            this.ExplainEvaluationEnd(algebra, context);
+            ExplainEvaluationEnd(algebra, context);
 
             // Result the results
             return results;
@@ -660,7 +660,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessAsk(Ask ask, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<Ask>(ask, context, base.ProcessAsk);
+            return ExplainAndEvaluate<Ask>(ask, context, base.ProcessAsk);
         }
 
         /// <summary>
@@ -670,7 +670,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessBgp(IBgp bgp, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<IBgp>(bgp, context, base.ProcessBgp);
+            return ExplainAndEvaluate<IBgp>(bgp, context, base.ProcessBgp);
         }
 
         /// <summary>
@@ -680,7 +680,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessBindings(Bindings b, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<Bindings>(b, context, base.ProcessBindings);
+            return ExplainAndEvaluate<Bindings>(b, context, base.ProcessBindings);
         }
 
         /// <summary>
@@ -690,7 +690,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessDistinct(Distinct distinct, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<Distinct>(distinct, context, base.ProcessDistinct);
+            return ExplainAndEvaluate<Distinct>(distinct, context, base.ProcessDistinct);
         }
 
         /// <summary>
@@ -700,7 +700,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessExistsJoin(IExistsJoin existsJoin, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<IExistsJoin>(existsJoin, context, base.ProcessExistsJoin);
+            return ExplainAndEvaluate<IExistsJoin>(existsJoin, context, base.ProcessExistsJoin);
         }
 
         /// <summary>
@@ -710,7 +710,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessExtend(Extend extend, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<Extend>(extend, context, base.ProcessExtend);
+            return ExplainAndEvaluate<Extend>(extend, context, base.ProcessExtend);
         }
 
         /// <summary>
@@ -720,7 +720,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessFilter(IFilter filter, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<IFilter>(filter, context, base.ProcessFilter);
+            return ExplainAndEvaluate<IFilter>(filter, context, base.ProcessFilter);
         }
 
         /// <summary>
@@ -730,7 +730,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessGraph(Algebra.Graph graph, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<Algebra.Graph>(graph, context, base.ProcessGraph);
+            return ExplainAndEvaluate<Algebra.Graph>(graph, context, base.ProcessGraph);
         }
 
         /// <summary>
@@ -740,7 +740,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessGroupBy(GroupBy groupBy, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<GroupBy>(groupBy, context, base.ProcessGroupBy);
+            return ExplainAndEvaluate<GroupBy>(groupBy, context, base.ProcessGroupBy);
         }
 
         /// <summary>
@@ -750,7 +750,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessHaving(Having having, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<Having>(having, context, base.ProcessHaving);
+            return ExplainAndEvaluate<Having>(having, context, base.ProcessHaving);
         }
 
         /// <summary>
@@ -760,7 +760,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessJoin(IJoin join, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<IJoin>(join, context, base.ProcessJoin);
+            return ExplainAndEvaluate<IJoin>(join, context, base.ProcessJoin);
         }
 
         /// <summary>
@@ -770,7 +770,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessLeftJoin(ILeftJoin leftJoin, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<ILeftJoin>(leftJoin, context, base.ProcessLeftJoin);
+            return ExplainAndEvaluate<ILeftJoin>(leftJoin, context, base.ProcessLeftJoin);
         }
 
         /// <summary>
@@ -780,7 +780,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessMinus(IMinus minus, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<IMinus>(minus, context, base.ProcessMinus);
+            return ExplainAndEvaluate<IMinus>(minus, context, base.ProcessMinus);
         }
 
         /// <summary>
@@ -791,7 +791,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override BaseMultiset ProcessNegatedPropertySet(NegatedPropertySet negPropSet, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<NegatedPropertySet>(negPropSet, context, base.ProcessNegatedPropertySet);
+            return ExplainAndEvaluate<NegatedPropertySet>(negPropSet, context, base.ProcessNegatedPropertySet);
         }
 
         /// <summary>
@@ -802,7 +802,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override BaseMultiset ProcessNullOperator(NullOperator nullOp, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<NullOperator>(nullOp, context, base.ProcessNullOperator);
+            return ExplainAndEvaluate<NullOperator>(nullOp, context, base.ProcessNullOperator);
         }
 
         /// <summary>
@@ -813,7 +813,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override BaseMultiset ProcessOneOrMorePath(OneOrMorePath path, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<OneOrMorePath>(path, context, base.ProcessOneOrMorePath);
+            return ExplainAndEvaluate<OneOrMorePath>(path, context, base.ProcessOneOrMorePath);
         }
 
         /// <summary>
@@ -823,7 +823,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessOrderBy(OrderBy orderBy, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<OrderBy>(orderBy, context, base.ProcessOrderBy);
+            return ExplainAndEvaluate<OrderBy>(orderBy, context, base.ProcessOrderBy);
         }
 
         /// <summary>
@@ -834,7 +834,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override BaseMultiset ProcessPropertyPath(PropertyPath path, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<PropertyPath>(path, context, base.ProcessPropertyPath);
+            return ExplainAndEvaluate<PropertyPath>(path, context, base.ProcessPropertyPath);
         }
 
         /// <summary>
@@ -844,7 +844,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessReduced(Reduced reduced, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<Reduced>(reduced, context, base.ProcessReduced);
+            return ExplainAndEvaluate<Reduced>(reduced, context, base.ProcessReduced);
         }
 
         /// <summary>
@@ -854,7 +854,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessSelect(Select select, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<Select>(select, context, base.ProcessSelect);
+            return ExplainAndEvaluate<Select>(select, context, base.ProcessSelect);
         }
 
         /// <summary>
@@ -864,7 +864,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessSelectDistinctGraphs(SelectDistinctGraphs selDistGraphs, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<SelectDistinctGraphs>(selDistGraphs, context, base.ProcessSelectDistinctGraphs);
+            return ExplainAndEvaluate<SelectDistinctGraphs>(selDistGraphs, context, base.ProcessSelectDistinctGraphs);
         }
 
         /// <summary>
@@ -874,7 +874,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessService(Service service, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<Service>(service, context, base.ProcessService);
+            return ExplainAndEvaluate<Service>(service, context, base.ProcessService);
         }
 
         /// <summary>
@@ -884,7 +884,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessSlice(Slice slice, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<Slice>(slice, context, base.ProcessSlice);
+            return ExplainAndEvaluate<Slice>(slice, context, base.ProcessSlice);
         }
 
         /// <summary>
@@ -895,7 +895,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override BaseMultiset ProcessSubQuery(SubQuery subquery, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<SubQuery>(subquery, context, base.ProcessSubQuery);
+            return ExplainAndEvaluate<SubQuery>(subquery, context, base.ProcessSubQuery);
         }
 
         /// <summary>
@@ -905,7 +905,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessUnion(IUnion union, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<IUnion>(union, context, base.ProcessUnion);
+            return ExplainAndEvaluate<IUnion>(union, context, base.ProcessUnion);
         }
 
         /// <summary>
@@ -915,7 +915,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessUnknownOperator(ISparqlAlgebra algebra, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<ISparqlAlgebra>(algebra, context, base.ProcessUnknownOperator);
+            return ExplainAndEvaluate<ISparqlAlgebra>(algebra, context, base.ProcessUnknownOperator);
         }
 
         /// <summary>
@@ -926,7 +926,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override BaseMultiset ProcessZeroLengthPath(ZeroLengthPath path, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<ZeroLengthPath>(path, context, base.ProcessZeroLengthPath);
+            return ExplainAndEvaluate<ZeroLengthPath>(path, context, base.ProcessZeroLengthPath);
         }
 
         /// <summary>
@@ -937,7 +937,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override BaseMultiset ProcessZeroOrMorePath(ZeroOrMorePath path, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<ZeroOrMorePath>(path, context, base.ProcessZeroOrMorePath);
+            return ExplainAndEvaluate<ZeroOrMorePath>(path, context, base.ProcessZeroOrMorePath);
         }
     }
 
@@ -951,11 +951,11 @@ namespace VDS.RDF.Query
 
         public override void SetActiveGraph(Uri graphUri)
         {
-            if (this.Processor != null)
+            if (Processor != null)
             {
-                if (this.Processor.HasFlag(ExplanationLevel.AnalyseNamedGraphs))
+                if (Processor.HasFlag(ExplanationLevel.AnalyseNamedGraphs))
                 {
-                    this.Processor.PrintExplanations("Switching to named graph " + graphUri.ToSafeString());
+                    Processor.PrintExplanations("Switching to named graph " + graphUri.ToSafeString());
                 }
             }
             base.SetActiveGraph(graphUri);
@@ -964,14 +964,14 @@ namespace VDS.RDF.Query
         public override void SetActiveGraph(IEnumerable<Uri> graphUris)
         {
             IList<Uri> gs = graphUris as IList<Uri> ?? graphUris.ToList();
-            if (this.Processor != null)
+            if (Processor != null)
             {
-                if (this.Processor.HasFlag(ExplanationLevel.AnalyseNamedGraphs))
+                if (Processor.HasFlag(ExplanationLevel.AnalyseNamedGraphs))
                 {
-                    this.Processor.PrintExplanations("Switching to named graph as merge of the following graphs:");
+                    Processor.PrintExplanations("Switching to named graph as merge of the following graphs:");
                     foreach (Uri graphUri in gs)
                     {
-                        this.Processor.PrintExplanations(graphUri.ToSafeString());
+                        Processor.PrintExplanations(graphUri.ToSafeString());
                         
                     }
                 }

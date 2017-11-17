@@ -37,7 +37,7 @@ namespace VDS.RDF.Query.Builder
 
         public IDistinctAggregateBuilder Distinct => new ExpressionBuilder(Prefixes)
         {
-            _distinctAggregate = true
+            _distinctAggregate = true,
         };
 
         public AggregateExpression Sum(VariableTerm variable)
@@ -121,7 +121,7 @@ namespace VDS.RDF.Query.Builder
             GroupConcatAggregate aggregate;
             if (separator != " ")
             {
-                aggregate = new GroupConcatAggregate(variable, this.Constant(separator).Expression, _distinctAggregate);
+                aggregate = new GroupConcatAggregate(variable, Constant(separator).Expression, _distinctAggregate);
             }
             else
             {
@@ -141,7 +141,7 @@ namespace VDS.RDF.Query.Builder
             GroupConcatAggregate aggregate;
             if (separator != " ")
             {
-                aggregate = new GroupConcatAggregate(expression.Expression, this.Constant(separator).Expression, _distinctAggregate);
+                aggregate = new GroupConcatAggregate(expression.Expression, Constant(separator).Expression, _distinctAggregate);
             }
             else
             {

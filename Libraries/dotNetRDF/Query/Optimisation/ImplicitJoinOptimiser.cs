@@ -89,7 +89,7 @@ namespace VDS.RDF.Query.Optimisation
                     Filter f = (Filter)algebra;
                     String lhsVar, rhsVar;
                     bool equals;
-                    if (this.IsImplicitJoinExpression(f.SparqlFilter.Expression, out lhsVar, out rhsVar, out equals))
+                    if (IsImplicitJoinExpression(f.SparqlFilter.Expression, out lhsVar, out rhsVar, out equals))
                     {
                         // We must ensure that both variables are in scope
                         List<String> vars = f.InnerAlgebra.Variables.ToList();
@@ -107,7 +107,7 @@ namespace VDS.RDF.Query.Optimisation
                             {
                                 // See if the Filtered Product style optimization applies instead
                                 int splitPoint = -1;
-                                if (this.IsDisjointOperation(f.InnerAlgebra, lhsVar, rhsVar, out splitPoint))
+                                if (IsDisjointOperation(f.InnerAlgebra, lhsVar, rhsVar, out splitPoint))
                                 {
                                     if (splitPoint > -1)
                                     {

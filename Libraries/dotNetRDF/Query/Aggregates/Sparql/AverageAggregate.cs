@@ -49,7 +49,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         public AverageAggregate(VariableTerm expr, bool distinct)
             : base(expr, distinct)
         {
-            this._varname = expr.ToString().Substring(1);
+            _varname = expr.ToString().Substring(1);
         }
 
         /// <summary>
@@ -97,10 +97,10 @@ namespace VDS.RDF.Query.Aggregates.Sparql
                 IValuedNode temp;
                 try
                 {
-                    temp = this._expr.Evaluate(context, id);
+                    temp = _expr.Evaluate(context, id);
                     if (temp == null) return null;
                     // Apply DISTINCT modifier if required
-                    if (this._distinct)
+                    if (_distinct)
                     {
                         if (values.Contains(temp))
                         {
@@ -202,8 +202,8 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         {
             StringBuilder output = new StringBuilder();
             output.Append("AVG(");
-            if (this._distinct) output.Append("DISTINCT ");
-            output.Append(this._expr.ToString() + ")");
+            if (_distinct) output.Append("DISTINCT ");
+            output.Append(_expr.ToString() + ")");
             return output.ToString();
         }
 

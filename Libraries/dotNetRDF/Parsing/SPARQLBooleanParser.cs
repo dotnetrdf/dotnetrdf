@@ -45,7 +45,7 @@ namespace VDS.RDF.Parsing
         public void Load(SparqlResultSet results, StreamReader input)
         {
             if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
-            this.Load(new ResultSetHandler(results), input);
+            Load(new ResultSetHandler(results), input);
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace VDS.RDF.Parsing
         {
             if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
             if (filename == null) throw new RdfParseException("Cannot read SPARQL Results from a null File");
-            this.Load(results, new StreamReader(File.OpenRead(filename)));
+            Load(results, new StreamReader(File.OpenRead(filename)));
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace VDS.RDF.Parsing
         public void Load(SparqlResultSet results, TextReader input)
         {
             if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
-            this.Load(new ResultSetHandler(results), input);
+            Load(new ResultSetHandler(results), input);
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                this.Parse(new BaseResultsParserContext(handler), input);
+                Parse(new BaseResultsParserContext(handler), input);
             }
             catch
             {
@@ -109,7 +109,7 @@ namespace VDS.RDF.Parsing
         /// <param name="input">Input Stream to read from</param>
         public void Load(ISparqlResultsHandler handler, StreamReader input)
         {
-            this.Load(handler, (TextReader)input);
+            Load(handler, (TextReader)input);
         }
 
         /// <summary>
@@ -120,12 +120,12 @@ namespace VDS.RDF.Parsing
         public void Load(ISparqlResultsHandler handler, String filename)
         {
             if (filename == null) throw new RdfParseException("Cannot read SPARQL Results from a null File");
-            this.Load(handler, new StreamReader(File.OpenRead(filename)));
+            Load(handler, new StreamReader(File.OpenRead(filename)));
         }
 
         private void Parse(IResultsParserContext context, TextReader input)
         {
-            this.Parse(context, input.ReadToEnd());
+            Parse(context, input.ReadToEnd());
         }
 
         private void Parse(IResultsParserContext context, String data)
@@ -163,7 +163,7 @@ namespace VDS.RDF.Parsing
         /// <param name="message">Warning Message</param>
         private void RaiseWarning(String message)
         {
-            SparqlWarning d = this.Warning;
+            SparqlWarning d = Warning;
             if (d != null)
             {
                 d(message);

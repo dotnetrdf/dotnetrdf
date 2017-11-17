@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         public AggregateTerm(ISparqlAggregate aggregate)
             : base(null)
         {
-            this._aggregate = aggregate;
+            _aggregate = aggregate;
         }
 
         /// <summary>
@@ -62,12 +62,12 @@ namespace VDS.RDF.Query.Expressions.Primary
             {
                 BindingGroup group = context.Binder.Group(bindingID);
                 context.Binder.SetGroupContext(true);
-                aggValue = this._aggregate.Apply(context, group.BindingIDs);
+                aggValue = _aggregate.Apply(context, group.BindingIDs);
                 context.Binder.SetGroupContext(false);
             }
             else
             {
-                aggValue = this._aggregate.Apply(context);
+                aggValue = _aggregate.Apply(context);
             }
             return aggValue;
         }
@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         {
             get
             {
-                return this._aggregate;
+                return _aggregate;
             }
         }
 
@@ -89,7 +89,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <returns></returns>
         public override string ToString()
         {
-            return this._aggregate.ToString();
+            return _aggregate.ToString();
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         {
             get
             {
-                return this._aggregate.Expression.Variables;
+                return _aggregate.Expression.Variables;
             }
         }
 
@@ -121,7 +121,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         {
             get
             {
-                return this._aggregate.Functor;
+                return _aggregate.Functor;
             }
         }
 
@@ -132,7 +132,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         {
             get
             {
-                return this._aggregate.Arguments;
+                return _aggregate.Arguments;
             }
         }
 

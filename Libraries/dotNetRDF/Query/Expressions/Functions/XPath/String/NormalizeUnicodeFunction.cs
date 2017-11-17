@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             if (arg == null)
             {
-                return this.ValueInternal(stringLit);
+                return ValueInternal(stringLit);
             }
             else
             {
@@ -111,13 +111,13 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public override string ToString()
         {
-            if (this._arg != null)
+            if (_arg != null)
             {
-                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeUnicode + ">(" + this._expr.ToString() + "," + this._arg.ToString() + ")";
+                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeUnicode + ">(" + _expr.ToString() + "," + _arg.ToString() + ")";
             }
             else
             {
-                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeUnicode + ">(" + this._expr.ToString() + ")";
+                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeUnicode + ">(" + _expr.ToString() + ")";
             }
         }
 
@@ -139,13 +139,13 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            if (this._arg != null)
+            if (_arg != null)
             {
-                return new NormalizeUnicodeFunction(transformer.Transform(this._expr), transformer.Transform(this._arg));
+                return new NormalizeUnicodeFunction(transformer.Transform(_expr), transformer.Transform(_arg));
             }
             else
             {
-                return new NormalizeUnicodeFunction(transformer.Transform(this._expr));
+                return new NormalizeUnicodeFunction(transformer.Transform(_expr));
             }
         }
     }

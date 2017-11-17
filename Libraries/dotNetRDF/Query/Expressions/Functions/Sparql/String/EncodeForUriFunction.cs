@@ -59,7 +59,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordEncodeForUri + "(" + this._expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordEncodeForUri + "(" + _expr.ToString() + ")";
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new EncodeForUriFunction(transformer.Transform(this._expr));
+            return new EncodeForUriFunction(transformer.Transform(_expr));
         }
     }
 }

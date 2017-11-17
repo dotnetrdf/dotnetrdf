@@ -48,7 +48,7 @@ namespace VDS.RDF.Nodes
         public BooleanNode(IGraph g, bool value, String lexicalValue)
             : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
         {
-            this._value = value;
+            _value = value;
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public string AsString()
         {
-            return this.Value;
+            return Value;
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public bool AsBoolean()
         {
-            return this._value;
+            return _value;
         }
 
         /// <summary>

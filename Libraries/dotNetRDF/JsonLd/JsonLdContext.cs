@@ -92,15 +92,19 @@ namespace VDS.RDF.JsonLd
             _termDefinitions.Add(key, termDefinition);
         }
 
+        /// <summary>
+        /// Create a deep clone of this context
+        /// </summary>
+        /// <returns>A new JsonLdContext that is a clone of this context</returns>
         public JsonLdContext Clone()
         {
             var clone = new JsonLdContext
             {
-                Base = this.Base,
-                HasBase = this.HasBase,
-                Language = this.Language,
-                Version = this.Version,
-                Vocab = this.Vocab,
+                Base = Base,
+                HasBase = HasBase,
+                Language = Language,
+                Version = Version,
+                Vocab = Vocab,
             };
             foreach(var termDefEntry in _termDefinitions)
             {
@@ -109,21 +113,41 @@ namespace VDS.RDF.JsonLd
             return clone;
         }
 
+        /// <summary>
+        /// Add or update an existing term definition
+        /// </summary>
+        /// <param name="term">The term key</param>
+        /// <param name="definition">The new value for the term definition</param>
         public void SetTerm(string term, JsonLdTermDefinition definition)
         {
             _termDefinitions[term] = definition;
         }
 
+        /// <summary>
+        /// Remote an existing term definition
+        /// </summary>
+        /// <param name="term">The key for the term to be removed</param>
         public void RemoveTerm(string term)
         {
             _termDefinitions.Remove(term);
         }
 
+        /// <summary>
+        /// Get an existing term defintiion
+        /// </summary>
+        /// <param name="term">The key for the term to be retrieved</param>
+        /// <returns>The term definition found for the specified key or null if there is no term definition defined for that key</returns>
         public JsonLdTermDefinition GetTerm(string term)
         {
-            return _termDefinitions.TryGetValue(term, out JsonLdTermDefinition ret) ? ret : null;
+            return _termDefinitions.TryGetValue(term, out var ret) ? ret : null;
         }
 
+        /// <summary>
+        /// Attempt to get an existing term defintion
+        /// </summary>
+        /// <param name="term">The key for the term to be retrieved</param>
+        /// <param name="termDefinition">Receives the term definition found</param>
+        /// <returns>True if an entry was found for <paramref name="term"/>, false otherwise</returns>
         public bool TryGetTerm(string term, out JsonLdTermDefinition termDefinition)
         {
             return _termDefinitions.TryGetValue(term, out termDefinition);

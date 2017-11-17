@@ -49,7 +49,7 @@ namespace VDS.RDF.Writing.Formatting
             new [] { "\"", "\\\"" },
             new [] { "\n", @"\n" },
             new [] { "\r", @"\r" },
-            new [] { "\t", @"\t" }
+            new [] { "\t", @"\t" },
         };
 
         /// <summary>
@@ -91,12 +91,7 @@ namespace VDS.RDF.Writing.Formatting
         protected NTriplesFormatter(string formatName)
             : this(NTriplesSyntax.Original, formatName) { }
 
-        private static String GetName()
-        {
-            return GetName(NTriplesSyntax.Original);
-        }
-
-        private static string GetName(NTriplesSyntax syntax)
+        private static string GetName(NTriplesSyntax syntax = NTriplesSyntax.Original)
         {
             switch (syntax)
             {

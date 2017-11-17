@@ -37,7 +37,6 @@ namespace VDS.RDF
     {
         private int _timeout = 30000;
         private string _httpMode = "AUTO";
-        private bool _useCredentialsForProxy;
 
         /// <summary>
         /// Creates a new Base Endpoint

@@ -41,7 +41,7 @@ namespace VDS.RDF.Parsing.Validation
         /// </summary>
         public SparqlQueryValidator()
         {
-            this._parser = new SparqlQueryParser();
+            _parser = new SparqlQueryParser();
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace VDS.RDF.Parsing.Validation
         /// <param name="syntax">Query Syntax</param>
         public SparqlQueryValidator(SparqlQuerySyntax syntax)
         {
-            this._parser = new SparqlQueryParser(syntax);
+            _parser = new SparqlQueryParser(syntax);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace VDS.RDF.Parsing.Validation
         /// <param name="parser">Query Parser</param>
         public SparqlQueryValidator(SparqlQueryParser parser)
         {
-            this._parser = parser;
+            _parser = parser;
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace VDS.RDF.Parsing.Validation
             String message;
             try
             {
-                SparqlQuery q = this._parser.ParseFromString(data);
+                SparqlQuery q = _parser.ParseFromString(data);
                 message = "Valid SPARQL Query";
 
                 return new SyntaxValidationResults(true, message, q);

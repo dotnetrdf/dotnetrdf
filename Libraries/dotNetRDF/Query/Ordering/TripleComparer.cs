@@ -37,11 +37,11 @@ namespace VDS.RDF.Query.Ordering
 
         public TripleComparer(Func<Triple, Triple, int> compareFunc, bool descending, IComparer<Triple> child)
         {
-            this._compareFunc = compareFunc;
-            this._child = child;
+            _compareFunc = compareFunc;
+            _child = child;
             if (descending)
             {
-                this._modifier = -1;
+                _modifier = -1;
             }
         }
 
@@ -53,27 +53,27 @@ namespace VDS.RDF.Query.Ordering
 
         public int Compare(Triple x, Triple y)
         {
-            if (this._compareFunc == null)
+            if (_compareFunc == null)
             {
                 return 0;
             }
             else
             {
-                int c = this._compareFunc(x, y);
+                int c = _compareFunc(x, y);
                 if (c == 0)
                 {
-                    if (this._child != null)
+                    if (_child != null)
                     {
-                        return this._modifier * this._child.Compare(x, y);
+                        return _modifier * _child.Compare(x, y);
                     }
                     else
                     {
-                        return this._modifier * c;
+                        return _modifier * c;
                     }
                 }
                 else
                 {
-                    return this._modifier * c;
+                    return _modifier * c;
                 }
             }
         }

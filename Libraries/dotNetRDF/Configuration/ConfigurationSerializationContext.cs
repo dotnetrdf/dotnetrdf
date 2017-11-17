@@ -43,8 +43,8 @@ namespace VDS.RDF.Configuration
         /// </summary>
         public ConfigurationSerializationContext()
         {
-            this._g = new Graph();
-            this._g.NamespaceMap.AddNamespace("dnr", UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
+            _g = new Graph();
+            _g.NamespaceMap.AddNamespace("dnr", UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace VDS.RDF.Configuration
         /// <param name="g">Base Configuration Graph</param>
         public ConfigurationSerializationContext(IGraph g)
         {
-            this._g = g;
+            _g = g;
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace VDS.RDF.Configuration
         {
             get
             {
-                return this._g;
+                return _g;
             }
         }
 
@@ -82,22 +82,22 @@ namespace VDS.RDF.Configuration
         {
             get
             {
-                INode temp = this._nextSubj;
+                INode temp = _nextSubj;
                 if (temp == null)
                 {
                     // When not set generate a new blank node
-                    temp = this._g.CreateBlankNode();
+                    temp = _g.CreateBlankNode();
                 }
                 else
                 {
                     // When retrieving a set subject null it so it isn't reused
-                    this._nextSubj = null;
+                    _nextSubj = null;
                 }
                 return temp;
             }
             set
             {
-                this._nextSubj = value;
+                _nextSubj = value;
             }
         }
     }

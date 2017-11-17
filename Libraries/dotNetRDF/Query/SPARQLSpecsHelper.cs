@@ -278,7 +278,7 @@ namespace VDS.RDF.Query
                                                       SparqlKeywordUCase,
                                                       SparqlKeywordUri,
                                                       SparqlKeywordUUID,
-                                                      SparqlKeywordYear
+                                                      SparqlKeywordYear,
                                                   };
 
         /// <summary>
@@ -304,7 +304,7 @@ namespace VDS.RDF.Query
                                                        SparqlKeywordAs,
                                                        SparqlKeywordGroupConcat,
                                                        SparqlKeywordSample,
-                                                       SparqlKeywordSeparator
+                                                       SparqlKeywordSeparator,
                                                    };
 
         /// <summary>
@@ -317,7 +317,7 @@ namespace VDS.RDF.Query
                                                                 SparqlKeywordMax,
                                                                 SparqlKeywordMin,
                                                                 SparqlKeywordSum,
-                                                                SparqlKeywordSample
+                                                                SparqlKeywordSample,
                                                            };
 
         /// <summary>
@@ -336,7 +336,7 @@ namespace VDS.RDF.Query
                                                       XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte, 
                                                       XmlSpecsHelper.XmlSchemaDataTypeUnsignedInt, 
                                                       XmlSpecsHelper.XmlSchemaDataTypeUnsignedLong, 
-                                                      XmlSpecsHelper.XmlSchemaDataTypeUnsignedShort 
+                                                      XmlSpecsHelper.XmlSchemaDataTypeUnsignedShort,
                                                   };
         /// <summary>
         /// Set of IRIs for supported Cast Functions
@@ -348,7 +348,7 @@ namespace VDS.RDF.Query
                                                             XmlSpecsHelper.XmlSchemaDataTypeDouble, 
                                                             XmlSpecsHelper.XmlSchemaDataTypeFloat, 
                                                             XmlSpecsHelper.XmlSchemaDataTypeInteger, 
-                                                            XmlSpecsHelper.XmlSchemaDataTypeString 
+                                                            XmlSpecsHelper.XmlSchemaDataTypeString,
                                                         };
 
         /// <summary>
@@ -456,7 +456,7 @@ namespace VDS.RDF.Query
                                                         SparqlKeywordUri,
                                                         SparqlKeywordUUID,
                                                         SparqlKeywordValues,
-                                                        SparqlKeywordYear
+                                                        SparqlKeywordYear,
                                                        };
 
         /// <summary>
@@ -479,7 +479,7 @@ namespace VDS.RDF.Query
                                                     SparqlKeywordSilent,
                                                     SparqlKeywordTo,
                                                     SparqlKeywordUsing,
-                                                    SparqlKeywordWith
+                                                    SparqlKeywordWith,
                                                 };
 
         /// <summary>
@@ -506,7 +506,7 @@ namespace VDS.RDF.Query
                                                           SparqlKeywordTo,
                                                           SparqlKeywordUsing,
                                                           SparqlKeywordWhere,
-                                                          SparqlKeywordWith                                                        
+                                                          SparqlKeywordWith,                                                   
                                                        };
                                                     
 
@@ -1271,17 +1271,13 @@ namespace VDS.RDF.Query
                         if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
                         {
                             // Boolean Typed Literal
-                            bool b = false;
-                            if (Boolean.TryParse(lit.Value, out b))
+                            if (bool.TryParse(lit.Value, out var b))
                             {
                                 // Valid Booleans have EBV of their value
                                 return b;
                             }
-                            else
-                            {
-                                // Invalid Booleans have EBV of false
-                                return false;
-                            }
+                            // Invalid Booleans have EBV of false
+                            return false;
                         }
                         else if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
                         {
@@ -1696,28 +1692,21 @@ namespace VDS.RDF.Query
             if (x == null || y == null) throw new RdfQueryException("Cannot evaluate numeric equality when one or both arguments are Null");
             if (type == SparqlNumericType.NaN) throw new RdfQueryException("Cannot evaluate numeric equality when the Numeric Type is NaN");
 
-            try
-            {
-                ILiteralNode a = (ILiteralNode)x;
-                ILiteralNode b = (ILiteralNode)y;
+            var a = (ILiteralNode)x;
+            var b = (ILiteralNode)y;
 
-                switch (type)
-                {
-                    case SparqlNumericType.Decimal:
-                        return ToDecimal(a).Equals(ToDecimal(b));
-                    case SparqlNumericType.Double:
-                        return ToDouble(a).Equals(ToDouble(b));
-                    case SparqlNumericType.Float:
-                        return ToFloat(a).Equals(ToFloat(b));
-                    case SparqlNumericType.Integer:
-                        return ToInteger(a).Equals(ToInteger(b));
-                    default:
-                        throw new RdfQueryException("Cannot evaluate numeric equality since of the arguments is not numeric");
-                }
-            }
-            catch (FormatException)
+            switch (type)
             {
-                throw;// new RdfQueryException("Cannot evaluate numeric equality since one of the arguments does not have a valid lexical value for the given type");
+                case SparqlNumericType.Decimal:
+                    return a.AsValuedNode().AsDecimal().Equals(b.AsValuedNode().AsDecimal());
+                case SparqlNumericType.Double:
+                    return a.AsValuedNode().AsDouble().Equals(b.AsValuedNode().AsDouble());
+                case SparqlNumericType.Float:
+                    return a.AsValuedNode().AsFloat().Equals(b.AsValuedNode().AsFloat());
+                case SparqlNumericType.Integer:
+                    return a.AsValuedNode().AsInteger().Equals(b.AsValuedNode().AsInteger());
+                default:
+                    throw new RdfQueryException("Cannot evaluate numeric equality since of the arguments is not numeric");
             }
         }
 
@@ -1834,11 +1823,11 @@ namespace VDS.RDF.Query
             if (x == null || y == null) throw new RdfQueryException("Cannot evaluate time span equality when one or both arguments are Null");
             try
             {
-                ILiteralNode a = (ILiteralNode)x;
-                ILiteralNode b = (ILiteralNode)y;
+                var a = (ILiteralNode)x;
+                var b = (ILiteralNode)y;
 
-                TimeSpan c = ToTimeSpan(a);
-                TimeSpan d = ToTimeSpan(b);
+                var c = a.AsValuedNode().AsTimeSpan();
+                var d = b.AsValuedNode().AsTimeSpan();
 
                 return c.Equals(d);
             }
@@ -1905,7 +1894,7 @@ namespace VDS.RDF.Query
         public static DateTime ToDateTime(ILiteralNode n)
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Date Time");
-            return DateTime.Parse(n.Value, null, System.Globalization.DateTimeStyles.AssumeUniversal);
+            return DateTime.Parse(n.Value, null, DateTimeStyles.AssumeUniversal);
         }
 
         /// <summary>
@@ -1917,7 +1906,7 @@ namespace VDS.RDF.Query
         public static DateTimeOffset ToDateTimeOffset(ILiteralNode n)
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Date Time");
-            return DateTimeOffset.Parse(n.Value, null, System.Globalization.DateTimeStyles.AssumeUniversal);
+            return DateTimeOffset.Parse(n.Value, null, DateTimeStyles.AssumeUniversal);
         }
 
         /// <summary>

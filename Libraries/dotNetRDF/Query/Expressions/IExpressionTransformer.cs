@@ -54,7 +54,7 @@ namespace VDS.RDF.Query.Expressions
         {
             if (expr.Type == SparqlExpressionType.Primary)
             {
-                return this.SubstitutePrimaryExpression(expr);
+                return SubstitutePrimaryExpression(expr);
             }
             else
             {

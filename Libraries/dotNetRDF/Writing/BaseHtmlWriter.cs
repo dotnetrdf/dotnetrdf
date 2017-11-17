@@ -53,11 +53,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._stylesheet;
+                return _stylesheet;
             }
             set
             {
-                if (value != null) this._stylesheet = value;
+                if (value != null) _stylesheet = value;
             }
         }
 
@@ -68,11 +68,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._uriClass;
+                return _uriClass;
             }
             set
             {
-                if (value != null) this._uriClass = value;
+                if (value != null) _uriClass = value;
             }
         }
 
@@ -83,11 +83,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._bnodeClass;
+                return _bnodeClass;
             }
             set
             {
-                if (value != null) this._bnodeClass = value;
+                if (value != null) _bnodeClass = value;
             }
         }
 
@@ -98,11 +98,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._literalClass;
+                return _literalClass;
             }
             set
             {
-                if (value != null) this._literalClass = value;
+                if (value != null) _literalClass = value;
             }
         }
 
@@ -113,11 +113,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._datatypeClass;
+                return _datatypeClass;
             }
             set
             {
-                if (value != null) this._datatypeClass = value;
+                if (value != null) _datatypeClass = value;
             }
         }
 
@@ -128,11 +128,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._langClass;
+                return _langClass;
             }
             set
             {
-                if (value != null) this._langClass = value;
+                if (value != null) _langClass = value;
             }
         }
 
@@ -143,11 +143,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._boxClass;
+                return _boxClass;
             }
             set
             {
-                if (value != null) this._boxClass = value;
+                if (value != null) _boxClass = value;
             }
         }
         
@@ -158,11 +158,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._uriPrefix;
+                return _uriPrefix;
             }
             set
             {
-                if (value != null) this._uriPrefix = value;
+                if (value != null) _uriPrefix = value;
             }
         }
 

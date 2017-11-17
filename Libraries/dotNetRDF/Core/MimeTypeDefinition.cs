@@ -57,12 +57,12 @@ namespace VDS.RDF
         public MimeTypeDefinition(String syntaxName, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
         {
             if (mimeTypes == null) throw new ArgumentNullException("MIME Types enumeration cannot be null");
-            this._name = syntaxName;
-            this._mimeTypes.AddRange(mimeTypes.Select(t => this.CheckValidMimeType(t)));
+            _name = syntaxName;
+            _mimeTypes.AddRange(mimeTypes.Select(t => CheckValidMimeType(t)));
 
             foreach (String ext in fileExtensions)
             {
-                this._fileExtensions.Add(this.CheckFileExtension(ext));
+                _fileExtensions.Add(CheckFileExtension(ext));
             }
         }
 
@@ -76,7 +76,7 @@ namespace VDS.RDF
         public MimeTypeDefinition(String syntaxName, String formatUri, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
             : this(syntaxName, mimeTypes, fileExtensions)
         {
-            this._formatUri = formatUri;
+            _formatUri = formatUri;
         }
 
         /// <summary>
@@ -94,12 +94,12 @@ namespace VDS.RDF
         public MimeTypeDefinition(String syntaxName, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions, Type rdfParserType, Type rdfDatasetParserType, Type sparqlResultsParserType, Type rdfWriterType, Type rdfDatasetWriterType, Type sparqlResultsWriterType)
             : this(syntaxName, mimeTypes, fileExtensions)
         {
-            this.RdfParserType = rdfParserType;
-            this.RdfDatasetParserType = rdfDatasetParserType;
-            this.SparqlResultsParserType = sparqlResultsParserType;
-            this.RdfWriterType = rdfWriterType;
-            this.RdfDatasetWriterType = rdfDatasetWriterType;
-            this.SparqlResultsWriterType = sparqlResultsWriterType;
+            RdfParserType = rdfParserType;
+            RdfDatasetParserType = rdfDatasetParserType;
+            SparqlResultsParserType = sparqlResultsParserType;
+            RdfWriterType = rdfWriterType;
+            RdfDatasetWriterType = rdfDatasetWriterType;
+            SparqlResultsWriterType = sparqlResultsWriterType;
         }
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace VDS.RDF
         public MimeTypeDefinition(String syntaxName, String formatUri, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions, Type rdfParserType, Type rdfDatasetParserType, Type sparqlResultsParserType, Type rdfWriterType, Type rdfDatasetWriterType, Type sparqlResultsWriterType)
             : this(syntaxName, mimeTypes, fileExtensions, rdfParserType, rdfDatasetParserType, sparqlResultsParserType, rdfWriterType, rdfDatasetWriterType, sparqlResultsWriterType)
         {
-            this._formatUri = formatUri;
+            _formatUri = formatUri;
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._name;
+                return _name;
             }
         }
 
@@ -139,7 +139,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._formatUri;
+                return _formatUri;
             }
         }
 
@@ -150,9 +150,9 @@ namespace VDS.RDF
         {
             get
             {
-                if (this._encoding != null)
+                if (_encoding != null)
                 {
-                    return this._encoding;
+                    return _encoding;
                 }
                 else
                 {
@@ -161,7 +161,7 @@ namespace VDS.RDF
             }
             set
             {
-                this._encoding = value;
+                _encoding = value;
             }
         }
 
@@ -174,7 +174,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._mimeTypes;
+                return _mimeTypes;
             }
         }
 
@@ -198,9 +198,9 @@ namespace VDS.RDF
         /// <param name="type">MIME Type</param>
         public void AddMimeType(String type)
         {
-            if (!this._mimeTypes.Contains(this.CheckValidMimeType(type)))
+            if (!_mimeTypes.Contains(CheckValidMimeType(type)))
             {
-                this._mimeTypes.Add(this.CheckValidMimeType(type));
+                _mimeTypes.Add(CheckValidMimeType(type));
             }
         }
 
@@ -211,32 +211,32 @@ namespace VDS.RDF
         {
             get
             {
-                if (this._canonicalType != null)
+                if (_canonicalType != null)
                 {
-                    return this._canonicalType;
+                    return _canonicalType;
                 }
-                else if (this._mimeTypes.Count > 0)
+                else if (_mimeTypes.Count > 0)
                 {
-                    return this._mimeTypes.First();
+                    return _mimeTypes.First();
                 }
                 else
                 {
-                    throw new RdfException("No MIME Types are defined for " + this._name);
+                    throw new RdfException("No MIME Types are defined for " + _name);
                 }
             }
             set
             {
                 if (value == null)
                 {
-                    this._canonicalType = value;
+                    _canonicalType = value;
                 }
-                else if (this._mimeTypes.Contains(value))
+                else if (_mimeTypes.Contains(value))
                 {
-                    this._canonicalType = value;
+                    _canonicalType = value;
                 }
                 else
                 {
-                    throw new RdfException("Cannot set the Canonical MIME Type for " + this._name + " to " + value + " as this is no such MIME Type listed in this definition.  Use AddMimeType to add a MIME Type prior to setting the CanonicalType.");
+                    throw new RdfException("Cannot set the Canonical MIME Type for " + _name + " to " + value + " as this is no such MIME Type listed in this definition.  Use AddMimeType to add a MIME Type prior to setting the CanonicalType.");
                 }
             }
         }
@@ -251,7 +251,7 @@ namespace VDS.RDF
         {
             String type = mimeType.ToLowerInvariant();
             type = type.Contains(';') ? type.Substring(0, type.IndexOf(';')) : type;
-            return this._mimeTypes.Contains(type) || mimeType.Equals(MimeTypesHelper.Any);
+            return _mimeTypes.Contains(type) || mimeType.Equals(MimeTypesHelper.Any);
         }
 
         /// <summary>
@@ -266,11 +266,11 @@ namespace VDS.RDF
             if (selector.IsRange)
             {
                 if (selector.RangeType == null) return false;
-                return this._mimeTypes.Any(type => type.StartsWith(selector.RangeType));
+                return _mimeTypes.Any(type => type.StartsWith(selector.RangeType));
             }
             else
             {
-                return this._mimeTypes.Contains(selector.Type);
+                return _mimeTypes.Contains(selector.Type);
             }
         }
 
@@ -285,7 +285,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._fileExtensions;
+                return _fileExtensions;
             }
         }
 
@@ -295,9 +295,9 @@ namespace VDS.RDF
         /// <param name="ext">File Extension</param>
         public void AddFileExtension(String ext)
         {
-            if (!this._fileExtensions.Contains(this.CheckFileExtension(ext)))
+            if (!_fileExtensions.Contains(CheckFileExtension(ext)))
             {
-                this._fileExtensions.Add(this.CheckFileExtension(ext));
+                _fileExtensions.Add(CheckFileExtension(ext));
             }
         }
 
@@ -314,7 +314,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._canonicalExt != null || this._fileExtensions.Count > 0;
+                return _canonicalExt != null || _fileExtensions.Count > 0;
             }
         }
 
@@ -325,32 +325,32 @@ namespace VDS.RDF
         {
             get
             {
-                if (this._canonicalExt != null)
+                if (_canonicalExt != null)
                 {
-                    return this._canonicalExt;
+                    return _canonicalExt;
                 }
-                else if (this._fileExtensions.Count > 0)
+                else if (_fileExtensions.Count > 0)
                 {
-                    return this._fileExtensions.First();
+                    return _fileExtensions.First();
                 }
                 else
                 {
-                    throw new RdfException("No File Extensions are defined for " + this._name);
+                    throw new RdfException("No File Extensions are defined for " + _name);
                 }
             }
             set
             {
                 if (value == null)
                 {
-                    this._canonicalExt = value;
+                    _canonicalExt = value;
                 }
-                else if (this._fileExtensions.Contains(this.CheckFileExtension(value)))
+                else if (_fileExtensions.Contains(CheckFileExtension(value)))
                 {
-                    this._fileExtensions.Add(this.CheckFileExtension(value));
+                    _fileExtensions.Add(CheckFileExtension(value));
                 } 
                 else 
                 {
-                    throw new RdfException("Cannot set the Canonical File Extension for " + this._name + " to " + value + " as this is no such File Extension listed in this definition.  Use AddFileExtension to add a File Extension prior to setting the CanonicalFileExtension.");
+                    throw new RdfException("Cannot set the Canonical File Extension for " + _name + " to " + value + " as this is no such File Extension listed in this definition.  Use AddFileExtension to add a File Extension prior to setting the CanonicalFileExtension.");
                 }
             }
         }
@@ -364,7 +364,7 @@ namespace VDS.RDF
         {
             ext = ext.ToLowerInvariant();
             if (ext.StartsWith(".")) ext = ext.Substring(1);
-            return this._fileExtensions.Contains(ext);
+            return _fileExtensions.Contains(ext);
         }
 
         #endregion
@@ -421,19 +421,19 @@ namespace VDS.RDF
         {
             get
             {
-                return this._rdfParserType;
+                return _rdfParserType;
             }
             set
             {
                 if (value == null)
                 {
-                    this._rdfParserType = value;
+                    _rdfParserType = value;
                 }
                 else
                 {
                     if (EnsureInterface("RDF Parser", value, typeof(IRdfReader)))
                     {
-                        this._rdfParserType = value;
+                        _rdfParserType = value;
                     }
                 }
             }
@@ -446,19 +446,19 @@ namespace VDS.RDF
         {
             get
             {
-                return this._rdfDatasetParserType;
+                return _rdfDatasetParserType;
             }
             set
             {
                 if (value == null)
                 {
-                    this._rdfDatasetParserType = value;
+                    _rdfDatasetParserType = value;
                 }
                 else
                 {
                     if (EnsureInterface("RDF Dataset Parser", value, typeof(IStoreReader)))
                     {
-                        this._rdfDatasetParserType = value;
+                        _rdfDatasetParserType = value;
                     }
                 }
             }
@@ -471,19 +471,19 @@ namespace VDS.RDF
         {
             get
             {
-                return this._sparqlResultsParserType;
+                return _sparqlResultsParserType;
             }
             set
             {
                 if (value == null)
                 {
-                    this._sparqlResultsParserType = value;
+                    _sparqlResultsParserType = value;
                 }
                 else
                 {
                     if (EnsureInterface("SPARQL Results Parser", value, typeof(ISparqlResultsReader)))
                     {
-                        this._sparqlResultsParserType = value;
+                        _sparqlResultsParserType = value;
                     }
                 }
             }
@@ -496,19 +496,19 @@ namespace VDS.RDF
         {
             get
             {
-                return this._rdfWriterType;
+                return _rdfWriterType;
             }
             set
             {
                 if (value == null)
                 {
-                    this._rdfWriterType = value;
+                    _rdfWriterType = value;
                 }
                 else
                 {
                     if (EnsureInterface("RDF Writer", value, typeof(IRdfWriter)))
                     {
-                        this._rdfWriterType = value;
+                        _rdfWriterType = value;
                     }
                 }
             }
@@ -521,19 +521,19 @@ namespace VDS.RDF
         {
             get
             {
-                return this._rdfDatasetWriterType;
+                return _rdfDatasetWriterType;
             }
             set
             {
                 if (value == null)
                 {
-                    this._rdfDatasetWriterType = value;
+                    _rdfDatasetWriterType = value;
                 }
                 else
                 {
                     if (EnsureInterface("RDF Dataset Writer", value, typeof(IStoreWriter)))
                     {
-                        this._rdfDatasetWriterType = value;
+                        _rdfDatasetWriterType = value;
                     }
                 }
             }
@@ -546,19 +546,19 @@ namespace VDS.RDF
         {
             get
             {
-                return this._sparqlResultsWriterType;
+                return _sparqlResultsWriterType;
             }
             set
             {
                 if (value == null)
                 {
-                    this._sparqlResultsWriterType = value;
+                    _sparqlResultsWriterType = value;
                 }
                 else
                 {
                     if (EnsureInterface("SPARQL Results Writer", value, typeof(ISparqlResultsWriter)))
                     {
-                        this._sparqlResultsWriterType = value;
+                        _sparqlResultsWriterType = value;
                     }
                 }
             }
@@ -571,7 +571,7 @@ namespace VDS.RDF
         {
             get
             {
-                return (this._rdfParserType != null);
+                return (_rdfParserType != null);
             }
         }
 
@@ -582,7 +582,7 @@ namespace VDS.RDF
         {
             get
             {
-                return (this._rdfDatasetParserType != null);
+                return (_rdfDatasetParserType != null);
             }
         }
 
@@ -593,7 +593,7 @@ namespace VDS.RDF
         {
             get
             {
-                return (this._sparqlResultsParserType != null);
+                return (_sparqlResultsParserType != null);
             }
         }
 
@@ -604,7 +604,7 @@ namespace VDS.RDF
         {
             get
             {
-                return (this._rdfWriterType != null);
+                return (_rdfWriterType != null);
             }
         }
 
@@ -615,7 +615,7 @@ namespace VDS.RDF
         {
             get
             {
-                return (this._rdfDatasetWriterType != null);
+                return (_rdfDatasetWriterType != null);
             }
         }
 
@@ -626,7 +626,7 @@ namespace VDS.RDF
         {
             get
             {
-                return (this._sparqlResultsWriterType != null);
+                return (_sparqlResultsWriterType != null);
             }
         }
 
@@ -636,13 +636,13 @@ namespace VDS.RDF
         /// <returns></returns>
         public IRdfReader GetRdfParser()
         {
-            if (this._rdfParserType != null)
+            if (_rdfParserType != null)
             {
-                return (IRdfReader)Activator.CreateInstance(this._rdfParserType);
+                return (IRdfReader)Activator.CreateInstance(_rdfParserType);
             }
             else
             {
-                throw new RdfParserSelectionException("There is no RDF Parser available for the Syntax " + this._name);
+                throw new RdfParserSelectionException("There is no RDF Parser available for the Syntax " + _name);
             }
         }
 
@@ -652,13 +652,13 @@ namespace VDS.RDF
         /// <returns></returns>
         public IRdfWriter GetRdfWriter()
         {
-            if (this._rdfWriterType != null)
+            if (_rdfWriterType != null)
             {
-                return (IRdfWriter)Activator.CreateInstance(this._rdfWriterType);
+                return (IRdfWriter)Activator.CreateInstance(_rdfWriterType);
             }
             else
             {
-                throw new RdfWriterSelectionException("There is no RDF Writer available for the Syntax " + this._name);
+                throw new RdfWriterSelectionException("There is no RDF Writer available for the Syntax " + _name);
             }
         }
 
@@ -668,13 +668,13 @@ namespace VDS.RDF
         /// <returns></returns>
         public IStoreReader GetRdfDatasetParser()
         {
-            if (this._rdfDatasetParserType != null)
+            if (_rdfDatasetParserType != null)
             {
-                return (IStoreReader)Activator.CreateInstance(this._rdfDatasetParserType);
+                return (IStoreReader)Activator.CreateInstance(_rdfDatasetParserType);
             }
             else
             {
-                throw new RdfParserSelectionException("There is no RDF Dataset Parser available for the Syntax " + this._name);
+                throw new RdfParserSelectionException("There is no RDF Dataset Parser available for the Syntax " + _name);
             }
         }
 
@@ -684,13 +684,13 @@ namespace VDS.RDF
         /// <returns></returns>
         public IStoreWriter GetRdfDatasetWriter()
         {
-            if (this._rdfDatasetWriterType != null)
+            if (_rdfDatasetWriterType != null)
             {
-                return (IStoreWriter)Activator.CreateInstance(this._rdfDatasetWriterType);
+                return (IStoreWriter)Activator.CreateInstance(_rdfDatasetWriterType);
             }
             else
             {
-                throw new RdfWriterSelectionException("There is no RDF Dataset Writer available for the Syntax " + this._name);
+                throw new RdfWriterSelectionException("There is no RDF Dataset Writer available for the Syntax " + _name);
             }
         }
 
@@ -700,17 +700,17 @@ namespace VDS.RDF
         /// <returns></returns>
         public ISparqlResultsReader GetSparqlResultsParser()
         {
-            if (this._sparqlResultsParserType != null)
+            if (_sparqlResultsParserType != null)
             {
-                return (ISparqlResultsReader)Activator.CreateInstance(this._sparqlResultsParserType);
+                return (ISparqlResultsReader)Activator.CreateInstance(_sparqlResultsParserType);
             }
-            else if (this._rdfParserType != null)
+            else if (_rdfParserType != null)
             {
-                return new SparqlRdfParser((IRdfReader)Activator.CreateInstance(this._rdfParserType));
+                return new SparqlRdfParser((IRdfReader)Activator.CreateInstance(_rdfParserType));
             }
             else
             {
-                throw new RdfParserSelectionException("There is no SPARQL Results Parser available for the Syntax " + this._name);
+                throw new RdfParserSelectionException("There is no SPARQL Results Parser available for the Syntax " + _name);
             }
         }
 
@@ -720,17 +720,17 @@ namespace VDS.RDF
         /// <returns></returns>
         public ISparqlResultsWriter GetSparqlResultsWriter()
         {
-            if (this._sparqlResultsWriterType != null)
+            if (_sparqlResultsWriterType != null)
             {
-                return (ISparqlResultsWriter)Activator.CreateInstance(this._sparqlResultsWriterType);
+                return (ISparqlResultsWriter)Activator.CreateInstance(_sparqlResultsWriterType);
             }
-            else if (this._rdfWriterType != null)
+            else if (_rdfWriterType != null)
             {
-                return new SparqlRdfWriter((IRdfWriter)Activator.CreateInstance(this._rdfWriterType));
+                return new SparqlRdfWriter((IRdfWriter)Activator.CreateInstance(_rdfWriterType));
             }
             else
             {
-                throw new RdfWriterSelectionException("There is no SPARQL Results Writer available for the Syntax " + this._name);
+                throw new RdfWriterSelectionException("There is no SPARQL Results Writer available for the Syntax " + _name);
             }
         }
 
@@ -741,7 +741,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool CanParseObject<T>()
         {
-            return this._objectParserTypes.ContainsKey(typeof(T));
+            return _objectParserTypes.ContainsKey(typeof(T));
         }
 
         /// <summary>
@@ -753,7 +753,7 @@ namespace VDS.RDF
         {
             Type t = typeof(T);
             Type result;
-            if (this._objectParserTypes.TryGetValue(t, out result))
+            if (_objectParserTypes.TryGetValue(t, out result))
             {
                 return result;
             }
@@ -771,25 +771,25 @@ namespace VDS.RDF
         public void SetObjectParserType<T>(Type parserType)
         {
             Type t = typeof(T);
-            if (this._objectParserTypes.ContainsKey(t))
+            if (_objectParserTypes.ContainsKey(t))
             {
                 if (parserType == null)
                 {
-                    this._objectParserTypes.Remove(t);
+                    _objectParserTypes.Remove(t);
                 }
                 else
                 {
-                    if (this.EnsureObjectParserInterface(parserType, t))
+                    if (EnsureObjectParserInterface(parserType, t))
                     {
-                        this._objectParserTypes[t] = parserType;
+                        _objectParserTypes[t] = parserType;
                     }
                 }
             }
             else if (parserType != null)
             {
-                if (this.EnsureObjectParserInterface(parserType, t))
+                if (EnsureObjectParserInterface(parserType, t))
                 {
-                    this._objectParserTypes.Add(t, parserType);
+                    _objectParserTypes.Add(t, parserType);
                 }
             }
         }
@@ -801,9 +801,9 @@ namespace VDS.RDF
         /// <returns></returns>
         public IObjectParser<T> GetObjectParser<T>()
         {
-            if (this._objectParserTypes.ContainsKey(typeof(T)))
+            if (_objectParserTypes.ContainsKey(typeof(T)))
             {
-                Type parserType = this._objectParserTypes[typeof(T)];
+                Type parserType = _objectParserTypes[typeof(T)];
                 return (IObjectParser<T>)Activator.CreateInstance(parserType);
             }
             else
@@ -819,7 +819,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._objectParserTypes;
+                return _objectParserTypes;
             }
         }
 
@@ -894,7 +894,7 @@ namespace VDS.RDF
                 int order = 1;
                 foreach (String type in ctypes)
                 {
-                    selectors.Add(MimeTypeSelector.Create(type, order));
+                    selectors.Add(Create(type, order));
                     order++;
                 }
             }
@@ -923,42 +923,42 @@ namespace VDS.RDF
         public MimeTypeSelector(String type, String charset, double quality, int order)
         {
             if (type == null) throw new ArgumentNullException("type", "Type cannot be null");
-            this._type = type.Trim().ToLowerInvariant();
-            this._charset = charset != null ? charset.Trim() : null;
-            this._quality = quality;
-            this._order = order;
+            _type = type.Trim().ToLowerInvariant();
+            _charset = charset != null ? charset.Trim() : null;
+            _quality = quality;
+            _order = order;
 
             // Validate parameters
-            if (this._quality < 0) this._quality = 0;
-            if (this._quality > 1) this._quality = 1;
-            if (this._order < 1) this._order = 1;
+            if (_quality < 0) _quality = 0;
+            if (_quality > 1) _quality = 1;
+            if (_order < 1) _order = 1;
 
             // Check what type of selector this is
-            if (!MimeTypesHelper.IsValidMimeType(this._type))
+            if (!MimeTypesHelper.IsValidMimeType(_type))
             {
                 // Invalid
-                this._isInvalid = true;
+                _isInvalid = true;
             }
-            else if (this._type.Equals(MimeTypesHelper.Any))
+            else if (_type.Equals(MimeTypesHelper.Any))
             {
                 // Is a */* any
-                this._isAny = true;
+                _isAny = true;
             }
-            else if (this._type.EndsWith("/*"))
+            else if (_type.EndsWith("/*"))
             {
                 // Is a blah/* range
-                this._isRange = true;
-                this._rangeType = this._type.Substring(0, this._type.Length - 1);
+                _isRange = true;
+                _rangeType = _type.Substring(0, _type.Length - 1);
             }
-            else if (this._type.Contains('*'))
+            else if (_type.Contains('*'))
             {
                 // If it contains a * and is not */* or blah/* it is invalid
-                this._isInvalid = true;
+                _isInvalid = true;
             }
             else
             {
                 // Must be a specific type
-                this._isSpecific = true;
+                _isSpecific = true;
             }
         }
 
@@ -970,7 +970,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._type;
+                return _type;
             }
         }
 
@@ -982,7 +982,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._rangeType;
+                return _rangeType;
             }
         }
 
@@ -993,7 +993,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._charset;
+                return _charset;
             }
         }
 
@@ -1004,7 +1004,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._quality;
+                return _quality;
             }
         }
 
@@ -1015,7 +1015,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._order;
+                return _order;
             }
         }
 
@@ -1026,7 +1026,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._isAny;
+                return _isAny;
             }
         }
 
@@ -1037,7 +1037,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._isRange;
+                return _isRange;
             }
         }
 
@@ -1048,7 +1048,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._isInvalid;
+                return _isInvalid;
             }
         }
 
@@ -1059,7 +1059,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._isSpecific;
+                return _isSpecific;
             }
         }
 
@@ -1076,12 +1076,12 @@ namespace VDS.RDF
                 return -1;
             }
 
-            if (this._isInvalid)
+            if (_isInvalid)
             {
                 if (other.IsInvalid)
                 {
                     // If both invalid use order
-                    return this.Order.CompareTo(other.Order);
+                    return Order.CompareTo(other.Order);
                 }
                 else
                 {
@@ -1095,16 +1095,16 @@ namespace VDS.RDF
                 return -1;
             }
 
-            if (this._isAny)
+            if (_isAny)
             {
                 if (other.IsAny)
                 {
                     // If both Any use quality
-                    int c = -1 * this.Quality.CompareTo(other.Quality);
+                    int c = -1 * Quality.CompareTo(other.Quality);
                     if (c == 0)
                     {
                         // If same quality use order
-                        c = this.Order.CompareTo(other.Order);
+                        c = Order.CompareTo(other.Order);
                     }
                     return c;
                 }
@@ -1114,7 +1114,7 @@ namespace VDS.RDF
                     return 1;
                 }
             }
-            else if (this._isRange)
+            else if (_isRange)
             {
                 if (other.IsAny)
                 {
@@ -1124,11 +1124,11 @@ namespace VDS.RDF
                 else if (other.IsRange)
                 {
                     // If both Range use quality
-                    int c = -1 * this.Quality.CompareTo(other.Quality);
+                    int c = -1 * Quality.CompareTo(other.Quality);
                     if (c == 0)
                     {
                         // If same quality use order
-                        c = this.Order.CompareTo(other.Order);
+                        c = Order.CompareTo(other.Order);
                     }
                     return c;
                 }
@@ -1148,11 +1148,11 @@ namespace VDS.RDF
                 else
                 {
                     // Both specific so use quality
-                    int c = -1 * this.Quality.CompareTo(other.Quality);
+                    int c = -1 * Quality.CompareTo(other.Quality);
                     if (c == 0)
                     {
                         // If same quality use order
-                        c = this.Order.CompareTo(other.Order);
+                        c = Order.CompareTo(other.Order);
                     }
                     return c;
                 }
@@ -1169,14 +1169,14 @@ namespace VDS.RDF
         public override string ToString()
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append(this._type);
-            if (this._quality != 1.0d)
+            builder.Append(_type);
+            if (_quality != 1.0d)
             {
-                builder.Append("; q=" + this._quality.ToString("g3"));
+                builder.Append("; q=" + _quality.ToString("g3"));
             }
-            if (this._charset != null)
+            if (_charset != null)
             {
-                builder.Append("; charset=" + this._charset);
+                builder.Append("; charset=" + _charset);
             }
             return builder.ToString();
         }

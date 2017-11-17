@@ -53,8 +53,8 @@ namespace VDS.RDF
         /// <returns></returns>
         public Object ExecuteQuery(String sparqlQuery)
         {
-            SparqlQuery q = this._parser.ParseFromString(sparqlQuery);
-            return this.ExecuteQuery(q);
+            SparqlQuery q = _parser.ParseFromString(sparqlQuery);
+            return ExecuteQuery(q);
         }
 
         /// <summary>
@@ -65,8 +65,8 @@ namespace VDS.RDF
         /// <param name="sparqlQuery">SPARQL Query</param>
         public void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
-            SparqlQuery q = this._parser.ParseFromString(sparqlQuery);
-            this.ExecuteQuery(rdfHandler, resultsHandler, q);
+            SparqlQuery q = _parser.ParseFromString(sparqlQuery);
+            ExecuteQuery(rdfHandler, resultsHandler, q);
         }
 
         /// <summary>
@@ -76,12 +76,12 @@ namespace VDS.RDF
         /// <returns></returns>
         public Object ExecuteQuery(SparqlQuery query)
         {
-            if (this._processor == null)
+            if (_processor == null)
             {
                 InMemoryDataset ds = new InMemoryDataset(this);
-                this._processor = new LeviathanQueryProcessor(ds);
+                _processor = new LeviathanQueryProcessor(ds);
             }
-            return this._processor.ProcessQuery(query);
+            return _processor.ProcessQuery(query);
         }
 
         /// <summary>
@@ -92,12 +92,12 @@ namespace VDS.RDF
         /// <param name="query">SPARQL Query</param>
         public void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
-            if (this._processor == null)
+            if (_processor == null)
             {
                 InMemoryDataset ds = new InMemoryDataset(this);
-                this._processor = new LeviathanQueryProcessor(ds);
+                _processor = new LeviathanQueryProcessor(ds);
             }
-            this._processor.ProcessQuery(rdfHandler, resultsHandler, query);
+            _processor.ProcessQuery(rdfHandler, resultsHandler, query);
         }
     }
 }

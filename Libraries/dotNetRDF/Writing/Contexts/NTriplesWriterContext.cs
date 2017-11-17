@@ -55,9 +55,9 @@ namespace VDS.RDF.Writing.Contexts
         public NTriplesWriterContext(IGraph g, TextWriter output, NTriplesSyntax syntax, bool prettyPrint, bool hiSpeed)
             : base(g, output, WriterCompressionLevel.Default, prettyPrint, hiSpeed)
         {
-            this.Syntax = syntax;
-            this._formatter = new NTriplesFormatter(this.Syntax);
-            this._uriFormatter = (IUriFormatter)this._formatter;
+            Syntax = syntax;
+            _formatter = new NTriplesFormatter(Syntax);
+            _uriFormatter = (IUriFormatter)_formatter;
         }
 
         /// <summary>

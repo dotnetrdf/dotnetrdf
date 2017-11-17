@@ -47,8 +47,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <param name="startsExpr">Starts Expression</param>
         public StrBeforeFunction(ISparqlExpression stringExpr, ISparqlExpression startsExpr)
         {
-            this._stringExpr = stringExpr;
-            this._endsExpr = startsExpr;
+            _stringExpr = stringExpr;
+            _endsExpr = startsExpr;
         }
 
         /// <summary>
@@ -59,10 +59,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            ILiteralNode input = this.CheckArgument(this._stringExpr, context, bindingID);
-            ILiteralNode ends = this.CheckArgument(this._endsExpr, context, bindingID);
+            ILiteralNode input = CheckArgument(_stringExpr, context, bindingID);
+            ILiteralNode ends = CheckArgument(_endsExpr, context, bindingID);
 
-            if (!this.IsValidArgumentPair(input, ends)) throw new RdfQueryException("The Literals provided as arguments to this SPARQL String function are not of valid forms (see SPARQL spec for acceptable combinations)");
+            if (!IsValidArgumentPair(input, ends)) throw new RdfQueryException("The Literals provided as arguments to this SPARQL String function are not of valid forms (see SPARQL spec for acceptable combinations)");
 
             Uri datatype = input.DataType;//(input.DataType != null ? input.DataType : ends.DataType);
             string lang = input.Language;// (!input.Language.Equals(string.Empty) ? input.Language : ends.Language);
@@ -105,7 +105,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 
         private ILiteralNode CheckArgument(ISparqlExpression expr, SparqlEvaluationContext context, int bindingID)
         {
-            return this.CheckArgument(expr, context, bindingID, XPathFunctionFactory.AcceptStringArguments);
+            return CheckArgument(expr, context, bindingID, XPathFunctionFactory.AcceptStringArguments);
         }
 
         private ILiteralNode CheckArgument(ISparqlExpression expr, SparqlEvaluationContext context, int bindingID, Func<Uri, bool> argumentTypeValidator)
@@ -227,7 +227,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         {
             get
             {
-                return this._endsExpr.Variables.Concat(this._stringExpr.Variables);
+                return _endsExpr.Variables.Concat(_stringExpr.Variables);
             }
         }
 
@@ -260,7 +260,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         {
             get
             {
-                return new ISparqlExpression[] { this._stringExpr, this._endsExpr };
+                return new ISparqlExpression[] { _stringExpr, _endsExpr };
             }
         }
 
@@ -271,7 +271,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         {
             get
             {
-                return this._stringExpr.CanParallelise && this._endsExpr.CanParallelise;
+                return _stringExpr.CanParallelise && _endsExpr.CanParallelise;
             }
         }
 
@@ -282,7 +282,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new StrBeforeFunction(transformer.Transform(this._stringExpr), transformer.Transform(this._endsExpr));
+            return new StrBeforeFunction(transformer.Transform(_stringExpr), transformer.Transform(_endsExpr));
         }
 
         /// <summary>
@@ -291,7 +291,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordStrBefore + "(" + this._stringExpr.ToString() + ", " + this._endsExpr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordStrBefore + "(" + _stringExpr.ToString() + ", " + _endsExpr.ToString() + ")";
         }
     }
 }

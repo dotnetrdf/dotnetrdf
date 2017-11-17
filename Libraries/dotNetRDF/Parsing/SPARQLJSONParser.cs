@@ -48,7 +48,7 @@ namespace VDS.RDF.Parsing
         public void Load(SparqlResultSet results, StreamReader input)
         {
             if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
-            this.Load(new ResultSetHandler(results), input);
+            Load(new ResultSetHandler(results), input);
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace VDS.RDF.Parsing
         {
             if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
             if (filename == null) throw new RdfParseException("Cannot read SPARQL Results from a null File");
-            this.Load(results, new StreamReader(File.OpenRead(filename)));
+            Load(results, new StreamReader(File.OpenRead(filename)));
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace VDS.RDF.Parsing
         public void Load(SparqlResultSet results, TextReader input)
         {
             if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
-            this.Load(new ResultSetHandler(results), input);
+            Load(new ResultSetHandler(results), input);
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                this.Parse(input, handler);
+                Parse(input, handler);
             }
             finally
             {
@@ -109,7 +109,7 @@ namespace VDS.RDF.Parsing
         /// <param name="input">Input Stream to read from</param>
         public void Load(ISparqlResultsHandler handler, StreamReader input)
         {
-            this.Load(handler, (TextReader) input);
+            Load(handler, (TextReader) input);
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace VDS.RDF.Parsing
         public void Load(ISparqlResultsHandler handler, String filename)
         {
             if (filename == null) throw new RdfParseException("Cannot read SPARQL Results from a null File");
-            this.Load(handler, new StreamReader(File.OpenRead(filename)));
+            Load(handler, new StreamReader(File.OpenRead(filename)));
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace VDS.RDF.Parsing
         /// <param name="handler">Results Handler</param>
         private void Parse(TextReader input, ISparqlResultsHandler handler)
         {
-            this.ParseResultSetObject(new SparqlJsonParserContext(new CommentIgnoringJsonTextReader(input), handler));
+            ParseResultSetObject(new SparqlJsonParserContext(new CommentIgnoringJsonTextReader(input), handler));
         }
 
         /// <summary>
@@ -148,10 +148,10 @@ namespace VDS.RDF.Parsing
                     if (context.Input.TokenType == JsonToken.StartObject)
                     {
                         // Parse the Header and the Body
-                        if (this.ParseHeader(context))
+                        if (ParseHeader(context))
                         {
                             // For SPARQL Results JSON with an unexpected ordering the act of parsing the header may cause us to parse the body
-                            this.ParseBody(context);
+                            ParseBody(context);
 
                             // Check we now get the End of the Result Set Object
                             context.Input.Read();
@@ -189,7 +189,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         private bool ParseHeader(SparqlJsonParserContext context)
         {
-            return this.ParseHeader(context, false);
+            return ParseHeader(context, false);
         }
 
         /// <summary>
@@ -206,17 +206,17 @@ namespace VDS.RDF.Parsing
             switch (propName)
             {
                 case "head":
-                    this.ParseHeaderObject(context, bodySeen);
+                    ParseHeaderObject(context, bodySeen);
                     return true;
                 case "results":
                     // We've seen the results before the header, still expect to see a header afterwards
-                    this.ParseResults(context, false);
-                    this.ParseHeader(context, true);
+                    ParseResults(context, false);
+                    ParseHeader(context, true);
                     return false;
                 case "boolean":
                     // We've seen the boolean result before the header, still expect to see a header afterwards
                     ParseBoolean(context);
-                    this.ParseHeader(context, false);
+                    ParseHeader(context, false);
                     return false;
                 default:
                     // TODO Technically we should probably allow and ignore unknown objects
@@ -237,7 +237,7 @@ namespace VDS.RDF.Parsing
                     case JsonToken.Null:
                         break;
                     case JsonToken.StartObject:
-                        this.ParseHeaderProperties(context, bodySeen);
+                        ParseHeaderProperties(context, bodySeen);
                         if (context.Input.TokenType != JsonToken.EndObject)
                         {
                             throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' with value '" + context.Input.Value + "' encountered, end of the Header Object of the JSON Result Set was expected");
@@ -274,12 +274,12 @@ namespace VDS.RDF.Parsing
                             if (varsSeen) throw Error(context, "Unexpected Property Name 'vars' encountered, a 'vars' property has already been seen in the Header Object of the JSON Result Set");
                             varsSeen = true;
 
-                            this.ParseVariables(context, bodySeen);
+                            ParseVariables(context, bodySeen);
                         }
                         else if (propName.Equals("link"))
                         {
                             // Link property
-                            this.ParseLink(context);
+                            ParseLink(context);
                         }
                         else
                         {
@@ -396,7 +396,7 @@ namespace VDS.RDF.Parsing
                     String propName = context.Input.Value.ToString();
                     if (propName.Equals("results"))
                     {
-                        this.ParseResults(context, true);
+                        ParseResults(context, true);
                     }
                     else if (propName.Equals("boolean"))
                     {
@@ -471,7 +471,7 @@ namespace VDS.RDF.Parsing
                         context.Input.Read();
                         if (context.Input.TokenType == JsonToken.StartArray)
                         {
-                            this.ParseBindings(context, headSeen);
+                            ParseBindings(context, headSeen);
                         }
                         else
                         {
@@ -484,7 +484,7 @@ namespace VDS.RDF.Parsing
                     }
 
                     // Skip to the End of the Results Object
-                    this.SkipToEndOfObject(context, true);
+                    SkipToEndOfObject(context, true);
                 }
                 else
                 {
@@ -509,7 +509,7 @@ namespace VDS.RDF.Parsing
                 {
                     if (context.Input.TokenType == JsonToken.StartObject)
                     {
-                        this.ParseBinding(context, headSeen);
+                        ParseBinding(context, headSeen);
                     }
                     else
                     {
@@ -542,7 +542,7 @@ namespace VDS.RDF.Parsing
                     if (context.Input.TokenType == JsonToken.PropertyName)
                     {
                         // Each Property Name should be for a variable
-                        this.ParseBoundVariable(context, context.Input.Value.ToString(), result, headSeen);
+                        ParseBoundVariable(context, context.Input.Value.ToString(), result, headSeen);
                     }
                     else
                     {
@@ -775,7 +775,7 @@ namespace VDS.RDF.Parsing
         {
             if (issueWarning)
             {
-                this.RaiseWarning("Found extra JSON property " + context.Input.Value + " which will be ignored and discarded");
+                RaiseWarning("Found extra JSON property " + context.Input.Value + " which will be ignored and discarded");
             }
 
             int depth = 1;
@@ -809,7 +809,7 @@ namespace VDS.RDF.Parsing
 
                     case JsonToken.StartArray:
                         // Need to separately skip the array
-                        this.SkipToEndOfArray(context, false);
+                        SkipToEndOfArray(context, false);
                         break;
 
                     case JsonToken.EndArray:
@@ -838,7 +838,7 @@ namespace VDS.RDF.Parsing
         {
             if (issueWarning)
             {
-                this.RaiseWarning("Found extra JSON array which will be ignored and discarded");
+                RaiseWarning("Found extra JSON array which will be ignored and discarded");
             }
 
             int depth = 1;
@@ -883,7 +883,7 @@ namespace VDS.RDF.Parsing
 
                     case JsonToken.StartObject:
                         // Need to separately skip the object
-                        this.SkipToEndOfObject(context, false);
+                        SkipToEndOfObject(context, false);
                         break;
 
                     case JsonToken.EndObject:
@@ -925,7 +925,7 @@ namespace VDS.RDF.Parsing
         /// <param name="message">Warning Message</param>
         private void RaiseWarning(String message)
         {
-            SparqlWarning d = this.Warning;
+            SparqlWarning d = Warning;
             if (d != null)
             {
                 d(message);

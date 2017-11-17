@@ -43,12 +43,12 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="name">Variable name</param>
         public VariablePattern(String name)
         {
-            this._varname = name;
+            _varname = name;
 
             // Strip leading ?/$ if present
-            if (this._varname.StartsWith("?") || this._varname.StartsWith("$"))
+            if (_varname.StartsWith("?") || _varname.StartsWith("$"))
             {
-                this._varname = this._varname.Substring(1);
+                _varname = _varname.Substring(1);
             }
         }
 
@@ -60,7 +60,7 @@ namespace VDS.RDF.Query.Patterns
         public VariablePattern(String name, bool rigorousEvaluation)
             : this(name)
         {
-            this.RigorousEvaluation = rigorousEvaluation;
+            RigorousEvaluation = rigorousEvaluation;
         }
 
         /// <summary>
@@ -71,13 +71,13 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         protected internal override bool Accepts(SparqlEvaluationContext context, INode obj)
         {
-            if (Options.RigorousEvaluation || this.RigorousEvaluation)
+            if (Options.RigorousEvaluation || RigorousEvaluation)
             {
-                if (context.InputMultiset.ContainsVariable(this._varname))
+                if (context.InputMultiset.ContainsVariable(_varname))
                 {
-                    return context.InputMultiset.ContainsValue(this._varname, obj);
+                    return context.InputMultiset.ContainsValue(_varname, obj);
                 }
-                else if (this.Repeated)
+                else if (Repeated)
                 {
                     return true;
                 }
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns>The Node which is bound to this Variable in this Solution</returns>
         protected internal override INode Construct(ConstructContext context)
         {
-            INode value = context.Set[this._varname];
+            INode value = context.Set[_varname];
 
             if (value == null) throw new RdfQueryException("Unable to construct a Value for this Variable for this solution as it is bound to a null");
             switch (value.NodeType)
@@ -134,7 +134,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public override string ToString()
         {
-            return "?" + this._varname;
+            return "?" + _varname;
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._varname;
+                return _varname;
             }
         }
     }

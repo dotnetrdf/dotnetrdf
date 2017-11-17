@@ -73,7 +73,7 @@ namespace VDS.RDF.Configuration
         public bool CanLoadObject(Type t)
         {
             // We can load any object which implements IPropertyFunctionFactory and has a public unparameterized constructor
-            return t.GetInterfaces().Contains(this._factoryType) && t.GetConstructors().Any(c => c.GetParameters().Length == 0 && c.IsPublic);
+            return t.GetInterfaces().Contains(_factoryType) && t.GetConstructors().Any(c => c.GetParameters().Length == 0 && c.IsPublic);
         }
     }
 }

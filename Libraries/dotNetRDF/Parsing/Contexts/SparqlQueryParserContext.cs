@@ -95,14 +95,14 @@ namespace VDS.RDF.Parsing.Contexts
         protected internal SparqlQueryParserContext(SparqlQueryParserContext parent, ITokenQueue tokens)
             : base(new NullHandler(), null)
         {
-            this._traceParsing = parent.TraceParsing;
-            this._traceTokeniser = parent.TraceTokeniser;
-            this._queue = tokens;
-            this._subqueryMode = true;
-            this._query = new SparqlQuery(true);
-            this._factories = parent.ExpressionFactories;
-            this._syntax = parent.SyntaxMode;
-            this._exprParser.SyntaxMode = this._syntax;
+            _traceParsing = parent.TraceParsing;
+            _traceTokeniser = parent.TraceTokeniser;
+            _queue = tokens;
+            _subqueryMode = true;
+            _query = new SparqlQuery(true);
+            _factories = parent.ExpressionFactories;
+            _syntax = parent.SyntaxMode;
+            _exprParser.SyntaxMode = _syntax;
         }
 
         /// <summary>
@@ -112,8 +112,8 @@ namespace VDS.RDF.Parsing.Contexts
         protected internal SparqlQueryParserContext(ITokenQueue tokens)
             : base(new NullHandler(), null)
         {
-            this._queue = tokens;
-            this._query = new SparqlQuery(true);
+            _queue = tokens;
+            _query = new SparqlQuery(true);
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._query;
+                return _query;
             }
         }
 
@@ -134,13 +134,13 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._verbSeen;
+                return _verbSeen;
             }
             set
             {
                 if (value)
                 {
-                    this._verbSeen = value;
+                    _verbSeen = value;
                 }
             }
         }
@@ -152,7 +152,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._subqueryMode;
+                return _subqueryMode;
             }
         }
 
@@ -163,12 +163,12 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._syntax;
+                return _syntax;
             }
             set
             {
-                this._syntax = value;
-                this._exprParser.SyntaxMode = value;
+                _syntax = value;
+                _exprParser.SyntaxMode = value;
             }
         }
 
@@ -179,13 +179,13 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._defaultBaseUri;
+                return _defaultBaseUri;
             }
             set
             {
-                this._defaultBaseUri = value;
-                this._exprParser.BaseUri = value;
-                this._query.BaseUri = value;
+                _defaultBaseUri = value;
+                _exprParser.BaseUri = value;
+                _query.BaseUri = value;
             }
         }
 
@@ -196,7 +196,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._exprParser;
+                return _exprParser;
             }
         }
 
@@ -207,7 +207,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._pathParser;
+                return _pathParser;
             }
         }
 
@@ -218,11 +218,11 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._graphPatternID;
+                return _graphPatternID;
             }
             set
             {
-                this._graphPatternID = value;
+                _graphPatternID = value;
             }
         }
 
@@ -232,13 +232,13 @@ namespace VDS.RDF.Parsing.Contexts
         /// <returns></returns>
         public String GetNewBlankNodeID()
         {
-            String id = "_:sparql-autos" + this._blankNodeID;
-            while (this._bnodeLabelUsages.ContainsKey(id))
+            String id = "_:sparql-autos" + _blankNodeID;
+            while (_bnodeLabelUsages.ContainsKey(id))
             {
-                this._blankNodeID++;
-                id = "_:sparql-autos" + this._blankNodeID;
+                _blankNodeID++;
+                id = "_:sparql-autos" + _blankNodeID;
             }
-            this._bnodeLabelUsages.Add(id, this._graphPatternID);
+            _bnodeLabelUsages.Add(id, _graphPatternID);
 
             return id;
         }
@@ -250,7 +250,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._bnodeLabelUsages;
+                return _bnodeLabelUsages;
             }
         }
 
@@ -261,7 +261,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._blankNodeID;
+                return _blankNodeID;
             }
         }
 
@@ -275,11 +275,11 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._checkBNodeScope;
+                return _checkBNodeScope;
             }
             set
             {
-                this._checkBNodeScope = value;
+                _checkBNodeScope = value;
             }
         }
 
@@ -290,8 +290,8 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                int temp = this._nextAliasID;
-                this._nextAliasID++;
+                int temp = _nextAliasID;
+                _nextAliasID++;
                 return temp;
             }
         }
@@ -303,13 +303,13 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._factories;
+                return _factories;
             }
             set
             {
                 if (value != null)
                 {
-                    this._factories = value;
+                    _factories = value;
                 }
             }
         }

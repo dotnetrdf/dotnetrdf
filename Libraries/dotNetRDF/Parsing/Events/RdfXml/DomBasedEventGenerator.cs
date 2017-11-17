@@ -44,7 +44,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// <param name="document">XML Document</param>
         public DomBasedEventGenerator(XmlDocument document)
         {
-            this._document = document;
+            _document = document;
         }
 
         /// <summary>
@@ -53,8 +53,8 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// <param name="input">Input Stream</param>
         public DomBasedEventGenerator(StreamReader input)
         {
-            this._document = new XmlDocument();
-            this._document.Load(input);
+            _document = new XmlDocument();
+            _document.Load(input);
         }
 
         /// <summary>
@@ -63,8 +63,8 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// <param name="file">Input File</param>
         public DomBasedEventGenerator(String file)
         {
-            this._document = new XmlDocument();
-            this._document.Load(File.OpenRead(file));
+            _document = new XmlDocument();
+            _document.Load(File.OpenRead(file));
         }
 
         /// <summary>
@@ -74,11 +74,11 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         public void GetAllEvents(RdfXmlParserContext context)
         {
             RootEvent root;
-            XmlNodeList nodes = this._document.GetElementsByTagName("rdf:RDF");
+            XmlNodeList nodes = _document.GetElementsByTagName("rdf:RDF");
             if (nodes.Count == 0)
             {
                 // Not using rdf:RDF
-                root = this.GenerateEventTree(context, this._document.DocumentElement);
+                root = GenerateEventTree(context, _document.DocumentElement);
             }
             else if (nodes.Count > 1)
             {
@@ -87,10 +87,10 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             else
             {
                 // Must thus be only 1 rdf:RDF element
-                root = this.GenerateEventTree(context, nodes[0]);
+                root = GenerateEventTree(context, nodes[0]);
             }
 
-            this.FlattenEventTree(context, root, 0);
+            FlattenEventTree(context, root, 0);
         }
 
         /// <summary>
@@ -183,13 +183,13 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             foreach (XmlNode child in docEl.ChildNodes)
             {
                 // Ignore Irrelevant Node Types
-                if (this.IsIgnorableNode(child))
+                if (IsIgnorableNode(child))
                 {
                     continue;
                 }
 
                 // Generate an Event for the Child Node
-                ElementEvent childEvent = this.GenerateEvents(context, child, element);
+                ElementEvent childEvent = GenerateEvents(context, child, element);
                 element.Children.Add(childEvent);
             }
 
@@ -394,13 +394,13 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                     foreach (XmlNode child in node.ChildNodes)
                     {
                         // Ignore Irrelevant Node Types
-                        if (this.IsIgnorableNode(child))
+                        if (IsIgnorableNode(child))
                         {
                             continue;
                         }
 
                         // Generate an Event for the Child Node
-                        ElementEvent childEvent = this.GenerateEvents(context, child, element);
+                        ElementEvent childEvent = GenerateEvents(context, child, element);
                         element.Children.Add(childEvent);
                     }
                 }
@@ -424,9 +424,9 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                     // Single Child which is not a Text Node
 
                     // Recurse on the single Child Node
-                    if (!this.IsIgnorableNode(node.ChildNodes[0]))
+                    if (!IsIgnorableNode(node.ChildNodes[0]))
                     {
-                        ElementEvent childEvent = this.GenerateEvents(context, node.ChildNodes[0], element);
+                        ElementEvent childEvent = GenerateEvents(context, node.ChildNodes[0], element);
                         element.Children.Add(childEvent);
                     }
                 }
@@ -480,7 +480,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                 }
                 foreach (IRdfXmlEvent childEvent in root.Children)
                 {
-                    this.FlattenEventTree(context, childEvent, nesting + 1);
+                    FlattenEventTree(context, childEvent, nesting + 1);
                 }
 
                 // No End after a RootEvent
@@ -497,7 +497,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                 {
                     foreach (IRdfXmlEvent childEvent in element.Children)
                     {
-                        this.FlattenEventTree(context, childEvent, nesting + 1);
+                        FlattenEventTree(context, childEvent, nesting + 1);
                     }
                 }
             }

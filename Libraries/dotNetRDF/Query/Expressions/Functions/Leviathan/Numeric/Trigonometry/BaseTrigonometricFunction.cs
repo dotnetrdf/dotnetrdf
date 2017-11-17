@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         public BaseTrigonometricFunction(ISparqlExpression expr, Func<double, double> func)
             : base(expr)
         {
-            this._func = func;
+            _func = func;
         }
 
         /// <summary>
@@ -66,12 +66,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            IValuedNode temp = this._expr.Evaluate(context, bindingID);
+            IValuedNode temp = _expr.Evaluate(context, bindingID);
             if (temp == null) throw new RdfQueryException("Cannot apply a trigonometric function to a null");
 
             if (temp.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot apply a trigonometric function to a non-numeric argument");
 
-            return new DoubleNode(null, this._func(temp.AsDouble()));
+            return new DoubleNode(null, _func(temp.AsDouble()));
         }
 
         /// <summary>

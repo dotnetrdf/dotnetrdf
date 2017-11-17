@@ -66,8 +66,7 @@ namespace VDS.RDF
 
             if (x is IVirtualIdComparable && y is IVirtualIdComparable)
             {
-                int result;
-                if ((x as IVirtualIdComparable).TryCompareVirtualId(y, out result)) return result;
+                if ((x as IVirtualIdComparable).TryCompareVirtualId(y, out int result)) return result;
             }
 
             if (x.NodeType == NodeType.Literal && y.NodeType == NodeType.Literal)
@@ -134,11 +133,18 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Determine equality for two nodes
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns>True if the nodes compare equal, false otheriwse</returns>
         public bool Equals(INode x, INode y)
         {
             return Compare(x, y) == 0;
         }
 
+        /// <inheritdoc />
         public int GetHashCode(INode obj)
         {
             return obj.GetHashCode();
@@ -241,17 +247,22 @@ namespace VDS.RDF
             }
         }
 
+        /// <inheritdoc />
         public bool Equals(INode x, INode y)
         {
             return Compare(x,y)==0;
         }
 
+        /// <inheritdoc />
         public int GetHashCode(INode obj)
         {
             return obj.GetHashCode();
         }
     }
 
+    /// <summary>
+    /// Compares triples for equality
+    /// </summary>
     public class TripleEqualityComparer : IEqualityComparer<Triple>
     { 
 
@@ -269,8 +280,7 @@ namespace VDS.RDF
         /// <summary>
         /// Returns a predictable HashCode for the triple based on its components'
         /// </summary>
-        /// <param name="x">Triple</param>
-        /// <param name="y">Triple</param>
+        /// <param name="t">Triple</param>
         /// <returns></returns>
         public int GetHashCode(Triple t)
         {
@@ -301,8 +311,7 @@ namespace VDS.RDF
         /// <param name="nodeComparer">Node Comparer to use</param>
         public BaseTripleComparer(IComparer<INode> nodeComparer)
         {
-            if (nodeComparer == null) throw new ArgumentNullException("nodeComparer");
-            this._nodeComparer = nodeComparer;
+            _nodeComparer = nodeComparer ?? throw new ArgumentNullException(nameof(nodeComparer));
         }
 
         /// <summary>
@@ -342,13 +351,13 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int Compare(Triple x, Triple y)
         {
-            int c = this._nodeComparer.Compare(x.Subject, y.Subject);
+            int c = _nodeComparer.Compare(x.Subject, y.Subject);
             if (c == 0)
             {
-                c = this._nodeComparer.Compare(x.Predicate, y.Predicate);
+                c = _nodeComparer.Compare(x.Predicate, y.Predicate);
                 if (c == 0)
                 {
-                    c = this._nodeComparer.Compare(x.Object, y.Object);
+                    c = _nodeComparer.Compare(x.Object, y.Object);
                 }
             }
             return c;
@@ -383,7 +392,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int Compare(Triple x, Triple y)
         {
-            return this._nodeComparer.Compare(x.Subject, y.Subject);
+            return _nodeComparer.Compare(x.Subject, y.Subject);
         }
     }
 
@@ -414,7 +423,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int Compare(Triple x, Triple y)
         {
-            return this._nodeComparer.Compare(x.Predicate, y.Predicate);
+            return _nodeComparer.Compare(x.Predicate, y.Predicate);
         }
     }
 
@@ -445,7 +454,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int Compare(Triple x, Triple y)
         {
-            return this._nodeComparer.Compare(x.Object, y.Object);
+            return _nodeComparer.Compare(x.Object, y.Object);
         }
     }
 
@@ -476,10 +485,10 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int Compare(Triple x, Triple y)
         {
-            int c = this._nodeComparer.Compare(x.Subject, y.Subject);
+            int c = _nodeComparer.Compare(x.Subject, y.Subject);
             if (c == 0)
             {
-                c = this._nodeComparer.Compare(x.Predicate, y.Predicate);
+                c = _nodeComparer.Compare(x.Predicate, y.Predicate);
             }
             return c;
         }
@@ -512,10 +521,10 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int Compare(Triple x, Triple y)
         {
-            int c = this._nodeComparer.Compare(x.Subject, y.Subject);
+            int c = _nodeComparer.Compare(x.Subject, y.Subject);
             if (c == 0)
             {
-                c = this._nodeComparer.Compare(x.Object, y.Object);
+                c = _nodeComparer.Compare(x.Object, y.Object);
             }
             return c;
         }
@@ -548,10 +557,10 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int Compare(Triple x, Triple y)
         {
-            int c = this._nodeComparer.Compare(x.Predicate, y.Predicate);
+            int c = _nodeComparer.Compare(x.Predicate, y.Predicate);
             if (c == 0)
             {
-                c = this._nodeComparer.Compare(x.Object, y.Object);
+                c = _nodeComparer.Compare(x.Object, y.Object);
             }
             return c;
         }
@@ -583,10 +592,10 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int Compare(Triple x, Triple y)
         {
-            int c = this._nodeComparer.Compare(x.Object, y.Object);
+            int c = _nodeComparer.Compare(x.Object, y.Object);
             if (c == 0)
             {
-                c = this._nodeComparer.Compare(x.Subject, y.Subject);
+                c = _nodeComparer.Compare(x.Subject, y.Subject);
             }
             return c;
         }

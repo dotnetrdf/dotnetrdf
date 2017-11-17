@@ -62,9 +62,9 @@ namespace VDS.RDF
         /// <param name="type">Node Type</param>
         public BaseNode(IGraph g, NodeType type)
         {
-            this._graph = g;
-            if (this._graph != null) this._graphUri = this._graph.BaseUri;
-            this._nodetype = type;
+            _graph = g;
+            if (_graph != null) _graphUri = _graph.BaseUri;
+            _nodetype = type;
         }
 
         /// <summary>
@@ -96,11 +96,11 @@ namespace VDS.RDF
         {
             get
             {
-                return this._graphUri;
+                return _graphUri;
             }
             set
             {
-                this._graphUri = value;
+                _graphUri = value;
             }
         }
 
@@ -160,7 +160,7 @@ namespace VDS.RDF
         /// </remarks>
         public override int GetHashCode()
         {
-            return this._hashcode;
+            return _hashcode;
         }
 
         /// <summary>

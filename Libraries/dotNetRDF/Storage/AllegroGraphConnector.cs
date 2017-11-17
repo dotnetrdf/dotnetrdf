@@ -83,22 +83,22 @@ namespace VDS.RDF.Storage
         public AllegroGraphConnector(String baseUri, String catalogID, String storeID, String username, String password)
             : base(baseUri, storeID, username, password)
         {
-            this._baseUri = baseUri;
-            if (!this._baseUri.EndsWith("/")) this._baseUri += "/";
+            _baseUri = baseUri;
+            if (!_baseUri.EndsWith("/")) _baseUri += "/";
 #if NETCORE
             this._agraphBase = this._baseUri.Copy();
 #else
-            this._agraphBase = String.Copy(this._baseUri);
+            _agraphBase = String.Copy(_baseUri);
 #endif
             if (catalogID != null)
             {
-                this._baseUri += "catalogs/" + catalogID + "/";
+                _baseUri += "catalogs/" + catalogID + "/";
             }
-            this._store = storeID;
-            this._catalog = catalogID;
-            this._updatePath = String.Empty;
+            _store = storeID;
+            _catalog = catalogID;
+            _updatePath = String.Empty;
 
-            this._server = new AllegroGraphServer(this._baseUri, this._catalog);
+            _server = new AllegroGraphServer(_baseUri, _catalog);
         }
 
         /// <summary>
@@ -142,7 +142,7 @@ namespace VDS.RDF.Storage
         public AllegroGraphConnector(String baseUri, String catalogID, String storeID, String username, String password, IWebProxy proxy)
             : this(baseUri, catalogID, storeID, username, password)
         {
-            this.Proxy = proxy;
+            Proxy = proxy;
         }
 
         /// <summary>
@@ -160,13 +160,7 @@ namespace VDS.RDF.Storage
         /// Gets the Catalog under which the repository you are connected to is located
         /// </summary>
         [Description("The Catalog under which the repository is located.  If using the Root Catalog on AllegroGrah 4+ <ROOT> will be displayed.")]
-        public String Catalog
-        {
-            get
-            {
-                return (this._catalog != null ? this._catalog : "<ROOT>");
-            }
-        }
+        public string Catalog => _catalog ?? "<ROOT>";
 
         /// <summary>
         /// Makes a SPARQL Update request to the Allegro Graph server
@@ -179,7 +173,7 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request;
 
                 // Create the Request
-                request = this.CreateRequest(this._repositoriesPrefix + this._store + this._updatePath, MimeTypesHelper.Any, "POST", new Dictionary<String, String>());
+                request = CreateRequest(_repositoriesPrefix + _store + _updatePath, MimeTypesHelper.Any, "POST", new Dictionary<String, String>());
 
                 // Build the Post Data and add to the Request Body
                 request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
@@ -221,7 +215,7 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request;
 
                 // Create the Request
-                request = this.CreateRequest(this._repositoriesPrefix + this._store + this._updatePath, MimeTypesHelper.Any, "POST", new Dictionary<String, String>());
+                request = CreateRequest(_repositoriesPrefix + _store + _updatePath, MimeTypesHelper.Any, "POST", new Dictionary<String, String>());
 
                 // Build the Post Data and add to the Request Body
                 request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
@@ -320,6 +314,7 @@ namespace VDS.RDF.Storage
             return base.CreateRequest(servicePath, accept, method, queryParams);
         }
 
+        /// <inheritdoc />
         protected override string GetSaveContentType()
         {
             // AllegroGraph rejects application/n-triples as it still expects to get text/plain so have to use that instead
@@ -332,11 +327,11 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public override string ToString()
         {
-            if (this._catalog != null)
+            if (_catalog != null)
             {
-                return "[AllegroGraph] Store '" + this._store + "' in Catalog '" + this._catalog + "' on Server '" + this._baseUri.Substring(0, this._baseUri.IndexOf("catalogs/")) + "'";
+                return "[AllegroGraph] Store '" + _store + "' in Catalog '" + _catalog + "' on Server '" + _baseUri.Substring(0, _baseUri.IndexOf("catalogs/")) + "'";
             }
-            return "[AllegroGraph] Store '" + this._store + "' in Root Catalog on Server '" + this._baseUri + "'";
+            return "[AllegroGraph] Store '" + _store + "' in Root Catalog on Server '" + _baseUri + "'";
         }
 
         /// <summary>
@@ -355,28 +350,28 @@ namespace VDS.RDF.Storage
             INode store = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStore));
 
             context.Graph.Assert(new Triple(manager, rdfType, genericManager));
-            context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString())));
-            context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
-            if (this._catalog != null)
+            context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString())));
+            context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(GetType().FullName)));
+            if (_catalog != null)
             {
-                context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._baseUri.Substring(0, this._baseUri.IndexOf("catalogs/")))));
-                context.Graph.Assert(new Triple(manager, catalog, context.Graph.CreateLiteralNode(this._catalog)));
+                context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(_baseUri.Substring(0, _baseUri.IndexOf("catalogs/")))));
+                context.Graph.Assert(new Triple(manager, catalog, context.Graph.CreateLiteralNode(_catalog)));
             }
             else
             {
-                context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._baseUri)));
+                context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(_baseUri)));
             }
-            context.Graph.Assert(new Triple(manager, store, context.Graph.CreateLiteralNode(this._store)));
+            context.Graph.Assert(new Triple(manager, store, context.Graph.CreateLiteralNode(_store)));
             
-            if (this._username != null && this._pwd != null)
+            if (_username != null && _pwd != null)
             {
                 INode username = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUser));
                 INode pwd = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPassword));
-                context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(this._username)));
-                context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(this._pwd)));
+                context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(_username)));
+                context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(_pwd)));
             }
 
-            base.SerializeStandardConfig(manager, context);
+            SerializeStandardConfig(manager, context);
         }
     }
 }

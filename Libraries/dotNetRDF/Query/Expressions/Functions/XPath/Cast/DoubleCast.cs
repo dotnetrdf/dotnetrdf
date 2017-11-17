@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            IValuedNode n = this._expr.Evaluate(context, bindingID);//.CoerceToDouble();
+            IValuedNode n = _expr.Evaluate(context, bindingID);//.CoerceToDouble();
 
             if (n == null)
             {
@@ -134,7 +134,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XmlSpecsHelper.XmlSchemaDataTypeDouble + ">(" + this._expr.ToString() + ")";
+            return "<" + XmlSpecsHelper.XmlSchemaDataTypeDouble + ">(" + _expr.ToString() + ")";
         }
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new DoubleCast(transformer.Transform(this._expr));
+            return new DoubleCast(transformer.Transform(_expr));
         }
     }
 }

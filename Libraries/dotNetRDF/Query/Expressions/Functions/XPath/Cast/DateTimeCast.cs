@@ -51,7 +51,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            IValuedNode n = this._expr.Evaluate(context, bindingID);//.CoerceToDateTime();
+            IValuedNode n = _expr.Evaluate(context, bindingID);//.CoerceToDateTime();
 
             if (n == null)
             {
@@ -135,7 +135,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XmlSpecsHelper.XmlSchemaDataTypeDateTime + ">(" + this._expr.ToString() + ")";
+            return "<" + XmlSpecsHelper.XmlSchemaDataTypeDateTime + ">(" + _expr.ToString() + ")";
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new DateTimeCast(transformer.Transform(this._expr));
+            return new DateTimeCast(transformer.Transform(_expr));
         }
     }
 }

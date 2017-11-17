@@ -50,7 +50,7 @@ namespace VDS.RDF.Parsing.Handlers
         public BaseHandler(INodeFactory factory)
         {
             if (factory == null) throw new ArgumentNullException("factory");
-            this._factory = factory;
+            _factory = factory;
         }
 
         /// <summary>
@@ -60,12 +60,12 @@ namespace VDS.RDF.Parsing.Handlers
         {
             get
             {
-                return this._factory;
+                return _factory;
             }
             set
             {
                 if (value == null) throw new InvalidOperationException("Cannot set the NodeFactory of a Handler to be null");
-                this._factory = value;
+                _factory = value;
             }
         }
 
@@ -77,7 +77,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         public virtual IBlankNode CreateBlankNode()
         {
-            return this._factory.CreateBlankNode();
+            return _factory.CreateBlankNode();
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         public virtual IBlankNode CreateBlankNode(string nodeId)
         {
-            return this._factory.CreateBlankNode(nodeId);
+            return _factory.CreateBlankNode(nodeId);
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         public virtual IGraphLiteralNode CreateGraphLiteralNode()
         {
-            return this._factory.CreateGraphLiteralNode();
+            return _factory.CreateGraphLiteralNode();
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         public virtual IGraphLiteralNode CreateGraphLiteralNode(IGraph subgraph)
         {
-            return this._factory.CreateGraphLiteralNode(subgraph);
+            return _factory.CreateGraphLiteralNode(subgraph);
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         public virtual ILiteralNode CreateLiteralNode(string literal, Uri datatype)
         {
-            return this._factory.CreateLiteralNode(literal, datatype);
+            return _factory.CreateLiteralNode(literal, datatype);
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         public virtual ILiteralNode CreateLiteralNode(string literal)
         {
-            return this._factory.CreateLiteralNode(literal);
+            return _factory.CreateLiteralNode(literal);
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         public virtual ILiteralNode CreateLiteralNode(string literal, string langspec)
         {
-            return this._factory.CreateLiteralNode(literal, langspec);
+            return _factory.CreateLiteralNode(literal, langspec);
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         public virtual IUriNode CreateUriNode(Uri uri)
         {
-            return this._factory.CreateUriNode(uri);
+            return _factory.CreateUriNode(uri);
         }
 
         /// <summary>
@@ -158,7 +158,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         public virtual IVariableNode CreateVariableNode(string varname)
         {
-            return this._factory.CreateVariableNode(varname);
+            return _factory.CreateVariableNode(varname);
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         public virtual string GetNextBlankNodeID()
         {
-            return this._factory.GetNextBlankNodeID();
+            return _factory.GetNextBlankNodeID();
         }
 
         #endregion
@@ -201,9 +201,9 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         public void StartRdf()
         {
-            if (this._inUse) throw new RdfParseException("Cannot use this Handler as an RDF Handler for parsing as it is already in-use");
-            this.StartRdfInternal();
-            this._inUse = true;
+            if (_inUse) throw new RdfParseException("Cannot use this Handler as an RDF Handler for parsing as it is already in-use");
+            StartRdfInternal();
+            _inUse = true;
         }
 
         /// <summary>
@@ -218,9 +218,9 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="ok">Whether the parsing completed without error</param>
         public void EndRdf(bool ok)
         {
-            if (!this._inUse) throw new RdfParseException("Cannot End RDF Handling as this RDF Handler is not currently in-use");
-            this.EndRdfInternal(ok);
-            this._inUse = false;
+            if (!_inUse) throw new RdfParseException("Cannot End RDF Handling as this RDF Handler is not currently in-use");
+            EndRdfInternal(ok);
+            _inUse = false;
         }
 
         /// <summary>
@@ -238,9 +238,9 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         public bool HandleNamespace(string prefix, Uri namespaceUri)
         {
-            if (!this._inUse) throw new RdfParseException("Cannot Handle Namespace as this RDF Handler is not currently in-use");
+            if (!_inUse) throw new RdfParseException("Cannot Handle Namespace as this RDF Handler is not currently in-use");
 
-            return this.HandleNamespaceInternal(prefix, namespaceUri);
+            return HandleNamespaceInternal(prefix, namespaceUri);
         }
 
         /// <summary>
@@ -261,9 +261,9 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         public bool HandleBaseUri(Uri baseUri)
         {
-            if (!this._inUse) throw new RdfParseException("Cannot Handle Base URI as this RDF Handler is not currently in-use");
+            if (!_inUse) throw new RdfParseException("Cannot Handle Base URI as this RDF Handler is not currently in-use");
 
-            return this.HandleBaseUriInternal(baseUri);
+            return HandleBaseUriInternal(baseUri);
         }
 
         /// <summary>
@@ -283,9 +283,9 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         public bool HandleTriple(Triple t)
         {
-            if (!this._inUse) throw new RdfParseException("Cannot Handle Triple as this RDF Handler is not currently in-use");
+            if (!_inUse) throw new RdfParseException("Cannot Handle Triple as this RDF Handler is not currently in-use");
 
-            return this.HandleTripleInternal(t);
+            return HandleTripleInternal(t);
         }
 
         /// <summary>
@@ -334,9 +334,9 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         public void StartResults()
         {
-            if (this._inUse) throw new RdfParseException("Cannot use this Handler as an Results Handler for parsing as it is already in-use");
-            this.StartResultsInternal();
-            this._inUse = true;
+            if (_inUse) throw new RdfParseException("Cannot use this Handler as an Results Handler for parsing as it is already in-use");
+            StartResultsInternal();
+            _inUse = true;
         }
 
         /// <summary>
@@ -351,9 +351,9 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="ok">Whether parsing completed without error</param>
         public void EndResults(bool ok)
         {
-            if (!this._inUse) throw new RdfParseException("Cannot End Results Handling as this Results Handler is not currently in-use");
-            this.EndResultsInternal(ok);
-            this._inUse = false;
+            if (!_inUse) throw new RdfParseException("Cannot End Results Handling as this Results Handler is not currently in-use");
+            EndResultsInternal(ok);
+            _inUse = false;
 
         }
 
@@ -370,8 +370,8 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="result">Result</param>
         public void HandleBooleanResult(bool result)
         {
-            if (!this._inUse) throw new RdfParseException("Cannot Handle a Boolean Result as this Handler is not currently in-use");
-            this.HandleBooleanResultInternal(result);
+            if (!_inUse) throw new RdfParseException("Cannot Handle a Boolean Result as this Handler is not currently in-use");
+            HandleBooleanResultInternal(result);
         }
 
         /// <summary>
@@ -387,8 +387,8 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         public bool HandleVariable(String var)
         {
-            if (!this._inUse) throw new RdfParseException("Cannot Handle a Variable as this Handler is not currently in-use");
-            return this.HandleVariableInternal(var);
+            if (!_inUse) throw new RdfParseException("Cannot Handle a Variable as this Handler is not currently in-use");
+            return HandleVariableInternal(var);
         }
 
         /// <summary>
@@ -405,8 +405,8 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         public bool HandleResult(SparqlResult result)
         {
-            if (!this._inUse) throw new RdfParseException("Cannot Handle a Result as this Handler is not currently in-use");
-            return this.HandleResultInternal(result);
+            if (!_inUse) throw new RdfParseException("Cannot Handle a Result as this Handler is not currently in-use");
+            return HandleResultInternal(result);
         }
 
         /// <summary>

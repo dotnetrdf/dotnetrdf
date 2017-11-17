@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <param name="pattern">Graph Pattern</param>
         public GraphPatternTerm(GraphPattern pattern)
         {
-            this._pattern = pattern;
+            _pattern = pattern;
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         {
             get
             {
-                return this._pattern;
+                return _pattern;
             }
         }
 
@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         {
             get
             {
-                return this._pattern.Variables;
+                return _pattern.Variables;
             }
         }
 

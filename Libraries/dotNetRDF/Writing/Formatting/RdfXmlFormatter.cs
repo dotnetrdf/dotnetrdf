@@ -52,9 +52,9 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         public string FormatGraphHeader(IGraph g)
         {
-            this._mapper = new QNameOutputMapper(g.NamespaceMap);
+            _mapper = new QNameOutputMapper(g.NamespaceMap);
             StringBuilder output = new StringBuilder();
-            output.Append(this.GetGraphHeaderBase());
+            output.Append(GetGraphHeaderBase());
             foreach (String prefix in g.NamespaceMap.Prefixes)
             {
                 if (!prefix.Equals("rdf"))
@@ -84,9 +84,9 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         public string FormatGraphHeader(INamespaceMapper namespaces)
         {
-            this._mapper = new QNameOutputMapper(namespaces);
+            _mapper = new QNameOutputMapper(namespaces);
             StringBuilder output = new StringBuilder();
-            output.Append(this.GetGraphHeaderBase());
+            output.Append(GetGraphHeaderBase());
             foreach (String prefix in namespaces.Prefixes)
             {
                 if (!prefix.Equals("rdf"))
@@ -110,7 +110,7 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         public string FormatGraphHeader()
         {
-            return this.GetGraphHeaderBase() + ">";
+            return GetGraphHeaderBase() + ">";
         }
 
         /// <summary>
@@ -119,13 +119,13 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         public string FormatGraphFooter()
         {
-            this._mapper = null;
+            _mapper = null;
             return "</rdf:RDF>";
         }
 
         private void GetQName(Uri u, out String qname, out String ns)
         {
-            if (this._mapper != null && this._mapper.ReduceToQName(u.AbsoluteUri, out qname) && RdfXmlSpecsHelper.IsValidQName(qname))
+            if (_mapper != null && _mapper.ReduceToQName(u.AbsoluteUri, out qname) && RdfXmlSpecsHelper.IsValidQName(qname))
             {
                 // Succesfully reduced to a QName using the known namespaces
                 ns = String.Empty;
@@ -178,7 +178,7 @@ namespace VDS.RDF.Writing.Formatting
             {
                 case NodeType.Uri:
                     Uri u = ((IUriNode)t.Predicate).Uri;
-                    this.GetQName(u, out qname, out ns);
+                    GetQName(u, out qname, out ns);
                     output.Append('\t');
                     if (ns.Equals(String.Empty))
                     {

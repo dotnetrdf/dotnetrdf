@@ -47,8 +47,8 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="rhs">RHS Pattern</param>
         public Minus(ISparqlAlgebra lhs, ISparqlAlgebra rhs)
         {
-            this._lhs = lhs;
-            this._rhs = rhs;
+            _lhs = lhs;
+            _rhs = rhs;
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace VDS.RDF.Query.Algebra
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             BaseMultiset initialInput = context.InputMultiset;
-            BaseMultiset lhsResult = context.Evaluate(this._lhs);//this._lhs.Evaluate(context);
+            BaseMultiset lhsResult = context.Evaluate(_lhs);//this._lhs.Evaluate(context);
             context.CheckTimeout();
 
             if (lhsResult is NullMultiset)
@@ -70,7 +70,7 @@ namespace VDS.RDF.Query.Algebra
             {
                 context.OutputMultiset = new NullMultiset();
             }
-            else if (this._lhs.Variables.IsDisjoint(this._rhs.Variables))
+            else if (_lhs.Variables.IsDisjoint(_rhs.Variables))
             {
                 // If the RHS is disjoint then there is no need to evaluate the RHS
                 context.OutputMultiset = lhsResult;
@@ -82,7 +82,7 @@ namespace VDS.RDF.Query.Algebra
                 // Only execute the RHS if the LHS had results
                 // context.InputMultiset = lhsResult;
                 context.InputMultiset = initialInput;
-                BaseMultiset rhsResult = context.Evaluate(this._rhs);//this._rhs.Evaluate(context);
+                BaseMultiset rhsResult = context.Evaluate(_rhs);//this._rhs.Evaluate(context);
                 context.CheckTimeout();
 
                 context.OutputMultiset = lhsResult.MinusJoin(rhsResult);
@@ -100,7 +100,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return (this._lhs.Variables.Concat(this._rhs.Variables)).Distinct();
+                return (_lhs.Variables.Concat(_rhs.Variables)).Distinct();
             }
         }
 
@@ -109,7 +109,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public IEnumerable<String> FloatingVariables
         {
-            get { return this._lhs.FloatingVariables; }
+            get { return _lhs.FloatingVariables; }
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public IEnumerable<String> FixedVariables
         {
-            get { return this._lhs.FixedVariables; }
+            get { return _lhs.FixedVariables; }
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._lhs;
+                return _lhs;
             }
         }
 
@@ -138,7 +138,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._rhs;
+                return _rhs;
             }
         }
 
@@ -148,7 +148,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Minus(" + this._lhs.ToString() + ", " + this._rhs.ToString() + ")";
+            return "Minus(" + _lhs.ToString() + ", " + _rhs.ToString() + ")";
         }
 
         /// <summary>
@@ -158,7 +158,7 @@ namespace VDS.RDF.Query.Algebra
         public SparqlQuery ToQuery()
         {
             SparqlQuery q = new SparqlQuery();
-            q.RootGraphPattern = this.ToGraphPattern();
+            q.RootGraphPattern = ToGraphPattern();
             q.Optimise();
             return q;
         }
@@ -169,8 +169,8 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            GraphPattern p = this._lhs.ToGraphPattern();
-            GraphPattern opt = this._rhs.ToGraphPattern();
+            GraphPattern p = _lhs.ToGraphPattern();
+            GraphPattern opt = _rhs.ToGraphPattern();
             if (!opt.HasModifier)
             {
                 opt.IsMinus = true;
@@ -193,7 +193,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new Minus(optimiser.Optimise(this._lhs), optimiser.Optimise(this._rhs));
+            return new Minus(optimiser.Optimise(_lhs), optimiser.Optimise(_rhs));
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser)
         {
-            return new Minus(optimiser.Optimise(this._lhs), this._rhs);
+            return new Minus(optimiser.Optimise(_lhs), _rhs);
         }
 
         /// <summary>
@@ -213,7 +213,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra TransformRhs(IAlgebraOptimiser optimiser)
         {
-            return new Minus(this._lhs, optimiser.Optimise(this._rhs));
+            return new Minus(_lhs, optimiser.Optimise(_rhs));
         }
     }
 }

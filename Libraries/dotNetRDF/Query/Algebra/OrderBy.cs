@@ -49,8 +49,8 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="ordering">Ordering</param>
         public OrderBy(ISparqlAlgebra pattern, ISparqlOrderBy ordering)
         {
-            this._pattern = pattern;
-            this._ordering = ordering;
+            _pattern = pattern;
+            _ordering = ordering;
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            context.InputMultiset = context.Evaluate(this._pattern);//this._pattern.Evaluate(context);
+            context.InputMultiset = context.Evaluate(_pattern);//this._pattern.Evaluate(context);
 
             if (context.Query != null)
             {
@@ -70,9 +70,9 @@ namespace VDS.RDF.Query.Algebra
                     context.InputMultiset.Sort(context.Query.OrderBy);
                 }
             }
-            else if (this._ordering != null)
+            else if (_ordering != null)
             {
-                context.InputMultiset.Sort(this._ordering);
+                context.InputMultiset.Sort(_ordering);
             }
             context.OutputMultiset = context.InputMultiset;
             return context.OutputMultiset;
@@ -85,19 +85,19 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._pattern.Variables.Distinct();
+                return _pattern.Variables.Distinct();
             }
         }
 
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
         /// </summary>
-        public IEnumerable<String> FloatingVariables { get { return this._pattern.FloatingVariables; } }
+        public IEnumerable<String> FloatingVariables { get { return _pattern.FloatingVariables; } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
         /// </summary>
-        public IEnumerable<String> FixedVariables { get { return this._pattern.FixedVariables; } }
+        public IEnumerable<String> FixedVariables { get { return _pattern.FixedVariables; } }
 
         /// <summary>
         /// Gets the Inner Algebra
@@ -106,7 +106,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._pattern;
+                return _pattern;
             }
         }
 
@@ -120,7 +120,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._ordering;
+                return _ordering;
             }
         }
 
@@ -130,7 +130,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "OrderBy(" + this._pattern.ToString() + ")";
+            return "OrderBy(" + _pattern.ToString() + ")";
         }
 
         /// <summary>
@@ -139,10 +139,10 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            SparqlQuery q = this._pattern.ToQuery();
-            if (this._ordering != null)
+            SparqlQuery q = _pattern.ToQuery();
+            if (_ordering != null)
             {
-                q.OrderBy = this._ordering;
+                q.OrderBy = _ordering;
             }
             return q;
         }
@@ -164,7 +164,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new OrderBy(optimiser.Optimise(this._pattern), this._ordering);
+            return new OrderBy(optimiser.Optimise(_pattern), _ordering);
         }
     }
 }

@@ -46,7 +46,7 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._formatter.GetType();
+                return _formatter.GetType();
             }
         }
 
@@ -59,7 +59,7 @@ namespace VDS.RDF.Writing
         {
             using (var stream = File.Open(filename, FileMode.Create))
             {
-                this.Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
+                Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
             }
         }
 
@@ -72,11 +72,11 @@ namespace VDS.RDF.Writing
         {
             foreach (Triple t in g.Triples)
             {
-                this.GenerateNodeOutput(output, t.Subject, TripleSegment.Subject);
+                GenerateNodeOutput(output, t.Subject, TripleSegment.Subject);
                 output.Write('\t');
-                this.GenerateNodeOutput(output, t.Predicate, TripleSegment.Predicate);
+                GenerateNodeOutput(output, t.Predicate, TripleSegment.Predicate);
                 output.Write('\t');
-                this.GenerateNodeOutput(output, t.Object, TripleSegment.Object);
+                GenerateNodeOutput(output, t.Object, TripleSegment.Object);
                 output.Write('\n');
             }
         }
@@ -90,7 +90,7 @@ namespace VDS.RDF.Writing
                 case NodeType.Blank:
                 case NodeType.Literal:
                 case NodeType.Uri:
-                    output.Write(this._formatter.Format(n));
+                    output.Write(_formatter.Format(n));
                     break;
                 default:
                     throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("TSV"));

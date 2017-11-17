@@ -46,8 +46,8 @@ namespace VDS.RDF.Update.Commands
             : base(SparqlUpdateCommandType.Create) 
         {
             if (graphUri == null) throw new ArgumentNullException("graphUri");
-            this._graphUri = graphUri;
-            this._silent = silent;
+            _graphUri = graphUri;
+            _silent = silent;
         }
 
         /// <summary>
@@ -75,13 +75,13 @@ namespace VDS.RDF.Update.Commands
         /// <returns></returns>
         public override bool AffectsGraph(Uri graphUri)
         {
-            if (this._graphUri == null)
+            if (_graphUri == null)
             {
                 return true;
             }
             else
             {
-                return this._graphUri.AbsoluteUri.Equals(graphUri.ToSafeString());
+                return _graphUri.AbsoluteUri.Equals(graphUri.ToSafeString());
             }
         }
 
@@ -92,7 +92,7 @@ namespace VDS.RDF.Update.Commands
         {
             get
             {
-                return this._graphUri;
+                return _graphUri;
             }
         }
 
@@ -103,7 +103,7 @@ namespace VDS.RDF.Update.Commands
         {
             get
             {
-                return this._silent;
+                return _silent;
             }
         }
 
@@ -113,14 +113,14 @@ namespace VDS.RDF.Update.Commands
         /// <param name="context">Update Evaluation Context</param>
         public override void Evaluate(SparqlUpdateEvaluationContext context)
         {
-            if (context.Data.HasGraph(this._graphUri))
+            if (context.Data.HasGraph(_graphUri))
             {
-                if (!this._silent) throw new SparqlUpdateException("Cannot create a Named Graph with URI '" + this._graphUri.AbsoluteUri + "' since a Graph with this URI already exists in the Store");
+                if (!_silent) throw new SparqlUpdateException("Cannot create a Named Graph with URI '" + _graphUri.AbsoluteUri + "' since a Graph with this URI already exists in the Store");
             }
             else
             {
                 Graph g = new Graph();
-                g.BaseUri = this._graphUri;
+                g.BaseUri = _graphUri;
                 context.Data.AddGraph(g);
             }
         }
@@ -142,9 +142,9 @@ namespace VDS.RDF.Update.Commands
         {
             StringBuilder output = new StringBuilder();
             output.Append("CREATE ");
-            if (this._silent) output.Append("SILENT ");
+            if (_silent) output.Append("SILENT ");
             output.Append("GRAPH <");
-            output.Append(this._graphUri.AbsoluteUri.Replace(">", "\\>"));
+            output.Append(_graphUri.AbsoluteUri.Replace(">", "\\>"));
             output.Append('>');
             return output.ToString();
         }

@@ -60,32 +60,38 @@ namespace VDS.RDF.Parsing
         {
         }
 
+        /// <inheritdoc />
         protected override IHtmlDocument LoadAndParse(TextReader input)
         {
             var parser = new HtmlParser();
             return parser.Parse(input.ReadToEnd());
         }
 
+        /// <inheritdoc />
         protected override bool HasAttribute(IElement element, string attributeName)
         {
             return element.HasAttribute(attributeName);
         }
 
+        /// <inheritdoc/>
         protected override string GetAttribute(IElement element, string attributeName)
         {
             return element.GetAttribute(attributeName);
         }
 
+        /// <inheritdoc/>
         protected override void SetAttribute(IElement element, string attributeName, string value)
         {
             element.SetAttribute(attributeName, value);
         }
 
+        /// <inheritdoc/>
         protected override IElement GetBaseElement(IHtmlDocument document)
         {
             return document.QuerySelector("head > base");
         }
 
+        /// <inheritdoc/>
         protected override bool IsXmlBaseIsPermissible(IHtmlDocument document)
         {
             var docType = document.Doctype.SystemIdentifier;
@@ -101,11 +107,13 @@ namespace VDS.RDF.Parsing
             return true;
         }
 
+        /// <inheritdoc/>
         protected override IElement GetHtmlElement(IHtmlDocument document)
         {
             return document.QuerySelector("html");
         }
 
+        /// <inheritdoc/>
         protected override void ProcessDocument(RdfAParserContext<IHtmlDocument> context, RdfAEvaluationContext evalContext)
         {
             foreach (var child in context.Document.Children)
@@ -114,51 +122,61 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <inheritdoc/>
         protected override IEnumerable<IAttr> GetAttributes(IElement element)
         {
             return element.Attributes;
         }
 
+        /// <inheritdoc/>
         protected override string GetAttributeName(IAttr attribute)
         {
             return attribute.Name;
         }
 
+        /// <inheritdoc/>
         protected override string GetAttributeValue(IAttr attribute)
         {
             return attribute.Value;
         }
 
+        /// <inheritdoc/>
         protected override string GetElementName(IElement element)
         {
             return element.LocalName;
         }
 
+        /// <inheritdoc/>
         protected override IEnumerable<AngleSharp.Dom.INode> GetChildren(IElement element)
         {
             return element.ChildNodes;
         }
 
+        /// <inheritdoc/>
         protected override bool HasChildren(IElement element)
         {
             return element.HasChildNodes;
         }
 
+        /// <inheritdoc/>
         protected override void GrabText(StringBuilder output, AngleSharp.Dom.INode node)
         {
             output.Append(node.TextContent.Trim());
         }
 
+        /// <inheritdoc/>
         protected override string GetInnerText(AngleSharp.Dom.INode node)
         {
             return node.TextContent.Trim();
         }
 
+        /// <inheritdoc/>
         protected override string GetInnerHtml(IElement element)
         {
             return element.InnerHtml;
         }
 
+        /// <inheritdoc/>
         protected override bool IsTextNode(AngleSharp.Dom.INode node)
         {
             return node.NodeType == AngleSharp.Dom.NodeType.Text;

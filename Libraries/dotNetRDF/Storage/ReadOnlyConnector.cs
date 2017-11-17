@@ -53,7 +53,7 @@ namespace VDS.RDF.Storage
         /// <param name="manager">Manager for the Store you want to wrap as read-only</param>
         public ReadOnlyConnector(IStorageProvider manager)
         {
-            this._manager = manager;
+            _manager = manager;
         }
 
         #region IStorageProvider Members
@@ -65,7 +65,7 @@ namespace VDS.RDF.Storage
         {
             get
             {
-                return this._manager.ParentServer;
+                return _manager.ParentServer;
             }
         }
 
@@ -76,7 +76,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to load</param>
         public void LoadGraph(IGraph g, Uri graphUri)
         {
-            this._manager.LoadGraph(g, graphUri);
+            _manager.LoadGraph(g, graphUri);
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to load</param>
         public void LoadGraph(IGraph g, string graphUri)
         {
-            this._manager.LoadGraph(g, graphUri);
+            _manager.LoadGraph(g, graphUri);
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to load</param>
         public void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
-            this._manager.LoadGraph(handler, graphUri);
+            _manager.LoadGraph(handler, graphUri);
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to load</param>
         public void LoadGraph(IRdfHandler handler, String graphUri)
         {
-            this._manager.LoadGraph(handler, graphUri);
+            _manager.LoadGraph(handler, graphUri);
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace VDS.RDF.Storage
         {
             get
             {
-                return (this._manager.IOBehaviour | IOBehaviour.IsReadOnly) & (IOBehaviour.HasDefaultGraph | IOBehaviour.HasDefaultGraph | IOBehaviour.IsQuadStore | IOBehaviour.IsTripleStore | IOBehaviour.IsReadOnly);
+                return (_manager.IOBehaviour | IOBehaviour.IsReadOnly) & (IOBehaviour.HasDefaultGraph | IOBehaviour.HasDefaultGraph | IOBehaviour.IsQuadStore | IOBehaviour.IsTripleStore | IOBehaviour.IsReadOnly);
             }
         }
 
@@ -202,7 +202,7 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public virtual IEnumerable<Uri> ListGraphs()
         {
-            return this._manager.ListGraphs();
+            return _manager.ListGraphs();
         }
 
         /// <summary>
@@ -212,7 +212,7 @@ namespace VDS.RDF.Storage
         {
             get
             {
-                return this._manager.ListGraphsSupported;
+                return _manager.ListGraphsSupported;
             }
         }
 
@@ -223,7 +223,7 @@ namespace VDS.RDF.Storage
         {
             get 
             {
-                return this._manager.IsReady; 
+                return _manager.IsReady; 
             }
 
         }
@@ -248,7 +248,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         public void Dispose()
         {
-            this._manager.Dispose();
+            _manager.Dispose();
         }
 
         #endregion
@@ -259,7 +259,7 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public override string ToString()
         {
-            return "[Read Only]" + this._manager.ToString();
+            return "[Read Only]" + _manager.ToString();
         }
 
         /// <summary>
@@ -275,14 +275,14 @@ namespace VDS.RDF.Storage
             INode storageProvider = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStorageProvider));
 
             context.Graph.Assert(manager, rdfType, context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassStorageProvider)));
-            context.Graph.Assert(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().ToString()));
-            context.Graph.Assert(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString()));
+            context.Graph.Assert(manager, dnrType, context.Graph.CreateLiteralNode(GetType().ToString()));
+            context.Graph.Assert(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString()));
 
-            if (this._manager is IConfigurationSerializable)
+            if (_manager is IConfigurationSerializable)
             {
                 INode managerObj = context.Graph.CreateBlankNode();
                 context.NextSubject = managerObj;
-                ((IConfigurationSerializable)this._manager).SerializeConfiguration(context);
+                ((IConfigurationSerializable)_manager).SerializeConfiguration(context);
                 context.Graph.Assert(manager, storageProvider, managerObj);
             }
             else
@@ -312,7 +312,7 @@ namespace VDS.RDF.Storage
         public QueryableReadOnlyConnector(IQueryableStorage manager)
             : base(manager)
         {
-            this._queryManager = manager;
+            _queryManager = manager;
         }
 
         /// <summary>
@@ -322,7 +322,7 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public Object Query(String sparqlQuery)
         {
-            return this._queryManager.Query(sparqlQuery);
+            return _queryManager.Query(sparqlQuery);
         }
 
         /// <summary>
@@ -334,7 +334,7 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
-            this._queryManager.Query(rdfHandler, resultsHandler, sparqlQuery);
+            _queryManager.Query(rdfHandler, resultsHandler, sparqlQuery);
         }
 
         /// <summary>
@@ -352,7 +352,7 @@ namespace VDS.RDF.Storage
             {
                 try
                 {
-                    Object results = this.Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
+                    Object results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
                     if (results is SparqlResultSet)
                     {
                         List<Uri> graphs = new List<Uri>();

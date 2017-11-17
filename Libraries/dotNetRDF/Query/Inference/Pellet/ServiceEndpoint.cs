@@ -44,11 +44,11 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// <param name="obj">JSON Object representing the Endpoint</param>
         internal ServiceEndpoint(JObject obj)
         {
-            this._uri = (String)obj.SelectToken("url");
+            _uri = (String)obj.SelectToken("url");
             JToken methods = obj.SelectToken("http-methods");
             foreach (JToken method in methods.Children())
             {
-                this._methods.Add((String)method);
+                _methods.Add((String)method);
             }
         }
 
@@ -59,7 +59,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         {
             get
             {
-                return this._uri;
+                return _uri;
             }
         }
 
@@ -70,7 +70,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         {
             get
             {
-                return this._methods;
+                return _methods;
             }
         }
     }

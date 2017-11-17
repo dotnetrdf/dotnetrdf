@@ -95,7 +95,7 @@ namespace VDS.RDF
         /// <summary>
         /// Disposes of the Graph Collection
         /// </summary>
-        /// <remarks>Invokes the <see cref="IGraph.Dispose()">Dispose()</see> method of all Graphs contained in the Collection</remarks>
+        /// <remarks>Invokes the <see cref="IDisposable.Dispose()">Dispose()</see> method of all Graphs contained in the Collection</remarks>
         public abstract void Dispose();
 
         /// <summary>
@@ -129,11 +129,7 @@ namespace VDS.RDF
         /// <param name="g">Graph</param>
         protected virtual void RaiseGraphAdded(IGraph g)
         {
-            GraphEventHandler d = this.GraphAdded;
-            if (d != null)
-            {
-                d(this, new GraphEventArgs(g));
-            }
+            GraphAdded?.Invoke(this, new GraphEventArgs(g));
         }
 
         /// <summary>
@@ -142,11 +138,7 @@ namespace VDS.RDF
         /// <param name="g">Graph</param>
         protected virtual void RaiseGraphRemoved(IGraph g)
         {
-            GraphEventHandler d = this.GraphRemoved;
-            if (d != null)
-            {
-                d(this, new GraphEventArgs(g));
-            }
+            GraphRemoved?.Invoke(this, new GraphEventArgs(g));
         }
     }
 }

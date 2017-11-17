@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="graphVar">Graph Variable to bind Graph URIs to</param>
         public SelectDistinctGraphs(String graphVar)
         {
-            this._graphVar = graphVar;
+            _graphVar = graphVar;
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Algebra
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             context.OutputMultiset = new Multiset();
-            string var = context.Query != null ? context.Query.Variables.First(v => v.IsResultVariable).Name : this._graphVar;
+            string var = context.Query != null ? context.Query.Variables.First(v => v.IsResultVariable).Name : _graphVar;
 
             foreach (Uri graphUri in context.Data.GraphUris)
             {
@@ -73,13 +73,13 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public IEnumerable<String> Variables
         {
-            get { return this._graphVar.AsEnumerable(); }
+            get { return _graphVar.AsEnumerable(); }
         }
 
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
         /// </summary>
-        public IEnumerable<String> FloatingVariables { get { return this._graphVar.AsEnumerable(); } }
+        public IEnumerable<String> FloatingVariables { get { return _graphVar.AsEnumerable(); } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
@@ -96,7 +96,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._graphVar;
+                return _graphVar;
             }
         }
 
@@ -116,8 +116,8 @@ namespace VDS.RDF.Query.Algebra
         public SparqlQuery ToQuery()
         {
             SparqlQuery q = new SparqlQuery();
-            q.RootGraphPattern = this.ToGraphPattern();
-            q.AddVariable(this._graphVar, true);
+            q.RootGraphPattern = ToGraphPattern();
+            q.AddVariable(_graphVar, true);
             q.Optimise();
             return q;
         }
@@ -129,13 +129,13 @@ namespace VDS.RDF.Query.Algebra
         public GraphPattern ToGraphPattern()
         {
             GraphPattern p = new GraphPattern();
-            String subjVar = (!this._graphVar.Equals("s")) ? "?s" : "?subj" ;
-            String predVar = (!this._graphVar.Equals("p")) ? "?p" : "?pred" ;
-            String objVar = (!this._graphVar.Equals("o")) ? "o" : "?obj" ;
+            String subjVar = (!_graphVar.Equals("s")) ? "?s" : "?subj" ;
+            String predVar = (!_graphVar.Equals("p")) ? "?p" : "?pred" ;
+            String objVar = (!_graphVar.Equals("o")) ? "o" : "?obj" ;
 
             p.AddTriplePattern(new TriplePattern(new VariablePattern(subjVar), new VariablePattern(predVar), new VariablePattern(objVar)));
             p.IsGraph = true;
-            p.GraphSpecifier = new VariableToken("?" + this._graphVar, 0, 0, 0);
+            p.GraphSpecifier = new VariableToken("?" + _graphVar, 0, 0, 0);
             return p;
         }
     }
@@ -200,7 +200,7 @@ namespace VDS.RDF.Query.Algebra
         public SparqlQuery ToQuery()
         {
             SparqlQuery q = new SparqlQuery();
-            q.RootGraphPattern = this.ToGraphPattern();
+            q.RootGraphPattern = ToGraphPattern();
             q.QueryType = SparqlQueryType.Ask;
             return q;
         }
