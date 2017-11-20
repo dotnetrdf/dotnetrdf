@@ -101,7 +101,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtNotation3_1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".n3");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -113,7 +113,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtNotation3_2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("n3");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -125,7 +125,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtNotation3_3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".n3.gz");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
@@ -137,7 +137,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtNotation3_4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("n3.gz");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
@@ -200,7 +200,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtTurtle1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".ttl");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -212,7 +212,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtTurtle2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("ttl");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -224,7 +224,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtTurtle3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".ttl.gz");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
@@ -236,7 +236,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtTurtle4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("ttl.gz");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
@@ -333,7 +333,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtNTriples1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".nt");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -345,7 +345,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtNTriples2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("nt");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -357,7 +357,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtNTriples3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".nt.gz");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
@@ -369,7 +369,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtNTriples4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("nt.gz");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
@@ -432,7 +432,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtRdfXml1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".rdf");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -444,7 +444,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtRdfXml2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("rdf");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -456,7 +456,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtRdfXml3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".rdf.gz");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
@@ -468,7 +468,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtRdfXml4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("rdf.gz");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
@@ -514,7 +514,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtRdfJson1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".rj");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -526,7 +526,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtRdfJson2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("rj");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -538,7 +538,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtRdfJson3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".rj.gz");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
@@ -549,7 +549,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtRdfJson4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("rj.gz");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
@@ -595,7 +595,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtRdfA1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".html");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -607,7 +607,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtRdfA2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("html");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -619,7 +619,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtRdfA3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".html.gz");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
@@ -631,7 +631,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtRdfA4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("html.gz");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
@@ -643,7 +643,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtRdfA5()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".htm");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -655,7 +655,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtRdfA6()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("htm");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -667,7 +667,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtRdfA7()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".htm.gz");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
@@ -679,7 +679,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtRdfA8()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("htm.gz");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
@@ -691,7 +691,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtRdfA9()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".xhtml");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -703,7 +703,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtRdfA10()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("xhtml");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -715,7 +715,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtRdfA11()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".xhtml.gz");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
@@ -727,7 +727,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtRdfA12()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("xhtml.gz");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
@@ -756,7 +756,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtSparqlXml1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".srx");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -768,7 +768,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtSparqlXml2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("srx");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -780,7 +780,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtSparqlXml3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".srx.gz");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
@@ -792,7 +792,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtSparqlXml4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("srx.gz");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
@@ -821,7 +821,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtSparqlJson1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".srj");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -833,7 +833,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtSparqlJson2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("srj");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -845,7 +845,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtSparqlJson3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".srj.gz");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
@@ -857,7 +857,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtSparqlJson4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("srj.gz");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
@@ -903,7 +903,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtSparqlCsv1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".csv");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -915,7 +915,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtSparqlCsv2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("csv");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -927,7 +927,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtSparqlCsv3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".csv.gz");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
@@ -939,7 +939,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtSparqlCsv4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("csv.gz");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
@@ -968,7 +968,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtSparqlTsv1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".tsv");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -980,7 +980,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtSparqlTsv2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("tsv");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -992,7 +992,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtSparqlTsv3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".tsv.gz");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
@@ -1004,7 +1004,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtSparqlTsv4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("tsv.gz");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
@@ -1025,7 +1025,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtJsonLd1()
         {
             var defs = MimeTypesHelper.GetDefinitionsByFileExtension("jsonld");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
             AssertIsJsonLd(defs.First());
         }
 
@@ -1033,7 +1033,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtJsonLd2()
         {
             var defs = MimeTypesHelper.GetDefinitionsByFileExtension(".jsonld");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
             AssertIsJsonLd(defs.First());
         }
 
@@ -1041,7 +1041,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtJsonLd3()
         {
             var defs = MimeTypesHelper.GetDefinitionsByFileExtension("jsonld.gz");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
             AssertIsGzippedJsonLd(defs.First());
         }
 
@@ -1049,7 +1049,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtJsonLd4()
         {
             var defs = MimeTypesHelper.GetDefinitionsByFileExtension(".jsonld.gz");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
             AssertIsGzippedJsonLd(defs.First());
         }
 
@@ -1122,7 +1122,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtCaseSensitivity1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".TTL");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -1134,7 +1134,7 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByExtCaseSensitivity2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".tTl");
-            Assert.Equal(1, defs.Count());
+            Assert.Single(defs);
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();

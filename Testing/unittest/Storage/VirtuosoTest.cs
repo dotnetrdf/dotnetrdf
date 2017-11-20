@@ -665,7 +665,7 @@ namespace VDS.RDF.Storage
                 Console.WriteLine();
 
                 //Ensure that object factory has not been serialized again 
-                Assert.Equal(1, g.GetTriplesWithPredicateObject(rdfType, objFactory).Count());
+                Assert.Single(g.GetTriplesWithPredicateObject(rdfType, objFactory));
 
                 //Now try to load the object
                 ConfigurationLoader.AutoConfigureObjectFactories(g);

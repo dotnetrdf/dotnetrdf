@@ -234,8 +234,8 @@ namespace VDS.RDF
             g.Assert(s, p, ucase);
 
             Assert.Equal(1, g.Triples.Count);
-            Assert.Equal(1, g.GetTriplesWithObject(lcase).Count());
-            Assert.Equal(1, g.GetTriplesWithObject(ucase).Count());
+            Assert.Single(g.GetTriplesWithObject(lcase));
+            Assert.Single(g.GetTriplesWithObject(ucase));
         }
     }
 }

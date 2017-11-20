@@ -233,7 +233,7 @@ WHERE { ?s ?p ?o . }"
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
-            Assert.Equal(1, dataset.Graphs.Count());
+            Assert.Single(dataset.Graphs);
 
             IGraph g = dataset.Graphs.First();
             Assert.Equal(2, g.Triples.Count);
@@ -272,7 +272,7 @@ WHERE { ?s ?p ?o . }"
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
-            Assert.Equal(1, dataset.Graphs.Count());
+            Assert.Single(dataset.Graphs);
 
             IGraph g = dataset.Graphs.First();
             Assert.Equal(2, g.Triples.Count);

@@ -313,8 +313,8 @@ namespace VDS.RDF.Ontology
             Console.WriteLine("Got the class of Ground Vehicles");
 
             //Check counts of super classes
-            Assert.Equal(1, groundVehicle.SuperClasses.Count());
-            Assert.Equal(1, groundVehicle.DirectSuperClasses.Count());
+            Assert.Single(groundVehicle.SuperClasses);
+            Assert.Single(groundVehicle.DirectSuperClasses);
             Assert.Equal(0, groundVehicle.IndirectSuperClasses.Count());
 
             //Check counts of sub-classes
@@ -376,8 +376,8 @@ namespace VDS.RDF.Ontology
             OntologyProperty groundSpeed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/GroundSpeed"));
 
             //Check counts of super properties
-            Assert.Equal(1, groundSpeed.SuperProperties.Count());
-            Assert.Equal(1, groundSpeed.DirectSuperProperties.Count());
+            Assert.Single(groundSpeed.SuperProperties);
+            Assert.Single(groundSpeed.DirectSuperProperties);
             Assert.Equal(0, groundSpeed.IndirectSuperProperty.Count());
 
             //Check counts of sub-properties
@@ -430,10 +430,10 @@ namespace VDS.RDF.Ontology
             g.LoadFromFile("resources\\ontology.ttl");
 
             //Check Property Counts
-            Assert.Equal(1, g.RdfProperties.Count());
-            Assert.Equal(1, g.OwlAnnotationProperties.Count());
-            Assert.Equal(1, g.OwlDatatypeProperties.Count());
-            Assert.Equal(1, g.OwlObjectProperties.Count());
+            Assert.Single(g.RdfProperties);
+            Assert.Single(g.OwlAnnotationProperties);
+            Assert.Single(g.OwlDatatypeProperties);
+            Assert.Single(g.OwlObjectProperties);
             Assert.Equal(3, g.OwlProperties.Count());
             Assert.Equal(4, g.AllProperties.Count());
         }
@@ -445,8 +445,8 @@ namespace VDS.RDF.Ontology
             g.LoadFromFile("resources\\ontology.ttl");
 
             //Check Class Counts
-            Assert.Equal(1, g.RdfClasses.Count());
-            Assert.Equal(1, g.OwlClasses.Count());
+            Assert.Single(g.RdfClasses);
+            Assert.Single(g.OwlClasses);
             Assert.Equal(2, g.AllClasses.Count());
         }
 

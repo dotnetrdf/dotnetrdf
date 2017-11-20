@@ -53,7 +53,7 @@ namespace VDS.RDF.Query.Builder.Expressions
 
             // then
             Assert.True(expression.Expression is InFunction);
-            Assert.Equal(1, expression.Expression.Arguments.Count());
+            Assert.Single(expression.Expression.Arguments);
         }
     }
 }

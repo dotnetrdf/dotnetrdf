@@ -91,7 +91,7 @@ namespace VDS.RDF.Query
             SparqlResultSet results = g.ExecuteQuery("SELECT * WHERE { GRAPH <http://example/graph> { <http://s> <http://p> <http://o> . <http://x> <http://y> <http://z> } }") as SparqlResultSet;
             Assert.NotNull(results);
             Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
-            Assert.Equal(1, results.Results.Count);
+            Assert.Single(results.Results);
             Assert.Equal(0, results.Variables.Count());
         }
 
@@ -374,7 +374,7 @@ SELECT * WHERE {
                 Console.WriteLine();
 
                 SparqlQuery q = parser.ParseFromString(query.ToString());
-                Assert.Equal(1, q.Variables.Count());
+                Assert.Single(q.Variables);
             }
         }
 

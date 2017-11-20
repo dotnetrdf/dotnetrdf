@@ -152,11 +152,11 @@ SELECT * WHERE
 
             Assert.False(q.RootGraphPattern.TriplePatterns[0] .PatternType == TriplePatternType.Filter, "First Triple Pattern should not be a FilterPattern");
             Assert.True(q.RootGraphPattern.TriplePatterns[1] .PatternType == TriplePatternType.Filter, "Second Triple Pattern should be a FilterPattern");
-            Assert.Equal(1, q.RootGraphPattern.TriplePatterns[1].Variables.Count);
+            Assert.Single(q.RootGraphPattern.TriplePatterns[1].Variables);
             Assert.Equal("label", q.RootGraphPattern.TriplePatterns[1].Variables.First());
             Assert.False(q.RootGraphPattern.TriplePatterns[2] .PatternType == TriplePatternType.Filter, "Third Triple Pattern should not be a FilterPattern");
             Assert.True(q.RootGraphPattern.TriplePatterns[3] .PatternType == TriplePatternType.Filter, "Second Triple Pattern should be a FilterPattern");
-            Assert.Equal(1, q.RootGraphPattern.TriplePatterns[3].Variables.Count);
+            Assert.Single(q.RootGraphPattern.TriplePatterns[3].Variables);
             Assert.Equal("type", q.RootGraphPattern.TriplePatterns[3].Variables.First());
         }
 
