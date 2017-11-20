@@ -244,8 +244,8 @@ namespace VDS.RDF.Query
                 DataTable table = rset.ToDataTable();
 
                 Assert.True(rset.ResultsType == SparqlResultsType.Boolean);
-                Assert.Equal(table.Columns.Count, 1);
-                Assert.Equal(table.Rows.Count, 1);
+                Assert.Single(table.Columns);
+                Assert.Single(table.Rows);
                 Assert.True((bool)table.Rows[0]["ASK"], "Should be true");
 
                 foreach (DataRow row in table.Rows)
@@ -282,8 +282,8 @@ namespace VDS.RDF.Query
                 DataTable table = rset.ToDataTable();
 
                 Assert.True(rset.ResultsType == SparqlResultsType.Boolean);
-                Assert.Equal(table.Columns.Count, 1);
-                Assert.Equal(table.Rows.Count, 1);
+                Assert.Single(table.Columns);
+                Assert.Single(table.Rows, 1);
                 Assert.False((bool)table.Rows[0]["ASK"], "Should be false");
 
                 foreach (DataRow row in table.Rows)
@@ -310,8 +310,8 @@ namespace VDS.RDF.Query
             DataTable table = rset.ToDataTable();
 
             Assert.True(rset.ResultsType == SparqlResultsType.Boolean);
-            Assert.Equal(table.Columns.Count, 1);
-            Assert.Equal(table.Rows.Count, 1);
+            Assert.Single(table.Columns);
+            Assert.Single(table.Rows);
             Assert.True((bool)table.Rows[0]["ASK"], "Should be true");
 
             foreach (DataRow row in table.Rows)
@@ -333,8 +333,8 @@ namespace VDS.RDF.Query
             DataTable table = rset.ToDataTable();
 
             Assert.True(rset.ResultsType == SparqlResultsType.Boolean);
-            Assert.Equal(table.Columns.Count, 1);
-            Assert.Equal(table.Rows.Count, 1);
+            Assert.Single(table.Columns);
+            Assert.Single(table.Rows);
             Assert.False((bool)table.Rows[0]["ASK"], "Should be false");
 
             foreach (DataRow row in table.Rows)

@@ -76,7 +76,7 @@ namespace VDS.RDF
             collection.Add(g, true);
 
             Assert.True(collection.Contains(g.BaseUri));
-            Assert.True(collection.GraphUris.Contains(null));
+            Assert.Contains(null, collection.GraphUris);
         }
 
         [Fact]

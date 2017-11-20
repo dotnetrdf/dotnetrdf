@@ -30,22 +30,19 @@ namespace VDS.RDF.JsonLd
                 jsonLdParser.Load(tStore, reader);
             }
             Assert.Equal(3, tStore.Triples.Count());
-            Assert.True(tStore.Triples.Any(
-                x=>
+            Assert.Contains(tStore.Triples, x =>
                 x.Subject.As<IUriNode>().Uri.ToString().Equals("http://dbpedia.org/resource/John_Lennon") &&
                 x.Predicate.As<IUriNode>().Uri.ToString().Equals("http://xmlns.com/foaf/0.1/name") &&
-                x.Object.As<ILiteralNode>().Value.Equals("John Lennon")));
-            Assert.True(tStore.Triples.Any(
-                x =>
+                x.Object.As<ILiteralNode>().Value.Equals("John Lennon"));
+            Assert.Contains(tStore.Triples, x =>
                     x.Subject.As<IUriNode>().Uri.ToString().Equals("http://dbpedia.org/resource/John_Lennon") &&
                     x.Predicate.As<IUriNode>().Uri.ToString().Equals("http://schema.org/birthDate") &&
                     x.Object.As<ILiteralNode>().Value.Equals("1940-10-09") &&
-                    x.Object.As<ILiteralNode>().DataType.ToString().Equals("http://www.w3.org/2001/XMLSchema#dateTime")));
-            Assert.True(tStore.Triples.Any(
-                x =>
+                    x.Object.As<ILiteralNode>().DataType.ToString().Equals("http://www.w3.org/2001/XMLSchema#dateTime"));
+            Assert.Contains(tStore.Triples, x =>
                     x.Subject.As<IUriNode>().Uri.ToString().Equals("http://dbpedia.org/resource/John_Lennon") &&
                     x.Predicate.As<IUriNode>().Uri.ToString().Equals("http://schema.org/spouse") &&
-                    x.Object.As<IUriNode>().Uri.ToString().Equals("http://dbpedia.org/resource/Cynthia_Lennon")));
+                    x.Object.As<IUriNode>().Uri.ToString().Equals("http://dbpedia.org/resource/Cynthia_Lennon"));
         }
     }
 }

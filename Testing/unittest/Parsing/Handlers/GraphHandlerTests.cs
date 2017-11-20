@@ -55,7 +55,7 @@ namespace VDS.RDF.Parsing.Handlers
 
         #region Explicit GraphHandler Usage
 
-        public void ParsingUsingGraphHandlerExplicitTest(String tempFile, IRdfReader parser, bool nsCheck)
+        protected void ParsingUsingGraphHandlerExplicitTest(String tempFile, IRdfReader parser, bool nsCheck)
         {
             Graph g = new Graph();
             EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");

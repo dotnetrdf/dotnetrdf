@@ -43,6 +43,14 @@ namespace VDS.RDF.Query
 
     public class DefaultGraphTests
     {
+        private object ExecuteQuery(IInMemoryQueryableStore store, string query)
+        {
+            var parser = new SparqlQueryParser();
+            var parsedQuery = parser.ParseFromString(query);
+            var processor = new LeviathanQueryProcessor(store);
+            return processor.ProcessQuery(parsedQuery);
+        }
+
         [Fact]
         public void SparqlDefaultGraphExists()
         {
@@ -51,7 +59,7 @@ namespace VDS.RDF.Query
             g.Assert(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
             store.Add(g);
 
-            Object results = store.ExecuteQuery("ASK WHERE { GRAPH ?g { ?s ?p ?o }}");
+            Object results = ExecuteQuery(store, "ASK WHERE { GRAPH ?g { ?s ?p ?o }}");
             if (results is SparqlResultSet)
             {
                 Assert.False(((SparqlResultSet)results).Result);
@@ -70,7 +78,7 @@ namespace VDS.RDF.Query
             g.Assert(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
             store.Add(g);
 
-            Object results = store.ExecuteQuery("ASK WHERE { GRAPH <dotnetrdf:default-graph> { ?s ?p ?o }}");
+            Object results = ExecuteQuery(store, "ASK WHERE { GRAPH <dotnetrdf:default-graph> { ?s ?p ?o }}");
             if (results is SparqlResultSet)
             {
                 Assert.False(((SparqlResultSet)results).Result);

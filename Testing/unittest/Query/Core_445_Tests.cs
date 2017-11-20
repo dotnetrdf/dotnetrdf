@@ -47,7 +47,7 @@ namespace VDS.RDF.Query
     public class Core_445_Tests
     {
 
-        public static String baseQuery = @"
+        public static string baseQuery = @"
 PREFIX type: <http://dbpedia.org/class/yago/>
 PREFIX prop: <http://dbpedia.org/property/>
 
@@ -55,7 +55,7 @@ SELECT ?country_name ?population
 WHERE {
 ";
 
-        private static String randomizedPattern = @"
+        private static string randomizedPattern = @"
     ?{0} a type:LandlockedCountries ;
              rdfs:label ?{1} ;
              prop:populationEstimate ?{2} .
@@ -66,21 +66,21 @@ WHERE {
         private static int randomBodyIterations = 1000;
 
         private static int runs = 100;
-        private static int averageExecutionTime;
-        private static int maxExecutionTime;
+        //private static int averageExecutionTime;
+        //private static int maxExecutionTime;
 
-        private HashSet<string> _variables = new HashSet<string>();
-        private Random randomizer = new Random();
+        private readonly HashSet<string> _variables = new HashSet<string>();
+        private readonly Random _randomizer = new Random();
 
-        private String BuildRandomSizeQuery()
+        private string BuildRandomSizeQuery()
         {
             StringBuilder sb = new StringBuilder();
 
             for (int i = 0; i < randomBodyIterations; i++)
             {
-                String countryVar = "country_" + randomizer.Next().ToString();
-                String countryNameVar = "country_name_" + randomizer.Next().ToString();
-                String popNameVar = "population_name_" + randomizer.Next().ToString();
+                string countryVar = "country_" + _randomizer.Next().ToString();
+                string countryNameVar = "country_name_" + _randomizer.Next().ToString();
+                string popNameVar = "population_name_" + _randomizer.Next().ToString();
 
                 _variables.Add(countryVar);
                 _variables.Add(countryNameVar);
@@ -103,7 +103,7 @@ WHERE {
             command.SetParameter("char", g.CreateUriNode(UriFactory.Create("urn:some-uri")));
             command.SetParameter("en", g.CreateUriNode(UriFactory.Create("urn:some-uri")));
             command.SetParameter("inLiteralParamPattern", g.CreateUriNode(UriFactory.Create("urn:some-uri")));
-            String output = command.ToString();
+            string output = command.ToString();
             Assert.True(output.Contains("<urn:with@char>"), "In IRI @ characters should not start a parameter capture");
             Assert.True(output.Contains("<urn:with?or$char>"), "In IRI ? and $ characters should not start a variable capture");
             Assert.True(output.Contains("rdfs:subClassOf ? "), "Property path ? quantifier should not start a variable capture");
@@ -115,7 +115,7 @@ WHERE {
         public void Core445_Benchmark()
         {
             Stopwatch timer = new Stopwatch();
-            String randomQuery = BuildRandomSizeQuery();
+            string randomQuery = BuildRandomSizeQuery();
 
             // Parsing performances
             timer.Start();
@@ -133,20 +133,20 @@ WHERE {
                 Console.WriteLine("Run #" + i.ToString());
                 timer.Reset();
                 timer.Start();
-                int variablesToSet = randomizer.Next(_variables.Count);
+                int variablesToSet = _randomizer.Next(_variables.Count);
                 if (variablesToSet > _variables.Count / 2)
                 {
                     variablesToSet = _variables.Count;
                 }
-                foreach (String variable in _variables.Take(variablesToSet))
+                foreach (string variable in _variables.Take(variablesToSet))
                 {
-                    command.SetVariable(variable, g.CreateUriNode(UriFactory.Create("urn:test#" + randomizer.Next(randomBodyIterations).ToString())));
+                    command.SetVariable(variable, g.CreateUriNode(UriFactory.Create("urn:test#" + _randomizer.Next(randomBodyIterations).ToString())));
                 }
                 timer.Stop();
                 Console.WriteLine(variablesToSet.ToString() + " Variables set: " + timer.ElapsedMilliseconds.ToString());
                 timer.Reset();
                 timer.Start();
-                String commandString = command.ToString();
+                string commandString = command.ToString();
                 timer.Stop();
                 Console.WriteLine("ToString: " + timer.ElapsedMilliseconds.ToString());
             }

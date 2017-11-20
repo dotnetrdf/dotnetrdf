@@ -103,14 +103,6 @@ namespace VDS.RDF
                 Console.WriteLine("Unable to retrieve the Graphs from the Web successfully!");
                 throw new SkipTestException("Unable to retrieve the graphs from the web successfully.");
             }
-            catch (RdfParseException parseEx)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
             finally
             {
                 Options.UriLoaderCaching = true;

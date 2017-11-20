@@ -40,6 +40,14 @@ namespace VDS.RDF.Query
 
     public class GroupByTests
     {
+        private object ExecuteQuery(IInMemoryQueryableStore store, string query)
+        {
+            var parser = new SparqlQueryParser();
+            var parsedQuery = parser.ParseFromString(query);
+            var processor =new LeviathanQueryProcessor(store);
+            return processor.ProcessQuery(parsedQuery);
+        }
+
         [Fact]
         public void SparqlGroupByInSubQuery()
         {
@@ -268,7 +276,7 @@ _:a <http://example/p> ""9""^^<http://www.w3.org/2001/XMLSchema#integer> <http:/
             TripleStore store = new TripleStore();
             StringParser.ParseDataset(store, data, new NQuadsParser());
 
-            SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
+            var results = ExecuteQuery(store, query) as SparqlResultSet;
             Assert.NotNull(results);
             TestTools.ShowResults(results);
             Assert.Equal(6, results.Variables.Count());
@@ -298,7 +306,7 @@ WHERE
             TripleStore store = new TripleStore();
             StringParser.ParseDataset(store, data, new NQuadsParser());
 
-            SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
+            var results = ExecuteQuery(store, query) as SparqlResultSet;
             Assert.NotNull(results);
             TestTools.ShowResults(results);
             Assert.Equal(1, results.Count);
@@ -336,7 +344,7 @@ _:a <http://example/p> ""9""^^<http://www.w3.org/2001/XMLSchema#integer> <http:/
             TripleStore store = new TripleStore();
             StringParser.ParseDataset(store, data, new NQuadsParser());
 
-            SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
+            var results = ExecuteQuery(store, query) as SparqlResultSet;
             Assert.NotNull(results);
             TestTools.ShowResults(results);
             Assert.Equal(1, results.Count);
@@ -365,7 +373,7 @@ GROUP BY ?s ?w";
             TripleStore store = new TripleStore();
             StringParser.ParseDataset(store, data, new NQuadsParser());
 
-            SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
+            var results = ExecuteQuery(store, query) as SparqlResultSet;
             Assert.NotNull(results);
             TestTools.ShowResults(results);
             Assert.Equal(3, results.Count);
@@ -386,12 +394,12 @@ GROUP BY ?s ?w";
             Console.WriteLine("Raw ToString()");
             Console.WriteLine(queryStr);
             Console.WriteLine();
-            Assert.True(queryStr.Contains("GROUP BY ?s"));
+            Assert.Contains("GROUP BY ?s", queryStr);
 
             String queryStrFmt = new SparqlFormatter().Format(q);
             Console.WriteLine("Formatted String");
             Console.WriteLine(queryStrFmt);
-            Assert.True(queryStrFmt.Contains("GROUP BY ?s"));
+            Assert.Contains("GROUP BY ?s", queryStrFmt);
         }
 
         [Fact]
@@ -406,12 +414,12 @@ GROUP BY ?s ?w";
             Console.WriteLine("Raw ToString()");
             Console.WriteLine(queryStr);
             Console.WriteLine();
-            Assert.True(queryStr.Contains("GROUP BY ?s ?p"));
+            Assert.Contains("GROUP BY ?s ?p", queryStr);
 
             String queryStrFmt = new SparqlFormatter().Format(q);
             Console.WriteLine("Formatted String");
             Console.WriteLine(queryStrFmt);
-            Assert.True(queryStrFmt.Contains("GROUP BY ?s ?p"));
+            Assert.Contains("GROUP BY ?s ?p", queryStrFmt);
         }
 
         [Fact]
@@ -426,12 +434,12 @@ GROUP BY ?s ?w";
             Console.WriteLine("Raw ToString()");
             Console.WriteLine(queryStr);
             Console.WriteLine();
-            Assert.True(queryStr.Contains("GROUP BY ?s"));
+            Assert.Contains("GROUP BY ?s", queryStr);
 
             String queryStrFmt = new SparqlFormatter().Format(q);
             Console.WriteLine("Formatted String");
             Console.WriteLine(queryStrFmt);
-            Assert.True(queryStrFmt.Contains("GROUP BY ?s"));
+            Assert.Contains("GROUP BY ?s", queryStrFmt);
         }
 
         [Fact]
@@ -459,7 +467,7 @@ WHERE
             TripleStore store = new TripleStore();
             StringParser.ParseDataset(store, data, new NQuadsParser());
 
-            SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
+            var results = ExecuteQuery(store, query) as SparqlResultSet;
             Assert.NotNull(results);
             TestTools.ShowResults(results);
             Assert.Equal(4, results.Count);
@@ -517,7 +525,7 @@ WHERE
                 TripleStore store = new TripleStore();
                 StringParser.ParseDataset(store, data, new NQuadsParser());
 
-                SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
+                var results = ExecuteQuery(store, query) as SparqlResultSet;
                 Assert.NotNull(results);
                 TestTools.ShowResults(results);
                 Assert.Equal(4, results.Count);
@@ -547,7 +555,7 @@ WHERE
             Assert.Equal(3, store.Triples.Count());
 
             //Aggregates may occur in project expressions and should evaluate correctly
-            SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
+            var results = ExecuteQuery(store, query) as SparqlResultSet;
             Assert.NotNull(results);
             Assert.True(results.All(r => r.HasBoundValue("Total")));
 
@@ -608,8 +616,7 @@ WHERE
 
             Assert.Equal(2, store.Graphs.Count);
 
-            SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
-            SparqlResultSet results = store.ExecuteQuery(q) as SparqlResultSet;
+            var results = ExecuteQuery(store, query) as SparqlResultSet;
             Assert.NotNull(results);
             Assert.False(results.IsEmpty);
 

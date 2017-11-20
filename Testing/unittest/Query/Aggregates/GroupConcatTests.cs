@@ -48,7 +48,7 @@ namespace VDS.RDF.Query.Aggregates
             TestTools.ShowResults(results);
 
             Assert.Equal(expected, results.Count);
-            Assert.True(results.Variables.Contains(var));
+            Assert.Contains(var, results.Variables);
 
             foreach (SparqlResult r in results)
             {
@@ -59,7 +59,7 @@ namespace VDS.RDF.Query.Aggregates
                     INode value = r[var];
                     Assert.Equal(NodeType.Literal, value.NodeType);
                     String lexValue = ((ILiteralNode)value).Value;
-                    Assert.True(lexValue.Contains(expectMatch));
+                    Assert.Contains(expectMatch, lexValue);
                 }
                 else
                 {

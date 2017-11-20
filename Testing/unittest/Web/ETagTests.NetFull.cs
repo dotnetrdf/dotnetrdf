@@ -39,51 +39,44 @@ namespace VDS.RDF.Web
         [Fact]
         public void WebETagComputation()
         {
-            try
-            {
-                Graph g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
-                Stopwatch timer = new Stopwatch();
-                timer.Start();
-                String etag = g.GetETag();
-                timer.Stop();
-                Console.WriteLine("ETag is " + etag);
-                Console.WriteLine(etag.Length);
-                Console.WriteLine("Took " + timer.Elapsed + " to calculate");
-                Console.WriteLine();
+            Graph g = new Graph();
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            String etag = g.GetETag();
+            timer.Stop();
+            Console.WriteLine("ETag is " + etag);
+            Console.WriteLine(etag.Length);
+            Console.WriteLine("Took " + timer.Elapsed + " to calculate");
+            Console.WriteLine();
 
-                Assert.False(String.IsNullOrEmpty(etag));
-                Assert.Equal(40, etag.Length);
+            Assert.False(String.IsNullOrEmpty(etag));
+            Assert.Equal(40, etag.Length);
 
-                timer.Reset();
-                timer.Start();
-                String etag2 = g.GetETag();
-                timer.Stop();
-                Console.WriteLine("ETag is " + etag2);
-                Console.WriteLine("Took " + timer.Elapsed + " to calculate");
-                Console.WriteLine();
+            timer.Reset();
+            timer.Start();
+            String etag2 = g.GetETag();
+            timer.Stop();
+            Console.WriteLine("ETag is " + etag2);
+            Console.WriteLine("Took " + timer.Elapsed + " to calculate");
+            Console.WriteLine();
 
-                Assert.Equal(etag, etag2);
-                Assert.Equal(40, etag2.Length);
+            Assert.Equal(etag, etag2);
+            Assert.Equal(40, etag2.Length);
 
-                g.Retract(g.Triples.First());
-                timer.Reset();
-                timer.Start();
-                String etag3 = g.GetETag();
-                timer.Stop();
-                Console.WriteLine("Graph has now been altered so ETag should change");
-                Console.WriteLine("ETag is " + etag3);
-                Console.WriteLine("Took " + timer.Elapsed + " to calculate");
-                Console.WriteLine();
+            g.Retract(g.Triples.First());
+            timer.Reset();
+            timer.Start();
+            String etag3 = g.GetETag();
+            timer.Stop();
+            Console.WriteLine("Graph has now been altered so ETag should change");
+            Console.WriteLine("ETag is " + etag3);
+            Console.WriteLine("Took " + timer.Elapsed + " to calculate");
+            Console.WriteLine();
 
-                Assert.NotEqual(etag, etag3);
-                Assert.NotEqual(etag2, etag3);
-                Assert.Equal(40, etag3.Length);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            Assert.NotEqual(etag, etag3);
+            Assert.NotEqual(etag2, etag3);
+            Assert.Equal(40, etag3.Length);
         }
     }
 }

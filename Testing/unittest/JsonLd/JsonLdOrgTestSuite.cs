@@ -12,7 +12,7 @@ namespace VDS.RDF.JsonLd
     public class JsonLdOrgTestSuite
     {
         [Theory]
-        [MemberData("ExpandTests", MemberType = typeof(JsonLdTestSuiteDataSource))]
+        [MemberData(nameof(JsonLdTestSuiteDataSource.ExpandTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
         public void ExpandTests(string inputPath, string contextPath, string expectedOutputPath, string baseIri,
             string processorMode, string expandContextPath, bool compactArrays)
         {
@@ -32,7 +32,7 @@ namespace VDS.RDF.JsonLd
         }
 
         [Theory]
-        [MemberData("CompactTests", MemberType = typeof(JsonLdTestSuiteDataSource))]
+        [MemberData(nameof(JsonLdTestSuiteDataSource.CompactTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
         public void CompactTests(string inputPath, string contextPath, string expectedOutputPath, string baseIri,
             string processorMode, string expandContextPath, bool compactArrays)
         {
@@ -51,7 +51,7 @@ namespace VDS.RDF.JsonLd
         }
 
         [Theory]
-        [MemberData("FlattenTests", MemberType = typeof(JsonLdTestSuiteDataSource))]
+        [MemberData(nameof(JsonLdTestSuiteDataSource.FlattenTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
         public void FlattenTests(string inputPath, string contextPath, string expectedOutputPath, string baseIri,
             string processorMode, string expandContextPath, bool compactArrays)
         {
@@ -70,7 +70,7 @@ namespace VDS.RDF.JsonLd
         }
 
         [Theory]
-        [MemberData("ToRdfTests", MemberType = typeof(JsonLdTestSuiteDataSource))]
+        [MemberData(nameof(JsonLdTestSuiteDataSource.ToRdfTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
         public void JsonLdParserTests(string inputPath, string contextPath, string expectedOutputPath, string baseIri,
             string processorMode, string expandContextPath, bool compactArrays)
         {
@@ -106,8 +106,10 @@ namespace VDS.RDF.JsonLd
         }
 
         [Theory]
-        [MemberData("FromRdfTests", MemberType = typeof(JsonLdTestSuiteDataSource))]
+        [MemberData(nameof(JsonLdTestSuiteDataSource.FromRdfTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
+#pragma warning disable xUnit1026 // Theory methods should use all of their parameters
         public void JsonLdWriterTests(string inputPath, string contextPath, string expectedOutputPath, bool useNativeTypes, bool useRdfType)
+#pragma warning restore xUnit1026 // Theory methods should use all of their parameters
         {
             var nqParser = new NQuadsParser(NQuadsSyntax.Rdf11);
             var input = new TripleStore();
@@ -131,7 +133,7 @@ namespace VDS.RDF.JsonLd
         }
 
         [Theory]
-        [MemberData("FrameTests", MemberType = typeof(JsonLdTestSuiteDataSource))]
+        [MemberData(nameof(JsonLdTestSuiteDataSource.FrameTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
         public void JsonLdFramingTests(string inputPath, string framePath, string expectedOutputPath,
             bool pruneBlankNodeIdentifiers)
         {

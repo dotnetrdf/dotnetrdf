@@ -44,7 +44,7 @@ namespace VDS.RDF.Configuration
             Uri optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Options#UsePLinqEvaluation");
 
             Assert.Equal("dotnetrdf-configure", optionUri.Scheme);
-            Assert.Equal(1, optionUri.Segments.Length);
+            Assert.Single(optionUri.Segments);
             Assert.Equal("VDS.RDF.Options", optionUri.Segments[0]);
             Assert.Equal("VDS.RDF.Options", optionUri.AbsolutePath);
             Assert.Equal("UsePLinqEvaluation", optionUri.Fragment.Substring(1));
@@ -56,7 +56,7 @@ namespace VDS.RDF.Configuration
             Uri optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Options,SomeAssembly#UsePLinqEvaluation");
 
             Assert.Equal("dotnetrdf-configure", optionUri.Scheme);
-            Assert.Equal(1, optionUri.Segments.Length);
+            Assert.Single(optionUri.Segments);
             Assert.Equal("VDS.RDF.Options,SomeAssembly", optionUri.Segments[0]);
             Assert.Equal("VDS.RDF.Options,SomeAssembly", optionUri.AbsolutePath);
             Assert.Equal("UsePLinqEvaluation", optionUri.Fragment.Substring(1));

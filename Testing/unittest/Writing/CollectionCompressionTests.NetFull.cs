@@ -45,15 +45,14 @@ namespace VDS.RDF.Writing
             Graph g = new Graph();
             g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
             INode n = g.CreateBlankNode();
-            INode rdfType = g.CreateUriNode("rdf:type");
 
             g.Assert(g.CreateUriNode("ex:subj"), g.CreateUriNode("ex:pred"), n);
 
             CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);
 
-            Assert.Equal(1, context.Collections.Count);
-            Assert.Equal(0, context.Collections.First().Value.Triples.Count);
+            Assert.Single(context.Collections);
+            Assert.Empty(context.Collections.First().Value.Triples);
 
             this.CheckCompressionRoundTrip(g);
         }
@@ -70,7 +69,7 @@ namespace VDS.RDF.Writing
             CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);
 
-            Assert.Equal(0, context.Collections.Count);
+            Assert.Empty(context.Collections);
 
             this.CheckCompressionRoundTrip(g);
         }
@@ -89,8 +88,8 @@ namespace VDS.RDF.Writing
             CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);
 
-            Assert.Equal(1, context.Collections.Count);
-            Assert.Equal(1, context.Collections.First().Value.Triples.Count);
+            Assert.Single(context.Collections);
+            Assert.Single(context.Collections.First().Value.Triples);
 
             this.CheckCompressionRoundTrip(g);
         }
@@ -110,7 +109,7 @@ namespace VDS.RDF.Writing
             CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);
 
-            Assert.Equal(0, context.Collections.Count);
+            Assert.Empty(context.Collections);
 
             this.CheckCompressionRoundTrip(g);
         }
@@ -133,7 +132,7 @@ namespace VDS.RDF.Writing
             CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);
 
-            Assert.Equal(1, context.Collections.Count);
+            Assert.Single(context.Collections);
 
             this.CheckCompressionRoundTrip(g);
         }
@@ -155,7 +154,7 @@ namespace VDS.RDF.Writing
             CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);
 
-            Assert.Equal(0, context.Collections.Count);
+            Assert.Empty(context.Collections);
 
             this.CheckCompressionRoundTrip(g);
         }
@@ -179,7 +178,7 @@ namespace VDS.RDF.Writing
             CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);
 
-            Assert.Equal(0, context.Collections.Count);
+            Assert.Empty(context.Collections);
 
             this.CheckCompressionRoundTrip(g);
         }
@@ -197,8 +196,8 @@ namespace VDS.RDF.Writing
             CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);
 
-            Assert.Equal(1, context.Collections.Count);
-            Assert.Equal(0, context.Collections.First().Value.Triples.Count);
+            Assert.Single(context.Collections);
+            Assert.Empty(context.Collections.First().Value.Triples);
 
             this.CheckCompressionRoundTrip(g);
         }
@@ -267,7 +266,7 @@ namespace VDS.RDF.Writing
             CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);
 
-            Assert.Equal(0, context.Collections.Count);
+            Assert.Empty(context.Collections);
 
             this.CheckCompressionRoundTrip(g);
         }
@@ -293,7 +292,7 @@ namespace VDS.RDF.Writing
             CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);
 
-            Assert.Equal(0, context.Collections.Count);
+            Assert.Empty(context.Collections);
 
             this.CheckCompressionRoundTrip(g);
         }
