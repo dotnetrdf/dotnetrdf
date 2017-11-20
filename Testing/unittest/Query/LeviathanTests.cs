@@ -59,9 +59,8 @@ namespace VDS.RDF.Query
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
-            Object testResult = store.ExecuteQuery(q);
-
-            ISparqlAlgebra testAlgebra = q.ToAlgebra();
+            var processor = new LeviathanQueryProcessor(store);
+            Object testResult = processor.ProcessQuery(q);
 
             if (testResult is SparqlResultSet)
             {
@@ -343,7 +342,8 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
                 //Now we'll try and evaluate it (if this is possible)
                 try
                 {
-                    Object results = store.ExecuteQuery(q);
+                    var processor = new LeviathanQueryProcessor(store);
+                    Object results = processor.ProcessQuery(q);
 
                     Console.WriteLine("Evaluated OK");
                     TestTools.ShowResults(results);
@@ -441,7 +441,10 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         {
             String query = "SELECT * WHERE { GRAPH <http://example.org/noSuchGraph> { ?s ?p ?o } }";
             TripleStore store = new TripleStore();
-            Object results = store.ExecuteQuery(query);
+            var processor = new LeviathanQueryProcessor(store);
+            var parser = new SparqlQueryParser();
+            var q = parser.ParseFromString(query);
+            Object results = processor.ProcessQuery(q);
 
             if (results is SparqlResultSet)
             {
