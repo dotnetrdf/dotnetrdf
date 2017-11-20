@@ -15,10 +15,10 @@ namespace VDS.RDF.Query.Algebra
             gp.GraphSpecifier = new VariableToken("g", 0, 0, 1);
 
             ISparqlAlgebra algebra = gp.ToAlgebra();
-            Assert.IsType(typeof(Graph), algebra);
+            Assert.IsType<Graph>(algebra);
 
             Graph g = (Graph) algebra;
-            Assert.IsAssignableFrom(typeof(IBgp), g.InnerAlgebra);
+            Assert.IsAssignableFrom<IBgp>(g.InnerAlgebra);
         }
 
         [Fact]
@@ -36,15 +36,15 @@ namespace VDS.RDF.Query.Algebra
             up.AddGraphPattern(empty);
 
             ISparqlAlgebra algebra = up.ToAlgebra();
-            Assert.IsType(typeof(Union), algebra);
+            Assert.IsType<Union>(algebra);
             Union u = (Union) algebra;
 
-            Assert.IsType(typeof(Graph), u.Lhs);
+            Assert.IsType<Graph>(u.Lhs);
 
             Graph g = (Graph)u.Lhs;
-            Assert.IsAssignableFrom(typeof(IBgp), g.InnerAlgebra);
+            Assert.IsAssignableFrom<IBgp>(g.InnerAlgebra);
 
-            Assert.IsAssignableFrom(typeof(IBgp), u.Rhs);
+            Assert.IsAssignableFrom<IBgp>(u.Rhs);
         }
 
         [Fact]
@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Algebra
             gp.GraphSpecifier = new UriToken("<http://example.org/sparql>", 0, 0, 0);
 
             ISparqlAlgebra algebra = gp.ToAlgebra();
-            Assert.IsType(typeof(Service), algebra);
+            Assert.IsType<Service>(algebra);
         }
 
         [Fact]
@@ -73,12 +73,12 @@ namespace VDS.RDF.Query.Algebra
             up.AddGraphPattern(empty);
 
             ISparqlAlgebra algebra = up.ToAlgebra();
-            Assert.IsType(typeof(Union), algebra);
+            Assert.IsType<Union>(algebra);
             Union u = (Union)algebra;
 
-            Assert.IsType(typeof(Service), u.Lhs);
+            Assert.IsType<Service>(u.Lhs);
 
-            Assert.IsAssignableFrom(typeof(IBgp), u.Rhs);
+            Assert.IsAssignableFrom<IBgp>(u.Rhs);
         }
 
         [Fact]
@@ -90,15 +90,15 @@ namespace VDS.RDF.Query.Algebra
             gp.AddInlineData(new BindingsPattern());
 
             ISparqlAlgebra algebra = gp.ToAlgebra();
-            Assert.IsAssignableFrom(typeof(IJoin), algebra);
+            Assert.IsAssignableFrom<IJoin>(algebra);
 
             IJoin join = (IJoin) algebra;
 
-            Assert.IsType(typeof(Graph), join.Lhs);
+            Assert.IsType<Graph>(join.Lhs);
             Graph g = (Graph)join.Lhs;
-            Assert.IsAssignableFrom(typeof(IBgp), g.InnerAlgebra);
+            Assert.IsAssignableFrom<IBgp>(g.InnerAlgebra);
 
-            Assert.IsAssignableFrom(typeof(Bindings), join.Rhs);
+            Assert.IsAssignableFrom<Bindings>(join.Rhs);
         }
 
         [Fact]
@@ -110,11 +110,11 @@ namespace VDS.RDF.Query.Algebra
             gp.AddInlineData(new BindingsPattern());
 
             ISparqlAlgebra algebra = gp.ToAlgebra();
-            Assert.IsAssignableFrom(typeof(IJoin), algebra);
+            Assert.IsAssignableFrom<IJoin>(algebra);
 
             IJoin join = (IJoin)algebra;
-            Assert.IsType(typeof(Service), join.Lhs);
-            Assert.IsType(typeof(Bindings), join.Rhs);
+            Assert.IsType<Service>(join.Lhs);
+            Assert.IsType<Bindings>(join.Rhs);
         }
 
         [Fact]
@@ -125,10 +125,10 @@ namespace VDS.RDF.Query.Algebra
             gp.GraphSpecifier = new VariableToken("g", 0, 0, 1);
 
             ISparqlAlgebra algebra = gp.ToAlgebra();
-            Assert.IsType(typeof(Graph), algebra);
+            Assert.IsType<Graph>(algebra);
 
             Graph g = (Graph)algebra;
-            Assert.IsAssignableFrom(typeof(IBgp), g.InnerAlgebra);
+            Assert.IsAssignableFrom<IBgp>(g.InnerAlgebra);
 
             // Nest in another graph pattern with same specifier
             GraphPattern parent = new GraphPattern();
@@ -138,10 +138,10 @@ namespace VDS.RDF.Query.Algebra
 
             // Resulting algebra will collapse the two graph clauses into a single one
             algebra = parent.ToAlgebra();
-            Assert.IsType(typeof(Graph), algebra);
+            Assert.IsType<Graph>(algebra);
 
             g = (Graph)algebra;
-            Assert.IsAssignableFrom(typeof(IBgp), g.InnerAlgebra);
+            Assert.IsAssignableFrom<IBgp>(g.InnerAlgebra);
         }
 
         [Fact]
@@ -152,10 +152,10 @@ namespace VDS.RDF.Query.Algebra
             gp.GraphSpecifier = new VariableToken("g", 0, 0, 1);
 
             ISparqlAlgebra algebra = gp.ToAlgebra();
-            Assert.IsType(typeof(Graph), algebra);
+            Assert.IsType<Graph>(algebra);
 
             Graph g = (Graph)algebra;
-            Assert.IsAssignableFrom(typeof(IBgp), g.InnerAlgebra);
+            Assert.IsAssignableFrom<IBgp>(g.InnerAlgebra);
 
             // Nest in another graph pattern with different specifier
             GraphPattern parent = new GraphPattern();
@@ -165,15 +165,15 @@ namespace VDS.RDF.Query.Algebra
 
             // Resulting algebra must nest the graph clauses
             algebra = parent.ToAlgebra();
-            Assert.IsType(typeof(Graph), algebra);
+            Assert.IsType<Graph>(algebra);
 
             g = (Graph)algebra;
             Assert.Equal(parent.GraphSpecifier.Value, g.GraphSpecifier.Value);
-            Assert.IsType(typeof(Graph), g.InnerAlgebra);
+            Assert.IsType<Graph>(g.InnerAlgebra);
 
             g = (Graph) g.InnerAlgebra;
             Assert.Equal(gp.GraphSpecifier.Value, g.GraphSpecifier.Value);
-            Assert.IsAssignableFrom(typeof(IBgp), g.InnerAlgebra);
+            Assert.IsAssignableFrom<IBgp>(g.InnerAlgebra);
         }
 
         [Fact]
@@ -184,10 +184,10 @@ namespace VDS.RDF.Query.Algebra
             gp.GraphSpecifier = new VariableToken("g", 0, 0, 1);
 
             ISparqlAlgebra algebra = gp.ToAlgebra();
-            Assert.IsType(typeof(Graph), algebra);
+            Assert.IsType<Graph>(algebra);
 
             Graph g = (Graph)algebra;
-            Assert.IsAssignableFrom(typeof(IBgp), g.InnerAlgebra);
+            Assert.IsAssignableFrom<IBgp>(g.InnerAlgebra);
 
             // Nest in another graph pattern with same specifier but also with another BGP
             GraphPattern parent = new GraphPattern();
@@ -200,16 +200,16 @@ namespace VDS.RDF.Query.Algebra
             // Resulting algebra will keep both graph clauses because of the join
             algebra = parent.ToAlgebra();
 
-            Assert.IsType(typeof(Graph), algebra);
+            Assert.IsType<Graph>(algebra);
             g = (Graph) algebra;
 
-            Assert.IsType(typeof(Join), g.InnerAlgebra);
+            Assert.IsType<Join>(g.InnerAlgebra);
 
             Join join = (Join) g.InnerAlgebra;
-            Assert.IsType(typeof(Graph), join.Lhs);
+            Assert.IsType<Graph>(join.Lhs);
 
             g = (Graph)join.Lhs;
-            Assert.IsAssignableFrom(typeof(IBgp), g.InnerAlgebra);
+            Assert.IsAssignableFrom<IBgp>(g.InnerAlgebra);
         }
     }
 }

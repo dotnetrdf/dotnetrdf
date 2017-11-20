@@ -56,7 +56,7 @@ namespace VDS.RDF.Update
             store.ExecuteUpdate(create2);
 
             Assert.Equal(3, store.Graphs.Count);
-            Assert.Equal(0, store.Triples.Count());
+            Assert.Empty(store.Triples);
 
             //Trying the same Create again should cause an error
             try
@@ -124,7 +124,7 @@ namespace VDS.RDF.Update
             store.ExecuteUpdate(loadSouthampton);
 
             Assert.Equal(2, store.Graphs.Count);
-            Assert.NotEqual(0, store.Triples.Count());
+            Assert.NotEmpty(store.Triples);
 
             foreach (IGraph g in store.Graphs)
             {
@@ -154,14 +154,14 @@ namespace VDS.RDF.Update
 
             IUriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
 
-            Assert.NotEqual(0, store.GetTriplesWithPredicate(rdfType).Count());
+            Assert.NotEmpty(store.GetTriplesWithPredicate(rdfType));
 
             String update = "DELETE {?s a ?type} WHERE {?s a ?type}";
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = parser.ParseFromString(update);
             store.ExecuteUpdate(cmds);
 
-            Assert.Equal(0, store.GetTriplesWithPredicate(rdfType).Count());
+            Assert.Empty(store.GetTriplesWithPredicate(rdfType));
         }
 
         [Fact]

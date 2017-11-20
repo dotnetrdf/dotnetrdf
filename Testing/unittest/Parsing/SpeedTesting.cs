@@ -293,7 +293,7 @@ namespace VDS.RDF.Parsing
                 Console.WriteLine(watch.Elapsed.ToString());
                 this.CalculateSpeed(1000000, watch);
             }
-            catch(OutOfMemoryException ex)
+            catch(OutOfMemoryException)
             {
                 throw new SkipTestException("Out of memory when parsing 1000000 NTriples");
             }

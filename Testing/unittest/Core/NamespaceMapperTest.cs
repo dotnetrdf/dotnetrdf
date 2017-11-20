@@ -50,33 +50,33 @@ namespace VDS.RDF
 
             Console.WriteLine("Trying to add the RDF Namespace, this should already be defined");
             nsmap.AddNamespace("rdf", new Uri(NamespaceMapper.RDF));
-            Assert.Equal(false, eventRaised);
+            Assert.False(eventRaised);
             eventRaised = false;
             Console.WriteLine();
 
             Console.WriteLine("Trying to add an example Namespace which isn't defined");
             nsmap.AddNamespace("ex", new Uri("http://example.org/"));
-            Assert.Equal(true, eventRaised);
+            Assert.True(eventRaised);
             eventRaised = false;
             Console.WriteLine(nsmap.GetNamespaceUri("ex").AbsoluteUri);
             Console.WriteLine();
 
             Console.WriteLine("Trying to modify the example Namespace");
             nsmap.AddNamespace("ex", new Uri("http://example.org/test/"));
-            Assert.Equal(true, eventRaised);
+            Assert.True(eventRaised);
             eventRaised = false;
             Console.WriteLine(nsmap.GetNamespaceUri("ex").AbsoluteUri);
             Console.WriteLine();
 
             Console.WriteLine("Trying to remove the example Namespace");
             nsmap.RemoveNamespace("ex");
-            Assert.Equal(true, eventRaised);
+            Assert.True(eventRaised);
             eventRaised = false;
             Console.WriteLine();
 
             Console.WriteLine("Trying to remove a non-existent Namespace");
             nsmap.RemoveNamespace("ex");
-            Assert.Equal(false, eventRaised);
+            Assert.False(eventRaised);
             eventRaised = false;
             Console.WriteLine();
 

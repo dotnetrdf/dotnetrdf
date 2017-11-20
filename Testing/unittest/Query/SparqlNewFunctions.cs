@@ -63,7 +63,8 @@ namespace VDS.RDF.Query
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString("SELECT ?obj (IsNumeric(?obj) AS ?IsNumeric) WHERE { ?s ?p ?obj }");
 
-            Object results = store.ExecuteQuery(q);
+            var processor = new LeviathanQueryProcessor(store);
+            var results = processor.ProcessQuery(q);
 
             Assert.True(results is SparqlResultSet, "Result should be a SPARQL Result Set");
             TestTools.ShowResults(results);

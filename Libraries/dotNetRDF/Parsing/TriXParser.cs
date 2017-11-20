@@ -94,7 +94,8 @@ namespace VDS.RDF.Parsing
         {
             XmlReaderSettings settings = new XmlReaderSettings();
 #if !NETCORE
-            settings.ProhibitDtd = false;
+            settings.DtdProcessing = DtdProcessing.Parse;
+            //settings.ProhibitDtd = false;
 #endif
             settings.ConformanceLevel = ConformanceLevel.Document;
             settings.IgnoreComments = true;

@@ -582,6 +582,7 @@ namespace VDS.RDF.Update
 
         #region INSERT DATA and DELETE DATA Tests
 
+        [Fact]
         public void SparqlUpdateTransactionsInsertDataThenDeleteDataCommit()
         {
             this.TestInsertDataThenDeleteDataCommit();

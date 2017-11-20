@@ -34,13 +34,14 @@ using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
+#pragma warning disable 618
 
 namespace VDS.RDF.Writing
 {
     public partial class WriterTests
         : CompressionTests
     {
-        private String prefix = "@prefix : <http://example.org>.\n";
+        // private String prefix = "@prefix : <http://example.org>.\n";
         
         [Fact]
         public void WritingBlankNodeOutput()

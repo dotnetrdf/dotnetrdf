@@ -136,7 +136,7 @@ namespace VDS.RDF.Writing
                 Console.WriteLine("PrettyRdfXmlWriter serialization was OK");
         }
 
-        public static void thingOneOf(IGraph graph, IUriNode[] listInds)
+        protected static void thingOneOf(IGraph graph, IUriNode[] listInds)
         {
             IBlankNode oneOfNode = graph.CreateBlankNode();
             IBlankNode chainA = graph.CreateBlankNode();

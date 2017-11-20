@@ -366,7 +366,7 @@ namespace VDS.RDF.Query.Builder
             Assert.False(q.RootGraphPattern.HasChildGraphPatterns);
             Assert.Equal(3, q.RootGraphPattern.TriplePatterns.Count);
             Assert.False(q.RootGraphPattern.IsFiltered);
-            Assert.Equal(0, q.RootGraphPattern.UnplacedAssignments.Count());
+            Assert.Empty(q.RootGraphPattern.UnplacedAssignments);
             Assert.Equal(1, q.Variables.Count(v => v.IsProjection && v.IsResultVariable));
         }
 

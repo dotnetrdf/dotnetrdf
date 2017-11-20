@@ -180,7 +180,7 @@ SELECT * WHERE
 
             Assert.False(q.RootGraphPattern.TriplePatterns[0] .PatternType == TriplePatternType.Filter, "First Triple Pattern should not be a FilterPattern");
             Assert.False(q.RootGraphPattern.TriplePatterns[1] .PatternType == TriplePatternType.Filter, "Second Triple Pattern should not be a FilterPattern");
-            Assert.Equal(0, q.RootGraphPattern.ChildGraphPatterns[0].TriplePatterns.Count);
+            Assert.Empty(q.RootGraphPattern.ChildGraphPatterns[0].TriplePatterns);
             Assert.True(q.RootGraphPattern.ChildGraphPatterns[0].IsFiltered, "Child Graph Pattern should be filtered");
 
             String algebra = q.ToAlgebra().ToString();
@@ -209,7 +209,7 @@ SELECT * WHERE
 
             Assert.False(q.RootGraphPattern.TriplePatterns[0] .PatternType == TriplePatternType.Filter, "First Triple Pattern should not be a FilterPattern");
             Assert.False(q.RootGraphPattern.TriplePatterns[1] .PatternType == TriplePatternType.Filter, "Second Triple Pattern should not be a FilterPattern");
-            Assert.Equal(0, q.RootGraphPattern.ChildGraphPatterns[0].TriplePatterns.Count);
+            Assert.Empty(q.RootGraphPattern.ChildGraphPatterns[0].TriplePatterns);
             Assert.True(q.RootGraphPattern.ChildGraphPatterns[0].IsFiltered, "Child Graph Pattern should be filtered");
 
             String algebra = q.ToAlgebra().ToString();

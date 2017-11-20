@@ -39,19 +39,19 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingPagingHandlerRdfXml()
         {
-            this.ParsingUsingPagingHandler("paging_handler_tests_temp.rdf", new RdfXmlParser());
+            ParsingUsingPagingHandler("paging_handler_tests_temp.rdf", new RdfXmlParser());
         }
 
         [Fact]
         public void ParsingPagingHandlerRdfXml2()
         {
-            this.ParsingUsingPagingHandler2("paging_handler_tests_temp.rdf", new RdfXmlParser());
+            ParsingUsingPagingHandler2("paging_handler_tests_temp.rdf", new RdfXmlParser());
         }
 
         [Fact]
         public void ParsingPagingHandlerRdfXml3()
         {
-            this.ParsingUsingPagingHandler3("paging_handler_tests_temp.rdf", new RdfXmlParser());
+            ParsingUsingPagingHandler3("paging_handler_tests_temp.rdf", new RdfXmlParser());
         }
     }
 }

@@ -96,7 +96,7 @@ namespace VDS.RDF.Parsing.Handlers
             TestTools.TestInMTAThread(this.ParsingStoreHandlerBlankNodesTriGActual);
         }
 
-        public void ParsingStoreHandlerBlankNodesTriGActual()
+        protected void ParsingStoreHandlerBlankNodesTriGActual()
         {
             EnsureTestData("test-bnodes.trig");
 
@@ -113,7 +113,7 @@ namespace VDS.RDF.Parsing.Handlers
             TestTools.TestInMTAThread(this.ParsingStoreHandlerBlankNodesTriXActual);
         }
 
-        public void ParsingStoreHandlerBlankNodesTriXActual()
+        protected void ParsingStoreHandlerBlankNodesTriXActual()
         {
             EnsureTestData("test-bnodes.xml");
 
@@ -130,7 +130,7 @@ namespace VDS.RDF.Parsing.Handlers
             TestTools.TestInMTAThread(this.ParsingStoreHandlerBlankNodesNQuadsActual);
         }
 
-        public void ParsingStoreHandlerBlankNodesNQuadsActual()
+        protected void ParsingStoreHandlerBlankNodesNQuadsActual()
         {
             EnsureTestData("test-bnodes.nq");
 
