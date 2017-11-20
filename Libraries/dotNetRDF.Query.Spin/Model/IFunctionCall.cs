@@ -37,7 +37,7 @@ namespace VDS.RDF.Query.Spin.Model
      * 
      * @author Holger Knublauch
      */
-    public interface IFunctionCall : IPrintable, IModuleCall
+    internal interface IFunctionCall : IPrintable, IModuleCall
     {
 
         /**

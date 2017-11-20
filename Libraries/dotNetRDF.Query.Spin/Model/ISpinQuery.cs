@@ -35,7 +35,7 @@ namespace VDS.RDF.Query.Spin.Model
      * 
      * @author Holger Knublauch
      */
-    public interface IQuery : ICommandWithWhere
+    internal interface IQuery : ICommandWithWhere
     {
 
         /**

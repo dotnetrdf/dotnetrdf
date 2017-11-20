@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Spin.Core
      * 
      * @author Holger Knublauch
      */
-    public class SPINLabels
+    internal class SPINLabels
     {
 
         /**

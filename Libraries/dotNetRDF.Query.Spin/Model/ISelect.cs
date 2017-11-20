@@ -35,7 +35,7 @@ namespace VDS.RDF.Query.Spin.Model
      * 
      * @author Holger Knublauch
      */
-    public interface ISelect : ISolutionModifierQuery
+    internal interface ISelect : ISolutionModifierQuery
     {
 
         /**

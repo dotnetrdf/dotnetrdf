@@ -37,7 +37,7 @@ namespace VDS.RDF.Query.Spin.LibraryOntology
      * 
      * @author Holger Knublauch
      */
-    public class SPIN
+    internal class SPIN
     {
 
         public const String BASE_URI = "http://spinrdf.org/spin";

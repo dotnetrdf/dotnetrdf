@@ -34,7 +34,7 @@ namespace VDS.RDF.Query.Spin.SparqlUtil
      * 
      * @author Holger Knublauch
      */
-    public interface IPrintable
+    internal interface IPrintable
     {
 
         /**

@@ -74,10 +74,5 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
-        public bool IsOptional()
-        {
-            return (bool)getBoolean(SPL.PropertyOptional);
-        }
     }
 }

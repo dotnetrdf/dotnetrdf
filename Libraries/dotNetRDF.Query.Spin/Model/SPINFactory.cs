@@ -37,7 +37,7 @@ namespace VDS.RDF.Query.Spin.Model
 
     // TODO rename this as SPINUtil and relocate into Core
 
-    /**
+    /* *
      * The singleton that is used to convert plain Jena objects into
      * SPIN API resources, and to do corresponding tests.
      * 
@@ -48,7 +48,7 @@ namespace VDS.RDF.Query.Spin.Model
     internal class SPINFactory
     {
 
-        /**
+        /* *
          * Attempts to cast a given INode into an Aggregation.
          * Resources that have an aggregation type as their rdf:type
          * are recognized as well-formed aggregations.
@@ -89,7 +89,7 @@ namespace VDS.RDF.Query.Spin.Model
             return new ArgumentImpl(resource, resource.getModel());
         }
 
-        /**
+        /* *
          * Attempts to cast a given INode into the most specific
          * subclass of Command, esp Update or Query.
          * @param resource  the INode to cast
@@ -110,7 +110,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Checks whether a given INode represents a SPARQL element, and returns
          * an instance of a subclass of Element if so.
          * @param resource  the INode to check
@@ -184,7 +184,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Returns the most specific Java instance for a given INode.
          * If the node is an aggregation, it will be returned as instance of
          * Aggregation.
@@ -220,7 +220,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Converts a given INode into a Function instance.
          * No other tests are done.
          * @param resource  the INode to convert
@@ -233,7 +233,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Checks if a given INode might represent a Function call, and if
          * yes returns the resource as Function.  The condition here is fairly
          * general: a function call must be a blank node with an rdf:type triple
@@ -260,7 +260,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Checks if a given INode is a SPIN query, and returns an
          * instance of a subclass of Query if so. 
          * @param resource  the INode to test
@@ -292,7 +292,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Converts a given INode into a Template instance.
          * No other tests are done.
          * @param resource  the INode to convert
@@ -305,7 +305,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Checks whether a given INode can be cast into TemplateCall, and returns
          * it as a TemplateCall instance if so.
          * @param node  the node to convert
@@ -330,7 +330,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Checks whether a given INode can be converted into a TriplePattern, and if yes,
          * returns an instance of TriplePattern.
          * @param node  the node to test
@@ -350,7 +350,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Checks if a given INode is a subclass of sp:Update and
          * casts it into the most specific Java class possible.
          * @param resource  the INode to cast
@@ -391,6 +391,7 @@ namespace VDS.RDF.Query.Spin.Model
             {
                 return (ILoad)resource.As(typeof(LoadImpl));
             }
+#pragma warning disable 612
             else if (resource.canAs(SP.ClassDelete))
             {
                 return (IDelete)resource.As(typeof(DeleteImpl));
@@ -399,6 +400,7 @@ namespace VDS.RDF.Query.Spin.Model
             {
                 return (IInsert)resource.As(typeof(InsertImpl));
             }
+#pragma warning restore 612
             else
             {
                 return null;
@@ -406,7 +408,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Checks whether a given INode can be cast into a Variable and - if yes -
          * converts it into an instance of Variable.  The INode must have a value
          * for spin:varName.
@@ -427,7 +429,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Creates an spl:Argument with a given property and value type.
          * The new Argument resource will be a blank node in a given Model.
          * @param model  the Model
@@ -455,7 +457,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Creates a new spl:Attribute as a blank node in a given Model.
          * @param model  the Model to create the attribute in
          * @param argProperty  the predicate or null
@@ -475,19 +477,13 @@ namespace VDS.RDF.Query.Spin.Model
             {
                 a.AddProperty(SPL.PropertyValueType, argType);
             }
-            if (minCount != null)
-            {
-                a.AddProperty(SPL.PropertyMinCount, RDFUtil.CreateLiteralNode(minCount.ToString(), XSD.DatatypeInt.Uri));
-            }
-            if (maxCount != null)
-            {
-                a.AddProperty(SPL.PropertyMaxCount, RDFUtil.CreateLiteralNode(maxCount.ToString(), XSD.DatatypeInt.Uri));
-            }
+            a.AddProperty(SPL.PropertyMinCount, RDFUtil.CreateLiteralNode(minCount.ToString(), XSD.DatatypeInt.Uri));
+            a.AddProperty(SPL.PropertyMaxCount, RDFUtil.CreateLiteralNode(maxCount.ToString(), XSD.DatatypeInt.Uri));
             return a;
         }
 
 
-        /**
+        /* *
          * Creates an Ask query for a given WHERE clause.
          * @param model  the Model to create the Ask (blank node) in
          * @param where  the elements of the WHERE clause
@@ -501,7 +497,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Creates a Bind in a given Model as a blank node.
          * @param model  the Model to create the Bind in
          * @param variable  the Variable to assign
@@ -523,7 +519,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Creates a new ElementList in a given Model.
          * @param model  the Model to create the ElementList in
          * @param elements  the elements (may be empty)
@@ -542,7 +538,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Creates a new ElementList in a given Model.
          * @param model  the Model to create the ElementList in
          * @param elements  the elements (may be empty)
@@ -562,7 +558,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Creates a new Exists as a blank node in a given Model.
          * @param model  the Model to create the EXISTS in
          * @param elements  the elements of the EXISTS
@@ -576,7 +572,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Creates a Filter from a given expression.
          * @param model  the Model to create the (blank node) Filter in
          * @param expression  the expression node (not null)
@@ -590,7 +586,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Creates a new Function call, which is basically an instance of the
          * function's class.
          * @param model  the Model to create the function call in
@@ -603,7 +599,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Creates a new Minus as a blank node in a given Model.
          * @param model  the Model to create the MINUS in
          * @param elements  the elements of the MINUS
@@ -617,7 +613,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Creates a new NamedGraph element as a blank node in a given Model.
          * @param model  the Model to generate the NamedGraph in
          * @param graphNameNode  the URI resource of the graph name
@@ -633,7 +629,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Creates a new NotExists as a blank node in a given Model.
          * @param model  the Model to create the NOT EXISTS in
          * @param elements  the elements of the NOT EXISTS
@@ -647,7 +643,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Creates a new Optional as a blank node in a given Model. 
          * @param model  the Model to create the OPTIONAL in
          * @param elements  the elements of the OPTIONAL
@@ -670,7 +666,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Creates a new SubQuery as a blank node in a given Model.
          * @param model  the Model to create the SubQuery in
          * @param subQuery  the nested query
@@ -684,7 +680,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Creates a new TemplateCall as a blank node instance of a given template.
          * @param model  the Model to create a template call in
          * @param template  the template class
@@ -697,7 +693,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Creates a new TriplePath as a blank node in a given Model.
          * @param model  the Model to create the path in
          * @param subject  the subject (not null)
@@ -715,7 +711,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Creates a new TriplePattern as a blank node in a given Model.
          * @param model  the Model to create the pattern in
          * @param subject  the subject (not null)
@@ -734,7 +730,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Creates a new UNION element as a blank node in a given Model.
          * @param model  the Model to create the Union in
          * @param elements  the elements
@@ -749,7 +745,7 @@ namespace VDS.RDF.Query.Spin.Model
 
 
         // TODO Should not be needed since we would rely on the underlying storage capabilities
-        /** 
+        /* * 
          * Creates a new Values element.
          * @param model  the Model to create the Values in
          * @param data  the Table providing the actual data
@@ -797,7 +793,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Creates a new Variable as a blank node in a given Model.
          * @param model  the Model
          * @param varName  the name of the variable
@@ -811,7 +807,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Gets an spl:Attribute defined for a given property on a given class.
          * The spl:Attribute must be a direct spin:constraint on the class.
          * @param cls  the class
@@ -838,7 +834,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Gets the most appopriate metaclass to wrap a given Command into a
          * Template.  For example, for an Ask query, this will return spin:AskTemplate.
          * @param command  the Command, cast into the best possible subclass
@@ -869,7 +865,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Checks whether a given module has been declared abstract using
          * <code>spin:abstract</code.
          * @param module  the module to test
@@ -881,7 +877,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Checks if a given INode can be cast into an ElementList.
          * It must be either rdf:nil or an rdf:List where the first
          * list item is an element using <code>asElement()</code>.
@@ -913,7 +909,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Checks if a given INode is an instance of a class that has
          * type spin:Module (or its subclasses such as spin:Function).
          * @param resource  the INode to check
@@ -932,7 +928,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Checks if a given INode is spin:query or a sub-property of it.
          * @param predicate  the INode to test
          * @return true if predicate is a query property
@@ -943,7 +939,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Checks whether a given INode is a TemplateCall.  The condition for this
          * is stricter than for <code>asTemplateCall</code> as the node also must have
          * a valid template assigned to it, i.e. the type of the node must be an
@@ -958,7 +954,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        /**
+        /* *
          * Checks whether a given INode is a variable.
          * @param node  the node to check
          * @return true if node is a variable

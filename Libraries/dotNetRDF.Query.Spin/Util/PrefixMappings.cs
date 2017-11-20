@@ -31,7 +31,7 @@ using System.Text;
 
 namespace VDS.RDF.Query.Spin.Util
 {
-    public class PrefixMapping : Dictionary<String, String>
+    internal class PrefixMapping : Dictionary<String, String>
     {
         public PrefixMapping()
             : base(StringComparer.Ordinal)

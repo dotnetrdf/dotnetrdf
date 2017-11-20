@@ -35,7 +35,7 @@ namespace VDS.RDF.Query.Spin.Constraints {
  * 
  * @author Holger Knublauch
  */
-public class ConstraintViolation {
+internal class ConstraintViolation {
 
     private List<ITemplateCall> fixes;
 	

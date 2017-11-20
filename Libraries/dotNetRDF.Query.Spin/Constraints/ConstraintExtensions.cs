@@ -36,14 +36,14 @@ namespace VDS.RDF.Query.Spin.Constraints
     /// <summary>
     /// Provides extensions to the SpinWrappedDataset class to check SPIN constraints
     /// </summary>
-    public static class ConstraintsExtensions
+    internal static class ConstraintsExtensions
     {
 
         /// <summary>
         /// Checks all spin:constraints for a given Resource set.
         /// </summary>
         /// <param name="dataset">the dataset containing the resource</param>
-        /// <param name="resource">the instance to run constraint checks on</param>
+        /// <param name="resources">the instances to run constraint checks on</param>
         /// <param name="monitor">an (optional) progress monitor (currently ignored)</param>
         /// <returns>a List of ConstraintViolations (empty if all is OK)</returns>
         public static List<ConstraintViolation> CheckConstraints(this SpinWrappedDataset dataset, IEnumerable<INode> resources, IProgressMonitor monitor)
@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Spin.Constraints
         /// Checks all spin:constraints for a given Resource set.
         /// </summary>
         /// <param name="dataset">the model containing the resource</param>
-        /// <param name="resource">the instance to run constraint checks on</param>
+        /// <param name="resources">the instances to run constraint checks on</param>
         /// <param name="stats">an (optional) List to add statistics to</param>
         /// <param name="monitor">an (optional) progress monitor (currently ignored)</param>
         /// <returns>a List of ConstraintViolations (empty if all is OK)</returns>

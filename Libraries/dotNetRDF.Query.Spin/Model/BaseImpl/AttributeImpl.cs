@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        public bool IsOptional()
+        public new bool IsOptional()
         {
             return getMinCount() == 0;
         }

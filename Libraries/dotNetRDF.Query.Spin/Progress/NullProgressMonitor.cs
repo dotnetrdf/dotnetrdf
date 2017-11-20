@@ -32,7 +32,7 @@ namespace VDS.RDF.Query.Spin.Progress
     /// Support for canceling is provided via <code>setCanceled</code>.
     /// </summary>
     /// <author>Holger Knublauch</author>
-    public class NullProgressMonitor : IProgressMonitor
+    internal class NullProgressMonitor : IProgressMonitor
     {
 
         private bool canceled;

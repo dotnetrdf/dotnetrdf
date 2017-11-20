@@ -32,7 +32,7 @@ namespace VDS.RDF.Query.Spin.Model
      * 
      * @author Holger Knublauch
      */
-    public interface IConstruct : ISolutionModifierQuery
+    internal interface IConstruct : ISolutionModifierQuery
     {
 
         /**

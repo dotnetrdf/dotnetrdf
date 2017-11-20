@@ -35,7 +35,7 @@ namespace VDS.RDF.Query.Spin.Model
      * 
      * @author Holger Knublauch
      */
-    public interface IArgument : IAbstractAttribute
+    internal interface IArgument : IAbstractAttribute
     {
 
 

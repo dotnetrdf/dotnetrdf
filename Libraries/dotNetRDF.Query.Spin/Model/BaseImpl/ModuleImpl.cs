@@ -156,7 +156,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        public String getComment()
+        public new String getComment()
         {
             return getString(RDFS.PropertyComment);
         }

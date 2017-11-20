@@ -41,7 +41,7 @@ namespace VDS.RDF.Query.Spin.Model
      * 
      * @author Holger Knublauch
      */
-    public interface IElementList : IElementGroup
+    internal interface IElementList : IElementGroup
     {
     }
 }

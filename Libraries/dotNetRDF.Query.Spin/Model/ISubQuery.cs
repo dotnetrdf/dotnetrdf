@@ -34,7 +34,7 @@ namespace VDS.RDF.Query.Spin.Model
      * 
      * @author Holger Knublauch
      */
-    public interface ISubQuery : IElement
+    internal interface ISubQuery : IElement
     {
 
         /**

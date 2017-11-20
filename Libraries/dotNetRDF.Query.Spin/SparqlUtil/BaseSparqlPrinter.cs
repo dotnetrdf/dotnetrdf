@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Spin.SparqlUtil
     /// 
     /// Except for IInsertData and IDeleteData commands, updates should redirect (as necessary) their Insert and Delete templates to the corresponding addTriplesTo and deleteTriplesFrom graphs so triples changes can be monitored correctly.
     /// </summary>
-    public class BaseSparqlPrinter : ISparqlPrinter
+    internal class BaseSparqlPrinter : ISparqlPrinter
     {
 
         //private const PrefixMapping noPrefixMapping = new PrefixMapping();
@@ -373,19 +373,19 @@ namespace VDS.RDF.Query.Spin.SparqlUtil
                 {
                     if (spinQuery is IDeleteData)
                     {
-                        sb.AppendLine("USING NAMED <" + Dataset._configuration.GetTripleRemovalsMonitorUri(graphUri).ToString() + ">");
+                        sb.AppendLine("USING NAMED <" + Dataset.Configuration.GetTripleRemovalsMonitorUri(graphUri).ToString() + ">");
                     }
                     else if (spinQuery is InsertDataImpl)
                     {
-                        sb.AppendLine("USING NAMED <" + Dataset._configuration.GetTripleAdditionsMonitorUri(graphUri).ToString() + ">");
+                        sb.AppendLine("USING NAMED <" + Dataset.Configuration.GetTripleAdditionsMonitorUri(graphUri).ToString() + ">");
                     }
-                    Uri ucg = Dataset._configuration.GetUpdateControlUri(graphUri, false);
+                    Uri ucg = Dataset.Configuration.GetUpdateControlUri(graphUri, false);
                     if (ucg != null)
                     {
                         sb.AppendLine("USING NAMED <" + ucg.ToString() + ">");
                     }
                 }
-                if (!Dataset._configuration.IsGraphReplaced(graphUri))
+                if (!Dataset.Configuration.IsGraphReplaced(graphUri))
                 {
                     sb.AppendLine("USING NAMED <" + graphUri.ToString() + ">");
                 }
@@ -619,11 +619,11 @@ namespace VDS.RDF.Query.Spin.SparqlUtil
                 {
                     if (CurrentSparqlContext == SparqlContext.InsertTemplateContext)
                     {
-                        print("<" + Dataset._configuration.GetTripleAdditionsMonitorUri(nameNode.Uri).ToString() + ">");
+                        print("<" + Dataset.Configuration.GetTripleAdditionsMonitorUri(nameNode.Uri).ToString() + ">");
                     }
                     else
                     {
-                        print("<" + Dataset._configuration.GetTripleRemovalsMonitorUri(nameNode.Uri).ToString() + ">");
+                        print("<" + Dataset.Configuration.GetTripleRemovalsMonitorUri(nameNode.Uri).ToString() + ">");
                     }
                 }
                 else

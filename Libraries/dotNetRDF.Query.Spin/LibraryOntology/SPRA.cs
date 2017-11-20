@@ -37,7 +37,7 @@ namespace VDS.RDF.Query.Spin.LibraryOntology
      *
      * @author Holger Knublauch
      */
-    public class SPRA
+    internal class SPRA
     {
 
         public const String BASE_URI = "http://spinrdf.org/spra";
@@ -47,7 +47,7 @@ namespace VDS.RDF.Query.Spin.LibraryOntology
         public const String PREFIX = "spra";
 
 
-        public readonly static IUriNode ClassTable = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "Table"));
+        public static readonly IUriNode ClassTable = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "Table"));
 
     }
 }

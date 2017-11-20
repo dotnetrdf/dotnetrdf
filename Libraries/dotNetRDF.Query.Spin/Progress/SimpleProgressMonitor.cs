@@ -34,7 +34,7 @@ namespace VDS.RDF.Query.Spin.Progress
      *
      * @author Holger Knublauch
      */
-    public class SimpleProgressMonitor : IProgressMonitor
+    internal class SimpleProgressMonitor : IProgressMonitor
     {
 
         private String name;

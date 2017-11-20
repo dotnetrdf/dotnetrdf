@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Spin.Core
      * 
      * @author Holger Knublauch
      */
-    public static class ExtraPrefixes
+    internal static class ExtraPrefixes
     {
 
         private static NamespaceMapper map = new NamespaceMapper();

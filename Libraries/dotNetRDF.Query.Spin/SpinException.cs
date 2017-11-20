@@ -31,7 +31,7 @@ using System.Text;
 
 namespace VDS.RDF.Query.Spin
 {
-    public class SpinException : RdfQueryException
+    internal class SpinException : RdfQueryException
     {
         public SpinException(String message)
             : base(message) { }
