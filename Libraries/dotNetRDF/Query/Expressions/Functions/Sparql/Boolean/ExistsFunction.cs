@@ -57,8 +57,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <param name="mustExist">Whether this is an EXIST</param>
         public ExistsFunction(GraphPattern pattern, bool mustExist)
         {
-            this._pattern = pattern;
-            this._mustExist = mustExist;
+            _pattern = pattern;
+            _mustExist = mustExist;
         }
 
         /// <summary>
@@ -69,25 +69,25 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            if (this._result == null || this._lastInput == null || (int)this._lastInput != context.InputMultiset.GetHashCode() || this._lastCount != context.InputMultiset.Count) this.EvaluateInternal(context);
+            if (_result == null || _lastInput == null || (int)_lastInput != context.InputMultiset.GetHashCode() || _lastCount != context.InputMultiset.Count) EvaluateInternal(context);
 
-            if (this._mustExist)
+            if (_mustExist)
             {
                 // If an EXISTS then Null/Empty Other results in false
-                if (this._result is NullMultiset) return new BooleanNode(null, false);
-                if (this._result.IsEmpty) return new BooleanNode(null, false);
+                if (_result is NullMultiset) return new BooleanNode(null, false);
+                if (_result.IsEmpty) return new BooleanNode(null, false);
             }
             else
             {
                 // If a NOT EXISTS then Null/Empty results in true
-                if (this._result is NullMultiset) return new BooleanNode(null, true);
-                if (this._result.IsEmpty) return new BooleanNode(null, true);
+                if (_result is NullMultiset) return new BooleanNode(null, true);
+                if (_result.IsEmpty) return new BooleanNode(null, true);
             }
 
-            if (this._joinVars.Count == 0)
+            if (_joinVars.Count == 0)
             {
                 // If Disjoint then all solutions are compatible
-                if (this._mustExist)
+                if (_mustExist)
                 {
                     // If Disjoint and must exist then true since
                     return new BooleanNode(null, true);
@@ -101,8 +101,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
 
             ISet x = context.InputMultiset[bindingID];
 
-            bool exists = this._exists.Contains(x.ID);
-            if (this._mustExist)
+            bool exists = _exists.Contains(x.ID);
+            if (_mustExist)
             {
                 // If an EXISTS then return the value of exists i.e. are there any compatible solutions
                 return new BooleanNode(null, exists);
@@ -123,27 +123,27 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// </remarks>
         private void EvaluateInternal(SparqlEvaluationContext origContext)
         {
-            this._result = null;
+            _result = null;
 
             // We must take a copy of the original context as otherwise we can have strange results
             SparqlEvaluationContext context = new SparqlEvaluationContext(origContext.Query, origContext.Data);
             context.InputMultiset = origContext.InputMultiset;
             context.OutputMultiset = new Multiset();
-            this._lastInput = context.InputMultiset.GetHashCode();
-            this._lastCount = context.InputMultiset.Count;
+            _lastInput = context.InputMultiset.GetHashCode();
+            _lastCount = context.InputMultiset.Count;
 
             // REQ: Optimise the algebra here
-            ISparqlAlgebra existsClause = this._pattern.ToAlgebra();
-            this._result = context.Evaluate(existsClause);
+            ISparqlAlgebra existsClause = _pattern.ToAlgebra();
+            _result = context.Evaluate(existsClause);
 
             // This is the new algorithm which is also correct but is O(3n) so much faster and scalable
             // Downside is that it does require more memory than the old algorithm
-            this._joinVars = origContext.InputMultiset.Variables.Where(v => this._result.Variables.Contains(v)).ToList();
-            if (this._joinVars.Count == 0) return;
+            _joinVars = origContext.InputMultiset.Variables.Where(v => _result.Variables.Contains(v)).ToList();
+            if (_joinVars.Count == 0) return;
 
             List<MultiDictionary<INode, List<int>>> values = new List<MultiDictionary<INode, List<int>>>();
             List<List<int>> nulls = new List<List<int>>();
-            foreach (System.String var in this._joinVars)
+            foreach (System.String var in _joinVars)
             {
                 values.Add(new MultiDictionary<INode, List<int>>(new FastVirtualNodeComparer()));
                 nulls.Add(new List<int>());
@@ -153,7 +153,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             foreach (ISet x in origContext.InputMultiset.Sets)
             {
                 int i = 0;
-                foreach (System.String var in this._joinVars)
+                foreach (System.String var in _joinVars)
                 {
                     INode value = x[var];
                     if (value != null)
@@ -177,12 +177,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             }
 
             // Then do a pass over the RHS and work out the intersections
-            this._exists = new HashSet<int>();
-            foreach (ISet y in this._result.Sets)
+            _exists = new HashSet<int>();
+            foreach (ISet y in _result.Sets)
             {
                 IEnumerable<int> possMatches = null;
                 int i = 0;
-                foreach (System.String var in this._joinVars)
+                foreach (System.String var in _joinVars)
                 {
                     INode value = y[var];
                     if (value != null)
@@ -210,10 +210,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                 // Don't reconsider sets which have already been marked as having an existing match
                 foreach (int poss in possMatches)
                 {
-                    if (this._exists.Contains(poss)) continue;
-                    if (origContext.InputMultiset[poss].IsCompatibleWith(y, this._joinVars))
+                    if (_exists.Contains(poss)) continue;
+                    if (origContext.InputMultiset[poss].IsCompatibleWith(y, _joinVars))
                     {
-                        this._exists.Add(poss);
+                        _exists.Add(poss);
                     }
                 }
             }
@@ -226,7 +226,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         {
             get 
             { 
-                return (from p in this._pattern.TriplePatterns
+                return (from p in _pattern.TriplePatterns
                         from v in p.Variables
                         select v).Distinct();
             }
@@ -250,7 +250,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            if (this._mustExist)
+            if (_mustExist)
             {
                 output.Append("EXISTS ");
             }
@@ -258,7 +258,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             {
                 output.Append("NOT EXISTS ");
             }
-            output.Append(this._pattern.ToString());
+            output.Append(_pattern.ToString());
             return output.ToString();
         }
 
@@ -280,7 +280,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         {
             get
             {
-                if (this._mustExist)
+                if (_mustExist)
                 {
                     return SparqlSpecsHelper.SparqlKeywordExists;
                 }
@@ -298,7 +298,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         {
             get
             {
-                return new ISparqlExpression[] { new GraphPatternTerm(this._pattern) };
+                return new ISparqlExpression[] { new GraphPatternTerm(_pattern) };
             }
         }
 
@@ -309,10 +309,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            ISparqlExpression temp = transformer.Transform(new GraphPatternTerm(this._pattern));
+            ISparqlExpression temp = transformer.Transform(new GraphPatternTerm(_pattern));
             if (temp is GraphPatternTerm)
             {
-                return new ExistsFunction(((GraphPatternTerm)temp).Pattern, this._mustExist);
+                return new ExistsFunction(((GraphPatternTerm)temp).Pattern, _mustExist);
             }
             else
             {

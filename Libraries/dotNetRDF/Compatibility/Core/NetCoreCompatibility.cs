@@ -34,20 +34,37 @@ using System.Xml;
 
 namespace VDS.RDF
 { 
+    /// <summary>
+    /// Extension class providing some methods required to cross-compile between .NET 4.0 and .NET Standard 1.4
+    /// </summary>
     public static class NetCoreCompatibility
     {
+        /// <summary>
+        /// Compatibility implementaton of String.Copy()
+        /// </summary>
+        /// <param name="str">The string to be copied</param>
+        /// <returns>A new string that is a copy of <paramref name="str"/></returns>
         public static string Copy(this string str)
         {
             return new string(str.ToCharArray());
         }
 
+        /// <summary>
+        /// Synchronously return the response to an HttpWebRequest
+        /// </summary>
+        /// <param name="request">The request to get the response to</param>
+        /// <returns>The response returned by processing <paramref name="request"/></returns>
         public static WebResponse GetResponse(this HttpWebRequest request)
         {
             var asyncResult = request.BeginGetResponse(ar => { }, null);
             return request.EndGetResponse(asyncResult);
-
         }
 
+        /// <summary>
+        /// Get the stream that can be used to write the request body
+        /// </summary>
+        /// <param name="request">The request to update</param>
+        /// <returns>The stream to use to write to the request body</returns>
         public static Stream GetRequestStream(this HttpWebRequest request)
         {
             var asyncResult = request.BeginGetRequestStream(ar => { }, null);
@@ -124,37 +141,72 @@ namespace VDS.RDF
             // No-op    
         }
 
+        /// <summary>
+        /// Return the constructors of a given Type
+        /// </summary>
+        /// <param name="t">The Type</param>
+        /// <returns>The constructors of <paramref name="t"/></returns>
         public static ConstructorInfo[] GetConstructors(this Type t)
         {
             return t.GetTypeInfo().DeclaredConstructors.ToArray();
         }
 
+        /// <summary>
+        /// Determine if a type is an Enum
+        /// </summary>
+        /// <param name="t">the Type</param>
+        /// <returns>True if <paramref name="t"/> is an enum type, false otherwise</returns>
         public static bool IsEnum(this Type t)
         {
             return t.GetTypeInfo().IsEnum;
         }
 
+        /// <summary>
+        /// Determine if a type is a generic type
+        /// </summary>
+        /// <param name="t">the Type</param>
+        /// <returns>True if <paramref name="t"/> is a generic type, false otherwise</returns>
         public static bool IsGenericType(this Type t)
         {
             return t.GetTypeInfo().IsGenericType;
         }
     }
 
+    /// <summary>
+    /// Compatibility replacement for System.ComponentModel.DesriptionAttribute
+    /// </summary>
     public class DescriptionAttribute : Attribute
     {
+        /// <summary>
+        /// Attribute constructor
+        /// </summary>
+        /// <param name="desc">Description text</param>
         public DescriptionAttribute(string desc) { }
     }
 
+    /// <summary>
+    /// Compatibility replacement for System.ComponentModel.CategoryAttribute
+    /// </summary>
     public class CategoryAttribute : Attribute
     {
+        /// <summary>
+        /// Attribute constructor
+        /// </summary>
+        /// <param name="name">Category name</param>
         public CategoryAttribute(string name) { }
     }
 
-        public class ExpandableObjectConverter : TypeConverter
+    /// <summary>
+    /// Compatibiltiy replacement for System.ComponentModel.ExpandableObjectConverter
+    /// </summary>
+    /// <remarks>This class implements no functionality. It is provided simply as a stub to enable easier cross-compilation</remarks>
+    public class ExpandableObjectConverter : TypeConverter
+    {
+        /// <summary>
+        /// No-op constructor
+        /// </summary>
+        public ExpandableObjectConverter()
         {
-
-            public ExpandableObjectConverter()
-            {
-            }
         }
+    }
 }

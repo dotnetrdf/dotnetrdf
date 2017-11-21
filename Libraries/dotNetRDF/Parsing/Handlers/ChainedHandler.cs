@@ -51,14 +51,14 @@ namespace VDS.RDF.Parsing.Handlers
             if (handlers == null) throw new ArgumentNullException("handlers", "Must be at least 1 Handler for use by the ChainedHandler");
             if (!handlers.Any()) throw new ArgumentException("Must be at least 1 Handler for use by the ChainedHandler", "handlers");
 
-            this._handlers.AddRange(handlers);
+            _handlers.AddRange(handlers);
 
             // Check there are no identical handlers in the List
-            for (int i = 0; i < this._handlers.Count; i++)
+            for (int i = 0; i < _handlers.Count; i++)
             {
-                for (int j = i + 1; j < this._handlers.Count; j++)
+                for (int j = i + 1; j < _handlers.Count; j++)
                 {
-                    if (ReferenceEquals(this._handlers[i], this._handlers[j])) throw new ArgumentException("All Handlers must be distinct IRdfHandler instances", "handlers");
+                    if (ReferenceEquals(_handlers[i], _handlers[j])) throw new ArgumentException("All Handlers must be distinct IRdfHandler instances", "handlers");
                 }
             }
         }
@@ -70,7 +70,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             get
             {
-                return this._handlers;
+                return _handlers;
             }
         }
 
@@ -79,7 +79,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         protected override void StartRdfInternal()
         {
-            this._handlers.ForEach(h => h.StartRdf());
+            _handlers.ForEach(h => h.StartRdf());
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="ok">Whether parsing completed without errors</param>
         protected override void EndRdfInternal(bool ok)
         {
-            this._handlers.ForEach(h => h.EndRdf(ok));
+            _handlers.ForEach(h => h.EndRdf(ok));
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </remarks>
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
-            return this._handlers.All(h => h.HandleBaseUri(baseUri));
+            return _handlers.All(h => h.HandleBaseUri(baseUri));
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </remarks>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
-            return this._handlers.All(h => h.HandleNamespace(prefix, namespaceUri));
+            return _handlers.All(h => h.HandleNamespace(prefix, namespaceUri));
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </remarks>
         protected override bool HandleTripleInternal(Triple t)
         {
-            return this._handlers.All(h => h.HandleTriple(t));
+            return _handlers.All(h => h.HandleTriple(t));
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             get
             {
-                return this._handlers.All(h => h.AcceptsAll);
+                return _handlers.All(h => h.AcceptsAll);
             }
         }
     }

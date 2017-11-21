@@ -47,6 +47,15 @@ namespace VDS.RDF.Query
 
     public class SparqlTests
     {
+
+        private object ExecuteQuery(IInMemoryQueryableStore store, string query)
+        {
+            var parser = new SparqlQueryParser();
+            var q = parser.ParseFromString(query);
+            var processor = new LeviathanQueryProcessor(store);
+            return processor.ProcessQuery(q);
+        }
+
         [Fact]
         public void SparqlJoinWithoutVars1()
         {
@@ -91,8 +100,8 @@ namespace VDS.RDF.Query
             SparqlResultSet results = g.ExecuteQuery("SELECT * WHERE { GRAPH <http://example/graph> { <http://s> <http://p> <http://o> . <http://x> <http://y> <http://z> } }") as SparqlResultSet;
             Assert.NotNull(results);
             Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
-            Assert.Equal(1, results.Results.Count);
-            Assert.Equal(0, results.Variables.Count());
+            Assert.Single(results.Results);
+            Assert.Empty(results.Variables);
         }
 
         [Fact]
@@ -308,7 +317,7 @@ where {
             FileLoader.Load(g, "resources\\json.owl");
             store.Add(g);
 
-            Object results = store.ExecuteQuery(query);
+            Object results = ExecuteQuery(store, query);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
@@ -374,7 +383,7 @@ SELECT * WHERE {
                 Console.WriteLine();
 
                 SparqlQuery q = parser.ParseFromString(query.ToString());
-                Assert.Equal(1, q.Variables.Count());
+                Assert.Single(q.Variables);
             }
         }
 
@@ -458,14 +467,14 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
             xmlparser.Load(results, "resources\\bnodes.srx");
 
             TestTools.ShowResults(results);
-            Assert.Equal(results.Results.Distinct().Count(), 1);
+            Assert.Single(results.Results.Distinct());
 
             SparqlJsonParser jsonparser = new SparqlJsonParser();
             results = new SparqlResultSet();
             jsonparser.Load(results, "resources\\bnodes.json");
 
             TestTools.ShowResults(results);
-            Assert.Equal(results.Results.Distinct().Count(), 1);
+            Assert.Single(results.Results.Distinct());
         }
 
         [Fact]
@@ -556,7 +565,8 @@ WHERE
             const string sparqlQuery = "SELECT * WHERE {?s ?p ?o}";
             SparqlQueryParser sparqlParser = new SparqlQueryParser();
             SparqlQuery query = sparqlParser.ParseFromString(sparqlQuery);
-            Object results = store.ExecuteQuery(query);
+            var processor = new LeviathanQueryProcessor(store);
+            Object results = processor.ProcessQuery(query);
         }
 
         private readonly String[] _langSpecCaseQueries = new string[]

@@ -379,11 +379,14 @@ WHERE
 
             TripleStore store = new TripleStore();
             store.LoadFromString(data, new NQuadsParser());
+            var queryParser = new SparqlQueryParser();
+            var q = queryParser.ParseFromString(query);
+            var processor = new LeviathanQueryProcessor(store);
 
-            SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
+            SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
             Assert.NotNull(results);
             Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
-            Assert.Equal(0, results.Results.Count);
+            Assert.Empty(results.Results);
         }
 
         [Fact]
@@ -524,7 +527,7 @@ WHERE
             Assert.NotNull(results);
             TestTools.ShowResults(results);
 
-            Assert.IsType(typeof(SparqlResultSet), results);
+            Assert.IsType<SparqlResultSet>(results);
             SparqlResultSet rset = (SparqlResultSet) results;
             Assert.Equal(3, rset.Count);
         }
@@ -551,7 +554,7 @@ select ?superclass where {
             Assert.NotNull(results);
             TestTools.ShowResults(results);
 
-            Assert.IsType(typeof(SparqlResultSet), results);
+            Assert.IsType<SparqlResultSet>(results);
             SparqlResultSet rset = (SparqlResultSet)results;
             Assert.Equal(2, rset.Count);
         }
@@ -571,7 +574,7 @@ select ?superclass where {
             Assert.NotNull(results);
             TestTools.ShowResults(results);
 
-            Assert.IsType(typeof(SparqlResultSet), results);
+            Assert.IsType<SparqlResultSet>(results);
             SparqlResultSet rset = (SparqlResultSet)results;
             Assert.Equal(1, rset.Count);
             Assert.Equal(g.CreateUriNode("Frame:Sheep"), rset[0]["prey"]);
@@ -592,7 +595,7 @@ select ?superclass where {
             Assert.NotNull(results);
             TestTools.ShowResults(results);
 
-            Assert.IsType(typeof(SparqlResultSet), results);
+            Assert.IsType<SparqlResultSet>(results);
             SparqlResultSet rset = (SparqlResultSet)results;
             Assert.Equal(0, rset.Count);
         }
@@ -611,7 +614,7 @@ select ?superclass where {
             Assert.NotNull(results);
             TestTools.ShowResults(results);
 
-            Assert.IsType(typeof(SparqlResultSet), results);
+            Assert.IsType<SparqlResultSet>(results);
             SparqlResultSet rset = (SparqlResultSet)results;
             Assert.Equal(1, rset.Count);
             Assert.Equal(g.CreateUriNode("Frame:Sheep"), rset[0]["prey"]);

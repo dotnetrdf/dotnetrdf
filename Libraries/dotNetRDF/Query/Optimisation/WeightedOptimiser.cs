@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Optimisation
         /// <param name="g">Graph</param>
         public WeightedOptimiser(IGraph g)
         {
-            this._weights = new Weightings(g);
+            _weights = new Weightings(g);
         }
 
         /// <summary>
@@ -80,9 +80,9 @@ namespace VDS.RDF.Query.Optimisation
         public WeightedOptimiser(IGraph g, double subjWeight, double predWeight, double objWeight)
             : this(g)
         {
-            this._weights.DefaultSubjectWeighting = subjWeight;
-            this._weights.DefaultPredicateWeighting = predWeight;
-            this._weights.DefaultObjectWeighting = objWeight;
+            _weights.DefaultSubjectWeighting = subjWeight;
+            _weights.DefaultPredicateWeighting = predWeight;
+            _weights.DefaultObjectWeighting = objWeight;
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace VDS.RDF.Query.Optimisation
         /// <returns></returns>
         protected override IComparer<ITriplePattern> GetRankingComparer()
         {
-            return new WeightingComparer(this._weights);
+            return new WeightingComparer(_weights);
         }
     }
 
@@ -122,21 +122,21 @@ namespace VDS.RDF.Query.Optimisation
 
             foreach (Triple t in g.GetTriplesWithPredicate(optSubjCount))
             {
-                this.SetSubjectCount(t.Subject, t.Object);
+                SetSubjectCount(t.Subject, t.Object);
             }
             foreach (Triple t in g.GetTriplesWithPredicate(optPredCount))
             {
-                this.SetPredicateCount(t.Subject, t.Object);
+                SetPredicateCount(t.Subject, t.Object);
             }
             foreach (Triple t in g.GetTriplesWithPredicate(optObjCount))
             {
-                this.SetObjectCount(t.Subject, t.Object);
+                SetObjectCount(t.Subject, t.Object);
             }
             foreach (Triple t in g.GetTriplesWithPredicate(optCount))
             {
-                this.SetSubjectCount(t.Subject, t.Object);
-                this.SetPredicateCount(t.Subject, t.Object);
-                this.SetObjectCount(t.Subject, t.Object);
+                SetSubjectCount(t.Subject, t.Object);
+                SetPredicateCount(t.Subject, t.Object);
+                SetObjectCount(t.Subject, t.Object);
             }
         }
 
@@ -148,13 +148,13 @@ namespace VDS.RDF.Query.Optimisation
                 if (Int64.TryParse(((ILiteralNode)count).Value, out i))
                 {
                     long current;
-                    if (this._subjectWeightings.TryGetValue(n, out current))
+                    if (_subjectWeightings.TryGetValue(n, out current))
                     {
-                        this._subjectWeightings[n] = Math.Max(current, i);
+                        _subjectWeightings[n] = Math.Max(current, i);
                     }
                     else
                     {
-                        this._subjectWeightings.Add(n, i);
+                        _subjectWeightings.Add(n, i);
                     }
                 }
             }
@@ -168,13 +168,13 @@ namespace VDS.RDF.Query.Optimisation
                 if (Int64.TryParse(((ILiteralNode)count).Value, out i))
                 {
                     long current;
-                    if (this._predicateWeightings.TryGetValue(n, out current))
+                    if (_predicateWeightings.TryGetValue(n, out current))
                     {
-                        this._predicateWeightings[n] = Math.Max(current, i);
+                        _predicateWeightings[n] = Math.Max(current, i);
                     }
                     else
                     {
-                        this._predicateWeightings.Add(n, i);
+                        _predicateWeightings.Add(n, i);
                     }
                 }
             }
@@ -188,13 +188,13 @@ namespace VDS.RDF.Query.Optimisation
                 if (Int64.TryParse(((ILiteralNode)count).Value, out i))
                 {
                     long current;
-                    if (this._objectWeightings.TryGetValue(n, out current))
+                    if (_objectWeightings.TryGetValue(n, out current))
                     {
-                        this._objectWeightings[n] = Math.Max(current, i);
+                        _objectWeightings[n] = Math.Max(current, i);
                     }
                     else
                     {
-                        this._objectWeightings.Add(n, i);
+                        _objectWeightings.Add(n, i);
                     }
                 }
             }
@@ -203,42 +203,42 @@ namespace VDS.RDF.Query.Optimisation
         public double SubjectWeighting(INode n)
         {
             long temp = 1;
-            if (this._subjectWeightings.TryGetValue(n, out temp))
+            if (_subjectWeightings.TryGetValue(n, out temp))
             {
                 temp = Math.Max(1, temp);
                 return 1d - (1d / temp);
             }
             else
             {
-                return 1d - this._defSubjWeight;
+                return 1d - _defSubjWeight;
             }
         }
 
         public double PredicateWeighting(INode n)
         {
             long temp = 1;
-            if (this._predicateWeightings.TryGetValue(n, out temp))
+            if (_predicateWeightings.TryGetValue(n, out temp))
             {
                 temp = Math.Max(1, temp);
                 return 1d - (1d / temp);
             }
             else
             {
-                return 1d - this._defPredWeight;
+                return 1d - _defPredWeight;
             }
         }
 
         public double ObjectWeighting(INode n)
         {
             long temp = 1;
-            if (this._objectWeightings.TryGetValue(n, out temp))
+            if (_objectWeightings.TryGetValue(n, out temp))
             {
                 temp = Math.Max(1, temp);
                 return 1d - (1d / temp);
             }
             else
             {
-                return 1d - this._defObjWeight;
+                return 1d - _defObjWeight;
             }
         }
 
@@ -246,11 +246,11 @@ namespace VDS.RDF.Query.Optimisation
         {
             get
             {
-                return this._defSubjWeight;
+                return _defSubjWeight;
             }
             set
             {
-                this._defSubjWeight = Math.Min(Math.Max(Double.Epsilon, value), 1d);
+                _defSubjWeight = Math.Min(Math.Max(Double.Epsilon, value), 1d);
             }
         }
 
@@ -258,11 +258,11 @@ namespace VDS.RDF.Query.Optimisation
         {
             get
             {
-                return this._defPredWeight;
+                return _defPredWeight;
             }
             set
             {
-                this._defPredWeight = Math.Min(Math.Max(Double.Epsilon, value), 1d);
+                _defPredWeight = Math.Min(Math.Max(Double.Epsilon, value), 1d);
             }
         }
 
@@ -270,11 +270,11 @@ namespace VDS.RDF.Query.Optimisation
         {
             get
             {
-                return this._defObjWeight;
+                return _defObjWeight;
             }
             set
             {
-                this._defObjWeight = Math.Min(Math.Max(Double.Epsilon, value), 1d);
+                _defObjWeight = Math.Min(Math.Max(Double.Epsilon, value), 1d);
             }
         }
 
@@ -282,7 +282,7 @@ namespace VDS.RDF.Query.Optimisation
         {
             get
             {
-                return this._defVarWeight;
+                return _defVarWeight;
             }
         }
     }
@@ -295,7 +295,7 @@ namespace VDS.RDF.Query.Optimisation
         public WeightingComparer(Weightings weights)
         {
             if (weights == null) throw new ArgumentNullException("weights");
-            this._weights = weights;
+            _weights = weights;
         }
 
         public int Compare(ITriplePattern x, ITriplePattern y)
@@ -303,8 +303,8 @@ namespace VDS.RDF.Query.Optimisation
             double xSubj, xPred, xObj;
             double ySubj, yPred, yObj;
 
-            this.GetSelectivities(x, out xSubj, out xPred, out xObj);
-            this.GetSelectivities(y, out ySubj, out yPred, out yObj);
+            GetSelectivities(x, out xSubj, out xPred, out xObj);
+            GetSelectivities(y, out ySubj, out yPred, out yObj);
 
             double xSel = xSubj * xPred * xObj;
             double ySel = ySubj * yPred * yObj;
@@ -327,39 +327,39 @@ namespace VDS.RDF.Query.Optimisation
                     switch (p.IndexType)
                     {
                         case TripleIndexType.NoVariables:
-                            subj = this._weights.SubjectWeighting(((NodeMatchPattern)p.Subject).Node);
-                            pred = this._weights.PredicateWeighting(((NodeMatchPattern)p.Predicate).Node);
-                            obj = this._weights.ObjectWeighting(((NodeMatchPattern)p.Object).Node);
+                            subj = _weights.SubjectWeighting(((NodeMatchPattern)p.Subject).Node);
+                            pred = _weights.PredicateWeighting(((NodeMatchPattern)p.Predicate).Node);
+                            obj = _weights.ObjectWeighting(((NodeMatchPattern)p.Object).Node);
                             break;
                         case TripleIndexType.Object:
-                            subj = this._weights.DefaultVariableWeighting;
-                            pred = this._weights.DefaultVariableWeighting;
-                            obj = this._weights.ObjectWeighting(((NodeMatchPattern)p.Object).Node);
+                            subj = _weights.DefaultVariableWeighting;
+                            pred = _weights.DefaultVariableWeighting;
+                            obj = _weights.ObjectWeighting(((NodeMatchPattern)p.Object).Node);
                             break;
                         case TripleIndexType.Predicate:
-                            subj = this._weights.DefaultVariableWeighting;
-                            pred = this._weights.PredicateWeighting(((NodeMatchPattern)p.Predicate).Node);
-                            obj = this._weights.DefaultVariableWeighting;
+                            subj = _weights.DefaultVariableWeighting;
+                            pred = _weights.PredicateWeighting(((NodeMatchPattern)p.Predicate).Node);
+                            obj = _weights.DefaultVariableWeighting;
                             break;
                         case TripleIndexType.PredicateObject:
-                            subj = this._weights.DefaultVariableWeighting;
-                            pred = this._weights.PredicateWeighting(((NodeMatchPattern)p.Predicate).Node);
-                            obj = this._weights.ObjectWeighting(((NodeMatchPattern)p.Object).Node);
+                            subj = _weights.DefaultVariableWeighting;
+                            pred = _weights.PredicateWeighting(((NodeMatchPattern)p.Predicate).Node);
+                            obj = _weights.ObjectWeighting(((NodeMatchPattern)p.Object).Node);
                             break;
                         case TripleIndexType.Subject:
-                            subj = this._weights.SubjectWeighting(((NodeMatchPattern)p.Subject).Node);
-                            pred = this._weights.DefaultVariableWeighting;
-                            obj = this._weights.DefaultVariableWeighting;
+                            subj = _weights.SubjectWeighting(((NodeMatchPattern)p.Subject).Node);
+                            pred = _weights.DefaultVariableWeighting;
+                            obj = _weights.DefaultVariableWeighting;
                             break;
                         case TripleIndexType.SubjectObject:
-                            subj = this._weights.SubjectWeighting(((NodeMatchPattern)p.Subject).Node);
-                            pred = this._weights.DefaultVariableWeighting;
-                            obj = this._weights.PredicateWeighting(((NodeMatchPattern)p.Object).Node);
+                            subj = _weights.SubjectWeighting(((NodeMatchPattern)p.Subject).Node);
+                            pred = _weights.DefaultVariableWeighting;
+                            obj = _weights.PredicateWeighting(((NodeMatchPattern)p.Object).Node);
                             break;
                         case TripleIndexType.SubjectPredicate:
-                            subj = this._weights.SubjectWeighting(((NodeMatchPattern)p.Subject).Node);
-                            pred = this._weights.PredicateWeighting(((NodeMatchPattern)p.Predicate).Node);
-                            obj = this._weights.DefaultVariableWeighting;
+                            subj = _weights.SubjectWeighting(((NodeMatchPattern)p.Subject).Node);
+                            pred = _weights.PredicateWeighting(((NodeMatchPattern)p.Predicate).Node);
+                            obj = _weights.DefaultVariableWeighting;
                             break;
                         default:
                             // Shouldn't see an unknown index type but have to keep the compiler happy

@@ -49,7 +49,7 @@ namespace VDS.RDF.Query.Optimisation
             // Optimise for special filter constructs which improve performance
             new IdentityFilterOptimiser(),
             new ImplicitJoinOptimiser(),
-            new FilteredProductOptimiser()
+            new FilteredProductOptimiser(),
         };
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace VDS.RDF.Query.Optimisation
             _algebraOpt = new List<IAlgebraOptimiser>()
             {
                 new AskBgpOptimiser(),
-                new LazyBgpOptimiser()
+                new LazyBgpOptimiser(),
             };
         }
     }

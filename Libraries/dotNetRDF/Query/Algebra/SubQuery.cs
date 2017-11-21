@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="q">Subquery</param>
         public SubQuery(SparqlQuery q)
         {
-            this._subquery = q;
+            _subquery = q;
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace VDS.RDF.Query.Algebra
             // Use the same algebra optimisers as the parent query (if any)
             if (context.Query != null)
             {
-                this._subquery.AlgebraOptimisers = context.Query.AlgebraOptimisers;
+                _subquery.AlgebraOptimisers = context.Query.AlgebraOptimisers;
             }
 
             if (context.InputMultiset is NullMultiset)
@@ -70,18 +70,18 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                SparqlEvaluationContext subcontext = new SparqlEvaluationContext(this._subquery, context.Data, context.Processor);
+                SparqlEvaluationContext subcontext = new SparqlEvaluationContext(_subquery, context.Data, context.Processor);
 
                 // Add any Named Graphs to the subquery
                 if (context.Query != null)
                 {
                     foreach (Uri u in context.Query.NamedGraphs)
                     {
-                        this._subquery.AddNamedGraph(u);
+                        _subquery.AddNamedGraph(u);
                     }
                 }
 
-                ISparqlAlgebra query = this._subquery.ToAlgebra();
+                ISparqlAlgebra query = _subquery.ToAlgebra();
                 try
                 {
                     // Evaluate the Subquery
@@ -94,9 +94,9 @@ namespace VDS.RDF.Query.Algebra
                     }
 
                     // Strip out any Named Graphs from the subquery
-                    if (this._subquery.NamedGraphs.Any())
+                    if (_subquery.NamedGraphs.Any())
                     {
-                        this._subquery.ClearNamedGraphs();
+                        _subquery.ClearNamedGraphs();
                     }
                 }
                 catch (RdfQueryException queryEx)
@@ -115,19 +115,19 @@ namespace VDS.RDF.Query.Algebra
         {
             get 
             { 
-                return this._subquery.Variables.Where(v => v.IsResultVariable).Select(v => v.Name); 
+                return _subquery.Variables.Where(v => v.IsResultVariable).Select(v => v.Name); 
             }
         }
 
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
         /// </summary>
-        public IEnumerable<String> FloatingVariables { get { return this._subquery.ToAlgebra().FloatingVariables; } }
+        public IEnumerable<String> FloatingVariables { get { return _subquery.ToAlgebra().FloatingVariables; } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
         /// </summary>
-        public IEnumerable<String> FixedVariables { get { return this._subquery.ToAlgebra().FixedVariables; } }
+        public IEnumerable<String> FixedVariables { get { return _subquery.ToAlgebra().FixedVariables; } }
 
         /// <summary>
         /// Converts the algebra back into a Query
@@ -136,7 +136,7 @@ namespace VDS.RDF.Query.Algebra
         public SparqlQuery ToQuery()
         {
             SparqlQuery q = new SparqlQuery();
-            q.RootGraphPattern = this.ToGraphPattern();
+            q.RootGraphPattern = ToGraphPattern();
             return q;
         }
 
@@ -144,10 +144,10 @@ namespace VDS.RDF.Query.Algebra
         /// Converts the algebra back into a Subquery
         /// </summary>
         /// <returns></returns>
-        public VDS.RDF.Query.Patterns.GraphPattern ToGraphPattern()
+        public GraphPattern ToGraphPattern()
         {
             GraphPattern gp = new GraphPattern();
-            gp.TriplePatterns.Add(new SubQueryPattern(this._subquery));
+            gp.TriplePatterns.Add(new SubQueryPattern(_subquery));
             return gp;
         }
 

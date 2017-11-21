@@ -53,15 +53,15 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            INode result = this._expr.Evaluate(context, bindingID);
+            INode result = _expr.Evaluate(context, bindingID);
             if (result != null)
             {
-                if (this._expressions.Count == 0) return new BooleanNode(null, true);
+                if (_expressions.Count == 0) return new BooleanNode(null, true);
 
                 // Have to use SPARQL Value Equality here
                 // If any expressions error and nothing in the set matches then an error is thrown
                 bool errors = false;
-                foreach (ISparqlExpression expr in this._expressions)
+                foreach (ISparqlExpression expr in _expressions)
                 {
                     try
                     {
@@ -107,12 +107,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            output.Append(this._expr.ToString());
+            output.Append(_expr.ToString());
             output.Append(" NOT IN (");
-            for (int i = 0; i < this._expressions.Count; i++)
+            for (int i = 0; i < _expressions.Count; i++)
             {
-                output.Append(this._expressions[i].ToString());
-                if (i < this._expressions.Count - 1)
+                output.Append(_expressions[i].ToString());
+                if (i < _expressions.Count - 1)
                 {
                     output.Append(" , ");
                 }
@@ -128,7 +128,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new NotInFunction(transformer.Transform(this._expr), this._expressions.Select(e => transformer.Transform(e)));
+            return new NotInFunction(transformer.Transform(_expr), _expressions.Select(e => transformer.Transform(e)));
         }
     }
 }

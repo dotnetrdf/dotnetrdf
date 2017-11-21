@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// </summary>
         public PiFunction()
         {
-            this._node = new DoubleNode(null, Math.PI);
+            _node = new DoubleNode(null, Math.PI);
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            return this._node;
+            return _node;
         }
 
         /// <summary>

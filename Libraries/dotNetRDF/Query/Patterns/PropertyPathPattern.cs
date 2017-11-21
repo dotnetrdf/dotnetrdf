@@ -50,22 +50,22 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="obj">Object</param>
         public PropertyPathPattern(PatternItem subj, ISparqlPath path, PatternItem obj)
         {
-            this._subj = subj;
-            this._path = path;
-            this._obj = obj;
-            this._subj.RigorousEvaluation = true;
-            this._obj.RigorousEvaluation = true;
+            _subj = subj;
+            _path = path;
+            _obj = obj;
+            _subj.RigorousEvaluation = true;
+            _obj.RigorousEvaluation = true;
 
             // Build our list of Variables
-            if (this._subj.VariableName != null)
+            if (_subj.VariableName != null)
             {
-                this._vars.Add(this._subj.VariableName);
+                _vars.Add(_subj.VariableName);
             }
-            if (this._obj.VariableName != null)
+            if (_obj.VariableName != null)
             {
-                if (!this._vars.Contains(this._obj.VariableName)) this._vars.Add(this._obj.VariableName);
+                if (!_vars.Contains(_obj.VariableName)) _vars.Add(_obj.VariableName);
             }
-            this._vars.Sort();
+            _vars.Sort();
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._subj;
+                return _subj;
             }
         }
 
@@ -97,30 +97,24 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._path;
+                return _path;
             }
         }
 
         /// <summary>
         /// Gets the Object of the Property Path
         /// </summary>
-        public PatternItem Object
-        {
-            get
-            {
-                return this._obj;
-            }
-        }
+        public PatternItem Object => _obj;
 
-        public override IEnumerable<String> FixedVariables
-        {
-            get { return this._vars; }
-        }
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the pattern i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public override IEnumerable<string> FixedVariables => _vars;
 
-        public override IEnumerable<string> FloatingVariables
-        {
-            get { return Enumerable.Empty<String>(); }
-        }
+        /// <summary>
+        /// Gets the enumeration of floating variables in the pattern i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public override IEnumerable<string> FloatingVariables { get; } = Enumerable.Empty<string>();
 
         /// <summary>
         /// Evaluates a property path pattern
@@ -131,12 +125,12 @@ namespace VDS.RDF.Query.Patterns
             // Try and generate an Algebra expression
             // Make sure we don't generate clashing temporary variable IDs over the life of the
             // Evaluation
-            PathTransformContext transformContext = new PathTransformContext(this._subj, this._obj);
+            PathTransformContext transformContext = new PathTransformContext(_subj, _obj);
             if (context["PathTransformID"] != null)
             {
                 transformContext.NextID = (int)context["PathTransformID"];
             }
-            ISparqlAlgebra algebra = this._path.ToAlgebra(transformContext);
+            ISparqlAlgebra algebra = _path.ToAlgebra(transformContext);
             context["PathTransformID"] = transformContext.NextID + 1;
 
             // Now we can evaluate the resulting algebra
@@ -206,7 +200,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public int CompareTo(PropertyPathPattern other)
         {
-            return this.CompareTo((IPropertyPathPattern)other);
+            return CompareTo((IPropertyPathPattern)other);
         }
 
         /// <summary>
@@ -226,11 +220,11 @@ namespace VDS.RDF.Query.Patterns
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            output.Append(this._subj.ToString());
+            output.Append(_subj.ToString());
             output.Append(' ');
-            output.Append(this._path.ToString());
+            output.Append(_path.ToString());
             output.Append(' ');
-            output.Append(this._obj.ToString());
+            output.Append(_obj.ToString());
             return output.ToString();
         }
     }

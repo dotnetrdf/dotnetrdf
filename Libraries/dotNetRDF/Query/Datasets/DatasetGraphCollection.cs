@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="dataset">SPARQL Dataset</param>
         public DatasetGraphCollection(ISparqlDataset dataset)
         {
-            this._dataset = dataset;
+            _dataset = dataset;
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public override bool Contains(Uri graphUri)
         {
-            return this._dataset.HasGraph(graphUri);
+            return _dataset.HasGraph(graphUri);
         }
 
         /// <summary>
@@ -65,14 +65,14 @@ namespace VDS.RDF.Query.Datasets
         /// <exception cref="RdfException">Thrown if a Graph with the given URI already exists and the <paramref name="mergeIfExists">mergeIfExists</paramref> is set to false</exception>
         protected internal override bool Add(IGraph g, bool mergeIfExists)
         {
-            if (this.Contains(g.BaseUri))
+            if (Contains(g.BaseUri))
             {
                 if (mergeIfExists)
                 {
-                    IGraph temp = this._dataset.GetModifiableGraph(g.BaseUri);
+                    IGraph temp = _dataset.GetModifiableGraph(g.BaseUri);
                     temp.Merge(g);
                     temp.Dispose();
-                    this._dataset.Flush();
+                    _dataset.Flush();
                     return true;
                 }
                 else
@@ -83,10 +83,10 @@ namespace VDS.RDF.Query.Datasets
             else
             {
                 // Safe to add a new Graph
-                if (this._dataset.AddGraph(g))
+                if (_dataset.AddGraph(g))
                 {
-                    this._dataset.Flush();
-                    this.RaiseGraphAdded(g);
+                    _dataset.Flush();
+                    RaiseGraphAdded(g);
                     return true;
                 }
                 return false;
@@ -99,12 +99,12 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphUri">URI of the Graph to removed</param>
         protected internal override bool Remove(Uri graphUri)
         {
-            if (this.Contains(graphUri))
+            if (Contains(graphUri))
             {
-                IGraph temp = this._dataset[graphUri];
-                bool removed = this._dataset.RemoveGraph(graphUri);
-                this._dataset.Flush();
-                this.RaiseGraphRemoved(temp);
+                IGraph temp = _dataset[graphUri];
+                bool removed = _dataset.RemoveGraph(graphUri);
+                _dataset.Flush();
+                RaiseGraphRemoved(temp);
                 temp.Dispose();
                 return removed;
             }
@@ -118,7 +118,7 @@ namespace VDS.RDF.Query.Datasets
         {
             get 
             {
-                return this._dataset.GraphUris.Count(); 
+                return _dataset.GraphUris.Count(); 
             }
         }
 
@@ -129,7 +129,7 @@ namespace VDS.RDF.Query.Datasets
         {
             get 
             {
-                return this._dataset.GraphUris;
+                return _dataset.GraphUris;
             }
         }
 
@@ -142,9 +142,9 @@ namespace VDS.RDF.Query.Datasets
         {
             get 
             {
-                if (this._dataset.HasGraph(graphUri))
+                if (_dataset.HasGraph(graphUri))
                 {
-                    return this._dataset[graphUri];
+                    return _dataset[graphUri];
                 }
                 else
                 {
@@ -158,7 +158,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         public override void Dispose()
         {
-            this._dataset.Flush();
+            _dataset.Flush();
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public override IEnumerator<IGraph> GetEnumerator()
         {
-            return this._dataset.Graphs.GetEnumerator();
+            return _dataset.Graphs.GetEnumerator();
         }
     }
 }

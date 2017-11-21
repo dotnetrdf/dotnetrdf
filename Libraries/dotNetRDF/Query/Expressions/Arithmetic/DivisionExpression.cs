@@ -52,8 +52,8 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            IValuedNode a = this._leftExpr.Evaluate(context, bindingID);
-            IValuedNode b = this._rightExpr.Evaluate(context, bindingID);
+            IValuedNode a = _leftExpr.Evaluate(context, bindingID);
+            IValuedNode b = _rightExpr.Evaluate(context, bindingID);
 
             IValuedNode[] inputs = new IValuedNode[] { a, b };
             ISparqlOperator op = null;
@@ -74,22 +74,22 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            if (this._leftExpr.Type == SparqlExpressionType.BinaryOperator)
+            if (_leftExpr.Type == SparqlExpressionType.BinaryOperator)
             {
-                output.Append("(" + this._leftExpr.ToString() + ")");
+                output.Append("(" + _leftExpr.ToString() + ")");
             }
             else
             {
-                output.Append(this._leftExpr.ToString());
+                output.Append(_leftExpr.ToString());
             }
             output.Append(" / ");
-            if (this._rightExpr.Type == SparqlExpressionType.BinaryOperator)
+            if (_rightExpr.Type == SparqlExpressionType.BinaryOperator)
             {
-                output.Append("(" + this._rightExpr.ToString() + ")");
+                output.Append("(" + _rightExpr.ToString() + ")");
             }
             else
             {
-                output.Append(this._rightExpr.ToString());
+                output.Append(_rightExpr.ToString());
             }
             return output.ToString();
         }
@@ -123,7 +123,7 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new DivisionExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
+            return new DivisionExpression(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
         }
     }
 }

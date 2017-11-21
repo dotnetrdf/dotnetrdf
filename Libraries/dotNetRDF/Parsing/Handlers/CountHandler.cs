@@ -46,7 +46,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         protected override void StartRdfInternal()
         {
-            this._counter = 0;
+            _counter = 0;
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
-            this._counter++;
+            _counter++;
             return true;
         }
 
@@ -70,7 +70,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             get
             {
-                return this._counter;
+                return _counter;
             }
         }
 

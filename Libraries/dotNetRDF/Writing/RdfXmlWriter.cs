@@ -69,7 +69,7 @@ namespace VDS.RDF.Writing
         public RdfXmlWriter(int compressionLevel)
             : this()
         {
-            this._compressionLevel = compressionLevel;
+            _compressionLevel = compressionLevel;
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace VDS.RDF.Writing
         public RdfXmlWriter(int compressionLevel, bool useDtd)
             : this(compressionLevel)
         {
-            this._useDTD = useDtd;
+            _useDTD = useDtd;
         }
 
         /// <summary>
@@ -90,11 +90,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._prettyprint;
+                return _prettyprint;
             }
             set
             {
-                this._prettyprint = value;
+                _prettyprint = value;
             }
         }
 
@@ -110,11 +110,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._compressionLevel;
+                return _compressionLevel;
             }
             set
             {
-                this._compressionLevel = value;
+                _compressionLevel = value;
             }
         }
 
@@ -125,11 +125,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._useDTD;
+                return _useDTD;
             }
             set
             {
-                this._useDTD = value;
+                _useDTD = value;
             }
         }
 
@@ -140,11 +140,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._defaultNamespaces;
+                return _defaultNamespaces;
             }
             set
             {
-                this._defaultNamespaces = value;
+                _defaultNamespaces = value;
             }
         }
 
@@ -168,7 +168,7 @@ namespace VDS.RDF.Writing
         {
             using (var stream = File.Open(filename, FileMode.Create))
             {
-                this.Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
+                Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
             }
         }
 
@@ -179,7 +179,7 @@ namespace VDS.RDF.Writing
         /// <param name="output">Stream to save to</param>
         protected override void SaveInternal(IGraph g, TextWriter output)
         {
-            this.GenerateOutput(g, output);
+            GenerateOutput(g, output);
         }
 
         /// <summary>
@@ -190,13 +190,13 @@ namespace VDS.RDF.Writing
         private void GenerateOutput(IGraph g, TextWriter output)
         {
             // Always force RDF Namespace to be correctly defined
-            g.NamespaceMap.Import(this._defaultNamespaces);
+            g.NamespaceMap.Import(_defaultNamespaces);
             g.NamespaceMap.AddNamespace("rdf", UriFactory.Create(NamespaceMapper.RDF));
 
             // Create our Writer Context and start the XML Document
             RdfXmlWriterContext context = new RdfXmlWriterContext(g, output);
-            context.CompressionLevel = this._compressionLevel;
-            context.UseDtd = this._useDTD;
+            context.CompressionLevel = _compressionLevel;
+            context.UseDtd = _useDTD;
             context.Writer.WriteStartDocument();
 
             if (context.UseDtd)
@@ -255,7 +255,7 @@ namespace VDS.RDF.Writing
                 WriterHelper.FindCollections(context, CollectionSearchMode.ImplicitOnly);
                 // WriterHelper.FindCollections(context, CollectionSearchMode.All);
             }
-            Dictionary<INode, String> typerefs = this.FindTypeReferences(context);
+            Dictionary<INode, String> typerefs = FindTypeReferences(context);
 
             // Get the Triples as a Sorted List
             List<Triple> ts = context.Graph.Triples.Where(t => !context.TriplesDone.Contains(t)).ToList();
@@ -320,7 +320,7 @@ namespace VDS.RDF.Writing
                         case NodeType.Blank:
                             if (context.Collections.ContainsKey(t.Subject))
                             {
-                                this.GenerateCollectionOutput(context, t.Subject);
+                                GenerateCollectionOutput(context, t.Subject);
                             }
                             else
                             {
@@ -328,7 +328,7 @@ namespace VDS.RDF.Writing
                             }
                             break;
                         case NodeType.Uri:
-                            this.GenerateUriOutput(context, (IUriNode)t.Subject, "rdf:about");
+                            GenerateUriOutput(context, (IUriNode)t.Subject, "rdf:about");
                             break;
                         default:
                             throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("RDF/XML"));
@@ -336,7 +336,7 @@ namespace VDS.RDF.Writing
 
                     // Write the Predicate
                     context.NamespaceMap.IncrementNesting();
-                    this.GeneratePredicateNode(context, t.Predicate);
+                    GeneratePredicateNode(context, t.Predicate);
                     lastPred = t.Predicate;
                     lastObj = null;
                 }
@@ -350,7 +350,7 @@ namespace VDS.RDF.Writing
 
                     // Write the Predicate
                     context.NamespaceMap.IncrementNesting();
-                    this.GeneratePredicateNode(context, t.Predicate);
+                    GeneratePredicateNode(context, t.Predicate);
                     lastPred = t.Predicate;
                     lastObj = null;
                 }
@@ -366,7 +366,7 @@ namespace VDS.RDF.Writing
                     context.NamespaceMap.DecrementNesting();
                     context.Writer.WriteEndElement();
                     context.NamespaceMap.IncrementNesting();
-                    this.GeneratePredicateNode(context, t.Predicate);
+                    GeneratePredicateNode(context, t.Predicate);
                 }
                 // Create an Object for the Object
                 switch (t.Object.NodeType)
@@ -375,7 +375,7 @@ namespace VDS.RDF.Writing
                         if (context.Collections.ContainsKey(t.Object))
                         {
                             // Output a Collection
-                            this.GenerateCollectionOutput(context, t.Object);
+                            GenerateCollectionOutput(context, t.Object);
                         }
                         else
                         {
@@ -390,11 +390,11 @@ namespace VDS.RDF.Writing
 
                     case NodeType.Literal:
                         ILiteralNode lit = (ILiteralNode)t.Object;
-                        this.GenerateLiteralOutput(context, lit);
+                        GenerateLiteralOutput(context, lit);
 
                         break;
                     case NodeType.Uri:
-                        this.GenerateUriOutput(context, (IUriNode)t.Object, "rdf:resource");
+                        GenerateUriOutput(context, (IUriNode)t.Object, "rdf:resource");
                         break;
                     default:
                         throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("RDF/XML"));
@@ -431,7 +431,7 @@ namespace VDS.RDF.Writing
                             context.Writer.WriteStartElement(tref);
                         }
 
-                        this.GenerateCollectionOutput(context, pair.Key);
+                        GenerateCollectionOutput(context, pair.Key);
 
                         context.Writer.WriteEndElement();
                     }
@@ -439,7 +439,7 @@ namespace VDS.RDF.Writing
                     {
                         context.Writer.WriteStartElement("rdf", "Description", NamespaceMapper.RDF);
                         context.Writer.WriteAttributeString("rdf", "nodeID", NamespaceMapper.RDF, context.BlankNodeMapper.GetOutputID(((IBlankNode)pair.Key).InternalID));
-                        this.GenerateCollectionOutput(context, pair.Key);
+                        GenerateCollectionOutput(context, pair.Key);
                         context.Writer.WriteEndElement();
                         // throw new RdfOutputException("Failed to output a Collection due to an unknown error");
                     }
@@ -482,10 +482,10 @@ namespace VDS.RDF.Writing
                         case NodeType.GraphLiteral:
                             throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("RDF/XML"));
                         case NodeType.Literal:
-                            this.GenerateLiteralOutput(context, (ILiteralNode)next);
+                            GenerateLiteralOutput(context, (ILiteralNode)next);
                             break;
                         case NodeType.Uri:
-                            this.GenerateUriOutput(context, (IUriNode)next, "rdf:resource");
+                            GenerateUriOutput(context, (IUriNode)next, "rdf:resource");
                             break;
                         default:
                             throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("RDF/XML"));
@@ -548,7 +548,7 @@ namespace VDS.RDF.Writing
                         INode nextObj = t.Object;
 
                         // Generate the predicate
-                        this.GeneratePredicateNode(context, nextPred);
+                        GeneratePredicateNode(context, nextPred);
 
                         // Output the Object
                         switch (nextObj.NodeType)
@@ -557,7 +557,7 @@ namespace VDS.RDF.Writing
                                 if (context.Collections.ContainsKey(nextObj))
                                 {
                                     // Output a Collection
-                                    this.GenerateCollectionOutput(context, nextObj);
+                                    GenerateCollectionOutput(context, nextObj);
                                 }
                                 else
                                 {
@@ -567,10 +567,10 @@ namespace VDS.RDF.Writing
                             case NodeType.GraphLiteral:
                                 throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("RDF/XML"));
                             case NodeType.Literal:
-                                this.GenerateLiteralOutput(context, (ILiteralNode)nextObj);
+                                GenerateLiteralOutput(context, (ILiteralNode)nextObj);
                                 break;
                             case NodeType.Uri:
-                                this.GenerateUriOutput(context, (IUriNode)nextObj, "rdf:resource");
+                                GenerateUriOutput(context, (IUriNode)nextObj, "rdf:resource");
                                 break;
                             default:
                                 throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("RDF/XML"));
@@ -595,21 +595,21 @@ namespace VDS.RDF.Writing
                 case NodeType.Uri:
                     // OK
                     UriRefType rtype;
-                    String predRef = this.GenerateUriRef(context, ((IUriNode)p).Uri, UriRefType.QName, out rtype);
+                    String predRef = GenerateUriRef(context, ((IUriNode)p).Uri, UriRefType.QName, out rtype);
                     String prefix, uri;
                     prefix = uri = null;
                     if (rtype != UriRefType.QName)
                     {
-                        this.GenerateTemporaryNamespace(context, (IUriNode)p, out prefix, out uri);
+                        GenerateTemporaryNamespace(context, (IUriNode)p, out prefix, out uri);
 
-                        predRef = this.GenerateUriRef(context, ((IUriNode)p).Uri, UriRefType.QName, out rtype);
+                        predRef = GenerateUriRef(context, ((IUriNode)p).Uri, UriRefType.QName, out rtype);
                         if (rtype != UriRefType.QName)
                         {
                             throw new RdfOutputException(WriterErrorMessages.UnreducablePropertyURIUnserializable + " - '" + p.ToString() + "'");
                         }
                     }
 
-                    this.GenerateElement(context, predRef);
+                    GenerateElement(context, predRef);
 
                     // Add Temporary Namespace to current XML Element
                     // CORE-431: This is unecessary and causes malformed XML under monotouch
@@ -645,7 +645,7 @@ namespace VDS.RDF.Writing
                 else
                 {
                     UriRefType refType;
-                    String dtUri = this.GenerateUriRef(context, lit.DataType, UriRefType.UriRef, out refType);
+                    String dtUri = GenerateUriRef(context, lit.DataType, UriRefType.UriRef, out refType);
                     if (refType == UriRefType.Uri)
                     {
                         context.Writer.WriteAttributeString("rdf", "datatype", null, lit.DataType.AbsoluteUri);//Uri.EscapeUriString(lit.DataType.ToString()));
@@ -670,7 +670,7 @@ namespace VDS.RDF.Writing
         {
             // Get a Uri Reference if the Uri can be reduced
             UriRefType rtype;
-            String uriref = this.GenerateUriRef(context, u.Uri, UriRefType.UriRef, out rtype);
+            String uriref = GenerateUriRef(context, u.Uri, UriRefType.UriRef, out rtype);
             
             if (attribute.Contains(':'))
             {
@@ -784,7 +784,7 @@ namespace VDS.RDF.Writing
             tempPrefix = prefix;
             tempUri = nsUri;
 
-            this.RaiseWarning("Created a Temporary Namespace '" + prefix + "' with URI '" + nsUri + "'");
+            RaiseWarning("Created a Temporary Namespace '" + prefix + "' with URI '" + nsUri + "'");
         }
 
         private void GenerateElement(RdfXmlWriterContext context, String qname)
@@ -825,19 +825,19 @@ namespace VDS.RDF.Writing
                 {
                     String typeref;
                     UriRefType rtype;
-                    typeref = this.GenerateUriRef(context, ((IUriNode)t.Object).Uri, UriRefType.QName, out rtype);
+                    typeref = GenerateUriRef(context, ((IUriNode)t.Object).Uri, UriRefType.QName, out rtype);
                     if (rtype != UriRefType.QName)
                     {
                         // Generate a Temporary Namespace for the QName Type Reference
                         String prefix, uri;
-                        this.GenerateTemporaryNamespace(context, (IUriNode)t.Object, out prefix, out uri);
+                        GenerateTemporaryNamespace(context, (IUriNode)t.Object, out prefix, out uri);
 
                         // Add to current XML Element
                         context.Writer.WriteStartAttribute("xmlns", prefix, null);
                         context.Writer.WriteRaw(Uri.EscapeUriString(WriterHelper.EncodeForXml(uri)));
                         context.Writer.WriteEndAttribute();
 
-                        typeref = this.GenerateUriRef(context, ((IUriNode)t.Object).Uri, UriRefType.QName, out rtype);
+                        typeref = GenerateUriRef(context, ((IUriNode)t.Object).Uri, UriRefType.QName, out rtype);
                         if (rtype == UriRefType.QName)
                         {
                             // Got a QName Type Reference in the Temporary Namespace OK
@@ -869,9 +869,9 @@ namespace VDS.RDF.Writing
         /// <param name="message">Warning Message</param>
         private void RaiseWarning(String message)
         {
-            if (this.Warning != null)
+            if (Warning != null)
             {
-                this.Warning(message);
+                Warning(message);
             }
         }
 
@@ -898,13 +898,13 @@ namespace VDS.RDF.Writing
 
         public override int Compare(Triple x, Triple y)
         {
-            int c = this.Compare(x.Subject, y.Subject);
+            int c = Compare(x.Subject, y.Subject);
             if (c == 0)
             {
-                c = this.Compare(x.Predicate, y.Predicate);
+                c = Compare(x.Predicate, y.Predicate);
                 if (c == 0)
                 {
-                    c = this.Compare(x.Object, y.Object);
+                    c = Compare(x.Object, y.Object);
                 }
             }
             return c;
@@ -914,7 +914,7 @@ namespace VDS.RDF.Writing
         {
             if (x.NodeType == y.NodeType)
             {
-                return this._nodeComparer.Compare(x, y);
+                return _nodeComparer.Compare(x, y);
             }
             else
             {

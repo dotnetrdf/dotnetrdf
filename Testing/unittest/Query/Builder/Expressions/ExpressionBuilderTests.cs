@@ -93,7 +93,7 @@ namespace VDS.RDF.Query.Builder.Expressions
             // then
             Assert.True(exists.Expression is ExistsFunction);
             var graphPatternTerm = (GraphPatternTerm)((ExistsFunction)exists.Expression).Arguments.ElementAt(0);
-            Assert.Equal(1, graphPatternTerm.Pattern.TriplePatterns.Count);
+            Assert.Single(graphPatternTerm.Pattern.TriplePatterns);
             Assert.Equal(3, graphPatternTerm.Pattern.Variables.Count());
         }
 

@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Algebra
         public Table(BaseMultiset table)
         {
             if (table == null) throw new ArgumentNullException("table");
-            this._table = table;
+            _table = table;
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            context.OutputMultiset = this._table;
+            context.OutputMultiset = _table;
             return context.OutputMultiset;
         }
 
@@ -66,7 +66,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._table.Variables; 
+                return _table.Variables; 
             }
         }
 
@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 // Floating variables are any where there are rows with an unbound value
-                return this._table.Variables.Where(v => this._table.Sets.Any(s => s[v] == null));
+                return _table.Variables.Where(v => _table.Sets.Any(s => s[v] == null));
             }
         }
 
@@ -90,7 +90,7 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 // Fixed variables are any where there are no rows with an unbound value
-                return this._table.Variables.Where(v => this._table.Sets.All(s => s[v] != null));
+                return _table.Variables.Where(v => _table.Sets.All(s => s[v] != null));
             }
         }
 

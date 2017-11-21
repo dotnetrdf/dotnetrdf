@@ -82,14 +82,14 @@ namespace VDS.RDF
         /// <param name="tripleCollection">Triple Collection to use</param>
         protected BaseGraph(BaseTripleCollection tripleCollection)
         {
-            this._triples = tripleCollection;
-            this._bnodemapper = new BlankNodeMapper();
-            this._nsmapper = new NamespaceMapper();
+            _triples = tripleCollection;
+            _bnodemapper = new BlankNodeMapper();
+            _nsmapper = new NamespaceMapper();
 
             // Create Event Handlers and attach to the Triple Collection
-            this.TripleAddedHandler = new TripleEventHandler(this.OnTripleAsserted);
-            this.TripleRemovedHandler = new TripleEventHandler(this.OnTripleRetracted);
-            this.AttachEventHandlers(this._triples);
+            TripleAddedHandler = new TripleEventHandler(OnTripleAsserted);
+            TripleRemovedHandler = new TripleEventHandler(OnTripleRetracted);
+            AttachEventHandlers(_triples);
         }
 
         /// <summary>
@@ -107,13 +107,13 @@ namespace VDS.RDF
         protected BaseGraph(SerializationInfo info, StreamingContext context)
             : this()
         {
-            this._dsInfo = new GraphDeserializationInfo(info, context);   
+            _dsInfo = new GraphDeserializationInfo(info, context);   
         }
 
         [OnDeserialized]
         private void OnDeserialized(StreamingContext context)
         {
-            if (this._dsInfo != null) this._dsInfo.Apply(this);
+            if (_dsInfo != null) _dsInfo.Apply(this);
         }
 #endif
 
@@ -128,7 +128,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._triples;
+                return _triples;
             }
         }
 
@@ -139,8 +139,8 @@ namespace VDS.RDF
         {
             get
             {
-                return (from t in this._triples
-                        select t.Subject).Concat(from t in this._triples
+                return (from t in _triples
+                        select t.Subject).Concat(from t in _triples
                                                  select t.Object).Distinct();
             }
         }
@@ -153,7 +153,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._nsmapper;
+                return _nsmapper;
             }
         }
 
@@ -167,11 +167,11 @@ namespace VDS.RDF
         {
             get
             {
-                return this._baseuri;
+                return _baseuri;
             }
             set
             {
-                this._baseuri = value;
+                _baseuri = value;
             }
         }
 
@@ -182,7 +182,7 @@ namespace VDS.RDF
         {
             get
             {
-                return (this._triples.Count == 0);
+                return (_triples.Count == 0);
             }
         }
 
@@ -225,11 +225,11 @@ namespace VDS.RDF
         /// </remarks>
         public virtual void Clear()
         {
-            if (!this.RaiseClearRequested()) return;
+            if (!RaiseClearRequested()) return;
 
-            this.Retract(this.Triples.ToList());
+            Retract(Triples.ToList());
 
-            this.RaiseCleared();
+            RaiseCleared();
         }
 
         #endregion
@@ -255,7 +255,7 @@ namespace VDS.RDF
             // try
             // {
             //    Monitor.Enter(this._bnodemapper);
-                this._bnodemapper.CheckID(ref nodeId);
+                _bnodemapper.CheckID(ref nodeId);
                 return new BlankNode(this, nodeId);
             // }
             // finally
@@ -302,7 +302,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IUriNode CreateUriNode()
         {
-            return new UriNode(this, UriFactory.Create(Tools.ResolveUri(String.Empty, this._baseuri.ToSafeString())));
+            return new UriNode(this, UriFactory.Create(Tools.ResolveUri(String.Empty, _baseuri.ToSafeString())));
         }
 
         /// <summary>
@@ -315,7 +315,7 @@ namespace VDS.RDF
         /// </remarks>
         public virtual IUriNode CreateUriNode(Uri uri)
         {
-            if (!uri.IsAbsoluteUri && this._baseuri != null) uri = Tools.ResolveUri(uri, this._baseuri);
+            if (!uri.IsAbsoluteUri && _baseuri != null) uri = Tools.ResolveUri(uri, _baseuri);
             return new UriNode(this, uri);
         }
 
@@ -499,7 +499,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual bool ContainsTriple(Triple t)
         {
-            return this._triples.Contains(t);
+            return _triples.Contains(t);
         }
 
         #endregion
@@ -513,7 +513,7 @@ namespace VDS.RDF
         /// <remarks>The Graph on which you invoke this method will preserve its Blank Node IDs while the Blank Nodes from the Graph being merged in will be given new IDs as required in the scope of this Graph.</remarks>
         public virtual void Merge(IGraph g)
         {
-            this.Merge(g, false);
+            Merge(g, false);
         }
 
         /// <summary>
@@ -534,17 +534,17 @@ namespace VDS.RDF
             if (ReferenceEquals(this, g)) throw new RdfException("You cannot Merge an RDF Graph with itself");
 
             // Check that the merge can go ahead
-            if (!this.RaiseMergeRequested()) return;
+            if (!RaiseMergeRequested()) return;
 
             // First copy and Prefixes across which aren't defined in this Graph
-            this._nsmapper.Import(g.NamespaceMap);
+            _nsmapper.Import(g.NamespaceMap);
 
-            if (this.IsEmpty)
+            if (IsEmpty)
             {
                 // Empty Graph so do a quick copy
                 foreach (Triple t in g.Triples)
                 {
-                    this.Assert(new Triple(Tools.CopyNode(t.Subject, this, keepOriginalGraphUri), Tools.CopyNode(t.Predicate, this, keepOriginalGraphUri), Tools.CopyNode(t.Object, this, keepOriginalGraphUri), t.Context));
+                    Assert(new Triple(Tools.CopyNode(t.Subject, this, keepOriginalGraphUri), Tools.CopyNode(t.Predicate, this, keepOriginalGraphUri), Tools.CopyNode(t.Object, this, keepOriginalGraphUri), t.Context));
                 }
             }
             else
@@ -559,7 +559,7 @@ namespace VDS.RDF
                     {
                         if (!mapping.ContainsKey(t.Subject))
                         {
-                            IBlankNode temp = this.CreateBlankNode();
+                            IBlankNode temp = CreateBlankNode();
                             if (keepOriginalGraphUri) temp.GraphUri = t.Subject.GraphUri;
                             mapping.Add(t.Subject, temp);
                         }
@@ -574,7 +574,7 @@ namespace VDS.RDF
                     {
                         if (!mapping.ContainsKey(t.Predicate))
                         {
-                            IBlankNode temp = this.CreateBlankNode();
+                            IBlankNode temp = CreateBlankNode();
                             if (keepOriginalGraphUri) temp.GraphUri = t.Predicate.GraphUri;
                             mapping.Add(t.Predicate, temp);
                         }
@@ -589,7 +589,7 @@ namespace VDS.RDF
                     {
                         if (!mapping.ContainsKey(t.Object))
                         {
-                            IBlankNode temp = this.CreateBlankNode();
+                            IBlankNode temp = CreateBlankNode();
                             if (keepOriginalGraphUri) temp.GraphUri = t.Object.GraphUri;
                             mapping.Add(t.Object, temp);
                         }
@@ -600,11 +600,11 @@ namespace VDS.RDF
                         o = Tools.CopyNode(t.Object, this, keepOriginalGraphUri);
                     }
 
-                    this.Assert(new Triple(s, p, o, t.Context));
+                    Assert(new Triple(s, p, o, t.Context));
                 }
             }
 
-            this.RaiseMerged();
+            RaiseMerged();
         }
 
         #endregion
@@ -629,18 +629,12 @@ namespace VDS.RDF
             // Graphs can't be equal to null
             if (obj == null) return false;
 
-            if (obj is IGraph)
+            if (obj is IGraph g)
             {
-                IGraph g = (IGraph)obj;
-
-                Dictionary<INode, INode> temp;
-                return this.Equals(g, out temp);
+                return Equals(g, out var temp);
             }
-            else
-            {
-                // Graphs can only be equal to other Graphs
-                return false;
-            }
+            // Graphs can only be equal to other Graphs
+            return false;
         }
 
         /// <summary>
@@ -680,8 +674,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool IsSubGraphOf(IGraph g)
         {
-            Dictionary<INode, INode> temp;
-            return this.IsSubGraphOf(g, out temp);
+            return IsSubGraphOf(g, out var temp);
         }
 
         /// <summary>
@@ -759,7 +752,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual Uri ResolveQName(String qname)
         {
-            return UriFactory.Create(Tools.ResolveQName(qname, this._nsmapper, this._baseuri));
+            return UriFactory.Create(Tools.ResolveQName(qname, _nsmapper, _baseuri));
         }
 
         /// <summary>
@@ -771,7 +764,7 @@ namespace VDS.RDF
             // try
             // {
             //    Monitor.Enter(this._bnodemapper);
-                return this._bnodemapper.GetNextID();
+                return _bnodemapper.GetNextID();
             // }
             // finally
             // {
@@ -825,7 +818,7 @@ namespace VDS.RDF
         /// <param name="args">Triple Event Arguments</param>
         protected virtual void OnTripleAsserted(Object sender, TripleEventArgs args)
         {
-            this.RaiseTripleAsserted(args);
+            RaiseTripleAsserted(args);
         }
 
         /// <summary>
@@ -834,13 +827,9 @@ namespace VDS.RDF
         /// <param name="args">Triple Event Arguments</param>
         protected void RaiseTripleAsserted(TripleEventArgs args)
         {
-            TripleEventHandler d = this.TripleAsserted;
             args.Graph = this;
-            if (d != null)
-            {
-                d(this, args);
-            }
-            this.RaiseGraphChanged(args);
+            TripleAsserted?.Invoke(this, args);
+            RaiseGraphChanged(args);
         }
 
         /// <summary>
@@ -849,13 +838,13 @@ namespace VDS.RDF
         /// <param name="t">Triple</param>
         protected void RaiseTripleAsserted(Triple t)
         {
-            TripleEventHandler d = this.TripleAsserted;
-            GraphEventHandler e = this.Changed;
+            var d = TripleAsserted;
+            var e = Changed;
             if (d != null || e != null)
             {
-                TripleEventArgs args = new TripleEventArgs(t, this);
-                if (d != null) d(this, args);
-                if (e != null) e(this, new GraphEventArgs(this, args));
+                var args = new TripleEventArgs(t, this);
+                d?.Invoke(this, args);
+                e?.Invoke(this, new GraphEventArgs(this, args));
             }
         }
 
@@ -866,7 +855,7 @@ namespace VDS.RDF
         /// <param name="args">Triple Event Arguments</param>
         protected virtual void OnTripleRetracted(Object sender, TripleEventArgs args)
         {
-            this.RaiseTripleRetracted(args);
+            RaiseTripleRetracted(args);
         }
 
         /// <summary>
@@ -875,13 +864,10 @@ namespace VDS.RDF
         /// <param name="args"></param>
         protected void RaiseTripleRetracted(TripleEventArgs args)
         {
-            TripleEventHandler d = this.TripleRetracted;
+            var d = TripleRetracted;
             args.Graph = this;
-            if (d != null)
-            {
-                d(this, args);
-            }
-            this.RaiseGraphChanged(args);
+            d?.Invoke(this, args);
+            RaiseGraphChanged(args);
         }
 
         /// <summary>
@@ -890,13 +876,13 @@ namespace VDS.RDF
         /// <param name="t">Triple</param>
         protected void RaiseTripleRetracted(Triple t)
         {
-            TripleEventHandler d = this.TripleRetracted;
-            GraphEventHandler e = this.Changed;
+            var d = TripleRetracted;
+            var e = Changed;
             if (d != null || e != null)
             {
-                TripleEventArgs args = new TripleEventArgs(t, this, false);
-                if (d != null) d(this, args);
-                if (e != null) e(this, new GraphEventArgs(this, args));
+                var args = new TripleEventArgs(t, this, false);
+                d?.Invoke(this, args);
+                e?.Invoke(this, new GraphEventArgs(this, args));
             }
         }
 
@@ -906,11 +892,7 @@ namespace VDS.RDF
         /// <param name="args">Triple Event Arguments</param>
         protected void RaiseGraphChanged(TripleEventArgs args)
         {
-            GraphEventHandler d = this.Changed;
-            if (d != null)
-            {
-                d(this, new GraphEventArgs(this, args));
-            }
+            Changed?.Invoke(this, new GraphEventArgs(this, args));
         }
 
         /// <summary>
@@ -918,11 +900,7 @@ namespace VDS.RDF
         /// </summary>
         protected void RaiseGraphChanged()
         {
-            GraphEventHandler d = this.Changed;
-            if (d != null)
-            {
-                d(this, new GraphEventArgs(this));
-            }
+            Changed?.Invoke(this, new GraphEventArgs(this));
         }
 
         /// <summary>
@@ -931,7 +909,7 @@ namespace VDS.RDF
         /// <returns>True if the operation can continue, false if it should be aborted</returns>
         protected bool RaiseClearRequested()
         {
-            CancellableGraphEventHandler d = this.ClearRequested;
+            CancellableGraphEventHandler d = ClearRequested;
             if (d != null)
             {
                 CancellableGraphEventArgs args = new CancellableGraphEventArgs(this);
@@ -949,11 +927,7 @@ namespace VDS.RDF
         /// </summary>
         protected void RaiseCleared()
         {
-            GraphEventHandler d = this.Cleared;
-            if (d != null)
-            {
-                d(this, new GraphEventArgs(this));
-            }
+            Cleared?.Invoke(this, new GraphEventArgs(this));
         }
 
         /// <summary>
@@ -962,7 +936,7 @@ namespace VDS.RDF
         /// <returns>True if the operation can continue, false if it should be aborted</returns>
         protected bool RaiseMergeRequested()
         {
-            CancellableGraphEventHandler d = this.MergeRequested;
+            CancellableGraphEventHandler d = MergeRequested;
             if (d != null)
             {
                 CancellableGraphEventArgs args = new CancellableGraphEventArgs(this);
@@ -980,11 +954,7 @@ namespace VDS.RDF
         /// </summary>
         protected void RaiseMerged()
         {
-            GraphEventHandler d = this.Merged;
-            if (d != null)
-            {
-                d(this, new GraphEventArgs(this));
-            }
+            Merged?.Invoke(this, new GraphEventArgs(this));
         }
 
         /// <summary>
@@ -996,8 +966,8 @@ namespace VDS.RDF
         /// </remarks>
         protected void AttachEventHandlers(BaseTripleCollection tripleCollection)
         {
-            tripleCollection.TripleAdded += this.TripleAddedHandler;
-            tripleCollection.TripleRemoved += this.TripleRemovedHandler;
+            tripleCollection.TripleAdded += TripleAddedHandler;
+            tripleCollection.TripleRemoved += TripleRemovedHandler;
         }
 
         /// <summary>
@@ -1009,8 +979,8 @@ namespace VDS.RDF
         /// </remarks>
         protected void DetachEventHandlers(BaseTripleCollection tripleCollection)
         {
-            tripleCollection.TripleAdded -= this.TripleAddedHandler;
-            tripleCollection.TripleRemoved -= this.TripleRemovedHandler;
+            tripleCollection.TripleAdded -= TripleAddedHandler;
+            tripleCollection.TripleRemoved -= TripleRemovedHandler;
         }
 
         #endregion
@@ -1020,7 +990,7 @@ namespace VDS.RDF
         /// </summary>
         public virtual void Dispose()
         {
-            this.DetachEventHandlers(this._triples);
+            DetachEventHandlers(_triples);
         }
 
 #if !NETCORE
@@ -1034,10 +1004,10 @@ namespace VDS.RDF
         /// <param name="context">Streaming Context</param>
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("base", this.BaseUri.ToSafeString());
-            info.AddValue("triples", this.Triples.ToList(), typeof(List<Triple>));
-            IEnumerable<KeyValuePair<String,String>> ns = from p in this.NamespaceMap.Prefixes
-                                                          select new KeyValuePair<String,String>(p, this.NamespaceMap.GetNamespaceUri(p).AbsoluteUri);
+            info.AddValue("base", BaseUri.ToSafeString());
+            info.AddValue("triples", Triples.ToList(), typeof(List<Triple>));
+            IEnumerable<KeyValuePair<String,String>> ns = from p in NamespaceMap.Prefixes
+                                                          select new KeyValuePair<String,String>(p, NamespaceMap.GetNamespaceUri(p).AbsoluteUri);
             info.AddValue("namespaces", ns.ToList(), typeof(List<KeyValuePair<String, String>>));
         }
 
@@ -1075,7 +1045,7 @@ namespace VDS.RDF
                             if (reader.MoveToAttribute("uri"))
                             {
                                 Uri u = UriFactory.Create(reader.Value);
-                                this.NamespaceMap.AddNamespace(prefix, u);
+                                NamespaceMap.AddNamespace(prefix, u);
                                 reader.Read();
                             }
                             else
@@ -1101,7 +1071,7 @@ namespace VDS.RDF
                         try
                         {
                             Object temp = tripleDeserializer.Deserialize(reader);
-                            this.Assert((Triple)temp);
+                            Assert((Triple)temp);
                             reader.Read();
                         }
                         catch
@@ -1126,25 +1096,25 @@ namespace VDS.RDF
             XmlSerializer tripleSerializer = new XmlSerializer(typeof(Triple));
 
             // Serialize Base Uri
-            if (this.BaseUri != null)
+            if (BaseUri != null)
             {
-                writer.WriteAttributeString("base", this.BaseUri.AbsoluteUri);
+                writer.WriteAttributeString("base", BaseUri.AbsoluteUri);
             }
 
             // Serialize Namespace Map
             writer.WriteStartElement("namespaces");
-            foreach (String prefix in this.NamespaceMap.Prefixes)
+            foreach (String prefix in NamespaceMap.Prefixes)
             {
                 writer.WriteStartElement("namespace");
                 writer.WriteAttributeString("prefix", prefix);
-                writer.WriteAttributeString("uri", this.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri);
+                writer.WriteAttributeString("uri", NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri);
                 writer.WriteEndElement();
             }
             writer.WriteEndElement();
 
             // Serialize Triples
             writer.WriteStartElement("triples");
-            foreach (Triple t in this.Triples)
+            foreach (Triple t in Triples)
             {
                 tripleSerializer.Serialize(writer, t);
             }

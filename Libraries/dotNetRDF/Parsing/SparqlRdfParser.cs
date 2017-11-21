@@ -53,7 +53,7 @@ namespace VDS.RDF.Parsing
         /// <param name="parser">RDF Parser</param>
         public SparqlRdfParser(IRdfReader parser)
         {
-            this._parser = parser;
+            _parser = parser;
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public void Load(SparqlResultSet results, TextReader input)
         {
-            this.Load(new ResultSetHandler(results), input);
+            Load(new ResultSetHandler(results), input);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace VDS.RDF.Parsing
         public void Load(SparqlResultSet results, StreamReader input)
         {
             if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
-            this.Load(new ResultSetHandler(results), input);
+            Load(new ResultSetHandler(results), input);
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace VDS.RDF.Parsing
         public void Load(SparqlResultSet results, string filename)
         {
             if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
-            this.Load(new ResultSetHandler(results), filename);
+            Load(new ResultSetHandler(results), filename);
         }
 
         /// <summary>
@@ -113,16 +113,16 @@ namespace VDS.RDF.Parsing
             try
             {
                 Graph g = new Graph();
-                if (this._parser == null)
+                if (_parser == null)
                 {
                     String data = input.ReadToEnd();
                     StringParser.Parse(g, data);
                 }
                 else
                 {
-                    this._parser.Load(g, input);
+                    _parser.Load(g, input);
                 }
-                this.Parse(new SparqlRdfParserContext(g, handler));
+                Parse(new SparqlRdfParserContext(g, handler));
             }
             catch
             {
@@ -151,7 +151,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public void Load(ISparqlResultsHandler handler, StreamReader input)
         {
-            this.Load(handler, (TextReader)input);
+            Load(handler, (TextReader)input);
         }
 
         /// <summary>
@@ -168,15 +168,15 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot read SPARQL Results from a null File");
 
             Graph g = new Graph();
-            if (this._parser == null)
+            if (_parser == null)
             {
                 FileLoader.Load(g, filename);
             }
             else
             {
-                this._parser.Load(g, filename);
+                _parser.Load(g, filename);
             }
-            this.Parse(new SparqlRdfParserContext(g, handler));
+            Parse(new SparqlRdfParserContext(g, handler));
         }
 
         /// <summary>
@@ -353,7 +353,7 @@ namespace VDS.RDF.Parsing
         /// <param name="message">Warning Message</param>
         private void RaiseWarning(String message)
         {
-            SparqlWarning d = this.Warning;
+            SparqlWarning d = Warning;
             if (d != null)
             {
                 d(message);
@@ -371,9 +371,9 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public override string ToString()
         {
-            if (this._parser != null)
+            if (_parser != null)
             {
-                return "SPARQL Results in RDF (" + this._parser.ToString() + ")";
+                return "SPARQL Results in RDF (" + _parser.ToString() + ")";
             }
             else
             {

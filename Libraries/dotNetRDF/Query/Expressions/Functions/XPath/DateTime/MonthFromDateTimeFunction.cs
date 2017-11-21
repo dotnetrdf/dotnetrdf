@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.MonthFromDateTime + ">(" + this._expr.ToString() + ")";
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.MonthFromDateTime + ">(" + _expr.ToString() + ")";
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new MonthFromDateTimeFunction(transformer.Transform(this._expr));
+            return new MonthFromDateTimeFunction(transformer.Transform(_expr));
         }
     }
 }

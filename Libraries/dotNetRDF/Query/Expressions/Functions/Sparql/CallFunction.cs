@@ -47,7 +47,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         /// <param name="expressions">Argument expressions</param>
         public CallFunction(IEnumerable<ISparqlExpression> expressions)
         {
-            this._args.AddRange(expressions);
+            _args.AddRange(expressions);
         }
 
         /// <summary>
@@ -58,15 +58,15 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            if (this._args.Count == 0) return null;
+            if (_args.Count == 0) return null;
 
-            IValuedNode funcIdent = this._args[0].Evaluate(context, bindingID);
+            IValuedNode funcIdent = _args[0].Evaluate(context, bindingID);
             if (funcIdent == null) throw new RdfQueryException("Function identifier is unbound");
             if (funcIdent.NodeType == NodeType.Uri)
             {
                 Uri funcUri = ((IUriNode)funcIdent).Uri;
                 ISparqlExpression func;
-                if (this._functionCache.TryGetValue(funcUri.AbsoluteUri, out func))
+                if (_functionCache.TryGetValue(funcUri.AbsoluteUri, out func))
                 {
                     if (func == null) throw new RdfQueryException("Function identifier does not identify a known function");
                 }
@@ -75,13 +75,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
                     try
                     {
                         // Try to create the function and cache it - remember to respect the queries Expression Factories if present
-                        func = SparqlExpressionFactory.CreateExpression(funcUri, this._args.Skip(1).ToList(), (context.Query != null ? context.Query.ExpressionFactories : Enumerable.Empty<ISparqlCustomExpressionFactory>()));
-                        this._functionCache.Add(funcUri.AbsoluteUri, func);
+                        func = SparqlExpressionFactory.CreateExpression(funcUri, _args.Skip(1).ToList(), (context.Query != null ? context.Query.ExpressionFactories : Enumerable.Empty<ISparqlCustomExpressionFactory>()));
+                        _functionCache.Add(funcUri.AbsoluteUri, func);
                     }
                     catch
                     {
                         // If something goes wrong creating the function cache a null so we ignore this function URI for later calls
-                        this._functionCache.Add(funcUri.AbsoluteUri, null);
+                        _functionCache.Add(funcUri.AbsoluteUri, null);
                     }
                 }
                 // Now invoke the function
@@ -100,7 +100,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         {
             get 
             {
-                return (from e in this._args
+                return (from e in _args
                         from v in e.Variables
                         select v);
             }
@@ -114,10 +114,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         {
             StringBuilder output = new StringBuilder();
             output.Append("CALL(");
-            for (int i = 0; i < this._args.Count; i++)
+            for (int i = 0; i < _args.Count; i++)
             {
-                output.Append(this._args[i].ToString());
-                if (i < this._args.Count - 1)
+                output.Append(_args[i].ToString());
+                if (i < _args.Count - 1)
                 {
                     output.Append(", ");
                 }
@@ -155,7 +155,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         {
             get
             {
-                return this._args;
+                return _args;
             }
         }
 
@@ -177,7 +177,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new CallFunction(this._args.Select(e => transformer.Transform(e)));
+            return new CallFunction(_args.Select(e => transformer.Transform(e)));
         }
     }
 }

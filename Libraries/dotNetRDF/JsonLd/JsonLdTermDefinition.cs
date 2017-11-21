@@ -58,10 +58,13 @@ namespace VDS.RDF.JsonLd
         /// </summary>
         /// <remarks>May be null. MUST be null if TypeMapping is not null</remarks>
         public string LanguageMapping {
-            get { return _languageMapping; }
+            get => _languageMapping;
             set { _languageMapping = value; HasLanguageMapping = true; }
         }
 
+        /// <summary>
+        /// Boolean flag indicating if this term definition specifies a language mapping
+        /// </summary>
         public bool HasLanguageMapping { get; private set; }
 
         /// <summary>
@@ -87,13 +90,13 @@ namespace VDS.RDF.JsonLd
         {
             var clone = new JsonLdTermDefinition()
             {
-                IriMapping = this.IriMapping,
-                Reverse = this.Reverse,
-                TypeMapping = this.TypeMapping,
-                LanguageMapping = this.LanguageMapping,
-                HasLanguageMapping = this.HasLanguageMapping,
-                ContainerMapping = this.ContainerMapping,
-                Nest = this.Nest,
+                IriMapping = IriMapping,
+                Reverse = Reverse,
+                TypeMapping = TypeMapping,
+                LanguageMapping = LanguageMapping,
+                HasLanguageMapping = HasLanguageMapping,
+                ContainerMapping = ContainerMapping,
+                Nest = Nest,
                 LocalContext = LocalContext?.DeepClone(), // TODO: Check if it correct to just directly clone the local context
             };
             return clone;

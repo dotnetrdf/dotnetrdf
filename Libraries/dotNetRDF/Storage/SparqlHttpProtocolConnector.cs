@@ -65,7 +65,7 @@ namespace VDS.RDF.Storage
             if (serviceUri == null) throw new ArgumentNullException("serviceUri", "Cannot create a connection to a Graph Store HTTP Protocol store if the Service URI is null");
             if (serviceUri.Equals(String.Empty)) throw new ArgumentException("Cannot create a connection to a Graph Store HTTP Protocol store if the Service URI is null/empty", "serviceUri");
 
-            this._serviceUri = serviceUri;
+            _serviceUri = serviceUri;
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace VDS.RDF.Storage
         public SparqlHttpProtocolConnector(String serviceUri, IWebProxy proxy)
             : this(serviceUri)
         {
-            this.Proxy = proxy;
+            Proxy = proxy;
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to load</param>
         public virtual void LoadGraph(IGraph g, Uri graphUri)
         {
-            this.LoadGraph(g, graphUri.ToSafeString());
+            LoadGraph(g, graphUri.ToSafeString());
         }
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to load</param>
         public virtual void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
-            this.LoadGraph(handler, graphUri.ToSafeString());
+            LoadGraph(handler, graphUri.ToSafeString());
         }
 
         /// <summary>
@@ -192,7 +192,7 @@ namespace VDS.RDF.Storage
             {
                 origUri = UriFactory.Create(graphUri);
             }
-            this.LoadGraph(new GraphHandler(g), graphUri);
+            LoadGraph(new GraphHandler(g), graphUri);
             g.BaseUri = origUri;
         }
 
@@ -203,7 +203,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to load</param>
         public virtual void LoadGraph(IRdfHandler handler, String graphUri)
         {
-            String retrievalUri = this._serviceUri;
+            String retrievalUri = _serviceUri;
             if (graphUri != null && !graphUri.Equals(String.Empty))
             {
                 retrievalUri += "?graph=" + Uri.EscapeDataString(graphUri);
@@ -217,7 +217,7 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(retrievalUri);
                 request.Method = "GET";
                 request.Accept = MimeTypesHelper.HttpAcceptHeader;
-                request = base.ApplyRequestOptions(request);
+                request = ApplyRequestOptions(request);
 
                 Tools.HttpDebugRequest(request);
 
@@ -251,7 +251,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to check for</param>
         public virtual bool HasGraph(Uri graphUri)
         {
-            return this.HasGraph(graphUri.ToSafeString());
+            return HasGraph(graphUri.ToSafeString());
         }
 
         /// <summary>
@@ -260,7 +260,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to check for</param>
         public virtual bool HasGraph(String graphUri)
         {
-            String lookupUri = this._serviceUri;
+            String lookupUri = _serviceUri;
             if (graphUri != null && !graphUri.Equals(String.Empty))
             {
                 lookupUri += "?graph=" + Uri.EscapeDataString(graphUri);
@@ -273,7 +273,7 @@ namespace VDS.RDF.Storage
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(lookupUri);
                 request.Method = "HEAD";
-                request = base.ApplyRequestOptions(request);
+                request = ApplyRequestOptions(request);
 
                 Tools.HttpDebugRequest(request);
 
@@ -307,7 +307,7 @@ namespace VDS.RDF.Storage
         /// <param name="g">Graph to save</param>
         public virtual void SaveGraph(IGraph g)
         {
-            String saveUri = this._serviceUri;
+            String saveUri = _serviceUri;
             if (g.BaseUri != null)
             {
                 saveUri += "?graph=" + Uri.EscapeDataString(g.BaseUri.AbsoluteUri);
@@ -321,7 +321,7 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(saveUri));
                 request.Method = "PUT";
                 request.ContentType = MimeTypesHelper.RdfXml[0];
-                request = base.ApplyRequestOptions(request);
+                request = ApplyRequestOptions(request);
 
                 RdfXmlWriter writer = new RdfXmlWriter();
                 writer.Save(g, new StreamWriter(request.GetRequestStream()));
@@ -352,7 +352,7 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public virtual void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            this.UpdateGraph(graphUri.ToSafeString(), additions, removals);
+            UpdateGraph(graphUri.ToSafeString(), additions, removals);
         }
 
         /// <summary>
@@ -370,7 +370,7 @@ namespace VDS.RDF.Storage
 
             if (additions == null || !additions.Any()) return;
 
-            String updateUri = this._serviceUri;
+            String updateUri = _serviceUri;
             if (graphUri != null && !graphUri.Equals(String.Empty))
             {
                 updateUri += "?graph=" + Uri.EscapeDataString(graphUri);
@@ -385,7 +385,7 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(updateUri));
                 request.Method = "POST";
                 request.ContentType = MimeTypesHelper.RdfXml[0];
-                request = base.ApplyRequestOptions(request);
+                request = ApplyRequestOptions(request);
 
                 RdfXmlWriter writer = new RdfXmlWriter();
                 Graph g = new Graph();
@@ -413,7 +413,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to delete</param>
         public virtual void DeleteGraph(Uri graphUri)
         {
-            this.DeleteGraph(graphUri.ToSafeString());
+            DeleteGraph(graphUri.ToSafeString());
         }
 
         /// <summary>
@@ -422,7 +422,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to delete</param>
         public virtual void DeleteGraph(String graphUri)
         {
-            String deleteUri = this._serviceUri;
+            String deleteUri = _serviceUri;
             if (graphUri != null && !graphUri.Equals(String.Empty))
             {
                 deleteUri += "?graph=" + Uri.EscapeDataString(graphUri);
@@ -436,7 +436,7 @@ namespace VDS.RDF.Storage
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(deleteUri));
                 request.Method = "DELETE";
-                request = base.ApplyRequestOptions(request);
+                request = ApplyRequestOptions(request);
 
                 Tools.HttpDebugRequest(request);
 
@@ -481,7 +481,7 @@ namespace VDS.RDF.Storage
             {
                 origUri = UriFactory.Create(graphUri);
             }
-            this.LoadGraph(new GraphHandler(g), graphUri, (sender, args, st) =>
+            LoadGraph(new GraphHandler(g), graphUri, (sender, args, st) =>
                 {
                     callback(sender, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadGraph, g, args.Error), st);
                 }, state);
@@ -497,7 +497,7 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback</param>
         public override void LoadGraph(IRdfHandler handler, String graphUri, AsyncStorageCallback callback, Object state)
         {
-            String retrievalUri = this._serviceUri;
+            String retrievalUri = _serviceUri;
             if (graphUri != null && !graphUri.Equals(String.Empty))
             {
                 retrievalUri += "?graph=" + Uri.EscapeDataString(graphUri);
@@ -509,9 +509,9 @@ namespace VDS.RDF.Storage
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(retrievalUri);
             request.Method = "GET";
             request.Accept = MimeTypesHelper.HttpAcceptHeader;
-            request = base.ApplyRequestOptions(request);
+            request = ApplyRequestOptions(request);
 
-            this.LoadGraphAsync(request, handler, callback, state);
+            LoadGraphAsync(request, handler, callback, state);
         }
 
         /// <summary>
@@ -522,7 +522,7 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback</param>
         public override void SaveGraph(IGraph g, AsyncStorageCallback callback, Object state)
         {
-            String saveUri = this._serviceUri;
+            String saveUri = _serviceUri;
             if (g.BaseUri != null)
             {
                 saveUri += "?graph=" + Uri.EscapeDataString(g.BaseUri.AbsoluteUri);
@@ -534,9 +534,9 @@ namespace VDS.RDF.Storage
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(saveUri));
             request.Method = "PUT";
             request.ContentType = MimeTypesHelper.RdfXml[0];
-            request = base.ApplyRequestOptions(request);
+            request = ApplyRequestOptions(request);
 
-            this.SaveGraphAsync(request, new RdfXmlWriter(), g, callback, state);
+            SaveGraphAsync(request, new RdfXmlWriter(), g, callback, state);
         }
 
         /// <summary>
@@ -564,7 +564,7 @@ namespace VDS.RDF.Storage
                 return;
             }
 
-            String updateUri = this._serviceUri;
+            String updateUri = _serviceUri;
             if (graphUri != null && !graphUri.Equals(String.Empty))
             {
                 updateUri += "?graph=" + Uri.EscapeDataString(graphUri);
@@ -577,11 +577,11 @@ namespace VDS.RDF.Storage
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(updateUri));
             request.Method = "POST";
             request.ContentType = MimeTypesHelper.RdfXml[0];
-            request = base.ApplyRequestOptions(request);
+            request = ApplyRequestOptions(request);
 
             RdfXmlWriter writer = new RdfXmlWriter();
 
-            this.UpdateGraphAsync(request, writer, graphUri.ToSafeUri(), additions, callback, state);
+            UpdateGraphAsync(request, writer, graphUri.ToSafeUri(), additions, callback, state);
         }
 
         /// <summary>
@@ -602,7 +602,7 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback</param>
         public override void DeleteGraph(String graphUri, AsyncStorageCallback callback, Object state)
         {
-            String deleteUri = this._serviceUri;
+            String deleteUri = _serviceUri;
             if (graphUri != null && !graphUri.Equals(String.Empty))
             {
                 deleteUri += "?graph=" + Uri.EscapeDataString(graphUri);
@@ -616,9 +616,9 @@ namespace VDS.RDF.Storage
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(deleteUri));
                 request.Method = "DELETE";
-                request = base.ApplyRequestOptions(request);
+                request = ApplyRequestOptions(request);
 
-                this.DeleteGraphAsync(request, true, graphUri, callback, state);
+                DeleteGraphAsync(request, true, graphUri, callback, state);
             }
             catch (WebException webEx)
             {
@@ -648,7 +648,7 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public override string ToString()
         {
-            return "[SPARQL Graph Store HTTP Protocol] " + this._serviceUri;
+            return "[SPARQL Graph Store HTTP Protocol] " + _serviceUri;
         }
 
         /// <summary>
@@ -665,11 +665,11 @@ namespace VDS.RDF.Storage
             INode server = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer));
 
             context.Graph.Assert(new Triple(manager, rdfType, genericManager));
-            context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString())));
-            context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
-            context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._serviceUri)));
+            context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString())));
+            context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(GetType().FullName)));
+            context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(_serviceUri)));
 
-            base.SerializeStandardConfig(manager, context);
+            SerializeStandardConfig(manager, context);
         }
     }
 }

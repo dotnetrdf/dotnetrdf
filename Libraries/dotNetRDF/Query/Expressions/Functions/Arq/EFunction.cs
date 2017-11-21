@@ -47,7 +47,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            return this._node;
+            return _node;
         }
 
         /// <summary>

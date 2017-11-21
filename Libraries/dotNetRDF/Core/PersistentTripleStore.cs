@@ -85,7 +85,7 @@ namespace VDS.RDF
         public PersistentTripleStore(IStorageProvider manager)
             : base(new PersistentGraphCollection(manager))
         {
-            this._manager = manager;
+            _manager = manager;
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace VDS.RDF
         /// </remarks>
         ~PersistentTripleStore()
         {
-            this.Dispose(false);
+            Dispose(false);
         }
 
         /// <summary>
@@ -118,13 +118,13 @@ namespace VDS.RDF
         /// </remarks>
         public override void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
         }
 
         private void Dispose(bool disposing)
         {
             if (disposing) GC.SuppressFinalize(this);
-            this.Flush();
+            Flush();
         }
 
         /// <summary>
@@ -132,9 +132,9 @@ namespace VDS.RDF
         /// </summary>
         public void  Flush()
         {
-            if (this._graphs != null)
+            if (_graphs != null)
             {
-                ((PersistentGraphCollection)this._graphs).Flush();
+                ((PersistentGraphCollection)_graphs).Flush();
             }
         }
 
@@ -143,9 +143,9 @@ namespace VDS.RDF
         /// </summary>
         public void  Discard()
         {
-            if (this._graphs != null)
+            if (_graphs != null)
             {
-                ((PersistentGraphCollection)this._graphs).Discard();
+                ((PersistentGraphCollection)_graphs).Discard();
             }
         }
 
@@ -160,7 +160,7 @@ namespace VDS.RDF
         {
             Graph g = new Graph();
             SparqlResultSet results = new SparqlResultSet();
-            this.ExecuteQuery(new GraphHandler(g), new ResultSetHandler(results), query);
+            ExecuteQuery(new GraphHandler(g), new ResultSetHandler(results), query);
             if (results.ResultsType != SparqlResultsType.Unknown)
             {
                 return results;
@@ -179,14 +179,14 @@ namespace VDS.RDF
         /// <param name="query">SPARQL Query as unparsed String</param>
         public void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string query)
         {
-            if (this._manager is IQueryableStorage)
+            if (_manager is IQueryableStorage)
             {
-                if (!((PersistentGraphCollection)this._graphs).IsSynced)
+                if (!((PersistentGraphCollection)_graphs).IsSynced)
                 {
                     throw new RdfQueryException("Unable to execute a SPARQL Query as the in-memory view of the store is not synced with the underlying store, please invoked Flush() or Discard() and try again.  Alternatively if you do not want to see in-memory changes reflected in query results you can invoke the Query() method directly on the underlying store by accessing it through the UnderlyingStore property.");
                 }
 
-                ((IQueryableStorage)this._manager).Query(rdfHandler, resultsHandler, query);
+                ((IQueryableStorage)_manager).Query(rdfHandler, resultsHandler, query);
             }
             else
             {
@@ -207,21 +207,21 @@ namespace VDS.RDF
         /// </remarks>
         public void ExecuteUpdate(string update)
         {
-            if (this._manager is IUpdateableStorage)
+            if (_manager is IUpdateableStorage)
             {
-                if (!((PersistentGraphCollection)this._graphs).IsSynced)
+                if (!((PersistentGraphCollection)_graphs).IsSynced)
                 {
                     throw new SparqlUpdateException("Unable to execute a SPARQL Update as the in-memory view of the store is not synced with the underlying store, please invoked Flush() or Discard() and try again.  Alternatively if you do not want to see in-memory changes reflected in update results you can invoke the Update() method directly on the underlying store by accessing it through the UnderlyingStore property.");
                 }
 
-                ((IUpdateableStorage)this._manager).Update(update);
+                ((IUpdateableStorage)_manager).Update(update);
             }
             else
             {
-                if (this._updateProcessor == null) this._updateProcessor = new GenericUpdateProcessor(this._manager);
-                if (this._updateParser == null) this._updateParser = new SparqlUpdateParser();
-                SparqlUpdateCommandSet cmds = this._updateParser.ParseFromString(update);
-                this._updateProcessor.ProcessCommandSet(cmds);
+                if (_updateProcessor == null) _updateProcessor = new GenericUpdateProcessor(_manager);
+                if (_updateParser == null) _updateParser = new SparqlUpdateParser();
+                SparqlUpdateCommandSet cmds = _updateParser.ParseFromString(update);
+                _updateProcessor.ProcessCommandSet(cmds);
             }
         }
 
@@ -231,7 +231,7 @@ namespace VDS.RDF
         /// <param name="update">SPARQL Update Command</param>
         public void ExecuteUpdate(SparqlUpdateCommand update)
         {
-            this.ExecuteUpdate(update.ToString());
+            ExecuteUpdate(update.ToString());
         }
 
         /// <summary>
@@ -240,7 +240,7 @@ namespace VDS.RDF
         /// <param name="updates">SPARQL Update Command Set</param>
         public void ExecuteUpdate(SparqlUpdateCommandSet updates)
         {
-            this.ExecuteUpdate(updates.ToString());
+            ExecuteUpdate(updates.ToString());
         }
 
         #endregion
@@ -261,33 +261,33 @@ namespace VDS.RDF
         public PersistentGraphCollection(IStorageProvider manager)
         {
             if (manager == null) throw new ArgumentNullException("manager", "Must use a non-null IStorageProvider instance with a PersistentGraphCollection");
-            this._manager = manager;
+            _manager = manager;
 
-            this.TripleAddedHandler = new TripleEventHandler(this.OnTripleAsserted);
-            this.TripleRemovedHandler = new TripleEventHandler(this.OnTripleRetracted);
+            TripleAddedHandler = new TripleEventHandler(OnTripleAsserted);
+            TripleRemovedHandler = new TripleEventHandler(OnTripleRetracted);
         }
 
         protected override void RaiseGraphAdded(IGraph g)
         {
-            if (!this._persisting)
+            if (!_persisting)
             {
-                if (this._manager.UpdateSupported)
+                if (_manager.UpdateSupported)
                 {
-                    this.AttachHandlers(g);
-                    if (this._removedGraphs.Contains(g.BaseUri.ToSafeString()) || !this.ContainsInternal(g.BaseUri))
+                    AttachHandlers(g);
+                    if (_removedGraphs.Contains(g.BaseUri.ToSafeString()) || !ContainsInternal(g.BaseUri))
                     {
                         // When a new graph is introduced that does not exist in the underlying store
                         // be sure to persist the initial triples
-                        this._actions.Add(new TripleStorePersistenceAction(new GraphPersistenceAction(g, GraphPersistenceActionType.Added)));
+                        _actions.Add(new TripleStorePersistenceAction(new GraphPersistenceAction(g, GraphPersistenceActionType.Added)));
                         foreach (Triple t in g.Triples)
                         {
-                            this._actions.Add(new TripleStorePersistenceAction(new TriplePersistenceAction(t)));
+                            _actions.Add(new TripleStorePersistenceAction(new TriplePersistenceAction(t)));
                         }
                     }
                 }
                 else
                 {
-                    this._actions.Add(new TripleStorePersistenceAction(new GraphPersistenceAction(g, GraphPersistenceActionType.Added)));
+                    _actions.Add(new TripleStorePersistenceAction(new GraphPersistenceAction(g, GraphPersistenceActionType.Added)));
                 }
             }
             base.RaiseGraphAdded(g);
@@ -295,18 +295,18 @@ namespace VDS.RDF
 
         protected override void RaiseGraphRemoved(IGraph g)
         {
-            if (!this._persisting)
+            if (!_persisting)
             {
                 String uri = g.BaseUri.ToSafeString();
-                this._removedGraphs.Add(uri);
-                if (this._manager.UpdateSupported)
+                _removedGraphs.Add(uri);
+                if (_manager.UpdateSupported)
                 {
-                    this.DetachHandlers(g);
-                    this._actions.Add(new TripleStorePersistenceAction(new GraphPersistenceAction(g, GraphPersistenceActionType.Deleted)));
+                    DetachHandlers(g);
+                    _actions.Add(new TripleStorePersistenceAction(new GraphPersistenceAction(g, GraphPersistenceActionType.Deleted)));
                 }
                 else
                 {
-                    this._actions.Add(new TripleStorePersistenceAction(new GraphPersistenceAction(g, GraphPersistenceActionType.Deleted)));
+                    _actions.Add(new TripleStorePersistenceAction(new GraphPersistenceAction(g, GraphPersistenceActionType.Deleted)));
                 }
             }
             base.RaiseGraphRemoved(g);
@@ -319,19 +319,19 @@ namespace VDS.RDF
             {
                 return true;
             }
-            else if (!this._removedGraphs.Contains(uri))
+            else if (!_removedGraphs.Contains(uri))
             {
                 // Try and load the Graph and return true if anything is returned
                 Graph g = new Graph();
                 try
                 {
-                    this._manager.LoadGraph(g, graphUri);
+                    _manager.LoadGraph(g, graphUri);
                     if (g.Triples.Count > 0)
                     {
                         // If we're going to return true we must also store the Graph in the collection
                         // for later use
                         g.BaseUri = graphUri;
-                        this.Add(g, true);
+                        Add(g, true);
                         return true;
                     }
                     else
@@ -353,7 +353,7 @@ namespace VDS.RDF
 
         protected internal override bool Remove(Uri graphUri)
         {
-            if (this.Contains(graphUri))
+            if (Contains(graphUri))
             {
                 return base.Remove(graphUri);
             }
@@ -364,9 +364,9 @@ namespace VDS.RDF
         {
             get
             {
-                if (this._manager.ListGraphsSupported)
+                if (_manager.ListGraphsSupported)
                 {
-                    return this._manager.ListGraphs().Concat(base.GraphUris).Distinct();
+                    return _manager.ListGraphs().Concat(base.GraphUris).Distinct();
                 }
                 else
                 {
@@ -379,7 +379,7 @@ namespace VDS.RDF
         {
             get
             {
-                if (this.Contains(graphUri))
+                if (Contains(graphUri))
                 {
                     return base[graphUri];
                 }
@@ -395,7 +395,7 @@ namespace VDS.RDF
             AnyHandler handler = new AnyHandler();
             try
             {
-                this._manager.LoadGraph(handler, graphUri);
+                _manager.LoadGraph(handler, graphUri);
                 return handler.Any;
             }
             catch
@@ -406,29 +406,29 @@ namespace VDS.RDF
 
         private void AttachHandlers(IGraph g)
         {
-            g.TripleAsserted += this.TripleAddedHandler;
-            g.TripleRetracted += this.TripleRemovedHandler;
+            g.TripleAsserted += TripleAddedHandler;
+            g.TripleRetracted += TripleRemovedHandler;
         }
 
         private void DetachHandlers(IGraph g)
         {
-            g.TripleAsserted -= this.TripleAddedHandler;
-            g.TripleRetracted -= this.TripleRemovedHandler;
+            g.TripleAsserted -= TripleAddedHandler;
+            g.TripleRetracted -= TripleRemovedHandler;
         }
 
         private void OnTripleAsserted(Object sender, TripleEventArgs args)
         {
-            if (!this._persisting)
+            if (!_persisting)
             {
-                this._actions.Add(new TripleStorePersistenceAction(new TriplePersistenceAction(args.Triple)));
+                _actions.Add(new TripleStorePersistenceAction(new TriplePersistenceAction(args.Triple)));
             }
         }
 
         private void OnTripleRetracted(Object sender, TripleEventArgs args)
         {
-            if (!this._persisting)
+            if (!_persisting)
             {
-                this._actions.Add(new TripleStorePersistenceAction(new TriplePersistenceAction(args.Triple, true)));
+                _actions.Add(new TripleStorePersistenceAction(new TriplePersistenceAction(args.Triple, true)));
             }
         }
 
@@ -436,7 +436,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._actions.Count == 0;
+                return _actions.Count == 0;
             }
         }
 
@@ -444,37 +444,37 @@ namespace VDS.RDF
         {
             try
             {
-                this._persisting = true;
-                this._removedGraphs.Clear();
+                _persisting = true;
+                _removedGraphs.Clear();
 
                 // Read-Only managers have no persistence
-                if (this._manager.IsReadOnly) return;
+                if (_manager.IsReadOnly) return;
 
                 // No actions means no persistence necessary
-                if (this._actions.Count == 0) return;
+                if (_actions.Count == 0) return;
 
-                if (this._manager.UpdateSupported)
+                if (_manager.UpdateSupported)
                 {
                     // Persist based on Triple level actions
                     // First group Triple together based on Graph URI
-                    while (this._actions.Count > 0)
+                    while (_actions.Count > 0)
                     {
-                        TripleStorePersistenceAction action = this._actions[0];
+                        TripleStorePersistenceAction action = _actions[0];
 
                         if (action.IsTripleAction)
                         {
                             Queue<TriplePersistenceAction> actions = new Queue<TriplePersistenceAction>();
                             Uri currUri = action.TripleAction.Triple.GraphUri;
-                            actions.Enqueue(this._actions[0].TripleAction);
-                            this._actions.RemoveAt(0);
+                            actions.Enqueue(_actions[0].TripleAction);
+                            _actions.RemoveAt(0);
 
                             // Find all the Triple actions related to this Graph up to the next non-Triple action
-                            for (int i = 0; i < this._actions.Count && this._actions[i].IsTripleAction; i++)
+                            for (int i = 0; i < _actions.Count && _actions[i].IsTripleAction; i++)
                             {
-                                if (EqualityHelper.AreUrisEqual(currUri, this._actions[i].TripleAction.Triple.GraphUri))
+                                if (EqualityHelper.AreUrisEqual(currUri, _actions[i].TripleAction.Triple.GraphUri))
                                 {
-                                    actions.Enqueue(this._actions[i].TripleAction);
-                                    this._actions.RemoveAt(i);
+                                    actions.Enqueue(_actions[i].TripleAction);
+                                    _actions.RemoveAt(i);
                                     i--;
                                 }
                             }
@@ -495,11 +495,11 @@ namespace VDS.RDF
                                         // additions and removals to happen in the order we care about
                                         if (toDelete)
                                         {
-                                            this._manager.UpdateGraph(currUri, null, batch);
+                                            _manager.UpdateGraph(currUri, null, batch);
                                         }
                                         else
                                         {
-                                            this._manager.UpdateGraph(currUri, batch, null);
+                                            _manager.UpdateGraph(currUri, batch, null);
                                         }
                                         batch.Clear();
                                     }
@@ -512,11 +512,11 @@ namespace VDS.RDF
                             {
                                 if (toDelete)
                                 {
-                                    this._manager.UpdateGraph(currUri, null, batch);
+                                    _manager.UpdateGraph(currUri, null, batch);
                                 }
                                 else
                                 {
-                                    this._manager.UpdateGraph(currUri, batch, null);
+                                    _manager.UpdateGraph(currUri, batch, null);
                                 }
                             }
                         }
@@ -531,37 +531,37 @@ namespace VDS.RDF
                                     // TriplePersistenceActions
                                     Graph g = new Graph();
                                     g.BaseUri = action.GraphAction.Graph.BaseUri;
-                                    this._manager.SaveGraph(g);
+                                    _manager.SaveGraph(g);
                                     break;
 
                                 case GraphPersistenceActionType.Deleted:
                                     // No need to do anything in-memory as won't be in the graph collection
                                     // If DeleteGraph() is supported call it to delete the relevant graph
-                                    if (this._manager.DeleteSupported)
+                                    if (_manager.DeleteSupported)
                                     {
-                                        this._manager.DeleteGraph(action.GraphAction.Graph.BaseUri);
+                                        _manager.DeleteGraph(action.GraphAction.Graph.BaseUri);
                                     }
                                     break;
                             }
-                            this._actions.RemoveAt(0);
+                            _actions.RemoveAt(0);
                         }
                     }
                 }
                 else
                 {
                     // Persist based on Graph level actions
-                    foreach (TripleStorePersistenceAction action in this._actions)
+                    foreach (TripleStorePersistenceAction action in _actions)
                     {
                         if (action.IsGraphAction)
                         {
                             if (action.GraphAction.Action == GraphPersistenceActionType.Added)
                             {
-                                this._manager.SaveGraph(action.GraphAction.Graph);
+                                _manager.SaveGraph(action.GraphAction.Graph);
                             }
-                            else if (action.GraphAction.Action == GraphPersistenceActionType.Deleted && this._manager.DeleteSupported)
+                            else if (action.GraphAction.Action == GraphPersistenceActionType.Deleted && _manager.DeleteSupported)
                             {
                                 // Can only delete graphs if deletion is supported
-                                this._manager.DeleteGraph(action.GraphAction.Graph.BaseUri);
+                                _manager.DeleteGraph(action.GraphAction.Graph.BaseUri);
                             }
                         }
                     }
@@ -569,7 +569,7 @@ namespace VDS.RDF
             }
             finally
             {
-                this._persisting = false;
+                _persisting = false;
             }
         }
 
@@ -577,41 +577,41 @@ namespace VDS.RDF
         {
             try 
             {
-                this._persisting = true;
-                this._removedGraphs.Clear();
+                _persisting = true;
+                _removedGraphs.Clear();
 
                 // Read-Only managers have no persistence
-                if (this._manager.IsReadOnly) return;
+                if (_manager.IsReadOnly) return;
 
                 // No actions mean no persistence necessary
-                if (this._actions.Count == 0) return;
+                if (_actions.Count == 0) return;
 
                 // Important - For discard we reverse the list of actions so that we
                 // rollback the actions in appropriate order
-                this._actions.Reverse();
+                _actions.Reverse();
 
-                if (this._manager.UpdateSupported)
+                if (_manager.UpdateSupported)
                 {
                     // Persist based on Triple level actions
                     // First group Triple together based on Graph URI
-                    while (this._actions.Count > 0)
+                    while (_actions.Count > 0)
                     {
-                        TripleStorePersistenceAction action = this._actions[0];
+                        TripleStorePersistenceAction action = _actions[0];
 
                         if (action.IsTripleAction)
                         {
                             Queue<TriplePersistenceAction> actions = new Queue<TriplePersistenceAction>();
-                            Uri currUri = this._actions[0].TripleAction.Triple.GraphUri;
-                            actions.Enqueue(this._actions[0].TripleAction);
-                            this._actions.RemoveAt(0);
+                            Uri currUri = _actions[0].TripleAction.Triple.GraphUri;
+                            actions.Enqueue(_actions[0].TripleAction);
+                            _actions.RemoveAt(0);
 
                             // Find all the Triple actions related to this Graph up to the next non-Triple action
-                            for (int i = 0; i < this._actions.Count && this._actions[i].IsTripleAction; i++)
+                            for (int i = 0; i < _actions.Count && _actions[i].IsTripleAction; i++)
                             {
-                                if (EqualityHelper.AreUrisEqual(currUri, this._actions[i].TripleAction.Triple.GraphUri))
+                                if (EqualityHelper.AreUrisEqual(currUri, _actions[i].TripleAction.Triple.GraphUri))
                                 {
-                                    actions.Enqueue(this._actions[i].TripleAction);
-                                    this._actions.RemoveAt(i);
+                                    actions.Enqueue(_actions[i].TripleAction);
+                                    _actions.RemoveAt(i);
                                     i--;
                                 }
                             }
@@ -672,22 +672,22 @@ namespace VDS.RDF
                             {
                                 case GraphPersistenceActionType.Added:
                                     // Need to remove from being in-memory
-                                    this.Remove(action.GraphAction.Graph.BaseUri);
+                                    Remove(action.GraphAction.Graph.BaseUri);
                                     break;
 
                                 case GraphPersistenceActionType.Deleted:
                                     // Need to add back into memory
-                                    this.Add(action.GraphAction.Graph, false);
+                                    Add(action.GraphAction.Graph, false);
                                     break;
                             }
-                            this._actions.RemoveAt(0);
+                            _actions.RemoveAt(0);
                         }
                     }
                 }
                 else
                 {
                     // Persist based on Graph level actions
-                    foreach (TripleStorePersistenceAction action in this._actions)
+                    foreach (TripleStorePersistenceAction action in _actions)
                     {
                         // Important - For discard we flip the actions in order to reverse them
                         // i.e. additions become removals and vice versa
@@ -696,11 +696,11 @@ namespace VDS.RDF
                         {
                             if (action.GraphAction.Action == GraphPersistenceActionType.Added)
                             {
-                                this.Remove(action.GraphAction.Graph.BaseUri);
+                                Remove(action.GraphAction.Graph.BaseUri);
                             }
                             else if (action.GraphAction.Action == GraphPersistenceActionType.Deleted)
                             {
-                                this.Add(action.GraphAction.Graph, false);
+                                Add(action.GraphAction.Graph, false);
                             }
                         }
                     }
@@ -708,7 +708,7 @@ namespace VDS.RDF
             } 
             finally 
             {
-                this._persisting = false;
+                _persisting = false;
             }
         }
     }

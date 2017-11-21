@@ -167,11 +167,11 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._id;
+                return _id;
             }
             set
             {
-                this._id = value;
+                _id = value;
             }
         }
 
@@ -229,7 +229,7 @@ namespace VDS.RDF.Query.Algebra
         {
             if (ReferenceEquals(this, other)) return true;
             if (other == null) return false;
-            return this.Variables.All(v => other.ContainsVariable(v) && ((this[v] == null && other[v] == null) || this[v].Equals(other[v])));
+            return Variables.All(v => other.ContainsVariable(v) && ((this[v] == null && other[v] == null) || this[v].Equals(other[v])));
         }
 
         /// <summary>
@@ -240,15 +240,12 @@ namespace VDS.RDF.Query.Algebra
         public sealed override bool Equals(object obj)
         {
             if (ReferenceEquals(this, obj)) return true;
- 	        if (obj == null) return false;
-            if (obj is ISet)
+            if (obj == null) return false;
+            if (obj is ISet set)
             {
-                return this.Equals((ISet)obj);
+                return Equals(set);
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         /// <summary>
@@ -257,7 +254,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override int GetHashCode()
         {
-            return this.ToString().GetHashCode();
+            return ToString().GetHashCode();
         }
 
         /// <summary>
@@ -268,7 +265,7 @@ namespace VDS.RDF.Query.Algebra
         {
             StringBuilder output = new StringBuilder();
             int count = 0;
-            foreach (String var in this.Variables.OrderBy(v => v))
+            foreach (String var in Variables.OrderBy(v => v))
             {
                 output.Append("?" + var + " = " + this[var].ToSafeString());
                 output.Append(" , ");

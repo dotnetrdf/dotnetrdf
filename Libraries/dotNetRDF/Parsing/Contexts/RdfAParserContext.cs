@@ -58,7 +58,7 @@ namespace VDS.RDF.Parsing.Contexts
         public RdfAParserContext(IGraph g, THtmlDocument document, bool traceParsing)
             : base(g, traceParsing) 
         {
-            this._document = document;
+            _document = document;
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace VDS.RDF.Parsing.Contexts
         public RdfAParserContext(IRdfHandler handler, THtmlDocument document, bool traceParsing)
             : base(handler, traceParsing)
         {
-            this._document = document;
+            _document = document;
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._document;
+                return _document;
             }
         }
 
@@ -99,11 +99,11 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._allowXmlBase;
+                return _allowXmlBase;
             }
             set
             {
-                this._allowXmlBase = value;
+                _allowXmlBase = value;
             }
         }
 
@@ -114,11 +114,11 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._defaultVocabularly;
+                return _defaultVocabularly;
             }
             set
             {
-                this._defaultVocabularly = value;
+                _defaultVocabularly = value;
             }
         }
 
@@ -129,11 +129,11 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._syntax;
+                return _syntax;
             }
             set
             {
-                this._syntax = value;
+                _syntax = value;
             }
         }
     }

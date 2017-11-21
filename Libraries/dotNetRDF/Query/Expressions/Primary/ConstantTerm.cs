@@ -48,7 +48,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <param name="n">Valued Node</param>
         public ConstantTerm(IValuedNode n)
         {
-            this._node = n;
+            _node = n;
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            return this._node;
+            return _node;
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.Formatter.Format(this._node);
+            return SparqlSpecsHelper.Formatter.Format(_node);
         }
 
         /// <summary>

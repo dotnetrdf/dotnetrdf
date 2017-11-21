@@ -53,19 +53,19 @@ namespace VDS.RDF
         public WrapperGraphCollection(BaseGraphCollection graphCollection)
         {
             if (graphCollection == null) throw new ArgumentNullException("graphCollection");
-            this._graphs = graphCollection;
-            this._graphs.GraphAdded += this.HandleGraphAdded;
-            this._graphs.GraphRemoved += this.HandleGraphRemoved;
+            _graphs = graphCollection;
+            _graphs.GraphAdded += HandleGraphAdded;
+            _graphs.GraphRemoved += HandleGraphRemoved;
         }
 
         private void HandleGraphAdded(Object sender, GraphEventArgs args)
         {
-            this.RaiseGraphAdded(args.Graph);
+            RaiseGraphAdded(args.Graph);
         }
 
         private void HandleGraphRemoved(Object sender, GraphEventArgs args)
         {
-            this.RaiseGraphRemoved(args.Graph);
+            RaiseGraphRemoved(args.Graph);
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace VDS.RDF
         /// <returns></returns>
         protected internal override bool Add(IGraph g, bool mergeIfExists)
         {
-            return this._graphs.Add(g, mergeIfExists);
+            return _graphs.Add(g, mergeIfExists);
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override bool Contains(Uri graphUri)
         {
-            return this._graphs.Contains(graphUri);
+            return _graphs.Contains(graphUri);
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._graphs.Count;
+                return _graphs.Count;
             }
         }
 
@@ -105,7 +105,7 @@ namespace VDS.RDF
         /// </summary>
         public override void Dispose()
         {
-            this._graphs.Dispose();
+            _graphs.Dispose();
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerator<IGraph> GetEnumerator()
         {
-            return this._graphs.GetEnumerator();
+            return _graphs.GetEnumerator();
         }
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace VDS.RDF
         {
             get 
             {
-                return this._graphs.GraphUris;
+                return _graphs.GraphUris;
             }
         }
 
@@ -135,7 +135,7 @@ namespace VDS.RDF
         /// <returns></returns>
         protected internal override bool Remove(Uri graphUri)
         {
-            return this._graphs.Remove(graphUri);
+            return _graphs.Remove(graphUri);
         }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._graphs[graphUri];
+                return _graphs[graphUri];
             }
         }
     }

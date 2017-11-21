@@ -49,7 +49,7 @@ namespace VDS.RDF.Writing
             StreamWriter output = new StreamWriter(File.OpenWrite(filename));
 
             // Call the other version of Save to do the actual work
-            this.Save(g, output);
+            Save(g, output);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace VDS.RDF.Writing
             // Write all the Triples to the Graph
             foreach (Triple t in g.Triples)
             {
-                output.WriteLine(this.TripleToDot(t, context));
+                output.WriteLine(TripleToDot(t, context));
             }
 
             // End the Graph
@@ -89,22 +89,22 @@ namespace VDS.RDF.Writing
             // Literals are shown in Boxes, Uri Nodes in ellipses (GraphViz's default shape)
             if (t.Subject.NodeType == NodeType.Literal)
             {
-                output.Append(this.NodeToDot(t.Subject, context));
+                output.Append(NodeToDot(t.Subject, context));
                 output.Append(" [shape=box];\n");
             }
             if (t.Object.NodeType == NodeType.Literal)
             {
-                output.Append(this.NodeToDot(t.Object, context));
+                output.Append(NodeToDot(t.Object, context));
                 output.Append(" [shape=box];\n");
             }
 
             // Output the actual lines that state the relationship between the Nodes
             // We use the Predicate as the Label on the relationship
-            output.Append(this.NodeToDot(t.Subject, context));
+            output.Append(NodeToDot(t.Subject, context));
             output.Append(" -> ");
-            output.Append(this.NodeToDot(t.Object, context));
+            output.Append(NodeToDot(t.Object, context));
             output.Append(" [label=");
-            output.Append(this.NodeToDot(t.Predicate, context));
+            output.Append(NodeToDot(t.Predicate, context));
             output.Append("];");
 
             return output.ToString();
@@ -121,15 +121,15 @@ namespace VDS.RDF.Writing
         {
             if (n.NodeType == NodeType.Uri)
             {
-                return this.UriNodeToDot((IUriNode)n, context);
+                return UriNodeToDot((IUriNode)n, context);
             }
             else if (n.NodeType == NodeType.Literal)
             {
-                return this.LiteralNodeToDot((ILiteralNode)n);
+                return LiteralNodeToDot((ILiteralNode)n);
             }
             else if (n.NodeType == NodeType.Blank)
             {
-                return this.BlankNodeToDot((IBlankNode)n);
+                return BlankNodeToDot((IBlankNode)n);
             }
             else if (n.NodeType == NodeType.GraphLiteral)
             {
@@ -225,7 +225,7 @@ namespace VDS.RDF.Writing
         /// <param name="message">Warning Message</param>
         private void OnWarning(String message)
         {
-            RdfWriterWarning d = this.Warning;
+            RdfWriterWarning d = Warning;
             if (d != null)
             {
                 d(message);

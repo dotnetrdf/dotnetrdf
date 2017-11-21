@@ -25,14 +25,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Globalization;
-using System.Threading;
+using VDS.RDF.Parsing;
 using Xunit;
+#if NET40
+using System.Threading;
+#endif
 
 namespace VDS.RDF.Query.Aggregates
 {
     public class AggregateTests : IDisposable
     {
-        private CultureInfo _previousCulture;
+        private readonly CultureInfo _previousCulture;
 
         public AggregateTests()
         {
@@ -54,13 +57,27 @@ namespace VDS.RDF.Query.Aggregates
 #endif
         }
 
+        private static IGraph ExecuteGraphQuery(IInMemoryQueryableStore store, string query)
+        {
+            return ExecuteQuery(store, query) as IGraph;
+        }
+
+        private static object ExecuteQuery(IInMemoryQueryableStore store, string query)
+        {
+            var qp = new LeviathanQueryProcessor(store);
+            var parser = new SparqlQueryParser();
+            var q = parser.ParseFromString(query);
+            return qp.ProcessQuery(q);
+        }
+
         [Fact]
         public void SparqlAggregatesMaxBug1()
         {
             TripleStore store = new TripleStore();
             store.LoadFromFile(@"resources\LearningStyles.rdf");
 
-            IGraph graph = store.ExecuteQuery(@"prefix sage:
+            
+            IGraph graph = ExecuteGraphQuery(store, @"prefix sage:
 <http://www.semanticsage.home.lc/LearningStyles.owl#>
 prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 prefix : <http://semanticsage.home.lc/files/LearningStyles.rdf#>
@@ -89,7 +106,7 @@ WHERE
         GROUP BY ?MTech ?LessonType
     }
     GROUP BY ?MTech
-}") as IGraph;
+}");
             Assert.NotNull(graph);
 
             INode zero = (0).ToLiteral(graph);
@@ -105,7 +122,7 @@ WHERE
             TripleStore store = new TripleStore();
             store.LoadFromFile("resources\\LearningStyles.rdf");
 
-            IGraph graph = store.ExecuteQuery(@"prefix sage:
+            IGraph graph = ExecuteGraphQuery(store, @"prefix sage:
 <http://www.semanticsage.home.lc/LearningStyles.owl#>
 prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 prefix : <http://semanticsage.home.lc/files/LearningStyles.rdf#>
@@ -134,7 +151,7 @@ WHERE
         GROUP BY ?MTech ?LessonType
     }
     GROUP BY ?MTech
-}") as IGraph;
+}");
             Assert.NotNull(graph);
 
             INode zero = (0).ToLiteral(graph);
@@ -158,7 +175,7 @@ WHERE
                 g.BaseUri = null;
                 store.Add(g);
 
-                var graph = (IGraph)store.ExecuteQuery(@"
+                var graph = ExecuteGraphQuery(store, @"
                     PREFIX sage: <http://www.semanticsage.home.lc/LearningStyles.owl#>
                     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
                     PREFIX : <http://www.semanticsage.home.lc/LearningStyles.rdf#>
@@ -194,7 +211,7 @@ WHERE
                 graph.BaseUri = new Uri("http://semanticsage.home.lc/files/LearningStyles.rdf#maxValues");
                 store.Add(graph, true);
 
-                SparqlResultSet actualResults = store.ExecuteQuery(@"
+                SparqlResultSet actualResults = ExecuteQuery(store, @"
                     PREFIX sage: <http://www.semanticsage.home.lc/LearningStyles.owl#>
                     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
                     PREFIX : <http://www.semanticsage.home.lc/LearningStyles.rdf#>

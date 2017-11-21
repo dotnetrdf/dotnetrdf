@@ -33,7 +33,7 @@ namespace VDS.RDF.Query.Spin.Model
      * 
      * @author Holger Knublauch
      */
-    public interface IUnion : IElementGroup
+    internal interface IUnion : IElementGroup
     {
     }
 }

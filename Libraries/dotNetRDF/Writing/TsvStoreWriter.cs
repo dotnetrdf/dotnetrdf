@@ -51,7 +51,7 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._formatter.GetType();
+                return _formatter.GetType();
             }
         }
 
@@ -107,8 +107,8 @@ namespace VDS.RDF.Writing
 
             // Start making the async calls
             var results = new List<IAsyncResult>();
-            var d = new SaveGraphsDelegate(this.SaveGraphs);
-            for (var i = 0; i < this._threads; i++)
+            var d = new SaveGraphsDelegate(SaveGraphs);
+            for (var i = 0; i < _threads; i++)
             {
                 results.Add(d.BeginInvoke(context, null, null));
             }
@@ -158,7 +158,7 @@ namespace VDS.RDF.Writing
 
                     // Generate the Graph Output and add to Stream
                     BaseWriterContext context = new BaseWriterContext(g, new System.IO.StringWriter());
-                    String graphContent = this.GenerateGraphOutput(globalContext, context);
+                    String graphContent = GenerateGraphOutput(globalContext, context);
                     try
                     {
                         Monitor.Enter(globalContext.Output);
@@ -201,14 +201,14 @@ namespace VDS.RDF.Writing
                 // Named Graphs have a fourth context field added
                 foreach (Triple t in context.Graph.Triples)
                 {
-                    this.GenerateNodeOutput(context, t.Subject, TripleSegment.Subject);
+                    GenerateNodeOutput(context, t.Subject, TripleSegment.Subject);
                     context.Output.Write('\t');
-                    this.GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate);
+                    GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate);
                     context.Output.Write('\t');
-                    this.GenerateNodeOutput(context, t.Object, TripleSegment.Object);
+                    GenerateNodeOutput(context, t.Object, TripleSegment.Object);
                     context.Output.Write('\t');
                     context.Output.Write('<');
-                    context.Output.Write(this._formatter.FormatUri(context.Graph.BaseUri));
+                    context.Output.Write(_formatter.FormatUri(context.Graph.BaseUri));
                     context.Output.Write('>');
                     context.Output.Write('\n');
                 }
@@ -218,11 +218,11 @@ namespace VDS.RDF.Writing
                 // Default Graph has an empty field added
                 foreach (Triple t in context.Graph.Triples)
                 {
-                    this.GenerateNodeOutput(context, t.Subject, TripleSegment.Subject);
+                    GenerateNodeOutput(context, t.Subject, TripleSegment.Subject);
                     context.Output.Write('\t');
-                    this.GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate);
+                    GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate);
                     context.Output.Write('\t');
-                    this.GenerateNodeOutput(context, t.Object, TripleSegment.Object);
+                    GenerateNodeOutput(context, t.Object, TripleSegment.Object);
                     context.Output.Write('\t');
                     context.Output.Write('\n');
                 }
@@ -246,7 +246,7 @@ namespace VDS.RDF.Writing
                 case NodeType.Blank:
                 case NodeType.Literal:
                 case NodeType.Uri:
-                    context.Output.Write(this._formatter.Format(n));
+                    context.Output.Write(_formatter.Format(n));
                     break;
                 default:
                     throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("TSV"));

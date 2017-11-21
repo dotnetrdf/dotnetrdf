@@ -2,6 +2,9 @@
 
 namespace VDS.RDF.Data.DataTables
 {
+    /// <summary>
+    /// Extends <see cref="IGraph"/> with a method to retrieve the graph triples as a <see cref="DataTable"/>
+    /// </summary>
     public static class GraphExtensions
     {
         /// <summary>

@@ -89,7 +89,7 @@ namespace VDS.RDF
                 return false;
             }
 
-            return EqualityHelper.AreUrisEqual(a.Uri, b.Uri);
+            return AreUrisEqual(a.Uri, b.Uri);
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace VDS.RDF
                     // The other Node has a Null DataType but we don't so can't be equal
                     return false;
                 }
-                else if (EqualityHelper.AreUrisEqual(a.DataType, b.DataType))
+                else if (AreUrisEqual(a.DataType, b.DataType))
                 {
                     // We have equal DataTypes so use String Equality to evaluate
                     if (Options.LiteralEqualityMode == LiteralEqualityMode.Strict)
@@ -298,7 +298,7 @@ namespace VDS.RDF
                 return 1;
             }
 
-            return ComparisonHelper.CompareUris(a.Uri, b.Uri);
+            return CompareUris(a.Uri, b.Uri);
         }
 
         /// <summary>
@@ -642,9 +642,9 @@ namespace VDS.RDF
                             case XmlSpecsHelper.XmlSchemaDataTypeHexBinary:
                                 // Extract the numeric value of the Hex encoded Binary and compare
                                 long aHex, bHex;
-                                if (Int64.TryParse(a.Value, System.Globalization.NumberStyles.HexNumber, null, out aHex))
+                                if (Int64.TryParse(a.Value, NumberStyles.HexNumber, null, out aHex))
                                 {
-                                    if (Int64.TryParse(b.Value, System.Globalization.NumberStyles.HexNumber, null, out bHex))
+                                    if (Int64.TryParse(b.Value, NumberStyles.HexNumber, null, out bHex))
                                     {
                                         return aHex.CompareTo(bHex);
                                     }
@@ -655,7 +655,7 @@ namespace VDS.RDF
                                 }
                                 else
                                 {
-                                    if (Int64.TryParse(b.Value, System.Globalization.NumberStyles.HexNumber, null, out bHex))
+                                    if (Int64.TryParse(b.Value, NumberStyles.HexNumber, null, out bHex))
                                     {
                                         return 1;
                                     }
@@ -727,7 +727,7 @@ namespace VDS.RDF
                                     try
                                     {
                                         bUri = UriFactory.Create(b.Value);
-                                        return ComparisonHelper.CompareUris(aUri, bUri);
+                                        return CompareUris(aUri, bUri);
                                     }
                                     catch
                                     {
@@ -825,7 +825,7 @@ namespace VDS.RDF
                 // No way of ordering by value if the Data Types are different
                 // Order by Data Type Uri
                 // This is required or the Value ordering between types won't occur correctly
-                return ComparisonHelper.CompareUris(a.DataType, b.DataType);
+                return CompareUris(a.DataType, b.DataType);
             }
         }
 

@@ -33,7 +33,7 @@ using VDS.RDF.Query.Spin.SparqlUtil;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-    public class SubQueryImpl : ElementImpl, ISubQuery
+    internal class SubQueryImpl : ElementImpl, ISubQuery
     {
 
         public SubQueryImpl(INode node, SpinProcessor spinModel)

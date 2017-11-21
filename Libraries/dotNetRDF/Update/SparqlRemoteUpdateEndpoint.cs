@@ -50,7 +50,7 @@ namespace VDS.RDF.Update
         public SparqlRemoteUpdateEndpoint(Uri endpointUri)
             : base(endpointUri) 
         {
-            this.HttpMode = "POST";
+            HttpMode = "POST";
         }
 
         /// <summary>
@@ -95,12 +95,12 @@ namespace VDS.RDF.Update
             {
                 // Build the Request URI and POST Data
                 StringBuilder requestUri = new StringBuilder();
-                requestUri.Append(this.Uri.AbsoluteUri);
+                requestUri.Append(Uri.AbsoluteUri);
                 StringBuilder postData = new StringBuilder();
                 bool longUpdate = false;
-                if (!this.HttpMode.Equals("POST") && sparqlUpdate.Length <= LongUpdateLength)
+                if (!HttpMode.Equals("POST") && sparqlUpdate.Length <= LongUpdateLength)
                 {
-                    if (!this.Uri.Query.Equals(String.Empty))
+                    if (!Uri.Query.Equals(String.Empty))
                     {
                         requestUri.Append("&update=");
                     }
@@ -119,7 +119,7 @@ namespace VDS.RDF.Update
 
                 // Make the request
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri.ToString());
-                this.ApplyRequestOptions(request);
+                ApplyRequestOptions(request);
                 Tools.HttpDebugRequest(request);
                 if (longUpdate)
                 {
@@ -133,7 +133,7 @@ namespace VDS.RDF.Update
                 }
                 else
                 {
-                    request.Method = this.HttpMode;
+                    request.Method = HttpMode;
                 }
                 request.Accept = MimeTypesHelper.Any;
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
@@ -160,11 +160,11 @@ namespace VDS.RDF.Update
         /// <param name="state">State to pass to the callback</param>
         public void Update(String sparqlUpdate, UpdateCallback callback, Object state)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Uri);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Uri);
             request.Method = "POST";
             request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
             request.Accept = MimeTypesHelper.Any;
-            this.ApplyRequestOptions(request);
+            ApplyRequestOptions(request);
             Tools.HttpDebugRequest(request);
 
             try
@@ -234,7 +234,7 @@ namespace VDS.RDF.Update
         /// Serializes configuration for the endpoint
         /// </summary>
         /// <param name="context">Serialization Context</param>
-        public override void SerializeConfiguration(Configuration.ConfigurationSerializationContext context)
+        public override void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode endpoint = context.NextSubject;
             INode endpointClass = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassSparqlUpdateEndpoint));
@@ -243,8 +243,8 @@ namespace VDS.RDF.Update
             INode endpointUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri));
 
             context.Graph.Assert(new Triple(endpoint, rdfType, endpointClass));
-            context.Graph.Assert(new Triple(endpoint, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
-            context.Graph.Assert(new Triple(endpoint, endpointUri, context.Graph.CreateUriNode(this.Uri)));
+            context.Graph.Assert(new Triple(endpoint, dnrType, context.Graph.CreateLiteralNode(GetType().FullName)));
+            context.Graph.Assert(new Triple(endpoint, endpointUri, context.Graph.CreateUriNode(Uri)));
 
             context.NextSubject = endpoint;
             base.SerializeConfiguration(context);

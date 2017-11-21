@@ -48,13 +48,13 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// <param name="obj">JSON Object representing the Service</param>
         protected PelletService(String name, JObject obj)
         {
-            this._name = name;
+            _name = name;
             JToken mimeTypes = obj.SelectToken("response-mimetype");
             foreach (JToken mimeType in mimeTypes.Children())
             {
-                this._mimeTypes.Add((String)mimeType);
+                _mimeTypes.Add((String)mimeType);
             }
-            this._endpoint = new ServiceEndpoint((JObject)obj.SelectToken("endpoint"));
+            _endpoint = new ServiceEndpoint((JObject)obj.SelectToken("endpoint"));
         }
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         {
             get
             {
-                return this._name;
+                return _name;
             }
         }
 
@@ -160,7 +160,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         {
             get
             {
-                return this._endpoint;
+                return _endpoint;
             }
         }
 
@@ -171,7 +171,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         {
             get
             {
-                return this._mimeTypes;
+                return _mimeTypes;
             }
         }
 

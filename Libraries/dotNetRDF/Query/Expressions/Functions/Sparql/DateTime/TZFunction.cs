@@ -51,7 +51,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            IValuedNode temp = this._expr.Evaluate(context, bindingID);
+            IValuedNode temp = _expr.Evaluate(context, bindingID);
             if (temp != null)
             {
                 DateTimeOffset dt = temp.AsDateTimeOffset();
@@ -108,7 +108,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordTz + "(" + this._expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordTz + "(" + _expr.ToString() + ")";
         }
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new TZFunction(transformer.Transform(this._expr));
+            return new TZFunction(transformer.Transform(_expr));
         }
     }
 }

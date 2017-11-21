@@ -62,7 +62,7 @@ namespace VDS.RDF.Writing
         /// <remarks>See Remarks for this classes <see cref="Notation3Writer.CompressionLevel">CompressionLevel</see> property to see what effect different compression levels have</remarks>
         public Notation3Writer(int compressionLevel)
         {
-            this._compressionLevel = compressionLevel;
+            _compressionLevel = compressionLevel;
         }
 
         /// <summary>
@@ -72,11 +72,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._prettyprint;
+                return _prettyprint;
             }
             set
             {
-                this._prettyprint = value;
+                _prettyprint = value;
             }
         }
 
@@ -87,11 +87,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._allowHiSpeed;
+                return _allowHiSpeed;
             }
             set
             {
-                this._allowHiSpeed = value;
+                _allowHiSpeed = value;
             }
         }
 
@@ -112,11 +112,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._compressionLevel;
+                return _compressionLevel;
             }
             set
             {
-                this._compressionLevel = value;
+                _compressionLevel = value;
             }
         }
 
@@ -127,11 +127,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._defaultNamespaces;
+                return _defaultNamespaces;
             }
             set
             {
-                this._defaultNamespaces = value;
+                _defaultNamespaces = value;
             }
         }
 
@@ -155,7 +155,7 @@ namespace VDS.RDF.Writing
         {
             using (var stream = File.Open(filename, FileMode.Create))
             {
-                this.Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
+                Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
             }
         }
 
@@ -166,10 +166,10 @@ namespace VDS.RDF.Writing
         /// <param name="output">Stream to save to</param>
         protected override void SaveInternal(IGraph g, TextWriter output)
         {
-            g.NamespaceMap.Import(this._defaultNamespaces);
-            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, output, this._compressionLevel, this._prettyprint, this._allowHiSpeed);
+            g.NamespaceMap.Import(_defaultNamespaces);
+            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, output, _compressionLevel, _prettyprint, _allowHiSpeed);
             context.NodeFormatter = new Notation3Formatter(g);
-            this.GenerateOutput(context);
+            GenerateOutput(context);
         }
 
         /// <summary>
@@ -210,7 +210,7 @@ namespace VDS.RDF.Writing
 
             if (context.CompressionLevel == WriterCompressionLevel.None || (hiSpeed && context.HighSpeedModePermitted))
             {
-                this.RaiseWarning("High Speed Write Mode in use - minimal syntax compression will be used");
+                RaiseWarning("High Speed Write Mode in use - minimal syntax compression will be used");
                 context.CompressionLevel = WriterCompressionLevel.Minimal;
                 context.NodeFormatter = new UncompressedNotation3Formatter();
 
@@ -219,9 +219,9 @@ namespace VDS.RDF.Writing
                     if (!contextWritten && t.Context != null && t.Context is VariableContext)
                     {
                         VariableContext varContext = (VariableContext)t.Context;
-                        contextWritten = this.GenerateVariableQuantificationOutput(context, varContext);
+                        contextWritten = GenerateVariableQuantificationOutput(context, varContext);
                     }
-                    context.Output.WriteLine(this.GenerateTripleOutput(context, t));
+                    context.Output.WriteLine(GenerateTripleOutput(context, t));
                 }
             }
             else
@@ -254,11 +254,11 @@ namespace VDS.RDF.Writing
                         if (!contextWritten && t.Context != null && t.Context is VariableContext)
                         {
                             VariableContext varContext = (VariableContext)t.Context;
-                            contextWritten = this.GenerateVariableQuantificationOutput(context, varContext);
+                            contextWritten = GenerateVariableQuantificationOutput(context, varContext);
                         }
 
                         // Start a new set of Triples
-                        temp = this.GenerateNodeOutput(context, t.Subject, TripleSegment.Subject, 0);
+                        temp = GenerateNodeOutput(context, t.Subject, TripleSegment.Subject, 0);
                         context.Output.Write(temp);
                         context.Output.Write(" ");
                         if (temp.Contains('\n'))
@@ -272,7 +272,7 @@ namespace VDS.RDF.Writing
                         lastSubj = t.Subject;
 
                         // Write the first Predicate
-                        temp = this.GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate, subjIndent);
+                        temp = GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate, subjIndent);
                         context.Output.Write(temp);
                         context.Output.Write(" ");
                         predIndent = temp.Length + 1;
@@ -286,7 +286,7 @@ namespace VDS.RDF.Writing
                         if (context.PrettyPrint) context.Output.Write(new String(' ', subjIndent));
 
                         // Write the next Predicate
-                        temp = this.GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate, subjIndent);
+                        temp = GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate, subjIndent);
                         context.Output.Write(temp);
                         context.Output.Write(" ");
                         predIndent = temp.Length + 1;
@@ -301,7 +301,7 @@ namespace VDS.RDF.Writing
                     }
 
                     // Write the Object
-                    context.Output.Write(this.GenerateNodeOutput(context, t.Object, TripleSegment.Object, subjIndent + predIndent));
+                    context.Output.Write(GenerateNodeOutput(context, t.Object, TripleSegment.Object, subjIndent + predIndent));
                 }
 
                 // Terminate Triples
@@ -322,11 +322,11 @@ namespace VDS.RDF.Writing
         private String GenerateTripleOutput(CompressingTurtleWriterContext context, Triple t)
         {
             StringBuilder temp = new StringBuilder();
-            temp.Append(this.GenerateNodeOutput(context, t.Subject, TripleSegment.Subject, 0));
+            temp.Append(GenerateNodeOutput(context, t.Subject, TripleSegment.Subject, 0));
             temp.Append(' ');
-            temp.Append(this.GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate, 0));
+            temp.Append(GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate, 0));
             temp.Append(' ');
-            temp.Append(this.GenerateNodeOutput(context, t.Object, TripleSegment.Object, 0));
+            temp.Append(GenerateNodeOutput(context, t.Object, TripleSegment.Object, 0));
             temp.Append('.');
 
             return temp.ToString();
@@ -349,7 +349,7 @@ namespace VDS.RDF.Writing
                 case NodeType.Blank:
                     if (context.Collections.ContainsKey(n))
                     {
-                        output.Append(this.GenerateCollectionOutput(context, context.Collections[n], indent));
+                        output.Append(GenerateCollectionOutput(context, context.Collections[n], indent));
                     }
                     else
                     {
@@ -373,15 +373,15 @@ namespace VDS.RDF.Writing
                     {
                         if (!contextWritten && t.Context != null && t.Context is VariableContext)
                         {
-                            contextWritten = this.GenerateVariableQuantificationOutput(subcontext, (VariableContext)t.Context);
+                            contextWritten = GenerateVariableQuantificationOutput(subcontext, (VariableContext)t.Context);
                             if (contextWritten) output.Append(temp.ToString());
                         }
 
-                        output.Append(this.GenerateNodeOutput(subcontext, t.Subject, TripleSegment.Subject, 0));
+                        output.Append(GenerateNodeOutput(subcontext, t.Subject, TripleSegment.Subject, 0));
                         output.Append(" ");
-                        output.Append(this.GenerateNodeOutput(subcontext, t.Predicate, TripleSegment.Predicate, 0));
+                        output.Append(GenerateNodeOutput(subcontext, t.Predicate, TripleSegment.Predicate, 0));
                         output.Append(" ");
-                        output.Append(this.GenerateNodeOutput(subcontext, t.Object, TripleSegment.Object, 0));
+                        output.Append(GenerateNodeOutput(subcontext, t.Object, TripleSegment.Object, 0));
                         output.Append(". ");
                     }
 
@@ -425,7 +425,7 @@ namespace VDS.RDF.Writing
                 {
                     if (context.PrettyPrint && !first) output.Append(new String(' ', indent));
                     first = false;
-                    output.Append(this.GenerateNodeOutput(context, c.Triples.First().Object, TripleSegment.Object, indent));
+                    output.Append(GenerateNodeOutput(context, c.Triples.First().Object, TripleSegment.Object, indent));
                     c.Triples.RemoveAt(0);
                     if (c.Triples.Count > 0)
                     {
@@ -451,7 +451,7 @@ namespace VDS.RDF.Writing
                     {
                         if (context.PrettyPrint && !first) output.Append(new String(' ', indent));
                         first = false;
-                        String temp = this.GenerateNodeOutput(context, c.Triples.First().Predicate, TripleSegment.Predicate, indent);
+                        String temp = GenerateNodeOutput(context, c.Triples.First().Predicate, TripleSegment.Predicate, indent);
                         output.Append(temp);
                         output.Append(' ');
                         int addIndent;
@@ -463,7 +463,7 @@ namespace VDS.RDF.Writing
                         {
                             addIndent = temp.Length;
                         }
-                        output.Append(this.GenerateNodeOutput(context, c.Triples.First().Object, TripleSegment.Object, indent + 2 + addIndent));
+                        output.Append(GenerateNodeOutput(context, c.Triples.First().Object, TripleSegment.Object, indent + 2 + addIndent));
                         c.Triples.RemoveAt(0);
 
                         if (c.Triples.Count > 0)
@@ -502,7 +502,7 @@ namespace VDS.RDF.Writing
 
             if (varContext.InnerContext != null)
             {
-                this.GenerateVariableQuantificationOutput(context, varContext.InnerContext);
+                GenerateVariableQuantificationOutput(context, varContext.InnerContext);
             }
             return true;
         }
@@ -513,7 +513,7 @@ namespace VDS.RDF.Writing
         /// <param name="message">Warning Message</param>
         private void RaiseWarning(String message)
         {
-            RdfWriterWarning d = this.Warning;
+            RdfWriterWarning d = Warning;
             if (d != null)
             {
                 d(message);

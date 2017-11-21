@@ -56,7 +56,7 @@ namespace VDS.RDF.Query
         {
             foreach (KeyValuePair<String, INode> assignment in parent.Assignments)
             {
-                this._assignments.Add(assignment.Key, assignment.Value);
+                _assignments.Add(assignment.Key, assignment.Value);
             }
         }
 
@@ -66,7 +66,7 @@ namespace VDS.RDF.Query
         /// <param name="ids">IDs</param>
         public BindingGroup(IEnumerable<int> ids)
         {
-            this._bindingIDs.AddRange(ids);
+            _bindingIDs.AddRange(ids);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query
         /// <param name="id">ID</param>
         public void Add(int id)
         {
-            this._bindingIDs.Add(id);
+            _bindingIDs.Add(id);
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public IEnumerator<int> GetEnumerator()
         {
-            return this._bindingIDs.GetEnumerator();
+            return _bindingIDs.GetEnumerator();
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return this._bindingIDs.GetEnumerator();
+            return _bindingIDs.GetEnumerator();
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return (from id in this._bindingIDs
+                return (from id in _bindingIDs
                         select id);
             }
         }
@@ -115,13 +115,13 @@ namespace VDS.RDF.Query
         /// <param name="value">Value</param>
         public void AddAssignment(String variable, INode value)
         {
-            if (this._assignments.ContainsKey(variable))
+            if (_assignments.ContainsKey(variable))
             {
                 throw new RdfQueryException("Cannot assign the value of a GROUP BY expression to a Variable assigned to by an earlier GROUP BY");
             }
             else
             {
-                this._assignments.Add(variable, value);
+                _assignments.Add(variable, value);
             }
         }
 
@@ -132,7 +132,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return (from kvp in this._assignments
+                return (from kvp in _assignments
                         select kvp);
             }
         }
@@ -144,14 +144,14 @@ namespace VDS.RDF.Query
         public override string ToString()
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append(this._bindingIDs.Count);
+            builder.Append(_bindingIDs.Count);
             builder.Append(" Member(s)");
-            if (this._assignments.Count > 0)
+            if (_assignments.Count > 0)
             {
                 builder.Append(" {");
-                foreach (String var in this._assignments.Keys)
+                foreach (String var in _assignments.Keys)
                 {
-                    builder.Append("?" + var + " = " + this._assignments[var].ToSafeString());
+                    builder.Append("?" + var + " = " + _assignments[var].ToSafeString());
                 }
                 builder.Append('}');
             }

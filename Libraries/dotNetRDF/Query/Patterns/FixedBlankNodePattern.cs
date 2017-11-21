@@ -44,11 +44,11 @@ namespace VDS.RDF.Query.Patterns
         {
             if (id.StartsWith("_:"))
             {
-                this._id = id.Substring(2);
+                _id = id.Substring(2);
             }
             else
             {
-                this._id = id;
+                _id = id;
             }
         }
 
@@ -59,7 +59,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._id;
+                return _id;
             }
         }
 
@@ -73,7 +73,7 @@ namespace VDS.RDF.Query.Patterns
         {
             if (obj.NodeType == NodeType.Blank)
             {
-                return ((IBlankNode)obj).InternalID.Equals(this._id);
+                return ((IBlankNode)obj).InternalID.Equals(_id);
             }
             else
             {
@@ -89,19 +89,19 @@ namespace VDS.RDF.Query.Patterns
         {
             if (context.Graph != null)
             {
-                IBlankNode b = context.Graph.GetBlankNode(this._id);
+                IBlankNode b = context.Graph.GetBlankNode(_id);
                 if (b != null)
                 {
                     return b;
                 }
                 else
                 {
-                    return context.Graph.CreateBlankNode(this._id);
+                    return context.Graph.CreateBlankNode(_id);
                 }
             }
             else
             {
-                return new BlankNode(context.Graph, this._id);
+                return new BlankNode(context.Graph, _id);
             }
         }
 
@@ -111,7 +111,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public override string ToString()
         {
-            return "<_:" + this._id + ">";
+            return "<_:" + _id + ">";
         }
     }
 }

@@ -49,10 +49,10 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="expr">Expression which generates a value which will be assigned to the variable</param>
         public LetPattern(String var, ISparqlExpression expr)
         {
-            this._var = var;
-            this._expr = expr;
-            this._vars = this._var.AsEnumerable().Concat(this._expr.Variables).Distinct().ToList();
-            this._vars.Sort();
+            _var = var;
+            _expr = expr;
+            _vars = _var.AsEnumerable().Concat(_expr.Variables).Distinct().ToList();
+            _vars.Sort();
         }
 
         /// <summary>
@@ -70,8 +70,8 @@ namespace VDS.RDF.Query.Patterns
                 Set s = new Set();
                 try
                 {
-                    INode temp = this._expr.Evaluate(context, 0);
-                    s.Add(this._var, temp);
+                    INode temp = _expr.Evaluate(context, 0);
+                    s.Add(_var, temp);
                     context.OutputMultiset.Add(s);
                 }
                 catch
@@ -84,13 +84,13 @@ namespace VDS.RDF.Query.Patterns
                 foreach (int id in context.InputMultiset.SetIDs.ToList())
                 {
                     ISet s = context.InputMultiset[id];
-                    if (s.ContainsVariable(this._var))
+                    if (s.ContainsVariable(_var))
                     {
                         try
                         {
                             // A value already exists so see if the two values match
-                            INode current = s[this._var];
-                            INode temp = this._expr.Evaluate(context, id);
+                            INode current = s[_var];
+                            INode temp = _expr.Evaluate(context, id);
                             if (current != temp)
                             {
                                 // Where the values aren't equal the solution is eliminated
@@ -105,12 +105,12 @@ namespace VDS.RDF.Query.Patterns
                     }
                     else
                     {
-                        context.InputMultiset.AddVariable(this._var);
+                        context.InputMultiset.AddVariable(_var);
                         try
                         {
                             // Make a new assignment
-                            INode temp = this._expr.Evaluate(context, id);
-                            s.Add(this._var, temp);
+                            INode temp = _expr.Evaluate(context, id);
+                            s.Add(_var, temp);
                         }
                         catch
                         {
@@ -151,7 +151,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._expr;
+                return _expr;
             }
         }
 
@@ -162,7 +162,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._var;
+                return _var;
             }
         }
 
@@ -179,7 +179,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public override IEnumerable<string> FloatingVariables
         {
-            get { return this._var.AsEnumerable(); }
+            get { return _var.AsEnumerable(); }
         }
 
         /// <summary>
@@ -189,7 +189,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._expr.UsesDefaultDataset();
+                return _expr.UsesDefaultDataset();
             }
         }
 
@@ -213,9 +213,9 @@ namespace VDS.RDF.Query.Patterns
             StringBuilder output = new StringBuilder();
             output.Append("LET(");
             output.Append("?");
-            output.Append(this._var);
+            output.Append(_var);
             output.Append(" := ");
-            output.Append(this._expr.ToString());
+            output.Append(_expr.ToString());
             output.Append(")");
 
             return output.ToString();

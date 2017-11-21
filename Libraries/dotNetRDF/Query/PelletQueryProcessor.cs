@@ -51,9 +51,9 @@ namespace VDS.RDF.Query
                 KnowledgeBase kb = server.GetKnowledgeBase(kbName);
 
                 // Check SPARQL Query is supported
-                if (kb.SupportsService(this._svcType))
+                if (kb.SupportsService(_svcType))
                 {
-                    this._svc = (QueryService)kb.GetService(this._svcType);
+                    _svc = (QueryService)kb.GetService(_svcType);
                 }
                 else
                 {
@@ -74,7 +74,8 @@ namespace VDS.RDF.Query
         public PelletQueryProcessor(Uri serverUri, String kbName)
             : this(new PelletServer(serverUri), kbName) { }
 
-        /// Processes a SPARQL Query
+        ///<summary>
+        ///  Processes a SPARQL Query
         /// </summary>
         /// <param name="query">SPARQL Query</param>
         /// <returns></returns>
@@ -84,7 +85,7 @@ namespace VDS.RDF.Query
             DateTime start = DateTime.Now;
             try
             {
-                Object temp = this._svc.Query(query.ToString());
+                Object temp = _svc.Query(query.ToString());
                 return temp;
             }
             finally
@@ -106,7 +107,7 @@ namespace VDS.RDF.Query
             DateTime start = DateTime.Now;
             try
             {
-                this._svc.Query(rdfHandler, resultsHandler, query.ToString());
+                _svc.Query(rdfHandler, resultsHandler, query.ToString());
             }
             finally
             {
@@ -128,7 +129,7 @@ namespace VDS.RDF.Query
             DateTime start = DateTime.Now;
             try
             {
-                this._svc.Query(query.ToString(), rdfCallback, resultsCallback, state);
+                _svc.Query(query.ToString(), rdfCallback, resultsCallback, state);
             }
             finally
             {
@@ -151,7 +152,7 @@ namespace VDS.RDF.Query
             DateTime start = DateTime.Now;
             try
             {
-                this._svc.Query(rdfHandler, resultsHandler, query.ToString(), callback, state);
+                _svc.Query(rdfHandler, resultsHandler, query.ToString(), callback, state);
             }
             finally
             {

@@ -152,12 +152,12 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get
             {
-                return this._tokeniser;
+                return _tokeniser;
             }
             set
             {
-                this._tokeniser = value;
-                this.Clear();
+                _tokeniser = value;
+                Clear();
             }
         }
 
@@ -200,11 +200,11 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get
             {
-                return this._tracing;
+                return _tracing;
             }
             set
             {
-                this._tracing = value;
+                _tracing = value;
             }
         }
 
@@ -215,7 +215,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get
             {
-                return this._lasttokentype;
+                return _lasttokentype;
             }
         }
     }

@@ -55,9 +55,9 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="filter">Filter to use</param>
         public VariableRestrictionFilter(ISparqlAlgebra pattern, String var, ISparqlFilter filter)
         {
-            this._pattern = pattern;
-            this._var = var;
-            this._filter = filter;
+            _pattern = pattern;
+            _var = var;
+            _filter = filter;
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._var;
+                return _var;
             }
         }
 
@@ -85,19 +85,19 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return (this._pattern.Variables.Concat(this._filter.Variables)).Distinct();
+                return (_pattern.Variables.Concat(_filter.Variables)).Distinct();
             }
         }
 
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
         /// </summary>
-        public IEnumerable<String> FloatingVariables { get { return this._pattern.FloatingVariables; } }
+        public IEnumerable<String> FloatingVariables { get { return _pattern.FloatingVariables; } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
         /// </summary>
-        public IEnumerable<String> FixedVariables { get { return this._pattern.FixedVariables; } }
+        public IEnumerable<String> FixedVariables { get { return _pattern.FixedVariables; } }
 
         /// <summary>
         /// Gets the Filter to be used
@@ -106,7 +106,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._filter;
+                return _filter;
             }
         }
 
@@ -117,7 +117,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._pattern;
+                return _pattern;
             }
         }
 
@@ -127,9 +127,9 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            String filter = this._filter.ToString();
+            String filter = _filter.ToString();
             filter = filter.Substring(7, filter.Length - 8);
-            return this.GetType().Name + "(" + this._pattern.ToString() + ", " + filter + ")";
+            return GetType().Name + "(" + _pattern.ToString() + ", " + filter + ")";
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace VDS.RDF.Query.Algebra
         public SparqlQuery ToQuery()
         {
             SparqlQuery q = new SparqlQuery();
-            q.RootGraphPattern = this.ToGraphPattern();
+            q.RootGraphPattern = ToGraphPattern();
             q.Optimise();
             return q;
         }
@@ -150,9 +150,9 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            GraphPattern p = this._pattern.ToGraphPattern();
+            GraphPattern p = _pattern.ToGraphPattern();
             GraphPattern f = new GraphPattern();
-            f.AddFilter(this._filter);
+            f.AddFilter(_filter);
             p.AddGraphPattern(f);
             return p;
         }
@@ -183,7 +183,7 @@ namespace VDS.RDF.Query.Algebra
         public SingleValueRestrictionFilter(ISparqlAlgebra pattern, String var, ConstantTerm term, ISparqlFilter filter)
             : base(pattern, var, filter)
         {
-            this._term = term;
+            _term = term;
         }
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._term;
+                return _term;
             }
         }
 
@@ -204,7 +204,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public sealed override BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            INode term = this._term.Evaluate(null, 0);
+            INode term = _term.Evaluate(null, 0);
 
             // First take appropriate pre-filtering actions
             if (context.InputMultiset is IdentityMultiset)
@@ -213,7 +213,7 @@ namespace VDS.RDF.Query.Algebra
                 // where the variable is bound to the term
                 context.InputMultiset = new Multiset();
                 Set s = new Set();
-                s.Add(this.RestrictionVariable, term);
+                s.Add(RestrictionVariable, term);
                 context.InputMultiset.Add(s);
             }
             else if (context.InputMultiset is NullMultiset)
@@ -224,7 +224,7 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                if (context.InputMultiset.ContainsVariable(this.RestrictionVariable))
+                if (context.InputMultiset.ContainsVariable(RestrictionVariable))
                 {
                     // If the Input Multiset contains the variable then pre-filter
                     foreach (int id in context.InputMultiset.SetIDs.ToList())
@@ -232,15 +232,15 @@ namespace VDS.RDF.Query.Algebra
                         ISet x = context.InputMultiset[id];
                         try
                         {
-                            if (x.ContainsVariable(this.RestrictionVariable))
+                            if (x.ContainsVariable(RestrictionVariable))
                             {
                                 // If does exist check it has appropriate value and if not remove it
-                                if (!term.Equals(x[this.RestrictionVariable])) context.InputMultiset.Remove(id);
+                                if (!term.Equals(x[RestrictionVariable])) context.InputMultiset.Remove(id);
                             }
                             else
                             {
                                 // If doesn't exist for this set then bind it to the term
-                                x.Add(this.RestrictionVariable, term);
+                                x.Add(RestrictionVariable, term);
                             }
                         }
                         catch (RdfQueryException)
@@ -254,13 +254,13 @@ namespace VDS.RDF.Query.Algebra
                     // If it doesn't contain the variable then bind for each existing set
                     foreach (ISet x in context.InputMultiset.Sets)
                     {
-                        x.Add(this.RestrictionVariable, term);
+                        x.Add(RestrictionVariable, term);
                     }
                 }
             }
 
             // Then evaluate the inner algebra
-            BaseMultiset results = context.Evaluate(this.InnerAlgebra);
+            BaseMultiset results = context.Evaluate(InnerAlgebra);
             if (results is NullMultiset || results is IdentityMultiset) return results;
 
             // Filter the results to ensure that the variable is indeed bound to the term
@@ -269,7 +269,7 @@ namespace VDS.RDF.Query.Algebra
                 ISet x = results[id];
                 try
                 {
-                    if (!term.Equals(x[this.RestrictionVariable]))
+                    if (!term.Equals(x[RestrictionVariable]))
                     {
                         results.Remove(id);
                     }
@@ -316,11 +316,11 @@ namespace VDS.RDF.Query.Algebra
         {
             if (optimiser is IExpressionTransformer)
             {
-                return new IdentityFilter(optimiser.Optimise(this.InnerAlgebra), this.RestrictionVariable, (ConstantTerm)((IExpressionTransformer)optimiser).Transform(this.RestrictionValue));
+                return new IdentityFilter(optimiser.Optimise(InnerAlgebra), RestrictionVariable, (ConstantTerm)((IExpressionTransformer)optimiser).Transform(RestrictionValue));
             }
             else
             {
-                return new IdentityFilter(optimiser.Optimise(this.InnerAlgebra), this.RestrictionVariable, this.RestrictionValue);
+                return new IdentityFilter(optimiser.Optimise(InnerAlgebra), RestrictionVariable, RestrictionValue);
             }
         }
     }
@@ -349,11 +349,11 @@ namespace VDS.RDF.Query.Algebra
         {
             if (optimiser is IExpressionTransformer)
             {
-                return new SameTermFilter(optimiser.Optimise(this.InnerAlgebra), this.RestrictionVariable, (ConstantTerm)((IExpressionTransformer)optimiser).Transform(this.RestrictionValue));
+                return new SameTermFilter(optimiser.Optimise(InnerAlgebra), RestrictionVariable, (ConstantTerm)((IExpressionTransformer)optimiser).Transform(RestrictionValue));
             }
             else
             {
-                return new SameTermFilter(optimiser.Optimise(this.InnerAlgebra), this.RestrictionVariable, this.RestrictionValue);
+                return new SameTermFilter(optimiser.Optimise(InnerAlgebra), RestrictionVariable, RestrictionValue);
             }
         }
     }

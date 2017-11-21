@@ -31,7 +31,7 @@ namespace VDS.RDF.Query.Spin.Model
      * 
      * @author Holger Knublauch
      */
-    public interface IBind : IElement
+    internal interface IBind : IElement
     {
 
         /**

@@ -63,7 +63,7 @@ namespace VDS.RDF.Parsing
             if (u.IsFile)
             {
                 // Invoke FileLoader instead
-                UriLoader.RaiseWarning("This is a file: URI so invoking the FileLoader instead");
+                RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                 if (Path.DirectorySeparatorChar == '/')
                 {
                     FileLoader.Load(g, u.AbsoluteUri.Substring(7), parser);
@@ -89,7 +89,7 @@ namespace VDS.RDF.Parsing
             // Set Base URI if necessary
             if (g.BaseUri == null && g.IsEmpty) g.BaseUri = u;
 
-            UriLoader.Load(new GraphHandler(g), u, parser, (_, s) => callback(g, s), state);
+            Load(new GraphHandler(g), u, parser, (_, s) => callback(g, s), state);
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static void Load(IGraph g, Uri u, GraphCallback callback, Object state)
         {
-            UriLoader.Load(g, u, null, callback, state);
+            Load(g, u, null, callback, state);
         }
 
         /// <summary>
@@ -276,7 +276,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static void Load(IRdfHandler handler, Uri u, RdfHandlerCallback callback, Object state)
         {
-            UriLoader.Load(handler, u, (IRdfReader)null, callback, state);
+            Load(handler, u, (IRdfReader)null, callback, state);
         }
 
         /// <summary>
@@ -302,7 +302,7 @@ namespace VDS.RDF.Parsing
         {
             if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Triple Store");
             if (u == null) throw new RdfParseException("Cannot read a RDF dataset from a null URI");
-            UriLoader.Load(new StoreHandler(store), u, parser, (_, s) => callback(store, s), state);
+            Load(new StoreHandler(store), u, parser, (_, s) => callback(store, s), state);
         }
 
         /// <summary>
@@ -322,7 +322,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static void Load(ITripleStore store, Uri u, TripleStoreCallback callback, Object state)
         {
-            UriLoader.Load(store, u, null, callback, state);
+            Load(store, u, null, callback, state);
         }
 
         /// <summary>
@@ -504,7 +504,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static void LoadDataset(IRdfHandler handler, Uri u, RdfHandlerCallback callback, Object state)
         {
-            UriLoader.Load(handler, u, (IStoreReader)null, callback, state);
+            Load(handler, u, (IStoreReader)null, callback, state);
         }
     }
 }

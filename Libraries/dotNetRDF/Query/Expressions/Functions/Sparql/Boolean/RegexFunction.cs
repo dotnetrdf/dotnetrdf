@@ -63,8 +63,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <param name="options">Regular Expression Options</param>
         public RegexFunction(ISparqlExpression text, ISparqlExpression pattern, ISparqlExpression options)
         {
-            this._textExpr = text;
-            this._patternExpr = pattern;
+            _textExpr = text;
+            _patternExpr = pattern;
 
             // Get the Pattern
             if (pattern is ConstantTerm)
@@ -80,9 +80,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                         Regex temp = new Regex(p);
 
                         // It's a Valid Pattern
-                        this._fixedPattern = true;
+                        _fixedPattern = true;
                         // this._useInStr = p.ToCharArray().All(c => Char.IsLetterOrDigit(c) || Char.IsWhiteSpace(c));
-                        this._pattern = p;
+                        _pattern = p;
                     }
                     catch
                     {
@@ -94,17 +94,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             // Get the Options
             if (options != null)
             {
-                this._optionExpr = options;
+                _optionExpr = options;
                 if (options is ConstantTerm)
                 {
-                    this.ConfigureOptions(options.Evaluate(null, 0), false);
-                    this._fixedOptions = true;
-                    if (this._fixedPattern) this._regex = new Regex(this._pattern, this._options);
+                    ConfigureOptions(options.Evaluate(null, 0), false);
+                    _fixedOptions = true;
+                    if (_fixedPattern) _regex = new Regex(_pattern, _options);
                 }
             }
             else
             {
-                if (this._fixedPattern) this._regex = new Regex(this._pattern);
+                if (_fixedPattern) _regex = new Regex(_pattern);
             }
         }
 
@@ -116,7 +116,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         private void ConfigureOptions(INode n, bool throwErrors)
         {
             // Start by resetting to no options
-            this._options = RegexOptions.None;
+            _options = RegexOptions.None;
 
             if (n == null)
             {
@@ -135,16 +135,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                         switch (c)
                         {
                             case 'i':
-                                this._options |= RegexOptions.IgnoreCase;
+                                _options |= RegexOptions.IgnoreCase;
                                 break;
                             case 'm':
-                                this._options |= RegexOptions.Multiline;
+                                _options |= RegexOptions.Multiline;
                                 break;
                             case 's':
-                                this._options |= RegexOptions.Singleline;
+                                _options |= RegexOptions.Singleline;
                                 break;
                             case 'x':
-                                this._options |= RegexOptions.IgnorePatternWhitespace;
+                                _options |= RegexOptions.IgnorePatternWhitespace;
                                 break;
                             default:
                                 if (throwErrors)
@@ -174,23 +174,23 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
             // Configure Options
-            if (this._optionExpr != null && !this._fixedOptions)
+            if (_optionExpr != null && !_fixedOptions)
             {
-                this.ConfigureOptions(this._optionExpr.Evaluate(context, bindingID), true);
+                ConfigureOptions(_optionExpr.Evaluate(context, bindingID), true);
             }
 
             // Compile the Regex if necessary
-            if (!this._fixedPattern)
+            if (!_fixedPattern)
             {
                 // Regex is not pre-compiled
-                if (this._patternExpr != null)
+                if (_patternExpr != null)
                 {
-                    IValuedNode p = this._patternExpr.Evaluate(context, bindingID);
+                    IValuedNode p = _patternExpr.Evaluate(context, bindingID);
                     if (p != null)
                     {
                         if (p.NodeType == NodeType.Literal)
                         {
-                            this._pattern = p.AsString();
+                            _pattern = p.AsString();
                         }
                         else
                         {
@@ -209,7 +209,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             }
 
             // Execute the Regular Expression
-            IValuedNode textNode = this._textExpr.Evaluate(context, bindingID);
+            IValuedNode textNode = _textExpr.Evaluate(context, bindingID);
             if (textNode == null)
             {
                 throw new RdfQueryException("Cannot evaluate a Regular Expression against a NULL");
@@ -218,13 +218,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             {
                 // Execute
                 string text = textNode.AsString();
-                if (this._regex != null)
+                if (_regex != null)
                 {
-                    return new BooleanNode(null, this._regex.IsMatch(text));
+                    return new BooleanNode(null, _regex.IsMatch(text));
                 }
                 else
                 {
-                    return new BooleanNode(null, Regex.IsMatch(text, this._pattern, this._options));
+                    return new BooleanNode(null, Regex.IsMatch(text, _pattern, _options));
                 }
             }
             else
@@ -242,21 +242,21 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         {
             StringBuilder output = new StringBuilder();
             output.Append("REGEX(");
-            output.Append(this._textExpr.ToString());
+            output.Append(_textExpr.ToString());
             output.Append(",");
-            if (this._fixedPattern)
+            if (_fixedPattern)
             {
                 output.Append('"');
-                output.Append(this._pattern);
+                output.Append(_pattern);
                 output.Append('"');
             }
             else
             {
-                output.Append(this._patternExpr.ToString());
+                output.Append(_patternExpr.ToString());
             }
-            if (this._optionExpr != null)
+            if (_optionExpr != null)
             {
-                output.Append("," + this._optionExpr.ToString());
+                output.Append("," + _optionExpr.ToString());
             }
             output.Append(")");
 
@@ -271,9 +271,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             get
             {
                 List<string> vs = new List<string>();
-                if (this._textExpr != null) vs.AddRange(this._textExpr.Variables);
-                if (this._patternExpr != null) vs.AddRange(this._patternExpr.Variables);
-                if (this._optionExpr != null) vs.AddRange(this._optionExpr.Variables);
+                if (_textExpr != null) vs.AddRange(_textExpr.Variables);
+                if (_patternExpr != null) vs.AddRange(_patternExpr.Variables);
+                if (_optionExpr != null) vs.AddRange(_optionExpr.Variables);
                 return vs;
             }
         }
@@ -307,13 +307,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         {
             get
             {
-                if (this._optionExpr != null)
+                if (_optionExpr != null)
                 {
-                    return new ISparqlExpression[] { this._textExpr, this._patternExpr, this._optionExpr };
+                    return new ISparqlExpression[] { _textExpr, _patternExpr, _optionExpr };
                 }
                 else
                 {
-                    return new ISparqlExpression[] { this._textExpr, this._patternExpr };
+                    return new ISparqlExpression[] { _textExpr, _patternExpr };
                 }
             }
         }
@@ -325,7 +325,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         {
             get
             {
-                return this._textExpr.CanParallelise && this._patternExpr.CanParallelise && (this._optionExpr == null || this._optionExpr.CanParallelise);
+                return _textExpr.CanParallelise && _patternExpr.CanParallelise && (_optionExpr == null || _optionExpr.CanParallelise);
             }
         }
 
@@ -336,13 +336,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            if (this._optionExpr != null)
+            if (_optionExpr != null)
             {
-                return new RegexFunction(transformer.Transform(this._textExpr), transformer.Transform(this._patternExpr), transformer.Transform(this._optionExpr));
+                return new RegexFunction(transformer.Transform(_textExpr), transformer.Transform(_patternExpr), transformer.Transform(_optionExpr));
             }
             else
             {
-                return new RegexFunction(transformer.Transform(this._textExpr), transformer.Transform(this._patternExpr));
+                return new RegexFunction(transformer.Transform(_textExpr), transformer.Transform(_patternExpr));
             }
         }
     }

@@ -51,7 +51,7 @@ namespace VDS.RDF.Update
         public SparqlUpdateEvaluationContext(SparqlUpdateCommandSet commands, ISparqlDataset data, ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> processor)
             : this(commands, data)
         {
-            this.QueryProcessor = processor;
+            QueryProcessor = processor;
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace VDS.RDF.Update
         public SparqlUpdateEvaluationContext(SparqlUpdateCommandSet commands, ISparqlDataset data)
             : this(data)
         {
-            this._commands = commands;
+            _commands = commands;
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace VDS.RDF.Update
         public SparqlUpdateEvaluationContext(ISparqlDataset data, ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> processor)
             : this(data)
         {
-            this.QueryProcessor = processor;
+            QueryProcessor = processor;
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace VDS.RDF.Update
         /// <param name="data">SPARQL Dataset</param>
         public SparqlUpdateEvaluationContext(ISparqlDataset data)
         {
-            this._data = data;
+            _data = data;
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace VDS.RDF.Update
         {
             get
             {
-                return this._commands;
+                return _commands;
             }
         }
 
@@ -103,7 +103,7 @@ namespace VDS.RDF.Update
         {
             get
             {
-                return this._data;
+                return _data;
             }
         }
 
@@ -123,7 +123,7 @@ namespace VDS.RDF.Update
         {
             get
             {
-               return this._timer.ElapsedMilliseconds;
+               return _timer.ElapsedMilliseconds;
             }
         }
 
@@ -134,37 +134,37 @@ namespace VDS.RDF.Update
         {
             get
             {
-                return this._timer.ElapsedTicks;
+                return _timer.ElapsedTicks;
             }
         }
 
         private void CalculateTimeout()
         {
-            if (this._commands != null)
+            if (_commands != null)
             {
-                if (this._commands.Timeout > 0)
+                if (_commands.Timeout > 0)
                 {
-                    if (Options.UpdateExecutionTimeout == 0 || (this._commands.Timeout <= Options.UpdateExecutionTimeout && Options.UpdateExecutionTimeout > 0))
+                    if (Options.UpdateExecutionTimeout == 0 || (_commands.Timeout <= Options.UpdateExecutionTimeout && Options.UpdateExecutionTimeout > 0))
                     {
                         // Update Timeout is used provided it is less than global timeout unless global timeout is zero
-                        this._timeout = this._commands.Timeout;
+                        _timeout = _commands.Timeout;
                     }
                     else
                     {
                         // Update Timeout cannot be set higher than global timeout
-                        this._timeout = Options.UpdateExecutionTimeout;
+                        _timeout = Options.UpdateExecutionTimeout;
                     }
                 }
                 else
                 {
                     // If Update Timeout set to zero (i.e. no timeout) then global timeout is used
-                    this._timeout = Options.UpdateExecutionTimeout;
+                    _timeout = Options.UpdateExecutionTimeout;
                 }
             }
             else
             {
                 // If no updates then global timeout is used
-                this._timeout = Options.UpdateExecutionTimeout;
+                _timeout = Options.UpdateExecutionTimeout;
             }
         }
 
@@ -178,13 +178,13 @@ namespace VDS.RDF.Update
         {
             get
             {
-                if (this._timeout <= 0)
+                if (_timeout <= 0)
                 {
                     return 0;
                 }
                 else
                 {
-                    long timeout = this._timeout - this.UpdateTime;
+                    long timeout = _timeout - UpdateTime;
                     if (timeout <= 0)
                     {
                         return 1;
@@ -209,7 +209,7 @@ namespace VDS.RDF.Update
         {
             get
             {
-                return this._timeout;
+                return _timeout;
             }
         }
 
@@ -219,12 +219,12 @@ namespace VDS.RDF.Update
         /// <exception cref="SparqlUpdateTimeoutException">Thrown if the Update has exceeded the Execution Timeout</exception>
         public void CheckTimeout()
         {
-            if (this._timeout > 0)
+            if (_timeout > 0)
             {
-                if (this._timer.ElapsedMilliseconds > this._timeout)
+                if (_timer.ElapsedMilliseconds > _timeout)
                 {
-                    this._timer.Stop();
-                    throw new SparqlUpdateTimeoutException("Update Execution Time exceeded the Timeout of " + this._timeout + "ms, updates aborted after " + this._timer.ElapsedMilliseconds + "ms");
+                    _timer.Stop();
+                    throw new SparqlUpdateTimeoutException("Update Execution Time exceeded the Timeout of " + _timeout + "ms, updates aborted after " + _timer.ElapsedMilliseconds + "ms");
                 }
             }
         }
@@ -234,8 +234,8 @@ namespace VDS.RDF.Update
         /// </summary>
         public void StartExecution()
         {
-            this.CalculateTimeout();
-            this._timer.Start();
+            CalculateTimeout();
+            _timer.Start();
         }
 
         /// <summary>
@@ -243,7 +243,7 @@ namespace VDS.RDF.Update
         /// </summary>
         public void EndExecution()
         {
-            this._timer.Stop();
+            _timer.Stop();
         }
     }
 }

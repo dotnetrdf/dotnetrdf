@@ -31,10 +31,10 @@ using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF
-{
-    
+{    
     public abstract partial class BaseEndpoint
     {
+        private bool _useCredentialsForProxy;
 
         #region Credentials and Proxy Server
 
@@ -163,14 +163,11 @@ namespace VDS.RDF
                 context.Graph.Assert(new Triple(proxy, server,
                     context.Graph.CreateLiteralNode(webProxy.Address.AbsoluteUri)));
 
-                if (!UseCredentialsForProxy && Proxy.Credentials != null)
+                if (!UseCredentialsForProxy && Proxy.Credentials != null && 
+                    Proxy.Credentials is NetworkCredential cred)
                 {
-                    if (Proxy.Credentials is NetworkCredential)
-                    {
-                        var cred = (NetworkCredential) Proxy.Credentials;
-                        context.Graph.Assert(new Triple(proxy, user, context.Graph.CreateLiteralNode(cred.UserName)));
-                        context.Graph.Assert(new Triple(proxy, pwd, context.Graph.CreateLiteralNode(cred.Password)));
-                    }
+                    context.Graph.Assert(new Triple(proxy, user, context.Graph.CreateLiteralNode(cred.UserName)));
+                    context.Graph.Assert(new Triple(proxy, pwd, context.Graph.CreateLiteralNode(cred.Password)));
                 }
             }
         }

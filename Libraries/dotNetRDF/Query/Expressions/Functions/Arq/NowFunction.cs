@@ -50,21 +50,21 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// </returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            if (this._currQuery == null)
+            if (_currQuery == null)
             {
-                this._currQuery = context.Query;
+                _currQuery = context.Query;
             }
-            if (this._node == null || !ReferenceEquals(this._currQuery, context.Query))
+            if (_node == null || !ReferenceEquals(_currQuery, context.Query))
             {
                 lock (this)
                 {
-                    if (this._node == null || !ReferenceEquals(this._currQuery, context.Query))
+                    if (_node == null || !ReferenceEquals(_currQuery, context.Query))
                     {
-                        this._node = new DateTimeNode(null, DateTime.Now);
+                        _node = new DateTimeNode(null, DateTime.Now);
                     }
                 }
             }
-            return this._node;
+            return _node;
         }
 
         /// <summary>

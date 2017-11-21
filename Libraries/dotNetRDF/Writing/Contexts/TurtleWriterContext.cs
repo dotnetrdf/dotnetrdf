@@ -87,8 +87,8 @@ namespace VDS.RDF.Writing.Contexts
         public TurtleWriterContext(IGraph g, TextWriter output, int compressionLevel, bool prettyPrint, bool hiSpeed, TurtleSyntax syntax)
             : base(g, output, compressionLevel, prettyPrint, hiSpeed) 
         {
-            this._formatter = (syntax == TurtleSyntax.Original ? new TurtleFormatter(g) : new TurtleW3CFormatter(g));
-            this._uriFormatter = (IUriFormatter)this._formatter;
+            _formatter = (syntax == TurtleSyntax.Original ? new TurtleFormatter(g) : new TurtleW3CFormatter(g));
+            _uriFormatter = (IUriFormatter)_formatter;
         }
     }
 
@@ -170,7 +170,7 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._collections;
+                return _collections;
             }
         }
 
@@ -181,7 +181,7 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._triplesDone;
+                return _triplesDone;
             }
         }
     }

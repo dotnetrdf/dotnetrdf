@@ -33,8 +33,7 @@ using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-    public abstract class AbstractAttributeImpl : AbstractSPINResource, IAbstractAttribute
+    internal abstract class AbstractAttributeImpl : AbstractSPINResource, IAbstractAttribute
     {
 
         public AbstractAttributeImpl(INode node, SpinProcessor spinModel)
@@ -62,18 +61,12 @@ namespace VDS.RDF.Query.Spin.Model
             return getObject(SPL.PropertyValueType);
         }
 
-
-        public String getComment()
-        {
-            return getString(RDFS.PropertyComment);
-        }
-
         public bool IsOptional()
         {
             return (bool)getBoolean(SPL.PropertyOptional);
         }
 
-        override public void Print(ISparqlPrinter p)
+        public override void Print(ISparqlPrinter p)
         {
             // TODO Auto-generated method stub
         }

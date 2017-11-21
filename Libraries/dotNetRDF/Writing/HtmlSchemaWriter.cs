@@ -54,7 +54,7 @@ namespace VDS.RDF.Writing
         {
             using (var stream = File.Open(filename, FileMode.Create))
             {
-                this.Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
+                Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
             }
         }
 
@@ -74,7 +74,7 @@ namespace VDS.RDF.Writing
             try
             {
                 HtmlWriterContext context = new HtmlWriterContext(g, output);
-                this.GenerateOutput(context);
+                GenerateOutput(context);
                 if (!leaveOpen) output.Close();
             }
             catch
@@ -140,9 +140,9 @@ namespace VDS.RDF.Writing
                 context.HtmlWriter.WriteEncodedText(" - " + context.Graph.BaseUri.AbsoluteUri);
             }
             context.HtmlWriter.RenderEndTag();
-            if (!this.Stylesheet.Equals(String.Empty))
+            if (!Stylesheet.Equals(String.Empty))
             {
-                context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, this.Stylesheet);
+                context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, Stylesheet);
                 context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Type, "text/css");
                 context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Rel, "stylesheet");
                 context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Link);
@@ -209,7 +209,7 @@ namespace VDS.RDF.Writing
                                 if (author.NodeType == NodeType.Uri)
                                 {
                                     context.HtmlWriter.AddAttribute("href", ((IUriNode)author).Uri.AbsoluteUri);
-                                    context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassUri);
+                                    context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, CssClassUri);
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
                                 }
                                 switch (authorName.NodeType)
@@ -252,7 +252,7 @@ namespace VDS.RDF.Writing
                                     context.HtmlWriter.RenderEndTag();
                                     context.HtmlWriter.WriteEncodedText(" and preferred Namespace URI is ");
                                     context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, context.QNameMapper.GetNamespaceUri(prefix).AbsoluteUri);
-                                    context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassUri);
+                                    context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, CssClassUri);
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
                                     context.HtmlWriter.WriteEncodedText(context.QNameMapper.GetNamespaceUri(prefix).AbsoluteUri);
                                     context.HtmlWriter.RenderEndTag();
@@ -339,7 +339,7 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.RenderEndTag();
             context.HtmlWriter.WriteLine();
             context.HtmlWriter.AddStyleAttribute("width", "90%");
-            context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassBox);
+            context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, CssClassBox);
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
 
             // Get the Classes and Display
@@ -360,7 +360,7 @@ namespace VDS.RDF.Writing
                         // users jump to a Class/Property definition
                         String qname = context.NodeFormatter.Format(r["class"]);
                         context.HtmlWriter.AddAttribute("href", "#" + qname);
-                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassUri);
+                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, CssClassUri);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
                         context.HtmlWriter.WriteEncodedText(qname);
                         context.HtmlWriter.RenderEndTag();
@@ -389,7 +389,7 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.RenderEndTag();
             context.HtmlWriter.WriteLine();
             context.HtmlWriter.AddStyleAttribute("width", "90%");
-            context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassBox);
+            context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, CssClassBox);
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
 
             // Get the Properties and Display
@@ -410,7 +410,7 @@ namespace VDS.RDF.Writing
                         // users jump to a Class/Property definition
                         String qname = context.NodeFormatter.Format(r["property"]);
                         context.HtmlWriter.AddAttribute("href", "#" + qname);
-                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassUri);
+                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, CssClassUri);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
                         context.HtmlWriter.WriteEncodedText(qname);
                         context.HtmlWriter.RenderEndTag();
@@ -463,7 +463,7 @@ namespace VDS.RDF.Writing
                         String qname = context.NodeFormatter.Format(r["class"]);
 
                         // Use a <div> for each Class
-                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassBox);
+                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, CssClassBox);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Div);
 
                         // Add the Anchor to which earlier Class summary links to
@@ -512,20 +512,20 @@ namespace VDS.RDF.Writing
 
                         // Output any Subclasses
                         ts = context.Graph.GetTriplesWithSubjectPredicate(rdfsSubClassOf, r["class"]);
-                        this.GenerateCaptionedInformation(context, "Has Sub Classes", ts, t => t.Object);
+                        GenerateCaptionedInformation(context, "Has Sub Classes", ts, t => t.Object);
 
                         // Output Properties which have this as domain/range
                         ts = context.Graph.GetTriplesWithPredicateObject(rdfsDomain, r["class"]);
-                        this.GenerateCaptionedInformation(context, "Properties Include", ts, t => t.Subject);
+                        GenerateCaptionedInformation(context, "Properties Include", ts, t => t.Subject);
                         ts = context.Graph.GetTriplesWithPredicateObject(rdfsRange, r["class"]);
-                        this.GenerateCaptionedInformation(context, "Used With", ts, t => t.Subject);
+                        GenerateCaptionedInformation(context, "Used With", ts, t => t.Subject);
 
                         // Output any Equivalent Classes
                         ts = context.Graph.GetTriplesWithSubjectPredicate(r["class"], owlEquivalentClass).Concat(context.Graph.GetTriplesWithPredicateObject(owlEquivalentClass, r["class"]));
-                        this.GenerateCaptionedInformation(context, "Equivalent Classes", ts, t => t.Subject.Equals(r["class"]) ? t.Object : t.Subject);
+                        GenerateCaptionedInformation(context, "Equivalent Classes", ts, t => t.Subject.Equals(r["class"]) ? t.Object : t.Subject);
                         // Output any Disjoint Classes
                         ts = context.Graph.GetTriplesWithSubjectPredicate(r["class"], owlDisjointClass).Concat(context.Graph.GetTriplesWithPredicateObject(owlDisjointClass, r["class"]));
-                        this.GenerateCaptionedInformation(context, "Disjoint Classes", ts, t => t.Subject.Equals(r["class"]) ? t.Object : t.Subject);
+                        GenerateCaptionedInformation(context, "Disjoint Classes", ts, t => t.Subject.Equals(r["class"]) ? t.Object : t.Subject);
 
                         // Show the Class Description
                         if (r.HasValue("classDescription"))
@@ -572,7 +572,7 @@ namespace VDS.RDF.Writing
                         String qname = context.NodeFormatter.Format(r["property"]);
 
                         // Use a <div> for each Property
-                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassBox);
+                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, CssClassBox);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Div);
 
                         // Add the Anchor to which earlier Property summary links to
@@ -621,7 +621,7 @@ namespace VDS.RDF.Writing
 
                         // Output any Subproperties
                         ts = context.Graph.GetTriplesWithSubjectPredicate(rdfsSubPropertyOf, r["property"]);
-                        this.GenerateCaptionedInformation(context, "Has Sub Properties", ts, t => t.Object);
+                        GenerateCaptionedInformation(context, "Has Sub Properties", ts, t => t.Object);
 
                         // Output Domain and Range
                         // ts = context.Graph.GetTriplesWithSubjectPredicate(r["property"], rdfsDomain);
@@ -629,16 +629,16 @@ namespace VDS.RDF.Writing
                         // ts = context.Graph.GetTriplesWithSubjectPredicate(r["property"], rdfsRange);
                         // this.GenerateCaptionedInformation(context, "Has Range", ts, t => t.Object);
                         getPropertyDomains.SetParameter("property", r["property"]);
-                        this.GenerateCaptionedInformation(context, "Has Domain", context.Graph.ExecuteQuery(getPropertyDomains) as SparqlResultSet, "domain");
+                        GenerateCaptionedInformation(context, "Has Domain", context.Graph.ExecuteQuery(getPropertyDomains) as SparqlResultSet, "domain");
                         getPropertyRanges.SetParameter("property", r["property"]);
-                        this.GenerateCaptionedInformation(context, "Has Range", context.Graph.ExecuteQuery(getPropertyRanges) as SparqlResultSet, "range");
+                        GenerateCaptionedInformation(context, "Has Range", context.Graph.ExecuteQuery(getPropertyRanges) as SparqlResultSet, "range");
 
                         // Output any Equivalent Properties
                         ts = context.Graph.GetTriplesWithSubjectPredicate(r["property"], owlEquivalentProperty).Concat(context.Graph.GetTriplesWithPredicateObject(owlEquivalentProperty, r["property"]));
-                        this.GenerateCaptionedInformation(context, "Equivalent Properties", ts, t => t.Subject.Equals(r["property"]) ? t.Object : t.Subject);
+                        GenerateCaptionedInformation(context, "Equivalent Properties", ts, t => t.Subject.Equals(r["property"]) ? t.Object : t.Subject);
                         // Output any Disjoint Classes
                         ts = context.Graph.GetTriplesWithSubjectPredicate(r["property"], owlInverseProperty).Concat(context.Graph.GetTriplesWithPredicateObject(owlInverseProperty, r["property"]));
-                        this.GenerateCaptionedInformation(context, "Inverse Property", ts, t => t.Subject.Equals(r["property"]) ? t.Object : t.Subject);
+                        GenerateCaptionedInformation(context, "Inverse Property", ts, t => t.Subject.Equals(r["property"]) ? t.Object : t.Subject);
 
                         // Show the Property Description
                         if (r.HasValue("propertyDescription"))
@@ -674,13 +674,13 @@ namespace VDS.RDF.Writing
 
         private void GenerateCaptionedInformation(HtmlWriterContext context, String caption, IEnumerable<Triple> ts, Func<Triple,INode> displaySelector)
         {
-            this.GenerateCaptionedInformation(context, caption, ts.Select(t => displaySelector(t)));
+            GenerateCaptionedInformation(context, caption, ts.Select(t => displaySelector(t)));
         }
 
         private void GenerateCaptionedInformation(HtmlWriterContext context, String caption, SparqlResultSet results, String var)
         {
             if (results == null) return;
-            this.GenerateCaptionedInformation(context, caption, results.Select(r => r[var]).Where(n => n != null));
+            GenerateCaptionedInformation(context, caption, results.Select(r => r[var]).Where(n => n != null));
         }
 
         private void GenerateCaptionedInformation(HtmlWriterContext context, String caption, IEnumerable<INode> ns)
@@ -698,7 +698,7 @@ namespace VDS.RDF.Writing
                 {
                     String qname = context.NodeFormatter.Format(n);
                     context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, "#" + qname);
-                    context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassUri);
+                    context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, CssClassUri);
                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
                     context.HtmlWriter.WriteEncodedText(qname);
                     context.HtmlWriter.RenderEndTag();
@@ -715,7 +715,7 @@ namespace VDS.RDF.Writing
         /// <param name="message">Warning Message</param>
         private void RaiseWarning(String message)
         {
-            RdfWriterWarning d = this.Warning;
+            RdfWriterWarning d = Warning;
             if (d != null)
             {
                 d(message);

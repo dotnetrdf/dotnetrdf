@@ -57,7 +57,7 @@ namespace System.Web.UI
         /// <param name="writer">Text Writer</param>
         public HtmlTextWriter(TextWriter writer)
         {
-            this._writer = writer;
+            _writer = writer;
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace System.Web.UI
         {
             get
             {
-                return this._writer.Encoding;
+                return _writer.Encoding;
             }
         }
 
@@ -78,11 +78,11 @@ namespace System.Web.UI
         {
             get
             {
-                return this._indent;
+                return _indent;
             }
             set
             {
-                this._indent = (value >= 0 ? value : 0);
+                _indent = (value >= 0 ? value : 0);
             }
         }
 
@@ -93,7 +93,7 @@ namespace System.Web.UI
         {
             get
             {
-                return this._writer;
+                return _writer;
             }
         }
 
@@ -160,7 +160,7 @@ namespace System.Web.UI
         /// <param name="value">Value</param>
         public void AddAttribute(String name, String value)
         {
-            this._attributes.Add(new KeyValuePair<String, String>(name, this.EncodeAttribute(value)));
+            _attributes.Add(new KeyValuePair<String, String>(name, EncodeAttribute(value)));
         }
 
         /// <summary>
@@ -171,8 +171,8 @@ namespace System.Web.UI
         /// <param name="fEncode">Whether to encode the attribute value</param>
         public void AddAttribute(String name, String value, Boolean fEncode)
         {
-            if (fEncode) value = this.EncodeAttribute(value);
-            this._attributes.Add(new KeyValuePair<String, String>(name, value));
+            if (fEncode) value = EncodeAttribute(value);
+            _attributes.Add(new KeyValuePair<String, String>(name, value));
         }
 
         /// <summary>
@@ -182,7 +182,7 @@ namespace System.Web.UI
         /// <param name="value">Value</param>
         public void AddAttribute(HtmlTextWriterAttribute key, String value)
         {
-            this.AddAttribute(this.GetAttributeName(key), value);
+            AddAttribute(GetAttributeName(key), value);
         }
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace System.Web.UI
         /// <param name="fEncode">Whether to encode the attribute value</param>
         public void AddAttribute(HtmlTextWriterAttribute key, String value, Boolean fEncode)
         {
-            this.AddAttribute(this.GetAttributeName(key), value, fEncode);
+            AddAttribute(GetAttributeName(key), value, fEncode);
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ namespace System.Web.UI
         /// <param name="value">Value</param>
         public void AddStyleAttribute(String name, String value)
         {
-            this._styles.Add(new KeyValuePair<String, String>(name, value));
+            _styles.Add(new KeyValuePair<String, String>(name, value));
         }
 
         /// <summary>
@@ -213,7 +213,7 @@ namespace System.Web.UI
         /// <param name="value">Value</param>
         public void AddStyleAttribute(HtmlTextWriterStyle key, String value)
         {
-            this._styles.Add(new KeyValuePair<String, String>(this.GetStyleName(key), value));
+            _styles.Add(new KeyValuePair<String, String>(GetStyleName(key), value));
         }
 
 #if NETCORE
@@ -228,7 +228,7 @@ namespace System.Web.UI
         public override void Close()
 #endif
         {
-            this._writer.Close();
+            _writer.Close();
         }
 
         /// <summary>
@@ -236,7 +236,7 @@ namespace System.Web.UI
         /// </summary>
         public override void Flush()
         {
-            this._writer.Flush();
+            _writer.Flush();
         }
 
         /// <summary>
@@ -245,40 +245,40 @@ namespace System.Web.UI
         /// <param name="tagName">Tag Name</param>
         public void RenderBeginTag(String tagName)
         {
-            this._tags.Push(tagName);
-            if (this._newline)
+            _tags.Push(tagName);
+            if (_newline)
             {
-                this._writer.Write(new String('\t', this._indent));
-                this._newline = false;
+                _writer.Write(new String('\t', _indent));
+                _newline = false;
             }
-            this._writer.Write("<" + tagName.ToLower());
-            foreach (KeyValuePair<String, String> attr in this._attributes)
+            _writer.Write("<" + tagName.ToLower());
+            foreach (KeyValuePair<String, String> attr in _attributes)
             {
-                this._writer.Write(" " + attr.Key + "=\"" + attr.Value + "\"");
+                _writer.Write(" " + attr.Key + "=\"" + attr.Value + "\"");
             }
-            this._attributes.Clear();
+            _attributes.Clear();
 
-            if (this._styles.Count > 0)
+            if (_styles.Count > 0)
             {
-                this._writer.Write(" style=\"");
-                foreach (KeyValuePair<String, String> style in this._styles)
+                _writer.Write(" style=\"");
+                foreach (KeyValuePair<String, String> style in _styles)
                 {
-                    this._writer.Write(style.Key + ": " + this.EncodeStyle(style.Value) + ";");
+                    _writer.Write(style.Key + ": " + EncodeStyle(style.Value) + ";");
                 }
-                this._writer.Write("\"");
-                this._styles.Clear();
+                _writer.Write("\"");
+                _styles.Clear();
             }
-            this._writer.Write(">");
+            _writer.Write(">");
             if (tagName == "span")
             {
-                this._newline = false;
+                _newline = false;
             }
             else
             {
-                this._writer.WriteLine();
-                this._newline = true;
+                _writer.WriteLine();
+                _newline = true;
             }
-            this._indent++;
+            _indent++;
         }
 
         /// <summary>
@@ -287,7 +287,7 @@ namespace System.Web.UI
         /// <param name="tagKey">Tag</param>
         public void RenderBeginTag(HtmlTextWriterTag tagKey)
         {
-            this.RenderBeginTag(this.GetTagName(tagKey));
+            RenderBeginTag(GetTagName(tagKey));
         }
 
         /// <summary>
@@ -295,16 +295,16 @@ namespace System.Web.UI
         /// </summary>
         public void RenderEndTag()
         {
-            if (this._tags.Count > 0)
+            if (_tags.Count > 0)
             {
-                if (this._indent > 0) this._indent--;
-                if (this._newline)
+                if (_indent > 0) _indent--;
+                if (_newline)
                 {
-                    this._writer.WriteLine();
-                    this._writer.Write(new String('\t', this._indent));
+                    _writer.WriteLine();
+                    _writer.Write(new String('\t', _indent));
                 }
-                this._writer.WriteLine("</" + this._tags.Pop().ToLower() + ">");
-                this._newline = true;
+                _writer.WriteLine("</" + _tags.Pop().ToLower() + ">");
+                _newline = true;
             }
             else
             {
@@ -318,7 +318,7 @@ namespace System.Web.UI
         /// <param name="value">Character</param>
         public override void Write(char value)
         {
-            this._writer.Write(value);
+            _writer.Write(value);
         }
 
         /// <summary>
@@ -327,7 +327,7 @@ namespace System.Web.UI
         /// <param name="value">Boolean</param>
         public override void Write(bool value)
         {
-            this._writer.Write(value);
+            _writer.Write(value);
         }
 
         /// <summary>
@@ -336,7 +336,7 @@ namespace System.Web.UI
         /// <param name="buffer">Characters</param>
         public override void Write(char[] buffer)
         {
-            this._writer.Write(buffer);
+            _writer.Write(buffer);
         }
 
         /// <summary>
@@ -347,7 +347,7 @@ namespace System.Web.UI
         /// <param name="count">Number of characters to write</param>
         public override void Write(char[] buffer, int index, int count)
         {
-            this._writer.Write(buffer, index, count);
+            _writer.Write(buffer, index, count);
         }
 
         /// <summary>
@@ -356,7 +356,7 @@ namespace System.Web.UI
         /// <param name="value">Decimal</param>
         public override void Write(decimal value)
         {
-            this._writer.Write(value);
+            _writer.Write(value);
         }
 
         /// <summary>
@@ -365,7 +365,7 @@ namespace System.Web.UI
         /// <param name="value">Double</param>
         public override void Write(double value)
         {
-            this._writer.Write(value);
+            _writer.Write(value);
         }
 
         /// <summary>
@@ -374,7 +374,7 @@ namespace System.Web.UI
         /// <param name="value">Float</param>
         public override void Write(float value)
         {
-            this._writer.Write(value);
+            _writer.Write(value);
         }
 
         /// <summary>
@@ -383,7 +383,7 @@ namespace System.Web.UI
         /// <param name="value">Integer</param>
         public override void Write(int value)
         {
-            this._writer.Write(value);
+            _writer.Write(value);
         }
 
         /// <summary>
@@ -392,7 +392,7 @@ namespace System.Web.UI
         /// <param name="value">Long Integer</param>
         public override void Write(long value)
         {
-            this._writer.Write(value);
+            _writer.Write(value);
         }
 
         /// <summary>
@@ -401,7 +401,7 @@ namespace System.Web.UI
         /// <param name="value">Object</param>
         public override void Write(object value)
         {
-            this._writer.Write(value);
+            _writer.Write(value);
         }
 
         /// <summary>
@@ -411,7 +411,7 @@ namespace System.Web.UI
         /// <param name="arg0">Argument to insert into string</param>
         public override void Write(string format, object arg0)
         {
-            this._writer.Write(format, arg0);
+            _writer.Write(format, arg0);
         }
 
         /// <summary>
@@ -422,7 +422,7 @@ namespace System.Web.UI
         /// <param name="arg1">Argument to insert into string</param>
         public override void Write(string format, object arg0, object arg1)
         {
-            this._writer.Write(format, arg0, arg1);
+            _writer.Write(format, arg0, arg1);
         }
 
         /// <summary>
@@ -432,7 +432,7 @@ namespace System.Web.UI
         /// <param name="arg">Arguments to insert into string</param>
         public override void Write(string format, params object[] arg)
         {
-            this._writer.Write(format, arg);
+            _writer.Write(format, arg);
         }
 
         /// <summary>
@@ -441,7 +441,7 @@ namespace System.Web.UI
         /// <param name="value">String</param>
         public override void Write(string value)
         {
-            this._writer.Write(value);
+            _writer.Write(value);
         }
 
         /// <summary>
@@ -450,7 +450,7 @@ namespace System.Web.UI
         /// <param name="value">Unsigned Integer</param>
         public override void Write(uint value)
         {
-            this._writer.Write(value);
+            _writer.Write(value);
         }
 
         /// <summary>
@@ -459,7 +459,7 @@ namespace System.Web.UI
         /// <param name="value">Unsigned Long Integer</param>
         public override void Write(ulong value)
         {
-            this._writer.Write(value);
+            _writer.Write(value);
         }
 
         /// <summary>
@@ -469,7 +469,7 @@ namespace System.Web.UI
         /// <param name="value">Value</param>
         public void WriteAttribute(String name, String value)
         {
-            this._writer.Write(name + "=\"" + this.EncodeAttribute(value) + "\"");
+            _writer.Write(name + "=\"" + EncodeAttribute(value) + "\"");
         }
 
         /// <summary>
@@ -480,8 +480,8 @@ namespace System.Web.UI
         /// <param name="fEncode">Whether to encode the value</param>
         public void WriteAttribute(String name, String value, Boolean fEncode)
         {
-            if (fEncode) value = this.EncodeAttribute(value);
-            this._writer.Write(name + "=\"" + value + "\"");
+            if (fEncode) value = EncodeAttribute(value);
+            _writer.Write(name + "=\"" + value + "\"");
         }
 
         /// <summary>
@@ -490,12 +490,12 @@ namespace System.Web.UI
         /// <param name="tagName">Tag Name</param>
         public void WriteBeginTag(String tagName)
         {
-            if (this._newline)
+            if (_newline)
             {
-                this._writer.Write(new String('\t', this._indent));
-                this._newline = false;
+                _writer.Write(new String('\t', _indent));
+                _newline = false;
             }
-            this._writer.Write("<" + tagName.ToLower());
+            _writer.Write("<" + tagName.ToLower());
         }
 
         /// <summary>
@@ -503,12 +503,12 @@ namespace System.Web.UI
         /// </summary>
         public void WriteBreak()
         {
-            if (this._newline)
+            if (_newline)
             {
-                this._writer.WriteLine(new String('\t', this._indent));
-                this._newline = false;
+                _writer.WriteLine(new String('\t', _indent));
+                _newline = false;
             }
-            this._writer.Write("<br />");
+            _writer.Write("<br />");
         }
 
         /// <summary>
@@ -517,12 +517,12 @@ namespace System.Web.UI
         /// <param name="text">Text</param>
         public void WriteEncodedText(String text)
         {
-            if (this._newline)
+            if (_newline)
             {
-                this._writer.Write(new String('\t', this._indent));
-                this._newline = false;
+                _writer.Write(new String('\t', _indent));
+                _newline = false;
             }
-            this._writer.Write(HttpUtility.HtmlEncode(text));
+            _writer.Write(HttpUtility.HtmlEncode(text));
         }
 
         /// <summary>
@@ -531,7 +531,7 @@ namespace System.Web.UI
         /// <param name="url">URL</param>
         public void WriteEncodedUrl(String url)
         {
-            this._writer.Write(Uri.EscapeUriString(url));
+            _writer.Write(Uri.EscapeUriString(url));
         }
 
         /// <summary>
@@ -540,7 +540,7 @@ namespace System.Web.UI
         /// <param name="urlText">URL parameter</param>
         public void WriteEncodedUrlParameter(String urlText)
         {
-            this._writer.Write(HttpUtility.UrlEncode(urlText));
+            _writer.Write(HttpUtility.UrlEncode(urlText));
         }
 
         /// <summary>
@@ -549,12 +549,12 @@ namespace System.Web.UI
         /// <param name="tagName">Tag Name</param>
         public void WriteEndTag(String tagName)
         {
-            if (this._newline)
+            if (_newline)
             {
-                this._writer.Write(new String('\t', this._indent));
-                this._newline = false;
+                _writer.Write(new String('\t', _indent));
+                _newline = false;
             }
-            this._writer.Write("</" + tagName.ToLower() + ">");
+            _writer.Write("</" + tagName.ToLower() + ">");
         }
 
         /// <summary>
@@ -563,12 +563,12 @@ namespace System.Web.UI
         /// <param name="tagName">Tag Name</param>
         public void WriteFullBeginTag(String tagName)
         {
-            if (this._newline)
+            if (_newline)
             {
-                this._writer.Write(new String('\t', this._indent));
-                this._newline = false;
+                _writer.Write(new String('\t', _indent));
+                _newline = false;
             }
-            this._writer.Write("<" + tagName.ToLower() + ">");
+            _writer.Write("<" + tagName.ToLower() + ">");
         }
 
         /// <summary>
@@ -576,7 +576,7 @@ namespace System.Web.UI
         /// </summary>
         public override void WriteLine()
         {
-            this._writer.WriteLine();
+            _writer.WriteLine();
         }
 
         /// <summary>
@@ -585,7 +585,7 @@ namespace System.Web.UI
         /// <param name="value">Boolean</param>
         public override void WriteLine(bool value)
         {
-            this._writer.WriteLine(value);
+            _writer.WriteLine(value);
         }
 
         /// <summary>
@@ -594,7 +594,7 @@ namespace System.Web.UI
         /// <param name="value">Character</param>
         public override void WriteLine(char value)
         {
-            this._writer.WriteLine(value);
+            _writer.WriteLine(value);
         }
 
         /// <summary>
@@ -603,7 +603,7 @@ namespace System.Web.UI
         /// <param name="buffer">Characters</param>
         public override void WriteLine(char[] buffer)
         {
-            this._writer.WriteLine(buffer);
+            _writer.WriteLine(buffer);
         }
 
         /// <summary>
@@ -614,7 +614,7 @@ namespace System.Web.UI
         /// <param name="count">Number of characters to write</param>
         public override void WriteLine(char[] buffer, int index, int count)
         {
-            this._writer.WriteLine(buffer, index, count);
+            _writer.WriteLine(buffer, index, count);
         }
 
         /// <summary>
@@ -623,7 +623,7 @@ namespace System.Web.UI
         /// <param name="value">Decimal</param>
         public override void WriteLine(decimal value)
         {
-             this._writer.WriteLine(value);
+             _writer.WriteLine(value);
         }
 
         /// <summary>
@@ -632,7 +632,7 @@ namespace System.Web.UI
         /// <param name="value">Double</param>
         public override void WriteLine(double value)
         {
-            this._writer.WriteLine(value);
+            _writer.WriteLine(value);
         }
 
         /// <summary>
@@ -641,7 +641,7 @@ namespace System.Web.UI
         /// <param name="value">Float</param>
         public override void WriteLine(float value)
         {
-            this._writer.WriteLine(value);
+            _writer.WriteLine(value);
         }
 
         /// <summary>
@@ -650,7 +650,7 @@ namespace System.Web.UI
         /// <param name="value">Integer</param>
         public override void WriteLine(int value)
         {
-            this._writer.WriteLine(value);
+            _writer.WriteLine(value);
         }
 
         /// <summary>
@@ -659,7 +659,7 @@ namespace System.Web.UI
         /// <param name="value">Long Integer</param>
         public override void WriteLine(long value)
         {
-            this._writer.WriteLine(value);
+            _writer.WriteLine(value);
         }
 
         /// <summary>
@@ -668,7 +668,7 @@ namespace System.Web.UI
         /// <param name="value">Object</param>
         public override void WriteLine(object value)
         {
-            this._writer.WriteLine(value);
+            _writer.WriteLine(value);
         }
 
         /// <summary>
@@ -677,7 +677,7 @@ namespace System.Web.UI
         /// <param name="value">String</param>
         public override void WriteLine(string value)
         {
-            this._writer.WriteLine(value);
+            _writer.WriteLine(value);
         }
 
         /// <summary>
@@ -687,7 +687,7 @@ namespace System.Web.UI
         /// <param name="arg0">Argument to insert into string</param>
         public override void WriteLine(string format, object arg0)
         {
-            this._writer.WriteLine(format, arg0);
+            _writer.WriteLine(format, arg0);
         }
 
         /// <summary>
@@ -698,7 +698,7 @@ namespace System.Web.UI
         /// <param name="arg1">Argument to insert into string</param>
         public override void WriteLine(string format, object arg0, object arg1)
         {
-            this._writer.WriteLine(format, arg0, arg1);
+            _writer.WriteLine(format, arg0, arg1);
         }
 
         /// <summary>
@@ -708,7 +708,7 @@ namespace System.Web.UI
         /// <param name="arg">Arguments to insert into string</param>
         public override void WriteLine(string format, params object[] arg)
         {
-            this._writer.WriteLine(format, arg);
+            _writer.WriteLine(format, arg);
         }
 
         /// <summary>
@@ -717,7 +717,7 @@ namespace System.Web.UI
         /// <param name="value">Unsigned Integer</param>
         public override void WriteLine(uint value)
         {
-            this._writer.WriteLine(value);
+            _writer.WriteLine(value);
         }
 
         /// <summary>
@@ -726,7 +726,7 @@ namespace System.Web.UI
         /// <param name="value">Unsigned Long Integer</param>
         public override void WriteLine(ulong value)
         {
-            this._writer.WriteLine(value);
+            _writer.WriteLine(value);
         }
 
         /// <summary>
@@ -735,8 +735,8 @@ namespace System.Web.UI
         /// <param name="s">String</param>
         public void WriteLineNoTabs(String s)
         {
-            this._writer.WriteLine();
-            this._writer.WriteLine(s);
+            _writer.WriteLine();
+            _writer.WriteLine(s);
         }
 
         /// <summary>
@@ -746,7 +746,7 @@ namespace System.Web.UI
         /// <param name="value">Value</param>
         public void WriteStyleAttribute(String name, String value)
         {
-            this._writer.Write(name + ": " + this.EncodeStyle(value) + ";");
+            _writer.Write(name + ": " + EncodeStyle(value) + ";");
         }
 
         /// <summary>
@@ -757,8 +757,8 @@ namespace System.Web.UI
         /// <param name="fEncode">Whether to encode the value</param>
         public void WriteStyleAttribute(String name, String value, Boolean fEncode)
         {
-            if (fEncode) value = this.EncodeAttribute(value);
-            this._writer.Write(name + ": " + value + ";");
+            if (fEncode) value = EncodeAttribute(value);
+            _writer.Write(name + ": " + value + ";");
         }
 
     }

@@ -33,8 +33,7 @@ using VDS.RDF.Query.Spin.SparqlUtil;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-    public class NamedGraphImpl : ElementImpl, INamedGraph
+    internal class NamedGraphImpl : ElementImpl, INamedGraph
     {
 
         public NamedGraphImpl(INode node, SpinProcessor spinModel)

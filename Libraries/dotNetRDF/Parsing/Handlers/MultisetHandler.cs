@@ -48,7 +48,7 @@ namespace VDS.RDF.Parsing.Handlers
         public MultisetHandler(Multiset mset)
         {
             if (mset == null) throw new ArgumentNullException("mset", "Multiset to load into cannot be null");
-            this._mset = mset;
+            _mset = mset;
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleVariableInternal(string var)
         {
-            this._mset.AddVariable(var);
+            _mset.AddVariable(var);
             return true;
         }
 
@@ -78,7 +78,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleResultInternal(SparqlResult result)
         {
-            this._mset.Add(new Set(result));
+            _mset.Add(new Set(result));
             return true;
         }
     }

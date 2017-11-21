@@ -36,6 +36,13 @@ namespace VDS.RDF.Writing
     public class SparqlXmlTests
     {
         private readonly SparqlXmlParser _parser = new SparqlXmlParser();
+        private object ExecuteQuery(IInMemoryQueryableStore store, string query)
+        {
+            var parser = new SparqlQueryParser();
+            var q = parser.ParseFromString(query);
+            var processor = new LeviathanQueryProcessor(store);
+            return processor.ProcessQuery(q);
+        }
 
         [Fact]
         public void WritingSparqlXmlWithNulls()
@@ -46,7 +53,7 @@ namespace VDS.RDF.Writing
             g.BaseUri = new Uri("http://example.org/graph");
             store.Add(g);
 
-            Object results = store.ExecuteQuery("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
+            Object results = ExecuteQuery(store, "SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
@@ -90,7 +97,7 @@ namespace VDS.RDF.Writing
             g.Assert(subj, pred, obj2);
             store.Add(g);
 
-            Object results = store.ExecuteQuery("SELECT * WHERE { ?s ?p ?o }");
+            Object results = ExecuteQuery(store, "SELECT * WHERE { ?s ?p ?o }");
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;

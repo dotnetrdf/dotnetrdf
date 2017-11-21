@@ -51,8 +51,8 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// </summary>
         public bool IsConsistent()
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Endpoint.Uri);
-            request.Method = this.Endpoint.HttpMethods.First();
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Endpoint.Uri);
+            request.Method = Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.HttpSparqlAcceptHeader;
 
             Tools.HttpDebugRequest(request);
@@ -87,8 +87,8 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// </remarks>
         public void IsConsistent(PelletConsistencyCallback callback, Object state)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Endpoint.Uri);
-            request.Method = this.Endpoint.HttpMethods.First();
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Endpoint.Uri);
+            request.Method = Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.HttpSparqlAcceptHeader;
 
             Tools.HttpDebugRequest(request);

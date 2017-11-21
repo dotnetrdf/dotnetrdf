@@ -63,7 +63,8 @@ namespace VDS.RDF.Parsing
 
             if (!File.Exists(file))
             {
-                MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeTypes(Path.GetExtension(file))).FirstOrDefault();
+                var def = MimeTypesHelper.GetDefinitionsByFileExtension(Path.GetExtension(file)).FirstOrDefault();
+                //MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeTypes(Path.GetExtension(file))).FirstOrDefault();
                 Assert.NotNull(def);
                 if (def != null)
                 {
@@ -90,8 +91,8 @@ namespace VDS.RDF.Parsing
         public void TestLangSpecParsing(String file)
         {
             this.EnsureTestData(file);
-
-            MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeTypes(Path.GetExtension(file))).FirstOrDefault();
+            var def = MimeTypesHelper.GetDefinitionsByFileExtension(Path.GetExtension(file)).FirstOrDefault();
+            //MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeTypes(Path.GetExtension(file))).FirstOrDefault();
             Assert.NotNull(def);
             if (def != null)
             {

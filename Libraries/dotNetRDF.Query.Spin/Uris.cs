@@ -33,126 +33,126 @@ using VDS.RDF.Query.Spin.Util;
 
 namespace VDS.RDF.Query.Spin
 {
-    public static class XSD
+    internal static class XSD
     {
-        public readonly static String NS_URI = NamespaceMapper.XMLSCHEMA;
-        public readonly static IUriNode string_ = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA +"string"));
+        public static readonly String NS_URI = NamespaceMapper.XMLSCHEMA;
+        public static readonly IUriNode string_ = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA +"string"));
 
-        public readonly static IUriNode DatatypeDecimal = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "decimal"));
-        public readonly static IUriNode DatatypeDuration = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "duration"));
-        public readonly static IUriNode DatatypeGDay = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "gDay"));
-        public readonly static IUriNode DatatypeGMonth = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "gMonth"));
-        public readonly static IUriNode DatatypeGMonthDay = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "gMonthDay"));
-        public readonly static IUriNode DatatypeGYear = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "gYear"));
-        public readonly static IUriNode DatatypeGYearMonth = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "gYearMonth"));
-        public readonly static IUriNode DatatypeInteger = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "integer"));
-        public readonly static IUriNode DatatypeNegativeInteger = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "negativeInteger"));
-        public readonly static IUriNode DatatypeNonNegativeInteger = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "nonNegativeInteger"));
-        public readonly static IUriNode DatatypeNonPositiveInteger = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "nonPositiveInteger"));
-        public readonly static IUriNode DatatypePositiveInteger = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "positiveInteger"));
-        public readonly static IUriNode DatatypeUnsignedByte = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "unsignedByte"));
-        public readonly static IUriNode DatatypeUnsignedInt = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "unsignedInt"));
-        public readonly static IUriNode DatatypeUnsignedLong = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "unsignedLong"));
-        public readonly static IUriNode DatatypeUnsignedShort = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "unsignedShort"));
-        public readonly static IUriNode DatatypeByte = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "byte"));
-        public readonly static IUriNode DatatypeDouble = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "double"));
-        public readonly static IUriNode DatatypeFloat = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "float"));
-        public readonly static IUriNode DatatypeInt = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "int"));
-        public readonly static IUriNode DatatypeLong = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "long"));
-        public readonly static IUriNode DatatypeShort = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "short"));
+        public static readonly IUriNode DatatypeDecimal = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "decimal"));
+        public static readonly IUriNode DatatypeDuration = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "duration"));
+        public static readonly IUriNode DatatypeGDay = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "gDay"));
+        public static readonly IUriNode DatatypeGMonth = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "gMonth"));
+        public static readonly IUriNode DatatypeGMonthDay = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "gMonthDay"));
+        public static readonly IUriNode DatatypeGYear = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "gYear"));
+        public static readonly IUriNode DatatypeGYearMonth = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "gYearMonth"));
+        public static readonly IUriNode DatatypeInteger = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "integer"));
+        public static readonly IUriNode DatatypeNegativeInteger = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "negativeInteger"));
+        public static readonly IUriNode DatatypeNonNegativeInteger = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "nonNegativeInteger"));
+        public static readonly IUriNode DatatypeNonPositiveInteger = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "nonPositiveInteger"));
+        public static readonly IUriNode DatatypePositiveInteger = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "positiveInteger"));
+        public static readonly IUriNode DatatypeUnsignedByte = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "unsignedByte"));
+        public static readonly IUriNode DatatypeUnsignedInt = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "unsignedInt"));
+        public static readonly IUriNode DatatypeUnsignedLong = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "unsignedLong"));
+        public static readonly IUriNode DatatypeUnsignedShort = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "unsignedShort"));
+        public static readonly IUriNode DatatypeByte = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "byte"));
+        public static readonly IUriNode DatatypeDouble = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "double"));
+        public static readonly IUriNode DatatypeFloat = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "float"));
+        public static readonly IUriNode DatatypeInt = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "int"));
+        public static readonly IUriNode DatatypeLong = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "long"));
+        public static readonly IUriNode DatatypeShort = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "short"));
 
-        public readonly static IUriNode DatatypeAnySimpleType = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "anySimpleType"));
-        public readonly static IUriNode DatatypeAnyURI = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "anyURI"));
-        public readonly static IUriNode DatatypeBase64Binary = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "base64Binary"));
-        public readonly static IUriNode DatatypeDate = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "date"));
-        public readonly static IUriNode DatatypeDateTime = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "dateTime"));
-        public readonly static IUriNode DatatypeENTITY = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "ENTITY"));
-        public readonly static IUriNode DatatypeHexBinary = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "hexBinary"));
-        public readonly static IUriNode DatatypeID = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "ID"));
-        public readonly static IUriNode DatatypeIDREF = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "IDREF"));
-        public readonly static IUriNode PropertyLanguage = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "language"));
-        public readonly static IUriNode DatatypeName = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "Name"));
-        public readonly static IUriNode DatatypeNCName = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "NCName"));
-        public readonly static IUriNode DatatypeNMTOKEN = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "NMTOKEN"));
-        public readonly static IUriNode DatatypeNormalizedString = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "normalizedString"));
-        public readonly static IUriNode DatatypeNOTATION = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "NOTATION"));
-        public readonly static IUriNode DatatypeQName = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "QName"));
-        public readonly static IUriNode DatatypeTime = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "time"));
-        public readonly static IUriNode DatatypeToken = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "token"));
-        public readonly static IUriNode DatatypeBoolean = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "boolean"));
+        public static readonly IUriNode DatatypeAnySimpleType = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "anySimpleType"));
+        public static readonly IUriNode DatatypeAnyURI = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "anyURI"));
+        public static readonly IUriNode DatatypeBase64Binary = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "base64Binary"));
+        public static readonly IUriNode DatatypeDate = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "date"));
+        public static readonly IUriNode DatatypeDateTime = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "dateTime"));
+        public static readonly IUriNode DatatypeENTITY = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "ENTITY"));
+        public static readonly IUriNode DatatypeHexBinary = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "hexBinary"));
+        public static readonly IUriNode DatatypeID = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "ID"));
+        public static readonly IUriNode DatatypeIDREF = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "IDREF"));
+        public static readonly IUriNode PropertyLanguage = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "language"));
+        public static readonly IUriNode DatatypeName = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "Name"));
+        public static readonly IUriNode DatatypeNCName = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "NCName"));
+        public static readonly IUriNode DatatypeNMTOKEN = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "NMTOKEN"));
+        public static readonly IUriNode DatatypeNormalizedString = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "normalizedString"));
+        public static readonly IUriNode DatatypeNOTATION = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "NOTATION"));
+        public static readonly IUriNode DatatypeQName = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "QName"));
+        public static readonly IUriNode DatatypeTime = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "time"));
+        public static readonly IUriNode DatatypeToken = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "token"));
+        public static readonly IUriNode DatatypeBoolean = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.XMLSCHEMA + "boolean"));
    
     }
 
-    public static class RDF
+    internal static class RDF
     {
-        public readonly static String NS_URI = NamespaceMapper.RDF;
+        public static readonly String NS_URI = NamespaceMapper.RDF;
 
-        public readonly static IUriNode ClassResource = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "Resource"));
-        public readonly static IUriNode ClassHTML = RDFUtil.CreateUriNode(UriFactory.Create(RDF.NS_URI + "HTML"));
-        public readonly static IUriNode ClassPlainLiteral = RDFUtil.CreateUriNode(UriFactory.Create(RDF.NS_URI + "PlainLiteral"));
-        public readonly static IUriNode ClassXMLLiteral = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "XMLLiteral"));
+        public static readonly IUriNode ClassResource = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "Resource"));
+        public static readonly IUriNode ClassHTML = RDFUtil.CreateUriNode(UriFactory.Create(RDF.NS_URI + "HTML"));
+        public static readonly IUriNode ClassPlainLiteral = RDFUtil.CreateUriNode(UriFactory.Create(RDF.NS_URI + "PlainLiteral"));
+        public static readonly IUriNode ClassXMLLiteral = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "XMLLiteral"));
 
-        public readonly static IUriNode PropertyLangString = RDFUtil.CreateUriNode(UriFactory.Create(RDF.NS_URI + "langString"));
+        public static readonly IUriNode PropertyLangString = RDFUtil.CreateUriNode(UriFactory.Create(RDF.NS_URI + "langString"));
 
-        public readonly static IUriNode PropertyGraphLabel = RDFUtil.CreateUriNode(UriFactory.Create(RDF.NS_URI + "graphLabel"));
-        public readonly static IUriNode PropertySubject = RDFUtil.CreateUriNode(UriFactory.Create(RDF.NS_URI + "subject"));
-        public readonly static IUriNode PropertyPredicate = RDFUtil.CreateUriNode(UriFactory.Create(RDF.NS_URI + "predicate"));
-        public readonly static IUriNode PropertyObject = RDFUtil.CreateUriNode(UriFactory.Create(RDF.NS_URI + "object"));
+        public static readonly IUriNode PropertyGraphLabel = RDFUtil.CreateUriNode(UriFactory.Create(RDF.NS_URI + "graphLabel"));
+        public static readonly IUriNode PropertySubject = RDFUtil.CreateUriNode(UriFactory.Create(RDF.NS_URI + "subject"));
+        public static readonly IUriNode PropertyPredicate = RDFUtil.CreateUriNode(UriFactory.Create(RDF.NS_URI + "predicate"));
+        public static readonly IUriNode PropertyObject = RDFUtil.CreateUriNode(UriFactory.Create(RDF.NS_URI + "object"));
 
-        public readonly static IUriNode Nil = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "nil"));
-        public readonly static IUriNode PropertyFirst = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "first"));
-        public readonly static IUriNode PropertyRest = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "rest"));
-        public readonly static IUriNode PropertyType = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyType));
+        public static readonly IUriNode Nil = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "nil"));
+        public static readonly IUriNode PropertyFirst = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "first"));
+        public static readonly IUriNode PropertyRest = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "rest"));
+        public static readonly IUriNode PropertyType = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyType));
     }
 
-    public static class RDFS
+    internal static class RDFS
     {
-        public readonly static String NS_URI = NamespaceMapper.RDFS;
+        public static readonly String NS_URI = NamespaceMapper.RDFS;
 
-        public readonly static IUriNode Class = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.RdfsClass));
-        public readonly static IUriNode PropertyComment = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyComment));
-        public readonly static IUriNode ClassDatatype = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "Datatype"));
-        public readonly static IUriNode PropertyDomain = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyDomain));
-        public readonly static IUriNode PropertyIsDefinedBy = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyIsDefinedBy));
-        public readonly static IUriNode PropertyLabel = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyLabel));
-        public readonly static IUriNode ClassLiteral = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "Literal"));
-        public readonly static IUriNode ClassProperty = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.RdfProperty));
-        public readonly static IUriNode PropertyRange = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyRange));
-        public readonly static IUriNode ClassResource = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "Resource"));
-        public readonly static IUriNode PropertySeeAlso = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySeeAlso));
-        public readonly static IUriNode PropertySubClassOf = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySubClassOf));
-        public readonly static IUriNode PropertySubPropertyOf = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySubPropertyOf));
+        public static readonly IUriNode Class = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.RdfsClass));
+        public static readonly IUriNode PropertyComment = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyComment));
+        public static readonly IUriNode ClassDatatype = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "Datatype"));
+        public static readonly IUriNode PropertyDomain = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyDomain));
+        public static readonly IUriNode PropertyIsDefinedBy = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyIsDefinedBy));
+        public static readonly IUriNode PropertyLabel = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyLabel));
+        public static readonly IUriNode ClassLiteral = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "Literal"));
+        public static readonly IUriNode ClassProperty = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.RdfProperty));
+        public static readonly IUriNode PropertyRange = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyRange));
+        public static readonly IUriNode ClassResource = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "Resource"));
+        public static readonly IUriNode PropertySeeAlso = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySeeAlso));
+        public static readonly IUriNode PropertySubClassOf = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySubClassOf));
+        public static readonly IUriNode PropertySubPropertyOf = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySubPropertyOf));
     }
 
-    public static class OWL
+    internal static class OWL
     {
-        public readonly static String NS_URI = NamespaceMapper.OWL;
+        public static readonly String NS_URI = NamespaceMapper.OWL;
 
 
-        public readonly static IUriNode PropertyAllValuesFrom = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "allValuesFrom"));
-        public readonly static IUriNode ClassAnnotationProperty = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.OwlAnnotationProperty));
-        public readonly static IUriNode Class = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.OwlClass));
-        public readonly static IUriNode PropertyCardinality = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "cardinality"));
-        public readonly static IUriNode ClassDatatypeProperty = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.OwlDatatypeProperty));
-        public readonly static IUriNode PropertyDifferentFrom = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyDifferentFrom));
-        public readonly static IUriNode PropertyDisjointWith = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyDisjointWith));
-        public readonly static IUriNode PropertyEquivalentClass = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyEquivalentClass));
-        public readonly static IUriNode PropertyEquivalentProperty = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyEquivalentProperty));
-        public readonly static IUriNode ClassFunctionalProperty = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "FunctionalProperty"));
-        public readonly static IUriNode PropertyImports = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyImports));
-        public readonly static IUriNode PropertyIncompatibleWith = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyIncompatibleWith));
-        public readonly static IUriNode PropertyInverseOf = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyInverseOf));
-        public readonly static IUriNode PropertyMaxCardinality = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "maxCardinality"));
-        public readonly static IUriNode PropertyMinCardinality = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "minCardinality"));
-        public readonly static IUriNode Nothing = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "Nothing"));
-        public readonly static IUriNode ClassObjectProperty = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.OwlObjectProperty));
-        public readonly static IUriNode PropertyOnProperty = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "onProperty"));
-        public readonly static IUriNode ClassOntology = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.OwlOntology));
-        public readonly static IUriNode PropertyPriorVersion = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyPriorVersion));
-        public readonly static IUriNode PropertySameAs = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySameAs));
-        public readonly static IUriNode SymmetricProperty = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "SymmetricProperty"));
-        public readonly static IUriNode Thing = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "Thing"));
-        public readonly static IUriNode PropertyVersionInfo = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyVersionInfo));
+        public static readonly IUriNode PropertyAllValuesFrom = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "allValuesFrom"));
+        public static readonly IUriNode ClassAnnotationProperty = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.OwlAnnotationProperty));
+        public static readonly IUriNode Class = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.OwlClass));
+        public static readonly IUriNode PropertyCardinality = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "cardinality"));
+        public static readonly IUriNode ClassDatatypeProperty = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.OwlDatatypeProperty));
+        public static readonly IUriNode PropertyDifferentFrom = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyDifferentFrom));
+        public static readonly IUriNode PropertyDisjointWith = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyDisjointWith));
+        public static readonly IUriNode PropertyEquivalentClass = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyEquivalentClass));
+        public static readonly IUriNode PropertyEquivalentProperty = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyEquivalentProperty));
+        public static readonly IUriNode ClassFunctionalProperty = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "FunctionalProperty"));
+        public static readonly IUriNode PropertyImports = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyImports));
+        public static readonly IUriNode PropertyIncompatibleWith = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyIncompatibleWith));
+        public static readonly IUriNode PropertyInverseOf = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyInverseOf));
+        public static readonly IUriNode PropertyMaxCardinality = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "maxCardinality"));
+        public static readonly IUriNode PropertyMinCardinality = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "minCardinality"));
+        public static readonly IUriNode Nothing = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "Nothing"));
+        public static readonly IUriNode ClassObjectProperty = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.OwlObjectProperty));
+        public static readonly IUriNode PropertyOnProperty = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "onProperty"));
+        public static readonly IUriNode ClassOntology = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.OwlOntology));
+        public static readonly IUriNode PropertyPriorVersion = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyPriorVersion));
+        public static readonly IUriNode PropertySameAs = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySameAs));
+        public static readonly IUriNode SymmetricProperty = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "SymmetricProperty"));
+        public static readonly IUriNode Thing = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "Thing"));
+        public static readonly IUriNode PropertyVersionInfo = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyVersionInfo));
     }
 
 }

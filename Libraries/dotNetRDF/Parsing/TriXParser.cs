@@ -63,7 +63,7 @@ namespace VDS.RDF.Parsing
         public void Load(ITripleStore store, String filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
-            this.Load(store, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
+            Load(store, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace VDS.RDF.Parsing
         {
             if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
             if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
-            this.Load(new StoreHandler(store), input);
+            Load(new StoreHandler(store), input);
         }
 
 
@@ -87,14 +87,15 @@ namespace VDS.RDF.Parsing
         public void Load(IRdfHandler handler, String filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
-            this.Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
+            Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
         }
 
         private XmlReaderSettings GetSettings()
         {
             XmlReaderSettings settings = new XmlReaderSettings();
 #if !NETCORE
-            settings.ProhibitDtd = false;
+            settings.DtdProcessing = DtdProcessing.Parse;
+            //settings.ProhibitDtd = false;
 #endif
             settings.ConformanceLevel = ConformanceLevel.Document;
             settings.IgnoreComments = true;
@@ -103,6 +104,7 @@ namespace VDS.RDF.Parsing
             return settings;
         }
 
+        /// <inheritdoc />
         public void Load(IRdfHandler handler, TextReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
@@ -114,9 +116,9 @@ namespace VDS.RDF.Parsing
                 try
                 {
                     // Get the reader and start parsing
-                    XmlReader reader = XmlReader.Create(input, this.GetSettings());
-                    this.RaiseWarning("The TriX Parser is operating without XSL support, if your TriX file requires XSL then it will not be parsed successfully");
-                    this.TryParseGraphset(reader, handler);
+                    XmlReader reader = XmlReader.Create(input, GetSettings());
+                    RaiseWarning("The TriX Parser is operating without XSL support, if your TriX file requires XSL then it will not be parsed successfully");
+                    TryParseGraphset(reader, handler);
 
                     input.Close();
                 }
@@ -201,7 +203,7 @@ namespace VDS.RDF.Parsing
                     if (reader.NodeType == XmlNodeType.Element)
                     {
                         // For elements we recurse to try and parse a Graph
-                        this.TryParseGraph(reader, handler);
+                        TryParseGraph(reader, handler);
                     }
                     else if (reader.NodeType == XmlNodeType.EndElement)
                     {
@@ -255,14 +257,13 @@ namespace VDS.RDF.Parsing
                     reader.MoveToNextAttribute();
                     if (reader.Name.Equals("asserted"))
                     {
-                        bool asserted = true;
-                        if (Boolean.TryParse(reader.Value, out asserted))
+                        if (Boolean.TryParse(reader.Value, out bool asserted))
                         {
                             // Don't process this Graph further if it is not being asserted
                             // i.e. it is only (potentially) being quoted
                             if (!asserted)
                             {
-                                this.RaiseWarning("A Graph is marked as not asserted in the TriX input.  This Graph will not be parsed, if you reserialize the input the information contained in it will not be preserved");
+                                RaiseWarning("A Graph is marked as not asserted in the TriX input.  This Graph will not be parsed, if you reserialize the input the information contained in it will not be preserved");
                                 return;
                             }
                         }
@@ -271,7 +272,6 @@ namespace VDS.RDF.Parsing
 
                 // See if we get an <id>/<uri> node to name the Graph
                 reader.Read();
-                IGraph g = null;
                 Uri graphUri = null;
                 if (reader.NodeType == XmlNodeType.Element)
                 {
@@ -302,7 +302,7 @@ namespace VDS.RDF.Parsing
                     // Remember to ignore anything that isn't an element i.e. comments and processing instructions
                     if (reader.NodeType == XmlNodeType.Element)
                     {
-                        this.TryParseTriple(reader, handler, graphUri);
+                        TryParseTriple(reader, handler, graphUri);
                     }
 
                     reader.Read();
@@ -322,9 +322,9 @@ namespace VDS.RDF.Parsing
 
             // Parse XML Nodes into RDF Nodes
             INode subj, pred, obj;
-            subj = this.TryParseNode(reader, handler, TripleSegment.Subject);
-            pred = this.TryParseNode(reader, handler, TripleSegment.Predicate);
-            obj = this.TryParseNode(reader, handler, TripleSegment.Object);
+            subj = TryParseNode(reader, handler, TripleSegment.Subject);
+            pred = TryParseNode(reader, handler, TripleSegment.Predicate);
+            obj = TryParseNode(reader, handler, TripleSegment.Object);
 
             if (reader.NodeType != XmlNodeType.EndElement) throw Error("Unexpected element type " + reader.NodeType.ToString() + " encountered, expected the </triple> element", reader);
             if (!reader.Name.Equals("triple")) throw Error("Unexpected </" + reader.Name + "> encountered, expected a </triple> element", reader);
@@ -413,7 +413,7 @@ namespace VDS.RDF.Parsing
         /// Helper method for raising informative standardised Parser Errors
         /// </summary>
         /// <param name="msg">The Error Message</param>
-        /// <param name="n">The Node that is the cause of the Error</param>
+        /// <param name="reader">The XML reader being used by the parser</param>
         /// <returns></returns>
         private RdfParseException Error(String msg, XmlReader reader)
         {
@@ -430,13 +430,9 @@ namespace VDS.RDF.Parsing
         /// Helper method used to raise the Warning event if there is an event handler registered
         /// </summary>
         /// <param name="message">Warning message</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
-            StoreReaderWarning d = this.Warning;
-            if (d != null)
-            {
-                d(message);
-            }
+            Warning?.Invoke(message);
         }
 
         /// <summary>

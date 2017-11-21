@@ -59,7 +59,7 @@ namespace VDS.RDF.Configuration.Permissions
         /// </remarks>
         public UserGroup(bool allowGuest)
         {
-            this._guest = false;
+            _guest = false;
         }
 
         /// <summary>
@@ -69,11 +69,11 @@ namespace VDS.RDF.Configuration.Permissions
         {
             get
             {
-                return this._guest;
+                return _guest;
             }
             set
             {
-                this._guest = value;
+                _guest = value;
             }
         }
 
@@ -84,11 +84,11 @@ namespace VDS.RDF.Configuration.Permissions
         {
             get
             {
-                return this._mode;
+                return _mode;
             }
             set
             {
-                this._mode = value;
+                _mode = value;
             }
         }
 
@@ -98,7 +98,7 @@ namespace VDS.RDF.Configuration.Permissions
         /// <param name="credentials">User Credentials</param>
         public void AddUser(NetworkCredential credentials)
         {
-            this._users.Add(credentials);
+            _users.Add(credentials);
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace VDS.RDF.Configuration.Permissions
         /// <param name="permission">Permission</param>
         public void AddAllowedAction(IPermission permission)
         {
-            this._allowedActions.Add(permission);
+            _allowedActions.Add(permission);
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace VDS.RDF.Configuration.Permissions
         /// <param name="permission">Permission</param>
         public void AddDeniedAction(IPermission permission)
         {
-            this._deniedActions.Add(permission);
+            _deniedActions.Add(permission);
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace VDS.RDF.Configuration.Permissions
         /// <returns></returns>
         public bool HasMember(String username)
         {
-            return this._users.Any(u => u.UserName.Equals(username));
+            return _users.Any(u => u.UserName.Equals(username));
         }
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace VDS.RDF.Configuration.Permissions
         /// <returns></returns>
         public bool HasMember(String username, String password)
         {
-            return this._users.Any(u => u.UserName.Equals(username) && u.Password.Equals(password));
+            return _users.Any(u => u.UserName.Equals(username) && u.Password.Equals(password));
         }
 
         /// <summary>
@@ -147,18 +147,18 @@ namespace VDS.RDF.Configuration.Permissions
         /// <returns></returns>
         public bool IsActionPermitted(String action)
         {
-            if (this._mode == PermissionModel.AllowAny) return true;
-            if (this._mode == PermissionModel.DenyAny) return false;
+            if (_mode == PermissionModel.AllowAny) return true;
+            if (_mode == PermissionModel.DenyAny) return false;
 
             bool ok;
-            if (this._mode == PermissionModel.AllowDeny)
+            if (_mode == PermissionModel.AllowDeny)
             {
                 // Is is allowed?
-                ok = this._allowedActions.Any(p => p.IsPermissionFor(action));
+                ok = _allowedActions.Any(p => p.IsPermissionFor(action));
                 if (ok)
                 {
                     // If it is also denied then Deny takes precedence
-                    ok = !this._deniedActions.Any(p => p.IsPermissionFor(action));
+                    ok = !_deniedActions.Any(p => p.IsPermissionFor(action));
                     return ok;
                 }
                 return false;
@@ -166,11 +166,11 @@ namespace VDS.RDF.Configuration.Permissions
             else
             {
                 // Is it denied?
-                ok = !this._deniedActions.Any(p => p.IsPermissionFor(action));
+                ok = !_deniedActions.Any(p => p.IsPermissionFor(action));
                 if (!ok)
                 {
                     // If it is also allowed then Allow takes precedence
-                    ok = this._allowedActions.Any(p => p.IsPermissionFor(action));
+                    ok = _allowedActions.Any(p => p.IsPermissionFor(action));
                     return ok;
                 }
                 return true;

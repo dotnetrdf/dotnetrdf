@@ -30,7 +30,7 @@ using System;
 namespace VDS.RDF.Query.Spin.Util
 {
 
-    public static class DCTerms
+    internal static class DCTerms
     {
 
         public readonly static String NS_URI = "http://purl.org/dc/terms/";
@@ -39,7 +39,7 @@ namespace VDS.RDF.Query.Spin.Util
 
     }
 
-    public static class SD
+    internal static class SD
     {
 
         public readonly static String NS_URI = "http://www.w3.org/ns/sparql-service-description#";
@@ -49,7 +49,7 @@ namespace VDS.RDF.Query.Spin.Util
 
     }
 
-    public static class RDFRuntime
+    internal static class RDFRuntime
     {
         public readonly static String NS_URI = "dotnetrdf-spin:";
         public readonly static String EVAL_NS_URI = NS_URI + "runtime#";

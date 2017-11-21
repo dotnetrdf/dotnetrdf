@@ -48,8 +48,8 @@ namespace VDS.RDF.Writing
         /// <param name="writer">Underlying writer</param>
         public BaseGZipDatasetWriter(IStoreWriter writer)
         {
-            this._writer = writer ?? throw new ArgumentNullException(nameof(writer));
-            this._writer.Warning += this.RaiseWarning;
+            _writer = writer ?? throw new ArgumentNullException(nameof(writer));
+            _writer.Warning += RaiseWarning;
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace VDS.RDF.Writing
         public void Save(ITripleStore store, string filename)
         {
             if (filename == null) throw new RdfOutputException("Cannot output to a null file");
-            this.Save(store, new StreamWriter(new GZipStream(new FileStream(filename, FileMode.Create, FileAccess.Write), CompressionMode.Compress)), false);
+            Save(store, new StreamWriter(new GZipStream(new FileStream(filename, FileMode.Create, FileAccess.Write), CompressionMode.Compress)), false);
         }
 
         /// <summary>
@@ -78,11 +78,11 @@ namespace VDS.RDF.Writing
                 StreamWriter writer = (StreamWriter)output;
                 if (writer.BaseStream is GZipStream)
                 {
-                    this._writer.Save(store, writer);
+                    _writer.Save(store, writer);
                 }
                 else
                 {
-                    this._writer.Save(store, new StreamWriter(new GZipStream(writer.BaseStream, CompressionMode.Compress)));
+                    _writer.Save(store, new StreamWriter(new GZipStream(writer.BaseStream, CompressionMode.Compress)));
                 }
             }
             else
@@ -139,7 +139,7 @@ namespace VDS.RDF.Writing
         /// <returns></returns>
         public override string ToString()
         {
-            return "GZipped " + this._writer;
+            return "GZipped " + _writer;
         }
     }
 

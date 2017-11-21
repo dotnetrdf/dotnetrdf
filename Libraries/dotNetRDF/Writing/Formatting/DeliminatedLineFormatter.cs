@@ -60,25 +60,25 @@ namespace VDS.RDF.Writing.Formatting
         public DeliminatedLineFormatter(String formatName, char deliminator, char escape, Nullable<char> uriStartChar, Nullable<char> uriEndChar, Nullable<char> literalWrapperChar, Nullable<char> longLiteralWrapperChar, Nullable<char> lineEndChar, bool fullLiteralOutput)
             : base(formatName)
         {
-            this._deliminatorChar = deliminator;
-            this._escapeChar = escape;
-            this._uriStartChar = uriStartChar;
-            this._uriEndChar = uriEndChar;
-            this._literalWrapperChar = literalWrapperChar;
-            this._longLiteralWrapperChar = longLiteralWrapperChar;
-            this._lineEndChar = lineEndChar;
-            this._fullLiteralOutput = fullLiteralOutput;
+            _deliminatorChar = deliminator;
+            _escapeChar = escape;
+            _uriStartChar = uriStartChar;
+            _uriEndChar = uriEndChar;
+            _literalWrapperChar = literalWrapperChar;
+            _longLiteralWrapperChar = longLiteralWrapperChar;
+            _lineEndChar = lineEndChar;
+            _fullLiteralOutput = fullLiteralOutput;
 
-            this._delimEscapes = new List<string[]>();
-            this._delimEscapes.Add(new String[] { new String(new char[] { this._deliminatorChar }), new String(new char[] { this._escapeChar, this._deliminatorChar }) });
-            this._delimEscapes.Add(new String[] { new String(new char[] { '\n' }), new String(new char[] { this._escapeChar, 'n' }) });
-            this._delimEscapes.Add(new String[] { new String(new char[] { '\r' }), new String(new char[] { this._escapeChar, 'r' }) });
-            this._delimEscapes.Add(new String[] { new String(new char[] { '\t' }), new String(new char[] { this._escapeChar, 't' }) });
+            _delimEscapes = new List<string[]>();
+            _delimEscapes.Add(new String[] { new String(new char[] { _deliminatorChar }), new String(new char[] { _escapeChar, _deliminatorChar }) });
+            _delimEscapes.Add(new String[] { new String(new char[] { '\n' }), new String(new char[] { _escapeChar, 'n' }) });
+            _delimEscapes.Add(new String[] { new String(new char[] { '\r' }), new String(new char[] { _escapeChar, 'r' }) });
+            _delimEscapes.Add(new String[] { new String(new char[] { '\t' }), new String(new char[] { _escapeChar, 't' }) });
 
             // TODO: Need to handle difference between standard and long literals better
-            if (this._literalWrapperChar.HasValue)
+            if (_literalWrapperChar.HasValue)
             {
-                this._delimEscapes.Add(new String[] { new String(new char[] { this._literalWrapperChar.Value }), new String(new char[] { this._escapeChar, this._literalWrapperChar.Value }) });
+                _delimEscapes.Add(new String[] { new String(new char[] { _literalWrapperChar.Value }), new String(new char[] { _escapeChar, _literalWrapperChar.Value }) });
             }
         }
 
@@ -90,14 +90,14 @@ namespace VDS.RDF.Writing.Formatting
         public override string Format(Triple t)
         {
             StringBuilder output = new StringBuilder();
-            output.Append(this.Format(t.Subject));
-            output.Append(this._deliminatorChar);
-            output.Append(this.Format(t.Predicate));
-            output.Append(this._deliminatorChar);
-            output.Append(this.Format(t.Object));
-            if (this._lineEndChar != null)
+            output.Append(Format(t.Subject));
+            output.Append(_deliminatorChar);
+            output.Append(Format(t.Predicate));
+            output.Append(_deliminatorChar);
+            output.Append(Format(t.Object));
+            if (_lineEndChar != null)
             {
-                output.Append(this._lineEndChar);
+                output.Append(_lineEndChar);
             }
             return output.ToString();
         }
@@ -111,15 +111,15 @@ namespace VDS.RDF.Writing.Formatting
         protected override string FormatUriNode(IUriNode u, TripleSegment? segment)
         {
             StringBuilder output = new StringBuilder();
-            if (this._uriStartChar != null) output.Append(this._uriStartChar);
-            if (this._uriEndChar != null)
+            if (_uriStartChar != null) output.Append(_uriStartChar);
+            if (_uriEndChar != null)
             {
-                output.Append(this.FormatUri(u.Uri));
-                output.Append(this._uriEndChar);
+                output.Append(FormatUri(u.Uri));
+                output.Append(_uriEndChar);
             }
             else
             {
-                output.Append(this.FormatUri(u.Uri));
+                output.Append(FormatUri(u.Uri));
             }
             return output.ToString();
         }
@@ -143,26 +143,26 @@ namespace VDS.RDF.Writing.Formatting
 
                 if (TurtleSpecsHelper.IsLongLiteral(value))
                 {
-                    value = this.Escape(value, this._delimEscapes);
+                    value = Escape(value, _delimEscapes);
 
                     // If there are no wrapper characters then we must escape the deliminator
-                    if (value.Contains(this._deliminatorChar))
+                    if (value.Contains(_deliminatorChar))
                     {
-                        if (this._literalWrapperChar == null && this._longLiteralWrapperChar == null)
+                        if (_literalWrapperChar == null && _longLiteralWrapperChar == null)
                         {
                             // Replace the deliminator
-                            value = value.Replace(new String(new char[] { this._deliminatorChar }), new String(new char[] { this._escapeChar, this._deliminatorChar }));
+                            value = value.Replace(new String(new char[] { _deliminatorChar }), new String(new char[] { _escapeChar, _deliminatorChar }));
                         }
                     }
 
                     // Apply appropriate wrapper characters
-                    if (this._longLiteralWrapperChar != null)
+                    if (_longLiteralWrapperChar != null)
                     {
-                        output.Append(this._longLiteralWrapperChar + value + this._longLiteralWrapperChar);
+                        output.Append(_longLiteralWrapperChar + value + _longLiteralWrapperChar);
                     }
-                    else if (this._literalWrapperChar != null)
+                    else if (_literalWrapperChar != null)
                     {
-                        output.Append(this._literalWrapperChar + value + this._literalWrapperChar);
+                        output.Append(_literalWrapperChar + value + _literalWrapperChar);
                     }
                     else
                     {
@@ -172,12 +172,12 @@ namespace VDS.RDF.Writing.Formatting
                 else
                 {
                     // Replace the deliminator
-                    value = this.Escape(value, this._delimEscapes);
+                    value = Escape(value, _delimEscapes);
 
                     // Apply appropriate wrapper characters
-                    if (this._literalWrapperChar != null)
+                    if (_literalWrapperChar != null)
                     {
-                        output.Append(this._literalWrapperChar + value + this._literalWrapperChar);
+                        output.Append(_literalWrapperChar + value + _literalWrapperChar);
                     }
                     else
                     {
@@ -185,7 +185,7 @@ namespace VDS.RDF.Writing.Formatting
                     }
                 }
 
-                if (this._fullLiteralOutput)
+                if (_fullLiteralOutput)
                 {
                     if (!lit.Language.Equals(String.Empty))
                     {
@@ -194,15 +194,15 @@ namespace VDS.RDF.Writing.Formatting
                     else if (lit.DataType != null)
                     {
                         output.Append("^^");
-                        if (this._uriStartChar != null) output.Append(this._uriStartChar);
-                        if (this._uriEndChar != null)
+                        if (_uriStartChar != null) output.Append(_uriStartChar);
+                        if (_uriEndChar != null)
                         {
-                            output.Append(this.FormatUri(lit.DataType));
-                            output.Append(this._uriEndChar);
+                            output.Append(FormatUri(lit.DataType));
+                            output.Append(_uriEndChar);
                         }
                         else
                         {
-                            output.Append(this.FormatUri(lit.DataType));
+                            output.Append(FormatUri(lit.DataType));
                         }
                     }
                 }
@@ -217,9 +217,9 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         public override string FormatUri(String u)
         {
-            if (this._uriEndChar != null)
+            if (_uriEndChar != null)
             {
-                return u.Replace(new String(new char[] { (char)this._uriEndChar }), new String(new char[] { this._escapeChar, (char)this._uriEndChar }));
+                return u.Replace(new String(new char[] { (char)_uriEndChar }), new String(new char[] { _escapeChar, (char)_uriEndChar }));
             }
             else
             {

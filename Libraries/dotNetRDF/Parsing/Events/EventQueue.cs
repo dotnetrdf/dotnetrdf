@@ -54,7 +54,7 @@ namespace VDS.RDF.Parsing.Events
         /// <param name="generator">Event Generator</param>
         public EventQueue(IEventGenerator<T> generator)
         {
-            this._eventgen = generator;
+            _eventgen = generator;
         }
 
         /// <summary>
@@ -63,10 +63,10 @@ namespace VDS.RDF.Parsing.Events
         /// <returns></returns>
         public override T Dequeue()
         {
-            this._lasteventtype = this._events.Peek().EventType;
+            _lasteventtype = _events.Peek().EventType;
             // REQ: Add proper tracing support to this
             // if (this._tracing) this.PrintTrace(this._events.Peek());
-            return this._events.Dequeue();
+            return _events.Dequeue();
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace VDS.RDF.Parsing.Events
         /// <param name="e">Event</param>
         public override void Enqueue(T e)
         {
-            this._events.Enqueue(e);
+            _events.Enqueue(e);
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace VDS.RDF.Parsing.Events
         /// <returns></returns>
         public override T Peek()
         {
-            return this._events.Peek();
+            return _events.Peek();
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace VDS.RDF.Parsing.Events
         /// </summary>
         public override void Clear()
         {
-            this._events.Clear();
+            _events.Clear();
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace VDS.RDF.Parsing.Events
         {
             get 
             {
-                return this._events.Count; 
+                return _events.Count; 
             }
         }
     }
@@ -122,7 +122,7 @@ namespace VDS.RDF.Parsing.Events
         public StreamingEventQueue(IJitEventGenerator<T> generator)
             : base(generator)
         {
-            this._jitgen = generator;
+            _jitgen = generator;
         }
 
         /// <summary>
@@ -132,11 +132,11 @@ namespace VDS.RDF.Parsing.Events
         {
             get
             {
-                if (this._jitgen.Finished) return base.Count;
+                if (_jitgen.Finished) return base.Count;
 
-                while (!this._jitgen.Finished && this._events.Count < this._buffer)
+                while (!_jitgen.Finished && _events.Count < _buffer)
                 {
-                    this.Enqueue(this._jitgen.GetNextEvent());
+                    Enqueue(_jitgen.GetNextEvent());
                 }
                 return base.Count;
             }
@@ -152,7 +152,7 @@ namespace VDS.RDF.Parsing.Events
             {
                 if (e is ClearQueueEvent)
                 {
-                    this.Clear();
+                    Clear();
                 }
                 else
                 {
@@ -167,9 +167,9 @@ namespace VDS.RDF.Parsing.Events
         /// <returns></returns>
         public override T Dequeue()
         {
-            while (!this._jitgen.Finished && this._events.Count < this._buffer)
+            while (!_jitgen.Finished && _events.Count < _buffer)
             {
-                this.Enqueue(this._jitgen.GetNextEvent());
+                Enqueue(_jitgen.GetNextEvent());
             }
             return base.Dequeue();
         }
@@ -180,73 +180,78 @@ namespace VDS.RDF.Parsing.Events
         /// <returns></returns>
         public override T Peek()
         {
-            while (!this._jitgen.Finished && this._events.Count < this._buffer)
+            while (!_jitgen.Finished && _events.Count < _buffer)
             {
-                this.Enqueue(this._jitgen.GetNextEvent());
+                Enqueue(_jitgen.GetNextEvent());
             }
             return base.Peek();
         }
     }
 
-
+    /// <summary>
+    /// An wrapper which exposes a subset of an event queue
+    /// </summary>
+    /// <typeparam name="T">The type of event queued</typeparam>
     public class SublistEventQueue<T> : BaseEventQueue<T> where T : IEvent
     {
-        private IEventQueue<T> _events;
-        private int _threshold;
+        private readonly IEventQueue<T> _events;
+        private readonly int _threshold;
 
+        /// <summary>
+        /// Create a new wrapper that exposes a subset of specific event queue
+        /// </summary>
+        /// <param name="events">The event queue to be wrapper</param>
+        /// <param name="threshold">The number of events to leave in the wrapped queue. When the wrapped event
+        /// queue contains this number of events or fewer, this wrapper will treat it as an empty queue</param>
         public SublistEventQueue(IEventQueue<T> events, int threshold)
         {
-            this._events = events;
-            this._threshold = threshold;
+            _events = events;
+            _threshold = threshold;
         }
 
+        /// <inheritdoc />
         public override T Dequeue()
         {
-            if (this._events.Count > this._threshold)
+            if (_events.Count > _threshold)
             {
-                return this._events.Dequeue();
+                return _events.Dequeue();
             }
-            else
-            {
-                throw new InvalidOperationException("Event queue is empty");
-            }
+            throw new InvalidOperationException("Event queue is empty");
         }
 
+        /// <inheritdoc />
         public override void Enqueue(T e)
         {
             if (!ReferenceEquals(e, null))
             {
                 if (e is ClearQueueEvent)
                 {
-                    this.Clear();
+                    Clear();
                 }
                 else
                 {
-                    this._events.Enqueue(e);
+                    _events.Enqueue(e);
                 }
             }
         }
 
+        /// <inheritdoc/>
         public override T Peek()
         {
-            if (this._events.Count > this._threshold)
+            if (_events.Count > _threshold)
             {
-                return this._events.Peek();
+                return _events.Peek();
             }
-            else
-            {
-                throw new InvalidOperationException("Event queue is empty");
-            }
+            throw new InvalidOperationException("Event queue is empty");
         }
 
+        /// <inheritdoc />
         public override void Clear()
         {
-            this._events.Clear();
+            _events.Clear();
         }
 
-        public override int Count
-        {
-            get { return this._events.Count - this._threshold; }
-        }
+        /// <inheritdoc />
+        public override int Count => _events.Count - _threshold;
     }
 }

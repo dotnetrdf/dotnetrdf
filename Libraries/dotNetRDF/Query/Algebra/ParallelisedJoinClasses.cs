@@ -48,8 +48,8 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="rhs">RHS Pattern</param>
         public ParallelUnion(ISparqlAlgebra lhs, ISparqlAlgebra rhs)
         {
-            this._lhs = lhs;
-            this._rhs = rhs;
+            _lhs = lhs;
+            _rhs = rhs;
         }
 
         /// <summary>
@@ -73,9 +73,9 @@ namespace VDS.RDF.Query.Algebra
             List<Uri> activeGraphs = context.Data.ActiveGraphUris.ToList();
             List<Uri> defaultGraphs = context.Data.DefaultGraphUris.ToList();
 
-            ParallelEvaluateDelegate d = new ParallelEvaluateDelegate(this.ParallelEvaluate);
-            IAsyncResult lhs = d.BeginInvoke(this._lhs, context, activeGraphs, defaultGraphs, null, null);
-            IAsyncResult rhs = d.BeginInvoke(this._rhs, context2, activeGraphs, defaultGraphs, null, null);
+            ParallelEvaluateDelegate d = new ParallelEvaluateDelegate(ParallelEvaluate);
+            IAsyncResult lhs = d.BeginInvoke(_lhs, context, activeGraphs, defaultGraphs, null, null);
+            IAsyncResult rhs = d.BeginInvoke(_rhs, context2, activeGraphs, defaultGraphs, null, null);
 
             WaitHandle.WaitAll(new WaitHandle[] { lhs.AsyncWaitHandle, rhs.AsyncWaitHandle });
 
@@ -172,7 +172,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return (this._lhs.Variables.Concat(this._rhs.Variables)).Distinct();
+                return (_lhs.Variables.Concat(_rhs.Variables)).Distinct();
             }
         }
 
@@ -184,8 +184,8 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 // Floating variables are those not fixed
-                HashSet<String> fixedVars = new HashSet<string>(this.FixedVariables);
-                return this.Variables.Where(v => !fixedVars.Contains(v));
+                HashSet<String> fixedVars = new HashSet<string>(FixedVariables);
+                return Variables.Where(v => !fixedVars.Contains(v));
             }
         }
 
@@ -197,7 +197,7 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 // Fixed variables are those fixed on both sides
-                return this._lhs.FixedVariables.Intersect(this._rhs.FixedVariables);
+                return _lhs.FixedVariables.Intersect(_rhs.FixedVariables);
             }
         }
 
@@ -208,7 +208,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._lhs;
+                return _lhs;
             }
         }
 
@@ -219,7 +219,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._rhs;
+                return _rhs;
             }
         }
 
@@ -229,7 +229,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "ParallelUnion(" + this._lhs.ToString() + ", " + this._rhs.ToString() + ")";
+            return "ParallelUnion(" + _lhs.ToString() + ", " + _rhs.ToString() + ")";
         }
 
         /// <summary>
@@ -239,7 +239,7 @@ namespace VDS.RDF.Query.Algebra
         public SparqlQuery ToQuery()
         {
             SparqlQuery q = new SparqlQuery();
-            q.RootGraphPattern = this.ToGraphPattern();
+            q.RootGraphPattern = ToGraphPattern();
             q.Optimise();
             return q;
         }
@@ -252,8 +252,8 @@ namespace VDS.RDF.Query.Algebra
         {
             GraphPattern p = new GraphPattern();
             p.IsUnion = true;
-            p.AddGraphPattern(this._lhs.ToGraphPattern());
-            p.AddGraphPattern(this._rhs.ToGraphPattern());
+            p.AddGraphPattern(_lhs.ToGraphPattern());
+            p.AddGraphPattern(_rhs.ToGraphPattern());
             return p;
         }
 
@@ -264,7 +264,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new ParallelUnion(optimiser.Optimise(this._lhs), optimiser.Optimise(this._rhs));
+            return new ParallelUnion(optimiser.Optimise(_lhs), optimiser.Optimise(_rhs));
         }
 
         /// <summary>
@@ -274,7 +274,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser)
         {
-            return new ParallelUnion(optimiser.Optimise(this._lhs), this._rhs);
+            return new ParallelUnion(optimiser.Optimise(_lhs), _rhs);
         }
 
         /// <summary>
@@ -284,7 +284,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra TransformRhs(IAlgebraOptimiser optimiser)
         {
-            return new ParallelUnion(this._lhs, optimiser.Optimise(this._rhs));
+            return new ParallelUnion(_lhs, optimiser.Optimise(_rhs));
         }
     }
 
@@ -306,9 +306,9 @@ namespace VDS.RDF.Query.Algebra
         public ParallelJoin(ISparqlAlgebra lhs, ISparqlAlgebra rhs)
         {
             if (!lhs.Variables.IsDisjoint(rhs.Variables)) throw new RdfQueryException("Cannot create a ParallelJoin between two algebra operators which are not distinct");
-            this._lhs = lhs;
-            this._rhs = rhs;
-            this._d = new ParallelEvaluateDelegate(this.ParallelEvaluate);
+            _lhs = lhs;
+            _rhs = rhs;
+            _d = new ParallelEvaluateDelegate(ParallelEvaluate);
         }
 
         /// <summary>
@@ -333,8 +333,8 @@ namespace VDS.RDF.Query.Algebra
             List<Uri> defaultGraphs = context.Data.DefaultGraphUris.ToList();
 
             // Start both executing asynchronously
-            IAsyncResult lhs = this._d.BeginInvoke(this._lhs, context, activeGraphs, defaultGraphs, null, null);
-            IAsyncResult rhs = this._d.BeginInvoke(this._rhs, context2, activeGraphs, defaultGraphs, new AsyncCallback(this.RhsCallback), null);
+            IAsyncResult lhs = _d.BeginInvoke(_lhs, context, activeGraphs, defaultGraphs, null, null);
+            IAsyncResult rhs = _d.BeginInvoke(_rhs, context2, activeGraphs, defaultGraphs, new AsyncCallback(RhsCallback), null);
 
             // Wait on the LHS
             if (context.RemainingTimeout > 0)
@@ -351,7 +351,7 @@ namespace VDS.RDF.Query.Algebra
             BaseMultiset lhsResult;
             try
             {
-                lhsResult = this._d.EndInvoke(lhs);
+                lhsResult = _d.EndInvoke(lhs);
             }
             catch
             {
@@ -383,15 +383,15 @@ namespace VDS.RDF.Query.Algebra
                     context.CheckTimeout();
                 }
 
-                if (this._rhsResult == null)
+                if (_rhsResult == null)
                 {
-                    if (this._rhsError != null) throw this._rhsError;
+                    if (_rhsError != null) throw _rhsError;
                     Thread.Sleep(10);
                 }
-                if (this._rhsResult == null) throw new RdfQueryException("Unknown error in parallel join evaluation, RHS is reported completed without errors but no result is available");
+                if (_rhsResult == null) throw new RdfQueryException("Unknown error in parallel join evaluation, RHS is reported completed without errors but no result is available");
 
                 // Compute the product of the two sides
-                context.OutputMultiset = lhsResult.Product(this._rhsResult);
+                context.OutputMultiset = lhsResult.Product(_rhsResult);
             }
             return context.OutputMultiset;
         }
@@ -454,12 +454,12 @@ namespace VDS.RDF.Query.Algebra
         {
             try
             {
-                this._rhsResult = this._d.EndInvoke(result);
+                _rhsResult = _d.EndInvoke(result);
             }
             catch (Exception ex)
             {
-                this._rhsError = ex;
-                this._rhsResult = null;
+                _rhsError = ex;
+                _rhsResult = null;
             }
         }
 
@@ -470,7 +470,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return (this._lhs.Variables.Concat(this._rhs.Variables)).Distinct();
+                return (_lhs.Variables.Concat(_rhs.Variables)).Distinct();
             }
         }
         /// <summary>
@@ -481,8 +481,8 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 // Floating variables are those floating on either side which are not fixed
-                IEnumerable<String> floating = this._lhs.FloatingVariables.Concat(this._rhs.FloatingVariables).Distinct();
-                HashSet<String> fixedVars = new HashSet<string>(this.FixedVariables);
+                IEnumerable<String> floating = _lhs.FloatingVariables.Concat(_rhs.FloatingVariables).Distinct();
+                HashSet<String> fixedVars = new HashSet<string>(FixedVariables);
                 return floating.Where(v => !fixedVars.Contains(v));
             }
         }
@@ -495,7 +495,7 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 // Fixed variables are those fixed on either side
-                return this._lhs.FixedVariables.Concat(this._rhs.FixedVariables).Distinct();
+                return _lhs.FixedVariables.Concat(_rhs.FixedVariables).Distinct();
             }
         }
 
@@ -506,7 +506,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._lhs;
+                return _lhs;
             }
         }
 
@@ -517,7 +517,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._rhs;
+                return _rhs;
             }
         }
 
@@ -527,7 +527,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "ParallelJoin(" + this._lhs.ToString() + ", " + this._rhs.ToString() + ")";
+            return "ParallelJoin(" + _lhs.ToString() + ", " + _rhs.ToString() + ")";
         }
 
         /// <summary>
@@ -537,7 +537,7 @@ namespace VDS.RDF.Query.Algebra
         public SparqlQuery ToQuery()
         {
             SparqlQuery q = new SparqlQuery();
-            q.RootGraphPattern = this.ToGraphPattern();
+            q.RootGraphPattern = ToGraphPattern();
             q.Optimise();
             return q;
         }
@@ -548,8 +548,8 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            GraphPattern p = this._lhs.ToGraphPattern();
-            p.AddGraphPattern(this._rhs.ToGraphPattern());
+            GraphPattern p = _lhs.ToGraphPattern();
+            p.AddGraphPattern(_rhs.ToGraphPattern());
             return p;
         }
 
@@ -560,7 +560,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new ParallelJoin(optimiser.Optimise(this._lhs), optimiser.Optimise(this._rhs));
+            return new ParallelJoin(optimiser.Optimise(_lhs), optimiser.Optimise(_rhs));
         }
 
         /// <summary>
@@ -570,7 +570,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser)
         {
-            return new ParallelJoin(optimiser.Optimise(this._lhs), this._rhs);
+            return new ParallelJoin(optimiser.Optimise(_lhs), _rhs);
         }
 
         /// <summary>
@@ -580,7 +580,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra TransformRhs(IAlgebraOptimiser optimiser)
         {
-            return new ParallelJoin(this._lhs, optimiser.Optimise(this._rhs));
+            return new ParallelJoin(_lhs, optimiser.Optimise(_rhs));
         }
     }
 }

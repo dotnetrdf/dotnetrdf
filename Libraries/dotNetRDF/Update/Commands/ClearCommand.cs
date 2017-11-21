@@ -69,11 +69,11 @@ namespace VDS.RDF.Update.Commands
         public ClearCommand(Uri graphUri, ClearMode mode, bool silent)
             : base(SparqlUpdateCommandType.Clear)
         {
-            this._graphUri = graphUri;
-            this._mode = mode;
-            if (this._graphUri == null && this._mode == ClearMode.Graph) this._mode = ClearMode.Default;
-            if (this._mode == ClearMode.Default) this._graphUri = null;
-            this._silent = silent;
+            _graphUri = graphUri;
+            _mode = mode;
+            if (_graphUri == null && _mode == ClearMode.Graph) _mode = ClearMode.Default;
+            if (_mode == ClearMode.Default) _graphUri = null;
+            _silent = silent;
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace VDS.RDF.Update.Commands
         {
             get 
             {
-                return this._mode == ClearMode.Graph || this._mode == ClearMode.Default;
+                return _mode == ClearMode.Graph || _mode == ClearMode.Default;
             }
         }
 
@@ -122,7 +122,7 @@ namespace VDS.RDF.Update.Commands
         /// <returns></returns>
         public override bool AffectsGraph(Uri graphUri)
         {
-            switch (this._mode)
+            switch (_mode)
             {
                 case ClearMode.All:
                     return true;
@@ -131,13 +131,13 @@ namespace VDS.RDF.Update.Commands
                 case ClearMode.Named:
                     return graphUri != null;
                 case ClearMode.Graph:
-                    if (this._graphUri == null)
+                    if (_graphUri == null)
                     {
                         return true;
                     }
                     else
                     {
-                        return this._graphUri.AbsoluteUri.Equals(graphUri.ToSafeString());
+                        return _graphUri.AbsoluteUri.Equals(graphUri.ToSafeString());
                     }
                 default:
                     // No Other Clear Modes but have to keep the compiler happy
@@ -152,7 +152,7 @@ namespace VDS.RDF.Update.Commands
         {
             get
             {
-                return this._graphUri;
+                return _graphUri;
             }
         }
 
@@ -163,7 +163,7 @@ namespace VDS.RDF.Update.Commands
         {
             get
             {
-                return this._silent;
+                return _silent;
             }
         }
 
@@ -174,7 +174,7 @@ namespace VDS.RDF.Update.Commands
         {
             get
             {
-                return this._mode;
+                return _mode;
             }
         }
 
@@ -186,13 +186,13 @@ namespace VDS.RDF.Update.Commands
         {
             try
             {
-                switch (this._mode)
+                switch (_mode)
                 {
                     case ClearMode.Graph:
                     case ClearMode.Default:
-                        if (context.Data.HasGraph(this._graphUri))
+                        if (context.Data.HasGraph(_graphUri))
                         {
-                            context.Data.GetModifiableGraph(this._graphUri).Clear();
+                            context.Data.GetModifiableGraph(_graphUri).Clear();
                         }
                         break;
                     case ClearMode.Named:
@@ -214,7 +214,7 @@ namespace VDS.RDF.Update.Commands
             }
             catch
             {
-                if (!this._silent) throw;
+                if (!_silent) throw;
             }
         }
 
@@ -233,15 +233,15 @@ namespace VDS.RDF.Update.Commands
         /// <returns></returns>
         public override string ToString()
         {
-            String silent = (this._silent) ? "SILENT " : String.Empty;
-            switch (this._mode)
+            String silent = (_silent) ? "SILENT " : String.Empty;
+            switch (_mode)
             {
                 case ClearMode.All:
                     return "CLEAR " + silent + "ALL";
                 case ClearMode.Default:
                     return "CLEAR " + silent + "DEFAULT";
                 case ClearMode.Graph:
-                    return "CLEAR " + silent + "GRAPH <" + this._graphUri.AbsoluteUri.Replace(">", "\\>") + ">";
+                    return "CLEAR " + silent + "GRAPH <" + _graphUri.AbsoluteUri.Replace(">", "\\>") + ">";
                 case ClearMode.Named:
                     return "CLEAR " + silent + "NAMED";
                 default:

@@ -46,7 +46,7 @@ namespace VDS.RDF.Parsing.Contexts
             : base(handler)
         {
             if (g == null) throw new ArgumentNullException("g");
-            this._g = g;
+            _g = g;
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._g;
+                return _g;
             }
         }
 

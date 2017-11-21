@@ -49,7 +49,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            IValuedNode result = this._expr.Evaluate(context, bindingID);
+            IValuedNode result = _expr.Evaluate(context, bindingID);
             if (result == null)
             {
                 throw new RdfQueryException("Cannot return the lexical value of an NULL");
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override string ToString()
         {
-            return "STR(" + this._expr.ToString() + ")";
+            return "STR(" + _expr.ToString() + ")";
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new StrFunction(transformer.Transform(this._expr));
+            return new StrFunction(transformer.Transform(_expr));
         }
     }
 }

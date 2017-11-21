@@ -48,8 +48,8 @@ namespace VDS.RDF.Writing
         /// <remarks>Only use this form if you're certain that dot.exe is in your PATH otherwise the code will throw an error</remarks>
         public GraphVizGenerator(String format)
         {
-            this.LocateGraphViz();
-            this._format = format;
+            LocateGraphViz();
+            _format = format;
         }
 
         /// <summary>
@@ -62,11 +62,11 @@ namespace VDS.RDF.Writing
         {
             if (gvdir.LastIndexOf('\\') != gvdir.Length)
             {
-                this._graphvizdir = gvdir + "\\";
+                _graphvizdir = gvdir + "\\";
             }
             else
             {
-                this._graphvizdir = gvdir;
+                _graphvizdir = gvdir;
             }
         }
 
@@ -77,11 +77,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._format;
+                return _format;
             }
             set
             {
-                this._format = value;
+                _format = value;
             }
         }
 
@@ -96,11 +96,11 @@ namespace VDS.RDF.Writing
             // Prepare the Process
             ProcessStartInfo start = new ProcessStartInfo();
             if (!_graphvizdir.Equals(String.Empty)) {
-                start.FileName = this._graphvizdir + "dot.exe";
+                start.FileName = _graphvizdir + "dot.exe";
             } else {
                 start.FileName = "dot.exe";
             }
-            start.Arguments = "-T" + this._format;
+            start.Arguments = "-T" + _format;
             start.UseShellExecute = false;
             start.RedirectStandardInput = true;
             start.RedirectStandardOutput = true;
@@ -151,12 +151,12 @@ namespace VDS.RDF.Writing
             {
                 if (File.Exists(folder + "dot.exe"))
                 {
-                    this._graphvizdir = folder;
+                    _graphvizdir = folder;
                     return;
                 } 
                 else if (File.Exists(folder + "\\dot.exe")) 
                 {
-                    this._graphvizdir = folder + "\\";
+                    _graphvizdir = folder + "\\";
                     return;
                 }
             }

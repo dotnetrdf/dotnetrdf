@@ -28,7 +28,7 @@ using VDS.RDF.Query.Spin.SparqlUtil;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-    public class MinusImpl : ElementImpl, IMinus
+    internal class MinusImpl : ElementImpl, IMinus
     {
 
         public MinusImpl(INode node, SpinProcessor spinModel)

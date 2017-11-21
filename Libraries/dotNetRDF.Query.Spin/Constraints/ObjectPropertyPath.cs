@@ -35,7 +35,7 @@ namespace VDS.RDF.Query.Spin.Constraints
      * 
      * @author Holger Knublauch
      */
-    public class ObjectPropertyPath : SimplePropertyPath
+    internal class ObjectPropertyPath : SimplePropertyPath
     {
 
         public ObjectPropertyPath(INode subject, INode predicate)

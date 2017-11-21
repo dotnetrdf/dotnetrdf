@@ -87,7 +87,7 @@ namespace VDS.RDF
     ///     <li>Does not include parts of the <see cref="VDS.RDF.Storage">Storage</see> namespace that would require synchronous HTTP</li>
     ///     <li>No String normalization support</li>
     ///     <li>No <see cref="VDS.RDF.Parsing.UriLoader">UriLoader</see> caching support</li>
-    ///     <li>No multi-threaded support where <see cref="System.Threading.ReaderWriteLockSlim">ReaderWriterLockSlim</see> is used</li>
+    ///     <li>No multi-threaded support where System.Threading.ReaderWriteLockSlim is used</li>
     ///     <li>Various writers and parsers use streaming rather than DOM based XML parsing</li>
     ///     <li>No support for XSL in TriX files</li>
     ///     <li>Synchronous HTTP Request Features - For most of these there are asynchronous callback driven versions of these features available from the 0.5.0 release onwards</li>

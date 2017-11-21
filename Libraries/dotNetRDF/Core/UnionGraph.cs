@@ -54,8 +54,8 @@ namespace VDS.RDF
         public UnionGraph(IGraph defaultGraph, IEnumerable<IGraph> graphs)
             : base(new UnionTripleCollection(defaultGraph.Triples, graphs.Where(g => !ReferenceEquals(defaultGraph, g)).Select(g => g.Triples)))
         {
-            this._default = defaultGraph;
-            this._graphs = graphs.Where(g => !ReferenceEquals(defaultGraph, g)).ToList();
+            _default = defaultGraph;
+            _graphs = graphs.Where(g => !ReferenceEquals(defaultGraph, g)).ToList();
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._default.Nodes.Concat(from g in this._graphs
+                return _default.Nodes.Concat(from g in _graphs
                                                   from n in g.Nodes
                                                   select n);
             }
@@ -80,7 +80,7 @@ namespace VDS.RDF
         /// </remarks>
         public override bool Assert(IEnumerable<Triple> ts)
         {
-            return this._default.Assert(ts);
+            return _default.Assert(ts);
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace VDS.RDF
         /// </remarks>
         public override bool Assert(Triple t)
         {
-            return this._default.Assert(t);
+            return _default.Assert(t);
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace VDS.RDF
         /// </remarks>
         public override bool Retract(IEnumerable<Triple> ts)
         {
-            return this._default.Retract(ts);
+            return _default.Retract(ts);
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace VDS.RDF
         /// </remarks>
         public override bool Retract(Triple t)
         {
-            return this._default.Retract(t);
+            return _default.Retract(t);
         }
 
         /// <summary>
@@ -124,15 +124,15 @@ namespace VDS.RDF
         /// </summary>
         public override void Clear()
         {
-            if (!this.RaiseClearRequested()) return;
+            if (!RaiseClearRequested()) return;
 
-            this._default.Clear();
-            foreach (IGraph g in this._graphs)
+            _default.Clear();
+            foreach (IGraph g in _graphs)
             {
                 g.Clear();
             }
 
-            this.RaiseCleared();
+            RaiseCleared();
         }
     }
 }

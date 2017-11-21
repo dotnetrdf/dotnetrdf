@@ -32,7 +32,7 @@ using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-    public class ArgumentImpl : AbstractAttributeImpl, IArgument
+    internal class ArgumentImpl : AbstractAttributeImpl, IArgument
     {
 
         public ArgumentImpl(INode node, SpinProcessor spinModel)
@@ -74,10 +74,5 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
-        public bool IsOptional()
-        {
-            return (bool)getBoolean(SPL.PropertyOptional);
-        }
     }
 }

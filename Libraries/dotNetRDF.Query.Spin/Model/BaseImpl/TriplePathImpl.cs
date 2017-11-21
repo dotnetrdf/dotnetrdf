@@ -32,9 +32,7 @@ using VDS.RDF.Query.Spin.Util;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-
-    public class TriplePathImpl : TupleImpl, ITriplePath
+    internal class TriplePathImpl : TupleImpl, ITriplePath
     {
 
         public TriplePathImpl(INode node, SpinProcessor spinModel)

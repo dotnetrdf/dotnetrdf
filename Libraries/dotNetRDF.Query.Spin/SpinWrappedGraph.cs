@@ -40,21 +40,13 @@ namespace VDS.RDF.Query.Spin
     /// </summary>
     public class SpinWrappedGraph : IGraph
     {
+        internal HashSet<Triple> Additions = new HashSet<Triple>(RDFUtil.tripleEqualityComparer);
 
-        private Uri _baseUri;
+        internal HashSet<Triple> Removals = new HashSet<Triple>(RDFUtil.tripleEqualityComparer);
 
-        internal HashSet<Triple> additions = new HashSet<Triple>(RDFUtil.tripleEqualityComparer);
+        internal bool Readonly = true;
 
-        internal HashSet<Triple> removals = new HashSet<Triple>(RDFUtil.tripleEqualityComparer);
-
-        internal bool _readonly = true;
-
-        internal bool IsChanged {
-            get {
-                return additions.Count > 0 || removals.Count > 0; 
-            }
-            private set { }
-        }
+        internal bool IsChanged => Additions.Count > 0 || Removals.Count > 0;
 
         #region Events helpers
 
@@ -62,85 +54,85 @@ namespace VDS.RDF.Query.Spin
         /// Helper method for raising the triple events manually
         /// </summary>
         /// <param name="t">Triple</param>
+        /// <param name="asserted">True to raise TripleAsserted, false to raise TripleRetracted</param>
         protected void RaiseTripleEvent(Triple t, bool asserted)
         {
-            TripleEventHandler d = asserted ? this.TripleAsserted : this.TripleRetracted;
-            GraphEventHandler e = this.Changed;
+            var d = asserted ? TripleAsserted : TripleRetracted;
+            var e = Changed;
             if (d != null || e != null)
             {
-                TripleEventArgs args = new TripleEventArgs(t, this, asserted);
-                if (d != null) d(this, args);
-                if (e != null) e(this, new GraphEventArgs(this, args));
+                var args = new TripleEventArgs(t, this, asserted);
+                d?.Invoke(this, args);
+                e?.Invoke(this, new GraphEventArgs(this, args));
             }
         }
 
-        protected void RaiseClearedEvent()
+        internal void RaiseClearedEvent()
         {
-            GraphEventHandler d = this.Cleared;
-            GraphEventHandler e = this.Changed;
-            GraphEventArgs args = new GraphEventArgs(this);
-            if (d != null)
-            {
-                d(this, args);
-            }
-            if (e != null)
-            {
-                e(this, args);
-            }
+            var d = Cleared;
+            var e = Changed;
+            var args = new GraphEventArgs(this);
+            d?.Invoke(this, args);
+            e?.Invoke(this, args);
         }
 
         #endregion
 
         internal void Reset() {
-            additions.Clear();
-            removals.Clear();
+            Additions.Clear();
+            Removals.Clear();
         }
 
+        /// <inheritdoc />
         public bool Assert(Triple t) {
-            if (_readonly) {
+            if (Readonly) {
                 throw new Exception("This graph is marked as read only");
             }
-            removals.Remove(t);
-            additions.Add(t);
+            Removals.Remove(t);
+            Additions.Add(t);
             RaiseTripleEvent(t, true);
             return true;
         }
 
+        /// <inheritdoc />
         public bool Retract(Triple t)
         {
-            if (_readonly)
+            if (Readonly)
             {
                 throw new Exception("This graph is marked as read only");
             }
-            additions.Remove(t);
-            removals.Add(t);
+            Additions.Remove(t);
+            Removals.Add(t);
             RaiseTripleEvent(t, false);
             return true;
         }
 
+        /// <inheritdoc />
         public bool Assert(IEnumerable<Triple> ts)
         {
-            bool result = false;
-            foreach (Triple t in ts)
+            var result = false;
+            foreach (var t in ts)
             {
                 result |= Assert(t);
             }
             return result;
         }
 
+        /// <inheritdoc />
         public bool Retract(IEnumerable<Triple> ts)
         {
-            bool result = false;
-            foreach (Triple t in ts)
+            var result = false;
+            foreach (var t in ts)
             {
                 result |= Retract(t);
             }
             return result;
         }
 
+        /// <inheritdoc />
         public void Clear()
         {
-            if (_readonly)
+            if (Readonly)
             {
                 throw new Exception("This graph is marked as read only");
             }
@@ -148,18 +140,10 @@ namespace VDS.RDF.Query.Spin
             throw new NotImplementedException();
         }
 
-        public Uri BaseUri
-        {
-            get
-            {
-                return _baseUri;
-            }
-            set
-            {
-                _baseUri = value;
-            }
-        }
+        /// <inheritdoc />
+        public Uri BaseUri { get; set; }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             Reset();
@@ -169,246 +153,299 @@ namespace VDS.RDF.Query.Spin
 
         // TODO provide the triple selection methods
 
+        /// <inheritdoc />
         public bool IsEmpty
         {
             get { throw new NotImplementedException(); }
         }
 
+        /// <inheritdoc />
         public INamespaceMapper NamespaceMap
         {
             get { throw new NotImplementedException(); }
         }
 
+        /// <inheritdoc />
         public IEnumerable<INode> Nodes
         {
             get { throw new NotImplementedException(); }
         }
 
+        /// <inheritdoc />
         public BaseTripleCollection Triples
         {
             get { throw new NotImplementedException(); }
         }
 
 
+        /// <inheritdoc />
         public IUriNode CreateUriNode()
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public IUriNode CreateUriNode(string qname)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public IBlankNode GetBlankNode(string nodeId)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public ILiteralNode GetLiteralNode(string literal, string langspec)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public ILiteralNode GetLiteralNode(string literal)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public ILiteralNode GetLiteralNode(string literal, Uri datatype)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public IEnumerable<Triple> GetTriples(Uri uri)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public IEnumerable<Triple> GetTriples(INode n)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public IEnumerable<Triple> GetTriplesWithObject(Uri u)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public IEnumerable<Triple> GetTriplesWithObject(INode n)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public IEnumerable<Triple> GetTriplesWithPredicate(INode n)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public IEnumerable<Triple> GetTriplesWithPredicate(Uri u)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public IEnumerable<Triple> GetTriplesWithSubject(INode n)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public IEnumerable<Triple> GetTriplesWithSubject(Uri u)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public IUriNode GetUriNode(string qname)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public IUriNode GetUriNode(Uri uri)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public bool ContainsTriple(Triple t)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public void Merge(IGraph g)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public void Merge(IGraph g, bool keepOriginalGraphUri)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public bool Equals(IGraph g, out Dictionary<INode, INode> mapping)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public bool IsSubGraphOf(IGraph g)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public bool IsSubGraphOf(IGraph g, out Dictionary<INode, INode> mapping)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public bool HasSubGraph(IGraph g)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public bool HasSubGraph(IGraph g, out Dictionary<INode, INode> mapping)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public GraphDiffReport Difference(IGraph g)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public Uri ResolveQName(string qname)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public event TripleEventHandler TripleAsserted;
 
+        /// <inheritdoc />
         public event TripleEventHandler TripleRetracted;
 
+        /// <inheritdoc />
         public event GraphEventHandler Changed;
 
+        /// <inheritdoc />
         public event CancellableGraphEventHandler ClearRequested;
 
+        /// <inheritdoc />
         public event GraphEventHandler Cleared;
 
+        /// <inheritdoc />
         public event CancellableGraphEventHandler MergeRequested;
 
+        /// <inheritdoc />
         public event GraphEventHandler Merged;
 
+        /// <inheritdoc />
         public IBlankNode CreateBlankNode()
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public IBlankNode CreateBlankNode(string nodeId)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public IGraphLiteralNode CreateGraphLiteralNode()
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public IGraphLiteralNode CreateGraphLiteralNode(IGraph subgraph)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public ILiteralNode CreateLiteralNode(string literal, Uri datatype)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public ILiteralNode CreateLiteralNode(string literal)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public ILiteralNode CreateLiteralNode(string literal, string langspec)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public IUriNode CreateUriNode(Uri uri)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public IVariableNode CreateVariableNode(string varname)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public string GetNextBlankNodeID()
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public System.Xml.Schema.XmlSchema GetSchema()
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public void ReadXml(System.Xml.XmlReader reader)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public void WriteXml(System.Xml.XmlWriter writer)
         {
             throw new NotImplementedException();

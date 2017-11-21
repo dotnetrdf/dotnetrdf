@@ -33,8 +33,7 @@ using VDS.RDF.Query.Spin.Util;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-    public class ValuesImpl : ElementImpl, IValues
+    internal class ValuesImpl : ElementImpl, IValues
     {
 
         public ValuesImpl(INode node, SpinProcessor spinModel)

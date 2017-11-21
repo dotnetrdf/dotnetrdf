@@ -44,7 +44,7 @@ namespace VDS.RDF.Parsing.Handlers
             : base(g)
         {
             if (g == null) throw new ArgumentNullException("graph");
-            this._g = g;
+            _g = g;
         }
 
         /// <summary>
@@ -54,13 +54,13 @@ namespace VDS.RDF.Parsing.Handlers
         {
             get
             {
-                if (this._target != null)
+                if (_target != null)
                 {
-                    return this._target.BaseUri;
+                    return _target.BaseUri;
                 }
                 else
                 {
-                    return this._g.BaseUri;
+                    return _g.BaseUri;
                 }
             }
         }
@@ -72,7 +72,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             get
             {
-                return this._g;
+                return _g;
             }
         }
 
@@ -81,17 +81,17 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         protected override void StartRdfInternal()
         {
-            if (this._g.IsEmpty)
+            if (_g.IsEmpty)
             {
-                this._target = this._g;
+                _target = _g;
             }
             else
             {
-                this._target = new Graph(true);
-                this._target.NamespaceMap.Import(this._g.NamespaceMap);
-                this._target.BaseUri = this._g.BaseUri;
+                _target = new Graph(true);
+                _target.NamespaceMap.Import(_g.NamespaceMap);
+                _target.BaseUri = _g.BaseUri;
             }
-            this.NodeFactory = this._target;
+            NodeFactory = _target;
         }
 
         /// <summary>
@@ -103,34 +103,34 @@ namespace VDS.RDF.Parsing.Handlers
             if (ok)
             {
                 // If the Target Graph was different from the Destination Graph then do a Merge
-                if (!ReferenceEquals(this._g, this._target))
+                if (!ReferenceEquals(_g, _target))
                 {
-                    this._g.Merge(this._target);
-                    this._g.NamespaceMap.Import(this._target.NamespaceMap);
-                    if (this._g.BaseUri == null) this._g.BaseUri = this._target.BaseUri;
+                    _g.Merge(_target);
+                    _g.NamespaceMap.Import(_target.NamespaceMap);
+                    if (_g.BaseUri == null) _g.BaseUri = _target.BaseUri;
                 }
                 else
                 {
                     // The Target was the Graph so we want to set our reference to it to be null so we don't
                     // clear it in the remainder of our clean up step
-                    this._target = null;
+                    _target = null;
                 }
             }
             else
             {
                 // Discard the Parsed Triples if parsing failed
-                if (ReferenceEquals(this._g, this._target))
+                if (ReferenceEquals(_g, _target))
                 {
-                    this._g.Clear();
-                    this._target = null;
+                    _g.Clear();
+                    _target = null;
                 }
             }
 
             // Always throw away the target afterwards if not already done so
-            if (this._target != null)
+            if (_target != null)
             {
-                this._target.Clear();
-                this._target = null;
+                _target.Clear();
+                _target = null;
             }
         }
 
@@ -142,7 +142,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
-            this._target.NamespaceMap.AddNamespace(prefix, namespaceUri);
+            _target.NamespaceMap.AddNamespace(prefix, namespaceUri);
             return true;
         }
 
@@ -153,7 +153,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
-            this._target.BaseUri = baseUri;
+            _target.BaseUri = baseUri;
             return true;
         }
 
@@ -164,7 +164,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
-            this._target.Assert(t);
+            _target.Assert(t);
             return true;
         }
 

@@ -28,10 +28,21 @@ using System;
 
 namespace VDS.RDF.JsonLd
 {
+    /// <summary>
+    /// Exception raised when the JSON-LD framing algorithm encounters an error during processing
+    /// </summary>
     public class JsonLdFramingException : Exception
     {
+        /// <summary>
+        /// The JSON-LD error code describing the error encountered
+        /// </summary>
         public JsonLdFramingErrorCode ErrorCode { get; }
 
+        /// <summary>
+        /// Create a new exception instance
+        /// </summary>
+        /// <param name="errorCode">The JSON-LD error code describing the error encountered</param>
+        /// <param name="message">A string containing contextual information to help the user identify the root cause of the error</param>
         public JsonLdFramingException(JsonLdFramingErrorCode errorCode, string message) : base(message)
         {
             ErrorCode = errorCode;

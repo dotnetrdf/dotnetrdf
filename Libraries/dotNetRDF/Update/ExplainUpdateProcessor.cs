@@ -53,7 +53,7 @@ namespace VDS.RDF.Update
         public ExplainUpdateProcessor(ISparqlDataset data, ExplanationLevel level)
             : base(data)
         {
-            this._level = level;
+            _level = level;
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace VDS.RDF.Update
         /// <returns></returns>
         protected override ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> GetQueryProcessor()
         {
-            return new ExplainQueryProcessor(this._dataset, this._level);
+            return new ExplainQueryProcessor(_dataset, _level);
         }
     }
 }

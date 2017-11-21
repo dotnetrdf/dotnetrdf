@@ -54,12 +54,12 @@ namespace VDS.RDF.Query.Algebra
             // Try and generate an Algebra expression
             // Make sure we don't generate clashing temporary variable IDs over the life of the
             // Evaluation
-            PathTransformContext transformContext = new PathTransformContext(this.PathStart, this.PathEnd);
+            PathTransformContext transformContext = new PathTransformContext(PathStart, PathEnd);
             if (context["PathTransformID"] != null)
             {
                 transformContext.NextID = (int)context["PathTransformID"];
             }
-            ISparqlAlgebra algebra = this.Path.ToAlgebra(transformContext);
+            ISparqlAlgebra algebra = Path.ToAlgebra(transformContext);
             context["PathTransformID"] = transformContext.NextID;
 
             // Now we can evaluate the resulting algebra
@@ -100,7 +100,7 @@ namespace VDS.RDF.Query.Algebra
         public override GraphPattern ToGraphPattern()
         {
             GraphPattern gp = new GraphPattern();
-            gp.AddTriplePattern(new PropertyPathPattern(this.PathStart, this.Path, this.PathEnd));
+            gp.AddTriplePattern(new PropertyPathPattern(PathStart, Path, PathEnd));
             return gp;
         }
 

@@ -72,29 +72,29 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="gp">Graph Pattern</param>
         internal GraphPattern(GraphPattern gp)
         {
-            this._break = gp._break;
-            this._broken = gp._broken;
-            this._filter = gp._filter;
-            this._graphPatterns.AddRange(gp._graphPatterns);
-            this._graphSpecifier = gp._graphSpecifier;
-            this._isExists = gp._isExists;
-            this._isFiltered = gp._isFiltered;
-            this._isGraph = gp._isGraph;
-            this._isMinus = gp._isMinus;
-            this._isNotExists = gp._isExists;
-            this._isOptional = gp._isOptional;
-            this._isService = gp._isService;
-            this._isSilent = gp._isSilent;
-            this._isUnion = gp._isUnion;
+            _break = gp._break;
+            _broken = gp._broken;
+            _filter = gp._filter;
+            _graphPatterns.AddRange(gp._graphPatterns);
+            _graphSpecifier = gp._graphSpecifier;
+            _isExists = gp._isExists;
+            _isFiltered = gp._isFiltered;
+            _isGraph = gp._isGraph;
+            _isMinus = gp._isMinus;
+            _isNotExists = gp._isExists;
+            _isOptional = gp._isOptional;
+            _isService = gp._isService;
+            _isSilent = gp._isSilent;
+            _isUnion = gp._isUnion;
 
             // Copy Triple Patterns across
             // Assignments and Filters are copied into the unplaced lists so the new pattern can be reoptimised if it gets modified since
             // reoptimising a pattern with already placed filters and assignments can lead to strange results
-            this._triplePatterns.AddRange(gp._triplePatterns.Where(tp => tp.PatternType != TriplePatternType.BindAssignment && tp.PatternType != TriplePatternType.LetAssignment && tp.PatternType != TriplePatternType.Filter));
-            this._unplacedAssignments.AddRange(gp._unplacedAssignments);
-            this._unplacedAssignments.AddRange(gp._triplePatterns.Where(tp => tp.PatternType == TriplePatternType.BindAssignment || tp.PatternType == TriplePatternType.LetAssignment).OfType<IAssignmentPattern>());
-            this._unplacedFilters.AddRange(gp._unplacedFilters);
-            this._unplacedFilters.AddRange(gp._triplePatterns.Where(tp => tp.PatternType == TriplePatternType.Filter).OfType<IFilterPattern>().Select(fp => fp.Filter));
+            _triplePatterns.AddRange(gp._triplePatterns.Where(tp => tp.PatternType != TriplePatternType.BindAssignment && tp.PatternType != TriplePatternType.LetAssignment && tp.PatternType != TriplePatternType.Filter));
+            _unplacedAssignments.AddRange(gp._unplacedAssignments);
+            _unplacedAssignments.AddRange(gp._triplePatterns.Where(tp => tp.PatternType == TriplePatternType.BindAssignment || tp.PatternType == TriplePatternType.LetAssignment).OfType<IAssignmentPattern>());
+            _unplacedFilters.AddRange(gp._unplacedFilters);
+            _unplacedFilters.AddRange(gp._triplePatterns.Where(tp => tp.PatternType == TriplePatternType.Filter).OfType<IFilterPattern>().Select(fp => fp.Filter));
         }
 
         /// <summary>
@@ -103,22 +103,22 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="p">Triple Pattern</param>
         internal void AddTriplePattern(ITriplePattern p)
         {
-            if (this._break)
+            if (_break)
             {
-                if (this._broken)
+                if (_broken)
                 {
-                    this._graphPatterns.Last().AddTriplePattern(p);
+                    _graphPatterns.Last().AddTriplePattern(p);
                 }
                 else
                 {
                     GraphPattern breakPattern = new GraphPattern();
                     breakPattern.AddTriplePattern(p);
-                    this._graphPatterns.Add(breakPattern);
+                    _graphPatterns.Add(breakPattern);
                 }
             }
             else
             {
-                this._triplePatterns.Add(p);
+                _triplePatterns.Add(p);
             }
         }
 
@@ -128,23 +128,23 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="p">Assignment Pattern</param>
         internal void AddAssignment(IAssignmentPattern p)
         {
-            if (this._break)
+            if (_break)
             {
-                if (this._broken)
+                if (_broken)
                 {
-                    this._graphPatterns.Last().AddAssignment(p);
+                    _graphPatterns.Last().AddAssignment(p);
                 }
                 else
                 {
                     // GraphPattern breakPattern = new GraphPattern();
                     // breakPattern.AddAssignment(p);
                     // this._graphPatterns.Add(breakPattern);
-                    this._unplacedAssignments.Add(p);
+                    _unplacedAssignments.Add(p);
                 }
             }
             else
             {
-                this._unplacedAssignments.Add(p);
+                _unplacedAssignments.Add(p);
             }
         }
 
@@ -154,8 +154,8 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="filter">Filter</param>
         internal void AddFilter(ISparqlFilter filter)
         {
-            this._isFiltered = true;
-            this._unplacedFilters.Add(filter);
+            _isFiltered = true;
+            _unplacedFilters.Add(filter);
         }
 
         /// <summary>
@@ -164,8 +164,8 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="filters">Filters</param>
         internal void ResetFilters(IEnumerable<ISparqlFilter> filters)
         {
-            this._unplacedFilters.Clear();
-            this._unplacedFilters.AddRange(filters);
+            _unplacedFilters.Clear();
+            _unplacedFilters.AddRange(filters);
         }
 
         /// <summary>
@@ -174,21 +174,21 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="p">Graph Pattern</param>
         internal void AddGraphPattern(GraphPattern p)
         {
-            if (this._break)
+            if (_break)
             {
-                if (this._broken)
+                if (_broken)
                 {
-                    this._graphPatterns.Last().AddGraphPattern(p);
+                    _graphPatterns.Last().AddGraphPattern(p);
                 }
                 else
                 {
-                    this._graphPatterns.Add(p);
+                    _graphPatterns.Add(p);
                 }
             }
             else
             {
-                this._graphPatterns.Add(p);
-                if (!this._isUnion && !p.IsSubQuery) this.BreakBGP();
+                _graphPatterns.Add(p);
+                if (!_isUnion && !p.IsSubQuery) BreakBGP();
             }
         }
 
@@ -198,32 +198,32 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="data"></param>
         internal void AddInlineData(BindingsPattern data)
         {
-            if (this._break)
+            if (_break)
             {
-                if (this._broken)
+                if (_broken)
                 {
-                    this._graphPatterns.Last().AddInlineData(data);
+                    _graphPatterns.Last().AddInlineData(data);
                 }
-                else if (this._data == null && this._graphPatterns.Count == 0)
+                else if (_data == null && _graphPatterns.Count == 0)
                 {
-                    this._data = data;
+                    _data = data;
                 }
                 else
                 {
                     GraphPattern p = new GraphPattern();
                     p.AddInlineData(data);
-                    this._graphPatterns.Add(p);
+                    _graphPatterns.Add(p);
                 }
             }
-            else if (this._isUnion)
+            else if (_isUnion)
             {
-                this.BreakBGP();
-                this.AddInlineData(data);
+                BreakBGP();
+                AddInlineData(data);
             }
             else
             {
-                this._data = data;
-                this.BreakBGP();
+                _data = data;
+                BreakBGP();
             }
         }
 
@@ -232,16 +232,16 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         internal void BreakBGP()
         {
-            if (this._break)
+            if (_break)
             {
-                if (this._broken)
+                if (_broken)
                 {
-                    this._graphPatterns.Last().BreakBGP();
+                    _graphPatterns.Last().BreakBGP();
                 }
             }
             else
             {
-                this._break = true;
+                _break = true;
             }
         }
 
@@ -255,9 +255,9 @@ namespace VDS.RDF.Query.Patterns
         /// </remarks>
         public void SwapTriplePatterns(int i, int j)
         {
-            ITriplePattern temp = this._triplePatterns[i];
-            this._triplePatterns[i] = this._triplePatterns[j];
-            this._triplePatterns[j] = temp;
+            ITriplePattern temp = _triplePatterns[i];
+            _triplePatterns[i] = _triplePatterns[j];
+            _triplePatterns[j] = temp;
         }
 
         /// <summary>
@@ -270,10 +270,10 @@ namespace VDS.RDF.Query.Patterns
         /// </remarks>
         public void InsertFilter(ISparqlFilter filter, int i)
         {
-            if (!this._unplacedFilters.Contains(filter)) throw new RdfQueryException("Cannot Insert a Filter that is not currentlyy an unplaced Filter in this Graph Pattern");
-            this._unplacedFilters.Remove(filter);
+            if (!_unplacedFilters.Contains(filter)) throw new RdfQueryException("Cannot Insert a Filter that is not currentlyy an unplaced Filter in this Graph Pattern");
+            _unplacedFilters.Remove(filter);
             FilterPattern p = new FilterPattern(filter);
-            this._triplePatterns.Insert(i, p);
+            _triplePatterns.Insert(i, p);
         }
 
         /// <summary>
@@ -286,9 +286,9 @@ namespace VDS.RDF.Query.Patterns
         /// </remarks>
         public void InsertAssignment(IAssignmentPattern assignment, int i)
         {
-            if (!this._unplacedAssignments.Contains(assignment)) throw new RdfQueryException("Cannot Insert an Assignment that is not currently an unplaced Assignment in this Graph Pattern");
-            this._unplacedAssignments.Remove(assignment);
-            this._triplePatterns.Insert(i, assignment);
+            if (!_unplacedAssignments.Contains(assignment)) throw new RdfQueryException("Cannot Insert an Assignment that is not currently an unplaced Assignment in this Graph Pattern");
+            _unplacedAssignments.Remove(assignment);
+            _triplePatterns.Insert(i, assignment);
         }
 
         #region Properties
@@ -298,8 +298,8 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool IsOptional
         {
-            get { return this._isOptional; }
-            internal set { this._isOptional = value; }
+            get { return _isOptional; }
+            internal set { _isOptional = value; }
         }
 
         /// <summary>
@@ -307,8 +307,8 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool IsFiltered
         {
-            get { return this._isFiltered; }
-            internal set { this._isFiltered = value; }
+            get { return _isFiltered; }
+            internal set { _isFiltered = value; }
         }
 
         /// <summary>
@@ -316,8 +316,8 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool IsUnion
         {
-            get { return this._isUnion; }
-            internal set { this._isUnion = value; }
+            get { return _isUnion; }
+            internal set { _isUnion = value; }
         }
 
         /// <summary>
@@ -325,8 +325,8 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool IsGraph
         {
-            get { return this._isGraph; }
-            internal set { this._isGraph = value; }
+            get { return _isGraph; }
+            internal set { _isGraph = value; }
         }
 
         /// <summary>
@@ -334,7 +334,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool IsEmpty
         {
-            get { return (this._triplePatterns.Count == 0 && this._graphPatterns.Count == 0 && !this._isFiltered && !this._isOptional && !this._isUnion && this._unplacedFilters.Count == 0 && this._unplacedAssignments.Count == 0); }
+            get { return (_triplePatterns.Count == 0 && _graphPatterns.Count == 0 && !_isFiltered && !_isOptional && !_isUnion && _unplacedFilters.Count == 0 && _unplacedAssignments.Count == 0); }
         }
 
         /// <summary>
@@ -342,12 +342,12 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool IsExists
         {
-            get { return this._isExists; }
+            get { return _isExists; }
             internal set
             {
-                if (value && this._isNotExists) throw new RdfQueryException("A Graph Pattern cannot be both an EXISTS and a NOT EXISTS");
-                this._isExists = value;
-                this._isOptional = value;
+                if (value && _isNotExists) throw new RdfQueryException("A Graph Pattern cannot be both an EXISTS and a NOT EXISTS");
+                _isExists = value;
+                _isOptional = value;
             }
         }
 
@@ -356,12 +356,12 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool IsNotExists
         {
-            get { return this._isNotExists; }
+            get { return _isNotExists; }
             internal set
             {
-                if (value && this._isExists) throw new RdfQueryException("A Graph Pattern cannot be both an EXISTS and a NOT EXISTS");
-                this._isNotExists = value;
-                this._isOptional = value;
+                if (value && _isExists) throw new RdfQueryException("A Graph Pattern cannot be both an EXISTS and a NOT EXISTS");
+                _isNotExists = value;
+                _isOptional = value;
             }
         }
 
@@ -370,8 +370,8 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool IsMinus
         {
-            get { return this._isMinus; }
-            internal set { this._isMinus = value; }
+            get { return _isMinus; }
+            internal set { _isMinus = value; }
         }
 
         /// <summary>
@@ -379,8 +379,8 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool IsService
         {
-            get { return this._isService; }
-            internal set { this._isService = value; }
+            get { return _isService; }
+            internal set { _isService = value; }
         }
 
         /// <summary>
@@ -391,7 +391,7 @@ namespace VDS.RDF.Query.Patterns
         /// </remarks>
         public bool IsOptimised
         {
-            get { return this._isOptimised; }
+            get { return _isOptimised; }
         }
 
         /// <summary>
@@ -399,8 +399,8 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool IsSilent
         {
-            get { return this._isSilent; }
-            internal set { this._isSilent = value; }
+            get { return _isSilent; }
+            internal set { _isSilent = value; }
         }
 
         /// <summary>
@@ -408,7 +408,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool HasInlineData
         {
-            get { return this._data != null; }
+            get { return _data != null; }
         }
 
         /// <summary>
@@ -416,7 +416,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool HasModifier
         {
-            get { return (this.IsExists || this.IsGraph || this.IsMinus || this.IsNotExists || this.IsOptional || this.IsService || this.IsSubQuery); }
+            get { return (IsExists || IsGraph || IsMinus || IsNotExists || IsOptional || IsService || IsSubQuery); }
         }
 
         /// <summary>
@@ -426,38 +426,38 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                if (this._unplacedFilters.Count > 0)
+                if (_unplacedFilters.Count > 0)
                 {
-                    if (this._filter == null)
+                    if (_filter == null)
                     {
-                        return new ChainFilter(this._unplacedFilters);
+                        return new ChainFilter(_unplacedFilters);
                     }
                     else
                     {
-                        return new ChainFilter(this._filter, this._unplacedFilters);
+                        return new ChainFilter(_filter, _unplacedFilters);
                     }
                 }
                 else
                 {
-                    return this._filter;
+                    return _filter;
                 }
             }
             internal set
             {
-                if (this._filter == null)
+                if (_filter == null)
                 {
                     // Set the Filter
-                    this._filter = value;
+                    _filter = value;
                 }
-                else if (this._filter is ChainFilter)
+                else if (_filter is ChainFilter)
                 {
                     // Add to the Filter Chain
-                    ((ChainFilter) this._filter).Add(value);
+                    ((ChainFilter) _filter).Add(value);
                 }
                 else
                 {
                     // Create a Filter Chain
-                    this._filter = new ChainFilter(this._filter, value);
+                    _filter = new ChainFilter(_filter, value);
                 }
             }
         }
@@ -470,8 +470,8 @@ namespace VDS.RDF.Query.Patterns
         /// </remarks>
         public IToken GraphSpecifier
         {
-            get { return this._graphSpecifier; }
-            internal set { this._graphSpecifier = value; }
+            get { return _graphSpecifier; }
+            internal set { _graphSpecifier = value; }
         }
 
         /// <summary>
@@ -479,7 +479,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool HasChildGraphPatterns
         {
-            get { return (this._graphPatterns.Count > 0); }
+            get { return (_graphPatterns.Count > 0); }
         }
 
         /// <summary>
@@ -487,8 +487,8 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         internal GraphPattern LastChildPattern()
         {
-            GraphPattern p = this._graphPatterns[this._graphPatterns.Count - 1];
-            this._graphPatterns.RemoveAt(this._graphPatterns.Count - 1);
+            GraphPattern p = _graphPatterns[_graphPatterns.Count - 1];
+            _graphPatterns.RemoveAt(_graphPatterns.Count - 1);
             return p;
         }
 
@@ -497,7 +497,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public List<GraphPattern> ChildGraphPatterns
         {
-            get { return this._graphPatterns; }
+            get { return _graphPatterns; }
         }
 
         /// <summary>
@@ -505,7 +505,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public List<ITriplePattern> TriplePatterns
         {
-            get { return this._triplePatterns; }
+            get { return _triplePatterns; }
         }
 
         /// <summary>
@@ -513,7 +513,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         internal bool IsSimplifiable
         {
-            get { return (this._graphPatterns.Count == 1 && this._triplePatterns.Count == 0 && !this._isFiltered && !this._isGraph && !this._isOptional && !this._isUnion && this._unplacedAssignments.Count == 0); }
+            get { return (_graphPatterns.Count == 1 && _triplePatterns.Count == 0 && !_isFiltered && !_isGraph && !_isOptional && !_isUnion && _unplacedAssignments.Count == 0); }
         }
 
         /// <summary>
@@ -521,7 +521,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool IsSubQuery
         {
-            get { return (this._graphPatterns.Count == 0 && this._triplePatterns.Count == 1 && !this._isFiltered && !this._isGraph && !this._isOptional && !this._isUnion && this._triplePatterns[0].PatternType == TriplePatternType.SubQuery); }
+            get { return (_graphPatterns.Count == 0 && _triplePatterns.Count == 1 && !_isFiltered && !_isGraph && !_isOptional && !_isUnion && _triplePatterns[0].PatternType == TriplePatternType.SubQuery); }
         }
 
         /// <summary>
@@ -535,9 +535,9 @@ namespace VDS.RDF.Query.Patterns
             get
             {
                 // SERVICE patterns are irrelevant as their dataset is irrelevant to whether the query uses the default dataset
-                if (this._isService) return true;
+                if (_isService) return true;
                 // Otherwise a pattern must not be a GRAPH pattern, all its triple patterns and child graph patterns must use the default dataset and any filters/assignments must use the default dataset
-                return !this._isGraph && this._triplePatterns.All(tp => tp.UsesDefaultDataset) && this._graphPatterns.All(gp => gp.UsesDefaultDataset) && (this._filter == null || this._filter.Expression.UsesDefaultDataset()) && this._unplacedAssignments.All(ap => ap.AssignExpression.UsesDefaultDataset()) && this._unplacedFilters.All(f => f.Expression.UsesDefaultDataset());
+                return !_isGraph && _triplePatterns.All(tp => tp.UsesDefaultDataset) && _graphPatterns.All(gp => gp.UsesDefaultDataset) && (_filter == null || _filter.Expression.UsesDefaultDataset()) && _unplacedAssignments.All(ap => ap.AssignExpression.UsesDefaultDataset()) && _unplacedFilters.All(f => f.Expression.UsesDefaultDataset());
             }
         }
 
@@ -546,7 +546,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public IEnumerable<ISparqlFilter> UnplacedFilters
         {
-            get { return this._unplacedFilters; }
+            get { return _unplacedFilters; }
         }
 
         /// <summary>
@@ -554,7 +554,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public IEnumerable<IAssignmentPattern> UnplacedAssignments
         {
-            get { return this._unplacedAssignments; }
+            get { return _unplacedAssignments; }
         }
 
         /// <summary>
@@ -564,9 +564,9 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return (from tp in this._triplePatterns
+                return (from tp in _triplePatterns
                         from v in tp.Variables
-                        select v).Concat(from gp in this._graphPatterns
+                        select v).Concat(from gp in _graphPatterns
                                          from v in gp.Variables
                                          select v).Distinct();
             }
@@ -577,7 +577,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public BindingsPattern InlineData
         {
-            get { return this._data; }
+            get { return _data; }
         }
 
         #endregion
@@ -589,7 +589,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public void Optimise()
         {
-            this.Optimise(SparqlOptimiser.QueryOptimiser);
+            Optimise(SparqlOptimiser.QueryOptimiser);
         }
 
         /// <summary>
@@ -606,7 +606,7 @@ namespace VDS.RDF.Query.Patterns
         /// </remarks>
         public void Optimise(IQueryOptimiser optimiser)
         {
-            if (this._isOptimised) return;
+            if (_isOptimised) return;
             optimiser.Optimise(this, Enumerable.Empty<String>());
         }
 
@@ -628,7 +628,7 @@ namespace VDS.RDF.Query.Patterns
         /// </remarks>
         public void Optimise(IQueryOptimiser optimiser, IEnumerable<String> vars)
         {
-            if (this._isOptimised) return;
+            if (_isOptimised) return;
             optimiser.Optimise(this, vars);
         }
 
@@ -645,12 +645,12 @@ namespace VDS.RDF.Query.Patterns
             StringBuilder output = new StringBuilder();
             String indent = String.Empty;
 
-            if (this._isUnion)
+            if (_isUnion)
             {
                 indent = new String(' ', 2);
-                for (int i = 0; i < this._graphPatterns.Count; i++)
+                for (int i = 0; i < _graphPatterns.Count; i++)
                 {
-                    GraphPattern gp = this._graphPatterns[i];
+                    GraphPattern gp = _graphPatterns[i];
 
                     if (i > 0) output.Append(indent);
                     String temp = gp.ToString();
@@ -664,7 +664,7 @@ namespace VDS.RDF.Query.Patterns
                         if (gp.HasModifier) temp = "{\n" + temp + "\n}";
                         output.AppendLineIndented(temp, 2);
                     }
-                    if (i < this._graphPatterns.Count - 1)
+                    if (i < _graphPatterns.Count - 1)
                     {
                         output.AppendLine();
                         output.Append(indent);
@@ -673,41 +673,41 @@ namespace VDS.RDF.Query.Patterns
                 }
                 return output.ToString();
             }
-            if (this._isGraph || this._isService)
+            if (_isGraph || _isService)
             {
-                if (this._isGraph)
+                if (_isGraph)
                 {
                     output.Append("GRAPH ");
                 }
                 else
                 {
                     output.Append("SERVICE ");
-                    if (this._isSilent) output.Append("SILENT ");
+                    if (_isSilent) output.Append("SILENT ");
                 }
-                switch (this._graphSpecifier.TokenType)
+                switch (_graphSpecifier.TokenType)
                 {
                     case Token.QNAME:
-                        output.Append(this._graphSpecifier.Value);
+                        output.Append(_graphSpecifier.Value);
                         break;
                     case Token.URI:
                         output.Append('<');
-                        output.Append(this._graphSpecifier.Value);
+                        output.Append(_graphSpecifier.Value);
                         output.Append('>');
                         break;
                     case Token.VARIABLE:
                     default:
-                        output.Append(this._graphSpecifier.Value);
+                        output.Append(_graphSpecifier.Value);
                         break;
                 }
                 output.Append(" ");
             }
-            else if (this._isOptional)
+            else if (_isOptional)
             {
-                if (this._isExists)
+                if (_isExists)
                 {
                     output.Append("EXISTS ");
                 }
-                else if (this._isNotExists)
+                else if (_isNotExists)
                 {
                     output.Append("NOT EXISTS ");
                 }
@@ -716,20 +716,20 @@ namespace VDS.RDF.Query.Patterns
                     output.Append("OPTIONAL ");
                 }
             }
-            else if (this._isMinus)
+            else if (_isMinus)
             {
                 output.Append("MINUS ");
             }
 
             output.Append("{ ");
-            bool linebreaks = ((this._triplePatterns.Count + this._graphPatterns.Count + this._unplacedAssignments.Count) > 1) || this._isFiltered;
+            bool linebreaks = ((_triplePatterns.Count + _graphPatterns.Count + _unplacedAssignments.Count) > 1) || _isFiltered;
             if (linebreaks)
             {
                 output.AppendLine();
                 indent = new String(' ', 2);
             }
             // Triple Patterns
-            foreach (ITriplePattern tp in this._triplePatterns)
+            foreach (ITriplePattern tp in _triplePatterns)
             {
                 String temp = tp.ToString();
                 output.Append(indent);
@@ -753,16 +753,16 @@ namespace VDS.RDF.Query.Patterns
                 }
             }
             // Unplaced Assignments
-            foreach (IAssignmentPattern ap in this._unplacedAssignments)
+            foreach (IAssignmentPattern ap in _unplacedAssignments)
             {
                 output.Append(ap.ToString());
                 if (linebreaks) output.AppendLine();
             }
             // Inline Data
-            if (this.HasInlineData)
+            if (HasInlineData)
             {
                 output.Append(indent);
-                String temp = this._data.ToString();
+                String temp = _data.ToString();
                 if (!temp.Contains('\n'))
                 {
                     output.Append(temp + " ");
@@ -780,7 +780,7 @@ namespace VDS.RDF.Query.Patterns
                 if (linebreaks) output.AppendLine();
             }
             // Graph Patterns
-            foreach (GraphPattern gp in this._graphPatterns)
+            foreach (GraphPattern gp in _graphPatterns)
             {
                 output.Append(indent);
                 String temp = gp.ToString();
@@ -801,13 +801,13 @@ namespace VDS.RDF.Query.Patterns
                 if (linebreaks) output.AppendLine();
             }
             // Filters
-            if (this._filter != null)
+            if (_filter != null)
             {
                 output.Append(indent);
-                output.Append(this._filter.ToString());
+                output.Append(_filter.ToString());
                 if (linebreaks) output.AppendLine();
             }
-            foreach (ISparqlFilter filter in this._unplacedFilters)
+            foreach (ISparqlFilter filter in _unplacedFilters)
             {
                 output.Append(indent);
                 output.Append(filter.ToString());
@@ -824,54 +824,54 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public ISparqlAlgebra ToAlgebra()
         {
-            if (this._isUnion)
+            if (_isUnion)
             {
                 // If this Graph Pattern represents a UNION of Graph Patterns turn into a series of UNIONs
-                ISparqlAlgebra union = new Union(this._graphPatterns[0].ToAlgebra(), this._graphPatterns[1].ToAlgebra());
-                if (this._graphPatterns.Count > 2)
+                ISparqlAlgebra union = new Union(_graphPatterns[0].ToAlgebra(), _graphPatterns[1].ToAlgebra());
+                if (_graphPatterns.Count > 2)
                 {
-                    for (int i = 2; i < this._graphPatterns.Count; i++)
+                    for (int i = 2; i < _graphPatterns.Count; i++)
                     {
-                        union = new Union(union, this._graphPatterns[i].ToAlgebra());
+                        union = new Union(union, _graphPatterns[i].ToAlgebra());
                     }
                 }
                 // Apply Inline Data
-                if (this.HasInlineData) union = Join.CreateJoin(union, new Bindings(this._data));
+                if (HasInlineData) union = Join.CreateJoin(union, new Bindings(_data));
                 // If there's a FILTER apply it over the Union
-                if (this._isFiltered && (this._filter != null || this._unplacedFilters.Count > 0))
+                if (_isFiltered && (_filter != null || _unplacedFilters.Count > 0))
                 {
-                    return new Filter(union, this.Filter);
+                    return new Filter(union, Filter);
                 }
                 return union;
             }
 
             // Terminal graph pattern
-            if (this._graphPatterns.Count == 0)
+            if (_graphPatterns.Count == 0)
             {
                 // If there are no Child Graph Patterns then this is a BGP
-                ISparqlAlgebra bgp = new Bgp(this._triplePatterns);
-                if (this._unplacedAssignments.Count > 0)
+                ISparqlAlgebra bgp = new Bgp(_triplePatterns);
+                if (_unplacedAssignments.Count > 0)
                 {
                     // If we have any unplaced LETs these get Extended onto the BGP
-                    foreach (IAssignmentPattern p in this._unplacedAssignments)
+                    foreach (IAssignmentPattern p in _unplacedAssignments)
                     {
                         bgp = new Extend(bgp, p.AssignExpression, p.VariableName);
                     }
                 }
-                if (this.IsGraph)
+                if (IsGraph)
                 {
-                    bgp = Algebra.Graph.ApplyGraph(bgp, this.GraphSpecifier);
+                    bgp = Algebra.Graph.ApplyGraph(bgp, GraphSpecifier);
                 }
-                else if (this.IsService)
+                else if (IsService)
                 {
-                    bgp = new Service(this.GraphSpecifier, this, this.IsSilent);
+                    bgp = new Service(GraphSpecifier, this, IsSilent);
                 }
 
                 // Apply Inline Data
-                if (this.HasInlineData) bgp = Join.CreateJoin(bgp, new Bindings(this._data));
-                if (this._isFiltered && (this._filter != null || this._unplacedFilters.Count > 0))
+                if (HasInlineData) bgp = Join.CreateJoin(bgp, new Bindings(_data));
+                if (_isFiltered && (_filter != null || _unplacedFilters.Count > 0))
                 {
-                    if (this._isOptional && !(this._isExists || this._isNotExists))
+                    if (_isOptional && !(_isExists || _isNotExists))
                     {
                         // If we contain an unplaced FILTER and we're an OPTIONAL then the FILTER
                         // applies over the LEFT JOIN and will have been added elsewhere in the Algebra transform
@@ -880,7 +880,7 @@ namespace VDS.RDF.Query.Patterns
 
                     // If we contain an unplaced FILTER and we're not an OPTIONAL the FILTER
                     // applies here
-                    return new Filter(bgp, this.Filter);
+                    return new Filter(bgp, Filter);
                 }
                 // We're not filtered (or all FILTERs were placed in the BGP) so we're just a BGP
                 return bgp;
@@ -888,18 +888,18 @@ namespace VDS.RDF.Query.Patterns
 
             // Create a basic BGP to start with
             ISparqlAlgebra complex = new Bgp();
-            if (this._triplePatterns.Count > 0)
+            if (_triplePatterns.Count > 0)
             {
-                complex = new Bgp(this._triplePatterns);
+                complex = new Bgp(_triplePatterns);
             }
 
             // Apply Inline Data
             // If this Graph Pattern had child patterns before this Graph Pattern then we would
             // have broken the BGP and not added the Inline Data here so it's always safe to apply this here
-            if (this.HasInlineData) complex = Join.CreateJoin(complex, new Bindings(this._data));
+            if (HasInlineData) complex = Join.CreateJoin(complex, new Bindings(_data));
 
             // Then Join each of the Graph Patterns as appropriate
-            foreach (GraphPattern gp in this._graphPatterns)
+            foreach (GraphPattern gp in _graphPatterns)
             {
                 if (gp.IsGraph)
                 {
@@ -945,22 +945,22 @@ namespace VDS.RDF.Query.Patterns
                     complex = Join.CreateJoin(complex, gp.ToAlgebra());
                 }
             }
-            if (this._unplacedAssignments.Count > 0)
+            if (_unplacedAssignments.Count > 0)
             {
                 // Unplaced assignments get Extended over the algebra so far here
                 // complex = Join.CreateJoin(complex, new Bgp(this._unplacedAssignments.OfType<ITriplePattern>()));
-                foreach (IAssignmentPattern p in this._unplacedAssignments)
+                foreach (IAssignmentPattern p in _unplacedAssignments)
                 {
                     complex = new Extend(complex, p.AssignExpression, p.VariableName);
                 }
             }
-            if (this.IsGraph)
+            if (IsGraph)
             {
-                complex = Algebra.Graph.ApplyGraph(complex, this.GraphSpecifier);
+                complex = Algebra.Graph.ApplyGraph(complex, GraphSpecifier);
             }
-            if (this._isFiltered && (this._filter != null || this._unplacedFilters.Count > 0))
+            if (_isFiltered && (_filter != null || _unplacedFilters.Count > 0))
             {
-                if (this._isOptional && !(this._isExists || this._isNotExists))
+                if (_isOptional && !(_isExists || _isNotExists))
                 {
                     // If there's an unplaced FILTER and we're an OPTIONAL then the FILTER will
                     // apply over the LeftJoin and is applied elsewhere in the Algebra transform
@@ -968,11 +968,11 @@ namespace VDS.RDF.Query.Patterns
                 }
                 else
                 {
-                    if (this._filter != null || this._unplacedFilters.Count > 0)
+                    if (_filter != null || _unplacedFilters.Count > 0)
                     {
                         // If there's an unplaced FILTER and we're not an OPTIONAL pattern we apply
                         // the FILTER here
-                        return new Filter(complex, this.Filter);
+                        return new Filter(complex, Filter);
                     }
                     else
                     {

@@ -32,7 +32,7 @@ namespace VDS.RDF.Query.Spin.Model
      *
      * @author Holger Knublauch
      */
-    public interface INotExists : IElementGroup
+    internal interface INotExists : IElementGroup
     {
     }
 }

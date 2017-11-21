@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.Spin
     /// <summary>
     /// Static class containing Extension Methods used to serialize SPARQL Queries into the SPIN RDF Syntax
     /// </summary>
-    public static class SpinSyntax
+    internal static class SpinSyntax
     {
 
         public static IGraph ToSpinRdf(this SparqlQuery query)
@@ -378,7 +378,6 @@ namespace VDS.RDF.Query.Spin
                     break;
                 case SparqlUpdateCommandType.Unknown:
                     throw new NotSupportedException("Unkown SPARQL update query encountered " + query.ToString());
-                    break;
             }
             return root;
         }

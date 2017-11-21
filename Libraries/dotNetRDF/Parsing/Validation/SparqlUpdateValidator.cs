@@ -46,7 +46,7 @@ namespace VDS.RDF.Parsing.Validation
             String message;
             try
             {
-                SparqlUpdateCommandSet cmds = this._parser.ParseFromString(data);
+                SparqlUpdateCommandSet cmds = _parser.ParseFromString(data);
                 message = "Valid SPARQL Update";
 
                 return new SyntaxValidationResults(true, message, cmds);

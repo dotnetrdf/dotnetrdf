@@ -64,7 +64,7 @@ namespace VDS.RDF.Writing
 
             Console.WriteLine(strWriter.ToString());
 
-            Assert.False(strWriter.ToString().Equals(String.Empty));
+            Assert.NotEqual(strWriter.ToString(), String.Empty);
 
             TripleStore store2 = new TripleStore();
             reader.Load(store2, new System.IO.StringReader(strWriter.ToString()));

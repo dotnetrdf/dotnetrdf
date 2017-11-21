@@ -48,7 +48,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         public JsonLdWriter()
         {
-            this._options = new JsonLdWriterOptions();
+            _options = new JsonLdWriterOptions();
         }
 
 

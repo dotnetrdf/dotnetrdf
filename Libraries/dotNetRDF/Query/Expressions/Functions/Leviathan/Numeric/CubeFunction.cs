@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            IValuedNode temp = this._expr.Evaluate(context, bindingID);
+            IValuedNode temp = _expr.Evaluate(context, bindingID);
             if (temp == null) throw new RdfQueryException("Cannot square a null");
 
             switch (temp.NumericType)
@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Cube + ">(" + this._expr.ToString() + ")";
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Cube + ">(" + _expr.ToString() + ")";
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new CubeFunction(transformer.Transform(this._expr));
+            return new CubeFunction(transformer.Transform(_expr));
         }
     }
 }

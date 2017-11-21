@@ -97,12 +97,12 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
             {
                 uuid = Guid.NewGuid();
             }
-            this.ContextNode = g.CreateBlankNode(uuid.ToString().Replace("-", ""));
+            ContextNode = g.CreateBlankNode(uuid.ToString().Replace("-", ""));
 
             // Assert basic triples
-            g.Assert(this.ContextNode, g.CreateUriNode("rdf:type"), g.CreateUriNode("rep:Repository"));
-            g.Assert(this.ContextNode, g.CreateUriNode("rep:repositoryID"), g.CreateLiteralNode(this.ID));
-            g.Assert(this.ContextNode, g.CreateUriNode("rdfs:label"), g.CreateLiteralNode(this.Label.ToSafeString()));
+            g.Assert(ContextNode, g.CreateUriNode("rdf:type"), g.CreateUriNode("rep:Repository"));
+            g.Assert(ContextNode, g.CreateUriNode("rep:repositoryID"), g.CreateLiteralNode(ID));
+            g.Assert(ContextNode, g.CreateUriNode("rdfs:label"), g.CreateLiteralNode(Label.ToSafeString()));
             return g;
         }
 

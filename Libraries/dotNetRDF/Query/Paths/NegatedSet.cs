@@ -47,8 +47,8 @@ namespace VDS.RDF.Query.Paths
         /// <param name="inverseProperties">Inverse Negated Properties</param>
         public NegatedSet(IEnumerable<Property> properties, IEnumerable<Property> inverseProperties)
         {
-            this._properties.AddRange(properties);
-            this._inverseProperties.AddRange(inverseProperties);
+            _properties.AddRange(properties);
+            _inverseProperties.AddRange(inverseProperties);
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Paths
         {
             get
             {
-                return this._properties;
+                return _properties;
             }
         }
 
@@ -69,7 +69,7 @@ namespace VDS.RDF.Query.Paths
         {
             get
             {
-                return this._inverseProperties;
+                return _inverseProperties;
             }
         }
 
@@ -80,20 +80,20 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
-            if (this._properties.Count > 0 && this._inverseProperties.Count == 0)
+            if (_properties.Count > 0 && _inverseProperties.Count == 0)
             {
-                return new NegatedPropertySet(context.Subject, context.Object, this._properties);
+                return new NegatedPropertySet(context.Subject, context.Object, _properties);
             }
-            else if (this._properties.Count == 0 && this._inverseProperties.Count > 0)
+            else if (_properties.Count == 0 && _inverseProperties.Count > 0)
             {
-                return new NegatedPropertySet(context.Object, context.Subject, this._inverseProperties, true);
+                return new NegatedPropertySet(context.Object, context.Subject, _inverseProperties, true);
             }
             else
             {
                 PathTransformContext lhsContext = new PathTransformContext(context);
                 PathTransformContext rhsContext = new PathTransformContext(context);
-                lhsContext.AddTriplePattern(new PropertyPathPattern(lhsContext.Subject, new NegatedSet(this._properties, Enumerable.Empty<Property>()), lhsContext.Object));
-                rhsContext.AddTriplePattern(new PropertyPathPattern(rhsContext.Subject, new NegatedSet(Enumerable.Empty<Property>(), this._inverseProperties), rhsContext.Object));
+                lhsContext.AddTriplePattern(new PropertyPathPattern(lhsContext.Subject, new NegatedSet(_properties, Enumerable.Empty<Property>()), lhsContext.Object));
+                rhsContext.AddTriplePattern(new PropertyPathPattern(rhsContext.Subject, new NegatedSet(Enumerable.Empty<Property>(), _inverseProperties), rhsContext.Object));
                 ISparqlAlgebra lhs = lhsContext.ToAlgebra();
                 ISparqlAlgebra rhs = rhsContext.ToAlgebra();
                 return new Union(lhs, rhs);
@@ -108,26 +108,26 @@ namespace VDS.RDF.Query.Paths
         {
             StringBuilder output = new StringBuilder();
             output.Append('!');
-            if (this._properties.Count + this._inverseProperties.Count > 1) output.Append('(');
+            if (_properties.Count + _inverseProperties.Count > 1) output.Append('(');
 
-            for (int i = 0; i < this._properties.Count; i++)
+            for (int i = 0; i < _properties.Count; i++)
             {
-                output.Append(this._properties[i].ToString());
-                if (i < this._properties.Count - 1 || this._inverseProperties.Count > 0)
+                output.Append(_properties[i].ToString());
+                if (i < _properties.Count - 1 || _inverseProperties.Count > 0)
                 {
                     output.Append(" | ");
                 }
             }
-            for (int i = 0; i < this._inverseProperties.Count; i++)
+            for (int i = 0; i < _inverseProperties.Count; i++)
             {
-                output.Append(this._inverseProperties[i].ToString());
-                if (i < this._inverseProperties.Count - 1)
+                output.Append(_inverseProperties[i].ToString());
+                if (i < _inverseProperties.Count - 1)
                 {
                     output.Append(" | ");
                 }
             }
 
-            if (this._properties.Count + this._inverseProperties.Count > 1) output.Append(')');
+            if (_properties.Count + _inverseProperties.Count > 1) output.Append(')');
 
             return output.ToString();
         }

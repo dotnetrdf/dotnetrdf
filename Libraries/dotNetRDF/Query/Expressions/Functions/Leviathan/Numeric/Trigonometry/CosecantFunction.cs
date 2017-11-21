@@ -53,14 +53,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         public CosecantFunction(ISparqlExpression expr, bool inverse)
             : base(expr)
         {
-            this._inverse = inverse;
-            if (this._inverse)
+            _inverse = inverse;
+            if (_inverse)
             {
-                this._func = _arccosecant;
+                _func = _arccosecant;
             }
             else
             {
-                this._func = _cosecant;
+                _func = _cosecant;
             }
         }
 
@@ -70,13 +70,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         /// <returns></returns>
         public override string ToString()
         {
-            if (this._inverse)
+            if (_inverse)
             {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosecInv + ">(" + this._expr.ToString() + ")";
+                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosecInv + ">(" + _expr.ToString() + ")";
             }
             else
             {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosec + ">(" + this._expr.ToString() + ")";
+                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosec + ">(" + _expr.ToString() + ")";
             }
         }
 
@@ -87,7 +87,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         {
             get
             {
-                if (this._inverse)
+                if (_inverse)
                 {
                     return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosecInv;
                 }
@@ -105,7 +105,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new CosecantFunction(transformer.Transform(this._expr), this._inverse);
+            return new CosecantFunction(transformer.Transform(_expr), _inverse);
         }
     }
 }

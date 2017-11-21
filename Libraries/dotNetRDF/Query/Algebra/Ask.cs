@@ -27,55 +27,75 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Represents a Having Clause
+    /// Represents the Ask step of Query Evaluation
     /// </summary>
-    public class Having
+    /// <remarks>
+    /// Used only for ASK queries.  Turns the final Multiset into either an <see cref="IdentityMultiset">IdentityMultiset</see> if the ASK succeeds or a <see cref="NullMultiset">NullMultiset</see> if the ASK fails
+    /// </remarks>
+    public class Ask 
         : IUnaryOperator
     {
         private readonly ISparqlAlgebra _pattern;
-        private readonly ISparqlFilter _having;
 
         /// <summary>
-        /// Creates a new Having Clause
+        /// Creates a new ASK
         /// </summary>
-        /// <param name="pattern">Pattern</param>
-        /// <param name="having">Having Clause</param>
-        public Having(ISparqlAlgebra pattern, ISparqlFilter having)
+        /// <param name="pattern">Inner Pattern</param>
+        public Ask(ISparqlAlgebra pattern)
         {
             _pattern = pattern;
-            _having = having;
         }
 
         /// <summary>
-        /// Evaluates the Having Clause
+        /// Evaluates the ASK by turning the Results of evaluating the Inner Pattern to either an Identity/Null Multiset depending on whether there were any Results
         /// </summary>
         /// <param name="context">Evaluation Context</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            context.InputMultiset = context.Evaluate(_pattern);//this._pattern.Evaluate(context);
-
-            if (context.Query != null)
+            try
             {
-                if (context.Query.Having != null)
+                context.InputMultiset = context.Evaluate(_pattern);
+            }
+            catch (RdfQueryTimeoutException)
+            {
+                if (!context.Query.PartialResultsOnTimeout) throw;
+            }
+
+            if (context.InputMultiset is IdentityMultiset || context.InputMultiset is NullMultiset)
+            {
+                context.OutputMultiset = context.InputMultiset;
+            }
+            else
+            {
+                if (context.InputMultiset.IsEmpty)
                 {
-                    context.Query.Having.Evaluate(context);
+                    context.OutputMultiset = new NullMultiset();
+                }
+                else
+                {
+                    context.OutputMultiset = new IdentityMultiset();
                 }
             }
-            else if (_having != null)
-            {
-                _having.Evaluate(context);
-            }
 
-            context.OutputMultiset = context.InputMultiset;
             return context.OutputMultiset;
+        }
+
+        /// <summary>
+        /// Gets the Inner Algebra
+        /// </summary>
+        public ISparqlAlgebra InnerAlgebra
+        {
+            get
+            {
+                return _pattern;
+            }
         }
 
         /// <summary>
@@ -100,37 +120,12 @@ namespace VDS.RDF.Query.Algebra
         public IEnumerable<String> FixedVariables { get { return _pattern.FixedVariables; } }
 
         /// <summary>
-        /// Gets the Inner Algebra
-        /// </summary>
-        public ISparqlAlgebra InnerAlgebra
-        {
-            get
-            {
-                return _pattern;
-            }
-        }
-
-        /// <summary>
-        /// Gets the HAVING clause used
-        /// </summary>
-        /// <remarks>
-        /// If the Query supplied in the <see cref="SparqlEvaluationContext">SparqlEvaluationContext</see> is non-null and has a HAVING clause then that is applied rather than the clause with which the Having algebra is instantiated
-        /// </remarks>
-        public ISparqlFilter HavingClause
-        {
-            get
-            {
-                return _having;
-            }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Algebra
+        /// Gets the String representation of the Ask
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return "Having(" + _pattern.ToString() + ")";
+            return "Ask(" + _pattern.ToString() + ")";
         }
 
         /// <summary>
@@ -140,21 +135,18 @@ namespace VDS.RDF.Query.Algebra
         public SparqlQuery ToQuery()
         {
             SparqlQuery q = _pattern.ToQuery();
-            if (_having != null)
-            {
-                q.Having = _having;
-            }
+            q.QueryType = SparqlQueryType.Ask;
             return q;
         }
 
         /// <summary>
-        /// Throws an exception since a Having() cannot be converted back to a Graph Pattern
+        /// Throws an exception since an Ask() cannot be converted to a Graph Pattern
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="NotSupportedException">Thrown since a Having() cannot be converted to a Graph Pattern</exception>
+        /// <exception cref="NotSupportedException">Thrown since an Ask() cannot be converted to a Graph Pattern</exception>
         public GraphPattern ToGraphPattern()
         {
-            throw new NotSupportedException("A Having() cannot be converted to a Graph Pattern");
+            throw new NotSupportedException("An Ask() cannot be converted to a GraphPattern");
         }
 
         /// <summary>
@@ -164,7 +156,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new Having(optimiser.Optimise(_pattern), _having);
+            return new Ask(optimiser.Optimise(_pattern));
         }
     }
 }

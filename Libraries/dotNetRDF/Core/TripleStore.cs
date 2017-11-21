@@ -78,7 +78,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool Contains(Triple t)
         {
-            return this._graphs.Any(g => g.ContainsTriple(t));
+            return _graphs.Any(g => g.ContainsTriple(t));
         }
 
         #region Selection over Entire Triple Store
@@ -100,7 +100,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriples(INode n)
         {
-            return (from g in this._graphs
+            return (from g in _graphs
                     from t in g.GetTriples(n)
                     select t);
         }
@@ -112,7 +112,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithObject(Uri u)
         {
-            return this.GetTriplesWithObject(new UriNode(null, u));
+            return GetTriplesWithObject(new UriNode(null, u));
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithObject(INode n)
         {
-            return (from g in this._graphs
+            return (from g in _graphs
                     from t in g.GetTriplesWithObject(n)
                     select t);
         }
@@ -134,7 +134,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithPredicate(INode n)
         {
-            return (from g in this._graphs
+            return (from g in _graphs
                     from t in g.GetTriplesWithPredicate(n)
                     select t);
         }
@@ -146,7 +146,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithPredicate(Uri u)
         {
-            return this.GetTriplesWithPredicate(new UriNode(null, u));
+            return GetTriplesWithPredicate(new UriNode(null, u));
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithSubject(INode n)
         {
-            return (from g in this._graphs
+            return (from g in _graphs
                     from t in g.GetTriplesWithSubject(n)
                     select t);
         }
@@ -168,7 +168,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithSubject(Uri u)
         {
-            return this.GetTriplesWithSubject(new UriNode(null, u));
+            return GetTriplesWithSubject(new UriNode(null, u));
         }
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred)
         {
-            return (from g in this._graphs
+            return (from g in _graphs
                     from t in g.GetTriplesWithSubjectPredicate(subj, pred)
                     select t);
         }
@@ -192,7 +192,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
         {
-            return (from g in this._graphs
+            return (from g in _graphs
                     from t in g.GetTriplesWithPredicateObject(pred, obj)
                     select t);
         }
@@ -205,7 +205,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj)
         {
-            return (from g in this._graphs
+            return (from g in _graphs
                     from t in g.GetTriplesWithSubjectObject(subj, obj)
                     select t);
         }
@@ -233,7 +233,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriples(List<Uri> graphUris, INode n)
         {
-            IEnumerable<Triple> ts = from g in this._graphs
+            IEnumerable<Triple> ts = from g in _graphs
                                      where graphUris.Contains(g.BaseUri)
                                      from t in g.GetTriples(n)
                                      select t;
@@ -260,7 +260,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithObject(List<Uri> graphUris, INode n)
         {
-            IEnumerable<Triple> ts = from g in this._graphs
+            IEnumerable<Triple> ts = from g in _graphs
                                      where graphUris.Contains(g.BaseUri)
                                      from t in g.GetTriplesWithObject(n)
                                      select t;
@@ -276,7 +276,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithPredicate(List<Uri> graphUris, INode n)
         {
-            IEnumerable<Triple> ts = from g in this._graphs
+            IEnumerable<Triple> ts = from g in _graphs
                                      where graphUris.Contains(g.BaseUri)
                                      from t in g.GetTriplesWithPredicate(n)
                                      select t;
@@ -303,7 +303,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithSubject(List<Uri> graphUris, INode n)
         {
-            IEnumerable<Triple> ts = from g in this._graphs
+            IEnumerable<Triple> ts = from g in _graphs
                                      where graphUris.Contains(g.BaseUri)
                                      from t in g.GetTriplesWithSubject(n)
                                      select t;
@@ -347,7 +347,7 @@ namespace VDS.RDF
             SparqlQuery q = sparqlparser.ParseFromString(query);
 
             // Invoke other execute method
-            return this.ExecuteQuery(q);
+            return ExecuteQuery(q);
         }
 
         /// <summary>
@@ -366,8 +366,8 @@ namespace VDS.RDF
         [Obsolete("This method of making queries is often error prone due to misconceptions about what data is being queries and we recommend using an ISparqlQueryProcessor instead, see remarks for more discussion")]
         public virtual Object ExecuteQuery(SparqlQuery query)
         {
-            if (this._processor == null) this._processor = new LeviathanQueryProcessor(new InMemoryQuadDataset(this));
-            return this._processor.ProcessQuery(query);
+            if (_processor == null) _processor = new LeviathanQueryProcessor(new InMemoryQuadDataset(this));
+            return _processor.ProcessQuery(query);
         }
 
         /// <summary>
@@ -392,7 +392,7 @@ namespace VDS.RDF
             SparqlQuery q = sparqlparser.ParseFromString(query);
 
             // Invoke other execute method
-            this.ExecuteQuery(rdfHandler, resultsHandler, q);
+            ExecuteQuery(rdfHandler, resultsHandler, q);
         }
 
         /// <summary>
@@ -412,8 +412,8 @@ namespace VDS.RDF
         [Obsolete("This method of making queries is often error prone due to misconceptions about what data is being queries and we recommend using an ISparqlQueryProcessor instead, see remarks for more discussion")]
         public virtual void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
-            if (this._processor == null) this._processor = new LeviathanQueryProcessor(new InMemoryQuadDataset(this));
-            this._processor.ProcessQuery(rdfHandler, resultsHandler, query);
+            if (_processor == null) _processor = new LeviathanQueryProcessor(new InMemoryQuadDataset(this));
+            _processor.ProcessQuery(rdfHandler, resultsHandler, query);
         }
 
         #endregion
@@ -429,25 +429,25 @@ namespace VDS.RDF
         public void ApplyInference(IGraph g)
         {
             // Apply Inference if we have any Inference Engines defined
-            if (this._reasoners.Count > 0)
+            if (_reasoners.Count > 0)
             {
                 // Set up Inference Graph if needed
-                if (this._storeInferencesExternally)
+                if (_storeInferencesExternally)
                 {
-                    if (!this._graphs.Contains(this._inferenceGraphUri))
+                    if (!_graphs.Contains(_inferenceGraphUri))
                     {
                         IGraph i = new ThreadSafeGraph();
-                        i.BaseUri = this._inferenceGraphUri;
-                        this._graphs.Add(i, true);
+                        i.BaseUri = _inferenceGraphUri;
+                        _graphs.Add(i, true);
                     }
                 }
 
                 // Apply inference
-                foreach (IInferenceEngine reasoner in this._reasoners)
+                foreach (IInferenceEngine reasoner in _reasoners)
                 {
-                    if (this._storeInferencesExternally)
+                    if (_storeInferencesExternally)
                     {
-                        reasoner.Apply(g, this._graphs[this._inferenceGraphUri]);
+                        reasoner.Apply(g, _graphs[_inferenceGraphUri]);
                     }
                     else
                     {
@@ -463,18 +463,18 @@ namespace VDS.RDF
         /// <param name="reasoner">Reasoner to add</param>
         public void AddInferenceEngine(IInferenceEngine reasoner)
         {
-            this._reasoners.Add(reasoner);
+            _reasoners.Add(reasoner);
 
             // Apply Inference to all existing Graphs
-            if (this._graphs.Count > 0)
+            if (_graphs.Count > 0)
             {
-                lock (this._graphs)
+                lock (_graphs)
                 {
                     // Have to do a ToList() in case someone else inserts a Graph
                     // Which ApplyInference may do if the Inference information is stored in a special Graph
-                    foreach (IGraph g in this._graphs.ToList())
+                    foreach (IGraph g in _graphs.ToList())
                     {
-                        this.ApplyInference(g);
+                        ApplyInference(g);
                     }
                 }
             }
@@ -486,7 +486,7 @@ namespace VDS.RDF
         /// <param name="reasoner">Reasoner to remove</param>
         public void RemoveInferenceEngine(IInferenceEngine reasoner)
         {
-            this._reasoners.Remove(reasoner);
+            _reasoners.Remove(reasoner);
         }
 
         /// <summary>
@@ -494,7 +494,7 @@ namespace VDS.RDF
         /// </summary>
         public void ClearInferenceEngines()
         {
-            this._reasoners.Clear();
+            _reasoners.Clear();
         }
 
         #endregion
@@ -506,7 +506,7 @@ namespace VDS.RDF
         /// </summary>
         public override void Dispose()
         {
-            this._graphs.Dispose();
+            _graphs.Dispose();
         }
 
         #endregion
@@ -524,7 +524,7 @@ namespace VDS.RDF
         {
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet commandSet = parser.ParseFromString(update);
-            this.ExecuteUpdate(commandSet);
+            ExecuteUpdate(commandSet);
         }
 
         /// <summary>
@@ -561,7 +561,7 @@ namespace VDS.RDF
         protected override void OnGraphAdded(object sender, GraphEventArgs args)
         {
             base.OnGraphAdded(sender, args);
-            this.ApplyInference(args.Graph);
+            ApplyInference(args.Graph);
         }
     }
 

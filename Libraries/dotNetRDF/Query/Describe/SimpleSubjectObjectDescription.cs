@@ -59,12 +59,12 @@ namespace VDS.RDF.Query.Describe
                 // Get Triples where the Node is the Subject
                 foreach (Triple t in context.Data.GetTriplesWithSubject(n).ToList())
                 {
-                    if (!handler.HandleTriple((this.RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
+                    if (!handler.HandleTriple((RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
                 }
                 // Get Triples where the Node is the Object
                 foreach (Triple t in context.Data.GetTriplesWithObject(n).ToList())
                 {
-                    if (!handler.HandleTriple((this.RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
+                    if (!handler.HandleTriple((RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
                 }
             }
         }

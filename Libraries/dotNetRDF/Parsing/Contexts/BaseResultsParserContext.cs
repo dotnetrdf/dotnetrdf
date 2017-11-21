@@ -68,8 +68,8 @@ namespace VDS.RDF.Parsing.Contexts
         public BaseResultsParserContext(ISparqlResultsHandler handler, bool traceParsing)
         {
             if (handler == null) throw new ArgumentNullException("handler");
-            this._handler = handler;
-            this._traceParsing = traceParsing;
+            _handler = handler;
+            _traceParsing = traceParsing;
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._handler;
+                return _handler;
             }
         }
 
@@ -97,7 +97,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._variables;
+                return _variables;
             }
         }
 
@@ -108,11 +108,11 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._traceParsing;
+                return _traceParsing;
             }
             set
             {
-                this._traceParsing = value;
+                _traceParsing = value;
             }
         }
     }
@@ -144,7 +144,7 @@ namespace VDS.RDF.Parsing.Contexts
         public TokenisingResultParserContext(SparqlResultSet results, ITokeniser tokeniser)
             : base(results)
         {
-            this._queue = new BufferedTokenQueue(tokeniser);
+            _queue = new BufferedTokenQueue(tokeniser);
         }
 
         /// <summary>
@@ -159,14 +159,14 @@ namespace VDS.RDF.Parsing.Contexts
             switch (queueMode)
             {
                 case TokenQueueMode.AsynchronousBufferDuringParsing:
-                    this._queue = new AsynchronousBufferedTokenQueue(tokeniser);
+                    _queue = new AsynchronousBufferedTokenQueue(tokeniser);
                     break;
                 case TokenQueueMode.SynchronousBufferDuringParsing:
-                    this._queue = new BufferedTokenQueue(tokeniser);
+                    _queue = new BufferedTokenQueue(tokeniser);
                     break;
                 case TokenQueueMode.QueueAllBeforeParsing:
                 default:
-                    this._queue = new TokenQueue(tokeniser);
+                    _queue = new TokenQueue(tokeniser);
                     break;
             }
         }
@@ -181,9 +181,9 @@ namespace VDS.RDF.Parsing.Contexts
         public TokenisingResultParserContext(SparqlResultSet results, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
             : this(results, tokeniser)
         {
-            this._traceParsing = traceParsing;
-            this._traceTokeniser = traceTokeniser;
-            this._queue.Tracing = this._traceTokeniser;
+            _traceParsing = traceParsing;
+            _traceTokeniser = traceTokeniser;
+            _queue.Tracing = _traceTokeniser;
         }
 
         /// <summary>
@@ -200,18 +200,18 @@ namespace VDS.RDF.Parsing.Contexts
             switch (queueMode)
             {
                 case TokenQueueMode.AsynchronousBufferDuringParsing:
-                    this._queue = new AsynchronousBufferedTokenQueue(tokeniser);
+                    _queue = new AsynchronousBufferedTokenQueue(tokeniser);
                     break;
                 case TokenQueueMode.SynchronousBufferDuringParsing:
-                    this._queue = new BufferedTokenQueue(tokeniser);
+                    _queue = new BufferedTokenQueue(tokeniser);
                     break;
                 case TokenQueueMode.QueueAllBeforeParsing:
                 default:
-                    this._queue = new TokenQueue(tokeniser);
+                    _queue = new TokenQueue(tokeniser);
                     break;
             }
-            this._traceTokeniser = traceTokeniser;
-            this._queue.Tracing = this._traceTokeniser;
+            _traceTokeniser = traceTokeniser;
+            _queue.Tracing = _traceTokeniser;
         }
 
         /// <summary>
@@ -222,7 +222,7 @@ namespace VDS.RDF.Parsing.Contexts
         public TokenisingResultParserContext(ISparqlResultsHandler handler, ITokeniser tokeniser)
             : base(handler)
         {
-            this._queue = new BufferedTokenQueue(tokeniser);
+            _queue = new BufferedTokenQueue(tokeniser);
         }
 
         /// <summary>
@@ -237,14 +237,14 @@ namespace VDS.RDF.Parsing.Contexts
             switch (queueMode)
             {
                 case TokenQueueMode.AsynchronousBufferDuringParsing:
-                    this._queue = new AsynchronousBufferedTokenQueue(tokeniser);
+                    _queue = new AsynchronousBufferedTokenQueue(tokeniser);
                     break;
                 case TokenQueueMode.SynchronousBufferDuringParsing:
-                    this._queue = new BufferedTokenQueue(tokeniser);
+                    _queue = new BufferedTokenQueue(tokeniser);
                     break;
                 case TokenQueueMode.QueueAllBeforeParsing:
                 default:
-                    this._queue = new TokenQueue(tokeniser);
+                    _queue = new TokenQueue(tokeniser);
                     break;
             }
         }
@@ -259,9 +259,9 @@ namespace VDS.RDF.Parsing.Contexts
         public TokenisingResultParserContext(ISparqlResultsHandler handler, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
             : this(handler, tokeniser)
         {
-            this._traceParsing = traceParsing;
-            this._traceTokeniser = traceTokeniser;
-            this._queue.Tracing = this._traceTokeniser;
+            _traceParsing = traceParsing;
+            _traceTokeniser = traceTokeniser;
+            _queue.Tracing = _traceTokeniser;
         }
 
         /// <summary>
@@ -278,18 +278,18 @@ namespace VDS.RDF.Parsing.Contexts
             switch (queueMode)
             {
                 case TokenQueueMode.AsynchronousBufferDuringParsing:
-                    this._queue = new AsynchronousBufferedTokenQueue(tokeniser);
+                    _queue = new AsynchronousBufferedTokenQueue(tokeniser);
                     break;
                 case TokenQueueMode.SynchronousBufferDuringParsing:
-                    this._queue = new BufferedTokenQueue(tokeniser);
+                    _queue = new BufferedTokenQueue(tokeniser);
                     break;
                 case TokenQueueMode.QueueAllBeforeParsing:
                 default:
-                    this._queue = new TokenQueue(tokeniser);
+                    _queue = new TokenQueue(tokeniser);
                     break;
             }
-            this._traceTokeniser = traceTokeniser;
-            this._queue.Tracing = this._traceTokeniser;
+            _traceTokeniser = traceTokeniser;
+            _queue.Tracing = _traceTokeniser;
         }
 
         /// <summary>
@@ -299,7 +299,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._queue;
+                return _queue;
             }
         }
 
@@ -310,8 +310,8 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                if (this._localTokens == null) this._localTokens = new Stack<IToken>();
-                return this._localTokens;
+                if (_localTokens == null) _localTokens = new Stack<IToken>();
+                return _localTokens;
             }
         }
 
@@ -322,11 +322,11 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._traceTokeniser;
+                return _traceTokeniser;
             }
             set
             {
-                this._traceTokeniser = value;
+                _traceTokeniser = value;
             }
         }
     }

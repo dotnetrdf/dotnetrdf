@@ -32,6 +32,7 @@ using System.Threading;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
+using VDS.RDF.Query;
 
 namespace VDS.RDF.Storage
 {
@@ -50,20 +51,20 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="filename">File to load from</param>
         /// <param name="isAsync">Whether to load asynchronously</param>
-        public DatasetFileManager(String filename, bool isAsync)
+        public DatasetFileManager(string filename, bool isAsync)
         {
             if (!File.Exists(filename)) throw new RdfStorageException("Cannot connect to a Dataset File that doesn't exist");
-            this._filename = filename;
+            _filename = filename;
 
             if (isAsync)
             {
-                Thread asyncLoader = new Thread(new ThreadStart(delegate { this.Initialise(filename); }));
-                asyncLoader.IsBackground = true;
+                var asyncLoader =
+                    new Thread(new ThreadStart(delegate { Initialise(filename); })) {IsBackground = true};
                 asyncLoader.Start();
             }
             else
             {
-                this.Initialise(filename);
+                Initialise(filename);
             }
         }
 
@@ -76,9 +77,9 @@ namespace VDS.RDF.Storage
             try
             {
                 IStoreReader reader = MimeTypesHelper.GetStoreParserByFileExtension(MimeTypesHelper.GetTrueFileExtension(filename));
-                reader.Load(this._store, filename);
+                reader.Load(_store, filename);
 
-                this._ready = true;
+                _ready = true;
             }
             catch (RdfException rdfEx)
             {
@@ -91,9 +92,12 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query</param>
         /// <returns></returns>
-        public object Query(String sparqlQuery)
+        public object Query(string sparqlQuery)
         {
-            return this._store.ExecuteQuery(sparqlQuery);
+            var queryProcessor = new LeviathanQueryProcessor(_store);
+            var queryParser = new SparqlQueryParser();
+            var query = queryParser.ParseFromString(sparqlQuery);
+            return queryProcessor.ProcessQuery(query);
         }
 
         /// <summary>
@@ -102,9 +106,12 @@ namespace VDS.RDF.Storage
         /// <param name="rdfHandler">RDF Handler</param>
         /// <param name="resultsHandler">Results Handler</param>
         /// <param name="sparqlQuery">SPARQL Query</param>
-        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
-            this._store.ExecuteQuery(rdfHandler, resultsHandler, sparqlQuery);
+            var queryProcessor = new LeviathanQueryProcessor(_store);
+            var queryParser = new SparqlQueryParser();
+            var query = queryParser.ParseFromString(sparqlQuery);
+            queryProcessor.ProcessQuery(rdfHandler, resultsHandler, query);
         }
 
         /// <summary>
@@ -114,7 +121,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to load</param>
         public override void LoadGraph(IGraph g, Uri graphUri)
         {
-            this.LoadGraph(new GraphHandler(g), graphUri);
+            LoadGraph(new GraphHandler(g), graphUri);
         }
 
         /// <summary>
@@ -127,14 +134,14 @@ namespace VDS.RDF.Storage
             IGraph g = null;
             if (graphUri == null)
             {
-                if (this._store.HasGraph(graphUri))
+                if (_store.HasGraph(graphUri))
                 {
-                    g = this._store[graphUri];
+                    g = _store[graphUri];
                 }
             }
-            else if (this._store.HasGraph(graphUri))
+            else if (_store.HasGraph(graphUri))
             {
-                g = this._store[graphUri];
+                g = _store[graphUri];
             }
 
             if (g == null) return;
@@ -150,11 +157,11 @@ namespace VDS.RDF.Storage
         {
             if (graphUri.Equals(String.Empty))
             {
-                this.LoadGraph(g, (Uri)null);
+                LoadGraph(g, (Uri)null);
             }
             else
             {
-                this.LoadGraph(g, UriFactory.Create(graphUri));
+                LoadGraph(g, UriFactory.Create(graphUri));
             }
         }
 
@@ -167,11 +174,11 @@ namespace VDS.RDF.Storage
         {
             if (graphUri.Equals(String.Empty))
             {
-                this.LoadGraph(handler, (Uri)null);
+                LoadGraph(handler, (Uri)null);
             }
             else
             {
-                this.LoadGraph(handler, UriFactory.Create(graphUri));
+                LoadGraph(handler, UriFactory.Create(graphUri));
             }
         }
 
@@ -267,7 +274,7 @@ namespace VDS.RDF.Storage
         {
             get
             {
-                return this._ready;
+                return _ready;
             }
         }
 
@@ -288,7 +295,7 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public override IEnumerable<Uri> ListGraphs()
         {
-            return this._store.Graphs.GraphUris;
+            return _store.Graphs.GraphUris;
         }
 
         /// <summary>
@@ -310,7 +317,7 @@ namespace VDS.RDF.Storage
         {
             get
             {
-                return this._filename;
+                return _filename;
             }
         }
 
@@ -320,7 +327,7 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public override string ToString()
         {
-            return "[Dataset File] " + this._filename;
+            return "[Dataset File] " + _filename;
         }
 
 
@@ -329,7 +336,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         public override void Dispose()
         {
-            this._store.Dispose();
+            _store.Dispose();
         }
 
         /// <summary>
@@ -346,9 +353,9 @@ namespace VDS.RDF.Storage
             INode file = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromFile));
 
             context.Graph.Assert(new Triple(manager, rdfType, genericManager));
-            context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString())));
-            context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
-            context.Graph.Assert(new Triple(manager, file, context.Graph.CreateLiteralNode(this._filename)));
+            context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString())));
+            context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(GetType().FullName)));
+            context.Graph.Assert(new Triple(manager, file, context.Graph.CreateLiteralNode(_filename)));
         }
     }
 }

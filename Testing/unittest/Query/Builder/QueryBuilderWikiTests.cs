@@ -93,7 +93,7 @@ namespace VDS.RDF.Query.Builder
             // then
             Assert.Null(q.RootGraphPattern);
             Assert.True(q.QueryType == SparqlQueryType.Describe);
-            Assert.Equal(1, q.DescribeVariables.Count());
+            Assert.Single(q.DescribeVariables);
             Assert.Equal(uriString, q.DescribeVariables.Single().Value);
         }
 
@@ -111,7 +111,7 @@ namespace VDS.RDF.Query.Builder
             // then
             Assert.NotNull(q.RootGraphPattern);
             Assert.Equal("x", q.DescribeVariables.Single().Value);
-            Assert.Equal(1, q.RootGraphPattern.TriplePatterns.Count);
+            Assert.Single(q.RootGraphPattern.TriplePatterns);
         }
 
         [Fact]
@@ -130,7 +130,7 @@ namespace VDS.RDF.Query.Builder
             Assert.Equal("x", q.DescribeVariables.ElementAt(0).Value);
             Assert.Equal("y", q.DescribeVariables.ElementAt(1).Value);
             Assert.Equal("http://example.org/", q.DescribeVariables.ElementAt(2).Value);
-            Assert.Equal(1, q.RootGraphPattern.TriplePatterns.Count);
+            Assert.Single(q.RootGraphPattern.TriplePatterns);
         }
 
         [Fact]
@@ -147,10 +147,10 @@ namespace VDS.RDF.Query.Builder
 
             // then
             Assert.NotNull(q.RootGraphPattern);
-            Assert.Equal(1, q.RootGraphPattern.TriplePatterns.Count);
-            Assert.Equal(1, q.RootGraphPattern.ChildGraphPatterns.Count);
+            Assert.Single(q.RootGraphPattern.TriplePatterns);
+            Assert.Single(q.RootGraphPattern.ChildGraphPatterns);
             Assert.True(q.RootGraphPattern.ChildGraphPatterns.Single().IsOptional);
-            Assert.Equal(1, q.RootGraphPattern.ChildGraphPatterns.Single().TriplePatterns.Count);
+            Assert.Single(q.RootGraphPattern.ChildGraphPatterns.Single().TriplePatterns);
         }
 
         [Fact]
@@ -167,10 +167,10 @@ namespace VDS.RDF.Query.Builder
             var q = b.BuildQuery();
 
             // then
-            Assert.Equal(1, q.RootGraphPattern.TriplePatterns.Count);
+            Assert.Single(q.RootGraphPattern.TriplePatterns);
             Assert.Equal(2, q.RootGraphPattern.ChildGraphPatterns.Count);
-            Assert.Equal(1, q.RootGraphPattern.ChildGraphPatterns.ElementAt(0).TriplePatterns.Count);
-            Assert.Equal(1, q.RootGraphPattern.ChildGraphPatterns.ElementAt(1).TriplePatterns.Count);
+            Assert.Single(q.RootGraphPattern.ChildGraphPatterns.ElementAt(0).TriplePatterns);
+            Assert.Single(q.RootGraphPattern.ChildGraphPatterns.ElementAt(1).TriplePatterns);
         }
 
         [Fact]
@@ -187,8 +187,8 @@ namespace VDS.RDF.Query.Builder
             var q = b.BuildQuery();
 
             // then
-            Assert.Equal(1, q.RootGraphPattern.TriplePatterns.Count);
-            Assert.Equal(1, q.RootGraphPattern.ChildGraphPatterns.Count);
+            Assert.Single(q.RootGraphPattern.TriplePatterns);
+            Assert.Single(q.RootGraphPattern.ChildGraphPatterns);
             Assert.Equal(2, q.RootGraphPattern.ChildGraphPatterns.Single().TriplePatterns.Count);
         }
 
@@ -230,7 +230,7 @@ namespace VDS.RDF.Query.Builder
             var q = b.BuildQuery();
 
             // then
-            Assert.Equal(1, q.RootGraphPattern.ChildGraphPatterns.Count);
+            Assert.Single(q.RootGraphPattern.ChildGraphPatterns);
             Assert.True(q.RootGraphPattern.ChildGraphPatterns.Single().Filter.Expression is LessThanExpression);
         }
 
@@ -269,10 +269,10 @@ namespace VDS.RDF.Query.Builder
 
             // then
             Assert.NotNull(q.RootGraphPattern);
-            Assert.Equal(1, q.RootGraphPattern.TriplePatterns.Count);
-            Assert.Equal(1, q.RootGraphPattern.ChildGraphPatterns.Count);
+            Assert.Single(q.RootGraphPattern.TriplePatterns);
+            Assert.Single(q.RootGraphPattern.ChildGraphPatterns);
             Assert.True(q.RootGraphPattern.ChildGraphPatterns.Single().IsMinus);
-            Assert.Equal(1, q.RootGraphPattern.ChildGraphPatterns.Single().TriplePatterns.Count);
+            Assert.Single(q.RootGraphPattern.ChildGraphPatterns.Single().TriplePatterns);
         }
 
         [Fact]
@@ -344,7 +344,7 @@ namespace VDS.RDF.Query.Builder
             Assert.Equal(3, q.RootGraphPattern.TriplePatterns.Count);
             Assert.True(q.RootGraphPattern.IsFiltered);
             Assert.True(q.RootGraphPattern.Filter.Expression is LessThanExpression);
-            Assert.Equal(1, q.RootGraphPattern.UnplacedAssignments.Count());
+            Assert.Single(q.RootGraphPattern.UnplacedAssignments);
         }
 
         [Fact]
@@ -366,7 +366,7 @@ namespace VDS.RDF.Query.Builder
             Assert.False(q.RootGraphPattern.HasChildGraphPatterns);
             Assert.Equal(3, q.RootGraphPattern.TriplePatterns.Count);
             Assert.False(q.RootGraphPattern.IsFiltered);
-            Assert.Equal(0, q.RootGraphPattern.UnplacedAssignments.Count());
+            Assert.Empty(q.RootGraphPattern.UnplacedAssignments);
             Assert.Equal(1, q.Variables.Count(v => v.IsProjection && v.IsResultVariable));
         }
 
@@ -386,8 +386,8 @@ namespace VDS.RDF.Query.Builder
 
             // then
             Assert.Equal(SparqlQueryType.Construct, q.QueryType);
-            Assert.Equal(1, q.ConstructTemplate.TriplePatterns.Count);
-            Assert.Equal(1, q.RootGraphPattern.TriplePatterns.Count);
+            Assert.Single(q.ConstructTemplate.TriplePatterns);
+            Assert.Single(q.RootGraphPattern.TriplePatterns);
         }
 
         [Fact]
@@ -404,7 +404,7 @@ namespace VDS.RDF.Query.Builder
             // then
             Assert.Equal(SparqlQueryType.Construct, q.QueryType);
             Assert.Null(q.ConstructTemplate);
-            Assert.Equal(1, q.RootGraphPattern.TriplePatterns.Count);
+            Assert.Single(q.RootGraphPattern.TriplePatterns);
         }
 
         [Fact]
@@ -420,7 +420,7 @@ namespace VDS.RDF.Query.Builder
 
             // then
             Assert.Equal(SparqlQueryType.Ask, q.QueryType);
-            Assert.Equal(1, q.RootGraphPattern.TriplePatterns.Count);
+            Assert.Single(q.RootGraphPattern.TriplePatterns);
         }
     }
 }

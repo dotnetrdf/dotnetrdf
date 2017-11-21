@@ -54,10 +54,10 @@ namespace VDS.RDF.Query.Inference
         {
             Graph g = new Graph();
             g.NamespaceMap.AddNamespace("skos", UriFactory.Create(SKOSNamespace));
-            this._rdfType = g.CreateUriNode("rdf:type");
-            this._skosBroader = g.CreateUriNode("skos:broader");
-            this._skosConcept = g.CreateUriNode("skos:Concept");
-            this._skosNarrower = g.CreateUriNode("skos:narrower");
+            _rdfType = g.CreateUriNode("rdf:type");
+            _skosBroader = g.CreateUriNode("skos:broader");
+            _skosConcept = g.CreateUriNode("skos:Concept");
+            _skosNarrower = g.CreateUriNode("skos:narrower");
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace VDS.RDF.Query.Inference
         /// <param name="g">Graph</param>
         public virtual void Apply(IGraph g)
         {
-            this.Apply(g, g);
+            Apply(g, g);
         }
 
         /// <summary>
@@ -77,20 +77,20 @@ namespace VDS.RDF.Query.Inference
         public virtual void Apply(IGraph input, IGraph output)
         {
             List<Triple> inferences = new List<Triple>();
-            lock (this._conceptMappings)
+            lock (_conceptMappings)
             {
                 foreach (Triple t in input.Triples)
                 {
-                    if (!(t.Predicate.Equals(this._skosBroader) || t.Predicate.Equals(this._skosNarrower)) && this._conceptMappings.ContainsKey(t.Object))
+                    if (!(t.Predicate.Equals(_skosBroader) || t.Predicate.Equals(_skosNarrower)) && _conceptMappings.ContainsKey(t.Object))
                     {
                         INode concept = t.Object;
-                        while (this._conceptMappings.ContainsKey(concept))
+                        while (_conceptMappings.ContainsKey(concept))
                         {
-                            if (this._conceptMappings[concept] != null)
+                            if (_conceptMappings[concept] != null)
                             {
                                 // Assert additional information
-                                inferences.Add(new Triple(t.Subject.CopyNode(output), t.Predicate.CopyNode(output), this._conceptMappings[concept].CopyNode(output)));
-                                concept = this._conceptMappings[concept];
+                                inferences.Add(new Triple(t.Subject.CopyNode(output), t.Predicate.CopyNode(output), _conceptMappings[concept].CopyNode(output)));
+                                concept = _conceptMappings[concept];
                             }
                             else
                             {
@@ -116,40 +116,40 @@ namespace VDS.RDF.Query.Inference
         /// </remarks>
         public void Initialise(IGraph g)
         {
-            lock (this._conceptMappings)
+            lock (_conceptMappings)
             {
                 foreach (Triple t in g.Triples)
                 {
-                    if (t.Predicate.Equals(this._rdfType) && t.Object.Equals(this._skosConcept))
+                    if (t.Predicate.Equals(_rdfType) && t.Object.Equals(_skosConcept))
                     {
                         // Defines a SKOS Concept
-                        if (!this._conceptMappings.ContainsKey(t.Subject))
+                        if (!_conceptMappings.ContainsKey(t.Subject))
                         {
-                            this._conceptMappings.Add(t.Subject, null);
+                            _conceptMappings.Add(t.Subject, null);
                         }
                     }
-                    else if (t.Predicate.Equals(this._skosNarrower))
+                    else if (t.Predicate.Equals(_skosNarrower))
                     {
                         // Links a SKOS Concept to a child concept
-                        if (!this._conceptMappings.ContainsKey(t.Object))
+                        if (!_conceptMappings.ContainsKey(t.Object))
                         {
-                            this._conceptMappings.Add(t.Object, t.Subject);
+                            _conceptMappings.Add(t.Object, t.Subject);
                         }
-                        else if (this._conceptMappings[t.Object] == null)
+                        else if (_conceptMappings[t.Object] == null)
                         {
-                            this._conceptMappings[t.Object] = t.Subject;
+                            _conceptMappings[t.Object] = t.Subject;
                         }
                     }
-                    else if (t.Predicate.Equals(this._skosBroader))
+                    else if (t.Predicate.Equals(_skosBroader))
                     {
                         // Links a SKOS Concept to a parent concept
-                        if (!this._conceptMappings.ContainsKey(t.Subject))
+                        if (!_conceptMappings.ContainsKey(t.Subject))
                         {
-                            this._conceptMappings.Add(t.Subject, t.Object);
+                            _conceptMappings.Add(t.Subject, t.Object);
                         }
-                        else if (this._conceptMappings[t.Subject] == null)
+                        else if (_conceptMappings[t.Subject] == null)
                         {
-                            this._conceptMappings[t.Subject] = t.Object;
+                            _conceptMappings[t.Subject] = t.Object;
                         }
                     }
                 }
@@ -170,7 +170,7 @@ namespace VDS.RDF.Query.Inference
         public override void Apply(IGraph input, IGraph output)
         {
             // Use this Graph to further initialise the Reasoner
-            this.Initialise(input);
+            Initialise(input);
 
             // Use Base Reasoner to do the Inference
             base.Apply(input, output);

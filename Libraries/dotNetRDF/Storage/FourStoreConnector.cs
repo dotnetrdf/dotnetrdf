@@ -75,25 +75,25 @@ namespace VDS.RDF.Storage
             // Determine the appropriate actual Base Uri
             if (baseUri.EndsWith("sparql/"))
             {
-                this._baseUri = baseUri.Substring(0, baseUri.IndexOf("sparql/"));
+                _baseUri = baseUri.Substring(0, baseUri.IndexOf("sparql/"));
             }
             else if (baseUri.EndsWith("data/"))
             {
-                this._baseUri = baseUri.Substring(0, baseUri.IndexOf("data/"));
+                _baseUri = baseUri.Substring(0, baseUri.IndexOf("data/"));
             }
             else if (!baseUri.EndsWith("/"))
             {
-                this._baseUri = baseUri + "/";
+                _baseUri = baseUri + "/";
             }
             else
             {
-                this._baseUri = baseUri;
+                _baseUri = baseUri;
             }
 
-            this._endpoint = new SparqlRemoteEndpoint(UriFactory.Create(this._baseUri + "sparql/"));
-            this._updateEndpoint = new SparqlRemoteUpdateEndpoint(UriFactory.Create(this._baseUri + "update/"));
-            this._endpoint.Timeout = 60000;
-            this._updateEndpoint.Timeout = 60000;
+            _endpoint = new SparqlRemoteEndpoint(UriFactory.Create(_baseUri + "sparql/"));
+            _updateEndpoint = new SparqlRemoteUpdateEndpoint(UriFactory.Create(_baseUri + "update/"));
+            _endpoint.Timeout = 60000;
+            _updateEndpoint.Timeout = 60000;
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace VDS.RDF.Storage
         public FourStoreConnector(String baseUri, bool enableUpdateSupport)
             : this(baseUri)
         {
-            this._updatesEnabled = enableUpdateSupport;
+            _updatesEnabled = enableUpdateSupport;
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace VDS.RDF.Storage
         public FourStoreConnector(String baseUri, IWebProxy proxy)
             : this(baseUri)
         {
-            this.Proxy = proxy;
+            Proxy = proxy;
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace VDS.RDF.Storage
         public FourStoreConnector(String baseUri, bool enableUpdateSupport, IWebProxy proxy)
             : this(baseUri, enableUpdateSupport)
         {
-            this.Proxy = proxy;
+            Proxy = proxy;
         }
 
         /// <summary>
@@ -215,7 +215,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Uri of the Graph to load</param>
         public void LoadGraph(IGraph g, Uri graphUri)
         {
-            this.LoadGraph(g, graphUri.ToSafeString());
+            LoadGraph(g, graphUri.ToSafeString());
         }
 
         /// <summary>
@@ -225,7 +225,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to load</param>
         public void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
-            this.LoadGraph(handler, graphUri.ToSafeString());
+            LoadGraph(handler, graphUri.ToSafeString());
         }
 
         /// <summary>
@@ -239,7 +239,7 @@ namespace VDS.RDF.Storage
             {
                 g.BaseUri = UriFactory.Create(graphUri);
             }
-            this.LoadGraph(new GraphHandler(g), graphUri);
+            LoadGraph(new GraphHandler(g), graphUri);
         }
 
         /// <summary>
@@ -251,7 +251,7 @@ namespace VDS.RDF.Storage
         {
             if (!graphUri.Equals(String.Empty))
             {
-                this._endpoint.QueryWithResultGraph(handler, "CONSTRUCT { ?s ?p ?o } FROM <" + graphUri.Replace(">", "\\>") + "> WHERE { ?s ?p ?o }");
+                _endpoint.QueryWithResultGraph(handler, "CONSTRUCT { ?s ?p ?o } FROM <" + graphUri.Replace(">", "\\>") + "> WHERE { ?s ?p ?o }");
             }
             else
             {
@@ -280,7 +280,7 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request;
                 if (g.BaseUri != null)
                 {
-                    request = (HttpWebRequest)WebRequest.Create(this._baseUri + "data/" + Uri.EscapeUriString(g.BaseUri.AbsoluteUri));
+                    request = (HttpWebRequest)WebRequest.Create(_baseUri + "data/" + Uri.EscapeUriString(g.BaseUri.AbsoluteUri));
                 }
                 else
                 {
@@ -288,7 +288,7 @@ namespace VDS.RDF.Storage
                 }
                 request.Method = "PUT";
                 request.ContentType = MimeTypesHelper.Turtle[0];
-                request = base.ApplyRequestOptions(request);
+                request = ApplyRequestOptions(request);
 
                 // Write the Graph as Turtle to the Request Stream
                 CompressingTurtleWriter writer = new CompressingTurtleWriter(WriterCompressionLevel.High);
@@ -329,7 +329,7 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                this.UpdateGraph(graphUri.ToString(), additions, removals);
+                UpdateGraph(graphUri.ToString(), additions, removals);
             }
         }
 
@@ -344,7 +344,7 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            if (!this._updatesEnabled)
+            if (!_updatesEnabled)
             {
                 throw new RdfStorageException("4store does not support Triple level updates");
             }
@@ -366,7 +366,7 @@ namespace VDS.RDF.Storage
                             delete.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
                             foreach (Triple t in removals)
                             {
-                                delete.AppendLine(t.ToString(this._formatter));
+                                delete.AppendLine(t.ToString(_formatter));
                             }
                             delete.AppendLine("}}");
                         }
@@ -382,7 +382,7 @@ namespace VDS.RDF.Storage
                             insert.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
                             foreach (Triple t in additions)
                             {
-                                insert.AppendLine(t.ToString(this._formatter));
+                                insert.AppendLine(t.ToString(_formatter));
                             }
                             insert.AppendLine("}}");
                         }
@@ -393,16 +393,16 @@ namespace VDS.RDF.Storage
                     {
                         if (insert.Length > 0)
                         {
-                            this.Update(delete.ToString() + "\n;\n"  + insert.ToString());
+                            Update(delete.ToString() + "\n;\n"  + insert.ToString());
                         }
                         else
                         {
-                            this.Update(delete.ToString());
+                            Update(delete.ToString());
                         }
                     }
                     else if (insert.Length > 0)
                     {
-                        this.Update(insert.ToString());
+                        Update(insert.ToString());
                     }
                 }
                 catch (WebException webEx)
@@ -424,7 +424,7 @@ namespace VDS.RDF.Storage
         {
             Graph g = new Graph();
             SparqlResultSet results = new SparqlResultSet();
-            this.Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery);
+            Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery);
 
             if (results.ResultsType != SparqlResultsType.Unknown)
             {
@@ -447,9 +447,9 @@ namespace VDS.RDF.Storage
             try
             {
                 // Ensure Proxy Settings have been taken from the class
-                this._endpoint.Proxy = this.Proxy;
-                this._endpoint.UseCredentialsForProxy = false;
-                HttpWebResponse response = this._endpoint.QueryRaw(sparqlQuery);
+                _endpoint.Proxy = Proxy;
+                _endpoint.UseCredentialsForProxy = false;
+                HttpWebResponse response = _endpoint.QueryRaw(sparqlQuery);
                 StreamReader data = new StreamReader(response.GetResponseStream());
                 try
                 {
@@ -486,7 +486,7 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                this.DeleteGraph(graphUri.AbsoluteUri);
+                DeleteGraph(graphUri.AbsoluteUri);
             }
         }
 
@@ -502,14 +502,14 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request;
                 if (!graphUri.Equals(String.Empty))
                 {
-                    request = (HttpWebRequest)WebRequest.Create(this._baseUri + "data/" + Uri.EscapeUriString(graphUri));
+                    request = (HttpWebRequest)WebRequest.Create(_baseUri + "data/" + Uri.EscapeUriString(graphUri));
                 }
                 else
                 {
                     throw new RdfStorageException("Cannot delete a Graph without a Base URI from a 4store Server");
                 }
                 request.Method = "DELETE";
-                request = base.ApplyRequestOptions(request);
+                request = ApplyRequestOptions(request);
 
                 Tools.HttpDebugRequest(request);
 
@@ -537,7 +537,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                Object results = this.Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
+                Object results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
                 if (results is SparqlResultSet)
                 {
                     List<Uri> graphs = new List<Uri>();
@@ -574,7 +574,7 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public void Update(String sparqlUpdate)
         {
-            this._updateEndpoint.Update(sparqlUpdate);
+            _updateEndpoint.Update(sparqlUpdate);
         }
 
         /// <summary>
@@ -589,7 +589,7 @@ namespace VDS.RDF.Storage
             HttpWebRequest request;
             if (g.BaseUri != null)
             {
-                request = (HttpWebRequest)WebRequest.Create(this._baseUri + "data/" + g.BaseUri.AbsoluteUri);
+                request = (HttpWebRequest)WebRequest.Create(_baseUri + "data/" + g.BaseUri.AbsoluteUri);
             }
             else
             {
@@ -597,11 +597,11 @@ namespace VDS.RDF.Storage
             }
             request.Method = "PUT";
             request.ContentType = MimeTypesHelper.Turtle[0];
-            request = base.ApplyRequestOptions(request);
+            request = ApplyRequestOptions(request);
 
             // Write the Graph as Turtle to the Request Stream
             CompressingTurtleWriter writer = new CompressingTurtleWriter(WriterCompressionLevel.High);
-            this.SaveGraphAsync(request, writer, g, callback, state);
+            SaveGraphAsync(request, writer, g, callback, state);
         }
 
         /// <summary>
@@ -615,7 +615,7 @@ namespace VDS.RDF.Storage
         {
             if (!graphUri.Equals(String.Empty))
             {
-                this._endpoint.QueryWithResultGraph(handler, "CONSTRUCT { ?s ?p ?o } FROM <" + graphUri.Replace(">", "\\>") + "> WHERE { ?s ?p ?o }", (rdfH, resH, st) =>
+                _endpoint.QueryWithResultGraph(handler, "CONSTRUCT { ?s ?p ?o } FROM <" + graphUri.Replace(">", "\\>") + "> WHERE { ?s ?p ?o }", (rdfH, resH, st) =>
                     {
                         callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadWithHandler, handler), state);
                     }, state);
@@ -636,7 +636,7 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback</param>
         public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state)
         {
-            if (!this._updatesEnabled)
+            if (!_updatesEnabled)
             {
                 throw new RdfStorageException("4store does not support Triple level updates");
             }
@@ -658,7 +658,7 @@ namespace VDS.RDF.Storage
                             delete.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
                             foreach (Triple t in removals)
                             {
-                                delete.AppendLine(t.ToString(this._formatter));
+                                delete.AppendLine(t.ToString(_formatter));
                             }
                             delete.AppendLine("}}");
                         }
@@ -674,7 +674,7 @@ namespace VDS.RDF.Storage
                             insert.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
                             foreach (Triple t in additions)
                             {
-                                insert.AppendLine(t.ToString(this._formatter));
+                                insert.AppendLine(t.ToString(_formatter));
                             }
                             insert.AppendLine("}}");
                         }
@@ -685,14 +685,14 @@ namespace VDS.RDF.Storage
                     {
                         if (insert.Length > 0)
                         {
-                            this.Update(delete.ToString() + "\n;\n" + insert.ToString(), (sender, args, st) =>
+                            Update(delete.ToString() + "\n;\n" + insert.ToString(), (sender, args, st) =>
                                 {
                                     callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), args.Error), state);
                                 }, state);
                         }
                         else
                         {
-                            this.Update(delete.ToString(), (sender, args, st) =>
+                            Update(delete.ToString(), (sender, args, st) =>
                                 {
                                     callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), args.Error), state);
                                 }, state);
@@ -700,7 +700,7 @@ namespace VDS.RDF.Storage
                     }
                     else if (insert.Length > 0)
                     {
-                        this.Update(insert.ToString(), (sender, args, st) =>
+                        Update(insert.ToString(), (sender, args, st) =>
                         {
                             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), args.Error), state);
                         }, state);
@@ -730,10 +730,10 @@ namespace VDS.RDF.Storage
             HttpWebRequest request;
             if (!graphUri.Equals(String.Empty))
             {
-                request = (HttpWebRequest)WebRequest.Create(this._baseUri + "data/" + Uri.EscapeUriString(graphUri));
+                request = (HttpWebRequest)WebRequest.Create(_baseUri + "data/" + Uri.EscapeUriString(graphUri));
                 request.Method = "DELETE";
-                request = base.ApplyRequestOptions(request);
-                this.DeleteGraphAsync(request, false, graphUri, callback, state);
+                request = ApplyRequestOptions(request);
+                DeleteGraphAsync(request, false, graphUri, callback, state);
             }
             else
             {
@@ -751,7 +751,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                this._updateEndpoint.Update(sparqlUpdates, (st) =>
+                _updateEndpoint.Update(sparqlUpdates, (st) =>
                     {
                         callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdates), state);
                     }, state);
@@ -772,7 +772,7 @@ namespace VDS.RDF.Storage
         {
             Graph g = new Graph();
             SparqlResultSet results = new SparqlResultSet();
-            this.Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery, (sender, args, st) =>
+            Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery, (sender, args, st) =>
             {
                 if (results.ResultsType != SparqlResultsType.Unknown)
                 {
@@ -801,7 +801,7 @@ namespace VDS.RDF.Storage
                 SparqlQuery q;
                 try
                 {
-                    q = this._parser.ParseFromString(sparqlQuery);
+                    q = _parser.ParseFromString(sparqlQuery);
                 }
                 catch (RdfParseException parseEx)
                 {
@@ -818,11 +818,11 @@ namespace VDS.RDF.Storage
                 String accept = (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask) ? MimeTypesHelper.HttpSparqlAcceptHeader : MimeTypesHelper.HttpAcceptHeader;
 
                 // Create the Request, for simplicity async requests are always POST
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._endpoint.Uri);
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_endpoint.Uri);
                 request.Accept = accept;
                 request.Method = "POST";
                 request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
-                request = base.ApplyRequestOptions(request);
+                request = ApplyRequestOptions(request);
 
                 Tools.HttpDebugRequest(request);
 
@@ -907,7 +907,7 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public override string ToString()
         {
-            return "[4store] " + this._baseUri;
+            return "[4store] " + _baseUri;
         }
 
         /// <summary>
@@ -925,12 +925,12 @@ namespace VDS.RDF.Storage
             INode enableUpdates = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEnableUpdates));
 
             context.Graph.Assert(new Triple(manager, rdfType, genericManager));
-            context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString())));
-            context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
-            context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._baseUri)));
-            context.Graph.Assert(new Triple(manager, enableUpdates, this._updatesEnabled.ToLiteral(context.Graph)));
+            context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString())));
+            context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(GetType().FullName)));
+            context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(_baseUri)));
+            context.Graph.Assert(new Triple(manager, enableUpdates, _updatesEnabled.ToLiteral(context.Graph)));
 
-            base.SerializeStandardConfig(manager, context);
+            SerializeStandardConfig(manager, context);
         }
     }
 }

@@ -31,7 +31,7 @@ using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-    public class TripleTemplateImpl : TripleImpl, ITripleTemplate
+    internal class TripleTemplateImpl : TripleImpl, ITripleTemplate
     {
 
         public TripleTemplateImpl(INode node, SpinProcessor spinModel)

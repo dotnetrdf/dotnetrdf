@@ -49,9 +49,9 @@ namespace VDS.RDF.Query.Paths
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            output.Append(this._lhs.ToString());
+            output.Append(_lhs.ToString());
             output.Append(" / ");
-            output.Append(this._rhs.ToString());
+            output.Append(_rhs.ToString());
             return output.ToString();
         }
 
@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Paths
             // The Object becomes a temporary variable then we transform the LHS of the path
             context.Object = context.GetNextTemporaryVariable();
             context.Top = false;
-            context.AddTriplePattern(context.GetTriplePattern(context.Subject, this._lhs, context.Object));
+            context.AddTriplePattern(context.GetTriplePattern(context.Subject, _lhs, context.Object));
 
             // The Subject is then the Object that results from the LHS transform since the
             // Transform may adjust the Object
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Paths
                 context.Object = context.GetNextTemporaryVariable();
             }
             context.Top = top;
-            context.AddTriplePattern(context.GetTriplePattern(context.Subject, this._rhs, context.Object));
+            context.AddTriplePattern(context.GetTriplePattern(context.Subject, _rhs, context.Object));
 
             return context.ToAlgebra();
         }

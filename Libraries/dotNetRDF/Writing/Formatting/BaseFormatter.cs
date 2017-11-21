@@ -44,7 +44,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="formatName">Format Name</param>
         public BaseFormatter(String formatName)
         {
-            this._format = formatName;
+            _format = formatName;
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace VDS.RDF.Writing.Formatting
         {
             get
             {
-                return this._format;
+                return _format;
             }
         }
 
@@ -69,17 +69,17 @@ namespace VDS.RDF.Writing.Formatting
             switch (n.NodeType)
             {
                 case NodeType.Blank:
-                    return this.FormatBlankNode((IBlankNode)n, segment);
+                    return FormatBlankNode((IBlankNode)n, segment);
                 case NodeType.GraphLiteral:
-                    return this.FormatGraphLiteralNode((IGraphLiteralNode)n, segment);
+                    return FormatGraphLiteralNode((IGraphLiteralNode)n, segment);
                 case NodeType.Literal:
-                    return this.FormatLiteralNode((ILiteralNode)n, segment);
+                    return FormatLiteralNode((ILiteralNode)n, segment);
                 case NodeType.Uri:
-                    return this.FormatUriNode((IUriNode)n, segment);
+                    return FormatUriNode((IUriNode)n, segment);
                 case NodeType.Variable:
-                    return this.FormatVariableNode((IVariableNode)n, segment);
+                    return FormatVariableNode((IVariableNode)n, segment);
                 default:
-                    throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable(this._format));
+                    throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable(_format));
             }
         }
 
@@ -90,7 +90,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         public virtual String Format(INode n)
         {
-            return this.Format(n, null);
+            return Format(n, null);
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         public virtual String Format(Triple t)
         {
-            return this.Format(t.Subject, TripleSegment.Subject) + " " + this.Format(t.Predicate, TripleSegment.Predicate) + " " + this.Format(t.Object, TripleSegment.Object) + " .";
+            return Format(t.Subject, TripleSegment.Subject) + " " + Format(t.Predicate, TripleSegment.Predicate) + " " + Format(t.Object, TripleSegment.Object) + " .";
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         public virtual String FormatUri(Uri u)
         {
-            return this.FormatUri(u.AbsoluteUri);
+            return FormatUri(u.AbsoluteUri);
         }
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         protected virtual String FormatBlankNode(IBlankNode b, TripleSegment? segment)
         {
-            if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.BlankPredicatesUnserializable(this._format));
+            if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.BlankPredicatesUnserializable(_format));
             return b.ToString();
         }
 
@@ -161,7 +161,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         protected virtual String FormatVariableNode(IVariableNode v, TripleSegment? segment)
         {
-            throw new RdfOutputException(WriterErrorMessages.VariableNodesUnserializable(this._format));
+            throw new RdfOutputException(WriterErrorMessages.VariableNodesUnserializable(_format));
         }
 
         /// <summary>
@@ -172,7 +172,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         protected virtual String FormatGraphLiteralNode(IGraphLiteralNode glit, TripleSegment? segment)
         {
-            throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable(this._format));
+            throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable(_format));
         }
 
         /// <summary>
@@ -238,7 +238,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         public override string ToString()
         {
-            return this.FormatName;
+            return FormatName;
         }
     }
 }

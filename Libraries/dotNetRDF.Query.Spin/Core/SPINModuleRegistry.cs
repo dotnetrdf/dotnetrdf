@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Spin.Core
      * 
      * @author Holger Knublauch
      */
-    public class SPINModuleRegistry
+    internal class SPINModuleRegistry
     {
 
         /**
@@ -176,7 +176,7 @@ namespace VDS.RDF.Query.Spin.Core
         }
 
 
-        /**
+        /* *
          * Initializes this registry with all system functions and templates
          * from the SPL namespace.
          */

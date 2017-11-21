@@ -50,7 +50,7 @@ namespace VDS.RDF.Writing
         /// <param name="writer">RDF Writer to use</param>
         public SparqlRdfWriter(IRdfWriter writer)
         {
-            this._writer = writer;
+            _writer = writer;
         }
 
         
@@ -61,7 +61,7 @@ namespace VDS.RDF.Writing
         /// <param name="filename">File to save to</param>
         public void Save(SparqlResultSet results, string filename)
         {
-            this._writer.Save(this.GenerateOutput(results), filename);
+            _writer.Save(GenerateOutput(results), filename);
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace VDS.RDF.Writing
         /// <param name="output">Stream to save to</param>
         public void Save(SparqlResultSet results, TextWriter output)
         {
-            this._writer.Save(this.GenerateOutput(results), output);
+            _writer.Save(GenerateOutput(results), output);
         }
 
         /// <summary>
@@ -166,7 +166,7 @@ namespace VDS.RDF.Writing
         /// <param name="message">Warning Message</param>
         private void RaiseWarning(String message)
         {
-            SparqlWarning d = this.Warning;
+            SparqlWarning d = Warning;
             if (d != null)
             {
                 d(message);
@@ -184,7 +184,7 @@ namespace VDS.RDF.Writing
         /// <returns></returns>
         public override string ToString()
         {
-            return "SPARQL Results in RDF as " + this._writer.ToString();
+            return "SPARQL Results in RDF as " + _writer.ToString();
         }
     }
 }

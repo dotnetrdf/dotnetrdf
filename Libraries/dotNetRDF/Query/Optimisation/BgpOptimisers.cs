@@ -62,7 +62,7 @@ namespace VDS.RDF.Query.Optimisation
                 else if (algebra is IUnion)
                 {
                     IUnion join = (IUnion)algebra;
-                    temp = new LazyUnion(this.OptimiseInternal(join.Lhs, depth + 1), this.OptimiseInternal(join.Rhs, depth + 1));
+                    temp = new LazyUnion(OptimiseInternal(join.Lhs, depth + 1), OptimiseInternal(join.Rhs, depth + 1));
                 }
                 else if (algebra is IJoin)
                 {
@@ -158,12 +158,12 @@ namespace VDS.RDF.Query.Optimisation
                     // UNLESS the LeftJoin occurs inside a Filter/Minus BUT we should never get called to transform a 
                     // LeftJoin() for those branches of the algebra as the Optimiseer does not transform 
                     // Filter()/Minus() operators
-                    temp = this.OptimiseInternal(((ILeftJoin)algebra).Lhs, depth + 1);
+                    temp = OptimiseInternal(((ILeftJoin)algebra).Lhs, depth + 1);
                 }
                 else if (algebra is IUnion)
                 {
                     IUnion join = (IUnion)algebra;
-                    temp = new AskUnion(this.OptimiseInternal(join.Lhs, depth + 1), this.OptimiseInternal(join.Rhs, depth + 1));
+                    temp = new AskUnion(OptimiseInternal(join.Lhs, depth + 1), OptimiseInternal(join.Rhs, depth + 1));
                 }
                 else if (algebra is IJoin)
                 {

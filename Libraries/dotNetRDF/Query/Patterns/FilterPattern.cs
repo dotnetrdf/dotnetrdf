@@ -50,9 +50,9 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="filter">Filter</param>
         public FilterPattern(ISparqlFilter filter)
         {
-            this._filter = filter;
-            this._vars = filter.Variables.Distinct().ToList();
-            this._vars.Sort();
+            _filter = filter;
+            _vars = filter.Variables.Distinct().ToList();
+            _vars.Sort();
         }
 
         /// <summary>
@@ -67,14 +67,14 @@ namespace VDS.RDF.Query.Patterns
             }
             else if (context.InputMultiset is IdentityMultiset)
             {
-                if (!this._filter.Variables.Any())
+                if (!_filter.Variables.Any())
                 {
                     // If we get an IdentityMultiset then the FILTER only has an effect if there are no
                     // variables - otherwise it is not in scope and is ignored
 
                     try
                     {
-                        if (!this._filter.Expression.Evaluate(context, 0).AsSafeBoolean())
+                        if (!_filter.Expression.Evaluate(context, 0).AsSafeBoolean())
                         {
                             context.OutputMultiset = new NullMultiset();
                             return;
@@ -89,7 +89,7 @@ namespace VDS.RDF.Query.Patterns
             }
             else
             {
-                this._filter.Evaluate(context);
+                _filter.Evaluate(context);
             }
             context.OutputMultiset = new IdentityMultiset();
         }
@@ -123,7 +123,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._filter;
+                return _filter;
             }
         }
 
@@ -147,7 +147,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._filter.Expression.UsesDefaultDataset();
+                return _filter.Expression.UsesDefaultDataset();
             }
         }
 
@@ -172,7 +172,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public int CompareTo(FilterPattern other)
         {
-            return this.CompareTo((IFilterPattern)other);
+            return CompareTo((IFilterPattern)other);
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public override string ToString()
         {
-            return this._filter.ToString();
+            return _filter.ToString();
         }
     }
 }

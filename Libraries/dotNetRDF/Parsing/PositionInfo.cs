@@ -42,8 +42,8 @@ namespace VDS.RDF.Parsing
         /// <param name="position">Column</param>
         public PositionInfo(int line, int position)
         {
-            this._startLine = this._endLine = line;
-            this._startPos = this._endPos = position;
+            _startLine = _endLine = line;
+            _startPos = _endPos = position;
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace VDS.RDF.Parsing
         public PositionInfo(int line, int startPosition, int endPosition)
             : this(line, startPosition)
         {
-            this._endPos = endPosition;
+            _endPos = endPosition;
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace VDS.RDF.Parsing
         public PositionInfo(int startLine, int endLine, int startPosition, int endPosition)
             : this(startLine, startPosition, endPosition)
         {
-            this._endLine = endLine;
+            _endLine = endLine;
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace VDS.RDF.Parsing
         {
             get
             {
-                return this._startLine;
+                return _startLine;
             }
         }
 
@@ -96,7 +96,7 @@ namespace VDS.RDF.Parsing
         {
             get
             {
-                return this._endLine;
+                return _endLine;
             }
         }
 
@@ -107,7 +107,7 @@ namespace VDS.RDF.Parsing
         {
             get
             {
-                return this._startPos;
+                return _startPos;
             }
         }
 
@@ -118,7 +118,7 @@ namespace VDS.RDF.Parsing
         {
             get
             {
-                return this._endPos;
+                return _endPos;
             }
         }
     }

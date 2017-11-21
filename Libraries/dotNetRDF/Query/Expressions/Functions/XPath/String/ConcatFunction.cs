@@ -47,8 +47,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="second">Second Expression</param>
         public ConcatFunction(ISparqlExpression first, ISparqlExpression second)
         {
-            this._exprs.Add(first);
-            this._exprs.Add(second);
+            _exprs.Add(first);
+            _exprs.Add(second);
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="expressions">Enumeration of expressions</param>
         public ConcatFunction(IEnumerable<ISparqlExpression> expressions)
         {
-            this._exprs.AddRange(expressions);
+            _exprs.AddRange(expressions);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
             StringBuilder output = new StringBuilder();
-            foreach (ISparqlExpression expr in this._exprs)
+            foreach (ISparqlExpression expr in _exprs)
             {
                 IValuedNode temp = expr.Evaluate(context, bindingID);
                 if (temp == null) throw new RdfQueryException("Cannot evaluate the XPath concat() function when an argument evaluates to a Null");
@@ -93,7 +93,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             get
             {
-                return this._exprs;
+                return _exprs;
             }
         }
 
@@ -104,7 +104,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             get
             {
-                return this._exprs.All(e => e.CanParallelise);
+                return _exprs.All(e => e.CanParallelise);
             }
         }
 
@@ -115,7 +115,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             get
             {
-                return (from expr in this._exprs
+                return (from expr in _exprs
                         from v in expr.Variables
                         select v);
             }
@@ -132,10 +132,10 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             output.Append(XPathFunctionFactory.XPathFunctionsNamespace);
             output.Append(XPathFunctionFactory.Concat);
             output.Append(">(");
-            for (int i = 0; i < this._exprs.Count; i++)
+            for (int i = 0; i < _exprs.Count; i++)
             {
-                output.Append(this._exprs[i].ToString());
-                if (i < this._exprs.Count - 1) output.Append(", ");
+                output.Append(_exprs[i].ToString());
+                if (i < _exprs.Count - 1) output.Append(", ");
             }
             output.Append(")");
             return output.ToString();
@@ -170,7 +170,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new ConcatFunction(this._exprs.Select(e => transformer.Transform(e)));
+            return new ConcatFunction(_exprs.Select(e => transformer.Transform(e)));
         }
     }
 }

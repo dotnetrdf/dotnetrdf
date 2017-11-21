@@ -51,9 +51,9 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="aggregates">Aggregates to calculate</param>
         public GroupBy(ISparqlAlgebra pattern, ISparqlGroupBy grouping, IEnumerable<SparqlVariable> aggregates)
         {
-            this._pattern = pattern;
-            this._grouping = grouping;
-            this._aggregates.AddRange(aggregates.Where(var => var.IsAggregate));
+            _pattern = pattern;
+            _grouping = grouping;
+            _aggregates.AddRange(aggregates.Where(var => var.IsAggregate));
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            BaseMultiset results = context.Evaluate(this._pattern);
+            BaseMultiset results = context.Evaluate(_pattern);
             context.InputMultiset = results;
 
             // Identity/Null yields an empty multiset
@@ -79,9 +79,9 @@ namespace VDS.RDF.Query.Algebra
             {
                 groups = context.Query.GroupBy.Apply(context);
             }
-            else if (this._grouping != null)
+            else if (_grouping != null)
             {
-                groups = this._grouping.Apply(context);
+                groups = _grouping.Apply(context);
             }
             else
             {
@@ -103,12 +103,12 @@ namespace VDS.RDF.Query.Algebra
             }
             // If grouping produced no groups and there are aggregates present
             // then an implicit group is created
-            if (groups.Count == 0 && this._aggregates.Count > 0) groupSet.AddGroup(new BindingGroup());
+            if (groups.Count == 0 && _aggregates.Count > 0) groupSet.AddGroup(new BindingGroup());
 
             // Apply the aggregates
             context.InputMultiset = groupSet;
             context.Binder.SetGroupContext(true);
-            foreach (SparqlVariable var in this._aggregates)
+            foreach (SparqlVariable var in _aggregates)
             {
                 if (!vars.Contains(var.Name))
                 {
@@ -142,7 +142,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._pattern.Variables.Concat(this._aggregates.Select(v => v.Name)).Distinct();
+                return _pattern.Variables.Concat(_aggregates.Select(v => v.Name)).Distinct();
             }
         }
 
@@ -154,7 +154,7 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 // Floating variables are those floating in the inner algebra plus aggregates
-                return this._pattern.FloatingVariables.Concat(this._aggregates.Select(v => v.Name)).Distinct();
+                return _pattern.FloatingVariables.Concat(_aggregates.Select(v => v.Name)).Distinct();
             }
             
         }
@@ -162,7 +162,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
         /// </summary>
-        public IEnumerable<String> FixedVariables { get { return this._pattern.FixedVariables; } }
+        public IEnumerable<String> FixedVariables { get { return _pattern.FixedVariables; } }
 
         /// <summary>
         /// Gets the Inner Algebra
@@ -171,7 +171,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._pattern;
+                return _pattern;
             }
         }
 
@@ -185,7 +185,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._grouping;
+                return _grouping;
             }
         }
 
@@ -196,7 +196,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._aggregates;
+                return _aggregates;
             }
         }
 
@@ -206,7 +206,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "GroupBy(" + this._pattern.ToString() + ")";
+            return "GroupBy(" + _pattern.ToString() + ")";
         }
 
         /// <summary>
@@ -215,8 +215,8 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            SparqlQuery q = this._pattern.ToQuery();
-            q.GroupBy = this._grouping;
+            SparqlQuery q = _pattern.ToQuery();
+            q.GroupBy = _grouping;
             return q;
         }
 
@@ -237,7 +237,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new GroupBy(optimiser.Optimise(this._pattern), this._grouping, this._aggregates);
+            return new GroupBy(optimiser.Optimise(_pattern), _grouping, _aggregates);
         }
     }
 }

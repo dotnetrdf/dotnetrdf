@@ -41,7 +41,7 @@ namespace VDS.RDF.Query.Spin.Statistics
      * 
      * @author Holger Knublauch
      */
-    public class SPINStatisticsManager
+    internal class SPINStatisticsManager
     {
 
         private static SPINStatisticsManager _singleton = new SPINStatisticsManager();

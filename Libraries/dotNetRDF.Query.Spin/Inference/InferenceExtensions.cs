@@ -37,9 +37,9 @@ namespace VDS.RDF.Query.Spin.Inference
     public static class InferenceExtensions
     {
 
-        public static void ApplyRules(this SpinWrappedDataset dataset)
-        {
-        }
+        //public static void ApplyRules(this SpinWrappedDataset dataset)
+        //{
+        //}
 
     }
 }

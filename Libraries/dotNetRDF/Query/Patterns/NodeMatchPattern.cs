@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="n">Exact Node to match</param>
         public NodeMatchPattern(INode n)
         {
-            this._node = n;
+            _node = n;
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace VDS.RDF.Query.Patterns
         public NodeMatchPattern(INode n, bool rigorousEvaluation)
             : this(n)
         {
-            this.RigorousEvaluation = rigorousEvaluation;
+            RigorousEvaluation = rigorousEvaluation;
         }
 
         /// <summary>
@@ -64,9 +64,9 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         protected internal override bool Accepts(SparqlEvaluationContext context, INode obj)
         {
-            if (Options.RigorousEvaluation || this.RigorousEvaluation)
+            if (Options.RigorousEvaluation || RigorousEvaluation)
             {
-                return this._node.Equals(obj);
+                return _node.Equals(obj);
             }
             else
             {
@@ -80,7 +80,7 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="context">Construct Context</param>
         protected internal override INode Construct(ConstructContext context)
         {
-            return context.GetNode(this._node);
+            return context.GetNode(_node);
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.Formatter.Format(this._node);
+            return SparqlSpecsHelper.Formatter.Format(_node);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._node;
+                return _node;
             }
         }
     }

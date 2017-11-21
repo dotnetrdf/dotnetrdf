@@ -53,7 +53,7 @@ namespace VDS.RDF.Query.Datasets
         public WrapperDataset(ISparqlDataset dataset)
         {
             if (dataset == null) throw new ArgumentNullException("dataset");
-            this._dataset = dataset;
+            _dataset = dataset;
         }
 
         /// <summary>
@@ -63,13 +63,13 @@ namespace VDS.RDF.Query.Datasets
         {
             get
             {
-                if (this._dataset is IThreadSafeDataset)
+                if (_dataset is IThreadSafeDataset)
                 {
-                    return ((IThreadSafeDataset)this._dataset).Lock;
+                    return ((IThreadSafeDataset)_dataset).Lock;
                 }
                 else
                 {
-                    return this._lock;
+                    return _lock;
                 }
             }
         }
@@ -81,7 +81,7 @@ namespace VDS.RDF.Query.Datasets
         {
             get
             {
-                return this._dataset;
+                return _dataset;
             }
         }
 
@@ -93,7 +93,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphUris">Graph URIs</param>
         public virtual void SetActiveGraph(IEnumerable<Uri> graphUris)
         {
-            this._dataset.SetActiveGraph(graphUris);
+            _dataset.SetActiveGraph(graphUris);
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphUri">Graph URI</param>
         public virtual void SetActiveGraph(Uri graphUri)
         {
-            this._dataset.SetActiveGraph(graphUri);
+            _dataset.SetActiveGraph(graphUri);
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphUri">Graph URI</param>
         public virtual void SetDefaultGraph(Uri graphUri)
         {
-            this._dataset.SetDefaultGraph(graphUri);
+            _dataset.SetDefaultGraph(graphUri);
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphUris">Graph URIs</param>
         public virtual void SetDefaultGraph(IEnumerable<Uri> graphUris)
         {
-            this._dataset.SetDefaultGraph(graphUris);
+            _dataset.SetDefaultGraph(graphUris);
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         public virtual void ResetActiveGraph()
         {
-            this._dataset.ResetActiveGraph();
+            _dataset.ResetActiveGraph();
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         public virtual void ResetDefaultGraph()
         {
-            this._dataset.ResetDefaultGraph();
+            _dataset.ResetDefaultGraph();
         }
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace VDS.RDF.Query.Datasets
         {
             get
             {
-                return this._dataset.DefaultGraphUris;
+                return _dataset.DefaultGraphUris;
             }
         }
 
@@ -157,7 +157,7 @@ namespace VDS.RDF.Query.Datasets
         {
             get
             {
-                return this._dataset.ActiveGraphUris;
+                return _dataset.ActiveGraphUris;
             }
         }
 
@@ -168,7 +168,7 @@ namespace VDS.RDF.Query.Datasets
         {
             get
             {
-                return this._dataset.UsesUnionDefaultGraph;
+                return _dataset.UsesUnionDefaultGraph;
             }
         }
 
@@ -178,7 +178,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="g">Graph</param>
         public virtual bool AddGraph(IGraph g)
         {
-            return this._dataset.AddGraph(g);
+            return _dataset.AddGraph(g);
         }
 
         /// <summary>
@@ -187,7 +187,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphUri">Graph URI</param>
         public virtual bool RemoveGraph(Uri graphUri)
         {
-            return this._dataset.RemoveGraph(graphUri);
+            return _dataset.RemoveGraph(graphUri);
         }
 
         /// <summary>
@@ -197,7 +197,7 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public virtual bool HasGraph(Uri graphUri)
         {
-            return this._dataset.HasGraph(graphUri);
+            return _dataset.HasGraph(graphUri);
         }
 
         /// <summary>
@@ -207,7 +207,7 @@ namespace VDS.RDF.Query.Datasets
         {
             get 
             {
-                return this._dataset.Graphs;
+                return _dataset.Graphs;
             }
         }
 
@@ -218,7 +218,7 @@ namespace VDS.RDF.Query.Datasets
         {
             get 
             {
-                return this._dataset.GraphUris;
+                return _dataset.GraphUris;
             }
         }
 
@@ -231,7 +231,7 @@ namespace VDS.RDF.Query.Datasets
         {
             get
             {
-                return this._dataset[graphUri];
+                return _dataset[graphUri];
             }
         }
 
@@ -242,7 +242,7 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public virtual IGraph GetModifiableGraph(Uri graphUri)
         {
-            return this._dataset.GetModifiableGraph(graphUri);
+            return _dataset.GetModifiableGraph(graphUri);
         }
 
         /// <summary>
@@ -252,7 +252,7 @@ namespace VDS.RDF.Query.Datasets
         {
             get 
             {
-                return this._dataset.HasTriples; 
+                return _dataset.HasTriples; 
             }
         }
 
@@ -263,7 +263,7 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public virtual bool ContainsTriple(Triple t)
         {
-            return this._dataset.ContainsTriple(t);
+            return _dataset.ContainsTriple(t);
         }
 
         /// <summary>
@@ -273,7 +273,7 @@ namespace VDS.RDF.Query.Datasets
         {
             get
             {
-                return this._dataset.Triples;
+                return _dataset.Triples;
             }
         }
 
@@ -284,7 +284,7 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithSubject(INode subj)
         {
-            return this._dataset.GetTriplesWithSubject(subj);
+            return _dataset.GetTriplesWithSubject(subj);
         }
 
         /// <summary>
@@ -294,7 +294,7 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithPredicate(INode pred)
         {
-            return this._dataset.GetTriplesWithPredicate(pred);
+            return _dataset.GetTriplesWithPredicate(pred);
         }
 
         /// <summary>
@@ -304,7 +304,7 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithObject(INode obj)
         {
-            return this._dataset.GetTriplesWithObject(obj);
+            return _dataset.GetTriplesWithObject(obj);
         }
 
         /// <summary>
@@ -315,7 +315,7 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred)
         {
-            return this._dataset.GetTriplesWithSubjectPredicate(subj, pred);
+            return _dataset.GetTriplesWithSubjectPredicate(subj, pred);
         }
 
         /// <summary>
@@ -326,7 +326,7 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj)
         {
-            return this._dataset.GetTriplesWithSubjectObject(subj, obj);
+            return _dataset.GetTriplesWithSubjectObject(subj, obj);
         }
 
         /// <summary>
@@ -337,7 +337,7 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
         {
-            return this._dataset.GetTriplesWithPredicateObject(pred, obj);
+            return _dataset.GetTriplesWithPredicateObject(pred, obj);
         }
 
         /// <summary>
@@ -345,7 +345,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         public virtual void Flush()
         {
-            this._dataset.Flush();
+            _dataset.Flush();
         }
 
         /// <summary>
@@ -353,7 +353,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         public virtual void Discard()
         {
-            this._dataset.Discard();
+            _dataset.Discard();
         }
 
         #endregion
@@ -364,7 +364,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="context">Serialization Context</param>
         public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
-            if (this._dataset is IConfigurationSerializable)
+            if (_dataset is IConfigurationSerializable)
             {
                 INode dataset = context.NextSubject;
                 INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
@@ -376,17 +376,17 @@ namespace VDS.RDF.Query.Datasets
 #if NETCORE
                 String assm = typeof(WrapperDataset).GetTypeInfo().Assembly.FullName;
 #else
-                String assm = Assembly.GetAssembly(this.GetType()).FullName;
+                String assm = Assembly.GetAssembly(GetType()).FullName;
 #endif
                 if (assm.Contains(",")) assm = assm.Substring(0, assm.IndexOf(','));
-                String effectiveType = this.GetType().FullName + (assm.Equals("dotNetRDF") ? String.Empty : ", " + assm);
+                String effectiveType = GetType().FullName + (assm.Equals("dotNetRDF") ? String.Empty : ", " + assm);
 
                 context.Graph.Assert(dataset, rdfType, datasetClass);
                 context.Graph.Assert(dataset, dnrType, context.Graph.CreateLiteralNode(effectiveType));
                 context.Graph.Assert(dataset, usingDataset, innerDataset);
                 context.NextSubject = innerDataset;
 
-                ((IConfigurationSerializable)this._dataset).SerializeConfiguration(context);
+                ((IConfigurationSerializable)_dataset).SerializeConfiguration(context);
             }
             else
             {

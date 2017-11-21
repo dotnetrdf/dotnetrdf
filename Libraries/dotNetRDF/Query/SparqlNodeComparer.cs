@@ -102,7 +102,7 @@ namespace VDS.RDF.Query
                         // Both are Numeric so use Numeric ordering
                         try
                         {
-                            return this.NumericCompare(x, y, numtype);
+                            return NumericCompare(x, y, numtype);
                         }
                         catch (FormatException)
                         {
@@ -230,7 +230,7 @@ namespace VDS.RDF.Query
                         // Both are Numeric so use Numeric ordering
                         try
                         {
-                            return this.NumericCompare(x, y, numtype);
+                            return NumericCompare(x, y, numtype);
                         }
                         catch (FormatException)
                         {
@@ -521,7 +521,7 @@ namespace VDS.RDF.Query
                             // Both are Numeric so use Numeric ordering
                             try
                             {
-                                return this.NumericCompare(x, y, numtype);
+                                return NumericCompare(x, y, numtype);
                             }
                             catch (FormatException)
                             {
@@ -661,7 +661,7 @@ namespace VDS.RDF.Query
                             // Both are Numeric so use Numeric ordering
                             try
                             {
-                                return this.NumericCompare(x, y, numtype);
+                                return NumericCompare(x, y, numtype);
                             }
                             catch (FormatException)
                             {

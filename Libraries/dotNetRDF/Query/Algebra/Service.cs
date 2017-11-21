@@ -50,9 +50,9 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="silent">Whether Evaluation Errors are suppressed</param>
         public Service(IToken endpointSpecifier, GraphPattern pattern, bool silent)
         {
-            this._endpointSpecifier = endpointSpecifier;
-            this._pattern = pattern;
-            this._silent = silent;
+            _endpointSpecifier = endpointSpecifier;
+            _pattern = pattern;
+            _silent = silent;
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.Algebra
                 String baseUri = (context.Query.BaseUri == null) ? String.Empty : context.Query.BaseUri.AbsoluteUri;
                 SparqlParameterizedString sparqlQuery = new SparqlParameterizedString("SELECT * WHERE ");
 
-                String pattern = this._pattern.ToString();
+                String pattern = _pattern.ToString();
                 pattern = pattern.Substring(pattern.IndexOf('{'));
                 sparqlQuery.CommandText += pattern;
 
@@ -93,15 +93,15 @@ namespace VDS.RDF.Query.Algebra
                 }
 
                 // Select which service to use
-                if (this._endpointSpecifier.TokenType == Token.URI)
+                if (_endpointSpecifier.TokenType == Token.URI)
                 {
-                    endpointUri = UriFactory.Create(Tools.ResolveUri(this._endpointSpecifier.Value, baseUri));
+                    endpointUri = UriFactory.Create(Tools.ResolveUri(_endpointSpecifier.Value, baseUri));
                     endpoint = new SparqlRemoteEndpoint(endpointUri);
                 }
-                else if (this._endpointSpecifier.TokenType == Token.VARIABLE)
+                else if (_endpointSpecifier.TokenType == Token.VARIABLE)
                 {
                     // Get all the URIs that are bound to this Variable in the Input
-                    String var = this._endpointSpecifier.Value.Substring(1);
+                    String var = _endpointSpecifier.Value.Substring(1);
                     if (!context.InputMultiset.ContainsVariable(var)) throw new RdfQueryException("Cannot evaluate a SERVICE clause which uses a Variable as the Service specifier when the Variable is unbound");
                     List<IUriNode> services = new List<IUriNode>();
                     foreach (ISet s in context.InputMultiset.Sets)
@@ -126,12 +126,12 @@ namespace VDS.RDF.Query.Algebra
                     // Note that we must bypass the SILENT operator in this case as this is not an evaluation failure
                     // but a query syntax error
                     bypassSilent = true;
-                    throw new RdfQueryException("SERVICE Specifier must be a URI/Variable Token but a " + this._endpointSpecifier.GetType().ToString() + " Token was provided");
+                    throw new RdfQueryException("SERVICE Specifier must be a URI/Variable Token but a " + _endpointSpecifier.GetType().ToString() + " Token was provided");
                 }
 
                 // Where possible do substitution and execution to get accurate and correct SERVICE results
                 context.OutputMultiset = new Multiset();
-                List<String> existingVars = (from v in this._pattern.Variables
+                List<String> existingVars = (from v in _pattern.Variables
                                              where context.InputMultiset.ContainsVariable(v)
                                              select v).ToList();
 
@@ -141,7 +141,7 @@ namespace VDS.RDF.Query.Algebra
 
                     // Build the set of possible bindings
                     HashSet<ISet> bindings = new HashSet<ISet>();
-                    if (context.Query.Bindings != null && !this._pattern.Variables.IsDisjoint(context.Query.Bindings.Variables))
+                    if (context.Query.Bindings != null && !_pattern.Variables.IsDisjoint(context.Query.Bindings.Variables))
                     {
                         // Possible Bindings comes from BINDINGS clause
                         // In this case each possibility is a distinct binding tuple defined in the BINDINGS clause
@@ -208,7 +208,7 @@ namespace VDS.RDF.Query.Algebra
             }
             catch (Exception ex)
             {
-                if (this._silent && !bypassSilent)
+                if (_silent && !bypassSilent)
                 {
 
                     // If Evaluation Errors are SILENT is specified then a Multiset containing a single set with all values unbound is returned
@@ -216,7 +216,7 @@ namespace VDS.RDF.Query.Algebra
                     if (context.OutputMultiset.IsEmpty)
                     {
                         Set s = new Set();
-                        foreach (String var in this._pattern.Variables.Distinct())
+                        foreach (String var in _pattern.Variables.Distinct())
                         {
                             s.Add(var, null);
                         }
@@ -238,14 +238,14 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                if (this._endpointSpecifier.TokenType == Token.VARIABLE)
+                if (_endpointSpecifier.TokenType == Token.VARIABLE)
                 {
-                    String serviceVar = ((VariableToken)this._endpointSpecifier).Value.Substring(1);
-                    return this._pattern.Variables.Concat(serviceVar.AsEnumerable()).Distinct();
+                    String serviceVar = ((VariableToken)_endpointSpecifier).Value.Substring(1);
+                    return _pattern.Variables.Concat(serviceVar.AsEnumerable()).Distinct();
                 }
                 else
                 {
-                    return this._pattern.Variables.Distinct();
+                    return _pattern.Variables.Distinct();
                 }
             }
         }
@@ -258,7 +258,7 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 // Safest to assume all variables are floating as no guarantee the remote service is fully SPARQL compliant
-                return this.Variables;
+                return Variables;
             }
         }
 
@@ -274,7 +274,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._endpointSpecifier;
+                return _endpointSpecifier;
             }
         }
 
@@ -285,7 +285,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._pattern;
+                return _pattern;
             }
         }
 
@@ -295,7 +295,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Service(" + this._endpointSpecifier.Value + ", " + this._pattern.ToString() + ")";
+            return "Service(" + _endpointSpecifier.Value + ", " + _pattern.ToString() + ")";
         }
 
         /// <summary>
@@ -305,7 +305,7 @@ namespace VDS.RDF.Query.Algebra
         public SparqlQuery ToQuery()
         {
             SparqlQuery q = new SparqlQuery();
-            q.RootGraphPattern = this.ToGraphPattern();
+            q.RootGraphPattern = ToGraphPattern();
             q.Optimise();
             return q;
         }
@@ -316,18 +316,18 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            GraphPattern p = new GraphPattern(this._pattern);
+            GraphPattern p = new GraphPattern(_pattern);
             if (!p.HasModifier)
             {
                 p.IsService = true;
-                p.GraphSpecifier = this._endpointSpecifier;
+                p.GraphSpecifier = _endpointSpecifier;
                 return p;
             }
             else
             {
                 GraphPattern parent = new GraphPattern();
                 parent.IsService = true;
-                parent.GraphSpecifier = this._endpointSpecifier;
+                parent.GraphSpecifier = _endpointSpecifier;
                 parent.AddGraphPattern(p);
                 return parent;
             }

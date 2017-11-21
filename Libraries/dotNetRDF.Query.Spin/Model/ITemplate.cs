@@ -34,7 +34,7 @@ namespace VDS.RDF.Query.Spin.Model
      * 
      * @author Holger Knublauch
      */
-    public interface ITemplate : IModule
+    internal interface ITemplate : IModule
     {
 
         /**

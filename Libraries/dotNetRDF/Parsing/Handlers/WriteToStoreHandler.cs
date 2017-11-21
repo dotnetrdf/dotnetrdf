@@ -61,14 +61,14 @@ namespace VDS.RDF.Parsing.Handlers
             if (!manager.UpdateSupported) throw new ArgumentException("manager", "Generic IO Manager must support Triple Level updates to be used with this Handler");
             if (batchSize <= 0) throw new ArgumentException("batchSize", "Batch Size must be >= 1");
 
-            this._manager = manager;
-            this._defaultGraphUri = defaultGraphUri;
-            this._batchSize = batchSize;
+            _manager = manager;
+            _defaultGraphUri = defaultGraphUri;
+            _batchSize = batchSize;
 
             // Make the Actions Queue one larger than the Batch Size
-            this._actions = new List<Triple>(this._batchSize + 1);
-            this._bnodeActions = new List<Triple>(this._batchSize + 1);
-            this._bnodeUris = new HashSet<string>();
+            _actions = new List<Triple>(_batchSize + 1);
+            _bnodeActions = new List<Triple>(_batchSize + 1);
+            _bnodeUris = new HashSet<string>();
         }
 
         /// <summary>
@@ -99,10 +99,10 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         protected override void StartRdfInternal()
         {
-            this._actions.Clear();
-            this._bnodeActions.Clear();
-            this._bnodeUris.Clear();
-            this._currGraphUri = this._defaultGraphUri;
+            _actions.Clear();
+            _bnodeActions.Clear();
+            _bnodeUris.Clear();
+            _currGraphUri = _defaultGraphUri;
         }
 
         /// <summary>
@@ -112,32 +112,32 @@ namespace VDS.RDF.Parsing.Handlers
         protected override void EndRdfInternal(bool ok)
         {
             // First process the last batch of ground triples (if any)
-            if (this._actions.Count > 0)
+            if (_actions.Count > 0)
             {
-                this.ProcessBatch();
+                ProcessBatch();
             }
             // Then process each batch of non-ground triples
-            List<Uri> uris = (from u in this._bnodeUris
+            List<Uri> uris = (from u in _bnodeUris
                               select (u.Equals(String.Empty) ? null : UriFactory.Create(u))).ToList();
             foreach (Uri u in uris)
             {
                 List<Triple> batch = new List<Triple>();
-                for (int i = 0; i < this._bnodeActions.Count; i++)
+                for (int i = 0; i < _bnodeActions.Count; i++)
                 {
-                    if (EqualityHelper.AreUrisEqual(u, this._bnodeActions[i].GraphUri))
+                    if (EqualityHelper.AreUrisEqual(u, _bnodeActions[i].GraphUri))
                     {
-                        batch.Add(this._bnodeActions[i]);
-                        this._bnodeActions.RemoveAt(i);
+                        batch.Add(_bnodeActions[i]);
+                        _bnodeActions.RemoveAt(i);
                         i--;
                     }
                 }
                 if (u == null)
                 {
-                    this._manager.UpdateGraph(this._defaultGraphUri, batch, null);
+                    _manager.UpdateGraph(_defaultGraphUri, batch, null);
                 }
                 else
                 {
-                    this._manager.UpdateGraph(u, batch, null);
+                    _manager.UpdateGraph(u, batch, null);
                 }
             }
         }
@@ -152,45 +152,45 @@ namespace VDS.RDF.Parsing.Handlers
             if (t.IsGroundTriple)
             {
                 // Ground Triples are processed in Batches as we handle the Triples
-                if (t.GraphUri != null && !EqualityHelper.AreUrisEqual(t.GraphUri, this._currGraphUri))
+                if (t.GraphUri != null && !EqualityHelper.AreUrisEqual(t.GraphUri, _currGraphUri))
                 {
                     // The Triple has a Graph URI and it is not the same as the Current Graph URI
                     // so we process the existing Batch and then set the Current Graph URI to the new Graph URI
-                    this.ProcessBatch();
-                    this._currGraphUri = t.GraphUri;
+                    ProcessBatch();
+                    _currGraphUri = t.GraphUri;
                 }
-                else if (t.GraphUri == null && !EqualityHelper.AreUrisEqual(this._currGraphUri, this._defaultGraphUri))
+                else if (t.GraphUri == null && !EqualityHelper.AreUrisEqual(_currGraphUri, _defaultGraphUri))
                 {
                     // The Triple has no Graph URI and the Current Graph URI is not the Default Graph URI so
                     // we process the existing Batch and reset the Current Graph URI to the Default Graph URI
-                    this.ProcessBatch();
-                    this._currGraphUri = this._defaultGraphUri;
+                    ProcessBatch();
+                    _currGraphUri = _defaultGraphUri;
                 }
 
-                this._actions.Add(t);
+                _actions.Add(t);
 
                 // Whenever we hit the Batch Size process it
-                if (this._actions.Count >= this._batchSize)
+                if (_actions.Count >= _batchSize)
                 {
-                    this.ProcessBatch();
+                    ProcessBatch();
                 }
             }
             else
             {
                 // Non-Ground Triples (i.e. those with Blank Nodes) are saved up until the end to ensure that Blank
                 // Node are persisted properly
-                this._bnodeActions.Add(t);
-                this._bnodeUris.Add(t.GraphUri.ToSafeString());
+                _bnodeActions.Add(t);
+                _bnodeUris.Add(t.GraphUri.ToSafeString());
             }
             return true;
         }
 
         private void ProcessBatch()
         {
-            if (this._actions.Count > 0)
+            if (_actions.Count > 0)
             {
-                this._manager.UpdateGraph(this._currGraphUri, this._actions, null);
-                this._actions.Clear();
+                _manager.UpdateGraph(_currGraphUri, _actions, null);
+                _actions.Clear();
             }
         }
 

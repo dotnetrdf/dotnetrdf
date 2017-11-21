@@ -87,7 +87,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static bool IsLetterOrDigit(char c)
         {
-            return (UnicodeSpecsHelper.IsLetter(c) || UnicodeSpecsHelper.IsDigit(c));
+            return (IsLetter(c) || IsDigit(c));
         }
 
         /// <summary>

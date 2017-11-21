@@ -34,6 +34,8 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 using VDS.RDF.XunitExtensions;
 
+#pragma warning disable CS1718 // Comparison made to same variable
+
 namespace VDS.RDF
 {
     public partial class BasicTests2 : BaseTest
@@ -41,37 +43,26 @@ namespace VDS.RDF
         [Fact]
         public void GraphWithBNodeEquality()
         {
-            try
+            Console.WriteLine("Testing Graph Equality when the Graphs have Blank Nodes");
+            Graph g = new Graph();
+            Graph h = new Graph();
+
+            TurtleParser ttlparser = new TurtleParser();
+            ttlparser.Load(g, "resources\\MergePart1.ttl");
+            ttlparser.Load(h, "resources\\MergePart1.ttl");
+
+            Assert.Equal(g.BaseUri, h.BaseUri);
+            //TestTools.CompareGraphs(g, h, true);
+            Dictionary<INode, INode> mapping;
+            bool equals = g.Equals(h, out mapping);
+            Assert.True(@equals, "Graphs should have been equal");
+            if (mapping != null)
             {
-                Console.WriteLine("Testing Graph Equality when the Graphs have Blank Nodes");
-                Graph g = new Graph();
-                Graph h = new Graph();
-
-                TurtleParser ttlparser = new TurtleParser();
-                ttlparser.Load(g, "resources\\MergePart1.ttl");
-                ttlparser.Load(h, "resources\\MergePart1.ttl");
-
-                Assert.Equal(g.BaseUri, h.BaseUri);
-                //TestTools.CompareGraphs(g, h, true);
-                Dictionary<INode, INode> mapping;
-                bool equals = g.Equals(h, out mapping);
-                Assert.True(equals, "Graphs should have been equal");
-                if (mapping != null)
+                Console.WriteLine("Blank Node Mapping was:");
+                foreach (KeyValuePair<INode, INode> pair in mapping)
                 {
-                    Console.WriteLine("Blank Node Mapping was:");
-                    foreach (KeyValuePair<INode, INode> pair in mapping)
-                    {
-                        Console.WriteLine(pair.Key.ToString() + " => " + pair.Value.ToString());
-                    }
+                    Console.WriteLine(pair.Key.ToString() + " => " + pair.Value.ToString());
                 }
-            }
-            catch (RdfParseException parseEx)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
             }
         }
 
@@ -80,55 +71,43 @@ namespace VDS.RDF
         {
             Console.WriteLine("Testing that the overridden operators for Nodes work as expected");
 
-            try
-            {
-                Graph g = new Graph();
-                IBlankNode a = g.CreateBlankNode();
-                IBlankNode b = g.CreateBlankNode();
+            Graph g = new Graph();
+            IBlankNode a = g.CreateBlankNode();
+            IBlankNode b = g.CreateBlankNode();
 
-                Console.WriteLine("Testing using Equals() method");
-                Assert.False(a.Equals(b), "Two different Blank Nodes should be non-equal");
-                Assert.True(a.Equals(a), "A Blank Node should be equal to itself");
-                Assert.True(b.Equals(b), "A Blank Node should be equal to itself");
-                Console.WriteLine("OK");
+            Console.WriteLine("Testing using Equals() method");
+            Assert.False(a.Equals(b), "Two different Blank Nodes should be non-equal");
+            Assert.True(a.Equals(a), "A Blank Node should be equal to itself");
+            Assert.True(b.Equals(b), "A Blank Node should be equal to itself");
+            Console.WriteLine("OK");
 
-                Console.WriteLine();
+            Console.WriteLine();
 
-                Console.WriteLine("Testing using == operator");
-                Assert.False(a == b, "Two different Blank Nodes should be non-equal");
-                Assert.True(a == a, "A Blank Node should be equal to itself");
-                Assert.True(b == b, "A Blank Node should be equal to itself");
-                Console.WriteLine("OK");
+            Console.WriteLine("Testing using == operator");
+            Assert.False(a == b, "Two different Blank Nodes should be non-equal");
+            Assert.True(a == a, "A Blank Node should be equal to itself");
+            Assert.True(b == b, "A Blank Node should be equal to itself");
+            Console.WriteLine("OK");
 
-                Console.WriteLine();
+            Console.WriteLine();
 
-                //Test typed as INode
-                INode c = g.CreateBlankNode();
-                INode d = g.CreateBlankNode();
+            //Test typed as INode
+            INode c = g.CreateBlankNode();
+            INode d = g.CreateBlankNode();
 
-                Console.WriteLine("Now testing with typed as INode using Equals()");
-                Assert.False(c.Equals(d), "Two different Nodes should be non-equal");
-                Assert.True(c.Equals(c), "A Node should be equal to itself");
-                Assert.True(d.Equals(d), "A Node should be equal to itself");
-                Console.WriteLine("OK");
+            Console.WriteLine("Now testing with typed as INode using Equals()");
+            Assert.False(c.Equals(d), "Two different Nodes should be non-equal");
+            Assert.True(c.Equals(c), "A Node should be equal to itself");
+            Assert.True(d.Equals(d), "A Node should be equal to itself");
+            Console.WriteLine("OK");
 
-                Console.WriteLine();
+            Console.WriteLine();
 
-                Console.WriteLine("Now testing with typed as INode using == operator");
-                Assert.False(c == d, "Two different Nodes should be non-equal");
-                Assert.True(c == c, "A Node should be equal to itself");
-                Assert.True(d == d, "A Node should be equal to itself");
-                Console.WriteLine("OK");
-
-            }
-            catch (RdfException rdfEx)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            Console.WriteLine("Now testing with typed as INode using == operator");
+            Assert.False(c == d, "Two different Nodes should be non-equal");
+            Assert.True(c == c, "A Node should be equal to itself");
+            Assert.True(d == d, "A Node should be equal to itself");
+            Console.WriteLine("OK");
         }
 
         [Fact]
@@ -142,21 +121,6 @@ namespace VDS.RDF
             INode o = wrapper.CreateUriNode("rdfs:Class");
 
             wrapper.Assert(s, p, o);
-        }
-
-        public void SimpleExample()
-        {
-            Graph g = new Graph();
-            g.LoadFromFile("example.rdf");
-
-            NTriplesFormatter formatter = new NTriplesFormatter();
-            foreach (Triple t in g.Triples)
-            {
-                if (t.Subject.NodeType == NodeType.Blank)
-                {
-                    Console.WriteLine(t.ToString(formatter));
-                }
-            }
         }
     }
 }

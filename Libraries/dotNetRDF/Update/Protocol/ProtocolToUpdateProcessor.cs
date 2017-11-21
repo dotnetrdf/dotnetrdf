@@ -56,8 +56,8 @@ namespace VDS.RDF.Update.Protocol
         /// <param name="updateProcessor">Update Processor</param>
         public ProtocolToUpdateProcessor(ISparqlQueryProcessor queryProcessor, ISparqlUpdateProcessor updateProcessor)
         {
-            this._queryProcessor = queryProcessor;
-            this._updateProcessor = updateProcessor;
+            _queryProcessor = queryProcessor;
+            _updateProcessor = updateProcessor;
         }
 
         /// <summary>
@@ -67,13 +67,13 @@ namespace VDS.RDF.Update.Protocol
         public override void ProcessGet(IHttpContext context)
         {
             // Work out the Graph URI we want to get
-            Uri graphUri = this.ResolveGraphUri(context);
+            Uri graphUri = ResolveGraphUri(context);
 
             try
             {
                 // Send the Graph to the user
-                IGraph g = this.GetGraph(graphUri);
-                this.SendResultsToClient(context, g);
+                IGraph g = GetGraph(graphUri);
+                SendResultsToClient(context, g);
             }
             catch (RdfQueryException)
             {
@@ -91,7 +91,7 @@ namespace VDS.RDF.Update.Protocol
         public override void ProcessPost(IHttpContext context)
         {
             // Get the payload assuming there is one
-            IGraph g = this.ParsePayload(context);
+            IGraph g = ParsePayload(context);
 
             if (g == null)
             {
@@ -100,7 +100,7 @@ namespace VDS.RDF.Update.Protocol
             }
 
             // Get the Graph URI of the Graph to be added
-            Uri graphUri = this.ResolveGraphUri(context, g);
+            Uri graphUri = ResolveGraphUri(context, g);
 
             // First we need a 
 
@@ -134,9 +134,9 @@ namespace VDS.RDF.Update.Protocol
             SparqlParameterizedString insertCmd = new SparqlParameterizedString(insert.ToString());
             insertCmd.Namespaces = g.NamespaceMap;
             if (graphUri != null) insertCmd.SetUri("graph", graphUri);
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromString(insertCmd);
-            this._updateProcessor.ProcessCommandSet(cmds);
-            this._updateProcessor.Flush();
+            SparqlUpdateCommandSet cmds = _parser.ParseFromString(insertCmd);
+            _updateProcessor.ProcessCommandSet(cmds);
+            _updateProcessor.Flush();
         }
 
         /// <summary>
@@ -151,10 +151,10 @@ namespace VDS.RDF.Update.Protocol
         public override void ProcessPostCreate(IHttpContext context)
         {
             // Get the payload assuming there is one
-            IGraph g = this.ParsePayload(context);
+            IGraph g = ParsePayload(context);
 
             // Mint a URI for the Graph
-            Uri graphUri = this.MintGraphUri(context, g);
+            Uri graphUri = MintGraphUri(context, g);
 
             // First generate a CREATE to ensure that the Graph exists
             // We don't do a CREATE SILENT as this operation is supposed to generate a new Graph URI
@@ -179,9 +179,9 @@ namespace VDS.RDF.Update.Protocol
             SparqlParameterizedString insertCmd = new SparqlParameterizedString(insert.ToString());
             insertCmd.Namespaces = g.NamespaceMap;
             insertCmd.SetUri("graph", graphUri);
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromString(insertCmd);
-            this._updateProcessor.ProcessCommandSet(cmds);
-            this._updateProcessor.Flush();
+            SparqlUpdateCommandSet cmds = _parser.ParseFromString(insertCmd);
+            _updateProcessor.ProcessCommandSet(cmds);
+            _updateProcessor.Flush();
 
             // Finally return a 201 Created and a Location header with the new Graph URI
             context.Response.StatusCode = (int)HttpStatusCode.Created;
@@ -202,10 +202,10 @@ namespace VDS.RDF.Update.Protocol
         public override void ProcessPut(IHttpContext context)
         {
             // Get the payload assuming there is one
-            IGraph g = this.ParsePayload(context);
+            IGraph g = ParsePayload(context);
 
             // Get the Graph URI of the Graph to be added
-            Uri graphUri = this.ResolveGraphUri(context, g);
+            Uri graphUri = ResolveGraphUri(context, g);
 
             // Determine whether the Graph already exists or not, if it doesn't then we have to send a 201 Response
             bool created = false;
@@ -216,7 +216,7 @@ namespace VDS.RDF.Update.Protocol
                 graphExistsQuery.CommandText = "ASK WHERE { GRAPH @graph { } }";
                 graphExistsQuery.SetUri("graph", graphUri);
 
-                Object temp = this._queryProcessor.ProcessQuery(parser.ParseFromString(graphExistsQuery));
+                Object temp = _queryProcessor.ProcessQuery(parser.ParseFromString(graphExistsQuery));
                 if (temp is SparqlResultSet)
                 {
                     created = !((SparqlResultSet)temp).Result;
@@ -270,9 +270,9 @@ namespace VDS.RDF.Update.Protocol
             SparqlParameterizedString put = new SparqlParameterizedString(cmdSequence.ToString());
             put.Namespaces = g.NamespaceMap;
             if (graphUri != null) put.SetUri("graph", graphUri);
-            SparqlUpdateCommandSet putCmds = this._parser.ParseFromString(put);
-            this._updateProcessor.ProcessCommandSet(putCmds);
-            this._updateProcessor.Flush();
+            SparqlUpdateCommandSet putCmds = _parser.ParseFromString(put);
+            _updateProcessor.ProcessCommandSet(putCmds);
+            _updateProcessor.Flush();
 
             // Return a 201 if required, otherwise the default behaviour of returning a 200 will occur automatically
             if (created)
@@ -288,10 +288,10 @@ namespace VDS.RDF.Update.Protocol
         public override void ProcessDelete(IHttpContext context)
         {
             // Get the Graph URI of the Graph to delete
-            Uri graphUri = this.ResolveGraphUri(context);
+            Uri graphUri = ResolveGraphUri(context);
 
             // Must return a 404 if the Graph doesn't exist
-            if (!this.HasGraph(graphUri))
+            if (!HasGraph(graphUri))
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 return;
@@ -308,9 +308,9 @@ namespace VDS.RDF.Update.Protocol
             {
                 drop.CommandText += "DEFAULT";
             }
-            SparqlUpdateCommandSet dropCmd = this._parser.ParseFromString(drop);
-            this._updateProcessor.ProcessCommandSet(dropCmd);
-            this._updateProcessor.Flush();
+            SparqlUpdateCommandSet dropCmd = _parser.ParseFromString(drop);
+            _updateProcessor.ProcessCommandSet(dropCmd);
+            _updateProcessor.Flush();
         }
 
         /// <summary>
@@ -320,11 +320,11 @@ namespace VDS.RDF.Update.Protocol
         public override void ProcessHead(IHttpContext context)
         {
             // Work out the Graph URI we want to get
-            Uri graphUri = this.ResolveGraphUri(context);
+            Uri graphUri = ResolveGraphUri(context);
 
             try
             {
-                bool exists = this.HasGraph(graphUri);
+                bool exists = HasGraph(graphUri);
                 if (exists)
                 {
                     // Send the Content Type we'd select based on the Accept header to the user
@@ -353,7 +353,7 @@ namespace VDS.RDF.Update.Protocol
         public override void ProcessPatch(IHttpContext context)
         {
             // Work out the Graph URI we want to patch
-            Uri graphUri = this.ResolveGraphUri(context);
+            Uri graphUri = ResolveGraphUri(context);
 
             // If the Request has the SPARQL Update MIME Type then we can process it
             if (context.Request.ContentLength > 0)
@@ -368,14 +368,14 @@ namespace VDS.RDF.Update.Protocol
                         patchData = reader.ReadToEnd();
                         reader.Close();
                     }
-                    SparqlUpdateCommandSet cmds = this._parser.ParseFromString(patchData);
+                    SparqlUpdateCommandSet cmds = _parser.ParseFromString(patchData);
 
                     // Assuming that we've got here i.e. the SPARQL Updates are parseable then
                     // we need to check that they actually affect the relevant Graph
                     if (cmds.Commands.All(c => c.AffectsSingleGraph && c.AffectsGraph(graphUri)))
                     {
-                        this._updateProcessor.ProcessCommandSet(cmds);
-                        this._updateProcessor.Flush();
+                        _updateProcessor.ProcessCommandSet(cmds);
+                        _updateProcessor.Flush();
                     }
                     else
                     {
@@ -421,7 +421,7 @@ namespace VDS.RDF.Update.Protocol
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(construct);
 
-            Object results = this._queryProcessor.ProcessQuery(q);
+            Object results = _queryProcessor.ProcessQuery(q);
             if (results is IGraph)
             {
                 return (IGraph)results;
@@ -453,7 +453,7 @@ namespace VDS.RDF.Update.Protocol
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(ask);
 
-            Object results = this._queryProcessor.ProcessQuery(q);
+            Object results = _queryProcessor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
                 return ((SparqlResultSet)results).Result;

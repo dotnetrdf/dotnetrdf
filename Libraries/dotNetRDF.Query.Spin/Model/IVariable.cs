@@ -38,7 +38,7 @@ namespace VDS.RDF.Query.Spin.Model
      * 
      * @author Holger Knublauch
      */
-    public interface IVariable : IResource, IPrintable
+    internal interface IVariable : IResource, IPrintable
     {
 
         /**

@@ -168,9 +168,9 @@ namespace VDS.RDF.Writing.Contexts
         /// <param name="output">TextWriter being written to</param>
         public BaseWriterContext(IGraph g, TextWriter output)
         {
-            this._g = g;
-            this._output = output;
-            this._qnameMapper = new QNameOutputMapper(this._g.NamespaceMap);
+            _g = g;
+            _output = output;
+            _qnameMapper = new QNameOutputMapper(_g.NamespaceMap);
         }
 
         /// <summary>
@@ -182,7 +182,7 @@ namespace VDS.RDF.Writing.Contexts
         public BaseWriterContext(IGraph g, TextWriter output, int compressionLevel)
             : this(g, output)
         {
-            this._compressionLevel = compressionLevel;
+            _compressionLevel = compressionLevel;
         }
 
         /// <summary>
@@ -196,9 +196,9 @@ namespace VDS.RDF.Writing.Contexts
         public BaseWriterContext(IGraph g, TextWriter output, int compressionLevel, bool prettyPrint, bool hiSpeedAllowed)
             : this(g, output)
         {
-            this._compressionLevel = compressionLevel;
-            this._prettyPrint = prettyPrint;
-            this._hiSpeedAllowed = hiSpeedAllowed;
+            _compressionLevel = compressionLevel;
+            _prettyPrint = prettyPrint;
+            _hiSpeedAllowed = hiSpeedAllowed;
         }
 
         /// <summary>
@@ -208,7 +208,7 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._g;
+                return _g;
             }
         }
 
@@ -219,7 +219,7 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._output;
+                return _output;
             }
         }
 
@@ -230,7 +230,7 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._qnameMapper;
+                return _qnameMapper;
             }
         }
 
@@ -241,11 +241,11 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._compressionLevel;
+                return _compressionLevel;
             }
             set
             {
-                this._compressionLevel = value;
+                _compressionLevel = value;
             }
         }
 
@@ -256,11 +256,11 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._prettyPrint;
+                return _prettyPrint;
             }
             set
             {
-                this._prettyPrint = value;
+                _prettyPrint = value;
             }
         }
 
@@ -271,11 +271,11 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._hiSpeedAllowed;
+                return _hiSpeedAllowed;
             }
             set
             {
-                this._hiSpeedAllowed = value;
+                _hiSpeedAllowed = value;
             }
         }
 
@@ -286,11 +286,11 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._formatter;
+                return _formatter;
             }
             set
             {
-                this._formatter = value;
+                _formatter = value;
             }
         }
 
@@ -301,12 +301,12 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                if (this._uriFormatter == null)
+                if (_uriFormatter == null)
                 {
                     // If no URI Formatter set but the Node Formatter used is also a URI Formatter return that instead
-                    if (this._formatter is IUriFormatter)
+                    if (_formatter is IUriFormatter)
                     {
-                        return (IUriFormatter)this._formatter;
+                        return (IUriFormatter)_formatter;
                     }
                     else
                     {
@@ -315,12 +315,12 @@ namespace VDS.RDF.Writing.Contexts
                 }
                 else
                 {
-                    return this._uriFormatter;
+                    return _uriFormatter;
                 }
             }
             set
             {
-                this._uriFormatter = value;
+                _uriFormatter = value;
             }
         }
     }

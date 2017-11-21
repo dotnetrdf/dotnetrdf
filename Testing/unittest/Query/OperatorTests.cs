@@ -108,7 +108,7 @@ namespace VDS.RDF.Query
                 {
                     actual = op.Apply(ns.ToArray());
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     if (shouldFail) return;
                     throw;

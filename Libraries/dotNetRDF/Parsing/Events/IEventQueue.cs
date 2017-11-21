@@ -131,7 +131,7 @@ namespace VDS.RDF.Parsing.Events
         {
             get
             {
-                return this._eventgen;
+                return _eventgen;
             }
         }
 
@@ -155,11 +155,11 @@ namespace VDS.RDF.Parsing.Events
         {
             get
             {
-                return this._tracing;
+                return _tracing;
             }
             set
             {
-                this._tracing = value;
+                _tracing = value;
             }
         }
 
@@ -170,7 +170,7 @@ namespace VDS.RDF.Parsing.Events
         {
             get
             {
-                return this._lasteventtype;
+                return _lasteventtype;
             }
         }
     }

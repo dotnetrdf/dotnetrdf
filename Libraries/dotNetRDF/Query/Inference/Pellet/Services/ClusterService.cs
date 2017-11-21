@@ -43,13 +43,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         internal ClusterService(String serviceName, JObject obj)
             : base(serviceName, obj)
         {
-            if (!this.Endpoint.Uri.EndsWith("cluster/"))
+            if (!Endpoint.Uri.EndsWith("cluster/"))
             {
-                this._clusterUri = this.Endpoint.Uri.Substring(0, this.Endpoint.Uri.IndexOf("cluster/") + 8);
+                _clusterUri = Endpoint.Uri.Substring(0, Endpoint.Uri.IndexOf("cluster/") + 8);
             }
             else
             {
-                this._clusterUri = this.Endpoint.Uri;
+                _clusterUri = Endpoint.Uri;
             }
         }
 
@@ -60,7 +60,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <returns></returns>
         public List<List<INode>> Cluster(int number)
         {
-            IGraph g = this.ClusterRaw(number); 
+            IGraph g = ClusterRaw(number); 
 
             // Build the List of Lists
             List<List<INode>> clusters = new List<List<INode>>();
@@ -85,7 +85,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <returns></returns>
         public List<List<INode>> Cluster(int number, String type)
         {
-            IGraph g = this.ClusterRaw(number, type);
+            IGraph g = ClusterRaw(number, type);
 
             // Build the List of Lists
             List<List<INode>> clusters = new List<List<INode>>();
@@ -111,11 +111,11 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         {
             if (number < 2) throw new RdfReasoningException("Pellet Server requires the number of Clusters to be at least 2");
 
-            String requestUri = this._clusterUri + number + "/";
+            String requestUri = _clusterUri + number + "/";
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
-            request.Method = this.Endpoint.HttpMethods.First();
-            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes.Where(type => !type.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
+            request.Method = Endpoint.HttpMethods.First();
+            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypes.Where(type => !type.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
 
             Tools.HttpDebugRequest(request);
 
@@ -141,11 +141,11 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         {
             if (number < 2) throw new RdfReasoningException("Pellet Server requires the number of Clusters to be at least 2");
 
-            String requestUri = this._clusterUri + number + "/" + type;
+            String requestUri = _clusterUri + number + "/" + type;
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
-            request.Method = this.Endpoint.HttpMethods.First();
-            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes.Where(t => !t.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
+            request.Method = Endpoint.HttpMethods.First();
+            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypes.Where(t => !t.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
 
             Tools.HttpDebugRequest(request);
 
@@ -180,7 +180,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// </remarks>
         public void Cluster(int number, PelletClusterServiceCallback callback, Object state)
         {
-            this.ClusterRaw(number, (g, s) =>
+            ClusterRaw(number, (g, s) =>
                 {
                     if (s is AsyncError)
                     {
@@ -218,7 +218,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// </remarks>
         public void Cluster(int number, String type, PelletClusterServiceCallback callback, Object state)
         {
-            this.ClusterRaw(number, type, (g, s) =>
+            ClusterRaw(number, type, (g, s) =>
                 {
                     if (s is AsyncError)
                     {
@@ -257,11 +257,11 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         {
             if (number < 2) throw new RdfReasoningException("Pellet Server requires the number of Clusters to be at least 2");
 
-            String requestUri = this._clusterUri + number + "/";
+            String requestUri = _clusterUri + number + "/";
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
-            request.Method = this.Endpoint.HttpMethods.First();
-            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes.Where(type => !type.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
+            request.Method = Endpoint.HttpMethods.First();
+            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypes.Where(type => !type.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
 
             Tools.HttpDebugRequest(request);
 
@@ -318,11 +318,11 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         {
             if (number < 2) throw new RdfReasoningException("Pellet Server requires the number of Clusters to be at least 2");
 
-            String requestUri = this._clusterUri + number + "/" + type;
+            String requestUri = _clusterUri + number + "/" + type;
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
-            request.Method = this.Endpoint.HttpMethods.First();
-            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes.Where(t => !t.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
+            request.Method = Endpoint.HttpMethods.First();
+            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypes.Where(t => !t.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
 
             Tools.HttpDebugRequest(request);
 

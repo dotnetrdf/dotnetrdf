@@ -197,8 +197,8 @@ namespace VDS.RDF.Parsing
             Assert.False(g.IsEmpty);
             Assert.Equal(3, triples.Count);
             Assert.NotNull(p2Node);
-            Assert.Equal(1, g.GetTriplesWithSubjectPredicate(resourceNode, p1Node).Count());
-            Assert.Equal(1, g.GetTriplesWithSubjectPredicate(resourceNode, p2Node).Count());
+            Assert.Single(g.GetTriplesWithSubjectPredicate(resourceNode, p1Node));
+            Assert.Single(g.GetTriplesWithSubjectPredicate(resourceNode, p2Node));
         }
 	}
 }

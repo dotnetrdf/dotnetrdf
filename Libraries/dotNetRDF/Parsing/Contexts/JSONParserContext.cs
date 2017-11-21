@@ -43,7 +43,7 @@ namespace VDS.RDF.Parsing.Contexts
         public JsonParserContext(IGraph g, JsonTextReader input)
             : base(g)
         {
-            this._input = input;
+            _input = input;
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace VDS.RDF.Parsing.Contexts
         public JsonParserContext(IRdfHandler handler, JsonTextReader input)
             : base(handler)
         {
-            this._input = input;
+            _input = input;
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._input;
+                return _input;
             }
         }
 
@@ -75,13 +75,13 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                if (this._input.LineNumber == 0 && this._input.LinePosition == 0)
+                if (_input.LineNumber == 0 && _input.LinePosition == 0)
                 {
                     return new PositionInfo(1, 1);
                 }
                 else
                 {
-                    return new PositionInfo(this._input.LineNumber, this._input.LinePosition);
+                    return new PositionInfo(_input.LineNumber, _input.LinePosition);
                 }
             }
         }
@@ -93,7 +93,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <returns></returns>
         public PositionInfo GetPositionRange(PositionInfo startPosition)
         {
-            return new PositionInfo(startPosition.StartLine, this._input.LineNumber, startPosition.StartPosition, this._input.LinePosition);
+            return new PositionInfo(startPosition.StartLine, _input.LineNumber, startPosition.StartPosition, _input.LinePosition);
         }
     }
 }

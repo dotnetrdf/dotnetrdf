@@ -56,7 +56,7 @@ namespace VDS.RDF.Query
         /// <param name="query">Query this provides Result Binding to</param>
         public SparqlResultBinder(SparqlQuery query)
         {
-            this._query = query;
+            _query = query;
         }
 
         /// <summary>
@@ -82,9 +82,9 @@ namespace VDS.RDF.Query
         {
             get
             {
-                if (this._groups != null)
+                if (_groups != null)
                 {
-                    return (from g in this._groups.Values
+                    return (from g in _groups.Values
                             select g);
                 }
                 else
@@ -109,11 +109,11 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public virtual BindingGroup Group(int groupID)
         {
-            if (this._groups != null)
+            if (_groups != null)
             {
-                if (this._groups.ContainsKey(groupID))
+                if (_groups.ContainsKey(groupID))
                 {
-                    return this._groups[groupID];
+                    return _groups[groupID];
                 }
                 else
                 {
@@ -133,13 +133,13 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public virtual bool IsGroup(int groupID)
         {
-            if (this._groups == null)
+            if (_groups == null)
             {
                 return false;
             }
             else
             {
-                return this._groups.ContainsKey(groupID);
+                return _groups.ContainsKey(groupID);
             }
         }
 
@@ -156,7 +156,7 @@ namespace VDS.RDF.Query
         /// </summary>
         public virtual void Dispose()
         {
-            this._groups.Clear();
+            _groups.Clear();
         }
     }
 
@@ -176,7 +176,7 @@ namespace VDS.RDF.Query
         public LeviathanResultBinder(SparqlEvaluationContext context)
             : base()
         {
-            this._context = context;
+            _context = context;
         }
 
         /// <summary>
@@ -187,7 +187,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override INode Value(string name, int bindingID)
         {
-            return this._context.InputMultiset[bindingID][name];
+            return _context.InputMultiset[bindingID][name];
         }
 
         /// <summary>
@@ -197,7 +197,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._context.InputMultiset.Variables;
+                return _context.InputMultiset.Variables;
             }
         }
 
@@ -208,7 +208,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._context.InputMultiset.SetIDs;
+                return _context.InputMultiset.SetIDs;
             }
         }
 
@@ -219,7 +219,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override bool IsGroup(int groupID)
         {
-            if (this._context.InputMultiset is GroupMultiset || this._groupSet != null)
+            if (_context.InputMultiset is GroupMultiset || _groupSet != null)
             {
                 return true;
             }
@@ -236,14 +236,14 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override BindingGroup Group(int groupID)
         {
-            if (this._context.InputMultiset is GroupMultiset)
+            if (_context.InputMultiset is GroupMultiset)
             {
-                GroupMultiset groupSet = (GroupMultiset)this._context.InputMultiset;
+                GroupMultiset groupSet = (GroupMultiset)_context.InputMultiset;
                 return groupSet.Group(groupID);
             }
-            else if (this._groupSet != null)
+            else if (_groupSet != null)
             {
-                return this._groupSet.Group(groupID);
+                return _groupSet.Group(groupID);
             }
             else
             {
@@ -259,10 +259,10 @@ namespace VDS.RDF.Query
         {
             if (accessContents)
             {
-                if (this._context.InputMultiset is GroupMultiset)
+                if (_context.InputMultiset is GroupMultiset)
                 {
-                    this._groupSet = (GroupMultiset)this._context.InputMultiset;
-                    this._context.InputMultiset = this._groupSet.Contents;
+                    _groupSet = (GroupMultiset)_context.InputMultiset;
+                    _context.InputMultiset = _groupSet.Contents;
 
                 }
                 else
@@ -272,10 +272,10 @@ namespace VDS.RDF.Query
             }
             else
             {
-                if (this._groupSet != null)
+                if (_groupSet != null)
                 {
-                    this._context.InputMultiset = this._groupSet;
-                    this._groupSet = null;
+                    _context.InputMultiset = _groupSet;
+                    _groupSet = null;
                 }
                 else
                 {
@@ -299,7 +299,7 @@ namespace VDS.RDF.Query
         public LeviathanLeftJoinBinder(BaseMultiset multiset)
             : base()
         {
-            this._input = multiset;
+            _input = multiset;
         }
 
         /// <summary>
@@ -310,7 +310,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override INode Value(string name, int bindingID)
         {
-            return this._input[bindingID][name];
+            return _input[bindingID][name];
         }
 
         /// <summary>
@@ -320,7 +320,7 @@ namespace VDS.RDF.Query
         {
             get 
             {
-                return this._input.Variables;
+                return _input.Variables;
             }
         }
 
@@ -331,7 +331,7 @@ namespace VDS.RDF.Query
         {
             get 
             {
-                return this._input.SetIDs;
+                return _input.SetIDs;
             }
         }
     }

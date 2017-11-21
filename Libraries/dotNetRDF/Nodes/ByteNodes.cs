@@ -48,7 +48,7 @@ namespace VDS.RDF.Nodes
         public ByteNode(IGraph g, byte value, String lexicalValue)
             : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte), SparqlNumericType.Integer)
         {
-            this._value = value;
+            _value = value;
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace VDS.RDF.Nodes
         {
             try
             {
-                return Convert.ToInt64(this._value);
+                return Convert.ToInt64(_value);
             }
             catch
             {
@@ -84,7 +84,7 @@ namespace VDS.RDF.Nodes
         {
             try
             {
-                return Convert.ToDecimal(this._value);
+                return Convert.ToDecimal(_value);
             }
             catch
             {
@@ -100,7 +100,7 @@ namespace VDS.RDF.Nodes
         {
             try
             {
-                return Convert.ToSingle(this._value);
+                return Convert.ToSingle(_value);
             }
             catch
             {
@@ -116,7 +116,7 @@ namespace VDS.RDF.Nodes
         {
             try
             {
-                return Convert.ToDouble(this._value);
+                return Convert.ToDouble(_value);
             }
             catch
             {
@@ -142,7 +142,7 @@ namespace VDS.RDF.Nodes
         public SignedByteNode(IGraph g, sbyte value, String lexicalValue)
             : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeByte), SparqlNumericType.Integer)
         {
-            this._value = value;
+            _value = value;
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace VDS.RDF.Nodes
         {
             try
             {
-                return Convert.ToInt64(this._value);
+                return Convert.ToInt64(_value);
             }
             catch
             {
@@ -177,7 +177,7 @@ namespace VDS.RDF.Nodes
         {
             try
             {
-                return Convert.ToDecimal(this._value);
+                return Convert.ToDecimal(_value);
             }
             catch
             {
@@ -193,7 +193,7 @@ namespace VDS.RDF.Nodes
         {
             try
             {
-                return Convert.ToSingle(this._value);
+                return Convert.ToSingle(_value);
             }
             catch
             {
@@ -209,7 +209,7 @@ namespace VDS.RDF.Nodes
         {
             try
             {
-                return Convert.ToDouble(this._value);
+                return Convert.ToDouble(_value);
             }
             catch
             {

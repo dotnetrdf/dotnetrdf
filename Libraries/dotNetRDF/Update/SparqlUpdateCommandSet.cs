@@ -59,7 +59,7 @@ namespace VDS.RDF.Update
         /// <param name="command">Command</param>
         public SparqlUpdateCommandSet(SparqlUpdateCommand command)
         {
-            this._commands.Add(command);
+            _commands.Add(command);
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace VDS.RDF.Update
         /// <param name="commands">Commands</param>
         public SparqlUpdateCommandSet(IEnumerable<SparqlUpdateCommand> commands)
         {
-            this._commands.AddRange(commands);
+            _commands.AddRange(commands);
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace VDS.RDF.Update
         /// <param name="command">Command to add</param>
         internal void AddCommand(SparqlUpdateCommand command)
         {
-            this._commands.Add(command);
+            _commands.Add(command);
         }
 
         /// <summary>
@@ -89,11 +89,11 @@ namespace VDS.RDF.Update
         {
             get
             {
-                if (index < 0 || index >= this._commands.Count)
+                if (index < 0 || index >= _commands.Count)
                 {
-                    if (this._commands.Count > 0)
+                    if (_commands.Count > 0)
                     {
-                        throw new IndexOutOfRangeException(index + " is not a valid index into the Command Set, the Set contains " + this._commands.Count + " Commands so only indexes in the range 0-" + (this._commands.Count - 1) + " are valid");
+                        throw new IndexOutOfRangeException(index + " is not a valid index into the Command Set, the Set contains " + _commands.Count + " Commands so only indexes in the range 0-" + (_commands.Count - 1) + " are valid");
                     }
                     else
                     {
@@ -102,7 +102,7 @@ namespace VDS.RDF.Update
                 }
                 else
                 {
-                    return this._commands[index];
+                    return _commands[index];
                 }
             }
         }
@@ -114,7 +114,7 @@ namespace VDS.RDF.Update
         {
             get
             {
-                return this._commands.Count;
+                return _commands.Count;
             }
         }
 
@@ -125,7 +125,7 @@ namespace VDS.RDF.Update
         {
             get
             {
-                return this._commands;
+                return _commands;
             }
         }
 
@@ -136,11 +136,11 @@ namespace VDS.RDF.Update
         {
             get
             {
-                return this._baseUri;
+                return _baseUri;
             }
             internal set
             {
-                this._baseUri = value;
+                _baseUri = value;
             }
         }
 
@@ -151,7 +151,7 @@ namespace VDS.RDF.Update
         {
             get
             {
-                return this._nsmap;
+                return _nsmap;
             }
         }
 
@@ -163,11 +163,11 @@ namespace VDS.RDF.Update
         {
             get
             {
-                return this._timeout;
+                return _timeout;
             }
             set
             {
-                this._timeout = Math.Max(value, 0);
+                _timeout = Math.Max(value, 0);
             }
         }
 
@@ -179,18 +179,18 @@ namespace VDS.RDF.Update
         {
             get
             {
-                if (this._executionTime == null)
+                if (_executionTime == null)
                 {
                     throw new InvalidOperationException("Cannot inspect the Update Time as the Command Set has not yet been processed");
                 }
                 else
                 {
-                    return this._executionTime;
+                    return _executionTime;
                 }
             }
             set
             {
-                this._executionTime = value;
+                _executionTime = value;
             }
         }
 
@@ -201,17 +201,17 @@ namespace VDS.RDF.Update
         {
             get
             {
-                return this._optimisers;
+                return _optimisers;
             }
             set
             {
                 if (value == null)
                 {
-                    this._optimisers = Enumerable.Empty<IAlgebraOptimiser>();
+                    _optimisers = Enumerable.Empty<IAlgebraOptimiser>();
                 }
                 else
                 {
-                    this._optimisers = value;
+                    _optimisers = value;
                 }
             }
         }
@@ -222,7 +222,7 @@ namespace VDS.RDF.Update
         /// <param name="optimiser">Optimiser to use</param>
         public void Optimise(IQueryOptimiser optimiser)
         {
-            foreach (SparqlUpdateCommand c in this._commands)
+            foreach (SparqlUpdateCommand c in _commands)
             {
                 c.Optimise(optimiser);
             }
@@ -234,7 +234,7 @@ namespace VDS.RDF.Update
         /// <remarks>Uses the globally registered query optimiser from <see cref="SparqlOptimiser.QueryOptimiser">SparqlOptimiser.QueryOptimiser</see></remarks>
         public void Optimise()
         {
-            foreach (SparqlUpdateCommand c in this._commands)
+            foreach (SparqlUpdateCommand c in _commands)
             {
                 c.Optimise(SparqlOptimiser.QueryOptimiser);
             }
@@ -254,7 +254,7 @@ namespace VDS.RDF.Update
             try
             {
                 // Apply Local Optimisers
-                foreach (IAlgebraOptimiser opt in this._optimisers.Where(o => o.IsApplicable(this)))
+                foreach (IAlgebraOptimiser opt in _optimisers.Where(o => o.IsApplicable(this)))
                 {
                     try
                     {
@@ -293,24 +293,24 @@ namespace VDS.RDF.Update
         {
             StringBuilder output = new StringBuilder();
 
-            if (this._baseUri != null)
+            if (_baseUri != null)
             {
-                output.AppendLine("BASE <" + this._baseUri.AbsoluteUri.Replace(">", "\\>") + ">");
+                output.AppendLine("BASE <" + _baseUri.AbsoluteUri.Replace(">", "\\>") + ">");
             }
 
-            foreach (String prefix in this._nsmap.Prefixes)
+            foreach (String prefix in _nsmap.Prefixes)
             {
                 output.Append("PREFIX ");
                 output.Append(prefix);
                 output.Append(": <");
-                output.Append(this._nsmap.GetNamespaceUri(prefix).AbsoluteUri.Replace(">", "\\>"));
+                output.Append(_nsmap.GetNamespaceUri(prefix).AbsoluteUri.Replace(">", "\\>"));
                 output.AppendLine(">");
             }
 
-            for (int i = 0; i < this._commands.Count; i++)
+            for (int i = 0; i < _commands.Count; i++)
             {
-                output.Append(this._commands[i].ToString());
-                if (i < this._commands.Count - 1)
+                output.Append(_commands[i].ToString());
+                if (i < _commands.Count - 1)
                 {
                     output.AppendLine(";");
                 }

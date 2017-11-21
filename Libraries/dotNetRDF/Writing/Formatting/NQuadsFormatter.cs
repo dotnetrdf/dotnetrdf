@@ -83,7 +83,7 @@ namespace VDS.RDF.Writing.Formatting
             {
                 return base.Format(t);
             }
-            return this.Format(t.Subject, TripleSegment.Subject) + " " + this.Format(t.Predicate, TripleSegment.Predicate) + " " + this.Format(t.Object, TripleSegment.Object) + " <" + this.FormatUri(t.GraphUri) + "> .";
+            return Format(t.Subject, TripleSegment.Subject) + " " + Format(t.Predicate, TripleSegment.Predicate) + " " + Format(t.Object, TripleSegment.Object) + " <" + FormatUri(t.GraphUri) + "> .";
         }
     }
 

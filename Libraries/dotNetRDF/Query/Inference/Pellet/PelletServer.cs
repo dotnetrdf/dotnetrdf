@@ -53,10 +53,10 @@ namespace VDS.RDF.Query.Inference.Pellet
         public PelletServer(Uri serverUri)
         {
             if (serverUri == null) throw new ArgumentNullException("serverUri", "A Server URI must be specified in order to connect to a Pellet Server");
-            this._serverUri = serverUri.AbsoluteUri;
-            if (!this._serverUri.EndsWith("/")) this._serverUri += "/";
+            _serverUri = serverUri.AbsoluteUri;
+            if (!_serverUri.EndsWith("/")) _serverUri += "/";
 
-            this.Discover();
+            Discover();
         }
 
         /// <summary>
@@ -67,10 +67,10 @@ namespace VDS.RDF.Query.Inference.Pellet
         {
             if (serverUri == null) throw new ArgumentNullException("serverUri", "A Server URI must be specified in order to connect to a Pellet Server");
             if (serverUri.Equals(String.Empty)) throw new ArgumentException("Server URI cannot be the empty string", "serverUri");
-            this._serverUri = serverUri;
-            if (!this._serverUri.EndsWith("/")) this._serverUri += "/";
+            _serverUri = serverUri;
+            if (!_serverUri.EndsWith("/")) _serverUri += "/";
 
-            this.Discover();
+            Discover();
         }
 
         /// <summary>
@@ -104,10 +104,10 @@ namespace VDS.RDF.Query.Inference.Pellet
         private PelletServer(Uri serverUri, PelletServerReadyCallback callback, Object state)
         {
             if (serverUri == null) throw new ArgumentNullException("serverUri", "A Server URI must be specified in order to connect to a Pellet Server");
-            this._serverUri = serverUri.AbsoluteUri;
-            if (!this._serverUri.EndsWith("/")) this._serverUri += "/";
+            _serverUri = serverUri.AbsoluteUri;
+            if (!_serverUri.EndsWith("/")) _serverUri += "/";
 
-            this.Discover(callback, state);
+            Discover(callback, state);
         }
 
         /// <summary>
@@ -120,10 +120,10 @@ namespace VDS.RDF.Query.Inference.Pellet
         {
             if (serverUri == null) throw new ArgumentNullException("serverUri", "A Server URI must be specified in order to connect to a Pellet Server");
             if (serverUri.Equals(String.Empty)) throw new ArgumentException("Server URI cannot be the empty string", "serverUri");
-            this._serverUri = serverUri;
-            if (!this._serverUri.EndsWith("/")) this._serverUri += "/";
+            _serverUri = serverUri;
+            if (!_serverUri.EndsWith("/")) _serverUri += "/";
 
-            this.Discover(callback, state);
+            Discover(callback, state);
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace VDS.RDF.Query.Inference.Pellet
             try
             {
                 // Make the request to the Server Root URL to get the JSON description of the server
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._serverUri);
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_serverUri);
                 request.Method = "GET";
                 request.Accept = ServerDescriptionFormat;
 
@@ -157,7 +157,7 @@ namespace VDS.RDF.Query.Inference.Pellet
                 JToken kbs = json.SelectToken("knowledge-bases");
                 foreach (JToken kb in kbs.Children())
                 {
-                    this._kbs.Add(new KnowledgeBase(kb));
+                    _kbs.Add(new KnowledgeBase(kb));
                 }
             }
             catch (WebException webEx)
@@ -180,7 +180,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         private void Discover(PelletServerReadyCallback callback, Object state)
         {
             // Make the request to the Server Root URL to get the JSON description of the server
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._serverUri);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_serverUri);
             request.Method = "GET";
             request.Accept = ServerDescriptionFormat;
 
@@ -204,7 +204,7 @@ namespace VDS.RDF.Query.Inference.Pellet
                     JToken kbs = json.SelectToken("knowledge-bases");
                     foreach (JToken kb in kbs.Children())
                     {
-                        this._kbs.Add(new KnowledgeBase(kb));
+                        _kbs.Add(new KnowledgeBase(kb));
                     }
 
                     callback(this, state);
@@ -218,7 +218,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         {
             get
             {
-                return this._kbs;
+                return _kbs;
             }
         }
 
@@ -229,7 +229,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// <returns></returns>
         public bool HasKnowledgeBase(String name)
         {
-            return this._kbs.Any(kb => kb.Name.Equals(name));
+            return _kbs.Any(kb => kb.Name.Equals(name));
         }
 
         /// <summary>
@@ -239,7 +239,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// <returns></returns>
         public bool HasKnowledgeBase(Type t)
         {
-            return this._kbs.Any(kb => kb.SupportsService(t));
+            return _kbs.Any(kb => kb.SupportsService(t));
         }
 
         /// <summary>
@@ -250,7 +250,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// </returns>
         public KnowledgeBase GetKnowledgeBase(String name)
         {
-            KnowledgeBase kb = this._kbs.FirstOrDefault(k => k.Name.Equals(name));
+            KnowledgeBase kb = _kbs.FirstOrDefault(k => k.Name.Equals(name));
             if (kb != null) return kb;
             throw new RdfReasoningException("This Pellet Server does not contain a Knowledge Base named '" + name + "'");
         }
@@ -262,7 +262,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// <returns></returns>
         public IEnumerable<KnowledgeBase> GetKnowledgeBases(Type t)
         {
-            return (from kb in this._kbs
+            return (from kb in _kbs
                     where kb.SupportsService(t)
                     select kb);
         }

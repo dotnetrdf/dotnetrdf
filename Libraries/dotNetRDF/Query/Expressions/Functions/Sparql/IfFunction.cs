@@ -47,9 +47,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         /// <param name="elseBranch">Expression to evalaute if condition evaluates to false/error</param>
         public IfElseFunction(ISparqlExpression condition, ISparqlExpression ifBranch, ISparqlExpression elseBranch)
         {
-            this._condition = condition;
-            this._ifBranch = ifBranch;
-            this._elseBranch = elseBranch;
+            _condition = condition;
+            _ifBranch = ifBranch;
+            _elseBranch = elseBranch;
         }
 
         /// <summary>
@@ -60,17 +60,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            IValuedNode result = this._condition.Evaluate(context, bindingID);
+            IValuedNode result = _condition.Evaluate(context, bindingID);
 
             // Condition evaluated without error so we go to the appropriate branch of the IF ELSE
             // depending on whether it evaluated to true or false
             if (result.AsSafeBoolean())
             {
-                return this._ifBranch.Evaluate(context, bindingID);
+                return _ifBranch.Evaluate(context, bindingID);
             }
             else
             {
-                return this._elseBranch.Evaluate(context, bindingID);
+                return _elseBranch.Evaluate(context, bindingID);
             }
         }
 
@@ -81,7 +81,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         {
             get 
             {
-                return this._condition.Variables.Concat(this._ifBranch.Variables).Concat(this._elseBranch.Variables);
+                return _condition.Variables.Concat(_ifBranch.Variables).Concat(_elseBranch.Variables);
             }
         }
 
@@ -93,11 +93,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         {
             StringBuilder output = new StringBuilder();
             output.Append("IF (");
-            output.Append(this._condition.ToString());
+            output.Append(_condition.ToString());
             output.Append(" , ");
-            output.Append(this._ifBranch.ToString());
+            output.Append(_ifBranch.ToString());
             output.Append(" , ");
-            output.Append(this._elseBranch.ToString());
+            output.Append(_elseBranch.ToString());
             output.Append(')');
             return output.ToString();
         }
@@ -131,7 +131,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         {
             get
             {
-                return new ISparqlExpression[] { this._condition, this._ifBranch, this._elseBranch };
+                return new ISparqlExpression[] { _condition, _ifBranch, _elseBranch };
             }
         }
 
@@ -142,7 +142,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         {
             get
             {
-                return this._condition.CanParallelise && this._ifBranch.CanParallelise && this._elseBranch.CanParallelise;
+                return _condition.CanParallelise && _ifBranch.CanParallelise && _elseBranch.CanParallelise;
             }
         }
 
@@ -153,7 +153,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new IfElseFunction(transformer.Transform(this._condition), transformer.Transform(this._ifBranch), transformer.Transform(this._elseBranch));
+            return new IfElseFunction(transformer.Transform(_condition), transformer.Transform(_ifBranch), transformer.Transform(_elseBranch));
         }
     }
 }

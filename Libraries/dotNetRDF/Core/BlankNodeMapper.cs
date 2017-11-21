@@ -54,7 +54,7 @@ namespace VDS.RDF
         public BlankNodeMapper(String prefix)
         {
             if (prefix == null || prefix.EndsWith(String.Empty)) prefix = "autos";
-            this._prefix = prefix;
+            _prefix = prefix;
         }
 
         /// <summary>
@@ -63,16 +63,16 @@ namespace VDS.RDF
         /// <returns></returns>
         public String GetNextID()
         {
-            String id = this._prefix + Interlocked.Increment(ref _nextid);
+            String id = _prefix + Interlocked.Increment(ref _nextid);
 
             // Check it's not in use
-            while (this._idmap.ContainsKey(id))
+            while (_idmap.ContainsKey(id))
             {
-                id = this._prefix + Interlocked.Increment(ref _nextid);
+                id = _prefix + Interlocked.Increment(ref _nextid);
             }
 
             // Add to ID Map
-            this._idmap.Add(id, new BlankNodeIDAssigment(id, true));
+            _idmap.Add(id, new BlankNodeIDAssigment(id, true));
 
             return id;
         }
@@ -86,26 +86,26 @@ namespace VDS.RDF
         /// </remarks>
         public void CheckID(ref String id)
         {
-            if (this._remappings.ContainsKey(id))
+            if (_remappings.ContainsKey(id))
             {
                 // Is remapped to something else
-                id = this._remappings[id];
+                id = _remappings[id];
             } 
-            else if (this._idmap.ContainsKey(id))
+            else if (_idmap.ContainsKey(id))
             {
-                BlankNodeIDAssigment idinfo = this._idmap[id];
+                BlankNodeIDAssigment idinfo = _idmap[id];
                 if (idinfo.AutoAssigned)
                 {
                     // This ID has been auto-assigned so remap to something else
                     String newid = "remapped" + Interlocked.Increment(ref _nextremap);
-                    while (this._idmap.ContainsKey(newid))
+                    while (_idmap.ContainsKey(newid))
                     {
                         newid = "remapped" + Interlocked.Increment(ref _nextremap);
                     }
 
                     // Add to ID Map
-                    this._idmap.Add(newid, new BlankNodeIDAssigment(newid, false));
-                    this._remappings.Add(id, newid);
+                    _idmap.Add(newid, new BlankNodeIDAssigment(newid, false));
+                    _remappings.Add(id, newid);
                     id = newid;
                 }
                 // Otherwise this ID can be used fine
@@ -113,7 +113,7 @@ namespace VDS.RDF
             else
             {
                 // Register the ID
-                this._idmap.Add(id, new BlankNodeIDAssigment(id, false));
+                _idmap.Add(id, new BlankNodeIDAssigment(id, false));
             }
         }
     }
@@ -136,7 +136,7 @@ namespace VDS.RDF
         /// <param name="validator">Function which determines whether IDs are valid or not</param>
         public BlankNodeOutputMapper(Func<String, bool> validator)
         {
-            this._validator = validator;
+            _validator = validator;
         }
 
         /// <summary>
@@ -146,42 +146,42 @@ namespace VDS.RDF
         /// <returns></returns>
         public String GetOutputID(String id)
         {
-            if (this._validator(id))
+            if (_validator(id))
             {
                 // A Valid ID for outputting
-                if (!this._remappings.ContainsKey(id))
+                if (!_remappings.ContainsKey(id))
                 {
                     // Check that our Value hasn't been used as the remapping of an invalid ID
-                    if (!this._remappings.ContainsValue(new BlankNodeIDAssigment(id, true)))
+                    if (!_remappings.ContainsValue(new BlankNodeIDAssigment(id, true)))
                     {
                         // We're OK
-                        this._remappings.Add(id, new BlankNodeIDAssigment(id, false));
+                        _remappings.Add(id, new BlankNodeIDAssigment(id, false));
                         return id;
                     }
                     else
                     {
                         // Our ID has already been remapped from another ID so we need to remap ourselves
-                        String remappedID = this.GetNextID();
-                        this._remappings.Add(id, new BlankNodeIDAssigment(remappedID, false));
+                        String remappedID = GetNextID();
+                        _remappings.Add(id, new BlankNodeIDAssigment(remappedID, false));
                         return remappedID;
                     }
                 }
                 else 
                 {
-                    return this._remappings[id].ID;
+                    return _remappings[id].ID;
                 }
 
             }
-            else if (this._remappings.ContainsKey(id))
+            else if (_remappings.ContainsKey(id))
             {
                 // Already validated/remapped
-                return this._remappings[id].ID;
+                return _remappings[id].ID;
             } 
             else
             {
                 // Not valid for outputting so need to remap
-                String remappedID = this.GetNextID();
-                this._remappings.Add(id, new BlankNodeIDAssigment(remappedID, true));
+                String remappedID = GetNextID();
+                _remappings.Add(id, new BlankNodeIDAssigment(remappedID, true));
                 return remappedID;
             }
         }
@@ -192,13 +192,13 @@ namespace VDS.RDF
         /// <returns></returns>
         private String GetNextID()
         {
-            String nextID = "autos" + this._nextid;
-            while (this._remappings.ContainsKey(nextID))
+            String nextID = "autos" + _nextid;
+            while (_remappings.ContainsKey(nextID))
             {
-                this._nextid++;
-                nextID = "autos" + this._nextid;
+                _nextid++;
+                nextID = "autos" + _nextid;
             }
-            this._nextid++;
+            _nextid++;
 
             return nextID;
         }
@@ -219,8 +219,8 @@ namespace VDS.RDF
         /// <param name="auto">Was the ID auto-assigned</param>
         public BlankNodeIDAssigment(String id, bool auto)
         {
-            this._id = id;
-            this._auto = auto;
+            _id = id;
+            _auto = auto;
         }
 
         /// <summary>
@@ -230,7 +230,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._id;
+                return _id;
             }
         }
 
@@ -241,7 +241,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._auto;
+                return _auto;
             }
         }
 
@@ -252,15 +252,16 @@ namespace VDS.RDF
         /// <returns></returns>
         public override bool Equals(object obj)
         {
-            if (obj is BlankNodeIDAssigment)
+            if (obj is BlankNodeIDAssigment other)
             {
-                BlankNodeIDAssigment other = (BlankNodeIDAssigment)obj;
-                return (other.ID.Equals(this._id) && other.AutoAssigned == this._auto);
+                return (other.ID.Equals(_id) && other.AutoAssigned == _auto);
             }
-            else
-            {
-                return false;
-            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }

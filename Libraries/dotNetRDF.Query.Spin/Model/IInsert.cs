@@ -34,7 +34,7 @@ namespace VDS.RDF.Query.Spin.Model
      * @author Holger Knublauch
      */
     [Obsolete()]
-    public interface IInsert : IUpdate
+    internal interface IInsert : IUpdate
     {
     }
 }

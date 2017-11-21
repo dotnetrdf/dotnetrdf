@@ -48,7 +48,7 @@ namespace VDS.RDF.Nodes
         protected NumericNode(IGraph g, String value, Uri datatype, SparqlNumericType numType)
             : base(g, value, datatype) 
         {
-            this._numType = numType;
+            _numType = numType;
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public string AsString()
         {
-            return this.Value;
+            return Value;
         }
 
         /// <summary>
@@ -90,16 +90,16 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public bool AsBoolean()
         {
-            switch (this._numType)
+            switch (_numType)
             {
                 case SparqlNumericType.Integer:
-                    return this.AsInteger() != 0;
+                    return AsInteger() != 0;
                 case SparqlNumericType.Decimal:
-                    return this.AsDecimal() != Decimal.Zero;
+                    return AsDecimal() != Decimal.Zero;
                 case SparqlNumericType.Float:
-                    return this.AsFloat() != 0.0f && !float.IsNaN(this.AsFloat());
+                    return AsFloat() != 0.0f && !float.IsNaN(AsFloat());
                 case SparqlNumericType.Double:
-                    return this.AsDouble() != 0.0d && !double.IsNaN(this.AsDouble());
+                    return AsDouble() != 0.0d && !double.IsNaN(AsDouble());
                 default:
                     return SparqlSpecsHelper.EffectiveBooleanValue(this);
             }
@@ -139,7 +139,7 @@ namespace VDS.RDF.Nodes
         {
             get
             {
-                return this.DataType.AbsoluteUri;
+                return DataType.AbsoluteUri;
             }
         }
 
@@ -150,7 +150,7 @@ namespace VDS.RDF.Nodes
         {
             get
             {
-                return this._numType;
+                return _numType;
             }
         }
     }

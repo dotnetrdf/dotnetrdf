@@ -25,6 +25,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Xml;
 using System.Xml.Serialization;
@@ -53,11 +54,11 @@ namespace VDS.RDF
         protected internal BaseBlankNode(IGraph g)
             : base(g, NodeType.Blank)
         {
-            this._id = this._graph.GetNextBlankNodeID();
-            this._autoassigned = true;
+            _id = _graph.GetNextBlankNodeID();
+            _autoassigned = true;
 
             // Compute Hash Code
-            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
+            _hashcode = (_nodetype + ToString()).GetHashCode();
         }
 
         /// <summary>
@@ -69,10 +70,10 @@ namespace VDS.RDF
             : base(g, NodeType.Blank)
         {
             if (nodeId.Equals(String.Empty)) throw new RdfException("Cannot create a Blank Node with an empty ID");
-            this._id = nodeId;
+            _id = nodeId;
 
             // Compute Hash Code
-            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
+            _hashcode = (_nodetype + ToString()).GetHashCode();
         }
 
         /// <summary>
@@ -82,11 +83,11 @@ namespace VDS.RDF
         protected internal BaseBlankNode(INodeFactory factory)
             : base(null, NodeType.Blank)
         {
-            this._id = factory.GetNextBlankNodeID();
-            this._autoassigned = true;
+            _id = factory.GetNextBlankNodeID();
+            _autoassigned = true;
 
             // Compute Hash Code
-            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
+            _hashcode = (_nodetype + ToString()).GetHashCode();
         }
 
         /// <summary>
@@ -106,10 +107,10 @@ namespace VDS.RDF
         protected BaseBlankNode(SerializationInfo info, StreamingContext context)
             : base(null, NodeType.Blank)
         {
-            this._id = info.GetString("id");
+            _id = info.GetString("id");
 
             // Compute Hash Code
-            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
+            _hashcode = (_nodetype + ToString()).GetHashCode();
         }
 
 #endif
@@ -124,7 +125,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._id;
+                return _id;
             }
         }
 
@@ -135,7 +136,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._autoassigned;
+                return _autoassigned;
             }
         }
 
@@ -155,7 +156,7 @@ namespace VDS.RDF
 
             if (obj is INode)
             {
-                return this.Equals((INode)obj);
+                return Equals((INode)obj);
             }
             else
             {
@@ -252,7 +253,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool Equals(BaseBlankNode other)
         {
-            return this.Equals((IBlankNode)other);
+            return Equals((IBlankNode)other);
         }
 
         /// <summary>
@@ -387,7 +388,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public int CompareTo(BaseBlankNode other)
         {
-            return this.CompareTo((IBlankNode)other);
+            return CompareTo((IBlankNode)other);
         }
 
         /// <summary>
@@ -396,7 +397,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override string ToString()
         {
-            return "_:" + this._id;
+            return "_:" + _id;
         }
 
 #if !NETCORE
@@ -410,7 +411,7 @@ namespace VDS.RDF
         /// <param name="context">Streaming Context</param>
         public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("id", this._id);
+            info.AddValue("id", _id);
         }
 
         #endregion
@@ -423,9 +424,9 @@ namespace VDS.RDF
         /// <param name="reader">XML Reader</param>
         public sealed override void ReadXml(XmlReader reader)
         {
-            this._id = reader.ReadElementContentAsString();
+            _id = reader.ReadElementContentAsString();
             // Compute Hash Code
-            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
+            _hashcode = (_nodetype + ToString()).GetHashCode();
         }
 
         /// <summary>
@@ -434,7 +435,7 @@ namespace VDS.RDF
         /// <param name="writer">XML Writer</param>
         public sealed override void WriteXml(XmlWriter writer)
         {
-            writer.WriteString(this._id);
+            writer.WriteString(_id);
         }
 
         #endregion
@@ -527,24 +528,12 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the URI of the datatype this valued node represents as a String
         /// </summary>
-        public String EffectiveType
-        {
-            get
-            {
-                return String.Empty;
-            }
-        }
+        public string EffectiveType => string.Empty;
 
         /// <summary>
         /// Gets the Numeric Type of the Node
         /// </summary>
-        public SparqlNumericType NumericType
-        {
-            get 
-            {
-                return SparqlNumericType.NaN; 
-            }
-        }
+        public SparqlNumericType NumericType => SparqlNumericType.NaN;
 
         #endregion
     }
@@ -607,7 +596,7 @@ namespace VDS.RDF
         /// </remarks>
         public int CompareTo(BlankNode other)
         {
-            return this.CompareTo((IBlankNode)other);
+            return CompareTo((IBlankNode)other);
         }
 
         /// <summary>

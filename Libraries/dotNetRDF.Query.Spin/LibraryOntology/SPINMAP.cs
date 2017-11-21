@@ -38,7 +38,7 @@ namespace VDS.RDF.Query.Spin.LibraryOntology
      *
      * Automatically generated with TopBraid Composer.
      */
-    public class SPINMAP
+    internal class SPINMAP
     {
 
         public const String BASE_URI = "http://spinrdf.org/spinmap";

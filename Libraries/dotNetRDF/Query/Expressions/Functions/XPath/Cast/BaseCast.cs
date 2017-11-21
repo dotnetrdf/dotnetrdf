@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// <param name="expr">Expression to be Cast</param>
         public BaseCast(ISparqlExpression expr)
         {
-            this._expr = expr;
+            _expr = expr;
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         {
             get
             {
-                return this._expr.Variables;
+                return _expr.Variables;
             }
         }
 
@@ -100,7 +100,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         {
             get
             {
-                return this._expr.AsEnumerable();
+                return _expr.AsEnumerable();
             }
         }
 
@@ -111,7 +111,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         {
             get
             {
-                return this._expr.CanParallelise;
+                return _expr.CanParallelise;
             }
         }
 

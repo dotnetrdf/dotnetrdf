@@ -49,8 +49,8 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="function">Property Function</param>
         public PropertyFunction(ISparqlAlgebra algebra, ISparqlPropertyFunction function)
         {
-            this._function = function;
-            this._algebra = algebra;
+            _function = function;
+            _algebra = algebra;
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get 
             {
-                return this._algebra;
+                return _algebra;
             }
         }
 
@@ -71,7 +71,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new PropertyFunction(optimiser.Optimise(this._algebra), this._function);
+            return new PropertyFunction(optimiser.Optimise(_algebra), _function);
         }
 
         /// <summary>
@@ -81,8 +81,8 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            context.InputMultiset = context.Evaluate(this._algebra);
-            return this._function.Evaluate(context);
+            context.InputMultiset = context.Evaluate(_algebra);
+            return _function.Evaluate(context);
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get 
             {
-                return this._algebra.Variables.Concat(this._function.Variables).Distinct();
+                return _algebra.Variables.Concat(_function.Variables).Distinct();
             }
         }
 
@@ -104,15 +104,15 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 // Floating variables includes those of the property function that aren't themselves fixed
-                HashSet<String> fixedVars = new HashSet<string>(this.FixedVariables);
-                return this._algebra.FloatingVariables.Concat(this._function.Variables.Where(v => !fixedVars.Contains(v))).Distinct();
+                HashSet<String> fixedVars = new HashSet<string>(FixedVariables);
+                return _algebra.FloatingVariables.Concat(_function.Variables.Where(v => !fixedVars.Contains(v))).Distinct();
             }
         }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
         /// </summary>
-        public IEnumerable<String> FixedVariables { get { return this._algebra.FixedVariables; } }
+        public IEnumerable<String> FixedVariables { get { return _algebra.FixedVariables; } }
 
         /// <summary>
         /// Throws an error because property functions cannot be converted back to queries
@@ -138,7 +138,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "PropertyFunction(" + this._algebra.ToString() + "," + this._function.FunctionUri + ")";
+            return "PropertyFunction(" + _algebra.ToString() + "," + _function.FunctionUri + ")";
         }
     }
 }

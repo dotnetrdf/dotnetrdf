@@ -35,12 +35,9 @@ using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-
-    public class VariableImpl : AbstractSPINResource, IVariable
+    internal class VariableImpl : AbstractSPINResource, IVariable
     {
-
-        public VariableImpl(INode node, SpinProcessor spinModel)
+        internal VariableImpl(INode node, SpinProcessor spinModel)
             : base(node, spinModel)
         {
         }

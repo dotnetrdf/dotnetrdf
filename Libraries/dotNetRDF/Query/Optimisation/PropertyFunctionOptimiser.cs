@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Optimisation
                 if (current.PatternCount == 0) return current;
 
                 List<ITriplePattern> ps = current.TriplePatterns.ToList();
-                List<IPropertyFunctionPattern> propFuncs = PropertyFunctionHelper.ExtractPatterns(ps, this._factories.Value);
+                List<IPropertyFunctionPattern> propFuncs = PropertyFunctionHelper.ExtractPatterns(ps, _factories.Value);
                 if (propFuncs.Count == 0) return current;
 
                 // Remove raw Triple Patterns pertaining to extracted property functions
@@ -117,8 +117,8 @@ namespace VDS.RDF.Query.Optimisation
         /// <returns></returns>
         public bool IsApplicable(SparqlQuery q)
         {
-            this._factories.Value = q.PropertyFunctionFactories;
-            return this._factories.Value.Any() || PropertyFunctionFactory.FactoryCount > 0;
+            _factories.Value = q.PropertyFunctionFactories;
+            return _factories.Value.Any() || PropertyFunctionFactory.FactoryCount > 0;
         }
 
         /// <summary>

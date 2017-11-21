@@ -26,6 +26,9 @@
 
 namespace VDS.RDF.Query.Builder
 {
+    /// <summary>
+    /// Factory interface for getting an <see cref="IQueryBuilder"/>
+    /// </summary>
     public interface IQueryWithVariablesBuilder
     {
         /// <summary>

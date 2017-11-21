@@ -36,7 +36,7 @@ namespace VDS.RDF.Query.Spin.Statistics
      * @author Holger Knublauch
      */
 
-    public class SPINStatistics
+    internal class SPINStatistics
     {
 
         private INode _context;

@@ -51,8 +51,8 @@ namespace VDS.RDF.Writing
         public BaseGZipResultsWriter(ISparqlResultsWriter writer)
         {
             if (writer == null) throw new ArgumentNullException("writer");
-            this._writer = writer;
-            this._writer.Warning += this.RaiseWarning;
+            _writer = writer;
+            _writer.Warning += RaiseWarning;
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace VDS.RDF.Writing
         public void Save(SparqlResultSet results, string filename)
         {
             if (filename == null) throw new RdfOutputException("Cannot write RDF to a null file");
-            this.Save(results, new StreamWriter(new GZipStream(new FileStream(filename, FileMode.OpenOrCreate, FileAccess.Write), CompressionMode.Compress)));
+            Save(results, new StreamWriter(new GZipStream(new FileStream(filename, FileMode.OpenOrCreate, FileAccess.Write), CompressionMode.Compress)));
         }
 
         /// <summary>
@@ -81,12 +81,12 @@ namespace VDS.RDF.Writing
                 StreamWriter streamOutput = (StreamWriter)output;
                 if (streamOutput.BaseStream is GZipStream)
                 {
-                    this._writer.Save(results, streamOutput);
+                    _writer.Save(results, streamOutput);
                 }
                 else
                 {
                     streamOutput = new StreamWriter(new GZipStream(streamOutput.BaseStream, CompressionMode.Compress));
-                    this._writer.Save(results, streamOutput);
+                    _writer.Save(results, streamOutput);
                 }
             }
             else
@@ -101,7 +101,7 @@ namespace VDS.RDF.Writing
         /// <param name="message">Warning message</param>
         private void RaiseWarning(String message)
         {
-            SparqlWarning d = this.Warning;
+            SparqlWarning d = Warning;
             if (d != null) d(message);
         }
 
@@ -116,7 +116,7 @@ namespace VDS.RDF.Writing
         /// <returns></returns>
         public override string ToString()
         {
-            return "GZipped " + this._writer.ToString();
+            return "GZipped " + _writer.ToString();
         }
     }
 

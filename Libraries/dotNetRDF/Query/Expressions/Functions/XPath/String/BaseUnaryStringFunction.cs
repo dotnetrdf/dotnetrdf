@@ -47,7 +47,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="stringExpr">Expression</param>
         public BaseUnaryStringFunction(ISparqlExpression stringExpr)
         {
-            this._expr = stringExpr;
+            _expr = stringExpr;
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            IValuedNode temp = this._expr.Evaluate(context, bindingID);
+            IValuedNode temp = _expr.Evaluate(context, bindingID);
             if (temp != null)
             {
                 if (temp.NodeType == NodeType.Literal)
@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                     {
                         if (lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
                         {
-                            return this.ValueInternal(lit);
+                            return ValueInternal(lit);
                         }
                         else
                         {
@@ -77,7 +77,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                     }
                     else
                     {
-                        return this.ValueInternal(lit);
+                        return ValueInternal(lit);
                     }
                 }
                 else
@@ -105,7 +105,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             get
             {
-                return this._expr.Variables;
+                return _expr.Variables;
             }
         }
 
@@ -141,7 +141,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             get
             {
-                return this._expr.AsEnumerable();
+                return _expr.AsEnumerable();
             }
         }
 
@@ -152,7 +152,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             get
             {
-                return this._expr.CanParallelise;
+                return _expr.CanParallelise;
             }
         }
 

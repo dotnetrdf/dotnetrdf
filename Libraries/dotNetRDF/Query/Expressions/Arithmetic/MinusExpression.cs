@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            IValuedNode a = this._expr.Evaluate(context, bindingID);
+            IValuedNode a = _expr.Evaluate(context, bindingID);
             if (a == null) throw new RdfQueryException("Cannot apply unary minus to a null");
 
             switch (a.NumericType)
@@ -115,7 +115,7 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         /// <returns></returns>
         public override string ToString()
         {
-            return "-" + this._expr.ToString();
+            return "-" + _expr.ToString();
         }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new MinusExpression(transformer.Transform(this._expr));
+            return new MinusExpression(transformer.Transform(_expr));
         }
     }
 }

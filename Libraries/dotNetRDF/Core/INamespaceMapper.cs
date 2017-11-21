@@ -79,17 +79,17 @@ namespace VDS.RDF
         /// <summary>
         /// Event which is raised when a Namespace is Added
         /// </summary>
-        event VDS.RDF.NamespaceChanged NamespaceAdded;
+        event NamespaceChanged NamespaceAdded;
 
         /// <summary>
         /// Event which is raised when a Namespace is Modified
         /// </summary>
-        event VDS.RDF.NamespaceChanged NamespaceModified;
+        event NamespaceChanged NamespaceModified;
 
         /// <summary>
         /// Event which is raised when a Namespace is Removed
         /// </summary>
-        event VDS.RDF.NamespaceChanged NamespaceRemoved;
+        event NamespaceChanged NamespaceRemoved;
 
         /// <summary>
         /// Gets a Enumeratorion of all the Prefixes

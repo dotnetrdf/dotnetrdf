@@ -101,7 +101,7 @@ namespace VDS.RDF.Update
         /// <param name="type">Command Type</param>
         public SparqlUpdateCommand(SparqlUpdateCommandType type)
         {
-            this._type = type;
+            _type = type;
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace VDS.RDF.Update
         {
             get
             {
-                return this._type;
+                return _type;
             }
         }
 

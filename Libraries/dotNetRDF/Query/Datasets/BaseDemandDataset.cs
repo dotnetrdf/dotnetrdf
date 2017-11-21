@@ -48,14 +48,14 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public override bool HasGraph(Uri graphUri)
         {
-            if (!this._dataset.HasGraph(graphUri))
+            if (!_dataset.HasGraph(graphUri))
             {
                 // If the underlying dataset doesn't have the Graph can we load it on demand
                 IGraph g;
-                if (this.TryLoadGraph(graphUri, out g))
+                if (TryLoadGraph(graphUri, out g))
                 {
                     g.BaseUri = graphUri;
-                    this.AddGraph(g);
+                    AddGraph(g);
                     return true;
                 }
                 else

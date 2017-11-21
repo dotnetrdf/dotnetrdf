@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Aggregates
         /// <param name="expr">Expression that the aggregate is over</param>
         public BaseAggregate(ISparqlExpression expr)
         {
-            this._expr = expr;
+            _expr = expr;
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Aggregates
         public BaseAggregate(ISparqlExpression expr, bool distinct)
             : this(expr)
         {
-            this._distinct = distinct;
+            _distinct = distinct;
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace VDS.RDF.Query.Aggregates
         /// <returns></returns>
         public IValuedNode Apply(SparqlEvaluationContext context)
         {
-            return this.Apply(context, context.Binder.BindingIDs);
+            return Apply(context, context.Binder.BindingIDs);
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace VDS.RDF.Query.Aggregates
         {
             get
             {
-                return this._expr;
+                return _expr;
             }
         }
 
@@ -127,7 +127,7 @@ namespace VDS.RDF.Query.Aggregates
         {
             get
             {
-                return this._expr.AsEnumerable();
+                return _expr.AsEnumerable();
             }
         }
     }

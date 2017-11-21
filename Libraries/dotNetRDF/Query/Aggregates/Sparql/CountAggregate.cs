@@ -48,7 +48,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         public CountAggregate(VariableTerm expr)
             : base(expr)
         {
-            this._varname = expr.ToString().Substring(1);
+            _varname = expr.ToString().Substring(1);
         }
 
         /// <summary>
@@ -67,10 +67,10 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
         {
             int c = 0;
-            if (this._varname != null)
+            if (_varname != null)
             {
                 // Just Count the number of results where the variable is bound
-                VariableTerm varExpr = (VariableTerm)this._expr;
+                VariableTerm varExpr = (VariableTerm)_expr;
                 foreach (int id in bindingIDs)
                 {
                     if (varExpr.Evaluate(context, id) != null) c++;
@@ -83,7 +83,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
                 {
                     try
                     {
-                        if (this._expr.Evaluate(context, id) != null) c++;
+                        if (_expr.Evaluate(context, id) != null) c++;
                     }
                     catch
                     {
@@ -102,7 +102,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            output.Append("COUNT(" + this._expr.ToString() + ")");
+            output.Append("COUNT(" + _expr.ToString() + ")");
             return output.ToString();
         }
 

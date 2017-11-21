@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordCeil + "(" + this._expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordCeil + "(" + _expr.ToString() + ")";
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new CeilFunction(transformer.Transform(this._expr));
+            return new CeilFunction(transformer.Transform(_expr));
         }
     }
 }

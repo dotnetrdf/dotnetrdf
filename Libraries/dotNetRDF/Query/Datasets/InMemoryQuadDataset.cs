@@ -77,11 +77,11 @@ namespace VDS.RDF.Query.Datasets
             : base(unionDefaultGraph)
         {
             if (store == null) throw new ArgumentNullException("store");
-            this._store = store;
+            _store = store;
 
-            if (!this._store.HasGraph(null))
+            if (!_store.HasGraph(null))
             {
-                this._store.Add(new Graph());
+                _store.Add(new Graph());
             }
         }
 
@@ -94,13 +94,13 @@ namespace VDS.RDF.Query.Datasets
             : base(defaultGraphUri)
         {
             if (store == null) throw new ArgumentNullException("store");
-            this._store = store;
+            _store = store;
 
-            if (!this._store.HasGraph(defaultGraphUri))
+            if (!_store.HasGraph(defaultGraphUri))
             {
                 Graph g = new Graph();
                 g.BaseUri = defaultGraphUri;
-                this._store.Add(g);
+                _store.Add(g);
             }
         }
 
@@ -111,7 +111,7 @@ namespace VDS.RDF.Query.Datasets
         {
             get
             {
-                return this._lock;
+                return _lock;
             }
         }
 
@@ -123,7 +123,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="g">Graph</param>
         protected override bool AddGraphInternal(IGraph g)
         {
-            return this._store.Add(g, true);
+            return _store.Add(g, true);
         }
 
         /// <summary>
@@ -134,16 +134,16 @@ namespace VDS.RDF.Query.Datasets
         {
             if (graphUri == null)
             {
-                if (this._store.HasGraph(null))
+                if (_store.HasGraph(null))
                 {
-                    this._store.Graphs[null].Clear();
+                    _store.Graphs[null].Clear();
                     return true;
                 }
                 return false;
             }
             else
             {
-                return this._store.Remove(graphUri);
+                return _store.Remove(graphUri);
             }
         }
 
@@ -154,7 +154,7 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         protected override bool HasGraphInternal(Uri graphUri)
         {
-            return this._store.HasGraph(graphUri);
+            return _store.HasGraph(graphUri);
         }
 
         /// <summary>
@@ -164,7 +164,7 @@ namespace VDS.RDF.Query.Datasets
         {
             get
             {
-                return this._store.Graphs;
+                return _store.Graphs;
             }
         }
 
@@ -175,7 +175,7 @@ namespace VDS.RDF.Query.Datasets
         {
             get
             {
-                return (from g in this._store.Graphs
+                return (from g in _store.Graphs
                         select g.BaseUri);
             }
         }
@@ -192,7 +192,7 @@ namespace VDS.RDF.Query.Datasets
         /// </remarks>
         protected override IGraph GetGraphInternal(Uri graphUri)
         {
-            return this._store[graphUri];
+            return _store[graphUri];
         }
 
         /// <summary>
@@ -216,13 +216,13 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="t">Triple</param>
         protected internal override bool AddQuad(Uri graphUri, Triple t)
         {
-            if (!this._store.HasGraph(graphUri))
+            if (!_store.HasGraph(graphUri))
             {
                 Graph g = new Graph();
                 g.BaseUri = graphUri;
-                this._store.Add(g);
+                _store.Add(g);
             }
-            return this._store[graphUri].Assert(t);
+            return _store[graphUri].Assert(t);
         }
 
         /// <summary>
@@ -232,9 +232,9 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="t">Triple</param>
         protected internal override bool ContainsQuad(Uri graphUri, Triple t)
         {
-            if (this._store.HasGraph(graphUri))
+            if (_store.HasGraph(graphUri))
             {
-                return this._store[graphUri].ContainsTriple(t);
+                return _store[graphUri].ContainsTriple(t);
             }
             else
             {
@@ -249,9 +249,9 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         protected internal override IEnumerable<Triple> GetQuads(Uri graphUri)
         {
-            if (this._store.HasGraph(graphUri))
+            if (_store.HasGraph(graphUri))
             {
-                return this._store[graphUri].Triples;
+                return _store[graphUri].Triples;
             }
             else
             {
@@ -267,9 +267,9 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         protected internal override IEnumerable<Triple> GetQuadsWithObject(Uri graphUri, INode obj)
         {
-            if (this._store.HasGraph(graphUri))
+            if (_store.HasGraph(graphUri))
             {
-                return this._store[graphUri].GetTriplesWithObject(obj);
+                return _store[graphUri].GetTriplesWithObject(obj);
             }
             else
             {
@@ -285,9 +285,9 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         protected internal override IEnumerable<Triple> GetQuadsWithPredicate(Uri graphUri, INode pred)
         {
-            if (this._store.HasGraph(graphUri))
+            if (_store.HasGraph(graphUri))
             {
-                return this._store[graphUri].GetTriplesWithPredicate(pred);
+                return _store[graphUri].GetTriplesWithPredicate(pred);
             }
             else
             {
@@ -304,9 +304,9 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         protected internal override IEnumerable<Triple> GetQuadsWithPredicateObject(Uri graphUri, INode pred, INode obj)
         {
-            if (this._store.HasGraph(graphUri))
+            if (_store.HasGraph(graphUri))
             {
-                return this._store[graphUri].GetTriplesWithPredicateObject(pred, obj);
+                return _store[graphUri].GetTriplesWithPredicateObject(pred, obj);
             }
             else
             {
@@ -322,9 +322,9 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         protected internal override IEnumerable<Triple> GetQuadsWithSubject(Uri graphUri, INode subj)
         {
-            if (this._store.HasGraph(graphUri))
+            if (_store.HasGraph(graphUri))
             {
-                return this._store[graphUri].GetTriplesWithSubject(subj);
+                return _store[graphUri].GetTriplesWithSubject(subj);
             }
             else
             {
@@ -341,9 +341,9 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         protected internal override IEnumerable<Triple> GetQuadsWithSubjectObject(Uri graphUri, INode subj, INode obj)
         {
-            if (this._store.HasGraph(graphUri))
+            if (_store.HasGraph(graphUri))
             {
-                return this._store[graphUri].GetTriplesWithSubjectObject(subj, obj);
+                return _store[graphUri].GetTriplesWithSubjectObject(subj, obj);
             }
             else
             {
@@ -360,9 +360,9 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         protected internal override IEnumerable<Triple> GetQuadsWithSubjectPredicate(Uri graphUri, INode subj, INode pred)
         {
-            if (this._store.HasGraph(graphUri))
+            if (_store.HasGraph(graphUri))
             {
-                return this._store[graphUri].GetTriplesWithSubjectPredicate(subj, pred);
+                return _store[graphUri].GetTriplesWithSubjectPredicate(subj, pred);
             }
             else
             {
@@ -377,9 +377,9 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="t">Triple</param>
         protected internal override bool RemoveQuad(Uri graphUri, Triple t)
         {
-            if (this._store.HasGraph(graphUri))
+            if (_store.HasGraph(graphUri))
             {
-                return this._store[graphUri].Retract(t);
+                return _store[graphUri].Retract(t);
             }
             return false;
         }
@@ -391,9 +391,9 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         protected override void FlushInternal()
         {
-            if (this._store is ITransactionalStore)
+            if (_store is ITransactionalStore)
             {
-                ((ITransactionalStore)this._store).Flush();
+                ((ITransactionalStore)_store).Flush();
             }
         }
     }

@@ -49,7 +49,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         /// <param name="expr">Expression</param>
         public TimezoneFromDateTimeFunction(ISparqlExpression expr)
         {
-            this._expr = expr;
+            _expr = expr;
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         /// <returns></returns>
         public virtual IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            IValuedNode temp = this._expr.Evaluate(context, bindingID);
+            IValuedNode temp = _expr.Evaluate(context, bindingID);
             if (temp != null)
             {
                 DateTimeOffset dt = temp.AsDateTimeOffset();
@@ -112,7 +112,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         {
             get
             {
-                return this._expr.Variables;
+                return _expr.Variables;
             }
         }
 
@@ -122,7 +122,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.TimezoneFromDateTime + ">(" + this._expr.ToString() + ")";
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.TimezoneFromDateTime + ">(" + _expr.ToString() + ")";
         }
 
         /// <summary>
@@ -154,7 +154,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         {
             get
             {
-                return this._expr.AsEnumerable();
+                return _expr.AsEnumerable();
             }
         }
 
@@ -165,7 +165,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         {
             get
             {
-                return this._expr.CanParallelise;
+                return _expr.CanParallelise;
             }
         }
 
@@ -176,7 +176,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         /// <returns></returns>
         public virtual ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new TimezoneFromDateTimeFunction(transformer.Transform(this._expr));
+            return new TimezoneFromDateTimeFunction(transformer.Transform(_expr));
         }
     }
 }

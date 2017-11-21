@@ -83,15 +83,15 @@ namespace VDS.RDF
         /// <param name="empty">Whether the Namespace Map should be empty, if set to false the Prefixes rdf, rdfs and xsd are automatically defined</param>
         public NamespaceMapper(bool empty)
         {
-            this._uris = new Dictionary<string, Uri>();
-            this._prefixes = new Dictionary<int, string>();
+            _uris = new Dictionary<string, Uri>();
+            _prefixes = new Dictionary<int, string>();
 
             if (!empty)
             {
                 // Add Standard Namespaces
-                this.AddNamespace("rdf", UriFactory.Create(RDF));
-                this.AddNamespace("rdfs", UriFactory.Create(RDFS));
-                this.AddNamespace("xsd", UriFactory.Create(XMLSCHEMA));
+                AddNamespace("rdf", UriFactory.Create(RDF));
+                AddNamespace("rdfs", UriFactory.Create(RDFS));
+                AddNamespace("xsd", UriFactory.Create(XMLSCHEMA));
             }
         }
 
@@ -102,7 +102,7 @@ namespace VDS.RDF
         protected internal NamespaceMapper(INamespaceMapper nsmapper)
             : this(true)
         {
-            this.Import(nsmapper);
+            Import(nsmapper);
         }
 
         /// <summary>
@@ -113,9 +113,9 @@ namespace VDS.RDF
         public virtual String GetPrefix(Uri uri)
         {
             int hash = uri.GetEnhancedHashCode();
-            if (this._prefixes.ContainsKey(hash))
+            if (_prefixes.ContainsKey(hash))
             {
-                return this._prefixes[hash];
+                return _prefixes[hash];
             }
             else
             {
@@ -130,9 +130,9 @@ namespace VDS.RDF
         /// <returns>URI for the Namespace</returns>
         public virtual Uri GetNamespaceUri(String prefix) 
         {
-            if (this._uris.ContainsKey(prefix))
+            if (_uris.ContainsKey(prefix))
             {
-                return this._uris[prefix];
+                return _uris[prefix];
             }
             else
             {
@@ -149,27 +149,27 @@ namespace VDS.RDF
         {
             if (uri == null) throw new ArgumentNullException("Cannot set a prefix to the null URI");
             int hash = uri.GetEnhancedHashCode();
-            if (!this._uris.ContainsKey(prefix))
+            if (!_uris.ContainsKey(prefix))
             {
                 // Add a New Prefix
-                this._uris.Add(prefix, uri);
+                _uris.Add(prefix, uri);
 
-                if (!this._prefixes.ContainsKey(hash))
+                if (!_prefixes.ContainsKey(hash))
                 {
                     // Add a New Uri
-                    this._prefixes.Add(hash, prefix);
-                    this.OnNamespaceAdded(prefix, uri);
+                    _prefixes.Add(hash, prefix);
+                    OnNamespaceAdded(prefix, uri);
                 }
                 else
                 {
                     // Check whether the Namespace Uri is actually being changed
                     // If the existing Uri is the same as the old one then we change the prefix
                     // but we don't raise the OnNamespaceModified event
-                    this._prefixes[hash] = prefix;
-                    if (!this._uris[prefix].AbsoluteUri.Equals(uri.AbsoluteUri, StringComparison.Ordinal))
+                    _prefixes[hash] = prefix;
+                    if (!_uris[prefix].AbsoluteUri.Equals(uri.AbsoluteUri, StringComparison.Ordinal))
                     {
                         // Raise modified event
-                        this.OnNamespaceModified(prefix, uri);
+                        OnNamespaceModified(prefix, uri);
                     }
                 }
             }
@@ -177,12 +177,12 @@ namespace VDS.RDF
             {
                 // Check whether the Namespace is actually being changed
                 // If the existing Uri is the same as the old one no change is needed
-                if (!this._uris[prefix].AbsoluteUri.Equals(uri.AbsoluteUri, StringComparison.Ordinal))
+                if (!_uris[prefix].AbsoluteUri.Equals(uri.AbsoluteUri, StringComparison.Ordinal))
                 {
                     // Update the existing Prefix
-                    this._uris[prefix] = uri;
-                    this._prefixes[hash] = prefix;
-                    this.OnNamespaceModified(prefix, uri);
+                    _uris[prefix] = uri;
+                    _prefixes[hash] = prefix;
+                    OnNamespaceModified(prefix, uri);
                 }
             }
         }
@@ -194,22 +194,22 @@ namespace VDS.RDF
         public virtual void RemoveNamespace(String prefix)
         {
             // Check the Namespace is defined
-            if (this._uris.ContainsKey(prefix))
+            if (_uris.ContainsKey(prefix))
             {
-                Uri u = this._uris[prefix];
+                Uri u = _uris[prefix];
 
                 // Remove the Prefix to Uri Mapping
-                this._uris.Remove(prefix);
+                _uris.Remove(prefix);
 
                 // Remove the corresponding Uri to Prefix Mapping
                 int hash = u.GetEnhancedHashCode();
-                if (this._prefixes.ContainsKey(hash))
+                if (_prefixes.ContainsKey(hash))
                 {
-                    this._prefixes.Remove(hash);
+                    _prefixes.Remove(hash);
                 }
 
                 // Raise the Event
-                this.OnNamespaceRemoved(prefix, u);
+                OnNamespaceRemoved(prefix, u);
             }
         }
 
@@ -220,7 +220,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual bool HasNamespace(String prefix)
         {
-            return this._uris.ContainsKey(prefix);
+            return _uris.ContainsKey(prefix);
         }
 
         /// <summary>
@@ -228,8 +228,8 @@ namespace VDS.RDF
         /// </summary>
         public void Clear()
         {
-            this._prefixes.Clear();
-            this._uris.Clear();
+            _prefixes.Clear();
+            _uris.Clear();
         }
 
         /// <summary>
@@ -239,7 +239,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._uris.Keys;
+                return _uris.Keys;
             }
         }
 
@@ -252,7 +252,7 @@ namespace VDS.RDF
         /// <remarks>This function will return a Boolean indicated whether it succeeded in reducing the Uri to a QName.  If it did then the out parameter qname will contain the reduction, otherwise it will be the empty string.</remarks>
         public virtual bool ReduceToQName(String uri, out String qname)
         {
-            foreach (Uri u in this._uris.Values)
+            foreach (Uri u in _uris.Values)
             {
                 String baseuri = u.AbsoluteUri;
 
@@ -262,7 +262,7 @@ namespace VDS.RDF
                     // Remove the Base Uri from the front of the Uri
                     qname = uri.Substring(baseuri.Length);
                     // Add the Prefix back onto the front plus the colon to give a QName
-                    qname = this._prefixes[u.GetEnhancedHashCode()] + ":" + qname;
+                    qname = _prefixes[u.GetEnhancedHashCode()] + ":" + qname;
                     if (qname.Equals(":")) continue;
                     if (qname.Contains("/") || qname.Contains("#")) continue;
                     return true;
@@ -287,23 +287,23 @@ namespace VDS.RDF
             int tempPrefixID = 0;
             foreach (String prefix in nsmap.Prefixes)
             {
-                if (!this._uris.ContainsKey(prefix))
+                if (!_uris.ContainsKey(prefix))
                 {
                     // Non-colliding Namespaces get copied across
-                    this.AddNamespace(prefix, nsmap.GetNamespaceUri(prefix));
+                    AddNamespace(prefix, nsmap.GetNamespaceUri(prefix));
                 }
                 else
                 {
                     // Colliding Namespaces get remapped to new prefixes
                     // Assuming the prefixes aren't already used for the same Uri
-                    if (!this._uris[prefix].AbsoluteUri.Equals(nsmap.GetNamespaceUri(prefix).AbsoluteUri, StringComparison.Ordinal))
+                    if (!_uris[prefix].AbsoluteUri.Equals(nsmap.GetNamespaceUri(prefix).AbsoluteUri, StringComparison.Ordinal))
                     {
-                        while (this._uris.ContainsKey(tempPrefix))
+                        while (_uris.ContainsKey(tempPrefix))
                         {
                             tempPrefixID++;
                             tempPrefix = "ns" + tempPrefixID;
                         }
-                        this.AddNamespace(tempPrefix, nsmap.GetNamespaceUri(prefix));
+                        AddNamespace(tempPrefix, nsmap.GetNamespaceUri(prefix));
                     }
                 }
             }
@@ -331,7 +331,7 @@ namespace VDS.RDF
         /// <param name="uri">Namespace Uri</param>
         protected virtual void OnNamespaceAdded(String prefix, Uri uri)
         {
-            NamespaceChanged handler = this.NamespaceAdded;
+            NamespaceChanged handler = NamespaceAdded;
             if (handler != null)
             {
                 handler(prefix, uri);
@@ -345,7 +345,7 @@ namespace VDS.RDF
         /// <param name="uri">Namespace Uri</param>
         protected virtual void OnNamespaceModified(String prefix, Uri uri)
         {
-            NamespaceChanged handler = this.NamespaceModified;
+            NamespaceChanged handler = NamespaceModified;
             if (handler != null)
             {
                 handler(prefix, uri);
@@ -359,7 +359,7 @@ namespace VDS.RDF
         /// <param name="uri">Namespace Uri</param>
         protected virtual void OnNamespaceRemoved(String prefix, Uri uri)
         {
-            NamespaceChanged handler = this.NamespaceRemoved;
+            NamespaceChanged handler = NamespaceRemoved;
             if (handler != null)
             {
                 handler(prefix, uri);
@@ -373,8 +373,8 @@ namespace VDS.RDF
         /// </summary>
         public void Dispose()
         {
-            this._prefixes.Clear();
-            this._uris.Clear();
+            _prefixes.Clear();
+            _uris.Clear();
         }
 
         #endregion
@@ -422,14 +422,14 @@ namespace VDS.RDF
         {
             // See if we've cached this mapping
             QNameMapping mapping;
-            if (this._mapping.TryGetValue(uri, out mapping))
+            if (_mapping.TryGetValue(uri, out mapping))
             {
                 qname = mapping.QName;
                 return true;
             }
             mapping = new QNameMapping(uri);
 
-            foreach (Uri u in this._uris.Values)
+            foreach (Uri u in _uris.Values)
             {
                 String baseuri = u.AbsoluteUri;
 
@@ -439,14 +439,14 @@ namespace VDS.RDF
                     // Remove the Base Uri from the front of the Uri
                     qname = uri.Substring(baseuri.Length);
                     // Add the Prefix back onto the front plus the colon to give a QName
-                    if (this._prefixes.ContainsKey(u.GetEnhancedHashCode()))
+                    if (_prefixes.ContainsKey(u.GetEnhancedHashCode()))
                     {
-                        qname = this._prefixes[u.GetEnhancedHashCode()] + ":" + qname;
+                        qname = _prefixes[u.GetEnhancedHashCode()] + ":" + qname;
                         if (qname.Equals(":")) continue;
                         if (qname.Contains("/") || qname.Contains("#")) continue;
                         // Cache the Mapping
                         mapping.QName = qname;
-                        this.AddToCache(uri, mapping);
+                        AddToCache(uri, mapping);
                         return true;
                     }
                 }
@@ -478,7 +478,7 @@ namespace VDS.RDF
 
             // See if we've cached this mapping
             QNameMapping mapping;
-            if (this._mapping.TryGetValue(uri, out mapping))
+            if (_mapping.TryGetValue(uri, out mapping))
             {
                 qname = mapping.QName;
                 return true;
@@ -486,7 +486,7 @@ namespace VDS.RDF
             mapping = new QNameMapping(uri);
 
             // Try and find a Namespace URI that is the prefix of the URI
-            foreach (Uri u in this._uris.Values)
+            foreach (Uri u in _uris.Values)
             {
                 String baseuri = u.AbsoluteUri;
 
@@ -496,14 +496,14 @@ namespace VDS.RDF
                     // Remove the Base Uri from the front of the Uri
                     qname = uri.Substring(baseuri.Length);
                     // Add the Prefix back onto the front plus the colon to give a QName
-                    if (this._prefixes.ContainsKey(u.GetEnhancedHashCode()))
+                    if (_prefixes.ContainsKey(u.GetEnhancedHashCode()))
                     {
-                        qname = this._prefixes[u.GetEnhancedHashCode()] + ":" + qname;
+                        qname = _prefixes[u.GetEnhancedHashCode()] + ":" + qname;
                         if (qname.Equals(":")) continue;
                         if (qname.Contains("/") || qname.Contains("#")) continue;
                         // Cache the Mapping
                         mapping.QName = qname;
-                        this.AddToCache(uri, mapping);
+                        AddToCache(uri, mapping);
                         return true;
                     }
                 }
@@ -514,12 +514,12 @@ namespace VDS.RDF
             if (uri.Contains('#'))
             {
                 nsUri = uri.Substring(0, uri.LastIndexOf('#') + 1);
-                nsPrefix = this.GetNextTemporaryNamespacePrefix();
+                nsPrefix = GetNextTemporaryNamespacePrefix();
             }
             else if (uri.LastIndexOf('/') > 8)
             {
                 nsUri = uri.Substring(0, uri.LastIndexOf('/') + 1);
-                nsPrefix = this.GetNextTemporaryNamespacePrefix();
+                nsPrefix = GetNextTemporaryNamespacePrefix();
             }
             else
             {
@@ -529,11 +529,11 @@ namespace VDS.RDF
             }
 
             // Add to Namespace Map
-            this.AddNamespace(nsPrefix, UriFactory.Create(nsUri));
+            AddNamespace(nsPrefix, UriFactory.Create(nsUri));
 
             // Cache mapping and return
             mapping.QName = nsPrefix + ":" + uri.Replace(nsUri, String.Empty);
-            this.AddToCache(uri, mapping);
+            AddToCache(uri, mapping);
             qname = mapping.QName;
             tempNamespace = nsPrefix;
             return true;
@@ -546,7 +546,7 @@ namespace VDS.RDF
         /// <param name="mapping">Mapping</param>
         protected virtual void AddToCache(String uri, QNameMapping mapping)
         {
-            this._mapping.Add(uri, mapping);
+            _mapping.Add(uri, mapping);
         }
 
         /// <summary>
@@ -556,11 +556,11 @@ namespace VDS.RDF
         private String GetNextTemporaryNamespacePrefix()
         {
             String nextPrefixBase = "ns";
-            while (this._uris.ContainsKey(nextPrefixBase + this._nextNamespaceID))
+            while (_uris.ContainsKey(nextPrefixBase + _nextNamespaceID))
             {
-                this._nextNamespaceID++;
+                _nextNamespaceID++;
             }
-            return nextPrefixBase + this._nextNamespaceID;
+            return nextPrefixBase + _nextNamespaceID;
         }
     }
 
@@ -586,12 +586,12 @@ namespace VDS.RDF
         {
             try
             {
-                Monitor.Enter(this._mapping);
+                Monitor.Enter(_mapping);
                 base.AddToCache(key, value);
             }
             finally
             {
-                Monitor.Exit(this._mapping);
+                Monitor.Exit(_mapping);
             }
         }
 
@@ -604,14 +604,14 @@ namespace VDS.RDF
         {
             try
             {
-                Monitor.Enter(this._prefixes);
-                Monitor.Enter(this._uris);
+                Monitor.Enter(_prefixes);
+                Monitor.Enter(_uris);
                 base.AddNamespace(prefix, uri);
             }
             finally
             {
-                Monitor.Exit(this._prefixes);
-                Monitor.Exit(this._uris);
+                Monitor.Exit(_prefixes);
+                Monitor.Exit(_uris);
             }
         }
     }
@@ -630,7 +630,7 @@ namespace VDS.RDF
         /// <param name="u">URI</param>
         public QNameMapping(String u)
         {
-            this._u = u;
+            _u = u;
         }
 
         /// <summary>
@@ -640,7 +640,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._u;
+                return _u;
             }
         }
 
@@ -651,11 +651,11 @@ namespace VDS.RDF
         {
             get
             {
-                return this._qname;
+                return _qname;
             }
             set
             {
-                this._qname = value;
+                _qname = value;
             }
         }
 
@@ -665,7 +665,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override string ToString()
         {
-            return this._u.ToString();
+            return _u.ToString();
         }
 
         /// <summary>
@@ -678,7 +678,7 @@ namespace VDS.RDF
             if (obj == null) return false;
             if (obj is QNameMapping)
             {
-                return this.ToString().Equals(obj.ToString(), StringComparison.Ordinal);
+                return ToString().Equals(obj.ToString(), StringComparison.Ordinal);
             }
             else
             {

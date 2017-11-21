@@ -60,14 +60,14 @@ namespace VDS.RDF.Parsing.Handlers
             if (writer == null) throw new ArgumentNullException("writer", "Cannot use a null TextWriter with the Write Through Handler");
             if (formatter != null)
             {
-                this._formatter = formatter;
+                _formatter = formatter;
             }
             else
             {
-                this._formatter = new NTriplesFormatter();
+                _formatter = new NTriplesFormatter();
             }
-            this._writer = writer;
-            this._closeOnEnd = closeOnEnd;
+            _writer = writer;
+            _closeOnEnd = closeOnEnd;
         }
 
         /// <summary>
@@ -88,9 +88,9 @@ namespace VDS.RDF.Parsing.Handlers
         {
             if (writer == null) throw new ArgumentNullException("writer", "Cannot use a null TextWriter with the Write Through Handler");
             if (formatterType == null) throw new ArgumentNullException("formatterType", "Cannot use a null formatter type");
-            this._formatterType = formatterType;
-            this._writer = writer;
-            this._closeOnEnd = closeOnEnd;
+            _formatterType = formatterType;
+            _writer = writer;
+            _closeOnEnd = closeOnEnd;
         }
 
         /// <summary>
@@ -106,15 +106,15 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         protected override void StartRdfInternal()
         {
-            if (this._closeOnEnd && this._writer == null) throw new RdfParseException("Cannot use this WriteThroughHandler as an RDF Handler for parsing as you set closeOnEnd to true and you have already used this Handler and so the provided TextWriter was closed");
+            if (_closeOnEnd && _writer == null) throw new RdfParseException("Cannot use this WriteThroughHandler as an RDF Handler for parsing as you set closeOnEnd to true and you have already used this Handler and so the provided TextWriter was closed");
 
-            if (this._formatterType != null)
+            if (_formatterType != null)
             {
-                this._formatter = null;
-                this._formattingMapper = new QNameOutputMapper();
+                _formatter = null;
+                _formattingMapper = new QNameOutputMapper();
 
                 // Instantiate a new Formatter
-                ConstructorInfo[] cs = this._formatterType.GetConstructors();
+                ConstructorInfo[] cs = _formatterType.GetConstructors();
                 Type qnameMapperType = typeof(QNameOutputMapper);
                 Type nsMapperType = typeof(INamespaceMapper);
                 foreach (ConstructorInfo c in cs.OrderByDescending(c => c.GetParameters().Count()))
@@ -126,19 +126,19 @@ namespace VDS.RDF.Parsing.Handlers
                         {
                             if (ps[0].ParameterType.Equals(qnameMapperType))
                             {
-                                this._formatter = Activator.CreateInstance(this._formatterType, new Object[] { this._formattingMapper }) as ITripleFormatter;
+                                _formatter = Activator.CreateInstance(_formatterType, new Object[] { _formattingMapper }) as ITripleFormatter;
                             }
                             else if (ps[0].ParameterType.Equals(nsMapperType))
                             {
-                                this._formatter = Activator.CreateInstance(this._formatterType, new Object[] { this._formattingMapper }) as ITripleFormatter;
+                                _formatter = Activator.CreateInstance(_formatterType, new Object[] { _formattingMapper }) as ITripleFormatter;
                             }
                         }
                         else if (ps.Length == 0)
                         {
-                            this._formatter = Activator.CreateInstance(this._formatterType) as ITripleFormatter;
+                            _formatter = Activator.CreateInstance(_formatterType) as ITripleFormatter;
                         }
 
-                        if (this._formatter != null) break;
+                        if (_formatter != null) break;
                     }
                     catch
                     {
@@ -147,14 +147,14 @@ namespace VDS.RDF.Parsing.Handlers
                 }
 
                 // If we get out here and the formatter is null then we throw an error
-                if (this._formatter == null) throw new RdfParseException("Unable to instantiate a ITripleFormatter from the given Formatter Type " + this._formatterType.FullName);
+                if (_formatter == null) throw new RdfParseException("Unable to instantiate a ITripleFormatter from the given Formatter Type " + _formatterType.FullName);
             }
 
-            if (this._formatter is IGraphFormatter)
+            if (_formatter is IGraphFormatter)
             {
-                this._writer.WriteLine(((IGraphFormatter)this._formatter).FormatGraphHeader(this._formattingMapper));
+                _writer.WriteLine(((IGraphFormatter)_formatter).FormatGraphHeader(_formattingMapper));
             }
-            this._written = 0;
+            _written = 0;
         }
 
         /// <summary>
@@ -163,14 +163,14 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="ok">Indicates whether parsing completed without error</param>
         protected override void EndRdfInternal(bool ok)
         {
-            if (this._formatter is IGraphFormatter)
+            if (_formatter is IGraphFormatter)
             {
-                this._writer.WriteLine(((IGraphFormatter)this._formatter).FormatGraphFooter());
+                _writer.WriteLine(((IGraphFormatter)_formatter).FormatGraphFooter());
             }
-            if (this._closeOnEnd)
+            if (_closeOnEnd)
             {
-                this._writer.Close();
-                this._writer = null;
+                _writer.Close();
+                _writer = null;
             }
         }
 
@@ -182,14 +182,14 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
-            if (this._formattingMapper != null)
+            if (_formattingMapper != null)
             {
-                this._formattingMapper.AddNamespace(prefix, namespaceUri);
+                _formattingMapper.AddNamespace(prefix, namespaceUri);
             }
 
-            if (this._formatter is INamespaceFormatter)
+            if (_formatter is INamespaceFormatter)
             {
-                this._writer.WriteLine(((INamespaceFormatter)this._formatter).FormatNamespace(prefix, namespaceUri));
+                _writer.WriteLine(((INamespaceFormatter)_formatter).FormatNamespace(prefix, namespaceUri));
             }
 
             return true;
@@ -202,9 +202,9 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
-            if (this._formatter is IBaseUriFormatter)
+            if (_formatter is IBaseUriFormatter)
             {
-                this._writer.WriteLine(((IBaseUriFormatter)this._formatter).FormatBaseUri(baseUri));
+                _writer.WriteLine(((IBaseUriFormatter)_formatter).FormatBaseUri(baseUri));
             }
 
             return true;
@@ -217,12 +217,12 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
-            this._written++;
-            this._writer.WriteLine(this._formatter.Format(t));
-            if (this._written >= FlushInterval)
+            _written++;
+            _writer.WriteLine(_formatter.Format(t));
+            if (_written >= FlushInterval)
             {
-                this._written = 0;
-                this._writer.Flush();
+                _written = 0;
+                _writer.Flush();
             }
             return true;
         }
@@ -265,14 +265,14 @@ namespace VDS.RDF.Parsing.Handlers
             if (writer == null) throw new ArgumentNullException("writer", "Cannot use a null TextWriter with the Result Write Through Handler");
             if (formatter != null)
             {
-                this._formatter = formatter;
+                _formatter = formatter;
             }
             else
             {
-                this._formatter = new NTriplesFormatter();
+                _formatter = new NTriplesFormatter();
             }
-            this._writer = writer;
-            this._closeOnEnd = closeOnEnd;
+            _writer = writer;
+            _closeOnEnd = closeOnEnd;
         }
 
         /// <summary>
@@ -293,9 +293,9 @@ namespace VDS.RDF.Parsing.Handlers
         {
             if (writer == null) throw new ArgumentNullException("writer", "Cannot use a null TextWriter with the Result Write Through Handler");
             if (formatterType == null) throw new ArgumentNullException("formatterType", "Cannot use a null formatter type");
-            this._formatterType = formatterType;
-            this._writer = writer;
-            this._closeOnEnd = closeOnEnd;
+            _formatterType = formatterType;
+            _writer = writer;
+            _closeOnEnd = closeOnEnd;
         }
 
         /// <summary>
@@ -311,18 +311,18 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         protected override void StartResultsInternal()
         {
-            if (this._closeOnEnd && this._writer == null) throw new RdfParseException("Cannot use this ResultWriteThroughHandler as an Results Handler for parsing as you set closeOnEnd to true and you have already used this Handler and so the provided TextWriter was closed");
-            this._currentType = SparqlResultsType.Unknown;
-            this._currVariables.Clear();
-            this._headerWritten = false;
+            if (_closeOnEnd && _writer == null) throw new RdfParseException("Cannot use this ResultWriteThroughHandler as an Results Handler for parsing as you set closeOnEnd to true and you have already used this Handler and so the provided TextWriter was closed");
+            _currentType = SparqlResultsType.Unknown;
+            _currVariables.Clear();
+            _headerWritten = false;
 
-            if (this._formatterType != null)
+            if (_formatterType != null)
             {
-                this._formatter = null;
-                this._formattingMapper = new QNameOutputMapper();
+                _formatter = null;
+                _formattingMapper = new QNameOutputMapper();
 
                 // Instantiate a new Formatter
-                ConstructorInfo[] cs = this._formatterType.GetConstructors();
+                ConstructorInfo[] cs = _formatterType.GetConstructors();
                 Type qnameMapperType = typeof(QNameOutputMapper);
                 Type nsMapperType = typeof(INamespaceMapper);
                 foreach (ConstructorInfo c in cs.OrderByDescending(c => c.GetParameters().Count()))
@@ -334,19 +334,19 @@ namespace VDS.RDF.Parsing.Handlers
                         {
                             if (ps[0].ParameterType.Equals(qnameMapperType))
                             {
-                                this._formatter = Activator.CreateInstance(this._formatterType, new Object[] { this._formattingMapper }) as IResultFormatter;
+                                _formatter = Activator.CreateInstance(_formatterType, new Object[] { _formattingMapper }) as IResultFormatter;
                             }
                             else if (ps[0].ParameterType.Equals(nsMapperType))
                             {
-                                this._formatter = Activator.CreateInstance(this._formatterType, new Object[] { this._formattingMapper }) as IResultFormatter;
+                                _formatter = Activator.CreateInstance(_formatterType, new Object[] { _formattingMapper }) as IResultFormatter;
                             }
                         }
                         else if (ps.Length == 0)
                         {
-                            this._formatter = Activator.CreateInstance(this._formatterType) as IResultFormatter;
+                            _formatter = Activator.CreateInstance(_formatterType) as IResultFormatter;
                         }
 
-                        if (this._formatter != null) break;
+                        if (_formatter != null) break;
                     }
                     catch
                     {
@@ -355,7 +355,7 @@ namespace VDS.RDF.Parsing.Handlers
                 }
 
                 // If we get out here and the formatter is null then we throw an error
-                if (this._formatter == null) throw new RdfParseException("Unable to instantiate a IResultFormatter from the given Formatter Type " + this._formatterType.FullName);
+                if (_formatter == null) throw new RdfParseException("Unable to instantiate a IResultFormatter from the given Formatter Type " + _formatterType.FullName);
             }
         }
 
@@ -365,18 +365,18 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="ok"></param>
         protected override void EndResultsInternal(bool ok)
         {
-            if (this._formatter is IResultSetFormatter)
+            if (_formatter is IResultSetFormatter)
             {
-                this._writer.WriteLine(((IResultSetFormatter)this._formatter).FormatResultSetFooter());
+                _writer.WriteLine(((IResultSetFormatter)_formatter).FormatResultSetFooter());
             }
-            if (this._closeOnEnd)
+            if (_closeOnEnd)
             {
-                this._writer.Close();
-                this._writer = null;
+                _writer.Close();
+                _writer = null;
             }
-            this._currentType = SparqlResultsType.Unknown;
-            this._currVariables.Clear();
-            this._headerWritten = false;
+            _currentType = SparqlResultsType.Unknown;
+            _currVariables.Clear();
+            _headerWritten = false;
         }
 
         /// <summary>
@@ -385,15 +385,15 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="result">Boolean Result</param>
         protected override void HandleBooleanResultInternal(bool result)
         {
-            if (this._currentType != SparqlResultsType.Unknown) throw new RdfParseException("Cannot handle a Boolean Result when the handler has already handled other types of results");
-            this._currentType = SparqlResultsType.Boolean;
-            if (!this._headerWritten && this._formatter is IResultSetFormatter)
+            if (_currentType != SparqlResultsType.Unknown) throw new RdfParseException("Cannot handle a Boolean Result when the handler has already handled other types of results");
+            _currentType = SparqlResultsType.Boolean;
+            if (!_headerWritten && _formatter is IResultSetFormatter)
             {
-                this._writer.WriteLine(((IResultSetFormatter)this._formatter).FormatResultSetHeader());
-                this._headerWritten = true;
+                _writer.WriteLine(((IResultSetFormatter)_formatter).FormatResultSetHeader());
+                _headerWritten = true;
             }
 
-            this._writer.WriteLine(this._formatter.FormatBooleanResult(result));
+            _writer.WriteLine(_formatter.FormatBooleanResult(result));
         }
 
         /// <summary>
@@ -403,9 +403,9 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleVariableInternal(string var)
         {
-            if (this._currentType == SparqlResultsType.Boolean) throw new RdfParseException("Cannot handler a Variable when the handler has already handled a boolean result");
-            this._currentType = SparqlResultsType.VariableBindings;
-            this._currVariables.Add(var);
+            if (_currentType == SparqlResultsType.Boolean) throw new RdfParseException("Cannot handler a Variable when the handler has already handled a boolean result");
+            _currentType = SparqlResultsType.VariableBindings;
+            _currVariables.Add(var);
             return true;
         }
 
@@ -416,14 +416,14 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleResultInternal(SparqlResult result)
         {
-            if (this._currentType == SparqlResultsType.Boolean) throw new RdfParseException("Cannot handle a Result when the handler has already handled a boolean result");
-            this._currentType = SparqlResultsType.VariableBindings;
-            if (!this._headerWritten && this._formatter is IResultSetFormatter)
+            if (_currentType == SparqlResultsType.Boolean) throw new RdfParseException("Cannot handle a Result when the handler has already handled a boolean result");
+            _currentType = SparqlResultsType.VariableBindings;
+            if (!_headerWritten && _formatter is IResultSetFormatter)
             {
-                this._writer.WriteLine(((IResultSetFormatter)this._formatter).FormatResultSetHeader(this._currVariables.Distinct()));
-                this._headerWritten = true;
+                _writer.WriteLine(((IResultSetFormatter)_formatter).FormatResultSetHeader(_currVariables.Distinct()));
+                _headerWritten = true;
             }
-            this._writer.WriteLine(this._formatter.Format(result));
+            _writer.WriteLine(_formatter.Format(result));
             return true;
         }
     }

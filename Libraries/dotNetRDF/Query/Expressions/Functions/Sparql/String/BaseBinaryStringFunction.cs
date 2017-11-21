@@ -51,8 +51,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            INode x = this._leftExpr.Evaluate(context, bindingID);
-            INode y = this._rightExpr.Evaluate(context, bindingID);
+            INode x = _leftExpr.Evaluate(context, bindingID);
+            INode y = _rightExpr.Evaluate(context, bindingID);
 
             if (x.NodeType == NodeType.Literal && y.NodeType == NodeType.Literal)
             {
@@ -61,7 +61,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 
                 if (IsValidArgumentPair(stringLit, argLit))
                 {
-                    return new BooleanNode(null, this.ValueInternal(stringLit, argLit));
+                    return new BooleanNode(null, ValueInternal(stringLit, argLit));
                 }
                 else
                 {

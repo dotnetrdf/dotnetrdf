@@ -50,9 +50,9 @@ namespace VDS.RDF.Query.Paths
         {
             StringBuilder output = new StringBuilder();
             output.Append('(');
-            output.Append(this._lhs.ToString());
+            output.Append(_lhs.ToString());
             output.Append(" | ");
-            output.Append(this._rhs.ToString());
+            output.Append(_rhs.ToString());
             output.Append(')');
             return output.ToString();
         }
@@ -66,8 +66,8 @@ namespace VDS.RDF.Query.Paths
         {
             PathTransformContext lhsContext = new PathTransformContext(context);
             PathTransformContext rhsContext = new PathTransformContext(context);
-            ISparqlAlgebra lhs = this._lhs.ToAlgebra(lhsContext);
-            ISparqlAlgebra rhs = this._rhs.ToAlgebra(rhsContext);
+            ISparqlAlgebra lhs = _lhs.ToAlgebra(lhsContext);
+            ISparqlAlgebra rhs = _rhs.ToAlgebra(rhsContext);
             return new Union(lhs, rhs);
         }
     }

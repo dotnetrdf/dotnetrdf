@@ -66,10 +66,10 @@ namespace VDS.RDF.Query
         /// <param name="s">Set</param>
         public SparqlResult(ISet s)
         {
-            foreach (String var in s.Variables)
+            foreach (var var in s.Variables)
             {
-                this._variables.Add(var);
-                this._resultValues.Add(var, s[var]);
+                _variables.Add(var);
+                _resultValues.Add(var, s[var]);
             }
         }
 
@@ -80,10 +80,10 @@ namespace VDS.RDF.Query
         /// <param name="variables">Variables</param>
         public SparqlResult(ISet s, IEnumerable<String> variables)
         {
-            this._variables.AddRange(variables);
-            foreach (String var in this._variables)
+            _variables.AddRange(variables);
+            foreach (var var in _variables)
             {
-                this._resultValues.Add(var, s[var]);
+                _resultValues.Add(var, s[var]);
             }
         }
 
@@ -95,8 +95,8 @@ namespace VDS.RDF.Query
         /// <param name="context">Streaming Context</param>
         private SparqlResult(SerializationInfo info, StreamingContext context)
         {
-            this._resultValues = (Dictionary<String,INode>)info.GetValue("bindings", typeof(Dictionary<String, INode>));
-            this._variables = new List<string>(this._resultValues.Keys);
+            _resultValues = (Dictionary<String,INode>)info.GetValue("bindings", typeof(Dictionary<String, INode>));
+            _variables = new List<string>(_resultValues.Keys);
         }
 #endif
 
@@ -108,9 +108,9 @@ namespace VDS.RDF.Query
         /// <exception cref="RdfException">Thrown if there is nothing bound to the given Variable Name for this Result</exception>
         public INode Value(string variable)
         {
-            if (this._resultValues.ContainsKey(variable))
+            if (_resultValues.ContainsKey(variable))
             {
-                return this._resultValues[variable];
+                return _resultValues[variable];
             }
             else
             {
@@ -128,7 +128,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this.Value(variable);
+                return Value(variable);
             }
         }
 
@@ -145,13 +145,13 @@ namespace VDS.RDF.Query
         {
             get
             {
-                if (index < 0 || index >= this._variables.Count)
+                if (index < 0 || index >= _variables.Count)
                 {
                     throw new IndexOutOfRangeException("There is no variable at Index " + index);
                 }
                 else
                 {
-                    return this._resultValues[this._variables[index]];
+                    return _resultValues[_variables[index]];
                 }
             }
         }
@@ -164,7 +164,7 @@ namespace VDS.RDF.Query
         /// <returns>True if the variable was present (even it was unbound) and false otherwise</returns>
         public bool TryGetValue(String variable, out INode value)
         {
-            if (this.HasValue(variable))
+            if (HasValue(variable))
             {
                 value = this[variable];
                 return true;
@@ -184,7 +184,7 @@ namespace VDS.RDF.Query
         /// <returns>True if the variable was present and bound, false otherwise</returns>
         public bool TryGetBoundValue(String variable, out INode value)
         {
-            if (this.HasValue(variable))
+            if (HasValue(variable))
             {
                 value = this[variable];
                 return value != null;
@@ -203,7 +203,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._resultValues.Count;
+                return _resultValues.Count;
             }
         }
 
@@ -212,16 +212,16 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="variable">Variable Name</param>
         /// <param name="value">Value bound to the Variable</param>
-        protected internal void SetValue(string variable, INode value)
+        internal void SetValue(string variable, INode value)
         {
-            if (this._resultValues.ContainsKey(variable))
+            if (_resultValues.ContainsKey(variable))
             {
-                this._resultValues[variable] = value;
+                _resultValues[variable] = value;
             }
             else
             {
-                this._variables.Add(variable);
-                this._resultValues.Add(variable, value);
+                _variables.Add(variable);
+                _resultValues.Add(variable, value);
             }
         }
 
@@ -229,16 +229,16 @@ namespace VDS.RDF.Query
         /// Sets the variable ordering for the result
         /// </summary>
         /// <param name="variables"></param>
-        protected internal void SetVariableOrdering(IEnumerable<String> variables)
+        internal void SetVariableOrdering(IEnumerable<String> variables)
         {
             // Validate that the ordering is applicable
-            if (variables.Count() < this._variables.Count) throw new RdfQueryException("Cannot set a variable ordering that contains less variables then are currently specified");
-            foreach (String var in this._variables)
+            if (variables.Count() < _variables.Count) throw new RdfQueryException("Cannot set a variable ordering that contains less variables then are currently specified");
+            foreach (var var in _variables)
             {
                 if (!variables.Contains(var)) throw new RdfQueryException("Cannot set a variable ordering that omits the variable ?" + var + " currently present in this result");
             }
             // Apply ordering
-            this._variables = new List<string>(variables);
+            _variables = new List<string>(variables);
         }
 
         /// <summary>
@@ -249,7 +249,7 @@ namespace VDS.RDF.Query
         /// <remarks>Returns true even if the value is null, use <see cref="SparqlResult.HasBoundValue"/> instead to see whether a non-null value is present for a variable.</remarks>
         public bool HasValue(string variable)
         {
-            return this._resultValues.ContainsKey(variable);
+            return _resultValues.ContainsKey(variable);
         }
 
         /// <summary>
@@ -259,7 +259,7 @@ namespace VDS.RDF.Query
         /// <returns>True if the variable is present and has a non-null value, false otherwise</returns>
         public bool HasBoundValue(String variable)
         {
-            return this._resultValues.ContainsKey(variable) && this._resultValues[variable] != null;
+            return _resultValues.ContainsKey(variable) && _resultValues[variable] != null;
         }
 
         /// <summary>
@@ -269,7 +269,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return new ImmutableView<String>(this._variables);
+                return new ImmutableView<String>(_variables);
             }
         }
 
@@ -283,7 +283,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return this._resultValues.Values.All(n => n == null || n.NodeType != NodeType.Blank);
+                return _resultValues.Values.All(n => n == null || n.NodeType != NodeType.Blank);
             }
         }
 
@@ -292,11 +292,11 @@ namespace VDS.RDF.Query
         /// </summary>
         public void Trim()
         {
-            foreach (String var in this._resultValues.Keys.ToList())
+            foreach (var var in _resultValues.Keys.ToList())
             {
-                if (this._resultValues[var] == null)
+                if (_resultValues[var] == null)
                 {
-                    this._resultValues.Remove(var);
+                    _resultValues.Remove(var);
                 }
             }
         }
@@ -307,17 +307,16 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
 
-            if (this._resultValues.Count == 0) return "<Empty Result>";
+            if (_resultValues.Count == 0) return "<Empty Result>";
 
-            foreach (String var in this._variables)
+            foreach (var var in _variables)
             {
                 output.Append("?");
                 output.Append(var);
                 output.Append(" = ");
-                INode value;
-                if (this._resultValues.TryGetValue(var, out value) && value != null)
+                if (_resultValues.TryGetValue(var, out var value) && value != null)
                 {
                     output.Append(value.ToString());
                 }
@@ -325,7 +324,7 @@ namespace VDS.RDF.Query
                 output.Append(" , ");
             }
 
-            String outString = output.ToString();
+            var outString = output.ToString();
             if (outString.Length > 3)
             {
                 return outString.Substring(0, outString.Length - 3);
@@ -343,24 +342,23 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public String ToString(INodeFormatter formatter)
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
 
-            if (this._resultValues.Count == 0) return "<Empty Result>";
+            if (_resultValues.Count == 0) return "<Empty Result>";
 
-            foreach (String var in this._variables)
+            foreach (var var in _variables)
             {
                 output.Append("?");
                 output.Append(var);
                 output.Append(" = ");
-                INode value;
-                if (this._resultValues.TryGetValue(var, out value) && value != null)
+                if (_resultValues.TryGetValue(var, out var value) && value != null)
                 {
                     output.Append(value.ToString(formatter));
                 }
                 output.Append(" , ");
             }
 
-            String outString = output.ToString();
+            var outString = output.ToString();
             if (outString.Length > 3)
             {
                 return outString.Substring(0, outString.Length - 3);
@@ -383,29 +381,27 @@ namespace VDS.RDF.Query
             {
                 return false;
             }
-            else if (obj is SparqlResult)
+            if (obj is SparqlResult other)
             {
-                SparqlResult other = (SparqlResult)obj;
-
                 // Empty Results are only equal to Empty Results
-                if (this._resultValues.Count == 0 && other._resultValues.Count == 0) return true;
-                if (this._resultValues.Count == 0 || other._resultValues.Count == 0) return false;
+                if (_resultValues.Count == 0 && other._resultValues.Count == 0) return true;
+                if (_resultValues.Count == 0 || other._resultValues.Count == 0) return false;
 
                 // For differing numbers of values we must contain all the same values for variables
                 // bound in both or the variable missing from us must be bound to null in the other
-                foreach (String v in other.Variables)
+                foreach (var v in other.Variables)
                 {
-                    if (this._resultValues.ContainsKey(v))
+                    if (_resultValues.ContainsKey(v))
                     {
-                        if (this._resultValues[v] == null && other[v] != null)
+                        if (_resultValues[v] == null && other[v] != null)
                         {
                             return false;
                         }
-                        else if (this._resultValues[v] == null && other[v] == null)
+                        else if (_resultValues[v] == null && other[v] == null)
                         {
                             continue;
                         }
-                        else if (!this._resultValues[v].Equals(other[v]))
+                        else if (!_resultValues[v].Equals(other[v]))
                         {
                             return false;
                         }
@@ -431,23 +427,23 @@ namespace VDS.RDF.Query
         /// <remarks>Used implicitly in applying Distinct and Reduced modifiers to the Result Set</remarks>
         public override int GetHashCode()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
 
-            foreach (String var in this._resultValues.Keys.OrderBy(v => v))
+            foreach (var var in _resultValues.Keys.OrderBy(v => v))
             {
                 output.Append("?");
                 output.Append(var);
                 output.Append(" = ");
-                if (!(this._resultValues[var] == null))
+                if (!(_resultValues[var] == null))
                 {
-                    output.Append(this._resultValues[var].NodeType);
-                    output.Append(this._resultValues[var].ToString());
+                    output.Append(_resultValues[var].NodeType);
+                    output.Append(_resultValues[var].ToString());
                 }
 
                 output.Append(" , ");
             }
 
-            String outString = output.ToString();
+            var outString = output.ToString();
             return outString.GetHashCode();
 
         }
@@ -463,7 +459,7 @@ namespace VDS.RDF.Query
         /// </remarks>
         public IEnumerator<KeyValuePair<string, INode>> GetEnumerator()
         {
-            return this._resultValues.GetEnumerator();
+            return _resultValues.GetEnumerator();
         }
 
         /// <summary>
@@ -472,7 +468,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return this._resultValues.GetEnumerator();
+            return _resultValues.GetEnumerator();
         }
 
         #endregion
@@ -487,7 +483,7 @@ namespace VDS.RDF.Query
         /// <param name="context">Streaming Context</param>
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("bindings", this._resultValues);
+            info.AddValue("bindings", _resultValues);
         }
 
         /// <summary>
@@ -506,7 +502,7 @@ namespace VDS.RDF.Query
         public void WriteXml(XmlWriter writer)
         {
             // writer.WriteStartElement("bindings");
-            foreach (KeyValuePair<String, INode> binding in this._resultValues)
+            foreach (KeyValuePair<String, INode> binding in _resultValues)
             {
                 writer.WriteStartElement("binding");
                 writer.WriteAttributeString("name", binding.Key);
@@ -537,14 +533,14 @@ namespace VDS.RDF.Query
                 if (reader.IsEmptyElement)
                 {
                     // May be empty indicating a null
-                    this._resultValues.Add(var, null);
+                    _resultValues.Add(var, null);
                 }
                 else
                 {
                     // Otherwise expect a deserializable node
                     reader.Read();
                     INode value = reader.DeserializeNode();
-                    this._resultValues.Add(var, value);
+                    _resultValues.Add(var, value);
                 }
                 // Read to the next binding
                 reader.Read();

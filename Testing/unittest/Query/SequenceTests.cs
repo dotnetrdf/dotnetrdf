@@ -47,13 +47,13 @@ namespace VDS.RDF.Query
             InMemoryDataset dataset = new InMemoryDataset();
             LeviathanUpdateProcessor updateProcessor = new LeviathanUpdateProcessor(dataset);
             LeviathanQueryProcessor queryProcessor = new LeviathanQueryProcessor(dataset);
-            Assert.Equal(1, dataset.Graphs.Count());
+            Assert.Single(dataset.Graphs);
 
             SparqlUpdateCommandSet updates = this._updateParser.ParseFromFile("resources\\sparql\\protocol\\update_dataset_default_graph.ru");
             updateProcessor.ProcessCommandSet(updates);
 
             Assert.Equal(3, dataset.Graphs.Count());
-            Assert.Equal(1, dataset[UriFactory.Create("http://example.org/protocol-update-dataset-test/")].Triples.Count());
+            Assert.Single(dataset[UriFactory.Create("http://example.org/protocol-update-dataset-test/")].Triples);
 
             SparqlQuery query = this._queryParser.ParseFromFile("resources\\sparql\\protocol\\update_dataset_default_graph.rq");
 
@@ -72,7 +72,7 @@ namespace VDS.RDF.Query
             InMemoryDataset dataset = new InMemoryDataset();
             LeviathanUpdateProcessor updateProcessor = new LeviathanUpdateProcessor(dataset);
             LeviathanQueryProcessor queryProcessor = new LeviathanQueryProcessor(dataset);
-            Assert.Equal(1, dataset.Graphs.Count());
+            Assert.Single(dataset.Graphs);
 
             SparqlUpdateCommandSet updates = this._updateParser.ParseFromFile("resources\\sparql\\protocol\\update_dataset_default_graphs.ru");
             updateProcessor.ProcessCommandSet(updates);
@@ -97,7 +97,7 @@ namespace VDS.RDF.Query
             InMemoryDataset dataset = new InMemoryDataset();
             LeviathanUpdateProcessor updateProcessor = new LeviathanUpdateProcessor(dataset);
             LeviathanQueryProcessor queryProcessor = new LeviathanQueryProcessor(dataset);
-            Assert.Equal(1, dataset.Graphs.Count());
+            Assert.Single(dataset.Graphs);
 
             SparqlUpdateCommandSet updates = this._updateParser.ParseFromFile("resources\\sparql\\protocol\\update_dataset_named_graphs.ru");
             updateProcessor.ProcessCommandSet(updates);
@@ -122,7 +122,7 @@ namespace VDS.RDF.Query
             InMemoryDataset dataset = new InMemoryDataset();
             LeviathanUpdateProcessor updateProcessor = new LeviathanUpdateProcessor(dataset);
             LeviathanQueryProcessor queryProcessor = new LeviathanQueryProcessor(dataset);
-            Assert.Equal(1, dataset.Graphs.Count());
+            Assert.Single(dataset.Graphs);
 
             SparqlUpdateCommandSet updates = this._updateParser.ParseFromFile("resources\\sparql\\protocol\\update_dataset_full.ru");
             updateProcessor.ProcessCommandSet(updates);

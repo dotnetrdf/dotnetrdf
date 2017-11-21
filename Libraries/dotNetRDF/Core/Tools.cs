@@ -116,12 +116,12 @@ namespace VDS.RDF
                 if (uriref.Equals(String.Empty))
                 {
                     // Empty Uri reference refers to the Base Uri
-                    return UriFactory.Create(Tools.FixMalformedUriStrings(baseUri)).AbsoluteUri;
+                    return UriFactory.Create(FixMalformedUriStrings(baseUri)).AbsoluteUri;
                 }
                 else
                 {
                     // Resolve the Uri by combining the Absolute/Relative Uri with the in-scope Base Uri
-                    Uri u = new Uri(Tools.FixMalformedUriStrings(uriref), UriKind.RelativeOrAbsolute);
+                    Uri u = new Uri(FixMalformedUriStrings(uriref), UriKind.RelativeOrAbsolute);
                     if (u.IsAbsoluteUri) 
                     {
                         // Uri Reference is an Absolute Uri so no need to resolve against Base Uri
@@ -129,18 +129,18 @@ namespace VDS.RDF
                     } 
                     else 
                     {
-                        Uri b = UriFactory.Create(Tools.FixMalformedUriStrings(baseUri));
+                        Uri b = UriFactory.Create(FixMalformedUriStrings(baseUri));
 
                         // Check that the Base Uri is valid for resolving Relative URIs
                         // If the Uri Reference is a Fragment ID then Base Uri validity is irrelevant
                         // We have to use ToString() here because this is a Relative URI so AbsoluteUri would be invalid here
                         if (u.ToString().StartsWith("#"))
                         {
-                            return Tools.ResolveUri(u, b).AbsoluteUri;
+                            return ResolveUri(u, b).AbsoluteUri;
                         }
-                        else if (Tools.IsValidBaseUri(b))
+                        else if (IsValidBaseUri(b))
                         {
-                            return Tools.ResolveUri(u, b).AbsoluteUri;
+                            return ResolveUri(u, b).AbsoluteUri;
                         }
                         else
                         {
@@ -158,7 +158,7 @@ namespace VDS.RDF
 
                 try
                 {
-                    return new Uri(Tools.FixMalformedUriStrings(uriref), UriKind.Absolute).AbsoluteUri;
+                    return new Uri(FixMalformedUriStrings(uriref), UriKind.Absolute).AbsoluteUri;
                 }
                 catch (UriFormatException)
                 {
@@ -189,7 +189,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public static String ResolveQName(String qname, INamespaceMapper nsmap, Uri baseUri)
         {
-            return Tools.ResolveQName(qname, nsmap, baseUri, false);
+            return ResolveQName(qname, nsmap, baseUri, false);
         }
 
         /// <summary>
@@ -267,12 +267,12 @@ namespace VDS.RDF
         {
             if (t.TokenType == Token.QNAME)
             {
-                return Tools.ResolveQName(t.Value, nsmap, baseUri);
+                return ResolveQName(t.Value, nsmap, baseUri);
             }
             else if (t.TokenType == Token.URI)
             {
                 String uriBase = (baseUri == null) ? String.Empty : baseUri.AbsoluteUri;
-                return Tools.ResolveUri(t.Value, uriBase);
+                return ResolveUri(t.Value, uriBase);
             }
             else
             {
@@ -318,7 +318,7 @@ namespace VDS.RDF
             if (ReferenceEquals(original.Graph, target)) return original;
 
             // if a node can copy itself then let it do it
-            var selfcopyable_original = original as RDF.Storage.Virtualisation.ICanCopy;
+            var selfcopyable_original = original as Storage.Virtualisation.ICanCopy;
             if (selfcopyable_original != null) return selfcopyable_original.CopyNode(target);
             
             // if it doesn't, copy it's values:

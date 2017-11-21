@@ -51,11 +51,11 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="var">Variable to bind to</param>
         public Extend(ISparqlAlgebra pattern, ISparqlExpression expr, String var)
         {
-            this._inner = pattern;
-            this._expr = expr;
-            this._var = var;
+            _inner = pattern;
+            _expr = expr;
+            _var = var;
 
-            if (this._inner.Variables.Contains(this._var))
+            if (_inner.Variables.Contains(_var))
             {
                 throw new RdfQueryException("Cannot create an Extend() operator which extends the results of the inner algebra with a variable that is already used in the inner algebra");
             }
@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._var;
+                return _var;
             }
         }
 
@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._expr;
+                return _expr;
             }
         }
 
@@ -90,7 +90,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get 
             { 
-                return this._inner; 
+                return _inner; 
             }
         }
 
@@ -103,11 +103,11 @@ namespace VDS.RDF.Query.Algebra
         {
             if (optimiser is IExpressionTransformer)
             {
-                return new Extend(optimiser.Optimise(this._inner), ((IExpressionTransformer)optimiser).Transform(this._expr), this._var);
+                return new Extend(optimiser.Optimise(_inner), ((IExpressionTransformer)optimiser).Transform(_expr), _var);
             }
             else
             {
-                return new Extend(optimiser.Optimise(this._inner), this._expr, this._var);
+                return new Extend(optimiser.Optimise(_inner), _expr, _var);
             }
         }
 
@@ -119,7 +119,7 @@ namespace VDS.RDF.Query.Algebra
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             // First evaluate the inner algebra
-            BaseMultiset results = context.Evaluate(this._inner);
+            BaseMultiset results = context.Evaluate(_inner);
             context.OutputMultiset = new Multiset();
 
             if (results is NullMultiset)
@@ -128,29 +128,29 @@ namespace VDS.RDF.Query.Algebra
             }
             else if (results is IdentityMultiset)
             {
-                context.OutputMultiset.AddVariable(this._var);
+                context.OutputMultiset.AddVariable(_var);
                 Set s = new Set();
                 try
                 {
-                    INode temp = this._expr.Evaluate(context, 0);
-                    s.Add(this._var, temp);
+                    INode temp = _expr.Evaluate(context, 0);
+                    s.Add(_var, temp);
                 }
                 catch
                 {
                     // No assignment if there's an error
-                    s.Add(this._var, null);
+                    s.Add(_var, null);
                 }
                 context.OutputMultiset.Add(s.Copy());
             }
             else
             {
-                if (results.ContainsVariable(this._var))
+                if (results.ContainsVariable(_var))
                 {
-                    throw new RdfQueryException("Cannot assign to the variable ?" + this._var + "since it has previously been used in the Query");
+                    throw new RdfQueryException("Cannot assign to the variable ?" + _var + "since it has previously been used in the Query");
                 }
 
                 context.InputMultiset = results;
-                context.OutputMultiset.AddVariable(this._var);
+                context.OutputMultiset.AddVariable(_var);
 #if NET40
                 if (Options.UsePLinqEvaluation && this._expr.CanParallelise)
                 {
@@ -158,12 +158,15 @@ namespace VDS.RDF.Query.Algebra
                 }
                 else
                 {
-#endif
                     foreach (int id in results.SetIDs)
                     {
                         EvalExtend(context, results, id);
                     }
-#if NET40
+                }
+#else
+                foreach (var id in results.SetIDs)
+                {
+                    EvalExtend(context, results, id);
                 }
 #endif
             }
@@ -177,8 +180,8 @@ namespace VDS.RDF.Query.Algebra
             try
             {
                 // Make a new assignment
-                INode temp = this._expr.Evaluate(context, id);
-                s.Add(this._var, temp);
+                INode temp = _expr.Evaluate(context, id);
+                s.Add(_var, temp);
             }
             catch
             {
@@ -194,19 +197,19 @@ namespace VDS.RDF.Query.Algebra
         {
             get 
             {
-                return this._inner.Variables.Concat(this._var.AsEnumerable()); 
+                return _inner.Variables.Concat(_var.AsEnumerable()); 
             }
         }
 
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
         /// </summary>
-        public IEnumerable<String> FloatingVariables { get { return this._inner.FloatingVariables.Concat(this._var.AsEnumerable()); } }
+        public IEnumerable<String> FloatingVariables { get { return _inner.FloatingVariables.Concat(_var.AsEnumerable()); } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
         /// </summary>
-        public IEnumerable<String> FixedVariables { get { return this._inner.FixedVariables; } }
+        public IEnumerable<String> FixedVariables { get { return _inner.FixedVariables; } }
 
         /// <summary>
         /// Converts the Algebra to a Query
@@ -214,9 +217,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            SparqlQuery q = new SparqlQuery();
-            q.RootGraphPattern = this.ToGraphPattern();
-            return q;
+            return new SparqlQuery {RootGraphPattern = ToGraphPattern()};
         }
 
         /// <summary>
@@ -225,17 +226,17 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            GraphPattern gp = this._inner.ToGraphPattern();
+            GraphPattern gp = _inner.ToGraphPattern();
             if (gp.HasModifier)
             {
                 GraphPattern p = new GraphPattern();
                 p.AddGraphPattern(gp);
-                p.AddAssignment(new BindPattern(this._var, this._expr));
+                p.AddAssignment(new BindPattern(_var, _expr));
                 return p;
             }
             else
             {
-                gp.AddAssignment(new BindPattern(this._var, this._expr));
+                gp.AddAssignment(new BindPattern(_var, _expr));
                 return gp;
             }
         }
@@ -246,7 +247,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Extend(" + this._inner.ToSafeString() + ", " + this._expr.ToString() + " AS ?" + this._var + ")";
+            return "Extend(" + _inner.ToSafeString() + ", " + _expr.ToString() + " AS ?" + _var + ")";
         }
     }
 }

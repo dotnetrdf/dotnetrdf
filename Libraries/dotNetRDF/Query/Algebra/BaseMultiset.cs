@@ -52,11 +52,11 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return (_virtualCount==-1 ? this.Count : this._virtualCount);
+                return (_virtualCount==-1 ? Count : _virtualCount);
             }
             internal set
             {
-                this._virtualCount = value;
+                _virtualCount = value;
             }
         }
 
@@ -77,8 +77,8 @@ namespace VDS.RDF.Query.Algebra
             // Find the First Variable from this Multiset which is in both Multisets
             // If there is no Variable from this Multiset in the other Multiset then this
             // should be a Product operation instead of a Join
-            List<String> joinVars = this.Variables.Where(v => other.Variables.Contains(v)).ToList();
-            if (joinVars.Count == 0) return this.Product(other);
+            List<String> joinVars = Variables.Where(v => other.Variables.Contains(v)).ToList();
+            if (joinVars.Count == 0) return Product(other);
 
             // Start building the Joined Set
             Multiset joinedSet = new Multiset();
@@ -95,16 +95,15 @@ namespace VDS.RDF.Query.Algebra
             }
 
             // First do a pass over the LHS Result to find all possible values for joined variables
-            foreach (ISet x in this.Sets)
+            foreach (ISet x in Sets)
             {
-                int i = 0;
-                foreach (String var in joinVars)
+                var i = 0;
+                foreach (var var in joinVars)
                 {
-                    INode value = x[var];
+                    var value = x[var];
                     if (value != null)
                     {
-                        List<int> ids;
-                        if (values[i].TryGetValue(value, out ids))
+                        if (values[i].TryGetValue(value, out List<int> ids))
                         {
                             ids.Add(x.ID);
                         }
@@ -129,17 +128,21 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-#endif
                 // Use a serial join
                 // Then do a pass over the RHS and work out the intersections
                 foreach (ISet y in other.Sets)
                 {
                     this.EvalJoin(y, joinVars, values, nulls, joinedSet);
                 }
-#if NET40
+            }
+#else
+            // Use a serial join
+            // Then do a pass over the RHS and work out the intersections
+            foreach (ISet y in other.Sets)
+            {
+                EvalJoin(y, joinVars, values, nulls, joinedSet);
             }
 #endif
-
             return joinedSet;
         }
 
@@ -165,7 +168,7 @@ namespace VDS.RDF.Query.Algebra
                 else
                 {
                     // Don't forget that a null will be potentially compatible with everything
-                    possMatches = (possMatches == null ? this.SetIDs : possMatches.Intersect(this.SetIDs));
+                    possMatches = (possMatches == null ? SetIDs : possMatches.Intersect(SetIDs));
                 }
                 i++;
             }
@@ -201,7 +204,7 @@ namespace VDS.RDF.Query.Algebra
             // Find the First Variable from this Multiset which is in both Multisets
             // If there is no Variable from this Multiset in the other Multiset then this
             // should be a Join operation instead of a LeftJoin
-            List<String> joinVars = this.Variables.Where(v => other.Variables.Contains(v)).ToList();
+            List<String> joinVars = Variables.Where(v => other.Variables.Contains(v)).ToList();
             if (joinVars.Count == 0)
             {
 #if NET40
@@ -215,7 +218,7 @@ namespace VDS.RDF.Query.Algebra
                 // Do a serial Left Join Product
 
                 // Calculate a Product filtering as we go
-                foreach (ISet x in this.Sets)
+                foreach (ISet x in Sets)
                 {
                     bool standalone = false;
                     bool matched = false;
@@ -268,8 +271,7 @@ namespace VDS.RDF.Query.Algebra
                         INode value = y[var];
                         if (value != null)
                         {
-                            List<int> ids;
-                            if (values[i].TryGetValue(value, out ids))
+                            if (values[i].TryGetValue(value, out List<int> ids))
                             {
                                 ids.Add(y.ID);
                             }
@@ -294,13 +296,17 @@ namespace VDS.RDF.Query.Algebra
                 }
                 else
                 {
-#endif
                     // Use a Serial Left Join
                     foreach (ISet x in this.Sets)
                     {
                         this.EvalLeftJoin(x, other, joinVars, values, nulls, joinedSet, subcontext, expr);
                     }
-#if NET40
+                }
+#else
+                // Use a Serial Left Join
+                foreach (var x in Sets)
+                {
+                    EvalLeftJoin(x, other, joinVars, values, nulls, joinedSet, subcontext, expr);
                 }
 #endif
             }
@@ -372,7 +378,7 @@ namespace VDS.RDF.Query.Algebra
                 else
                 {
                     // Don't forget that a null will be potentially compatible with everything
-                    possMatches = (possMatches == null ? this.SetIDs : possMatches.Intersect(this.SetIDs));
+                    possMatches = (possMatches == null ? SetIDs : possMatches.Intersect(SetIDs));
                 }
                 i++;
             }
@@ -439,7 +445,7 @@ namespace VDS.RDF.Query.Algebra
             }
 
             // Find the Variables that are to be used for Joining
-            List<String> joinVars = this.Variables.Where(v => other.Variables.Contains(v)).ToList();
+            List<String> joinVars = Variables.Where(v => other.Variables.Contains(v)).ToList();
             if (joinVars.Count == 0)
             {
                 // All Disjoint Solutions are compatible
@@ -470,7 +476,7 @@ namespace VDS.RDF.Query.Algebra
             }
 
             // First do a pass over the LHS Result to find all possible values for joined variables
-            foreach (ISet x in this.Sets)
+            foreach (ISet x in Sets)
             {
                 int i = 0;
                 foreach (String var in joinVars)
@@ -478,8 +484,7 @@ namespace VDS.RDF.Query.Algebra
                     INode value = x[var];
                     if (value != null)
                     {
-                        List<int> ids;
-                        if (values[i].TryGetValue(value, out ids))
+                        if (values[i].TryGetValue(value, out List<int> ids))
                         {
                             ids.Add(x.ID);
                         }
@@ -520,7 +525,7 @@ namespace VDS.RDF.Query.Algebra
                     else
                     {
                         // Don't forget that a null will be potentially compatible with everything
-                        possMatches = (possMatches == null ? this.SetIDs : possMatches.Intersect(this.SetIDs));
+                        possMatches = (possMatches == null ? SetIDs : possMatches.Intersect(SetIDs));
                     }
                     i++;
                 }
@@ -539,7 +544,7 @@ namespace VDS.RDF.Query.Algebra
             }
 
             // Apply the actual exists
-            if (exists.Count == this.Count)
+            if (exists.Count == Count)
             {
                 // If number of sets that have a match is equal to number of sets then we're either returning everything or nothing
                 if (mustExist)
@@ -554,7 +559,7 @@ namespace VDS.RDF.Query.Algebra
             else
             {
                 // Otherwise iterate
-                foreach (ISet x in this.Sets)
+                foreach (ISet x in Sets)
                 {
                     if (mustExist)
                     {
@@ -587,11 +592,11 @@ namespace VDS.RDF.Query.Algebra
             if (other is IdentityMultiset) return this;
             if (other is NullMultiset) return this;
             // If the other Multiset is disjoint then minus-ing it also doesn't alter this set
-            if (this.IsDisjointWith(other)) return this;
+            if (IsDisjointWith(other)) return this;
 
             // Find the Variables that are to be used for Joining
-            List<String> joinVars = this.Variables.Where(v => other.Variables.Contains(v)).ToList();
-            if (joinVars.Count == 0) return this.Product(other);
+            List<String> joinVars = Variables.Where(v => other.Variables.Contains(v)).ToList();
+            if (joinVars.Count == 0) return Product(other);
 
             // Start building the Joined Set
             Multiset joinedSet = new Multiset();
@@ -607,7 +612,7 @@ namespace VDS.RDF.Query.Algebra
             }
 
             // First do a pass over the LHS Result to find all possible values for joined variables
-            foreach (ISet x in this.Sets)
+            foreach (ISet x in Sets)
             {
                 int i = 0;
                 foreach (String var in joinVars)
@@ -615,8 +620,7 @@ namespace VDS.RDF.Query.Algebra
                     INode value = x[var];
                     if (value != null)
                     {
-                        List<int> ids;
-                        if (values[i].TryGetValue(value, out ids))
+                        if (values[i].TryGetValue(value, out List<int> ids))
                         {
                             ids.Add(x.ID);
                         }
@@ -657,7 +661,7 @@ namespace VDS.RDF.Query.Algebra
                     else
                     {
                         // Don't forget that a null will be potentially compatible with everything
-                        possMatches = (possMatches == null ? this.SetIDs : possMatches.Intersect(this.SetIDs));
+                        possMatches = (possMatches == null ? SetIDs : possMatches.Intersect(SetIDs));
                     }
                     i++;
                 }
@@ -676,7 +680,7 @@ namespace VDS.RDF.Query.Algebra
             }
 
             // Apply the actual minus
-            if (toMinus.Count == this.Count)
+            if (toMinus.Count == Count)
             {
                 // If number of sets to minus is equal to number of sets then we're minusing everything
                 return new NullMultiset();
@@ -684,7 +688,7 @@ namespace VDS.RDF.Query.Algebra
             else
             {
                 // Otherwise iterate
-                foreach (ISet x in this.Sets)
+                foreach (ISet x in Sets)
                 {
                     if (!toMinus.Contains(x.ID))
                     {
@@ -727,7 +731,6 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-#endif
                 // Use serial calculation which is likely to really suck for big products
                 Multiset productSet = new Multiset();
                 foreach (ISet x in this.Sets)
@@ -738,8 +741,18 @@ namespace VDS.RDF.Query.Algebra
                     }
                 }
                 return productSet;
-#if NET40
             }
+#else
+            // Use serial calculation which is likely to really suck for big products
+            var productSet = new Multiset();
+            foreach (var x in Sets)
+            {
+                foreach (var y in other.Sets)
+                {
+                    productSet.Add(x.Join(y));
+                }
+            }
+            return productSet;
 #endif
         }
 
@@ -772,7 +785,7 @@ namespace VDS.RDF.Query.Algebra
 
             foreach (ISet s in other.Sets)
             {
-                this.Add(s.Copy());
+                Add(s.Copy());
             }
             return this;
         }
@@ -831,12 +844,12 @@ namespace VDS.RDF.Query.Algebra
         {
             if (comparer != null)
             {
-                this._orderedIDs = (from s in this.Sets.OrderBy(x => x, comparer)
+                _orderedIDs = (from s in Sets.OrderBy(x => x, comparer)
                                     select s.ID).ToList();
             }
             else
             {
-                this._orderedIDs = null;
+                _orderedIDs = null;
             }
         }
 
@@ -916,7 +929,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return String.Join(", ", this.Variables.ToArray()) + " (" + this.Count + " Results)";
+            return String.Join(", ", Variables.ToArray()) + " (" + Count + " Results)";
         }
     }
 }

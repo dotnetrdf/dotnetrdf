@@ -147,7 +147,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
         {
-            return (from t in this.WithSubject(subj)
+            return (from t in WithSubject(subj)
                     where t.Predicate.Equals(pred)
                     select t);
         }
@@ -160,7 +160,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
         {
-            return (from t in this.WithPredicate(pred)
+            return (from t in WithPredicate(pred)
                     where t.Object.Equals(obj)
                     select t);
         }
@@ -173,7 +173,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
         {
-            return (from t in this.WithSubject(subj)
+            return (from t in WithSubject(subj)
                     where t.Object.Equals(obj)
                     select t);
         }
@@ -214,7 +214,7 @@ namespace VDS.RDF
         /// <param name="t">Triple</param>
         protected void RaiseTripleAdded(Triple t)
         {
-            TripleEventHandler d = this.TripleAdded;
+            TripleEventHandler d = TripleAdded;
             if (d != null)
             {
                 d(this, new TripleEventArgs(t, null));
@@ -227,7 +227,7 @@ namespace VDS.RDF
         /// <param name="t">Triple</param>
         protected void RaiseTripleRemoved(Triple t)
         {
-            TripleEventHandler d = this.TripleRemoved;
+            TripleEventHandler d = TripleRemoved;
             if (d != null)
             {
                 d(this, new TripleEventArgs(t, null, false));

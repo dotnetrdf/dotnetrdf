@@ -386,12 +386,12 @@ WHERE { GRAPH <htp://source> { ?s ?p ?o } . FILTER (NOT EXISTS { ?s a <http://re
             SparqlExpressionParser parser = new SparqlExpressionParser();
             ISparqlExpression expr = parser.Parse(tokens);
 
-            Assert.IsType(typeof (ConstantTerm), expr);
+            Assert.IsType<ConstantTerm>(expr);
             ConstantTerm constant = expr as ConstantTerm;
             Assert.NotNull(constant);
 
             IValuedNode n = constant.Node;
-            Assert.IsAssignableFrom(typeof(ILiteralNode), n);
+            Assert.IsAssignableFrom<ILiteralNode>(n);
             ILiteralNode lit = (ILiteralNode) n;
             Assert.Equal(String.Empty, lit.Language);
             Assert.True(EqualityHelper.AreUrisEqual(lit.DataType, new Uri("http://example/type")));
@@ -444,11 +444,11 @@ SELECT * WHERE
             catch (RdfParseException parseEx)
             {
                 Console.WriteLine(parseEx.Message);
-                Assert.False(parseEx.Message.Contains("?s"));
-                Assert.False(parseEx.Message.Contains("rdf:type"));
-                Assert.False(parseEx.Message.Contains("?type"));
-                Assert.True(parseEx.Message.Contains("?p"));
-                Assert.True(parseEx.Message.Contains("?o"));
+                Assert.DoesNotContain("?s", parseEx.Message);
+                Assert.DoesNotContain("rdf:type", parseEx.Message);
+                Assert.DoesNotContain("?type", parseEx.Message);
+                Assert.Contains("?p", parseEx.Message);
+                Assert.Contains("?o", parseEx.Message);
             }
         }
 
@@ -469,11 +469,11 @@ SELECT * WHERE
             catch (RdfParseException parseEx)
             {
                 Console.WriteLine(parseEx.Message);
-                Assert.False(parseEx.Message.Contains("?s"));
-                Assert.False(parseEx.Message.Contains("rdf:type"));
-                Assert.False(parseEx.Message.Contains("?type"));
-                Assert.True(parseEx.Message.Contains("?p"));
-                Assert.True(parseEx.Message.Contains("?o"));
+                Assert.DoesNotContain("?s", parseEx.Message);
+                Assert.DoesNotContain("rdf:type", parseEx.Message);
+                Assert.DoesNotContain("?type", parseEx.Message);
+                Assert.Contains("?p", parseEx.Message);
+                Assert.Contains("?o", parseEx.Message);
             }
         }
 
@@ -494,11 +494,11 @@ SELECT * WHERE
             catch (RdfParseException parseEx)
             {
                 Console.WriteLine(parseEx.Message);
-                Assert.False(parseEx.Message.Contains("?s"));
-                Assert.False(parseEx.Message.Contains("rdf:type"));
-                Assert.False(parseEx.Message.Contains("?type"));
-                Assert.True(parseEx.Message.Contains("?p"));
-                Assert.True(parseEx.Message.Contains("?o"));
+                Assert.DoesNotContain("?s", parseEx.Message);
+                Assert.DoesNotContain("rdf:type", parseEx.Message);
+                Assert.DoesNotContain("?type", parseEx.Message);
+                Assert.Contains("?p", parseEx.Message);
+                Assert.Contains("?o", parseEx.Message);
             }
         }
 
@@ -519,11 +519,11 @@ SELECT * WHERE
             catch (RdfParseException parseEx)
             {
                 Console.WriteLine(parseEx.Message);
-                Assert.False(parseEx.Message.Contains("?s"));
-                Assert.False(parseEx.Message.Contains("rdf:type"));
-                Assert.False(parseEx.Message.Contains("?type"));
-                Assert.True(parseEx.Message.Contains("?p"));
-                Assert.True(parseEx.Message.Contains("?o"));
+                Assert.DoesNotContain("?s", parseEx.Message);
+                Assert.DoesNotContain("rdf:type", parseEx.Message);
+                Assert.DoesNotContain("?type", parseEx.Message);
+                Assert.Contains("?p", parseEx.Message);
+                Assert.Contains("?o", parseEx.Message);
             }
         }
 
@@ -625,10 +625,10 @@ WHERE
             SparqlQuery q = this._parser.ParseFromString(query);
 
             String toString = q.ToString();
-            Assert.True(toString.Contains("(UUID"));
+            Assert.Contains("(UUID", toString);
 
             String formattedString = new SparqlFormatter().Format(q);
-            Assert.True(formattedString.Contains("(UUID"));
+            Assert.Contains("(UUID", formattedString);
         }
 
         [Fact]
@@ -639,10 +639,10 @@ WHERE
             SparqlQuery q = this._parser.ParseFromString(query);
 
             String toString = q.ToString();
-            Assert.True(toString.Contains("(STRUUID"));
+            Assert.Contains("(STRUUID", toString);
 
             String formattedString = new SparqlFormatter().Format(q);
-            Assert.True(formattedString.Contains("(STRUUID"));
+            Assert.Contains("(STRUUID", formattedString);
         }
 
         [Fact]

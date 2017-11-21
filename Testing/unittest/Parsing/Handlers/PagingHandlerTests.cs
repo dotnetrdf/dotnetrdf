@@ -36,7 +36,7 @@ namespace VDS.RDF.Parsing.Handlers
 {
     public partial class PagingHandlerTests
     {
-        public void ParsingUsingPagingHandler(String tempFile, IRdfReader parser)
+        private static void ParsingUsingPagingHandler(String tempFile, IRdfReader parser)
         {
             Graph g = new Graph();
             EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
@@ -77,7 +77,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.Equal(h.Triples.Count, report.RemovedTriples.Count());
         }
 
-        public void ParsingUsingPagingHandler2(String tempFile, IRdfReader parser)
+        private static void ParsingUsingPagingHandler2(String tempFile, IRdfReader parser)
         {
             Graph g = new Graph();
             EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
@@ -91,7 +91,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.True(h.IsEmpty, "Graph should be empty");
         }
 
-        public void ParsingUsingPagingHandler3(String tempFile, IRdfReader parser)
+        private static void ParsingUsingPagingHandler3(String tempFile, IRdfReader parser)
         {
             Graph g = new Graph();
             EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
@@ -111,31 +111,31 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingPagingHandlerNTriples()
         {
-            this.ParsingUsingPagingHandler("paging_handler_tests_temp.nt", new NTriplesParser());
+            ParsingUsingPagingHandler("paging_handler_tests_temp.nt", new NTriplesParser());
         }
 
         [Fact]
         public void ParsingPagingHandlerTurtle()
         {
-            this.ParsingUsingPagingHandler("paging_handler_tests_temp.ttl", new TurtleParser());
+            ParsingUsingPagingHandler("paging_handler_tests_temp.ttl", new TurtleParser());
         }
 
         [Fact]
         public void ParsingPagingHandlerNotation3()
         {
-            this.ParsingUsingPagingHandler("paging_handler_tests_temp.n3", new Notation3Parser());
+            ParsingUsingPagingHandler("paging_handler_tests_temp.n3", new Notation3Parser());
         }
 
         [Fact]
         public void ParsingPagingHandlerRdfA()
         {
-            this.ParsingUsingPagingHandler("paging_handler_tests_temp.html", new RdfAParser());
+            ParsingUsingPagingHandler("paging_handler_tests_temp.html", new RdfAParser());
         }
 
         [Fact]
         public void ParsingPagingHandlerRdfJson()
         {
-            this.ParsingUsingPagingHandler("paging_handler_tests_temp.json", new RdfJsonParser());
+            ParsingUsingPagingHandler("paging_handler_tests_temp.json", new RdfJsonParser());
         }
 
         #endregion
@@ -145,31 +145,31 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingPagingHandlerNTriples2()
         {
-            this.ParsingUsingPagingHandler2("paging_handler_tests_temp.nt", new NTriplesParser());
+            ParsingUsingPagingHandler2("paging_handler_tests_temp.nt", new NTriplesParser());
         }
 
         [Fact]
         public void ParsingPagingHandlerTurtle2()
         {
-            this.ParsingUsingPagingHandler2("paging_handler_tests_temp.ttl", new TurtleParser());
+            ParsingUsingPagingHandler2("paging_handler_tests_temp.ttl", new TurtleParser());
         }
 
         [Fact]
         public void ParsingPagingHandlerNotation3_2()
         {
-            this.ParsingUsingPagingHandler2("paging_handler_tests_temp.n3", new Notation3Parser());
+            ParsingUsingPagingHandler2("paging_handler_tests_temp.n3", new Notation3Parser());
         }
 
         [Fact]
         public void ParsingPagingHandlerRdfA2()
         {
-            this.ParsingUsingPagingHandler2("paging_handler_tests_temp.html", new RdfAParser());
+            ParsingUsingPagingHandler2("paging_handler_tests_temp.html", new RdfAParser());
         }
 
         [Fact]
         public void ParsingPagingHandlerRdfJson2()
         {
-            this.ParsingUsingPagingHandler2("paging_handler_tests_temp.json", new RdfJsonParser());
+            ParsingUsingPagingHandler2("paging_handler_tests_temp.json", new RdfJsonParser());
         }
 
         #endregion
@@ -179,31 +179,31 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingPagingHandlerNTriples3()
         {
-            this.ParsingUsingPagingHandler3("paging_handler_tests_temp.nt", new NTriplesParser());
+            ParsingUsingPagingHandler3("paging_handler_tests_temp.nt", new NTriplesParser());
         }
 
         [Fact]
         public void ParsingPagingHandlerTurtle3()
         {
-            this.ParsingUsingPagingHandler3("paging_handler_tests_temp.ttl", new TurtleParser());
+            ParsingUsingPagingHandler3("paging_handler_tests_temp.ttl", new TurtleParser());
         }
 
         [Fact]
         public void ParsingPagingHandlerNotation3_3()
         {
-            this.ParsingUsingPagingHandler3("paging_handler_tests_temp.n3", new Notation3Parser());
+            ParsingUsingPagingHandler3("paging_handler_tests_temp.n3", new Notation3Parser());
         }
 
         [Fact]
         public void ParsingPagingHandlerRdfA3()
         {
-            this.ParsingUsingPagingHandler3("paging_handler_tests_temp.html", new RdfAParser());
+            ParsingUsingPagingHandler3("paging_handler_tests_temp.html", new RdfAParser());
         }
 
         [Fact]
         public void ParsingPagingHandlerRdfJson3()
         {
-            this.ParsingUsingPagingHandler3("paging_handler_tests_temp.json", new RdfJsonParser());
+            ParsingUsingPagingHandler3("paging_handler_tests_temp.json", new RdfJsonParser());
         }
 
         #endregion

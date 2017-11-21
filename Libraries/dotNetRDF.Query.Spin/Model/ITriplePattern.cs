@@ -34,7 +34,7 @@ namespace VDS.RDF.Query.Spin.Model
      * 
      * @author Holger Knublauch
      */
-    public interface ITriplePattern : IElement, ITriple
+    internal interface ITriplePattern : IElement, ITriple
     {
     }
 }

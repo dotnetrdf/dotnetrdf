@@ -32,7 +32,7 @@ namespace VDS.RDF.Query.Spin.Progress
      *
      * @author Holger Knublauch
      */
-    public interface IRunnableWithProgress
+    internal interface IRunnableWithProgress
     {
 
         /**

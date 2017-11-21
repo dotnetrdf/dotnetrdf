@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordSha512 + "(" + this._expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordSha512 + "(" + _expr.ToString() + ")";
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new Sha512HashFunction(transformer.Transform(this._expr));
+            return new Sha512HashFunction(transformer.Transform(_expr));
         }
     }
 }

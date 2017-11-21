@@ -67,16 +67,16 @@ namespace VDS.RDF.Query.Operators.Numeric
                     case SparqlNumericType.Integer:
                     case SparqlNumericType.Decimal:
                         // For Division Integers are treated as decimals
-                        decimal d = this.Divide(ns.Select(n => n.AsDecimal()));
+                        decimal d = Divide(ns.Select(n => n.AsDecimal()));
                         if (Decimal.Floor(d).Equals(d) && d >= Int64.MinValue && d <= Int64.MaxValue)
                         {
                             return new LongNode(null, Convert.ToInt64(d));
                         }
                         return new DecimalNode(null, d);
                     case SparqlNumericType.Float:
-                        return new FloatNode(null, this.Divide(ns.Select(n => n.AsFloat())));
+                        return new FloatNode(null, Divide(ns.Select(n => n.AsFloat())));
                     case SparqlNumericType.Double:
-                        return new DoubleNode(null, this.Divide(ns.Select(n => n.AsDouble())));
+                        return new DoubleNode(null, Divide(ns.Select(n => n.AsDouble())));
                     default:
                         throw new RdfQueryException("Cannot evalute an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
                 }

@@ -57,7 +57,7 @@ namespace VDS.RDF
             //With everything in a single bucket the keys should be considered
             //equal by the default comparer hence the key count will only be one
             //and retrieving with either 2 gives the value from the second Add()
-            Assert.Equal(1, dictionary.Count);
+            Assert.Single(dictionary);
             Assert.Equal(2, dictionary[alternate]);
             Assert.Equal(2, dictionary[canonical]);
         }
@@ -122,7 +122,7 @@ namespace VDS.RDF
 
             //With the default comparer we expect to see 1 here rather than 2 because
             //the keys are considered equal
-            Assert.Equal(1, tree.Keys.Count());
+            Assert.Single(tree.Keys);
         }
 
         [Fact]
@@ -173,7 +173,7 @@ namespace VDS.RDF
 
             //With the default comparer we expect to see 1 here rather than 2 because
             //the keys are considered equal
-            Assert.Equal(1, tree.Keys.Count());
+            Assert.Single(tree.Keys);
         }
 
         [Fact]

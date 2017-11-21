@@ -44,7 +44,7 @@ namespace VDS.RDF
         /// </summary>
         public bool UseCredentialsForProxy
         {
-            get => _useCredentialsForProxy;
+            get => false;
             set => throw new PlatformNotSupportedException("Web proxies are not supported in the .NET Core build");
         }
 

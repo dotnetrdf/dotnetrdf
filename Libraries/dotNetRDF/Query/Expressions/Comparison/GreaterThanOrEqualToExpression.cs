@@ -53,8 +53,8 @@ namespace VDS.RDF.Query.Expressions.Comparison
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
             IValuedNode a, b;
-            a = this._leftExpr.Evaluate(context, bindingID);
-            b = this._rightExpr.Evaluate(context, bindingID);
+            a = _leftExpr.Evaluate(context, bindingID);
+            b = _rightExpr.Evaluate(context, bindingID);
 
             if (a == null)
             {
@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Expressions.Comparison
                 }
             }
 
-            int compare = this._comparer.Compare(a, b);// a.CompareTo(b);
+            int compare = _comparer.Compare(a, b);// a.CompareTo(b);
             return new BooleanNode(null, compare >= 0);
         }
 
@@ -79,22 +79,22 @@ namespace VDS.RDF.Query.Expressions.Comparison
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            if (this._leftExpr.Type == SparqlExpressionType.BinaryOperator)
+            if (_leftExpr.Type == SparqlExpressionType.BinaryOperator)
             {
-                output.Append("(" + this._leftExpr.ToString() + ")");
+                output.Append("(" + _leftExpr.ToString() + ")");
             }
             else
             {
-                output.Append(this._leftExpr.ToString());
+                output.Append(_leftExpr.ToString());
             }
             output.Append(" >= ");
-            if (this._rightExpr.Type == SparqlExpressionType.BinaryOperator)
+            if (_rightExpr.Type == SparqlExpressionType.BinaryOperator)
             {
-                output.Append("(" + this._rightExpr.ToString() + ")");
+                output.Append("(" + _rightExpr.ToString() + ")");
             }
             else
             {
-                output.Append(this._rightExpr.ToString());
+                output.Append(_rightExpr.ToString());
             }
             return output.ToString();
         }
@@ -128,7 +128,7 @@ namespace VDS.RDF.Query.Expressions.Comparison
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new GreaterThanOrEqualToExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
+            return new GreaterThanOrEqualToExpression(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
         }
     }
 }

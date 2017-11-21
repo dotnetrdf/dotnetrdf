@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Optimisation
                     String var;
                     INode term;
                     bool equals = false;
-                    if (this.IsIdentityExpression(f.SparqlFilter.Expression, out var, out term, out equals))
+                    if (IsIdentityExpression(f.SparqlFilter.Expression, out var, out term, out equals))
                     {
                         try
                         {
@@ -72,11 +72,11 @@ namespace VDS.RDF.Query.Optimisation
                             // Fall back to simpler Identity Filter
                             if (equals)
                             {
-                                return new IdentityFilter(this.Optimise(f.InnerAlgebra), var, new ConstantTerm(term));
+                                return new IdentityFilter(Optimise(f.InnerAlgebra), var, new ConstantTerm(term));
                             }
                             else
                             {
-                                return new SameTermFilter(this.Optimise(f.InnerAlgebra), var, new ConstantTerm(term));
+                                return new SameTermFilter(Optimise(f.InnerAlgebra), var, new ConstantTerm(term));
                             }
                         }
                     }
@@ -138,7 +138,7 @@ namespace VDS.RDF.Query.Optimisation
 
             if (lhs is VariableTerm)
             {
-                if (rhs.GetType().Equals(this._exprType))
+                if (rhs.GetType().Equals(_exprType))
                 {
                     var = lhs.Variables.First();
                     term = rhs.Evaluate(null, 0);
@@ -156,7 +156,7 @@ namespace VDS.RDF.Query.Optimisation
                     return false;
                 }
             }
-            else if (lhs.GetType().Equals(this._exprType))
+            else if (lhs.GetType().Equals(_exprType))
             {
                 if (rhs is VariableTerm)
                 {

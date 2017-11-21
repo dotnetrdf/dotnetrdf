@@ -94,7 +94,7 @@ namespace VDS.RDF.Storage
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Has full support for Stardog Transactions, connection is in auto-commit mode by default i.e. all write operations (Delete/Save/Update) will create and use a dedicated transaction for their operation, if the operation fails the transaction will automatically be rolled back.  You can manage Transactions using the <see cref="StardogConnector.Begin()">Begin()</see>, <see cref="StardogConnector.Commit()">Commit()</see> and <see cref="StardogConnector.Rollback()">Rollback()</see> methods.
+    /// Has full support for Stardog Transactions, connection is in auto-commit mode by default i.e. all write operations (Delete/Save/Update) will create and use a dedicated transaction for their operation, if the operation fails the transaction will automatically be rolled back.  You can manage Transactions using the <see cref="BaseStardogConnector.Begin()">Begin()</see>, <see cref="BaseStardogConnector.Commit()">Commit()</see> and <see cref="BaseStardogConnector.Rollback()">Rollback()</see> methods.
     /// </para>
     /// <para>
     /// The connector maintains a single transaction which is shared across all threads since Stardog is currently provides only MRSW (Multiple Reader Single Writer) concurrency and does not permit multiple transactions to occur simultaneously.  
@@ -107,15 +107,19 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Constant for the default Anonymous user account and password used by Stardog if you have not supplied a shiro.ini file or otherwise disabled security
         /// </summary>
-        public const String AnonymousUser = "anonymous";
+        public const string AnonymousUser = "anonymous";
 
-        protected String _baseUri, _kb, _username, _pwd;
-        protected bool _hasCredentials = false;
-        protected StardogReasoningMode _reasoning = StardogReasoningMode.None;
+        private readonly string _baseUri, _kb, _username, _pwd;
+        private readonly bool _hasCredentials;
+        private StardogReasoningMode _reasoning = StardogReasoningMode.None;
 
-        protected String _activeTrans = null;
-        protected TriGWriter _writer = new TriGWriter();
-        protected BaseStardogServer _server;
+        private string _activeTrans;
+        private readonly TriGWriter _writer = new TriGWriter();
+
+        /// <summary>
+        /// The underlying server connection
+        /// </summary>
+        protected BaseStardogServer Server;
 
         /// <summary>
         /// Creates a new connection to a Stardog Store
@@ -123,7 +127,7 @@ namespace VDS.RDF.Storage
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="reasoning">Reasoning Mode</param>
-        protected BaseStardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning)
+        protected BaseStardogConnector(string baseUri, string kbID, StardogReasoningMode reasoning)
             : this(baseUri, kbID, reasoning, null, null)
         {
         }
@@ -133,7 +137,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        protected BaseStardogConnector(String baseUri, String kbID)
+        protected BaseStardogConnector(string baseUri, string kbID)
             : this(baseUri, kbID, StardogReasoningMode.None)
         {
         }
@@ -145,7 +149,7 @@ namespace VDS.RDF.Storage
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
-        protected BaseStardogConnector(String baseUri, String kbID, String username, String password)
+        protected BaseStardogConnector(string baseUri, string kbID, string username, string password)
             : this(baseUri, kbID, StardogReasoningMode.None, username, password)
         {
         }
@@ -158,25 +162,25 @@ namespace VDS.RDF.Storage
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
         /// <param name="reasoning">Reasoning Mode</param>
-        protected BaseStardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, String username,
-            String password)
+        protected BaseStardogConnector(string baseUri, string kbID, StardogReasoningMode reasoning, string username,
+            string password)
         {
-            this._baseUri = baseUri;
-            if (!this._baseUri.EndsWith("/")) this._baseUri += "/";
-            this._kb = kbID;
-            this._reasoning = reasoning;
+            _baseUri = baseUri;
+            if (!_baseUri.EndsWith("/")) _baseUri += "/";
+            _kb = kbID;
+            _reasoning = reasoning;
 
             // Prep the writer
-            this._writer.HighSpeedModePermitted = true;
-            this._writer.CompressionLevel = WriterCompressionLevel.None;
-            this._writer.UseMultiThreadedWriting = false;
+            _writer.HighSpeedModePermitted = true;
+            _writer.CompressionLevel = WriterCompressionLevel.None;
+            _writer.UseMultiThreadedWriting = false;
 
-            this._username = username;
-            this._pwd = password;
-            this._hasCredentials = (!String.IsNullOrEmpty(username) && !String.IsNullOrEmpty(password));
+            _username = username;
+            _pwd = password;
+            _hasCredentials = (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password));
 
             // Server reference
-            this._server = new StardogV1Server(this._baseUri, this._username, this._pwd);
+            Server = new StardogV1Server(_baseUri, _username, _pwd);
         }
 
         /// <summary>
@@ -186,7 +190,7 @@ namespace VDS.RDF.Storage
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="reasoning">Reasoning Mode</param>
         /// <param name="proxy">Proxy Server</param>
-        protected BaseStardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, IWebProxy proxy)
+        protected BaseStardogConnector(string baseUri, string kbID, StardogReasoningMode reasoning, IWebProxy proxy)
             : this(baseUri, kbID, reasoning, null, null, proxy)
         {
         }
@@ -200,11 +204,11 @@ namespace VDS.RDF.Storage
         /// <param name="password">Password</param>
         /// <param name="reasoning">Reasoning Mode</param>
         /// <param name="proxy">Proxy Server</param>
-        protected BaseStardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, String username,
-            String password, IWebProxy proxy)
+        protected BaseStardogConnector(string baseUri, string kbID, StardogReasoningMode reasoning, string username,
+            string password, IWebProxy proxy)
             : this(baseUri, kbID, reasoning, username, password)
         {
-            this.Proxy = proxy;
+            Proxy = proxy;
         }
 
         /// <summary>
@@ -213,7 +217,7 @@ namespace VDS.RDF.Storage
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="proxy">Proxy Server</param>
-        protected BaseStardogConnector(String baseUri, String kbID, IWebProxy proxy)
+        protected BaseStardogConnector(string baseUri, string kbID, IWebProxy proxy)
             : this(baseUri, kbID, StardogReasoningMode.None, proxy)
         {
         }
@@ -226,7 +230,7 @@ namespace VDS.RDF.Storage
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
         /// <param name="proxy">Proxy Server</param>
-        protected BaseStardogConnector(String baseUri, String kbID, String username, String password, IWebProxy proxy)
+        protected BaseStardogConnector(string baseUri, string kbID, string username, string password, IWebProxy proxy)
             : this(baseUri, kbID, StardogReasoningMode.None, username, password, proxy)
         {
         }
@@ -234,10 +238,12 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Gets the Base URI of the Stardog server
         /// </summary>
-        public String BaseUri
-        {
-            get { return this._baseUri; }
-        }
+        public string BaseUri => _baseUri;
+
+        /// <summary>
+        /// Gets the knowledge base ID being used by this connector
+        /// </summary>
+        public string KbId => _kb;
 
         /// <summary>
         /// Gets/Sets the reasoning mode to use for queries
@@ -245,76 +251,55 @@ namespace VDS.RDF.Storage
         [Description("What reasoning mode (if any) is currently in use for SPARQL Queries")]
         public virtual StardogReasoningMode Reasoning
         {
-            get { return this._reasoning; }
-            set { this._reasoning = value; }
+            get => _reasoning;
+            set => _reasoning = value;
         }
 
         /// <summary>
         /// Gets the IO Behaviour of Stardog
         /// </summary>
-        public override IOBehaviour IOBehaviour
-        {
-            get { return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples; }
-        }
+        public override IOBehaviour IOBehaviour => IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples;
 
         /// <summary>
         /// Returns that listing Graphs is supported
         /// </summary>
-        public override bool ListGraphsSupported
-        {
-            get { return true; }
-        }
+        public override bool ListGraphsSupported => true;
 
         /// <summary>
         /// Returns that the Connection is ready
         /// </summary>
-        public override bool IsReady
-        {
-            get { return true; }
-        }
+        public override bool IsReady => true;
 
         /// <summary>
         /// Returns that the Connection is not read-only
         /// </summary>
-        public override bool IsReadOnly
-        {
-            get { return false; }
-        }
+        public override bool IsReadOnly => false;
 
         /// <summary>
         /// Returns that Updates are supported on Stardog Stores
         /// </summary>
-        public override bool UpdateSupported
-        {
-            get { return true; }
-        }
+        public override bool UpdateSupported => true;
 
         /// <summary>
         /// Returns that deleting graphs from the Stardog store is not yet supported (due to a .Net specific issue)
         /// </summary>
-        public override bool DeleteSupported
-        {
-            get { return true; }
-        }
+        public override bool DeleteSupported => true;
 
         /// <summary>
         /// Gets the parent server
         /// </summary>
-        public override IStorageServer ParentServer
-        {
-            get { return this._server; }
-        }
+        public override IStorageServer ParentServer => Server;
 
         /// <summary>
         /// Makes a SPARQL Query against the underlying Store using whatever reasoning mode is currently in-use
         /// </summary>
         /// <param name="sparqlQuery">Sparql Query</param>
         /// <returns></returns>
-        public virtual object Query(String sparqlQuery)
+        public virtual object Query(string sparqlQuery)
         {
             Graph g = new Graph();
             SparqlResultSet results = new SparqlResultSet();
-            this.Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery);
+            Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery);
 
             if (results.ResultsType != SparqlResultsType.Unknown)
             {
@@ -332,11 +317,11 @@ namespace VDS.RDF.Storage
         /// <param name="sparqlQuery">Sparql Query</param>
         /// <param name="reasoning"></param>
         /// <returns></returns>
-        public virtual object Query(String sparqlQuery, bool reasoning)
+        public virtual object Query(string sparqlQuery, bool reasoning)
         {
             Graph g = new Graph();
             SparqlResultSet results = new SparqlResultSet();
-            this.Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery, reasoning);
+            Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery, reasoning);
 
             if (results.ResultsType != SparqlResultsType.Unknown)
             {
@@ -359,30 +344,30 @@ namespace VDS.RDF.Storage
         /// <param name="resultsHandler">Results Handler</param>
         /// <param name="sparqlQuery">SPARQL Query</param>
         /// <returns></returns>
-        public virtual void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
+        public virtual void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
             try
             {
                 HttpWebRequest request;
 
-                String tID = (this._activeTrans == null) ? String.Empty : "/" + this._activeTrans;
+                string tID = (_activeTrans == null) ? string.Empty : "/" + _activeTrans;
 
                 // String accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
-                String accept =
+                string accept =
                     MimeTypesHelper.CustomHttpAcceptHeader(
                         MimeTypesHelper.SparqlResultsXml.Concat(
                             MimeTypesHelper.Definitions.Where(d => d.CanParseRdf).SelectMany(d => d.MimeTypes)));
 
                 // Create the Request
-                Dictionary<String, String> queryParams = new Dictionary<string, string>();
+                Dictionary<string, string> queryParams = new Dictionary<string, string>();
                 if (sparqlQuery.Length < 2048)
                 {
                     queryParams.Add("query", sparqlQuery);
-                    request = this.CreateRequest(this._kb + tID + "/query", accept, "GET", queryParams);
+                    request = CreateRequest(_kb + tID + "/query", accept, "GET", queryParams);
                 }
                 else
                 {
-                    request = this.CreateRequest(this._kb + tID + "/query", accept, "POST", queryParams);
+                    request = CreateRequest(_kb + tID + "/query", accept, "POST", queryParams);
 
                     // Build the Post Data and add to the Request Body
                     request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
@@ -404,7 +389,7 @@ namespace VDS.RDF.Storage
                     Tools.HttpDebugResponse(response);
 
                     StreamReader data = new StreamReader(response.GetResponseStream());
-                    String ctype = response.ContentType;
+                    string ctype = response.ContentType;
                     try
                     {
                         // Is the Content Type referring to a Sparql Result Set format?
@@ -439,32 +424,32 @@ namespace VDS.RDF.Storage
         /// <param name="sparqlQuery">SPARQL Query</param>
         /// <param name="reasoning"></param>
         /// <returns></returns>
-        public virtual void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery, bool reasoning)
+        public virtual void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery, bool reasoning)
         {
             try
             {
                 HttpWebRequest request;
 
-                String tID = (this._activeTrans == null) ? String.Empty : "/" + this._activeTrans;
+                string tID = (_activeTrans == null) ? string.Empty : "/" + _activeTrans;
 
                 // String accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
-                String accept =
+                string accept =
                     MimeTypesHelper.CustomHttpAcceptHeader(
                         MimeTypesHelper.SparqlResultsXml.Concat(
                             MimeTypesHelper.Definitions.Where(d => d.CanParseRdf).SelectMany(d => d.MimeTypes)));
 
                 // Create the Request
-                Dictionary<String, String> queryParams = new Dictionary<string, string>();
+                Dictionary<string, string> queryParams = new Dictionary<string, string>();
                 if (sparqlQuery.Length < 2048)
                 {
                     queryParams.Add("query", sparqlQuery);
                     queryParams.Add("reasoning", reasoning.ToString());
 
-                    request = this.CreateRequest(this._kb + tID + "/query", accept, "GET", queryParams);
+                    request = CreateRequest(_kb + tID + "/query", accept, "GET", queryParams);
                 }
                 else
                 {
-                    request = this.CreateRequest(this._kb + tID + "/query", accept, "POST", queryParams);
+                    request = CreateRequest(_kb + tID + "/query", accept, "POST", queryParams);
 
                     // Build the Post Data and add to the Request Body
                     request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
@@ -491,7 +476,7 @@ namespace VDS.RDF.Storage
                     Tools.HttpDebugResponse(response);
 
                     StreamReader data = new StreamReader(response.GetResponseStream());
-                    String ctype = response.ContentType;
+                    string ctype = response.ContentType;
                     try
                     {
                         // Is the Content Type referring to a Sparql Result Set format?
@@ -527,7 +512,7 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public virtual void LoadGraph(IGraph g, Uri graphUri)
         {
-            this.LoadGraph(g, graphUri.ToSafeString());
+            LoadGraph(g, graphUri.ToSafeString());
         }
 
         /// <summary>
@@ -540,7 +525,7 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public virtual void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
-            this.LoadGraph(handler, graphUri.ToSafeString());
+            LoadGraph(handler, graphUri.ToSafeString());
         }
 
         /// <summary>
@@ -551,13 +536,13 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// If an empty/null Uri is specified then the Default Graph of the Store will be loaded
         /// </remarks>
-        public virtual void LoadGraph(IGraph g, String graphUri)
+        public virtual void LoadGraph(IGraph g, string graphUri)
         {
-            if (g.IsEmpty && graphUri != null && !graphUri.Equals(String.Empty))
+            if (g.IsEmpty && graphUri != null && !graphUri.Equals(string.Empty))
             {
                 g.BaseUri = UriFactory.Create(graphUri);
             }
-            this.LoadGraph(new GraphHandler(g), graphUri);
+            LoadGraph(new GraphHandler(g), graphUri);
         }
 
         /// <summary>
@@ -568,17 +553,17 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// If an empty/null URI is specified then the Default Graph of the Store will be loaded
         /// </remarks>
-        public virtual void LoadGraph(IRdfHandler handler, String graphUri)
+        public virtual void LoadGraph(IRdfHandler handler, string graphUri)
         {
             try
             {
                 HttpWebRequest request;
-                Dictionary<String, String> serviceParams = new Dictionary<string, string>();
+                Dictionary<string, string> serviceParams = new Dictionary<string, string>();
 
-                String tID = (this._activeTrans == null) ? String.Empty : "/" + this._activeTrans;
-                String requestUri = this._kb + tID + "/query";
+                string tID = (_activeTrans == null) ? string.Empty : "/" + _activeTrans;
+                string requestUri = _kb + tID + "/query";
                 SparqlParameterizedString construct = new SparqlParameterizedString();
-                if (!graphUri.Equals(String.Empty))
+                if (!graphUri.Equals(string.Empty))
                 {
                     construct.CommandText = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH @graph { ?s ?p ?o } }";
                     construct.SetUri("graph", UriFactory.Create(graphUri));
@@ -589,7 +574,7 @@ namespace VDS.RDF.Storage
                 }
                 serviceParams.Add("query", construct.ToString());
 
-                request = this.CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, "GET", serviceParams);
+                request = CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, "GET", serviceParams);
 
                 Tools.HttpDebugRequest(request);
 
@@ -614,12 +599,12 @@ namespace VDS.RDF.Storage
         /// <param name="g">Graph to save</param>
         /// <remarks>
         /// <para>
-        /// If the Graph has no URI then the contents will be appended to the Store's Default Graph.  If the Graph has a URI then existing Graph associated with that URI will be replaced.  To append to a named Graph use the <see cref="StardogConnector.UpdateGraph(Uri,System.Collections.Generic.IEnumerable{VDS.RDF.Triple},IEnumerable{Triple})">UpdateGraph()</see> method instead
+        /// If the Graph has no URI then the contents will be appended to the Store's Default Graph.  If the Graph has a URI then existing Graph associated with that URI will be replaced.  To append to a named Graph use the <see cref="BaseStardogConnector.UpdateGraph(Uri,System.Collections.Generic.IEnumerable{VDS.RDF.Triple},IEnumerable{Triple})">UpdateGraph()</see> method instead
         /// </para>
         /// </remarks>
         public virtual void SaveGraph(IGraph g)
         {
-            String tID = null;
+            string tID = null;
             try
             {
                 // Have to do the delete first as that requires a separate transaction
@@ -627,7 +612,7 @@ namespace VDS.RDF.Storage
                 {
                     try
                     {
-                        this.DeleteGraph(g.BaseUri);
+                        DeleteGraph(g.BaseUri);
                     }
                     catch (Exception ex)
                     {
@@ -638,16 +623,16 @@ namespace VDS.RDF.Storage
                 }
 
                 // Get a Transaction ID, if there is no active Transaction then this operation will be auto-committed
-                tID = this._activeTrans ?? this.BeginTransaction();
+                tID = _activeTrans ?? BeginTransaction();
 
-                HttpWebRequest request = this.CreateRequest(this._kb + "/" + tID + "/add", MimeTypesHelper.Any, "POST",
+                HttpWebRequest request = CreateRequest(_kb + "/" + tID + "/add", MimeTypesHelper.Any, "POST",
                     new Dictionary<string, string>());
                 request.ContentType = MimeTypesHelper.TriG[0];
 
                 // Save the Data as TriG to the Request Stream
                 TripleStore store = new TripleStore();
                 store.Add(g);
-                this._writer.Save(store, new StreamWriter(request.GetRequestStream()));
+                _writer.Save(store, new StreamWriter(request.GetRequestStream()));
 
                 Tools.HttpDebugRequest(request);
 
@@ -659,10 +644,10 @@ namespace VDS.RDF.Storage
                 }
 
                 // Commit Transaction only if in auto-commit mode (active transaction will be null)
-                if (this._activeTrans != null) return;
+                if (_activeTrans != null) return;
                 try
                 {
-                    this.CommitTransaction(tID);
+                    CommitTransaction(tID);
                 }
                 catch (Exception ex)
                 {
@@ -675,11 +660,11 @@ namespace VDS.RDF.Storage
                 // and in auto-commit mode
                 if (tID != null)
                 {
-                    if (this._activeTrans == null)
+                    if (_activeTrans == null)
                     {
                         try
                         {
-                            this.RollbackTransaction(tID);
+                            RollbackTransaction(tID);
                         }
                         catch (Exception ex)
                         {
@@ -708,18 +693,18 @@ namespace VDS.RDF.Storage
             bool anyData = (removals != null && removals.Any()) || (additions != null && additions.Any());
             if (!anyData) return;
 
-            String tID = null;
+            string tID = null;
             try
             {
                 // Get a Transaction ID, if there is no active Transaction then this operation will be auto-committed
-                tID = this._activeTrans ?? this.BeginTransaction();
+                tID = _activeTrans ?? BeginTransaction();
 
                 // First do the Removals
                 if (removals != null)
                 {
                     if (removals.Any())
                     {
-                        HttpWebRequest request = this.CreateRequest(this._kb + "/" + tID + "/remove",
+                        HttpWebRequest request = CreateRequest(_kb + "/" + tID + "/remove",
                             MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
                         request.ContentType = MimeTypesHelper.TriG[0];
 
@@ -729,7 +714,7 @@ namespace VDS.RDF.Storage
                         g.Assert(removals);
                         g.BaseUri = graphUri;
                         store.Add(g);
-                        this._writer.Save(store, new StreamWriter(request.GetRequestStream()));
+                        _writer.Save(store, new StreamWriter(request.GetRequestStream()));
 
                         using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
                         {
@@ -743,7 +728,7 @@ namespace VDS.RDF.Storage
                 {
                     if (additions.Any())
                     {
-                        HttpWebRequest request = this.CreateRequest(this._kb + "/" + tID + "/add", MimeTypesHelper.Any,
+                        HttpWebRequest request = CreateRequest(_kb + "/" + tID + "/add", MimeTypesHelper.Any,
                             "POST", new Dictionary<string, string>());
                         request.ContentType = MimeTypesHelper.TriG[0];
 
@@ -753,7 +738,7 @@ namespace VDS.RDF.Storage
                         g.Assert(additions);
                         g.BaseUri = graphUri;
                         store.Add(g);
-                        this._writer.Save(store, new StreamWriter(request.GetRequestStream()));
+                        _writer.Save(store, new StreamWriter(request.GetRequestStream()));
 
                         using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
                         {
@@ -763,10 +748,10 @@ namespace VDS.RDF.Storage
                 }
 
                 // Commit Transaction only if in auto-commit mode (active transaction will be null)
-                if (this._activeTrans != null) return;
+                if (_activeTrans != null) return;
                 try
                 {
-                    this.CommitTransaction(tID);
+                    CommitTransaction(tID);
                 }
                 catch (Exception ex)
                 {
@@ -779,11 +764,11 @@ namespace VDS.RDF.Storage
                 // and in auto-commit mode
                 if (tID != null)
                 {
-                    if (this._activeTrans == null)
+                    if (_activeTrans == null)
                     {
                         try
                         {
-                            this.RollbackTransaction(tID);
+                            RollbackTransaction(tID);
                         }
                         catch (Exception ex)
                         {
@@ -803,15 +788,15 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Uri of the Graph to update</param>
         /// <param name="additions">Triples to be added</param>
         /// <param name="removals">Triples to be removed</param>
-        public virtual void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public virtual void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            if (graphUri == null || graphUri.Equals(String.Empty))
+            if (graphUri == null || graphUri.Equals(string.Empty))
             {
-                this.UpdateGraph((Uri) null, additions, removals);
+                UpdateGraph((Uri) null, additions, removals);
             }
             else
             {
-                this.UpdateGraph(UriFactory.Create(graphUri), additions, removals);
+                UpdateGraph(UriFactory.Create(graphUri), additions, removals);
             }
         }
 
@@ -821,30 +806,30 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to delete</param>
         public virtual void DeleteGraph(Uri graphUri)
         {
-            this.DeleteGraph(graphUri.ToSafeString());
+            DeleteGraph(graphUri.ToSafeString());
         }
 
         /// <summary>
         /// Deletes a Graph from the Stardog store
         /// </summary>
         /// <param name="graphUri">URI of the Graph to delete</param>
-        public virtual void DeleteGraph(String graphUri)
+        public virtual void DeleteGraph(string graphUri)
         {
-            String tID = null;
+            string tID = null;
             try
             {
                 // Get a Transaction ID, if there is no active Transaction then this operation will be auto-committed
-                tID = this._activeTrans ?? this.BeginTransaction();
+                tID = _activeTrans ?? BeginTransaction();
 
-                HttpWebRequest request = this.CreateRequest(
-                    this._kb + "/" + tID + "/clear/",
+                var request = CreateRequest(
+                    _kb + "/" + tID + "/clear/",
                     MimeTypesHelper.Any,
                     "POST",
-                    new Dictionary<string, string>()
+                    new Dictionary<string, string>
                     {
-                        {"graph-uri", graphUri.Equals(String.Empty) ? "DEFAULT" : graphUri}
+                        {"graph-uri", graphUri.Equals(string.Empty) ? "DEFAULT" : graphUri},
                     }
-                    );
+                );
 
                 request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
 
@@ -858,10 +843,10 @@ namespace VDS.RDF.Storage
                 }
 
                 // Commit Transaction only if in auto-commit mode (active transaction will be null)
-                if (this._activeTrans != null) return;
+                if (_activeTrans != null) return;
                 try
                 {
-                    this.CommitTransaction(tID);
+                    CommitTransaction(tID);
                 }
                 catch (Exception ex)
                 {
@@ -874,11 +859,11 @@ namespace VDS.RDF.Storage
                 // and in auto-commit mode
                 if (tID != null)
                 {
-                    if (this._activeTrans == null)
+                    if (_activeTrans == null)
                     {
                         try
                         {
-                            this.RollbackTransaction(tID);
+                            RollbackTransaction(tID);
                         }
                         catch (Exception ex)
                         {
@@ -900,7 +885,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                Object results = this.Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
+                object results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
                 if (results is SparqlResultSet)
                 {
                     List<Uri> graphs = new List<Uri>();
@@ -931,10 +916,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Gets the parent server
         /// </summary>
-        public override IAsyncStorageServer AsyncParentServer
-        {
-            get { return this._server; }
-        }
+        public override IAsyncStorageServer AsyncParentServer => Server;
 
         /// <summary>
         /// Saves a Graph to the Store asynchronously
@@ -944,30 +926,36 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback</param>
         public override void SaveGraph(IGraph g, AsyncStorageCallback callback, object state)
         {
-            this.SaveGraphAsync(g, callback, state);
+            SaveGraphAsync(g, callback, state);
         }
 
-        protected virtual void SaveGraphAsync(IGraph g, AsyncStorageCallback callback, Object state)
+        /// <summary>
+        /// Saves a Graph to the Store asynchronously
+        /// </summary>
+        /// <param name="g">Graph to save</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        protected virtual void SaveGraphAsync(IGraph g, AsyncStorageCallback callback, object state)
         {
             // Get a Transaction ID, if there is no active Transaction then this operation will start a new transaction and be auto-committed
-            if (this._activeTrans != null)
+            if (_activeTrans != null)
             {
-                this.SaveGraphAsync(this._activeTrans, false, g, callback, state);
+                SaveGraphAsync(_activeTrans, false, g, callback, state);
             }
             else
             {
-                this.Begin((sender, args, st) =>
+                Begin((sender, args, st) =>
                 {
                     if (args.WasSuccessful)
                     {
                         // Have to do the delete first as that requires a separate transaction
                         if (g.BaseUri != null)
                         {
-                            this.DeleteGraph(g.BaseUri, (_1, delArgs, _2) =>
+                            DeleteGraph(g.BaseUri, (_1, delArgs, _2) =>
                             {
                                 if (delArgs.WasSuccessful)
                                 {
-                                    this.SaveGraphAsync(this._activeTrans, true, g, callback, state);
+                                    SaveGraphAsync(_activeTrans, true, g, callback, state);
                                 }
                                 else
                                 {
@@ -981,7 +969,7 @@ namespace VDS.RDF.Storage
                         }
                         else
                         {
-                            this.SaveGraphAsync(this._activeTrans, true, g, callback, state);
+                            SaveGraphAsync(_activeTrans, true, g, callback, state);
                         }
                     }
                     else
@@ -993,12 +981,20 @@ namespace VDS.RDF.Storage
             }
         }
 
-        protected virtual void SaveGraphAsync(String tID, bool autoCommit, IGraph g, AsyncStorageCallback callback,
-            Object state)
+        /// <summary>
+        /// Save a graph to the database asynchronously within the context of an open transaction
+        /// </summary>
+        /// <param name="tID">The ID of the transaction to use for the update</param>
+        /// <param name="autoCommit">True to commit the transaction on completion</param>
+        /// <param name="g">The graph to write</param>
+        /// <param name="callback">Callback invoked on completion</param>
+        /// <param name="state">State parameter to pass to the callback</param>
+        protected virtual void SaveGraphAsync(string tID, bool autoCommit, IGraph g, AsyncStorageCallback callback,
+            object state)
         {
             try
             {
-                HttpWebRequest request = this.CreateRequest(this._kb + "/" + tID + "/add", MimeTypesHelper.Any, "POST",
+                HttpWebRequest request = CreateRequest(_kb + "/" + tID + "/add", MimeTypesHelper.Any, "POST",
                     new Dictionary<string, string>());
                 request.ContentType = MimeTypesHelper.TriG[0];
 
@@ -1007,17 +1003,17 @@ namespace VDS.RDF.Storage
                     try
                     {
                         // Save the Data as TriG to the Request Stream
-                        Stream stream = request.EndGetRequestStream(r);
-                        TripleStore store = new TripleStore();
+                        var stream = request.EndGetRequestStream(r);
+                        var store = new TripleStore();
                         store.Add(g);
-                        this._writer.Save(store, new StreamWriter(stream));
+                        _writer.Save(store, new StreamWriter(stream));
 
                         Tools.HttpDebugRequest(request);
                         request.BeginGetResponse(r2 =>
                         {
                             try
                             {
-                                HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(r2);
+                                var response = (HttpWebResponse) request.EndGetResponse(r2);
                                 Tools.HttpDebugResponse(response);
 
                                 // If we get here then it was OK
@@ -1026,7 +1022,7 @@ namespace VDS.RDF.Storage
                                 // Commit Transaction only if in auto-commit mode (active transaction will be null)
                                 if (autoCommit)
                                 {
-                                    this.Commit((sender, args, st) =>
+                                    Commit((sender, args, st) =>
                                     {
                                         if (args.WasSuccessful)
                                         {
@@ -1052,7 +1048,7 @@ namespace VDS.RDF.Storage
                                 if (autoCommit)
                                 {
                                     // If something went wrong try to rollback, don't care what the rollback response is
-                                    this.Rollback((sender, args, st) => { }, state);
+                                    Rollback((sender, args, st) => { }, state);
                                 }
                                 callback(this,
                                     new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph,
@@ -1063,7 +1059,7 @@ namespace VDS.RDF.Storage
                                 if (autoCommit)
                                 {
                                     // If something went wrong try to rollback, don't care what the rollback response is
-                                    this.Rollback((sender, args, st) => { }, state);
+                                    Rollback((sender, args, st) => { }, state);
                                 }
                                 callback(this,
                                     new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph,
@@ -1076,7 +1072,7 @@ namespace VDS.RDF.Storage
                         if (autoCommit)
                         {
                             // If something went wrong try to rollback, don't care what the rollback response is
-                            this.Rollback((sender, args, st) => { }, state);
+                            Rollback((sender, args, st) => { }, state);
                         }
                         callback(this,
                             new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph,
@@ -1087,7 +1083,7 @@ namespace VDS.RDF.Storage
                         if (autoCommit)
                         {
                             // If something went wrong try to rollback, don't care what the rollback response is
-                            this.Rollback((sender, args, st) => { }, state);
+                            Rollback((sender, args, st) => { }, state);
                         }
                         callback(this,
                             new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph,
@@ -1100,7 +1096,7 @@ namespace VDS.RDF.Storage
                 if (autoCommit)
                 {
                     // If something went wrong try to rollback, don't care what the rollback response is
-                    this.Rollback((sender, args, st) => { }, state);
+                    Rollback((sender, args, st) => { }, state);
                 }
                 callback(this,
                     new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph,
@@ -1111,7 +1107,7 @@ namespace VDS.RDF.Storage
                 if (autoCommit)
                 {
                     // If something went wrong try to rollback, don't care what the rollback response is
-                    this.Rollback((sender, args, st) => { }, state);
+                    Rollback((sender, args, st) => { }, state);
                 }
                 callback(this,
                     new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph,
@@ -1131,12 +1127,12 @@ namespace VDS.RDF.Storage
             try
             {
                 HttpWebRequest request;
-                Dictionary<String, String> serviceParams = new Dictionary<string, string>();
+                Dictionary<string, string> serviceParams = new Dictionary<string, string>();
 
-                String tID = (this._activeTrans == null) ? String.Empty : "/" + this._activeTrans;
-                String requestUri = this._kb + tID + "/query";
+                string tID = (_activeTrans == null) ? string.Empty : "/" + _activeTrans;
+                string requestUri = _kb + tID + "/query";
                 SparqlParameterizedString construct = new SparqlParameterizedString();
-                if (!graphUri.Equals(String.Empty))
+                if (!graphUri.Equals(string.Empty))
                 {
                     construct.CommandText = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH @graph { ?s ?p ?o } }";
                     construct.SetUri("graph", UriFactory.Create(graphUri));
@@ -1147,7 +1143,7 @@ namespace VDS.RDF.Storage
                 }
                 serviceParams.Add("query", construct.ToString());
 
-                request = this.CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, "GET", serviceParams);
+                request = CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, "GET", serviceParams);
 
                 Tools.HttpDebugRequest(request);
 
@@ -1205,8 +1201,7 @@ namespace VDS.RDF.Storage
             AsyncStorageCallback callback, object state)
         {
             // If there are no adds or deletes, just callback and avoid creating empty transaction
-            bool anyData = false;
-            if (removals != null && removals.Any()) anyData = true;
+            bool anyData = removals != null && removals.Any();
             if (additions != null && additions.Any()) anyData = true;
             if (!anyData)
             {
@@ -1215,25 +1210,35 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                this.UpdateGraphAsync(graphUri, additions, removals, callback, state);
+                UpdateGraphAsync(graphUri, additions, removals, callback, state);
             }
         }
 
+        /// <summary>
+        /// Apply an update to a graph
+        /// </summary>
+        /// <param name="graphUri">The URI of the graph to be updated</param>
+        /// <param name="additions">The triples to insert</param>
+        /// <param name="removals">The triples to delete</param>
+        /// <param name="callback">Callback invoked on completion</param>
+        /// <param name="state">Additional state passed to the callback</param>
+        /// <remarks>If a transaction is currently in progress, the update is applied
+        /// as part of that transaction. Otherwise a new transaction is started and committed by this method.</remarks>
         protected virtual void UpdateGraphAsync(string graphUri, IEnumerable<Triple> additions,
-            IEnumerable<Triple> removals, AsyncStorageCallback callback, Object state)
+            IEnumerable<Triple> removals, AsyncStorageCallback callback, object state)
         {
             // Get a Transaction ID, if there is no active Transaction then this operation will start a new transaction and be auto-committed
-            if (this._activeTrans != null)
+            if (_activeTrans != null)
             {
-                this.UpdateGraphAsync(this._activeTrans, false, graphUri, additions, removals, callback, state);
+                UpdateGraphAsync(_activeTrans, false, graphUri, additions, removals, callback, state);
             }
             else
             {
-                this.Begin((sender, args, st) =>
+                Begin((sender, args, st) =>
                 {
                     if (args.WasSuccessful)
                     {
-                        this.UpdateGraphAsync(this._activeTrans, true, graphUri, additions, removals, callback, state);
+                        UpdateGraphAsync(_activeTrans, true, graphUri, additions, removals, callback, state);
                     }
                     else
                     {
@@ -1245,14 +1250,24 @@ namespace VDS.RDF.Storage
             }
         }
 
-        protected virtual void UpdateGraphAsync(String tID, bool autoCommit, String graphUri,
-            IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, Object state)
+        /// <summary>
+        /// Apply an update to a graph as part of a transaction
+        /// </summary>
+        /// <param name="tID">The ID of the open transaction to use</param>
+        /// <param name="autoCommit">True to commit the transaction at the end of the update, false otherwise</param>
+        /// <param name="graphUri">The URI of the graph to be updated</param>
+        /// <param name="additions">The triples to inser</param>
+        /// <param name="removals">The triples to remove</param>
+        /// <param name="callback">A callback to be invoked on completion</param>
+        /// <param name="state">Additional state to pass to the callback</param>
+        protected virtual void UpdateGraphAsync(string tID, bool autoCommit, string graphUri,
+            IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state)
         {
             try
             {
                 if (removals != null && removals.Any())
                 {
-                    HttpWebRequest request = this.CreateRequest(this._kb + "/" + tID + "/remove", MimeTypesHelper.Any,
+                    HttpWebRequest request = CreateRequest(_kb + "/" + tID + "/remove", MimeTypesHelper.Any,
                         "POST", new Dictionary<string, string>());
                     request.ContentType = MimeTypesHelper.TriG[0];
 
@@ -1261,13 +1276,12 @@ namespace VDS.RDF.Storage
                         try
                         {
                             // Save the Data as TriG to the Request Stream
-                            Stream stream = request.EndGetRequestStream(r);
-                            TripleStore store = new TripleStore();
-                            Graph g = new Graph();
-                            g.BaseUri = graphUri.ToSafeUri();
+                            var stream = request.EndGetRequestStream(r);
+                            var store = new TripleStore();
+                            var g = new Graph {BaseUri = graphUri.ToSafeUri()};
                             g.Assert(removals);
                             store.Add(g);
-                            this._writer.Save(store, new StreamWriter(stream));
+                            _writer.Save(store, new StreamWriter(stream));
 
                             Tools.HttpDebugRequest(request);
                             request.BeginGetResponse(r2 =>
@@ -1283,7 +1297,7 @@ namespace VDS.RDF.Storage
                                     if (additions != null && additions.Any())
                                     {
                                         // Now we need to do additions
-                                        request = this.CreateRequest(this._kb + "/" + tID + "/add", MimeTypesHelper.Any,
+                                        request = CreateRequest(_kb + "/" + tID + "/add", MimeTypesHelper.Any,
                                             "POST", new Dictionary<string, string>());
                                         request.ContentType = MimeTypesHelper.TriG[0];
 
@@ -1294,11 +1308,10 @@ namespace VDS.RDF.Storage
                                                 // Save the Data as TriG to the Request Stream
                                                 stream = request.EndGetRequestStream(r3);
                                                 store = new TripleStore();
-                                                g = new Graph();
-                                                g.BaseUri = graphUri.ToSafeUri();
+                                                g = new Graph {BaseUri = graphUri.ToSafeUri()};
                                                 g.Assert(additions);
                                                 store.Add(g);
-                                                this._writer.Save(store, new StreamWriter(stream));
+                                                _writer.Save(store, new StreamWriter(stream));
 
                                                 Tools.HttpDebugRequest(request);
 
@@ -1315,7 +1328,7 @@ namespace VDS.RDF.Storage
                                                         // Commit Transaction only if in auto-commit mode (active transaction will be null)
                                                         if (autoCommit)
                                                         {
-                                                            this.Commit((sender, args, st) =>
+                                                            Commit((sender, args, st) =>
                                                             {
                                                                 if (args.WasSuccessful)
                                                                 {
@@ -1346,7 +1359,7 @@ namespace VDS.RDF.Storage
                                                         if (autoCommit)
                                                         {
                                                             // If something went wrong try to rollback, don't care what the rollback response is
-                                                            this.Rollback((sender, args, st) => { }, state);
+                                                            Rollback((sender, args, st) => { }, state);
                                                         }
                                                         callback(this,
                                                             new AsyncStorageCallbackArgs(
@@ -1359,7 +1372,7 @@ namespace VDS.RDF.Storage
                                                         if (autoCommit)
                                                         {
                                                             // If something went wrong try to rollback, don't care what the rollback response is
-                                                            this.Rollback((sender, args, st) => { }, state);
+                                                            Rollback((sender, args, st) => { }, state);
                                                         }
                                                         callback(this,
                                                             new AsyncStorageCallbackArgs(
@@ -1374,7 +1387,7 @@ namespace VDS.RDF.Storage
                                                 if (autoCommit)
                                                 {
                                                     // If something went wrong try to rollback, don't care what the rollback response is
-                                                    this.Rollback((sender, args, st) => { }, state);
+                                                    Rollback((sender, args, st) => { }, state);
                                                 }
                                                 callback(this,
                                                     new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph,
@@ -1386,7 +1399,7 @@ namespace VDS.RDF.Storage
                                                 if (autoCommit)
                                                 {
                                                     // If something went wrong try to rollback, don't care what the rollback response is
-                                                    this.Rollback((sender, args, st) => { }, state);
+                                                    Rollback((sender, args, st) => { }, state);
                                                 }
                                                 callback(this,
                                                     new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph,
@@ -1401,7 +1414,7 @@ namespace VDS.RDF.Storage
                                         // Commit Transaction only if in auto-commit mode (active transaction will be null)
                                         if (autoCommit)
                                         {
-                                            this.Commit((sender, args, st) =>
+                                            Commit((sender, args, st) =>
                                             {
                                                 if (args.WasSuccessful)
                                                 {
@@ -1430,7 +1443,7 @@ namespace VDS.RDF.Storage
                                     if (autoCommit)
                                     {
                                         // If something went wrong try to rollback, don't care what the rollback response is
-                                        this.Rollback((sender, args, st) => { }, state);
+                                        Rollback((sender, args, st) => { }, state);
                                     }
                                     callback(this,
                                         new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph,
@@ -1442,7 +1455,7 @@ namespace VDS.RDF.Storage
                                     if (autoCommit)
                                     {
                                         // If something went wrong try to rollback, don't care what the rollback response is
-                                        this.Rollback((sender, args, st) => { }, state);
+                                        Rollback((sender, args, st) => { }, state);
                                     }
                                     callback(this,
                                         new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph,
@@ -1455,7 +1468,7 @@ namespace VDS.RDF.Storage
                             if (autoCommit)
                             {
                                 // If something went wrong try to rollback, don't care what the rollback response is
-                                this.Rollback((sender, args, st) => { }, state);
+                                Rollback((sender, args, st) => { }, state);
                             }
                             callback(this,
                                 new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph,
@@ -1466,7 +1479,7 @@ namespace VDS.RDF.Storage
                             if (autoCommit)
                             {
                                 // If something went wrong try to rollback, don't care what the rollback response is
-                                this.Rollback((sender, args, st) => { }, state);
+                                Rollback((sender, args, st) => { }, state);
                             }
                             callback(this,
                                 new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph,
@@ -1476,7 +1489,7 @@ namespace VDS.RDF.Storage
                 }
                 else if (additions != null && additions.Any())
                 {
-                    HttpWebRequest request = this.CreateRequest(this._kb + "/" + tID + "/add", MimeTypesHelper.Any,
+                    HttpWebRequest request = CreateRequest(_kb + "/" + tID + "/add", MimeTypesHelper.Any,
                         "POST", new Dictionary<string, string>());
                     request.ContentType = MimeTypesHelper.TriG[0];
 
@@ -1491,7 +1504,7 @@ namespace VDS.RDF.Storage
                             g.Assert(additions);
                             g.BaseUri = graphUri.ToSafeUri();
                             store.Add(g);
-                            this._writer.Save(store, new StreamWriter(stream));
+                            _writer.Save(store, new StreamWriter(stream));
 
                             Tools.HttpDebugRequest(request);
 
@@ -1508,7 +1521,7 @@ namespace VDS.RDF.Storage
                                     // Commit Transaction only if in auto-commit mode (active transaction will be null)
                                     if (autoCommit)
                                     {
-                                        this.Commit((sender, args, st) =>
+                                        Commit((sender, args, st) =>
                                         {
                                             if (args.WasSuccessful)
                                             {
@@ -1536,7 +1549,7 @@ namespace VDS.RDF.Storage
                                     if (autoCommit)
                                     {
                                         // If something went wrong try to rollback, don't care what the rollback response is
-                                        this.Rollback((sender, args, st) => { }, state);
+                                        Rollback((sender, args, st) => { }, state);
                                     }
                                     callback(this,
                                         new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph,
@@ -1548,7 +1561,7 @@ namespace VDS.RDF.Storage
                                     if (autoCommit)
                                     {
                                         // If something went wrong try to rollback, don't care what the rollback response is
-                                        this.Rollback((sender, args, st) => { }, state);
+                                        Rollback((sender, args, st) => { }, state);
                                     }
                                     callback(this,
                                         new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph,
@@ -1561,7 +1574,7 @@ namespace VDS.RDF.Storage
                             if (autoCommit)
                             {
                                 // If something went wrong try to rollback, don't care what the rollback response is
-                                this.Rollback((sender, args, st) => { }, state);
+                                Rollback((sender, args, st) => { }, state);
                             }
                             callback(this,
                                 new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph,
@@ -1572,7 +1585,7 @@ namespace VDS.RDF.Storage
                             if (autoCommit)
                             {
                                 // If something went wrong try to rollback, don't care what the rollback response is
-                                this.Rollback((sender, args, st) => { }, state);
+                                Rollback((sender, args, st) => { }, state);
                             }
                             callback(this,
                                 new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph,
@@ -1592,7 +1605,7 @@ namespace VDS.RDF.Storage
                 if (autoCommit)
                 {
                     // If something went wrong try to rollback, don't care what the rollback response is
-                    this.Rollback((sender, args, st) => { }, state);
+                    Rollback((sender, args, st) => { }, state);
                 }
                 callback(this,
                     new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph,
@@ -1603,7 +1616,7 @@ namespace VDS.RDF.Storage
                 if (autoCommit)
                 {
                     // If something went wrong try to rollback, don't care what the rollback response is
-                    this.Rollback((sender, args, st) => { }, state);
+                    Rollback((sender, args, st) => { }, state);
                 }
                 callback(this,
                     new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph,
@@ -1620,17 +1633,17 @@ namespace VDS.RDF.Storage
         public override void DeleteGraph(string graphUri, AsyncStorageCallback callback, object state)
         {
             // Get a Transaction ID, if there is no active Transaction then this operation will start a new transaction and be auto-committed
-            if (this._activeTrans != null)
+            if (_activeTrans != null)
             {
-                this.DeleteGraphAsync(this._activeTrans, false, graphUri, callback, state);
+                DeleteGraphAsync(_activeTrans, false, graphUri, callback, state);
             }
             else
             {
-                this.Begin((sender, args, st) =>
+                Begin((sender, args, st) =>
                 {
                     if (args.WasSuccessful)
                     {
-                        this.DeleteGraphAsync(this._activeTrans, true, graphUri, callback, state);
+                        DeleteGraphAsync(_activeTrans, true, graphUri, callback, state);
                     }
                     else
                     {
@@ -1642,20 +1655,28 @@ namespace VDS.RDF.Storage
             }
         }
 
-        protected virtual void DeleteGraphAsync(String tID, bool autoCommit, String graphUri,
-            AsyncStorageCallback callback, Object state)
+        /// <summary>
+        /// Delete a graph as part of an open transaction
+        /// </summary>
+        /// <param name="tID">The ID of the transaction to use</param>
+        /// <param name="autoCommit">True to commit the transaction at the end of the delete operation, false to leave the transaction open</param>
+        /// <param name="graphUri">The URI of the graph to delete</param>
+        /// <param name="callback">Callback to invoked on completion of the operation</param>
+        /// <param name="state">Additional state to pass into the callback</param>
+        protected virtual void DeleteGraphAsync(string tID, bool autoCommit, string graphUri,
+            AsyncStorageCallback callback, object state)
         {
             try
             {
-                HttpWebRequest request = this.CreateRequest(
-                    this._kb + "/" + tID + "/clear/",
+                var request = CreateRequest(
+                    _kb + "/" + tID + "/clear/",
                     MimeTypesHelper.Any,
                     "POST",
                     new Dictionary<string, string>()
                     {
-                        {"graph-uri", graphUri.Equals(String.Empty) ? "DEFAULT" : graphUri}
+                        {"graph-uri", graphUri.Equals(string.Empty) ? "DEFAULT" : graphUri},
                     }
-                    );
+                );
 
                 request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
 
@@ -1673,7 +1694,7 @@ namespace VDS.RDF.Storage
                         // Commit Transaction only if in auto-commit mode (active transaction will be null)
                         if (autoCommit)
                         {
-                            this.Commit((sender, args, st) =>
+                            Commit((sender, args, st) =>
                             {
                                 if (args.WasSuccessful)
                                 {
@@ -1701,7 +1722,7 @@ namespace VDS.RDF.Storage
                         if (autoCommit)
                         {
                             // If something went wrong try to rollback, don't care what the rollback response is
-                            this.Rollback((sender, args, st) => { }, state);
+                            Rollback((sender, args, st) => { }, state);
                         }
                         callback(this,
                             new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteGraph, graphUri.ToSafeUri(),
@@ -1712,7 +1733,7 @@ namespace VDS.RDF.Storage
                         if (autoCommit)
                         {
                             // If something went wrong try to rollback, don't care what the rollback response is
-                            this.Rollback((sender, args, st) => { }, state);
+                            Rollback((sender, args, st) => { }, state);
                         }
                         callback(this,
                             new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteGraph, graphUri.ToSafeUri(),
@@ -1725,7 +1746,7 @@ namespace VDS.RDF.Storage
                 if (autoCommit)
                 {
                     // If something went wrong try to rollback, don't care what the rollback response is
-                    this.Rollback((sender, args, st) => { }, state);
+                    Rollback((sender, args, st) => { }, state);
                 }
                 callback(this,
                     new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteGraph, graphUri.ToSafeUri(),
@@ -1736,7 +1757,7 @@ namespace VDS.RDF.Storage
                 if (autoCommit)
                 {
                     // If something went wrong try to rollback, don't care what the rollback response is
-                    this.Rollback((sender, args, st) => { }, state);
+                    Rollback((sender, args, st) => { }, state);
                 }
                 callback(this,
                     new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteGraph, graphUri.ToSafeUri(),
@@ -1750,11 +1771,11 @@ namespace VDS.RDF.Storage
         /// <param name="query">SPARQL Query</param>
         /// <param name="callback">Callback</param>
         /// <param name="state">State to pass to the callback</param>
-        public virtual void Query(String query, AsyncStorageCallback callback, Object state)
+        public virtual void Query(string query, AsyncStorageCallback callback, object state)
         {
             Graph g = new Graph();
             SparqlResultSet results = new SparqlResultSet();
-            this.Query(new GraphHandler(g), new ResultSetHandler(results), query, (sender, args, st) =>
+            Query(new GraphHandler(g), new ResultSetHandler(results), query, (sender, args, st) =>
             {
                 if (results.ResultsType != SparqlResultsType.Unknown)
                 {
@@ -1778,24 +1799,24 @@ namespace VDS.RDF.Storage
         /// <param name="resultsHandler">Results Handler</param>
         /// <param name="callback">Callback</param>
         /// <param name="state">State to pass to the callback</param>
-        public virtual void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String query,
-            AsyncStorageCallback callback, Object state)
+        public virtual void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string query,
+            AsyncStorageCallback callback, object state)
         {
             try
             {
                 HttpWebRequest request;
 
-                String tID = (this._activeTrans == null) ? String.Empty : "/" + this._activeTrans;
+                string tID = (_activeTrans == null) ? string.Empty : "/" + _activeTrans;
 
                 // String accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
-                String accept =
+                string accept =
                     MimeTypesHelper.CustomHttpAcceptHeader(
                         MimeTypesHelper.SparqlResultsXml.Concat(
                             MimeTypesHelper.Definitions.Where(d => d.CanParseRdf).SelectMany(d => d.MimeTypes)));
 
                 // Create the Request, for simplicity async requests are always POST
-                Dictionary<String, String> queryParams = new Dictionary<string, string>();
-                request = this.CreateRequest(this._kb + tID + "/query", accept, "POST", queryParams);
+                Dictionary<string, string> queryParams = new Dictionary<string, string>();
+                request = CreateRequest(_kb + tID + "/query", accept, "POST", queryParams);
 
                 // Build the Post Data and add to the Request Body
                 request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
@@ -1823,7 +1844,7 @@ namespace VDS.RDF.Storage
                                 Tools.HttpDebugResponse(response);
 
                                 StreamReader data = new StreamReader(response.GetResponseStream());
-                                String ctype = response.ContentType;
+                                string ctype = response.ContentType;
                                 try
                                 {
                                     // Is the Content Type referring to a Sparql Result Set format?
@@ -1897,21 +1918,21 @@ namespace VDS.RDF.Storage
         /// <param name="method">HTTP Method</param>
         /// <param name="requestParams">Querystring Parameters</param>
         /// <returns></returns>
-        protected virtual HttpWebRequest CreateRequest(String servicePath, String accept, String method,
-            Dictionary<String, String> requestParams)
+        protected virtual HttpWebRequest CreateRequest(string servicePath, string accept, string method,
+            Dictionary<string, string> requestParams)
         {
             // Build the Request Uri
-            String requestUri = this._baseUri + servicePath + "?";
+            string requestUri = _baseUri + servicePath + "?";
 
             if (!ReferenceEquals(requestParams, null) && requestParams.Count > 0)
             {
-                foreach (String p in requestParams.Keys)
+                foreach (string p in requestParams.Keys)
                 {
                     requestUri += p + "=" + HttpUtility.UrlEncode(requestParams[p]) + "&";
                 }
             }
 
-            requestUri += this.GetReasoningParameter();
+            requestUri += GetReasoningParameter();
 
             // Create our Request
             HttpWebRequest request = (HttpWebRequest) WebRequest.Create(requestUri);
@@ -1920,17 +1941,17 @@ namespace VDS.RDF.Storage
             request = ApplyRequestOptions(request);
 
             // Add the special Stardog Headers
-            this.AddStardogHeaders(request);
+            AddStardogHeaders(request);
 
             // Add Credentials if needed
-            if (this._hasCredentials)
+            if (_hasCredentials)
             {
                 if (Options.ForceHttpBasicAuth)
                 {
                     // Forcibly include a HTTP basic authentication header
 #if !NETCORE
                     string credentials =
-                        Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(this._username + ":" + this._pwd));
+                        Convert.ToBase64String(Encoding.ASCII.GetBytes(_username + ":" + _pwd));
                     request.Headers.Add("Authorization", "Basic " + credentials);
 #else
                     string credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(this._username + ":" + this._pwd));
@@ -1940,7 +1961,7 @@ namespace VDS.RDF.Storage
                 else
                 {
                     // Leave .Net to cope with HTTP auth challenge response
-                    NetworkCredential credentials = new NetworkCredential(this._username, this._pwd);
+                    NetworkCredential credentials = new NetworkCredential(_username, _pwd);
                     request.Credentials = credentials;
 #if !NETCORE
                     request.PreAuthenticate = true;
@@ -1952,13 +1973,13 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Adds Stardog specific request headers; reasoning needed for < 2.2
+        /// Adds Stardog specific request headers; reasoning needed for &lt; 2.2
         /// </summary>
         /// <param name="request"></param>
         protected virtual void AddStardogHeaders(HttpWebRequest request)
         {
 #if !NETCORE
-            request.Headers.Add("SD-Connection-String", "kb=" + this._kb + ";" + this.GetReasoningParameter());
+            request.Headers.Add("SD-Connection-String", "kb=" + _kb + ";" + GetReasoningParameter());
             // removed persist=sync, no longer needed in latest stardog versions?
             request.Headers.Add("SD-Protocol", "1.0");
 #else
@@ -1967,9 +1988,13 @@ namespace VDS.RDF.Storage
 #endif
         }
 
-        protected virtual String GetReasoningParameter()
+        /// <summary>
+        /// Get the query parameter string that specifies the current reasoning mode
+        /// </summary>
+        /// <returns></returns>
+        protected virtual string GetReasoningParameter()
         {
-            switch (this._reasoning)
+            switch (_reasoning)
             {
                 case StardogReasoningMode.QL:
                     return "reasoning=QL";
@@ -1985,7 +2010,7 @@ namespace VDS.RDF.Storage
                     throw new RdfStorageException(
                         "Stardog 1.* does not support the SL reasoning level, please ensure you are using a Stardog 2.* connector if you wish to use this reasoning level");
                 default:
-                    return String.Empty;
+                    return string.Empty;
             }
         }
 
@@ -1993,11 +2018,15 @@ namespace VDS.RDF.Storage
 
         #region Stardog Transaction Support
 
-        protected virtual String BeginTransaction()
+        /// <summary>
+        /// Start a transaction
+        /// </summary>
+        /// <returns>A transaction ID for the new transaction</returns>
+        protected virtual string BeginTransaction()
         {
-            String tID = null;
+            string tID = null;
 
-            HttpWebRequest request = this.CreateRequest(this._kb + "/transaction/begin", "text/plain"
+            HttpWebRequest request = CreateRequest(_kb + "/transaction/begin", "text/plain"
                 /*MimeTypesHelper.Any*/, "POST", new Dictionary<string, string>());
             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
             try
@@ -2021,16 +2050,20 @@ namespace VDS.RDF.Storage
                 throw StorageHelper.HandleError(ex, "beginning a Transaction in");
             }
 
-            if (String.IsNullOrEmpty(tID))
+            if (string.IsNullOrEmpty(tID))
             {
                 throw new RdfStorageException("Stardog failed to begin a Transaction");
             }
             return tID;
         }
 
-        protected virtual void CommitTransaction(String tID)
+        /// <summary>
+        /// Commit an open transaction
+        /// </summary>
+        /// <param name="tID">The ID of the transaction to commit</param>
+        protected virtual void CommitTransaction(string tID)
         {
-            HttpWebRequest request = this.CreateRequest(this._kb + "/transaction/commit/" + tID, "text/plain"
+            HttpWebRequest request = CreateRequest(_kb + "/transaction/commit/" + tID, "text/plain"
                 /* MimeTypesHelper.Any*/, "POST", new Dictionary<string, string>());
             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
 
@@ -2043,15 +2076,19 @@ namespace VDS.RDF.Storage
             }
 
             // Reset the Active Transaction on this Thread if the IDs match up
-            if (this._activeTrans != null && this._activeTrans.Equals(tID))
+            if (_activeTrans != null && _activeTrans.Equals(tID))
             {
-                this._activeTrans = null;
+                _activeTrans = null;
             }
         }
 
-        protected virtual void RollbackTransaction(String tID)
+        /// <summary>
+        /// Rollback an open transaction
+        /// </summary>
+        /// <param name="tID">The ID of the transaction to rollback</param>
+        protected virtual void RollbackTransaction(string tID)
         {
-            HttpWebRequest request = this.CreateRequest(this._kb + "/transaction/rollback/" + tID, MimeTypesHelper.Any,
+            var request = CreateRequest(_kb + "/transaction/rollback/" + tID, MimeTypesHelper.Any,
                 "POST", new Dictionary<string, string>());
             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
             using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
@@ -2060,9 +2097,9 @@ namespace VDS.RDF.Storage
             }
 
             // Reset the Active Transaction on this Thread if the IDs match up
-            if (this._activeTrans != null && this._activeTrans.Equals(tID))
+            if (_activeTrans != null && _activeTrans.Equals(tID))
             {
-                this._activeTrans = null;
+                _activeTrans = null;
             }
         }
 
@@ -2077,12 +2114,12 @@ namespace VDS.RDF.Storage
             try
             {
                 Monitor.Enter(this);
-                if (this._activeTrans != null)
+                if (_activeTrans != null)
                 {
                     throw new RdfStorageException(
                         "Cannot start a new Transaction as there is already an active Transaction");
                 }
-                this._activeTrans = this.BeginTransaction();
+                _activeTrans = BeginTransaction();
             }
             finally
             {
@@ -2102,12 +2139,12 @@ namespace VDS.RDF.Storage
             try
             {
                 Monitor.Enter(this);
-                if (this._activeTrans == null)
+                if (_activeTrans == null)
                 {
                     throw new RdfStorageException(
                         "Cannot commit a Transaction as there is currently no active Transaction");
                 }
-                this.CommitTransaction(this._activeTrans);
+                CommitTransaction(_activeTrans);
             }
             finally
             {
@@ -2127,12 +2164,12 @@ namespace VDS.RDF.Storage
             try
             {
                 Monitor.Enter(this);
-                if (this._activeTrans == null)
+                if (_activeTrans == null)
                 {
                     throw new RdfStorageException(
                         "Cannot rollback a Transaction on the as there is currently no active Transaction");
                 }
-                this.RollbackTransaction(this._activeTrans);
+                RollbackTransaction(_activeTrans);
             }
             finally
             {
@@ -2149,7 +2186,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                if (this._activeTrans != null)
+                if (_activeTrans != null)
                 {
                     callback(this,
                         new AsyncStorageCallbackArgs(AsyncStorageOperation.TransactionBegin,
@@ -2158,7 +2195,7 @@ namespace VDS.RDF.Storage
                 }
                 else
                 {
-                    HttpWebRequest request = this.CreateRequest(this._kb + "/transaction/begin", "text/plain"
+                    HttpWebRequest request = CreateRequest(_kb + "/transaction/begin", "text/plain"
                         /*MimeTypesHelper.Any*/, "POST", new Dictionary<string, string>());
                     request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
                     try
@@ -2169,7 +2206,7 @@ namespace VDS.RDF.Storage
                             try
                             {
                                 HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(r);
-                                String tID;
+                                string tID;
                                 using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                                 {
                                     Tools.HttpDebugResponse(response);
@@ -2178,7 +2215,7 @@ namespace VDS.RDF.Storage
                                 }
                                 response.Close();
 
-                                if (String.IsNullOrEmpty(tID))
+                                if (string.IsNullOrEmpty(tID))
                                 {
                                     callback(this,
                                         new AsyncStorageCallbackArgs(AsyncStorageOperation.TransactionBegin,
@@ -2186,7 +2223,7 @@ namespace VDS.RDF.Storage
                                 }
                                 else
                                 {
-                                    this._activeTrans = tID;
+                                    _activeTrans = tID;
                                     callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.TransactionBegin),
                                         state);
                                 }
@@ -2242,7 +2279,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                if (this._activeTrans == null)
+                if (_activeTrans == null)
                 {
                     callback(this,
                         new AsyncStorageCallbackArgs(AsyncStorageOperation.TransactionCommit,
@@ -2251,7 +2288,7 @@ namespace VDS.RDF.Storage
                 }
                 else
                 {
-                    HttpWebRequest request = this.CreateRequest(this._kb + "/transaction/commit/" + this._activeTrans,
+                    HttpWebRequest request = CreateRequest(_kb + "/transaction/commit/" + _activeTrans,
                         "text/plain" /* MimeTypesHelper.Any*/, "POST", new Dictionary<string, string>());
                     request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
                     Tools.HttpDebugRequest(request);
@@ -2265,7 +2302,7 @@ namespace VDS.RDF.Storage
 
                                 Tools.HttpDebugResponse(response);
                                 response.Close();
-                                this._activeTrans = null;
+                                _activeTrans = null;
                                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.TransactionCommit),
                                     state);
                             }
@@ -2320,7 +2357,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                if (this._activeTrans == null)
+                if (_activeTrans == null)
                 {
                     callback(this,
                         new AsyncStorageCallbackArgs(AsyncStorageOperation.TransactionRollback,
@@ -2330,8 +2367,8 @@ namespace VDS.RDF.Storage
                 }
                 else
                 {
-                    HttpWebRequest request = this.CreateRequest(
-                        this._kb + "/transaction/rollback/" + this._activeTrans, MimeTypesHelper.Any, "POST",
+                    HttpWebRequest request = CreateRequest(
+                        _kb + "/transaction/rollback/" + _activeTrans, MimeTypesHelper.Any, "POST",
                         new Dictionary<string, string>());
                     request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
                     try
@@ -2342,7 +2379,7 @@ namespace VDS.RDF.Storage
                             {
                                 HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(r);
                                 response.Close();
-                                this._activeTrans = null;
+                                _activeTrans = null;
                                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.TransactionRollback),
                                     state);
                             }
@@ -2404,8 +2441,8 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public override string ToString()
         {
-            String mode = String.Empty;
-            switch (this._reasoning)
+            string mode = string.Empty;
+            switch (_reasoning)
             {
                 case StardogReasoningMode.QL:
                     mode = " (OWL QL Reasoning)";
@@ -2426,7 +2463,7 @@ namespace VDS.RDF.Storage
                     mode = " (SL Reasoning)";
                     break;
             }
-            return "[Stardog] Knowledge Base '" + this._kb + "' on Server '" + this._baseUri + "'" + mode;
+            return "[Stardog] Knowledge Base '" + _kb + "' on Server '" + _baseUri + "'" + mode;
         }
 
         /// <summary>
@@ -2447,26 +2484,26 @@ namespace VDS.RDF.Storage
 
             // Add Core config
             context.Graph.Assert(new Triple(manager, rdfType, genericManager));
-            context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString())));
-            context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
-            context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._baseUri)));
-            context.Graph.Assert(new Triple(manager, store, context.Graph.CreateLiteralNode(this._kb)));
+            context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString())));
+            context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(GetType().FullName)));
+            context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(_baseUri)));
+            context.Graph.Assert(new Triple(manager, store, context.Graph.CreateLiteralNode(_kb)));
 
             // Add reasoning mode
-            if (this._reasoning != StardogReasoningMode.None)
+            if (_reasoning != StardogReasoningMode.None)
                 context.Graph.Assert(new Triple(manager, loadMode,
-                    context.Graph.CreateLiteralNode(this._reasoning.ToString())));
+                    context.Graph.CreateLiteralNode(_reasoning.ToString())));
 
             // Add User Credentials
-            if (this._username != null && this._pwd != null)
+            if (_username != null && _pwd != null)
             {
                 INode username = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUser));
                 INode pwd = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPassword));
-                context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(this._username)));
-                context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(this._pwd)));
+                context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(_username)));
+                context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(_pwd)));
             }
 
-            base.SerializeStandardConfig(manager, context);
+            SerializeStandardConfig(manager, context);
         }
     }
 
@@ -2482,7 +2519,7 @@ namespace VDS.RDF.Storage
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="reasoning">Reasoning Mode</param>
-        public StardogV1Connector(String baseUri, String kbID, StardogReasoningMode reasoning)
+        public StardogV1Connector(string baseUri, string kbID, StardogReasoningMode reasoning)
             : this(baseUri, kbID, reasoning, null, null)
         {
         }
@@ -2492,7 +2529,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        public StardogV1Connector(String baseUri, String kbID)
+        public StardogV1Connector(string baseUri, string kbID)
             : this(baseUri, kbID, StardogReasoningMode.None)
         {
         }
@@ -2504,7 +2541,7 @@ namespace VDS.RDF.Storage
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
-        public StardogV1Connector(String baseUri, String kbID, String username, String password)
+        public StardogV1Connector(string baseUri, string kbID, string username, string password)
             : this(baseUri, kbID, StardogReasoningMode.None, username, password)
         {
         }
@@ -2517,8 +2554,8 @@ namespace VDS.RDF.Storage
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
         /// <param name="reasoning">Reasoning Mode</param>
-        public StardogV1Connector(String baseUri, String kbID, StardogReasoningMode reasoning, String username,
-            String password)
+        public StardogV1Connector(string baseUri, string kbID, StardogReasoningMode reasoning, string username,
+            string password)
             : base(baseUri, kbID, reasoning, username, password)
         {
         }
@@ -2530,7 +2567,7 @@ namespace VDS.RDF.Storage
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="reasoning">Reasoning Mode</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogV1Connector(String baseUri, String kbID, StardogReasoningMode reasoning, IWebProxy proxy)
+        public StardogV1Connector(string baseUri, string kbID, StardogReasoningMode reasoning, IWebProxy proxy)
             : this(baseUri, kbID, reasoning, null, null, proxy)
         {
         }
@@ -2544,8 +2581,8 @@ namespace VDS.RDF.Storage
         /// <param name="password">Password</param>
         /// <param name="reasoning">Reasoning Mode</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogV1Connector(String baseUri, String kbID, StardogReasoningMode reasoning, String username,
-            String password, IWebProxy proxy)
+        public StardogV1Connector(string baseUri, string kbID, StardogReasoningMode reasoning, string username,
+            string password, IWebProxy proxy)
             : base(baseUri, kbID, reasoning, username, password, proxy)
         {
         }
@@ -2556,7 +2593,7 @@ namespace VDS.RDF.Storage
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogV1Connector(String baseUri, String kbID, IWebProxy proxy)
+        public StardogV1Connector(string baseUri, string kbID, IWebProxy proxy)
             : this(baseUri, kbID, StardogReasoningMode.None, proxy)
         {
         }
@@ -2569,7 +2606,7 @@ namespace VDS.RDF.Storage
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogV1Connector(String baseUri, String kbID, String username, String password, IWebProxy proxy)
+        public StardogV1Connector(string baseUri, string kbID, string username, string password, IWebProxy proxy)
             : this(baseUri, kbID, StardogReasoningMode.None, username, password, proxy)
         {
         }
@@ -2587,7 +2624,7 @@ namespace VDS.RDF.Storage
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="reasoning">Reasoning Mode</param>
-        public StardogV2Connector(String baseUri, String kbID, StardogReasoningMode reasoning)
+        public StardogV2Connector(string baseUri, string kbID, StardogReasoningMode reasoning)
             : this(baseUri, kbID, reasoning, null, null)
         {
         }
@@ -2597,7 +2634,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        public StardogV2Connector(String baseUri, String kbID)
+        public StardogV2Connector(string baseUri, string kbID)
             : this(baseUri, kbID, StardogReasoningMode.None)
         {
         }
@@ -2609,7 +2646,7 @@ namespace VDS.RDF.Storage
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
-        public StardogV2Connector(String baseUri, String kbID, String username, String password)
+        public StardogV2Connector(string baseUri, string kbID, string username, string password)
             : this(baseUri, kbID, StardogReasoningMode.None, username, password)
         {
         }
@@ -2622,11 +2659,11 @@ namespace VDS.RDF.Storage
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
         /// <param name="reasoning">Reasoning Mode</param>
-        public StardogV2Connector(String baseUri, String kbID, StardogReasoningMode reasoning, String username,
-            String password)
+        public StardogV2Connector(string baseUri, string kbID, StardogReasoningMode reasoning, string username,
+            string password)
             : base(baseUri, kbID, reasoning, username, password)
         {
-            this._server = new StardogV2Server(baseUri, username, password);
+            Server = new StardogV2Server(baseUri, username, password);
         }
 
         /// <summary>
@@ -2636,7 +2673,7 @@ namespace VDS.RDF.Storage
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="reasoning">Reasoning Mode</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogV2Connector(String baseUri, String kbID, StardogReasoningMode reasoning, IWebProxy proxy)
+        public StardogV2Connector(string baseUri, string kbID, StardogReasoningMode reasoning, IWebProxy proxy)
             : this(baseUri, kbID, reasoning, null, null, proxy)
         {
         }
@@ -2650,11 +2687,11 @@ namespace VDS.RDF.Storage
         /// <param name="password">Password</param>
         /// <param name="reasoning">Reasoning Mode</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogV2Connector(String baseUri, String kbID, StardogReasoningMode reasoning, String username,
-            String password, IWebProxy proxy)
+        public StardogV2Connector(string baseUri, string kbID, StardogReasoningMode reasoning, string username,
+            string password, IWebProxy proxy)
             : base(baseUri, kbID, reasoning, username, password, proxy)
         {
-            this._server = new StardogV2Server(baseUri, username, password, proxy);
+            Server = new StardogV2Server(baseUri, username, password, proxy);
         }
 
         /// <summary>
@@ -2663,7 +2700,7 @@ namespace VDS.RDF.Storage
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogV2Connector(String baseUri, String kbID, IWebProxy proxy)
+        public StardogV2Connector(string baseUri, string kbID, IWebProxy proxy)
             : this(baseUri, kbID, StardogReasoningMode.None, proxy)
         {
         }
@@ -2676,7 +2713,7 @@ namespace VDS.RDF.Storage
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogV2Connector(String baseUri, String kbID, String username, String password, IWebProxy proxy)
+        public StardogV2Connector(string baseUri, string kbID, string username, string password, IWebProxy proxy)
             : this(baseUri, kbID, StardogReasoningMode.None, username, password, proxy)
         {
         }
@@ -2687,7 +2724,7 @@ namespace VDS.RDF.Storage
         /// <param name="request"></param>
         protected override void AddStardogHeaders(HttpWebRequest request)
         {
-            String reasoning = this.GetReasoningParameter();
+            string reasoning = GetReasoningParameter();
 #if !NETCORE
             request.Headers.Add("SD-Connection-String", reasoning);
             // Only reasoning parameter needed in Stardog 2.0, but < 2.2
@@ -2696,9 +2733,13 @@ namespace VDS.RDF.Storage
 #endif
         }
 
-        protected override String GetReasoningParameter()
+        /// <summary>
+        /// Get the query string parameter that specifies the current reasoning mode
+        /// </summary>
+        /// <returns></returns>
+        protected override string GetReasoningParameter()
         {
-            switch (this._reasoning)
+            switch (Reasoning)
             {
                 case StardogReasoningMode.QL:
                     return "reasoning=QL";
@@ -2714,7 +2755,7 @@ namespace VDS.RDF.Storage
                     return "reasoning=SL";
                 case StardogReasoningMode.None:
                 default:
-                    return String.Empty;
+                    return string.Empty;
             }
         }
 
@@ -2732,7 +2773,7 @@ namespace VDS.RDF.Storage
                 // NB - Updates don't run inside a transaction rather they use their own self-contained transaction
 
                 // Create the Request
-                HttpWebRequest request = this.CreateRequest(this._kb + "/update", MimeTypesHelper.Any, "POST", null);
+                HttpWebRequest request = CreateRequest(KbId + "/update", MimeTypesHelper.Any, "POST", null);
 
                 // Build the Post Data and add to the Request Body
                 request.ContentType = MimeTypesHelper.SparqlUpdate;
@@ -2775,7 +2816,7 @@ namespace VDS.RDF.Storage
                 // NB - Updates don't run inside a transaction rather they use their own self-contained transaction
 
                 // Create the Request, for simplicity async requests are always POST
-                HttpWebRequest request = this.CreateRequest(this._kb + "/update", MimeTypesHelper.Any, "POST", null);
+                HttpWebRequest request = CreateRequest(KbId + "/update", MimeTypesHelper.Any, "POST", null);
 
                 // Create the request body
                 request.ContentType = MimeTypesHelper.SparqlUpdate;
@@ -2866,7 +2907,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        public StardogV3Connector(String baseUri, String kbID)
+        public StardogV3Connector(string baseUri, string kbID)
             : this(baseUri, kbID, null, null)
         {
         }
@@ -2878,10 +2919,10 @@ namespace VDS.RDF.Storage
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
-        public StardogV3Connector(String baseUri, String kbID, String username, String password)
+        public StardogV3Connector(string baseUri, string kbID, string username, string password)
             : base(baseUri, kbID, StardogReasoningMode.DatabaseControlled, username, password)
         {
-            this._server = new StardogV2Server(baseUri, username, password);
+            Server = new StardogV2Server(baseUri, username, password);
         }
 
         /// <summary>
@@ -2890,7 +2931,7 @@ namespace VDS.RDF.Storage
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogV3Connector(String baseUri, String kbID, IWebProxy proxy)
+        public StardogV3Connector(string baseUri, string kbID, IWebProxy proxy)
             : this(baseUri, kbID, null, null, proxy)
         {
         }
@@ -2903,20 +2944,18 @@ namespace VDS.RDF.Storage
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogV3Connector(String baseUri, String kbID, String username, String password, IWebProxy proxy)
+        public StardogV3Connector(string baseUri, string kbID, string username, string password, IWebProxy proxy)
             : base(baseUri, kbID, StardogReasoningMode.DatabaseControlled, username, password, proxy)
         {
-            this._server = new StardogV2Server(baseUri, username, password, proxy);
+            Server = new StardogV2Server(baseUri, username, password, proxy);
         }
 
+        /// <inheritdoc />
         public override StardogReasoningMode Reasoning
         {
-            get { return StardogReasoningMode.DatabaseControlled; }
-            set
-            {
-                throw new RdfStorageException(
-                    "Stardog 3.x does not support configuring reasoning mode at the connection level, reasoning is instead controlled at the database level ");
-            }
+            get => StardogReasoningMode.DatabaseControlled;
+            set => throw new RdfStorageException(
+                "Stardog 3.x does not support configuring reasoning mode at the connection level, reasoning is instead controlled at the database level ");
         }
 
         /// <summary>
@@ -2940,7 +2979,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        public StardogConnector(String baseUri, String kbID)
+        public StardogConnector(string baseUri, string kbID)
             : this(baseUri, kbID, null, null)
         {
         }
@@ -2952,7 +2991,7 @@ namespace VDS.RDF.Storage
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
-        public StardogConnector(String baseUri, String kbID, String username, String password)
+        public StardogConnector(string baseUri, string kbID, string username, string password)
             : base(baseUri, kbID, username, password)
         {
         }
@@ -2962,9 +3001,8 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="reasoning">Reasoning Mode</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogConnector(String baseUri, String kbID, IWebProxy proxy)
+        public StardogConnector(string baseUri, string kbID, IWebProxy proxy)
             : this(baseUri, kbID, null, null, proxy)
         {
         }
@@ -2976,10 +3014,9 @@ namespace VDS.RDF.Storage
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
-        /// <param name="reasoning">Reasoning Mode</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogConnector(String baseUri, String kbID, String username,
-            String password, IWebProxy proxy)
+        public StardogConnector(string baseUri, string kbID, string username,
+            string password, IWebProxy proxy)
             : base(baseUri, kbID, username, password, proxy)
         {
         }

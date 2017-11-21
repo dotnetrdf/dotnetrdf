@@ -59,7 +59,7 @@ namespace VDS.RDF.Writing
         {
             PrettyPrintMode = true;
             UseMultiThreadedWriting = Options.AllowMultiThreadedWriting;
-            this.Syntax = syntax;
+            Syntax = syntax;
         }
 
         /// <summary>
@@ -178,10 +178,10 @@ namespace VDS.RDF.Writing
                 {
                     foreach (var g in context.Store.Graphs)
                     {
-                        var graphContext = new NTriplesWriterContext(g, context.Output, NQuadsParser.AsNTriplesSyntax(this.Syntax));
+                        var graphContext = new NTriplesWriterContext(g, context.Output, NQuadsParser.AsNTriplesSyntax(Syntax));
                         foreach (var t in g.Triples)
                         {
-                            context.Output.WriteLine(this.TripleToNQuads(graphContext, t, g.BaseUri));
+                            context.Output.WriteLine(TripleToNQuads(graphContext, t, g.BaseUri));
                         }
                     }
                     if (!leaveOpen)
@@ -216,7 +216,7 @@ namespace VDS.RDF.Writing
             }
             foreach (var t in context.Graph.Triples)
             {
-                context.Output.WriteLine(this.TripleToNQuads(context, t, context.Graph.BaseUri));
+                context.Output.WriteLine(TripleToNQuads(context, t, context.Graph.BaseUri));
             }
             context.Output.WriteLine();
 
@@ -233,11 +233,11 @@ namespace VDS.RDF.Writing
         private string TripleToNQuads(NTriplesWriterContext context, Triple t, Uri graphUri)
         {
             var output = new StringBuilder();
-            output.Append(this.NodeToNTriples(context, t.Subject, TripleSegment.Subject));
+            output.Append(NodeToNTriples(context, t.Subject, TripleSegment.Subject));
             output.Append(" ");
-            output.Append(this.NodeToNTriples(context, t.Predicate, TripleSegment.Predicate));
+            output.Append(NodeToNTriples(context, t.Predicate, TripleSegment.Predicate));
             output.Append(" ");
-            output.Append(this.NodeToNTriples(context, t.Object, TripleSegment.Object));
+            output.Append(NodeToNTriples(context, t.Object, TripleSegment.Object));
             if (t.GraphUri != null || graphUri != null)
             {
                 output.Append(" <");
@@ -299,8 +299,8 @@ namespace VDS.RDF.Writing
                     var g = globalContext.Store.Graphs[u];
 
                     // Generate the Graph Output and add to Stream
-                    var context = new NTriplesWriterContext(g, new System.IO.StringWriter(), NQuadsParser.AsNTriplesSyntax(this.Syntax), globalContext.PrettyPrint, globalContext.HighSpeedModePermitted);
-                    var graphContent = this.GraphToNQuads(globalContext, context);
+                    var context = new NTriplesWriterContext(g, new System.IO.StringWriter(), NQuadsParser.AsNTriplesSyntax(Syntax), globalContext.PrettyPrint, globalContext.HighSpeedModePermitted);
+                    var graphContent = GraphToNQuads(globalContext, context);
                     if (!graphContent.Equals(String.Empty))
                     {
                         try

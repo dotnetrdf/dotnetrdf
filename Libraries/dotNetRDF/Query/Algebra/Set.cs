@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public Set()
         {
-            this._values = new Dictionary<string, INode>();
+            _values = new Dictionary<string, INode>();
         }
 
         /// <summary>
@@ -54,20 +54,20 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="y">A Set</param>
         internal Set(ISet x, ISet y)
         {
-            this._values = new Dictionary<string, INode>();
+            _values = new Dictionary<string, INode>();
             foreach (String var in x.Variables)
             {
-                this._values.Add(var, x[var]);
+                _values.Add(var, x[var]);
             }
             foreach (String var in y.Variables)
             {
-                if (!this._values.ContainsKey(var))
+                if (!_values.ContainsKey(var))
                 {
-                    this._values.Add(var, y[var]);
+                    _values.Add(var, y[var]);
                 }
-                else if (this._values[var] == null)
+                else if (_values[var] == null)
                 {
-                    this._values[var] = y[var];
+                    _values[var] = y[var];
                 }
             }
         }
@@ -78,10 +78,10 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="x">Set to copy</param>
         internal Set(ISet x)
         {
-            this._values = new Dictionary<string, INode>();
+            _values = new Dictionary<string, INode>();
             foreach (String var in x.Variables)
             {
-                this._values.Add(var, x[var]);
+                _values.Add(var, x[var]);
             }
         }
 
@@ -91,10 +91,10 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="result">Result</param>
         internal Set(SparqlResult result)
         {
-            this._values = new Dictionary<string, INode>();
+            _values = new Dictionary<string, INode>();
             foreach (String var in result.Variables)
             {
-                this.Add(var, result[var]);
+                Add(var, result[var]);
             }
         }
 
@@ -104,10 +104,10 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="tuple">Tuple</param>
         internal Set(BindingTuple tuple)
         {
-            this._values = new Dictionary<string, INode>();
+            _values = new Dictionary<string, INode>();
             foreach (KeyValuePair<String, PatternItem> binding in tuple.Values)
             {
-                this.Add(binding.Key, tuple[binding.Key]);
+                Add(binding.Key, tuple[binding.Key]);
             }
         }
 
@@ -120,9 +120,9 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                if (this._values.ContainsKey(variable))
+                if (_values.ContainsKey(variable))
                 {
-                    return this._values[variable];
+                    return _values[variable];
                 }
                 else
                 {
@@ -138,9 +138,9 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="value">Value</param>
         public override void Add(String variable, INode value)
         {
-            if (!this._values.ContainsKey(variable))
+            if (!_values.ContainsKey(variable))
             {
-                this._values.Add(variable, value);
+                _values.Add(variable, value);
             }
             else
             {
@@ -154,7 +154,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="variable">Variable</param>
         public override void Remove(String variable)
         {
-            if (this._values.ContainsKey(variable)) this._values.Remove(variable);
+            if (_values.ContainsKey(variable)) _values.Remove(variable);
         }
 
         /// <summary>
@@ -164,7 +164,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override bool ContainsVariable(String variable)
         {
-            return this._values.ContainsKey(variable);
+            return _values.ContainsKey(variable);
         }
 
         /// <summary>
@@ -196,7 +196,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return (from var in this._values.Keys
+                return (from var in _values.Keys
                         select var);
             }
         }
@@ -208,7 +208,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return (from value in this._values.Values
+                return (from value in _values.Values
                         select value);
             }
         }
@@ -242,7 +242,7 @@ namespace VDS.RDF.Query.Algebra
         public bool Equals(Set other)
         {
             if (other == null) return false;
-            return this._values.All(pair => other.ContainsVariable(pair.Key) && ((pair.Value == null && other[pair.Key] == null) || pair.Value.Equals(other[pair.Key])));
+            return _values.All(pair => other.ContainsVariable(pair.Key) && ((pair.Value == null && other[pair.Key] == null) || pair.Value.Equals(other[pair.Key])));
         }
 
     }

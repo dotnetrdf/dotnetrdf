@@ -53,15 +53,15 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            IValuedNode result = this._expr.Evaluate(context, bindingID);
+            IValuedNode result = _expr.Evaluate(context, bindingID);
             if (result != null)
             {
-                if (this._expressions.Count == 0) return new BooleanNode(null, false);
+                if (_expressions.Count == 0) return new BooleanNode(null, false);
 
                 // Have to use SPARQL Value Equality here
                 // If any expressions error and nothing in the set matches then an error is thrown
                 bool errors = false;
-                foreach (ISparqlExpression expr in this._expressions)
+                foreach (ISparqlExpression expr in _expressions)
                 {
                     try
                     {
@@ -107,14 +107,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            if (this._expr.Type == SparqlExpressionType.BinaryOperator || this._expr.Type == SparqlExpressionType.GraphOperator || this._expr.Type == SparqlExpressionType.SetOperator) output.Append('(');
-            output.Append(this._expr.ToString());
-            if (this._expr.Type == SparqlExpressionType.BinaryOperator || this._expr.Type == SparqlExpressionType.GraphOperator || this._expr.Type == SparqlExpressionType.SetOperator) output.Append(')');
+            if (_expr.Type == SparqlExpressionType.BinaryOperator || _expr.Type == SparqlExpressionType.GraphOperator || _expr.Type == SparqlExpressionType.SetOperator) output.Append('(');
+            output.Append(_expr.ToString());
+            if (_expr.Type == SparqlExpressionType.BinaryOperator || _expr.Type == SparqlExpressionType.GraphOperator || _expr.Type == SparqlExpressionType.SetOperator) output.Append(')');
             output.Append(" IN (");
-            for (int i = 0; i < this._expressions.Count; i++)
+            for (int i = 0; i < _expressions.Count; i++)
             {
-                output.Append(this._expressions[i].ToString());
-                if (i < this._expressions.Count - 1)
+                output.Append(_expressions[i].ToString());
+                if (i < _expressions.Count - 1)
                 {
                     output.Append(" , ");
                 }
@@ -130,7 +130,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new InFunction(transformer.Transform(this._expr), this._expressions.Select(e => transformer.Transform(e)));
+            return new InFunction(transformer.Transform(_expr), _expressions.Select(e => transformer.Transform(e)));
         }
     }
 }

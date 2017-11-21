@@ -33,6 +33,12 @@ using Xunit;
 using VDS.RDF.Writing;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+#pragma warning disable 252,253
+
+#pragma warning disable xUnit2000 // Expected value should be first
+#pragma warning disable xUnit2003 // Do not use Assert.Equal to check for null value
+#pragma warning disable CS1718 // Comparison made to same variable
+// ReSharper disable EqualExpressionComparison
 
 namespace VDS.RDF
 {
@@ -150,7 +156,7 @@ namespace VDS.RDF
             try
             {
                 Console.WriteLine("Writing Turtle file graph_building_example.ttl");
-                TurtleWriter ttlwriter = new TurtleWriter();
+                var ttlwriter = new CompressingTurtleWriter();
                 ttlwriter.Save(g, "graph_building_example.ttl");
             }
             catch (Exception ex)
@@ -224,44 +230,33 @@ namespace VDS.RDF
                                     new String[] {"http://www.bbc.co.uk/test2.txt","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test.txt#fragment2"}
                                   };
 
-            try
+            for (int i = 0; i < baseUris.Length; i++)
             {
-                for (int i = 0; i < baseUris.Length; i++)
+                Console.WriteLine("Resolving against Base URI " + baseUris[i]);
+
+                Uri baseUri = new Uri(baseUris[i]);
+
+                for (int j = 0; j < uriRefs.Length; j++)
                 {
-                    Console.WriteLine("Resolving against Base URI " + baseUris[i]);
+                    Console.WriteLine("Resolving " + uriRefs[j]);
 
-                    Uri baseUri = new Uri(baseUris[i]);
+                    String result, expectedResult;
+                    result = Tools.ResolveUri(uriRefs[j], baseUris[i]);
+                    expectedResult = expected[i][j];
 
-                    for (int j = 0; j < uriRefs.Length; j++)
-                    {
-                        Console.WriteLine("Resolving " + uriRefs[j]);
+                    Console.WriteLine("Expected: " + expectedResult);
+                    Console.WriteLine("Actual: " + result);
 
-                        String result, expectedResult;
-                        result = Tools.ResolveUri(uriRefs[j], baseUris[i]);
-                        expectedResult = expected[i][j];
-
-                        Console.WriteLine("Expected: " + expectedResult);
-                        Console.WriteLine("Actual: " + result);
-
-                        Assert.Equal(expectedResult, result);
-                    }
-
-                    Console.WriteLine();
+                    Assert.Equal(expectedResult, result);
                 }
 
-                Uri mailto = new Uri("mailto:example@example.org");
-                Uri rel = new Uri("/some/folder", UriKind.Relative);
-                Uri res = new Uri(mailto, rel);
-                Console.WriteLine(res.ToString());
+                Console.WriteLine();
             }
-            catch (UriFormatException uriEx)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+
+            Uri mailto = new Uri("mailto:example@example.org");
+            Uri rel = new Uri("/some/folder", UriKind.Relative);
+            Uri res = new Uri(mailto, rel);
+            Console.WriteLine(res.ToString());
         }
 
         [Fact]
@@ -547,7 +542,7 @@ namespace VDS.RDF
                 Assert.NotEqual(t, one5);
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //Reset Literal Equality Mode
                 Options.LiteralEqualityMode = LiteralEqualityMode.Strict;
@@ -755,9 +750,9 @@ namespace VDS.RDF
             Assert.Equal(nullUri, null);
             Assert.Equal(null, nullUri);
             Assert.True(nullUri == nullUri, "Null URI Node should be equal to self");
+            Assert.False(nullUri != nullUri, "Null URI Node should be equal to self");
             Assert.True(nullUri == null, "Null URI Node should be equal to a null");
             Assert.True(null == nullUri, "Null should be equal to a Null URI Node");
-            Assert.False(nullUri != nullUri, "Null URI Node should be equal to self");
             Assert.False(nullUri != null, "Null URI Node should be equal to a null");
             Assert.False(null != nullUri, "Null should be equal to a Null URI Node");
             Assert.NotEqual(nullUri, someUri);
@@ -797,71 +792,64 @@ namespace VDS.RDF
         [Fact]
         public void GraphMerging()
         {
-            try
+            //Load the Test RDF
+            TurtleParser ttlparser = new TurtleParser();
+            Graph g = new Graph();
+            Graph h = new Graph();
+            Assert.NotNull(g);
+            Assert.NotNull(h);
+            ttlparser.Load(g, "resources\\MergePart1.ttl");
+            ttlparser.Load(h, "resources\\MergePart2.ttl");
+
+            Console.WriteLine("Merge Test Data Loaded OK");
+            Console.WriteLine();
+
+            Console.WriteLine("Graph 1 Contains");
+            foreach (Triple t in g.Triples)
             {
-                //Load the Test RDF
-                TurtleParser ttlparser = new TurtleParser();
-                Graph g = new Graph();
-                Graph h = new Graph();
-                Assert.NotNull(g);
-                Assert.NotNull(h);
-                ttlparser.Load(g, "resources\\MergePart1.ttl");
-                ttlparser.Load(h, "resources\\MergePart2.ttl");
-
-                Console.WriteLine("Merge Test Data Loaded OK");
-                Console.WriteLine();
-
-                Console.WriteLine("Graph 1 Contains");
-                foreach (Triple t in g.Triples)
-                {
-                    Console.WriteLine(t.ToString());
-                }
-
-                Console.WriteLine();
-                Console.WriteLine("Graph 2 Contains");
-                foreach (Triple t in h.Triples)
-                {
-                    Console.WriteLine(t.ToString());
-                }
-
-                Console.WriteLine();
-
-                Console.WriteLine("Attempting Graph Merge");
-                g.Merge(h);
-                Console.WriteLine();
-
-                foreach (Triple t in g.Triples)
-                {
-                    Console.WriteLine(t.ToString());
-                }
-
-                Assert.Equal(8, g.Triples.Count);
-
-                //Same merge into an Empty Graph
-                Console.WriteLine();
-                Console.WriteLine("Combining the two Graphs with two Merge operations into an Empty Graph");
-                Graph i = new Graph();
-
-                //Need to reload g from disk
-                g = new Graph();
-                ttlparser.Load(g, "resources\\MergePart1.ttl");
-
-                //Do the actual merge
-                i.Merge(g);
-                i.Merge(h);
-                Console.WriteLine();
-
-                foreach (Triple t in i.Triples)
-                {
-                    Console.WriteLine(t.ToString());
-                }
-
-                Assert.Equal(8, i.Triples.Count);
+                Console.WriteLine(t.ToString());
             }
-            catch (Exception ex)
+
+            Console.WriteLine();
+            Console.WriteLine("Graph 2 Contains");
+            foreach (Triple t in h.Triples)
             {
-                throw;
+                Console.WriteLine(t.ToString());
             }
+
+            Console.WriteLine();
+
+            Console.WriteLine("Attempting Graph Merge");
+            g.Merge(h);
+            Console.WriteLine();
+
+            foreach (Triple t in g.Triples)
+            {
+                Console.WriteLine(t.ToString());
+            }
+
+            Assert.Equal(8, g.Triples.Count);
+
+            //Same merge into an Empty Graph
+            Console.WriteLine();
+            Console.WriteLine("Combining the two Graphs with two Merge operations into an Empty Graph");
+            Graph i = new Graph();
+
+            //Need to reload g from disk
+            g = new Graph();
+            ttlparser.Load(g, "resources\\MergePart1.ttl");
+
+            //Do the actual merge
+            i.Merge(g);
+            i.Merge(h);
+            Console.WriteLine();
+
+            foreach (Triple t in i.Triples)
+            {
+                Console.WriteLine(t.ToString());
+            }
+
+            Assert.Equal(8, i.Triples.Count);
         }
 
         [Fact]

@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Spin.Core
      * 
      * @author Holger Knublauch
      */
-    public class SPINImports
+    internal class SPINImports
     {
 
         private Dictionary<Uri, IGraph> _registeredImports = new Dictionary<Uri, IGraph>(RDFUtil.uriComparer);
@@ -88,7 +88,7 @@ namespace VDS.RDF.Query.Spin.Core
                     importGraph.LoadFromUri(uri, rdfReader);
                 }
             }
-            catch (Exception any)
+            catch (Exception)
             {
             }
             RegisterGraph(importGraph);

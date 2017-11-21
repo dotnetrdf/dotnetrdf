@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         internal SearchService(String name, JObject obj)
             : base(name, obj) 
         {
-            this._searchUri = this.Endpoint.Uri.Substring(0, this.Endpoint.Uri.IndexOf('{'));
+            _searchUri = Endpoint.Uri.Substring(0, Endpoint.Uri.IndexOf('{'));
         }
 
         /// <summary>
@@ -60,10 +60,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <returns>A list of Search Results representing Nodes in the Knowledge Base that match the search term</returns>
         public List<SearchServiceResult> Search(String text)
         {
-            String search = this._searchUri + "?search=" + HttpUtility.UrlEncode(text);
+            String search = _searchUri + "?search=" + HttpUtility.UrlEncode(text);
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(search);
-            request.Method = this.Endpoint.HttpMethods.First();
+            request.Method = Endpoint.HttpMethods.First();
             request.Accept = "text/json";
 
             Tools.HttpDebugRequest(request);
@@ -126,10 +126,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// </remarks>
         public void Search(String text, PelletSearchServiceCallback callback, Object state)
         {
-            String search = this._searchUri + "?search=" + HttpUtility.UrlEncode(text);
+            String search = _searchUri + "?search=" + HttpUtility.UrlEncode(text);
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(search);
-            request.Method = this.Endpoint.HttpMethods.First();
+            request.Method = Endpoint.HttpMethods.First();
             request.Accept = "text/json";
 
             Tools.HttpDebugRequest(request);
@@ -213,8 +213,8 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="score">Result Score</param>
         internal SearchServiceResult(INode node, double score)
         {
-            this._n = node;
-            this._score = score;
+            _n = node;
+            _score = score;
         }
 
         /// <summary>
@@ -224,7 +224,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         {
             get
             {
-                return this._n;
+                return _n;
             }
         }
 
@@ -235,7 +235,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         {
             get
             {
-                return this._score;
+                return _score;
             }
         }
 
@@ -245,7 +245,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <returns></returns>
         public override string ToString()
         {
-            return this._n.ToString() + ": " + this._score;
+            return _n.ToString() + ": " + _score;
         }
     }
 }

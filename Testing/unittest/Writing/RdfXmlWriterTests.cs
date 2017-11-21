@@ -319,8 +319,8 @@ namespace VDS.RDF.Writing
             String outData = StringWriter.Write(g, writer);
             Console.WriteLine(outData);
 
-            Assert.True(outData.Contains("rdf:about=\"&ex;1s\""));
-            Assert.True(outData.Contains("rdf:resource=\"&ex;2o\""));
+            Assert.Contains("rdf:about=\"&ex;1s\"", outData);
+            Assert.Contains("rdf:resource=\"&ex;2o\"", outData);
         }
     }
 }

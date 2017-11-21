@@ -44,7 +44,7 @@ namespace VDS.RDF.Parsing.Tokens
         public CsvTokeniser(ParsingTextReader reader)
             : base(reader)
         {
-            this._in = reader;
+            _in = reader;
         }
 
         /// <summary>
@@ -61,10 +61,10 @@ namespace VDS.RDF.Parsing.Tokens
         public override IToken GetNextToken()
         {
             // Have we read anything yet?
-            if (this.LastTokenType == -1)
+            if (LastTokenType == -1)
             {
                 // Nothing read yet so produce a BOF Token
-                this.LastTokenType = Token.BOF;
+                LastTokenType = Token.BOF;
                 return new BOFToken();
             }
             else
@@ -72,15 +72,15 @@ namespace VDS.RDF.Parsing.Tokens
                 try
                 {
                     // Reading has started
-                    this.StartNewToken();
+                    StartNewToken();
 
                     // Check for EOF
-                    if (this._in.EndOfStream)
+                    if (_in.EndOfStream)
                     {
-                        if (this.Length == 0)
+                        if (Length == 0)
                         {
                             // We're at the End of the Stream and not part-way through reading a Token
-                            return new EOFToken(this.CurrentLine, this.CurrentPosition);
+                            return new EOFToken(CurrentLine, CurrentPosition);
                         }
                         else
                         {
@@ -90,15 +90,15 @@ namespace VDS.RDF.Parsing.Tokens
                         }
                     }
 
-                    char next = this.Peek();
+                    char next = Peek();
 
                     // Always need to do a check for End of Stream after Peeking to handle empty files OK
-                    if (next == Char.MaxValue && this._in.EndOfStream)
+                    if (next == Char.MaxValue && _in.EndOfStream)
                     {
-                        if (this.Length == 0)
+                        if (Length == 0)
                         {
                             // We're at the End of the Stream and not part-way through reading a Token
-                            return new EOFToken(this.CurrentLine, this.CurrentPosition);
+                            return new EOFToken(CurrentLine, CurrentPosition);
                         }
                         else
                         {
@@ -112,34 +112,34 @@ namespace VDS.RDF.Parsing.Tokens
                     {
                         case ',':
                             // Comma
-                            this.ConsumeCharacter();
-                            this.LastTokenType = Token.COMMA;
-                            return new CommaToken(this.StartLine, this.StartPosition);
+                            ConsumeCharacter();
+                            LastTokenType = Token.COMMA;
+                            return new CommaToken(StartLine, StartPosition);
 
                         case '\r':
                         case '\n':
                             // New Line
-                            this.ConsumeNewLine(true);
-                            this.LastTokenType = Token.EOL;
-                            return new EOLToken(this.StartLine, this.StartPosition);
+                            ConsumeNewLine(true);
+                            LastTokenType = Token.EOL;
+                            return new EOLToken(StartLine, StartPosition);
 
                         case '"':
                             // Start of a Quoted Field
-                            return this.TryGetQuotedField();
+                            return TryGetQuotedField();
 
                         default:
                             // Start of an Unquoted Field
-                            return this.TryGetUnquotedField();
+                            return TryGetUnquotedField();
                     }
 
                 }
                 catch (IOException)
                 {
                     // End Of Stream Check
-                    if (this._in.EndOfStream)
+                    if (_in.EndOfStream)
                     {
                         // At End of Stream so produce the EOFToken
-                        return new EOFToken(this.CurrentLine, this.CurrentPosition);
+                        return new EOFToken(CurrentLine, CurrentPosition);
                     }
                     else
                     {
@@ -152,40 +152,40 @@ namespace VDS.RDF.Parsing.Tokens
 
         private IToken TryGetUnquotedField()
         {
-            char next = this.Peek();
+            char next = Peek();
             while (next != ',' && next != '\n' && next != '\r')
             {
-                this.ConsumeCharacter();
-                next = this.Peek();
+                ConsumeCharacter();
+                next = Peek();
             }
 
-            if (this.Value.StartsWith("_:"))
+            if (Value.StartsWith("_:"))
             {
-                return new BlankNodeWithIDToken(this.Value, this.StartLine, this.StartPosition, this.EndPosition);
+                return new BlankNodeWithIDToken(Value, StartLine, StartPosition, EndPosition);
             }
             else
             {
-                return new PlainLiteralToken(this.Value, this.StartLine, this.StartPosition, this.EndPosition);
+                return new PlainLiteralToken(Value, StartLine, StartPosition, EndPosition);
             }
         }
 
         private IToken TryGetQuotedField()
         {
-            this.ConsumeCharacter();
-            char next = this.Peek();
+            ConsumeCharacter();
+            char next = Peek();
             do
             {
                 if (next == '"')
                 {
                     // May be end of quoted field unless followed immediately by another quote
-                    this.ConsumeCharacter();
-                    next = this.Peek();
+                    ConsumeCharacter();
+                    next = Peek();
                     if (next == '"')
                     {
                         // Just a "" to escape a quote, skip the 2nd quote and continue
-                        this.SkipCharacter();
+                        SkipCharacter();
                     }
-                    else if (next == ',' || next == '\n' || next == '\r' || this._in.EndOfStream)
+                    else if (next == ',' || next == '\n' || next == '\r' || _in.EndOfStream)
                     {
                         // Otherwise if a comma/new line/EOF it's the end of the field
                         break;
@@ -199,24 +199,24 @@ namespace VDS.RDF.Parsing.Tokens
                 else if (next == '\r' || next == '\n')
                 {
                     // New lines are permitted inside quoted fields, use consume method to consume correctly
-                    this.ConsumeNewLine(true, false);
+                    ConsumeNewLine(true, false);
                 }
-                else if (this._in.EndOfStream)
+                else if (_in.EndOfStream)
                 {
                     throw UnexpectedEndOfInput("quoted field");
                 }
                 else
                 {
                     // Any other character has literal meaning and is consumed as-is
-                    this.ConsumeCharacter();
+                    ConsumeCharacter();
                 }
 
-                if (this._in.EndOfStream) throw UnexpectedEndOfInput("quoted field");
+                if (_in.EndOfStream) throw UnexpectedEndOfInput("quoted field");
 
-                next = this.Peek();
+                next = Peek();
             } while (true);
 
-            return new LiteralToken(this.Value, this.StartLine, this.EndLine, this.StartPosition, this.EndPosition);
+            return new LiteralToken(Value, StartLine, EndLine, StartPosition, EndPosition);
         }
     }
 }

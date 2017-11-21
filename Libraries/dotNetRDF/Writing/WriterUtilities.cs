@@ -271,7 +271,7 @@ namespace VDS.RDF.Writing
         /// <param name="explicitCollection">Whether the collection is explicit (specified using square bracket notation) or implicit (specified using normal parentheses)</param>
         public OutputRdfCollection(bool explicitCollection)
         {
-            this._explicit = explicitCollection;
+            _explicit = explicitCollection;
         }
 
         /// <summary>
@@ -281,7 +281,7 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._explicit;
+                return _explicit;
             }
         }
 
@@ -292,11 +292,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._written;
+                return _written;
             }
             set
             {
-                this._written = value;
+                _written = value;
             }
         }
 
@@ -307,7 +307,7 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._triples;
+                return _triples;
             }
         }
     }

@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="vars">Variables</param>
         public BindingsPattern(IEnumerable<String> vars)
         {
-            this._vars.AddRange(vars);
+            _vars.AddRange(vars);
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._vars;
+                return _vars;
             }
         }
 
@@ -71,7 +71,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public IEnumerable<String> FixedVariables
         {
-            get { return this._vars.Where(v => this._tuples.All(t => t.IsBound(v))); }
+            get { return _vars.Where(v => _tuples.All(t => t.IsBound(v))); }
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public IEnumerable<String> FloatingVariables
         {
-            get { return this._vars.Where(v => this._tuples.Any(t => !t.IsBound(v))); }
+            get { return _vars.Where(v => _tuples.Any(t => !t.IsBound(v))); }
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._tuples;
+                return _tuples;
             }
         }
 
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="t"></param>
         internal void AddTuple(BindingTuple t)
         {
-            this._tuples.Add(t);
+            _tuples.Add(t);
         }
 
         /// <summary>
@@ -108,14 +108,14 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public BaseMultiset ToMultiset()
         {
-            if (this._vars.Any())
+            if (_vars.Any())
             {
                 Multiset m = new Multiset();
-                foreach (String var in this._vars)
+                foreach (String var in _vars)
                 {
                     m.AddVariable(var);
                 }
-                foreach (BindingTuple tuple in this._tuples)
+                foreach (BindingTuple tuple in _tuples)
                 {
                     m.Add(new Set(tuple));
                 }
@@ -135,13 +135,13 @@ namespace VDS.RDF.Query.Patterns
         {
             StringBuilder output = new StringBuilder();
             output.Append("VALUES ( ");
-            foreach (String var in this._vars)
+            foreach (String var in _vars)
             {
                 output.Append("?" + var + " ");
             }
             output.AppendLine(")");
             output.AppendLine("{");
-            foreach (BindingTuple t in this._tuples)
+            foreach (BindingTuple t in _tuples)
             {
                 output.AppendLine("  " + t.ToString());
             }
@@ -167,7 +167,7 @@ namespace VDS.RDF.Query.Patterns
         {
             for (int i = 0; i < variables.Count; i++)
             {
-                this._values.Add(variables[i], values[i]);
+                _values.Add(variables[i], values[i]);
             }
         }
 
@@ -178,7 +178,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._values;
+                return _values;
             }
         }
 
@@ -191,8 +191,8 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                if (!this._values.ContainsKey(var)) throw new IndexOutOfRangeException();
-                PatternItem temp = this._values[var];
+                if (!_values.ContainsKey(var)) throw new IndexOutOfRangeException();
+                PatternItem temp = _values[var];
                 if (temp is NodeMatchPattern)
                 {
                     return ((NodeMatchPattern)temp).Node;
@@ -211,7 +211,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._values.Count == 0;
+                return _values.Count == 0;
             }
         }
 
@@ -222,7 +222,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._values.Values.All(v => v != null);
+                return _values.Values.All(v => v != null);
             }
         }
 
@@ -231,10 +231,9 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         /// <param name="var">Variable</param>
         /// <returns>True if the variable exists in the tuple and is bound, false otherwise</returns>
-        public bool IsBound(String var)
+        public bool IsBound(string var)
         {
-            PatternItem value;
-            return this._values.TryGetValue(var, out value) && value != null;
+            return _values.TryGetValue(var, out var value) && value != null;
         }
 
         /// <summary>
@@ -243,13 +242,13 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public override string ToString()
         {
- 	        StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append("( ");
-            foreach (PatternItem p in this._values.Values)
+            foreach (var p in _values.Values)
             {
                 if (p != null) 
                 {
-                    output.Append(p.ToString() + " ");
+                    output.Append(p + " ");
                 } 
                 else 
                 {

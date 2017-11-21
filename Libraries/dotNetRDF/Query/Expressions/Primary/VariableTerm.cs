@@ -45,12 +45,12 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <param name="name">Variable Name</param>
         public VariableTerm(String name)
         {
-            this._name = name;
+            _name = name;
 
             // Strip leading ?/$ if present
-            if (this._name.StartsWith("?") || this._name.StartsWith("$"))
+            if (_name.StartsWith("?") || _name.StartsWith("$"))
             {
-                this._name = this._name.Substring(1);
+                _name = _name.Substring(1);
             }
         }
         
@@ -62,7 +62,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            INode value = context.Binder.Value(this._name, bindingID);
+            INode value = context.Binder.Value(_name, bindingID);
             return value.AsValuedNode();
         }
 
@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <returns></returns>
         public override string ToString()
         {
-            return "?" + this._name;
+            return "?" + _name;
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         {
             get
             {
-                return this._name.AsEnumerable();
+                return _name.AsEnumerable();
             }
         }
 

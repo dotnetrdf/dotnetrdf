@@ -59,14 +59,14 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="propertyFunction">Property Function</param>
         public PropertyFunctionPattern(IEnumerable<ITriplePattern> origPatterns, IEnumerable<PatternItem> lhsArgs, IEnumerable<PatternItem> rhsArgs, ISparqlPropertyFunction propertyFunction)
         {
-            this._patterns = origPatterns.ToList();
-            this._lhsArgs = lhsArgs.ToList();
-            this._rhsArgs = rhsArgs.ToList();
-            this._function = propertyFunction;
+            _patterns = origPatterns.ToList();
+            _lhsArgs = lhsArgs.ToList();
+            _rhsArgs = rhsArgs.ToList();
+            _function = propertyFunction;
 
-            foreach (PatternItem item in this._lhsArgs.Concat(this._rhsArgs))
+            foreach (PatternItem item in _lhsArgs.Concat(_rhsArgs))
             {
-                if (item.VariableName != null && !this._vars.Contains(item.VariableName)) this._vars.Add(item.VariableName);
+                if (item.VariableName != null && !_vars.Contains(item.VariableName)) _vars.Add(item.VariableName);
             }
         }
 
@@ -88,7 +88,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._lhsArgs;
+                return _lhsArgs;
             }
         }
 
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._rhsArgs;
+                return _rhsArgs;
             }
         }
 
@@ -110,7 +110,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._patterns;
+                return _patterns;
             }
         }
 
@@ -121,7 +121,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._function;
+                return _function;
             }
         }
 
@@ -136,7 +136,7 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Returns all variables mentioned in the property function as we can't guarantee they are bound
         /// </summary>
-        public override IEnumerable<string> FloatingVariables { get { return this._vars; } }
+        public override IEnumerable<string> FloatingVariables { get { return _vars; } }
 
         /// <summary>
         /// Evaluates the property function
@@ -144,7 +144,7 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="context">Evaluation Context</param>
         public override void Evaluate(SparqlEvaluationContext context)
         {
-            context.OutputMultiset = this._function.Evaluate(context);
+            context.OutputMultiset = _function.Evaluate(context);
         }
 
         /// <summary>
@@ -165,7 +165,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get 
             {
-                return !this._vars.Any(v => v.StartsWith("_:"));
+                return !_vars.Any(v => v.StartsWith("_:"));
             }
         }
 
@@ -176,7 +176,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public int CompareTo(PropertyFunctionPattern other)
         {
-            return this.CompareTo((IPropertyFunctionPattern)other);
+            return CompareTo((IPropertyFunctionPattern)other);
         }
 
         /// <summary>
@@ -196,10 +196,10 @@ namespace VDS.RDF.Query.Patterns
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            if (this._lhsArgs.Count > 1)
+            if (_lhsArgs.Count > 1)
             {
                 output.Append("( ");
-                foreach (PatternItem arg in this._lhsArgs)
+                foreach (PatternItem arg in _lhsArgs)
                 {
                     output.Append(arg.ToString());
                     output.Append(' ');
@@ -208,15 +208,15 @@ namespace VDS.RDF.Query.Patterns
             }
             else
             {
-                output.Append(this._lhsArgs.First().ToString());
+                output.Append(_lhsArgs.First().ToString());
             }
             output.Append(" <");
-            output.Append(this._function.FunctionUri);
+            output.Append(_function.FunctionUri);
             output.Append("> ");
-            if (this._rhsArgs.Count > 1)
+            if (_rhsArgs.Count > 1)
             {
                 output.Append("( ");
-                foreach (PatternItem arg in this._rhsArgs)
+                foreach (PatternItem arg in _rhsArgs)
                 {
                     output.Append(arg.ToString());
                     output.Append(' ');
@@ -225,7 +225,7 @@ namespace VDS.RDF.Query.Patterns
             }
             else
             {
-                output.Append(this._rhsArgs.First().ToString());
+                output.Append(_rhsArgs.First().ToString());
             }
             output.Append(" .");
             return output.ToString();

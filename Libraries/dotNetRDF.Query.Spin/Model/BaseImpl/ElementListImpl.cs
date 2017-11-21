@@ -36,9 +36,7 @@ using VDS.RDF.Query.Spin.Util;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-
-    public class ElementListImpl : ElementImpl, IElementList
+    internal class ElementListImpl : ElementImpl, IElementList
     {
 
         public ElementListImpl(INode node, SpinProcessor spinModel)
@@ -89,7 +87,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        public List<IElement> getElements()
+        public new List<IElement> getElements()
         {
             List<IElement> results = new List<IElement>();
             IEnumerator<IResource> it = AsList().GetEnumerator();
@@ -254,7 +252,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        public String toString()
+        public new String toString()
         {
             StringBuilder sb = new StringBuilder();
             //ISparqlPrinter context = new StringSparqlPrinter(sb);

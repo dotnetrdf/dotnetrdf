@@ -45,11 +45,11 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// <param name="t">JSON Token for the Object that represents the Service</param>
         internal KnowledgeBase(JToken t)
         {
-            this._name = (String)t.SelectToken("name");
+            _name = (String)t.SelectToken("name");
             foreach (JToken svc in t.SelectToken("kb-services").Children())
             {
                 PelletService s = PelletService.CreateService(svc);
-                if (s != null) this._services.Add(s);
+                if (s != null) _services.Add(s);
             }
         }
 
@@ -60,7 +60,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         {
             get
             {
-                return this._name;
+                return _name;
             }
         }
 
@@ -71,7 +71,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         {
             get
             {
-                return this._services;
+                return _services;
             }
         }
 
@@ -82,7 +82,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// <returns></returns>
         public bool SupportsService(Type t)
         {
-            foreach (PelletService svc in this._services)
+            foreach (PelletService svc in _services)
             {
                 if (t.Equals(svc.GetType())) return true;
             }
@@ -98,7 +98,7 @@ namespace VDS.RDF.Query.Inference.Pellet
             where T : PelletService
         {
             Type target = typeof(T);
-            return this._services.Any(s => target.Equals(s.GetType()));
+            return _services.Any(s => target.Equals(s.GetType()));
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// <returns></returns>
         public bool SupportsService(String name)
         {
-            return this._services.Any(s => s.Name.Equals(name));
+            return _services.Any(s => s.Name.Equals(name));
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// </returns>
         public PelletService GetService(Type t)
         {
-            foreach (PelletService svc in this._services)
+            foreach (PelletService svc in _services)
             {
                 if (t.Equals(svc.GetType())) return svc;
             }
@@ -136,7 +136,7 @@ namespace VDS.RDF.Query.Inference.Pellet
             where T : PelletService
         {
             Type target = typeof(T);
-            foreach (PelletService svc in this._services)
+            foreach (PelletService svc in _services)
             {
                 if (target.Equals(svc.GetType())) return (T)svc;
             }
@@ -152,7 +152,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// </returns>
         public PelletService GetService(String name)
         {
-            return this._services.FirstOrDefault(s => s.Name.Equals(name));
+            return _services.FirstOrDefault(s => s.Name.Equals(name));
         }
 
         /// <summary>
@@ -162,7 +162,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// <returns></returns>
         public IEnumerable<PelletService> GetServices(Type t)
         {
-            return (from svc in this._services
+            return (from svc in _services
                     where t.Equals(svc.GetType())
                     select svc);
         }
@@ -174,7 +174,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// <returns></returns>
         public IEnumerable<PelletService> GetServices(String name)
         {
-            return this._services.Where(s => s.Name.Equals(name));
+            return _services.Where(s => s.Name.Equals(name));
         }
     }
 }

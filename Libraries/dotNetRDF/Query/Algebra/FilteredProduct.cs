@@ -51,9 +51,9 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="expr">Expression to filter with</param>
         public FilteredProduct(ISparqlAlgebra lhs, ISparqlAlgebra rhs, ISparqlExpression expr)
         {
-            this._lhs = lhs;
-            this._rhs = rhs;
-            this._expr = expr;
+            _lhs = lhs;
+            _rhs = rhs;
+            _expr = expr;
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._lhs;
+                return _lhs;
             }
         }
 
@@ -74,7 +74,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get 
             {
-                return this._rhs;
+                return _rhs;
             }
         }
 
@@ -87,11 +87,11 @@ namespace VDS.RDF.Query.Algebra
         {
             if (optimiser is IExpressionTransformer)
             {
-                return new FilteredProduct(optimiser.Optimise(this._lhs), optimiser.Optimise(this._rhs), ((IExpressionTransformer)optimiser).Transform(this._expr));
+                return new FilteredProduct(optimiser.Optimise(_lhs), optimiser.Optimise(_rhs), ((IExpressionTransformer)optimiser).Transform(_expr));
             }
             else
             {
-                return new FilteredProduct(optimiser.Optimise(this._lhs), optimiser.Optimise(this._rhs), this._expr);
+                return new FilteredProduct(optimiser.Optimise(_lhs), optimiser.Optimise(_rhs), _expr);
             }
         }
 
@@ -102,7 +102,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser)
         {
-            return new FilteredProduct(optimiser.Optimise(this._lhs), this._rhs, this._expr);
+            return new FilteredProduct(optimiser.Optimise(_lhs), _rhs, _expr);
         }
 
         /// <summary>
@@ -110,9 +110,9 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <param name="optimiser">Algebra Optimiser</param>
         /// <returns></returns>
-        public ISparqlAlgebra TransformRhs(Optimisation.IAlgebraOptimiser optimiser)
+        public ISparqlAlgebra TransformRhs(IAlgebraOptimiser optimiser)
         {
-            return new FilteredProduct(this._lhs, optimiser.Optimise(this._rhs), this._expr);
+            return new FilteredProduct(_lhs, optimiser.Optimise(_rhs), _expr);
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace VDS.RDF.Query.Algebra
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             BaseMultiset initialInput = context.InputMultiset;
-            BaseMultiset lhsResults = context.Evaluate(this._lhs);
+            BaseMultiset lhsResults = context.Evaluate(_lhs);
 
             if (lhsResults is NullMultiset || lhsResults.IsEmpty)
             {
@@ -134,7 +134,7 @@ namespace VDS.RDF.Query.Algebra
             {
 
                 context.InputMultiset = initialInput;
-                BaseMultiset rhsResults = context.Evaluate(this._rhs);
+                BaseMultiset rhsResults = context.Evaluate(_rhs);
                 if (rhsResults is NullMultiset || rhsResults.IsEmpty)
                 {
                     // If RHS Results are Null/Empty then end results will always be null so short circuit
@@ -144,7 +144,7 @@ namespace VDS.RDF.Query.Algebra
                 {
                     // Apply Filter over LHS Results only - defer evaluation to filter implementation
                     context.InputMultiset = lhsResults;
-                    UnaryExpressionFilter filter = new UnaryExpressionFilter(this._expr);
+                    UnaryExpressionFilter filter = new UnaryExpressionFilter(_expr);
                     filter.Evaluate(context);
                     context.OutputMultiset = lhsResults;
                 }
@@ -186,7 +186,7 @@ namespace VDS.RDF.Query.Algebra
                                 productSet.Add(z);
                                 try
                                 {
-                                    if (!this._expr.Evaluate(context, z.ID).AsSafeBoolean())
+                                    if (!_expr.Evaluate(context, z.ID).AsSafeBoolean())
                                     {
                                         // Means the expression evaluates to false so we discard the solution
                                         productSet.Remove(z.ID);
@@ -249,7 +249,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._lhs.Variables.Concat(this._rhs.Variables).Concat(this._expr.Variables).Distinct();
+                return _lhs.Variables.Concat(_rhs.Variables).Concat(_expr.Variables).Distinct();
             }
         }
 
@@ -261,8 +261,8 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 // Floating variables are those floating on either side which are not fixed
-                IEnumerable<String> floating = this._lhs.FloatingVariables.Concat(this._rhs.FloatingVariables).Distinct();
-                HashSet<String> fixedVars = new HashSet<string>(this.FixedVariables);
+                IEnumerable<String> floating = _lhs.FloatingVariables.Concat(_rhs.FloatingVariables).Distinct();
+                HashSet<String> fixedVars = new HashSet<string>(FixedVariables);
                 return floating.Where(v => !fixedVars.Contains(v));
             }
         }
@@ -275,7 +275,7 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 // Fixed variables are those fixed on either side
-                return this._lhs.FixedVariables.Concat(this._rhs.FixedVariables).Distinct();
+                return _lhs.FixedVariables.Concat(_rhs.FixedVariables).Distinct();
             }
         }
 
@@ -285,7 +285,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            ISparqlAlgebra algebra = new Filter(new Join(this._lhs, this._rhs), new UnaryExpressionFilter(this._expr));
+            ISparqlAlgebra algebra = new Filter(new Join(_lhs, _rhs), new UnaryExpressionFilter(_expr));
             return algebra.ToQuery();
         }
 
@@ -295,7 +295,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public Patterns.GraphPattern ToGraphPattern()
         {
-            ISparqlAlgebra algebra = new Filter(new Join(this._lhs, this._rhs), new UnaryExpressionFilter(this._expr));
+            ISparqlAlgebra algebra = new Filter(new Join(_lhs, _rhs), new UnaryExpressionFilter(_expr));
             return algebra.ToGraphPattern();
         }
 
@@ -305,7 +305,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "FilteredProduct(" + this._lhs.ToString() + ", " + this._rhs.ToString() + ", " + this._expr.ToString() + ")";
+            return "FilteredProduct(" + _lhs.ToString() + ", " + _rhs.ToString() + ", " + _expr.ToString() + ")";
         }
     }
 }

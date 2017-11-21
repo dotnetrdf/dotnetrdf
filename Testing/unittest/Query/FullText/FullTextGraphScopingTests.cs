@@ -89,7 +89,7 @@ namespace VDS.RDF.Query.FullText
             using (LuceneSearchProvider searcher = new LuceneSearchProvider(LucUtil.Version.LUCENE_30, this._index, new StandardAnalyzer(LucUtil.Version.LUCENE_30)))
             {
                 IEnumerable<IFullTextSearchResult> results = searcher.Match(new Uri[] { new Uri("http://g1") }, "sample");
-                Assert.Equal(1, results.Count());
+                Assert.Single(results);
                 Assert.Equal(new Uri("http://x"), ((IUriNode)results.First().Node).Uri);
             }
         }

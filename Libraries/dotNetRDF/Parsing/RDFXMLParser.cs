@@ -99,11 +99,11 @@ namespace VDS.RDF.Parsing
         {
             get
             {
-                return this._traceparsing;
+                return _traceparsing;
             }
             set
             {
-                this._traceparsing = value;
+                _traceparsing = value;
             }
         }
 
@@ -123,7 +123,7 @@ namespace VDS.RDF.Parsing
         /// <param name="mode">RDF/XML Parse Mode</param>
         public RdfXmlParser(RdfXmlParserMode mode)
         {
-            this._mode = mode;
+            _mode = mode;
         }
 
         #region Load Method Implementations
@@ -136,7 +136,7 @@ namespace VDS.RDF.Parsing
         public void Load(IGraph g, StreamReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-            this.Load(new GraphHandler(g), input);
+            Load(new GraphHandler(g), input);
         }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace VDS.RDF.Parsing
         public void Load(IGraph g, TextReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-            this.Load(new GraphHandler(g), input);
+            Load(new GraphHandler(g), input);
         }
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace VDS.RDF.Parsing
 
             // Open a Stream for the File and call other variant of Load
             StreamReader input = new StreamReader(File.OpenRead(filename), Encoding.UTF8);
-            this.Load(g, input);
+            Load(g, input);
         }
 
         /// <summary>
@@ -179,10 +179,10 @@ namespace VDS.RDF.Parsing
             // Issue a Warning if the Encoding of the Stream is not UTF-8
             if (!input.CurrentEncoding.Equals(Encoding.UTF8))
             {
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+                RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
             }
 
-            this.Load(handler, (TextReader)input);
+            Load(handler, (TextReader)input);
         }
 
         /// <summary>
@@ -198,20 +198,20 @@ namespace VDS.RDF.Parsing
             try
             {
                 // Silverlight only supports XmlReader not the full XmlDocument API
-                if (this._mode == RdfXmlParserMode.DOM)
+                if (_mode == RdfXmlParserMode.DOM)
                 {
                     // Load XML from Stream
                     XmlDocument doc = new XmlDocument();
                     doc.Load(input);
 
                     // Create a new Parser Context and Parse
-                    RdfXmlParserContext context = new RdfXmlParserContext(handler, doc, this._traceparsing);
-                    this.Parse(context);
+                    RdfXmlParserContext context = new RdfXmlParserContext(handler, doc, _traceparsing);
+                    Parse(context);
                 }
                 else
                 {
                     RdfXmlParserContext context = new RdfXmlParserContext(handler, input);
-                    this.Parse(context);
+                    Parse(context);
                 }
             }
             catch (XmlException xmlEx)
@@ -246,7 +246,7 @@ namespace VDS.RDF.Parsing
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-            this.Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
+            Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
         }
 
         /// <summary>
@@ -262,8 +262,8 @@ namespace VDS.RDF.Parsing
             try 
             {
                 // Create a new Parser Context and Parse
-                RdfXmlParserContext context = new RdfXmlParserContext(g, document, this._traceparsing);
-                this.Parse(context);
+                RdfXmlParserContext context = new RdfXmlParserContext(g, document, _traceparsing);
+                Parse(context);
             }
             catch (XmlException xmlEx)
             {
@@ -290,7 +290,7 @@ namespace VDS.RDF.Parsing
         /// <param name="warning">Warning Message</param>
         private void RaiseWarning(String warning)
         {
-            RdfReaderWarning d = this.Warning;
+            RdfReaderWarning d = Warning;
             if (d != null)
             {
                 d(warning);
@@ -313,7 +313,7 @@ namespace VDS.RDF.Parsing
                 context.Handler.StartRdf();
 
                 // Trace Parser Information
-                if (this._traceparsing)
+                if (_traceparsing)
                 {
                     Console.WriteLine("Trace Format is as follows:");
                     Console.WriteLine("NestingLevel EventType [Description]");
@@ -325,7 +325,7 @@ namespace VDS.RDF.Parsing
                 context.Namespaces.AddNamespace("xml", UriFactory.Create(XmlSpecsHelper.NamespaceXml));
 
                 // Process the Queue
-                this.ProcessEventQueue(context);
+                ProcessEventQueue(context);
 
                 context.Handler.EndRdf(true);
             }
@@ -355,7 +355,7 @@ namespace VDS.RDF.Parsing
 
             if (first is RootEvent)
             {
-                this.GrammarProductionDoc(context, (RootEvent)first);
+                GrammarProductionDoc(context, (RootEvent)first);
                 if (setBaseUri && !((RootEvent)first).BaseUri.Equals(String.Empty))
                 {
                     baseUri = UriFactory.Create(Tools.ResolveUri(((RootEvent)first).BaseUri, String.Empty));
@@ -365,7 +365,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                this.GrammarProductionRDF(context, (ElementEvent)first);
+                GrammarProductionRDF(context, (ElementEvent)first);
                 if (setBaseUri && !((ElementEvent)first).BaseUri.Equals(String.Empty))
                 {
                     baseUri = UriFactory.Create(Tools.ResolveUri(((ElementEvent)first).BaseUri, String.Empty));
@@ -388,9 +388,9 @@ namespace VDS.RDF.Parsing
         private void GrammarProductionDoc(RdfXmlParserContext context, RootEvent root)
         {
             // Tracing
-            if (this._traceparsing)
+            if (_traceparsing)
             {
-                this.ProductionTrace("Doc");
+                ProductionTrace("Doc");
             }
 
             // Call the RDF Production on the first child if it's an rdf:RDF element
@@ -401,7 +401,7 @@ namespace VDS.RDF.Parsing
                 ((context.Namespaces.HasNamespace(prefix) && context.Namespaces.GetNamespaceUri(prefix).AbsoluteUri.Equals(NamespaceMapper.RDF)) 
                  || root.DocumentElement.NamespaceAttributes.Any(ns => ns.Prefix.Equals(prefix) && ns.Uri.Equals(NamespaceMapper.RDF))))
             {
-                this.GrammarProductionRDF(context, root.Children[0]);
+                GrammarProductionRDF(context, root.Children[0]);
             }
             else
             {
@@ -409,7 +409,7 @@ namespace VDS.RDF.Parsing
                 // Drop first element from Queue (which will be a RootEvent)
                 // Skip straight to NodeElementList production
                 // context.Events.Dequeue();
-                this.GrammarProductionNodeElementList(context, context.Events);
+                GrammarProductionNodeElementList(context, context.Events);
             }
         }
 
@@ -421,9 +421,9 @@ namespace VDS.RDF.Parsing
         private void GrammarProductionRDF(RdfXmlParserContext context, ElementEvent element)
         {
             // Tracing
-            if (this._traceparsing)
+            if (_traceparsing)
             {
-                this.ProductionTrace("RDF", element);
+                ProductionTrace("RDF", element);
             }
 
             // Check Uri is correct
@@ -455,7 +455,7 @@ namespace VDS.RDF.Parsing
             IEventQueue<IRdfXmlEvent> subevents = new SublistEventQueue<IRdfXmlEvent>(context.Events, 1);
 
             // Call the NodeElementList Grammer Production
-            this.GrammarProductionNodeElementList(context, subevents);
+            GrammarProductionNodeElementList(context, subevents);
 
             // Next Event in queue should be an EndElementEvent or we Error
             IRdfXmlEvent next = context.Events.Dequeue();
@@ -476,9 +476,9 @@ namespace VDS.RDF.Parsing
         private void GrammarProductionNodeElementList(RdfXmlParserContext context, IEventQueue<IRdfXmlEvent> eventlist)
         {
             // Tracing
-            if (this._traceparsing)
+            if (_traceparsing)
             {
-                this.ProductionTrace("Node Element List");
+                ProductionTrace("Node Element List");
             }
 
             IRdfXmlEvent next;
@@ -507,7 +507,7 @@ namespace VDS.RDF.Parsing
                 } while (nesting > 0);
 
                 // Call the next Grammar Production
-                this.GrammarProductionNodeElement(context, subevents);
+                GrammarProductionNodeElement(context, subevents);
             }
         }
 
@@ -519,9 +519,9 @@ namespace VDS.RDF.Parsing
         private void GrammarProductionNodeElement(RdfXmlParserContext context, IEventQueue<IRdfXmlEvent> eventlist)
         {
             // Tracing
-            if (this._traceparsing)
+            if (_traceparsing)
             {
-                this.ProductionTracePartial("Node Element");
+                ProductionTracePartial("Node Element");
             }
 
             // Get First Event in the Queue
@@ -536,7 +536,7 @@ namespace VDS.RDF.Parsing
 
             // Check it has a valid Uri
             ElementEvent element = (ElementEvent)first;
-            if (this._traceparsing) this.ProductionTracePartial(element);
+            if (_traceparsing) ProductionTracePartial(element);
             // Start a new namespace scope
             ApplyNamespaces(context, element);
             if (!RdfXmlSpecsHelper.IsNodeElementUri(element.QName))
@@ -608,7 +608,7 @@ namespace VDS.RDF.Parsing
                 if (element.Subject is UriReferenceEvent)
                 {
                     UriReferenceEvent uri = (UriReferenceEvent)element.Subject;
-                    subj = this.Resolve(context, uri, element.BaseUri);
+                    subj = Resolve(context, uri, element.BaseUri);
                 }
                 else if (element.Subject is BlankNodeIDEvent)
                 {
@@ -641,14 +641,14 @@ namespace VDS.RDF.Parsing
             // Validate the ID (if any)
             if (!ID.Equals(String.Empty))
             {
-                this.ValidateID(context, ID, subj);
+                ValidateID(context, ID, subj);
             }
 
             if (!element.QName.Equals("rdf:Description") && !element.QName.Equals(":Description"))
             {
                 // Assert a Triple regarding Type
                 pred = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-                obj = this.Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
+                obj = Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
                 if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
             }
 
@@ -664,7 +664,7 @@ namespace VDS.RDF.Parsing
 
                         // Resolve URIRef into a Uri Node
                         UriReferenceEvent uriref = new UriReferenceEvent(attr.Value, attr.SourceXml);
-                        obj = this.Resolve(context, uriref, element.BaseUri);
+                        obj = Resolve(context, uriref, element.BaseUri);
 
                         if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
                     }
@@ -694,7 +694,7 @@ namespace VDS.RDF.Parsing
             {
                 children.Enqueue(eventlist.Dequeue());
             }
-            if (children.Count > 0) this.GrammarProductionPropertyElementList(context, children, element);
+            if (children.Count > 0) GrammarProductionPropertyElementList(context, children, element);
 
             // Check Last Event in queue is an EndElement event
             IRdfXmlEvent last = eventlist.Dequeue();
@@ -716,9 +716,9 @@ namespace VDS.RDF.Parsing
         private void GrammarProductionPropertyElementList(RdfXmlParserContext context, IEventQueue<IRdfXmlEvent> eventlist, IRdfXmlEvent parent)
         {
             // Tracing
-            if (this._traceparsing)
+            if (_traceparsing)
             {
-                this.ProductionTrace("Property Element List");
+                ProductionTrace("Property Element List");
             }
 
             IRdfXmlEvent next;
@@ -747,7 +747,7 @@ namespace VDS.RDF.Parsing
                 } while (nesting > 0);
 
                 // Call the next Grammar Production
-                if (subevents.Count > 0) this.GrammarProductionPropertyElement(context, subevents, parent);
+                if (subevents.Count > 0) GrammarProductionPropertyElement(context, subevents, parent);
             }
         }
 
@@ -760,9 +760,9 @@ namespace VDS.RDF.Parsing
         private void GrammarProductionPropertyElement(RdfXmlParserContext context, IEventQueue<IRdfXmlEvent> eventlist, IRdfXmlEvent parent)
         {
             // Tracing
-            if (this._traceparsing)
+            if (_traceparsing)
             {
-                this.ProductionTracePartial("Property Element");
+                ProductionTracePartial("Property Element");
             }
 
             // Get first thing from the Queue
@@ -778,7 +778,7 @@ namespace VDS.RDF.Parsing
 
             // Validate the Uri
             element = (ElementEvent)first;
-            if (this._traceparsing) this.ProductionTracePartial(element);
+            if (_traceparsing) ProductionTracePartial(element);
 
             // Start a new namespace scope
             ApplyNamespaces(context, element);
@@ -791,7 +791,7 @@ namespace VDS.RDF.Parsing
             // List Expansion
             if (element.QName.Equals("rdf:li"))
             {
-                UriReferenceEvent u = this.ListExpand(parent);
+                UriReferenceEvent u = ListExpand(parent);
                 element.SetUri(u);
             }
 
@@ -801,7 +801,7 @@ namespace VDS.RDF.Parsing
             // This call inserts the first element back at the head of the queue
             // Most of the sub-productions here need this
             // Would ideally use Stacks instead of Queues but Queues make more sense for most of the Parsing
-            this.QueueJump(eventlist, first);
+            QueueJump(eventlist, first);
 
             if (element.ParseType == RdfXmlParseType.None)
             {
@@ -810,17 +810,17 @@ namespace VDS.RDF.Parsing
                 if (next is ElementEvent)
                 {
                     // Resource
-                    this.GrammarProductionResourcePropertyElement(context, eventlist, parent);
+                    GrammarProductionResourcePropertyElement(context, eventlist, parent);
                 }
                 else if (next is TextEvent)
                 {
                     // Literal
-                    this.GrammarProductionLiteralPropertyElement(context, eventlist, parent);
+                    GrammarProductionLiteralPropertyElement(context, eventlist, parent);
                 }
                 else if (next is EndElementEvent)
                 {
                     // An Empty Property Element
-                    this.GrammarProductionEmptyPropertyElement(context, element, parent);
+                    GrammarProductionEmptyPropertyElement(context, element, parent);
                 }
                 else
                 {
@@ -832,24 +832,24 @@ namespace VDS.RDF.Parsing
             {
                 // A rdf:parseType="Literal" Property Element
 
-                this.GrammarProductionParseTypeLiteralPropertyElement(context, eventlist, parent);
+                GrammarProductionParseTypeLiteralPropertyElement(context, eventlist, parent);
             }
             else if (element.ParseType == RdfXmlParseType.Collection)
             {
                 // A rdf:parseType="Collection" Property Element
 
-                this.GrammarProductionParseTypeCollectionPropertyElement(context, eventlist, parent);
+                GrammarProductionParseTypeCollectionPropertyElement(context, eventlist, parent);
             }
             else if (element.ParseType == RdfXmlParseType.Resource)
             {
                 // A rdf:parseType="Resource" Property Element
 
-                this.GrammarProductionParseTypeResourcePropertyElement(context, eventlist, parent);
+                GrammarProductionParseTypeResourcePropertyElement(context, eventlist, parent);
             }
             else if (next is EndElementEvent)
             {
                 // An Empty Property Element
-                this.GrammarProductionEmptyPropertyElement(context, element, parent);
+                GrammarProductionEmptyPropertyElement(context, element, parent);
             }
             else
             {
@@ -868,9 +868,9 @@ namespace VDS.RDF.Parsing
         private void GrammarProductionResourcePropertyElement(RdfXmlParserContext context, IEventQueue<IRdfXmlEvent> eventlist, IRdfXmlEvent parent)
         {
             // Tracing
-            if (this._traceparsing)
+            if (_traceparsing)
             {
-                this.ProductionTracePartial("Resource Property Element");
+                ProductionTracePartial("Resource Property Element");
             }
 
             // Cast to an ElementEvent
@@ -879,7 +879,7 @@ namespace VDS.RDF.Parsing
             IRdfXmlEvent first = eventlist.Dequeue();
             IRdfXmlEvent next = eventlist.Peek();
             ElementEvent element = (ElementEvent)first;
-            if (this._traceparsing) this.ProductionTracePartial(element);
+            if (_traceparsing) ProductionTracePartial(element);
 
             // Start new namespace scope
             ApplyNamespaces(context, element);
@@ -914,7 +914,7 @@ namespace VDS.RDF.Parsing
             {
                 subevents.Enqueue(eventlist.Dequeue());
             }
-            this.GrammarProductionNodeElement(context, subevents);
+            GrammarProductionNodeElement(context, subevents);
 
             // Check Last is an EndElementEvent
             IRdfXmlEvent last = eventlist.Dequeue();
@@ -939,11 +939,11 @@ namespace VDS.RDF.Parsing
             // Validate the ID (if any)
             if (!ID.Equals(String.Empty))
             {
-                this.ValidateID(context, ID, subj);
+                ValidateID(context, ID, subj);
             }
 
             // Create a Predicate from this Element
-            pred = this.Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
+            pred = Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
 
             // Get the Object Node from the Child Node
             ElementEvent child = (ElementEvent)next;
@@ -960,9 +960,9 @@ namespace VDS.RDF.Parsing
                 // Get the Attribute Event and generate a Uri from it
                 AttributeEvent attr = element.Attributes.First();
                 UriReferenceEvent uriref = new UriReferenceEvent("#" + attr.Value, attr.SourceXml);
-                IUriNode uri = this.Resolve(context, uriref, element.BaseUri);
+                IUriNode uri = Resolve(context, uriref, element.BaseUri);
 
-                this.Reify(context, uri, subj, pred, obj);
+                Reify(context, uri, subj, pred, obj);
             }
 
             // End current namespace scope
@@ -978,9 +978,9 @@ namespace VDS.RDF.Parsing
         private void GrammarProductionLiteralPropertyElement(RdfXmlParserContext context, IEventQueue<IRdfXmlEvent> eventlist, IRdfXmlEvent parent)
         {
             // Tracing
-            if (this._traceparsing)
+            if (_traceparsing)
             {
-                this.ProductionTracePartial("Literal Property Element");
+                ProductionTracePartial("Literal Property Element");
             }
 
             // Get the 3 Events (should only be three)
@@ -996,7 +996,7 @@ namespace VDS.RDF.Parsing
             }
 
             ElementEvent element = (ElementEvent)first;
-            if (this._traceparsing) this.ProductionTracePartial(element);
+            if (_traceparsing) ProductionTracePartial(element);
 
             // Start a new namespace sscope
             ApplyNamespaces(context, element);
@@ -1044,11 +1044,11 @@ namespace VDS.RDF.Parsing
             // Validate the ID (if any)
             if (!ID.Equals(String.Empty))
             {
-                this.ValidateID(context, ID.Substring(1), subj);
+                ValidateID(context, ID.Substring(1), subj);
             }
 
             // Create a Predicate from this Element
-            pred = this.Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
+            pred = Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
 
             // Create an Object from the Text Event
             if (datatype.Equals(String.Empty))
@@ -1069,7 +1069,7 @@ namespace VDS.RDF.Parsing
 
                 // Resolve the Datatype Uri
                 UriReferenceEvent dtref = new UriReferenceEvent(datatype, String.Empty);
-                IUriNode dturi = this.Resolve(context, dtref, element.BaseUri);
+                IUriNode dturi = Resolve(context, dtref, element.BaseUri);
 
                 obj = context.Handler.CreateLiteralNode(text.Value, dturi.Uri);
             }
@@ -1082,9 +1082,9 @@ namespace VDS.RDF.Parsing
             {
                 // Resolve the Uri
                 UriReferenceEvent uriref = new UriReferenceEvent(ID, String.Empty);
-                IUriNode uri = this.Resolve(context, uriref,element.BaseUri);
+                IUriNode uri = Resolve(context, uriref,element.BaseUri);
 
-                this.Reify(context, uri, subj, pred, obj);
+                Reify(context, uri, subj, pred, obj);
             }
 
             // End namespace scope
@@ -1100,16 +1100,16 @@ namespace VDS.RDF.Parsing
         private void GrammarProductionParseTypeLiteralPropertyElement(RdfXmlParserContext context, IEventQueue<IRdfXmlEvent> eventlist, IRdfXmlEvent parent)
         {
             // Tracing
-            if (this._traceparsing)
+            if (_traceparsing)
             {
-                this.ProductionTracePartial("Parse Type Literal Property Element");
+                ProductionTracePartial("Parse Type Literal Property Element");
             }
 
             // Get the first Event, should be an ElementEvent
             // Type checking is done by the Parent Production
             IRdfXmlEvent first = eventlist.Dequeue();
             ElementEvent element = (ElementEvent)first;
-            if (this._traceparsing) this.ProductionTracePartial(element);
+            if (_traceparsing) ProductionTracePartial(element);
 
             // Start new namespace scope
             ApplyNamespaces(context, element);
@@ -1158,11 +1158,11 @@ namespace VDS.RDF.Parsing
             // Validate the ID (if any)
             if (!ID.Equals(String.Empty))
             {
-                this.ValidateID(context, ID.Substring(1), subj);
+                ValidateID(context, ID.Substring(1), subj);
             }
 
             // Create the Predicate from the Element
-            pred = this.Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
+            pred = Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
 
             // Create the Object from the Typed Literal
             TypedLiteralEvent tlit = (TypedLiteralEvent)lit;
@@ -1179,9 +1179,9 @@ namespace VDS.RDF.Parsing
             {
                 // Resolve the Uri
                 UriReferenceEvent uriref = new UriReferenceEvent(ID, String.Empty);
-                IUriNode uri = this.Resolve(context, uriref,element.BaseUri);
+                IUriNode uri = Resolve(context, uriref,element.BaseUri);
 
-                this.Reify(context, uri, subj, pred, obj);
+                Reify(context, uri, subj, pred, obj);
             }
 
             // Check for the last thing being an EndElement Event
@@ -1204,16 +1204,16 @@ namespace VDS.RDF.Parsing
         private void GrammarProductionParseTypeResourcePropertyElement(RdfXmlParserContext context, IEventQueue<IRdfXmlEvent> eventlist, IRdfXmlEvent parent)
         {
             // Tracing
-            if (this._traceparsing)
+            if (_traceparsing)
             {
-                this.ProductionTracePartial("Parse Type Resource Property Element");
+                ProductionTracePartial("Parse Type Resource Property Element");
             }
 
             // Get the first Event, should be an ElementEvent
             // Type checking is done by the Parent Production
             IRdfXmlEvent first = eventlist.Dequeue();
             ElementEvent element = (ElementEvent)first;
-            if (this._traceparsing) this.ProductionTracePartial(element);
+            if (_traceparsing) ProductionTracePartial(element);
 
             // Start a new namespace scope
             ApplyNamespaces(context, element);
@@ -1256,11 +1256,11 @@ namespace VDS.RDF.Parsing
             // Validate the ID (if any)
             if (!ID.Equals(String.Empty))
             {
-                this.ValidateID(context, ID.Substring(1), subj);
+                ValidateID(context, ID.Substring(1), subj);
             }
 
             // Create the Predicate from the Element
-            pred = this.Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
+            pred = Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
 
             // Generate a Blank Node ID for the Object
             obj = context.Handler.CreateBlankNode();
@@ -1273,9 +1273,9 @@ namespace VDS.RDF.Parsing
             {
                 // Resolve the Uri
                 UriReferenceEvent uriref = new UriReferenceEvent(ID, String.Empty);
-                IUriNode uri = this.Resolve(context, uriref,element.BaseUri);
+                IUriNode uri = Resolve(context, uriref,element.BaseUri);
 
-                this.Reify(context, uri, subj, pred, obj);
+                Reify(context, uri, subj, pred, obj);
             }
 
             // Get the next event in the Queue which should be either an Element Event or a End Element Event
@@ -1309,7 +1309,7 @@ namespace VDS.RDF.Parsing
                 subEvents.Enqueue(new EndElementEvent());
 
                 // Process with Node Element Production
-                this.GrammarProductionNodeElement(context, subEvents);
+                GrammarProductionNodeElement(context, subEvents);
 
                 // Get the last thing in the List
                 next = eventlist.Dequeue();
@@ -1338,16 +1338,16 @@ namespace VDS.RDF.Parsing
         private void GrammarProductionParseTypeCollectionPropertyElement(RdfXmlParserContext context, IEventQueue<IRdfXmlEvent> eventlist, IRdfXmlEvent parent)
         {
             // Tracing
-            if (this._traceparsing)
+            if (_traceparsing)
             {
-                this.ProductionTracePartial("Parse Type Collection Property Element");
+                ProductionTracePartial("Parse Type Collection Property Element");
             }
 
             // Get the first Event, should be an ElementEvent
             // Type checking is done by the Parent Production
             IRdfXmlEvent first = eventlist.Dequeue();
             ElementEvent element = (ElementEvent)first;
-            if (this._traceparsing) this.ProductionTracePartial(element);
+            if (_traceparsing) ProductionTracePartial(element);
 
             // Start a new namespace scope
             ApplyNamespaces(context, element);
@@ -1415,7 +1415,7 @@ namespace VDS.RDF.Parsing
                 } while (nesting > 0);
 
                 // Call the next Grammar Production
-                this.GrammarProductionNodeElement(context, subevents);
+                GrammarProductionNodeElement(context, subevents);
 
                 #endregion
             }
@@ -1432,11 +1432,11 @@ namespace VDS.RDF.Parsing
             // Validate the ID (if any)
             if (!ID.Equals(String.Empty))
             {
-                this.ValidateID(context, ID.Substring(1), subj);
+                ValidateID(context, ID.Substring(1), subj);
             }
 
             // Predicate from the Element
-            pred = this.Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
+            pred = Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
 
             if (seqNodes.Count > 0)
             {
@@ -1457,9 +1457,9 @@ namespace VDS.RDF.Parsing
                 {
                     // Resolve the Uri
                     UriReferenceEvent uriref = new UriReferenceEvent(ID, String.Empty);
-                    IUriNode uri = this.Resolve(context, uriref, element.BaseUri);
+                    IUriNode uri = Resolve(context, uriref, element.BaseUri);
 
-                    this.Reify(context, uri, subj, pred, b1);
+                    Reify(context, uri, subj, pred, b1);
                 }
 
                 // Set the first element in the list
@@ -1501,9 +1501,9 @@ namespace VDS.RDF.Parsing
                 {
                     // Resolve the Uri
                     UriReferenceEvent uriref = new UriReferenceEvent(ID, String.Empty);
-                    IUriNode uri = this.Resolve(context, uriref, element.BaseUri);
+                    IUriNode uri = Resolve(context, uriref, element.BaseUri);
 
-                    this.Reify(context, uri, subj, pred, obj);
+                    Reify(context, uri, subj, pred, obj);
                 }
             }
 
@@ -1527,9 +1527,9 @@ namespace VDS.RDF.Parsing
         private void GrammarProductionEmptyPropertyElement(RdfXmlParserContext context, ElementEvent element, IRdfXmlEvent parent)
         {
             // Tracing
-            if (this._traceparsing)
+            if (_traceparsing)
             {
-                this.ProductionTrace("Empty Property Element");
+                ProductionTrace("Empty Property Element");
             }
 
             // Start a new namespace scope
@@ -1548,7 +1548,7 @@ namespace VDS.RDF.Parsing
                 subj = parentEl.SubjectNode;
 
                 // Create the Predicate from the Element
-                pred = this.Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
+                pred = Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
 
                 // Create the Object
                 if (!element.Language.Equals(String.Empty))
@@ -1567,13 +1567,13 @@ namespace VDS.RDF.Parsing
                 if (element.Attributes.Count == 1)
                 {
                     // Validate the ID
-                    this.ValidateID(context, element.Attributes[0].Value, subj);
+                    ValidateID(context, element.Attributes[0].Value, subj);
 
                     // Resolve the Uri
                     UriReferenceEvent uriref = new UriReferenceEvent("#" + element.Attributes[0].Value, String.Empty);
-                    IUriNode uri = this.Resolve(context, uriref, element.BaseUri);
+                    IUriNode uri = Resolve(context, uriref, element.BaseUri);
 
-                    this.Reify(context, uri, subj, pred, obj);
+                    Reify(context, uri, subj, pred, obj);
                 }
 
             }
@@ -1584,7 +1584,7 @@ namespace VDS.RDF.Parsing
                 temp.Enqueue(element);
                 temp.Enqueue(new TextEvent(String.Empty, String.Empty));
                 temp.Enqueue(new EndElementEvent());
-                this.GrammarProductionLiteralPropertyElement(context, temp, parent);
+                GrammarProductionLiteralPropertyElement(context, temp, parent);
             }
             else
             {
@@ -1639,7 +1639,7 @@ namespace VDS.RDF.Parsing
                 {
                     // Resolve the Uri Reference
                     UriReferenceEvent uriref = (UriReferenceEvent)res;
-                    subj = this.Resolve(context, uriref, element.BaseUri);
+                    subj = Resolve(context, uriref, element.BaseUri);
                 }
                 else if (res is BlankNodeIDEvent)
                 {
@@ -1665,12 +1665,12 @@ namespace VDS.RDF.Parsing
                 // Validate the ID (if any)
                 if (!ID.Equals(String.Empty))
                 {
-                    this.ValidateID(context, ID.Substring(1), subj);
+                    ValidateID(context, ID.Substring(1), subj);
                 }
 
                 // Relate the Property element to its parent
                 parentEl = (ElementEvent)parent;
-                pred = this.Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
+                pred = Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
                 if (!context.Handler.HandleTriple(new Triple(parentEl.SubjectNode, pred, subj))) ParserHelper.Stop();
 
                 // Reify if applicable
@@ -1678,9 +1678,9 @@ namespace VDS.RDF.Parsing
                 {
                     // Resolve the Uri
                     UriReferenceEvent uriref = new UriReferenceEvent(ID, String.Empty);
-                    IUriNode uri = this.Resolve(context, uriref, element.BaseUri);
+                    IUriNode uri = Resolve(context, uriref, element.BaseUri);
 
-                    this.Reify(context, uri, parentEl.SubjectNode, pred, subj);
+                    Reify(context, uri, parentEl.SubjectNode, pred, subj);
                 }
 
                 // Process the rest of the Attributes
@@ -1693,7 +1693,7 @@ namespace VDS.RDF.Parsing
                         // Assert a Type Triple
                         UriReferenceEvent type = new UriReferenceEvent(a.Value, a.SourceXml);
                         pred = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-                        obj = this.Resolve(context, type, element.BaseUri);
+                        obj = Resolve(context, type, element.BaseUri);
 
                         if (!context.Handler.HandleTriple(new Triple(parentEl.SubjectNode, pred, obj))) ParserHelper.Stop();
                     }
@@ -1949,7 +1949,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public override string ToString()
         {
-            switch (this._mode)
+            switch (_mode)
             {
                 case RdfXmlParserMode.DOM:
                     return "RDF/XML (DOM)";

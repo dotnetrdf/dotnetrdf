@@ -45,8 +45,8 @@ namespace VDS.RDF.Parsing.Events
         /// <param name="info">Position Information</param>
         public BaseEvent(int eventType, PositionInfo info)
         {
-            this._eventtype = eventType;
-            this._pos = info;
+            _eventtype = eventType;
+            _pos = info;
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace VDS.RDF.Parsing.Events
         {
             get
             {
-                return this._eventtype;
+                return _eventtype;
             }
         }
 
@@ -77,7 +77,7 @@ namespace VDS.RDF.Parsing.Events
         {
             get
             {
-                return this._pos;
+                return _pos;
             }
         }
     }
@@ -99,7 +99,7 @@ namespace VDS.RDF.Parsing.Events
         public BaseRdfXmlEvent(int eventType, String sourceXml, PositionInfo pos)
             : base(eventType, pos)
         {
-            this._sourcexml = sourceXml;
+            _sourcexml = sourceXml;
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace VDS.RDF.Parsing.Events
         {
             get 
             {
-                return this._sourcexml;
+                return _sourcexml;
             }
         }
     }
@@ -139,10 +139,10 @@ namespace VDS.RDF.Parsing.Events
         public BaseRdfAEvent(int eventType, PositionInfo pos, IEnumerable<KeyValuePair<String, String>> attributes)
             : base(eventType, pos)
         {
-            this._attributes = new Dictionary<string, string>();
+            _attributes = new Dictionary<string, string>();
             foreach (KeyValuePair<String, String> attr in attributes)
             {
-                this._attributes.Add(attr.Key, attr.Value);
+                _attributes.Add(attr.Key, attr.Value);
             }
         }
 
@@ -153,7 +153,7 @@ namespace VDS.RDF.Parsing.Events
         {
             get 
             {
-                return this._attributes; 
+                return _attributes; 
             }
         }
 
@@ -164,7 +164,7 @@ namespace VDS.RDF.Parsing.Events
         /// <returns></returns>
         public bool HasAttribute(String name)
         {
-            return this._attributes.ContainsKey(name);
+            return _attributes.ContainsKey(name);
         }
 
         /// <summary>
@@ -176,7 +176,7 @@ namespace VDS.RDF.Parsing.Events
         {
             get
             {
-                return this._attributes[name];
+                return _attributes[name];
             }
         }
     }

@@ -62,10 +62,10 @@ namespace VDS.RDF
         /// Underlying Graph this is a wrapper around
         /// </summary>
         protected readonly IGraph _g;
-        private List<TriplePersistenceAction> _actions = new List<TriplePersistenceAction>();
+        private readonly List<TriplePersistenceAction> _actions = new List<TriplePersistenceAction>();
         private bool _alwaysQueueActions = false;
-        private TripleEventHandler TripleAddedHandler, TripleRemovedHandler;
-        private List<Triple> _temp;
+        private readonly TripleEventHandler _tripleAddedHandler;
+        private readonly TripleEventHandler _tripleRemovedHandler;
 
         /// <summary>
         /// Creates a new Graph Persistence Wrapper around a new Graph
@@ -90,12 +90,12 @@ namespace VDS.RDF
         public GraphPersistenceWrapper(IGraph g)
         {
             if (g == null) throw new ArgumentNullException("graph", "Wrapped Graph cannot be null");
-            this._g = g;
+            _g = g;
 
             // Create Event Handlers and attach to the Triple Collection
-            this.TripleAddedHandler = new TripleEventHandler(this.OnTripleAsserted);
-            this.TripleRemovedHandler = new TripleEventHandler(this.OnTripleRetracted);
-            this.AttachEventHandlers(this._g.Triples);
+            _tripleAddedHandler = new TripleEventHandler(OnTripleAsserted);
+            _tripleRemovedHandler = new TripleEventHandler(OnTripleRetracted);
+            AttachEventHandlers(_g.Triples);
         }
 
         /// <summary>
@@ -109,10 +109,12 @@ namespace VDS.RDF
         public GraphPersistenceWrapper(IGraph g, bool alwaysQueueActions)
             : this(g)
         {
-            this._alwaysQueueActions = alwaysQueueActions;
+            _alwaysQueueActions = alwaysQueueActions;
         }
 
 #if !NETCORE
+        private List<Triple> _temp;
+
         /// <summary>
         /// Deserialization Constructor
         /// </summary>
@@ -121,16 +123,16 @@ namespace VDS.RDF
         protected GraphPersistenceWrapper(SerializationInfo info, StreamingContext context)
             : this()
         {
-            this._temp = (List<Triple>)info.GetValue("triples", typeof(List<Triple>));   
+            _temp = (List<Triple>)info.GetValue("triples", typeof(List<Triple>));   
         }
 
         [OnDeserialized]
         private void OnDeserialized(StreamingContext context)
         {
-            if (this._temp != null)
+            if (_temp != null)
             {
-                this.Assert(this._temp);
-                this._temp = null;
+                Assert(_temp);
+                _temp = null;
             }
         }
 
@@ -141,7 +143,7 @@ namespace VDS.RDF
         /// </summary>
         ~GraphPersistenceWrapper()
         {
-            this.Dispose(false);
+            Dispose(false);
         }
 
         #region Wrappers around all the standard IGraph stuff
@@ -153,11 +155,11 @@ namespace VDS.RDF
         {
             get
             {
-                return this._g.BaseUri;
+                return _g.BaseUri;
             }
             set
             {
-                this._g.BaseUri = value;
+                _g.BaseUri = value;
             }
         }
 
@@ -168,7 +170,7 @@ namespace VDS.RDF
         {
             get 
             { 
-                return this._g.IsEmpty; 
+                return _g.IsEmpty; 
             }
         }
 
@@ -179,7 +181,7 @@ namespace VDS.RDF
         {
             get
             { 
-                return this._g.NamespaceMap; 
+                return _g.NamespaceMap; 
             }
         }
 
@@ -190,7 +192,7 @@ namespace VDS.RDF
         {
             get 
             { 
-                return this._g.Nodes; 
+                return _g.Nodes; 
             }
         }
 
@@ -201,7 +203,7 @@ namespace VDS.RDF
         {
             get 
             {
-                return this._g.Triples; 
+                return _g.Triples; 
             }
         }
 
@@ -211,11 +213,11 @@ namespace VDS.RDF
         /// <param name="t">Triple</param>
         public virtual bool Assert(Triple t)
         {
-            if (this._alwaysQueueActions || !this._g.Triples.Contains(t))
+            if (_alwaysQueueActions || !_g.Triples.Contains(t))
             {
-                t = t.CopyTriple(this._g);
-                this._g.Assert(t);
-                this._actions.Add(new TriplePersistenceAction(t));
+                t = t.CopyTriple(_g);
+                _g.Assert(t);
+                _actions.Add(new TriplePersistenceAction(t));
                 return true;
             }
             return false;
@@ -230,7 +232,7 @@ namespace VDS.RDF
             bool asserted = false;
             foreach (Triple t in ts)
             {
-                asserted = this.Assert(t) || asserted;
+                asserted = Assert(t) || asserted;
             }
             return asserted;
         }
@@ -241,10 +243,10 @@ namespace VDS.RDF
         /// <param name="t">Triple</param>
         public virtual bool Retract(Triple t)
         {
-            if (this._alwaysQueueActions || this._g.Triples.Contains(t))
+            if (_alwaysQueueActions || _g.Triples.Contains(t))
             {
-                this._g.Retract(t);
-                this._actions.Add(new TriplePersistenceAction(t, true));
+                _g.Retract(t);
+                _actions.Add(new TriplePersistenceAction(t, true));
                 return true;
             }
             return false;
@@ -259,7 +261,7 @@ namespace VDS.RDF
             bool retracted = false;
             foreach (Triple t in ts)
             {
-                retracted = this.Retract(t) || retracted;
+                retracted = Retract(t) || retracted;
             }
             return retracted;
         }
@@ -269,11 +271,11 @@ namespace VDS.RDF
         /// </summary>
         public void Clear()
         {
-            foreach (Triple t in this._g.Triples)
+            foreach (Triple t in _g.Triples)
             {
-                this._actions.Add(new TriplePersistenceAction(t, true));
+                _actions.Add(new TriplePersistenceAction(t, true));
             }
-            this._g.Clear();
+            _g.Clear();
         }
 
         /// <summary>
@@ -283,7 +285,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IBlankNode CreateBlankNode(string nodeId)
         {
-            return this._g.CreateBlankNode(nodeId);
+            return _g.CreateBlankNode(nodeId);
         }
 
         /// <summary>
@@ -292,7 +294,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IBlankNode CreateBlankNode()
         {
-            return this._g.CreateBlankNode();
+            return _g.CreateBlankNode();
         }
 
         /// <summary>
@@ -301,7 +303,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public string GetNextBlankNodeID()
         {
-            return this._g.GetNextBlankNodeID();
+            return _g.GetNextBlankNodeID();
         }
 
         /// <summary>
@@ -311,7 +313,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IGraphLiteralNode CreateGraphLiteralNode(IGraph subgraph)
         {
-            return this._g.CreateGraphLiteralNode(subgraph);
+            return _g.CreateGraphLiteralNode(subgraph);
         }
 
         /// <summary>
@@ -320,7 +322,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IGraphLiteralNode CreateGraphLiteralNode()
         {
-            return this._g.CreateGraphLiteralNode();
+            return _g.CreateGraphLiteralNode();
         }
 
         /// <summary>
@@ -330,7 +332,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public ILiteralNode CreateLiteralNode(string literal)
         {
-            return this._g.CreateLiteralNode(literal);
+            return _g.CreateLiteralNode(literal);
         }
 
         /// <summary>
@@ -341,7 +343,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public ILiteralNode CreateLiteralNode(string literal, Uri datatype)
         {
-            return this._g.CreateLiteralNode(literal, datatype);
+            return _g.CreateLiteralNode(literal, datatype);
         }
 
         /// <summary>
@@ -352,7 +354,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public ILiteralNode CreateLiteralNode(string literal, string langspec)
         {
-            return this._g.CreateLiteralNode(literal, langspec);
+            return _g.CreateLiteralNode(literal, langspec);
         }
 
         /// <summary>
@@ -361,7 +363,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IUriNode CreateUriNode()
         {
-            return this._g.CreateUriNode();
+            return _g.CreateUriNode();
         }
 
         /// <summary>
@@ -371,7 +373,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IUriNode CreateUriNode(string qname)
         {
-            return this._g.CreateUriNode(qname);
+            return _g.CreateUriNode(qname);
         }
 
         /// <summary>
@@ -381,7 +383,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IUriNode CreateUriNode(Uri uri)
         {
-            return this._g.CreateUriNode(uri);
+            return _g.CreateUriNode(uri);
         }
 
         /// <summary>
@@ -391,7 +393,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IVariableNode CreateVariableNode(String varname)
         {
-            return this._g.CreateVariableNode(varname);
+            return _g.CreateVariableNode(varname);
         }
 
         /// <summary>
@@ -401,7 +403,7 @@ namespace VDS.RDF
         /// <returns>The Node if it exists or null</returns>
         public IBlankNode GetBlankNode(string nodeId)
         {
-            return this._g.GetBlankNode(nodeId);
+            return _g.GetBlankNode(nodeId);
         }
 
         /// <summary>
@@ -412,7 +414,7 @@ namespace VDS.RDF
         /// <returns>The Node if it exists or null</returns>
         public ILiteralNode GetLiteralNode(string literal, string langspec)
         {
-            return this._g.GetLiteralNode(literal, langspec);
+            return _g.GetLiteralNode(literal, langspec);
         }
 
         /// <summary>
@@ -422,7 +424,7 @@ namespace VDS.RDF
         /// <returns>The Node if it exists or null</returns>
         public ILiteralNode GetLiteralNode(string literal)
         {
-            return this._g.GetLiteralNode(literal);
+            return _g.GetLiteralNode(literal);
         }
 
         /// <summary>
@@ -433,7 +435,7 @@ namespace VDS.RDF
         /// <returns>The Node if it exists or null otherwise</returns>
         public ILiteralNode GetLiteralNode(string literal, Uri datatype)
         {
-            return this._g.GetLiteralNode(literal, datatype);
+            return _g.GetLiteralNode(literal, datatype);
         }
 
         /// <summary>
@@ -443,7 +445,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples</returns>
         public IEnumerable<Triple> GetTriples(Uri uri)
         {
-            return this._g.GetTriples(uri);
+            return _g.GetTriples(uri);
         }
 
         /// <summary>
@@ -453,7 +455,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples</returns>
         public IEnumerable<Triple> GetTriples(INode n)
         {
-            return this._g.GetTriples(n);
+            return _g.GetTriples(n);
         }
 
         /// <summary>
@@ -463,7 +465,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples</returns>
         public IEnumerable<Triple> GetTriplesWithObject(Uri u)
         {
-            return this._g.GetTriplesWithObject(u);
+            return _g.GetTriplesWithObject(u);
         }
 
         /// <summary>
@@ -473,7 +475,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithObject(INode n)
         {
-            return this._g.GetTriplesWithObject(n);
+            return _g.GetTriplesWithObject(n);
         }
 
         /// <summary>
@@ -483,7 +485,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithPredicate(INode n)
         {
-            return this._g.GetTriplesWithPredicate(n);
+            return _g.GetTriplesWithPredicate(n);
         }
 
         /// <summary>
@@ -493,7 +495,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples</returns>
         public IEnumerable<Triple> GetTriplesWithPredicate(Uri u)
         {
-            return this._g.GetTriplesWithPredicate(u);
+            return _g.GetTriplesWithPredicate(u);
         }
 
         /// <summary>
@@ -503,7 +505,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples</returns>
         public IEnumerable<Triple> GetTriplesWithSubject(INode n)
         {
-            return this._g.GetTriplesWithSubject(n);
+            return _g.GetTriplesWithSubject(n);
         }
 
         /// <summary>
@@ -513,7 +515,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples</returns>
         public IEnumerable<Triple> GetTriplesWithSubject(Uri u)
         {
-            return this._g.GetTriplesWithSubject(u);
+            return _g.GetTriplesWithSubject(u);
         }
 
         /// <summary>
@@ -524,7 +526,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred)
         {
-            return this._g.GetTriplesWithSubjectPredicate(subj, pred);
+            return _g.GetTriplesWithSubjectPredicate(subj, pred);
         }
 
         /// <summary>
@@ -535,7 +537,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj)
         {
-            return this._g.GetTriplesWithSubjectObject(subj, obj);
+            return _g.GetTriplesWithSubjectObject(subj, obj);
         }
 
         /// <summary>
@@ -546,7 +548,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
         {
-            return this._g.GetTriplesWithPredicateObject(pred, obj);
+            return _g.GetTriplesWithPredicateObject(pred, obj);
         }
 
         /// <summary>
@@ -556,7 +558,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IUriNode GetUriNode(string qname)
         {
-            return this._g.GetUriNode(qname);
+            return _g.GetUriNode(qname);
         }
 
         /// <summary>
@@ -566,7 +568,7 @@ namespace VDS.RDF
         /// <returns>Either the UriNode Or null if no Node with the given Uri exists</returns>
         public IUriNode GetUriNode(Uri uri)
         {
-            return this._g.GetUriNode(uri);
+            return _g.GetUriNode(uri);
         }
 
         /// <summary>
@@ -576,7 +578,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual bool ContainsTriple(Triple t)
         {
-            return this._g.ContainsTriple(t);
+            return _g.ContainsTriple(t);
         }
 
         /// <summary>
@@ -586,7 +588,7 @@ namespace VDS.RDF
         /// <remarks>The Graph on which you invoke this method will preserve its Blank Node IDs while the Blank Nodes from the Graph being merged in will be given new IDs as required in the scope of this Graph.</remarks>
         public virtual void Merge(IGraph g)
         {
-            this.Merge(g, false);
+            Merge(g, false);
         }
 
         /// <summary>
@@ -605,14 +607,14 @@ namespace VDS.RDF
         public virtual void Merge(IGraph g, bool keepOriginalGraphUri)
         {
             // First copy and Prefixes across which aren't defined in this Graph
-            this._g.NamespaceMap.Import(g.NamespaceMap);
+            _g.NamespaceMap.Import(g.NamespaceMap);
 
-            if (this.IsEmpty)
+            if (IsEmpty)
             {
                 // Empty Graph so do a quick copy
                 foreach (Triple t in g.Triples)
                 {
-                    this.Assert(new Triple(Tools.CopyNode(t.Subject, this._g, keepOriginalGraphUri), Tools.CopyNode(t.Predicate, this._g, keepOriginalGraphUri), Tools.CopyNode(t.Object, this._g, keepOriginalGraphUri)));
+                    Assert(new Triple(Tools.CopyNode(t.Subject, _g, keepOriginalGraphUri), Tools.CopyNode(t.Predicate, _g, keepOriginalGraphUri), Tools.CopyNode(t.Object, _g, keepOriginalGraphUri)));
                 }
             }
             else
@@ -626,7 +628,7 @@ namespace VDS.RDF
                     {
                         if (!mapping.ContainsKey(t.Subject))
                         {
-                            IBlankNode temp = this.CreateBlankNode();
+                            IBlankNode temp = CreateBlankNode();
                             if (keepOriginalGraphUri) temp.GraphUri = t.Subject.GraphUri;
                             mapping.Add(t.Subject, temp);
                         }
@@ -634,14 +636,14 @@ namespace VDS.RDF
                     }
                     else
                     {
-                        s = Tools.CopyNode(t.Subject, this._g, keepOriginalGraphUri);
+                        s = Tools.CopyNode(t.Subject, _g, keepOriginalGraphUri);
                     }
 
                     if (t.Predicate.NodeType == NodeType.Blank)
                     {
                         if (!mapping.ContainsKey(t.Predicate))
                         {
-                            IBlankNode temp = this.CreateBlankNode();
+                            IBlankNode temp = CreateBlankNode();
                             if (keepOriginalGraphUri) temp.GraphUri = t.Predicate.GraphUri;
                             mapping.Add(t.Predicate, temp);
                         }
@@ -649,14 +651,14 @@ namespace VDS.RDF
                     }
                     else
                     {
-                        p = Tools.CopyNode(t.Predicate, this._g, keepOriginalGraphUri);
+                        p = Tools.CopyNode(t.Predicate, _g, keepOriginalGraphUri);
                     }
 
                     if (t.Object.NodeType == NodeType.Blank)
                     {
                         if (!mapping.ContainsKey(t.Object))
                         {
-                            IBlankNode temp = this.CreateBlankNode();
+                            IBlankNode temp = CreateBlankNode();
                             if (keepOriginalGraphUri) temp.GraphUri = t.Object.GraphUri;
                             mapping.Add(t.Object, temp);
                         }
@@ -664,10 +666,10 @@ namespace VDS.RDF
                     }
                     else
                     {
-                        o = Tools.CopyNode(t.Object, this._g, keepOriginalGraphUri);
+                        o = Tools.CopyNode(t.Object, _g, keepOriginalGraphUri);
                     }
 
-                    this.Assert(new Triple(s, p, o));
+                    Assert(new Triple(s, p, o));
                 }
             }
         }
@@ -690,7 +692,7 @@ namespace VDS.RDF
             if (obj is IGraph)
             {
                 Dictionary<INode, INode> temp;
-                return this.Equals((IGraph)obj, out temp);
+                return Equals((IGraph)obj, out temp);
             }
             else
             {
@@ -746,7 +748,7 @@ namespace VDS.RDF
         /// </remarks>
         public bool Equals(IGraph g, out Dictionary<INode, INode> mapping)
         {
-            return this._g.Equals(g, out mapping);
+            return _g.Equals(g, out mapping);
         }
 
         /// <summary>
@@ -756,7 +758,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool IsSubGraphOf(IGraph g)
         {
-            return this._g.IsSubGraphOf(g);
+            return _g.IsSubGraphOf(g);
         }
 
         /// <summary>
@@ -767,7 +769,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool IsSubGraphOf(IGraph g, out Dictionary<INode, INode> mapping)
         {
-            return this._g.IsSubGraphOf(g, out mapping);
+            return _g.IsSubGraphOf(g, out mapping);
         }
 
         /// <summary>
@@ -777,7 +779,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool HasSubGraph(IGraph g)
         {
-            return this._g.HasSubGraph(g);
+            return _g.HasSubGraph(g);
         }
 
         /// <summary>
@@ -788,7 +790,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool HasSubGraph(IGraph g, out Dictionary<INode, INode> mapping)
         {
-            return this._g.HasSubGraph(g, out mapping);
+            return _g.HasSubGraph(g, out mapping);
         }
 
         /// <summary>
@@ -803,7 +805,7 @@ namespace VDS.RDF
         /// </remarks>
         public GraphDiffReport Difference(IGraph g)
         {
-            return this._g.Difference(g);
+            return _g.Difference(g);
         }
 
         /// <summary>
@@ -813,7 +815,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public Uri ResolveQName(string qname)
         {
-            return this._g.ResolveQName(qname);
+            return _g.ResolveQName(qname);
         }
 
         #endregion
@@ -862,7 +864,7 @@ namespace VDS.RDF
         /// <param name="args">Triple Event Arguments</param>
         protected virtual void OnTripleAsserted(Object sender, TripleEventArgs args)
         {
-            this.RaiseTripleAsserted(args);
+            RaiseTripleAsserted(args);
         }
 
         /// <summary>
@@ -871,13 +873,13 @@ namespace VDS.RDF
         /// <param name="args">Triple Event Arguments</param>
         protected void RaiseTripleAsserted(TripleEventArgs args)
         {
-            TripleEventHandler d = this.TripleAsserted;
+            TripleEventHandler d = TripleAsserted;
             args.Graph = this;
             if (d != null)
             {
                 d(this, args);
             }
-            this.RaiseGraphChanged(args);
+            RaiseGraphChanged(args);
         }
 
         /// <summary>
@@ -886,8 +888,8 @@ namespace VDS.RDF
         /// <param name="t">Triple</param>
         protected void RaiseTripleAsserted(Triple t)
         {
-            TripleEventHandler d = this.TripleAsserted;
-            GraphEventHandler e = this.Changed;
+            TripleEventHandler d = TripleAsserted;
+            GraphEventHandler e = Changed;
             if (d != null || e != null)
             {
                 TripleEventArgs args = new TripleEventArgs(t, this);
@@ -903,7 +905,7 @@ namespace VDS.RDF
         /// <param name="args">Triple Event Arguments</param>
         protected virtual void OnTripleRetracted(Object sender, TripleEventArgs args)
         {
-            this.RaiseTripleRetracted(args);
+            RaiseTripleRetracted(args);
         }
 
         /// <summary>
@@ -912,13 +914,13 @@ namespace VDS.RDF
         /// <param name="args"></param>
         protected void RaiseTripleRetracted(TripleEventArgs args)
         {
-            TripleEventHandler d = this.TripleRetracted;
+            TripleEventHandler d = TripleRetracted;
             args.Graph = this;
             if (d != null)
             {
                 d(this, args);
             }
-            this.RaiseGraphChanged(args);
+            RaiseGraphChanged(args);
         }
 
         /// <summary>
@@ -927,8 +929,8 @@ namespace VDS.RDF
         /// <param name="t">Triple</param>
         protected void RaiseTripleRetracted(Triple t)
         {
-            TripleEventHandler d = this.TripleRetracted;
-            GraphEventHandler e = this.Changed;
+            TripleEventHandler d = TripleRetracted;
+            GraphEventHandler e = Changed;
             if (d != null || e != null)
             {
                 TripleEventArgs args = new TripleEventArgs(t, this, false);
@@ -943,7 +945,7 @@ namespace VDS.RDF
         /// <param name="args">Triple Event Arguments</param>
         protected void RaiseGraphChanged(TripleEventArgs args)
         {
-            GraphEventHandler d = this.Changed;
+            GraphEventHandler d = Changed;
             if (d != null)
             {
                 d(this, new GraphEventArgs(this, args));
@@ -955,7 +957,7 @@ namespace VDS.RDF
         /// </summary>
         protected void RaiseGraphChanged()
         {
-            GraphEventHandler d = this.Changed;
+            GraphEventHandler d = Changed;
             if (d != null)
             {
                 d(this, new GraphEventArgs(this));
@@ -968,7 +970,7 @@ namespace VDS.RDF
         /// <returns>True if the operation can continue, false if it should be aborted</returns>
         protected bool RaiseClearRequested()
         {
-            CancellableGraphEventHandler d = this.ClearRequested;
+            CancellableGraphEventHandler d = ClearRequested;
             if (d != null)
             {
                 CancellableGraphEventArgs args = new CancellableGraphEventArgs(this);
@@ -986,7 +988,7 @@ namespace VDS.RDF
         /// </summary>
         protected void RaiseCleared()
         {
-            GraphEventHandler d = this.Cleared;
+            GraphEventHandler d = Cleared;
             if (d != null)
             {
                 d(this, new GraphEventArgs(this));
@@ -999,7 +1001,7 @@ namespace VDS.RDF
         /// <returns>True if the operation can continue, false if it should be aborted</returns>
         protected bool RaiseMergeRequested()
         {
-            CancellableGraphEventHandler d = this.MergeRequested;
+            CancellableGraphEventHandler d = MergeRequested;
             if (d != null)
             {
                 CancellableGraphEventArgs args = new CancellableGraphEventArgs(this);
@@ -1017,7 +1019,7 @@ namespace VDS.RDF
         /// </summary>
         protected void RaiseMerged()
         {
-            GraphEventHandler d = this.Merged;
+            GraphEventHandler d = Merged;
             if (d != null)
             {
                 d(this, new GraphEventArgs(this));
@@ -1033,8 +1035,8 @@ namespace VDS.RDF
         /// </remarks>
         protected void AttachEventHandlers(BaseTripleCollection tripleCollection)
         {
-            tripleCollection.TripleAdded += this.TripleAddedHandler;
-            tripleCollection.TripleRemoved += this.TripleRemovedHandler;
+            tripleCollection.TripleAdded += _tripleAddedHandler;
+            tripleCollection.TripleRemoved += _tripleRemovedHandler;
         }
 
         /// <summary>
@@ -1046,8 +1048,8 @@ namespace VDS.RDF
         /// </remarks>
         protected void DetachEventHandlers(BaseTripleCollection tripleCollection)
         {
-            tripleCollection.TripleAdded -= this.TripleAddedHandler;
-            tripleCollection.TripleRemoved -= this.TripleRemovedHandler;
+            tripleCollection.TripleAdded -= _tripleAddedHandler;
+            tripleCollection.TripleRemoved -= _tripleRemovedHandler;
         }
 
         #endregion
@@ -1059,29 +1061,29 @@ namespace VDS.RDF
         /// </summary>
         public void Flush()
         {
-            if (this._actions.Count > 0)
+            if (_actions.Count > 0)
             {
-                if (this.SupportsTriplePersistence)
+                if (SupportsTriplePersistence)
                 {
-                    TriplePersistenceAction action = this._actions[0];
+                    TriplePersistenceAction action = _actions[0];
                     bool isDelete = action.IsDelete;
                     List<Triple> ts = new List<Triple>();
                     ts.Add(action.Triple);
 
                     int i = 1;
-                    while (i < this._actions.Count)
+                    while (i < _actions.Count)
                     {
-                        action = this._actions[i];
+                        action = _actions[i];
                         if (action.IsDelete != isDelete)
                         {
                             // Action switches to/from delete so process the current batch then continue
                             if (isDelete)
                             {
-                                this.PersistDeletedTriples(ts);
+                                PersistDeletedTriples(ts);
                             }
                             else
                             {
-                                this.PersistInsertedTriples(ts);
+                                PersistInsertedTriples(ts);
                             }
                             isDelete = action.IsDelete;
                             ts.Clear();
@@ -1095,19 +1097,19 @@ namespace VDS.RDF
                     {
                         if (isDelete)
                         {
-                            this.PersistDeletedTriples(ts);
+                            PersistDeletedTriples(ts);
                         }
                         else
                         {
-                            this.PersistInsertedTriples(ts);
+                            PersistInsertedTriples(ts);
                         }
                     }
                 }
                 else
                 {
-                    this.PersistGraph();
+                    PersistGraph();
                 }
-                this._actions.Clear();
+                _actions.Clear();
             }
         }
 
@@ -1116,29 +1118,29 @@ namespace VDS.RDF
         /// </summary>
         public void Discard()
         {
-            int total = this._actions.Count;
-            int i = this._actions.Count - 1;
+            int total = _actions.Count;
+            int i = _actions.Count - 1;
             while (i >= 0)
             {
-                TriplePersistenceAction action = this._actions[i];
+                TriplePersistenceAction action = _actions[i];
                 if (action.IsDelete)
                 {
-                    this._g.Assert(action.Triple);
+                    _g.Assert(action.Triple);
                 }
                 else
                 {
-                    this._g.Retract(action.Triple);
+                    _g.Retract(action.Triple);
                 }
                 i--;
             }
 
-            if (total == this._actions.Count)
+            if (total == _actions.Count)
             {
-                this._actions.Clear();
+                _actions.Clear();
             }
             else
             {
-                this._actions.RemoveRange(0, total);
+                _actions.RemoveRange(0, total);
             }
         }
 
@@ -1191,7 +1193,7 @@ namespace VDS.RDF
         /// </summary>
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
         }
 
         /// <summary>
@@ -1201,7 +1203,7 @@ namespace VDS.RDF
         protected void Dispose(bool disposing)
         {
             if (disposing) GC.SuppressFinalize(this);
-            this.Flush();
+            Flush();
         }
 
 #if !NETCORE
@@ -1215,7 +1217,7 @@ namespace VDS.RDF
         /// <param name="context">Streaming Context</param>
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("triples", this.Triples.ToList(), typeof(List<Triple>));
+            info.AddValue("triples", Triples.ToList(), typeof(List<Triple>));
         }
 
         #endregion
@@ -1249,7 +1251,7 @@ namespace VDS.RDF
                         try
                         {
                             Object temp = tripleDeserializer.Deserialize(reader);
-                            this.Assert((Triple)temp);
+                            Assert((Triple)temp);
                             reader.Read();
                         }
                         catch
@@ -1273,7 +1275,7 @@ namespace VDS.RDF
         {
             XmlSerializer tripleSerializer = new XmlSerializer(typeof(Triple));
             writer.WriteStartElement("triples");
-            foreach (Triple t in this.Triples)
+            foreach (Triple t in Triples)
             {
                 tripleSerializer.Serialize(writer, t);
             }
@@ -1302,7 +1304,7 @@ namespace VDS.RDF
         /// <param name="writeOnly">Whether to operate in write-only mode</param>
         /// <remarks>
         /// <para>
-        /// <strong>Note:</strong> In order to operate in write-only mode the <see cref="IStorageProvider">IStorageProvider</see> must support triple level updates indicated by it returning true to its <see cref="IStorageProvider.UpdateSupported">UpdateSupported</see> property and the Graph to be wrapped must be an empty Graph
+        /// <strong>Note:</strong> In order to operate in write-only mode the <see cref="IStorageProvider">IStorageProvider</see> must support triple level updates indicated by it returning true to its <see cref="IStorageCapabilities.UpdateSupported">UpdateSupported</see> property and the Graph to be wrapped must be an empty Graph
         /// </para>
         /// </remarks>
         public StoreGraphPersistenceWrapper(IStorageProvider manager, IGraph g, Uri graphUri, bool writeOnly)
@@ -1313,8 +1315,8 @@ namespace VDS.RDF
             if (writeOnly && !manager.UpdateSupported) throw new ArgumentException("If writeOnly is set to true then the Generic IO Manager must support triple level updates", "writeOnly");
             if (writeOnly && !g.IsEmpty) throw new ArgumentException("If writeOnly is set to true then the input graph must be empty", "writeOnly");
 
-            this._manager = manager;
-            this.BaseUri = graphUri;
+            _manager = manager;
+            BaseUri = graphUri;
         }
 
         /// <summary>
@@ -1325,7 +1327,7 @@ namespace VDS.RDF
         /// <param name="writeOnly">Whether to operate in write-only mode</param>
         /// <remarks>
         /// <para>
-        /// <strong>Note:</strong> In order to operate in write-only mode the <see cref="IStorageProvider">IStorageProvider</see> must support triple level updates indicated by it returning true to its <see cref="IStorageProvider.UpdateSupported">UpdateSupported</see> property and the Graph to be wrapped must be an empty Graph
+        /// <strong>Note:</strong> In order to operate in write-only mode the <see cref="IStorageProvider">IStorageProvider</see> must support triple level updates indicated by it returning true to its <see cref="IStorageCapabilities.UpdateSupported">UpdateSupported</see> property and the Graph to be wrapped must be an empty Graph
         /// </para>
         /// </remarks>
         public StoreGraphPersistenceWrapper(IStorageProvider manager, IGraph g, bool writeOnly)
@@ -1347,7 +1349,7 @@ namespace VDS.RDF
         /// <param name="writeOnly">Whether to operate in write-only mode</param>
         /// <remarks>
         /// <para>
-        /// <strong>Note:</strong> In order to operate in write-only mode the <see cref="IStorageProvider">IStorageProvider</see> must support triple level updates indicated by it returning true to its <see cref="IStorageProvider.UpdateSupported">UpdateSupported</see> property
+        /// <strong>Note:</strong> In order to operate in write-only mode the <see cref="IStorageProvider">IStorageProvider</see> must support triple level updates indicated by it returning true to its <see cref="IStorageCapabilities.UpdateSupported">UpdateSupported</see> property
         /// </para>
         /// <para>
         /// When not operating in write-only mode the existing Graph will be loaded from the underlying store
@@ -1360,13 +1362,13 @@ namespace VDS.RDF
             if (manager.IsReadOnly) throw new ArgumentException("Cannot persist to a read-only Generic IO Manager", "manager");
             if (writeOnly && !manager.UpdateSupported) throw new ArgumentException("If writeOnly is set to true then the Generic IO Manager must support triple level updates", "writeOnly");
 
-            this._manager = manager;
-            this.BaseUri = graphUri;
+            _manager = manager;
+            BaseUri = graphUri;
 
             if (!writeOnly)
             {
                 // Load in the existing data
-                this._manager.LoadGraph(this._g, graphUri);
+                _manager.LoadGraph(_g, graphUri);
             }
         }
 
@@ -1385,7 +1387,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._manager.UpdateSupported;
+                return _manager.UpdateSupported;
             }
         }
 
@@ -1395,9 +1397,9 @@ namespace VDS.RDF
         /// <param name="ts">Triples</param>
         protected override void PersistDeletedTriples(IEnumerable<Triple> ts)
         {
-            if (this._manager.UpdateSupported)
+            if (_manager.UpdateSupported)
             {
-                this._manager.UpdateGraph(this.BaseUri, null, ts);
+                _manager.UpdateGraph(BaseUri, null, ts);
             }
             else
             {
@@ -1411,9 +1413,9 @@ namespace VDS.RDF
         /// <param name="ts">Triples</param>
         protected override void PersistInsertedTriples(IEnumerable<Triple> ts)
         {
-            if (this._manager.UpdateSupported)
+            if (_manager.UpdateSupported)
             {
-                this._manager.UpdateGraph(this.BaseUri, ts, null);
+                _manager.UpdateGraph(BaseUri, ts, null);
             }
             else
             {
@@ -1426,7 +1428,7 @@ namespace VDS.RDF
         /// </summary>
         protected override void PersistGraph()
         {
-            this._manager.SaveGraph(this);
+            _manager.SaveGraph(this);
         }
     }
 
@@ -1447,7 +1449,7 @@ namespace VDS.RDF
             : base(g)
         {
             if (filename == null) throw new ArgumentException("Cannot persist to a null Filename", "filename");
-            this._filename = filename;
+            _filename = filename;
         }
 
         /// <summary>
@@ -1464,7 +1466,7 @@ namespace VDS.RDF
 
             if (File.Exists(filename))
             {
-                this._g.LoadFromFile(filename);
+                _g.LoadFromFile(filename);
             }
         }
 
@@ -1484,7 +1486,7 @@ namespace VDS.RDF
         /// </summary>
         protected override void PersistGraph()
         {
-            this.SaveToFile(this._filename);
+            this.SaveToFile(_filename);
         }
     }
 }

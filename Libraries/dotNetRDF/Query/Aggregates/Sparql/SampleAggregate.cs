@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
                 {
 
                     // First non-null result we find is returned
-                    IValuedNode temp = this._expr.Evaluate(context, id);
+                    IValuedNode temp = _expr.Evaluate(context, id);
                     if (temp != null) return temp;
                 }
                 catch (RdfQueryException)
@@ -77,13 +77,13 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         /// <returns></returns>
         public override string ToString()
         {
-            if (this._distinct)
+            if (_distinct)
             {
-                return "SAMPLE(DISTINCT " + this._expr.ToString() + ")";
+                return "SAMPLE(DISTINCT " + _expr.ToString() + ")";
             }
             else
             {
-                return "SAMPLE(" + this._expr.ToString() + ")";
+                return "SAMPLE(" + _expr.ToString() + ")";
             }
         }
 

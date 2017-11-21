@@ -122,7 +122,7 @@ namespace VDS.RDF.Query.FullText
         {
             SparqlQuery q = this.TestOptimisation("SELECT * WHERE { ?s pf:textMatch 'value' . BIND(STR(?s) AS ?str) }");
             ISparqlAlgebra algebra = q.ToAlgebra();
-            Assert.False(algebra.ToString().Contains("PropertyFunction(Extend("));
+            Assert.DoesNotContain("PropertyFunction(Extend(", algebra.ToString());
         }
 
         [Fact]
@@ -130,7 +130,7 @@ namespace VDS.RDF.Query.FullText
         {
             SparqlQuery q = this.TestOptimisation("SELECT * WHERE { (?s ?score) pf:textMatch 'value' . BIND(STR(?s) AS ?str) }");
             ISparqlAlgebra algebra = q.ToAlgebra();
-            Assert.False(algebra.ToString().Contains("PropertyFunction(Extend("));
+            Assert.DoesNotContain("PropertyFunction(Extend(", algebra.ToString());
         }
 
         [Fact]
@@ -155,7 +155,7 @@ SELECT DISTINCT ?result ?isWebSite WHERE {
     } ORDER BY DESC(?isWebSite) DESC(?score) ASC(?label)";
             SparqlQuery q = this.TestOptimisation(query);
             ISparqlAlgebra algebra = q.ToAlgebra();
-            Assert.False(algebra.ToString().Contains("PropertyFunction(Extend("));
+            Assert.DoesNotContain("PropertyFunction(Extend(", algebra.ToString());
         }
     }
 

@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <param name="options">Options Expression</param>
         public ReplaceFunction(ISparqlExpression text, ISparqlExpression find, ISparqlExpression replace, ISparqlExpression options)
         {
-            this._textExpr = text;
+            _textExpr = text;
 
             // Get the Pattern
             if (find is ConstantTerm)
@@ -83,8 +83,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                         Regex temp = new Regex(p);
 
                         // It's a Valid Pattern
-                        this._fixedPattern = true;
-                        this._find = p;
+                        _fixedPattern = true;
+                        _find = p;
                     }
                     catch
                     {
@@ -92,7 +92,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                     }
                 }
             }
-            this._findExpr = find;
+            _findExpr = find;
 
             // Get the Replace
             if (replace is ConstantTerm)
@@ -101,20 +101,20 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                 IValuedNode n = replace.Evaluate(null, 0);
                 if (n.NodeType == NodeType.Literal)
                 {
-                    this._replace = n.AsString();
-                    this._fixedReplace = true;
+                    _replace = n.AsString();
+                    _fixedReplace = true;
                 }
             }
-            this._replaceExpr = replace;
+            _replaceExpr = replace;
 
             // Get the Options
             if (options != null)
             {
                 if (options is ConstantTerm)
                 {
-                    this.ConfigureOptions(options.Evaluate(null, 0), false);
+                    ConfigureOptions(options.Evaluate(null, 0), false);
                 }
-                this._optionExpr = options;
+                _optionExpr = options;
             }
         }
 
@@ -126,7 +126,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         private void ConfigureOptions(INode n, bool throwErrors)
         {
             // Start by resetting to no options
-            this._options = RegexOptions.None;
+            _options = RegexOptions.None;
 
             if (n == null)
             {
@@ -145,16 +145,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                         switch (c)
                         {
                             case 'i':
-                                this._options |= RegexOptions.IgnoreCase;
+                                _options |= RegexOptions.IgnoreCase;
                                 break;
                             case 'm':
-                                this._options |= RegexOptions.Multiline;
+                                _options |= RegexOptions.Multiline;
                                 break;
                             case 's':
-                                this._options |= RegexOptions.Singleline;
+                                _options |= RegexOptions.Singleline;
                                 break;
                             case 'x':
-                                this._options |= RegexOptions.IgnorePatternWhitespace;
+                                _options |= RegexOptions.IgnorePatternWhitespace;
                                 break;
                             default:
                                 if (throwErrors)
@@ -184,23 +184,23 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
             // Configure Options
-            if (this._optionExpr != null)
+            if (_optionExpr != null)
             {
-                this.ConfigureOptions(this._optionExpr.Evaluate(context, bindingID), true);
+                ConfigureOptions(_optionExpr.Evaluate(context, bindingID), true);
             }
 
             // Compile the Regex if necessary
-            if (!this._fixedPattern)
+            if (!_fixedPattern)
             {
                 // Regex is not pre-compiled
-                if (this._findExpr != null)
+                if (_findExpr != null)
                 {
-                    IValuedNode p = this._findExpr.Evaluate(context, bindingID);
+                    IValuedNode p = _findExpr.Evaluate(context, bindingID);
                     if (p != null)
                     {
                         if (p.NodeType == NodeType.Literal)
                         {
-                            this._find = p.AsString();
+                            _find = p.AsString();
                         }
                         else
                         {
@@ -218,16 +218,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                 }
             }
             // Compute the Replace if necessary
-            if (!this._fixedReplace)
+            if (!_fixedReplace)
             {
-                if (this._replaceExpr != null)
+                if (_replaceExpr != null)
                 {
-                    IValuedNode r = this._replaceExpr.Evaluate(context, bindingID);
+                    IValuedNode r = _replaceExpr.Evaluate(context, bindingID);
                     if (r != null)
                     {
                         if (r.NodeType == NodeType.Literal)
                         {
-                            this._replace = r.AsString();
+                            _replace = r.AsString();
                         }
                         else
                         {
@@ -246,7 +246,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             }
 
             // Execute the Regular Expression
-            IValuedNode textNode = this._textExpr.Evaluate(context, bindingID);
+            IValuedNode textNode = _textExpr.Evaluate(context, bindingID);
             if (textNode == null)
             {
                 throw new RdfQueryException("Cannot evaluate a Regular Expression against a NULL");
@@ -258,7 +258,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                 ILiteralNode lit = (ILiteralNode)textNode;
                 if (lit.DataType != null && !lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) throw new RdfQueryException("Text Argument to Replace must be of type xsd:string if a datatype is specified");
                 string text = lit.Value;
-                string output = Regex.Replace(text, this._find, this._replace, this._options);
+                string output = Regex.Replace(text, _find, _replace, _options);
 
                 if (lit.DataType != null)
                 {
@@ -290,32 +290,32 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             output.Append(XPathFunctionFactory.XPathFunctionsNamespace);
             output.Append(XPathFunctionFactory.Replace);
             output.Append(">(");
-            output.Append(this._textExpr.ToString());
+            output.Append(_textExpr.ToString());
             output.Append(",");
-            if (this._fixedPattern)
+            if (_fixedPattern)
             {
                 output.Append('"');
-                output.Append(this._find);
+                output.Append(_find);
                 output.Append('"');
             }
             else
             {
-                output.Append(this._findExpr.ToString());
+                output.Append(_findExpr.ToString());
             }
             output.Append(",");
-            if (this._fixedReplace)
+            if (_fixedReplace)
             {
                 output.Append('"');
-                output.Append(this._replace);
+                output.Append(_replace);
                 output.Append('"');
             }
-            else if (this._replaceExpr != null)
+            else if (_replaceExpr != null)
             {
-                output.Append(this._replaceExpr.ToString());
+                output.Append(_replaceExpr.ToString());
             }
-            if (this._optionExpr != null)
+            if (_optionExpr != null)
             {
-                output.Append("," + this._optionExpr.ToString());
+                output.Append("," + _optionExpr.ToString());
             }
             output.Append(")");
 
@@ -330,10 +330,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             get
             {
                 List<string> vs = new List<string>();
-                if (this._textExpr != null) vs.AddRange(this._textExpr.Variables);
-                if (this._findExpr != null) vs.AddRange(this._findExpr.Variables);
-                if (this._replaceExpr != null) vs.AddRange(this._replaceExpr.Variables);
-                if (this._optionExpr != null) vs.AddRange(this._optionExpr.Variables);
+                if (_textExpr != null) vs.AddRange(_textExpr.Variables);
+                if (_findExpr != null) vs.AddRange(_findExpr.Variables);
+                if (_replaceExpr != null) vs.AddRange(_replaceExpr.Variables);
+                if (_optionExpr != null) vs.AddRange(_optionExpr.Variables);
                 return vs;
             }
         }
@@ -367,13 +367,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         {
             get
             {
-                if (this._optionExpr != null)
+                if (_optionExpr != null)
                 {
-                    return new ISparqlExpression[] { this._textExpr, this._findExpr, this._replaceExpr, this._optionExpr };
+                    return new ISparqlExpression[] { _textExpr, _findExpr, _replaceExpr, _optionExpr };
                 }
                 else
                 {
-                    return new ISparqlExpression[] { this._textExpr, this._findExpr, this._replaceExpr };
+                    return new ISparqlExpression[] { _textExpr, _findExpr, _replaceExpr };
                 }
             }
         }
@@ -385,7 +385,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         {
             get
             {
-                return this._textExpr.CanParallelise && this._findExpr.CanParallelise && this._replaceExpr.CanParallelise && (this._optionExpr == null || this._optionExpr.CanParallelise);
+                return _textExpr.CanParallelise && _findExpr.CanParallelise && _replaceExpr.CanParallelise && (_optionExpr == null || _optionExpr.CanParallelise);
             }
         }
 
@@ -396,13 +396,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            if (this._optionExpr != null)
+            if (_optionExpr != null)
             {
-                return new ReplaceFunction(transformer.Transform(this._textExpr), transformer.Transform(this._findExpr), transformer.Transform(this._replaceExpr), transformer.Transform(this._optionExpr));
+                return new ReplaceFunction(transformer.Transform(_textExpr), transformer.Transform(_findExpr), transformer.Transform(_replaceExpr), transformer.Transform(_optionExpr));
             }
             else
             {
-                return new ReplaceFunction(transformer.Transform(this._textExpr), transformer.Transform(this._findExpr), transformer.Transform(this._replaceExpr));
+                return new ReplaceFunction(transformer.Transform(_textExpr), transformer.Transform(_findExpr), transformer.Transform(_replaceExpr));
             }
         }
     }

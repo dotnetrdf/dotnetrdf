@@ -79,7 +79,7 @@ namespace VDS.RDF.Configuration.Permissions
         /// <param name="action">Action</param>
         public Permission(String action)
         {
-            this._action = action;
+            _action = action;
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace VDS.RDF.Configuration.Permissions
         /// <returns></returns>
         public bool IsPermissionFor(String action)
         {
-            return this._action.Equals(action);
+            return _action.Equals(action);
         }
     }
 
@@ -106,7 +106,7 @@ namespace VDS.RDF.Configuration.Permissions
         /// <param name="action">Action</param>
         public PermissionSet(String action)
         {
-            this._actions.Add(action);
+            _actions.Add(action);
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace VDS.RDF.Configuration.Permissions
         /// <param name="actions">Actions</param>
         public PermissionSet(IEnumerable<String> actions)
         {
-            this._actions.AddRange(actions);
+            _actions.AddRange(actions);
         }
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace VDS.RDF.Configuration.Permissions
         /// <returns></returns>
         public bool IsPermissionFor(String action)
         {
-            return this._actions.Any(a => a.Equals(action));
+            return _actions.Any(a => a.Equals(action));
         }
     }
 }

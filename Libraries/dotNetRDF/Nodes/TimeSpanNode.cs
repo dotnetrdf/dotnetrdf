@@ -67,7 +67,7 @@ namespace VDS.RDF.Nodes
         public TimeSpanNode(IGraph g, TimeSpan value, String lexicalValue, Uri dtUri)
             : base(g, lexicalValue, dtUri)
         {
-            this._value = value;
+            _value = value;
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public string AsString()
         {
-            return this.Value;
+            return Value;
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public TimeSpan AsTimeSpan()
         {
-            return this._value;
+            return _value;
         }
 
         /// <summary>
@@ -158,7 +158,7 @@ namespace VDS.RDF.Nodes
         {
             get
             {
-                return this.DataType.AbsoluteUri;
+                return DataType.AbsoluteUri;
             }
         }
 

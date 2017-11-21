@@ -48,7 +48,7 @@ namespace VDS.RDF.Writing
         {
             using (var stream = File.Open(filename, FileMode.Create))
             {
-                this.Save(results, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
+                Save(results, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
             }
         }
 
@@ -73,8 +73,8 @@ namespace VDS.RDF.Writing
         {
             try
             {
-                XmlWriter writer = XmlWriter.Create(output, this.GetSettings());
-                this.GenerateOutput(results, writer);
+                XmlWriter writer = XmlWriter.Create(output, GetSettings());
+                GenerateOutput(results, writer);
                 output.Close();
             }
             catch
@@ -224,7 +224,7 @@ namespace VDS.RDF.Writing
         /// <param name="message">Warning Message</param>
         protected void RaiseWarning(String message)
         {
-            SparqlWarning d = this.Warning;
+            SparqlWarning d = Warning;
             if (d != null)
             {
                 d(message);

@@ -34,10 +34,10 @@ namespace VDS.RDF.Query.Spin.Model
      * 
      * @author Holger Knublauch
      */
-    public interface IElement : IPrintable, IResource
+    internal interface IElement : IPrintable, IResource
     {
 
-        /**
+        /*
          * Visits this with a given visitor.
          * @param visitor  the visitor to visit this with
          */

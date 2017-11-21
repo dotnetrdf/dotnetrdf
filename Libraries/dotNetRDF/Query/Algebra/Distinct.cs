@@ -47,7 +47,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="pattern">Pattern</param>
         public Distinct(ISparqlAlgebra pattern)
         {
-            this._pattern = pattern;
+            _pattern = pattern;
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Algebra
         public Distinct(ISparqlAlgebra algebra, bool ignoreTemporaryVariables)
             : this(algebra)
         {
-            this._trimTemporaryVariables = !ignoreTemporaryVariables;
+            _trimTemporaryVariables = !ignoreTemporaryVariables;
         }
 
         /// <summary>
@@ -68,14 +68,14 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            context.InputMultiset = context.Evaluate(this._pattern);
+            context.InputMultiset = context.Evaluate(_pattern);
 
             if (context.InputMultiset is IdentityMultiset || context.InputMultiset is NullMultiset)
             {
                 context.OutputMultiset = context.InputMultiset;
                 return context.OutputMultiset;
             }
-            if (this._trimTemporaryVariables)
+            if (_trimTemporaryVariables)
             {
                 // Trim temporary variables
                 context.InputMultiset.Trim();
@@ -98,19 +98,19 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._pattern.Variables;
+                return _pattern.Variables;
             }
         }
 
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
         /// </summary>
-        public IEnumerable<String> FloatingVariables { get { return this._pattern.FloatingVariables; } }
+        public IEnumerable<String> FloatingVariables { get { return _pattern.FloatingVariables; } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
         /// </summary>
-        public IEnumerable<String> FixedVariables { get { return this._pattern.FixedVariables; } }
+        public IEnumerable<String> FixedVariables { get { return _pattern.FixedVariables; } }
 
         /// <summary>
         /// Gets the Inner Algebra
@@ -119,7 +119,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._pattern;
+                return _pattern;
             }
         }
 
@@ -129,7 +129,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Distinct(" + this._pattern.ToString() + ")";
+            return "Distinct(" + _pattern.ToString() + ")";
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            SparqlQuery q = this._pattern.ToQuery();
+            SparqlQuery q = _pattern.ToQuery();
             switch (q.QueryType)
             {
                 case SparqlQueryType.Select:
@@ -183,7 +183,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new Distinct(optimiser.Optimise(this._pattern));
+            return new Distinct(optimiser.Optimise(_pattern));
         }
     }
 
@@ -201,7 +201,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="pattern">Pattern</param>
         public Reduced(ISparqlAlgebra pattern)
         {
-            this._pattern = pattern;
+            _pattern = pattern;
         }
 
         /// <summary>
@@ -211,7 +211,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            context.InputMultiset = context.Evaluate(this._pattern);//this._pattern.Evaluate(context);
+            context.InputMultiset = context.Evaluate(_pattern);//this._pattern.Evaluate(context);
 
             if (context.InputMultiset is IdentityMultiset || context.InputMultiset is NullMultiset)
             {
@@ -243,19 +243,19 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._pattern.Variables.Distinct();
+                return _pattern.Variables.Distinct();
             }
         }
 
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
         /// </summary>
-        public IEnumerable<String> FloatingVariables { get { return this._pattern.FloatingVariables; } }
+        public IEnumerable<String> FloatingVariables { get { return _pattern.FloatingVariables; } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
         /// </summary>
-        public IEnumerable<String> FixedVariables { get { return this._pattern.FixedVariables; } }
+        public IEnumerable<String> FixedVariables { get { return _pattern.FixedVariables; } }
 
         /// <summary>
         /// Gets the Inner Algebra
@@ -264,7 +264,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._pattern;
+                return _pattern;
             }
         }
 
@@ -274,7 +274,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Reduced(" + this._pattern.ToString() + ")";
+            return "Reduced(" + _pattern.ToString() + ")";
         }
 
         /// <summary>
@@ -283,7 +283,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            SparqlQuery q = this._pattern.ToQuery();
+            SparqlQuery q = _pattern.ToQuery();
             switch (q.QueryType)
             {
                 case SparqlQueryType.Select:
@@ -328,7 +328,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new Reduced(optimiser.Optimise(this._pattern));
+            return new Reduced(optimiser.Optimise(_pattern));
         }
     }
 }

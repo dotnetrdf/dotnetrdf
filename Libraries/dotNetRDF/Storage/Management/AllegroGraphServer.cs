@@ -69,18 +69,18 @@ namespace VDS.RDF.Storage.Management
         public AllegroGraphServer(String baseUri, String catalogID, String username, String password)
             : base(baseUri, username, password)
         {
-            this._baseUri = baseUri;
-            if (!this._baseUri.EndsWith("/")) this._baseUri += "/";
+            _baseUri = baseUri;
+            if (!_baseUri.EndsWith("/")) _baseUri += "/";
 #if NETCORE
             this._agraphBase = this._baseUri.Copy();
 #else
-            this._agraphBase = String.Copy(this._baseUri);
+            _agraphBase = String.Copy(_baseUri);
 #endif
             if (catalogID != null)
             {
-                this._baseUri += "catalogs/" + catalogID + "/";
+                _baseUri += "catalogs/" + catalogID + "/";
             }
-            this._catalog = catalogID;
+            _catalog = catalogID;
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace VDS.RDF.Storage.Management
         public AllegroGraphServer(String baseUri, String catalogID, String username, String password, IWebProxy proxy)
             : this(baseUri, catalogID, username, password)
         {
-            this.Proxy = proxy;
+            Proxy = proxy;
         }
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace VDS.RDF.Storage.Management
         /// <returns></returns>
         public override IEnumerable<IStoreTemplate> GetAvailableTemplates(String id)
         {
-            return this.GetDefaultTemplate(id).AsEnumerable();
+            return GetDefaultTemplate(id).AsEnumerable();
         }
 
         /// <summary>
@@ -163,9 +163,8 @@ namespace VDS.RDF.Storage.Management
             HttpWebResponse response = null;
             try
             {
-                Dictionary<String, String> createParams = new Dictionary<string, string>();
-                createParams.Add("override", "false");
-                request = this.CreateRequest("repositories/" + template.ID, "*/*", "PUT", createParams);
+                var createParams = new Dictionary<string, string> {{"override", "false"}};
+                request = CreateRequest("repositories/" + template.ID, "*/*", "PUT", createParams);
 
                 Tools.HttpDebugRequest(request);
 
@@ -209,7 +208,7 @@ namespace VDS.RDF.Storage.Management
         {
             try
             {
-                HttpWebRequest request = this.CreateRequest("repositories/" + storeID, "*/*", "DELETE", new Dictionary<string, string>());
+                HttpWebRequest request = CreateRequest("repositories/" + storeID, "*/*", "DELETE", new Dictionary<string, string>());
                 Tools.HttpDebugRequest(request);
 
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
@@ -233,7 +232,7 @@ namespace VDS.RDF.Storage.Management
             String data;
             try
             {
-                HttpWebRequest request = this.CreateRequest("repositories", "application/json", "GET", new Dictionary<string, string>());
+                HttpWebRequest request = CreateRequest("repositories", "application/json", "GET", new Dictionary<string, string>());
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     using (StreamReader reader = new StreamReader(response.GetResponseStream()))
@@ -249,12 +248,11 @@ namespace VDS.RDF.Storage.Management
                 throw StorageHelper.HandleHttpError(webEx, "list Stores from");
             }
 
-            JArray json = JArray.Parse(data);
-            List<String> stores = new List<string>();
-            foreach (JToken token in json.Children())
+            var json = JArray.Parse(data);
+            var stores = new List<string>();
+            foreach (var token in json.Children())
             {
-                JValue id = token["id"] as JValue;
-                if (id != null)
+                if (token["id"] is JValue id)
                 {
                     stores.Add(id.Value.ToString());
                 }
@@ -273,7 +271,7 @@ namespace VDS.RDF.Storage.Management
         public override IStorageProvider GetStore(String storeID)
         {
             // Otherwise return a new instance
-            return new AllegroGraphConnector(this._agraphBase, this._catalog, storeID, this._username, this._pwd, this.Proxy);
+            return new AllegroGraphConnector(_agraphBase, _catalog, storeID, _username, _pwd, Proxy);
         }
 
         /// <summary>
@@ -285,7 +283,7 @@ namespace VDS.RDF.Storage.Management
         {
             try
             {
-                HttpWebRequest request = this.CreateRequest("repositories", "application/json", "GET", new Dictionary<string, string>());
+                HttpWebRequest request = CreateRequest("repositories", "application/json", "GET", new Dictionary<string, string>());
                 request.BeginGetResponse(r =>
                 {
                     try
@@ -298,12 +296,11 @@ namespace VDS.RDF.Storage.Management
                             reader.Close();
                         }
 
-                        JArray json = JArray.Parse(data);
-                        List<String> stores = new List<string>();
-                        foreach (JToken token in json.Children())
+                        var json = JArray.Parse(data);
+                        var stores = new List<string>();
+                        foreach (var token in json.Children())
                         {
-                            JValue id = token["id"] as JValue;
-                            if (id != null)
+                            if (token["id"] is JValue id)
                             {
                                 stores.Add(id.Value.ToString());
                             }
@@ -364,9 +361,8 @@ namespace VDS.RDF.Storage.Management
         {
             try
             {
-                Dictionary<String, String> createParams = new Dictionary<string, string>();
-                createParams.Add("override", "false");
-                HttpWebRequest request = this.CreateRequest("repositories/" + template.ID, "*/*", "PUT", createParams);
+                var createParams = new Dictionary<string, string> {{"override", "false"}};
+                var request = CreateRequest("repositories/" + template.ID, "*/*", "PUT", createParams);
 
                 Tools.HttpDebugRequest(request);
 
@@ -386,8 +382,8 @@ namespace VDS.RDF.Storage.Management
                             if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                             
                             // Got a Response so we can analyse the Response Code
-                            HttpWebResponse response = (HttpWebResponse)webEx.Response;
-                            int code = (int)response.StatusCode;
+                            var response = (HttpWebResponse)webEx.Response;
+                            var code = (int)response.StatusCode;
                             if (code == 400)
                             {
                                 // 400 just means the store already exists so this is OK
@@ -442,16 +438,16 @@ namespace VDS.RDF.Storage.Management
         /// <summary>
         /// Deletes a Store from the server within the current catalog asynchronously
         /// </summary>
-        /// <param name="storeID">Store ID</param>
+        /// <param name="storeId">Store ID</param>
         /// <param name="callback">Callback</param>
         /// <param name="state">State to pass to callback</param>
-        public override void DeleteStore(string storeID, AsyncStorageCallback callback, object state)
+        public override void DeleteStore(string storeId, AsyncStorageCallback callback, object state)
         {
             try
             {
-                HttpWebRequest request = this.CreateRequest("repositories/" + storeID, "*/*", "DELETE", new Dictionary<string, string>());
+                var request = CreateRequest("repositories/" + storeId, "*/*", "DELETE", new Dictionary<string, string>());
 
-                    Tools.HttpDebugRequest(request);
+                Tools.HttpDebugRequest(request);
 
                 request.BeginGetResponse(r =>
                 {
@@ -462,25 +458,25 @@ namespace VDS.RDF.Storage.Management
                         
                         // If we get here then the operation completed OK
                         response.Close();
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID), state);
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeId), state);
                     }
                     catch (WebException webEx)
                     {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID, StorageHelper.HandleHttpError(webEx, "delete the Store '" + storeID + "; from")), state);
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeId, StorageHelper.HandleHttpError(webEx, "delete the Store '" + storeId + "; from")), state);
                     }
                     catch (Exception ex)
                     {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID, StorageHelper.HandleError(ex, "delete the Store '" + storeID + "' from")), state);
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeId, StorageHelper.HandleError(ex, "delete the Store '" + storeId + "' from")), state);
                     }
                 }, state);
             }
             catch (WebException webEx)
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID, StorageHelper.HandleHttpError(webEx, "delete the Store '" + storeID + "; from")), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeId, StorageHelper.HandleHttpError(webEx, "delete the Store '" + storeId + "; from")), state);
             }
             catch (Exception ex)
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID, StorageHelper.HandleError(ex, "delete the Store '" + storeID + "' from")), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeId, StorageHelper.HandleError(ex, "delete the Store '" + storeId + "' from")), state);
             }
         }
 
@@ -496,7 +492,7 @@ namespace VDS.RDF.Storage.Management
         /// </remarks>
         public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
         {
-            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new AllegroGraphConnector(this._agraphBase, this._catalog, storeID, this._username, this._pwd, this.Proxy)), state);
+            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new AllegroGraphConnector(_agraphBase, _catalog, storeID, _username, _pwd, Proxy)), state);
         }
 
         /// <summary>
@@ -541,27 +537,27 @@ namespace VDS.RDF.Storage.Management
             INode catalog = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyCatalog));
 
             context.Graph.Assert(new Triple(manager, rdfType, storageServer));
-            context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString())));
-            context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
-            if (this._catalog != null)
+            context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString())));
+            context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(GetType().FullName)));
+            if (_catalog != null)
             {
-                context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._baseUri.Substring(0, this._baseUri.IndexOf("catalogs/")))));
-                context.Graph.Assert(new Triple(manager, catalog, context.Graph.CreateLiteralNode(this._catalog)));
+                context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(_baseUri.Substring(0, _baseUri.IndexOf("catalogs/")))));
+                context.Graph.Assert(new Triple(manager, catalog, context.Graph.CreateLiteralNode(_catalog)));
             }
             else
             {
-                context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._baseUri)));
+                context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(_baseUri)));
             }
 
-            if (this._username != null && this._pwd != null)
+            if (_username != null && _pwd != null)
             {
                 INode username = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUser));
                 INode pwd = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPassword));
-                context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(this._username)));
-                context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(this._pwd)));
+                context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(_username)));
+                context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(_pwd)));
             }
 
-            base.SerializeStandardConfig(manager, context);
+            SerializeStandardConfig(manager, context);
         }
     }
 }

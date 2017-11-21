@@ -44,7 +44,7 @@ namespace VDS.RDF.Parsing.Handlers
         public CancellableHandler(IRdfHandler handler)
         {
             if (handler == null) throw new ArgumentNullException("handler", "Inner Handler cannot be null");
-            this._handler = handler;
+            _handler = handler;
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             get
             {
-                return this._handler.AsEnumerable();
+                return _handler.AsEnumerable();
             }
         }
 
@@ -66,7 +66,7 @@ namespace VDS.RDF.Parsing.Handlers
             // Note - We don't reset the cancelled flag here as it is possible that in an async environment that
             // Cancel() may get called before handling properly starts at which case we still need to cancel.
             // The cancelled flag only resets when handling ends
-            this._handler.StartRdf();
+            _handler.StartRdf();
         }
 
         /// <summary>
@@ -75,8 +75,8 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="ok">Indicates whether parsing completed without error</param>
         protected override void EndRdfInternal(bool ok)
         {
-            this._cancelled = false;
-            this._handler.EndRdf(ok);
+            _cancelled = false;
+            _handler.EndRdf(ok);
         }
 
         /// <summary>
@@ -86,8 +86,8 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
-            if (this._cancelled) return false;
-            return this._handler.HandleBaseUri(baseUri);
+            if (_cancelled) return false;
+            return _handler.HandleBaseUri(baseUri);
         }
 
         /// <summary>
@@ -98,8 +98,8 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
-            if (this._cancelled) return false;
-            return this._handler.HandleNamespace(prefix, namespaceUri);
+            if (_cancelled) return false;
+            return _handler.HandleNamespace(prefix, namespaceUri);
         }
 
         /// <summary>
@@ -109,8 +109,8 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
-            if (this._cancelled) return false;
-            return this._handler.HandleTriple(t);
+            if (_cancelled) return false;
+            return _handler.HandleTriple(t);
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         public void Cancel()
         {
-            this._cancelled = true;
+            _cancelled = true;
         }
     }
 }

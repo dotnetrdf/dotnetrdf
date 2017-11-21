@@ -120,13 +120,13 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._defaultGraphExists;
+                return _defaultGraphExists;
             }
             set
             {
-                if (!this._defaultGraphExists && value)
+                if (!_defaultGraphExists && value)
                 {
-                    this._defaultGraphExists = value;
+                    _defaultGraphExists = value;
                 }
             }
         }
@@ -138,11 +138,11 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._syntax;
+                return _syntax;
             }
             set
             {
-                this._syntax = value;
+                _syntax = value;
             }
         }
     }

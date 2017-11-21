@@ -48,8 +48,8 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         protected override void StartRdfInternal()
         {
-            this._counter = 0;
-            this._graphs = new HashSet<string>();
+            _counter = 0;
+            _graphs = new HashSet<string>();
         }
 
         /// <summary>
@@ -59,8 +59,8 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
-            this._counter++;
-            this._graphs.Add(t.GraphUri.ToSafeString());
+            _counter++;
+            _graphs.Add(t.GraphUri.ToSafeString());
             return true;
         }
 
@@ -71,7 +71,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             get
             {
-                return this._counter;
+                return _counter;
             }
         }
 
@@ -82,7 +82,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             get 
             {
-                return this._graphs.Count;
+                return _graphs.Count;
             }
         }
 

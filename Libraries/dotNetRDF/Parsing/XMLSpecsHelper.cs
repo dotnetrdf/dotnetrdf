@@ -158,8 +158,8 @@ namespace VDS.RDF.Parsing
             XmlSchemaDataTypeUnsignedByte,
             XmlSchemaDataTypeUnsignedInt,
             XmlSchemaDataTypeUnsignedLong,
-            XmlSchemaDataTypeUnsignedShort/*,
-            XmlSchemaDataTypeXmlLiteral*/
+            XmlSchemaDataTypeUnsignedShort,
+            /*XmlSchemaDataTypeXmlLiteral*/
         };
 
         #region Name Validation
@@ -313,7 +313,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static bool IsSupportedType(String type)
         {
-            return XmlSpecsHelper.SupportedTypes.Contains(type);
+            return SupportedTypes.Contains(type);
         }
 
         /// <summary>
@@ -366,7 +366,7 @@ namespace VDS.RDF.Parsing
                     else
                     {
                         String type = l.DataType.AbsoluteUri;
-                        if (XmlSpecsHelper.IsSupportedType(type))
+                        if (IsSupportedType(type))
                         {
                             return type;
                         }

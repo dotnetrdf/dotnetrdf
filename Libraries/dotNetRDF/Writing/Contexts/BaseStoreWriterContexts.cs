@@ -66,8 +66,8 @@ namespace VDS.RDF.Writing.Contexts
         /// <param name="output">TextWriter being written to</param>
         public BaseStoreWriterContext(ITripleStore store, TextWriter output)
         {
-            this._store = store;
-            this._output = output;
+            _store = store;
+            _output = output;
         }
 
         /// <summary>
@@ -80,8 +80,8 @@ namespace VDS.RDF.Writing.Contexts
         public BaseStoreWriterContext(ITripleStore store, TextWriter output, bool prettyPrint, bool hiSpeedAllowed)
             : this(store, output)
         {
-            this._prettyPrint = prettyPrint;
-            this._hiSpeedAllowed = hiSpeedAllowed;
+            _prettyPrint = prettyPrint;
+            _hiSpeedAllowed = hiSpeedAllowed;
         }
 
         /// <summary>
@@ -91,11 +91,11 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._prettyPrint;
+                return _prettyPrint;
             }
             set
             {
-                this._prettyPrint = value;
+                _prettyPrint = value;
             }
         }
 
@@ -106,11 +106,11 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._hiSpeedAllowed;
+                return _hiSpeedAllowed;
             }
             set
             {
-                this._hiSpeedAllowed = value;
+                _hiSpeedAllowed = value;
             }
         }
 
@@ -121,7 +121,7 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._store;
+                return _store;
             }
         }
 
@@ -132,7 +132,7 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._output;
+                return _output;
             }
         }
 
@@ -155,7 +155,7 @@ namespace VDS.RDF.Writing.Contexts
         /// <returns></returns>
         public virtual String FormatUri(Uri u)
         {
-            return this.FormatUri(u.AbsoluteUri);
+            return FormatUri(u.AbsoluteUri);
         }
     }
 }

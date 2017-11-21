@@ -42,7 +42,7 @@ namespace VDS.RDF.Parsing.Tokens
         public PathToken(ISparqlPath path)
             : base(Token.PATH, path.ToString(), 0, 0, 0, 0)
         {
-            this._path = path;
+            _path = path;
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get
             {
-                return this._path;
+                return _path;
             }
         }
     }

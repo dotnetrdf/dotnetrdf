@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordStrLen + "(" + this._expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordStrLen + "(" + _expr.ToString() + ")";
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new StrLenFunction(transformer.Transform(this._expr));
+            return new StrLenFunction(transformer.Transform(_expr));
         }
     }
 }

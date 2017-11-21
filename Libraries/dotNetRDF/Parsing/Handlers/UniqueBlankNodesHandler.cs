@@ -52,7 +52,7 @@ namespace VDS.RDF.Parsing.Handlers
         public UniqueBlankNodesHandler(IRdfHandler handler)
         {
             if (handler == null) throw new ArgumentNullException("handler");
-            this._handler = handler;
+            _handler = handler;
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             get
             {
-                return this._handler.AsEnumerable();
+                return _handler.AsEnumerable();
             }
         }
 
@@ -81,7 +81,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         protected override void StartRdfInternal()
         {
-            this._handler.StartRdf();
+            _handler.StartRdf();
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="ok">Whether parsing completed OK</param>
         protected override void EndRdfInternal(bool ok)
         {
-            this._handler.EndRdf(ok);
+            _handler.EndRdf(ok);
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
-            return this._handler.HandleBaseUri(baseUri);
+            return _handler.HandleBaseUri(baseUri);
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
-            return this._handler.HandleNamespace(prefix, namespaceUri);
+            return _handler.HandleNamespace(prefix, namespaceUri);
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
-            return this._handler.HandleTriple(t);
+            return _handler.HandleTriple(t);
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             get
             {
-                return this._handler.AcceptsAll;
+                return _handler.AcceptsAll;
             }
         }
     }

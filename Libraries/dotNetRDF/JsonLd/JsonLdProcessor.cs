@@ -504,7 +504,7 @@ namespace VDS.RDF.JsonLd
             if (containerValue != null)
             {
                 definition.ContainerMapping = ValidateContainerMapping(term, containerValue);
-                if (this.ProcessingMode == JsonLdProcessingMode.JsonLd10 &&
+                if (ProcessingMode == JsonLdProcessingMode.JsonLd10 &&
                     (definition.ContainerMapping == JsonLdContainer.Id ||
                     definition.ContainerMapping == JsonLdContainer.Type))
                 {
@@ -517,7 +517,7 @@ namespace VDS.RDF.JsonLd
             if (contextValue != null)
             {
                 // 17.1 - If processingMode is json-ld-1.0, an invalid term definition has been detected and processing is aborted.
-                if (this.ProcessingMode == JsonLdProcessingMode.JsonLd10)
+                if (ProcessingMode == JsonLdProcessingMode.JsonLd10)
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTermDefinition, $"Invalid Term Definition for term '{term}'. The @context property is not supported on a term definition when the processing mode is json-ld-1.0");
                 }
@@ -563,7 +563,7 @@ namespace VDS.RDF.JsonLd
             if(nestValue != null)
             {
                 // 19.1 - If processingMode is json-ld-1.0, an invalid term definition has been detected and processing is aborted.
-                if (this.ProcessingMode == JsonLdProcessingMode.JsonLd10)
+                if (ProcessingMode == JsonLdProcessingMode.JsonLd10)
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTermDefinition, $"Invalid Term Definition for term '{term}. Term definitions may not contain the @nest property when the processing mode is json-ld-1.0");
                 }

@@ -58,6 +58,7 @@ namespace VDS.RDF.Parsing
         {
         }
 
+        /// <inheritdoc/>
         protected override HtmlDocument LoadAndParse(TextReader input)
         {
             HtmlDocument doc = new HtmlDocument();
@@ -65,26 +66,31 @@ namespace VDS.RDF.Parsing
             return doc;
         }
 
+        /// <inheritdoc/>
         protected override bool HasAttribute(HtmlNode element, string attributeName)
         {
             return element.Attributes.Contains(attributeName);
         }
 
+        /// <inheritdoc/>
         protected override string GetAttribute(HtmlNode element, string attributeName)
         {
             return element.Attributes[attributeName].Value;
         }
 
+        /// <inheritdoc/>
         protected override void SetAttribute(HtmlNode element, string attributeName, string value)
         {
             element.Attributes.Add(attributeName, value);
         }
 
+        /// <inheritdoc/>
         protected override HtmlNode GetBaseElement(HtmlDocument document)
         {
             return document.DocumentNode.SelectSingleNode("/html/head/base");
         }
 
+        /// <inheritdoc/>
         protected override bool IsXmlBaseIsPermissible(HtmlDocument document)
         {
             HtmlNodeCollection docTypes = document.DocumentNode.SelectNodes("comment()");
@@ -112,61 +118,73 @@ namespace VDS.RDF.Parsing
             return true;
         }
 
+        /// <inheritdoc/>
         protected override HtmlNode GetHtmlElement(HtmlDocument document)
         {
             return document.DocumentNode.SelectSingleNode("html");
         }
 
+        /// <inheritdoc/>
         protected override void ProcessDocument(RdfAParserContext<HtmlDocument> context, RdfAEvaluationContext evalContext)
         {
             ProcessElement(context, evalContext, context.Document.DocumentNode);
         }
 
+        /// <inheritdoc/>
         protected override IEnumerable<HtmlAttribute> GetAttributes(HtmlNode element)
         {
             return element.Attributes;
         }
 
+        /// <inheritdoc/>
         protected override string GetAttributeName(HtmlAttribute attribute)
         {
             return attribute.Name;
         }
 
+        /// <inheritdoc/>
         protected override string GetAttributeValue(HtmlAttribute attribute)
         {
             return attribute.Value;
         }
 
+        /// <inheritdoc/>
         protected override string GetElementName(HtmlNode element)
         {
             return element.Name;
         }
 
+        /// <inheritdoc/>
         protected override IEnumerable<HtmlNode> GetChildren(HtmlNode element)
         {
             return element.ChildNodes;
         }
 
+        /// <inheritdoc/>
         protected override string GetInnerText(HtmlNode node)
         {
             return node.InnerText;
         }
 
+        /// <inheritdoc/>
         protected override string GetInnerHtml(HtmlNode element)
         {
             return element.InnerHtml;
         }
 
+        /// <inheritdoc/>
         protected override bool HasChildren(HtmlNode element)
         {
             return element.HasChildNodes;
         }
 
+        /// <inheritdoc/>
         protected override bool IsTextNode(HtmlNode node)
         {
             return node.NodeType == HtmlNodeType.Text;
         }
 
+        /// <inheritdoc/>
         protected override void GrabText(StringBuilder output, HtmlNode node)
         {
             switch (node.NodeType)
@@ -175,7 +193,7 @@ namespace VDS.RDF.Parsing
                 case HtmlNodeType.Element:
                     foreach (HtmlNode child in node.ChildNodes)
                     {
-                        this.GrabText(output, child);
+                        GrabText(output, child);
                     }
                     break;
                 case HtmlNodeType.Text:

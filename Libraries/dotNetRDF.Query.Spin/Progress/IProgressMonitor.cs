@@ -36,7 +36,7 @@ namespace VDS.RDF.Query.Spin.Progress
      * 
      * @author Holger Knublauch
      */
-    public interface IProgressMonitor
+    internal interface IProgressMonitor
     {
 
         bool isCanceled();

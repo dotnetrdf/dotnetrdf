@@ -28,11 +28,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.Common.Collections;
+using VDS.Common.Trees;
 
 namespace VDS.RDF
 {
     /// <summary>
-    /// An indexed triple collection that uses our <see cref="MultiDictionary{TKey,TValue}"/> and <see cref="BinaryTree{TNode,TKey,TValue}"/> implementations under the hood for the index structures
+    /// An indexed triple collection that uses our <see cref="MultiDictionary{TKey,TValue}"/> and <see cref="BinaryTree{TKey,TValue}"/> implementations under the hood for the index structures
     /// </summary>
     /// <remarks>
     /// <para>
@@ -64,13 +65,7 @@ namespace VDS.RDF
                                   _pComparer = new PredicateObjectComparer(new FastVirtualNodeComparer()),
                                   _oComparer = new ObjectSubjectComparer(new FastVirtualNodeComparer());
 
-        private int _count = 0;
-
-        /// <summary>
-        /// Creates a new Tree Indexed triple collection
-        /// </summary>
-        public SubTreeIndexedTripleCollection()
-        { }
+        private int _count;
 
         /// <summary>
         /// Indexes a Triple
@@ -78,9 +73,9 @@ namespace VDS.RDF
         /// <param name="t">Triple</param>
         private void Index(Triple t)
         {
-            this.Index(t.Subject, t, this._s, this._sHash, this._sComparer);
-            this.Index(t.Predicate, t, this._p, this._pHash, this._pComparer);
-            this.Index(t.Object, t, this._o, this._oHash, this._oComparer);
+            Index(t.Subject, t, _s, _sHash, _sComparer);
+            Index(t.Predicate, t, _p, _pHash, _pComparer);
+            Index(t.Object, t, _o, _oHash, _oComparer);
         }
 
         /// <summary>
@@ -93,11 +88,9 @@ namespace VDS.RDF
         /// <param name="hashFunc">Hash Function for the Index</param>
         private void Index(INode n, Triple t, MultiDictionary<INode, MultiDictionary<Triple, List<Triple>>> index, Func<Triple,int> hashFunc, IComparer<Triple> comparer)
         {
-            MultiDictionary<Triple, List<Triple>> subtree;
-            if (index.TryGetValue(n, out subtree))
+            if (index.TryGetValue(n, out var subtree))
             {
-                List<Triple> ts;
-                if (subtree.TryGetValue(t, out ts))
+                if (subtree.TryGetValue(t, out List<Triple> ts))
                 {
                     if (ts == null)
                     {
@@ -127,9 +120,9 @@ namespace VDS.RDF
         /// <param name="t">Triple</param>
         private void Unindex(Triple t)
         {
-            this.Unindex(t.Subject, t, this._s);
-            this.Unindex(t.Predicate, t, this._p);
-            this.Unindex(t.Object, t, this._o);
+            Unindex(t.Subject, t, _s);
+            Unindex(t.Predicate, t, _p);
+            Unindex(t.Object, t, _o);
 
         }
 
@@ -141,11 +134,9 @@ namespace VDS.RDF
         /// <param name="index">Index to remove from</param>
         private void Unindex(INode n, Triple t, MultiDictionary<INode, MultiDictionary<Triple, List<Triple>>> index)
         {
-            MultiDictionary<Triple, List<Triple>> subtree;
-            if (index.TryGetValue(n, out subtree))
+            if (index.TryGetValue(n, out MultiDictionary<Triple, List<Triple>> subtree))
             {
-                List<Triple> ts;
-                if (subtree.TryGetValue(t, out ts))
+                if (subtree.TryGetValue(t, out List<Triple> ts))
                 {
                     if (ts != null) ts.Remove(t);
                 }
@@ -159,11 +150,11 @@ namespace VDS.RDF
         /// <returns></returns>
         protected internal override bool Add(Triple t)
         {
-            if (!this.Contains(t))
+            if (!Contains(t))
             {
-                this._triples.Add(t, null);
-                this.Index(t);
-                this._count++;
+                _triples.Add(t, null);
+                Index(t);
+                _count++;
                 return true;
             }
             return false;
@@ -176,7 +167,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override bool Contains(Triple t)
         {
-            return this._triples.ContainsKey(t);
+            return _triples.ContainsKey(t);
         }
 
         /// <summary>
@@ -187,7 +178,7 @@ namespace VDS.RDF
             get 
             {
                 // Note we maintain the count manually as traversing the entire tree every time we want to count would get very expensive
-                return this._count;
+                return _count;
             }
         }
 
@@ -198,12 +189,12 @@ namespace VDS.RDF
         /// <returns></returns>
         protected internal override bool Delete(Triple t)
         {
-            if (this._triples.Remove(t))
+            if (_triples.Remove(t))
             {
                 // If removed then unindex
-                this.Unindex(t);
-                this.RaiseTripleRemoved(t);
-                this._count--;
+                Unindex(t);
+                RaiseTripleRemoved(t);
+                _count--;
                 return true;
             }
             return false;
@@ -216,17 +207,13 @@ namespace VDS.RDF
         /// <returns></returns>
         public override Triple this[Triple t]
         {
-            get 
+            get
             {
-                Triple actual;
-                if (this._triples.TryGetKey(t, out actual))
+                if (_triples.TryGetKey(t, out Triple actual))
                 {
                     return actual;
                 }
-                else
-                {
-                    throw new KeyNotFoundException("Given triple does not exist in this collection");
-                }
+                throw new KeyNotFoundException("Given triple does not exist in this collection");
             }
         }
 
@@ -237,19 +224,15 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithObject(INode obj)
         {
-            MultiDictionary<Triple, List<Triple>> subtree;
-            if (this._o.TryGetValue(obj, out subtree))
+            if (_o.TryGetValue(obj, out MultiDictionary<Triple, List<Triple>> subtree))
             {
                 return (from ts in subtree.Values
                         where ts != null
                         from t in ts
                         select t);
             }
-            else
-            {
-                return Enumerable.Empty<Triple>();
-            }
-         }
+            return Enumerable.Empty<Triple>();
+        }
 
         /// <summary>
         /// Gets all the triples with a given predicate
@@ -258,18 +241,14 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithPredicate(INode pred)
         {
-            MultiDictionary<Triple, List<Triple>> subtree;
-            if (this._p.TryGetValue(pred, out subtree))
+            if (_p.TryGetValue(pred, out MultiDictionary<Triple, List<Triple>> subtree))
             {
                 return (from ts in subtree.Values
                         where ts != null
                         from t in ts
                         select t);
             }
-            else
-            {
-                return Enumerable.Empty<Triple>();
-            }
+            return Enumerable.Empty<Triple>();
         }
 
         /// <summary>
@@ -279,18 +258,14 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubject(INode subj)
         {
-            MultiDictionary<Triple, List<Triple>> subtree;
-            if (this._s.TryGetValue(subj, out subtree))
+            if (_s.TryGetValue(subj, out MultiDictionary<Triple, List<Triple>> subtree))
             {
                 return (from ts in subtree.Values
                         where ts != null
                         from t in ts
                         select t);
             }
-            else
-            {
-                return Enumerable.Empty<Triple>();
-            }
+            return Enumerable.Empty<Triple>();
         }
 
         /// <summary>
@@ -301,23 +276,15 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
         {
-            MultiDictionary<Triple, List<Triple>> subtree;
-            if (this._p.TryGetValue(obj, out subtree))
+            if (_p.TryGetValue(obj, out MultiDictionary<Triple, List<Triple>> subtree))
             {
-                List<Triple> ts;
-                if (subtree.TryGetValue(new Triple(this._subjVar.CopyNode(pred.Graph), pred, obj.CopyNode(pred.Graph)), out ts))
+                if (subtree.TryGetValue(new Triple(_subjVar.CopyNode(pred.Graph), pred, obj.CopyNode(pred.Graph)), out List<Triple> ts))
                 {
-                    return (ts != null ? ts : Enumerable.Empty<Triple>());
+                    return (ts ?? Enumerable.Empty<Triple>());
                 }
-                else
-                {
-                    return Enumerable.Empty<Triple>();
-                }
-            }
-            else
-            {
                 return Enumerable.Empty<Triple>();
             }
+            return Enumerable.Empty<Triple>();
         }
 
         /// <summary>
@@ -328,23 +295,15 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
         {
-            MultiDictionary<Triple, List<Triple>> subtree;
-            if (this._o.TryGetValue(obj, out subtree))
+            if (_o.TryGetValue(obj, out MultiDictionary<Triple, List<Triple>> subtree))
             {
-                List<Triple> ts;
-                if (subtree.TryGetValue(new Triple(subj, this._predVar.CopyNode(subj.Graph), obj.CopyNode(subj.Graph)), out ts))
+                if (subtree.TryGetValue(new Triple(subj, _predVar.CopyNode(subj.Graph), obj.CopyNode(subj.Graph)), out List<Triple> ts))
                 {
                     return (ts != null ? ts : Enumerable.Empty<Triple>());
                 }
-                else
-                {
-                    return Enumerable.Empty<Triple>();
-                }
-            }
-            else
-            {
                 return Enumerable.Empty<Triple>();
             }
+            return Enumerable.Empty<Triple>();
         }
 
         /// <summary>
@@ -355,23 +314,15 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
         {
-            MultiDictionary<Triple, List<Triple>> subtree;
-            if (this._s.TryGetValue(subj, out subtree))
+            if (_s.TryGetValue(subj, out MultiDictionary<Triple, List<Triple>> subtree))
             {
-                List<Triple> ts;
-                if (subtree.TryGetValue(new Triple(subj, pred.CopyNode(subj.Graph), this._objVar.CopyNode(subj.Graph)), out ts))
+                if (subtree.TryGetValue(new Triple(subj, pred.CopyNode(subj.Graph), _objVar.CopyNode(subj.Graph)), out List<Triple> ts))
                 {
-                    return (ts != null ? ts : Enumerable.Empty<Triple>());
+                    return ts ?? Enumerable.Empty<Triple>();
                 }
-                else
-                {
-                    return Enumerable.Empty<Triple>();
-                }
-            }
-            else
-            {
                 return Enumerable.Empty<Triple>();
             }
+            return Enumerable.Empty<Triple>();
         }
 
         /// <summary>
@@ -381,41 +332,29 @@ namespace VDS.RDF
         {
             get 
             {
-                return this._o.Keys;
+                return _o.Keys;
             }
         }
 
         /// <summary>
         /// Gets the Predicate Nodes
         /// </summary>
-        public override IEnumerable<INode> PredicateNodes
-        {
-            get
-            {
-                return this._p.Keys;
-            }
-        }
+        public override IEnumerable<INode> PredicateNodes => _p.Keys;
 
         /// <summary>
         /// Gets the Subject Nodes
         /// </summary>
-        public override IEnumerable<INode> SubjectNodes
-        {
-            get 
-            {
-                return this._s.Keys;
-            }
-        }
+        public override IEnumerable<INode> SubjectNodes => _s.Keys;
 
         /// <summary>
         /// Disposes of the collection
         /// </summary>
         public override void Dispose()
         {
-            this._triples.Clear();
-            this._s.Clear();
-            this._p.Clear();
-            this._o.Clear();
+            _triples.Clear();
+            _s.Clear();
+            _p.Clear();
+            _o.Clear();
         }
 
         /// <summary>
@@ -424,7 +363,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerator<Triple> GetEnumerator()
         {
-            return this._triples.Keys.GetEnumerator();
+            return _triples.Keys.GetEnumerator();
         }
     }
 }

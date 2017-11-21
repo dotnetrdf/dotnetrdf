@@ -30,9 +30,7 @@ using VDS.RDF.Query.Spin;
 using VDS.RDF.Query.Datasets;
 namespace VDS.RDF.Query.Spin.Model
 {
-
-
-    public class DropImpl : UpdateImpl, IDrop
+    internal class DropImpl : UpdateImpl, IDrop
     {
 
         public DropImpl(INode node, SpinProcessor graph)

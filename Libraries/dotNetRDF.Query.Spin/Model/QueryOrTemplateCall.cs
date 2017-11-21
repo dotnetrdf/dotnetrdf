@@ -35,7 +35,7 @@ namespace VDS.RDF.Query.Spin.Model
      * 
      * @author Holger Knublauch
      */
-    public class QueryOrTemplateCall
+    internal class QueryOrTemplateCall
     {
 
         private IResource cls;

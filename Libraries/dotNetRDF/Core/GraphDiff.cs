@@ -93,11 +93,11 @@ namespace VDS.RDF
                         }
                         else
                         {
-                            this._rhsUnassigned.Add(t);
+                            _rhsUnassigned.Add(t);
                         }
                     }
-                    GraphDiff.ComputeMSGs(b, this._rhsUnassigned, this._rhsMSGs);
-                    foreach (IGraph msg in this._rhsMSGs)
+                    ComputeMSGs(b, _rhsUnassigned, _rhsMSGs);
+                    foreach (IGraph msg in _rhsMSGs)
                     {
                         report.AddAddedMSG(msg);
                     }
@@ -117,11 +117,11 @@ namespace VDS.RDF
                     }
                     else
                     {
-                        this._lhsUnassigned.Add(t);
+                        _lhsUnassigned.Add(t);
                     }
                 }
-                GraphDiff.ComputeMSGs(a, this._lhsUnassigned, this._lhsMSGs);
-                foreach (IGraph msg in this._lhsMSGs)
+                ComputeMSGs(a, _lhsUnassigned, _lhsMSGs);
+                foreach (IGraph msg in _lhsMSGs)
                 {
                     report.AddRemovedMSG(msg);
                 }
@@ -168,27 +168,27 @@ namespace VDS.RDF
                 // First build 2 HashSets of the non-ground Triples from the Graphs
                 foreach (Triple t in a.Triples.Where(t => !t.IsGroundTriple))
                 {
-                    this._lhsUnassigned.Add(t);
+                    _lhsUnassigned.Add(t);
                 }
                 foreach (Triple t in b.Triples.Where(t => !t.IsGroundTriple))
                 {
-                    this._rhsUnassigned.Add(t);
+                    _rhsUnassigned.Add(t);
                 }
 
                 // Then compute all the MSGs
-                GraphDiff.ComputeMSGs(a, this._lhsUnassigned, this._lhsMSGs);
-                GraphDiff.ComputeMSGs(b, this._rhsUnassigned, this._rhsMSGs);
+                ComputeMSGs(a, _lhsUnassigned, _lhsMSGs);
+                ComputeMSGs(b, _rhsUnassigned, _rhsMSGs);
 
                 // Sort MSGs by size - this is just so we start checking MSG equality from smallest MSGs first for efficiency
                 GraphSizeComparer comparer = new GraphSizeComparer();
-                this._lhsMSGs.Sort(comparer);
-                this._rhsMSGs.Sort(comparer);
+                _lhsMSGs.Sort(comparer);
+                _rhsMSGs.Sort(comparer);
 
                 // Now start trying to match MSG
-                foreach (IGraph msg in this._lhsMSGs)
+                foreach (IGraph msg in _lhsMSGs)
                 {
                     // Get Candidate MSGs from RHS i.e. those of equal size
-                    List<IGraph> candidates = (from g in this._rhsMSGs
+                    List<IGraph> candidates = (from g in _rhsMSGs
                                                where g.Triples.Count == msg.Triples.Count
                                                select g).ToList();
 
@@ -210,7 +210,7 @@ namespace VDS.RDF
                                 hasMatch = true;
                                 try
                                 {
-                                    this.MergeMapping(report, tempMapping);
+                                    MergeMapping(report, tempMapping);
                                 }
                                 catch (RdfException)
                                 {
@@ -221,7 +221,7 @@ namespace VDS.RDF
 
                                 // Remove the matched MSG from the RHS MSGs so we cannot match another LHS MSG to it later
                                 // We use ReferenceEquals for this remove to avoid potentially costly Graph Equality calculations
-                                this._rhsMSGs.RemoveAll(g => ReferenceEquals(g, candidate));
+                                _rhsMSGs.RemoveAll(g => ReferenceEquals(g, candidate));
                             }
                         }
 
@@ -231,7 +231,7 @@ namespace VDS.RDF
                 }
 
                 // If we are left with any MSGs in the RHS then these are added MSG
-                foreach (IGraph msg in this._rhsMSGs)
+                foreach (IGraph msg in _rhsMSGs)
                 {
                     report.AddAddedMSG(msg);
                 }
@@ -258,7 +258,7 @@ namespace VDS.RDF
                 unassigned.Remove(first);
 
                 // Get the BNodes from it that need to be processed
-                GraphDiff.GetNodesForProcessing(first, unprocessed);
+                GetNodesForProcessing(first, unprocessed);
 
                 // Start building an MSG starting from the Triple
                 Graph msg = new Graph();
@@ -275,7 +275,7 @@ namespace VDS.RDF
                         // When a Triple is added to an MSG it is removed from the unassigned list
                         unassigned.Remove(t);
                         msg.Assert(t);
-                        GraphDiff.GetNodesForProcessing(t, unprocessed);
+                        GetNodesForProcessing(t, unprocessed);
                     }
 
                     processed.Add(next);
@@ -334,11 +334,11 @@ namespace VDS.RDF
         {
             get
             {
-                return this._areEqual;
+                return _areEqual;
             }
             internal set
             {
-                this._areEqual = value;
+                _areEqual = value;
             }
         }
 
@@ -349,11 +349,11 @@ namespace VDS.RDF
         {
             get
             {
-                return this._areDiffSize;
+                return _areDiffSize;
             }
             internal set
             {
-                this._areDiffSize = value;
+                _areDiffSize = value;
             }
         }
 
@@ -369,11 +369,11 @@ namespace VDS.RDF
         {
             get
             {
-                return this._mapping;
+                return _mapping;
             }
             internal set
             {
-                this._mapping = value;
+                _mapping = value;
             }
         }
 
@@ -384,7 +384,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._addedTriples;
+                return _addedTriples;
             }
         }
 
@@ -395,7 +395,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._removedTriples;
+                return _removedTriples;
             }
         }
 
@@ -406,7 +406,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._addedMSGs;
+                return _addedMSGs;
             }
         }
 
@@ -417,28 +417,28 @@ namespace VDS.RDF
         {
             get
             {
-                return this._removedMSGs;
+                return _removedMSGs;
             }
         }
 
         internal void AddAddedTriple(Triple t)
         {
-            this._addedTriples.Add(t);
+            _addedTriples.Add(t);
         }
 
         internal void AddRemovedTriple(Triple t)
         {
-            this._removedTriples.Add(t);
+            _removedTriples.Add(t);
         }
 
         internal void AddAddedMSG(IGraph g)
         {
-            this._addedMSGs.Add(g);
+            _addedMSGs.Add(g);
         }
 
         internal void AddRemovedMSG(IGraph g)
         {
-            this._removedMSGs.Add(g);
+            _removedMSGs.Add(g);
         }
     }
 

@@ -64,11 +64,11 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="argumentTypeValidator">Type validator for the argument</param>
         public BaseBinaryStringFunction(ISparqlExpression stringExpr, ISparqlExpression argExpr, bool allowNullArgument, Func<Uri, bool> argumentTypeValidator)
         {
-            this._expr = stringExpr;
-            this._arg = argExpr;
-            this._allowNullArgument = allowNullArgument;
-            if (this._arg == null && !this._allowNullArgument) throw new RdfParseException("Cannot create a XPath String Function which takes a String and a single argument since the expression for the argument is null");
-            this._argumentTypeValidator = argumentTypeValidator;
+            _expr = stringExpr;
+            _arg = argExpr;
+            _allowNullArgument = allowNullArgument;
+            if (_arg == null && !_allowNullArgument) throw new RdfParseException("Cannot create a XPath String Function which takes a String and a single argument since the expression for the argument is null");
+            _argumentTypeValidator = argumentTypeValidator;
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            INode temp = this._expr.Evaluate(context, bindingID);
+            INode temp = _expr.Evaluate(context, bindingID);
             if (temp != null)
             {
                 if (temp.NodeType == NodeType.Literal)
@@ -96,22 +96,22 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                 }
 
                 // Once we've got to here we've established that the First argument is an appropriately typed/untyped Literal
-                if (this._arg == null)
+                if (_arg == null)
                 {
-                    return this.ValueInternal((ILiteralNode)temp);
+                    return ValueInternal((ILiteralNode)temp);
                 }
                 else
                 {
                     // Need to validate the argument
-                    INode tempArg = this._arg.Evaluate(context, bindingID);
+                    INode tempArg = _arg.Evaluate(context, bindingID);
                     if (tempArg != null)
                     {
                         if (tempArg.NodeType == NodeType.Literal)
                         {
                             ILiteralNode litArg = (ILiteralNode)tempArg;
-                            if (this._argumentTypeValidator(litArg.DataType))
+                            if (_argumentTypeValidator(litArg.DataType))
                             {
-                                return this.ValueInternal((ILiteralNode)temp, litArg);
+                                return ValueInternal((ILiteralNode)temp, litArg);
                             }
                             else
                             {
@@ -123,10 +123,10 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                             throw new RdfQueryException("Unable to evaluate an XPath String function where the argument is a non-Literal");
                         }
                     }
-                    else if (this._allowNullArgument)
+                    else if (_allowNullArgument)
                     {
                         // Null argument permitted so just invoke the non-argument version of the function
-                        return this.ValueInternal((ILiteralNode)temp);
+                        return ValueInternal((ILiteralNode)temp);
                     }
                     else
                     {
@@ -147,7 +147,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public virtual IValuedNode ValueInternal(ILiteralNode stringLit)
         {
-            if (!this._allowNullArgument)
+            if (!_allowNullArgument)
             {
                 throw new RdfQueryException("This XPath function requires a non-null argument in addition to an input string");
             }
@@ -172,13 +172,13 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             get
             {
-                if (this._arg == null)
+                if (_arg == null)
                 {
-                    return this._expr.Variables;
+                    return _expr.Variables;
                 }
                 else
                 {
-                    return this._expr.Variables.Concat(this._arg.Variables);
+                    return _expr.Variables.Concat(_arg.Variables);
                 }
             }
         }
@@ -215,7 +215,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             get
             {
-                return new ISparqlExpression[] { this._expr, this._arg };
+                return new ISparqlExpression[] { _expr, _arg };
             }
         }
 
@@ -226,7 +226,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             get
             {
-                return this._expr.CanParallelise && this._arg.CanParallelise;
+                return _expr.CanParallelise && _arg.CanParallelise;
             }
         }
 

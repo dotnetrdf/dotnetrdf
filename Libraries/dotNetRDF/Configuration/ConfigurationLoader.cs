@@ -226,7 +226,7 @@ namespace VDS.RDF.Configuration
         /// <summary>
         /// Set of built-in object factories that are automatically registered and used
         /// </summary>
-        private static List<IObjectFactory> _factories = new List<IObjectFactory>()
+        private static List<IObjectFactory> _factories = new List<IObjectFactory>
         {
             // Default Data Factories
             new GraphFactory(),
@@ -257,12 +257,12 @@ namespace VDS.RDF.Configuration
             new ObjectFactoryFactory(),
             // Parser and Writer Factories
             new ParserFactory(),
-            new WriterFactory()
+            new WriterFactory(),
         };
         /// <summary>
         /// Path resolver
         /// </summary>
-        private static IPathResolver _resolver = null;
+        private static IPathResolver _resolver;
 
         /// <summary>
         /// Gets or sets the provider of external settings
@@ -288,7 +288,7 @@ namespace VDS.RDF.Configuration
         /// <returns></returns>
         public static IGraph LoadConfiguration(Uri u)
         {
-            return ConfigurationLoader.LoadConfiguration(u, true);
+            return LoadConfiguration(u, true);
         }
 
         /// <summary>
@@ -301,7 +301,7 @@ namespace VDS.RDF.Configuration
         {
             Graph g = new Graph();
             UriLoader.Load(g, u);
-            return ConfigurationLoader.LoadCommon(g, g.CreateUriNode(u), autoConfigure);
+            return LoadCommon(g, g.CreateUriNode(u), autoConfigure);
         }
 
         /// <summary>
@@ -311,7 +311,7 @@ namespace VDS.RDF.Configuration
         /// <returns></returns>
         public static IGraph LoadConfiguration(String file)
         {
-            return ConfigurationLoader.LoadConfiguration(file, true);
+            return LoadConfiguration(file, true);
         }
 
         /// <summary>
@@ -324,7 +324,7 @@ namespace VDS.RDF.Configuration
         {
             Graph g = new Graph();
             FileLoader.Load(g, file);
-            return ConfigurationLoader.LoadCommon(g, new INode[] { g.CreateLiteralNode(file), g.CreateLiteralNode(Path.GetFileName(file)) }, autoConfigure);
+            return LoadCommon(g, new INode[] { g.CreateLiteralNode(file), g.CreateLiteralNode(Path.GetFileName(file)) }, autoConfigure);
         }
 
         /// <summary>
@@ -334,7 +334,7 @@ namespace VDS.RDF.Configuration
         /// <returns></returns>
         public static IGraph LoadEmbeddedConfiguration(String resource)
         {
-            return ConfigurationLoader.LoadEmbeddedConfiguration(resource, true);
+            return LoadEmbeddedConfiguration(resource, true);
         }
 
         /// <summary>
@@ -347,7 +347,7 @@ namespace VDS.RDF.Configuration
         {
             Graph g = new Graph();
             EmbeddedResourceLoader.Load(g, resource);
-            return ConfigurationLoader.LoadCommon(g, g.CreateLiteralNode(resource), autoConfigure);
+            return LoadCommon(g, g.CreateLiteralNode(resource), autoConfigure);
         }
 
         /// <summary>
@@ -359,7 +359,7 @@ namespace VDS.RDF.Configuration
         /// <returns></returns>
         private static IGraph LoadCommon(IGraph g, INode source, bool autoConfigure)
         {
-            return ConfigurationLoader.LoadCommon(g, source.AsEnumerable(), autoConfigure);
+            return LoadCommon(g, source.AsEnumerable(), autoConfigure);
         }
 
         /// <summary>
@@ -394,7 +394,7 @@ namespace VDS.RDF.Configuration
                 switch (importData.NodeType)
                 {
                     case NodeType.Uri:
-                        importData = ConfigurationLoader.ResolveAppSetting(g, importData);
+                        importData = ResolveAppSetting(g, importData);
                         if (!imported.Contains(importData))
                         {
                             UriLoader.Load(data, ((IUriNode)importData).Uri);
@@ -405,7 +405,7 @@ namespace VDS.RDF.Configuration
                     case NodeType.Literal:
                         if (!imported.Contains(importData))
                         {
-                            FileLoader.Load(data, ConfigurationLoader.ResolvePath(((ILiteralNode)importData).Value));
+                            FileLoader.Load(data, ResolvePath(((ILiteralNode)importData).Value));
                             imported.Add(importData);
                         }
                         break;
@@ -424,7 +424,7 @@ namespace VDS.RDF.Configuration
             }
 
             // Apply auto-configuration if requested
-            if (autoConfigure) ConfigurationLoader.AutoConfigure(g);
+            if (autoConfigure) AutoConfigure(g);
 
             return g;
         }
@@ -435,10 +435,10 @@ namespace VDS.RDF.Configuration
         /// <param name="g">Configuration Graph</param>
         public static void AutoConfigure(IGraph g)
         {
-            ConfigurationLoader.AutoConfigureObjectFactories(g);
-            ConfigurationLoader.AutoConfigureReadersAndWriters(g);
-            ConfigurationLoader.AutoConfigureSparqlOperators(g);
-            ConfigurationLoader.AutoConfigureStaticOptions(g);
+            AutoConfigureObjectFactories(g);
+            AutoConfigureReadersAndWriters(g);
+            AutoConfigureSparqlOperators(g);
+            AutoConfigureStaticOptions(g);
         }
 
         /// <summary>
@@ -540,7 +540,7 @@ namespace VDS.RDF.Configuration
                             else if (valueType.IsEnum)
 #endif
                             {
-                                if (value.NodeType != NodeType.Literal) throw new DotNetRdfConfigurationException("Malformed dnf:configure triple - " + t.ToString() + " - the object must be a literal when the property being set has a enumeration type");
+                                if (value.NodeType != NodeType.Literal) throw new DotNetRdfConfigurationException("Malformed dnf:configure triple - " + t + " - the object must be a literal when the property being set has a enumeration type");
                                 Object enumVal = Enum.Parse(valueType, valueNode.AsString(), true);
                                 property.SetValue(null, enumVal, null);
                             }
@@ -584,9 +584,9 @@ namespace VDS.RDF.Configuration
                 if (temp is IRdfReader)
                 {
                     // Get the formats to associate this with
-                    mimeTypes = ConfigurationLoader.GetConfigurationArray(g, objNode, formatMimeType);
+                    mimeTypes = GetConfigurationArray(g, objNode, formatMimeType);
                     if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-configuration of Readers and Writers failed as the Parser specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
-                    extensions = ConfigurationLoader.GetConfigurationArray(g, objNode, formatExtension);
+                    extensions = GetConfigurationArray(g, objNode, formatExtension);
 
                     // Register
                     MimeTypesHelper.RegisterParser((IRdfReader)temp, mimeTypes, extensions);
@@ -605,9 +605,9 @@ namespace VDS.RDF.Configuration
                 if (temp is IStoreReader)
                 {
                     // Get the formats to associate this with
-                    mimeTypes = ConfigurationLoader.GetConfigurationArray(g, objNode, formatMimeType);
+                    mimeTypes = GetConfigurationArray(g, objNode, formatMimeType);
                     if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-configuration of Readers and Writers failed as the Parser specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
-                    extensions = ConfigurationLoader.GetConfigurationArray(g, objNode, formatExtension);
+                    extensions = GetConfigurationArray(g, objNode, formatExtension);
 
                     // Register
                     MimeTypesHelper.RegisterParser((IStoreReader)temp, mimeTypes, extensions);
@@ -626,9 +626,9 @@ namespace VDS.RDF.Configuration
                 if (temp is ISparqlResultsReader)
                 {
                     // Get the formats to associate this with
-                    mimeTypes = ConfigurationLoader.GetConfigurationArray(g, objNode, formatMimeType);
+                    mimeTypes = GetConfigurationArray(g, objNode, formatMimeType);
                     if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-configuration of Readers and Writers failed as the Parser specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
-                    extensions = ConfigurationLoader.GetConfigurationArray(g, objNode, formatExtension);
+                    extensions = GetConfigurationArray(g, objNode, formatExtension);
 
                     // Register
                     MimeTypesHelper.RegisterParser((ISparqlResultsReader)temp, mimeTypes, extensions);
@@ -647,9 +647,9 @@ namespace VDS.RDF.Configuration
                 if (temp is IRdfWriter)
                 {
                     // Get the formats to associate this with
-                    mimeTypes = ConfigurationLoader.GetConfigurationArray(g, objNode, formatMimeType);
+                    mimeTypes = GetConfigurationArray(g, objNode, formatMimeType);
                     if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-configuration of Readers and Writers failed as the Writer specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
-                    extensions = ConfigurationLoader.GetConfigurationArray(g, objNode, formatExtension);
+                    extensions = GetConfigurationArray(g, objNode, formatExtension);
 
                     // Register
                     MimeTypesHelper.RegisterWriter((IRdfWriter)temp, mimeTypes, extensions);
@@ -668,9 +668,9 @@ namespace VDS.RDF.Configuration
                 if (temp is IStoreWriter)
                 {
                     // Get the formats to associate this with
-                    mimeTypes = ConfigurationLoader.GetConfigurationArray(g, objNode, formatMimeType);
+                    mimeTypes = GetConfigurationArray(g, objNode, formatMimeType);
                     if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-configuration of Readers and Writers failed as the Writer specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
-                    extensions = ConfigurationLoader.GetConfigurationArray(g, objNode, formatExtension);
+                    extensions = GetConfigurationArray(g, objNode, formatExtension);
 
                     // Register
                     MimeTypesHelper.RegisterWriter((IStoreWriter)temp, mimeTypes, extensions);
@@ -689,9 +689,9 @@ namespace VDS.RDF.Configuration
                 if (temp is ISparqlResultsWriter)
                 {
                     // Get the formats to associate this with
-                    mimeTypes = ConfigurationLoader.GetConfigurationArray(g, objNode, formatMimeType);
+                    mimeTypes = GetConfigurationArray(g, objNode, formatMimeType);
                     if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-configuration of Readers and Writers failed as the Writer specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
-                    extensions = ConfigurationLoader.GetConfigurationArray(g, objNode, formatExtension);
+                    extensions = GetConfigurationArray(g, objNode, formatExtension);
 
                     // Register
                     MimeTypesHelper.RegisterWriter((ISparqlResultsWriter)temp, mimeTypes, extensions);
@@ -715,10 +715,10 @@ namespace VDS.RDF.Configuration
 
             foreach (Triple t in g.GetTriplesWithPredicateObject(rdfType, operatorClass))
             {
-                Object temp = ConfigurationLoader.LoadObject(g, t.Subject);
+                Object temp = LoadObject(g, t.Subject);
                 if (temp is ISparqlOperator)
                 {
-                    bool enable = ConfigurationLoader.GetConfigurationBoolean(g, t.Subject, enabled, true);
+                    bool enable = GetConfigurationBoolean(g, t.Subject, enabled, true);
                     if (enable)
                     {
                         SparqlOperators.AddOperator((ISparqlOperator)temp);
@@ -759,10 +759,7 @@ namespace VDS.RDF.Configuration
             {
                 throw new DotNetRdfConfigurationException("Unable to load the Object identified by the Node '" + a.ToString() + "' as one of the values for the " + property + " property is a circular reference to the Object we are attempting to load");
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         /// <summary>
@@ -855,7 +852,7 @@ namespace VDS.RDF.Configuration
         /// </returns>
         public static INode GetConfigurationNode(IGraph g, INode objNode, IEnumerable<INode> properties)
         {
-            return properties.Select(p => ConfigurationLoader.GetConfigurationNode(g, objNode, p)).Where(n => n != null).FirstOrDefault();
+            return properties.Select(p => GetConfigurationNode(g, objNode, p)).Where(n => n != null).FirstOrDefault();
         }
 
         /// <summary>
@@ -880,19 +877,13 @@ namespace VDS.RDF.Configuration
             {
                 return ((ILiteralNode)n).Value;
             }
-            else
+            INode temp = ResolveAppSetting(g, n);
+            if (temp == null) return null;
+            if (temp.NodeType == NodeType.Literal)
             {
-                INode temp = ResolveAppSetting(g, n);
-                if (temp == null) return null;
-                if (temp.NodeType == NodeType.Literal)
-                {
-                    return ((ILiteralNode)temp).Value;
-                }
-                else
-                {
-                    return null;
-                }
+                return ((ILiteralNode)temp).Value;
             }
+            return null;
         }
 
         /// <summary>
@@ -911,7 +902,7 @@ namespace VDS.RDF.Configuration
         /// </returns>
         public static String GetConfigurationString(IGraph g, INode objNode, IEnumerable<INode> properties)
         {
-            return properties.Select(p => ConfigurationLoader.GetConfigurationString(g, objNode, p)).Where(s => s != null).FirstOrDefault();
+            return properties.Select(p => GetConfigurationString(g, objNode, p)).Where(s => s != null).FirstOrDefault();
         }
 
         /// <summary>
@@ -956,7 +947,7 @@ namespace VDS.RDF.Configuration
         /// <returns></returns>
         public static String GetConfigurationValue(IGraph g, INode objNode, IEnumerable<INode> properties)
         {
-            return properties.Select(p => ConfigurationLoader.GetConfigurationValue(g, objNode, p)).Where(s => s != null).FirstOrDefault();
+            return properties.Select(p => GetConfigurationValue(g, objNode, p)).Where(s => s != null).FirstOrDefault();
         }
 
         /// <summary>
@@ -983,20 +974,13 @@ namespace VDS.RDF.Configuration
 
             if (n.NodeType == NodeType.Literal)
             {
-                bool temp;
-                if (Boolean.TryParse(((ILiteralNode)n).Value, out temp))
+                if (bool.TryParse(((ILiteralNode)n).Value, out var temp))
                 {
                     return temp;
                 }
-                else
-                {
-                    return defValue;
-                }
-            }
-            else
-            {
                 return defValue;
             }
+            return defValue;
         }
 
         /// <summary>
@@ -1025,8 +1009,7 @@ namespace VDS.RDF.Configuration
 
                 if (n.NodeType == NodeType.Literal)
                 {
-                    bool temp;
-                    if (Boolean.TryParse(((ILiteralNode)n).Value, out temp))
+                    if (bool.TryParse(((ILiteralNode)n).Value, out var temp))
                     {
                         return temp;
                     }
@@ -1059,20 +1042,13 @@ namespace VDS.RDF.Configuration
 
             if (n.NodeType == NodeType.Literal)
             {
-                long temp;
-                if (Int64.TryParse(((ILiteralNode)n).Value, out temp))
+                if (long.TryParse(((ILiteralNode)n).Value, out var temp))
                 {
                     return temp;
                 }
-                else
-                {
-                    return defValue;
-                }
-            }
-            else
-            {
                 return defValue;
             }
+            return defValue;
         }
 
         /// <summary>
@@ -1101,8 +1077,7 @@ namespace VDS.RDF.Configuration
 
                 if (n.NodeType == NodeType.Literal)
                 {
-                    long temp;
-                    if (Int64.TryParse(((ILiteralNode)n).Value, out temp))
+                    if (long.TryParse(((ILiteralNode)n).Value, out var temp))
                     {
                         return temp;
                     }
@@ -1135,20 +1110,13 @@ namespace VDS.RDF.Configuration
 
             if (n.NodeType == NodeType.Literal)
             {
-                int temp;
-                if (Int32.TryParse(((ILiteralNode)n).Value, out temp))
+                if (int.TryParse(((ILiteralNode)n).Value, out var temp))
                 {
                     return temp;
                 }
-                else
-                {
-                    return defValue;
-                }
-            }
-            else
-            {
                 return defValue;
             }
+            return defValue;
         }
 
         /// <summary>
@@ -1177,8 +1145,7 @@ namespace VDS.RDF.Configuration
 
                 if (n.NodeType == NodeType.Literal)
                 {
-                    int temp;
-                    if (Int32.TryParse(((ILiteralNode)n).Value, out temp))
+                    if (int.TryParse(((ILiteralNode)n).Value, out var temp))
                     {
                         return temp;
                     }
@@ -1200,19 +1167,19 @@ namespace VDS.RDF.Configuration
         /// </remarks>
         public static void GetUsernameAndPassword(IGraph g, INode objNode, bool allowCredentials, out String user, out String pwd)
         {
-            INode propUser = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUser)),
-                  propPwd = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPassword));
+            INode propUser = g.CreateUriNode(UriFactory.Create(PropertyUser)),
+                  propPwd = g.CreateUriNode(UriFactory.Create(PropertyPassword));
 
-            user = ConfigurationLoader.GetConfigurationString(g, objNode, propUser);
-            pwd = ConfigurationLoader.GetConfigurationString(g, objNode, propPwd);
+            user = GetConfigurationString(g, objNode, propUser);
+            pwd = GetConfigurationString(g, objNode, propPwd);
             if ((user == null || pwd == null) && allowCredentials)
             {
                 // Have they been specified as credentials instead?
-                INode propCredentials = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyCredentials));
-                INode credObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propCredentials);
+                INode propCredentials = g.CreateUriNode(UriFactory.Create(PropertyCredentials));
+                INode credObj = GetConfigurationNode(g, objNode, propCredentials);
                 if (credObj != null)
                 {
-                    NetworkCredential credentials = (NetworkCredential)ConfigurationLoader.LoadObject(g, credObj, typeof(NetworkCredential));
+                    NetworkCredential credentials = (NetworkCredential)LoadObject(g, credObj, typeof(NetworkCredential));
                     user = credentials.UserName;
                     pwd = credentials.Password;
                 }
@@ -1270,21 +1237,15 @@ namespace VDS.RDF.Configuration
                     // for direct circular references with the CheckCircularReference() method
                     throw new DotNetRdfConfigurationException("Unable to load the Object identified by the Node '" + objNode.ToString() + "' as we have already started trying to load this Object which indicates that your Configuration Graph contains a circular reference");
                 }
-                else if (_cache[key] is UnloadableObject)
+                if (_cache[key] is UnloadableObject)
                 {
                     // We don't retry loading if we fail
                     throw new DotNetRdfConfigurationException("Unable to load the Object identified by the Node '" + objNode.ToString() + "' as previous attempt(s) to load the Object failed.  Call ClearCache() before attempting loading if you wish to retry loading");
                 }
-                else
-                {
-                    // Return from Cache
-                    return _cache[key];
-                }
+                // Return from Cache
+                return _cache[key];
             }
-            else
-            {
-                _cache.Add(key, null);
-            }
+            _cache.Add(key, null);
 
             Object temp = null;
 
@@ -1311,8 +1272,7 @@ namespace VDS.RDF.Configuration
             }
 
             // Error or return
-            if (temp == null) throw new DotNetRdfConfigurationException("Unable to load the Object identified by the Node '" + objNode.ToString() + "' as an instance of type '" + targetType.ToString() + "' since no Object Loaders are able to load this type");
-            _cache[key] = temp;
+            _cache[key] = temp ?? throw new DotNetRdfConfigurationException("Unable to load the Object identified by the Node '" + objNode.ToString() + "' as an instance of type '" + targetType + "' since no Object Loaders are able to load this type");
             return temp;
         }
 
@@ -1329,7 +1289,7 @@ namespace VDS.RDF.Configuration
         /// </remarks>
         public static Object LoadObject(IGraph g, INode objNode)
         {
-            String typeName = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(PropertyType)));
+            String typeName = GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(PropertyType)));
             if (typeName == null)
             {
                 typeName = GetDefaultType(g, objNode);
@@ -1337,15 +1297,9 @@ namespace VDS.RDF.Configuration
                 {
                     throw new DotNetRdfConfigurationException("Unable to load the Object identified by the Node '" + objNode.ToString() + "' since there is no dnr:type property associated with it");
                 }
-                else
-                {
-                    return ConfigurationLoader.LoadObject(g, objNode, Type.GetType(typeName));
-                }
+                return LoadObject(g, objNode, Type.GetType(typeName));
             }
-            else
-            {
-                return ConfigurationLoader.LoadObject(g, objNode, Type.GetType(typeName));
-            }
+            return LoadObject(g, objNode, Type.GetType(typeName));
         }
 
         /// <summary>
@@ -1362,24 +1316,18 @@ namespace VDS.RDF.Configuration
         public static String GetDefaultType(IGraph g, INode objNode)
         {
             IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            INode declaredType = ConfigurationLoader.GetConfigurationNode(g, objNode, rdfType);
+            INode declaredType = GetConfigurationNode(g, objNode, rdfType);
             if (declaredType == null) return null; //Fixes Bug CORE-98
             if (declaredType.NodeType == NodeType.Uri)
             {
                 String typeUri = declaredType.ToString();
                 if (typeUri.StartsWith(ConfigurationNamespace))
                 {
-                    return ConfigurationLoader.GetDefaultType(typeUri);
+                    return GetDefaultType(typeUri);
                 }
-                else
-                {
-                    return null;
-                }
-            }
-            else
-            {
                 return null;
             }
+            return null;
         }
 
         /// <summary>
@@ -1406,7 +1354,7 @@ namespace VDS.RDF.Configuration
                 case ClassTripleStore:
                     return DefaultTypeTripleStore;
                 case ClassUser:
-                    return typeof(System.Net.NetworkCredential).AssemblyQualifiedName;
+                    return typeof(NetworkCredential).AssemblyQualifiedName;
                 case ClassUserGroup:
                     return DefaultTypeUserGroup;
                 case ClassProxy:
@@ -1448,10 +1396,7 @@ namespace VDS.RDF.Configuration
             {
                 return null;
             }
-            else
-            {
-                return g.CreateLiteralNode(setting);
-            }
+            return g.CreateLiteralNode(setting);
         }
 
         #endregion

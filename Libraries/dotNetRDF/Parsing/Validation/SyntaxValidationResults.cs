@@ -47,8 +47,8 @@ namespace VDS.RDF.Parsing.Validation
         /// <param name="message">Validation Message</param>
         public SyntaxValidationResults(bool valid, String message)
         {
-            this._valid = valid;
-            this._message = message;
+            _valid = valid;
+            _message = message;
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace VDS.RDF.Parsing.Validation
         public SyntaxValidationResults(bool valid, String message, Object result)
             : this(valid, message)
         {
-            this._result = result;
+            _result = result;
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace VDS.RDF.Parsing.Validation
         public SyntaxValidationResults(bool valid, String message, Object result, IEnumerable<String> warnings)
             : this(valid, message, result)
         {
-            this._warnings.AddRange(warnings);
+            _warnings.AddRange(warnings);
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace VDS.RDF.Parsing.Validation
         public SyntaxValidationResults(bool valid, String message, Object result, IEnumerable<String> warnings, Exception error)
             : this(valid, message, result, warnings)
         {
-            this._error = error;
+            _error = error;
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace VDS.RDF.Parsing.Validation
         public SyntaxValidationResults(bool valid, String message, Exception error)
             : this(valid, message)
         {
-            this._error = error;
+            _error = error;
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace VDS.RDF.Parsing.Validation
         {
             get 
             {
-                return this._valid; 
+                return _valid; 
             }
         }
 
@@ -128,7 +128,7 @@ namespace VDS.RDF.Parsing.Validation
         {
             get 
             {
-                return this._message;
+                return _message;
             }
         }
 
@@ -139,7 +139,7 @@ namespace VDS.RDF.Parsing.Validation
         {
             get 
             {
-                return this._warnings;
+                return _warnings;
             }
         }
 
@@ -150,7 +150,7 @@ namespace VDS.RDF.Parsing.Validation
         {
             get 
             {
-                return this._error; 
+                return _error; 
             }
         }
 
@@ -161,7 +161,7 @@ namespace VDS.RDF.Parsing.Validation
         {
             get
             {
-                return this._result;
+                return _result;
             }
         }
     }

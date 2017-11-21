@@ -79,7 +79,7 @@ namespace VDS.RDF.Parsing.Contexts
         public TurtleParserContext(IGraph g, ITokeniser tokeniser, TurtleSyntax syntax, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
             : base(g, tokeniser, queueMode, traceParsing, traceTokeniser)
         {
-            this._syntax = syntax;
+            _syntax = syntax;
         }
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace VDS.RDF.Parsing.Contexts
         public TurtleParserContext(IRdfHandler handler, ITokeniser tokeniser, TurtleSyntax syntax, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
             : base(handler, tokeniser, queueMode, traceParsing, traceTokeniser)
         {
-            this._syntax = syntax;
+            _syntax = syntax;
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._syntax;
+                return _syntax;
             }
         }
 
@@ -145,7 +145,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                switch (this._syntax)
+                switch (_syntax)
                 {
                     case TurtleSyntax.W3C:
                         return TurtleSpecsHelper.UnescapeQName;

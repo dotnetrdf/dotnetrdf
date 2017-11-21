@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Optimisation
         /// <returns></returns>
         public virtual ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
         {
-            return this.OptimiseInternal(algebra, 0);
+            return OptimiseInternal(algebra, 0);
         }
 
         /// <summary>

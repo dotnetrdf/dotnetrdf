@@ -47,7 +47,7 @@ namespace VDS.RDF.Writing.Formatting
         /// Creates a new Uncompressed Formatter
         /// </summary>
         /// <param name="formatName">Format Name</param>
-        protected UncompressedTurtleFormatter(String formatName)
+        protected UncompressedTurtleFormatter(string formatName)
             : base(formatName) { }
 
         /// <summary>
@@ -78,26 +78,26 @@ namespace VDS.RDF.Writing.Formatting
     public class TurtleFormatter 
         : QNameFormatter, IBaseUriFormatter
     {
-        private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidBlankNodeID);
+        private readonly BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidBlankNodeID);
         /// <summary>
         /// Set of characters that must be escaped for Long Literals
         /// </summary>
-        protected List<String[]> _longLitMustEscape = new List<String[]>
+        protected List<string[]> _longLitMustEscape = new List<string[]>
         { 
-            new String[] { @"\", @"\\" }, 
-            new String[] { "\"", "\\\"" }
+            new string[] { @"\", @"\\" }, 
+            new string[] { "\"", "\\\"" },
         };
 
         /// <summary>
         /// Set of characters that must be escaped for Literals
         /// </summary>
-        protected List<String[]> _litMustEscape = new List<String[]>
+        protected List<string[]> _litMustEscape = new List<string[]>
         { 
-            new String[] { @"\", @"\\" }, 
-            new String[] { "\"", "\\\"" },
-            new String[] { "\n", @"\n" },
-            new String[] { "\r", @"\r" },
-            new String[] { "\t", @"\t" }
+            new string[] { @"\", @"\\" }, 
+            new string[] { "\"", "\\\"" },
+            new string[] { "\n", @"\n" },
+            new string[] { "\r", @"\r" },
+            new string[] { "\t", @"\t" },
         };
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace VDS.RDF.Writing.Formatting
         /// Creates a new Turtle Formatter
         /// </summary>
         /// <param name="formatName">Format Name</param>
-        protected TurtleFormatter(String formatName)
+        protected TurtleFormatter(string formatName)
             : base(formatName, new QNameOutputMapper()) { }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="formatName">Format Name</param>
         /// <param name="g">Graph</param>
-        protected TurtleFormatter(String formatName, IGraph g)
+        protected TurtleFormatter(string formatName, IGraph g)
             : base(formatName, new QNameOutputMapper(g.NamespaceMap)) { }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="formatName">Format Name</param>
         /// <param name="nsmap">Namespace Map</param>
-        protected TurtleFormatter(String formatName, INamespaceMapper nsmap)
+        protected TurtleFormatter(string formatName, INamespaceMapper nsmap)
             : base(formatName, new QNameOutputMapper(nsmap)) { }
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="formatName">Format Name</param>
         /// <param name="qnameMapper">QName Map</param>
-        protected TurtleFormatter(String formatName, QNameOutputMapper qnameMapper)
+        protected TurtleFormatter(string formatName, QNameOutputMapper qnameMapper)
             : base(formatName, qnameMapper) { }
 
         /// <summary>
@@ -166,9 +166,8 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         protected override string FormatLiteralNode(ILiteralNode l, TripleSegment? segment)
         {
-            StringBuilder output = new StringBuilder();
-            String value, qname;
-            bool longlit = false, plainlit = false;
+            var output = new StringBuilder();
+            bool longlit, plainlit;
 
             longlit = TurtleSpecsHelper.IsLongLiteral(l.Value);
             plainlit = TurtleSpecsHelper.IsValidPlainLiteral(l.Value, l.DataType, TurtleSyntax.Original);
@@ -181,7 +180,7 @@ namespace VDS.RDF.Writing.Formatting
                     output.Append('"');
                     output.Append(l.Value.Substring(0, l.Value.Length - 1));
                     output.Append("\"^^<");
-                    output.Append(this.FormatUri(XmlSpecsHelper.XmlSchemaDataTypeDecimal));
+                    output.Append(FormatUri(XmlSpecsHelper.XmlSchemaDataTypeDecimal));
                     output.Append('>');
                 }
                 else
@@ -200,14 +199,14 @@ namespace VDS.RDF.Writing.Formatting
                 output.Append('"');
                 if (longlit) output.Append("\"\"");
 
-                value = l.Value;
-                value = longlit ? this.Escape(value, this._longLitMustEscape) : this.Escape(value, this._litMustEscape);
+                var value = l.Value;
+                value = longlit ? Escape(value, _longLitMustEscape) : Escape(value, _litMustEscape);
 
                 output.Append(value);
                 output.Append('"');
                 if (longlit) output.Append("\"\"");
 
-                if (!l.Language.Equals(String.Empty))
+                if (!l.Language.Equals(string.Empty))
                 {
                     output.Append('@');
                     output.Append(l.Language.ToLower());
@@ -215,7 +214,7 @@ namespace VDS.RDF.Writing.Formatting
                 else if (l.DataType != null)
                 {
                     output.Append("^^");
-                    if (this._qnameMapper.ReduceToQName(l.DataType.AbsoluteUri, out qname))
+                    if (_qnameMapper.ReduceToQName(l.DataType.AbsoluteUri, out var qname))
                     {
                         if (TurtleSpecsHelper.IsValidQName(qname))
                         {
@@ -224,14 +223,14 @@ namespace VDS.RDF.Writing.Formatting
                         else
                         {
                             output.Append('<');
-                            output.Append(this.FormatUri(l.DataType));
+                            output.Append(FormatUri(l.DataType));
                             output.Append('>');
                         }
                     }
                     else
                     {
                         output.Append('<');
-                        output.Append(this.FormatUri(l.DataType));
+                        output.Append(FormatUri(l.DataType));
                         output.Append('>');
                     }
                 }
@@ -248,7 +247,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         protected override string FormatBlankNode(IBlankNode b, TripleSegment? segment)
         {
-            return "_:" + this._bnodeMapper.GetOutputID(b.InternalID);
+            return "_:" + _bnodeMapper.GetOutputID(b.InternalID);
         }
 
         /// <summary>
@@ -259,7 +258,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         public override string FormatNamespace(string prefix, Uri namespaceUri)
         {
-            return "@prefix " + prefix + ": <" + this.FormatUri(namespaceUri) + "> .";
+            return "@prefix " + prefix + ": <" + FormatUri(namespaceUri) + "> .";
         }
 
         /// <summary>
@@ -269,7 +268,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         public virtual string FormatBaseUri(Uri u)
         {
-            return "@base <" + this.FormatUri(u) + "> .";
+            return "@base <" + FormatUri(u) + "> .";
         }
     }
 
@@ -310,7 +309,7 @@ namespace VDS.RDF.Writing.Formatting
         /// Creates a new Turtle Formatter
         /// </summary>
         /// <param name="formatName">Format Name</param>
-        protected TurtleW3CFormatter(String formatName)
+        protected TurtleW3CFormatter(string formatName)
             : base(formatName, new QNameOutputMapper()) { }
 
         /// <summary>
@@ -318,7 +317,7 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="formatName">Format Name</param>
         /// <param name="g">Graph</param>
-        protected TurtleW3CFormatter(String formatName, IGraph g)
+        protected TurtleW3CFormatter(string formatName, IGraph g)
             : base(formatName, new QNameOutputMapper(g.NamespaceMap)) { }
 
         /// <summary>
@@ -326,7 +325,7 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="formatName">Format Name</param>
         /// <param name="nsmap">Namespace Map</param>
-        protected TurtleW3CFormatter(String formatName, INamespaceMapper nsmap)
+        protected TurtleW3CFormatter(string formatName, INamespaceMapper nsmap)
             : base(formatName, new QNameOutputMapper(nsmap)) { }
 
         /// <summary>
@@ -334,7 +333,7 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="formatName">Format Name</param>
         /// <param name="qnameMapper">QName Map</param>
-        protected TurtleW3CFormatter(String formatName, QNameOutputMapper qnameMapper)
+        protected TurtleW3CFormatter(string formatName, QNameOutputMapper qnameMapper)
             : base(formatName, qnameMapper) { }
 
         /// <summary>

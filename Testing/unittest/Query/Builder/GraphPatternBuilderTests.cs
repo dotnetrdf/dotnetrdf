@@ -74,7 +74,7 @@ namespace VDS.RDF.Query.Builder
             // then
             for (int i = 0; i < 4; i++)
             {
-                Assert.Equal(1, graphPattern.ChildGraphPatterns.Count);
+                Assert.Single(graphPattern.ChildGraphPatterns);
                 graphPattern = graphPattern.ChildGraphPatterns.Single();
             }
         }

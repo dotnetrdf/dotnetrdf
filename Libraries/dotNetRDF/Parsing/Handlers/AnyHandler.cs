@@ -49,7 +49,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             get
             {
-                return this._any;
+                return _any;
             }
         }
 
@@ -58,7 +58,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         protected override void StartRdfInternal()
         {
-            this._any = false;
+            _any = false;
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
-            this._any = true;
+            _any = true;
             return false;
         }
 

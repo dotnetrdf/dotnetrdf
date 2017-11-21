@@ -41,8 +41,8 @@ namespace VDS.RDF.Parsing.Handlers
     {
         private void EnsureTestData(String file)
         {
-            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriter(MimeTypesHelper.GetMimeTypes(Path.GetExtension(file)));
-            this.EnsureTestData(file, writer);
+            var writer = MimeTypesHelper.GetSparqlWriterByFileExtension(Path.GetExtension(file));
+            EnsureTestData(file, writer);
         }
 
         private void EnsureTestData(String file, ISparqlResultsWriter writer)

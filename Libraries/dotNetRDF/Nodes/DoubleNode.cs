@@ -48,7 +48,7 @@ namespace VDS.RDF.Nodes
         public DoubleNode(IGraph g, double value, String lexicalValue)
             : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble), SparqlNumericType.Double)
         {
-            this._value = value;
+            _value = value;
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace VDS.RDF.Nodes
         {
             try
             {
-                return Convert.ToInt64(this._value);
+                return Convert.ToInt64(_value);
             }
             catch
             {
@@ -83,7 +83,7 @@ namespace VDS.RDF.Nodes
         {
             try
             {
-                return Convert.ToDecimal(this._value);
+                return Convert.ToDecimal(_value);
             }
             catch
             {
@@ -99,7 +99,7 @@ namespace VDS.RDF.Nodes
         {
             try
             {
-                return Convert.ToSingle(this._value);
+                return Convert.ToSingle(_value);
             }
             catch
             {
@@ -113,7 +113,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public override double AsDouble()
         {
-            return this._value;
+            return _value;
         }
     }
 }

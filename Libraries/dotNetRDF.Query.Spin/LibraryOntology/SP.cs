@@ -34,12 +34,12 @@ using VDS.RDF.Query.Spin.Util;
 namespace VDS.RDF.Query.Spin.LibraryOntology
 {
 
-    /**
+    /* *
      * Vocabulary of the SPIN SPARQL Syntax schema.
      * 
      * @author Holger Knublauch
      */
-    public class SP
+    internal class SP
     {
 
         public const String BASE_URI = "http://spinrdf.org/sp";
@@ -323,7 +323,7 @@ namespace VDS.RDF.Query.Spin.LibraryOntology
         }
 
 
-        /**
+        /* *
          * Checks whether the SP ontology is used in a given Model.
          * This is true if the model defines the SP namespace prefix
          * and also has sp:Query defined with an rdf:type.
@@ -345,12 +345,12 @@ namespace VDS.RDF.Query.Spin.LibraryOntology
         {
             if (varName.StartsWith("arg"))
             {
-                String subString = varName.Substring(3);
+                var subString = varName.Substring(3);
                 try
                 {
-                    return Int32.Parse(subString);
+                    return int.Parse(subString);
                 }
-                catch (Exception t)
+                catch (Exception)
                 {
                 }
             }

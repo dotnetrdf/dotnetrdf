@@ -137,7 +137,7 @@ namespace VDS.RDF.Update.Protocol
         /// </remarks>
         protected Uri ResolveGraphUri(IHttpContext context, IGraph g)
         {
-            if (g == null) return this.ResolveGraphUri(context);
+            if (g == null) return ResolveGraphUri(context);
 
             Uri graphUri;
             try

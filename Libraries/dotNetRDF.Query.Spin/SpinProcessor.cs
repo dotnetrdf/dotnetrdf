@@ -43,7 +43,7 @@ namespace VDS.RDF.Query.Spin
     /// TODO refactor the initialization process to allow for dynamic SPIN configuration updates through the dataset API.
     /// TODO avoid multiple query transformations (ie String => SparqlQuery => SPIN Resources => String) by using the native dotNetRDF algebra classes instead of IResource
     /// </summary>
-    public class SpinProcessor //: IInferenceEngine
+    internal class SpinProcessor //: IInferenceEngine
     {
 
         // TODO change support to OWL ?

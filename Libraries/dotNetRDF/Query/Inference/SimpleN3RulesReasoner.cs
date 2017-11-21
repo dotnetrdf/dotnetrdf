@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Inference
         /// <param name="g">Graph</param>
         public void Apply(IGraph g)
         {
-            this.Apply(g, g);
+            Apply(g, g);
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace VDS.RDF.Query.Inference
             }
 
             // Apply each rule in turn
-            foreach (String[] rule in this._rules)
+            foreach (String[] rule in _rules)
             {
                 // Build the final version of the rule text for the given input and output
                 StringBuilder ruleText = new StringBuilder();
@@ -98,17 +98,17 @@ namespace VDS.RDF.Query.Inference
                 // If there's a Base URI on the Output Graph need a WITH clause
                 if (output.BaseUri != null)
                 {
-                    ruleText.AppendLine("WITH <" + this._formatter.FormatUri(output.BaseUri) + ">");
+                    ruleText.AppendLine("WITH <" + _formatter.FormatUri(output.BaseUri) + ">");
                 }
                 ruleText.AppendLine(rule[0]);
                 // If there's a Base URI on the Input Graph need a USING clause
                 if (input.BaseUri != null)
                 {
-                    ruleText.AppendLine("USING <" + this._formatter.FormatUri(input.BaseUri) + ">");
+                    ruleText.AppendLine("USING <" + _formatter.FormatUri(input.BaseUri) + ">");
                 }
                 ruleText.AppendLine(rule[1]);
 
-                ISyntaxValidationResults results = this._validator.Validate(ruleText.ToString());
+                ISyntaxValidationResults results = _validator.Validate(ruleText.ToString());
                 if (results.IsValid)
                 {
                     store.ExecuteUpdate((SparqlUpdateCommandSet)results.Result);
@@ -128,7 +128,7 @@ namespace VDS.RDF.Query.Inference
             {
                 if (t.Subject.NodeType == NodeType.GraphLiteral && t.Object.NodeType == NodeType.GraphLiteral)
                 {
-                    this.TryCreateRule(t);
+                    TryCreateRule(t);
                 }
             }
         }
@@ -154,7 +154,7 @@ namespace VDS.RDF.Query.Inference
             {
                 if (vars == null)
                 {
-                    output.AppendLine(this._formatter.Format(x));
+                    output.AppendLine(_formatter.Format(x));
                 }
                 else
                 {
@@ -165,11 +165,11 @@ namespace VDS.RDF.Query.Inference
                             variableMap.Add(x.Subject, new VariableNode(null, "autoRuleVar" + nextVarID));
                             nextVarID++;
                         }
-                        output.Append(this._formatter.Format(variableMap[x.Subject]));
+                        output.Append(_formatter.Format(variableMap[x.Subject]));
                     } 
                     else
                     {
-                        output.Append(this._formatter.Format(x.Subject));
+                        output.Append(_formatter.Format(x.Subject));
                     }
                     output.Append(' ');
                     if (vars.IsVariable(x.Predicate))
@@ -179,11 +179,11 @@ namespace VDS.RDF.Query.Inference
                             variableMap.Add(x.Predicate, new VariableNode(null, "autoRuleVar" + nextVarID));
                             nextVarID++;
                         }
-                        output.Append(this._formatter.Format(variableMap[x.Predicate]));
+                        output.Append(_formatter.Format(variableMap[x.Predicate]));
                     }
                     else
                     {
-                        output.Append(this._formatter.Format(x.Predicate));
+                        output.Append(_formatter.Format(x.Predicate));
                     }
                     output.Append(' ');
                     if (vars.IsVariable(x.Object))
@@ -193,11 +193,11 @@ namespace VDS.RDF.Query.Inference
                             variableMap.Add(x.Object, new VariableNode(null, "autoRuleVar" + nextVarID));
                             nextVarID++;
                         }
-                        output.Append(this._formatter.Format(variableMap[x.Object]));
+                        output.Append(_formatter.Format(variableMap[x.Object]));
                     }
                     else
                     {
-                        output.Append(this._formatter.Format(x.Object));
+                        output.Append(_formatter.Format(x.Object));
                     }
                     output.AppendLine(" .");
                 }
@@ -213,7 +213,7 @@ namespace VDS.RDF.Query.Inference
             {
                 if (vars == null)
                 {
-                    output.AppendLine(this._formatter.Format(x));
+                    output.AppendLine(_formatter.Format(x));
                 }
                 else
                 {
@@ -224,11 +224,11 @@ namespace VDS.RDF.Query.Inference
                             variableMap.Add(x.Subject, new VariableNode(null, "autoRuleVar" + nextVarID));
                             nextVarID++;
                         }
-                        output.Append(this._formatter.Format(variableMap[x.Subject]));
+                        output.Append(_formatter.Format(variableMap[x.Subject]));
                     } 
                     else
                     {
-                        output.Append(this._formatter.Format(x.Subject));
+                        output.Append(_formatter.Format(x.Subject));
                     }
                     output.Append(' ');
                     if (vars.IsVariable(x.Predicate))
@@ -238,11 +238,11 @@ namespace VDS.RDF.Query.Inference
                             variableMap.Add(x.Predicate, new VariableNode(null, "autoRuleVar" + nextVarID));
                             nextVarID++;
                         }
-                        output.Append(this._formatter.Format(variableMap[x.Predicate]));
+                        output.Append(_formatter.Format(variableMap[x.Predicate]));
                     }
                     else
                     {
-                        output.Append(this._formatter.Format(x.Predicate));
+                        output.Append(_formatter.Format(x.Predicate));
                     }
                     output.Append(' ');
                     if (vars.IsVariable(x.Object))
@@ -252,11 +252,11 @@ namespace VDS.RDF.Query.Inference
                             variableMap.Add(x.Object, new VariableNode(null, "autoRuleVar" + nextVarID));
                             nextVarID++;
                         }
-                        output.Append(this._formatter.Format(variableMap[x.Object]));
+                        output.Append(_formatter.Format(variableMap[x.Object]));
                     }
                     else
                     {
-                        output.Append(this._formatter.Format(x.Object));
+                        output.Append(_formatter.Format(x.Object));
                     }
                     output.AppendLine(" .");
                 }
@@ -264,10 +264,10 @@ namespace VDS.RDF.Query.Inference
             output.AppendLine("}");
             rule[1] = output.ToString();
             
-            ISyntaxValidationResults results = this._validator.Validate(rule[0] + rule[1]);
+            ISyntaxValidationResults results = _validator.Validate(rule[0] + rule[1]);
             if (results.IsValid)
             {
-                this._rules.Add(rule);
+                _rules.Add(rule);
             }
         }
     }

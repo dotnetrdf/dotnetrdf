@@ -50,9 +50,9 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// </summary>
         public IGraph Classify()
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Endpoint.Uri);
-            request.Method = this.Endpoint.HttpMethods.First();
-            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes, MimeTypesHelper.SupportedRdfMimeTypes);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Endpoint.Uri);
+            request.Method = Endpoint.HttpMethods.First();
+            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypes, MimeTypesHelper.SupportedRdfMimeTypes);
 
             Tools.HttpDebugRequest(request);
 
@@ -87,9 +87,9 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// </remarks>
         public void Classify(GraphCallback callback, Object state)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Endpoint.Uri);
-            request.Method = this.Endpoint.HttpMethods.First();
-            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes, MimeTypesHelper.SupportedRdfMimeTypes);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Endpoint.Uri);
+            request.Method = Endpoint.HttpMethods.First();
+            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypes, MimeTypesHelper.SupportedRdfMimeTypes);
 
             Tools.HttpDebugRequest(request);
 

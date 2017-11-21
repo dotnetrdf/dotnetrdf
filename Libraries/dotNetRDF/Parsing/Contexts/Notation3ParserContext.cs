@@ -127,14 +127,14 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._keywordsMode;
+                return _keywordsMode;
             }
             set
             {
                 // Can only turn Keywords Mode on, once on it cannot be turned off for the current input
-                if (!this._keywordsMode)
+                if (!_keywordsMode)
                 {
-                    this._keywordsMode = value;
+                    _keywordsMode = value;
                 }
             }
         }
@@ -146,7 +146,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._keywords;
+                return _keywords;
             }
         }
 
@@ -157,11 +157,11 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._varContext;
+                return _varContext;
             }
             set
             {
-                this._varContext = value;
+                _varContext = value;
             }
         }
 
@@ -174,19 +174,19 @@ namespace VDS.RDF.Parsing.Contexts
         public void PushGraph()
         {
             Graph h = new Graph();
-            h.NamespaceMap.Import(this.Namespaces);
-            h.BaseUri = this.BaseUri;
+            h.NamespaceMap.Import(Namespaces);
+            h.BaseUri = BaseUri;
 
-            this._handlers.Push(this._handler);
-            this._handler = new GraphHandler(h);
-            this._handler.StartRdf();
+            _handlers.Push(_handler);
+            _handler = new GraphHandler(h);
+            _handler.StartRdf();
 
-            this._subgraphs.Push(this._g);
-            this._g = h;
+            _subgraphs.Push(_g);
+            _g = h;
 
             VariableContext v = new VariableContext(VariableContextType.None);
-            this._varContexts.Push(this._varContext);
-            this._varContext = v;
+            _varContexts.Push(_varContext);
+            _varContext = v;
         }
 
         /// <summary>
@@ -197,12 +197,12 @@ namespace VDS.RDF.Parsing.Contexts
         /// </remarks>
         public void PopGraph()
         {
-            if (this._handlers.Count > 0)
+            if (_handlers.Count > 0)
             {
-                this._g = this._subgraphs.Pop();
-                this._handler.EndRdf(true);
-                this._handler = this._handlers.Pop();
-                this._varContext = this._varContexts.Pop();
+                _g = _subgraphs.Pop();
+                _handler.EndRdf(true);
+                _handler = _handlers.Pop();
+                _varContext = _varContexts.Pop();
             }
             else
             {
@@ -217,7 +217,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._g;
+                return _g;
             }
         }
 
@@ -228,7 +228,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return (this._handlers.Count > 0);
+                return (_handlers.Count > 0);
             }
         }
     }

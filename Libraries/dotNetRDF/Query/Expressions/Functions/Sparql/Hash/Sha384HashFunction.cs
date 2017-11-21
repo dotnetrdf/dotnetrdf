@@ -61,7 +61,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordSha384 + "(" + this._expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordSha384 + "(" + _expr.ToString() + ")";
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new Sha384HashFunction(transformer.Transform(this._expr));
+            return new Sha384HashFunction(transformer.Transform(_expr));
         }
     }
 }

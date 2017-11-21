@@ -33,7 +33,7 @@ using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-    public class DescribeImpl : QueryImpl, IDescribe
+    internal class DescribeImpl : QueryImpl, IDescribe
     {
 
         public DescribeImpl(INode node, SpinProcessor spinModel)

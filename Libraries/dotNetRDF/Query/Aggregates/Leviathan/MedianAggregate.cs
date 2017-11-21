@@ -64,7 +64,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         public MedianAggregate(VariableTerm expr, bool distinct)
             : base(expr, distinct)
         {
-            this._varname = expr.ToString().Substring(1);
+            _varname = expr.ToString().Substring(1);
         }
 
         /// <summary>
@@ -83,12 +83,12 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         /// <returns></returns>
         public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
         {
-            if (this._varname != null)
+            if (_varname != null)
             {
                 // Ensured the MEDIANed variable is in the Variables of the Results
-                if (!context.Binder.Variables.Contains(this._varname))
+                if (!context.Binder.Variables.Contains(_varname))
                 {
-                    throw new RdfQueryException("Cannot use the Variable " + this._expr.ToString() + " in a MEDIAN Aggregate since the Variable does not occur in a Graph Pattern");
+                    throw new RdfQueryException("Cannot use the Variable " + _expr.ToString() + " in a MEDIAN Aggregate since the Variable does not occur in a Graph Pattern");
                 }
             }
 
@@ -99,8 +99,8 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
             {
                 try
                 {
-                    IValuedNode temp = this._expr.Evaluate(context, id);
-                    if (this._distinct)
+                    IValuedNode temp = _expr.Evaluate(context, id);
+                    if (_distinct)
                     {
                         if (temp != null)
                         {
@@ -149,8 +149,8 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
             output.Append(LeviathanFunctionFactory.LeviathanFunctionsNamespace);
             output.Append(LeviathanFunctionFactory.Median);
             output.Append(">(");
-            if (this._distinct) output.Append("DISTINCT ");
-            output.Append(this._expr.ToString());
+            if (_distinct) output.Append("DISTINCT ");
+            output.Append(_expr.ToString());
             output.Append(')');
             return output.ToString();
         }

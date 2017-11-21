@@ -48,8 +48,8 @@ namespace VDS.RDF.Update.Commands
         public DeleteDataCommand(GraphPattern pattern)
             : base(SparqlUpdateCommandType.DeleteData) 
         {
-            if (!this.IsValidDataPattern(pattern, true)) throw new SparqlUpdateException("Cannot create a DELETE DATA command where any of the Triple Patterns are not concrete triples (Variables/Blank Nodes are not permitted) or a GRAPH clause has nested Graph Patterns");
-            this._pattern = pattern;
+            if (!IsValidDataPattern(pattern, true)) throw new SparqlUpdateException("Cannot create a DELETE DATA command where any of the Triple Patterns are not concrete triples (Variables/Blank Nodes are not permitted) or a GRAPH clause has nested Graph Patterns");
+            _pattern = pattern;
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace VDS.RDF.Update.Commands
         {
             get
             {
-                return this._pattern;
+                return _pattern;
             }
         }
 
@@ -97,22 +97,22 @@ namespace VDS.RDF.Update.Commands
         {
             get
             {
-                if (!this._pattern.HasChildGraphPatterns)
+                if (!_pattern.HasChildGraphPatterns)
                 {
                     return true;
                 }
                 else
                 {
                     List<String> affectedUris = new List<string>();
-                    if (this._pattern.IsGraph)
+                    if (_pattern.IsGraph)
                     {
-                        affectedUris.Add(this._pattern.GraphSpecifier.Value);
+                        affectedUris.Add(_pattern.GraphSpecifier.Value);
                     }
                     else
                     {
                         affectedUris.Add(null);
                     }
-                    affectedUris.AddRange(from p in this._pattern.ChildGraphPatterns
+                    affectedUris.AddRange(from p in _pattern.ChildGraphPatterns
                                           where p.IsGraph
                                           select p.GraphSpecifier.Value);
 
@@ -129,17 +129,17 @@ namespace VDS.RDF.Update.Commands
         public override bool AffectsGraph(Uri graphUri)
         {
             List<String> affectedUris = new List<string>();
-            if (this._pattern.IsGraph)
+            if (_pattern.IsGraph)
             {
-                affectedUris.Add(this._pattern.GraphSpecifier.Value);
+                affectedUris.Add(_pattern.GraphSpecifier.Value);
             }
             else
             {
                 affectedUris.Add(String.Empty);
             }
-            if (this._pattern.HasChildGraphPatterns)
+            if (_pattern.HasChildGraphPatterns)
             {
-                affectedUris.AddRange(from p in this._pattern.ChildGraphPatterns
+                affectedUris.AddRange(from p in _pattern.ChildGraphPatterns
                                       where p.IsGraph
                                       select p.GraphSpecifier.Value);
             }
@@ -156,18 +156,18 @@ namespace VDS.RDF.Update.Commands
         {
             // Split the Pattern into the set of Graph Patterns
             List<GraphPattern> patterns = new List<GraphPattern>();
-            if (this._pattern.IsGraph)
+            if (_pattern.IsGraph)
             {
-                patterns.Add(this._pattern);
+                patterns.Add(_pattern);
             }
-            else if (this._pattern.TriplePatterns.Count > 0 || this._pattern.HasChildGraphPatterns)
+            else if (_pattern.TriplePatterns.Count > 0 || _pattern.HasChildGraphPatterns)
             {
-                if (this._pattern.TriplePatterns.Count > 0)
+                if (_pattern.TriplePatterns.Count > 0)
                 {
                     patterns.Add(new GraphPattern());
-                    this._pattern.TriplePatterns.ForEach(tp => patterns[0].AddTriplePattern(tp));
+                    _pattern.TriplePatterns.ForEach(tp => patterns[0].AddTriplePattern(tp));
                 }
-                this._pattern.ChildGraphPatterns.ForEach(gp => patterns.Add(gp));
+                _pattern.ChildGraphPatterns.ForEach(gp => patterns.Add(gp));
             }
             else
             {
@@ -177,7 +177,7 @@ namespace VDS.RDF.Update.Commands
 
             foreach (GraphPattern pattern in patterns)
             {
-                if (!this.IsValidDataPattern(pattern, false)) throw new SparqlUpdateException("Cannot evaluate a DELETE DATA command where any of the Triple Patterns are not concrete triples (variables are not permitted) or any of the GRAPH clauses have nested Graph Patterns");
+                if (!IsValidDataPattern(pattern, false)) throw new SparqlUpdateException("Cannot evaluate a DELETE DATA command where any of the Triple Patterns are not concrete triples (variables are not permitted) or any of the GRAPH clauses have nested Graph Patterns");
 
                 // Get the Target Graph
                 IGraph target;
@@ -236,9 +236,9 @@ namespace VDS.RDF.Update.Commands
         {
             StringBuilder output = new StringBuilder();
             output.AppendLine("DELETE DATA");
-            if (this._pattern.IsGraph) output.AppendLine("{");
-            output.AppendLine(this._pattern.ToString());
-            if (this._pattern.IsGraph) output.AppendLine("}");
+            if (_pattern.IsGraph) output.AppendLine("{");
+            output.AppendLine(_pattern.ToString());
+            if (_pattern.IsGraph) output.AppendLine("}");
             return output.ToString();
         }
     }

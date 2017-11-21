@@ -42,7 +42,7 @@ namespace VDS.RDF.Update
         /// <param name="store">Updateable Triple Store</param>
         public SimpleUpdateProcessor(IUpdateableTripleStore store)
         {
-            this._store = store;
+            _store = store;
         }
 
         /// <summary>
@@ -58,9 +58,9 @@ namespace VDS.RDF.Update
         /// </summary>
         public virtual void Flush()
         {
-            if (this._store is ITransactionalStore)
+            if (_store is ITransactionalStore)
             {
-                ((ITransactionalStore)this._store).Flush();
+                ((ITransactionalStore)_store).Flush();
             }
         }
 
@@ -70,7 +70,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Add Command</param>
         public void ProcessAddCommand(AddCommand cmd)
         {
-            this.ProcessCommand(cmd);
+            ProcessCommand(cmd);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Clear Command</param>
         public void ProcessClearCommand(ClearCommand cmd)
         {
-            this.ProcessCommand(cmd);
+            ProcessCommand(cmd);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Copy Command</param>
         public void ProcessCopyCommand(CopyCommand cmd)
         {
-            this.ProcessCommand(cmd);
+            ProcessCommand(cmd);
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Create Command</param>
         public void ProcessCreateCommand(CreateCommand cmd)
         {
-            this.ProcessCommand(cmd);
+            ProcessCommand(cmd);
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Command</param>
         public void ProcessCommand(SparqlUpdateCommand cmd)
         {
-            this._store.ExecuteUpdate(cmd);
+            _store.ExecuteUpdate(cmd);
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace VDS.RDF.Update
             commands.UpdateExecutionTime = null;
             try
             {
-                this._store.ExecuteUpdate(commands);
+                _store.ExecuteUpdate(commands);
             }
             finally
             {
@@ -134,7 +134,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Delete Command</param>
         public void ProcessDeleteCommand(DeleteCommand cmd)
         {
-            this.ProcessCommand(cmd);
+            ProcessCommand(cmd);
         }
 
         /// <summary>
@@ -143,7 +143,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">DELETE Data Command</param>
         public void ProcessDeleteDataCommand(DeleteDataCommand cmd)
         {
-            this.ProcessCommand(cmd);
+            ProcessCommand(cmd);
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Drop Command</param>
         public void ProcessDropCommand(DropCommand cmd)
         {
-            this.ProcessCommand(cmd);
+            ProcessCommand(cmd);
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Insert Command</param>
         public void ProcessInsertCommand(InsertCommand cmd)
         {
-            this.ProcessCommand(cmd);
+            ProcessCommand(cmd);
         }
 
         /// <summary>
@@ -170,7 +170,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Insert Data Command</param>
         public void ProcessInsertDataCommand(InsertDataCommand cmd)
         {
-            this.ProcessCommand(cmd);
+            ProcessCommand(cmd);
         }
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Load Command</param>
         public void ProcessLoadCommand(LoadCommand cmd)
         {
-            this.ProcessCommand(cmd);
+            ProcessCommand(cmd);
         }
 
         /// <summary>
@@ -188,7 +188,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Insert/Delete Command</param>
         public void ProcessModifyCommand(ModifyCommand cmd)
         {
-            this.ProcessCommand(cmd);
+            ProcessCommand(cmd);
         }
 
         /// <summary>
@@ -197,7 +197,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Move Command</param>
         public void ProcessMoveCommand(MoveCommand cmd)
         {
-            this.ProcessCommand(cmd);
+            ProcessCommand(cmd);
         }
     }
 }

@@ -31,8 +31,7 @@ using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-    public class AskImpl : QueryImpl, IAsk
+    internal class AskImpl : QueryImpl, IAsk
     {
 
         public AskImpl(INode node, SpinProcessor spinModel)

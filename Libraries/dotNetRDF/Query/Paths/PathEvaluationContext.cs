@@ -48,12 +48,12 @@ namespace VDS.RDF.Query.Paths
         /// <param name="start">End point of the Path</param>
         public PathEvaluationContext(SparqlEvaluationContext context, PatternItem start, PatternItem end)
         {
-            this._context = context;
-            this._start = start;
-            this._end = end;
-            if (this._start.VariableName == null && this._end.VariableName == null) this._earlyAbort = true;
-            this._start.RigorousEvaluation = true;
-            this._end.RigorousEvaluation = true;
+            _context = context;
+            _start = start;
+            _end = end;
+            if (_start.VariableName == null && _end.VariableName == null) _earlyAbort = true;
+            _start.RigorousEvaluation = true;
+            _end.RigorousEvaluation = true;
         }
 
         /// <summary>
@@ -65,12 +65,12 @@ namespace VDS.RDF.Query.Paths
         {
             foreach (PotentialPath p in context.Paths)
             {
-                this._incompletePaths.Add(new PotentialPath(p));
+                _incompletePaths.Add(new PotentialPath(p));
             }
-            this._completePaths.UnionWith(context.CompletePaths);
-            this._first = context.IsFirst;
-            this._last = context.IsLast;
-            this._reverse = context.IsReversed;
+            _completePaths.UnionWith(context.CompletePaths);
+            _first = context.IsFirst;
+            _last = context.IsLast;
+            _reverse = context.IsReversed;
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace VDS.RDF.Query.Paths
         {
             get
             {
-                return this._context;
+                return _context;
             }
         }
 
@@ -91,11 +91,11 @@ namespace VDS.RDF.Query.Paths
         {
             get
             {
-                return this._first;
+                return _first;
             }
             set
             {
-                this._first = value;
+                _first = value;
             }
         }
 
@@ -106,11 +106,11 @@ namespace VDS.RDF.Query.Paths
         {
             get
             {
-                return this._last;
+                return _last;
             }
             set
             {
-                this._last = value;
+                _last = value;
             }
         }
 
@@ -121,11 +121,11 @@ namespace VDS.RDF.Query.Paths
         {
             get
             {
-                return this._reverse;
+                return _reverse;
             }
             set
             {
-                this._reverse = value;
+                _reverse = value;
             }
         }
 
@@ -136,7 +136,7 @@ namespace VDS.RDF.Query.Paths
         {
             get
             {
-                return this._incompletePaths;
+                return _incompletePaths;
             }
         }
 
@@ -147,7 +147,7 @@ namespace VDS.RDF.Query.Paths
         {
             get
             {
-                return this._completePaths;
+                return _completePaths;
             }
         }
 
@@ -158,7 +158,7 @@ namespace VDS.RDF.Query.Paths
         {
             get
             {
-                return this._start;
+                return _start;
             }
         }
 
@@ -169,7 +169,7 @@ namespace VDS.RDF.Query.Paths
         {
             get
             {
-                return this._end;
+                return _end;
             }
         }
 
@@ -183,7 +183,7 @@ namespace VDS.RDF.Query.Paths
         {
             get
             {
-                return this._earlyAbort;
+                return _earlyAbort;
             }
         }
 
@@ -202,11 +202,11 @@ namespace VDS.RDF.Query.Paths
         {
             get
             {
-                return this._allowNewPaths;
+                return _allowNewPaths;
             }
             set
             {
-                this._allowNewPaths = value;
+                _allowNewPaths = value;
             }
         }
 
@@ -216,9 +216,9 @@ namespace VDS.RDF.Query.Paths
         /// <param name="p">Path</param>
         public void AddPath(PotentialPath p)
         {
-            if (!this._incompletePaths.Contains(p))
+            if (!_incompletePaths.Contains(p))
             {
-                this._incompletePaths.Add(p);
+                _incompletePaths.Add(p);
             }
         }
 
@@ -230,9 +230,9 @@ namespace VDS.RDF.Query.Paths
         {
             if (p.IsComplete && !p.IsPartial)
             {
-                if (!this._completePaths.Contains(p))
+                if (!_completePaths.Contains(p))
                 {
-                    this._completePaths.Add(p);
+                    _completePaths.Add(p);
                 }
             }
         }

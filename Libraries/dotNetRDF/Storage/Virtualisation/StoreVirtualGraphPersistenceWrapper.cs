@@ -60,14 +60,13 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <param name="writeOnly">Whether to operate in write-only mode</param>
         /// <remarks>
         /// <para>
-        /// <strong>Note:</strong> In order to operate in write-only mode the <see cref="IStorageProvider">IStorageProvider</see> must support triple level updates indicated by it returning true to its <see cref="IStorageProvider.UpdateSupported">UpdateSupported</see> property and the Graph to be wrapped must be an empty Graph
+        /// <strong>Note:</strong> In order to operate in write-only mode the <see cref="IStorageProvider">IStorageProvider</see> must support triple level updates indicated by it returning true to its <see cref="IStorageCapabilities.UpdateSupported">UpdateSupported</see> property and the Graph to be wrapped must be an empty Graph
         /// </para>
         /// </remarks>
-        public StoreVirtualGraphPersistenceWrapper(VDS.RDF.Storage.IStorageProvider manager, IVirtualRdfProvider<TNodeID, TGraphID> provider, VDS.RDF.IGraph g, System.Uri graphUri, bool writeOnly)
+        public StoreVirtualGraphPersistenceWrapper(IStorageProvider manager, IVirtualRdfProvider<TNodeID, TGraphID> provider, IGraph g, Uri graphUri, bool writeOnly)
             : base(manager, g, graphUri, writeOnly)
         {
-            if (provider == null) throw new ArgumentNullException("provider", "Cannot persist virtual nodes without a virtual RDF provider");
-            this._provider = provider;
+            _provider = provider ?? throw new ArgumentNullException(nameof(provider), "Cannot persist virtual nodes without a virtual RDF provider");
         }
 
         /// <summary>
@@ -113,7 +112,7 @@ namespace VDS.RDF.Storage.Virtualisation
             {
                 return t;
             }
-            return new Triple(s, p, o, this._g);
+            return new Triple(s, p, o, _g);
         }
 
         /// <summary>

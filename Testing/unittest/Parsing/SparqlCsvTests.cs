@@ -34,7 +34,7 @@ http://x,http://y
             Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
             Assert.Equal(2, results.Variables.Count());
             CheckVariables(results, "x", "y");
-            Assert.Equal(1, results.Results.Count);
+            Assert.Single(results.Results);
         }
 
         [Fact]
@@ -53,7 +53,7 @@ http://x,http://y
             Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
             Assert.Equal(2, results.Variables.Count());
             CheckVariables(results, "x", "y");
-            Assert.Equal(1, results.Results.Count);
+            Assert.Single(results.Results);
         }
 
         [Fact]
@@ -71,7 +71,7 @@ http://x a bad uri,http://y
             Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
             Assert.Equal(2, results.Variables.Count());
             CheckVariables(results, "x", "y");
-            Assert.Equal(1, results.Results.Count);
+            Assert.Single(results.Results);
 
             INode n = results.Results[0]["x"];
             Assert.NotNull(n);

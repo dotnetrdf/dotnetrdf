@@ -34,7 +34,7 @@ namespace VDS.RDF.Query.Spin.Model
      * 
      * @author Holger Knublauch
      */
-    public interface IAggregation : IPrintable, IResource
+    internal interface IAggregation : IPrintable, IResource
     {
 
         IVariable getAs();

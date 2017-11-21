@@ -35,8 +35,7 @@ using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-    public class AggregationImpl : AbstractSPINResource, IAggregation
+    internal class AggregationImpl : AbstractSPINResource, IAggregation
     {
 
         public AggregationImpl(INode node, SpinProcessor spinModel)

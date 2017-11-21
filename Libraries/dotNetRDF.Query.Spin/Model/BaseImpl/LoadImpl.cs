@@ -30,9 +30,7 @@ using VDS.RDF.Query.Spin;
 using VDS.RDF.Query.Spin.LibraryOntology;
 using VDS.RDF.Query.Datasets;
 namespace  VDS.RDF.Query.Spin.Model {
-
-
-public class LoadImpl : UpdateImpl, ILoad {
+    internal class LoadImpl : UpdateImpl, ILoad {
 
     public LoadImpl(INode node, SpinProcessor spinModel)
         : base(node, spinModel)

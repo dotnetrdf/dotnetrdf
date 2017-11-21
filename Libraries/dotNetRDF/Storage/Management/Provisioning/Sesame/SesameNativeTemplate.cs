@@ -83,7 +83,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         public SesameNativeTemplate(String id)
             : base(id, "Sesame Native", "A Sesame native store resides on disk")
         {
-            this.IndexMode = SesameNativeIndexMode.SPOC;
+            IndexMode = SesameNativeIndexMode.SPOC;
         }
 
         /// <summary>
@@ -92,21 +92,21 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// <returns>Template Graph</returns>
         public override IGraph GetTemplateGraph()
         {
-            IGraph g = this.GetBaseTemplateGraph();
+            IGraph g = GetBaseTemplateGraph();
             INode impl = g.CreateBlankNode();
-            g.Assert(this.ContextNode, g.CreateUriNode("rep:repositoryImpl"), impl);
+            g.Assert(ContextNode, g.CreateUriNode("rep:repositoryImpl"), impl);
             g.Assert(impl, g.CreateUriNode("rep:repositoryType"), g.CreateLiteralNode("openrdf:SailRepository"));
             INode sailImpl = g.CreateBlankNode();
             g.Assert(impl, g.CreateUriNode("sr:sailImpl"), sailImpl);
 
-            if (this.DirectTypeHierarchyInferencing)
+            if (DirectTypeHierarchyInferencing)
             {
                 INode sailDelegate = g.CreateBlankNode();
                 g.Assert(sailImpl, g.CreateUriNode("sail:sailType"), g.CreateLiteralNode("openrdf:DirectTypeHierarchyInferencer"));
                 g.Assert(sailImpl, g.CreateUriNode("sail:delegate"), sailDelegate);
                 sailImpl = sailDelegate;
             }
-            if (this.RdfSchemaInferencing)
+            if (RdfSchemaInferencing)
             {
                 INode sailDelegate = g.CreateBlankNode();
                 g.Assert(sailImpl, g.CreateUriNode("sail:sailType"), g.CreateLiteralNode("openrdf:ForwardChainingRDFSInferencer"));
@@ -115,7 +115,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
             }
 
             g.Assert(sailImpl, g.CreateUriNode("sail:sailType"), g.CreateLiteralNode("openrdf:NativeStore"));
-            String mode = this.IndexMode.ToString().ToLower();
+            String mode = IndexMode.ToString().ToLower();
             if (mode.Contains(".")) mode = mode.Substring(mode.LastIndexOf('.') + 1);
             g.Assert(sailImpl, g.CreateUriNode("ns:tripleIndexes"), g.CreateLiteralNode(mode));
             return g;

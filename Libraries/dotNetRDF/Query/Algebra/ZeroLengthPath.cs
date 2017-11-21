@@ -53,9 +53,9 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            if (this.AreBothTerms())
+            if (AreBothTerms())
             {
-                if (this.AreSameTerms())
+                if (AreSameTerms())
                 {
                     return new IdentityMultiset();
                 }
@@ -65,8 +65,8 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
 
-            String subjVar = this.PathStart.VariableName;
-            String objVar = this.PathEnd.VariableName;
+            String subjVar = PathStart.VariableName;
+            String objVar = PathEnd.VariableName;
             context.OutputMultiset = new Multiset();
 
             // Determine the Triples to which this applies
@@ -82,7 +82,7 @@ namespace VDS.RDF.Query.Algebra
                         if (context.InputMultiset.ContainsVariable(objVar))
                         {
                             // Both Subject and Object are Bound
-                            foreach (ISet s in context.InputMultiset.Sets.Where(x => x[subjVar] != null && x[objVar] != null && this.PathStart.Accepts(context, x[subjVar]) && this.PathEnd.Accepts(context, x[objVar])))
+                            foreach (ISet s in context.InputMultiset.Sets.Where(x => x[subjVar] != null && x[objVar] != null && PathStart.Accepts(context, x[subjVar]) && PathEnd.Accepts(context, x[objVar])))
                             {
                                 ISet x = new Set();
                                 x.Add(subjVar, x[subjVar]);
@@ -95,7 +95,7 @@ namespace VDS.RDF.Query.Algebra
                         else
                         {
                             // Subject is bound but Object is Unbound
-                            foreach (ISet s in context.InputMultiset.Sets.Where(x => x[subjVar] != null && this.PathStart.Accepts(context, x[subjVar])))
+                            foreach (ISet s in context.InputMultiset.Sets.Where(x => x[subjVar] != null && PathStart.Accepts(context, x[subjVar])))
                             {
                                 ISet x = s.Copy();
                                 x.Add(objVar, x[subjVar]);
@@ -107,7 +107,7 @@ namespace VDS.RDF.Query.Algebra
                     {
                         // Object is a Term
                         // Preseve sets where the Object Term is equal to the currently bound Subject
-                        INode objTerm = ((NodeMatchPattern)this.PathEnd).Node;
+                        INode objTerm = ((NodeMatchPattern)PathEnd).Node;
                         foreach (ISet s in context.InputMultiset.Sets)
                         {
                             INode temp = s[subjVar];
@@ -127,7 +127,7 @@ namespace VDS.RDF.Query.Algebra
                         if (context.InputMultiset.ContainsVariable(objVar))
                         {
                             // Object is Bound but Subject is unbound
-                            foreach (ISet s in context.InputMultiset.Sets.Where(x => x[objVar] != null && this.PathEnd.Accepts(context, x[objVar])))
+                            foreach (ISet s in context.InputMultiset.Sets.Where(x => x[objVar] != null && PathEnd.Accepts(context, x[objVar])))
                             {
                                 ISet x = s.Copy();
                                 x.Add(subjVar, x[objVar]);
@@ -157,7 +157,7 @@ namespace VDS.RDF.Query.Algebra
                         // Object is a Term
                         // Create a single set with the Variable bound to the Object Term
                         Set s = new Set();
-                        s.Add(subjVar, ((NodeMatchPattern)this.PathEnd).Node);
+                        s.Add(subjVar, ((NodeMatchPattern)PathEnd).Node);
                         context.OutputMultiset.Add(s);
                     }
                 }
@@ -169,7 +169,7 @@ namespace VDS.RDF.Query.Algebra
                 {
                     // Object is Bound
                     // Preseve sets where the Subject Term is equal to the currently bound Object
-                    INode subjTerm = ((NodeMatchPattern)this.PathStart).Node;
+                    INode subjTerm = ((NodeMatchPattern)PathStart).Node;
                     foreach (ISet s in context.InputMultiset.Sets)
                     {
                         INode temp = s[objVar];
@@ -184,7 +184,7 @@ namespace VDS.RDF.Query.Algebra
                     // Object is Unbound
                     // Create a single set with the Variable bound to the Suject Term
                     Set s = new Set();
-                    s.Add(objVar, ((NodeMatchPattern)this.PathStart).Node);
+                    s.Add(objVar, ((NodeMatchPattern)PathStart).Node);
                     context.OutputMultiset.Add(s);
                 }
             }
@@ -199,18 +199,18 @@ namespace VDS.RDF.Query.Algebra
 
         private bool AreBothTerms()
         {
-            return (this.PathStart.VariableName == null && this.PathEnd.VariableName == null);
+            return (PathStart.VariableName == null && PathEnd.VariableName == null);
         }
 
         private bool AreSameTerms()
         {
-            if (this.PathStart is NodeMatchPattern && this.PathEnd is NodeMatchPattern)
+            if (PathStart is NodeMatchPattern && PathEnd is NodeMatchPattern)
             {
-                return ((NodeMatchPattern)this.PathStart).Node.Equals(((NodeMatchPattern)this.PathEnd).Node);
+                return ((NodeMatchPattern)PathStart).Node.Equals(((NodeMatchPattern)PathEnd).Node);
             }
-            else if (this.PathStart is FixedBlankNodePattern && this.PathEnd is FixedBlankNodePattern)
+            else if (PathStart is FixedBlankNodePattern && PathEnd is FixedBlankNodePattern)
             {
-                return ((FixedBlankNodePattern)this.PathStart).InternalID.Equals(((FixedBlankNodePattern)this.PathEnd).InternalID);
+                return ((FixedBlankNodePattern)PathStart).InternalID.Equals(((FixedBlankNodePattern)PathEnd).InternalID);
             }
             else
             {
@@ -224,7 +224,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "ZeroLengthPath(" + this.PathStart.ToString() + ", " + this.Path.ToString() + ", " + this.PathEnd.ToString() + ")";
+            return "ZeroLengthPath(" + PathStart.ToString() + ", " + Path.ToString() + ", " + PathEnd.ToString() + ")";
         }
 
         /// <summary>
@@ -234,7 +234,7 @@ namespace VDS.RDF.Query.Algebra
         public override GraphPattern ToGraphPattern()
         {
             GraphPattern gp = new GraphPattern();
-            PropertyPathPattern pp = new PropertyPathPattern(this.PathStart, new FixedCardinality(this.Path, 0), this.PathEnd);
+            PropertyPathPattern pp = new PropertyPathPattern(PathStart, new FixedCardinality(Path, 0), PathEnd);
             gp.AddTriplePattern(pp);
             return gp;
         }

@@ -45,17 +45,17 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="subquery">Sub-query</param>
         public SubQueryPattern(SparqlQuery subquery)
         {
-            this._subquery = subquery;
+            _subquery = subquery;
             
             // Get the Variables this query projects out
-            foreach (SparqlVariable var in this._subquery.Variables)
+            foreach (SparqlVariable var in _subquery.Variables)
             {
                 if (var.IsResultVariable)
                 {
-                    this._vars.Add(var.Name);
+                    _vars.Add(var.Name);
                 }
             }
-            this._vars.Sort();
+            _vars.Sort();
         }
 
         /// <summary>
@@ -65,19 +65,19 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._subquery;
+                return _subquery;
             }
         }
 
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
         /// </summary>
-        public override IEnumerable<String> FloatingVariables { get { return this._subquery.ToAlgebra().FloatingVariables; } }
+        public override IEnumerable<String> FloatingVariables { get { return _subquery.ToAlgebra().FloatingVariables; } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
         /// </summary>
-        public override IEnumerable<String> FixedVariables { get { return this._subquery.ToAlgebra().FixedVariables; } }
+        public override IEnumerable<String> FixedVariables { get { return _subquery.ToAlgebra().FixedVariables; } }
 
         /// <summary>
         /// Gets the pattern type
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query.Patterns
             // Use the same algebra optimisers as the parent query (if any)
             if (context.Query != null)
             {
-                this._subquery.AlgebraOptimisers = context.Query.AlgebraOptimisers;
+                _subquery.AlgebraOptimisers = context.Query.AlgebraOptimisers;
             }
 
             if (context.InputMultiset is NullMultiset)
@@ -112,7 +112,7 @@ namespace VDS.RDF.Query.Patterns
             }
             else
             {
-                SparqlEvaluationContext subcontext = new SparqlEvaluationContext(this._subquery, context.Data, context.Processor);
+                SparqlEvaluationContext subcontext = new SparqlEvaluationContext(_subquery, context.Data, context.Processor);
                 subcontext.InputMultiset = context.InputMultiset;
 
                 // Add any Named Graphs to the subquery
@@ -120,11 +120,11 @@ namespace VDS.RDF.Query.Patterns
                 {
                     foreach (Uri u in context.Query.NamedGraphs)
                     {
-                        this._subquery.AddNamedGraph(u);
+                        _subquery.AddNamedGraph(u);
                     }
                 }
 
-                ISparqlAlgebra query = this._subquery.ToAlgebra();
+                ISparqlAlgebra query = _subquery.ToAlgebra();
                 try
                 {
                     // Evaluate the Subquery
@@ -137,9 +137,9 @@ namespace VDS.RDF.Query.Patterns
                     }
 
                     // Strip out any Named Graphs from the subquery
-                    if (this._subquery.NamedGraphs.Any())
+                    if (_subquery.NamedGraphs.Any())
                     {
-                        this._subquery.ClearNamedGraphs();
+                        _subquery.ClearNamedGraphs();
                     }
                 }
                 catch (RdfQueryException queryEx)
@@ -167,7 +167,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._subquery.UsesDefaultDataset;
+                return _subquery.UsesDefaultDataset;
             }
         }
 
@@ -189,7 +189,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public int CompareTo(SubQueryPattern other)
         {
-            return this.CompareTo((ISubQueryPattern)other);
+            return CompareTo((ISubQueryPattern)other);
         }
 
         /// <summary>
@@ -208,7 +208,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public override string ToString()
         {
-            return "{" + this._subquery.ToString() + "}";
+            return "{" + _subquery.ToString() + "}";
         }
     }
 }

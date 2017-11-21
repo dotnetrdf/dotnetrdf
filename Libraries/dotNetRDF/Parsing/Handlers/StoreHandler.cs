@@ -45,7 +45,7 @@ namespace VDS.RDF.Parsing.Handlers
             : base()
         {
             if (store == null) throw new ArgumentNullException("store");
-            this._store = store;
+            _store = store;
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             get
             {
-                return this._store;
+                return _store;
             }
         }
 
@@ -69,7 +69,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
-            this._nsmap.AddNamespace(prefix, namespaceUri);
+            _nsmap.AddNamespace(prefix, namespaceUri);
             return true;
         }
 
@@ -80,13 +80,13 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
-            if (!this._store.HasGraph(t.GraphUri))
+            if (!_store.HasGraph(t.GraphUri))
             {
                 Graph g = new Graph();
                 g.BaseUri = t.GraphUri;
-                this._store.Add(g);
+                _store.Add(g);
             }
-            IGraph target = this._store[t.GraphUri];
+            IGraph target = _store[t.GraphUri];
             target.Assert(t.CopyTriple(target));
             return true;
         }
@@ -96,7 +96,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         protected override void StartRdfInternal()
         {
-            this._nsmap.Clear();
+            _nsmap.Clear();
         }
 
         /// <summary>
@@ -106,9 +106,9 @@ namespace VDS.RDF.Parsing.Handlers
         protected override void EndRdfInternal(bool ok)
         {
             // Propogate discovered namespaces to all graphs
-            foreach (IGraph g in this._store.Graphs)
+            foreach (IGraph g in _store.Graphs)
             {
-                g.NamespaceMap.Import(this._nsmap);
+                g.NamespaceMap.Import(_nsmap);
             }
         }
 

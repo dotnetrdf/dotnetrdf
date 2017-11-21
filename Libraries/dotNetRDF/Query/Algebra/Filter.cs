@@ -51,8 +51,8 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="filter">Filter to apply</param>
         public Filter(ISparqlAlgebra pattern, ISparqlFilter filter)
         {
-            this._pattern = pattern;
-            this._filter = filter;
+            _pattern = pattern;
+            _filter = filter;
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Algebra
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             // Apply the Pattern first
-            context.InputMultiset = context.Evaluate(this._pattern);
+            context.InputMultiset = context.Evaluate(_pattern);
 
             if (context.InputMultiset is NullMultiset)
             {
@@ -71,7 +71,7 @@ namespace VDS.RDF.Query.Algebra
             }
             else if (context.InputMultiset is IdentityMultiset)
             {
-                if (this._filter.Variables.Any())
+                if (_filter.Variables.Any())
                 {
                     // If we get an IdentityMultiset then the FILTER only has an effect if there are no
                     // variables - otherwise it is not in scope and causes the Output to become Null
@@ -81,7 +81,7 @@ namespace VDS.RDF.Query.Algebra
                 {
                     try
                     {
-                        if (!this._filter.Expression.Evaluate(context, 0).AsSafeBoolean())
+                        if (!_filter.Expression.Evaluate(context, 0).AsSafeBoolean())
                         {
                             context.OutputMultiset = new NullMultiset();
                             return context.OutputMultiset;
@@ -96,7 +96,7 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                this._filter.Evaluate(context);
+                _filter.Evaluate(context);
             }
             context.OutputMultiset = context.InputMultiset;
             return context.OutputMultiset;
@@ -109,19 +109,19 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return (this._pattern.Variables.Concat(this._filter.Variables)).Distinct();
+                return (_pattern.Variables.Concat(_filter.Variables)).Distinct();
             }
         }
 
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
         /// </summary>
-        public IEnumerable<String> FloatingVariables { get { return this._pattern.FloatingVariables; } }
+        public IEnumerable<String> FloatingVariables { get { return _pattern.FloatingVariables; } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
         /// </summary>
-        public IEnumerable<String> FixedVariables { get { return this._pattern.FixedVariables; } }
+        public IEnumerable<String> FixedVariables { get { return _pattern.FixedVariables; } }
 
         /// <summary>
         /// Gets the Filter to be used
@@ -130,7 +130,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._filter;
+                return _filter;
             }
         }
 
@@ -141,7 +141,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._pattern;
+                return _pattern;
             }
         }
 
@@ -151,9 +151,9 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            String filter = this._filter.ToString();
+            String filter = _filter.ToString();
             filter = filter.Substring(7, filter.Length - 8);
-            return "Filter(" + this._pattern.ToString() + ", " + filter + ")";
+            return "Filter(" + _pattern.ToString() + ", " + filter + ")";
         }
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace VDS.RDF.Query.Algebra
         public SparqlQuery ToQuery()
         {
             SparqlQuery q = new SparqlQuery();
-            q.RootGraphPattern = this.ToGraphPattern();
+            q.RootGraphPattern = ToGraphPattern();
             q.Optimise();
             return q;
         }
@@ -174,9 +174,9 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            GraphPattern p = this._pattern.ToGraphPattern();
+            GraphPattern p = _pattern.ToGraphPattern();
             GraphPattern f = new GraphPattern();
-            f.AddFilter(this._filter);
+            f.AddFilter(_filter);
             p.AddGraphPattern(f);
             return p;
         }
@@ -190,11 +190,11 @@ namespace VDS.RDF.Query.Algebra
         {
             if (optimiser is IExpressionTransformer)
             {
-                return new Filter(optimiser.Optimise(this._pattern), new UnaryExpressionFilter(((IExpressionTransformer)optimiser).Transform(this._filter.Expression)));
+                return new Filter(optimiser.Optimise(_pattern), new UnaryExpressionFilter(((IExpressionTransformer)optimiser).Transform(_filter.Expression)));
             }
             else
             {
-                return new Filter(optimiser.Optimise(this._pattern), this._filter);
+                return new Filter(optimiser.Optimise(_pattern), _filter);
             }
         }
     }

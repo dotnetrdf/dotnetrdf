@@ -52,9 +52,9 @@ namespace VDS.RDF.Storage.Management.Provisioning
         /// <param name="description">Template Description</param>
         public StoreTemplate(String id, String name, String description)
         {
-            this.ID = id;
-            this.TemplateName = name;
-            this.TemplateDescription = description;
+            ID = id;
+            TemplateName = name;
+            TemplateDescription = description;
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace VDS.RDF.Storage.Management.Provisioning
         /// <returns></returns>
         public override string ToString()
         {
-            return this.TemplateName;
+            return TemplateName;
         }
     }
 }

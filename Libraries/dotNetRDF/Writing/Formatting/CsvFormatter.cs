@@ -49,7 +49,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         protected override string FormatUriNode(IUriNode u, TripleSegment? segment)
         {
-            return this.FormatUri(u.Uri);
+            return FormatUri(u.Uri);
         }
 
         /// <summary>

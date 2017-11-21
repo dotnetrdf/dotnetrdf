@@ -64,11 +64,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._allowHiSpeed;
+                return _allowHiSpeed;
             }
             set
             {
-                this._allowHiSpeed = value;
+                _allowHiSpeed = value;
             }
         }
 
@@ -79,11 +79,11 @@ namespace VDS.RDF.Writing
         {
             get 
             {
-                return this._prettyprint;
+                return _prettyprint;
             }
             set 
             {
-                this._prettyprint = value;
+                _prettyprint = value;
             }
         }
 
@@ -94,11 +94,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._compressionLevel;
+                return _compressionLevel;
             }
             set
             {
-                this._compressionLevel = value;
+                _compressionLevel = value;
             }
         }
 
@@ -112,11 +112,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._n3compat;
+                return _n3compat;
             }
             set
             {
-                this._n3compat = value;
+                _n3compat = value;
             }
         }
 
@@ -127,11 +127,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._useMultiThreading;
+                return _useMultiThreading;
             }
             set
             {
-                this._useMultiThreading = value;
+                _useMultiThreading = value;
             }
         }
 
@@ -170,7 +170,7 @@ namespace VDS.RDF.Writing
             if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
             if (writer == null) throw new RdfOutputException("Cannot output to a null writer");
 
-            TriGWriterContext context = new TriGWriterContext(store, writer, this._prettyprint, this._allowHiSpeed, this._compressionLevel, this._n3compat);
+            TriGWriterContext context = new TriGWriterContext(store, writer, _prettyprint, _allowHiSpeed, _compressionLevel, _n3compat);
 
             // Check there's something to do
             if (context.Store.Graphs.Count == 0)
@@ -205,7 +205,7 @@ namespace VDS.RDF.Writing
                 context.QNameMapper = new ThreadSafeQNameOutputMapper(new NamespaceMapper(true));
             }
 
-            if (this._useMultiThreading)
+            if (_useMultiThreading)
             {
                 // Standard Multi-Threaded Writing
 
@@ -217,8 +217,8 @@ namespace VDS.RDF.Writing
 
                 // Start making the async calls
                 List<IAsyncResult> results = new List<IAsyncResult>();
-                SaveGraphsDelegate d = new SaveGraphsDelegate(this.SaveGraphs);
-                for (int i = 0; i < this._threads; i++)
+                SaveGraphsDelegate d = new SaveGraphsDelegate(SaveGraphs);
+                for (int i = 0; i < _threads; i++)
                 {
                     results.Add(d.BeginInvoke(context, null, null));
                 }
@@ -262,7 +262,7 @@ namespace VDS.RDF.Writing
                         {
                             graphContext.NodeFormatter = new UncompressedTurtleFormatter();
                         }
-                        context.Output.WriteLine(this.GenerateGraphOutput(context, graphContext));
+                        context.Output.WriteLine(GenerateGraphOutput(context, graphContext));
                     }
 
                     // Make sure to close the output
@@ -322,7 +322,7 @@ namespace VDS.RDF.Writing
             }
 
             // Generate Triples
-            this.GenerateTripleOutput(globalContext, context);
+            GenerateTripleOutput(globalContext, context);
 
             // Close the Graph
             context.Output.WriteLine("}");
@@ -352,11 +352,11 @@ namespace VDS.RDF.Writing
                 foreach (Triple t in context.Graph.Triples)
                 {
                     context.Output.Write(indentation);
-                    context.Output.Write(this.GenerateNodeOutput(globalContext, context, t.Subject, TripleSegment.Subject));
+                    context.Output.Write(GenerateNodeOutput(globalContext, context, t.Subject, TripleSegment.Subject));
                     context.Output.Write(' ');
-                    context.Output.Write(this.GenerateNodeOutput(globalContext, context, t.Predicate, TripleSegment.Predicate));
+                    context.Output.Write(GenerateNodeOutput(globalContext, context, t.Predicate, TripleSegment.Predicate));
                     context.Output.Write(' ');
-                    context.Output.Write(this.GenerateNodeOutput(globalContext, context, t.Object, TripleSegment.Object));
+                    context.Output.Write(GenerateNodeOutput(globalContext, context, t.Object, TripleSegment.Object));
                     context.Output.WriteLine(".");
                 }
             }
@@ -384,14 +384,14 @@ namespace VDS.RDF.Writing
                         if (context.PrettyPrint) context.Output.Write(new String(' ', baseIndent));
 
                         // Start a new set of Triples
-                        temp = this.GenerateNodeOutput(globalContext, context, t.Subject, TripleSegment.Subject);
+                        temp = GenerateNodeOutput(globalContext, context, t.Subject, TripleSegment.Subject);
                         context.Output.Write(temp);
                         context.Output.Write(" ");
                         subjIndent = baseIndent + temp.Length + 1;
                         lastSubj = t.Subject;
 
                         // Write the first Predicate
-                        temp = this.GenerateNodeOutput(globalContext, context, t.Predicate, TripleSegment.Predicate);
+                        temp = GenerateNodeOutput(globalContext, context, t.Predicate, TripleSegment.Predicate);
                         context.Output.Write(temp);
                         context.Output.Write(" ");
                         predIndent = temp.Length + 1;
@@ -405,7 +405,7 @@ namespace VDS.RDF.Writing
                         if (context.PrettyPrint) context.Output.Write(new String(' ', subjIndent));
 
                         // Write the next Predicate
-                        temp = this.GenerateNodeOutput(globalContext, context, t.Predicate, TripleSegment.Predicate);
+                        temp = GenerateNodeOutput(globalContext, context, t.Predicate, TripleSegment.Predicate);
                         context.Output.Write(temp);
                         context.Output.Write(" ");
                         predIndent = temp.Length + 1;
@@ -420,7 +420,7 @@ namespace VDS.RDF.Writing
                     }
 
                     // Write the Object
-                    context.Output.Write(this.GenerateNodeOutput(globalContext, context, t.Object, TripleSegment.Object));
+                    context.Output.Write(GenerateNodeOutput(globalContext, context, t.Object, TripleSegment.Object));
                 }
 
                 // Terminate Triples
@@ -492,7 +492,7 @@ namespace VDS.RDF.Writing
                     {
                         context.NodeFormatter = new UncompressedTurtleFormatter();
                     }
-                    String graphContent = this.GenerateGraphOutput(globalContext, context);
+                    String graphContent = GenerateGraphOutput(globalContext, context);
                     try
                     {
                         Monitor.Enter(globalContext.Output);
@@ -533,7 +533,7 @@ namespace VDS.RDF.Writing
         /// <param name="message">Warning Message</param>
         private void RaiseWarning(String message) 
         {
-            StoreWriterWarning d = this.Warning;
+            StoreWriterWarning d = Warning;
             if (d != null)
             {
                 d(message);

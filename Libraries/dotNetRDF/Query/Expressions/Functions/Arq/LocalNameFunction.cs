@@ -51,7 +51,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            INode temp = this._expr.Evaluate(context, bindingID);
+            INode temp = _expr.Evaluate(context, bindingID);
             if (temp != null)
             {
                 if (temp.NodeType == NodeType.Uri)
@@ -83,7 +83,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.LocalName + ">(" + this._expr.ToString() + ")";
+            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.LocalName + ">(" + _expr.ToString() + ")";
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new LocalNameFunction(transformer.Transform(this._expr));
+            return new LocalNameFunction(transformer.Transform(_expr));
         }
     }
 }

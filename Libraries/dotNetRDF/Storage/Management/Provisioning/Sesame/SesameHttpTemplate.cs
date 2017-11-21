@@ -89,15 +89,15 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// <returns></returns>
         public override IGraph GetTemplateGraph()
         {
-            IGraph g = this.GetBaseTemplateGraph();
+            IGraph g = GetBaseTemplateGraph();
             INode impl = g.CreateBlankNode();
-            g.Assert(this.ContextNode, g.CreateUriNode("rep:repositoryImpl"), impl);
+            g.Assert(ContextNode, g.CreateUriNode("rep:repositoryImpl"), impl);
             g.Assert(impl, g.CreateUriNode("rep:repositoryType"), g.CreateLiteralNode("openrdf:HTTPRepository"));
 
-            String url = this.RemoteServer;
+            String url = RemoteServer;
             if (!url.EndsWith("/")) url += "/";
             url += "repositories/";
-            url += this.RemoteRepositoryID;
+            url += RemoteRepositoryID;
 
             g.Assert(impl, g.CreateUriNode("hr:repositoryURL"), g.CreateUriNode(UriFactory.Create(url)));
             return g;

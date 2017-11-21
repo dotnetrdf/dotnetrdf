@@ -36,6 +36,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
 using VDS.RDF.XunitExtensions;
+#pragma warning disable 618
 
 namespace VDS.RDF.Parsing
 {

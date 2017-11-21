@@ -28,7 +28,7 @@ using VDS.RDF.Query.Spin.SparqlUtil;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-    public class ExistsImpl : ElementImpl, IExists
+    internal class ExistsImpl : ElementImpl, IExists
     {
 
         public ExistsImpl(INode node, SpinProcessor spinModel)

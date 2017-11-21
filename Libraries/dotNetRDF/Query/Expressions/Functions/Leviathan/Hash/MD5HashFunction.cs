@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.MD5Hash + ">(" + this._expr.ToString() + ")";
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.MD5Hash + ">(" + _expr.ToString() + ")";
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new MD5HashFunction(transformer.Transform(this._expr));
+            return new MD5HashFunction(transformer.Transform(_expr));
         }
     }
 }

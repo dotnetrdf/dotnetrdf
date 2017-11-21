@@ -62,7 +62,7 @@ namespace VDS.RDF
         /// <param name="type">Context Type</param>
         public VariableContext(VariableContextType type)
         {
-            this._type = type;
+            _type = type;
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._type;
+                return _type;
             }
         }
 
@@ -83,7 +83,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._vars;
+                return _vars;
             }
         }
 
@@ -95,13 +95,13 @@ namespace VDS.RDF
         {
             if (var == null) return;
 
-            if (this._innerContext == null)
+            if (_innerContext == null)
             {
-                this._vars.Add(var);
+                _vars.Add(var);
             }
             else
             {
-                this._innerContext.AddVariable(var);
+                _innerContext.AddVariable(var);
             }
         }
 
@@ -112,13 +112,13 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool IsVariable(INode var)
         {
-            if (this.InnerContext == null)
+            if (InnerContext == null)
             {
-                return this._vars.Contains(var);
+                return _vars.Contains(var);
             }
             else
             {
-                return this._vars.Contains(var) || this.InnerContext.IsVariable(var);
+                return _vars.Contains(var) || InnerContext.IsVariable(var);
             }
         }
 
@@ -132,17 +132,17 @@ namespace VDS.RDF
         {
             get
             {
-                return this._innerContext;
+                return _innerContext;
             }
             set
             {
-                if (value == null || this._innerContext == null)
+                if (value == null || _innerContext == null)
                 {
-                    this._innerContext = value;
+                    _innerContext = value;
                 }
                 else 
                 {
-                    this._innerContext.InnerContext = value;
+                    _innerContext.InnerContext = value;
                 }
             }
         }

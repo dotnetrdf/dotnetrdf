@@ -54,7 +54,7 @@ namespace VDS.RDF.Configuration
             obj = null;
             INode wrapsNode;
             Object wrappedCollection;
-            if (this._tripleCollectionType.IsAssignableFrom(targetType))
+            if (_tripleCollectionType.IsAssignableFrom(targetType))
             {
                 wrapsNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingTripleCollection)));
                 if (wrapsNode == null)
@@ -84,7 +84,7 @@ namespace VDS.RDF.Configuration
                     }
                 }
             }
-            else if (this._graphCollectionType.IsAssignableFrom(targetType))
+            else if (_graphCollectionType.IsAssignableFrom(targetType))
             {
                 wrapsNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingGraphCollection)));
                 if (wrapsNode == null)
@@ -124,7 +124,7 @@ namespace VDS.RDF.Configuration
         /// <returns></returns>
         public bool CanLoadObject(Type t)
         {
-            return (this._tripleCollectionType.IsAssignableFrom(t) || this._graphCollectionType.IsAssignableFrom(t))
+            return (_tripleCollectionType.IsAssignableFrom(t) || _graphCollectionType.IsAssignableFrom(t))
                    && t.GetConstructors().Any(c => c.IsPublic);
         }
     }

@@ -54,10 +54,10 @@ namespace VDS.RDF.Writing
             CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);
 
-            Assert.Equal(1, context.Collections.Count);
-            Assert.Equal(1, context.Collections.First().Value.Triples.Count);
+            Assert.Single(context.Collections);
+            Assert.Single(context.Collections.First().Value.Triples);
 
-            this.CheckCompressionRoundTrip(g);
+            CheckCompressionRoundTrip(g);
         }
 
         [Fact]

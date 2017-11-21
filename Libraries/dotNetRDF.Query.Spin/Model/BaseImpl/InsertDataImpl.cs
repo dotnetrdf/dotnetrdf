@@ -32,9 +32,7 @@ using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-
-    public class InsertDataImpl : UpdateImpl, IInsertData
+    internal class InsertDataImpl : UpdateImpl, IInsertData
     {
 
         public InsertDataImpl(INode node, SpinProcessor graph)

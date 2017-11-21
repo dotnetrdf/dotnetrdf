@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get 
             { 
-                return this._vars;
+                return _vars;
             }
         }
 
@@ -106,23 +106,23 @@ namespace VDS.RDF.Query.Patterns
         /// </remarks>
         public virtual int CompareTo(ITriplePattern other)
         {
-            if (this._vars.Count < other.Variables.Count)
+            if (_vars.Count < other.Variables.Count)
             {
                 // We have fewer variables so we go before the other pattern
                 return -1;
             }
-            if (this._vars.Count > other.Variables.Count)
+            if (_vars.Count > other.Variables.Count)
             {
                 // We have more variables so we go after the other pattern
                 return 1;
             }
             // Neither pattern has any variables so we consider these to be equivalent
             // Order of these patterns has no effect
-            if (this._vars.Count <= 0) return 0;
+            if (_vars.Count <= 0) return 0;
 
-            for (int i = 0; i < this._vars.Count; i++)
+            for (int i = 0; i < _vars.Count; i++)
             {
-                int c = String.Compare(this._vars[i], other.Variables[i], StringComparison.Ordinal);
+                int c = String.Compare(_vars[i], other.Variables[i], StringComparison.Ordinal);
                 if (c < 0)
                 {
                     // Our variables occur alphabetically sooner than the other patterns so we go before the other pattern
@@ -139,7 +139,7 @@ namespace VDS.RDF.Query.Patterns
             // If we reach this point then we contain the same variables
             // Now we order based on our Index Types
             TriplePatternTypeComparer sorter = new TriplePatternTypeComparer();
-            return sorter.Compare(this.PatternType, other.PatternType);
+            return sorter.Compare(PatternType, other.PatternType);
         }
 
         /// <summary>

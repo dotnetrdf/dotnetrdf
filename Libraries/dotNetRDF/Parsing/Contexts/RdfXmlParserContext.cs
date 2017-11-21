@@ -59,10 +59,10 @@ namespace VDS.RDF.Parsing.Contexts
         public RdfXmlParserContext(IGraph g, XmlDocument document, bool traceParsing)
             : base(g) 
         {
-            this._queue = new EventQueue<IRdfXmlEvent>(new DomBasedEventGenerator(document));
-            if (this._queue.EventGenerator is IRdfXmlPreProcessingEventGenerator)
+            _queue = new EventQueue<IRdfXmlEvent>(new DomBasedEventGenerator(document));
+            if (_queue.EventGenerator is IRdfXmlPreProcessingEventGenerator)
             {
-                ((IRdfXmlPreProcessingEventGenerator)this._queue.EventGenerator).GetAllEvents(this);
+                ((IRdfXmlPreProcessingEventGenerator)_queue.EventGenerator).GetAllEvents(this);
             }
         }
 
@@ -83,10 +83,10 @@ namespace VDS.RDF.Parsing.Contexts
         public RdfXmlParserContext(IRdfHandler handler, XmlDocument document, bool traceParsing)
             : base(handler)
         {
-            this._queue = new EventQueue<IRdfXmlEvent>(new DomBasedEventGenerator(document));
-            if (this._queue.EventGenerator is IRdfXmlPreProcessingEventGenerator)
+            _queue = new EventQueue<IRdfXmlEvent>(new DomBasedEventGenerator(document));
+            if (_queue.EventGenerator is IRdfXmlPreProcessingEventGenerator)
             {
-                ((IRdfXmlPreProcessingEventGenerator)this._queue.EventGenerator).GetAllEvents(this);
+                ((IRdfXmlPreProcessingEventGenerator)_queue.EventGenerator).GetAllEvents(this);
             }
         }
 
@@ -98,7 +98,7 @@ namespace VDS.RDF.Parsing.Contexts
         public RdfXmlParserContext(IGraph g, Stream stream)
             : base(g)
         {
-            this._queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(stream, g.BaseUri.ToSafeString()));
+            _queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(stream, g.BaseUri.ToSafeString()));
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace VDS.RDF.Parsing.Contexts
         public RdfXmlParserContext(IRdfHandler handler, Stream stream)
             : base(handler)
         {
-            this._queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(stream, handler.GetBaseUri().ToSafeString()));
+            _queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(stream, handler.GetBaseUri().ToSafeString()));
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace VDS.RDF.Parsing.Contexts
         public RdfXmlParserContext(IGraph g, TextReader input)
             : base(g)
         {
-            this._queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(input, g.BaseUri.ToSafeString()));
+            _queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(input, g.BaseUri.ToSafeString()));
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace VDS.RDF.Parsing.Contexts
         public RdfXmlParserContext(IRdfHandler handler, TextReader input)
             : base(handler)
         {
-            this._queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(input, handler.GetBaseUri().ToSafeString()));
+            _queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(input, handler.GetBaseUri().ToSafeString()));
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._queue;
+                return _queue;
             }
         }
 
@@ -152,7 +152,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return this._usedIDs;
+                return _usedIDs;
             }
         }
     }

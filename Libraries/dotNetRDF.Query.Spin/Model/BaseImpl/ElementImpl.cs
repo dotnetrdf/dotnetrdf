@@ -26,8 +26,7 @@
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-    public abstract class ElementImpl : AbstractSPINResource, IElement
+    internal abstract class ElementImpl : AbstractSPINResource, IElement
     {
 
         public ElementImpl(INode node, SpinProcessor spinModel)

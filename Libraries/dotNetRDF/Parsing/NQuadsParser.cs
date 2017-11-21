@@ -85,7 +85,7 @@ namespace VDS.RDF.Parsing
         /// <param name="syntax">NQuads syntax mode</param>
         public NQuadsParser(NQuadsSyntax syntax)
         {
-            this.Syntax = syntax;
+            Syntax = syntax;
             TokenQueueMode = Options.DefaultTokenQueueMode;
             TraceTokeniser = false;
         }
@@ -97,7 +97,7 @@ namespace VDS.RDF.Parsing
         public NQuadsParser(TokenQueueMode queueMode)
             : this(NQuadsSyntax.Rdf11)
         {
-            this.TokenQueueMode = queueMode;
+            TokenQueueMode = queueMode;
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace VDS.RDF.Parsing
         public NQuadsParser(NQuadsSyntax syntax, TokenQueueMode queueMode)
             : this(syntax)
         {
-            this.TokenQueueMode = queueMode;
+            TokenQueueMode = queueMode;
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
             if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
 
-            this.Load(new StoreHandler(store), filename);
+            Load(new StoreHandler(store), filename);
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace VDS.RDF.Parsing
         {
             if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
             if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
-            this.Load(new StoreHandler(store), input);
+            Load(new StoreHandler(store), input);
         }
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace VDS.RDF.Parsing
             // Can only open Streams as ASCII when not running under Silverlight as Silverlight has no ASCII support
             // However if we are parsing RDF 1.1 NTriples then we use UTF-8 anyway so that doesn't matter
             StreamReader input;
-            switch (this.Syntax)
+            switch (Syntax)
             {
                 case NQuadsSyntax.Original:
                     // Original NQuads uses ASCII encoding
@@ -175,7 +175,7 @@ namespace VDS.RDF.Parsing
                     break;
             }
 
-            this.Load(handler, input);
+            Load(handler, input);
         }
 
         /// <summary>
@@ -191,19 +191,19 @@ namespace VDS.RDF.Parsing
             // Check for incorrect stream encoding and issue warning if appropriate
             if (input is StreamReader)
             {
-                switch (this.Syntax)
+                switch (Syntax)
                 {
                     case NQuadsSyntax.Original:
                         // Issue a Warning if the Encoding of the Stream is not ASCII
                         if (!((StreamReader) input).CurrentEncoding.Equals(Encoding.ASCII))
                         {
-                            this.RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " + ((StreamReader) input).CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+                            RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " + ((StreamReader) input).CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
                         }
                         break;
                     default:
                         if (!((StreamReader) input).CurrentEncoding.Equals(Encoding.UTF8))
                         {
-                            this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + ((StreamReader) input).CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+                            RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + ((StreamReader) input).CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
                         }
                         break;
                 }
@@ -212,10 +212,10 @@ namespace VDS.RDF.Parsing
             try
             {
                 // Setup Token Queue and Tokeniser
-                NTriplesTokeniser tokeniser = new NTriplesTokeniser(input, AsNTriplesSyntax(this.Syntax));
+                NTriplesTokeniser tokeniser = new NTriplesTokeniser(input, AsNTriplesSyntax(Syntax));
                 tokeniser.NQuadsMode = true;
                 ITokenQueue tokens;
-                switch (this.TokenQueueMode)
+                switch (TokenQueueMode)
                 {
                     case TokenQueueMode.AsynchronousBufferDuringParsing:
                         tokens = new AsynchronousBufferedTokenQueue(tokeniser);
@@ -228,11 +228,11 @@ namespace VDS.RDF.Parsing
                         tokens = new BufferedTokenQueue(tokeniser);
                         break;
                 }
-                tokens.Tracing = this.TraceTokeniser;
+                tokens.Tracing = TraceTokeniser;
                 tokens.InitialiseBuffer();
 
                 // Invoke the Parser
-                this.Parse(handler, tokens);
+                Parse(handler, tokens);
             }
             finally
             {
@@ -284,12 +284,12 @@ namespace VDS.RDF.Parsing
                     next = tokens.Peek();
                     if (next.TokenType == Token.EOF) return;
 
-                    s = this.TryParseSubject(tokens);
-                    p = this.TryParsePredicate(tokens);
-                    o = this.TryParseObject(tokens);
-                    Uri context = this.TryParseContext(handler, tokens);
+                    s = TryParseSubject(tokens);
+                    p = TryParsePredicate(tokens);
+                    o = TryParseObject(tokens);
+                    Uri context = TryParseContext(handler, tokens);
 
-                    this.TryParseTriple(handler, s, p, o, context);
+                    TryParseTriple(handler, s, p, o, context);
 
                     next = tokens.Peek();
                 } while (next.TokenType != Token.EOF);
@@ -387,7 +387,7 @@ namespace VDS.RDF.Parsing
                     context = TryParseUri(handler, next.Value);
                     break;
                 case Token.LITERAL:
-                    if (this.Syntax != NQuadsSyntax.Original) throw new RdfParseException("Only a Blank Node/URI may be used as the graph name in RDF NQuads 1.1");
+                    if (Syntax != NQuadsSyntax.Original) throw new RdfParseException("Only a Blank Node/URI may be used as the graph name in RDF NQuads 1.1");
 
                     // Check for Datatype/Language
                     IToken temp = tokens.Peek();
@@ -513,7 +513,7 @@ namespace VDS.RDF.Parsing
         /// <param name="message">Warning message</param>
         private void RaiseWarning(String message)
         {
-            StoreReaderWarning d = this.Warning;
+            StoreReaderWarning d = Warning;
             if (d != null)
             {
                 d(message);

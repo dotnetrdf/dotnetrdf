@@ -113,8 +113,8 @@ namespace VDS.RDF
         public TripleEventArgs(Triple t, IGraph g)
             : base()
         {
-            this._t = t;
-            this._g = g;
+            _t = t;
+            _g = g;
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace VDS.RDF
         public TripleEventArgs(Triple t, IGraph g, bool asserted)
             : this(t, g)
         {
-            this._added = asserted;
+            _added = asserted;
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._t;
+                return _t;
             }
         }
 
@@ -147,11 +147,11 @@ namespace VDS.RDF
         {
             get
             {
-                return this._g;
+                return _g;
             }
             internal set
             {
-                this._g = value;
+                _g = value;
             }
         }
 
@@ -162,7 +162,7 @@ namespace VDS.RDF
         {
             get
             {
-                return (this._g == null) ? null : this._g.BaseUri;
+                return (_g == null) ? null : _g.BaseUri;
             }
         }
 
@@ -173,7 +173,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._added;
+                return _added;
             }
         }
 
@@ -184,7 +184,7 @@ namespace VDS.RDF
         {
             get
             {
-                return !this._added;
+                return !_added;
             }
         }
     }
@@ -204,7 +204,7 @@ namespace VDS.RDF
         public GraphEventArgs(IGraph g)
             : base()
         {
-            this._g = g;
+            _g = g;
         }
 
         /// <summary>
@@ -215,7 +215,7 @@ namespace VDS.RDF
         public GraphEventArgs(IGraph g, TripleEventArgs args)
             : this(g)
         {
-            this._args = args;
+            _args = args;
         }
 
         /// <summary>
@@ -225,7 +225,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._g;
+                return _g;
             }
         }
 
@@ -236,7 +236,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._args;
+                return _args;
             }
         }
     }
@@ -270,11 +270,11 @@ namespace VDS.RDF
         {
             get
             {
-                return this._cancel;
+                return _cancel;
             }
             set
             {
-                this._cancel = value;
+                _cancel = value;
             }
         }
     }
@@ -294,7 +294,7 @@ namespace VDS.RDF
         public TripleStoreEventArgs(ITripleStore store)
             : base()
         {
-            this._store = store;
+            _store = store;
         }
 
         /// <summary>
@@ -305,7 +305,7 @@ namespace VDS.RDF
         public TripleStoreEventArgs(ITripleStore store, GraphEventArgs args)
             : this(store)
         {
-            this._args = args;
+            _args = args;
         }
 
         /// <summary>
@@ -323,7 +323,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._store;
+                return _store;
             }
         }
 
@@ -334,7 +334,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._args;
+                return _args;
             }
         }
     }

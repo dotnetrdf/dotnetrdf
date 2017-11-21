@@ -48,7 +48,7 @@ namespace VDS.RDF.Nodes
         public FloatNode(IGraph g, float value, String lexicalValue)
             : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeFloat), SparqlNumericType.Float)
         {
-            this._value = value;
+            _value = value;
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace VDS.RDF.Nodes
         {
             try
             {
-                return Convert.ToInt64(this._value);
+                return Convert.ToInt64(_value);
             }
             catch
             {
@@ -83,7 +83,7 @@ namespace VDS.RDF.Nodes
         {
             try
             {
-                return Convert.ToDecimal(this._value);
+                return Convert.ToDecimal(_value);
             }
             catch
             {
@@ -97,7 +97,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public override float AsFloat()
         {
-            return this._value;
+            return _value;
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace VDS.RDF.Nodes
         {
             try
             {
-                return Convert.ToDouble(this._value);
+                return Convert.ToDouble(_value);
             }
             catch
             {

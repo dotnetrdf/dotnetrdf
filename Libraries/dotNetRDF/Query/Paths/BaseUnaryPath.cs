@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Paths
         /// <param name="path">Path</param>
         public BaseUnaryPath(ISparqlPath path)
         {
-            this._path = path;
+            _path = path;
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Paths
         {
             get
             {
-                return this._path;
+                return _path;
             }
         }
 

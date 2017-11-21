@@ -233,20 +233,17 @@ namespace VDS.RDF
         /// <summary>
         /// Default File Extension for GZip
         /// </summary>
-        public const String DefaultGZipExtension = "gz";
+        public const string DefaultGZipExtension = "gz";
 
         /// <summary>
         /// Extensions which are considered stackable
         /// </summary>
-        private static String[] AllowedStackableExtensions = new String[] 
-        {
-            DefaultGZipExtension
-        };
+        private static readonly string[] AllowedStackableExtensions = { DefaultGZipExtension };
 
         /// <summary>
         /// Charset constants
         /// </summary>
-        public const String CharsetUtf8 = "utf-8",
+        public const string CharsetUtf8 = "utf-8",
                             CharsetUtf16 = "utf-16";
 
         #endregion 
@@ -680,7 +677,7 @@ namespace VDS.RDF
             if (!_init) Init();
 
             MimeTypeSelector selector = MimeTypeSelector.Create(mimeType, 1);
-            return (from definition in MimeTypesHelper.Definitions
+            return (from definition in Definitions
                     where definition.SupportsMimeType(selector)
                     select definition);
         }
@@ -698,7 +695,7 @@ namespace VDS.RDF
 
             IEnumerable<MimeTypeSelector> selectors = MimeTypeSelector.CreateSelectors(mimeTypes);
             return (from selector in selectors
-                    from definition in MimeTypesHelper.Definitions
+                    from definition in Definitions
                     where definition.SupportsMimeType(selector)
                     select definition).Distinct();
         }
@@ -714,7 +711,7 @@ namespace VDS.RDF
 
             if (!_init) Init();
 
-            return (from def in MimeTypesHelper.Definitions
+            return (from def in Definitions
                     where def.SupportsFileExtension(fileExt)
                     select def).Distinct();
         }
@@ -731,7 +728,7 @@ namespace VDS.RDF
 
                 StringBuilder output = new StringBuilder();
 
-                foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+                foreach (MimeTypeDefinition definition in Definitions)
                 {
                     if (definition.CanParseRdf)
                     {
@@ -758,7 +755,7 @@ namespace VDS.RDF
 
                 StringBuilder output = new StringBuilder();
 
-                foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+                foreach (MimeTypeDefinition definition in Definitions)
                 {
                     if (definition.CanParseSparqlResults)
                     {
@@ -784,7 +781,7 @@ namespace VDS.RDF
 
                 StringBuilder output = new StringBuilder();
 
-                foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+                foreach (MimeTypeDefinition definition in Definitions)
                 {
                     if (definition.CanParseRdf || definition.CanParseSparqlResults)
                     {
@@ -810,7 +807,7 @@ namespace VDS.RDF
 
                 StringBuilder output = new StringBuilder();
 
-                foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+                foreach (MimeTypeDefinition definition in Definitions)
                 {
                     if (definition.CanParseRdfDatasets)
                     {
@@ -835,7 +832,7 @@ namespace VDS.RDF
 
                 StringBuilder output = new StringBuilder();
 
-                foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+                foreach (MimeTypeDefinition definition in Definitions)
                 {
                     if (definition.CanParseRdf || definition.CanParseRdfDatasets)
                     {
@@ -906,14 +903,14 @@ namespace VDS.RDF
             if (!_init) Init();
 
             Type requiredType = parser.GetType();
-            foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+            foreach (MimeTypeDefinition definition in Definitions)
             {
                 if (requiredType.Equals(definition.RdfParserType))
                 {
                     return String.Join(",", definition.MimeTypes.ToArray());
                 }
             }
-            return MimeTypesHelper.HttpAcceptHeader;
+            return HttpAcceptHeader;
         }
 
         /// <summary>
@@ -926,14 +923,14 @@ namespace VDS.RDF
             if (!_init) Init();
 
             Type requiredType = parser.GetType();
-            foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+            foreach (MimeTypeDefinition definition in Definitions)
             {
                 if (requiredType.Equals(definition.RdfDatasetParserType))
                 {
                     return String.Join(",", definition.MimeTypes.ToArray());
                 }
             }
-            return MimeTypesHelper.HttpRdfDatasetAcceptHeader;
+            return HttpRdfDatasetAcceptHeader;
         }
 
         /// <summary>
@@ -945,7 +942,7 @@ namespace VDS.RDF
             {
                 if (!_init) Init();
 
-                return (from definition in MimeTypesHelper.Definitions
+                return (from definition in Definitions
                         where definition.CanParseRdf
                         from mimeType in definition.MimeTypes
                         select mimeType);
@@ -961,7 +958,7 @@ namespace VDS.RDF
             {
                 if (!_init) Init();
 
-                return (from definition in MimeTypesHelper.Definitions
+                return (from definition in Definitions
                         where definition.CanParseRdfDatasets
                         from mimeType in definition.MimeTypes
                         select mimeType);
@@ -977,7 +974,7 @@ namespace VDS.RDF
             {
                 if (!_init) Init();
 
-                return (from definition in MimeTypesHelper.Definitions
+                return (from definition in Definitions
                         where definition.CanParseSparqlResults
                         from mimeType in definition.MimeTypes
                         select mimeType);
@@ -993,7 +990,7 @@ namespace VDS.RDF
             {
                 if (!_init) Init();
 
-                return (from definition in MimeTypesHelper.Definitions
+                return (from definition in Definitions
                         where definition.CanParseRdf || definition.CanParseSparqlResults
                         from mimeType in definition.MimeTypes
                         select mimeType);
@@ -1006,7 +1003,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public static String GetFilenameFilter()
         {
-            return MimeTypesHelper.GetFilenameFilter(true, true, true, true, true, true);
+            return GetFilenameFilter(true, true, true, true, true, true);
         }
 
         /// <summary>
@@ -1026,7 +1023,7 @@ namespace VDS.RDF
             String filter = String.Empty;
             List<String> exts = new List<string>();
 
-            foreach (MimeTypeDefinition def in MimeTypesHelper.Definitions)
+            foreach (MimeTypeDefinition def in Definitions)
             {
                 if ((rdf && (def.CanParseRdf || def.CanWriteRdf)) 
                     || (rdfDatasets && (def.CanParseRdfDatasets || def.CanWriteRdfDatasets)) 
@@ -1119,13 +1116,13 @@ namespace VDS.RDF
             if (ctypes != null)
             {
                 // See if there are any MIME Type Definitions for the given MIME Types
-                foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(ctypes))
+                foreach (MimeTypeDefinition definition in GetDefinitions(ctypes))
                 {
                     // If so return the Writer from the first match found
                     if (definition.CanWriteRdf)
                     {
                         IRdfWriter writer = definition.GetRdfWriter();
-                        MimeTypesHelper.ApplyWriterOptions(writer);
+                        ApplyWriterOptions(writer);
                         contentType = definition.CanonicalMimeType;
                         return writer;
                     }
@@ -1133,9 +1130,9 @@ namespace VDS.RDF
             }
 
             // Default to Turtle
-            contentType = MimeTypesHelper.Turtle[0];
+            contentType = Turtle[0];
             IRdfWriter defaultWriter = new CompressingTurtleWriter();
-            MimeTypesHelper.ApplyWriterOptions(defaultWriter);
+            ApplyWriterOptions(defaultWriter);
             return defaultWriter;
         }
 
@@ -1211,7 +1208,7 @@ namespace VDS.RDF
         public static IRdfWriter GetWriterByFileExtension(String fileExt)
         {
             String temp;
-            return MimeTypesHelper.GetWriterByFileExtension(fileExt, out temp);
+            return GetWriterByFileExtension(fileExt, out temp);
         }
 
         /// <summary>
@@ -1231,13 +1228,13 @@ namespace VDS.RDF
             if (fileExt == null) throw new ArgumentNullException("fileExt", "File extension cannot be null");
 
             // See if there are any MIME Type Definition for the file extension
-            foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitionsByFileExtension(fileExt))
+            foreach (MimeTypeDefinition definition in GetDefinitionsByFileExtension(fileExt))
             {
                 // If so return the Writer from the first match found
                 if (definition.CanWriteRdf)
                 {
                     IRdfWriter writer = definition.GetRdfWriter();
-                    MimeTypesHelper.ApplyWriterOptions(writer);
+                    ApplyWriterOptions(writer);
                     contentType = definition.CanonicalMimeType;
                     return writer;
                 }
@@ -1257,12 +1254,12 @@ namespace VDS.RDF
         {
             if (ctypes != null)
             {
-                foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(ctypes))
+                foreach (MimeTypeDefinition definition in GetDefinitions(ctypes))
                 {
                     if (definition.CanParseRdf)
                     {
                         IRdfReader parser = definition.GetRdfParser();
-                        MimeTypesHelper.ApplyParserOptions(parser);
+                        ApplyParserOptions(parser);
                         return parser;
                     }
                 }
@@ -1279,7 +1276,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public static IRdfReader GetParser(String contentType)
         {
-            return MimeTypesHelper.GetParser(contentType.AsEnumerable());
+            return GetParser(contentType.AsEnumerable());
         }
 
         /// <summary>
@@ -1291,12 +1288,12 @@ namespace VDS.RDF
         {
             if (fileExt == null) throw new ArgumentNullException("fileExt", "File extension cannot be null");
 
-            foreach (MimeTypeDefinition def in MimeTypesHelper.GetDefinitionsByFileExtension(fileExt))
+            foreach (MimeTypeDefinition def in GetDefinitionsByFileExtension(fileExt))
             {
                 if (def.CanParseRdf)
                 {
                     IRdfReader parser = def.GetRdfParser();
-                    MimeTypesHelper.ApplyParserOptions(parser);
+                    ApplyParserOptions(parser);
                     return parser;
                 }
             }
@@ -1312,12 +1309,12 @@ namespace VDS.RDF
         /// <returns></returns>
         public static ISparqlResultsReader GetSparqlParser(IEnumerable<String> ctypes, bool allowPlainTextResults)
         {
-            foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(ctypes))
+            foreach (MimeTypeDefinition definition in GetDefinitions(ctypes))
             {
                 if (definition.CanParseSparqlResults)
                 {
                     ISparqlResultsReader parser = definition.GetSparqlResultsParser();
-                    MimeTypesHelper.ApplyParserOptions(parser);
+                    ApplyParserOptions(parser);
                     return parser;
                 }
             }
@@ -1325,7 +1322,7 @@ namespace VDS.RDF
             if (allowPlainTextResults && (ctypes.Contains("text/plain") || ctypes.Contains("text/boolean")))
             {
                 ISparqlResultsReader bParser = new SparqlBooleanParser();
-                MimeTypesHelper.ApplyParserOptions(bParser);
+                ApplyParserOptions(bParser);
                 return bParser;
             }
             else
@@ -1342,7 +1339,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public static ISparqlResultsReader GetSparqlParser(String contentType)
         {
-            return MimeTypesHelper.GetSparqlParser(contentType.AsEnumerable(), false);
+            return GetSparqlParser(contentType.AsEnumerable(), false);
         }
 
         /// <summary>
@@ -1353,7 +1350,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public static ISparqlResultsReader GetSparqlParser(String contentType, bool allowPlainTextResults)
         {
-            return MimeTypesHelper.GetSparqlParser(contentType.AsEnumerable(), allowPlainTextResults);
+            return GetSparqlParser(contentType.AsEnumerable(), allowPlainTextResults);
         }
 
         /// <summary>
@@ -1365,12 +1362,12 @@ namespace VDS.RDF
         {
             if (fileExt == null) throw new ArgumentNullException("fileExt", "File Extension cannot be null");
 
-            foreach (MimeTypeDefinition def in MimeTypesHelper.GetDefinitionsByFileExtension(fileExt))
+            foreach (MimeTypeDefinition def in GetDefinitionsByFileExtension(fileExt))
             {
                 if (def.CanParseSparqlResults)
                 {
                     ISparqlResultsReader parser = def.GetSparqlResultsParser();
-                    MimeTypesHelper.ApplyParserOptions(parser);
+                    ApplyParserOptions(parser);
                     return parser;
                 }
             }
@@ -1413,21 +1410,21 @@ namespace VDS.RDF
         /// </remarks>
         public static ISparqlResultsWriter GetSparqlWriter(IEnumerable<String> ctypes, out String contentType)
         {
-            foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(ctypes))
+            foreach (MimeTypeDefinition definition in GetDefinitions(ctypes))
             {
                 if (definition.CanWriteSparqlResults)
                 {
                     contentType = definition.CanonicalMimeType;
                     ISparqlResultsWriter writer = definition.GetSparqlResultsWriter();
-                    MimeTypesHelper.ApplyWriterOptions(writer);
+                    ApplyWriterOptions(writer);
                     return writer;
                 }
             }
 
             // Default to SPARQL XML Output
-            contentType = MimeTypesHelper.SparqlResultsXml[0];
+            contentType = SparqlResultsXml[0];
             ISparqlResultsWriter defaultWriter = new SparqlXmlWriter();
-            MimeTypesHelper.ApplyWriterOptions(defaultWriter);
+            ApplyWriterOptions(defaultWriter);
             return defaultWriter;
         }
 
@@ -1490,7 +1487,7 @@ namespace VDS.RDF
         public static ISparqlResultsWriter GetSparqlWriterByFileExtension(String fileExt)
         {
             String temp;
-            return MimeTypesHelper.GetSparqlWriterByFileExtension(fileExt, out temp);
+            return GetSparqlWriterByFileExtension(fileExt, out temp);
         }
 
         /// <summary>
@@ -1503,12 +1500,12 @@ namespace VDS.RDF
         {
             if (fileExt == null) throw new ArgumentNullException("fileExt", "File Extension cannot be null");
 
-            foreach (MimeTypeDefinition def in MimeTypesHelper.GetDefinitionsByFileExtension(fileExt))
+            foreach (MimeTypeDefinition def in GetDefinitionsByFileExtension(fileExt))
             {
                 if (def.CanWriteSparqlResults)
                 {
                     ISparqlResultsWriter writer = def.GetSparqlResultsWriter();
-                    MimeTypesHelper.ApplyWriterOptions(writer);
+                    ApplyWriterOptions(writer);
                     contentType = def.CanonicalMimeType;
                     return writer;
                 }
@@ -1524,12 +1521,12 @@ namespace VDS.RDF
         /// <returns></returns>
         public static IStoreReader GetStoreParser(IEnumerable<String> ctypes)
         {
-            foreach (MimeTypeDefinition def in MimeTypesHelper.GetDefinitions(ctypes))
+            foreach (MimeTypeDefinition def in GetDefinitions(ctypes))
             {
                 if (def.CanParseRdfDatasets)
                 {
                     IStoreReader parser = def.GetRdfDatasetParser();
-                    MimeTypesHelper.ApplyParserOptions(parser);
+                    ApplyParserOptions(parser);
                     return parser;
                 }
             }
@@ -1545,7 +1542,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public static IStoreReader GetStoreParser(String contentType)
         {
-            return MimeTypesHelper.GetStoreParser(contentType.AsEnumerable());
+            return GetStoreParser(contentType.AsEnumerable());
         }
 
         /// <summary>
@@ -1557,12 +1554,12 @@ namespace VDS.RDF
         {
             if (fileExt == null) throw new ArgumentNullException("fileExt", "File Extension cannot be null");
 
-            foreach (MimeTypeDefinition def in MimeTypesHelper.GetDefinitionsByFileExtension(fileExt))
+            foreach (MimeTypeDefinition def in GetDefinitionsByFileExtension(fileExt))
             {
                 if (def.CanParseRdfDatasets)
                 {
                     IStoreReader parser = def.GetRdfDatasetParser();
-                    MimeTypesHelper.ApplyParserOptions(parser);
+                    ApplyParserOptions(parser);
                     return parser;
                 }
             }
@@ -1605,20 +1602,20 @@ namespace VDS.RDF
         /// </remarks>
         public static IStoreWriter GetStoreWriter(IEnumerable<String> ctypes, out String contentType)
         {
-            foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(ctypes))
+            foreach (MimeTypeDefinition definition in GetDefinitions(ctypes))
             {
                 if (definition.CanWriteRdfDatasets)
                 {
                     contentType = definition.CanonicalMimeType;
                     IStoreWriter writer = definition.GetRdfDatasetWriter();
-                    MimeTypesHelper.ApplyWriterOptions(writer);
+                    ApplyWriterOptions(writer);
                     return writer;
                 }
             }
 
             contentType = NQuads[0];
             IStoreWriter defaultWriter = new NQuadsWriter();
-            MimeTypesHelper.ApplyWriterOptions(defaultWriter);
+            ApplyWriterOptions(defaultWriter);
             return defaultWriter;
         }
 
@@ -1667,7 +1664,7 @@ namespace VDS.RDF
         public static IStoreWriter GetStoreWriterByFileExtension(String fileExt)
         {
             String temp;
-            return MimeTypesHelper.GetStoreWriterByFileExtension(fileExt, out temp);
+            return GetStoreWriterByFileExtension(fileExt, out temp);
         }
 
         /// <summary>
@@ -1680,12 +1677,12 @@ namespace VDS.RDF
         {
             if (fileExt == null) throw new ArgumentNullException("fileExt", "File Extension cannot be null");
 
-            foreach (MimeTypeDefinition def in MimeTypesHelper.GetDefinitionsByFileExtension(fileExt))
+            foreach (MimeTypeDefinition def in GetDefinitionsByFileExtension(fileExt))
             {
                 if (def.CanWriteRdfDatasets)
                 {
                     IStoreWriter writer = def.GetRdfDatasetWriter();
-                    MimeTypesHelper.ApplyWriterOptions(writer);
+                    ApplyWriterOptions(writer);
                     contentType = def.CanonicalMimeType;
                     return writer;
                 }
@@ -1703,7 +1700,7 @@ namespace VDS.RDF
         public static String GetMimeType(String fileExt)
         {
             if (!_init) Init();
-            foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+            foreach (MimeTypeDefinition definition in Definitions)
             {
                 if (definition.SupportsFileExtension(fileExt))
                 {
@@ -1725,7 +1722,7 @@ namespace VDS.RDF
         {
             if (!_init) Init();
             List<String> types = new List<string>();
-            foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+            foreach (MimeTypeDefinition definition in Definitions)
             {
                 if (definition.SupportsFileExtension(fileExt))
                 {
@@ -1822,7 +1819,7 @@ namespace VDS.RDF
         {
             if (!_init) Init();
             MimeTypeSelector selector = MimeTypeSelector.Create(mimeType, 1);
-            foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+            foreach (MimeTypeDefinition definition in Definitions)
             {
                 if (definition.SupportsMimeType(selector))
                 {
@@ -1842,7 +1839,7 @@ namespace VDS.RDF
         {
             if (!_init) Init();
             Type requiredType = writer.GetType();
-            foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+            foreach (MimeTypeDefinition definition in Definitions)
             {
                 if (requiredType.Equals(definition.RdfWriterType))
                 {
@@ -1862,7 +1859,7 @@ namespace VDS.RDF
         {
             if (!_init) Init();
             Type requiredType = writer.GetType();
-            foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+            foreach (MimeTypeDefinition definition in Definitions)
             {
                 if (requiredType.Equals(definition.RdfDatasetWriterType))
                 {

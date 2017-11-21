@@ -32,7 +32,7 @@ using VDS.RDF.Query.Spin.Util;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-    public class ModuleImpl : AbstractSPINResource, IModule
+    internal class ModuleImpl : AbstractSPINResource, IModule
     {
 
 
@@ -156,7 +156,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        public String getComment()
+        public new String getComment()
         {
             return getString(RDFS.PropertyComment);
         }

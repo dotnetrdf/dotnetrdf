@@ -64,7 +64,7 @@ namespace VDS.RDF.Query.Patterns
         {
             set
             {
-                this._context = value;
+                _context = value;
             }
         }
 
@@ -73,8 +73,8 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool RigorousEvaluation
         {
-            get { return this._rigorousEvaluation; }
-            set { this._rigorousEvaluation = value; }
+            get { return _rigorousEvaluation; }
+            set { _rigorousEvaluation = value; }
 
         }
 
@@ -102,11 +102,11 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._repeated;
+                return _repeated;
             }
             set
             {
-                this._repeated = value;
+                _repeated = value;
             }
         }
 

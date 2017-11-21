@@ -50,7 +50,7 @@ namespace VDS.RDF.Writing
         {
             using (var stream = File.Open(filename, FileMode.Create))
             {
-                this.Save(results, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
+                Save(results, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
             }
         }
 
@@ -88,7 +88,7 @@ namespace VDS.RDF.Writing
                                         case NodeType.Blank:
                                         case NodeType.Uri:
                                         case NodeType.Literal:
-                                            output.Write(this._formatter.Format(temp));
+                                            output.Write(_formatter.Format(temp));
                                             break;
                                         case NodeType.GraphLiteral:
                                             throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("SPARQL CSV"));
@@ -129,7 +129,7 @@ namespace VDS.RDF.Writing
         /// <param name="message">Warning Message</param>
         private void RaiseWarning(String message)
         {
-            SparqlWarning d = this.Warning;
+            SparqlWarning d = Warning;
             if (d != null)
             {
                 d(message);

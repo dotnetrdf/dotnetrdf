@@ -34,12 +34,24 @@ namespace VDS.RDF.JsonLd
 
     public partial class JsonLdProcessor
     {
+        /// <summary>
+        /// Apply the JSON-LD context expansion algorithm to the context found at the specified URL
+        /// </summary>
+        /// <param name="contextUrl">The URL to load the source context from</param>
+        /// <param name="options">Options to apply during the expansion processing</param>
+        /// <returns>The expanded JSON-LD contex</returns>
         public static JArray Expand(Uri contextUrl, JsonLdProcessorOptions options = null)
         {
             var parsedJson = LoadJson(contextUrl, options);
             return Expand(parsedJson, contextUrl, options);
         }
 
+        /// <summary>
+        /// Apply the JSON-LD expansion algorithm to a context JSON object
+        /// </summary>
+        /// <param name="input">The context JSON object to be expanded</param>
+        /// <param name="options">Options to apply during the expansion processing</param>
+        /// <returns>The expanded JSON-LD contex</returns>
         public static JArray Expand(JToken input, JsonLdProcessorOptions options = null)
         {
             if (input is JValue && (input as JValue).Type == JTokenType.String)

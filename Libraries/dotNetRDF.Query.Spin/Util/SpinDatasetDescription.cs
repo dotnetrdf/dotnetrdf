@@ -37,7 +37,7 @@ namespace VDS.RDF.Query.Spin.Util
     /// <summary>
     /// 
     /// </summary>
-    public class SpinDatasetDescription : ThreadSafeGraph
+    internal class SpinDatasetDescription : ThreadSafeGraph
     {
 
         internal static Dictionary<Uri, IGraph> datasets = new Dictionary<Uri, IGraph>(RDFUtil.uriComparer);
@@ -102,12 +102,8 @@ namespace VDS.RDF.Query.Spin.Util
                 this.Assert(RDFUtil.CreateUriNode(BaseUri), RDFRuntime.PropertyRemovesGraph, sourceGraph);
                 return true;
             }
-            else
-            {
-                Retract(Triples.Where(t => t.Involves(graphUri)).ToList());
-                return true;
-            }
-            return false;
+            Retract(Triples.Where(t => t.Involves(graphUri)).ToList());
+            return true;
         }
 
         public bool ImportGraph(Uri graphUri)
@@ -217,7 +213,7 @@ namespace VDS.RDF.Query.Spin.Util
 
             SpinWrappedGraph graph = (SpinWrappedGraph)this[graphUri];
             graph.BaseUri = graphUri;
-            graph._readonly = false;
+            graph.Readonly = false;
             graph.Changed += OnModificableGraphChange;
             graph.Cleared += OnModificableGraphCleared;
             _modificableGraphs[graphUri] = graph;

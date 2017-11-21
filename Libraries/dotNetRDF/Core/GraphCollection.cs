@@ -54,7 +54,7 @@ namespace VDS.RDF
         /// </summary>
         public GraphCollection()
         {
-            this._graphs = new MultiDictionary<Uri, IGraph>(u => (u != null ? u.GetEnhancedHashCode() : DefaultGraphID), true, new UriComparer(), MultiDictionaryMode.AVL);
+            _graphs = new MultiDictionary<Uri, IGraph>(u => (u != null ? u.GetEnhancedHashCode() : DefaultGraphID), true, new UriComparer(), MultiDictionaryMode.AVL);
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override bool Contains(Uri graphUri)
         {
-            return this._graphs.ContainsKey(graphUri);
+            return _graphs.ContainsKey(graphUri);
         }
 
         /// <summary>
@@ -75,13 +75,13 @@ namespace VDS.RDF
         /// <exception cref="RdfException">Throws an RDF Exception if the Graph has no Base Uri or if the Graph already exists in the Collection and the <paramref name="mergeIfExists"/> parameter was not set to true</exception>
         protected internal override bool Add(IGraph g, bool mergeIfExists)
         {
-            if (this._graphs.ContainsKey(g.BaseUri))
+            if (_graphs.ContainsKey(g.BaseUri))
             {
                 // Already exists in the Graph Collection
                 if (mergeIfExists)
                 {
                     // Merge into the existing Graph
-                    this._graphs[g.BaseUri].Merge(g);
+                    _graphs[g.BaseUri].Merge(g);
                     return true;
                 }
                 else
@@ -93,8 +93,8 @@ namespace VDS.RDF
             else
             {
                 // Safe to add a new Graph
-                this._graphs.Add(g.BaseUri, g);
-                this.RaiseGraphAdded(g);
+                _graphs.Add(g.BaseUri, g);
+                RaiseGraphAdded(g);
                 return true;
             }
         }
@@ -106,11 +106,11 @@ namespace VDS.RDF
         protected internal override bool Remove(Uri graphUri)
         {
             IGraph g;
-            if (this._graphs.TryGetValue(graphUri, out g))
+            if (_graphs.TryGetValue(graphUri, out g))
             {
-                if (this._graphs.Remove(graphUri))
+                if (_graphs.Remove(graphUri))
                 {
-                    this.RaiseGraphRemoved(g);
+                    RaiseGraphRemoved(g);
                     return true;
                 }
                 return false;
@@ -125,7 +125,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._graphs.Count;
+                return _graphs.Count;
             }
         }
 
@@ -136,7 +136,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._graphs.Keys;
+                return _graphs.Keys;
             }
         }
 
@@ -150,7 +150,7 @@ namespace VDS.RDF
             get 
             {
                 IGraph g;
-                if (this._graphs.TryGetValue(graphUri, out g))
+                if (_graphs.TryGetValue(graphUri, out g))
                 {
                     return g;
                 }
@@ -167,7 +167,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerator<IGraph> GetEnumerator()
         {
-            return this._graphs.Values.GetEnumerator();
+            return _graphs.Values.GetEnumerator();
         }
 
         /// <summary>
@@ -176,7 +176,7 @@ namespace VDS.RDF
         /// <returns></returns>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace VDS.RDF
         /// <remarks>Invokes the <strong>Dispose()</strong> method of all Graphs contained in the Collection</remarks>
         public override void Dispose()
         {
-            this._graphs.Clear();
+            _graphs.Clear();
         }
     }
 
@@ -218,7 +218,7 @@ namespace VDS.RDF
         /// </summary>
         protected void EnterWriteLock()
         {
-            this._lockManager.EnterWriteLock();
+            _lockManager.EnterWriteLock();
         }
 
         /// <summary>
@@ -226,7 +226,7 @@ namespace VDS.RDF
         /// </summary>
         protected void ExitWriteLock()
         {
-            this._lockManager.ExitWriteLock();
+            _lockManager.ExitWriteLock();
         }
 
         /// <summary>
@@ -234,7 +234,7 @@ namespace VDS.RDF
         /// </summary>
         protected void EnterReadLock()
         {
-            this._lockManager.EnterReadLock();
+            _lockManager.EnterReadLock();
         }
 
         /// <summary>
@@ -242,7 +242,7 @@ namespace VDS.RDF
         /// </summary>
         protected void ExitReadLock()
         {
-            this._lockManager.ExitReadLock();
+            _lockManager.ExitReadLock();
         }
 
         /// <summary>
@@ -256,12 +256,12 @@ namespace VDS.RDF
 
             try
             {
-                this.EnterReadLock();
-                contains = this._graphs.Contains(graphUri);
+                EnterReadLock();
+                contains = _graphs.Contains(graphUri);
             }
             finally
             {
-                this.ExitReadLock();
+                ExitReadLock();
             }
             return contains;
         }
@@ -276,12 +276,12 @@ namespace VDS.RDF
         {
             try
             {
-                this.EnterWriteLock();
-                return this._graphs.Add(g, mergeIfExists);
+                EnterWriteLock();
+                return _graphs.Add(g, mergeIfExists);
             }
             finally
             {
-                this.ExitWriteLock();
+                ExitWriteLock();
             }
         }
 
@@ -293,12 +293,12 @@ namespace VDS.RDF
         {
             try
             {
-                this.EnterWriteLock();
-                return this._graphs.Remove(graphUri);
+                EnterWriteLock();
+                return _graphs.Remove(graphUri);
             }
             finally
             {
-                this.ExitWriteLock();
+                ExitWriteLock();
             }
         }
 
@@ -312,12 +312,12 @@ namespace VDS.RDF
                 int c = 0;
                 try
                 {
-                    this.EnterReadLock();
-                    c = this._graphs.Count;
+                    EnterReadLock();
+                    c = _graphs.Count;
                 }
                 finally
                 {
-                    this.ExitReadLock();
+                    ExitReadLock();
                 }
                 return c;
             }
@@ -332,12 +332,12 @@ namespace VDS.RDF
             List<IGraph> graphs = new List<IGraph>();
             try
             {
-                this.EnterReadLock();
-                graphs = this._graphs.ToList();
+                EnterReadLock();
+                graphs = _graphs.ToList();
             }
             finally
             {
-                this.ExitReadLock();
+                ExitReadLock();
             }
             return graphs.GetEnumerator();
         }
@@ -352,12 +352,12 @@ namespace VDS.RDF
                 List<Uri> uris = new List<Uri>();
                 try
                 {
-                    this.EnterReadLock();
-                    uris = this._graphs.GraphUris.ToList();
+                    EnterReadLock();
+                    uris = _graphs.GraphUris.ToList();
                 }
                 finally
                 {
-                    this.ExitReadLock();
+                    ExitReadLock();
                 }
                 return uris;
             }
@@ -375,12 +375,12 @@ namespace VDS.RDF
                 IGraph g = null;
                 try
                 {
-                    this.EnterReadLock();
-                    g = this._graphs[graphUri];
+                    EnterReadLock();
+                    g = _graphs[graphUri];
                 }
                 finally
                 {
-                    this.ExitReadLock();
+                    ExitReadLock();
                 }
                 return g;
             }
@@ -394,12 +394,12 @@ namespace VDS.RDF
         {
             try
             {
-                this.EnterWriteLock();
-                this._graphs.Dispose();
+                EnterWriteLock();
+                _graphs.Dispose();
             }
             finally
             {
-                this.ExitWriteLock();
+                ExitWriteLock();
             }
         }
     }
