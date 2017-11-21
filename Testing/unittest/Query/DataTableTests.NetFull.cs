@@ -283,7 +283,7 @@ namespace VDS.RDF.Query
 
                 Assert.True(rset.ResultsType == SparqlResultsType.Boolean);
                 Assert.Single(table.Columns);
-                Assert.Single(table.Rows, 1);
+                Assert.Single(table.Rows);
                 Assert.False((bool)table.Rows[0]["ASK"], "Should be false");
 
                 foreach (DataRow row in table.Rows)
