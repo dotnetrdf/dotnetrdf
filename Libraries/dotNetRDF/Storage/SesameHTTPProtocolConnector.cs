@@ -63,18 +63,6 @@ namespace VDS.RDF.Storage
         /// Store ID
         /// </summary>
         protected String _store;
-        /// <summary>
-        /// Username for accessing the Store
-        /// </summary>
-        protected String _username;
-        /// <summary>
-        /// Password for accessing the Store
-        /// </summary>
-        protected String _pwd;
-        /// <summary>
-        /// Whether the User has provided credentials for accessing the Store using authentication
-        /// </summary>
-        protected bool _hasCredentials = false;
 
         /// <summary>
         /// Repositories Prefix
@@ -127,9 +115,8 @@ namespace VDS.RDF.Storage
             _baseUri = baseUri;
             if (!_baseUri.EndsWith("/")) _baseUri += "/";
             _store = storeID;
-            _username = username;
-            _pwd = password;
-            _hasCredentials = (!String.IsNullOrEmpty(username) && !String.IsNullOrEmpty(password));
+
+            SetCredentials(username, password);
 
             // Setup server
             _server = new SesameServer(_baseUri);
@@ -1160,31 +1147,6 @@ namespace VDS.RDF.Storage
             request.Accept = accept;
             request.Method = method;
 
-            // Add Credentials if needed
-            if (_hasCredentials)
-            {
-                if (Options.ForceHttpBasicAuth)
-                {
-                    // Forcibly include a HTTP basic authentication header
-#if !NETCORE
-                    string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(_username + ":" + _pwd));
-                    request.Headers.Add("Authorization", "Basic " + credentials);
-#else
-                    string credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(this._username + ":" + this._pwd));
-                    request.Headers["Authorization"] = "Basic " + credentials;
-#endif
-                }
-                else
-                {
-                    // Leave .Net to cope with HTTP auth challenge response
-                    NetworkCredential credentials = new NetworkCredential(_username, _pwd);
-                    request.Credentials = credentials;
-#if !NETCORE
-                    request.PreAuthenticate = true;
-#endif
-                }
-            }
-
             return ApplyRequestOptions(request);
         }
 
@@ -1225,12 +1187,12 @@ namespace VDS.RDF.Storage
             context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(_baseUri)));
             context.Graph.Assert(new Triple(manager, store, context.Graph.CreateLiteralNode(_store)));
 
-            if (_username != null && _pwd != null)
+            if (Username != null && Password != null)
             {
                 INode username = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUser));
                 INode pwd = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPassword));
-                context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(_username)));
-                context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(_pwd)));
+                context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(Username)));
+                context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(Password)));
             }
 
             SerializeStandardConfig(manager, context);
