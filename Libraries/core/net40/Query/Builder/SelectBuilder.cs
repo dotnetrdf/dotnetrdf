@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Query.Builder.Expressions;
+using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Query.Builder
 {
@@ -67,7 +68,7 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Adds additional SELECT expression
         /// </summary>
-        public IAssignmentVariableNamePart<ISelectBuilder> And<TExpression>(Func<IExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression)
+        public IAssignmentVariableNamePart<ISelectBuilder> And<TExpression>(Func<IExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression) where TExpression : ISparqlExpressionBase
         {
             return new SelectAssignmentVariableNamePart<TExpression>(this, buildAssignmentExpression);
         }

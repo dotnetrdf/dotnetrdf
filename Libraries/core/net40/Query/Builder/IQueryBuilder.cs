@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using VDS.RDF.Query.Builder.Expressions;
+using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Query.Builder
 {
@@ -61,11 +62,11 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Adds ascending ordering by an expression to the query
         /// </summary>
-        IQueryBuilder OrderBy(Func<IExpressionBuilder, SparqlExpression> buildOrderExpression);
+        IQueryBuilder OrderBy(Func<IExpressionBuilder, PrimaryExpression<ISparqlExpression>> buildOrderExpression);
         /// <summary>
         /// Adds descending ordering by an expression to the query
         /// </summary>
-        IQueryBuilder OrderByDescending(Func<IExpressionBuilder, SparqlExpression> buildOrderExpression);
+        IQueryBuilder OrderByDescending(Func<IExpressionBuilder, PrimaryExpression<ISparqlExpression>> buildOrderExpression);
         /// <summary>
         /// Adds a GROUP BY clause to the query.
         /// </summary>
@@ -73,7 +74,7 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Adds a GROUP BY clause to the query.
         /// </summary>
-        IQueryBuilder GroupBy(Func<INonAggregateExpressionBuilder, SparqlExpression> buildGroupingExpression);
+        IQueryBuilder GroupBy(Func<INonAggregateExpressionBuilder, PrimaryExpression<ISparqlExpression>> buildGroupingExpression);
         /// <summary>
         /// Adds a HAVING clause to the query.
         /// </summary>
@@ -85,6 +86,6 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Adds a BIND variable assignment to the root graph pattern
         /// </summary>
-        IAssignmentVariableNamePart<IQueryBuilder> Bind(Func<INonAggregateExpressionBuilder, SparqlExpression> buildAssignmentExpression);
+        IAssignmentVariableNamePart<IQueryBuilder> Bind(Func<INonAggregateExpressionBuilder, PrimaryExpression<ISparqlExpression>> buildAssignmentExpression);
     }
 }

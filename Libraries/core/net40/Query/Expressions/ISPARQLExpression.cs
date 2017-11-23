@@ -92,32 +92,8 @@ namespace VDS.RDF.Query.Expressions
         GraphOperator
     }
 
-    /// <summary>
-    /// Interface for SPARQL Expression Terms that can be used in Expression Trees while evaluating Sparql Queries
-    /// </summary>
-    public interface ISparqlExpression
+    public interface ISparqlExpressionBase
     {
-        /// <summary>
-        /// Evalutes a SPARQL Expression for the given binding in a given context
-        /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// <para>
-        /// Newly introduced in Version 0.6.0 to replace the variety of functions that were used previously for numeric vs non-numeric versions to allow our code to be simplified and improve performance
-        /// </para>
-        /// </remarks>
-        IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID);
-
-        /// <summary>
-        /// Gets an enumeration of all the Variables used in an expression
-        /// </summary>
-        IEnumerable<String> Variables
-        {
-            get;
-        }
-
         /// <summary>
         /// Gets the SPARQL Expression Type
         /// </summary>
@@ -138,6 +114,33 @@ namespace VDS.RDF.Query.Expressions
         /// Gets the Arguments of this Expression
         /// </summary>
         IEnumerable<ISparqlExpression> Arguments
+        {
+            get;
+        }
+    }
+
+    /// <summary>
+    /// Interface for SPARQL Expression Terms that can be used in Expression Trees while evaluating Sparql Queries
+    /// </summary>
+    public interface ISparqlExpression : ISparqlExpressionBase
+    {
+        /// <summary>
+        /// Evalutes a SPARQL Expression for the given binding in a given context
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// Newly introduced in Version 0.6.0 to replace the variety of functions that were used previously for numeric vs non-numeric versions to allow our code to be simplified and improve performance
+        /// </para>
+        /// </remarks>
+        IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID);
+
+        /// <summary>
+        /// Gets an enumeration of all the Variables used in an expression
+        /// </summary>
+        IEnumerable<String> Variables
         {
             get;
         }

@@ -158,7 +158,7 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Creates a new SELECT query which will return an expression
         /// </summary>
-        public static IAssignmentVariableNamePart<ISelectBuilder> Select<TExpression>(Func<IExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression)
+        public static IAssignmentVariableNamePart<ISelectBuilder> Select<TExpression>(Func<IExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression) where TExpression : ISparqlExpressionBase
         {
             SelectBuilder selectBuilder = (SelectBuilder)Select(new SparqlVariable[0]);
             return new SelectAssignmentVariableNamePart<TExpression>(selectBuilder, buildAssignmentExpression);
@@ -232,7 +232,7 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Adds ascending ordering by an expression to the query
         /// </summary>
-        public IQueryBuilder OrderBy(Func<IExpressionBuilder, SparqlExpression> buildOrderExpression)
+        public IQueryBuilder OrderBy(Func<IExpressionBuilder, PrimaryExpression<ISparqlExpression>> buildOrderExpression)
         {
             AppendOrdering(buildOrderExpression, false);
             return this;
@@ -241,7 +241,7 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Adds descending ordering by an expression to the query
         /// </summary>
-        public IQueryBuilder OrderByDescending(Func<IExpressionBuilder, SparqlExpression> buildOrderExpression)
+        public IQueryBuilder OrderByDescending(Func<IExpressionBuilder, PrimaryExpression<ISparqlExpression>> buildOrderExpression)
         {
             AppendOrdering(buildOrderExpression, true);
             return this;
@@ -253,7 +253,7 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        public IQueryBuilder GroupBy(Func<INonAggregateExpressionBuilder, SparqlExpression> buildGroupingExpression)
+        public IQueryBuilder GroupBy(Func<INonAggregateExpressionBuilder, PrimaryExpression<ISparqlExpression>> buildGroupingExpression)
         {
             _buildGroups.Add(prefixes =>
             {
@@ -270,7 +270,7 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        private void AppendOrdering(Func<ExpressionBuilder, SparqlExpression> orderExpression, bool descending)
+        private void AppendOrdering(Func<IExpressionBuilder, PrimaryExpression<ISparqlExpression>> orderExpression, bool descending)
         {
             _buildOrderings.Add(prefixes =>
                 {
@@ -379,12 +379,12 @@ namespace VDS.RDF.Query.Builder
 
         private void BuildHavingClauses(SparqlQuery query)
         {
-            var filters = (from builder in _buildHavings
-                           select new UnaryExpressionFilter(builder(Prefixes))).ToList();
+            var filters = from builder in _buildHavings
+                          select new UnaryExpressionFilter(builder(Prefixes)) as ISparqlFilter;
 
             if (filters.Any())
             {
-                query.Having = new ChainFilter(filters);
+                query.Having = new ChainFilter(filters.ToList());
             }
         }
 
@@ -399,9 +399,13 @@ namespace VDS.RDF.Query.Builder
             executableQuery.OrderBy = orderings.FirstOrDefault();
         }
 
-        public IAssignmentVariableNamePart<IQueryBuilder> Bind(Func<INonAggregateExpressionBuilder, SparqlExpression> buildAssignmentExpression)
+        public IAssignmentVariableNamePart<IQueryBuilder> Bind(Func<INonAggregateExpressionBuilder, PrimaryExpression<ISparqlExpression>> buildAssignmentExpression)
         {
+#if NET35
+            return new BindAssignmentVariableNamePart(this, buildAssignmentExpression, true);
+#else
             return new BindAssignmentVariableNamePart(this, buildAssignmentExpression);
+#endif
         }
     }
 }

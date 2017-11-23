@@ -35,7 +35,7 @@ namespace VDS.RDF.Query.Aggregates
     /// <summary>
     /// Interface for SPARQL Aggregates which can be used to calculate aggregates over Results
     /// </summary>
-    public interface ISparqlAggregate
+    public interface ISparqlAggregate : ISparqlExpressionBase
     {
         /// <summary>
         /// Applies the Aggregate to the Result Binder and returns a single Node as a Result
@@ -54,30 +54,6 @@ namespace VDS.RDF.Query.Aggregates
         /// Gets the Expression that the Aggregate is applied to
         /// </summary>
         ISparqlExpression Expression
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the Type of the Aggregate
-        /// </summary>
-        SparqlExpressionType Type
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the URI/Keyword of the Aggregate
-        /// </summary>
-        String Functor
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the Arguments of the Aggregate
-        /// </summary>
-        IEnumerable<ISparqlExpression> Arguments
         {
             get;
         }
