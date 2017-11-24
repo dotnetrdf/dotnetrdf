@@ -34,7 +34,7 @@ namespace VDS.RDF.Query.Builder
     {
         private readonly SelectBuilder _selectBuilder;
 
-        internal SelectAssignmentVariableNamePart(SelectBuilder selectBuilder, Func<ExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression)
+        internal SelectAssignmentVariableNamePart(SelectBuilder selectBuilder, Func<IExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression)
             : base(buildAssignmentExpression)
         {
             _selectBuilder = selectBuilder;
@@ -53,6 +53,7 @@ namespace VDS.RDF.Query.Builder
 
                 return new SparqlVariable(variableName, (ISparqlExpression)assignmentExpression);
             });
+
             return _selectBuilder;
         }
     }

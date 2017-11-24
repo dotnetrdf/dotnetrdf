@@ -39,17 +39,31 @@ namespace VDS.RDF.Query.Builder
         private readonly GraphPatternBuilder _graphPatternBuilder;
         private readonly QueryBuilder _queryBuilder;
 
-        internal BindAssignmentVariableNamePart(QueryBuilder queryBuilder, Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
+        internal BindAssignmentVariableNamePart(QueryBuilder queryBuilder, Func<IExpressionBuilder, PrimaryExpression<ISparqlExpression>> buildAssignmentExpression)
             : this(queryBuilder.RootGraphPatternBuilder, buildAssignmentExpression)
         {
             _queryBuilder = queryBuilder;
         }
 
-        internal BindAssignmentVariableNamePart(GraphPatternBuilder graphPatternBuilder, Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
+        internal BindAssignmentVariableNamePart(GraphPatternBuilder graphPatternBuilder, Func<IExpressionBuilder, PrimaryExpression<ISparqlExpression>> buildAssignmentExpression)
             :base(buildAssignmentExpression)
         {
             _graphPatternBuilder = graphPatternBuilder;
         }
+
+#if NET35
+        internal BindAssignmentVariableNamePart(QueryBuilder queryBuilder, Func<INonAggregateExpressionBuilder, PrimaryExpression<ISparqlExpression>> buildAssignmentExpression, bool nonAggregate)
+            : this(queryBuilder.RootGraphPatternBuilder, buildAssignmentExpression, true)
+        {
+            _queryBuilder = queryBuilder;
+        }
+
+        internal BindAssignmentVariableNamePart(GraphPatternBuilder graphPatternBuilder, Func<INonAggregateExpressionBuilder, PrimaryExpression<ISparqlExpression>> buildAssignmentExpression, bool nonAggregate)
+            : base(buildAssignmentExpression)
+        {
+            _graphPatternBuilder = graphPatternBuilder;
+        }
+#endif
 
         IGraphPatternBuilder IAssignmentVariableNamePart<IGraphPatternBuilder>.As(string variableName)
         {

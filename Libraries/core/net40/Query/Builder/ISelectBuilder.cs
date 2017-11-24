@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using VDS.RDF.Query.Builder.Expressions;
+using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Query.Builder
 {
@@ -44,7 +45,7 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Adds additional SELECT expression
         /// </summary>
-        IAssignmentVariableNamePart<ISelectBuilder> And<TExpression>(Func<IExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression);
+        IAssignmentVariableNamePart<ISelectBuilder> And<TExpression>(Func<IExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression) where TExpression : ISparqlExpressionBase;
         /// <summary>
         /// Applies the DISTINCT modifier if the Query is a SELECT, otherwise leaves query unchanged (since results from any other query are DISTINCT by default)
         /// </summary>

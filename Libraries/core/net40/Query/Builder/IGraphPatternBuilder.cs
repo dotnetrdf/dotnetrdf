@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Adds a BIND variable assignment to the graph pattern
         /// </summary>
-        IAssignmentVariableNamePart<IGraphPatternBuilder> Bind(Func<INonAggregateExpressionBuilder, SparqlExpression> buildAssignmentExpression);
+        IAssignmentVariableNamePart<IGraphPatternBuilder> Bind(Func<INonAggregateExpressionBuilder, PrimaryExpression<ISparqlExpression>> buildAssignmentExpression);
         /// <summary>
         /// Addsa "normal" child graph pattern
         /// </summary>

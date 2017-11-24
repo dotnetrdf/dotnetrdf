@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using VDS.RDF.Query.Builder.Expressions;
+using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Query.Builder
 {
@@ -42,18 +43,41 @@ namespace VDS.RDF.Query.Builder
 
     internal abstract class AssignmentVariableNamePart<TExpression>
     {
-        private readonly Func<ExpressionBuilder, PrimaryExpression<TExpression>> _buildAssignmentExpression;
+        private readonly Func<IExpressionBuilder, PrimaryExpression<TExpression>> _buildAssignmentExpression;
 
-        protected AssignmentVariableNamePart(Func<ExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression)
+        protected AssignmentVariableNamePart(Func<IExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression)
         {
             _buildAssignmentExpression = buildAssignmentExpression;
+        }
+
+#if NET35
+        private readonly Func<INonAggregateExpressionBuilder, PrimaryExpression<TExpression>> _buildNonAggregateAssignmentExpression;
+
+        protected AssignmentVariableNamePart(Func<INonAggregateExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression)
+        {
+            _buildNonAggregateAssignmentExpression = buildAssignmentExpression;
         }
 
         protected TExpression BuildAssignmentExpression(INamespaceMapper prefixes)
         {
             var expressionBuilder = new ExpressionBuilder(prefixes);
-            var assignment = _buildAssignmentExpression(expressionBuilder);
-            return assignment.Expression;
+
+            if(_buildAssignmentExpression != null)
+            {
+                return _buildAssignmentExpression(expressionBuilder).Expression;
+            }
+            else
+            {
+                return _buildNonAggregateAssignmentExpression(expressionBuilder).Expression;
+            }
         }
+#else
+        protected TExpression BuildAssignmentExpression(INamespaceMapper prefixes)
+        {
+            var expressionBuilder = new ExpressionBuilder(prefixes);
+
+            return _buildAssignmentExpression(expressionBuilder).Expression;
+        }
+#endif
     }
 }

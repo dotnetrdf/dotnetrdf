@@ -650,6 +650,24 @@ namespace VDS.RDF.Query.Builder
         }
 
         [Test]
+        public void CanBuildSelectSumWithAnd()
+        {
+            // given
+            var o = new VariableTerm("o");
+
+            // when
+            var select = QueryBuilder.Select(new string[] { });
+            var query = select.And(ex => ex.Sum(o)).As("sum")
+                .Where(BuildSPOPattern)
+                .GroupBy("s")
+                .BuildQuery();
+
+            // then
+            Assert.That(query.Variables.Single().Name, Is.EqualTo("sum"));
+            Assert.That(query.GroupBy.Variables.Single(), Is.EqualTo("s"));
+        }
+
+        [Test]
         public void CanBuildGroupingWithExpression()
         {
             // when

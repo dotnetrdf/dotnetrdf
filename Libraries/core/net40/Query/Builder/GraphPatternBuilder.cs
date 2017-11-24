@@ -203,9 +203,13 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        public IAssignmentVariableNamePart<IGraphPatternBuilder> Bind(Func<INonAggregateExpressionBuilder, SparqlExpression> buildAssignmentExpression)
+        public IAssignmentVariableNamePart<IGraphPatternBuilder> Bind(Func<INonAggregateExpressionBuilder, PrimaryExpression<ISparqlExpression>> buildAssignmentExpression)
         {
+#if NET35
+            return new BindAssignmentVariableNamePart(this, buildAssignmentExpression, true);
+#else
             return new BindAssignmentVariableNamePart(this, buildAssignmentExpression);
+#endif
         }
 
         public IGraphPatternBuilder Child(Action<IGraphPatternBuilder> buildGraphPattern)
