@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Builder
 
         public SparqlQuerySyntax SparqlVersion { get; set; }
 
-        private INamespaceMapper Prefixes { get; }
+        private INamespaceMapper Prefixes { get; set; }
 
         public VariableExpression Variable(string variable)
         {

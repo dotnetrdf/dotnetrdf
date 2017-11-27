@@ -34,10 +34,16 @@ namespace VDS.RDF.Query.Builder
     {
         private bool _distinctAggregate;
 
-        public IDistinctAggregateBuilder Distinct => new ExpressionBuilder(Prefixes)
+        public IDistinctAggregateBuilder Distinct
         {
-            _distinctAggregate = true
-        };
+            get
+            {
+                return new ExpressionBuilder(Prefixes)
+                {
+                    _distinctAggregate = true
+                };
+            }
+        }
 
         public AggregateExpression Sum(VariableTerm variable)
         {

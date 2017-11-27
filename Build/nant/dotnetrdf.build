@@ -56,15 +56,15 @@
   <!-- Project Generation Targets which generate some Project Files from others -->
 
   <target name="projectsync" description="Sync project files" unless="${dotnetrdf.nocompile}" 
-	depends="projectsync-core-net35,
-		 projectsync-core-clientprofile,
-	   projectsync-core-clientprofile-net35,
-     projectsync-core-portable,
-		 projectsync-query-fulltext-clientprofile,
-		 projectsync-query-fulltext-clientprofile-net35,
-		 projectsync-query-fulltext-net35,
-		 projectsync-data-virtuoso-net35,
-     projectsync-test-portable">
+	      depends="projectsync-core-net35,
+                   projectsync-core-clientprofile,
+	               projectsync-core-clientprofile-net35,
+                   projectsync-core-portable,
+		           projectsync-query-fulltext-clientprofile,
+		           projectsync-query-fulltext-clientprofile-net35,
+		           projectsync-query-fulltext-net35,
+		           projectsync-data-virtuoso-net35,
+                   projectsync-test-portable">
 
   </target>
 
@@ -519,18 +519,22 @@
                    compile-core,
                    compile-core-clientprofile,
                    compile-core-portable,
-				   compile-core-netcore">  
+				   compile-core-net35,
+				   compile-core-clientprofile-net35">  
   </target>
 
   <target name="compile-libs-data-virtuoso" description="Compiles all builds of the Data.Virtuoso library" unless="${dotnetrdf.nocompile}"
           depends="restore-packages,
-                   compile-data-virtuoso">
+                   compile-data-virtuoso,
+				   compile-data-virtuoso-net35">
   </target>
 
   <target name="compile-libs-query-fulltext" description="Compiles all builds of the Query.FullText library" unless="${dotnetrdf.nocompile}"
           depends="restore-packages,
                    compile-query-fulltext,
-                   compile-query-fulltext-clientprofile">
+                   compile-query-fulltext-clientprofile,
+				   compile-query-fulltext-net35,
+				   compile-query-fulltext-clientprofile-net35">
   </target>
 
   <target name="compile-libs-utils" description="Compiles all the additional libraries needed for the Toolkit distribution" unless="${dotnetrdf.nocompile}"
@@ -547,6 +551,7 @@
                  compile-util-opt-stats,
                  compile-util-query-cmd,compile-util-query-gui,
                  compile-util-server-cmd,compile-util-server-gui,
+				 compile-util-soh,
                  compile-util-webdeploy,
                  compile-util-storemanager">
     
@@ -821,6 +826,18 @@
     </exec>
   </target>
 
+  <target name="compile-util-soh" description="Compile the soh Utility" depends="license-utils,compile-libs-main,compile-libs-utils,restore-packages" unless="${dotnetrdf.nocompile}">
+    <property name="nant.settings.currentframework" value="net-4.0" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Utilities/soh/soh.csproj" />
+      <arg line="/p:Configuration=${dotnetrdf.configuration}" />
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
+    </exec>
+  </target>
+
   <target name="compile-util-webdeploy" description="Compile the rdfWebDeploy Utility" depends="license-utils,compile-libs-main,restore-packages" unless="${dotnetrdf.nocompile}">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
@@ -848,10 +865,12 @@
   <target name="compile-util-installer" description="Compiles the dotNetRDF Toolkit Installer" unless="${dotnetrdf.nocompile}" depends="compile-utils,restore-packages">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+	<property name="msBuild.exe" value="C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe"/>
     <exec program="${msBuild.exe}" failonerror="true" verbose="true">
       <arg value="Build/ToolkitInstaller/ToolkitInstaller.wixproj" />
       <arg line="/p:Configuration=${dotnetrdf.configuration}" />
       <arg line="/p:PostBuildEvent=" />
+	  <arg line="/p:Platform=x86" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
@@ -872,10 +891,15 @@
   <target name="build-libs" description="Builds dotNetRDF library nightlies" unless="${dotnetrdf.nobuild}"
           depends="build-core,
                    build-core-clientprofile,
+				   build-core-net35,
+				   build-core-clientprofile-net35,
                    build-core-portable,
-				   build-core-netcore,
                    build-data-virtuoso,
-                   build-query-fulltext,build-query-fulltext-clientprofile" />
+				   build-data-virtuoso-net35,
+                   build-query-fulltext,
+				   build-query-fulltext-clientprofile,
+				   build-query-fulltext-net35,
+				   build-query-fulltext-clientprofile-net35" />
 
   <target name="build-utils" description="Builds dotNetRDF Toolkit nightlies" unless="${dotnetrdf.nobuild}"
           depends="build-util-convert,
@@ -883,6 +907,7 @@
                    build-util-opt-stats,
                    build-util-query-cmd,build-util-query-gui,
                    build-util-server,
+				   build-util-soh,
                    build-util-webdeploy,
                    build-util-storemanager">
 
@@ -1054,6 +1079,16 @@
     </copy>
   </target>
 
+  <target name="build-util-soh" unless="${dotnetrdf.nobuild}" depends="compile-util-soh">
+	<copy overwrite="true" todir="bin/nightlies/Toolkit/soh">
+		<fileset basedir="Utilities/soh/bin/Debug">
+		  <include name="soh.exe"/>
+		  <include name="soh.exe.config" />
+		  <include name="*.dll"/>
+		</fileset>
+	</copy>
+  </target>
+  
   <target name="build-util-webdeploy" unless="${dotnetrdf.nobuild}" depends="compile-util-webdeploy">
     <copy overwrite="true" todir="bin/nightlies/Toolkit/rdfWebDeploy">
       <fileset basedir="Utilities/rdfWebDeploy/bin/Debug">
@@ -1367,7 +1402,6 @@
         <include name="dotNetRDF.*" />
       </fileset>
     </copy>
-	<!--
     <copy todir="Build/nuget/Core/lib/net35/">
       <fileset basedir="bin/stable/Libraries/Core/net35/">
         <include name="dotNetRDF.*" />
@@ -1378,7 +1412,6 @@
         <include name="dotNetRDF.*" />
       </fileset>
     </copy>
-	-->
     <copy todir="Build/nuget/Core/lib/portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1">
       <fileset basedir="bin/stable/Libraries/Core/portable/">
         <include name="dotNetRDF.*" />
@@ -1386,12 +1419,7 @@
         <include name="Portable.Runtime.dll" />
       </fileset>
     </copy>
-	<copy todir="Build/nuget/Core/lib/netstandard1.4">
-	  <fileset basedir="bin/stable/Libraries/Core/netstandard1.4/">
-	    <include name="dotNetRDF.*"/>
-	  </fileset>
-	</copy>
-	  
+
     <!-- Finally invoke nuget on the package -->
     <exec workingdir="Build/nuget/Core/" program="nuget.exe">
       <arg value="pack" />
@@ -1439,13 +1467,11 @@
         <include name="dotNetRDF.*" />
       </fileset>
     </copy>
-	<!--
     <copy todir="Build/nuget/Data.Virtuoso/lib/net35/">
       <fileset basedir="bin/stable/Libraries/Data/Virtuoso/net35/">
         <include name="dotNetRDF.*" />
       </fileset>
     </copy>
-	-->
     <!-- Invoke nuget on the package -->
     <exec workingdir="Build/nuget/Data.Virtuoso/" program="nuget.exe">
       <arg value="pack" />
@@ -1498,7 +1524,6 @@
         <include name="dotNetRDF.*" />
       </fileset>
     </copy>
-	<!--
     <copy todir="Build/nuget/Query.FullText/lib/net35/">
       <fileset basedir="bin/stable/Libraries/Query/FullText/net35/">
         <include name="dotNetRDF.*" />
@@ -1509,7 +1534,6 @@
         <include name="dotNetRDF.*" />
       </fileset>
     </copy>
-	-->
     <!-- Invoke nuget on the package -->
     <exec workingdir="Build/nuget/Query.FullText/" program="nuget.exe">
       <arg value="pack" />

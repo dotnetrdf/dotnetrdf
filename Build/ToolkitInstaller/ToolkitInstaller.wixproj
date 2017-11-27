@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -54,7 +54,7 @@
     <MSBuild Projects="CopyBinaries.proj" Targets="Build" Properties="PackageDir=$(PackageDir);Configuration=$(Configuration)" />
   </Target>
   <Target Name="HeatPackage" DependsOnTargets="CopyBinaries">
-    <MSBuild Projects="Heat.proj" Targets="Build" Properties="PackageDir=$(PackageDir);Configuration=$(Configuration);WixToolPath=$(WixToolPath);WixTargetsPath=$(WixTargetsPath);OutputPath=$(OutputPath);OutputName=$(OutputName);OutputType=$(OutputType)" />
+    <MSBuild Projects="Heat.proj" Targets="Build" Properties="PlatformTarget=x86;PackageDir=$(PackageDir);Configuration=$(Configuration);WixToolPath=$(WixToolPath);WixTargetsPath=$(WixTargetsPath);OutputPath=$(OutputPath);OutputName=$(OutputName);OutputType=$(OutputType)" />
   </Target>
   <ItemGroup>
     <BootstrapperFile Include=".NETFramework,Version=v4.0">
