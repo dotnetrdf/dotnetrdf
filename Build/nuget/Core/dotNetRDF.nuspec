@@ -11,35 +11,34 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>dotNetRDF is a RDF, SPARQL and Semantic Web API for .Net.  It provides simple but powerfully extensible APIs for this and integrates with a variety of popular triple stores.</description>
     <tags>RDF Semantic Web SPARQL RDF/XML Turtle Notation3</tags>
-    <dependencies>       
+    <dependencies>
+      <group targetFramework="net35">
+        <dependency id="VDS.Common" version="1.8.0" />
+        <dependency id="Newtonsoft.Json" version="10.0.3" />
+        <dependency id="HtmlAgilityPack" version="1.6.5" />
+      </group>
+      <group targetFramework="net35-client">
+        <dependency id="VDS.Common" version="1.8.0" />
+        <dependency id="Newtonsoft.Json" version="10.0.3" />
+        <dependency id="HtmlAgilityPack" version="1.6.5" />
+      </group>
       <group targetFramework="net40">
-        <dependency id="VDS.Common" version="1.7.0" />
-        <dependency id="Newtonsoft.Json" version="9.0.1" />
-        <dependency id="HtmlAgilityPack" version="1.4.9.5" />
+        <dependency id="VDS.Common" version="1.8.0" />
+        <dependency id="Newtonsoft.Json" version="10.0.3" />
+        <dependency id="HtmlAgilityPack" version="1.6.5" />
       </group>
       <group targetFramework="net40-client">
-        <dependency id="VDS.Common" version="1.7.0" />
-        <dependency id="Newtonsoft.Json" version="9.0.1" />
-        <dependency id="HtmlAgilityPack" version="1.4.9.5" />
+        <dependency id="VDS.Common" version="1.8.0" />
+        <dependency id="Newtonsoft.Json" version="10.0.3" />
+        <dependency id="HtmlAgilityPack" version="1.6.5" />
       </group>
       <group targetFramework="portable-net4+sl4+netcore45+wp8+MonoAndroid1+MonoTouch1">
-        <dependency id="VDS.Common" version="1.7.0" />
-        <dependency id="Newtonsoft.Json" version="8.0.3" />
+        <dependency id="VDS.Common" version="1.8.0" />
+        <dependency id="Newtonsoft.Json" version="10.0.3" />
       </group>
-	  <group targetFramework="netstandard1.4">
-	    <dependency id="NETStandard.Library" version="1.6.0" />
-        <dependency id="Newtonsoft.Json" version="9.0.1" />
-        <dependency id="System.ComponentModel.TypeConverter" version="4.1.0" />
-        <dependency id="System.Globalization.Extensions" version="4.0.1" />
-        <dependency id="System.Net.Requests" version="4.0.11" />
-        <dependency id="System.Reflection.TypeExtensions" version="4.1.0" />
-        <dependency id="System.Threading.Thread" version="4.0.0" />
-        <dependency id="System.Xml.XmlDocument" version="4.0.1" />
-        <dependency id="VDS.Common" version="1.7.0" />
-	  </group>
     </dependencies>
     <releaseNotes>
-	Added .NET Core build
+	Reinstated .NET 3.5 and .NET 3.5 client profile
     </releaseNotes>
   </metadata>
 </package>
