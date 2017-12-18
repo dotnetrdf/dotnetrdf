@@ -224,6 +224,16 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Method which checks whether a given Namespace is defined
+        /// </summary>
+        /// <param name="ns">Namespace to test</param>
+        public virtual bool HasNamespace(Uri ns)
+        {
+            int hash = ns.GetEnhancedHashCode();
+            return this._prefixes.ContainsKey(hash);
+        }
+
+        /// <summary>
         /// Clears the Namespace Map
         /// </summary>
         public void Clear()
