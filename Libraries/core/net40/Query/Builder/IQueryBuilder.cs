@@ -34,6 +34,7 @@ namespace VDS.RDF.Query.Builder
     /// </summary>
     public interface IQueryBuilder
     {
+        GraphPatternBuilder RootGraphPatternBuilder { get; }
         /// <summary>
         /// Gets the prefix manager, which allows adding prefixes to the query or graph pattern
         /// </summary>

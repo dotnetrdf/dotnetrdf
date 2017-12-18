@@ -66,7 +66,7 @@ namespace VDS.RDF.Query.Builder
             set { _prefixes = value; }
         }
 
-        internal GraphPatternBuilder RootGraphPatternBuilder
+        public GraphPatternBuilder RootGraphPatternBuilder
         {
             get { return _rootGraphPatternBuilder; }
         }
@@ -284,11 +284,11 @@ namespace VDS.RDF.Query.Builder
         public SparqlQuery BuildQuery()
         {
             SparqlQuery query = new SparqlQuery
-                {
-                    QueryType = _sparqlQueryType,
-                    Limit = _queryLimit,
-                    Offset = _queryOffset
-                };
+            {
+                QueryType = _sparqlQueryType,
+                Limit = _queryLimit,
+                Offset = _queryOffset
+            };
 
             switch (_sparqlQueryType)
             {
@@ -297,7 +297,7 @@ namespace VDS.RDF.Query.Builder
                     break;
                 case SparqlQueryType.Describe:
                 case SparqlQueryType.DescribeAll:
-                    BuildDecribeVariables(query);
+                    BuildDescribeVariables(query);
                     break;
                 case SparqlQueryType.Select:
                 case SparqlQueryType.SelectAll:
@@ -319,11 +319,12 @@ namespace VDS.RDF.Query.Builder
             return query;
         }
 
-        private void BuildDecribeVariables(SparqlQuery query)
+        private void BuildDescribeVariables(SparqlQuery query)
         {
             if (_describeBuilder == null) return;
 
             query.QueryType = _describeBuilder.SparqlQueryType;
+
             foreach (var describeVariable in _describeBuilder.DescribeVariables)
             {
                 query.AddDescribeVariable(describeVariable);
@@ -340,6 +341,7 @@ namespace VDS.RDF.Query.Builder
         private void BuildRootGraphPattern(SparqlQuery query)
         {
             var rootGraphPattern = RootGraphPatternBuilder.BuildGraphPattern(Prefixes);
+
             if (!rootGraphPattern.IsEmpty)
             {
                 query.RootGraphPattern = rootGraphPattern;
@@ -351,6 +353,7 @@ namespace VDS.RDF.Query.Builder
             if (_selectBuilder == null) return;
 
             query.QueryType = _selectBuilder.SparqlQueryType;
+
             foreach (SparqlVariable selectVariable in _selectBuilder.BuildVariables(Prefixes))
             {
                 query.AddVariable(selectVariable);
@@ -396,6 +399,7 @@ namespace VDS.RDF.Query.Builder
             {
                 orderings[i - 1].Child = orderings[i];
             }
+
             executableQuery.OrderBy = orderings.FirstOrDefault();
         }
 

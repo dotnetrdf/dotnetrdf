@@ -34,8 +34,9 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
 {
-    sealed class GraphPatternBuilder : IGraphPatternBuilder
+    public sealed class GraphPatternBuilder : IGraphPatternBuilder
     {
+        private readonly IList<GraphPattern> _childGraphPatterns = new List<GraphPattern>();
         private readonly IList<GraphPatternBuilder> _childGraphPatternBuilders = new List<GraphPatternBuilder>();
         private readonly IList<Func<INamespaceMapper, ISparqlExpression>> _filterBuilders = new List<Func<INamespaceMapper, ISparqlExpression>>();
         private readonly IList<Func<INamespaceMapper, ITriplePattern[]>> _triplePatterns = new List<Func<INamespaceMapper, ITriplePattern[]>>();
@@ -45,7 +46,7 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Creates a builder of a normal graph patterns
         /// </summary>
-        internal GraphPatternBuilder()
+        public GraphPatternBuilder()
             : this(GraphPatternType.Normal)
         {
         }
@@ -54,7 +55,7 @@ namespace VDS.RDF.Query.Builder
         /// Creates a builder of a graph pattern
         /// </summary>
         /// <param name="graphPatternType">MINUS, GRAPH, SERVICE etc.</param>
-        private GraphPatternBuilder(GraphPatternType graphPatternType)
+        public GraphPatternBuilder(GraphPatternType graphPatternType)
         {
             _graphPatternType = graphPatternType;
         }
@@ -73,9 +74,13 @@ namespace VDS.RDF.Query.Builder
             {
                 AddTriplePattern(graphPattern, triplePattern);
             }
-            foreach (var graphPatternBuilder in _childGraphPatternBuilders)
+            foreach (var childPattern in _childGraphPatterns)
             {
-                graphPattern.AddGraphPattern(graphPatternBuilder.BuildGraphPattern(prefixes));
+                graphPattern.AddGraphPattern(childPattern);
+            }
+            foreach (var childBuilder in _childGraphPatternBuilders)
+            {
+                graphPattern.AddGraphPattern(childBuilder.BuildGraphPattern(prefixes));
             }
             foreach (var buildFilter in _filterBuilders)
             {
@@ -131,6 +136,24 @@ namespace VDS.RDF.Query.Builder
             return graphPattern;
         }
 
+        public IGraphPatternBuilder Group(GraphPatternBuilder groupBuilder)
+        {
+            if(!_childGraphPatternBuilders.Contains(groupBuilder))
+            {
+                _childGraphPatternBuilders.Add(groupBuilder);
+            }
+
+            return this;
+        }
+
+        public IGraphPatternBuilder Group(Action<IGraphPatternBuilder> buildGraphPattern)
+        {
+            GraphPatternBuilder groupBuilder = new GraphPatternBuilder();
+            buildGraphPattern(groupBuilder);
+            _childGraphPatternBuilders.Add(groupBuilder);
+            return this;
+        }
+
         public IGraphPatternBuilder Where(params ITriplePattern[] triplePatterns)
         {
             _triplePatterns.Add(prefixes => triplePatterns);
@@ -184,6 +207,26 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
+        public IGraphPatternBuilder Union(GraphPatternBuilder firstGraphPattern, params GraphPatternBuilder[] unionedGraphPatternBuilders)
+        {
+            if (unionedGraphPatternBuilders == null || unionedGraphPatternBuilders.Length == 0)
+            {
+                return Child(firstGraphPattern);
+            }
+
+            var union = new GraphPatternBuilder(GraphPatternType.Union);
+            union.Child(firstGraphPattern);
+
+            foreach (var builder in unionedGraphPatternBuilders)
+            {
+                union.Child(builder);
+            }
+
+            _childGraphPatternBuilders.Add(union);
+
+            return this;
+        }
+
         public IGraphPatternBuilder Union(Action<IGraphPatternBuilder> firstGraphPattern, params Action<IGraphPatternBuilder>[] unionedGraphPatternBuilders)
         {
             if (unionedGraphPatternBuilders == null || unionedGraphPatternBuilders.Length == 0)
@@ -200,6 +243,7 @@ namespace VDS.RDF.Query.Builder
             }
 
             _childGraphPatternBuilders.Add(union);
+
             return this;
         }
 
@@ -212,6 +256,23 @@ namespace VDS.RDF.Query.Builder
 #endif
         }
 
+        public IGraphPatternBuilder Child(IQueryBuilder queryBuilder)
+        {
+            SparqlQuery subquery = queryBuilder.BuildQuery();
+
+            GraphPatternBuilder childBuilder = new GraphPatternBuilder();
+            childBuilder.Where(new SubQueryPattern(subquery));
+
+            _childGraphPatternBuilders.Add(childBuilder);
+            return this;
+        }
+
+        public IGraphPatternBuilder Child(GraphPatternBuilder childBuilder)
+        {
+            _childGraphPatternBuilders.Add(childBuilder);
+            return this;
+        }
+
         public IGraphPatternBuilder Child(Action<IGraphPatternBuilder> buildGraphPattern)
         {
             AddChildGraphPattern(buildGraphPattern, GraphPatternType.Normal);
@@ -221,10 +282,10 @@ namespace VDS.RDF.Query.Builder
         public IGraphPatternBuilder Filter(Func<INonAggregateExpressionBuilder, BooleanExpression> buildExpression)
         {
             _filterBuilders.Add(namespaceMapper =>
-                {
-                    var builder = new ExpressionBuilder(namespaceMapper);
-                    return buildExpression(builder).Expression;
-                });
+            {
+                var builder = new ExpressionBuilder(namespaceMapper);
+                return buildExpression(builder).Expression;
+            });
             return this;
         }
 
