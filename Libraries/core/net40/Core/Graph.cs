@@ -231,7 +231,13 @@ namespace VDS.RDF
                 return (T)firstWithSubject.Subject;
             }
 
-            return (T)withObject.FirstOrDefault()?.Object;
+            var firstWithObject = withObject.FirstOrDefault();
+            if (firstWithObject != null)
+            {
+                return (T) firstWithObject.Object;
+            }
+
+            return (T)(INode)null;
         }
 
         #endregion
