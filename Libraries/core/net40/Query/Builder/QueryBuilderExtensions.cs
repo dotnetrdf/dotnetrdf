@@ -83,7 +83,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Builds a simple DESCRIBE query without the WHERE part
+        /// Build a simple DESCRIBE query without the WHERE part.
         /// </summary>
         public static SparqlQuery BuildQuery(this IDescribeBuilder describeBuilder)
         {
@@ -91,7 +91,24 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Adds a group graph pattern or a sub query to the query.
+        /// Add a group graph pattern or a sub query to the query.
+        /// </summary>
+        /// <param name="childBuilder"></param>
+        public static IQueryBuilder Child(this IQueryBuilder queryBuilder, IQueryBuilder childBuilder)
+        {
+            if ((childBuilder.QueryType & SparqlQueryType.Select) == SparqlQueryType.Select)
+            {
+                queryBuilder.RootGraphPatternBuilder.Where(new SubQueryPattern(childBuilder.BuildQuery()));
+                return queryBuilder;
+            }
+            else
+            {
+                throw new ArgumentException("Invalid query type: " + childBuilder.QueryType + "; only Select queries may be used as sub-queries.");
+            }
+        }
+
+        /// <summary>
+        /// Add a group graph pattern or a sub query to the query.
         /// </summary>
         /// <param name="buildGraphPattern"></param>
         public static IQueryBuilder Child(this IQueryBuilder queryBuilder, Action<IGraphPatternBuilder> buildGraphPattern)
@@ -166,6 +183,12 @@ namespace VDS.RDF.Query.Builder
         }
 
         public static IQueryBuilder Union(this IQueryBuilder queryBuilder, Action<IGraphPatternBuilder> firstGraphPattern, params Action<IGraphPatternBuilder>[] otherGraphPatterns)
+        {
+            queryBuilder.RootGraphPatternBuilder.Union(firstGraphPattern, otherGraphPatterns);
+            return queryBuilder;
+        }
+
+        public static IQueryBuilder Union(this IQueryBuilder queryBuilder, GraphPatternBuilder firstGraphPattern, params GraphPatternBuilder[] otherGraphPatterns)
         {
             queryBuilder.RootGraphPatternBuilder.Union(firstGraphPattern, otherGraphPatterns);
             return queryBuilder;

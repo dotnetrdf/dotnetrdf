@@ -56,6 +56,15 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
+        /// Sets a SPARQL variable as <see cref="IMatchTriplePattern.Object"/>
+        /// </summary>
+        public ITriplePatternBuilder Object(SparqlVariable variable)
+        {
+            var objectPattern = _triplePatternBuilder.PatternItemFactory.CreateVariablePattern(variable.Name);
+            return Object(objectPattern);
+        }
+
+        /// <summary>
         /// Depending on the generic parameter type, sets a literal, a QName or a blank node as <see cref="IMatchTriplePattern.Object"/>
         /// </summary>
         /// <param name="object">Either a variable name, a literal, a QName or a blank node identifier</param>

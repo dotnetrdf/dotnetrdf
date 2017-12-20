@@ -47,6 +47,11 @@ namespace VDS.RDF.Query.Builder
             return new VariableExpression(variable);
         }
 
+        public VariableExpression Variable(SparqlVariable variable)
+        {
+            return new VariableExpression(variable.Name);
+        }
+
         public TypedLiteralExpression<string> Constant(string value)
         {
             return new NumericExpression<string>(value);

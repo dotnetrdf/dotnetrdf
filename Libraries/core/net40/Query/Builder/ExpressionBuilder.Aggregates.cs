@@ -57,6 +57,11 @@ namespace VDS.RDF.Query.Builder
             return Sum(new VariableTerm(variable));
         }
 
+        public AggregateExpression Sum(SparqlVariable variable)
+        {
+            return Sum(new VariableTerm(variable.Name));
+        }
+
         public AggregateExpression Sum(SparqlExpression expression)
         {
             var sumAggregate = new SumAggregate(expression.Expression, _distinctAggregate);
@@ -74,6 +79,11 @@ namespace VDS.RDF.Query.Builder
         public AggregateExpression Avg(string variable)
         {
             return Avg(new VariableTerm(variable));
+        }
+
+        public AggregateExpression Avg(SparqlVariable variable)
+        {
+            return Avg(new VariableTerm(variable.Name));
         }
 
         public AggregateExpression Avg(SparqlExpression expression)
@@ -95,6 +105,11 @@ namespace VDS.RDF.Query.Builder
             return Min(new VariableTerm(variable));
         }
 
+        public AggregateExpression Min(SparqlVariable variable)
+        {
+            return Min(new VariableTerm(variable.Name));
+        }
+
         public AggregateExpression Min(SparqlExpression expression)
         {
             var aggregate = new MinAggregate(expression.Expression, _distinctAggregate);
@@ -112,6 +127,11 @@ namespace VDS.RDF.Query.Builder
         public AggregateExpression Max(string variable)
         {
             return Max(new VariableTerm(variable));
+        }
+
+        public AggregateExpression Max(SparqlVariable variable)
+        {
+            return Max(new VariableTerm(variable.Name));
         }
 
         public AggregateExpression Max(SparqlExpression expression)
@@ -196,6 +216,11 @@ namespace VDS.RDF.Query.Builder
         public AggregateExpression Count(string variable)
         {
             return Count(new VariableTerm(variable));
+        }
+
+        public AggregateExpression Count(SparqlVariable variable)
+        {
+            return Count(new VariableTerm(variable.Name));
         }
 
         public AggregateExpression Count(SparqlExpression expression)

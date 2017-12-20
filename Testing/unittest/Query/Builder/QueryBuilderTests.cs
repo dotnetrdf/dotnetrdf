@@ -26,12 +26,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Linq;
 using NUnit.Framework;
-using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query.Aggregates;
-using VDS.RDF.Query.Builder.Expressions;
+using VDS.RDF.Query.Aggregates.Sparql;
 using VDS.RDF.Query.Expressions;
-using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;
 using VDS.RDF.Query.Expressions.Primary;
@@ -706,6 +703,111 @@ namespace VDS.RDF.Query.Builder
 
             // then
             Assert.That(query.Having, Is.Null);
+        }
+
+        /// <summary>
+        /// Tests if queries that contain sub-query can be build.
+        /// </summary>
+        [Test]
+        public void CanBuildSubQueries()
+        {
+            Uri hasSomeValue = new Uri("http://example.org/hasSomeValue");
+
+            SparqlVariable s = new SparqlVariable("s");
+            SparqlVariable x = new SparqlVariable("x");
+
+            // Valid: SELECT query with one SELECT sub-query.
+            IQueryBuilder subSelectBuilder = QueryBuilder
+                .Select(s)
+                .And(v => v.Count(x)).As("c")
+                .Where(BuildSPOPattern)
+                .Optional(o => o.Where(p => p.Subject(s).PredicateUri(hasSomeValue).Object(x)))
+                .GroupBy(s);
+
+            IQueryBuilder queryBuilder0 = QueryBuilder
+                .Select(s)
+                .Where(BuildSPOPattern)
+                .Child(subSelectBuilder)
+                .Filter(f => f.Variable("c") == 0);
+
+            SparqlQuery q0 = queryBuilder0.BuildQuery();
+
+            Assert.That(q0.RootGraphPattern.TriplePatterns.Count(p => p.PatternType == TriplePatternType.SubQuery), Is.EqualTo(1));
+
+            // Invalid: SELECT query with one ASK sub-query.
+            IQueryBuilder subAskBuilder = QueryBuilder
+                .Ask()
+                .Where(BuildSPOPattern);
+
+            Assert.Throws<ArgumentException>(() =>
+            {
+                IQueryBuilder queryBuilder1 = QueryBuilder
+                    .Select(s)
+                    .Where(BuildSPOPattern)
+                    .Child(subAskBuilder);
+            });
+
+            // Invalid: SELECT query with one CONSTRUCT sub-query.
+            IQueryBuilder subConstructBuilder = QueryBuilder
+                .Construct()
+                .Where(BuildSPOPattern);
+
+            Assert.Throws<ArgumentException>(() =>
+            {
+                IQueryBuilder queryBuilder1 = QueryBuilder
+                    .Select(s)
+                    .Where(BuildSPOPattern)
+                    .Child(subConstructBuilder);
+            });
+
+            // Invalid: SELECT query with one DESCRIBE sub-query.
+            IQueryBuilder subDescribeBuilder = QueryBuilder
+                .Construct()
+                .Where(BuildSPOPattern);
+
+            Assert.Throws<ArgumentException>(() =>
+            {
+                IQueryBuilder queryBuilder1 = QueryBuilder
+                    .Select(s)
+                    .Where(BuildSPOPattern)
+                    .Child(subDescribeBuilder);
+            });
+        }
+
+        /// <summary>
+        /// Tests if queries can be build using a visitor pattern where the expressions are 
+        /// visited top-down, building UNION before the actual content.
+        /// </summary>
+        [Test]
+        public void CanBuildUnionWithGraphPatternBuilders()
+        {
+            // Define two pattern builders which will be used to generate triple patterns for a UNION expression.
+            GraphPatternBuilder patternBuilder0 = new GraphPatternBuilder();
+            GraphPatternBuilder patternBuilder1 = new GraphPatternBuilder();
+
+            IQueryBuilder queryBuilder0 = QueryBuilder
+                .Ask()
+                .Union(patternBuilder0, patternBuilder1);
+
+            // Add some triple patterns after the UNION was added to the query.
+            patternBuilder0.Where(p => p.Subject("s0").Predicate("p0").ObjectLiteral(0));
+            patternBuilder1.Where(p => p.Subject("s1").Predicate("p1").ObjectLiteral(1));
+
+            SparqlQuery q0 = queryBuilder0.BuildQuery();
+
+            Assert.That(q0.RootGraphPattern.ChildGraphPatterns.Count(), Is.EqualTo(1));
+            Assert.That(q0.RootGraphPattern.ChildGraphPatterns.First().IsUnion, Is.EqualTo(true));
+            Assert.That(q0.RootGraphPattern.ChildGraphPatterns.First().ChildGraphPatterns.Count(), Is.EqualTo(2));
+
+            // Now add other triples to the query after the query was already build.
+            patternBuilder1.Where(p => p.Subject("s1").Predicate("p2").ObjectLiteral(2));
+
+            SparqlQuery q1 = queryBuilder0.BuildQuery();
+
+            Assert.That(q1.RootGraphPattern.ChildGraphPatterns.Count(), Is.EqualTo(1));
+            Assert.That(q1.RootGraphPattern.ChildGraphPatterns.First().IsUnion, Is.EqualTo(true));
+            Assert.That(q1.RootGraphPattern.ChildGraphPatterns.First().ChildGraphPatterns.Count(), Is.EqualTo(2));
+            Assert.That(q1.RootGraphPattern.ChildGraphPatterns.First().ChildGraphPatterns.Any(p => p.ToString().Contains("p2")), Is.EqualTo(true));
         }
     }
 }

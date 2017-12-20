@@ -47,6 +47,11 @@ namespace VDS.RDF.Query.Builder
             return Subject(PatternItemFactory.CreateVariablePattern(subjectVariableName));
         }
 
+        public TriplePatternPredicatePart Subject(SparqlVariable variable)
+        {
+            return Subject(PatternItemFactory.CreateVariablePattern(variable.Name));
+        }
+
         public TriplePatternPredicatePart Subject<TNode>(string subject) where TNode : INode
         {
             return Subject(PatternItemFactory.CreatePatternItem(typeof(TNode), subject, _prefixes));
