@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Threading;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
@@ -55,6 +56,11 @@ namespace VDS.RDF.Storage
         {
             this.Timeout = 30000;
         }
+
+        /// <summary>
+        /// Whether the User has provided credentials for accessing the Store using authentication
+        /// </summary>
+        private bool _hasCredentials;
 
 #if !NO_PROXY
         private WebProxy _proxy;
@@ -197,6 +203,16 @@ namespace VDS.RDF.Storage
         public int Timeout { get; set; }
 
         /// <summary>
+        /// Password for accessing the Store
+        /// </summary>
+        protected string Username { get; private set; }
+
+        /// <summary>
+        /// Password for accessing the Store
+        /// </summary>
+        protected string Password { get; private set; }
+
+        /// <summary>
         /// Helper method which applies standard request options to the request, these currently include proxy settings and HTTP timeout
         /// </summary>
         /// <param name="request">HTTP Web Request</param>
@@ -218,6 +234,30 @@ namespace VDS.RDF.Storage
             // Disable Keep Alive since it can cause errors when carrying out high volumes of operations or when performing long running operations
             request.KeepAlive = false;
 #endif
+
+            // Add Credentials if needed
+            if (_hasCredentials)
+            {
+                if (Options.ForceHttpBasicAuth)
+                {
+                    // Forcibly include a HTTP basic authentication header
+#if !(SILVERLIGHT||NETCORE)
+                    string credentials = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(Username + ":" + Password));
+                    request.Headers.Add("Authorization", "Basic " + credentials);
+#else
+                    string credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(Username + ":" + Password));
+                    request.Headers["Authorization"] = "Basic " + credentials;
+#endif
+                }
+                else
+                {
+                    // Leave .Net to cope with HTTP auth challenge response
+                    NetworkCredential credentials = new NetworkCredential(Username, Password);
+#if !(SILVERLIGHT||NETCORE)
+                    request.PreAuthenticate = true;
+#endif
+                }
+            }
 
             return request;
         }
@@ -256,6 +296,16 @@ namespace VDS.RDF.Storage
             context.Graph.Assert(new Triple(proxy, user, context.Graph.CreateLiteralNode(cred.UserName)));
             context.Graph.Assert(new Triple(proxy, pwd, context.Graph.CreateLiteralNode(cred.Password)));
 #endif
+        }
+
+        /// <summary>
+        /// Sets the credentials to be used with basic authentication
+        /// </summary>
+        public void SetCredentials(string username, string password)
+        {
+            Username = username;
+            Password = password;
+            _hasCredentials = (!String.IsNullOrEmpty(username) && !String.IsNullOrEmpty(password));
         }
     }
 
