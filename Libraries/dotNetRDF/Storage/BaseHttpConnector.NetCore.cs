@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Threading;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
@@ -53,6 +54,11 @@ namespace VDS.RDF.Storage
         {
             this.Timeout = 30000;
         }
+
+        /// <summary>
+        /// Whether the User has provided credentials for accessing the Store using authentication
+        /// </summary>
+        private bool _hasCredentials;
 
         private IWebProxy _proxy;
 
@@ -193,6 +199,16 @@ namespace VDS.RDF.Storage
         public int Timeout { get; set; }
 
         /// <summary>
+        /// Password for accessing the Store
+        /// </summary>
+        protected string Username { get; private set; }
+
+        /// <summary>
+        /// Password for accessing the Store
+        /// </summary>
+        protected string Password { get; private set; }
+
+        /// <summary>
         /// Helper method which applies standard request options to the request, these currently include proxy settings and HTTP timeout
         /// </summary>
         /// <param name="request">HTTP Web Request</param>
@@ -203,6 +219,24 @@ namespace VDS.RDF.Storage
             {
                 request.Proxy = this._proxy;
             }
+
+            // Add Credentials if needed
+            if (_hasCredentials)
+            {
+                if (Options.ForceHttpBasicAuth)
+                {
+                    // Forcibly include a HTTP basic authentication header
+                    string credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(this.Username + ":" + this.Password));
+                    request.Headers["Authorization"] = "Basic " + credentials;
+                }
+                else
+                {
+                    // Leave .Net to cope with HTTP auth challenge response
+                    NetworkCredential credentials = new NetworkCredential(Username, Password);
+                    request.Credentials = credentials;
+                }
+            }
+
             return request;
         }
 
@@ -219,6 +253,13 @@ namespace VDS.RDF.Storage
                 INode timeout = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyTimeout));
                 context.Graph.Assert(new Triple(objNode, timeout, this.Timeout.ToLiteral(context.Graph)));
             }
+        }
+
+        public void SetCredentials(string username, string password)
+        {
+            Username = username;
+            Password = password;
+            _hasCredentials = (!String.IsNullOrEmpty(username) && !String.IsNullOrEmpty(password));
         }
     }
 

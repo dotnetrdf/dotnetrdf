@@ -363,12 +363,12 @@ namespace VDS.RDF.Storage
             }
             context.Graph.Assert(new Triple(manager, store, context.Graph.CreateLiteralNode(_store)));
             
-            if (_username != null && _pwd != null)
+            if (Username != null && Password != null)
             {
                 INode username = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUser));
                 INode pwd = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPassword));
-                context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(_username)));
-                context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(_pwd)));
+                context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(Username)));
+                context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(Password)));
             }
 
             SerializeStandardConfig(manager, context);
