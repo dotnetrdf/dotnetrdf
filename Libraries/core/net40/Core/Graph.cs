@@ -163,11 +163,7 @@ namespace VDS.RDF
         /// <returns>Either the UriNode Or null if no Node with the given Uri exists</returns>
         public override IUriNode GetUriNode(Uri uri)
         {
-            IUriNode test = new UriNode(this, uri);
-            IEnumerable<IUriNode> us = from u in this.Nodes.UriNodes()
-                                          where u.Equals(test)
-                                          select u;
-            return us.FirstOrDefault();
+            return GetNode(new UriNode(this, uri));
         }
 
         /// <summary>
@@ -177,11 +173,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IUriNode GetUriNode(String qname)
         {
-            IUriNode test = new UriNode(this, qname);
-            IEnumerable<IUriNode> us = from u in this.Nodes.UriNodes()
-                                      where u.Equals(test)
-                                      select u;
-            return us.FirstOrDefault();
+            return GetNode(new UriNode(this, qname));
         }
 
         /// <summary>
@@ -192,11 +184,7 @@ namespace VDS.RDF
         /// <remarks>The LiteralNode in the Graph must have no Language or DataType set</remarks>
         public override ILiteralNode GetLiteralNode(String literal)
         {
-            ILiteralNode test = new LiteralNode(this, literal);
-            IEnumerable<ILiteralNode> ls = from l in this.Nodes.LiteralNodes()
-                                          where l.Equals(test)
-                                          select l;
-            return ls.FirstOrDefault();
+            return GetNode(new LiteralNode(this, literal));
         }
 
         /// <summary>
@@ -207,11 +195,7 @@ namespace VDS.RDF
         /// <returns>Either the LiteralNode Or null if no Node with the given Value and Language Specifier exists</returns>
         public override ILiteralNode GetLiteralNode(String literal, String langspec)
         {
-            ILiteralNode test = new LiteralNode(this, literal, langspec);
-            IEnumerable<ILiteralNode> ls = from l in this.Nodes.LiteralNodes()
-                                          where l.Equals(test)
-                                          select l;
-            return ls.FirstOrDefault();
+            return GetNode(new LiteralNode(this, literal, langspec));
         }
 
         /// <summary>
@@ -222,11 +206,7 @@ namespace VDS.RDF
         /// <returns>Either the LiteralNode Or null if no Node with the given Value and Data Type exists</returns>
         public override ILiteralNode GetLiteralNode(String literal, Uri datatype)
         {
-            ILiteralNode test = new LiteralNode(this, literal, datatype);
-            IEnumerable<ILiteralNode> ls = from l in this.Nodes.LiteralNodes()
-                                          where l.Equals(test)
-                                          select l;
-            return ls.FirstOrDefault();
+            return GetNode(new LiteralNode(this, literal, datatype));
         }
 
         /// <summary>
@@ -236,11 +216,28 @@ namespace VDS.RDF
         /// <returns>Either the Blank Node or null if no Node with the given Identifier exists</returns>
         public override IBlankNode GetBlankNode(String nodeId)
         {
-            IEnumerable<IBlankNode> bs = from b in this.Nodes.BlankNodes()
-                                        where b.InternalID.Equals(nodeId)
-                                        select b;
+            return GetNode(new BlankNode(this, nodeId));
+        }
 
-            return bs.FirstOrDefault();
+        private T GetNode<T>(T node) where T : INode
+        {
+            var withSubject = Triples.WithSubject(node);
+            var withObject = Triples.WithObject(node);
+
+            var firstWithSubject = withSubject.FirstOrDefault();
+
+            if (firstWithSubject != null)
+            {
+                return (T)firstWithSubject.Subject;
+            }
+
+            var firstWithObject = withObject.FirstOrDefault();
+            if (firstWithObject != null)
+            {
+                return (T) firstWithObject.Object;
+            }
+
+            return (T)(INode)null;
         }
 
         #endregion
