@@ -252,6 +252,15 @@ namespace VDS.RDF.Storage
         /// <param name="context">Serialization Context</param>
         protected void SerializeStandardConfig(INode objNode, ConfigurationSerializationContext context)
         {
+            // Basic Authentication
+            if (Username != null && Password != null)
+            {
+                INode username = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUser));
+                INode password = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPassword));
+                context.Graph.Assert(new Triple(objNode, username, context.Graph.CreateLiteralNode(Username)));
+                context.Graph.Assert(new Triple(objNode, password, context.Graph.CreateLiteralNode(Password)));
+            }
+
             // Timeout
             if (Timeout > 0)
             {
