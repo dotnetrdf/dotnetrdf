@@ -68,18 +68,6 @@ namespace VDS.RDF.Storage
         /// Store ID
         /// </summary>
         protected String _store;
-        /// <summary>
-        /// Username for accessing the Store
-        /// </summary>
-        protected String _username;
-        /// <summary>
-        /// Password for accessing the Store
-        /// </summary>
-        protected String _pwd;
-        /// <summary>
-        /// Whether the User has provided credentials for accessing the Store using authentication
-        /// </summary>
-        protected bool _hasCredentials = false;
 
         /// <summary>
         /// Repositories Prefix
@@ -132,9 +120,8 @@ namespace VDS.RDF.Storage
             this._baseUri = baseUri;
             if (!this._baseUri.EndsWith("/")) this._baseUri += "/";
             this._store = storeID;
-            this._username = username;
-            this._pwd = password;
-            this._hasCredentials = (!String.IsNullOrEmpty(username) && !String.IsNullOrEmpty(password));
+
+            SetCredentials(username, password);
 
             //Setup server
             this._server = new SesameServer(this._baseUri);
@@ -1176,31 +1163,6 @@ namespace VDS.RDF.Storage
             request.Accept = accept;
             request.Method = method;
 
-            //Add Credentials if needed
-            if (this._hasCredentials)
-            {
-                if (Options.ForceHttpBasicAuth)
-                {
-                    //Forcibly include a HTTP basic authentication header
-#if !(SILVERLIGHT||NETCORE)
-                    string credentials = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(this._username + ":" + this._pwd));
-                    request.Headers.Add("Authorization", "Basic " + credentials);
-#else
-                    string credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(this._username + ":" + this._pwd));
-                    request.Headers["Authorization"] = "Basic " + credentials;
-#endif
-                }
-                else
-                {
-                    //Leave .Net to cope with HTTP auth challenge response
-                    NetworkCredential credentials = new NetworkCredential(this._username, this._pwd);
-                    request.Credentials = credentials;
-#if !(SILVERLIGHT||NETCORE)
-                    request.PreAuthenticate = true;
-#endif
-                }
-            }
-
             return base.ApplyRequestOptions(request);
         }
 
@@ -1240,14 +1202,6 @@ namespace VDS.RDF.Storage
             context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
             context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._baseUri)));
             context.Graph.Assert(new Triple(manager, store, context.Graph.CreateLiteralNode(this._store)));
-
-            if (this._username != null && this._pwd != null)
-            {
-                INode username = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUser));
-                INode pwd = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPassword));
-                context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(this._username)));
-                context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(this._pwd)));
-            }
 
             base.SerializeStandardConfig(manager, context);
         }

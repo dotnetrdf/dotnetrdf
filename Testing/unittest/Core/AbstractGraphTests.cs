@@ -104,7 +104,7 @@ namespace VDS.RDF
             Assert.IsFalse(g.GetTriplesWithPredicate(rdfType).Any());
         }
 
-        [Fact]
+        [Test]
         public void GetUriNode_ShouldReturnIfUsedAsObject()
         {
             // given
@@ -120,10 +120,10 @@ namespace VDS.RDF
             var uriNode = graph.GetUriNode(uri);
 
             // then
-            Assert.Same(node, uriNode);
+            Assert.ReferenceEquals(node, uriNode);
         }
 
-        [Fact]
+        [Test]
         public void GetUriNode_ShouldReturnIfUsedAsSubject()
         {
             // given
@@ -139,10 +139,10 @@ namespace VDS.RDF
             var uriNode = graph.GetUriNode(uri);
 
             // then
-            Assert.Same(node, uriNode);
+            Assert.ReferenceEquals(node, uriNode);
         }
 
-        [Fact]
+        [Test]
         public void GetUriNode_ShouldReturnNullWhenNotFound()
         {
             // given
@@ -155,7 +155,7 @@ namespace VDS.RDF
             Assert.Null(uriNode);
         }
 
-        [Fact]
+        [Test]
         public void GetBlankNode_ShouldReturnIfUsedAsSubject()
         {
             // given
@@ -170,10 +170,10 @@ namespace VDS.RDF
             var uriNode = graph.GetBlankNode("xyz");
 
             // then
-            Assert.Same(node, uriNode);
+            Assert.ReferenceEquals(node, uriNode);
         }
 
-        [Fact]
+        [Test]
         public void GetBlankNode_ShouldReturnIfUsedAsObject()
         {
             // given
@@ -188,10 +188,10 @@ namespace VDS.RDF
             var uriNode = graph.GetBlankNode("xyz");
 
             // then
-            Assert.Same(node, uriNode);
+            Assert.ReferenceEquals(node, uriNode);
         }
 
-        [Fact]
+        [Test]
         public void GetBlankNode_ShouldReturnNullWhenNotFound()
         {
             // given
@@ -204,7 +204,7 @@ namespace VDS.RDF
             Assert.Null(uriNode);
         }
 
-        [Fact]
+        [Test]
         public void GetLiteralNode_Plain_ShouldReturnWhenFound()
         {
             // given
@@ -220,10 +220,10 @@ namespace VDS.RDF
             var uriNode = graph.GetLiteralNode(literal);
 
             // then
-            Assert.Same(node, uriNode);
+            Assert.ReferenceEquals(node, uriNode);
         }
 
-        [Fact]
+        [Test]
         public void GetLiteralNode_WithLanguageTag_ShouldReturnWhenFound()
         {
             // given
@@ -240,10 +240,10 @@ namespace VDS.RDF
             var uriNode = graph.GetLiteralNode(literal, tag);
 
             // then
-            Assert.Same(node, uriNode);
+            Assert.ReferenceEquals(node, uriNode);
         }
 
-        [Fact]
+        [Test]
         public void GetLiteralNode_WithDatatype_ShouldReturnWhenFound()
         {
             // given
@@ -260,10 +260,10 @@ namespace VDS.RDF
             var uriNode = graph.GetLiteralNode(literal, type);
 
             // then
-            Assert.Same(node, uriNode);
+            Assert.ReferenceEquals(node, uriNode);
         }
 
-        [Fact]
+        [Test]
         public void GetLiteralNode_ShouldReturnNullWhenNotFound()
         {
             // given
@@ -289,7 +289,7 @@ namespace VDS.RDF
             return new Graph();
         }
 
-        [Fact]
+        [Test]
         public void GetUriNode_ShouldBeFastForLargeGraphs()
         {
             // given
@@ -315,7 +315,7 @@ namespace VDS.RDF
             Assert.True(total.TotalMilliseconds < 100);
         }
 
-        [Fact]
+        [Test]
         public void GetUriNode_WhenSelectedNodeIsNotInGraph_ShouldBeFastForLargeGraphs()
         {
             // given
@@ -341,7 +341,7 @@ namespace VDS.RDF
             Assert.True(total.TotalMilliseconds < 100);
         }
 
-        [Fact]
+        [Test]
         public void GetLiteralNode_ShouldBeFastForLargeGraphs()
         {
             // given
@@ -367,7 +367,7 @@ namespace VDS.RDF
             Assert.True(total.TotalMilliseconds < 100);
         }
 
-        [Fact]
+        [Test]
         public void GetLiteralNode_WhenSelectedNodeIsNotInGraph_ShouldBeFastForLargeGraphs()
         {
             // given
@@ -393,7 +393,7 @@ namespace VDS.RDF
             Assert.True(total.TotalMilliseconds < 100);
         }
 
-        [Fact]
+        [Test]
         public void GetBlankNode_ShouldBeFastForLargeGraphs()
         {
             // given
@@ -419,7 +419,7 @@ namespace VDS.RDF
             Assert.True(total.TotalMilliseconds < 100);
         }
 
-        [Fact]
+        [Test]
         public void GetBlankNode_WhenSelectedNodeIsNotInGraph_ShouldBeFastForLargeGraphs()
         {
             // given
