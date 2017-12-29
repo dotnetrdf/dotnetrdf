@@ -563,6 +563,11 @@ namespace VDS.RDF.Query.Builder
         VariableExpression Variable(string variable);
 
         /// <summary>
+        /// Creates a SPARQL variable
+        /// </summary>
+        VariableExpression Variable(SparqlVariable variable);
+
+        /// <summary>
         /// Creates a string constant 
         /// </summary>
         TypedLiteralExpression<string> Constant(string value);

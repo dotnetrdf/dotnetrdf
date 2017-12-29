@@ -52,10 +52,11 @@ namespace VDS.RDF.Query.Builder
         private readonly IList<Func<INamespaceMapper, ISparqlOrderBy>> _buildOrderings = new List<Func<INamespaceMapper, ISparqlOrderBy>>();
         private readonly IList<Func<INamespaceMapper, ISparqlGroupBy>> _buildGroups = new List<Func<INamespaceMapper, ISparqlGroupBy>>();
         private readonly IList<Func<INamespaceMapper, ISparqlExpression>> _buildHavings = new List<Func<INamespaceMapper, ISparqlExpression>>();
-        private readonly SparqlQueryType _sparqlQueryType;
         private int _queryLimit = -1;
         private int _queryOffset;
         private INamespaceMapper _prefixes = new NamespaceMapper(true);
+
+        public SparqlQueryType QueryType { get; private set; }
 
         /// <summary>
         /// Gets or sets the namespace mappings for the SPARQL query being built
@@ -66,7 +67,7 @@ namespace VDS.RDF.Query.Builder
             set { _prefixes = value; }
         }
 
-        internal GraphPatternBuilder RootGraphPatternBuilder
+        public GraphPatternBuilder RootGraphPatternBuilder
         {
             get { return _rootGraphPatternBuilder; }
         }
@@ -85,7 +86,7 @@ namespace VDS.RDF.Query.Builder
 
         private QueryBuilder(SparqlQueryType sparqlQueryType)
         {
-            _sparqlQueryType = sparqlQueryType;
+            QueryType = sparqlQueryType;
         }
 
         /// <summary>
@@ -221,11 +222,29 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
+        /// Adds ascending ordering by a variable to the query
+        /// </summary>
+        public IQueryBuilder OrderBy(SparqlVariable variable)
+        {
+            _buildOrderings.Add(prefixes => new OrderByVariable(variable.Name));
+            return this;
+        }
+
+        /// <summary>
         /// Adds descending ordering by a variable to the query
         /// </summary>
         public IQueryBuilder OrderByDescending(string variableName)
         {
             _buildOrderings.Add(prefixes => new OrderByVariable(variableName) { Descending = true });
+            return this;
+        }
+
+        /// <summary>
+        /// Adds descending ordering by a variable to the query
+        /// </summary>
+        public IQueryBuilder OrderByDescending(SparqlVariable variable)
+        {
+            _buildOrderings.Add(prefixes => new OrderByVariable(variable.Name) { Descending = true });
             return this;
         }
 
@@ -250,6 +269,12 @@ namespace VDS.RDF.Query.Builder
         public IQueryBuilder GroupBy(string variableName)
         {
             _buildGroups.Add(prefixes => new GroupByVariable(variableName));
+            return this;
+        }
+
+        public IQueryBuilder GroupBy(SparqlVariable variable)
+        {
+            _buildGroups.Add(prefixes => new GroupByVariable(variable.Name));
             return this;
         }
 
@@ -284,20 +309,20 @@ namespace VDS.RDF.Query.Builder
         public SparqlQuery BuildQuery()
         {
             SparqlQuery query = new SparqlQuery
-                {
-                    QueryType = _sparqlQueryType,
-                    Limit = _queryLimit,
-                    Offset = _queryOffset
-                };
+            {
+                QueryType = QueryType,
+                Limit = _queryLimit,
+                Offset = _queryOffset
+            };
 
-            switch (_sparqlQueryType)
+            switch (QueryType)
             {
                 case SparqlQueryType.Construct:
                     BuildConstructGraphPattern(query);
                     break;
                 case SparqlQueryType.Describe:
                 case SparqlQueryType.DescribeAll:
-                    BuildDecribeVariables(query);
+                    BuildDescribeVariables(query);
                     break;
                 case SparqlQueryType.Select:
                 case SparqlQueryType.SelectAll:
@@ -319,11 +344,12 @@ namespace VDS.RDF.Query.Builder
             return query;
         }
 
-        private void BuildDecribeVariables(SparqlQuery query)
+        private void BuildDescribeVariables(SparqlQuery query)
         {
             if (_describeBuilder == null) return;
 
             query.QueryType = _describeBuilder.SparqlQueryType;
+
             foreach (var describeVariable in _describeBuilder.DescribeVariables)
             {
                 query.AddDescribeVariable(describeVariable);
@@ -340,6 +366,7 @@ namespace VDS.RDF.Query.Builder
         private void BuildRootGraphPattern(SparqlQuery query)
         {
             var rootGraphPattern = RootGraphPatternBuilder.BuildGraphPattern(Prefixes);
+
             if (!rootGraphPattern.IsEmpty)
             {
                 query.RootGraphPattern = rootGraphPattern;
@@ -351,6 +378,7 @@ namespace VDS.RDF.Query.Builder
             if (_selectBuilder == null) return;
 
             query.QueryType = _selectBuilder.SparqlQueryType;
+
             foreach (SparqlVariable selectVariable in _selectBuilder.BuildVariables(Prefixes))
             {
                 query.AddVariable(selectVariable);
@@ -396,6 +424,7 @@ namespace VDS.RDF.Query.Builder
             {
                 orderings[i - 1].Child = orderings[i];
             }
+
             executableQuery.OrderBy = orderings.FirstOrDefault();
         }
 

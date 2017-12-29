@@ -54,6 +54,15 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
+        /// Sets a SPARQL variable as <see cref="IMatchTriplePattern.Predicate"/>
+        /// </summary>
+        public TriplePatternObjectPart Predicate(SparqlVariable variable)
+        {
+            var predicate = _triplePatternBuilder.PatternItemFactory.CreateVariablePattern(variable.Name);
+            return CreateTriplePatternObjectPart(predicate);
+        }
+
+        /// <summary>
         /// Sets a <see cref="PatternItem"/> as <see cref="IMatchTriplePattern.Predicate"/>
         /// </summary>
         public TriplePatternObjectPart Predicate(PatternItem predicate)

@@ -168,6 +168,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Query.FullText.Cl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.ClientProfile.Net35", "Libraries\core\net35-client\dotNetRDF.ClientProfile.Net35.csproj", "{5B3596B5-DB36-45B6-AC58-1B505E78FB86}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Net35", "Libraries\core\net35\dotNetRDF.Net35.csproj", "{C834D5A0-18DA-4206-BE86-C1CA59837DA8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Data.Virtuoso.Net35", "Libraries\Data\Virtuoso\net35\dotNetRDF.Data.Virtuoso.Net35.csproj", "{83B41E38-CD55-463D-A6C4-7D8B42CEA204}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

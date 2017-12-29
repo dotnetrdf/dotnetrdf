@@ -36,6 +36,19 @@ namespace VDS.RDF.Query.Builder
     public interface IGraphPatternBuilder
     {
         /// <summary>
+        /// Adds another child graph pattern builder.
+        /// </summary>
+        IGraphPatternBuilder Group(GraphPatternBuilder groupBuilder);
+        /// <summary>
+        /// Adds another child graph pattern builder.
+        /// </summary>
+        IGraphPatternBuilder Group(Action<IGraphPatternBuilder> buildTriplePatterns);
+        /// <summary>
+        /// Creates a UNION of multiple graph patterns. If <paramref name="unionedGraphPatternBuilders"/> is null or empty,
+        /// acts as a call to the <see cref="Child"/> method.
+        /// </summary>
+        IGraphPatternBuilder Union(GraphPatternBuilder firstGraphPattern, params GraphPatternBuilder[] unionedGraphPatternBuilders);
+        /// <summary>
         /// Creates a UNION of multiple graph patterns. If <paramref name="unionedGraphPatternBuilders"/> is null or empty,
         /// acts as a call to the <see cref="Child"/> method.
         /// </summary>
@@ -81,7 +94,15 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         IAssignmentVariableNamePart<IGraphPatternBuilder> Bind(Func<INonAggregateExpressionBuilder, PrimaryExpression<ISparqlExpression>> buildAssignmentExpression);
         /// <summary>
-        /// Addsa "normal" child graph pattern
+        /// Adds a "normal" child graph pattern
+        /// </summary>
+        IGraphPatternBuilder Child(IQueryBuilder queryBuilder);
+        /// <summary>
+        /// Adds a "normal" child graph pattern
+        /// </summary>
+        IGraphPatternBuilder Child(GraphPatternBuilder buildGraphPattern);
+        /// <summary>
+        /// Adds a "normal" child graph pattern
         /// </summary>
         IGraphPatternBuilder Child(Action<IGraphPatternBuilder> buildGraphPattern);
     }

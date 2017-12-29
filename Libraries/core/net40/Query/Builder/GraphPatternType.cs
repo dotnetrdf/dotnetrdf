@@ -25,7 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace VDS.RDF.Query.Builder
 {
-    internal enum GraphPatternType
+    public enum GraphPatternType
     {
         Normal,
         Optional,
