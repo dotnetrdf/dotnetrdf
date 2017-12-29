@@ -4721,8 +4721,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>IF not EXIST "$(ProjectDir)resources\UnitTestConfig.properties" copy "$(ProjectDir)resources\UnitTestConfig.template" "$(ProjectDir)resources\UnitTestConfig.properties"
-"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" disk "$(ProjectPath)"</PreBuildEvent>
+    <PreBuildEvent>IF not EXIST "$(ProjectDir)resources\UnitTestConfig.properties" copy "$(ProjectDir)resources\UnitTestConfig.template" "$(ProjectDir)resources\UnitTestConfig.properties"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
