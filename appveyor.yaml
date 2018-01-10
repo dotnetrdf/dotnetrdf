@@ -1,0 +1,27 @@
+image: Visual Studio 2015
+
+branches:
+  only:
+  - maintenance/1.x
+
+environment:
+  SHFBROOT:  C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\
+  SandCastleZipFile: SHFBInstaller.zip
+  SandCastleUri: https://github.com/EWSoftware/SHFB/releases/download/v2017.1.28.0/SHFBInstaller_v20171.28.0.zip
+  
+install:
+  - choco install gitversion.portable -pre -y
+  - ps: Start-FileDownload $env:SandCastleUri -FileName $env:SandCastleZipFile
+  - cmd: 7z x SHFBInstaller.zip -y
+  - ps: msiexec /i InstallResources\SandcastleHelpFileBuilder.msi /quiet /qn /norestart /log install.log
+
+
+before_build:
+  - dotnet restore dotNetRDF.sln
+  - ps: gitversion /l console /output buildserver /updateassemblyinfo
+
+configuration: Release
+
+build:
+  project: dotNetRDF.sln
+  verbosity: minimal
