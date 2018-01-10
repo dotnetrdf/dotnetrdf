@@ -120,7 +120,7 @@ namespace VDS.RDF
             var uriNode = graph.GetUriNode(uri);
 
             // then
-            Assert.ReferenceEquals(node, uriNode);
+            Assert.AreSame(node, uriNode);
         }
 
         [Test]
@@ -139,7 +139,7 @@ namespace VDS.RDF
             var uriNode = graph.GetUriNode(uri);
 
             // then
-            Assert.ReferenceEquals(node, uriNode);
+            Assert.AreSame(node, uriNode);
         }
 
         [Test]
@@ -170,7 +170,7 @@ namespace VDS.RDF
             var uriNode = graph.GetBlankNode("xyz");
 
             // then
-            Assert.ReferenceEquals(node, uriNode);
+            Assert.AreSame(node, uriNode);
         }
 
         [Test]
@@ -188,7 +188,7 @@ namespace VDS.RDF
             var uriNode = graph.GetBlankNode("xyz");
 
             // then
-            Assert.ReferenceEquals(node, uriNode);
+            Assert.AreSame(node, uriNode);
         }
 
         [Test]
@@ -220,7 +220,7 @@ namespace VDS.RDF
             var uriNode = graph.GetLiteralNode(literal);
 
             // then
-            Assert.ReferenceEquals(node, uriNode);
+            Assert.AreSame(node, uriNode);
         }
 
         [Test]
@@ -240,7 +240,7 @@ namespace VDS.RDF
             var uriNode = graph.GetLiteralNode(literal, tag);
 
             // then
-            Assert.ReferenceEquals(node, uriNode);
+            Assert.AreSame(node, uriNode);
         }
 
         [Test]
@@ -260,7 +260,7 @@ namespace VDS.RDF
             var uriNode = graph.GetLiteralNode(literal, type);
 
             // then
-            Assert.ReferenceEquals(node, uriNode);
+            Assert.AreSame(node, uriNode);
         }
 
         [Test]
