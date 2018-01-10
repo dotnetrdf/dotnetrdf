@@ -1,9 +1,5 @@
 image: Visual Studio 2015
 
-branches:
-  only:
-  - maintenance/1.x
-
 environment:
   SHFBROOT:  C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\
   SandCastleZipFile: SHFBInstaller.zip
