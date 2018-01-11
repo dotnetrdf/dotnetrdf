@@ -7,6 +7,7 @@ environment:
   
 install:
   - choco install gitversion.portable -pre -y
+  - choco install nant -pre -y
   - ps: Start-FileDownload $env:SandCastleUri -FileName $env:SandCastleZipFile
   - cmd: 7z x SHFBInstaller.zip -y
   - ps: msiexec /i InstallResources\SandcastleHelpFileBuilder.msi /quiet /qn /norestart /log install.log
@@ -21,3 +22,16 @@ configuration: Release
 build:
   project: dotNetRDF.sln
   verbosity: minimal
+  
+test:
+  categories:
+    only:
+      - Nothing
+
+after_build:
+  - nant -buildfile:Build\nant\dotnetrdf.build -D:dotnetrdf.version=%GitVersion_NuGetVersion% -D:dotnetrdf.nuspecversion=%GitVersion_NuGetVersion% no-compile dist-libs-stable dist-libs-nuget
+  
+artifacts:
+  - path: 'Build\nuget\**\*.nupkg'
+  - path: 'dotNetRDF_library_*.zip'
+    name: binaries
