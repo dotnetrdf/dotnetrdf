@@ -23,11 +23,6 @@ build:
   project: dotNetRDF.sln
   verbosity: minimal
   
-test:
-  categories:
-    only:
-      - Nothing
-
 after_build:
   cmd: |
     "%ProgramFiles(x86)%\nant-0.92\bin\nant" -buildfile:Build\nant\dotnetrdf.build -D:dotnetrdf.version=%GitVersion_NuGetVersion% -D:dotnetrdf.nuspecversion=%GitVersion_NuGetVersion% -D:dotnetrdf.buildversion=%GitVersion_AssemblySemVer% no-compile dist-libs-stable dist-libs-nuget
@@ -45,10 +40,10 @@ deploy:
       secure: j3GoyDavErTD91EcSTfNBbQyTc7tqpp+klmmz85xC4fjbE8Gl2brFjr8t3/Zzwmk
     on:
       appveyor_repo_tag: true 
-    artifact: Build\shfb\Help.zip, Build\shfb\Help\dotNetRDFApi.chm, /.*\.nupkg/
+    artifact: dotNetRDF_library_*.zip
   - provider: NuGet
     api_key:
       secure: URqGK+AnkTfy7Q36+5K2kNv2qpaI4ZOzjnRGry8tMiOMCtuqrwJWW/jSaEGhchuo
     on:
       appveyor_repo_tag: true 
-    artifact: /((?!Spin).)*.nupkg/
+    artifact: /*.nupkg/
