@@ -37,3 +37,18 @@ artifacts:
     name: NuGet Packages
   - path: 'dotNetRDF_library_*.zip'
     name: binaries
+
+deploy:
+  - provider: GitHub
+    description: 'dotNetRDF $(GitVersion_SemVer)'
+    auth_token:
+      secure: j3GoyDavErTD91EcSTfNBbQyTc7tqpp+klmmz85xC4fjbE8Gl2brFjr8t3/Zzwmk
+    on:
+      appveyor_repo_tag: true 
+    artifact: Build\shfb\Help.zip, Build\shfb\Help\dotNetRDFApi.chm, /.*\.nupkg/
+  - provider: NuGet
+    api_key:
+      secure: URqGK+AnkTfy7Q36+5K2kNv2qpaI4ZOzjnRGry8tMiOMCtuqrwJWW/jSaEGhchuo
+    on:
+      appveyor_repo_tag: true 
+    artifact: /((?!Spin).)*.nupkg/
