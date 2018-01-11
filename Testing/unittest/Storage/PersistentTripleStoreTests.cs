@@ -188,8 +188,8 @@ namespace VDS.RDF.Storage
         }
 
 
-        [Test]
 #if !NO_SYNC_HTTP
+        [Test]
         public void StoragePersistentTripleStoreFusekiGetGraph()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
@@ -209,7 +209,7 @@ namespace VDS.RDF.Storage
 
         #region Add Triples Tests
 
-        private void _TestAddTriplesFlushed(IStorageProvider manager)
+        private void TestAddTriplesFlushed(IStorageProvider manager)
         {
             this.EnsureGraphDeleted(manager, new Uri(TestGraphUri1));
             this.EnsureTestDataset(manager);
@@ -244,7 +244,7 @@ namespace VDS.RDF.Storage
         public void StoragePersistentTripleStoreMemAddTriplesFlushed()
         {
             InMemoryManager manager = new InMemoryManager();
-            this._TestAddTriplesFlushed(manager);
+            this.TestAddTriplesFlushed(manager);
         }
 
 #if !NO_SYNC_HTTP
@@ -252,7 +252,7 @@ namespace VDS.RDF.Storage
         public void StoragePersistentTripleStoreFusekiAddTriplesFlushed()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
-            this._TestAddTriplesFlushed(fuseki);
+            this.TestAddTriplesFlushed(fuseki);
         }
 #endif
 
@@ -261,7 +261,7 @@ namespace VDS.RDF.Storage
         public void StoragePersistentTripleStoreVirtuosoAddTriplesFlushed()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this._TestAddTriplesFlushed(virtuoso);
+            this.TestAddTriplesFlushed(virtuoso);
         }
 #endif
 
