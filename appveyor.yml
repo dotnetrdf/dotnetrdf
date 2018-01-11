@@ -30,7 +30,7 @@ test:
 
 after_build:
   cmd: |
-    "%ProgramFiles(x86)%\nant-0.92\bin\nant" -buildfile:Build\nant\dotnetrdf.build -D:dotnetrdf.version=%GitVersion_NuGetVersion% -D:dotnetrdf.nuspecversion=%GitVersion_NuGetVersion% no-compile dist-libs-stable dist-libs-nuget
+    "%ProgramFiles(x86)%\nant-0.92\bin\nant" -buildfile:Build\nant\dotnetrdf.build -D:dotnetrdf.version=%GitVersion_NuGetVersion% -D:dotnetrdf.nuspecversion=%GitVersion_NuGetVersion% -D:dotnetrdf.buildversion=%GitVersion_AssemblySemVer% no-compile dist-libs-stable dist-libs-nuget
   
 artifacts:
   - path: 'Build\nuget\**\*.nupkg'
