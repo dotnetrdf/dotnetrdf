@@ -2,7 +2,7 @@ image: Visual Studio 2017
 
 branches:
   except:
-    - maintenance/1.x
+  - maintenance/1.x
 
 environment:
   SHFBROOT:  C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\
