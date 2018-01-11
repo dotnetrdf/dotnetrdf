@@ -33,5 +33,6 @@ after_build:
   
 artifacts:
   - path: 'Build\nuget\**\*.nupkg'
+    name: NuGet Packages
   - path: 'dotNetRDF_library_*.zip'
     name: binaries
