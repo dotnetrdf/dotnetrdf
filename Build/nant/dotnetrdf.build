@@ -32,10 +32,10 @@
 
   <!-- Version Properties -->
   <!-- When generating ZIP files with the dist targets use the command line -d option to set these appropriately -->
-  <property name="dotnetrdf.version" value="1013" /> <!-- Version number used for dotNetRDF Library release ZIPs -->
-  <property name="dotnetrdf.toolsversion" value="1013" /> <!-- Version number used for dotNetRDF Toolkit release ZIPs -->
-  <property name="dotnetrdf.nuspecversion" value="1.0.13-pre8" /> <!-- Version number passed to NuGet for packaging -->
-  <property name="dotnetrdf.buildversion" value="1.0.13.0" /> <!-- Version number expected to be set for Assembly versions, used for pre-release validation -->
+  <property name="dotnetrdf.version" value="1013" readonly="false" /> <!-- Version number used for dotNetRDF Library release ZIPs -->
+  <property name="dotnetrdf.toolsversion" value="1013"  readonly="false" /> <!-- Version number used for dotNetRDF Toolkit release ZIPs -->
+  <property name="dotnetrdf.nuspecversion" value="1.0.13-pre8" readonly="false"/> <!-- Version number passed to NuGet for packaging -->
+  <property name="dotnetrdf.buildversion" value="1.0.13.0" readonly="false"/> <!-- Version number expected to be set for Assembly versions, used for pre-release validation -->
 
   <!-- Note that FTP credentials are not included in the file for obvious reasons -->
   <!-- If you want to use the upload targets then use the command line -d option to set these appropriately -->
