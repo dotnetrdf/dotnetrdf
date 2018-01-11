@@ -113,6 +113,7 @@ namespace VDS.RDF
 
 #if !SILVERLIGHT
         [Test]
+        [Ignore("Remote configuration file no longer available")]
         public void GraphCollectionWebDemand1()
         {
             TripleStore store = new TripleStore(new WebDemandGraphCollection());
@@ -126,6 +127,7 @@ namespace VDS.RDF
         }
 
         [Test]
+        [Ignore("Remote configuration file no longer available")]
         public void GraphCollectionWebDemand2()
         {
             //Test that on-demand loading does not kick in for pre-existing graphs

@@ -433,6 +433,7 @@ namespace VDS.RDF.Parsing
 #if !PORTABLE
 
         [Test]
+        [Ignore("Remote configuration file no longer available")]
         public void ParsingTextReaderBlockingNetworkStreamNotation3()
         {
             int defaultTimeout = Options.UriLoaderTimeout;
@@ -454,6 +455,7 @@ namespace VDS.RDF.Parsing
         }
 
         [Test]
+        [Ignore("Remote configuration file no longer available")]
         public void ParsingTextReaderBlockingNetworkStreamNTriples()
         {
             try
@@ -472,6 +474,7 @@ namespace VDS.RDF.Parsing
         }
 
         [Test]
+        [Ignore("Remote configuration file no longer available")]
         public void ParsingTextReaderBlockingNetworkStreamTurtle()
         {
             try
@@ -490,6 +493,7 @@ namespace VDS.RDF.Parsing
         }
 
         [Test]
+        [Ignore("Remote configuration file no longer available")]
         public void ParsingTextReaderBlockingNetworkStreamRdfJson()
         {
             try

@@ -40,6 +40,7 @@ namespace VDS.RDF.Update
 
 #if !SILVERLIGHT // LOAD not supported
         [Test]
+        [Ignore("Remote configuration file no longer available")]
         public void SparqlUpdateTimeout()
         {
             String update = "CREATE GRAPH <http://example.org/1>; LOAD <http://www.dotnetrdf.org/configuration#>; CREATE GRAPH <http://example.org/2>";

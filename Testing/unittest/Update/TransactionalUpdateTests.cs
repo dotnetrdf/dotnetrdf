@@ -504,12 +504,14 @@ namespace VDS.RDF.Update
 
 #if !SILVERLIGHT // LOAD not supported under SILVERLIGHT
         [Test]
+        [Ignore("Remote configuration file no longer available")]
         public void SparqlUpdateTransactionsLoadCommit()
         {
             TestLoadCommit();
         }
 
         [Test]
+        [Ignore("Remote configuration file no longer available")]
         public void SparqlUpdateTransactionsLoadRollback()
         {
             TestLoadRollback();

@@ -41,6 +41,7 @@ namespace VDS.RDF.Parsing.Handlers
 #if !PORTABLE
 
         [Test]
+        [Ignore("Remote configuration file no longer available")]
         public void ParsingUriLoaderGraphHandlerImplicit()
         {
             Graph g = new Graph();
@@ -51,6 +52,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         [Test]
+        [Ignore("Remote configuration file no longer available")]
         public void ParsingUriLoaderGraphHandlerExplicit()
         {
             Graph g = new Graph();
