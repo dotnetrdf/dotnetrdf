@@ -1195,6 +1195,7 @@ namespace VDS.RDF.Storage
 
 #if !SILVERLIGHT // SPARQL LOAD command not supported
         [Test]
+        [Ignore("Test is currently failing because the remote resource used does not return valid RDF/JSON")]
         public void StoragePersistentTripleStoreMemUpdate()
         {
             InMemoryManager manager = new InMemoryManager();
