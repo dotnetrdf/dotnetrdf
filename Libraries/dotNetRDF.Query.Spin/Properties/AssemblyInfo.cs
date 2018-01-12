@@ -48,7 +48,6 @@ using System.Runtime.InteropServices;
 // Version information is managed by GitVersion
 [assembly: AssemblyVersion("0.0.0.0")]
 [assembly: AssemblyFileVersion("0.0.0.0")]
-[assembly: AssemblyInformationalVersion("")]
 
 
 
