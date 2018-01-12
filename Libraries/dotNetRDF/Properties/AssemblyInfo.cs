@@ -1,4 +1,4 @@
-/*
+﻿/*
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
@@ -31,12 +31,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("dotNetRDF.Core")]
+[assembly: AssemblyTitle("dotNetRDF Core")]
 [assembly: AssemblyDescription("API for manipulating RDF data")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Visual Design Studios")]
-[assembly: AssemblyProduct("dotNetRDF.Core")]
-[assembly: AssemblyCopyright("Copyright © dotNetRDF Project 2009-2017")]
+[assembly: AssemblyProduct("dotNetRDF")]
+[assembly: AssemblyCopyright("Copyright © dotNetRDF Project 2009-2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -48,14 +47,9 @@ using System.Runtime.InteropServices;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("39beeb2e-f86b-46ef-a4c1-c91d5f3fe432")]
 
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version 
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Build and Revision Numbers 
-// by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.13.0")]
 [assembly: InternalsVisibleTo("dotNetRDF.Test, PublicKey=0024000004800000940000000602000000240000525341310004000001000100d9118ebaf78c95309b80c81fe948290c8bd462fca5fc60d4f1a291bc32406feac610f9955f9bdb535f0a4b0609b06805f51b20a36703443546528f0fa27c1b63dce6133dec56f63d950ccfa059d7fe02270ee293da1a95228a15c414a89143962a03e3f48c1a42eaa09254403a1edd764980bc55bab37cf8908f1faadf4ae1b9")]
+
+// Version information is managed by GitVersion
+[assembly: AssemblyVersion("0.0.0.0")]
+[assembly: AssemblyFileVersion("0.0.0.0")]
+[assembly: AssemblyInformationalVersion("")]

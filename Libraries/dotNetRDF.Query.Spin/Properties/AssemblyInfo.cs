@@ -1,4 +1,4 @@
-/*
+﻿/*
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
@@ -25,7 +25,6 @@
 */
 
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
@@ -33,10 +32,8 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("dotNetRDF SPIN")]
 [assembly: AssemblyDescription("A library which provides a full SPIN implementation using dotNetRDF's Leviathan SPARQL engine")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Visual Design Studios")]
 [assembly: AssemblyProduct("dotNetRDF.Query.SPIN")]
-[assembly: AssemblyCopyright("Copyright © Robert Vesse 2010")]
+[assembly: AssemblyCopyright("Copyright © dotNetRDF Project 2010-2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -48,21 +45,9 @@ using System.Runtime.InteropServices;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("e2b905e0-5527-4bc8-8011-5413744bb1c6")]
 
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version 
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Build and Revision Numbers 
-// by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.13.0")]
-[assembly: AssemblyVersion("1.0.13.0")]
-[assembly: AssemblyFileVersion("1.0.13.0")]
-
-//TODO: Remove once finished
-//[assembly: InternalsVisibleTo("spin-tests")]
+// Version information is managed by GitVersion
+[assembly: AssemblyVersion("0.0.0.0")]
+[assembly: AssemblyFileVersion("0.0.0.0")]
 
 
 
@@ -88,8 +73,4 @@ using System.Runtime.InteropServices;
 
 
 
-
-
-
-
-
+[assembly: AssemblyInformationalVersion("2.0.1+5.Branch.master.Sha.2b2692866fdc3f3bb5bc6f318ab2f93abcc1a689")]
