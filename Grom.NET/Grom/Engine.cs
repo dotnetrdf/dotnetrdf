@@ -11,6 +11,7 @@
         private readonly IGraph graph;
         internal Uri prefix;
 
+        // TODO: Treat insance uri and schema uri separately?
         public Engine(IGraph graph, Uri prefix) : this(graph)
         {
             this.prefix = prefix;

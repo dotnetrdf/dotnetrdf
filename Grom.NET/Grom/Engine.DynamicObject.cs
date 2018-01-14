@@ -26,6 +26,7 @@
             var indexObject = indexes[0];
 
             // TODO: also support int?
+            // TODO: support qnames?
             if (!(indexObject is INode indexNode))
             {
                 if (!(indexObject is Uri indexUri))

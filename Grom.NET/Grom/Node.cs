@@ -18,16 +18,13 @@
 
         private object Convert(INode tripleObject)
         {
+            var valuedNode = tripleObject.AsValuedNode();
 
-
-
-            switch (tripleObject.AsValuedNode())
+            switch (valuedNode)
             {
                 case IUriNode uriNode:
-                    return this.context.GetByNode(uriNode);
-
                 case IBlankNode blankNode:
-                    return this.context.GetByNode(blankNode);
+                    return this.context.GetByNode(valuedNode);
 
                 case StringNode stringNode:
                     return stringNode.AsString();
@@ -43,9 +40,6 @@
 
                 case BooleanNode booleanNode:
                     return booleanNode.AsBoolean();
-
-                case DateNode dateNode:
-                    return dateNode.AsDateTimeOffset();
 
                 case DateTimeNode dateTimeNode:
                     return dateTimeNode.AsDateTimeOffset();
