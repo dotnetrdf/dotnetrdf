@@ -286,7 +286,7 @@
                 dynamic s1 = engine.s1;
                 dynamic p1 = s1.p1[0];
 
-                Assert.IsInstanceOfType(p1, typeof(int));
+                Assert.IsInstanceOfType(p1, typeof(long));
             }
         }
 
@@ -418,7 +418,7 @@
                 dynamic s1 = engine.s1;
                 dynamic p1 = s1.p1[0];
 
-                Assert.IsInstanceOfType(p1, typeof(int));
+                Assert.IsInstanceOfType(p1, typeof(long));
             }
         }
 
@@ -446,7 +446,7 @@
         }
 
         [TestMethod]
-        public void Decimal_is_correct_type()
+        public void Correct_type_for_decimal()
         {
             var turtle = @"
 @prefix : <http://example.com/> .
@@ -519,6 +519,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 :s1 :p1 ""01-01-1900""^^xsd:date.
+:s1 :p2 ""01-01-1900""^^xsd:dateTime.
 ";
 
             using (var graph = new Graph())
@@ -529,8 +530,10 @@
 
                 dynamic s1 = engine.s1;
                 dynamic p1 = s1.p1[0];
+                dynamic p2 = s1.p2[0];
 
-                Assert.IsInstanceOfType(p1, typeof(DateTime));
+                Assert.IsInstanceOfType(p1, typeof(DateTimeOffset));
+                Assert.IsInstanceOfType(p2, typeof(DateTimeOffset));
             }
         }
     }
