@@ -28,24 +28,12 @@
             var indexObject = indexes[0];
 
             // TODO: also support int?
-            INode indexNode;
-            if (indexObject is INode)
+            if (!(indexObject is INode indexNode))
             {
-                indexNode = indexObject as INode;
-            }
-            else
-            {
-                Uri indexUri;
-                if (indexObject is Uri)
+                if (!(indexObject is Uri indexUri))
                 {
-                    indexUri = indexObject as Uri;
-                }
-                else
-                {
-                    if (indexObject is string)
+                    if (indexObject is string indexString)
                     {
-                        var indexString = indexObject as string;
-
                         if (!Uri.TryCreate(indexString, UriKind.Absolute, out indexUri))
                         {
                             throw new FormatException("Illegal Uri.");

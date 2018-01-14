@@ -22,10 +22,8 @@
                 return this.context.GetByNode(tripleObject);
             }
 
-            if (tripleObject.NodeType == NodeType.Literal)
+            if (tripleObject is ILiteralNode literalObject)
             {
-                var literalObject = tripleObject as ILiteralNode;
-
                 if (literalObject.DataType != null)
                 {
                     var dataType = literalObject.DataType.ToString();
@@ -33,8 +31,7 @@
                     // See https://www.w3.org/TR/xmlschema-2/#built-in-datatypes
                     if (dataType == "http://www.w3.org/2001/XMLSchema#int" || dataType == "http://www.w3.org/2001/XMLSchema#integer")
                     {
-                        int literalResult;
-                        if (int.TryParse(literalObject.Value, out literalResult))
+                        if (int.TryParse(literalObject.Value, out int literalResult))
                         {
                             return literalResult;
                         }
@@ -42,8 +39,7 @@
 
                     if (dataType == "http://www.w3.org/2001/XMLSchema#long")
                     {
-                        long literalResult;
-                        if (long.TryParse(literalObject.Value, out literalResult))
+                        if (long.TryParse(literalObject.Value, out long literalResult))
                         {
                             return literalResult;
                         }
@@ -51,8 +47,7 @@
 
                     if (dataType == "http://www.w3.org/2001/XMLSchema#decimal")
                     {
-                        decimal literalResult;
-                        if (decimal.TryParse(literalObject.Value, out literalResult))
+                        if (decimal.TryParse(literalObject.Value, out decimal literalResult))
                         {
                             return literalResult;
                         }
@@ -60,8 +55,7 @@
 
                     if (dataType == "http://www.w3.org/2001/XMLSchema#double")
                     {
-                        double literalResult;
-                        if (double.TryParse(literalObject.Value, out literalResult))
+                        if (double.TryParse(literalObject.Value, out double literalResult))
                         {
                             return literalResult;
                         }
@@ -69,8 +63,7 @@
 
                     if (dataType == "http://www.w3.org/2001/XMLSchema#boolean")
                     {
-                        bool literalResult;
-                        if (bool.TryParse(literalObject.Value, out literalResult))
+                        if (bool.TryParse(literalObject.Value, out bool literalResult))
                         {
                             return literalResult;
                         }
@@ -78,8 +71,7 @@
 
                     if (dataType == "http://www.w3.org/2001/XMLSchema#date")
                     {
-                        DateTime literalResult;
-                        if (DateTime.TryParse(literalObject.Value, out literalResult))
+                        if (DateTime.TryParse(literalObject.Value, out DateTime literalResult))
                         {
                             return literalResult;
                         }
