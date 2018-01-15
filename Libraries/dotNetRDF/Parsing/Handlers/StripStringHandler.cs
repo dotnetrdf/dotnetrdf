@@ -51,8 +51,8 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         protected override bool HandleTripleInternal(Triple t)
         {
-            if (t.Object is ILiteralNode literal && literal.DataType == DataTypeString)
-                t = new Triple(t.Subject, t.Predicate, CreateLiteralNode(literal.Value));
+            if (t.Object is ILiteralNode literal && EqualityHelper.AreUrisEqual(literal.DataType, DataTypeString))
+                t = new Triple(t.Subject, t.Predicate, t.Graph.CreateLiteralNode(literal.Value));
 
             return _handler.HandleTriple(t);
         }

@@ -59,6 +59,48 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.False(diff.AreEqual, "Graphs should be different.");
         }
 
+        [Fact]
+        public void WorksWithApply()
+        {
+            var originalRDF = "<http://example.com/subject> <http://example.com/predicate> \"object\"^^<http://www.w3.org/2001/XMLSchema#string>.";
+            var referenceRDF = "<http://example.com/subject> <http://example.com/predicate> \"object\".";
+
+            using (var originalGraph = new Graph())
+            {
+                originalGraph.LoadFromString(originalRDF);
+
+                using (var resultGraph = new Graph())
+                {
+                    new StripStringHandler(new GraphHandler(resultGraph)).Apply(originalGraph);
+
+                    using (var referenceGraph = new Graph())
+                    {
+                        referenceGraph.LoadFromString(referenceRDF);
+
+                        Assert.True(resultGraph.Difference(referenceGraph).AreEqual, "Graphs should be equal.");
+                    }
+                }
+            }
+        }
+
+        [Fact]
+        public void DoesntConfuseFragmentUris()
+        {
+            var originalRDF = "<http://example.com/subject> <http://example.com/predicate> \"0\"^^<http://www.w3.org/2001/XMLSchema#integer>.";
+
+            using (var originalGraph = new Graph())
+            {
+                originalGraph.LoadFromString(originalRDF);
+
+                using (var resultGraph = new Graph())
+                {
+                    new StripStringHandler(new GraphHandler(resultGraph)).Apply(originalGraph);
+
+                    Assert.True(resultGraph.Difference(originalGraph).AreEqual, "Graphs should be equal.");
+                }
+            }
+        }
+
         private static IGraph Load(string source)
         {
             var result = new Graph();
