@@ -11,19 +11,19 @@ dotNetRDF is licensed under the MIT License, see the LICENSE.txt file in this re
 
 The easiest way to get dotNetRDF is via NuGet. We provide the following packages:
 
-	- **dotNetRDF** - contains the core libraries. This includes support for reading and writing RDF; and for managing and querying RDF data in-memory.
-	- **dotNetRDF.Data.DataTables** - a package which integrates RDF data with System.Data.DataTable
-	- **dotNetRDF.Data.Virtuoso** - provides support for using OpenLink Virtuoso as a backend store with dotNetRDF.
-	- **dotNetRDF.Query.FullText** - provides a full-text query plugin for dotNetRDF's Leviathan SPARQL query engine. The text indexing is provided by Lucene.
-	- **dotNetRDF.Query.Spin** - provides an implementation of [SPIN](http://spinrdf.org/) using dotNetRDF's Leviathan SPARQL query engine.
-	- **dotNetRDF.Web** - provides a framework for hosting RDF data in an IIS web application. This includes implementations of the SPARQL Protocol and SPARQL Graph Store Protocol.
+- **dotNetRDF** - contains the core libraries. This includes support for reading and writing RDF; and for managing and querying RDF data in-memory.
+- **dotNetRDF.Data.DataTables** - a package which integrates RDF data with System.Data.DataTable
+- **dotNetRDF.Data.Virtuoso** - provides support for using OpenLink Virtuoso as a backend store with dotNetRDF.
+- **dotNetRDF.Query.FullText** - provides a full-text query plugin for dotNetRDF's Leviathan SPARQL query engine. The text indexing is provided by Lucene.
+- **dotNetRDF.Query.Spin** - provides an implementation of [SPIN](http://spinrdf.org/) using dotNetRDF's Leviathan SPARQL query engine.
+- **dotNetRDF.Web** - provides a framework for hosting RDF data in an IIS web application. This includes implementations of the SPARQL Protocol and SPARQL Graph Store Protocol.
 
 We currently provide support for the following .NET frameworks:
 
-	- .NET 4.0
-	- .NET 4.0 Client Profile
-	- .NET Standard 1.4
-	- .NET Standard 2.0
+- .NET 4.0
+- .NET 4.0 Client Profile
+- .NET Standard 1.4
+- .NET Standard 2.0
 	
 ## Read The Docs!
 
