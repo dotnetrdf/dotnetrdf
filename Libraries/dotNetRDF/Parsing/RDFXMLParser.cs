@@ -657,7 +657,8 @@ namespace VDS.RDF.Parsing
             {
                 if (RdfXmlSpecsHelper.IsPropertyAttribute(attr))
                 {
-                    if (attr.QName.Equals("rdf:type"))
+                    if (attr.Namespace.Equals(NamespaceMapper.RDF) && attr.LocalName.Equals("type"))
+                    //if (attr.QName.Equals("rdf:type"))
                     {
                         // Generate a Type Triple
                         pred = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
@@ -789,7 +790,7 @@ namespace VDS.RDF.Parsing
             }
 
             // List Expansion
-            if (element.QName.Equals("rdf:li"))
+            if (element.Namespace.Equals(NamespaceMapper.RDF) && element.LocalName.Equals("li"))
             {
                 UriReferenceEvent u = ListExpand(parent);
                 element.SetUri(u);
