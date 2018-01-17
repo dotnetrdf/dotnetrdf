@@ -29,8 +29,8 @@ We currently provide support for the following .NET frameworks:
 
 To get started with using dotNetRDF you may want to check out the following resources:
 
- - [User Guide][https://github.com/dotnetrdf/dotnetrdf/wiki/UserGuide] - Series of articles detailing how to use various features of the library
- - [Developer Guide][https://github.com/dotnetrdf/dotnetrdf/wiki/DeveloperGuide] - Some advanced documentation
+ - [User Guide](https://github.com/dotnetrdf/dotnetrdf/wiki/UserGuide) - Series of articles detailing how to use various features of the library
+ - [Developer Guide](https://github.com/dotnetrdf/dotnetrdf/wiki/DeveloperGuide) - Some advanced documentation
 
 ## Asking Questions and Reporting Bugs
 
