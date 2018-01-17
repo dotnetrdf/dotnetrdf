@@ -1785,6 +1785,8 @@ namespace VDS.RDF.Parsing
             try
             {
                 if (baseUri.Equals(String.Empty)) baseUri = context.BaseUri.ToSafeString();
+                if (string.Empty.Equals(uriref.Identifier))
+                    baseUri = Tools.StripUriFragment(UriFactory.Create(baseUri)).ToSafeString();
                 IUriNode u = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(uriref.Identifier, baseUri)));
                 return u;
             }

@@ -200,5 +200,25 @@ namespace VDS.RDF.Parsing
             Assert.Single(g.GetTriplesWithSubjectPredicate(resourceNode, p1Node));
             Assert.Single(g.GetTriplesWithSubjectPredicate(resourceNode, p2Node));
         }
+
+	    [Fact]
+	    public void EmptySameDocumentReferenceResolvesAgainstUriPartOfBaseUri()
+	    {
+	        var rdfXml1 = "<rdf:RDF xml:base='http://example.org#fragment' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:eg='http://example.org/'><eg:type rdf:about='' /></rdf:RDF>";
+	        var rdfXml2 = "<rdf:RDF xml:base='http://example.org' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:eg='http://example.org/'><eg:type rdf:about='' /></rdf:RDF>";
+
+	        var parser = new RdfXmlParser();
+
+	        var graph1 = new Graph();
+	        graph1.LoadFromString(rdfXml1, parser);
+
+	        var graph2 = new Graph();
+	        graph2.LoadFromString(rdfXml2, parser);
+
+	        var diff = graph1.Difference(graph2);
+
+	        Assert.True(diff.AreEqual);
+        }
+
 	}
 }
