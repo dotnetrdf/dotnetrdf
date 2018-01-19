@@ -268,5 +268,24 @@ namespace VDS.RDF.Parsing
 	        Assert.True(diff12.AreEqual);
 	        Assert.True(diff13.AreEqual);
         }
+
+        [Fact]
+        public void ItHandlesRdfParseTypeRegardlessOfNamespacePrefix()
+        {
+            var rdfXml1 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:eg='http://example.org/'><eg:Example rdf:about='http://example.org/#us'><eg:prop rdf:parseType='Literal'/><eg:Value /></eg:Example></rdf:RDF>";
+            var rdfXml2 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:eg='http://example.org/'><eg:Example rdf:about='http://example.org/#us'><eg:prop  xx:parseType='Literal' xmlns:xx='http://www.w3.org/1999/02/22-rdf-syntax-ns#'/><eg:Value /></eg:Example></rdf:RDF>";
+
+            var parser = new RdfXmlParser();
+
+            var graph1 = new Graph();
+            graph1.LoadFromString(rdfXml1, parser);
+
+            var graph2 = new Graph();
+            graph2.LoadFromString(rdfXml2, parser);
+
+            var diff12 = graph1.Difference(graph2);
+
+            Assert.True(diff12.AreEqual);
+        }
     }
 }

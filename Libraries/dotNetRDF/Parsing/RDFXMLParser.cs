@@ -1131,7 +1131,7 @@ namespace VDS.RDF.Parsing
                     {
                         ID = "#" + a.Value;
                     }
-                    else if (a.QName.Equals("rdf:parseType"))
+                    else if (a.Namespace.Equals(NamespaceMapper.RDF) && a.LocalName.Equals("parseType"))
                     {
                         // OK
                     }
@@ -1235,7 +1235,7 @@ namespace VDS.RDF.Parsing
                     {
                         ID = "#" + a.Value;
                     }
-                    else if (a.QName.Equals("rdf:parseType"))
+                    else if (a.Namespace.Equals(NamespaceMapper.RDF) && a.LocalName.Equals("parseType"))
                     {
                         // OK
                     }
@@ -1369,7 +1369,7 @@ namespace VDS.RDF.Parsing
                     {
                         ID = "#" + a.Value;
                     }
-                    else if (a.QName.Equals("rdf:parseType"))
+                    else if (a.Namespace.Equals(NamespaceMapper.RDF) && a.LocalName.Equals("parseType"))
                     {
                         // OK
                     }
