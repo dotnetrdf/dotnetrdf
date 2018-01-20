@@ -348,7 +348,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                     else if (attr is ParseTypeAttributeEvent)
                     {
                         el.ParseType = ((ParseTypeAttributeEvent)attr).ParseType;
-                        el.Attributes.Add(new AttributeEvent(_reader.Name, _reader.Value, _reader.Value, GetPosition()));
+                        el.Attributes.Add(new AttributeEvent( _reader.LocalName, _reader.NamespaceURI, _reader.Value, _reader.Value, GetPosition()));
                     }
                     else if (attr is XmlBaseAttributeEvent)
                     {
