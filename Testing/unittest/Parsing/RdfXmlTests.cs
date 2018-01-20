@@ -287,5 +287,31 @@ namespace VDS.RDF.Parsing
 
             Assert.True(diff12.AreEqual);
         }
+
+	    [Fact]
+	    public void ItHandlesRdfDescriptionRegardessOfNamespacePrefix()
+	    {
+	        var rdfXml1 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:ex='http://example.org/'><rdf:Description rdf:about='http://example.org/#us'><ex:property rdf:Resource='http://example.org/object'/></rdf:Description></rdf:RDF>";
+	        var rdfXml2 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:ex='http://example.org/'><foo:Description rdf:about='http://example.org/#us' xmlns:foo='http://www.w3.org/1999/02/22-rdf-syntax-ns#'><ex:property rdf:Resource='http://example.org/object' xmlns:ex='http://example.org/'/></foo:Description></rdf:RDF>";
+	        var rdfXml3 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:ex='http://example.org/'><Description     rdf:about='http://example.org/#us' xmlns='http://www.w3.org/1999/02/22-rdf-syntax-ns#'><ex:property rdf:Resource='http://example.org/object'/></Description></rdf:RDF>";
+
+	        var parser = new RdfXmlParser();
+
+	        var graph1 = new Graph();
+	        graph1.LoadFromString(rdfXml1, parser);
+
+	        var graph2 = new Graph();
+	        graph2.LoadFromString(rdfXml2, parser);
+
+	        var graph3 = new Graph();
+	        graph3.LoadFromString(rdfXml3, parser);
+
+	        var diff12 = graph1.Difference(graph2);
+	        var diff13 = graph1.Difference(graph3);
+
+	        Assert.True(diff12.AreEqual);
+	        Assert.True(diff13.AreEqual);
+
+        }
     }
 }
