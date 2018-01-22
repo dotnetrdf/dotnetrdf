@@ -1,8 +1,6 @@
-﻿using System;
+﻿using FluentAssertions;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using FluentAssertions;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 using Xunit;
@@ -69,7 +67,7 @@ namespace VDS.RDF.JsonLd
 
         [Theory]
         [MemberData(nameof(DateTimeValues))]
-        public void DateTimeHandlingDiff(string dateTimeValue, string datatype)
+        public void RoundtripsDatetimeLiteralsInDiff(string dateTimeValue, string datatype)
         {
             using (var original = new TripleStore())
             {
@@ -86,7 +84,7 @@ namespace VDS.RDF.JsonLd
 
         [Theory]
         [MemberData(nameof(DateTimeValues))]
-        public void DateTimeHandling(string dateTimeValue, string datatype)
+        public void RoundtripsDatetimeLiterals(string dateTimeValue, string datatype)
         {
             using (var store = new TripleStore())
             {
