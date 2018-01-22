@@ -68,7 +68,7 @@ namespace VDS.RDF.JsonLd
         }
 
         [Theory]
-        [MemberData(nameof(DateTimeValues), DisableDiscoveryEnumeration = false)]
+        [MemberData(nameof(DateTimeValues))]
         public void DateTimeHandlingDiff(string dateTimeValue, string datatype)
         {
             using (var original = new TripleStore())
@@ -85,7 +85,7 @@ namespace VDS.RDF.JsonLd
         }
 
         [Theory]
-        [MemberData(nameof(DateTimeValues), DisableDiscoveryEnumeration = false)]
+        [MemberData(nameof(DateTimeValues))]
         public void DateTimeHandling(string dateTimeValue, string datatype)
         {
             using (var store = new TripleStore())
