@@ -1,6 +1,8 @@
 ﻿using FluentAssertions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 using Xunit;
@@ -102,6 +104,34 @@ namespace VDS.RDF.JsonLd
 
                 Assert.Equal(dateTimeValue, result.Value);
                 Assert.Equal(datatype, result.DataType.AbsoluteUri);
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(DateTimeValues))]
+        public void RoundtripsDatetimeTypedLiterals(string dateTimeValue, string datatype)
+        {
+            var isValidDateTime = DateTime.TryParse(dateTimeValue, out DateTime parsedDateTime);
+            var isDateTimeDatatype = datatype == XmlSpecsHelper.XmlSchemaDataTypeDateTime;
+
+            if (isValidDateTime && isDateTimeDatatype)
+            {
+                using (var store = new TripleStore())
+                {
+                    var jsonLd = $@"
+{{
+    ""http://example.com/1"": {{
+        ""@type"": ""{datatype}"",
+        ""@value"": ""{dateTimeValue}""
+    }}
+}}
+";
+                    store.LoadFromString(jsonLd, new JsonLdParser());
+
+                    var result = store.Graphs.Single().Triples.Single().Object.AsValuedNode().AsDateTime();
+
+                    Assert.Equal(parsedDateTime, result);
+                }
             }
         }
     }
