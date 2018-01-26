@@ -31,11 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Grom\Engine.cs" />
-    <Compile Include="Grom\Engine.DynamicObject.cs" />
-    <Compile Include="Grom\Engine.IEnumerable.cs" />
-    <Compile Include="Grom\Node.DynamicObject.cs" />
-    <Compile Include="Grom\Node.cs" />
+    <Compile Include="Grom\GraphWrapper.cs" />
+    <Compile Include="Grom\Helper.cs" />
+    <Compile Include="Grom\NodeWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

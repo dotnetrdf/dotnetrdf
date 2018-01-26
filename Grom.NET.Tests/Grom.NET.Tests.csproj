@@ -73,8 +73,11 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="Grom\NodeTests.cs" />
-    <Compile Include="Grom\EngineTests.cs" />
+    <Compile Include="Grom\Data.cs" />
+    <Compile Include="Grom\DynamicNodeTests.cs" />
+    <Compile Include="Grom\GraphWrapperTests.cs" />
+    <Compile Include="Grom\Helper.cs" />
+    <Compile Include="Grom\NodeWrapperTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

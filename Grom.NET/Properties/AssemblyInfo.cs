@@ -35,7 +35,3 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: InternalsVisibleTo("Grom.NET.Tests")]
-[assembly: InternalsVisibleTo("Grom.NET.Explorables")]
-[assembly: InternalsVisibleTo("Grom.NET.IT.Tests")]
-[assembly: InternalsVisibleTo("Grom.NET.iTests")]
-
