@@ -175,7 +175,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         [Fact]
-        public void ParsingMultiHandlerGraphAndWithFactory()
+        public void ParsingMultiHandlerGraphWithFactory()
         {
             EnsureTestData();
 
