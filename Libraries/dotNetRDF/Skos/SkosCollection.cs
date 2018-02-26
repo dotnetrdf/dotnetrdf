@@ -29,10 +29,20 @@ namespace VDS.RDF.Skos
     using System.Collections.Generic;
     using System.Linq;
 
+    /// <summary>
+    /// Represents a labelled group of SKOS concepts.
+    /// </summary>
     public class SkosCollection : SkosMember
     {
+        /// <summary>
+        /// Creates a new collection for the given resource
+        /// </summary>
+        /// <param name="resource">Resource representing the collection</param>
         public SkosCollection(INode resource) : base(resource) { }
 
+        /// <summary>
+        /// Gets the members of the collection
+        /// </summary>
         public IEnumerable<SkosMember> Member
         {
             get

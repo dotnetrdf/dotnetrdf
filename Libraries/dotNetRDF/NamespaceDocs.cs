@@ -200,7 +200,7 @@ namespace VDS.RDF.Parsing.Events
     /// </summary>
     class NamespaceDoc
     {
-       
+
     }
 }
 
@@ -229,7 +229,7 @@ namespace VDS.RDF.Parsing.Tokens
     /// </summary>
     class NamespaceDoc
     {
-        
+
     }
 }
 
@@ -796,6 +796,17 @@ namespace VDS.RDF.Query.PropertyFunctions
 {
     /// <summary>
     /// Namespace which provide classes relating to the property function extension point of SPARQL
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Skos
+{
+    /// <summary>
+    /// Namespace containing classes implementing the Simple Knowledge Organization System (SKOS)
     /// </summary>
     class NamespaceDoc
     {

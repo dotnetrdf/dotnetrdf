@@ -39,7 +39,7 @@ namespace VDS.RDF.Skos
             {
                 return this.resource.Graph
                     .GetListItems(
-                        this.GetObjects(SkosHelper.Member)
+                        this.GetObjects(SkosHelper.MemberList)
                         .Single())
                     .Select(SkosMember.Create);
             }

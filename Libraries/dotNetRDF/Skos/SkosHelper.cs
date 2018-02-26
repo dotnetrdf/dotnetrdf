@@ -26,48 +26,53 @@
 
 namespace VDS.RDF.Skos
 {
+    /// <summary>
+    /// Static Helper class for the SKOS API
+    /// </summary>
     public static class SkosHelper
     {
-        public const string Prefix = "skos";
-        public const string Namespace = "http://www.w3.org/2004/02/skos/core#";
+        /// <summary>
+        /// SKOS namespace and prefix
+        /// </summary>
+        public const string
+            Prefix = "skos",
+            Namespace = "http://www.w3.org/2004/02/skos/core#";
 
-        public const string Concept = Namespace + "Concept";
-        public const string ConceptScheme = Namespace + "ConceptScheme";
-
-        public const string InScheme = Namespace + "inScheme";
-        public const string HasTopConcept = Namespace + "hasTopConcept";
-        public const string TopConceptOf = Namespace + "topConceptOf";
-
-        public const string PrefLabel = Namespace + "prefLabel";
-        public const string AltLabel = Namespace + "altLabel";
-        public const string HiddenLabel = Namespace + "hiddenLabel";
-
-        public const string Notation = Namespace + "notation";
-
-        public const string Note = Namespace + "note";
-        public const string ChangeNote = Namespace + "changeNote";
-        public const string Definition = Namespace + "definition";
-        public const string EditorialNote = Namespace + "editorialNote";
-        public const string Example = Namespace + "example";
-        public const string HistoryNote = Namespace + "historyNote";
-        public const string ScopeNote = Namespace + "scopeNote";
-
-        public const string SemanticRelation = Namespace + "semanticRelation";
-        public const string Broader = Namespace + "broader";
-        public const string Narrower = Namespace + "narrower";
-        public const string Related = Namespace + "related";
-        public const string BroaderTransitive = Namespace + "broaderTransitive";
-        public const string NarrowerTransitive = Namespace + "narrowerTransitive";
-
-        public const string Collection = Namespace + "Collection";
-        public const string OrderedCollection = Namespace + "OrderedCollection";
-        public const string Member = Namespace + "member";
-
-        public const string MappingRelation = Namespace + "mappingRelation";
-        public const string CloseMatch = Namespace + "closeMatch";
-        public const string ExactMatch = Namespace + "exactMatch";
-        public const string BroadMatch = Namespace + "broadMatch";
-        public const string NarrowMatch = Namespace + "narrowMatch";
-        public const string RelatedMatch = Namespace + "relatedMatch";
+        /// <summary>
+        /// Constant URIs for classes and properties exposed by <see cref="SkosResource">SkosResource</see> and its derived classes
+        /// </summary>
+        public const string 
+            Concept = Namespace + "Concept",
+            ConceptScheme = Namespace + "ConceptScheme",
+            InScheme = Namespace + "inScheme",
+            HasTopConcept = Namespace + "hasTopConcept",
+            TopConceptOf = Namespace + "topConceptOf",
+            PrefLabel = Namespace + "prefLabel",
+            AltLabel = Namespace + "altLabel",
+            HiddenLabel = Namespace + "hiddenLabel",
+            Notation = Namespace + "notation",
+            Note = Namespace + "note",
+            ChangeNote = Namespace + "changeNote",
+            Definition = Namespace + "definition",
+            EditorialNote = Namespace + "editorialNote",
+            Example = Namespace + "example",
+            HistoryNote = Namespace + "historyNote",
+            ScopeNote = Namespace + "scopeNote",
+            SemanticRelation = Namespace + "semanticRelation",
+            Broader = Namespace + "broader",
+            Narrower = Namespace + "narrower",
+            Related = Namespace + "related",
+            BroaderTransitive = Namespace + "broaderTransitive",
+            NarrowerTransitive = Namespace + "narrowerTransitive",
+            Collection = Namespace + "Collection",
+            OrderedCollection = Namespace + "OrderedCollection",
+            Member = Namespace + "member",
+            MemberList = Namespace + "memberList",
+            MappingRelation = Namespace + "mappingRelation",
+            CloseMatch = Namespace + "closeMatch",
+            ExactMatch = Namespace + "exactMatch",
+            BroadMatch = Namespace + "broadMatch",
+            NarrowMatch = Namespace + "narrowMatch",
+            RelatedMatch = Namespace + "relatedMatch";
     }
 }

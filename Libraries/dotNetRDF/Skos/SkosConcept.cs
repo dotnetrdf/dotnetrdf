@@ -28,10 +28,20 @@ namespace VDS.RDF.Skos
 {
     using System.Collections.Generic;
 
+    /// <summary>
+    /// Represents a SKOS concept
+    /// </summary>
     public class SkosConcept : SkosMember
     {
+        /// <summary>
+        /// Creates a new concept for the given resource
+        /// </summary>
+        /// <param name="resource">Resource representing the concept</param>
         public SkosConcept(INode resource) : base(resource) { }
 
+        /// <summary>
+        /// Gets the concept schemes the concept is contained in
+        /// </summary>
         public IEnumerable<SkosConceptScheme> InScheme
         {
             get
@@ -40,6 +50,9 @@ namespace VDS.RDF.Skos
             }
         }
 
+        /// <summary>
+        /// Get the concept schemes the concept is the top concept of
+        /// </summary>
         public IEnumerable<SkosConceptScheme> TopConceptOf
         {
             get
@@ -48,6 +61,9 @@ namespace VDS.RDF.Skos
             }
         }
 
+        /// <summary>
+        /// Gets the preferred labels of the concept
+        /// </summary>
         public IEnumerable<ILiteralNode> PrefLabel
         {
             get
@@ -56,6 +72,9 @@ namespace VDS.RDF.Skos
             }
         }
 
+        /// <summary>
+        /// Gets the alternative labels of the concept
+        /// </summary>
         public IEnumerable<ILiteralNode> AltLabel
         {
             get
@@ -64,6 +83,9 @@ namespace VDS.RDF.Skos
             }
         }
 
+        /// <summary>
+        /// Gets the hidden labels of the concept
+        /// </summary>
         public IEnumerable<ILiteralNode> HiddenLabel
         {
             get
@@ -72,6 +94,9 @@ namespace VDS.RDF.Skos
             }
         }
 
+        /// <summary>
+        /// Gets a unique identifiers of the concept in a given concept scheme
+        /// </summary>
         public IEnumerable<ILiteralNode> Notation
         {
             get
@@ -80,6 +105,9 @@ namespace VDS.RDF.Skos
             }
         }
 
+        /// <summary>
+        /// Gets the general notes of the concept
+        /// </summary>
         public IEnumerable<INode> Note
         {
             get
@@ -88,6 +116,9 @@ namespace VDS.RDF.Skos
             }
         }
 
+        /// <summary>
+        /// Gets the modification notes of the concept
+        /// </summary>
         public IEnumerable<INode> ChangeNote
         {
             get
@@ -96,6 +127,9 @@ namespace VDS.RDF.Skos
             }
         }
 
+        /// <summary>
+        /// Gets the formal explanation of the concept
+        /// </summary>
         public IEnumerable<INode> Definition
         {
             get
@@ -104,6 +138,9 @@ namespace VDS.RDF.Skos
             }
         }
 
+        /// <summary>
+        /// Gets the editorial notes the concept
+        /// </summary>
         public IEnumerable<INode> EditorialNote
         {
             get
@@ -112,6 +149,9 @@ namespace VDS.RDF.Skos
             }
         }
 
+        /// <summary>
+        /// Gets examples of the use of the concept
+        /// </summary>
         public IEnumerable<INode> Example
         {
             get
@@ -120,6 +160,9 @@ namespace VDS.RDF.Skos
             }
         }
 
+        /// <summary>
+        /// Gets notes about the past of the concept
+        /// </summary>
         public IEnumerable<INode> HistoryNote
         {
             get
@@ -128,6 +171,9 @@ namespace VDS.RDF.Skos
             }
         }
 
+        /// <summary>
+        /// Gets notes that help to clarify the meaning and/or the use of the concept
+        /// </summary>
         public IEnumerable<INode> ScopeNote
         {
             get
@@ -136,6 +182,9 @@ namespace VDS.RDF.Skos
             }
         }
 
+        /// <summary>
+        /// Gets concepts related by meaning
+        /// </summary>
         public IEnumerable<SkosConcept> SemanticRelation
         {
             get
@@ -144,6 +193,9 @@ namespace VDS.RDF.Skos
             }
         }
 
+        /// <summary>
+        /// Gets more general concepts 
+        /// </summary>
         public IEnumerable<SkosConcept> Broader
         {
             get
@@ -152,6 +204,9 @@ namespace VDS.RDF.Skos
             }
         }
 
+        /// <summary>
+        /// Gets more specific concepts
+        /// </summary>
         public IEnumerable<SkosConcept> Narrower
         {
             get
@@ -160,6 +215,9 @@ namespace VDS.RDF.Skos
             }
         }
 
+        /// <summary>
+        /// Gets associated concepts
+        /// </summary>
         public IEnumerable<SkosConcept> Related
         {
             get
@@ -168,6 +226,9 @@ namespace VDS.RDF.Skos
             }
         }
 
+        /// <summary>
+        /// Gets more general concepts (transitive)
+        /// </summary>
         public IEnumerable<SkosConcept> BroaderTransitive
         {
             get
@@ -176,6 +237,9 @@ namespace VDS.RDF.Skos
             }
         }
 
+        /// <summary>
+        /// Gets more specific concepts (transitive)
+        /// </summary>
         public IEnumerable<SkosConcept> NarrowerTransitive
         {
             get
@@ -184,6 +248,9 @@ namespace VDS.RDF.Skos
             }
         }
 
+        /// <summary>
+        /// Gets concepts with comparable meaning from other concept schemes
+        /// </summary>
         public IEnumerable<SkosConcept> MappingRelation
         {
             get
@@ -192,6 +259,9 @@ namespace VDS.RDF.Skos
             }
         }
 
+        /// <summary>
+        /// Gets confidently interchangeable concepts from other concept schemes
+        /// </summary>
         public IEnumerable<SkosConcept> CloseMatch
         {
             get
@@ -200,6 +270,9 @@ namespace VDS.RDF.Skos
             }
         }
 
+        /// <summary>
+        /// Gets interchangeably similar concepts from other concept schemes
+        /// </summary>
         public IEnumerable<SkosConcept> ExactMatch
         {
             get
@@ -208,6 +281,9 @@ namespace VDS.RDF.Skos
             }
         }
 
+        /// <summary>
+        /// Gets more general concepts from other concept schemes
+        /// </summary>
         public IEnumerable<SkosConcept> BroadMatch
         {
             get
@@ -216,6 +292,9 @@ namespace VDS.RDF.Skos
             }
         }
 
+        /// <summary>
+        /// Gets more specific concepts from other concept schemes
+        /// </summary>
         public IEnumerable<SkosConcept> NarrowMatch
         {
             get
@@ -224,6 +303,9 @@ namespace VDS.RDF.Skos
             }
         }
 
+        /// <summary>
+        /// Gets associated concepts from other concept schemes
+        /// </summary>
         public IEnumerable<SkosConcept> RelatedMatch
         {
             get
