@@ -30,52 +30,71 @@ namespace VDS.RDF.Skos
     using System.Linq;
     using VDS.RDF.Parsing;
 
+    /// <summary>
+    /// Represents a wrapper around a SKOS graph providing convenient access to concepts, schemes, and collections
+    /// </summary>
     public class SkosGraph : WrapperGraph
     {
-        public SkosGraph() : base()
-        {
-            this.InitializeNamespaceMap();
-        }
+        /// <summary>
+        /// Creates a new SKOS graph
+        /// </summary>
+        public SkosGraph() : base() { }
 
-        public SkosGraph(IGraph g) : base(g)
-        {
-            this.InitializeNamespaceMap();
-        }
+        /// <summary>
+        /// Creates a new SKOS graph for the given graph
+        /// </summary>
+        /// <param name="g">The graph this SKOS graph wraps</param>
+        public SkosGraph(IGraph g) : base(g) { }
 
-        private void InitializeNamespaceMap()
-        {
-            this.NamespaceMap.AddNamespace(SkosHelper.Prefix, UriFactory.Create(SkosHelper.Namespace));
-        }
-
+        /// <summary>
+        /// Gets concept schems contained in the graph
+        /// </summary>
         public IEnumerable<SkosConceptScheme> ConceptSchemes
         {
             get
             {
-                return this.GetInstances(SkosHelper.ConceptScheme).Cast<SkosConceptScheme>();
+                return this
+                    .GetInstances(SkosHelper.ConceptScheme)
+                    .Select(node => new SkosConceptScheme(node));
             }
         }
 
+        /// <summary>
+        /// Gets concepts contained in the graph
+        /// </summary>
         public IEnumerable<SkosConcept> Concepts
         {
             get
             {
-                return this.GetInstances(SkosHelper.Concept).Cast<SkosConcept>();
+                return this
+                    .GetInstances(SkosHelper.Concept)
+                    .Select(node => new SkosConcept(node));
             }
         }
 
+        /// <summary>
+        /// Gets collections contained in the graph
+        /// </summary>
         public IEnumerable<SkosCollection> Collections
         {
             get
             {
-                return this.GetInstances(SkosHelper.Collection).Cast<SkosCollection>();
+                return this
+                    .GetInstances(SkosHelper.Collection)
+                    .Select(node => new SkosCollection(node));
             }
         }
 
+        /// <summary>
+        /// Gets ordered collections contained in the graph
+        /// </summary>
         public IEnumerable<SkosOrderedCollection> OrderedCollections
         {
             get
             {
-                return this.GetInstances(SkosHelper.OrderedCollection).Cast<SkosOrderedCollection>();
+                return this
+                    .GetInstances(SkosHelper.OrderedCollection)
+                    .Select(node => new SkosOrderedCollection(node));
             }
         }
 

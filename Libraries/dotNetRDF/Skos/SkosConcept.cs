@@ -27,6 +27,7 @@
 namespace VDS.RDF.Skos
 {
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Represents a SKOS concept
@@ -312,6 +313,20 @@ namespace VDS.RDF.Skos
             {
                 return this.GetConcepts(SkosHelper.RelatedMatch);
             }
+        }
+
+        private IEnumerable<SkosConceptScheme> GetConceptSchemes(string predicateUri)
+        {
+            return this
+                .GetObjects(predicateUri)
+                .Select(o => new SkosConceptScheme(o));
+        }
+
+        private IEnumerable<ILiteralNode> GetLiterals(string predicateUri)
+        {
+            return this
+                .GetObjects(predicateUri)
+                .Cast<ILiteralNode>();
         }
     }
 }

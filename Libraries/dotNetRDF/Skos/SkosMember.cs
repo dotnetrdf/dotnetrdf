@@ -29,11 +29,14 @@ namespace VDS.RDF.Skos
     using System.Linq;
     using VDS.RDF.Parsing;
 
-    public class SkosMember : SkosResource
+    /// <summary>
+    /// Represents SKOS resources that can be members of collections (concepts and collections)
+    /// </summary>
+    public abstract class SkosMember : SkosResource
     {
-        public SkosMember(INode resource) : base(resource) { }
+        internal SkosMember(INode resource) : base(resource) { }
 
-        public static SkosMember Create(INode node)
+        internal static SkosMember Create(INode node)
         {
             var a = node.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
             var typeStatements = node.Graph.GetTriplesWithSubjectPredicate(node, a);

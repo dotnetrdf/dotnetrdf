@@ -39,9 +39,9 @@ namespace VDS.RDF.Skos
             Namespace = "http://www.w3.org/2004/02/skos/core#";
 
         /// <summary>
-        /// Constant URIs for classes and properties exposed by <see cref="SkosResource">SkosResource</see> and its derived classes
+        /// Constant URIs for classes and properties exposed by the SKOS API and its derived classes
         /// </summary>
-        public const string 
+        public const string
             Concept = Namespace + "Concept",
             ConceptScheme = Namespace + "ConceptScheme",
             InScheme = Namespace + "inScheme",

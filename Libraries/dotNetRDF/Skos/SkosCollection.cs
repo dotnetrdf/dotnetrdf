@@ -30,7 +30,7 @@ namespace VDS.RDF.Skos
     using System.Linq;
 
     /// <summary>
-    /// Represents a labelled group of SKOS concepts.
+    /// Represents a labelled group of SKOS concepts
     /// </summary>
     public class SkosCollection : SkosMember
     {
