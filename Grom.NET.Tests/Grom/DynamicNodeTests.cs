@@ -35,6 +35,21 @@
         }
 
         [TestMethod]
+        public void Get_index_array()
+        {
+            var graph = Helper.Load(@"
+<http://example.com/subject1> <http://example.com/predicate1> ""0"" .
+<http://example.com/subject1> <http://example.com/predicate1> ""1"" .
+");
+
+            dynamic wrapper = new NodeWrapper(graph.Nodes.First());
+            
+            Assert.AreEqual(
+                "0",
+                wrapper["http://example.com/predicate1"][0]);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(FormatException))]
         public void Get_index_fails_invalid_uri()
         {
@@ -144,7 +159,7 @@
                 expected);
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void PersonByIdNode()
         {
             var a = @"
@@ -319,7 +334,7 @@
             var c = wrapper.memberHasMemberImage[0];
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void SerializationTest()
         {
             var rdf = @"
@@ -496,7 +511,7 @@
         }
 
 
-        [TestMethod]
+        //[TestMethod]
         public void x()
         {
             var graph = Helper.Load(@"

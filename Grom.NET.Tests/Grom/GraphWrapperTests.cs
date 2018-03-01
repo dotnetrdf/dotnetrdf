@@ -63,7 +63,7 @@
             var result = wrapper.subject1;
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void PersonByIdGraph()
         {
             var rdf = @"

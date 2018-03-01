@@ -8,15 +8,15 @@
 
     internal static class Helper
     {
-        internal static IUriNode ConvertNode(object predicate, IGraph graph, Uri baseUri)
+        internal static IUriNode ConvertNode(object node, IGraph graph, Uri baseUri)
         {
             // TODO: Consider graph.BaseUri?
 
-            if (!(predicate is IUriNode predicateNode))
+            if (!(node is IUriNode predicateNode))
             {
-                if (!(predicate is Uri predicateUri))
+                if (!(node is Uri predicateUri))
                 {
-                    if (!(predicate is string predicateString))
+                    if (!(node is string predicateString))
                     {
                         throw new ArgumentException("Only IUriNode, Uri or string predicates", "predicate");
                     }

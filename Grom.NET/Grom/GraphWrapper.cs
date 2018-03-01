@@ -32,7 +32,11 @@
 
             var subjectNode = Helper.ConvertNode(subject, this.graph, this.subjectBaseUri);
 
-            result = this.graph.Nodes.UriNodes().Where(x => x.Equals(subjectNode)).Select(x => new NodeWrapper(x, this.predicateBaseUri, this.collapseSingularArrays)).SingleOrDefault();
+            result = this.graph.Nodes
+                .UriNodes()
+                .Where(node => node.Equals(subjectNode))
+                .Select(node => new NodeWrapper(node, this.predicateBaseUri, this.collapseSingularArrays))
+                .SingleOrDefault();
 
             return result != null;
         }
