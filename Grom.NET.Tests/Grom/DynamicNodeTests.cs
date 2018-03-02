@@ -43,7 +43,7 @@
 ");
 
             dynamic wrapper = new NodeWrapper(graph.Nodes.First());
-            
+
             Assert.AreEqual(
                 "0",
                 wrapper["http://example.com/predicate1"][0]);
@@ -157,6 +157,61 @@
             Assert.IsInstanceOfType(
                 node[predicate],
                 expected);
+        }
+
+        [TestMethod]
+        public void Set_member1()
+        {
+            var graph = Helper.Load("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            dynamic wrapper = new NodeWrapper(graph.Triples.Single().Subject, new Uri("http://example.com/"));
+            wrapper.p = new object[] { true, byte.MaxValue, DateTime.MaxValue, DateTimeOffset.MaxValue, decimal.MaxValue, double.Epsilon, float.Epsilon, long.MaxValue, int.MaxValue, "lorem ipsum", 'a', TimeSpan.MaxValue };
+
+            //Assert.AreEqual()
+        }
+
+        [TestMethod]
+        public void Set_member2()
+        {
+            var graph = Helper.Load(@"
+<http://example.com/s1> <http://example.com/p> <http://example.com/o1> .
+<http://example.com/s2> <http://example.com/p> <http://example.com/o2> .
+");
+
+            dynamic g = new GraphWrapper(graph, new Uri("http://example.com/"), new Uri("http://example.com/"));
+
+            g.s1.p = g.o2;
+
+            Assert.AreEqual(graph.Triples.First().Object, graph.Triples.Last().Object);
+        }
+
+        [TestMethod]
+        public void Set_member3()
+        {
+            var graph = Helper.Load("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            dynamic g = new GraphWrapper(graph, new Uri("http://example.com/"), new Uri("http://example.com/"));
+
+            g.s.p = null;
+
+            Assert.IsTrue(graph.IsEmpty);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void Set_index_fails_multidimensional()
+        {
+            var result = this.wrapper[0, 0] = null;
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void Set_member_fails_without_base()
+        {
+            dynamic wrapper = new NodeWrapper(
+                new NodeFactory().CreateBlankNode());
+
+            wrapper.predicate1 = null;
         }
 
         //[TestMethod]

@@ -1,13 +1,12 @@
 ﻿namespace Grom
 {
-    using Newtonsoft.Json;
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Dynamic;
     using System.Linq;
     using VDS.RDF;
     using VDS.RDF.Nodes;
-    using VDS.RDF.Parsing;
 
     public class NodeWrapper : DynamicObject, IEquatable<NodeWrapper>, IComparable<NodeWrapper>
     {
@@ -72,6 +71,37 @@
 
             return Helper.GetDynamicMemberNames(distinctPredicateNodes, this.baseUri);
         }
+
+        public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
+        {
+            if (indexes.Length != 1)
+            {
+                throw new ArgumentException("Only one index", "indexes");
+            }
+
+            var predicate = indexes[0];
+
+            var predicateNode = Helper.ConvertNode(predicate, this.graphNode.Graph, this.baseUri);
+
+            this.graphNode.Graph.Retract(this.graphNode.Graph.GetTriplesWithSubjectPredicate(this.graphNode, predicateNode).ToArray());
+
+            if (value != null)
+            {
+                this.graphNode.Graph.Assert(this.ConvertValues(value).Select(node => new Triple(this.graphNode, predicateNode, node, this.graphNode.Graph)));
+            }
+
+            return true;
+        }
+
+        public override bool TrySetMember(SetMemberBinder binder, object value)
+        {
+            if (this.baseUri == null)
+            {
+                throw new InvalidOperationException("Can't set member without baseUri.");
+            }
+
+            return this.TrySetIndex(null, new[] { binder.Name }, value);
+        }
         #endregion
 
         private object ConvertObject(INode tripleObject)
@@ -107,6 +137,102 @@
 
                 default:
                     return valuedNode.ToString();
+            }
+        }
+
+        private IEnumerable<INode> ConvertValues(object value)
+        {
+            if (!(value is IEnumerable enumerableValue))
+            {
+                enumerableValue = new[] { value };
+            }
+
+            foreach (var item in enumerableValue)
+            {
+                yield return ConvertValue(item);
+            }
+        }
+
+        private INode ConvertValue(object value)
+        {
+            if (value is NodeWrapper wrapperValue)
+            {
+                value = wrapperValue.graphNode;
+            }
+
+            if (value is Uri uriValue)
+            {
+                value = this.graphNode.Graph.CreateUriNode(uriValue);
+            }
+
+            if (this.TryConvertLiteralValue(value, out INode literalNode))
+            {
+                value = literalNode;
+            }
+
+            if (value is INode nodeValue)
+            {
+                return nodeValue;
+            }
+
+            throw new Exception("Unrecognized value type");
+        }
+
+        private bool TryConvertLiteralValue(object value, out INode literalNode)
+        {
+            switch (value)
+            {
+                case bool boolValue:
+                    literalNode = new BooleanNode(this.graphNode.Graph, boolValue);
+                    return true;
+
+                case byte byteValue:
+                    literalNode = new ByteNode(this.graphNode.Graph, byteValue);
+                    return true;
+
+                case DateTime dateTimeValue:
+                    literalNode = new DateTimeNode(this.graphNode.Graph, dateTimeValue);
+                    return true;
+
+                case DateTimeOffset dateTimeOffsetValue:
+                    literalNode = new DateTimeNode(this.graphNode.Graph, dateTimeOffsetValue);
+                    return true;
+
+                case decimal decimalValue:
+                    literalNode = new DecimalNode(this.graphNode.Graph, decimalValue);
+                    return true;
+
+                case double doubleValue:
+                    literalNode = new DoubleNode(this.graphNode.Graph, doubleValue);
+                    return true;
+
+                case float floatValue:
+                    literalNode = new FloatNode(this.graphNode.Graph, floatValue);
+                    return true;
+
+                case long longValue:
+                    literalNode = new LongNode(this.graphNode.Graph, longValue);
+                    return true;
+
+                case int intValue:
+                    literalNode = new LongNode(this.graphNode.Graph, intValue);
+                    return true;
+
+                case string stringValue:
+                    literalNode = new StringNode(this.graphNode.Graph, stringValue);
+                    return true;
+
+                case char charValue:
+                    literalNode = new StringNode(this.graphNode.Graph, charValue.ToString());
+                    return true;
+
+                case TimeSpan timeSpanValue:
+                    literalNode = new TimeSpanNode(this.graphNode.Graph, timeSpanValue);
+                    return true;
+
+                default:
+                    literalNode = null;
+                    return false;
             }
         }
 
