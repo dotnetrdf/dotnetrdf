@@ -51,6 +51,40 @@
             return this.TryGetIndex(null, new[] { binder.Name }, out result);
         }
 
+        public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
+        {
+            if (indexes.Length != 1)
+            {
+                throw new ArgumentException("Only one index", "indexes");
+            }
+
+            if (!this.TryGetIndex(null, indexes, out object result))
+            {
+                var subject = indexes[0];
+                var subjectNode = Helper.ConvertNode(subject, this.graph, this.subjectBaseUri);
+                result = new NodeWrapper(subjectNode, this.predicateBaseUri, this.collapseSingularArrays);
+            }
+
+            var subjectWrapper = result as NodeWrapper;
+
+            foreach (var p in value.GetType().GetProperties())
+            {
+                subjectWrapper.TrySetIndex(null, new[] { p.Name }, p.GetValue(value));
+            }
+
+            return true;
+        }
+
+        public override bool TrySetMember(SetMemberBinder binder, object value)
+        {
+            if (this.subjectBaseUri == null)
+            {
+                throw new InvalidOperationException("Can't set member without baseUri.");
+            }
+
+            return this.TrySetIndex(null, new[] { binder.Name }, value);
+        }
+
         public override IEnumerable<string> GetDynamicMemberNames()
         {
             var subjectUriNodes = this.graph.Triples.SubjectNodes.UriNodes();

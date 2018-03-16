@@ -5,6 +5,12 @@
     using System;
     using System.Linq;
     using VDS.RDF;
+    using VDS.RDF.Writing;
+
+    class C
+    {
+        public Uri P { get; set; }
+    }
 
     [TestClass]
     public class GraphWrapperTests
@@ -16,6 +22,54 @@
             new GraphWrapper(null);
         }
 
+        [TestMethod]
+        public void Set1()
+        {
+            var graph = new Graph();
+            dynamic wrapper = new GraphWrapper(graph, new Uri("http://example.com/"), new Uri("http://example.com/"), true);
+
+            wrapper.job1 = new { name = "job1" };
+            wrapper.person1 = new { name = "name1", job = wrapper.job1 };
+
+            Console.WriteLine(wrapper.person1.job.name);
+        }
+
+        [TestMethod]
+        public void Set2()
+        {
+            var graph = new Graph();
+            dynamic wrapper = new GraphWrapper(graph, new Uri("http://example.com/"), new Uri("http://example.com/"));
+            wrapper["s"] = new { p = new { p2 = "o" } };
+
+            Console.WriteLine(wrapper.s.p[0]);
+        }
+
+        [TestMethod]
+        public void Set3()
+        {
+            var graph = new Graph();
+            dynamic wrapper = new GraphWrapper(graph, new Uri("http://example.com/"), new Uri("http://example.com/"));
+            wrapper["s"] = new C { P = new Uri("http://example.com/o") };
+
+            Console.WriteLine(wrapper.s.P[0]);
+        }
+
+        [TestMethod]
+        public void Set4()
+        {
+            var graph = new Graph();
+            dynamic g = new GraphWrapper(graph, new Uri("https://id.parliament.uk/"), new Uri("https://id.parliament.uk/schema/"), true);
+
+            g.house1 = new { name = "House of Lords" };
+            g.house1["rdf:type"] = new Uri("http://example.com/House");
+            g.houseSeat1 = new { houseSeatHasHouse = g.house1 };
+            g.interruption1 = new { startDate = DateTime.Now, endDate = DateTime.Now.AddDays(1) };
+            g.incumbency1 = new { incumbencyHasInterruption = g.interruption1, seatIncumbencyHasHouseSeat = g.houseSeat1 };
+
+            Assert.AreEqual("House of Lords", g.incumbency1.seatIncumbencyHasHouseSeat.houseSeatHasHouse.name);
+
+            graph.SaveToStream(Console.Out, new CompressingTurtleWriter());
+        }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]

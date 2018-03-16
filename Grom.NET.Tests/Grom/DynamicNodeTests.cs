@@ -2,11 +2,10 @@
 {
     using Grom;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Newtonsoft.Json;
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using VDS.RDF;
+    using VDS.RDF.Nodes;
 
     [TestClass]
     public class DynamicNodeTests
@@ -160,14 +159,30 @@
         }
 
         [TestMethod]
-        public void Set_member1()
+        [DynamicData(nameof(Data.TypedValueConversions), typeof(Data))]
+        public void Strongly_typed_values_create_typed_literals(object value, Type expectedType)
         {
-            var graph = Helper.Load("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+            var graph = new Graph();
 
-            dynamic wrapper = new NodeWrapper(graph.Triples.Single().Subject, new Uri("http://example.com/"));
-            wrapper.p = new object[] { true, byte.MaxValue, DateTime.MaxValue, DateTimeOffset.MaxValue, decimal.MaxValue, double.Epsilon, float.Epsilon, long.MaxValue, int.MaxValue, "lorem ipsum", 'a', TimeSpan.MaxValue };
+            var subject = graph.CreateBlankNode();
+            var predicate = graph.CreateUriNode(new Uri("http://example.com/"));
 
-            //Assert.AreEqual()
+            graph.Assert(
+                subject,
+                predicate,
+                subject);
+
+            dynamic node = new NodeWrapper(
+                subject,
+                collapseSingularArrays: true);
+
+            node[predicate] = value;
+
+            var actual = graph.Triples.Single().Object.AsValuedNode();
+
+            Assert.IsInstanceOfType(
+                actual,
+                expectedType);
         }
 
         [TestMethod]
@@ -187,6 +202,24 @@
 
         [TestMethod]
         public void Set_member3()
+        {
+            var graph = Helper.Load(@"
+<http://example.com/s> <http://example.com/p> <http://example.com/o1> .
+");
+
+            dynamic g = new GraphWrapper(graph, new Uri("http://example.com/"), new Uri("http://example.com/"));
+
+            var newObjectUri = new Uri("http://example.com/o2");
+
+            g.s.p = newObjectUri;
+            
+            Assert.AreEqual(
+                graph.CreateUriNode(newObjectUri),
+                graph.Triples.Single().Object);
+        }
+
+        [TestMethod]
+        public void Set_member4()
         {
             var graph = Helper.Load("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
 

@@ -1,12 +1,13 @@
 ﻿namespace Grom.Tests
 {
+    using Grom;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using VDS.RDF;
+    using VDS.RDF.Nodes;
     using VDS.RDF.Parsing;
-    using Grom;
 
     public static class Data
     {
@@ -43,6 +44,28 @@
                     new object[] { "P0Y0M0DT0H0M0S", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDuration), typeof(TimeSpan) },
                     new object[] { "string", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInt), typeof(string) },
                     new object[] { "0", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInt), typeof(long) },
+                    new object[] { "xxx", new Uri("http://example.com/"), typeof(string) },
+                };
+            }
+        }
+
+        public static IEnumerable<object[]> TypedValueConversions
+        {
+            get
+            {
+                return new[] {
+                    new object[] { true, typeof(BooleanNode) },
+                    new object[] { byte.MaxValue, typeof(ByteNode) },
+                    new object[] { DateTime.MaxValue, typeof(DateTimeNode) },
+                    new object[] { DateTimeOffset.MaxValue, typeof(DateTimeNode) },
+                    new object[] { decimal.MaxValue, typeof(DecimalNode) },
+                    new object[] { double.MaxValue, typeof(DoubleNode) },
+                    new object[] { float.MaxValue, typeof(FloatNode) },
+                    new object[] { long.MaxValue, typeof(LongNode) },
+                    new object[] { int.MaxValue, typeof(LongNode) },
+                    new object[] { "string", typeof(StringNode) },
+                    new object[] { 'c', typeof(StringNode) },
+                    new object[] { TimeSpan.MaxValue, typeof(TimeSpanNode) }
                 };
             }
         }

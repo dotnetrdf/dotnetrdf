@@ -45,7 +45,6 @@
             }
             else
             {
-                // TODO: Add configuration option to be IEnumerable<NodeWrapper>?
                 result = nodes.ToArray();
             }
 
@@ -83,11 +82,26 @@
 
             var predicateNode = Helper.ConvertNode(predicate, this.graphNode.Graph, this.baseUri);
 
-            this.graphNode.Graph.Retract(this.graphNode.Graph.GetTriplesWithSubjectPredicate(this.graphNode, predicateNode).ToArray());
+            var n = new Graph();
+            n.Assert(this.graphNode.Graph.GetTriplesWithSubjectPredicate(this.graphNode, predicateNode));
 
-            if (value != null)
+            var n2 = new Graph();
+            n2.Assert(this.ConvertValues(value).Select(node => new Triple(this.graphNode, predicateNode, node, this.graphNode.Graph)));
+
+            var d = n.Difference(n2);
+            if (!d.AreEqual)
             {
-                this.graphNode.Graph.Assert(this.ConvertValues(value).Select(node => new Triple(this.graphNode, predicateNode, node, this.graphNode.Graph)));
+                foreach (var x in d.RemovedMSGs)
+                {
+                    this.graphNode.Graph.Retract(x.Triples);
+                }
+                foreach (var x in d.AddedMSGs)
+                {
+                    this.graphNode.Graph.Assert(x.Triples);
+                }
+
+                this.graphNode.Graph.Retract(d.RemovedTriples);
+                this.graphNode.Graph.Assert(d.AddedTriples);
             }
 
             return true;
@@ -142,9 +156,14 @@
 
         private IEnumerable<INode> ConvertValues(object value)
         {
-            if (!(value is IEnumerable enumerableValue))
+            if (value == null)
             {
-                enumerableValue = new[] { value };
+                yield break;
+            }
+
+            if (value is string || !(value is IEnumerable enumerableValue)) // Strings are enumerable but not for our case
+            {
+                enumerableValue = value.AsEnumerable();
             }
 
             foreach (var item in enumerableValue)

@@ -57,7 +57,7 @@
 
         internal static IEnumerable<string> GetDynamicMemberNames(IEnumerable<IUriNode> nodes, Uri baseUri)
         {
-            return nodes.Select(x => GetPropertyName(x, baseUri));
+            return nodes.Select(node => GetPropertyName(node, baseUri));
         }
 
         private static string GetPropertyName(IUriNode node, Uri baseUri)
