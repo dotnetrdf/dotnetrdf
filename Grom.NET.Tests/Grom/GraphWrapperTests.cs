@@ -35,16 +35,6 @@
         }
 
         [TestMethod]
-        public void Set2()
-        {
-            var graph = new Graph();
-            dynamic wrapper = new GraphWrapper(graph, new Uri("http://example.com/"), new Uri("http://example.com/"));
-            wrapper["s"] = new { p = new { p2 = "o" } };
-
-            Console.WriteLine(wrapper.s.p[0]);
-        }
-
-        [TestMethod]
         public void Set3()
         {
             var graph = new Graph();
