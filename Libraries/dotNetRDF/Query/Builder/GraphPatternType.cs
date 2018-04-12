@@ -26,7 +26,7 @@
 
 namespace VDS.RDF.Query.Builder
 {
-    internal enum GraphPatternType
+    public enum GraphPatternType
     {
         Normal,
         Optional,

@@ -98,6 +98,11 @@ namespace VDS.RDF.Query.Builder
             return new NumericExpression<DateTime>(value);
         }
 
+        public VariableExpression Variable(SparqlVariable variable)
+        {
+            return new VariableExpression(variable.Name);
+        }
+
         public RdfTermExpression Constant(Uri value)
         {
             return new RdfTermExpression(new ConstantTerm(new UriNode(null, value)));
