@@ -50,6 +50,15 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Sets a SPARQL variable as <see cref="IMatchTriplePattern.Object"/>
         /// </summary>
+        public ITriplePatternBuilder Object(SparqlVariable variable)
+        {
+            var objectPattern = _triplePatternBuilder.PatternItemFactory.CreateVariablePattern(variable.Name);
+            return Object(objectPattern);
+        }
+
+        /// <summary>
+        /// Sets a SPARQL variable as <see cref="IMatchTriplePattern.Object"/>
+        /// </summary>
         public ITriplePatternBuilder Object(string variableName)
         {
             var objectPattern = _triplePatternBuilder.PatternItemFactory.CreateVariablePattern(variableName);

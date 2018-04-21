@@ -67,9 +67,14 @@ namespace VDS.RDF.Query.Builder
             set { _prefixes = value; }
         }
 
-        internal GraphPatternBuilder RootGraphPatternBuilder
+        public GraphPatternBuilder RootGraphPatternBuilder
         {
             get { return _rootGraphPatternBuilder; }
+        }
+
+        public SparqlQueryType QueryType
+        {
+            get { return _sparqlQueryType; }
         }
 
         internal QueryBuilder(SelectBuilder selectBuilder)
@@ -215,9 +220,27 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Adds ascending ordering by a variable to the query
         /// </summary>
+        public IQueryBuilder OrderBy(SparqlVariable variable)
+        {
+            _buildOrderings.Add(prefixes => new OrderByVariable(variable.Name));
+            return this;
+        }
+
+        /// <summary>
+        /// Adds ascending ordering by a variable to the query
+        /// </summary>
         public IQueryBuilder OrderBy(string variableName)
         {
             _buildOrderings.Add(prefixes => new OrderByVariable(variableName));
+            return this;
+        }
+
+        /// <summary>
+        /// Adds descending ordering by a variable to the query
+        /// </summary>
+        public IQueryBuilder OrderByDescending(SparqlVariable variable)
+        {
+            _buildOrderings.Add(prefixes => new OrderByVariable(variable.Name) { Descending = true });
             return this;
         }
 
@@ -245,6 +268,13 @@ namespace VDS.RDF.Query.Builder
         public IQueryBuilder OrderByDescending(Func<IExpressionBuilder, SparqlExpression> buildOrderExpression)
         {
             AppendOrdering(buildOrderExpression, true);
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IQueryBuilder GroupBy(SparqlVariable variable)
+        {
+            _buildGroups.Add(prefixes => new GroupByVariable(variable.Name));
             return this;
         }
 
@@ -302,7 +332,7 @@ namespace VDS.RDF.Query.Builder
                     break;
                 case SparqlQueryType.Describe:
                 case SparqlQueryType.DescribeAll:
-                    BuildDecribeVariables(query);
+                    BuildDescribeVariables(query);
                     break;
                 case SparqlQueryType.Select:
                 case SparqlQueryType.SelectAll:
@@ -324,11 +354,12 @@ namespace VDS.RDF.Query.Builder
             return query;
         }
 
-        private void BuildDecribeVariables(SparqlQuery query)
+        private void BuildDescribeVariables(SparqlQuery query)
         {
             if (_describeBuilder == null) return;
 
             query.QueryType = _describeBuilder.SparqlQueryType;
+
             foreach (var describeVariable in _describeBuilder.DescribeVariables)
             {
                 query.AddDescribeVariable(describeVariable);
@@ -345,6 +376,7 @@ namespace VDS.RDF.Query.Builder
         private void BuildRootGraphPattern(SparqlQuery query)
         {
             var rootGraphPattern = RootGraphPatternBuilder.BuildGraphPattern(Prefixes);
+
             if (!rootGraphPattern.IsEmpty)
             {
                 query.RootGraphPattern = rootGraphPattern;
@@ -356,6 +388,7 @@ namespace VDS.RDF.Query.Builder
             if (_selectBuilder == null) return;
 
             query.QueryType = _selectBuilder.SparqlQueryType;
+
             foreach (SparqlVariable selectVariable in _selectBuilder.BuildVariables(Prefixes))
             {
                 query.AddVariable(selectVariable);
@@ -395,12 +428,13 @@ namespace VDS.RDF.Query.Builder
 
         private void BuildAndChainOrderings(SparqlQuery executableQuery)
         {
-            IList<ISparqlOrderBy> orderings = (from orderByBuilder in _buildOrderings
-                select orderByBuilder(Prefixes)).ToList();
+            IList<ISparqlOrderBy> orderings = (from orderByBuilder in _buildOrderings select orderByBuilder(Prefixes)).ToList();
+
             for (int i = 1; i < orderings.Count; i++)
             {
                 orderings[i - 1].Child = orderings[i];
             }
+
             executableQuery.OrderBy = orderings.FirstOrDefault();
         }
 
