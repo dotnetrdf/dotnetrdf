@@ -94,7 +94,7 @@ namespace VDS.RDF.Ontology
         /// Creates a new RDF Ontology Exception with the given message
         /// </summary>
         /// <param name="errorMsg">Error message</param>
-        public RdfOntologyException(String errorMsg) 
+        public RdfOntologyException(String errorMsg)
             : base(errorMsg) { }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="errorMsg">Error Message</param>
         /// <param name="cause">Inner Exception</param>
-        public RdfParseException(String errorMsg, Exception cause) 
+        public RdfParseException(String errorMsg, Exception cause)
             : base(errorMsg, cause) { }
 
         /// <summary>
@@ -364,7 +364,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="errorMsg">Error Message</param>
         /// <param name="cause">Inner Exception</param>
-        public RdfParserSelectionException(String errorMsg, Exception cause) 
+        public RdfParserSelectionException(String errorMsg, Exception cause)
             : base(errorMsg, cause) { }
     }
 
@@ -395,7 +395,7 @@ namespace VDS.RDF.Query
         /// Creates a new RDF Query Exception
         /// </summary>
         /// <param name="errorMsg">Error Message</param>
-        public RdfQueryException(String errorMsg) 
+        public RdfQueryException(String errorMsg)
             : base(errorMsg) { }
 
         /// <summary>
@@ -403,7 +403,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="errorMsg">Error Message</param>
         /// <param name="cause">Exception that caused this Exception</param>
-        public RdfQueryException(String errorMsg, Exception cause) 
+        public RdfQueryException(String errorMsg, Exception cause)
             : base(errorMsg, cause) { }
     }
 
@@ -449,7 +449,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Creates a new RDF Query Termination Exception
         /// </summary>
-        public RdfQueryTerminatedException() 
+        public RdfQueryTerminatedException()
             : base("Terminated Query since there are no results at the point reached so further execution is unnecessary") { }
     }
 
@@ -466,6 +466,16 @@ namespace VDS.RDF.Query
     }
 }
 
+namespace VDS.RDF.Skos
+{
+    public class RdfSkosException : RdfException
+    {
+        public RdfSkosException(string errorMsg) : base(errorMsg) { }
+
+        public RdfSkosException(string errorMsg, Exception cause) : base(errorMsg, cause) { }
+    }
+}
+
 namespace VDS.RDF.Storage
 {
     /// <summary>
@@ -477,7 +487,7 @@ namespace VDS.RDF.Storage
         /// Creates a new RDF Storage Exception
         /// </summary>
         /// <param name="errorMsg">Error Message</param>
-        public RdfStorageException(String errorMsg) 
+        public RdfStorageException(String errorMsg)
             : base(errorMsg) { }
 
         /// <summary>
@@ -485,7 +495,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="errorMsg">Error Message</param>
         /// <param name="cause">Exception which caused this Exception</param>
-        public RdfStorageException(String errorMsg, Exception cause) 
+        public RdfStorageException(String errorMsg, Exception cause)
             : base(errorMsg, cause) { }
     }
 }
