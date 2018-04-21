@@ -31,7 +31,7 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
 {
-    internal class TriplePatternBuilder : ITriplePatternBuilder
+    public class TriplePatternBuilder : ITriplePatternBuilder
     {
         private readonly IList<ITriplePattern> _patterns = new List<ITriplePattern>();
         private readonly PatternItemFactory _patternItemFactory;
@@ -41,6 +41,11 @@ namespace VDS.RDF.Query.Builder
         {
             _prefixes = prefixes;
             _patternItemFactory = new PatternItemFactory();
+        }
+
+        public TriplePatternPredicatePart Subject(SparqlVariable subjectVariable)
+        {
+            return Subject(PatternItemFactory.CreateVariablePattern(subjectVariable.Name));
         }
 
         public TriplePatternPredicatePart Subject(string subjectVariableName)
@@ -73,7 +78,7 @@ namespace VDS.RDF.Query.Builder
             get { return _patterns.ToArray(); }
         }
 
-        public PatternItemFactory PatternItemFactory
+        internal PatternItemFactory PatternItemFactory
         {
             get { return _patternItemFactory; }
         }

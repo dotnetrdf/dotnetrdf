@@ -37,6 +37,11 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Sets a variable as <see cref="IMatchTriplePattern.Subject"/>
         /// </summary>
+        TriplePatternPredicatePart Subject(SparqlVariable variable);
+
+        /// <summary>
+        /// Sets a variable as <see cref="IMatchTriplePattern.Subject"/>
+        /// </summary>
         TriplePatternPredicatePart Subject(string subjectVariableName);
         
         /// <summary>
