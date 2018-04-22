@@ -64,6 +64,16 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
+        /// Creates a new Multi Handler with a known Node Factory
+        /// </summary>
+        /// <param name="handlers">Inner Handlers for this Handler</param>
+        /// <param name="factory">Node Factory to use for this Handler</param>
+        public MultiHandler(IEnumerable<IRdfHandler> handlers, INodeFactory factory) : this(handlers)
+        {
+            this.NodeFactory = factory ?? throw new ArgumentNullException("factory");
+        }
+
+        /// <summary>
         /// Gets the Inner Handlers used by this Handler
         /// </summary>
         public IEnumerable<IRdfHandler> InnerHandlers
@@ -139,7 +149,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         public override bool AcceptsAll
         {
-            get 
+            get
             {
                 return _handlers.All(h => h.AcceptsAll);
             }

@@ -46,7 +46,7 @@ namespace VDS.RDF.Parsing.Handlers
                 g.SaveToFile("multi_handler_tests_temp.ttl");
             }
         }
-        
+
         [Fact]
         public void ParsingMultiHandlerBadInstantiation()
         {
@@ -65,6 +65,14 @@ namespace VDS.RDF.Parsing.Handlers
             GraphHandler h = new GraphHandler(new Graph());
 
             Assert.Throws<ArgumentException>(() => new MultiHandler(new IRdfHandler[] { h, h }));
+        }
+
+        [Fact]
+        public void ParsingMultiHandlerBadInstantiation4()
+        {
+            GraphHandler h = new GraphHandler(new Graph());
+
+            Assert.Throws<ArgumentNullException>(() => new MultiHandler(new IRdfHandler[] { h }, null));
         }
 
         [Fact]
@@ -130,7 +138,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.NotEqual(g.Triples.Count, h.Triples.Count);
             Assert.NotEqual(g, h);
         }
-        
+
         [Fact]
         public void ParsingMultiHandlerGraphAndCount()
         {
@@ -147,7 +155,7 @@ namespace VDS.RDF.Parsing.Handlers
             parser.Load(handler, "multi_handler_tests_temp.ttl");
 
             Assert.Equal(g.Triples.Count, handler2.Count);
- 
+
         }
 
         [Fact]
@@ -164,6 +172,22 @@ namespace VDS.RDF.Parsing.Handlers
 
             TurtleParser parser = new TurtleParser();
             parser.Load(handler, "multi_handler_tests_temp.ttl");
+        }
+
+        [Fact]
+        public void ParsingMultiHandlerGraphWithFactory()
+        {
+            EnsureTestData();
+
+            Graph g = new Graph();
+            GraphHandler h = new GraphHandler(g);
+
+            MultiHandler handler = new MultiHandler(new IRdfHandler[] { h }, g);
+
+            TurtleParser parser = new TurtleParser();
+            parser.Load(handler, "multi_handler_tests_temp.ttl");
+
+            Assert.Same(g, g.Triples.First().Graph);
         }
     }
 }

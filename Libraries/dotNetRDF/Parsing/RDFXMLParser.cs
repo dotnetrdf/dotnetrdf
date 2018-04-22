@@ -644,7 +644,8 @@ namespace VDS.RDF.Parsing
                 ValidateID(context, ID, subj);
             }
 
-            if (!element.QName.Equals("rdf:Description") && !element.QName.Equals(":Description"))
+            //if (!element.QName.Equals("rdf:Description") && !element.QName.Equals(":Description"))
+            if (!ElementHasName(element, "Description", NamespaceMapper.RDF, context))
             {
                 // Assert a Triple regarding Type
                 pred = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
@@ -657,7 +658,8 @@ namespace VDS.RDF.Parsing
             {
                 if (RdfXmlSpecsHelper.IsPropertyAttribute(attr))
                 {
-                    if (attr.QName.Equals("rdf:type"))
+                    if (attr.Namespace.Equals(NamespaceMapper.RDF) && attr.LocalName.Equals("type"))
+                    //if (attr.QName.Equals("rdf:type"))
                     {
                         // Generate a Type Triple
                         pred = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
@@ -789,7 +791,7 @@ namespace VDS.RDF.Parsing
             }
 
             // List Expansion
-            if (element.QName.Equals("rdf:li"))
+            if (element.Namespace.Equals(NamespaceMapper.RDF) && element.LocalName.Equals("li"))
             {
                 UriReferenceEvent u = ListExpand(parent);
                 element.SetUri(u);
@@ -1130,7 +1132,7 @@ namespace VDS.RDF.Parsing
                     {
                         ID = "#" + a.Value;
                     }
-                    else if (a.QName.Equals("rdf:parseType"))
+                    else if (a.Namespace.Equals(NamespaceMapper.RDF) && a.LocalName.Equals("parseType"))
                     {
                         // OK
                     }
@@ -1234,7 +1236,7 @@ namespace VDS.RDF.Parsing
                     {
                         ID = "#" + a.Value;
                     }
-                    else if (a.QName.Equals("rdf:parseType"))
+                    else if (a.Namespace.Equals(NamespaceMapper.RDF) && a.LocalName.Equals("parseType"))
                     {
                         // OK
                     }
@@ -1368,7 +1370,7 @@ namespace VDS.RDF.Parsing
                     {
                         ID = "#" + a.Value;
                     }
-                    else if (a.QName.Equals("rdf:parseType"))
+                    else if (a.Namespace.Equals(NamespaceMapper.RDF) && a.LocalName.Equals("parseType"))
                     {
                         // OK
                     }
@@ -1959,6 +1961,12 @@ namespace VDS.RDF.Parsing
                 default:
                     return "RDF/XML (Streaming)";
             }
+        }
+        private static bool ElementHasName(ElementEvent el, string localName, string namespaceUri, RdfXmlParserContext context)
+        {
+            return el.LocalName.Equals(localName) && 
+                   context.Namespaces.HasNamespace(el.Namespace) && 
+                   context.Namespaces.GetNamespaceUri(el.Namespace).ToString().Equals(namespaceUri);
         }
     }
 }

@@ -200,7 +200,7 @@ namespace VDS.RDF.Parsing.Events
     /// </summary>
     class NamespaceDoc
     {
-       
+
     }
 }
 
@@ -229,7 +229,7 @@ namespace VDS.RDF.Parsing.Tokens
     /// </summary>
     class NamespaceDoc
     {
-        
+
     }
 }
 
@@ -803,11 +803,22 @@ namespace VDS.RDF.Query.PropertyFunctions
     }
 }
 
+namespace VDS.RDF.Skos
+{
+    /// <summary>
+    /// Namespace containing classes implementing the Simple Knowledge Organization System (SKOS)
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
 namespace VDS.RDF.Storage
 {
     /// <summary>
     /// <para>
-    /// Namespace for ctorage classes which provide support for using arbitrary backing Stores
+    /// Namespace for storage classes which provide support for using arbitrary backing Stores
     /// </para>
     /// <para>
     /// Storage is managed via the <see cref="IStorageProvider">IStorageProvider</see> interface, see the <a href="http://www.dotnetrdf.org/content.asp?pageID=Triple%20Store%20Integration">Triple Store Integration</a> documentation on the main website for more detail.

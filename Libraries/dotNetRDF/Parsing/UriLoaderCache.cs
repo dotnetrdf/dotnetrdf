@@ -38,7 +38,7 @@ namespace VDS.RDF.Parsing
     /// <summary>
     /// Provides caching services to the <see cref="UriLoader">UriLoader</see> class
     /// </summary>
-    class UriLoaderCache 
+    class UriLoaderCache
         : IUriLoaderCache
     {
         private String _cacheDir;
@@ -465,12 +465,16 @@ namespace VDS.RDF.Parsing
                 if (_canCacheGraphs)
                 {
                     String graph = Path.Combine(_graphDir, requestUri.GetSha256Hash());
-                    handler = new WriteThroughHandler(_formatterType, new StreamWriter( File.Open(graph, FileMode.Append)));
+                    handler = new WriteThroughHandler(_formatterType, new StreamWriter(File.Open(graph, FileMode.Append)));
 
                     if (cacheTwice)
                     {
                         graph = Path.Combine(_graphDir, responseUri.GetSha256Hash());
-                        handler = new MultiHandler(new IRdfHandler[] { handler, new WriteThroughHandler(_formatterType, new StreamWriter(File.Open(graph, FileMode.Append, FileAccess.Write)), true) });
+
+                        // We should use the original handler in its capacity as node factory,
+                        // otherwise there might be unexpected differences between its output
+                        // and that of the MultiHandler's
+                        handler = new MultiHandler(new IRdfHandler[] { handler, new WriteThroughHandler(_formatterType, new StreamWriter(File.Open(graph, FileMode.Append, FileAccess.Write)), true) }, handler);
                     }
                 }
             }

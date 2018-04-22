@@ -1,4 +1,4 @@
-/*
+﻿/*
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
@@ -24,15 +24,43 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Builder
+namespace VDS.RDF.Skos
 {
-    public enum GraphPatternType
+    using System.Collections.Generic;
+    using System.Linq;
+
+    /// <summary>
+    /// Represents a SKOS resource
+    /// </summary>
+    public abstract class SkosResource
     {
-        Normal,
-        Optional,
-        Minus,
-        Union,
-        Graph,
-        Service
+        /// <summary>
+        /// Gets the original resource underlying the SKOS resource
+        /// </summary>
+        public INode Resource { get; private set; }
+
+        internal SkosResource(INode resource)
+        {
+            this.Resource = resource ?? throw new RdfSkosException("Cannot create a SKOS Resource for a null Resource");
+        }
+
+        internal IEnumerable<SkosConcept> GetConcepts(string predicateUri)
+        {
+            return this
+                .GetObjects(predicateUri)
+                .Select(o => new SkosConcept(o));
+        }
+
+        internal IEnumerable<INode> GetObjects(string predicateUri)
+        {
+            var predicate = this.Resource.Graph
+                .CreateUriNode(
+                    UriFactory.Create(
+                        predicateUri));
+
+            return this.Resource.Graph
+                .GetTriplesWithSubjectPredicate(this.Resource, predicate)
+                .Select(t => t.Object);
+        }
     }
 }

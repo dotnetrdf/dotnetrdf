@@ -1,6 +1,17 @@
 ﻿Change Log
 ==========
 
+2.0.1
+-----
+
+This is a bug-fix release for the 2.0.0 release.
+
+- FIX: Updated VDS.Common dependency to latest release version. Thanks to @langsamu for the report.
+- FIX: Ensure all assemblies receive the correct version number as AssemlyVersion and FileVersion. Thanks to @langsamu for the report.
+- FIX: RDF/XML parser now strips off the fragment part of the XML base URI when resolving same document references. Thanks to @langsamu for the report and suggested fix.
+- FIX: RDF/XML parser now better handles documents where the RDF XML namespace URI is not mapped to the `rdf` prefix. Thanks to @langsamu fo the report.
+
+
 2.0.0
 -----
 

@@ -408,7 +408,10 @@ namespace VDS.RDF.Parsing
                             // i.e. if the Handler may trim the data in some way then we shouldn't cache the data returned
                             if (handler.AcceptsAll)
                             {
-                                handler = new MultiHandler(new IRdfHandler[] { handler, cacheHandler });
+                                // We should use the original handler in its capacity as node factory,
+                                // otherwise there might be unexpected differences between its output
+                                // and that of the MultiHandler's
+                                handler = new MultiHandler(new IRdfHandler[] { handler, cacheHandler }, handler);
                             }
                             else
                             {
