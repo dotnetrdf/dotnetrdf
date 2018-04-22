@@ -134,12 +134,10 @@ namespace VDS.RDF.Writing
         }
 
         [Fact]
-        public void WritingCollections()
+        public void WritingRdfCollections()
         {
             Graph g = new Graph();
-            Options.UriLoaderCaching = false;
-            UriLoader.Load(g, new Uri("http://www.wurvoc.org/vocabularies/om-1.6/Kelvin_scale"));
-
+            FileLoader.Load(g, "resources\\swrc.owl");
             CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter(WriterCompressionLevel.High);
             ttlwriter.Save(g, Console.Out);
         }

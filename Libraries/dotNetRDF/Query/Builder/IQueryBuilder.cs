@@ -35,6 +35,14 @@ namespace VDS.RDF.Query.Builder
     public interface IQueryBuilder
     {
         /// <summary>
+        /// Gets the query type of the generated SPARQL query.
+        /// </summary>
+        SparqlQueryType QueryType { get; }
+        /// <summary>
+        /// Gets the builder associated with the root graph pattern.
+        /// </summary>
+        GraphPatternBuilder RootGraphPatternBuilder { get; }
+        /// <summary>
         /// Gets the prefix manager, which allows adding prefixes to the query or graph pattern
         /// </summary>
         INamespaceMapper Prefixes { get; set; }
@@ -54,7 +62,15 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Adds ascending ordering by a variable to the query
         /// </summary>
+        IQueryBuilder OrderBy(SparqlVariable variable);
+        /// <summary>
+        /// Adds ascending ordering by a variable to the query
+        /// </summary>
         IQueryBuilder OrderBy(string variableName);
+        /// <summary>
+        /// Adds descending ordering by a variable to the query
+        /// </summary>
+        IQueryBuilder OrderByDescending(SparqlVariable variable);
         /// <summary>
         /// Adds descending ordering by a variable to the query
         /// </summary>
@@ -67,6 +83,10 @@ namespace VDS.RDF.Query.Builder
         /// Adds descending ordering by an expression to the query
         /// </summary>
         IQueryBuilder OrderByDescending(Func<IExpressionBuilder, SparqlExpression> buildOrderExpression);
+        /// <summary>
+        /// Adds a GROUP BY clause to the query.
+        /// </summary>
+        IQueryBuilder GroupBy(SparqlVariable variable);
         /// <summary>
         /// Adds a GROUP BY clause to the query.
         /// </summary>

@@ -24,15 +24,30 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Builder
+namespace VDS.RDF.Skos
 {
-    public enum GraphPatternType
+    using System.Collections.Generic;
+
+    /// <summary>
+    /// Represents an aggregation of one or more SKOS concepts
+    /// </summary>
+    public class SkosConceptScheme : SkosResource
     {
-        Normal,
-        Optional,
-        Minus,
-        Union,
-        Graph,
-        Service
+        /// <summary>
+        /// Creates a new concept schemes for the given resource
+        /// </summary>
+        /// <param name="resource">Resource representing the concept scheme</param>
+        public SkosConceptScheme(INode resource) : base(resource) { }
+
+        /// <summary>
+        /// Gets the top concepts of the concept scheme
+        /// </summary>
+        public IEnumerable<SkosConcept> HasTopConcept
+        {
+            get
+            {
+                return this.GetConcepts(SkosHelper.HasTopConcept);
+            }
+        }
     }
 }

@@ -158,7 +158,7 @@ namespace VDS.RDF.Web.Configuration
                     }
                 }
             }
-            this._stylesheet = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStylesheet))).ToSafeString();
+            this._stylesheet = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStylesheet)))?.ToString() ?? string.Empty;
             this._corsEnabled = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEnableCors)), true);
 
             // Cache Settings

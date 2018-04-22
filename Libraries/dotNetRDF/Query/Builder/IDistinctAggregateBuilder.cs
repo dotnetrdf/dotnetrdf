@@ -47,6 +47,11 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Creates a SUM aggregate
         /// </summary>
+        AggregateExpression Sum(SparqlVariable variable);
+
+        /// <summary>
+        /// Creates a SUM aggregate
+        /// </summary>
         AggregateExpression Sum(SparqlExpression expression);
 
         /// <summary>
@@ -58,6 +63,11 @@ namespace VDS.RDF.Query.Builder
         /// Creates a AVG aggregate
         /// </summary>
         AggregateExpression Avg(string variable);
+
+        /// <summary>
+        /// Creates a AVG aggregate
+        /// </summary>
+        AggregateExpression Avg(SparqlVariable variable);
 
         /// <summary>
         /// Creates a AVG aggregate
@@ -77,6 +87,11 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Creates a MIN aggregate
         /// </summary>
+        AggregateExpression Min(SparqlVariable variable);
+
+        /// <summary>
+        /// Creates a MIN aggregate
+        /// </summary>
         AggregateExpression Min(SparqlExpression expression);
 
         /// <summary>
@@ -88,6 +103,11 @@ namespace VDS.RDF.Query.Builder
         /// Creates a MAX aggregate
         /// </summary>
         AggregateExpression Max(string variable);
+
+        /// <summary>
+        /// Creates a MAX aggregate
+        /// </summary>
+        AggregateExpression Max(SparqlVariable variable);
 
         /// <summary>
         /// Creates a MAX aggregate
@@ -123,6 +143,11 @@ namespace VDS.RDF.Query.Builder
         /// Creates a COUNT aggregate
         /// </summary>
         AggregateExpression Count(string variable);
+
+        /// <summary>
+        /// Creates a COUNT aggregate
+        /// </summary>
+        AggregateExpression Count(SparqlVariable variable);
 
         /// <summary>
         /// Creates a COUNT aggregate
