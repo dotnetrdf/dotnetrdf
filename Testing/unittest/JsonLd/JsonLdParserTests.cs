@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
@@ -111,7 +112,7 @@ namespace VDS.RDF.JsonLd
         [MemberData(nameof(DateTimeValues))]
         public void RoundtripsDatetimeTypedLiterals(string dateTimeValue, string datatype)
         {
-            var isValidDateTime = DateTime.TryParse(dateTimeValue, out DateTime parsedDateTime);
+            var isValidDateTime = DateTime.TryParse(dateTimeValue, null, DateTimeStyles.AdjustToUniversal, out DateTime parsedDateTime);
             var isDateTimeDatatype = datatype == XmlSpecsHelper.XmlSchemaDataTypeDateTime;
 
             if (isValidDateTime && isDateTimeDatatype)
