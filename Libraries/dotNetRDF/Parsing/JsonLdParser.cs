@@ -105,7 +105,7 @@ namespace VDS.RDF.Parsing
             try
             {
                 JToken element;
-                using (var reader = new JsonTextReader(input))
+                using (var reader = new JsonTextReader(input) { DateParseHandling = DateParseHandling.None })
                 {
                     element = JToken.ReadFrom(reader);
                 }
@@ -192,7 +192,6 @@ namespace VDS.RDF.Parsing
         private const string XsdNs = "http://www.w3.org/2001/XMLSchema#";
         private const string RdfNs = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
         private static Regex ExponentialFormatMatcher = new Regex(@"(\d)0*E\+?0*");
-        private static Regex DateTimeSecondDecimalMatcher = new Regex(@"(:\d\d)\.0*(Z|\+|\-|^)");
 
         private static INode MakeNode(IRdfHandler handler, JToken token, bool allowRelativeIri = false)
         {
@@ -228,11 +227,6 @@ namespace VDS.RDF.Parsing
                     literalValue = ExponentialFormatMatcher.Replace(literalValue, "$1E");
                     if (literalValue.EndsWith("E")) literalValue = literalValue + "0";
                     if (datatype == null) datatype = XsdNs + "double";
-                }
-                else if (value.Type == JTokenType.Date)
-                {
-                    literalValue = value.Value<DateTime>().ToString("o");
-                    literalValue = DateTimeSecondDecimalMatcher.Replace(literalValue, "$1$2");
                 }
                 else if (value.Type == JTokenType.Integer ||
                     value.Type == JTokenType.Float && datatype != null && datatype.Equals(XsdNs + "integer"))
