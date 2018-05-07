@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -90,10 +91,10 @@ namespace VDS.RDF.Writing
 
         private static void WriteGraphML(XmlWriter writer, ITripleStore store)
         {
-            writer.WriteStartElement(GraphMLHelper.GraphML, GraphMLHelper.NS);
+            writer.WriteStartElement(GraphMLSpecsHelper.GraphML, GraphMLSpecsHelper.NS);
 
-            GraphMLWriter.WriteKey(writer, GraphMLHelper.EdgeLabel, GraphMLHelper.Edge);
-            GraphMLWriter.WriteKey(writer, GraphMLHelper.NodeLabel, GraphMLHelper.Node);
+            GraphMLWriter.WriteKey(writer, GraphMLSpecsHelper.EdgeLabel, GraphMLSpecsHelper.Edge);
+            GraphMLWriter.WriteKey(writer, GraphMLSpecsHelper.NodeLabel, GraphMLSpecsHelper.Node);
 
             foreach (var graph in store.Graphs)
             {
@@ -105,31 +106,39 @@ namespace VDS.RDF.Writing
 
         private static void WriteGraph(XmlWriter writer, IGraph graph)
         {
-            writer.WriteStartElement(GraphMLHelper.Graph);
+            writer.WriteStartElement(GraphMLSpecsHelper.Graph);
 
             // Named graphs
             if (graph.BaseUri != null)
             {
-                writer.WriteAttributeString(GraphMLHelper.Id, graph.BaseUri.AbsoluteUri);
+                writer.WriteAttributeString(GraphMLSpecsHelper.Id, graph.BaseUri.AbsoluteUri);
             }
 
             // RDF is always a directed graph
-            writer.WriteAttributeString(GraphMLHelper.Edgedefault, GraphMLHelper.Directed);
+            writer.WriteAttributeString(GraphMLSpecsHelper.Edgedefault, GraphMLSpecsHelper.Directed);
 
-            // The next two iterations are disjoint
-            foreach (var literalNode in graph.Nodes.Where(n => n.NodeType != NodeType.Literal))
-            {
-                GraphMLWriter.WriteNode(writer, literalNode.GetHashCode().ToString(), literalNode.ToString());
-            }
-
-            // Literal node identifiers are the whole statement so they become distinct
-            foreach (var triple in graph.Triples.Where(t => t.Object.NodeType == NodeType.Literal))
-            {
-                GraphMLWriter.WriteNode(writer, triple.GetHashCode().ToString(), triple.Object.ToString());
-            }
+            var nodesAlreadyWritten = new List<INode>();
 
             foreach (var triple in graph.Triples)
             {
+                foreach (var node in new[] { triple.Subject, triple.Object })
+                {
+                    if (node is ILiteralNode)
+                    {
+                        // Literal node identifiers are the whole statement so they become distinct
+                        GraphMLWriter.WriteNode(writer, triple.GetHashCode().ToString(), node.ToString());
+                    }
+                    else
+                    {
+                        if (!nodesAlreadyWritten.Contains(node))
+                        {
+                            nodesAlreadyWritten.Add(node);
+
+                            GraphMLWriter.WriteNode(writer, node.GetHashCode().ToString(), node.ToString());
+                        }
+                    }
+                }
+
                 GraphMLWriter.WriteEdge(writer, triple);
             }
 
@@ -138,10 +147,10 @@ namespace VDS.RDF.Writing
 
         private static void WriteEdge(XmlWriter writer, Triple triple)
         {
-            writer.WriteStartElement(GraphMLHelper.Edge);
-            writer.WriteAttributeString(GraphMLHelper.Source, triple.Subject.GetHashCode().ToString());
+            writer.WriteStartElement(GraphMLSpecsHelper.Edge);
+            writer.WriteAttributeString(GraphMLSpecsHelper.Source, triple.Subject.GetHashCode().ToString());
 
-            writer.WriteStartAttribute(GraphMLHelper.Target);
+            writer.WriteStartAttribute(GraphMLSpecsHelper.Target);
             if (triple.Object.NodeType == NodeType.Literal)
             {
                 writer.WriteString(triple.GetHashCode().ToString());
@@ -151,132 +160,36 @@ namespace VDS.RDF.Writing
                 writer.WriteString(triple.Object.GetHashCode().ToString());
             }
 
-            GraphMLWriter.WriteData(writer, GraphMLHelper.EdgeLabel, triple.Predicate.ToString());
+            GraphMLWriter.WriteData(writer, GraphMLSpecsHelper.EdgeLabel, triple.Predicate.ToString());
 
             writer.WriteEndElement();
         }
 
         private static void WriteKey(XmlWriter writer, string id, string domain)
         {
-            writer.WriteStartElement(GraphMLHelper.Key);
-            writer.WriteAttributeString(GraphMLHelper.Id, id);
-            writer.WriteAttributeString(GraphMLHelper.Domain, domain);
-            writer.WriteAttributeString(GraphMLHelper.AttributeTyte, GraphMLHelper.String);
+            writer.WriteStartElement(GraphMLSpecsHelper.Key);
+            writer.WriteAttributeString(GraphMLSpecsHelper.Id, id);
+            writer.WriteAttributeString(GraphMLSpecsHelper.Domain, domain);
+            writer.WriteAttributeString(GraphMLSpecsHelper.AttributeTyte, GraphMLSpecsHelper.String);
             writer.WriteEndElement();
         }
 
         private static void WriteNode(XmlWriter writer, string id, string label)
         {
-            writer.WriteStartElement(GraphMLHelper.Node);
-            writer.WriteAttributeString(GraphMLHelper.Id, id);
+            writer.WriteStartElement(GraphMLSpecsHelper.Node);
+            writer.WriteAttributeString(GraphMLSpecsHelper.Id, id);
 
-            GraphMLWriter.WriteData(writer, GraphMLHelper.NodeLabel, label);
+            GraphMLWriter.WriteData(writer, GraphMLSpecsHelper.NodeLabel, label);
 
             writer.WriteEndElement();
         }
 
         private static void WriteData(XmlWriter writer, string key, string value)
         {
-            writer.WriteStartElement(GraphMLHelper.Data);
-            writer.WriteAttributeString(GraphMLHelper.Key, key);
+            writer.WriteStartElement(GraphMLSpecsHelper.Data);
+            writer.WriteAttributeString(GraphMLSpecsHelper.Key, key);
             writer.WriteString(value);
             writer.WriteEndElement();
         }
-    }
-
-    /// <summary>
-    /// A helper class containing GraphML name and URI constants
-    /// </summary>
-    public static class GraphMLHelper
-    {
-        /// <summary>
-        /// The namespace URI for GraphML XML elements
-        /// </summary>
-        public const string NS = "http://graphml.graphdrawing.org/xmlns";
-
-        /// <summary>
-        /// The URL of the GraphML XML schema
-        /// </summary>
-        public const string XsdUri = "http://graphml.graphdrawing.org/xmlns/1.1/graphml.xsd";
-
-        /// <summary>
-        /// The name of the GraphML XML root element
-        /// </summary>
-        public const string GraphML = "graphml";
-
-        /// <summary>
-        /// The name of the GraphML XML element representing a graph
-        /// </summary>
-        public const string Graph = "graph";
-
-        /// <summary>
-        /// The name of the GraphML XML attribute representing the default directedness of and edge
-        /// </summary>
-        public const string Edgedefault = "edgedefault";
-
-        /// <summary>
-        /// The value representing a directed edge
-        /// </summary>
-        public const string Directed = "directed";
-
-        /// <summary>
-        /// The name of the GraphML XML element representing an edge
-        /// </summary>
-        public const string Edge = "edge";
-
-        /// <summary>
-        /// The name of the GraphML attribute representing the source of an edge
-        /// </summary>
-        public const string Source = "source";
-
-        /// <summary>
-        /// The name of the GraphML attribute representing the target of an edge
-        /// </summary>
-        public const string Target = "target";
-
-        /// <summary>
-        /// The name of the GraphML element representing the source of a node
-        /// </summary>
-        public const string Node = "node";
-
-        /// <summary>
-        /// The name of the GraphML element representing custom attributes for nodes and edges
-        /// </summary>
-        public const string Data = "data";
-
-        /// <summary>
-        /// The name of the GraphML attribute representing the domain of a key
-        /// </summary>
-        public const string Domain = "for";
-
-        /// <summary>
-        /// The name of the GraphML attribute representing the type of an attribute
-        /// </summary>
-        public const string AttributeTyte = "attr.type";
-
-        /// <summary>
-        /// The value representing the string type
-        /// </summary>
-        public const string String = "string";
-
-        /// <summary>
-        /// The value representing a node label attribute id
-        /// </summary>
-        public const string NodeLabel = "label";
-
-        /// <summary>
-        /// The value representing an edge label attribute id
-        /// </summary>
-        public const string EdgeLabel = "edgelabel";
-
-        /// <summary>
-        /// The name of the GraphML attribute representing the id of a node or edge
-        /// </summary>
-        public const string Id = "id";
-
-        /// <summary>
-        /// The name of the GraphML element representing a key
-        /// </summary>
-        public const string Key = "key";
     }
 }

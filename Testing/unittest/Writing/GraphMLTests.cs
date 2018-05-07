@@ -23,7 +23,6 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
@@ -59,21 +58,21 @@ namespace VDS.RDF.Writing
                 var graphElement = this.fixture.GraphElementByBaseUri(graph.BaseUri);
 
                 var expected = graph.Triples.Count();
-                var actual = graphElement.Elements(XName.Get(GraphMLHelper.Edge, GraphMLHelper.NS)).Count();
+                var actual = graphElement.Elements(XName.Get(GraphMLSpecsHelper.Edge, GraphMLSpecsHelper.NS)).Count();
 
                 Assert.Equal(expected, actual);
             }
         }
 
         [Fact]
-        public void Produces_an_node_element_per_node()
+        public void Produces_a_node_element_per_node()
         {
             foreach (var graph in this.fixture.Input.Graphs)
             {
                 var graphElement = this.fixture.GraphElementByBaseUri(graph.BaseUri);
 
                 var expected = graph.Nodes.Count();
-                var actual = graphElement.Elements(XName.Get(GraphMLHelper.Node, GraphMLHelper.NS)).Count();
+                var actual = graphElement.Elements(XName.Get(GraphMLSpecsHelper.Node, GraphMLSpecsHelper.NS)).Count();
 
                 Assert.Equal(expected, actual);
             }
@@ -85,61 +84,12 @@ namespace VDS.RDF.Writing
         {
             var reader = this.fixture.Output.CreateReader();
 
-            reader.Settings.Schemas.Add(GraphMLHelper.NS, GraphMLHelper.XsdUri);
+            reader.Settings.Schemas.Add(GraphMLSpecsHelper.NS, GraphMLSpecsHelper.XsdUri);
             reader.Settings.ValidationType = ValidationType.Schema;
             reader.Settings.ValidationEventHandler += (sender, e) => throw e.Exception;
 
             while (reader.Read()) { }
         }
 #endif
-    }
-
-    public class GraphMLFixture
-    {
-        internal ITripleStore Input { get; private set; }
-
-        internal XDocument Output { get; private set; }
-
-        public GraphMLFixture()
-        {
-            this.Output = new XDocument();
-            this.Input = GraphMLFixture.Load();
-
-            using (var outputWriter = this.Output.CreateWriter())
-            {
-                new GraphMLWriter().Save(this.Input, outputWriter);
-            }
-        }
-
-        private static ITripleStore Load()
-        {
-            var store = new TripleStore();
-
-            var graph1 = new Graph();
-            graph1.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            graph1.BaseUri = null;
-            store.Add(graph1);
-
-            var graph2 = new Graph();
-            graph2.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            store.Add(graph2);
-
-            return store;
-        }
-
-        internal XElement GraphElementByBaseUri(Uri baseUri)
-        {
-            var graphElements = this.Output.Descendants(XName.Get(GraphMLHelper.Graph, GraphMLHelper.NS));
-
-            if (baseUri == null)
-            {
-                return graphElements.Single(element => element.Attribute(GraphMLHelper.Id) == null);
-            }
-            else
-            {
-                return graphElements.Single(element => element.Attribute(GraphMLHelper.Id)?.Value == baseUri.AbsoluteUri);
-            }
-        }
-
     }
 }
