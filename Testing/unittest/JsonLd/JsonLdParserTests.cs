@@ -2,11 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 using Xunit;
+using StringWriter = VDS.RDF.Writing.StringWriter;
 
 namespace VDS.RDF.JsonLd
 {
@@ -134,6 +136,32 @@ namespace VDS.RDF.JsonLd
                     Assert.Equal(parsedDateTime, result);
                 }
             }
+        }
+
+        [Fact]
+        public void ItRetainsLocalContextWhenProcessingARemoteContext()
+        {
+            var jsonLd = @"
+{
+  '@context': [
+    { '@base': 'http://example.com/' },
+    'https://www.w3.org/ns/hydra/core'
+  ],
+  '@id': 'foo',
+  'rdf:type': 'hydra:Class'
+}";
+            var jsonLdParser = new JsonLdParser();
+            ITripleStore tStore = new TripleStore();
+            using (var reader = new StringReader(jsonLd))
+            {
+                jsonLdParser.Load(tStore, reader);
+            }
+            foreach (var t in tStore.Triples)
+            {
+                Console.WriteLine(t.Subject);
+            }
+            Assert.Contains(tStore.Triples, t=>t.Subject.As<IUriNode>().Uri.ToString().Equals("http://example.com/foo"));
+            
         }
     }
 }
