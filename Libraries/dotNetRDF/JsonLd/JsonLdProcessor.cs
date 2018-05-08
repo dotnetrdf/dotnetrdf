@@ -164,7 +164,8 @@ namespace VDS.RDF.JsonLd
                         {
                             remoteContext = remoteContext["@context"] as JObject;
                         }
-                        result = ProcessContext(activeContext, remoteContext, remoteContexts);
+
+                        result = ProcessContext(result, remoteContext, remoteContexts);
                     }
                     continue;
                 }
