@@ -117,7 +117,14 @@ namespace VDS.RDF.Writing
             // RDF is always a directed graph
             writer.WriteAttributeString(GraphMLSpecsHelper.Edgedefault, GraphMLSpecsHelper.Directed);
 
-            var nodesAlreadyWritten = new List<INode>();
+            GraphMLWriter.WriteTriples(writer, graph);
+
+            writer.WriteEndElement();
+        }
+
+        private static void WriteTriples(XmlWriter writer, IGraph graph)
+        {
+            var nodesAlreadyWritten = new HashSet<INode>();
 
             foreach (var triple in graph.Triples)
             {
@@ -127,22 +134,18 @@ namespace VDS.RDF.Writing
                     {
                         // Literal node identifiers are the whole statement so they become distinct
                         GraphMLWriter.WriteNode(writer, triple.GetHashCode().ToString(), node.ToString());
-                    }
-                    else
-                    {
-                        if (!nodesAlreadyWritten.Contains(node))
-                        {
-                            nodesAlreadyWritten.Add(node);
 
-                            GraphMLWriter.WriteNode(writer, node.GetHashCode().ToString(), node.ToString());
-                        }
+                        // TODO: Could add datatype and language as data elements
+                    }
+                    // Skip if already written
+                    else if (nodesAlreadyWritten.Add(node))
+                    {
+                        GraphMLWriter.WriteNode(writer, node.GetHashCode().ToString(), node.ToString());
                     }
                 }
 
                 GraphMLWriter.WriteEdge(writer, triple);
             }
-
-            writer.WriteEndElement();
         }
 
         private static void WriteEdge(XmlWriter writer, Triple triple)
