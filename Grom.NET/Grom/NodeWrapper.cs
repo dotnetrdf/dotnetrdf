@@ -31,7 +31,7 @@
 
             var predicate = indexes[0];
 
-            var predicateNode = Helper.ConvertNode(predicate, this.graphNode.Graph, this.baseUri);
+            var predicateNode = Helper.ConvertIndex(predicate, this.graphNode.Graph, this.baseUri);
 
             var propertyTriples = this.graphNode.Graph.GetTriplesWithSubjectPredicate(this.graphNode, predicateNode);
 
@@ -80,7 +80,7 @@
 
             var predicate = indexes[0];
 
-            var predicateNode = Helper.ConvertNode(predicate, this.graphNode.Graph, this.baseUri);
+            var predicateNode = Helper.ConvertIndex(predicate, this.graphNode.Graph, this.baseUri);
 
             var n = new Graph();
             n.Assert(this.graphNode.Graph.GetTriplesWithSubjectPredicate(this.graphNode, predicateNode));

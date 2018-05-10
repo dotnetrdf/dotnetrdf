@@ -1,6 +1,6 @@
-﻿namespace Grom.Tests
+﻿namespace Grom
 {
-    using Grom;
+    using Microsoft.CSharp.RuntimeBinder;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using System.Linq;
@@ -12,17 +12,340 @@
         public Uri P { get; set; }
     }
 
-    //[TestClass]
+    [TestClass]
     public class GraphWrapperTests
     {
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Constructor_fails_null_graph()
+        public void Get_index_with_absolute_uri_string()
         {
-            new GraphWrapper(null);
+            var graph = new Graph();
+            graph.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            dynamic dynamicGraph = new GraphWrapper(graph);
+
+            var expected = new NodeWrapper(graph.Triples.First().Subject);
+            var actual = dynamicGraph["http://example.com/s"];
+
+            Assert.AreEqual(expected, actual);
         }
 
         [TestMethod]
+        public void Indexing_supports_qnames()
+        {
+            var graph = new Graph();
+            graph.NamespaceMap.AddNamespace("ex", new Uri("http://example.com/"));
+            graph.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            dynamic dynamicGraph = new GraphWrapper(graph);
+
+            var expected = new NodeWrapper(graph.Triples.First().Subject);
+            var actual = dynamicGraph["ex:s"];
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void Get_index_with_qName_default_prefix()
+        {
+            var graph = new Graph();
+            graph.NamespaceMap.AddNamespace(string.Empty, new Uri("http://example.com/"));
+            graph.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            dynamic dynamicGraph = new GraphWrapper(graph);
+
+            var expected = new NodeWrapper(graph.Triples.First().Subject);
+            var actual = dynamicGraph[":s"];
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void Get_index_with_relative_uri_string()
+        {
+            var graph = new Graph();
+            graph.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            dynamic dynamicGraph = new GraphWrapper(graph, new Uri("http://example.com/"));
+
+            var expected = new NodeWrapper(graph.Triples.First().Subject);
+            var actual = dynamicGraph["s"];
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void Get_index_supports_hash_base()
+        {
+            var graph = new Graph();
+            graph.LoadFromString("<http://example.com/#s> <http://example.com/p> <http://example.com/o> .");
+
+            dynamic dynamicGraph = new GraphWrapper(graph, new Uri("http://example.com/#"));
+
+            var expected = new NodeWrapper(graph.Triples.First().Subject);
+            var actual = dynamicGraph["s"];
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void Indexing_supports_absolute_uris()
+        {
+            var graph = new Graph();
+            graph.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            dynamic dynamicGraph = new GraphWrapper(graph);
+
+            var expected = new NodeWrapper(graph.Triples.First().Subject);
+            var actual = dynamicGraph[new Uri("http://example.com/s")];
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void Indexing_supports_relative_uris()
+        {
+            var graph = new Graph();
+            graph.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            dynamic dynamicGraph = new GraphWrapper(graph, new Uri("http://example.com/"));
+
+            var expected = new NodeWrapper(graph.Triples.First().Subject);
+            var actual = dynamicGraph[new Uri("s", UriKind.Relative)];
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void Indexing_supports_uri_nodes()
+        {
+            var graph = new Graph();
+            graph.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            dynamic dynamicGraph = new GraphWrapper(graph);
+
+            var expected = new NodeWrapper(graph.Triples.First().Subject);
+            var actual = dynamicGraph[graph.CreateUriNode(new Uri("http://example.com/s"))];
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void Relative_indexing_requires_base_uri()
+        {
+            var graph = new Graph();
+            graph.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            dynamic dynamicGraph = new GraphWrapper(graph);
+
+            var actual = dynamicGraph["s"];
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void Property_access_requires_base_uri()
+        {
+            var graph = new Graph();
+            graph.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            dynamic dynamicGraph = new GraphWrapper(graph);
+
+            var actual = dynamicGraph.s;
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(RdfException))]
+        public void Cant_get_index_with_unknown_qName()
+        {
+            var graph = new Graph();
+            graph.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            dynamic dynamicGraph = new GraphWrapper(graph);
+
+            var actual = dynamicGraph["ex:s"];
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(FormatException))]
+        public void Cant_get_index_with_illegal_uri()
+        {
+            var graph = new Graph();
+            graph.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            dynamic dynamicGraph = new GraphWrapper(graph);
+
+            var actual = dynamicGraph["http:///"];
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(RuntimeBinderException))]
+        public void Cant_get_nonexistent_index()
+        {
+            var graph = new Graph();
+            graph.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            dynamic dynamicGraph = new GraphWrapper(graph);
+
+            var actual = dynamicGraph["http://example.com/nonexistent"];
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(RuntimeBinderException))]
+        public void Cant_get_nonexistent_member()
+        {
+            var graph = new Graph();
+            graph.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            dynamic dynamicGraph = new GraphWrapper(graph, new Uri("http://example.com/"));
+
+            var actual = dynamicGraph.nonexistent;
+        }
+
+        [TestMethod]
+        public void Only_subject_nodes_are_exposed()
+        {
+            var graph = new Graph();
+            graph.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            var dynamicGraph = new GraphWrapper(graph);
+
+            var collection = dynamicGraph.GetDynamicMemberNames().ToArray();
+            var element = "http://example.com/o";
+
+            CollectionAssert.DoesNotContain(collection, element);
+        }
+
+        [TestMethod]
+        public void Only_uri_nodes_are_exposed()
+        {
+            var graph = new Graph();
+            graph.LoadFromString("_:s <http://example.com/p> <http://example.com/o> .");
+
+            var dynamicGraph = new GraphWrapper(graph);
+
+            var expected = 0;
+            var actual = dynamicGraph.GetDynamicMemberNames().Count();
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void Multidimensional_indexing_is_forbidden()
+        {
+            var graph = new Graph();
+            graph.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            dynamic dynamicGraph = new GraphWrapper(graph);
+
+            var actual = dynamicGraph[0, 0];
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void Cant_get_index_with_unknown_type()
+        {
+            var graph = new Graph();
+            graph.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            dynamic dynamicGraph = new GraphWrapper(graph);
+
+            var actual = dynamicGraph[0];
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Cant_construct_without_graph()
+        {
+            dynamic dynamicGraph = new GraphWrapper(null);
+        }
+
+        [TestMethod]
+        public void Get_member()
+        {
+            var graph = new Graph();
+            graph.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            dynamic dynamicGraph = new GraphWrapper(graph, new Uri("http://example.com/"));
+
+            var expected = new NodeWrapper(graph.Triples.First().Subject);
+            var actual = dynamicGraph.s;
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void Subject_base_uri_defaults_to_graph_base_uri()
+        {
+            var graph = new Graph();
+            graph.BaseUri = new Uri("http://example.com/");
+            graph.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            dynamic dynamicGraph = new GraphWrapper(graph);
+
+            var expected = new NodeWrapper(graph.Triples.First().Subject);
+            var actual = dynamicGraph.s;
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void Dynamic_member_names_become_relative_to_base()
+        {
+            var graph = new Graph();
+            graph.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            var dynamicGraph = new GraphWrapper(graph, new Uri("http://example.com/"));
+
+            var actual = "s";
+            var expected = dynamicGraph.GetDynamicMemberNames().Single();
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void Dynamic_member_names_without_base_remain_absolute()
+        {
+            var graph = new Graph();
+            graph.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            var dynamicGraph = new GraphWrapper(graph);
+
+            var actual = "http://example.com/s";
+            var expected = dynamicGraph.GetDynamicMemberNames().Single();
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void Dynamic_member_names_unrelated_to_base_remain_absolute()
+        {
+            var graph = new Graph();
+            graph.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            var dynamicGraph = new GraphWrapper(graph, new Uri("http://example2.com/"));
+
+            var actual = "http://example.com/s";
+            var expected = dynamicGraph.GetDynamicMemberNames().Single();
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void Dynamic_member_names_support_hash_base()
+        {
+            var graph = new Graph();
+            graph.LoadFromString("<http://example.com/#s> <http://example.com/p> <http://example.com/o> .");
+
+            var dynamicGraph = new GraphWrapper(graph, new Uri("http://example.com/#"));
+
+            var actual = "s";
+            var expected = dynamicGraph.GetDynamicMemberNames().Single();
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        //[TestMethod]
         public void Set1()
         {
             var graph = new Graph();
@@ -34,7 +357,7 @@
             Console.WriteLine(wrapper.person1.job.name);
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void Set3()
         {
             var graph = new Graph();
@@ -44,7 +367,7 @@
             Console.WriteLine(wrapper.s.P[0]);
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void Set4()
         {
             var graph = new Graph();
@@ -59,52 +382,6 @@
             Assert.AreEqual("House of Lords", g.incumbency1.seatIncumbencyHasHouseSeat.houseSeatHasHouse.name);
 
             graph.SaveToStream(Console.Out, new CompressingTurtleWriter());
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void Get_index_fails_multidimensional()
-        {
-            dynamic wrapper = new GraphWrapper(new Graph());
-
-            var result = wrapper[0, 0];
-        }
-
-        [TestMethod]
-        [DynamicData(nameof(Data.MemberNames), typeof(Data))]
-        public void Member_names_reduce_correctly(string subject, Uri baseUri, string memberName)
-        {
-            var wrapper = new GraphWrapper(
-                Helper.Load($"<{subject}> <urn:example:p> <urn:example:o>."),
-                baseUri);
-
-            CollectionAssert.AreEqual(
-                new[] { memberName },
-                wrapper.GetDynamicMemberNames().ToArray());
-        }
-
-        [TestMethod]
-        public void Get_member()
-        {
-            var graph = Helper.Load("<http://example.com/subject1> <http://example.com/predicate1> <http://example.com/object1> .");
-
-            dynamic wrapper = new GraphWrapper(
-                graph,
-                new Uri("http://example.com/"));
-
-            Assert.AreEqual(
-                new NodeWrapper(graph.Nodes.UriNodes().First()),
-                wrapper.subject1);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void Get_member_fails_without_base()
-        {
-            dynamic wrapper = new GraphWrapper(
-                new Graph());
-
-            var result = wrapper.subject1;
         }
 
         //[TestMethod]
@@ -273,8 +550,11 @@
 <https://id.parliament.uk/DqWmAFwg> <https://id.parliament.uk/schema/seatIncumbencyHasHouseSeat> <https://id.parliament.uk/0BhROnYP> .
 ";
 
+            var graph = new Graph();
+            graph.LoadFromString(rdf);
+
             dynamic wrapper = new GraphWrapper(
-                Helper.Load(rdf),
+                graph,
                 new Uri("https://id.parliament.uk/"),
                 new Uri("https://id.parliament.uk/schema/"),
                 true);

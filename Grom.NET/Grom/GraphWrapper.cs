@@ -16,8 +16,8 @@
         public GraphWrapper(IGraph graph, Uri subjectBaseUri = null, Uri predicateBaseUri = null, bool collapseSingularArrays = false)
         {
             this.graph = graph ?? throw new ArgumentNullException(nameof(graph));
-            this.subjectBaseUri = subjectBaseUri;
-            this.predicateBaseUri = predicateBaseUri;
+            this.subjectBaseUri = subjectBaseUri ?? graph.BaseUri;
+            this.predicateBaseUri = predicateBaseUri; // TODO: Default to subjectBaseUrI?
             this.collapseSingularArrays = collapseSingularArrays;
         }
 
@@ -30,9 +30,9 @@
 
             var subject = indexes[0];
 
-            var subjectNode = Helper.ConvertNode(subject, this.graph, this.subjectBaseUri);
+            var subjectNode = Helper.ConvertIndex(subject, this.graph, this.subjectBaseUri);
 
-            result = this.graph.Nodes
+            result = this.graph.Triples.SubjectNodes
                 .UriNodes()
                 .Where(node => node.Equals(subjectNode))
                 .Select(node => new NodeWrapper(node, this.predicateBaseUri, this.collapseSingularArrays))
@@ -61,7 +61,7 @@
             if (!this.TryGetIndex(null, indexes, out object result))
             {
                 var subject = indexes[0];
-                var subjectNode = Helper.ConvertNode(subject, this.graph, this.subjectBaseUri);
+                var subjectNode = Helper.ConvertIndex(subject, this.graph, this.subjectBaseUri);
                 result = new NodeWrapper(subjectNode, this.predicateBaseUri, this.collapseSingularArrays);
             }
 

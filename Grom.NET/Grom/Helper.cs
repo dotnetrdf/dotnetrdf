@@ -3,36 +3,33 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using VDS.RDF;
-    using VDS.RDF.Parsing;
 
     internal static class Helper
     {
-        internal static IUriNode ConvertNode(object node, IGraph graph, Uri baseUri)
+        internal static IUriNode ConvertIndex(object index, IGraph graph, Uri baseUri)
         {
-            if (!(node is IUriNode predicateNode))
+            if (!(index is IUriNode indexNode))
             {
-                if (!(node is Uri predicateUri))
+                if (!(index is Uri indexUri))
                 {
-                    if (!(node is string predicateString))
+                    if (!(index is string indexString))
                     {
-                        throw new ArgumentException("Only IUriNode, Uri or string predicates", "predicate");
+                        throw new ArgumentException("Only IUriNode, Uri or string indices", "index");
                     }
 
-                    if (!Helper.TryResolveQName(predicateString, graph, out predicateUri))
+                    if (!Helper.TryResolveQName(indexString, graph, out indexUri))
                     {
-                        if (!Uri.TryCreate(predicateString, UriKind.RelativeOrAbsolute, out predicateUri))
+                        if (!Uri.TryCreate(indexString, UriKind.RelativeOrAbsolute, out indexUri))
                         {
                             throw new FormatException("Illegal Uri.");
                         }
                     }
                 }
 
-                if (!predicateUri.IsAbsoluteUri)
+                if (!indexUri.IsAbsoluteUri)
                 {
-                    // TODO: Consider graph.BaseUri?
-                    baseUri = baseUri ?? graph.BaseUri;
-
                     if (baseUri == null)
                     {
                         throw new InvalidOperationException("Can't use relative uri index without baseUri.");
@@ -40,20 +37,20 @@
 
                     if (baseUri.AbsoluteUri.EndsWith("#"))
                     {
-                        var builder = new UriBuilder(baseUri) { Fragment = predicateUri.ToString() };
+                        var builder = new UriBuilder(baseUri) { Fragment = indexUri.ToString() };
 
-                        predicateUri = builder.Uri;
+                        indexUri = builder.Uri;
                     }
                     else
                     {
-                        predicateUri = new Uri(baseUri, predicateUri);
+                        indexUri = new Uri(baseUri, indexUri);
                     }
                 }
 
-                predicateNode = graph.CreateUriNode(predicateUri);
+                indexNode = graph.CreateUriNode(indexUri);
             }
 
-            return predicateNode;
+            return indexNode;
         }
 
         internal static IEnumerable<string> GetDynamicMemberNames(IEnumerable<IUriNode> nodes, Uri baseUri)
@@ -63,7 +60,6 @@
 
         private static string GetPropertyName(IUriNode node, Uri baseUri)
         {
-            // TODO: Consider graph.BaseUri?
             // TODO: Consider qnames?
 
             var nodeUri = node.Uri;
@@ -81,24 +77,16 @@
             return baseUri.MakeRelativeUri(nodeUri).ToString();
         }
 
-        private static bool TryResolveQName(string predicate, IGraph graph, out Uri predicateUri)
+        private static bool TryResolveQName(string index, IGraph graph, out Uri indexUri)
         {
-            predicateUri = null;
 
-            //if (!RdfXmlSpecsHelper.IsValidQName(predicate))
-            //{
-            //    return false;
-            //}
-
-            try
+            if (!Regex.IsMatch(index, @"^\w*:\w+$"))
             {
-                predicateUri = graph.ResolveQName(predicate);
-            }
-            catch (RdfException)
-            {
+                indexUri = null;
                 return false;
             }
 
+            indexUri = graph.ResolveQName(index);
             return true;
         }
     }
