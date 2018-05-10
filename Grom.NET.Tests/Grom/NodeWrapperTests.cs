@@ -6,7 +6,7 @@
     using System.Linq.Expressions;
     using VDS.RDF;
 
-    [TestClass]
+    //[TestClass]
     public class NodeWrapperTests
     {
         [TestMethod]

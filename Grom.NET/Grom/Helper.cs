@@ -10,8 +10,6 @@
     {
         internal static IUriNode ConvertNode(object node, IGraph graph, Uri baseUri)
         {
-            // TODO: Consider graph.BaseUri?
-
             if (!(node is IUriNode predicateNode))
             {
                 if (!(node is Uri predicateUri))
@@ -32,6 +30,9 @@
 
                 if (!predicateUri.IsAbsoluteUri)
                 {
+                    // TODO: Consider graph.BaseUri?
+                    baseUri = baseUri ?? graph.BaseUri;
+
                     if (baseUri == null)
                     {
                         throw new InvalidOperationException("Can't use relative uri index without baseUri.");
@@ -84,10 +85,10 @@
         {
             predicateUri = null;
 
-            if (!RdfXmlSpecsHelper.IsValidQName(predicate))
-            {
-                return false;
-            }
+            //if (!RdfXmlSpecsHelper.IsValidQName(predicate))
+            //{
+            //    return false;
+            //}
 
             try
             {

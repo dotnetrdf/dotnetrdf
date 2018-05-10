@@ -7,7 +7,7 @@
     using VDS.RDF;
     using VDS.RDF.Nodes;
 
-    [TestClass]
+    //[TestClass]
     public class DynamicNodeTests
     {
         private dynamic wrapper;

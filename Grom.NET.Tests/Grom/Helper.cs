@@ -10,6 +10,7 @@
 
             graph.LoadFromString(rdf);
 
-            return graph;        }
+            return graph;
+        }
     }
 }

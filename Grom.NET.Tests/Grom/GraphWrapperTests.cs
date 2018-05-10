@@ -12,7 +12,7 @@
         public Uri P { get; set; }
     }
 
-    [TestClass]
+    //[TestClass]
     public class GraphWrapperTests
     {
         [TestMethod]
