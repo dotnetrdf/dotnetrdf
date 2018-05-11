@@ -3,6 +3,7 @@
     using Microsoft.CSharp.RuntimeBinder;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using VDS.RDF;
     using VDS.RDF.Writing;
@@ -290,6 +291,20 @@
         }
 
         [TestMethod]
+        public void Predicate_base_uri_defaults_to_subject_base_uri()
+        {
+            var graph = new Graph();
+            graph.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            dynamic dynamicGraph = new GraphWrapper(graph, new Uri("http://example.com/"));
+
+            var expected = new NodeWrapper(graph.Triples.First().Object);
+            var actual = dynamicGraph.s.p[0];
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
         public void Dynamic_member_names_become_relative_to_base()
         {
             var graph = new Graph();
@@ -345,8 +360,28 @@
             Assert.AreEqual(expected, actual);
         }
 
+        [TestMethod]
+        public void MyTestMethod()
+        {
+            var graph = new Graph();
+            dynamic dynamicGraph = new GraphWrapper(graph, new Uri("http://example.com/"));
+
+            //dynamicGraph["http://example.com/s"] = new[] { "a", "b" };
+            //dynamicGraph["http://example.com/s"] = new List<string>(new[] { "a", "b" });
+            //dynamicGraph["http://example.com/s"] = new[] { "a", "b" }.GetEnumerator();
+            //dynamicGraph["http://example.com/s"] = "";
+            //dynamicGraph["http://example.com/s"] = DateTime.Now;
+            //dynamicGraph["http://example.com/s"] = Guid.Empty;
+            //dynamicGraph["http://example.com/s"] = new Uri("http://example.com");
+            //dynamicGraph["http://example.com/s"] = new Graph();
+            dynamicGraph["http://example.com/s"] = new Dictionary<string, string> { { "a", "b" } };
+
+
+            new CompressingTurtleWriter().Save(graph, Console.Out);
+        }
+
         //[TestMethod]
-        public void Set1()
+        public void Set_member_1()
         {
             var graph = new Graph();
             dynamic wrapper = new GraphWrapper(graph, new Uri("http://example.com/"), new Uri("http://example.com/"), true);
@@ -358,7 +393,7 @@
         }
 
         //[TestMethod]
-        public void Set3()
+        public void Set_index_1()
         {
             var graph = new Graph();
             dynamic wrapper = new GraphWrapper(graph, new Uri("http://example.com/"), new Uri("http://example.com/"));
@@ -368,7 +403,7 @@
         }
 
         //[TestMethod]
-        public void Set4()
+        public void Set_all_example()
         {
             var graph = new Graph();
             dynamic g = new GraphWrapper(graph, new Uri("https://id.parliament.uk/"), new Uri("https://id.parliament.uk/schema/"), true);
@@ -385,7 +420,7 @@
         }
 
         //[TestMethod]
-        public void PersonByIdGraph()
+        public void Get_all_example()
         {
             var rdf = @"
 <https://id.parliament.uk/43RHonMf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://id.parliament.uk/schema/Person> .

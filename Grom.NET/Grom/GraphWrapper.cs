@@ -1,9 +1,11 @@
 ﻿namespace Grom
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Dynamic;
     using System.Linq;
+    using System.Reflection;
     using VDS.RDF;
 
     public class GraphWrapper : DynamicObject
@@ -16,8 +18,8 @@
         public GraphWrapper(IGraph graph, Uri subjectBaseUri = null, Uri predicateBaseUri = null, bool collapseSingularArrays = false)
         {
             this.graph = graph ?? throw new ArgumentNullException(nameof(graph));
-            this.subjectBaseUri = subjectBaseUri ?? graph.BaseUri;
-            this.predicateBaseUri = predicateBaseUri; // TODO: Default to subjectBaseUrI?
+            this.subjectBaseUri = subjectBaseUri ?? this.graph.BaseUri;
+            this.predicateBaseUri = predicateBaseUri ?? this.subjectBaseUri;
             this.collapseSingularArrays = collapseSingularArrays;
         }
 
@@ -28,9 +30,7 @@
                 throw new ArgumentException("Only one index", "indexes");
             }
 
-            var subject = indexes[0];
-
-            var subjectNode = Helper.ConvertIndex(subject, this.graph, this.subjectBaseUri);
+            var subjectNode = Helper.ConvertIndex(indexes[0], this.graph, this.subjectBaseUri);
 
             result = this.graph.Triples.SubjectNodes
                 .UriNodes()
@@ -58,18 +58,52 @@
                 throw new ArgumentException("Only one index", "indexes");
             }
 
+            if (value is IEnumerable && !(value is string || value is IDictionary))
+            {
+                throw new ArgumentException("Value cannot be enumerable.", "value");
+            }
+
+            var subjectIndex = indexes[0];
+
             if (!this.TryGetIndex(null, indexes, out object result))
             {
-                var subject = indexes[0];
-                var subjectNode = Helper.ConvertIndex(subject, this.graph, this.subjectBaseUri);
+                var subjectNode = Helper.ConvertIndex(subjectIndex, this.graph, this.subjectBaseUri);
                 result = new NodeWrapper(subjectNode, this.predicateBaseUri, this.collapseSingularArrays);
             }
 
             var subjectWrapper = result as NodeWrapper;
 
-            foreach (var p in value.GetType().GetProperties())
+            if (!(value is IDictionary valueDictionary))
             {
-                subjectWrapper.TrySetIndex(null, new[] { p.Name }, p.GetValue(value));
+                valueDictionary = new Dictionary<object, object>();
+
+                var properties = value.GetType()
+                    .GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty)
+                    .Where(p => p.CanRead)
+                    .Where(p => p.GetIndexParameters().Count() == 0);
+
+                if (!properties.Any())
+                {
+                    throw new ArgumentException($"Value type {value.GetType()} for subject {subjectIndex} lacks readable public instance properties.", "value");
+                }
+
+                foreach (var property in properties)
+                {
+                    valueDictionary[property.Name] = property.GetValue(value);
+                    //try
+                    //{
+                    //subjectWrapper.TrySetIndex(null, new[] { property.Name }, property.GetValue(value));
+                    //}
+                    //catch (Exception e)
+                    //{
+                    //    throw new Exception($"Can't set property {property.Name} for {subjectIndex}", e);
+                    //}
+                }
+            }
+
+            foreach (var key in valueDictionary.Keys)
+            {
+                subjectWrapper.TrySetIndex(null, new[] { key }, valueDictionary[key]);
             }
 
             return true;

@@ -82,11 +82,20 @@
 
             var predicateNode = Helper.ConvertIndex(predicate, this.graphNode.Graph, this.baseUri);
 
+            var n2 = new Graph();
+            var a = this.ConvertValues(value);
+
+            try
+            {
+                n2.Assert(this.ConvertValues(value).Select(node => new Triple(this.graphNode, predicateNode, node, this.graphNode.Graph)));
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Can't convert property {predicate}", e);
+            }
+
             var n = new Graph();
             n.Assert(this.graphNode.Graph.GetTriplesWithSubjectPredicate(this.graphNode, predicateNode));
-
-            var n2 = new Graph();
-            n2.Assert(this.ConvertValues(value).Select(node => new Triple(this.graphNode, predicateNode, node, this.graphNode.Graph)));
 
             var d = n.Difference(n2);
             if (!d.AreEqual)
@@ -111,7 +120,7 @@
         {
             if (this.baseUri == null)
             {
-                throw new InvalidOperationException("Can't set member without baseUri.");
+                throw new InvalidOperationException($"Can't set member {binder.Name} without baseUri.");
             }
 
             return this.TrySetIndex(null, new[] { binder.Name }, value);
@@ -163,7 +172,7 @@
 
             if (value is string || !(value is IEnumerable enumerableValue)) // Strings are enumerable but not for our case
             {
-                enumerableValue = value.AsEnumerable();
+                enumerableValue = value.AsEnumerable(); // When they're not enumerable, wrap them in an enumerable of one
             }
 
             foreach (var item in enumerableValue)
@@ -194,7 +203,7 @@
                 return nodeValue;
             }
 
-            throw new Exception("Unrecognized value type");
+            throw new Exception($"Can't convert type {value.GetType()}");
         }
 
         private bool TryConvertLiteralValue(object value, out INode literalNode)
