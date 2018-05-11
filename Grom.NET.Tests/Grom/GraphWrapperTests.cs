@@ -361,6 +361,37 @@
         }
 
         [TestMethod]
+        public void Indexing_supports_setting_dictionaries()
+        {
+            var graph = new Graph();
+            dynamic dynamicGraph = new GraphWrapper(graph);
+
+            dynamicGraph["http://example.com/s"] = new Dictionary<string, string> {
+                { "http://example.com/s", "o" }
+            };
+
+            var actual = "o";
+            var expected = graph.Nodes.LiteralNodes().Single().Value;
+
+            Assert.AreEqual(expected, actual);
+        }
+
+
+        [TestMethod]
+        public void Indexing_supports_setting_custom_classes()
+        {
+            var graph = new Graph();
+            dynamic dynamicGraph = new GraphWrapper(graph, new Uri("http://example.com"));
+
+            dynamicGraph["s"] = new { p = "o" };
+
+            var actual = "o";
+            var expected = graph.Nodes.LiteralNodes().Single().Value;
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        //[TestMethod]
         public void MyTestMethod()
         {
             var graph = new Graph();
