@@ -95,7 +95,7 @@ namespace VDS.RDF.Writing
         /// <param name="output">Stream to save to</param>
         /// <param name="leaveOpen">Whether to leave <paramref name="output"/> open after writing the graph</param>
         public void Save(IGraph g, TextWriter output, bool leaveOpen)
-        { 
+        {
             try
             {
                 g.NamespaceMap.Import(_defaultNamespaces);
@@ -187,7 +187,9 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Tbody);
 
             TripleCollection triplesDone = new TripleCollection();
-            foreach (INode subj in context.Graph.Triples.SubjectNodes)
+            
+            // HACK: Getting subject nodes explicitly while BaseTripleCollection.SubjectNodes is broken for indexed graphs
+            foreach (INode subj in context.Graph.Triples.Select(t => t.Subject).Distinct())
             {
                 IEnumerable<Triple> ts = context.Graph.GetTriplesWithSubject(subj);
 
@@ -200,7 +202,7 @@ namespace VDS.RDF.Writing
 
                 context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Td);
                 context.HtmlWriter.WriteLine();
-      
+
                 // For each Subject add an anchor if it can be reduced to a QName
                 if (subj.NodeType == NodeType.Uri)
                 {
@@ -303,7 +305,7 @@ namespace VDS.RDF.Writing
         /// <param name="n">Node</param>
         /// <param name="t">Triple being written</param>
         private void GenerateNodeOutput(HtmlWriterContext context, INode n, Triple t)
-        {                
+        {
             // Embed RDFa on the Node Output
             bool rdfASerializable = false;
             if (t != null)
