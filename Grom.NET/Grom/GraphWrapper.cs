@@ -58,11 +58,6 @@
                 throw new ArgumentException("Only one index", "indexes");
             }
 
-            if (value is IEnumerable && !(value is string || value is IDictionary))
-            {
-                throw new ArgumentException("Value cannot be enumerable.", "value");
-            }
-
             var subjectIndex = indexes[0];
 
             if (!this.TryGetIndex(null, indexes, out object result))
@@ -90,14 +85,6 @@
                 foreach (var property in properties)
                 {
                     valueDictionary[property.Name] = property.GetValue(value);
-                    //try
-                    //{
-                    //subjectWrapper.TrySetIndex(null, new[] { property.Name }, property.GetValue(value));
-                    //}
-                    //catch (Exception e)
-                    //{
-                    //    throw new Exception($"Can't set property {property.Name} for {subjectIndex}", e);
-                    //}
                 }
             }
 
