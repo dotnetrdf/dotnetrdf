@@ -48,6 +48,17 @@
         }
 
         [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Cant_work_with_null_index()
+        {
+            var graph = GenerateSPOGraph();
+
+            dynamic dynamicGraph = new GraphWrapper(graph, exampleBase);
+
+            var actual = dynamicGraph[null];
+        }
+
+        [TestMethod]
         public void Node_support_wrapper_indices()
         {
             var graph = GenerateSPOGraph();

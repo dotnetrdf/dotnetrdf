@@ -30,6 +30,11 @@
                 throw new ArgumentException("Only one index", "indexes");
             }
 
+            if (indexes[0] == null)
+            {
+                throw new ArgumentNullException("Can't work with null index", "indexes");
+            }
+
             var subjectNode = Helper.ConvertIndex(indexes[0], this.graph, this.subjectBaseUri);
 
             result = this.graph.Triples.SubjectNodes
@@ -81,7 +86,6 @@
 
                 var properties = value.GetType()
                     .GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty)
-                    .Where(p => p.CanRead)
                     .Where(p => p.GetIndexParameters().Count() == 0);
 
                 if (!properties.Any())
