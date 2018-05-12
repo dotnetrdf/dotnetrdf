@@ -10,7 +10,7 @@
 
     public class NodeWrapper : DynamicObject, IEquatable<NodeWrapper>, IComparable<NodeWrapper>
     {
-        private readonly INode graphNode;
+        internal readonly INode graphNode;
         private readonly Uri baseUri;
         private readonly bool collapseSingularArrays;
 

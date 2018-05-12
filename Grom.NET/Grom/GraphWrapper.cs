@@ -68,6 +68,13 @@
 
             var subjectWrapper = result as NodeWrapper;
 
+            if (value == null)
+            {
+                this.graph.Retract(this.graph.GetTriplesWithSubject(subjectWrapper.graphNode).ToArray());
+
+                return true;
+            }
+
             if (!(value is IDictionary valueDictionary))
             {
                 valueDictionary = new Dictionary<object, object>();

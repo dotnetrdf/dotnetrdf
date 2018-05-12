@@ -6,6 +6,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using VDS.RDF;
+    using VDS.RDF.Nodes;
     using VDS.RDF.Writing;
 
     public class CustomClass
@@ -28,6 +29,73 @@
             spoGraph.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
 
             return spoGraph;
+        }
+
+        [TestMethod]
+        public void Graph_support_wrapper_indices()
+        {
+            var graph = GenerateSPOGraph();
+
+            dynamic dynamicGraph = new GraphWrapper(graph, exampleBase);
+
+            dynamic s = dynamicGraph.s;
+
+            dynamicGraph[s] = new { p = 0 };
+
+            Assert.AreEqual(
+                0,
+                graph.Triples.Single().Object.AsValuedNode().AsInteger());
+        }
+
+        [TestMethod]
+        public void Node_support_wrapper_indices()
+        {
+            var graph = GenerateSPOGraph();
+
+            dynamic dynamicGraph = new GraphWrapper(graph, exampleBase);
+
+            dynamic s = dynamicGraph.s;
+            dynamic o = s.p[0];
+
+            s[o] = "o";
+
+            Assert.IsNotNull(
+               graph.GetTriplesWithObject(graph.CreateLiteralNode("o")).SingleOrDefault());
+        }
+
+        [TestMethod]
+        public void Indes_set_null_deletes_by_subject()
+        {
+            var graph = GenerateSPOGraph();
+
+            dynamic dynamicGraph = new GraphWrapper(graph);
+
+            dynamicGraph["http://example.com/s"] = null;
+
+            Assert.IsTrue(graph.IsEmpty);
+        }
+
+        [TestMethod]
+        public void Member_set_null_deletes_by_subject()
+        {
+            var graph = GenerateSPOGraph();
+
+            dynamic dynamicGraph = new GraphWrapper(graph, exampleBase);
+
+            dynamicGraph.s = null;
+
+            Assert.IsTrue(graph.IsEmpty);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void Cant_set_without_readable_public_properties()
+        {
+            var graph = GenerateSPOGraph();
+
+            dynamic dynamicGraph = new GraphWrapper(graph, exampleBase);
+
+            dynamicGraph.s = new { };
         }
 
         [TestMethod]
