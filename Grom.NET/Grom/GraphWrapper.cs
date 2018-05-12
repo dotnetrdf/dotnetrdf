@@ -37,8 +37,7 @@
 
             var subjectNode = Helper.ConvertIndex(indexes[0], this.graph, this.subjectBaseUri);
 
-            result = this.graph
-                .Nodes
+            result = this.graph.Triples.SubjectNodes
                 .UriNodes()
                 .Where(node => node.Equals(subjectNode))
                 .Select(node => new NodeWrapper(node, this.predicateBaseUri, this.collapseSingularArrays))
@@ -120,7 +119,7 @@
 
         public override IEnumerable<string> GetDynamicMemberNames()
         {
-            var subjectUriNodes = this.graph.Nodes.UriNodes();
+            var subjectUriNodes = this.graph.Triples.SubjectNodes.UriNodes();
 
             return Helper.GetDynamicMemberNames(subjectUriNodes, this.subjectBaseUri);
         }
