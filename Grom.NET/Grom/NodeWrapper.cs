@@ -37,15 +37,13 @@
                 throw new ArgumentException("Only one index", "indexes");
             }
 
-            var predicateIndex = indexes[0];
+            var predicate = indexes[0];
 
-            var predicateNode = DynamicHelper.ConvertIndexToNode(predicateIndex, this.graphNode.Graph, this.baseUri);
+            var predicateNode = DynamicHelper.ConvertToNode(predicate, this.graphNode.Graph, this.baseUri);
 
-            var propertyTriples = this.graphNode.Graph.GetTriplesWithSubjectPredicate(this.graphNode, predicateNode);
+            var triples = this.graphNode.Graph.GetTriplesWithSubjectPredicate(this.graphNode, predicateNode);
 
-            var nodes =
-                from triple in propertyTriples
-                select this.ConvertNodeObject(triple.Object);
+            var nodes = triples.Select(t => this.ConvertToObject(t.Object));
 
             if (this.collapseSingularArrays && nodes.Count() == 1)
             {
@@ -76,9 +74,9 @@
                 throw new ArgumentException("Only one index", "indexes");
             }
 
-            var predicateIndex = indexes[0];
-            var difference = this.CalculateDifference(predicateIndex, value);
-            this.ApplyDifference(difference);
+            var predicate = indexes[0];
+            var difference = this.CalculateDifference(predicate, value);
+            this.Apply(difference);
 
             return true;
         }
@@ -105,24 +103,27 @@
         #endregion
 
         #region Internals
-        private GraphDiffReport CalculateDifference(object predicateIndex, object value)
+        private GraphDiffReport CalculateDifference(object predicate, object value)
         {
-            var predicateNode = DynamicHelper.ConvertIndexToNode(predicateIndex, this.graphNode.Graph, this.baseUri);
+            var predicateNode = DynamicHelper.ConvertToNode(predicate, this.graphNode.Graph, this.baseUri);
 
-            using (var n2 = new Graph())
+            var newStatements = this.ConvertToTriples(predicateNode, value);
+            var currentStatements = this.graphNode.Graph.GetTriplesWithSubjectPredicate(this.graphNode, predicateNode);
+
+            using (var newState = new Graph())
             {
-                n2.Assert(this.ConvertObjectsToTriples(predicateNode, value));
+                newState.Assert(newStatements);
 
-                using (var n = new Graph())
+                using (var currentState = new Graph())
                 {
-                    n.Assert(this.graphNode.Graph.GetTriplesWithSubjectPredicate(this.graphNode, predicateNode));
+                    currentState.Assert(currentStatements);
 
-                    return n.Difference(n2);
+                    return currentState.Difference(newState);
                 }
             }
         }
 
-        private void ApplyDifference(GraphDiffReport difference)
+        private void Apply(GraphDiffReport difference)
         {
             if (!difference.AreEqual)
             {
@@ -134,9 +135,9 @@
             }
         }
 
-        private object ConvertNodeObject(INode tripleObject)
+        private object ConvertToObject(INode objectNode)
         {
-            var valuedNode = tripleObject.AsValuedNode();
+            var valuedNode = objectNode.AsValuedNode();
 
             switch (valuedNode)
             {
@@ -170,7 +171,7 @@
             }
         }
 
-        private IEnumerable<Triple> ConvertObjectsToTriples(INode predicateNode, object value)
+        private IEnumerable<Triple> ConvertToTriples(INode predicateNode, object value)
         {
             if (value == null)
             {
@@ -184,16 +185,20 @@
 
             foreach (var item in enumerableValue)
             {
-                yield return new Triple(this.graphNode, predicateNode, ConvertObjectToNode(item), this.graphNode.Graph);
+                yield return new Triple(
+                    subj: this.graphNode,
+                    pred: predicateNode,
+                    obj: this.ConvertToNode(item),
+                    g: this.graphNode.Graph);
             }
         }
 
-        private INode ConvertObjectToNode(object value)
+        private INode ConvertToNode(object value)
         {
             switch (value)
             {
-                case DynamicNode wrapperValue:
-                    return wrapperValue.graphNode;
+                case DynamicNode dynamicValue:
+                    return dynamicValue.graphNode;
 
                 case INode nodeValue:
                     return nodeValue;

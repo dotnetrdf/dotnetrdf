@@ -8,7 +8,7 @@
 
     internal static class DynamicHelper
     {
-        internal static IUriNode ConvertIndexToNode(object index, IGraph graph, Uri baseUri)
+        internal static IUriNode ConvertToNode(object index, IGraph graph, Uri baseUri)
         {
             if (index is DynamicNode indexWrapper)
             {
@@ -60,13 +60,11 @@
 
         internal static IEnumerable<string> GetDynamicMemberNames(IEnumerable<IUriNode> nodes, Uri baseUri)
         {
-            return nodes.Select(node => GetPropertyName(node, baseUri));
+            return nodes.Select(node => DynamicHelper.ConvertToName(node, baseUri));
         }
 
-        private static string GetPropertyName(IUriNode node, Uri baseUri)
+        private static string ConvertToName(IUriNode node, Uri baseUri)
         {
-            // TODO: Consider qnames?
-
             var nodeUri = node.Uri;
 
             if (node.Graph.NamespaceMap.ReduceToQName(nodeUri.AbsoluteUri, out string qname))
@@ -89,7 +87,7 @@
 
         private static bool TryResolveQName(string index, IGraph graph, out Uri indexUri)
         {
-
+            // TODO: This is naive
             if (!Regex.IsMatch(index, @"^\w*:\w+$"))
             {
                 indexUri = null;

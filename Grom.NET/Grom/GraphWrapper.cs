@@ -37,7 +37,7 @@
                 throw new ArgumentNullException("Can't work with null index", "indexes");
             }
 
-            var subjectNode = DynamicHelper.ConvertIndexToNode(subjectIndex, this.graph, this.subjectBaseUri);
+            var subjectNode = DynamicHelper.ConvertToNode(subjectIndex, this.graph, this.subjectBaseUri);
 
             result = this.graph.Triples.SubjectNodes
                 .UriNodes()
@@ -69,7 +69,7 @@
 
             if (!this.TryGetIndex(null, indexes, out object result))
             {
-                var subjectNode = DynamicHelper.ConvertIndexToNode(subjectIndex, this.graph, this.subjectBaseUri);
+                var subjectNode = DynamicHelper.ConvertToNode(subjectIndex, this.graph, this.subjectBaseUri);
                 result = new DynamicNode(subjectNode, this.predicateBaseUri, this.collapseSingularArrays);
             }
 
