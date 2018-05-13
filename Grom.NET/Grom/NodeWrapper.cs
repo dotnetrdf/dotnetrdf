@@ -14,12 +14,20 @@
         private readonly Uri baseUri;
         private readonly bool collapseSingularArrays;
 
-        public DynamicNode(INode graphNode, Uri baseUri = null, bool collapseSingularArrays = false)
+        #region Constructors
+        public DynamicNode(INode graphNode) : this(graphNode, null) { }
+
+        public DynamicNode(INode graphNode, Uri baseUri) : this(graphNode, baseUri, false) { }
+
+        public DynamicNode(INode graphNode, bool collapseSingularArrays) : this(graphNode, null, collapseSingularArrays) { }
+
+        public DynamicNode(INode graphNode, Uri baseUri, bool collapseSingularArrays)
         {
             this.graphNode = graphNode ?? throw new ArgumentNullException(nameof(graphNode));
             this.baseUri = baseUri;
             this.collapseSingularArrays = collapseSingularArrays;
         }
+        #endregion
 
         #region DynamicObject
         public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
@@ -29,15 +37,15 @@
                 throw new ArgumentException("Only one index", "indexes");
             }
 
-            var predicate = indexes[0];
+            var predicateIndex = indexes[0];
 
-            var predicateNode = DynamicHelper.ConvertIndex(predicate, this.graphNode.Graph, this.baseUri);
+            var predicateNode = DynamicHelper.ConvertIndexToNode(predicateIndex, this.graphNode.Graph, this.baseUri);
 
             var propertyTriples = this.graphNode.Graph.GetTriplesWithSubjectPredicate(this.graphNode, predicateNode);
 
             var nodes =
                 from triple in propertyTriples
-                select this.ConvertObject(triple.Object);
+                select this.ConvertNodeObject(triple.Object);
 
             if (this.collapseSingularArrays && nodes.Count() == 1)
             {
@@ -55,20 +63,10 @@
         {
             if (this.baseUri == null)
             {
-                throw new InvalidOperationException("Can't get member without baseUri.");
+                throw new InvalidOperationException($"Can't get member {binder.Name} without baseUri.");
             }
 
             return this.TryGetIndex(null, new[] { binder.Name }, out result);
-        }
-
-        public override IEnumerable<string> GetDynamicMemberNames()
-        {
-            var distinctPredicateNodes = this.graphNode.Graph
-                .GetTriplesWithSubject(this.graphNode)
-                .Select(triple => triple.Predicate as IUriNode)
-                .Distinct();
-
-            return DynamicHelper.GetDynamicMemberNames(distinctPredicateNodes, this.baseUri);
         }
 
         public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
@@ -78,40 +76,9 @@
                 throw new ArgumentException("Only one index", "indexes");
             }
 
-            var predicate = indexes[0];
-
-            var predicateNode = DynamicHelper.ConvertIndex(predicate, this.graphNode.Graph, this.baseUri);
-
-            var n2 = new Graph();
-            var a = this.ConvertValues(value);
-
-            try
-            {
-                n2.Assert(this.ConvertValues(value).Select(node => new Triple(this.graphNode, predicateNode, node, this.graphNode.Graph)));
-            }
-            catch (Exception e)
-            {
-                throw new Exception($"Can't convert property {predicate}", e);
-            }
-
-            var n = new Graph();
-            n.Assert(this.graphNode.Graph.GetTriplesWithSubjectPredicate(this.graphNode, predicateNode));
-
-            var d = n.Difference(n2);
-            if (!d.AreEqual)
-            {
-                foreach (var x in d.RemovedMSGs)
-                {
-                    this.graphNode.Graph.Retract(x.Triples);
-                }
-                foreach (var x in d.AddedMSGs)
-                {
-                    this.graphNode.Graph.Assert(x.Triples);
-                }
-
-                this.graphNode.Graph.Retract(d.RemovedTriples);
-                this.graphNode.Graph.Assert(d.AddedTriples);
-            }
+            var predicateIndex = indexes[0];
+            var difference = this.CalculateDifference(predicateIndex, value);
+            this.ApplyDifference(difference);
 
             return true;
         }
@@ -125,9 +92,49 @@
 
             return this.TrySetIndex(null, new[] { binder.Name }, value);
         }
+
+        public override IEnumerable<string> GetDynamicMemberNames()
+        {
+            var distinctPredicateNodes = this.graphNode.Graph
+                .GetTriplesWithSubject(this.graphNode)
+                .Select(triple => triple.Predicate as IUriNode)
+                .Distinct();
+
+            return DynamicHelper.GetDynamicMemberNames(distinctPredicateNodes, this.baseUri);
+        }
         #endregion
 
-        private object ConvertObject(INode tripleObject)
+        #region Internals
+        private GraphDiffReport CalculateDifference(object predicateIndex, object value)
+        {
+            var predicateNode = DynamicHelper.ConvertIndexToNode(predicateIndex, this.graphNode.Graph, this.baseUri);
+
+            using (var n2 = new Graph())
+            {
+                n2.Assert(this.ConvertObjectsToTriples(predicateNode, value));
+
+                using (var n = new Graph())
+                {
+                    n.Assert(this.graphNode.Graph.GetTriplesWithSubjectPredicate(this.graphNode, predicateNode));
+
+                    return n.Difference(n2);
+                }
+            }
+        }
+
+        private void ApplyDifference(GraphDiffReport difference)
+        {
+            if (!difference.AreEqual)
+            {
+                this.graphNode.Graph.Retract(difference.RemovedMSGs.SelectMany(g => g.Triples));
+                this.graphNode.Graph.Assert(difference.AddedMSGs.SelectMany(g => g.Triples));
+
+                this.graphNode.Graph.Retract(difference.RemovedTriples);
+                this.graphNode.Graph.Assert(difference.AddedTriples);
+            }
+        }
+
+        private object ConvertNodeObject(INode tripleObject)
         {
             var valuedNode = tripleObject.AsValuedNode();
 
@@ -163,7 +170,7 @@
             }
         }
 
-        private IEnumerable<INode> ConvertValues(object value)
+        private IEnumerable<Triple> ConvertObjectsToTriples(INode predicateNode, object value)
         {
             if (value == null)
             {
@@ -177,92 +184,64 @@
 
             foreach (var item in enumerableValue)
             {
-                yield return ConvertValue(item);
+                yield return new Triple(this.graphNode, predicateNode, ConvertObjectToNode(item), this.graphNode.Graph);
             }
         }
 
-        private INode ConvertValue(object value)
-        {
-            if (value is DynamicNode wrapperValue)
-            {
-                value = wrapperValue.graphNode;
-            }
-
-            if (value is Uri uriValue)
-            {
-                value = this.graphNode.Graph.CreateUriNode(uriValue);
-            }
-
-            if (this.TryConvertLiteralValue(value, out INode literalNode))
-            {
-                value = literalNode;
-            }
-
-            if (value is INode nodeValue)
-            {
-                return nodeValue;
-            }
-
-            throw new Exception($"Can't convert type {value.GetType()}");
-        }
-
-        private bool TryConvertLiteralValue(object value, out INode literalNode)
+        private INode ConvertObjectToNode(object value)
         {
             switch (value)
             {
+                case DynamicNode wrapperValue:
+                    return wrapperValue.graphNode;
+
+                case INode nodeValue:
+                    return nodeValue;
+
+                case Uri uriValue:
+                    return this.graphNode.Graph.CreateUriNode(uriValue);
+
                 case bool boolValue:
-                    literalNode = new BooleanNode(this.graphNode.Graph, boolValue);
-                    return true;
+                    return new BooleanNode(this.graphNode.Graph, boolValue);
 
                 case byte byteValue:
-                    literalNode = new ByteNode(this.graphNode.Graph, byteValue);
-                    return true;
+                    return new ByteNode(this.graphNode.Graph, byteValue);
 
                 case DateTime dateTimeValue:
-                    literalNode = new DateTimeNode(this.graphNode.Graph, dateTimeValue);
-                    return true;
+                    return new DateTimeNode(this.graphNode.Graph, dateTimeValue);
 
                 case DateTimeOffset dateTimeOffsetValue:
-                    literalNode = new DateTimeNode(this.graphNode.Graph, dateTimeOffsetValue);
-                    return true;
+                    return new DateTimeNode(this.graphNode.Graph, dateTimeOffsetValue);
 
                 case decimal decimalValue:
-                    literalNode = new DecimalNode(this.graphNode.Graph, decimalValue);
-                    return true;
+                    return new DecimalNode(this.graphNode.Graph, decimalValue);
 
                 case double doubleValue:
-                    literalNode = new DoubleNode(this.graphNode.Graph, doubleValue);
-                    return true;
+                    return new DoubleNode(this.graphNode.Graph, doubleValue);
 
                 case float floatValue:
-                    literalNode = new FloatNode(this.graphNode.Graph, floatValue);
-                    return true;
+                    return new FloatNode(this.graphNode.Graph, floatValue);
 
                 case long longValue:
-                    literalNode = new LongNode(this.graphNode.Graph, longValue);
-                    return true;
+                    return new LongNode(this.graphNode.Graph, longValue);
 
                 case int intValue:
-                    literalNode = new LongNode(this.graphNode.Graph, intValue);
-                    return true;
+                    return new LongNode(this.graphNode.Graph, intValue);
 
                 case string stringValue:
-                    literalNode = new StringNode(this.graphNode.Graph, stringValue);
-                    return true;
+                    return new StringNode(this.graphNode.Graph, stringValue);
 
                 case char charValue:
-                    literalNode = new StringNode(this.graphNode.Graph, charValue.ToString());
-                    return true;
+                    return new StringNode(this.graphNode.Graph, charValue.ToString());
 
                 case TimeSpan timeSpanValue:
-                    literalNode = new TimeSpanNode(this.graphNode.Graph, timeSpanValue);
-                    return true;
+                    return new TimeSpanNode(this.graphNode.Graph, timeSpanValue);
 
                 default:
-                    literalNode = null;
-                    return false;
+                    throw new Exception($"Can't convert type {value.GetType()}");
             }
         }
+        #endregion
 
         #region Object
         public override bool Equals(object other)

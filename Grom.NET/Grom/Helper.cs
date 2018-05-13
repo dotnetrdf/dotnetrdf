@@ -8,7 +8,7 @@
 
     internal static class DynamicHelper
     {
-        internal static IUriNode ConvertIndex(object index, IGraph graph, Uri baseUri)
+        internal static IUriNode ConvertIndexToNode(object index, IGraph graph, Uri baseUri)
         {
             if (index is DynamicNode indexWrapper)
             {
