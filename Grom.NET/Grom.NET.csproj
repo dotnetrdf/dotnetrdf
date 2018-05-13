@@ -31,9 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Grom\GraphWrapper.cs" />
-    <Compile Include="Grom\Helper.cs" />
-    <Compile Include="Grom\NodeWrapper.cs" />
+    <Compile Include="Dynamic\DynamicGraph.cs" />
+    <Compile Include="Dynamic\DynamicHelper.cs" />
+    <Compile Include="Dynamic\DynamicNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

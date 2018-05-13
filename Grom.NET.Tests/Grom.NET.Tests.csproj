@@ -70,8 +70,8 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="Grom\GraphWrapperTests.cs" />
-    <Compile Include="Grom\NodeWrapperTests.cs" />
+    <Compile Include="Dynamic\DynamicGraphTests.cs" />
+    <Compile Include="Dynamic\DynamicNodeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
