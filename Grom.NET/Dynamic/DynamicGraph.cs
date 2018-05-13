@@ -121,9 +121,13 @@
 
         public override IEnumerable<string> GetDynamicMemberNames()
         {
-            var subjectUriNodes = this.graph.Triples.SubjectNodes.UriNodes();
+            var subjects = this.graph
+                .Triples
+                .Select(triple => triple.Subject)
+                .UriNodes()
+                .Distinct();
 
-            return DynamicHelper.GetDynamicMemberNames(subjectUriNodes, this.subjectBaseUri);
+            return DynamicHelper.ConvertToNames(subjects, this.subjectBaseUri);
         }
     }
 }

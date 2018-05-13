@@ -58,7 +58,7 @@
             return indexNode;
         }
 
-        internal static IEnumerable<string> GetDynamicMemberNames(IEnumerable<IUriNode> nodes, Uri baseUri)
+        internal static IEnumerable<string> ConvertToNames(IEnumerable<IUriNode> nodes, Uri baseUri)
         {
             return nodes.Select(node => DynamicHelper.ConvertToName(node, baseUri));
         }

@@ -43,15 +43,15 @@
 
             var triples = this.graphNode.Graph.GetTriplesWithSubjectPredicate(this.graphNode, predicateNode);
 
-            var nodes = triples.Select(t => this.ConvertToObject(t.Object));
+            var nodeObjects = triples.Select(t => this.ConvertToObject(t.Object));
 
-            if (this.collapseSingularArrays && nodes.Count() == 1)
+            if (this.collapseSingularArrays && nodeObjects.Count() == 1)
             {
-                result = nodes.Single();
+                result = nodeObjects.Single();
             }
             else
             {
-                result = nodes.ToArray();
+                result = nodeObjects.ToArray();
             }
 
             return true;
@@ -75,7 +75,9 @@
             }
 
             var predicate = indexes[0];
+
             var difference = this.CalculateDifference(predicate, value);
+
             this.Apply(difference);
 
             return true;
@@ -93,12 +95,12 @@
 
         public override IEnumerable<string> GetDynamicMemberNames()
         {
-            var distinctPredicateNodes = this.graphNode.Graph
+            var predicates = this.graphNode.Graph
                 .GetTriplesWithSubject(this.graphNode)
                 .Select(triple => triple.Predicate as IUriNode)
                 .Distinct();
 
-            return DynamicHelper.GetDynamicMemberNames(distinctPredicateNodes, this.baseUri);
+            return DynamicHelper.ConvertToNames(predicates, this.baseUri);
         }
         #endregion
 
