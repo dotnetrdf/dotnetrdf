@@ -1,4 +1,4 @@
-﻿namespace Grom
+﻿namespace Dynamic
 {
     using System;
     using System.Collections;
@@ -8,14 +8,14 @@
     using System.Reflection;
     using VDS.RDF;
 
-    public class GraphWrapper : DynamicObject
+    public class DynamicGraph : DynamicObject
     {
         private readonly IGraph graph;
         private readonly Uri subjectBaseUri;
         private readonly Uri predicateBaseUri;
         private readonly bool collapseSingularArrays;
 
-        public GraphWrapper(IGraph graph, Uri subjectBaseUri = null, Uri predicateBaseUri = null, bool collapseSingularArrays = false)
+        public DynamicGraph(IGraph graph, Uri subjectBaseUri = null, Uri predicateBaseUri = null, bool collapseSingularArrays = false)
         {
             this.graph = graph ?? throw new ArgumentNullException(nameof(graph));
             this.subjectBaseUri = subjectBaseUri ?? this.graph.BaseUri;
@@ -35,12 +35,12 @@
                 throw new ArgumentNullException("Can't work with null index", "indexes");
             }
 
-            var subjectNode = Helper.ConvertIndex(indexes[0], this.graph, this.subjectBaseUri);
+            var subjectNode = DynamicHelper.ConvertIndex(indexes[0], this.graph, this.subjectBaseUri);
 
             result = this.graph.Triples.SubjectNodes
                 .UriNodes()
                 .Where(node => node.Equals(subjectNode))
-                .Select(node => new NodeWrapper(node, this.predicateBaseUri, this.collapseSingularArrays))
+                .Select(node => new DynamicNode(node, this.predicateBaseUri, this.collapseSingularArrays))
                 .SingleOrDefault();
 
             return result != null;
@@ -67,11 +67,11 @@
 
             if (!this.TryGetIndex(null, indexes, out object result))
             {
-                var subjectNode = Helper.ConvertIndex(subjectIndex, this.graph, this.subjectBaseUri);
-                result = new NodeWrapper(subjectNode, this.predicateBaseUri, this.collapseSingularArrays);
+                var subjectNode = DynamicHelper.ConvertIndex(subjectIndex, this.graph, this.subjectBaseUri);
+                result = new DynamicNode(subjectNode, this.predicateBaseUri, this.collapseSingularArrays);
             }
 
-            var subjectWrapper = result as NodeWrapper;
+            var subjectWrapper = result as DynamicNode;
 
             if (value == null)
             {
@@ -121,7 +121,7 @@
         {
             var subjectUriNodes = this.graph.Triples.SubjectNodes.UriNodes();
 
-            return Helper.GetDynamicMemberNames(subjectUriNodes, this.subjectBaseUri);
+            return DynamicHelper.GetDynamicMemberNames(subjectUriNodes, this.subjectBaseUri);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Grom
+﻿namespace Dynamic
 {
     using System;
     using System.Collections;
@@ -8,13 +8,13 @@
     using VDS.RDF;
     using VDS.RDF.Nodes;
 
-    public class NodeWrapper : DynamicObject, IEquatable<NodeWrapper>, IComparable<NodeWrapper>
+    public class DynamicNode : DynamicObject, IEquatable<DynamicNode>, IComparable<DynamicNode>
     {
         internal readonly INode graphNode;
         private readonly Uri baseUri;
         private readonly bool collapseSingularArrays;
 
-        public NodeWrapper(INode graphNode, Uri baseUri = null, bool collapseSingularArrays = false)
+        public DynamicNode(INode graphNode, Uri baseUri = null, bool collapseSingularArrays = false)
         {
             this.graphNode = graphNode ?? throw new ArgumentNullException(nameof(graphNode));
             this.baseUri = baseUri;
@@ -31,7 +31,7 @@
 
             var predicate = indexes[0];
 
-            var predicateNode = Helper.ConvertIndex(predicate, this.graphNode.Graph, this.baseUri);
+            var predicateNode = DynamicHelper.ConvertIndex(predicate, this.graphNode.Graph, this.baseUri);
 
             var propertyTriples = this.graphNode.Graph.GetTriplesWithSubjectPredicate(this.graphNode, predicateNode);
 
@@ -68,7 +68,7 @@
                 .Select(triple => triple.Predicate as IUriNode)
                 .Distinct();
 
-            return Helper.GetDynamicMemberNames(distinctPredicateNodes, this.baseUri);
+            return DynamicHelper.GetDynamicMemberNames(distinctPredicateNodes, this.baseUri);
         }
 
         public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
@@ -80,7 +80,7 @@
 
             var predicate = indexes[0];
 
-            var predicateNode = Helper.ConvertIndex(predicate, this.graphNode.Graph, this.baseUri);
+            var predicateNode = DynamicHelper.ConvertIndex(predicate, this.graphNode.Graph, this.baseUri);
 
             var n2 = new Graph();
             var a = this.ConvertValues(value);
@@ -135,7 +135,7 @@
             {
                 case IUriNode uriNode:
                 case IBlankNode blankNode:
-                    return new NodeWrapper(valuedNode, this.baseUri, this.collapseSingularArrays);
+                    return new DynamicNode(valuedNode, this.baseUri, this.collapseSingularArrays);
 
                 case DoubleNode doubleNode:
                     return doubleNode.AsDouble();
@@ -183,7 +183,7 @@
 
         private INode ConvertValue(object value)
         {
-            if (value is NodeWrapper wrapperValue)
+            if (value is DynamicNode wrapperValue)
             {
                 value = wrapperValue.graphNode;
             }
@@ -267,12 +267,12 @@
         #region Object
         public override bool Equals(object other)
         {
-            return this.Equals(other as NodeWrapper);
+            return this.Equals(other as DynamicNode);
         }
 
         public override int GetHashCode()
         {
-            return string.Concat(nameof(NodeWrapper), this.ToString()).GetHashCode();
+            return string.Concat(nameof(DynamicNode), this.ToString()).GetHashCode();
         }
 
         public override string ToString()
@@ -282,7 +282,7 @@
         #endregion
 
         #region Operators
-        public static bool operator ==(NodeWrapper a, NodeWrapper b)
+        public static bool operator ==(DynamicNode a, DynamicNode b)
         {
             if (a as object == null)
             {
@@ -292,12 +292,12 @@
             return a.Equals(b);
         }
 
-        public static bool operator !=(NodeWrapper a, NodeWrapper b)
+        public static bool operator !=(DynamicNode a, DynamicNode b)
         {
             return !(a == b);
         }
 
-        public static bool operator >(NodeWrapper a, NodeWrapper b)
+        public static bool operator >(DynamicNode a, DynamicNode b)
         {
             if (a as object == null)
             {
@@ -307,7 +307,7 @@
             return a.CompareTo(b) > 0;
         }
 
-        public static bool operator <(NodeWrapper a, NodeWrapper b)
+        public static bool operator <(DynamicNode a, DynamicNode b)
         {
             if (a as object == null)
             {
@@ -317,19 +317,19 @@
             return a.CompareTo(b) < 0;
         }
 
-        public static bool operator >=(NodeWrapper a, NodeWrapper b)
+        public static bool operator >=(DynamicNode a, DynamicNode b)
         {
             return a == b || a > b;
         }
 
-        public static bool operator <=(NodeWrapper a, NodeWrapper b)
+        public static bool operator <=(DynamicNode a, DynamicNode b)
         {
             return a == b || a < b;
         }
         #endregion
 
         #region IEquatable
-        public bool Equals(NodeWrapper other)
+        public bool Equals(DynamicNode other)
         {
             if (other as object == null)
             {
@@ -346,7 +346,7 @@
         #endregion
 
         #region IComparable
-        public int CompareTo(NodeWrapper other)
+        public int CompareTo(DynamicNode other)
         {
             if (other as object == null)
             {

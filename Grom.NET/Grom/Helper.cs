@@ -1,4 +1,4 @@
-﻿namespace Grom
+﻿namespace Dynamic
 {
     using System;
     using System.Collections.Generic;
@@ -6,11 +6,11 @@
     using System.Text.RegularExpressions;
     using VDS.RDF;
 
-    internal static class Helper
+    internal static class DynamicHelper
     {
         internal static IUriNode ConvertIndex(object index, IGraph graph, Uri baseUri)
         {
-            if (index is NodeWrapper indexWrapper)
+            if (index is DynamicNode indexWrapper)
             {
                 index = indexWrapper.graphNode;
             }
@@ -24,7 +24,7 @@
                         throw new ArgumentException("Only IUriNode, Uri or string indices", "index");
                     }
 
-                    if (!Helper.TryResolveQName(indexString, graph, out indexUri))
+                    if (!DynamicHelper.TryResolveQName(indexString, graph, out indexUri))
                     {
                         if (!Uri.TryCreate(indexString, UriKind.RelativeOrAbsolute, out indexUri))
                         {
@@ -68,6 +68,11 @@
             // TODO: Consider qnames?
 
             var nodeUri = node.Uri;
+
+            if (node.Graph.NamespaceMap.ReduceToQName(nodeUri.AbsoluteUri, out string qname))
+            {
+                return qname;
+            }
 
             if (baseUri == null)
             {
