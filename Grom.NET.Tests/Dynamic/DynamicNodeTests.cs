@@ -251,5 +251,17 @@
 
             Assert.IsInstanceOfType(result, expected);
         }
+
+        [TestMethod]
+        public void Property_access_is_translated_to_indexing_with_relative_uri_strings()
+        {
+            var g = GenerateSPOGraph();
+            var s = g.GetTriplesWithSubject(exampleSubjectNode).Single().Subject;
+            dynamic d = new DynamicNode(s, exampleBase);
+            var result = d.p;
+            var expected = exampleObject;
+
+            CollectionAssert.Contains(result, expected);
+        }
     }
 }
