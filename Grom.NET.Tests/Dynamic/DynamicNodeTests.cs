@@ -259,9 +259,54 @@
             var s = g.GetTriplesWithSubject(exampleSubjectNode).Single().Subject;
             dynamic d = new DynamicNode(s, exampleBase);
             var result = d.p;
-            var expected = exampleObject;
+            var expected = d["p"];
 
-            CollectionAssert.Contains(result, expected);
+            CollectionAssert.AreEqual(result, expected);
+        }
+
+
+        [TestMethod]
+        public void ToString_delegates_to_graphNode()
+        {
+            var n = new NodeFactory().CreateBlankNode();
+
+            var d = new DynamicNode(n);
+
+            Assert.AreEqual(
+                n.ToString(),
+                d.ToString());
+        }
+
+        [TestMethod]
+        public void GetHashCode_salts_INode()
+        {
+            var n = new NodeFactory().CreateBlankNode();
+
+            var d = new DynamicNode(n);
+
+            Assert.AreEqual(
+                string.Concat(nameof(DynamicNode), n.ToString()).GetHashCode(),
+                d.GetHashCode());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Cant_construct_without_graph_node()
+        {
+            new DynamicNode(null);
+        }
+
+        [TestMethod]
+        public void Subject_base_uri_defaults_to_graph_base_uri()
+        {
+            var g = GenerateSPOGraph();
+            g.BaseUri = exampleBase;
+            var s = g.GetTriplesWithSubject(exampleSubjectNode).Single().Subject;
+            dynamic d = new DynamicNode(s);
+            var result = d.p;
+            var expected = d["p"];
+
+            CollectionAssert.AreEqual(result, expected);
         }
     }
 }

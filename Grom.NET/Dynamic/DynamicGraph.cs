@@ -129,5 +129,14 @@
 
             return DynamicHelper.ConvertToNames(subjects, this.subjectBaseUri);
         }
+
+        public IEnumerable<DynamicNode> BlankNodes()
+        {
+            return this.graph
+                .Triples
+                .Select(t => t.Subject)
+                .BlankNodes()
+                .Select(n => new DynamicNode(n, this.predicateBaseUri, this.collapseSingularArrays));
+        }
     }
 }

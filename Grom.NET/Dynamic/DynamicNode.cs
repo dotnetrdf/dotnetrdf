@@ -15,18 +15,19 @@
         private readonly bool collapseSingularArrays;
 
         #region Constructors
-        public DynamicNode(INode graphNode) : this(graphNode, null) { }
-
-        public DynamicNode(INode graphNode, Uri baseUri) : this(graphNode, baseUri, false) { }
-
-        public DynamicNode(INode graphNode, bool collapseSingularArrays) : this(graphNode, null, collapseSingularArrays) { }
-
-        public DynamicNode(INode graphNode, Uri baseUri, bool collapseSingularArrays)
+        public DynamicNode(INode graphNode, Uri baseUri = null, bool collapseSingularArrays = false)
         {
             this.graphNode = graphNode ?? throw new ArgumentNullException(nameof(graphNode));
-            this.baseUri = baseUri;
+
+            if (!(graphNode is IUriNode || graphNode is IBlankNode))
+            {
+                throw new ArgumentException("Only uri nodes and blank nodes.", nameof(graphNode));
+            }
+
+            this.baseUri = baseUri ?? this.graphNode.Graph?.BaseUri;
             this.collapseSingularArrays = collapseSingularArrays;
         }
+
         #endregion
 
         #region DynamicObject

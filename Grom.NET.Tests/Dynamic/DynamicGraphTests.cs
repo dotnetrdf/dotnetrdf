@@ -7,7 +7,6 @@
     using System.Linq;
     using VDS.RDF;
     using VDS.RDF.Nodes;
-    using VDS.RDF.Writing;
 
     public class CustomClass
     {
@@ -19,8 +18,14 @@
     {
         private static readonly Uri exampleBase = new Uri("http://example.com/");
         private static readonly Uri exampleSubjectUri = new Uri(exampleBase, "s");
+        private static readonly Uri examplePredicateUri = new Uri(exampleBase, "p");
+        private static readonly Uri exampleObjectUri = new Uri(exampleBase, "o");
         private static readonly IUriNode exampleSubjectNode = new NodeFactory().CreateUriNode(exampleSubjectUri);
+        private static readonly IUriNode examplePredicateNode = new NodeFactory().CreateUriNode(examplePredicateUri);
+        private static readonly IUriNode exampleObjectNode = new NodeFactory().CreateUriNode(exampleObjectUri);
         private static readonly DynamicNode exampleSubject = new DynamicNode(exampleSubjectNode);
+        private static readonly DynamicNode examplePredicate = new DynamicNode(examplePredicateNode);
+        private static readonly DynamicNode exampleObject = new DynamicNode(exampleObjectNode);
         private static readonly IGraph spoGraph = GenerateSPOGraph();
 
         private static IGraph GenerateSPOGraph()
@@ -34,44 +39,44 @@
         [TestMethod]
         public void Graph_support_wrapper_indices()
         {
-            var graph = GenerateSPOGraph();
+            var g = GenerateSPOGraph();
 
-            dynamic dynamicGraph = new DynamicGraph(graph, exampleBase);
+            dynamic d = g.AsDynamic(exampleBase);
 
-            dynamic s = dynamicGraph.s;
+            dynamic s = d.s;
 
-            dynamicGraph[s] = new { p = 0 };
+            d[s] = new { p = 0 };
 
             Assert.AreEqual(
                 0,
-                graph.Triples.Single().Object.AsValuedNode().AsInteger());
+                g.Triples.Single().Object.AsValuedNode().AsInteger());
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void Cant_work_with_null_index()
         {
-            var graph = GenerateSPOGraph();
+            var g = GenerateSPOGraph();
 
-            dynamic dynamicGraph = new DynamicGraph(graph, exampleBase);
+            dynamic d = g.AsDynamic();
 
-            var actual = dynamicGraph[null];
+            var actual = d[null];
         }
 
         [TestMethod]
         public void Node_support_wrapper_indices()
         {
-            var graph = GenerateSPOGraph();
+            var g = GenerateSPOGraph();
 
-            dynamic dynamicGraph = new DynamicGraph(graph, exampleBase);
+            dynamic d = g.AsDynamic(exampleBase);
 
-            dynamic s = dynamicGraph.s;
+            dynamic s = d.s;
             dynamic o = s.p[0];
 
             s[o] = "o";
 
             Assert.IsNotNull(
-               graph.GetTriplesWithObject(graph.CreateLiteralNode("o")).SingleOrDefault());
+               g.GetTriplesWithObject(g.CreateLiteralNode("o")).SingleOrDefault());
         }
 
         [TestMethod]
@@ -135,7 +140,22 @@
         }
 
         [TestMethod]
-        public void Get_index_with_qName_default_prefix()
+        public void Indexing_supports_empty_string()
+        {
+            var g = GenerateSPOGraph();
+            g.BaseUri = exampleSubjectUri;
+            dynamic d = new DynamicGraph(g);
+
+            var expected = exampleSubject;
+            var actual = d[string.Empty];
+
+            Assert.AreEqual(
+                expected,
+                actual);
+        }
+
+        [TestMethod]
+        public void Indexing_supports_qnames_with_default_prefix()
         {
             var graph = GenerateSPOGraph();
             graph.NamespaceMap.AddNamespace(string.Empty, exampleBase);
@@ -171,8 +191,8 @@
             var actual = dynamicGraph["s"];
 
             Assert.AreEqual(
-                new DynamicNode(graph.Triples.First().Subject),
-                dynamicGraph["s"]);
+                expected,
+                actual);
         }
 
         [TestMethod]
@@ -339,7 +359,7 @@
         {
             var graph = GenerateSPOGraph();
 
-            dynamic dynamicGraph = new DynamicGraph(graph);
+            var dynamicGraph = graph.AsDynamic();
 
             var actual = dynamicGraph[0];
         }
@@ -354,38 +374,37 @@
         [TestMethod]
         public void Get_member()
         {
-            var graph = GenerateSPOGraph();
-
-            dynamic dynamicGraph = new DynamicGraph(graph, exampleBase);
+            var g = GenerateSPOGraph();
+            var d = g.AsDynamic(exampleBase);
 
             Assert.AreEqual(
                 exampleSubject,
-                dynamicGraph.s);
+                d.s);
         }
 
         [TestMethod]
         public void Subject_base_uri_defaults_to_graph_base_uri()
         {
-            var graph = GenerateSPOGraph();
-            graph.BaseUri = exampleBase;
+            var g = GenerateSPOGraph();
+            g.BaseUri = exampleBase;
 
-            dynamic dynamicGraph = new DynamicGraph(graph);
+            var d = g.AsDynamic();
 
             Assert.AreEqual(
                 exampleSubject,
-                dynamicGraph.s);
+                d.s);
         }
 
         [TestMethod]
         public void Predicate_base_uri_defaults_to_subject_base_uri()
         {
-            var graph = GenerateSPOGraph();
+            var g = GenerateSPOGraph();
 
-            dynamic dynamicGraph = new DynamicGraph(graph, exampleBase);
+            var d = g.AsDynamic(exampleBase);
 
             Assert.AreEqual(
-                new DynamicNode(graph.Triples.First().Object),
-                dynamicGraph.s.p[0]);
+                g.Triples.First().Object.AsDynamic(),
+                d.s.p[0]);
         }
 
         [TestMethod]
@@ -491,17 +510,28 @@
         [TestMethod]
         public void Setter_delegates_to_index_setter()
         {
-            var graph1 = new Graph();
-            dynamic dynamicGraph = new DynamicGraph(graph1, exampleBase);
+            var g1 = new Graph();
+            var g2 = new Graph();
+            dynamic d1 = new DynamicGraph(g1, exampleBase);
+            dynamic d2 = new DynamicGraph(g2, exampleBase);
 
-            dynamicGraph.s = new { p = "o" };
+            d1.s = new { p = "o" };
+            d2["s"] = new { p = "o" };
 
-            var graph2 = new Graph();
-            dynamic dynamicGraph2 = new DynamicGraph(graph2, exampleBase);
+            Assert.AreEqual(g2, g1);
+        }
 
-            dynamicGraph2["s"] = new { p = "o" };
+        [TestMethod]
+        public void MyTestMethod()
+        {
+            var g = new Graph();
+            g.LoadFromString("_:s <http://example.com/p> <http://example.com/o> .");
+            dynamic d = new DynamicGraph(g);
 
-            Assert.AreEqual(graph2, graph1);
+            var actual = d.BlankNodes() as IEnumerable<DynamicNode>;
+            var expected = new DynamicNode(g.Triples.Single().Subject);
+
+            CollectionAssert.Contains(actual.ToArray(), expected);
         }
     }
 }
