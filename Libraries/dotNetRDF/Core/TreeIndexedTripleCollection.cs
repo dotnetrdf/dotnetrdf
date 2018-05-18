@@ -183,7 +183,14 @@ namespace VDS.RDF
             List<Triple> ts;
             if (index.TryGetValue(n, out ts))
             {
-                if (ts != null) ts.Remove(t);
+                if (ts != null)
+                {
+                    ts.Remove(t);
+                    if (ts.Count == 0)
+                    {
+                        index.Remove(new KeyValuePair<INode, List<Triple>>(n, ts));
+                    }
+                }
             }
         }
 
@@ -199,7 +206,14 @@ namespace VDS.RDF
             List<Triple> ts;
             if (index.TryGetValue(t, out ts))
             {
-                if (ts != null) ts.Remove(t);
+                if (ts != null)
+                {
+                    ts.Remove(t);
+                    if (ts.Count == 0)
+                    {
+                        index.Remove(new KeyValuePair<Triple, List<Triple>>(t, ts));
+                    }
+                }
             }
         }
 
