@@ -5,6 +5,7 @@ using System.Text;
 using System.Web;
 using FluentAssertions;
 using VDS.RDF.Update;
+using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -34,7 +35,7 @@ namespace dotNetRDF.MockServerTests
 
             var endpoint = GetUpdateEndpoint();
             endpoint.Update(input);
-            var logEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher("/update")).ToList();
+            var logEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/update")).ToList();
             logEntries.Should().HaveCount(1);
             logEntries[0].RequestMessage.Method.Should().BeEquivalentTo("post");
         }
@@ -48,7 +49,7 @@ namespace dotNetRDF.MockServerTests
 
             var endpoint = GetUpdateEndpoint();
             endpoint.Update(input.ToString());
-            var logEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher("/update")).ToList();
+            var logEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/update")).ToList();
             logEntries.Should().HaveCount(1);
             logEntries[0].RequestMessage.Method.Should().BeEquivalentTo("post");
         }
