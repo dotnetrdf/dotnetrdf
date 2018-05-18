@@ -39,5 +39,36 @@ namespace VDS.RDF
         {
             TreeIndexedTripleCollection collection = new TreeIndexedTripleCollection();
         }
+
+        [Fact]
+        public void TestClearTreeIndexedCollectionUpdatesKeys()
+        {
+            // Added as a repro for issue #188
+            var indexed = new Graph();
+            indexed.LoadFromString("_:s <urn:p> _:o.");
+
+            var nonIndexed = new NonIndexedGraph();
+            nonIndexed.LoadFromString("_:s <urn:p> _:o.");
+
+            Assert.Equal(nonIndexed, indexed); // Yes
+
+            indexed.Clear();
+            nonIndexed.Clear();
+
+            Assert.Equal(nonIndexed, indexed); // Yes
+
+            Assert.Empty(nonIndexed.Triples); // Yes
+            Assert.Empty(indexed.Triples); // Yes
+
+            Assert.Empty(nonIndexed.Triples.SubjectNodes); // Yes
+            Assert.Empty(nonIndexed.Triples.PredicateNodes); // Yes
+            Assert.Empty(nonIndexed.Triples.ObjectNodes); // Yes
+
+            Assert.Empty(indexed.Triples.SubjectNodes); // No
+            Assert.Empty(indexed.Triples.PredicateNodes); // No
+            Assert.Empty(indexed.Triples.ObjectNodes); // No
+
+        }
+
     }
 }
