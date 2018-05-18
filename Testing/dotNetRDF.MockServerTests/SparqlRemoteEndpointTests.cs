@@ -33,6 +33,7 @@ using Moq;
 using VDS.RDF;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
+using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -124,7 +125,7 @@ namespace dotNetRDF.MockServerTests
             var endpoint = GetQueryEndpoint();
             var results = endpoint.QueryWithResultSet("SELECT * WHERE {?s ?p ?o}");
             results.Should().NotBeNull().And.HaveCount(1);
-            var sparqlLogEntries = _server.FindLogEntries(new RequestMessagePathMatcher("/sparql")).ToList();
+            var sparqlLogEntries = _server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
             sparqlLogEntries.Should().HaveCount(1);
             sparqlLogEntries[0].RequestMessage.Method.Should().BeEquivalentTo("get");
         }
@@ -141,7 +142,7 @@ namespace dotNetRDF.MockServerTests
             var endpoint = GetQueryEndpoint();
             var results = endpoint.QueryWithResultSet(input.ToString());
             results.Should().HaveCount(1);
-            var sparqlLogEntries = _server.FindLogEntries(new RequestMessagePathMatcher("/sparql")).ToList();
+            var sparqlLogEntries = _server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
             sparqlLogEntries.Should().HaveCount(1);
             sparqlLogEntries[0].RequestMessage.Method.Should().BeEquivalentTo("post");
         }
@@ -159,7 +160,7 @@ namespace dotNetRDF.MockServerTests
 
             var results = endpoint.QueryWithResultSet(input.ToString());
             results.Should().NotBeNull().And.HaveCount(1);
-            var sparqlLogEntries = _server.FindLogEntries(new RequestMessagePathMatcher("/sparql")).ToList();
+            var sparqlLogEntries = _server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
             sparqlLogEntries.Should().HaveCount(1);
             sparqlLogEntries[0].RequestMessage.Method.Should().BeEquivalentTo("get");
         }
@@ -176,7 +177,7 @@ namespace dotNetRDF.MockServerTests
 
             var results = endpoint.QueryWithResultSet(input.ToString());
             results.Should().NotBeNull().And.HaveCount(1);
-            var sparqlLogEntries = _server.FindLogEntries(new RequestMessagePathMatcher("/sparql")).ToList();
+            var sparqlLogEntries = _server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
             sparqlLogEntries.Should().HaveCount(1);
             sparqlLogEntries[0].RequestMessage.Method.Should().BeEquivalentTo("get");
         }
