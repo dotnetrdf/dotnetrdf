@@ -10,11 +10,6 @@
     {
         internal static IUriNode ConvertToNode(object index, IGraph graph, Uri baseUri)
         {
-            if (index is DynamicNode indexWrapper)
-            {
-                index = indexWrapper.graphNode;
-            }
-
             if (!(index is IUriNode indexNode))
             {
                 if (!(index is Uri indexUri))

@@ -3,6 +3,7 @@
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using System.Linq;
+    using System.Linq.Expressions;
     using VDS.RDF;
 
     [TestClass]
@@ -12,18 +13,15 @@
         private static readonly Uri exampleSubjectUri = new Uri(exampleBase, "s");
         private static readonly Uri examplePredicateUri = new Uri(exampleBase, "p");
         private static readonly Uri exampleObjectUri = new Uri(exampleBase, "o");
-        private static readonly IUriNode exampleSubjectNode = new NodeFactory().CreateUriNode(exampleSubjectUri);
-        private static readonly IUriNode examplePredicateNode = new NodeFactory().CreateUriNode(examplePredicateUri);
-        private static readonly IUriNode exampleObjectNode = new NodeFactory().CreateUriNode(exampleObjectUri);
-        private static readonly DynamicNode exampleSubject = new DynamicNode(exampleSubjectNode);
-        private static readonly DynamicNode examplePredicate = new DynamicNode(examplePredicateNode);
-        private static readonly DynamicNode exampleObject = new DynamicNode(exampleObjectNode);
+        private static readonly IUriNode exampleSubject = new NodeFactory().CreateUriNode(exampleSubjectUri);
+        private static readonly IUriNode examplePredicate = new NodeFactory().CreateUriNode(examplePredicateUri);
+        private static readonly IUriNode exampleObject = new NodeFactory().CreateUriNode(exampleObjectUri);
         private static readonly IGraph spoGraph = GenerateSPOGraph();
 
         private static IGraph GenerateSPOGraph()
         {
             var spoGraph = new Graph();
-            spoGraph.Assert(exampleSubjectNode, examplePredicateNode, exampleObjectNode);
+            spoGraph.Assert(exampleSubject, examplePredicate, exampleObject);
 
             return spoGraph;
         }
@@ -32,8 +30,8 @@
         public void Indexing_supports_wrappers()
         {
             var g = GenerateSPOGraph();
-            var s = g.GetTriplesWithSubject(exampleSubjectNode).Single().Subject;
-            dynamic d = new DynamicNode(s);
+            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
+            dynamic d = s.AsDynamic();
             var i = examplePredicate;
             var result = d[i];
             var expected = exampleObject;
@@ -45,9 +43,9 @@
         public void Indexing_supports_uri_nodes()
         {
             var g = GenerateSPOGraph();
-            var s = g.GetTriplesWithSubject(exampleSubjectNode).Single().Subject;
-            dynamic d = new DynamicNode(s);
-            var i = examplePredicateNode;
+            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
+            dynamic d = s.AsDynamic();
+            var i = examplePredicate;
             var result = d[i];
             var expected = exampleObject;
 
@@ -58,8 +56,8 @@
         public void Indexing_supports_absolute_uris()
         {
             var g = GenerateSPOGraph();
-            var s = g.GetTriplesWithSubject(exampleSubjectNode).Single().Subject;
-            dynamic d = new DynamicNode(s);
+            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
+            dynamic d = s.AsDynamic();
             var i = examplePredicateUri;
             var result = d[i];
             var expected = exampleObject;
@@ -71,8 +69,8 @@
         public void Indexing_supports_relative_uris()
         {
             var g = GenerateSPOGraph();
-            var s = g.GetTriplesWithSubject(exampleSubjectNode).Single().Subject;
-            dynamic d = new DynamicNode(s, exampleBase);
+            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
+            dynamic d = s.AsDynamic(exampleBase);
             var i = new Uri("p", UriKind.Relative);
             var result = d[i];
             var expected = exampleObject;
@@ -85,10 +83,10 @@
         {
             var g = new Graph();
             g.LoadFromString("<http://example.com/#s> <http://example.com/#p> <http://example.com/#o> .");
-            dynamic d = new DynamicNode(g.Triples.Single().Subject, new Uri("http://example.com/#"));
+            dynamic d = g.Triples.Single().Subject.AsDynamic(new Uri("http://example.com/#"));
             var i = "p";
             var result = d[i];
-            var expected = new DynamicNode(g.Triples.Single().Object);
+            var expected = g.Triples.Single().Object.AsDynamic();
 
             CollectionAssert.Contains(result, expected);
         }
@@ -97,8 +95,8 @@
         public void Indexing_supports_absolute_uri_strings()
         {
             var g = GenerateSPOGraph();
-            var s = g.GetTriplesWithSubject(exampleSubjectNode).Single().Subject;
-            dynamic d = new DynamicNode(s);
+            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
+            dynamic d = s.AsDynamic();
             var i = "http://example.com/p";
             var result = d[i];
             var expected = exampleObject;
@@ -110,8 +108,8 @@
         public void Indexing_supports_relative_uri_strings()
         {
             var g = GenerateSPOGraph();
-            var s = g.GetTriplesWithSubject(exampleSubjectNode).Single().Subject;
-            dynamic d = new DynamicNode(s, exampleBase);
+            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
+            dynamic d = s.AsDynamic(exampleBase);
             var i = "p";
             var result = d[i];
             var expected = exampleObject;
@@ -124,8 +122,8 @@
         {
             var g = GenerateSPOGraph();
             g.NamespaceMap.AddNamespace("ex", exampleBase);
-            var s = g.GetTriplesWithSubject(exampleSubjectNode).Single().Subject;
-            dynamic d = new DynamicNode(s);
+            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
+            dynamic d = s.AsDynamic();
             var i = "ex:p";
             var result = d[i];
             var expected = exampleObject;
@@ -138,8 +136,8 @@
         {
             var g = GenerateSPOGraph();
             g.NamespaceMap.AddNamespace(string.Empty, exampleBase);
-            var s = g.GetTriplesWithSubject(exampleSubjectNode).Single().Subject;
-            dynamic d = new DynamicNode(s);
+            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
+            dynamic d = s.AsDynamic();
             var i = ":p";
             var result = d[i];
             var expected = exampleObject;
@@ -151,9 +149,10 @@
         public void Member_names_are_predicate_uris()
         {
             var g = GenerateSPOGraph();
-            var s = g.GetTriplesWithSubject(exampleSubjectNode).Single().Subject;
-            var d = new DynamicNode(s);
-            var result = d.GetDynamicMemberNames().ToArray();
+            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
+            dynamic d = s.AsDynamic();
+            var memberNames = (d.GetMetaObject(Expression.Empty()) as DynamicNodeMetaObject).GetDynamicMemberNames();
+            var result = memberNames.ToArray();
             var expected = new[] { "http://example.com/p" };
 
             CollectionAssert.AreEqual(expected, result);
@@ -164,9 +163,10 @@
         {
             var g = GenerateSPOGraph();
             g.NamespaceMap.AddNamespace("ex", exampleBase);
-            var s = g.GetTriplesWithSubject(exampleSubjectNode).Single().Subject;
-            var d = new DynamicNode(s);
-            var result = d.GetDynamicMemberNames().ToArray();
+            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
+            dynamic d = s.AsDynamic();
+            var memberNames = (d.GetMetaObject(Expression.Empty()) as DynamicNodeMetaObject).GetDynamicMemberNames();
+            var result = memberNames.ToArray();
             var expected = new[] { "ex:p" };
 
             CollectionAssert.AreEqual(expected, result);
@@ -177,9 +177,10 @@
         {
             var g = GenerateSPOGraph();
             g.NamespaceMap.AddNamespace(string.Empty, exampleBase);
-            var s = g.GetTriplesWithSubject(exampleSubjectNode).Single().Subject;
-            var d = new DynamicNode(s);
-            var result = d.GetDynamicMemberNames().ToArray();
+            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
+            dynamic d = s.AsDynamic();
+            var memberNames = (d.GetMetaObject(Expression.Empty()) as DynamicNodeMetaObject).GetDynamicMemberNames();
+            var result = memberNames.ToArray();
             var expected = new[] { ":p" };
 
             CollectionAssert.AreEqual(expected, result);
@@ -189,9 +190,10 @@
         public void Member_names_become_relative_to_base()
         {
             var g = GenerateSPOGraph();
-            var s = g.GetTriplesWithSubject(exampleSubjectNode).Single().Subject;
-            var d = new DynamicNode(s, exampleBase);
-            var result = d.GetDynamicMemberNames().ToArray();
+            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
+            dynamic d = s.AsDynamic(exampleBase);
+            var memberNames = (d.GetMetaObject(Expression.Empty()) as DynamicNodeMetaObject).GetDynamicMemberNames();
+            var result = memberNames.ToArray();
             var expected = new[] { "p" };
 
             CollectionAssert.AreEqual(expected, result);
@@ -202,8 +204,9 @@
         {
             var g = new Graph();
             g.LoadFromString("<http://example.com/#s> <http://example.com/#p> <http://example.com/#o> .");
-            var d = new DynamicNode(g.Triples.Single().Subject, new Uri("http://example.com/#"));
-            var result = d.GetDynamicMemberNames().ToArray();
+            var d = g.Triples.Single().Subject.AsDynamic(new Uri("http://example.com/#"));
+            var memberNames = (d.GetMetaObject(Expression.Empty()) as DynamicNodeMetaObject).GetDynamicMemberNames();
+            var result = memberNames.ToArray();
             var expected = new[] { "p" };
 
             CollectionAssert.AreEqual(expected, result);
@@ -213,8 +216,8 @@
         public void Values_are_arrays()
         {
             var g = GenerateSPOGraph();
-            var s = g.GetTriplesWithSubject(exampleSubjectNode).Single().Subject;
-            dynamic d = new DynamicNode(s);
+            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
+            dynamic d = s.AsDynamic();
             var i = "http://example.com/p";
             var result = d[i];
             var expected = typeof(Array);
@@ -226,8 +229,8 @@
         public void Values_can_collaps_if_single()
         {
             var g = GenerateSPOGraph();
-            var s = g.GetTriplesWithSubject(exampleSubjectNode).Single().Subject;
-            dynamic d = new DynamicNode(s, collapseSingularArrays: true);
+            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
+            dynamic d = s.AsDynamic(collapseSingularArrays: true);
             var i = "http://example.com/p";
             var result = d[i];
             var expected = typeof(Array);
@@ -243,8 +246,8 @@
 <http://example.com/s> <http://example.com/p> <http://example.com/o1> .
 <http://example.com/s> <http://example.com/p> <http://example.com/o2> .
 ");
-            var s = g.GetTriplesWithSubject(exampleSubjectNode).First().Subject;
-            dynamic d = new DynamicNode(s, collapseSingularArrays: true);
+            var s = g.GetTriplesWithSubject(exampleSubject).First().Subject;
+            dynamic d = s.AsDynamic(collapseSingularArrays: true);
             var i = "http://example.com/p";
             var result = d[i];
             var expected = typeof(Array);
@@ -256,8 +259,8 @@
         public void Property_access_is_translated_to_indexing_with_relative_uri_strings()
         {
             var g = GenerateSPOGraph();
-            var s = g.GetTriplesWithSubject(exampleSubjectNode).Single().Subject;
-            dynamic d = new DynamicNode(s, exampleBase);
+            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
+            dynamic d = s.AsDynamic(exampleBase);
             var result = d.p;
             var expected = d["p"];
 
@@ -270,7 +273,7 @@
         {
             var n = new NodeFactory().CreateBlankNode();
 
-            var d = new DynamicNode(n);
+            dynamic d = n.AsDynamic();
 
             Assert.AreEqual(
                 n.ToString(),
@@ -278,14 +281,14 @@
         }
 
         [TestMethod]
-        public void GetHashCode_salts_INode()
+        public void GetHashCode_delegates_to_node()
         {
             var n = new NodeFactory().CreateBlankNode();
 
-            var d = new DynamicNode(n);
+            dynamic d = n.AsDynamic();
 
             Assert.AreEqual(
-                string.Concat(nameof(DynamicNode), n.ToString()).GetHashCode(),
+                d.GetHashCode(),
                 d.GetHashCode());
         }
 
@@ -293,7 +296,7 @@
         [ExpectedException(typeof(ArgumentNullException))]
         public void Cant_construct_without_graph_node()
         {
-            new DynamicNode(null);
+            new DynamicUriNode(null);
         }
 
         [TestMethod]
@@ -301,12 +304,29 @@
         {
             var g = GenerateSPOGraph();
             g.BaseUri = exampleBase;
-            var s = g.GetTriplesWithSubject(exampleSubjectNode).Single().Subject;
-            dynamic d = new DynamicNode(s);
+            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
+            dynamic d = s.AsDynamic();
             var result = d.p;
             var expected = d["p"];
 
             CollectionAssert.AreEqual(result, expected);
         }
+
+        [TestMethod]
+        public void Setter_delegates_to_index_setter()
+        {
+            var g1 = GenerateSPOGraph();
+            var g2 = GenerateSPOGraph();
+            var n1 = g1.Triples.SubjectNodes.First().AsDynamic(exampleBase);
+            var n2 = g2.Triples.SubjectNodes.First().AsDynamic(exampleBase);
+
+            var now = DateTimeOffset.Now;
+
+            n1.p = now;
+            n2["p"] = now;
+
+            Assert.AreEqual(g2, g1);
+        }
+
     }
 }
