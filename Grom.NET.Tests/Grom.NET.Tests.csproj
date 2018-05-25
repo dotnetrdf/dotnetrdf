@@ -70,6 +70,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Class1.cs" />
     <Compile Include="Dynamic\DynamicGraphTests.cs" />
     <Compile Include="Dynamic\DynamicNodeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
