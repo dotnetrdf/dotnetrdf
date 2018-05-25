@@ -11,11 +11,11 @@
 
     public class DynamicGraphMetaObject : DynamicMetaObject
     {
-        private readonly DynamicGraph dynamicGraph;
+        private readonly DynamicGraph graph;
 
-        public DynamicGraphMetaObject(Expression parameter, DynamicGraph dynamicGraph) : base(parameter, BindingRestrictions.Empty, dynamicGraph)
+        public DynamicGraphMetaObject(Expression parameter, DynamicGraph graph) : base(parameter, BindingRestrictions.Empty, graph)
         {
-            this.dynamicGraph = dynamicGraph;
+            this.graph = graph;
         }
 
         public override DynamicMetaObject BindGetIndex(GetIndexBinder binder, DynamicMetaObject[] indexes)
@@ -44,7 +44,7 @@
 
         public override DynamicMetaObject BindGetMember(GetMemberBinder binder)
         {
-            if (this.dynamicGraph.subjectBaseUri == null)
+            if (this.graph.subjectBaseUri == null)
             {
                 throw new InvalidOperationException("Can't get member without baseUri.");
             }
@@ -73,7 +73,7 @@
 
         public override DynamicMetaObject BindSetMember(SetMemberBinder binder, DynamicMetaObject value)
         {
-            if (this.dynamicGraph.subjectBaseUri == null)
+            if (this.graph.subjectBaseUri == null)
             {
                 throw new InvalidOperationException("Can't set member without baseUri.");
             }
@@ -85,66 +85,93 @@
 
         public override IEnumerable<string> GetDynamicMemberNames()
         {
-            var subjects = this.dynamicGraph
+            var subjects = this.graph
                 .Triples
                 .Select(triple => triple.Subject)
                 .UriNodes()
                 .Distinct();
 
-            return DynamicHelper.ConvertToNames(subjects, this.dynamicGraph.subjectBaseUri);
+            return DynamicHelper.ConvertToNames(subjects, this.graph.subjectBaseUri);
         }
 
         private DynamicUriNode GetIndex(object subject)
         {
-            var subjectNode = DynamicHelper.ConvertToNode(subject, this.dynamicGraph, this.dynamicGraph.subjectBaseUri);
+            var subjectNode = DynamicHelper.ConvertToNode(subject, this.graph, this.graph.subjectBaseUri);
 
-            return this.dynamicGraph.Triples.SubjectNodes
+            return this.graph.Triples
+                .SubjectNodes
                 .UriNodes()
                 .Where(node => node.Equals(subjectNode))
-                .Select(node => new DynamicUriNode(node, this.dynamicGraph.predicateBaseUri, this.dynamicGraph.collapseSingularArrays))
+                .Select(node => node.AsDynamic(this.graph.predicateBaseUri, this.graph.collapseSingularArrays))
                 .SingleOrDefault();
         }
 
-        private void SetIndex(object subjectIndex, object value)
+        private void SetIndex(object index, object value)
         {
-            var result = this.GetIndex(subjectIndex);
-            if (result == null)
-            {
-                var subjectNode = DynamicHelper.ConvertToNode(subjectIndex, this.dynamicGraph, this.dynamicGraph.subjectBaseUri);
-                result = new DynamicUriNode(subjectNode, this.dynamicGraph.predicateBaseUri, this.dynamicGraph.collapseSingularArrays);
-            }
+            var targetNode = this.GetDynamicNodeByIndexOrCreate(index);
 
             if (value == null)
             {
-                this.dynamicGraph.Retract(this.dynamicGraph.GetTriplesWithSubject(result).ToArray());
+                this.RetractWithSubject(targetNode);
+
+                return;
             }
-            else
+
+            var valueDictionary = DynamicGraphMetaObject.ConvertToDictionary(value);
+            //var targetMeta = targetNode.GetMetaObject(this.Expression) as DynamicNodeMetaObject;
+
+            foreach (DictionaryEntry entry in valueDictionary)
             {
-                if (!(value is IDictionary valueDictionary))
-                {
-                    valueDictionary = new Dictionary<object, object>();
-
-                    var properties = value.GetType()
-                        .GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty)
-                        .Where(p => p.GetIndexParameters().Count() == 0);
-
-                    if (!properties.Any())
-                    {
-                        throw new ArgumentException($"Value type {value.GetType()} for subject {subjectIndex} lacks readable public instance properties.", "value");
-                    }
-
-                    foreach (var property in properties)
-                    {
-                        valueDictionary[property.Name] = property.GetValue(value);
-                    }
-                }
-
-                foreach (var key in valueDictionary.Keys)
-                {
-                    var a = result.GetMetaObject(Expression.Empty()) as DynamicNodeMetaObject;
-                    a.SetIndex(key, valueDictionary[key]);
-                }
+                //targetMeta.SetIndex(key, valueDictionary[key]);
+                (targetNode as dynamic)[entry.Key] = entry.Value;
             }
+        }
+
+        private void RetractWithSubject(DynamicUriNode targetNode)
+        {
+            var triples = this.graph.GetTriplesWithSubject(targetNode).ToArray();
+
+            this.graph.Retract(triples);
+        }
+
+        private static IDictionary ConvertToDictionary(object value)
+        {
+            if (value is IDictionary valueDictionary)
+            {
+                return valueDictionary;
+            }
+
+            valueDictionary = new Dictionary<object, object>();
+
+            var properties = value.GetType()
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty)
+                .Where(p => p.GetIndexParameters().Count() == 0);
+
+            if (!properties.Any())
+            {
+                throw new ArgumentException($"Value type {value.GetType()} lacks readable public instance properties.", "value");
+            }
+
+            foreach (var property in properties)
+            {
+                valueDictionary[property.Name] = property.GetValue(value);
+            }
+
+            return valueDictionary;
+        }
+
+        private DynamicUriNode GetDynamicNodeByIndexOrCreate(object subjectIndex)
+        {
+            var result = this.GetIndex(subjectIndex);
+
+            if (result == null)
+            {
+                var subjectNode = DynamicHelper.ConvertToNode(subjectIndex, this.graph, this.graph.subjectBaseUri);
+
+                result = subjectNode.AsDynamic(this.graph.predicateBaseUri, this.graph.collapseSingularArrays);
+            }
+
+            return result;
         }
     }
 }

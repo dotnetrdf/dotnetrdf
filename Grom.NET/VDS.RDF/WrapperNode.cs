@@ -17,46 +17,46 @@
 
         public override string ToString() => this.node.ToString();
 
-        public NodeType NodeType => node.NodeType;
+        public NodeType NodeType => this.node.NodeType;
 
-        public IGraph Graph => node.Graph;
+        public IGraph Graph => this.node.Graph;
 
-        public Uri GraphUri { get => node.GraphUri; set => node.GraphUri = value; }
+        public Uri GraphUri { get => this.node.GraphUri; set => this.node.GraphUri = value; }
 
-        public int CompareTo(INode other) => node.CompareTo(other);
+        public int CompareTo(INode other) => this.node.CompareTo(other);
 
-        public int CompareTo(IBlankNode other) => node.CompareTo(other);
+        public int CompareTo(IBlankNode other) => this.node.CompareTo(other);
 
-        public int CompareTo(IGraphLiteralNode other) => node.CompareTo(other);
+        public int CompareTo(IGraphLiteralNode other) => this.node.CompareTo(other);
 
-        public int CompareTo(ILiteralNode other) => node.CompareTo(other);
+        public int CompareTo(ILiteralNode other) => this.node.CompareTo(other);
 
-        public int CompareTo(IUriNode other) => node.CompareTo(other);
+        public int CompareTo(IUriNode other) => this.node.CompareTo(other);
 
-        public int CompareTo(IVariableNode other) => node.CompareTo(other);
+        public int CompareTo(IVariableNode other) => this.node.CompareTo(other);
 
-        public bool Equals(INode other) => node.Equals(other);
+        public bool Equals(INode other) => this.node.Equals(other);
 
-        public bool Equals(IBlankNode other) => node.Equals(other);
+        public bool Equals(IBlankNode other) => this.node.Equals(other);
 
-        public bool Equals(IGraphLiteralNode other) => node.Equals(other);
+        public bool Equals(IGraphLiteralNode other) => this.node.Equals(other);
 
-        public bool Equals(ILiteralNode other) => node.Equals(other);
+        public bool Equals(ILiteralNode other) => this.node.Equals(other);
 
-        public bool Equals(IUriNode other) => node.Equals(other);
+        public bool Equals(IUriNode other) => this.node.Equals(other);
 
-        public bool Equals(IVariableNode other) => node.Equals(other);
+        public bool Equals(IVariableNode other) => this.node.Equals(other);
 
-        public void GetObjectData(SerializationInfo info, StreamingContext context) => node.GetObjectData(info, context);
+        public void GetObjectData(SerializationInfo info, StreamingContext context) => this.node.GetObjectData(info, context);
 
-        public XmlSchema GetSchema() => node.GetSchema();
+        public XmlSchema GetSchema() => this.node.GetSchema();
 
-        public void ReadXml(XmlReader reader) => node.ReadXml(reader);
+        public void ReadXml(XmlReader reader) => this.node.ReadXml(reader);
 
-        public string ToString(INodeFormatter formatter) => node.ToString(formatter);
+        public string ToString(INodeFormatter formatter) => this.node.ToString(formatter);
 
-        public string ToString(INodeFormatter formatter, TripleSegment segment) => node.ToString(formatter, segment);
+        public string ToString(INodeFormatter formatter, TripleSegment segment) => this.node.ToString(formatter, segment);
 
-        public void WriteXml(XmlWriter writer) => node.WriteXml(writer);
+        public void WriteXml(XmlWriter writer) => this.node.WriteXml(writer);
     }
 }

@@ -35,7 +35,7 @@
         }
 
         [TestMethod]
-        public void Graph_support_wrapper_indices()
+        public void Indexing_supports_setting_wrapper_indices()
         {
             var g = GenerateSPOGraph();
             var d = g.AsDynamic(exampleBase);
