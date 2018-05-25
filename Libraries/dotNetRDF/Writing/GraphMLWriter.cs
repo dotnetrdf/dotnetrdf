@@ -34,8 +34,13 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// Class for serializing a <see cref="IGraph">graph</see> in GraphML format
     /// </summary>
-    public class GraphMLWriter : IStoreWriter
+    public class GraphMLWriter : IStoreWriter, ICollapseLiteralsWriter
     {
+        /// <summary>
+        /// Controls whether to collapse distinct literals
+        /// </summary>
+        public bool CollapseLiterals { get; set; } = true;
+
         /// <summary>
         /// Event raised when there is ambiguity in the syntax being producing
         /// </summary>
@@ -86,10 +91,10 @@ namespace VDS.RDF.Writing
         /// <param name="output">The target XML writer</param>
         public void Save(ITripleStore store, XmlWriter output)
         {
-            GraphMLWriter.WriteGraphML(output, store);
+            GraphMLWriter.WriteGraphML(output, store, this.CollapseLiterals);
         }
 
-        private static void WriteGraphML(XmlWriter writer, ITripleStore store)
+        private static void WriteGraphML(XmlWriter writer, ITripleStore store, bool collapseLiterals)
         {
             writer.WriteStartElement(GraphMLSpecsHelper.GraphML, GraphMLSpecsHelper.NS);
 
@@ -98,13 +103,13 @@ namespace VDS.RDF.Writing
 
             foreach (var graph in store.Graphs)
             {
-                GraphMLWriter.WriteGraph(writer, graph);
+                GraphMLWriter.WriteGraph(writer, graph, collapseLiterals);
             }
 
             writer.WriteEndElement();
         }
 
-        private static void WriteGraph(XmlWriter writer, IGraph graph)
+        private static void WriteGraph(XmlWriter writer, IGraph graph, bool collapseLiterals)
         {
             writer.WriteStartElement(GraphMLSpecsHelper.Graph);
 
@@ -117,51 +122,41 @@ namespace VDS.RDF.Writing
             // RDF is always a directed graph
             writer.WriteAttributeString(GraphMLSpecsHelper.Edgedefault, GraphMLSpecsHelper.Directed);
 
-            GraphMLWriter.WriteTriples(writer, graph);
+            GraphMLWriter.WriteTriples(writer, graph, collapseLiterals);
 
             writer.WriteEndElement();
         }
 
-        private static void WriteTriples(XmlWriter writer, IGraph graph)
+        private static void WriteTriples(XmlWriter writer, IGraph graph, bool collapseLiterals)
         {
-            var nodesAlreadyWritten = new HashSet<INode>();
+            var nodesAlreadyWritten = new HashSet<object>();
 
             foreach (var triple in graph.Triples)
             {
                 foreach (var node in new[] { triple.Subject, triple.Object })
                 {
-                    if (node is ILiteralNode)
-                    {
-                        // Literal node identifiers are the whole statement so they become distinct
-                        GraphMLWriter.WriteNode(writer, triple.GetHashCode().ToString(), node.ToString());
+                    var id = GraphMLWriter.CalculateNodeId(node, triple, collapseLiterals);
 
-                        // TODO: Could add datatype and language as data elements
-                    }
                     // Skip if already written
-                    else if (nodesAlreadyWritten.Add(node))
+                    if (nodesAlreadyWritten.Add(id))
                     {
-                        GraphMLWriter.WriteNode(writer, node.GetHashCode().ToString(), node.ToString());
+                        GraphMLWriter.WriteNode(writer, id.GetHashCode().ToString(), node.ToString());
                     }
                 }
 
-                GraphMLWriter.WriteEdge(writer, triple);
+                GraphMLWriter.WriteEdge(writer, triple, collapseLiterals);
             }
         }
 
-        private static void WriteEdge(XmlWriter writer, Triple triple)
+        private static void WriteEdge(XmlWriter writer, Triple triple, bool collapseLiterals)
         {
             writer.WriteStartElement(GraphMLSpecsHelper.Edge);
             writer.WriteAttributeString(GraphMLSpecsHelper.Source, triple.Subject.GetHashCode().ToString());
 
             writer.WriteStartAttribute(GraphMLSpecsHelper.Target);
-            if (triple.Object.NodeType == NodeType.Literal)
-            {
-                writer.WriteString(triple.GetHashCode().ToString());
-            }
-            else
-            {
-                writer.WriteString(triple.Object.GetHashCode().ToString());
-            }
+
+            var id = GraphMLWriter.CalculateNodeId(triple.Object, triple, collapseLiterals);
+            writer.WriteString(id.GetHashCode().ToString());
 
             GraphMLWriter.WriteData(writer, GraphMLSpecsHelper.EdgeLabel, triple.Predicate.ToString());
 
@@ -193,6 +188,21 @@ namespace VDS.RDF.Writing
             writer.WriteAttributeString(GraphMLSpecsHelper.Key, key);
             writer.WriteString(value);
             writer.WriteEndElement();
+        }
+
+        private static object CalculateNodeId(INode node, Triple triple, bool collapseLiterals)
+        {
+            // Literal nodes are identified either by their value or by their containing triple.
+            // When identified by value, there will be a single node representing all literals with the same value.
+            // When identified by triple, there will be a separate node representing each triple that has an object with that value.
+            var idObject = node as object;
+
+            if (!collapseLiterals && node is ILiteralNode)
+            {
+                idObject = triple;
+            }
+
+            return idObject;
         }
     }
 }

@@ -33,12 +33,17 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// A Writer which generates GraphViz DOT Format files from an RDF Graph
     /// </summary>
-    public class GraphVizWriter : BaseRdfWriter, IPrettyPrintingWriter
+    public class GraphVizWriter : BaseRdfWriter, IPrettyPrintingWriter, ICollapseLiteralsWriter
     {
         /// <summary>
         /// Gets/Sets Pretty Print Mode for the Writer
         /// </summary>
         public bool PrettyPrintMode { get; set; } = true;
+
+        /// <summary>
+        /// Gets/Sets whether to collapse distinct literal nodes
+        /// </summary>
+        public bool CollapseLiterals { get; set; } = false;
 
         /// <summary>
         /// Saves a Graph into GraphViz DOT Format
@@ -63,10 +68,10 @@ namespace VDS.RDF.Writing
         {
             var context = new BaseWriterContext(g, output) { PrettyPrint = this.PrettyPrintMode };
 
-            GraphVizWriter.WriteGraph(context);
+            GraphVizWriter.WriteGraph(context, this.CollapseLiterals);
         }
 
-        private static void WriteGraph(BaseWriterContext context)
+        private static void WriteGraph(BaseWriterContext context, bool collapseLiterals)
         {
             context.Output.Write(DOT.Digraph);
 
@@ -84,19 +89,19 @@ namespace VDS.RDF.Writing
 
             foreach (var t in context.Graph.Triples)
             {
-                GraphVizWriter.WriteTriple(t, context);
+                GraphVizWriter.WriteTriple(t, context, collapseLiterals);
             }
 
             context.Output.Write(DOT.CloseCurly);
         }
 
-        private static void WriteTriple(Triple triple, BaseWriterContext context)
+        private static void WriteTriple(Triple triple, BaseWriterContext context, bool collapseLiterals)
         {
             // Output Node lines for Literal Node so we show them as Boxes
             // This is in keeping with Standard Graph representation of RDF
             // Literals are shown in Boxes, Uri Nodes in ellipses (GraphViz's default shape)
-            var subjectId = GraphVizWriter.ProcessNode(triple, TripleSegment.Subject, context);
-            var objectId = GraphVizWriter.ProcessNode(triple, TripleSegment.Object, context);
+            var subjectId = GraphVizWriter.ProcessNode(triple, TripleSegment.Subject, context, collapseLiterals);
+            var objectId = GraphVizWriter.ProcessNode(triple, TripleSegment.Object, context, collapseLiterals);
 
             // Output the actual lines that state the relationship between the Nodes
             // We use the Predicate as the Label on the relationship
@@ -120,14 +125,14 @@ namespace VDS.RDF.Writing
             GraphVizWriter.Prettify(DOT.NewLine, context);
         }
 
-        private static string ProcessNode(Triple t, TripleSegment segment, BaseWriterContext context)
+        private static string ProcessNode(Triple t, TripleSegment segment, BaseWriterContext context, bool collapseLiterals)
         {
             var node = GraphVizWriter.GetNode(t, segment);
 
             switch (node)
             {
                 case ILiteralNode literalnode:
-                    return GraphVizWriter.WriteLiteralNode(literalnode, t, context);
+                    return GraphVizWriter.WriteLiteralNode(literalnode, t, context, collapseLiterals);
 
                 case IUriNode uriNode:
                     return GraphVizWriter.ReduceToQName(uriNode.Uri, context);
@@ -140,15 +145,18 @@ namespace VDS.RDF.Writing
             }
         }
 
-        private static string WriteLiteralNode(ILiteralNode literalnode, Triple t, BaseWriterContext context)
+        private static string WriteLiteralNode(ILiteralNode literalnode, Triple t, BaseWriterContext context, bool collapseLiterals)
         {
             // Example output:
             //     "h" [label = "v", shape = box];
             // where h is the hash of the triple containing the literal node
             // and v is value of literal node
 
-            // Literal nodes are identified by their triple.
-            var nodeId = t.GetHashCode().ToString();
+            // Literal nodes are identified either by their value or by their containing triple.
+            // When identified by value, there will be a single node representing all literals with the same value.
+            // When identified by triple, there will be a separate node representing each triple that has an object with that value.
+            var idObject = collapseLiterals ? literalnode as object : t as object;
+            var nodeId = idObject.GetHashCode().ToString();
 
             GraphVizWriter.Prettify(DOT.Tab, context);
             GraphVizWriter.WriteQuoted(nodeId, context);

@@ -78,6 +78,54 @@ namespace VDS.RDF.Writing
             }
         }
 
+        [Fact]
+        public void Collapses_literals_by_default()
+        {
+            var s = new TripleStore();
+            var g = new Graph();
+            g.LoadFromString(@"
+_:s1 <urn:p> ""o"" .
+_:s2 <urn:p> ""o"" .
+");
+            s.Add(g);
+
+            var x = new XDocument();
+            using (var outputWriter = x.CreateWriter())
+            {
+                new GraphMLWriter().Save(s, outputWriter);
+            }
+
+            var graphElement = x.Descendants(XName.Get(GraphMLSpecsHelper.Graph, GraphMLSpecsHelper.NS)).Single();
+            var expected = 3;
+            var actual = graphElement.Elements(XName.Get(GraphMLSpecsHelper.Node, GraphMLSpecsHelper.NS)).Count();
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void Doesnt_collapses_literals_if_required()
+        {
+            var s = new TripleStore();
+            var g = new Graph();
+            g.LoadFromString(@"
+_:s1 <urn:p> ""o"" .
+_:s2 <urn:p> ""o"" .
+");
+            s.Add(g);
+
+            var x = new XDocument();
+            using (var outputWriter = x.CreateWriter())
+            {
+                new GraphMLWriter() { CollapseLiterals = false }.Save(s, outputWriter);
+            }
+
+            var graphElement = x.Descendants(XName.Get(GraphMLSpecsHelper.Graph, GraphMLSpecsHelper.NS)).Single();
+            var expected = 4;
+            var actual = graphElement.Elements(XName.Get(GraphMLSpecsHelper.Node, GraphMLSpecsHelper.NS)).Count();
+
+            Assert.Equal(expected, actual);
+        }
+
 #if NET40
         [Fact]
         public void Output_conforms_to_XSD()
