@@ -151,7 +151,7 @@
             var g = GenerateSPOGraph();
             var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
             dynamic d = s.AsDynamic();
-            var memberNames = (d.GetMetaObject(Expression.Empty()) as DynamicNodeMetaObject).GetDynamicMemberNames();
+            var memberNames = (d.InnerMetaObjectProvider as DynamicNodeDispatcher).GetDynamicMemberNames();
             var result = memberNames.ToArray();
             var expected = new[] { "http://example.com/p" };
 
@@ -165,7 +165,7 @@
             g.NamespaceMap.AddNamespace("ex", exampleBase);
             var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
             dynamic d = s.AsDynamic();
-            var memberNames = (d.GetMetaObject(Expression.Empty()) as DynamicNodeMetaObject).GetDynamicMemberNames();
+            var memberNames = (d.InnerMetaObjectProvider as DynamicNodeDispatcher).GetDynamicMemberNames();
             var result = memberNames.ToArray();
             var expected = new[] { "ex:p" };
 
@@ -179,7 +179,7 @@
             g.NamespaceMap.AddNamespace(string.Empty, exampleBase);
             var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
             dynamic d = s.AsDynamic();
-            var memberNames = (d.GetMetaObject(Expression.Empty()) as DynamicNodeMetaObject).GetDynamicMemberNames();
+            var memberNames = (d.InnerMetaObjectProvider as DynamicNodeDispatcher).GetDynamicMemberNames();
             var result = memberNames.ToArray();
             var expected = new[] { ":p" };
 
@@ -192,7 +192,7 @@
             var g = GenerateSPOGraph();
             var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
             dynamic d = s.AsDynamic(exampleBase);
-            var memberNames = (d.GetMetaObject(Expression.Empty()) as DynamicNodeMetaObject).GetDynamicMemberNames();
+            var memberNames = (d.InnerMetaObjectProvider as DynamicNodeDispatcher).GetDynamicMemberNames();
             var result = memberNames.ToArray();
             var expected = new[] { "p" };
 
@@ -205,7 +205,7 @@
             var g = new Graph();
             g.LoadFromString("<http://example.com/#s> <http://example.com/#p> <http://example.com/#o> .");
             var d = g.Triples.Single().Subject.AsDynamic(new Uri("http://example.com/#"));
-            var memberNames = (d.GetMetaObject(Expression.Empty()) as DynamicNodeMetaObject).GetDynamicMemberNames();
+            var memberNames = (d.InnerMetaObjectProvider as DynamicNodeDispatcher).GetDynamicMemberNames();
             var result = memberNames.ToArray();
             var expected = new[] { "p" };
 
@@ -322,8 +322,8 @@
 
             var now = DateTimeOffset.Now;
 
-            n1.p = now;
             n2["p"] = now;
+            n1.p = now;
 
             Assert.AreEqual(g2, g1);
         }

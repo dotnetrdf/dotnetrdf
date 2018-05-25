@@ -286,12 +286,12 @@
         }
 
         [TestMethod]
-        public void Only_subject_nodes_are_exposed()
+        public void Dynamic_member_names_only_subject_nodes_are_exposed()
         {
             var g = GenerateSPOGraph();
 
             var d = new DynamicGraph(g);
-            var memberNames = d.GetMetaObject(Expression.Empty()).GetDynamicMemberNames();
+            var memberNames = (d.InnerMetaObjectProvider as DynamicGraphDispatcher).GetDynamicMemberNames();
 
             CollectionAssert.DoesNotContain(
                 memberNames.ToArray(),
@@ -299,13 +299,13 @@
         }
 
         [TestMethod]
-        public void Only_uri_nodes_are_exposed()
+        public void Dynamic_member_names_only_uri_nodes_are_exposed()
         {
             var g = new Graph();
             g.LoadFromString("_:s <http://example.com/p> <http://example.com/o> .");
 
             var d = new DynamicGraph(g);
-            var memberNames = d.GetMetaObject(Expression.Empty()).GetDynamicMemberNames();
+            var memberNames = (d.InnerMetaObjectProvider as DynamicGraphDispatcher).GetDynamicMemberNames();
 
             Assert.IsFalse(memberNames.Any());
         }
@@ -386,7 +386,7 @@
         {
             var g = GenerateSPOGraph();
             var d = new DynamicGraph(g, exampleBase);
-            var memberNames = d.GetMetaObject(Expression.Empty()).GetDynamicMemberNames();
+            var memberNames = (d.InnerMetaObjectProvider as DynamicGraphDispatcher).GetDynamicMemberNames();
 
             Assert.AreEqual(
                 "s",
@@ -398,7 +398,7 @@
         {
             var g = GenerateSPOGraph();
             var d = new DynamicGraph(g);
-            var memberNames = d.GetMetaObject(Expression.Empty()).GetDynamicMemberNames();
+            var memberNames = (d.InnerMetaObjectProvider as DynamicGraphDispatcher).GetDynamicMemberNames();
 
             Assert.AreEqual(
                 "http://example.com/s",
@@ -410,7 +410,7 @@
         {
             var g = GenerateSPOGraph();
             var d = new DynamicGraph(g, new Uri("http://example2.com/"));
-            var memberNames = d.GetMetaObject(Expression.Empty()).GetDynamicMemberNames();
+            var memberNames = (d.InnerMetaObjectProvider as DynamicGraphDispatcher).GetDynamicMemberNames();
 
             Assert.AreEqual(
                 "http://example.com/s",
@@ -423,7 +423,7 @@
             var g = new Graph();
             g.LoadFromString("<http://example.com/#s> <http://example.com/p> <http://example.com/o> .");
             var d = new DynamicGraph(g, new Uri("http://example.com/#"));
-            var memberNames = d.GetMetaObject(Expression.Empty()).GetDynamicMemberNames();
+            var memberNames = (d.InnerMetaObjectProvider as DynamicGraphDispatcher).GetDynamicMemberNames();
 
             Assert.AreEqual(
                 "s",

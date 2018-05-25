@@ -5,24 +5,20 @@
     using System.Linq.Expressions;
     using VDS.RDF;
 
-    public class DynamicUriNode : WrapperUriNode, IDynamicMetaObjectProvider
+    public class DynamicUriNode : WrapperUriNode, IDynamicMetaObjectProvider, IDynamicMetaObjectProviderContainer
     {
         internal readonly Uri baseUri;
         internal readonly bool collapseSingularArrays;
 
         public DynamicUriNode(IUriNode node, Uri baseUri = null, bool collapseSingularArrays = false) : base(node)
         {
+            this.InnerMetaObjectProvider = new DynamicNodeDispatcher(node, baseUri, collapseSingularArrays);
             this.baseUri = baseUri ?? node.Graph?.BaseUri;
             this.collapseSingularArrays = collapseSingularArrays;
         }
 
-        public DynamicMetaObject GetMetaObject(Expression parameter)
-        {
-            return new DynamicNodeMetaObject(parameter, this, this.baseUri, this.collapseSingularArrays);
-        }
+        public DynamicMetaObject GetMetaObject(Expression parameter) => new DelegatingMetaObject(parameter, this);
 
-        public override int GetHashCode() => base.GetHashCode();
-
-        public override string ToString() => base.ToString();
+        public IDynamicMetaObjectProvider InnerMetaObjectProvider { get; private set; }
     }
 }

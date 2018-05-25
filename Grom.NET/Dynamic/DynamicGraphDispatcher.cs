@@ -5,82 +5,81 @@
     using System.Collections.Generic;
     using System.Dynamic;
     using System.Linq;
-    using System.Linq.Expressions;
     using System.Reflection;
     using VDS.RDF;
 
-    public class DynamicGraphMetaObject : DynamicMetaObject
+    internal class DynamicGraphDispatcher : DynamicObject
     {
-        private readonly DynamicGraph graph;
+        private DynamicGraph graph;
 
-        public DynamicGraphMetaObject(Expression parameter, DynamicGraph graph) : base(parameter, BindingRestrictions.Empty, graph)
+        internal DynamicGraphDispatcher(DynamicGraph graph)
         {
             this.graph = graph;
         }
 
-        public override DynamicMetaObject BindGetIndex(GetIndexBinder binder, DynamicMetaObject[] indexes)
+        public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
         {
             if (indexes.Length != 1)
             {
                 throw new ArgumentException("Only one index", "indexes");
             }
 
-            var subjectIndex = indexes[0].Value;
+            var subjectIndex = indexes[0];
 
             if (subjectIndex == null)
             {
                 throw new ArgumentNullException("Can't work with null index", "indexes");
             }
 
-            var result = GetIndex(subjectIndex);
+            result = this.GetIndex(subjectIndex);
 
             if (result == null)
             {
-                return base.BindGetIndex(binder, indexes);
+                return false;
             }
 
-            return new DynamicMetaObject(Expression.Convert(Expression.Constant(result), binder.ReturnType), BindingRestrictions.GetTypeRestriction(Expression, LimitType));
+            return true;
         }
 
-        public override DynamicMetaObject BindGetMember(GetMemberBinder binder)
+        public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
             if (this.graph.subjectBaseUri == null)
             {
                 throw new InvalidOperationException("Can't get member without baseUri.");
             }
 
-            var result = this.GetIndex(binder.Name);
+            result = this.GetIndex(binder.Name);
 
             if (result == null)
             {
-                return base.BindGetMember(binder);
+                return false;
             }
-
-            return new DynamicMetaObject(Expression.Convert(Expression.Constant(result), binder.ReturnType), BindingRestrictions.GetTypeRestriction(Expression, LimitType));
+            
+            return true;
         }
 
-        public override DynamicMetaObject BindSetIndex(SetIndexBinder binder, DynamicMetaObject[] indexes, DynamicMetaObject value)
+        public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
         {
             if (indexes.Length != 1)
             {
                 throw new ArgumentException("Only one index", "indexes");
             }
 
-            this.SetIndex(indexes[0].Value, value.Value);
+            this.SetIndex(indexes[0], value);
 
-            return new DynamicMetaObject(Expression.Convert(Expression.Constant(value.Value), binder.ReturnType), BindingRestrictions.GetTypeRestriction(Expression, LimitType));
+            return true;
         }
 
-        public override DynamicMetaObject BindSetMember(SetMemberBinder binder, DynamicMetaObject value)
+        public override bool TrySetMember(SetMemberBinder binder, object value)
         {
             if (this.graph.subjectBaseUri == null)
             {
                 throw new InvalidOperationException("Can't set member without baseUri.");
             }
 
-            this.SetIndex(binder.Name, value.Value);
+            this.SetIndex(binder.Name, value);
 
-            return new DynamicMetaObject(Expression.Convert(Expression.Constant(value.Value), binder.ReturnType), BindingRestrictions.GetTypeRestriction(Expression, LimitType));
+            return true;
         }
 
         public override IEnumerable<string> GetDynamicMemberNames()
@@ -117,14 +116,27 @@
                 return;
             }
 
-            var valueDictionary = DynamicGraphMetaObject.ConvertToDictionary(value);
-            //var targetMeta = targetNode.GetMetaObject(this.Expression) as DynamicNodeMetaObject;
+            var valueDictionary = DynamicGraphDispatcher.ConvertToDictionary(value);
+            var dynamicTarget = targetNode as dynamic;
 
             foreach (DictionaryEntry entry in valueDictionary)
             {
-                //targetMeta.SetIndex(key, valueDictionary[key]);
-                (targetNode as dynamic)[entry.Key] = entry.Value;
+                dynamicTarget[entry.Key] = entry.Value;
             }
+        }
+
+        private DynamicUriNode GetDynamicNodeByIndexOrCreate(object subjectIndex)
+        {
+            var result = this.GetIndex(subjectIndex);
+
+            if (result == null)
+            {
+                var subjectNode = DynamicHelper.ConvertToNode(subjectIndex, this.graph, this.graph.subjectBaseUri);
+
+                result = subjectNode.AsDynamic(this.graph.predicateBaseUri, this.graph.collapseSingularArrays);
+            }
+
+            return result;
         }
 
         private void RetractWithSubject(DynamicUriNode targetNode)
@@ -158,20 +170,6 @@
             }
 
             return valueDictionary;
-        }
-
-        private DynamicUriNode GetDynamicNodeByIndexOrCreate(object subjectIndex)
-        {
-            var result = this.GetIndex(subjectIndex);
-
-            if (result == null)
-            {
-                var subjectNode = DynamicHelper.ConvertToNode(subjectIndex, this.graph, this.graph.subjectBaseUri);
-
-                result = subjectNode.AsDynamic(this.graph.predicateBaseUri, this.graph.collapseSingularArrays);
-            }
-
-            return result;
         }
     }
 }

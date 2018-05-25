@@ -5,81 +5,66 @@
     using System.Collections.Generic;
     using System.Dynamic;
     using System.Linq;
-    using System.Linq.Expressions;
+    using System.Reflection;
     using VDS.RDF;
     using VDS.RDF.Nodes;
 
-    public class DynamicNodeMetaObject : DynamicMetaObject
+    internal class DynamicNodeDispatcher : DynamicObject
     {
         private readonly INode node;
         private readonly Uri baseUri;
         private readonly bool collapseSingularArrays;
 
-        public DynamicNodeMetaObject(Expression parameter, INode node, Uri baseUri = null, bool collapseSingularArrays = false) : base(parameter, BindingRestrictions.Empty, node)
+        internal DynamicNodeDispatcher(INode node, Uri baseUri = null, bool collapseSingularArrays = false)
         {
             this.node = node;
             this.baseUri = baseUri ?? node.Graph?.BaseUri;
             this.collapseSingularArrays = collapseSingularArrays;
         }
 
-        public override DynamicMetaObject BindGetIndex(GetIndexBinder binder, DynamicMetaObject[] indexes)
+        public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
         {
             if (indexes.Length != 1)
             {
                 throw new ArgumentException("Only one index", "indexes");
             }
 
-            var predicate = indexes[0].Value;
-
-            var result = GetIndex(predicate);
-
-            if (result == null)
-            {
-                return base.BindGetIndex(binder, indexes);
-            }
-
-            return new DynamicMetaObject(Expression.Convert(Expression.Constant(result), binder.ReturnType), BindingRestrictions.GetTypeRestriction(Expression, LimitType));
+            return (result = this.GetIndex(indexes[0])) != null;
         }
 
-        public override DynamicMetaObject BindSetIndex(SetIndexBinder binder, DynamicMetaObject[] indexes, DynamicMetaObject value)
-        {
-            if (indexes.Length != 1)
-            {
-                throw new ArgumentException("Only one index", "indexes");
-            }
-
-            this.SetIndex(indexes[0].Value, value.Value);
-
-            return new DynamicMetaObject(Expression.Convert(Expression.Constant(value.Value), binder.ReturnType), BindingRestrictions.GetTypeRestriction(Expression, LimitType));
-        }
-
-        public override DynamicMetaObject BindSetMember(SetMemberBinder binder, DynamicMetaObject value)
-        {
-            if (this.baseUri == null)
-            {
-                throw new InvalidOperationException($"Can't set member {binder.Name} without baseUri.");
-            }
-
-            this.SetIndex(binder.Name, value.Value);
-
-            return new DynamicMetaObject(Expression.Convert(Expression.Constant(value.Value), binder.ReturnType), BindingRestrictions.GetTypeRestriction(Expression, LimitType));
-        }
-
-        public override DynamicMetaObject BindGetMember(GetMemberBinder binder)
+        public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
             if (this.baseUri == null)
             {
                 throw new InvalidOperationException($"Can't get member {binder.Name} without baseUri.");
             }
 
-            var result = this.GetIndex(binder.Name);
+            return (result = this.GetIndex(binder.Name)) != null;
+        }
 
-            if (result == null)
+        public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
+        {
+            if (indexes.Length != 1)
             {
-                return base.BindGetMember(binder);
+                throw new ArgumentException("Only one index", "indexes");
             }
 
-            return new DynamicMetaObject(Expression.Convert(Expression.Constant(result), binder.ReturnType), BindingRestrictions.GetTypeRestriction(Expression, LimitType));
+            this.SetIndex(indexes[0], value);
+
+            return true;
+        }
+
+        public override bool TrySetMember(SetMemberBinder binder, object value)
+        {
+            if (this.baseUri == null)
+            {
+                throw new InvalidOperationException($"Can't set member {binder.Name} without baseUri.");
+            }
+
+            this.SetIndex(binder.Name, value);
+
+            return true;
+
         }
 
         public override IEnumerable<string> GetDynamicMemberNames()
@@ -115,7 +100,45 @@
             }
         }
 
-        internal void SetIndex(object predicate, object value)
+        private object ConvertToObject(INode objectNode)
+        {
+            var valuedNode = objectNode.AsValuedNode();
+
+            switch (valuedNode)
+            {
+                case IUriNode uriNode:
+                    return new DynamicUriNode(uriNode, this.baseUri, this.collapseSingularArrays);
+
+                case IBlankNode blankNode:
+                    return new DynamicBlankNode(blankNode, this.baseUri, this.collapseSingularArrays);
+
+                case DoubleNode doubleNode:
+                    return doubleNode.AsDouble();
+
+                case FloatNode floatNode:
+                    return floatNode.AsFloat();
+
+                case DecimalNode decimalNode:
+                    return decimalNode.AsDecimal();
+
+                case BooleanNode booleanNode:
+                    return booleanNode.AsBoolean();
+
+                case DateTimeNode dateTimeNode:
+                    return dateTimeNode.AsDateTimeOffset();
+
+                case TimeSpanNode timeSpanNode:
+                    return timeSpanNode.AsTimeSpan();
+
+                case NumericNode numericNode:
+                    return numericNode.AsInteger();
+
+                default:
+                    return valuedNode.ToString();
+            }
+        }
+
+        private void SetIndex(object predicate, object value)
         {
             if (this.node.Graph == null)
             {
@@ -229,44 +252,6 @@
 
                 default:
                     throw new Exception($"Can't convert type {value.GetType()}");
-            }
-        }
-
-        private object ConvertToObject(INode objectNode)
-        {
-            var valuedNode = objectNode.AsValuedNode();
-
-            switch (valuedNode)
-            {
-                case IUriNode uriNode:
-                    return new DynamicUriNode(uriNode, this.baseUri, this.collapseSingularArrays);
-
-                case IBlankNode blankNode:
-                    return new DynamicBlankNode(blankNode, this.baseUri, this.collapseSingularArrays);
-
-                case DoubleNode doubleNode:
-                    return doubleNode.AsDouble();
-
-                case FloatNode floatNode:
-                    return floatNode.AsFloat();
-
-                case DecimalNode decimalNode:
-                    return decimalNode.AsDecimal();
-
-                case BooleanNode booleanNode:
-                    return booleanNode.AsBoolean();
-
-                case DateTimeNode dateTimeNode:
-                    return dateTimeNode.AsDateTimeOffset();
-
-                case TimeSpanNode timeSpanNode:
-                    return timeSpanNode.AsTimeSpan();
-
-                case NumericNode numericNode:
-                    return numericNode.AsInteger();
-
-                default:
-                    return valuedNode.ToString();
             }
         }
     }
