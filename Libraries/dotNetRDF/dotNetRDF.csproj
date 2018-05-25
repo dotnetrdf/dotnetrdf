@@ -5,7 +5,7 @@
     <Copyright>Copyright © dotNetRDF Project 2009-2017</Copyright>
     <AssemblyTitle>dotNetRDF</AssemblyTitle>
     <VersionPrefix>$(Version)</VersionPrefix>
-    <Authors>RobVesse;tpluscode;kal_ahmed;ronmichael</Authors>
+    <Authors>RobVesse;tpluscode;kal_ahmed;ronmichael;dotnetrdf</Authors>
     <TargetFrameworks>netstandard1.4;net40;net40-client;netstandard2.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>dotNetRDF</AssemblyName>

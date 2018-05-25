@@ -7,7 +7,7 @@
     <VersionPrefix>1.0.13-pre6</VersionPrefix>
     <TargetFrameworks>net40</TargetFrameworks>
     <AssemblyName>dotNetRDF.Web</AssemblyName>
-    <Authors>RobVesse;tpluscode;kal_ahmed</Authors>
+    <Authors>RobVesse;tpluscode;kal_ahmed;dotnetrdf</Authors>
     <AssemblyOriginatorKeyFile>../../Build/dotNetRDF.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
