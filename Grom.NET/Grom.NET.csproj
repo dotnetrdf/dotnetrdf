@@ -31,15 +31,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Dynamic\DelegatingMetaObject.cs" />
     <Compile Include="Dynamic\DynamicBlankNode.cs" />
     <Compile Include="Dynamic\DynamicExtensions.cs" />
     <Compile Include="Dynamic\DynamicGraph.cs" />
-    <Compile Include="Dynamic\DynamicNodeDispatcher.cs" />
-    <Compile Include="Dynamic\DynamicGraphDispatcher.cs" />
     <Compile Include="Dynamic\DynamicHelper.cs" />
     <Compile Include="Dynamic\DynamicUriNode.cs" />
     <Compile Include="Dynamic\IDynamicMetaObjectProviderContainer.cs" />
+    <Compile Include="Dynamic\MetaDynamic.cs" />
     <Compile Include="VDS.RDF\WrapperBlankNode.cs" />
     <Compile Include="VDS.RDF\WrapperNode.cs" />
     <Compile Include="VDS.RDF\WrapperUriNode.cs" />

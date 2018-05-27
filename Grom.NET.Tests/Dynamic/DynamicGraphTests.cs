@@ -1,11 +1,9 @@
 ﻿namespace Dynamic
 {
-    using Microsoft.CSharp.RuntimeBinder;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Linq.Expressions;
     using VDS.RDF;
     using VDS.RDF.Nodes;
 
@@ -58,20 +56,6 @@
         }
 
         [TestMethod]
-        public void Node_support_wrapper_indices()
-        {
-            var g = GenerateSPOGraph();
-            var d = g.AsDynamic(exampleBase);
-            var s = d.s;
-            var o = s.p[0];
-            s[o] = "o";
-
-            var value = g.GetTriplesWithObject(g.CreateLiteralNode("o")).SingleOrDefault();
-
-            Assert.IsNotNull(value);
-        }
-
-        [TestMethod]
         public void Index_set_null_deletes_by_subject()
         {
             var g = GenerateSPOGraph();
@@ -84,11 +68,11 @@
         }
 
         [TestMethod]
-        public void Member_set_null_deletes_by_subject()
+        public void Set_null_deletes_by_subject()
         {
             var g = GenerateSPOGraph();
             var d = g.AsDynamic(exampleBase);
-            d.s = null;
+            d["s"] = null;
 
             var condition = g.IsEmpty;
 
@@ -97,18 +81,17 @@
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
-        public void Cant_set_without_readable_public_properties()
+        public void Cant_set_index_without_readable_public_properties()
         {
-            var g = GenerateSPOGraph();
-            var d = g.AsDynamic(exampleBase);
-            d.s = new { };
+            var d = GenerateSPOGraph().AsDynamic(exampleBase);
+
+            d["s"] = new { };
         }
 
         [TestMethod]
         public void Get_index_with_absolute_uri_string()
         {
-            var g = GenerateSPOGraph();
-            var d = g.AsDynamic();
+            var d = spoGraph.AsDynamic();
 
             var expected = exampleSubject;
             var actual = d["http://example.com/s"];
@@ -158,8 +141,7 @@
         [TestMethod]
         public void Get_index_with_relative_uri_string()
         {
-            var g = GenerateSPOGraph();
-            var d = g.AsDynamic(exampleBase);
+            var d = spoGraph.AsDynamic(exampleBase);
 
             var expected = exampleSubject;
             var actual = d["s"];
@@ -183,9 +165,7 @@
         [TestMethod]
         public void Indexing_supports_absolute_uris()
         {
-            var g = GenerateSPOGraph();
-
-            var d = g.AsDynamic();
+            var d = spoGraph.AsDynamic();
 
             Assert.AreEqual(
                 exampleSubject,
@@ -195,20 +175,17 @@
         [TestMethod]
         public void Indexing_supports_relative_uris()
         {
-            var g = GenerateSPOGraph();
-
-            dynamic dynamicGraph = new DynamicGraph(g, exampleBase);
+            var d = GenerateSPOGraph().AsDynamic(exampleBase);
 
             Assert.AreEqual(
                 exampleSubject,
-                dynamicGraph[new Uri("s", UriKind.Relative)]);
+                d[new Uri("s", UriKind.Relative)]);
         }
 
         [TestMethod]
         public void Indexing_supports_uri_nodes()
         {
-            var g = GenerateSPOGraph();
-            var d = g.AsDynamic();
+            var d = GenerateSPOGraph().AsDynamic();
 
             Assert.AreEqual(
                 exampleSubject,
@@ -219,8 +196,7 @@
         [ExpectedException(typeof(InvalidOperationException))]
         public void Relative_indexing_requires_base_uri()
         {
-            var g = new Graph();
-            var d = g.AsDynamic();
+            var d = new Graph().AsDynamic();
 
             var result = d["s"];
         }
@@ -229,8 +205,7 @@
         [ExpectedException(typeof(InvalidOperationException))]
         public void Property_access_requires_base_uri()
         {
-            var g = new Graph();
-            var d = g.AsDynamic();
+            var d = new Graph().AsDynamic();
 
             var result = d.s;
         }
@@ -239,8 +214,7 @@
         [ExpectedException(typeof(RdfException))]
         public void Cant_get_index_with_unknown_qName()
         {
-            var g = new Graph();
-            var d = g.AsDynamic();
+            var d = new Graph().AsDynamic();
 
             var result = d["ex:s"];
         }
@@ -249,38 +223,34 @@
         [ExpectedException(typeof(FormatException))]
         public void Cant_get_index_with_illegal_uri()
         {
-            var g = new Graph();
-            var d = g.AsDynamic();
+            var d = new Graph().AsDynamic();
 
             var result = d["http:///"];
         }
 
         [TestMethod]
-        [ExpectedException(typeof(RuntimeBinderException))]
+        [ExpectedException(typeof(Exception))]
         public void Cant_get_nonexistent_absolute_uri_string_index()
         {
-            var g = new Graph();
-            var d = g.AsDynamic();
+            var d = new Graph().AsDynamic();
 
             var result = d["http://example.com/nonexistent"];
         }
 
         [TestMethod]
-        [ExpectedException(typeof(RuntimeBinderException))]
+        [ExpectedException(typeof(Exception))]
         public void Cant_get_nonexistent_relative_uri_string_index()
         {
-            var g = new Graph();
-            var d = g.AsDynamic(exampleBase);
+            var d = GenerateSPOGraph().AsDynamic(exampleBase);
 
             var result = d["nonexistent"];
         }
 
         [TestMethod]
-        [ExpectedException(typeof(RuntimeBinderException))]
+        [ExpectedException(typeof(Exception))]
         public void Cant_get_nonexistent_member()
         {
-            var g = new Graph();
-            var d = g.AsDynamic(exampleBase);
+            var d = new Graph().AsDynamic(exampleBase);
 
             var result = d.nonexistent;
         }
@@ -291,7 +261,7 @@
             var g = GenerateSPOGraph();
 
             var d = new DynamicGraph(g);
-            var memberNames = (d.InnerMetaObjectProvider as DynamicGraphDispatcher).GetDynamicMemberNames();
+            var memberNames = d.GetDynamicMemberNames();
 
             CollectionAssert.DoesNotContain(
                 memberNames.ToArray(),
@@ -305,7 +275,7 @@
             g.LoadFromString("_:s <http://example.com/p> <http://example.com/o> .");
 
             var d = new DynamicGraph(g);
-            var memberNames = (d.InnerMetaObjectProvider as DynamicGraphDispatcher).GetDynamicMemberNames();
+            var memberNames = d.GetDynamicMemberNames();
 
             Assert.IsFalse(memberNames.Any());
         }
@@ -314,8 +284,7 @@
         [ExpectedException(typeof(ArgumentException))]
         public void Multidimensional_get_index_is_forbidden()
         {
-            var g = GenerateSPOGraph();
-            var d = g.AsDynamic();
+            var d = GenerateSPOGraph().AsDynamic();
 
             var result = d[0, 0];
         }
@@ -324,8 +293,7 @@
         [ExpectedException(typeof(ArgumentException))]
         public void Multidimensional_set_index_is_forbidden()
         {
-            var g = GenerateSPOGraph();
-            var d = g.AsDynamic();
+            var d = GenerateSPOGraph().AsDynamic();
 
             d[0, 0] = null;
         }
@@ -334,8 +302,7 @@
         [ExpectedException(typeof(ArgumentException))]
         public void Cant_get_index_with_unknown_type()
         {
-            var g = GenerateSPOGraph();
-            var d = g.AsDynamic();
+            var d = GenerateSPOGraph().AsDynamic();
 
             var result = d[0];
         }
@@ -350,8 +317,7 @@
         [TestMethod]
         public void Get_member()
         {
-            var g = GenerateSPOGraph();
-            var d = g.AsDynamic(exampleBase);
+            var d = GenerateSPOGraph().AsDynamic(exampleBase);
 
             Assert.AreEqual(
                 exampleSubject,
@@ -377,7 +343,7 @@
             var d = g.AsDynamic(exampleBase);
 
             Assert.AreEqual(
-                g.Triples.First().Object.AsDynamic(),
+                g.Triples.First().Object,
                 d.s.p[0]);
         }
 
@@ -386,7 +352,7 @@
         {
             var g = GenerateSPOGraph();
             var d = new DynamicGraph(g, exampleBase);
-            var memberNames = (d.InnerMetaObjectProvider as DynamicGraphDispatcher).GetDynamicMemberNames();
+            var memberNames = d.GetDynamicMemberNames();
 
             Assert.AreEqual(
                 "s",
@@ -398,7 +364,7 @@
         {
             var g = GenerateSPOGraph();
             var d = new DynamicGraph(g);
-            var memberNames = (d.InnerMetaObjectProvider as DynamicGraphDispatcher).GetDynamicMemberNames();
+            var memberNames = d.GetDynamicMemberNames();
 
             Assert.AreEqual(
                 "http://example.com/s",
@@ -410,7 +376,7 @@
         {
             var g = GenerateSPOGraph();
             var d = new DynamicGraph(g, new Uri("http://example2.com/"));
-            var memberNames = (d.InnerMetaObjectProvider as DynamicGraphDispatcher).GetDynamicMemberNames();
+            var memberNames = d.GetDynamicMemberNames();
 
             Assert.AreEqual(
                 "http://example.com/s",
@@ -423,7 +389,7 @@
             var g = new Graph();
             g.LoadFromString("<http://example.com/#s> <http://example.com/p> <http://example.com/o> .");
             var d = new DynamicGraph(g, new Uri("http://example.com/#"));
-            var memberNames = (d.InnerMetaObjectProvider as DynamicGraphDispatcher).GetDynamicMemberNames();
+            var memberNames = d.GetDynamicMemberNames();
 
             Assert.AreEqual(
                 "s",
@@ -433,8 +399,7 @@
         [TestMethod]
         public void Indexing_supports_setting_dictionaries()
         {
-            var g = new Graph();
-            var d = g.AsDynamic();
+            var d = new Graph().AsDynamic();
 
             d["http://example.com/s"] = new Dictionary<string, Uri> {
                 { "http://example.com/p", new Uri("http://example.com/o") }
@@ -442,41 +407,38 @@
 
             Assert.AreEqual(
                 spoGraph,
-                g);
+                d);
         }
 
         [TestMethod]
         public void Indexing_supports_setting_anonymous_classes()
         {
-            var g = new Graph();
-            var d = g.AsDynamic(exampleBase);
+            var d = new Graph().AsDynamic(exampleBase);
 
             d["s"] = new { p = new Uri("http://example.com/o") };
 
             Assert.AreEqual(
                 spoGraph,
-                g);
+                d);
         }
 
         [TestMethod]
         public void Indexing_supports_setting_custom_classes()
         {
-            var g = new Graph();
-            var d = g.AsDynamic(exampleBase);
+            var d = new Graph().AsDynamic(exampleBase);
 
             d["s"] = new CustomClass { p = new Uri("http://example.com/o") };
 
             Assert.AreEqual(
                 spoGraph,
-                g);
+                d);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void Setter_requires_base_uri()
         {
-            var g = new Graph();
-            var d = g.AsDynamic();
+            var d = new Graph().AsDynamic();
 
             d.s = new { p = "o" };
         }
@@ -484,10 +446,8 @@
         [TestMethod]
         public void Setter_delegates_to_index_setter()
         {
-            var g1 = new Graph();
-            var g2 = new Graph();
-            var d1 = g1.AsDynamic(exampleBase);
-            var d2 = g2.AsDynamic(exampleBase);
+            var d1 = new Graph().AsDynamic(exampleBase);
+            var d2 = new Graph().AsDynamic(exampleBase);
 
             d1.s = new { p = "o" };
             d2["s"] = new { p = "o" };
