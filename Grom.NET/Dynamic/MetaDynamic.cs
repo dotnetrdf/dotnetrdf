@@ -6,9 +6,9 @@
     using System.Linq;
     using System.Linq.Expressions;
 
-    public class MetaDynamic : DynamicMetaObject
+    internal class MetaDynamic : DynamicMetaObject
     {
-        public MetaDynamic(Expression parameter, object value) : base(parameter, BindingRestrictions.Empty, value) { }
+        internal MetaDynamic(Expression parameter, ISimpleDynamicObject value) : base(parameter, BindingRestrictions.Empty, value) { }
 
         public override DynamicMetaObject BindGetMember(GetMemberBinder binder)
         {
@@ -16,7 +16,7 @@
                 Expression.Call(
                     Expression.Convert(
                         this.Expression,
-                        this.LimitType),
+                        typeof(ISimpleDynamicObject)),
                     "GetMember",
                     new Type[0],
                     Expression.Constant(binder.Name)
@@ -33,7 +33,7 @@
                 Expression.Call(
                     Expression.Convert(
                         this.Expression,
-                        this.LimitType),
+                        typeof(ISimpleDynamicObject)),
                     "GetIndex",
                     new Type[0],
                     Expression.NewArrayInit(
@@ -55,7 +55,7 @@
                 Expression.Call(
                     Expression.Convert(
                         this.Expression,
-                        this.LimitType),
+                        typeof(ISimpleDynamicObject)),
                     "SetMember",
                     new Type[0],
                     Expression.Constant(binder.Name),
@@ -73,7 +73,7 @@
                 Expression.Call(
                     Expression.Convert(
                         this.Expression,
-                        this.LimitType),
+                        typeof(ISimpleDynamicObject)),
                     "SetIndex",
                     new Type[0],
                     Expression.NewArrayInit(
@@ -92,7 +92,7 @@
 
         public override IEnumerable<string> GetDynamicMemberNames()
         {
-            return this.Value.GetType().GetMethod("GetDynamicMemberNames").Invoke(this.Value, new object[0]) as IEnumerable<string>;
+            return (this.Value as ISimpleDynamicObject).GetDynamicMemberNames();
         }
     }
 }

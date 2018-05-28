@@ -9,11 +9,11 @@
     using System.Reflection;
     using VDS.RDF;
 
-    public class DynamicGraph : WrapperGraph, IDynamicMetaObjectProvider
+    public class DynamicGraph : WrapperGraph, IDynamicMetaObjectProvider, ISimpleDynamicObject
     {
-        internal readonly Uri subjectBaseUri;
-        internal readonly Uri predicateBaseUri;
-        internal readonly bool collapseSingularArrays;
+        private readonly Uri subjectBaseUri;
+        private readonly Uri predicateBaseUri;
+        private readonly bool collapseSingularArrays;
 
         public DynamicGraph(IGraph graph, Uri subjectBaseUri = null, Uri predicateBaseUri = null, bool collapseSingularArrays = false) : base(graph)
         {
@@ -22,9 +22,9 @@
             this.collapseSingularArrays = collapseSingularArrays;
         }
 
-        public DynamicMetaObject GetMetaObject(Expression parameter) => new MetaDynamic(parameter, this);
+        DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter) => new MetaDynamic(parameter, this);
 
-        public DynamicUriNode GetIndex(object[] indexes)
+        object ISimpleDynamicObject.GetIndex(object[] indexes)
         {
             if (indexes.Length != 1)
             {
@@ -36,7 +36,7 @@
             return this.GetIndex(subjectIndex) ?? throw new Exception("index not found");
         }
 
-        public DynamicUriNode GetMember(string name)
+        object ISimpleDynamicObject.GetMember(string name)
         {
             if (this.subjectBaseUri == null)
             {
@@ -46,7 +46,7 @@
             return this.GetIndex(name) ?? throw new Exception("member not found");
         }
 
-        public object SetIndex(object[] indexes, object value)
+        object ISimpleDynamicObject.SetIndex(object[] indexes, object value)
         {
             if (indexes.Length != 1)
             {
@@ -58,7 +58,7 @@
             return value;
         }
 
-        public object SetMember(string name, object value)
+        object ISimpleDynamicObject.SetMember(string name, object value)
         {
             if (this.subjectBaseUri == null)
             {
@@ -70,7 +70,7 @@
             return value;
         }
 
-        public IEnumerable<string> GetDynamicMemberNames()
+        IEnumerable<string> ISimpleDynamicObject.GetDynamicMemberNames()
         {
             var subjects = this
                 .Triples

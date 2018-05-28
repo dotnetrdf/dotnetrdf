@@ -3,7 +3,9 @@
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using System.Collections.Generic;
+    using System.Dynamic;
     using System.Linq;
+    using System.Linq.Expressions;
     using VDS.RDF;
     using VDS.RDF.Nodes;
 
@@ -256,31 +258,6 @@
         }
 
         [TestMethod]
-        public void Dynamic_member_names_only_subject_nodes_are_exposed()
-        {
-            var g = GenerateSPOGraph();
-
-            var d = new DynamicGraph(g);
-            var memberNames = d.GetDynamicMemberNames();
-
-            CollectionAssert.DoesNotContain(
-                memberNames.ToArray(),
-                "http://example.com/o");
-        }
-
-        [TestMethod]
-        public void Dynamic_member_names_only_uri_nodes_are_exposed()
-        {
-            var g = new Graph();
-            g.LoadFromString("_:s <http://example.com/p> <http://example.com/o> .");
-
-            var d = new DynamicGraph(g);
-            var memberNames = d.GetDynamicMemberNames();
-
-            Assert.IsFalse(memberNames.Any());
-        }
-
-        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void Multidimensional_get_index_is_forbidden()
         {
@@ -348,39 +325,60 @@
         }
 
         [TestMethod]
+        public void Dynamic_member_names_only_subject_nodes_are_exposed()
+        {
+            var d = spoGraph.AsDynamic() as IDynamicMetaObjectProvider;
+            var meta = d.GetMetaObject(Expression.Parameter(typeof(object), "debug"));
+            var collection = meta.GetDynamicMemberNames().ToArray();
+            var element = "http://example.com/o";
+
+            CollectionAssert.DoesNotContain(collection, element);
+        }
+
+        [TestMethod]
+        public void Dynamic_member_names_only_uri_nodes_are_exposed()
+        {
+             var g = new Graph();
+            g.LoadFromString("_:s <http://example.com/p> <http://example.com/o> .");
+
+            var d = g.AsDynamic() as IDynamicMetaObjectProvider;
+            var meta = d.GetMetaObject(Expression.Parameter(typeof(object), "debug"));
+            var condition = meta.GetDynamicMemberNames().Any();
+
+            Assert.IsFalse(condition);
+        }
+
+        [TestMethod]
         public void Dynamic_member_names_become_relative_to_base()
         {
-            var g = GenerateSPOGraph();
-            var d = new DynamicGraph(g, exampleBase);
-            var memberNames = d.GetDynamicMemberNames();
+            var d = spoGraph.AsDynamic(exampleBase) as IDynamicMetaObjectProvider;
+            var meta = d.GetMetaObject(Expression.Parameter(typeof(object), "debug"));
+            var collection = meta.GetDynamicMemberNames().ToArray();
+            var element = "s";
 
-            Assert.AreEqual(
-                "s",
-                memberNames.Single());
+            CollectionAssert.Contains(collection, element);
         }
 
         [TestMethod]
         public void Dynamic_member_names_without_base_remain_absolute()
         {
-            var g = GenerateSPOGraph();
-            var d = new DynamicGraph(g);
-            var memberNames = d.GetDynamicMemberNames();
+            var d = spoGraph.AsDynamic() as IDynamicMetaObjectProvider;
+            var meta = d.GetMetaObject(Expression.Parameter(typeof(object), "debug"));
+            var collection = meta.GetDynamicMemberNames().ToArray();
+            var element = "http://example.com/s";
 
-            Assert.AreEqual(
-                "http://example.com/s",
-                memberNames.Single());
+            CollectionAssert.Contains(collection, element);
         }
 
         [TestMethod]
         public void Dynamic_member_names_unrelated_to_base_remain_absolute()
         {
-            var g = GenerateSPOGraph();
-            var d = new DynamicGraph(g, new Uri("http://example2.com/"));
-            var memberNames = d.GetDynamicMemberNames();
+            var d = spoGraph.AsDynamic(new Uri("http://example2.com/")) as IDynamicMetaObjectProvider;
+            var meta = d.GetMetaObject(Expression.Parameter(typeof(object), "debug"));
+            var collection = meta.GetDynamicMemberNames().ToArray();
+            var element = "http://example.com/s";
 
-            Assert.AreEqual(
-                "http://example.com/s",
-                memberNames.Single());
+            CollectionAssert.Contains(collection, element);
         }
 
         [TestMethod]
@@ -388,12 +386,13 @@
         {
             var g = new Graph();
             g.LoadFromString("<http://example.com/#s> <http://example.com/p> <http://example.com/o> .");
-            var d = new DynamicGraph(g, new Uri("http://example.com/#"));
-            var memberNames = d.GetDynamicMemberNames();
 
-            Assert.AreEqual(
-                "s",
-                memberNames.Single());
+            var d = g.AsDynamic(new Uri("http://example.com/#")) as IDynamicMetaObjectProvider;
+            var meta = d.GetMetaObject(Expression.Parameter(typeof(object), "debug"));
+            var collection = meta.GetDynamicMemberNames().ToArray();
+            var element = "s";
+
+            CollectionAssert.Contains(collection, element);
         }
 
         [TestMethod]

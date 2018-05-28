@@ -7,11 +7,11 @@
     using VDS.RDF.Writing;
     using VDS.RDF.Writing.Formatting;
 
-    public class WrapperNode : INode
+    public abstract class WrapperNode : INode
     {
         protected readonly INode node;
 
-        public WrapperNode(INode node) => this.node = node ?? throw new ArgumentNullException(nameof(node));
+        protected WrapperNode(INode node) => this.node = node ?? throw new ArgumentNullException(nameof(node));
 
         public override bool Equals(object obj)
         {

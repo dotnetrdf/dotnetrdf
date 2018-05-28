@@ -35,12 +35,11 @@
     <Compile Include="Dynamic\DynamicExtensions.cs" />
     <Compile Include="Dynamic\DynamicGraph.cs" />
     <Compile Include="Dynamic\DynamicHelper.cs" />
+    <Compile Include="Dynamic\DynamicNode.cs" />
     <Compile Include="Dynamic\DynamicUriNode.cs" />
-    <Compile Include="Dynamic\IDynamicMetaObjectProviderContainer.cs" />
+    <Compile Include="Dynamic\ISimpleDynamicObject.cs" />
     <Compile Include="Dynamic\MetaDynamic.cs" />
-    <Compile Include="VDS.RDF\WrapperBlankNode.cs" />
     <Compile Include="VDS.RDF\WrapperNode.cs" />
-    <Compile Include="VDS.RDF\WrapperUriNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

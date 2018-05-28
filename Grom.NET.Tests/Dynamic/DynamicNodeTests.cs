@@ -2,7 +2,9 @@
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
+    using System.Dynamic;
     using System.Linq;
+    using System.Linq.Expressions;
     using VDS.RDF;
 
     [TestClass]
@@ -147,14 +149,13 @@
         [TestMethod]
         public void Member_names_are_predicate_uris()
         {
-            var g = GenerateSPOGraph();
-            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
-            var d = new DynamicUriNode(s as IUriNode);
-            var memberNames = d.GetDynamicMemberNames();
-            var result = memberNames.ToArray();
-            var expected = new[] { "http://example.com/p" };
+            var s = spoGraph.GetTriplesWithSubject(exampleSubject).Single().Subject;
+            var d = s.AsDynamic() as IDynamicMetaObjectProvider;
+            var meta = d.GetMetaObject(Expression.Parameter(typeof(object), "debug"));
+            var collection = meta.GetDynamicMemberNames().ToArray();
+            var element = "http://example.com/p";
 
-            CollectionAssert.AreEqual(expected, result);
+            CollectionAssert.Contains(collection, element);
         }
 
         [TestMethod]
@@ -163,12 +164,12 @@
             var g = GenerateSPOGraph();
             g.NamespaceMap.AddNamespace("ex", exampleBase);
             var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
-            var d = new DynamicUriNode(s as IUriNode);
-            var memberNames = d.GetDynamicMemberNames();
-            var result = memberNames.ToArray();
-            var expected = new[] { "ex:p" };
+            var d = s.AsDynamic() as IDynamicMetaObjectProvider;
+            var meta = d.GetMetaObject(Expression.Parameter(typeof(object), "debug"));
+            var collection = meta.GetDynamicMemberNames().ToArray();
+            var element = "ex:p";
 
-            CollectionAssert.AreEqual(expected, result);
+            CollectionAssert.Contains(collection, element);
         }
 
         [TestMethod]
@@ -177,25 +178,24 @@
             var g = GenerateSPOGraph();
             g.NamespaceMap.AddNamespace(string.Empty, exampleBase);
             var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
-            var d = new DynamicUriNode(s as IUriNode);
-            var memberNames = d.GetDynamicMemberNames();
-            var result = memberNames.ToArray();
-            var expected = new[] { ":p" };
+            var d = s.AsDynamic() as IDynamicMetaObjectProvider;
+            var meta = d.GetMetaObject(Expression.Parameter(typeof(object), "debug"));
+            var collection = meta.GetDynamicMemberNames().ToArray();
+            var element = ":p";
 
-            CollectionAssert.AreEqual(expected, result);
+            CollectionAssert.Contains(collection, element);
         }
 
         [TestMethod]
         public void Member_names_become_relative_to_base()
         {
-            var g = GenerateSPOGraph();
-            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
-            var d = new DynamicUriNode(s as IUriNode, exampleBase);
-            var memberNames = d.GetDynamicMemberNames();
-            var result = memberNames.ToArray();
-            var expected = new[] { "p" };
+            var s = spoGraph.GetTriplesWithSubject(exampleSubject).Single().Subject;
+            var d = s.AsDynamic(exampleBase) as IDynamicMetaObjectProvider;
+            var meta = d.GetMetaObject(Expression.Parameter(typeof(object), "debug"));
+            var collection = meta.GetDynamicMemberNames().ToArray();
+            var element = "p";
 
-            CollectionAssert.AreEqual(expected, result);
+            CollectionAssert.Contains(collection, element);
         }
 
         [TestMethod]
@@ -204,12 +204,12 @@
             var g = new Graph();
             g.LoadFromString("<http://example.com/#s> <http://example.com/#p> <http://example.com/#o> .");
             var s = g.Triples.Single().Subject;
-            var d = new DynamicUriNode(s as IUriNode, new Uri("http://example.com/#"));
-            var memberNames = d.GetDynamicMemberNames();
-            var result = memberNames.ToArray();
-            var expected = new[] { "p" };
+            var d = s.AsDynamic(new Uri("http://example.com/#")) as IDynamicMetaObjectProvider;
+            var meta = d.GetMetaObject(Expression.Parameter(typeof(object), "debug"));
+            var collection = meta.GetDynamicMemberNames().ToArray();
+            var element = "p";
 
-            CollectionAssert.AreEqual(expected, result);
+            CollectionAssert.Contains(collection, element);
         }
 
         [TestMethod]
@@ -321,7 +321,7 @@
 
             // TODO: Add support for value types
             //var now = DateTimeOffset.Now;
-     
+
             n2["p"] = "x"; // now;
             n1.p = "x"; // now;
 
