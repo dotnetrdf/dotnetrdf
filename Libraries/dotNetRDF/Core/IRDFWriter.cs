@@ -273,5 +273,18 @@ namespace VDS.RDF.Writing
         }
     }
 
-
+    /// <summary>
+    /// Interface for Writers that support collapsing distinct literal nodes
+    /// </summary>
+    public interface ICollapseLiteralsWriter
+    {
+        /// <summary>
+        /// Controls whether to collapse distinct literal nodes
+        /// </summary>
+        bool CollapseLiterals
+        {
+            get;
+            set;
+        }
+    }
 }

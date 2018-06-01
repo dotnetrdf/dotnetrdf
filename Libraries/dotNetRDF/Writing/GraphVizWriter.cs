@@ -26,7 +26,6 @@
 
 using System;
 using System.IO;
-using System.Text;
 using VDS.RDF.Writing.Contexts;
 
 namespace VDS.RDF.Writing
@@ -34,9 +33,17 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// A Writer which generates GraphViz DOT Format files from an RDF Graph
     /// </summary>
-    public class GraphVizWriter 
-        : BaseRdfWriter
+    public class GraphVizWriter : BaseRdfWriter, IPrettyPrintingWriter, ICollapseLiteralsWriter
     {
+        /// <summary>
+        /// Gets/Sets Pretty Print Mode for the Writer
+        /// </summary>
+        public bool PrettyPrintMode { get; set; } = true;
+
+        /// <summary>
+        /// Gets/Sets whether to collapse distinct literal nodes
+        /// </summary>
+        public bool CollapseLiterals { get; set; } = false;
 
         /// <summary>
         /// Saves a Graph into GraphViz DOT Format
@@ -59,176 +66,191 @@ namespace VDS.RDF.Writing
         /// <param name="output">Stream to save to</param>
         protected override void SaveInternal(IGraph g, TextWriter output)
         {
-            // Start the Graph
-            output.WriteLine("digraph G {");
+            var context = new BaseWriterContext(g, output) { PrettyPrint = this.PrettyPrintMode };
 
-            BaseWriterContext context = new BaseWriterContext(g, output);
-
-            // Write all the Triples to the Graph
-            foreach (Triple t in g.Triples)
-            {
-                output.WriteLine(TripleToDot(t, context));
-            }
-
-            // End the Graph
-            output.WriteLine("}");
+            GraphVizWriter.WriteGraph(context, this.CollapseLiterals);
         }
 
-        /// <summary>
-        /// Internal Helper Method for converting a Triple into DOT notation
-        /// </summary>
-        /// <param name="t">Triple to convert</param>
-        /// <param name="context">Writer Context</param>
-        /// <returns></returns>
-        private String TripleToDot(Triple t, BaseWriterContext context)
+        private static void WriteGraph(BaseWriterContext context, bool collapseLiterals)
         {
-            StringBuilder output = new StringBuilder();
+            context.Output.Write(DOT.Digraph);
 
+            if (context.Graph.BaseUri != null)
+            {
+                var graphId = GraphVizWriter.ReduceToQName(context.Graph.BaseUri, context);
+
+                GraphVizWriter.Prettify(DOT.Space, context);
+                GraphVizWriter.WriteQuoted(graphId, context);
+            }
+
+            GraphVizWriter.Prettify(DOT.Space, context);
+            context.Output.Write(DOT.OpenCurly);
+            GraphVizWriter.Prettify(DOT.NewLine, context);
+
+            foreach (var t in context.Graph.Triples)
+            {
+                GraphVizWriter.WriteTriple(t, context, collapseLiterals);
+            }
+
+            context.Output.Write(DOT.CloseCurly);
+        }
+
+        private static void WriteTriple(Triple triple, BaseWriterContext context, bool collapseLiterals)
+        {
             // Output Node lines for Literal Node so we show them as Boxes
             // This is in keeping with Standard Graph representation of RDF
             // Literals are shown in Boxes, Uri Nodes in ellipses (GraphViz's default shape)
-            if (t.Subject.NodeType == NodeType.Literal)
-            {
-                output.Append(NodeToDot(t.Subject, context));
-                output.Append(" [shape=box];\n");
-            }
-            if (t.Object.NodeType == NodeType.Literal)
-            {
-                output.Append(NodeToDot(t.Object, context));
-                output.Append(" [shape=box];\n");
-            }
+            var subjectId = GraphVizWriter.ProcessNode(triple, TripleSegment.Subject, context, collapseLiterals);
+            var objectId = GraphVizWriter.ProcessNode(triple, TripleSegment.Object, context, collapseLiterals);
 
             // Output the actual lines that state the relationship between the Nodes
             // We use the Predicate as the Label on the relationship
-            output.Append(NodeToDot(t.Subject, context));
-            output.Append(" -> ");
-            output.Append(NodeToDot(t.Object, context));
-            output.Append(" [label=");
-            output.Append(NodeToDot(t.Predicate, context));
-            output.Append("];");
+            var predicateLabel = GraphVizWriter.ReduceToQName((triple.Predicate as IUriNode).Uri, context);
 
-            return output.ToString();
+            GraphVizWriter.Prettify(DOT.Tab, context);
+            GraphVizWriter.WriteQuoted(subjectId, context);
+            GraphVizWriter.Prettify(DOT.Space, context);
+            context.Output.Write(DOT.Arrow);
+            GraphVizWriter.Prettify(DOT.Space, context);
+            GraphVizWriter.WriteQuoted(objectId, context);
+            GraphVizWriter.Prettify(DOT.Space, context);
+            context.Output.Write(DOT.OpenSquare);
+            context.Output.Write(DOT.Label);
+            GraphVizWriter.Prettify(DOT.Space, context);
+            context.Output.Write(DOT.Equal);
+            GraphVizWriter.Prettify(DOT.Space, context);
+            GraphVizWriter.WriteQuoted(predicateLabel, context);
+            context.Output.Write(DOT.CloseSquare);
+            context.Output.Write(DOT.Semicolon);
+            GraphVizWriter.Prettify(DOT.NewLine, context);
         }
 
-        /// <summary>
-        /// Internal Helper method for converting a Node into DOT notation
-        /// </summary>
-        /// <param name="n">Node to Convert</param>
-        /// <param name="context">Writer Context</param>
-        /// <returns></returns>
-        /// <remarks>Currently Graphs containing Graph Literal Nodes cannot be converted</remarks>
-        private String NodeToDot(INode n, BaseWriterContext context)
+        private static string ProcessNode(Triple t, TripleSegment segment, BaseWriterContext context, bool collapseLiterals)
         {
-            if (n.NodeType == NodeType.Uri)
+            var node = GraphVizWriter.GetNode(t, segment);
+
+            switch (node)
             {
-                return UriNodeToDot((IUriNode)n, context);
-            }
-            else if (n.NodeType == NodeType.Literal)
-            {
-                return LiteralNodeToDot((ILiteralNode)n);
-            }
-            else if (n.NodeType == NodeType.Blank)
-            {
-                return BlankNodeToDot((IBlankNode)n);
-            }
-            else if (n.NodeType == NodeType.GraphLiteral)
-            {
-                throw new RdfOutputException("Graphs containing Graph Literal Nodes cannot be converted into GraphViz DOT Format");
-            }
-            else
-            {
-                throw new RdfOutputException("Unknown Node Type cannot be converted into GraphViz DOT Format");
+                case ILiteralNode literalnode:
+                    return GraphVizWriter.WriteLiteralNode(literalnode, t, context, collapseLiterals);
+
+                case IUriNode uriNode:
+                    return GraphVizWriter.ReduceToQName(uriNode.Uri, context);
+
+                case IBlankNode blankNode:
+                    return blankNode.ToString();
+
+                default:
+                    throw new RdfOutputException("Only Uri nodes, literal nodes and blank nodes can be converted to GraphViz DOT Format.");
             }
         }
 
-        /// <summary>
-        /// Internal Helper method for converting Uri Nodes to DOT Notation
-        /// </summary>
-        /// <param name="u">Uri Node to convert</param>
-        /// <param name="context">Writer Context</param>
-        /// <returns></returns>
-        private String UriNodeToDot(IUriNode u, BaseWriterContext context)
+        private static string WriteLiteralNode(ILiteralNode literalnode, Triple t, BaseWriterContext context, bool collapseLiterals)
         {
-            StringBuilder output = new StringBuilder();
-            output.Append("\"");
+            // Example output:
+            //     "h" [label = "v", shape = box];
+            // where h is the hash of the triple containing the literal node
+            // and v is value of literal node
 
-            // Try QName reduction
-            String qname;
-            if (context.QNameMapper.ReduceToQName(u.Uri.AbsoluteUri, out qname))
-            {
-                // Use the QName
-                output.Append(qname);
-            }
-            else
-            {
-                // Use the full Uri
-                output.Append(u.Uri);
-            }
+            // Literal nodes are identified either by their value or by their containing triple.
+            // When identified by value, there will be a single node representing all literals with the same value.
+            // When identified by triple, there will be a separate node representing each triple that has an object with that value.
+            var idObject = collapseLiterals ? literalnode as object : t as object;
+            var nodeId = idObject.GetHashCode().ToString();
 
-            output.Append("\"");
+            GraphVizWriter.Prettify(DOT.Tab, context);
+            GraphVizWriter.WriteQuoted(nodeId, context);
+            GraphVizWriter.Prettify(DOT.Space, context);
+            context.Output.Write(DOT.OpenSquare);
+            context.Output.Write(DOT.Label);
+            GraphVizWriter.Prettify(DOT.Space, context);
+            context.Output.Write(DOT.Equal);
+            GraphVizWriter.Prettify(DOT.Space, context);
+            GraphVizWriter.WriteLiteralNodeLabel(literalnode, context);
+            context.Output.Write(DOT.Comma);
+            GraphVizWriter.Prettify(DOT.Space, context);
+            context.Output.Write(DOT.Shape);
+            GraphVizWriter.Prettify(DOT.Space, context);
+            context.Output.Write(DOT.Equal);
+            GraphVizWriter.Prettify(DOT.Space, context);
+            context.Output.Write(DOT.Box);
+            context.Output.Write(DOT.CloseSquare);
+            context.Output.Write(DOT.NewLine, context);
 
-            return output.ToString();
+            return nodeId;
         }
 
-        /// <summary>
-        /// Internal Helper Method for converting Blank Nodes to DOT notation
-        /// </summary>
-        /// <param name="b">Blank Node to Convert</param>
-        /// <returns></returns>
-        private String BlankNodeToDot(IBlankNode b)
+        private static void WriteQuoted(string value, BaseWriterContext context)
         {
-            // Generate a _: QName
-            StringBuilder output = new StringBuilder();
-            output.Append("\"_:");
-            output.Append(b.InternalID);
-            output.Append("\"");
+            context.Output.Write(DOT.Quote);
 
-            return output.ToString();
+            context.Output.Write(value);
+
+            context.Output.Write(DOT.Quote);
         }
 
-        /// <summary>
-        /// Internal Helper Method for converting Literal Nodes to DOT notation
-        /// </summary>
-        /// <param name="l">Literal Node to convert</param>
-        /// <returns></returns>
-        private String LiteralNodeToDot(ILiteralNode l)
+        private static void WriteLiteralNodeLabel(ILiteralNode literalnode, BaseWriterContext context)
         {
-            StringBuilder output = new StringBuilder();
-            output.Append("\"");
+            var nodeValue = GraphVizWriter.Escape(literalnode.Value);
 
-            // Escape any quotes and newlines in the value
-            String value = l.Value.Replace("\"", "\\\"");
+            context.Output.Write(DOT.Quote);
+            context.Output.Write(nodeValue);
+
+            if (!string.IsNullOrEmpty(literalnode.Language))
+            {
+                context.Output.Write("@");
+                context.Output.Write(literalnode.Language);
+            }
+
+            if (literalnode.DataType != null)
+            {
+                string datatype = GraphVizWriter.ReduceToQName(literalnode.DataType, context);
+
+                context.Output.Write("^^");
+                context.Output.Write(datatype);
+            }
+
+            context.Output.Write(DOT.Quote);
+        }
+
+        private static string ReduceToQName(Uri uri, BaseWriterContext context)
+        {
+            if (!context.QNameMapper.ReduceToQName(uri.ToString(), out string result))
+            {
+                result = uri.ToString();
+            }
+
+            return result;
+        }
+
+        private static void Prettify(string value, BaseWriterContext context)
+        {
+            if (context.PrettyPrint)
+            {
+                context.Output.Write(value);
+            }
+        }
+
+        private static string Escape(string value)
+        {
+            value = value.Replace("\"", "\\\"");
             value = value.Replace("\n", "\\n");
 
-            output.Append(value);
-
-            if (!l.Language.Equals(String.Empty))
-            {
-                output.Append("@");
-                output.Append(l.Language);
-            }
-            else if (!(l.DataType == null))
-            {
-                output.Append("^^");
-                output.Append(l.DataType.AbsoluteUri);
-            }
-
-
-            output.Append("\"");
-
-            return output.ToString();
+            return value;
         }
 
-        /// <summary>
-        /// Internal Helper method which handles raising the Warning event if an Event Handler is registered to it
-        /// </summary>
-        /// <param name="message">Warning Message</param>
-        private void OnWarning(String message)
+        private static INode GetNode(Triple t, TripleSegment segment)
         {
-            RdfWriterWarning d = Warning;
-            if (d != null)
+            switch (segment)
             {
-                d(message);
+                case TripleSegment.Subject:
+                    return t.Subject;
+
+                case TripleSegment.Object:
+                    return t.Object;
+
+                default:
+                    return null;
             }
         }
 
@@ -245,6 +267,26 @@ namespace VDS.RDF.Writing
         public override string ToString()
         {
             return "GraphViz DOT";
+        }
+
+        private static class DOT
+        {
+            internal const string Digraph = "digraph";
+            internal const string Label = "label";
+            internal const string Shape = "shape";
+            internal const string Box = "box";
+            internal const string Quote = "\"";
+            internal const string Arrow = "->";
+            internal const string Equal = "=";
+            internal const string OpenSquare = "[";
+            internal const string CloseSquare = "]";
+            internal const string OpenCurly = "{";
+            internal const string CloseCurly = "}";
+            internal const string Semicolon = ";";
+            internal const string Space = " ";
+            internal const string Tab = "    ";
+            internal const string Comma = ",";
+            internal const string NewLine = "\n";
         }
     }
 }
