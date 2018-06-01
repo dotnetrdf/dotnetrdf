@@ -31,12 +31,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Dynamic\DynamicBlankNode.cs" />
     <Compile Include="Dynamic\DynamicExtensions.cs" />
     <Compile Include="Dynamic\DynamicGraph.cs" />
     <Compile Include="Dynamic\DynamicHelper.cs" />
     <Compile Include="Dynamic\DynamicNode.cs" />
-    <Compile Include="Dynamic\DynamicUriNode.cs" />
+    <Compile Include="Dynamic\DynamicObjectCollection.cs" />
     <Compile Include="Dynamic\ISimpleDynamicObject.cs" />
     <Compile Include="Dynamic\MetaDynamic.cs" />
     <Compile Include="VDS.RDF\WrapperNode.cs" />

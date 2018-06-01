@@ -9,14 +9,26 @@
     using VDS.RDF;
     using VDS.RDF.Nodes;
 
-    public abstract class DynamicNode : WrapperNode, IDynamicMetaObjectProvider, ISimpleDynamicObject
+    public class DynamicNode : WrapperNode, IUriNode, IBlankNode, IDynamicMetaObjectProvider, ISimpleDynamicObject
     {
         private readonly Uri baseUri;
         private readonly bool collapseSingularArrays;
 
-        protected DynamicNode(INode node, Uri baseUri = null, bool collapseSingularArrays = false) : base(node)
+        public Uri Uri => this.node is IUriNode buriNode ? buriNode.Uri : throw new InvalidOperationException("is not a uri node");
+
+        public string InternalID => this.node is IBlankNode blankNode ? blankNode.InternalID : throw new InvalidOperationException("is not a blank node");
+
+        private Uri BaseUri
         {
-            this.baseUri = baseUri ?? node.Graph?.BaseUri;
+            get
+            {
+                return this.baseUri ?? this.Graph?.BaseUri;
+            }
+        }
+
+        public DynamicNode(INode node, Uri baseUri = null, bool collapseSingularArrays = false) : base(node)
+        {
+            this.baseUri = baseUri;
             this.collapseSingularArrays = collapseSingularArrays;
         }
 
@@ -34,7 +46,7 @@
 
         object ISimpleDynamicObject.GetMember(string name)
         {
-            if (this.baseUri == null)
+            if (this.BaseUri == null)
             {
                 throw new InvalidOperationException($"Can't get member {name} without baseUri.");
             }
@@ -56,7 +68,7 @@
 
         object ISimpleDynamicObject.SetMember(string name, object value)
         {
-            if (this.baseUri == null)
+            if (this.BaseUri == null)
             {
                 throw new InvalidOperationException($"Can't set member {name} without baseUri.");
             }
@@ -74,7 +86,7 @@
                 .Select(triple => triple.Predicate as IUriNode)
                 .Distinct();
 
-            return DynamicHelper.ConvertToNames(predicates, this.baseUri);
+            return DynamicHelper.ConvertToNames(predicates, this.BaseUri);
         }
 
         private object GetIndex(object predicate)
@@ -84,7 +96,7 @@
                 throw new InvalidOperationException("Node must have graph");
             }
 
-            var predicateNode = DynamicHelper.ConvertToNode(predicate, this.Graph, this.baseUri);
+            var predicateNode = DynamicHelper.ConvertToNode(predicate, this.Graph, this.BaseUri);
 
             var triples = this.Graph.GetTriplesWithSubjectPredicate(this, predicateNode);
 
@@ -96,7 +108,7 @@
             }
             else
             {
-                return nodeObjects.ToArray();
+                return new DynamicObjectCollection(this, predicateNode, nodeObjects);
             }
         }
 
@@ -107,29 +119,10 @@
                 throw new InvalidOperationException("Node must have graph");
             }
 
-            var difference = this.CalculateDifference(predicate, value);
-
-            this.Apply(difference);
-        }
-
-        private GraphDiffReport CalculateDifference(object predicate, object value)
-        {
-            var predicateNode = DynamicHelper.ConvertToNode(predicate, this.Graph, this.baseUri);
-
+            var predicateNode = DynamicHelper.ConvertToNode(predicate, this.Graph, this.BaseUri);
+            this.Graph.Retract(this.Graph.GetTriplesWithSubjectPredicate(this, predicateNode).ToArray());
             var newStatements = this.ConvertToTriples(predicateNode, value);
-            var currentStatements = this.Graph.GetTriplesWithSubjectPredicate(this, predicateNode);
-
-            using (var newState = new Graph())
-            {
-                newState.Assert(newStatements);
-
-                using (var currentState = new Graph())
-                {
-                    currentState.Assert(currentStatements);
-
-                    return currentState.Difference(newState);
-                }
-            }
+            this.Graph.Assert(newStatements);
         }
 
         private IEnumerable<Triple> ConvertToTriples(INode predicateNode, object value)
@@ -146,11 +139,14 @@
 
             foreach (var item in enumerableValue)
             {
-                yield return new Triple(
-                    subj: this.node,
-                    pred: predicateNode,
-                    obj: this.ConvertToNode(item),
-                    g: this.node.Graph);
+                if (item != null)
+                {
+                    yield return new Triple(
+                        subj: this.node,
+                        pred: predicateNode,
+                        obj: this.ConvertToNode(item),
+                        g: this.node.Graph);
+                }
             }
         }
 
@@ -205,18 +201,6 @@
             }
         }
 
-        private void Apply(GraphDiffReport difference)
-        {
-            if (!difference.AreEqual)
-            {
-                this.Graph.Retract(difference.RemovedMSGs.SelectMany(g => g.Triples));
-                this.Graph.Assert(difference.AddedMSGs.SelectMany(g => g.Triples));
-
-                this.Graph.Retract(difference.RemovedTriples);
-                this.Graph.Assert(difference.AddedTriples);
-            }
-        }
-
         private object ConvertToObject(INode objectNode)
         {
             var valuedNode = objectNode.AsValuedNode();
@@ -224,10 +208,10 @@
             switch (valuedNode)
             {
                 case IUriNode uriNode:
-                    return uriNode.AsDynamic(this.baseUri, this.collapseSingularArrays);
+                    return uriNode.AsDynamic(this.BaseUri, this.collapseSingularArrays);
 
                 case IBlankNode blankNode:
-                    return blankNode.AsDynamic(this.baseUri, this.collapseSingularArrays);
+                    return blankNode.AsDynamic(this.BaseUri, this.collapseSingularArrays);
 
                 case DoubleNode doubleNode:
                     return doubleNode.AsDouble();

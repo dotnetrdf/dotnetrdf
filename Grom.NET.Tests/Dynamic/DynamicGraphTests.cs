@@ -294,7 +294,7 @@
         [TestMethod]
         public void Get_member()
         {
-            var d = GenerateSPOGraph().AsDynamic(exampleBase);
+            var d = spoGraph.AsDynamic(exampleBase);
 
             Assert.AreEqual(
                 exampleSubject,
@@ -308,9 +308,10 @@
             g.BaseUri = exampleBase;
             var d = g.AsDynamic();
 
-            Assert.AreEqual(
-                exampleSubject,
-                d.s);
+            var expected = exampleSubject;
+            var actual = d.s;
+
+            Assert.AreEqual(expected, actual);
         }
 
         [TestMethod]
@@ -318,10 +319,12 @@
         {
             var g = GenerateSPOGraph();
             var d = g.AsDynamic(exampleBase);
+            var objects = d.s.p as IEnumerable<object>;
 
-            Assert.AreEqual(
-                g.Triples.First().Object,
-                d.s.p[0]);
+            var expected = g.Triples.First().Object;
+            var actual = objects.First();
+
+            Assert.AreEqual(expected, actual);
         }
 
         [TestMethod]
@@ -338,7 +341,7 @@
         [TestMethod]
         public void Dynamic_member_names_only_uri_nodes_are_exposed()
         {
-             var g = new Graph();
+            var g = new Graph();
             g.LoadFromString("_:s <http://example.com/p> <http://example.com/o> .");
 
             var d = g.AsDynamic() as IDynamicMetaObjectProvider;

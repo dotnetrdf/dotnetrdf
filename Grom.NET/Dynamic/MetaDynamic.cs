@@ -6,6 +6,9 @@
     using System.Linq;
     using System.Linq.Expressions;
 
+    // TODO: Remove fallback handling?
+    // TODO: 1. Fallback isn't "simple".
+    // TODO: 2. No point in our cases (node & graph)
     internal class MetaDynamic : DynamicMetaObject
     {
         internal MetaDynamic(Expression parameter, ISimpleDynamicObject value) : base(parameter, BindingRestrictions.Empty, value) { }

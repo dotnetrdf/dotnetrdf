@@ -12,17 +12,12 @@
 
         public static dynamic AsDynamic(this INode node, Uri baseUri = null, bool collapseSingularArrays = false)
         {
-            switch (node)
+            if (!(node is IUriNode || node is IBlankNode))
             {
-                case IUriNode uriNode:
-                    return new DynamicUriNode(uriNode, baseUri, collapseSingularArrays);
-
-                case IBlankNode blankNode:
-                    return new DynamicBlankNode(blankNode, baseUri, collapseSingularArrays);
-
-                default:
-                    throw new Exception("Only URI and blank nodes.");
+                throw new Exception("Only URI and blank nodes.");
             }
+
+            return new DynamicNode(node, baseUri, collapseSingularArrays);
         }
     }
 }

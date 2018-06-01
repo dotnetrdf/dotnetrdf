@@ -9,16 +9,34 @@
     using System.Reflection;
     using VDS.RDF;
 
+    // TODO: Remove subjectBaseUri in favour of just BaseUri?
     public class DynamicGraph : WrapperGraph, IDynamicMetaObjectProvider, ISimpleDynamicObject
     {
         private readonly Uri subjectBaseUri;
         private readonly Uri predicateBaseUri;
         private readonly bool collapseSingularArrays;
 
+        private Uri SubjectBaseUri
+        {
+            get
+            {
+                return this.subjectBaseUri ?? this.BaseUri;
+            }
+        }
+
+        private Uri PredicateBaseUri
+        {
+            get
+            {
+                return this.predicateBaseUri ?? this.SubjectBaseUri;
+            }
+        }
+
+
         public DynamicGraph(IGraph graph, Uri subjectBaseUri = null, Uri predicateBaseUri = null, bool collapseSingularArrays = false) : base(graph)
         {
-            this.subjectBaseUri = subjectBaseUri ?? this.BaseUri;
-            this.predicateBaseUri = predicateBaseUri ?? this.subjectBaseUri;
+            this.subjectBaseUri = subjectBaseUri;
+            this.predicateBaseUri = predicateBaseUri;
             this.collapseSingularArrays = collapseSingularArrays;
         }
 
@@ -38,7 +56,7 @@
 
         object ISimpleDynamicObject.GetMember(string name)
         {
-            if (this.subjectBaseUri == null)
+            if (this.SubjectBaseUri == null)
             {
                 throw new InvalidOperationException("Can't get member without baseUri.");
             }
@@ -60,7 +78,7 @@
 
         object ISimpleDynamicObject.SetMember(string name, object value)
         {
-            if (this.subjectBaseUri == null)
+            if (this.SubjectBaseUri == null)
             {
                 throw new InvalidOperationException("Can't set member without baseUri.");
             }
@@ -78,18 +96,18 @@
                 .UriNodes()
                 .Distinct();
 
-            return DynamicHelper.ConvertToNames(subjects, this.subjectBaseUri);
+            return DynamicHelper.ConvertToNames(subjects, this.SubjectBaseUri);
         }
 
-        private DynamicUriNode GetIndex(object subject)
+        private DynamicNode GetIndex(object subject)
         {
-            var subjectNode = DynamicHelper.ConvertToNode(subject, this, this.subjectBaseUri);
+            var subjectNode = DynamicHelper.ConvertToNode(subject, this, this.SubjectBaseUri);
 
             return this.Triples
                 .SubjectNodes
                 .UriNodes()
                 .Where(node => node.Equals(subjectNode))
-                .Select(node => node.AsDynamic(this.predicateBaseUri, this.collapseSingularArrays))
+                .Select(node => node.AsDynamic(this.PredicateBaseUri, this.collapseSingularArrays))
                 .SingleOrDefault();
         }
 
@@ -113,14 +131,14 @@
             }
         }
 
-        private DynamicUriNode GetDynamicNodeByIndexOrCreate(object subjectIndex)
+        private DynamicNode GetDynamicNodeByIndexOrCreate(object subjectIndex)
         {
-            var indexNode = DynamicHelper.ConvertToNode(subjectIndex, this, this.subjectBaseUri);
+            var indexNode = DynamicHelper.ConvertToNode(subjectIndex, this, this.SubjectBaseUri);
 
-            return this.GetIndex(indexNode) ?? indexNode.AsDynamic(this.predicateBaseUri, this.collapseSingularArrays);
+            return this.GetIndex(indexNode) ?? indexNode.AsDynamic(this.PredicateBaseUri, this.collapseSingularArrays);
         }
 
-        private void RetractWithSubject(DynamicUriNode targetNode)
+        private void RetractWithSubject(DynamicNode targetNode)
         {
             var triples = this.GetTriplesWithSubject(targetNode).ToArray();
 

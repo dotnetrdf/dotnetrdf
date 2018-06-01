@@ -72,6 +72,8 @@
   <ItemGroup>
     <Compile Include="Dynamic\DynamicGraphTests.cs" />
     <Compile Include="Dynamic\DynamicNodeTests.cs" />
+    <Compile Include="Experimental\RecursiveObjectTranslation.cs" />
+    <Compile Include="Experimental\StaticLazy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -13,10 +13,7 @@
 
         protected WrapperNode(INode node) => this.node = node ?? throw new ArgumentNullException(nameof(node));
 
-        public override bool Equals(object obj)
-        {
-            return this.node.Equals(obj);
-        }
+        public override bool Equals(object obj) => this.node.Equals(obj);
 
         public override int GetHashCode() => this.node.GetHashCode();
 

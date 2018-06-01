@@ -1,8 +1,9 @@
 ﻿namespace Dynamic
 {
+    using System;
     using System.Collections.Generic;
 
-    public interface ISimpleDynamicObject
+    internal interface ISimpleDynamicObject
     {
         object GetIndex(object[] indexes);
 
