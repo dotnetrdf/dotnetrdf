@@ -3,154 +3,35 @@
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using System.Collections;
+    using System.Collections.Generic;
     using System.Dynamic;
     using System.Linq;
     using System.Linq.Expressions;
     using VDS.RDF;
 
     [TestClass]
-    public class DynamicNodeTests
+    public partial class DynamicNodeTests
     {
         private static readonly Uri exampleBase = new Uri("http://example.com/");
         private static readonly Uri exampleSubjectUri = new Uri(exampleBase, "s");
-        private static readonly Uri examplePredicateUri = new Uri(exampleBase, "p");
+        private static readonly Uri ex_p_u = new Uri(exampleBase, "p");
         private static readonly Uri exampleObjectUri = new Uri(exampleBase, "o");
-        private static readonly IUriNode exampleSubject = new NodeFactory().CreateUriNode(exampleSubjectUri);
-        private static readonly IUriNode examplePredicate = new NodeFactory().CreateUriNode(examplePredicateUri);
-        private static readonly IUriNode exampleObject = new NodeFactory().CreateUriNode(exampleObjectUri);
+        private static readonly IUriNode ex_s = new NodeFactory().CreateUriNode(exampleSubjectUri);
+        private static readonly IUriNode ex_p = new NodeFactory().CreateUriNode(ex_p_u);
+        private static readonly IUriNode example_o = new NodeFactory().CreateUriNode(exampleObjectUri);
         private static readonly IGraph spoGraph = GenerateSPOGraph();
 
         private static IGraph GenerateSPOGraph()
         {
             var spoGraph = new Graph();
-            spoGraph.Assert(exampleSubject, examplePredicate, exampleObject);
+            spoGraph.Assert(ex_s, ex_p, example_o);
 
             return spoGraph;
         }
-
-        [TestMethod]
-        public void Indexing_supports_wrappers()
-        {
-            var g = GenerateSPOGraph();
-            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
-            dynamic d = s.AsDynamic();
-            var i = examplePredicate;
-            var result = d[i];
-            var expected = exampleObject;
-
-            CollectionAssert.Contains(result, expected);
-        }
-
-        [TestMethod]
-        public void Indexing_supports_uri_nodes()
-        {
-            var g = GenerateSPOGraph();
-            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
-            dynamic d = s.AsDynamic();
-            var i = examplePredicate;
-            var result = d[i];
-            var expected = exampleObject;
-
-            CollectionAssert.Contains(result, expected);
-        }
-
-        [TestMethod]
-        public void Indexing_supports_absolute_uris()
-        {
-            var g = GenerateSPOGraph();
-            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
-            dynamic d = s.AsDynamic();
-            var i = examplePredicateUri;
-            var result = d[i];
-            var expected = exampleObject;
-
-            CollectionAssert.Contains(result, expected);
-        }
-
-        [TestMethod]
-        public void Indexing_supports_relative_uris()
-        {
-            var g = GenerateSPOGraph();
-            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
-            dynamic d = s.AsDynamic(exampleBase);
-            var i = new Uri("p", UriKind.Relative);
-            var result = d[i];
-            var expected = exampleObject;
-
-            CollectionAssert.Contains(result, expected);
-        }
-
-        [TestMethod]
-        public void Indexing_supports_hash_base_uris()
-        {
-            var g = new Graph();
-            g.LoadFromString("<http://example.com/#s> <http://example.com/#p> <http://example.com/#o> .");
-            dynamic d = g.Triples.Single().Subject.AsDynamic(new Uri("http://example.com/#"));
-            var i = "p";
-            var result = d[i];
-            var expected = g.Triples.Single().Object.AsDynamic();
-
-            CollectionAssert.Contains(result, expected);
-        }
-
-        [TestMethod]
-        public void Indexing_supports_absolute_uri_strings()
-        {
-            var g = GenerateSPOGraph();
-            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
-            var d = s.AsDynamic();
-            var i = "http://example.com/p";
-            var result = d[i];
-            var expected = exampleObject;
-            
-            CollectionAssert.Contains(result, expected);
-        }
-
-        [TestMethod]
-        public void Indexing_supports_relative_uri_strings()
-        {
-            var g = GenerateSPOGraph();
-            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
-            dynamic d = s.AsDynamic(exampleBase);
-            var i = "p";
-            var result = d[i];
-            var expected = exampleObject;
-
-            CollectionAssert.Contains(result, expected);
-        }
-
-        [TestMethod]
-        public void Indexing_supports_qnames()
-        {
-            var g = GenerateSPOGraph();
-            g.NamespaceMap.AddNamespace("ex", exampleBase);
-            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
-            dynamic d = s.AsDynamic();
-            var i = "ex:p";
-            var result = d[i];
-            var expected = exampleObject;
-
-            CollectionAssert.Contains(result, expected);
-        }
-
-        [TestMethod]
-        public void Indexing_supports_qnames_with_empty_prefix()
-        {
-            var g = GenerateSPOGraph();
-            g.NamespaceMap.AddNamespace(string.Empty, exampleBase);
-            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
-            dynamic d = s.AsDynamic();
-            var i = ":p";
-            var result = d[i];
-            var expected = exampleObject;
-
-            CollectionAssert.Contains(result, expected);
-        }
-
         [TestMethod]
         public void Member_names_are_predicate_uris()
         {
-            var s = spoGraph.GetTriplesWithSubject(exampleSubject).Single().Subject;
+            var s = spoGraph.GetTriplesWithSubject(ex_s).Single().Subject;
             var d = s.AsDynamic() as IDynamicMetaObjectProvider;
             var meta = d.GetMetaObject(Expression.Parameter(typeof(object), "debug"));
             var collection = meta.GetDynamicMemberNames().ToArray();
@@ -164,7 +45,7 @@
         {
             var g = GenerateSPOGraph();
             g.NamespaceMap.AddNamespace("ex", exampleBase);
-            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
+            var s = g.GetTriplesWithSubject(ex_s).Single().Subject;
             var d = s.AsDynamic() as IDynamicMetaObjectProvider;
             var meta = d.GetMetaObject(Expression.Parameter(typeof(object), "debug"));
             var collection = meta.GetDynamicMemberNames().ToArray();
@@ -178,7 +59,7 @@
         {
             var g = GenerateSPOGraph();
             g.NamespaceMap.AddNamespace(string.Empty, exampleBase);
-            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
+            var s = g.GetTriplesWithSubject(ex_s).Single().Subject;
             var d = s.AsDynamic() as IDynamicMetaObjectProvider;
             var meta = d.GetMetaObject(Expression.Parameter(typeof(object), "debug"));
             var collection = meta.GetDynamicMemberNames().ToArray();
@@ -190,7 +71,7 @@
         [TestMethod]
         public void Member_names_become_relative_to_base()
         {
-            var s = spoGraph.GetTriplesWithSubject(exampleSubject).Single().Subject;
+            var s = spoGraph.GetTriplesWithSubject(ex_s).Single().Subject;
             var d = s.AsDynamic(exampleBase) as IDynamicMetaObjectProvider;
             var meta = d.GetMetaObject(Expression.Parameter(typeof(object), "debug"));
             var collection = meta.GetDynamicMemberNames().ToArray();
@@ -214,53 +95,10 @@
         }
 
         [TestMethod]
-        public void Values_are_collections()
-        {
-            var g = GenerateSPOGraph();
-            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
-            dynamic d = s.AsDynamic();
-            var i = "http://example.com/p";
-            var result = d[i];
-            var expected = typeof(ICollection);
-
-            Assert.IsInstanceOfType(result, expected);
-        }
-
-        [TestMethod]
-        public void Values_can_collaps_if_single()
-        {
-            var g = GenerateSPOGraph();
-            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
-            dynamic d = s.AsDynamic(collapseSingularArrays: true);
-            var i = "http://example.com/p";
-            var result = d[i];
-            var expected = typeof(Array);
-
-            Assert.IsNotInstanceOfType(result, expected);
-        }
-
-        [TestMethod]
-        public void Values_never_collapse_if_not_single()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
-<http://example.com/s> <http://example.com/p> <http://example.com/o1> .
-<http://example.com/s> <http://example.com/p> <http://example.com/o2> .
-");
-            var s = g.GetTriplesWithSubject(exampleSubject).First().Subject;
-            dynamic d = s.AsDynamic(collapseSingularArrays: true);
-            var i = "http://example.com/p";
-            var result = d[i];
-            var expected = typeof(ICollection);
-
-            Assert.IsInstanceOfType(result, expected);
-        }
-
-        [TestMethod]
         public void Property_access_is_translated_to_indexing_with_relative_uri_strings()
         {
             var g = GenerateSPOGraph();
-            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
+            var s = g.GetTriplesWithSubject(ex_s).Single().Subject;
             dynamic d = s.AsDynamic(exampleBase);
             var result = d.p;
             var expected = d["p"];
@@ -304,7 +142,7 @@
         {
             var g = GenerateSPOGraph();
             g.BaseUri = exampleBase;
-            var s = g.GetTriplesWithSubject(exampleSubject).Single().Subject;
+            var s = g.GetTriplesWithSubject(ex_s).Single().Subject;
             dynamic d = s.AsDynamic();
             var result = d.p;
             var expected = d["p"];
@@ -339,10 +177,9 @@
 <http://example.com/s> <http://example.com/p> ""2"" .
 ");
             var d = g1.AsDynamic(exampleBase);
-            var a = d.s.p;
+            var a = d.s.p as ICollection<object>;
 
-            Assert.AreEqual("1", a[0]);
-            Assert.AreEqual("2", a[1]);
+            CollectionAssert.AreEquivalent(new[] { "1", "2" }.ToList(), a as ICollection);
 
             var g2 = new Graph();
             g2.LoadFromString(@"
@@ -350,8 +187,8 @@
 <http://example.com/s> <http://example.com/p> ""2"" .
 ");
 
-            a[0] = "0";
-            Assert.AreEqual("0", a[0]);
+            a.Remove("1");
+            a.Add("0");
             Assert.AreEqual(g2, g1);
 
             var g3 = new Graph();
@@ -359,35 +196,124 @@
 <http://example.com/s> <http://example.com/p> ""2"" .
 ");
 
-            a[0] = null;
-            Assert.AreEqual("2", a[0]);
+            a.Remove("0");
             Assert.AreEqual(g3, g1);
 
             var g4 = new Graph();
             g4.LoadFromString(@"
-<http://example.com/s> <http://example.com/p> <http://example.com/o> .
-");
+            <http://example.com/s> <http://example.com/p> <http://example.com/o> .
+            ");
 
-            a[0] = new Uri("http://example.com/o");
-            Assert.AreEqual(g1.CreateUriNode(new Uri("http://example.com/o")), a[0]);
+            a.Remove("2");
+            a.Add(new Uri("http://example.com/o"));
             Assert.AreEqual(g4, g1);
 
             a.Clear();
             Assert.IsTrue(g1.IsEmpty);
 
             a.Add("2");
-            Assert.AreEqual("2", a[0]);
             Assert.AreEqual(g3, g1);
 
-            a[0] = "0";
-            a.Add("2");
-            Assert.AreEqual("0", a[0]);
-            Assert.AreEqual("2", a[1]);
+            a.Add("0");
             Assert.AreEqual(g2, g1);
-
-            a.Remove("0");
-            Assert.AreEqual("2", a[0]);
-            Assert.AreEqual(g3, g1);
         }
+
+        [TestMethod]
+        public void Dynamic_node_is_INode()
+        {
+            var g = new Graph();
+            g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            var result = g.Triples.Single().Subject.AsDynamic();
+
+            Assert.IsInstanceOfType(result, typeof(INode));
+        }
+
+        [TestMethod]
+        public void Dynamic_uri_node_is_IUriNode()
+        {
+            var g = new Graph();
+            g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            var result = (g.Triples.Single().Subject.AsDynamic() as IUriNode).Uri;
+            var expected = (g.Triples.Single().Subject as IUriNode).Uri;
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void Dynamic_blank_node_is_IBlankNode()
+        {
+            var g = new Graph();
+            g.LoadFromString("_:s <http://example.com/p> <http://example.com/o> .");
+
+            var result = (g.Triples.Single().Subject.AsDynamic() as IBlankNode).InternalID;
+            var expected = (g.Triples.Single().Subject as IBlankNode).InternalID;
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void Dynamic_uri_node_is_Not_IBlankNode()
+        {
+            var g = new Graph();
+            g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            var result = (g.Triples.Single().Subject.AsDynamic() as IBlankNode).InternalID;
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void Dynamic_blank_node_is_not_IUriNode()
+        {
+            var g = new Graph();
+            g.LoadFromString("_:s <http://example.com/p> <http://example.com/o> .");
+
+            var result = (g.Triples.Single().Subject.AsDynamic() as IUriNode).Uri;
+        }
+
+        [TestMethod]
+        public void Values_are_collections_by_default()
+        {
+            var g = new Graph();
+            g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            var dynamic_s = g.Triples.Single().Subject.AsDynamic();
+
+            var result = dynamic_s["http://example.com/p"];
+
+            Assert.IsInstanceOfType(result, typeof(ICollection));
+        }
+
+        [TestMethod]
+        public void Values_can_collapse_predicates_with_single_objects()
+        {
+            var g = new Graph();
+            g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
+
+            var dynamic_s = g.Triples.Single().Subject.AsDynamic(collapseSingularArrays: true);
+
+            var result = dynamic_s["http://example.com/p"];
+
+            Assert.IsInstanceOfType(result, typeof(DynamicNode));
+        }
+
+        [TestMethod]
+        public void Values_never_collapse_predicates_with_multiple_objects()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+<http://example.com/s> <http://example.com/p> <http://example.com/o1> .
+<http://example.com/s> <http://example.com/p> <http://example.com/o2> .
+");
+
+            var dynamic_s = g.Triples.First().Subject.AsDynamic(collapseSingularArrays: true);
+
+            var result = dynamic_s["http://example.com/p"];
+
+            Assert.IsInstanceOfType(result, typeof(ICollection));
+        }
+
     }
 }

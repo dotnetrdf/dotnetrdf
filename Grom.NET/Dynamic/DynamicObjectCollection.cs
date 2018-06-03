@@ -20,21 +20,6 @@
             this.objects = objects;
         }
 
-        public object this[int index]
-        {
-            get
-            {
-                return this.objects.ToArray()[index];
-            }
-            set
-            {
-                var objectList = this.objects.ToArray();
-                objectList[index] = value;
-
-                this.Set(objectList);
-            }
-        }
-
         public int Count => this.objects.Count();
 
         public bool IsReadOnly => false;

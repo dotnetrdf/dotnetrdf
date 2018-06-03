@@ -41,17 +41,13 @@
                 throw new ArgumentException("Only one index", "indexes");
             }
 
-            return this.GetIndex(indexes[0]) ?? throw new Exception("index not found");
+            return this.GetIndex(indexes[0]);
         }
 
         object ISimpleDynamicObject.GetMember(string name)
         {
-            if (this.BaseUri == null)
-            {
-                throw new InvalidOperationException($"Can't get member {name} without baseUri.");
-            }
 
-            return this.GetIndex(name) ?? throw new Exception("member not found");
+            return this.GetIndex(name);
         }
 
         object ISimpleDynamicObject.SetIndex(object[] indexes, object value)
@@ -91,6 +87,11 @@
 
         private object GetIndex(object predicate)
         {
+            if (predicate == null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
+
             if (this.Graph == null)
             {
                 throw new InvalidOperationException("Node must have graph");
