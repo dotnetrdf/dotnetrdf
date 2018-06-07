@@ -9,6 +9,7 @@ This release fixes a number of bugs found in the 2.0.1 release and adds some new
 - NEW: New features for the QueryBuilder API. Added support for generating sub-queries using the QueryBuilder and added support for supplying custom TripleBuilders in addition to the fluent style API. Thanks to @faubulous for the PR. (#144)
 - NEW: Added a new (read-only) SKOS API making it easier to access data held in RDF graphs that use the SKOS vocabulary. Thanks to @langsamu for the PR. (#174)
 - NEW: Added a GraphML store writer. This writer generates a GraphML file that describes the topology of the graphs in a store in a format suitable for loading into various graph processing/visualisation tools. Thanks to @langsamu for the PR (#184)
+- NEW: The GraphViz writer now supports optionally outputting literals as separate nodes for each triple rather than as a single node for a given literal value. Thanks to @langsamu for the PR (#196).
 - FIX: Fix for over-enthusiastic DateTime coercion in the JSON-LD parser. Thanks to @langsamu for the report and fix. (#164)
 - FIX: Fix for the JSON-LD parser incorrectly losing the content of the local context when processing a remote context. Thanks to @briancr-ms for the bug report. (#183)
 - FIX: Fix for the TreeIndexedTripleCollection to explicitly remove empty triple lists from the indices when triples are removed from the colleciton. Thanks to @langsamu for the report. This fix also fixes an issue with the HtmlWriter generating empty table rows for triples that have been removed from the graph (#188, #189)
