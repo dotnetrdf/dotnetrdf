@@ -1,32 +1,29 @@
 ﻿namespace Dynamic
 {
-    using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Dynamic;
     using System.Linq;
     using VDS.RDF;
+    using VDS.RDF.Nodes;
 
-    public class DynamicObjectCollection : ICollection<object>, ICollection
+    internal class DynamicObjectCollection : ICollection<object>
     {
-        private readonly dynamic subject;
+        private readonly DynamicNode subject;
         private readonly IUriNode predicate;
-        private IEnumerable<object> objects;
 
-        public DynamicObjectCollection(dynamic subject, IUriNode predicate, IEnumerable<object> objects)
+        internal DynamicObjectCollection(DynamicNode subject, IUriNode predicate)
         {
             this.subject = subject;
             this.predicate = predicate;
-            this.objects = objects;
         }
 
-        public int Count => this.objects.Count();
+        public int Count => this.Get().Count();
 
         public bool IsReadOnly => false;
 
         public void Add(object item)
         {
-            var objectList = this.objects.ToList();
+            var objectList = this.Get().ToList();
             objectList.Add(item);
 
             this.Set(objectList);
@@ -37,15 +34,15 @@
             this.Set(null);
         }
 
-        public bool Contains(object item) => this.objects.Contains(item);
+        public bool Contains(object item) => this.Get().Contains(item);
 
-        public void CopyTo(object[] array, int index) => (this as ICollection).CopyTo(array, index);
+        public void CopyTo(object[] array, int index) => this.Get().ToArray().CopyTo(array, index);
 
-        public IEnumerator<object> GetEnumerator() => this.objects.GetEnumerator();
+        public IEnumerator<object> GetEnumerator() => this.Get().GetEnumerator();
 
         public bool Remove(object item)
         {
-            var objectList = this.objects.ToList();
+            var objectList = this.Get().ToList();
 
             if (!objectList.Remove(item))
             {
@@ -57,19 +54,57 @@
             return true;
         }
 
-        object ICollection.SyncRoot => throw new NotImplementedException();
-
-        bool ICollection.IsSynchronized => throw new NotImplementedException();
-
-        void ICollection.CopyTo(Array array, int index) => this.objects.ToArray().CopyTo(array, index);
-
         IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
         private void Set(object value)
         {
-            this.subject[this.predicate] = value;
+            (this.subject as ISimpleDynamicObject).SetIndex(new[] { this.predicate }, value);
+        }
 
-            this.objects = (this.subject[this.predicate] as DynamicObjectCollection).objects;
+        private IEnumerable<object> Get()
+        {
+            return
+                from t
+                in this.subject.Graph.GetTriplesWithSubjectPredicate(this.subject, this.predicate)
+                select this.ConvertToObject(t.Object);
+        }
+
+        private object ConvertToObject(INode objectNode)
+        {
+            var valuedNode = objectNode.AsValuedNode();
+
+            switch (valuedNode)
+            {
+                case IUriNode uriNode:
+                    return uriNode.AsDynamic(this.subject.BaseUri);
+
+                case IBlankNode blankNode:
+                    return blankNode.AsDynamic(this.subject.BaseUri);
+
+                case DoubleNode doubleNode:
+                    return doubleNode.AsDouble();
+
+                case FloatNode floatNode:
+                    return floatNode.AsFloat();
+
+                case DecimalNode decimalNode:
+                    return decimalNode.AsDecimal();
+
+                case BooleanNode booleanNode:
+                    return booleanNode.AsBoolean();
+
+                case DateTimeNode dateTimeNode:
+                    return dateTimeNode.AsDateTimeOffset();
+
+                case TimeSpanNode timeSpanNode:
+                    return timeSpanNode.AsTimeSpan();
+
+                case NumericNode numericNode:
+                    return numericNode.AsInteger();
+
+                default:
+                    return valuedNode.ToString();
+            }
         }
     }
 }

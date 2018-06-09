@@ -14,7 +14,6 @@
     {
         private readonly Uri subjectBaseUri;
         private readonly Uri predicateBaseUri;
-        private readonly bool collapseSingularArrays;
 
         private Uri SubjectBaseUri
         {
@@ -33,11 +32,10 @@
         }
 
 
-        public DynamicGraph(IGraph graph, Uri subjectBaseUri = null, Uri predicateBaseUri = null, bool collapseSingularArrays = false) : base(graph)
+        public DynamicGraph(IGraph graph, Uri subjectBaseUri = null, Uri predicateBaseUri = null) : base(graph)
         {
             this.subjectBaseUri = subjectBaseUri;
             this.predicateBaseUri = predicateBaseUri;
-            this.collapseSingularArrays = collapseSingularArrays;
         }
 
         DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter) => new MetaDynamic(parameter, this);
@@ -107,7 +105,7 @@
                 .SubjectNodes
                 .UriNodes()
                 .Where(node => node.Equals(subjectNode))
-                .Select(node => node.AsDynamic(this.PredicateBaseUri, this.collapseSingularArrays))
+                .Select(node => node.AsDynamic(this.PredicateBaseUri))
                 .SingleOrDefault();
         }
 
@@ -135,7 +133,7 @@
         {
             var indexNode = DynamicHelper.ConvertToNode(subjectIndex, this, this.SubjectBaseUri);
 
-            return this.GetIndex(indexNode) ?? indexNode.AsDynamic(this.PredicateBaseUri, this.collapseSingularArrays);
+            return this.GetIndex(indexNode) ?? indexNode.AsDynamic(this.PredicateBaseUri);
         }
 
         private void RetractWithSubject(DynamicNode targetNode)

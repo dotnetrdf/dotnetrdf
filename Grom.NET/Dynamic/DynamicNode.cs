@@ -12,13 +12,12 @@
     public class DynamicNode : WrapperNode, IUriNode, IBlankNode, IDynamicMetaObjectProvider, ISimpleDynamicObject
     {
         private readonly Uri baseUri;
-        private readonly bool collapseSingularArrays;
 
         public Uri Uri => this.node is IUriNode buriNode ? buriNode.Uri : throw new InvalidOperationException("is not a uri node");
 
         public string InternalID => this.node is IBlankNode blankNode ? blankNode.InternalID : throw new InvalidOperationException("is not a blank node");
 
-        private Uri BaseUri
+        internal Uri BaseUri
         {
             get
             {
@@ -26,10 +25,9 @@
             }
         }
 
-        public DynamicNode(INode node, Uri baseUri = null, bool collapseSingularArrays = false) : base(node)
+        public DynamicNode(INode node, Uri baseUri = null) : base(node)
         {
             this.baseUri = baseUri;
-            this.collapseSingularArrays = collapseSingularArrays;
         }
 
         DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter) => new MetaDynamic(parameter, this);
@@ -38,55 +36,11 @@
         {
             if (indexes.Length != 1)
             {
-                throw new ArgumentException("Only one index", "indexes");
+                throw new ArgumentException("Only one index", nameof(indexes));
             }
 
-            return this.GetIndex(indexes[0]);
-        }
+            var predicate = indexes[0];
 
-        object ISimpleDynamicObject.GetMember(string name)
-        {
-
-            return this.GetIndex(name);
-        }
-
-        object ISimpleDynamicObject.SetIndex(object[] indexes, object value)
-        {
-            if (indexes.Length != 1)
-            {
-                throw new ArgumentException("Only one index", "indexes");
-            }
-
-            this.SetIndex(indexes[0], value);
-
-            return value;
-        }
-
-        object ISimpleDynamicObject.SetMember(string name, object value)
-        {
-            if (this.BaseUri == null)
-            {
-                throw new InvalidOperationException($"Can't set member {name} without baseUri.");
-            }
-
-            this.SetIndex(name, value);
-
-            return value;
-
-        }
-
-        IEnumerable<string> ISimpleDynamicObject.GetDynamicMemberNames()
-        {
-            var predicates = this.Graph
-                .GetTriplesWithSubject(this)
-                .Select(triple => triple.Predicate as IUriNode)
-                .Distinct();
-
-            return DynamicHelper.ConvertToNames(predicates, this.BaseUri);
-        }
-
-        private object GetIndex(object predicate)
-        {
             if (predicate == null)
             {
                 throw new ArgumentNullException(nameof(predicate));
@@ -99,31 +53,53 @@
 
             var predicateNode = DynamicHelper.ConvertToNode(predicate, this.Graph, this.BaseUri);
 
-            var triples = this.Graph.GetTriplesWithSubjectPredicate(this, predicateNode);
-
-            var nodeObjects = triples.Select(t => this.ConvertToObject(t.Object));
-
-            if (this.collapseSingularArrays && nodeObjects.Count() == 1)
-            {
-                return nodeObjects.Single();
-            }
-            else
-            {
-                return new DynamicObjectCollection(this, predicateNode, nodeObjects);
-            }
+            return new DynamicObjectCollection(this, predicateNode);
         }
 
-        private void SetIndex(object predicate, object value)
+        object ISimpleDynamicObject.GetMember(string name)
         {
+
+            return (this as ISimpleDynamicObject).GetIndex(new[] { name });
+        }
+
+        object ISimpleDynamicObject.SetIndex(object[] indexes, object value)
+        {
+            if (indexes.Length != 1)
+            {
+                throw new ArgumentException("Only one index", "indexes");
+            }
+
             if (this.Graph == null)
             {
                 throw new InvalidOperationException("Node must have graph");
             }
 
+            var predicate = indexes[0];
             var predicateNode = DynamicHelper.ConvertToNode(predicate, this.Graph, this.BaseUri);
             this.Graph.Retract(this.Graph.GetTriplesWithSubjectPredicate(this, predicateNode).ToArray());
-            var newStatements = this.ConvertToTriples(predicateNode, value);
-            this.Graph.Assert(newStatements);
+            this.Graph.Assert(this.ConvertToTriples(predicateNode, value));
+
+            return value;
+        }
+
+        object ISimpleDynamicObject.SetMember(string name, object value)
+        {
+            if (this.BaseUri == null)
+            {
+                throw new InvalidOperationException($"Can't set member {name} without baseUri.");
+            }
+
+            return (this as ISimpleDynamicObject).SetIndex(new[] { name }, value);
+        }
+
+        IEnumerable<string> ISimpleDynamicObject.GetDynamicMemberNames()
+        {
+            var predicates = this.Graph
+                .GetTriplesWithSubject(this)
+                .Select(triple => triple.Predicate as IUriNode)
+                .Distinct();
+
+            return DynamicHelper.ConvertToNames(predicates, this.BaseUri);
         }
 
         private IEnumerable<Triple> ConvertToTriples(INode predicateNode, object value)
@@ -199,44 +175,6 @@
 
                 default:
                     throw new Exception($"Can't convert type {value.GetType()}");
-            }
-        }
-
-        private object ConvertToObject(INode objectNode)
-        {
-            var valuedNode = objectNode.AsValuedNode();
-
-            switch (valuedNode)
-            {
-                case IUriNode uriNode:
-                    return uriNode.AsDynamic(this.BaseUri, this.collapseSingularArrays);
-
-                case IBlankNode blankNode:
-                    return blankNode.AsDynamic(this.BaseUri, this.collapseSingularArrays);
-
-                case DoubleNode doubleNode:
-                    return doubleNode.AsDouble();
-
-                case FloatNode floatNode:
-                    return floatNode.AsFloat();
-
-                case DecimalNode decimalNode:
-                    return decimalNode.AsDecimal();
-
-                case BooleanNode booleanNode:
-                    return booleanNode.AsBoolean();
-
-                case DateTimeNode dateTimeNode:
-                    return dateTimeNode.AsDateTimeOffset();
-
-                case TimeSpanNode timeSpanNode:
-                    return timeSpanNode.AsTimeSpan();
-
-                case NumericNode numericNode:
-                    return numericNode.AsInteger();
-
-                default:
-                    return valuedNode.ToString();
             }
         }
     }
