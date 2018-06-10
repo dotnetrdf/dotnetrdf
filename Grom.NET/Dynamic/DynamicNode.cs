@@ -13,9 +13,9 @@
     {
         private readonly Uri baseUri;
 
-        public Uri Uri => this.node is IUriNode buriNode ? buriNode.Uri : throw new InvalidOperationException("is not a uri node");
+        public Uri Uri => this.Node is IUriNode buriNode ? buriNode.Uri : throw new InvalidOperationException("is not a uri node");
 
-        public string InternalID => this.node is IBlankNode blankNode ? blankNode.InternalID : throw new InvalidOperationException("is not a blank node");
+        public string InternalID => this.Node is IBlankNode blankNode ? blankNode.InternalID : throw new InvalidOperationException("is not a blank node");
 
         internal Uri BaseUri
         {
@@ -119,10 +119,10 @@
                 if (item != null)
                 {
                     yield return new Triple(
-                        subj: this.node,
+                        subj: this.Node,
                         pred: predicateNode,
                         obj: this.ConvertToNode(item),
-                        g: this.node.Graph);
+                        g: this.Node.Graph);
                 }
             }
         }

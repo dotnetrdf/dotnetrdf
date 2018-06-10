@@ -71,15 +71,11 @@
 
         private object ConvertToObject(INode objectNode)
         {
-            var valuedNode = objectNode.AsValuedNode();
-
-            switch (valuedNode)
+            switch (objectNode.AsValuedNode())
             {
                 case IUriNode uriNode:
-                    return uriNode.AsDynamic(this.subject.BaseUri);
-
                 case IBlankNode blankNode:
-                    return blankNode.AsDynamic(this.subject.BaseUri);
+                    return objectNode.AsDynamic(this.subject.BaseUri);
 
                 case DoubleNode doubleNode:
                     return doubleNode.AsDouble();
@@ -103,7 +99,7 @@
                     return numericNode.AsInteger();
 
                 default:
-                    return valuedNode.ToString();
+                    return objectNode.ToString();
             }
         }
     }
