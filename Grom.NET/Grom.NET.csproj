@@ -36,7 +36,7 @@
     <Compile Include="Dynamic\DynamicHelper.cs" />
     <Compile Include="Dynamic\DynamicNode.cs" />
     <Compile Include="Dynamic\DynamicObjectCollection.cs" />
-    <Compile Include="Dynamic\ISimpleDynamicObject.cs" />
+    <Compile Include="Dynamic\IDynamicObject.cs" />
     <Compile Include="Dynamic\MetaDynamic.cs" />
     <Compile Include="VDS.RDF\WrapperNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -8,10 +8,10 @@
     using VDS.RDF;
 
     [TestClass]
-    public class DynamicNodeTests
+    public class ObjectCollectionTests
     {
         [TestMethod]
-        public void ObjectCollection_supports_add()
+        public void Supports_add()
         {
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o1> .");
@@ -31,7 +31,7 @@
         }
 
         [TestMethod]
-        public void ObjectCollection_supports_blank_nodes()
+        public void Supports_blank_nodes()
         {
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> _:o .");
@@ -45,7 +45,7 @@
         }
 
         [TestMethod]
-        public void ObjectCollection_supports_clear()
+        public void Supports_clear()
         {
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
@@ -59,7 +59,7 @@
         }
 
         [TestMethod]
-        public void ObjectCollection_supports_contains()
+        public void Supports_contains()
         {
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
@@ -74,7 +74,7 @@
         }
 
         [TestMethod]
-        public void ObjectCollection_supports_copy_to()
+        public void Supports_copy_to()
         {
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
@@ -91,7 +91,7 @@
         }
 
         [TestMethod]
-        public void ObjectCollection_supports_count()
+        public void Supports_count()
         {
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
@@ -107,7 +107,7 @@
         }
 
         [TestMethod]
-        public void ObjectCollection_supports_get_enumerator()
+        public void Supports_get_enumerator()
         {
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
@@ -123,7 +123,7 @@
         }
 
         [TestMethod]
-        public void ObjectCollection_supports_native_data_types()
+        public void Supports_native_data_types()
         {
             var g = new Graph();
             g.LoadFromString(@"
@@ -150,7 +150,7 @@
         }
 
         [TestMethod]
-        public void ObjectCollection_supports_read_write()
+        public void Supports_read_write()
         {
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
@@ -163,7 +163,7 @@
         }
 
         [TestMethod]
-        public void ObjectCollection_supports_remove()
+        public void Supports_remove()
         {
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
@@ -179,7 +179,7 @@
         }
 
         [TestMethod]
-        public void ObjectCollection_supports_remove_with_missing_item()
+        public void Supports_remove_with_missing_item()
         {
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
@@ -193,7 +193,7 @@
         }
 
         [TestMethod]
-        public void ObjectCollection_supports_uri_nodes()
+        public void Supports_uri_nodes()
         {
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");

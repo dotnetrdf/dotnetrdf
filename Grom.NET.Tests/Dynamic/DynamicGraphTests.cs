@@ -35,7 +35,7 @@
         }
 
         [TestMethod]
-        public void Indexing_supports_setting_wrapper_indices()
+        public void Indexing_supports_setting_wrapper_index()
         {
             var g = GenerateSPOGraph();
             var d = g.AsDynamic(exampleBase);
@@ -398,6 +398,7 @@
             CollectionAssert.Contains(collection, element);
         }
 
+        // TODO: all kinds of dictionary entries
         [TestMethod]
         public void Indexing_supports_setting_dictionaries()
         {
@@ -412,6 +413,7 @@
                 d);
         }
 
+        // TODO: all kinds of properties
         [TestMethod]
         public void Indexing_supports_setting_anonymous_classes()
         {
@@ -424,6 +426,22 @@
                 d);
         }
 
+        [TestMethod]
+        public void x()
+        {
+            var d = new Graph().AsDynamic(exampleBase);
+            var r = new { p = new Uri("http://example.com/o") };
+            var xx = d["s"] = r;
+
+            Assert.AreEqual(
+                spoGraph,
+                d);
+            Assert.AreSame(
+                r,
+                xx);
+        }
+
+        // TODO: all kinds of properties
         [TestMethod]
         public void Indexing_supports_setting_custom_classes()
         {

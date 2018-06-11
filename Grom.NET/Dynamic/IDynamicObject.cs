@@ -1,17 +1,16 @@
 ﻿namespace Dynamic
 {
-    using System;
     using System.Collections.Generic;
 
-    internal interface ISimpleDynamicObject
+    internal interface IDynamicObject
     {
         object GetIndex(object[] indexes);
 
         object GetMember(string name);
 
-        object SetIndex(object[] indexes, object value);
+        void SetIndex(object[] indexes, object value);
 
-        object SetMember(string name, object value);
+        void SetMember(string name, object value);
 
         IEnumerable<string> GetDynamicMemberNames();
     }

@@ -17,9 +17,11 @@
             this.predicate = predicate;
         }
 
-        public int Count => this.Get().Count();
+        public int Count =>
+            this.Get().Count();
 
-        public bool IsReadOnly => false;
+        public bool IsReadOnly =>
+            false;
 
         public void Add(object item)
         {
@@ -29,45 +31,40 @@
             this.Set(objectList);
         }
 
-        public void Clear()
-        {
+        public void Clear() =>
             this.Set(null);
-        }
 
-        public bool Contains(object item) => this.Get().Contains(item);
+        public bool Contains(object item) =>
+            this.Get().Contains(item);
 
-        public void CopyTo(object[] array, int index) => this.Get().ToArray().CopyTo(array, index);
+        public void CopyTo(object[] array, int index) =>
+            this.Get().ToArray().CopyTo(array, index);
 
-        public IEnumerator<object> GetEnumerator() => this.Get().GetEnumerator();
+        public IEnumerator<object> GetEnumerator() =>
+            this.Get().GetEnumerator();
 
         public bool Remove(object item)
         {
             var objectList = this.Get().ToList();
 
             if (!objectList.Remove(item))
-            {
                 return false;
-            }
 
             this.Set(objectList);
 
             return true;
         }
 
-        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() =>
+            this.GetEnumerator();
 
-        private void Set(object value)
-        {
-            (this.subject as ISimpleDynamicObject).SetIndex(new[] { this.predicate }, value);
-        }
+        private void Set(object value) =>
+            (this.subject as IDynamicObject).SetIndex(new[] { this.predicate }, value);
 
-        private IEnumerable<object> Get()
-        {
-            return
-                from t
-                in this.subject.Graph.GetTriplesWithSubjectPredicate(this.subject, this.predicate)
-                select this.ConvertToObject(t.Object);
-        }
+        private IEnumerable<object> Get() =>
+            from triple
+            in this.subject.Graph.GetTriplesWithSubjectPredicate(this.subject, this.predicate)
+            select this.ConvertToObject(triple.Object);
 
         private object ConvertToObject(INode objectNode)
         {

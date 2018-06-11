@@ -11,7 +11,7 @@
     // TODO: 2. No point in our cases (node & graph)
     internal class MetaDynamic : DynamicMetaObject
     {
-        internal MetaDynamic(Expression parameter, ISimpleDynamicObject value) : base(parameter, BindingRestrictions.Empty, value) { }
+        internal MetaDynamic(Expression parameter, IDynamicObject value) : base(parameter, BindingRestrictions.Empty, value) { }
 
         public override DynamicMetaObject BindGetMember(GetMemberBinder binder)
         {
@@ -19,7 +19,7 @@
                 Expression.Call(
                     Expression.Convert(
                         this.Expression,
-                        typeof(ISimpleDynamicObject)),
+                        typeof(IDynamicObject)),
                     "GetMember",
                     new Type[0],
                     Expression.Constant(binder.Name)
@@ -36,7 +36,7 @@
                 Expression.Call(
                     Expression.Convert(
                         this.Expression,
-                        typeof(ISimpleDynamicObject)),
+                        typeof(IDynamicObject)),
                     "GetIndex",
                     new Type[0],
                     Expression.NewArrayInit(
@@ -55,15 +55,17 @@
         public override DynamicMetaObject BindSetMember(SetMemberBinder binder, DynamicMetaObject value)
         {
             var expression =
-                Expression.Call(
-                    Expression.Convert(
-                        this.Expression,
-                        typeof(ISimpleDynamicObject)),
-                    "SetMember",
-                    new Type[0],
-                    Expression.Constant(binder.Name),
-                    value.Expression
-                );
+                Expression.Block(
+                    Expression.Call(
+                        Expression.Convert(
+                            this.Expression,
+                            typeof(IDynamicObject)),
+                        "SetMember",
+                        new Type[0],
+                        Expression.Constant(binder.Name),
+                        value.Expression
+                    ),
+                    value.Expression);
 
             var suggestion = new DynamicMetaObject(expression, BindingRestrictions.GetTypeRestriction(this.Expression, this.LimitType));
 
@@ -73,20 +75,23 @@
         public override DynamicMetaObject BindSetIndex(SetIndexBinder binder, DynamicMetaObject[] indexes, DynamicMetaObject value)
         {
             var expression =
-                Expression.Call(
-                    Expression.Convert(
-                        this.Expression,
-                        typeof(ISimpleDynamicObject)),
-                    "SetIndex",
-                    new Type[0],
-                    Expression.NewArrayInit(
-                        typeof(object),
-                        indexes.Select(i =>
-                            Expression.Convert(
-                                i.Expression,
-                                typeof(object)))),
-                    value.Expression
-                );
+                Expression.Block(
+                    Expression.Call(
+                        Expression.Convert(
+                            this.Expression,
+                            typeof(IDynamicObject)),
+                        "SetIndex",
+                        new Type[0],
+                        Expression.NewArrayInit(
+                            typeof(object),
+                            indexes.Select(i =>
+                                Expression.Convert(
+                                    i.Expression,
+                                    typeof(object)))),
+                        value.Expression
+                    ),
+                    value.Expression);
+
 
             var suggestion = new DynamicMetaObject(expression, BindingRestrictions.GetTypeRestriction(this.Expression, this.LimitType));
 
@@ -95,7 +100,7 @@
 
         public override IEnumerable<string> GetDynamicMemberNames()
         {
-            return (this.Value as ISimpleDynamicObject).GetDynamicMemberNames();
+            return (this.Value as IDynamicObject).GetDynamicMemberNames();
         }
     }
 }
