@@ -5,6 +5,8 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using VDS.RDF;
+    using VDS.RDF.Writing;
 
     public class c
     {
@@ -16,20 +18,48 @@
     public class RecursiveObjectTranslation
     {
         [TestMethod]
-        public void MyTestMethod()
+        public void MyTestMethod1()
         {
-            var a = new c { s = "a" };
-            var b = new c { s = "b", c1 = a };
+            var a = new c
+            {
+                s = "a",
+                c1 = new c
+                {
+                    s = "b",
+                    c1 = new c
+                    {
+                        s = "c"
+                    }
+                }
+            };
+            a.c1.c1.c1 = a;
+
+            var g = new Graph();
+            process(g, g.CreateUriNode(new Uri("http://example.com/a")), a);
+            g.SaveToStream(Console.Out, new NTriplesWriter());
+        }
+
+        [TestMethod]
+        public void MyTestMethod2()
+        {
+            var a = new c
+            {
+                s = "a"
+            };
             a.c1 = a;
 
-            process("b", a);
+            var g = new Graph();
+            process(g, g.CreateUriNode(new Uri("http://example.com/a")), a);
+            g.SaveToStream(Console.Out, new NTriplesWriter());
         }
 
         private static readonly Random r = new Random();
 
-        private void process(object subject, object value, Dictionary<object, string> seen = null)
+        private static void process(IGraph g, INode subject, object value, Dictionary<object, INode> seen = null)
         {
-            seen = seen ?? new Dictionary<object, string>();
+            seen = seen ?? new Dictionary<object, INode>();
+
+            seen[value] = subject;
 
             var properties = value.GetType()
                 .GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty)
@@ -37,25 +67,27 @@
 
             foreach (var property in properties)
             {
-                var x = property.GetValue(value);
+                var propertyValue = property.GetValue(value);
 
-                if (x != null)
+                if (propertyValue != null)
                 {
-                    if (x is string || x.GetType().IsPrimitive)
+                    var predicate = g.CreateUriNode(new Uri(new Uri("http://example.com/"), property.Name));
+                    if (propertyValue is string || propertyValue.GetType().IsPrimitive)
                     {
-                        Console.WriteLine("{0} {1} {2}", subject, property.Name, x);
+                        var objectNode = g.CreateLiteralNode(propertyValue.ToString());
+                        g.Assert(subject, predicate, objectNode);
                     }
                     else
                     {
-                        if (seen.TryGetValue(x, out string bnode))
+                        if (seen.TryGetValue(propertyValue, out INode bnode))
                         {
-                            Console.WriteLine("{0} {1} {2}", subject, property.Name, bnode);
+                            g.Assert(subject, predicate, bnode);
                         }
                         else
                         {
-                            bnode = seen[x] = r.Next().ToString();
-                            Console.WriteLine("{0} {1} {2}", subject, property.Name, bnode);
-                            process(bnode, x, seen);
+                            bnode = seen[propertyValue] = g.CreateBlankNode();
+                            g.Assert(subject, predicate, bnode);
+                            process(g, bnode, propertyValue, seen);
                         }
                     }
                 }
