@@ -2,16 +2,22 @@
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
     using VDS.RDF;
     using VDS.RDF.Writing;
 
-    public class c
+    public class Class1
     {
-        public string s { get; set; }
-        public c c1 { get; set; }
+        public string SingleStringProperty { get; set; }
+
+        public Class1 SingleClassProperty { get; set; }
+
+        public IEnumerable<string> EnumerableStringProperty { get; set; }
+
+        public IEnumerable<Class1> EnumerableClassProperty { get; set; }
     }
 
     [TestClass]
@@ -20,36 +26,72 @@
         [TestMethod]
         public void MyTestMethod1()
         {
-            var a = new c
+            var c1 = new Class1
             {
-                s = "a",
-                c1 = new c
+                SingleStringProperty = "c1",
+                SingleClassProperty = new Class1
                 {
-                    s = "b",
-                    c1 = new c
+                    SingleStringProperty = "c2",
+                    SingleClassProperty = new Class1
                     {
-                        s = "c"
+                        SingleStringProperty = "c3"
                     }
                 }
             };
-            a.c1.c1.c1 = a;
+            c1.SingleClassProperty.SingleClassProperty.SingleClassProperty = c1;
 
             var g = new Graph();
-            process(g, g.CreateUriNode(new Uri("http://example.com/a")), a);
+            process(g, g.CreateUriNode(new Uri("http://example.com/c1")), c1);
             g.SaveToStream(Console.Out, new NTriplesWriter());
         }
 
         [TestMethod]
         public void MyTestMethod2()
         {
-            var a = new c
+            var c1 = new Class1
             {
-                s = "a"
+                SingleStringProperty = "c1"
             };
-            a.c1 = a;
+            c1.SingleClassProperty = c1;
 
             var g = new Graph();
-            process(g, g.CreateUriNode(new Uri("http://example.com/a")), a);
+            process(g, g.CreateUriNode(new Uri("http://example.com/c1")), c1);
+            g.SaveToStream(Console.Out, new NTriplesWriter());
+        }
+
+        [TestMethod]
+        public void MyTestMethod3()
+        {
+            var c1 = new Class1
+            {
+                EnumerableStringProperty = new[] {
+                    "s1",
+                    "s2"
+                }
+            };
+
+            var g = new Graph();
+            process(g, g.CreateUriNode(new Uri("http://example.com/c1")), c1);
+            g.SaveToStream(Console.Out, new NTriplesWriter());
+        }
+
+        [TestMethod]
+        public void MyTestMethod4()
+        {
+            var c1 = new Class1
+            {
+                EnumerableClassProperty = new[] {
+                    new Class1 {
+                        SingleStringProperty = "s1"
+                    },
+                    new Class1 {
+                        SingleStringProperty = "s2"
+                    }
+                }
+            };
+
+            var g = new Graph();
+            process(g, g.CreateUriNode(new Uri("http://example.com/c1")), c1);
             g.SaveToStream(Console.Out, new NTriplesWriter());
         }
 
@@ -72,25 +114,37 @@
                 if (propertyValue != null)
                 {
                     var predicate = g.CreateUriNode(new Uri(new Uri("http://example.com/"), property.Name));
-                    if (propertyValue is string || propertyValue.GetType().IsPrimitive)
+
+                    foreach (var x in Enumerate(propertyValue))
                     {
-                        var objectNode = g.CreateLiteralNode(propertyValue.ToString());
-                        g.Assert(subject, predicate, objectNode);
-                    }
-                    else
-                    {
-                        if (seen.TryGetValue(propertyValue, out INode bnode))
+                        if (x is string || x.GetType().IsPrimitive)
                         {
-                            g.Assert(subject, predicate, bnode);
+                            var objectNode = g.CreateLiteralNode(x.ToString());
+                            g.Assert(subject, predicate, objectNode);
                         }
                         else
                         {
-                            bnode = seen[propertyValue] = g.CreateBlankNode();
+                            if (!seen.TryGetValue(x, out INode bnode))
+                            {
+                                bnode = seen[x] = g.CreateBlankNode();
+                                process(g, bnode, x, seen);
+                            }
+
                             g.Assert(subject, predicate, bnode);
-                            process(g, bnode, propertyValue, seen);
                         }
                     }
                 }
+            }
+        }
+
+        private static IEnumerable<object> Enumerate(object value)
+        {
+            if (value is string || !(value is IEnumerable enumerableValue)) // Strings are enumerable but not for our case
+                enumerableValue = value.AsEnumerable(); // When they're not enumerable, wrap them in an enumerable of one
+
+            foreach (var item in enumerableValue)
+            {
+                yield return item;
             }
         }
     }
