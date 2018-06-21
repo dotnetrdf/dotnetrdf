@@ -14,7 +14,7 @@
         {
             if (!(node is IUriNode || node is IBlankNode))
             {
-                throw new Exception("Only URI and blank nodes.");
+                throw new InvalidOperationException("Only URI and blank nodes.");
             }
 
             return new DynamicNode(node, baseUri);

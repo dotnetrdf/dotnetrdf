@@ -2,7 +2,6 @@
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Dynamic;
     using System.Linq;
@@ -138,16 +137,19 @@
         }
 
         [TestMethod]
-        public void Subject_base_uri_defaults_to_graph_base_uri()
+        public void Subject_base_uri_defaults_to_graph_base_uri1()
         {
-            var g = GenerateSPOGraph();
-            g.BaseUri = exampleBase;
-            var s = g.GetTriplesWithSubject(ex_s).Single().Subject;
-            dynamic d = s.AsDynamic();
-            var result = (d.p as ICollection<object>).Single();
-            var expected = (d["p"] as ICollection<object>).Single();
+            var d = new DynamicNode(new NodeFactory().CreateBlankNode());
 
-            Assert.AreEqual(result, expected);
+            Assert.IsNull(d.BaseUri);
+        }
+
+        [TestMethod]
+        public void Subject_base_uri_defaults_to_graph_base_uri2()
+        {
+            var d = new DynamicNode(new Graph() { BaseUri = new Uri("http://example.com/") }.CreateBlankNode());
+
+            Assert.AreEqual(new Uri("http://example.com/"), d.BaseUri);
         }
 
         [TestMethod]
@@ -167,55 +169,12 @@
             Assert.AreEqual(g2, g1);
         }
 
-
         [TestMethod]
-        public void ObjectCollectionTests()
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void Setter_requires_base_uri()
         {
-            var g1 = new Graph();
-            g1.LoadFromString(@"
-<http://example.com/s> <http://example.com/p> ""1"" .
-<http://example.com/s> <http://example.com/p> ""2"" .
-");
-            var d = g1.AsDynamic(exampleBase);
-            var a = d.s.p as ICollection<object>;
-
-            //CollectionAssert.AreEquivalent(new[] { "1", "2" }.ToList(), a as ICollection);
-
-            var g2 = new Graph();
-            g2.LoadFromString(@"
-<http://example.com/s> <http://example.com/p> ""0"" .
-<http://example.com/s> <http://example.com/p> ""2"" .
-");
-
-            a.Remove("1");
-            a.Add("0");
-            Assert.AreEqual(g2, g1);
-
-            var g3 = new Graph();
-            g3.LoadFromString(@"
-<http://example.com/s> <http://example.com/p> ""2"" .
-");
-
-            a.Remove("0");
-            Assert.AreEqual(g3, g1);
-
-            var g4 = new Graph();
-            g4.LoadFromString(@"
-            <http://example.com/s> <http://example.com/p> <http://example.com/o> .
-            ");
-
-            a.Remove("2");
-            a.Add(new Uri("http://example.com/o"));
-            Assert.AreEqual(g4, g1);
-
-            a.Clear();
-            Assert.IsTrue(g1.IsEmpty);
-
-            a.Add("2");
-            Assert.AreEqual(g3, g1);
-
-            a.Add("0");
-            Assert.AreEqual(g2, g1);
+            var a = new NodeFactory().CreateBlankNode().AsDynamic();
+            a.p = null;
         }
 
         [TestMethod]

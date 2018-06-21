@@ -48,7 +48,7 @@
             if (indexes.Length != 1)
                 throw new ArgumentException("Only one index", nameof(indexes));
 
-            var subject = indexes[0] ?? throw new ArgumentNullException("Can't work with null index", nameof(indexes)); ;
+            var subject = indexes[0] ?? throw new ArgumentNullException("Can't work with null index", nameof(indexes));
         
             var targetNode = this.GetDynamicNodeOrCreate(subject);
 

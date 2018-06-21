@@ -15,6 +15,15 @@
 
         public override DynamicMetaObject BindGetMember(GetMemberBinder binder)
         {
+            // Original:
+            //
+            // dyn.member;
+            //
+            //
+            // Result:
+            //
+            // ((IDynamicObject)dyn).GetMember("member");
+
             var expression =
                 Expression.Call(
                     Expression.Convert(
@@ -32,6 +41,15 @@
 
         public override DynamicMetaObject BindGetIndex(GetIndexBinder binder, DynamicMetaObject[] indexes)
         {
+            // Original:
+            //
+            // dyn[index1, index2];
+            //
+            //
+            // Result:
+            //
+            // ((IDynamicObject)dyn).GetIndex(new object[] { (object)index1, (object)index2 });
+
             var expression =
                 Expression.Call(
                     Expression.Convert(
@@ -54,6 +72,18 @@
 
         public override DynamicMetaObject BindSetMember(SetMemberBinder binder, DynamicMetaObject value)
         {
+            // Original:
+            //
+            // dyn.member = value;
+            //
+            //
+            // Result:
+            //
+            // {
+            //      ((IDynamicObject)dyn).SetMember("member", new [] { value });
+            //      return value;
+            // }
+
             var expression =
                 Expression.Block(
                     Expression.Call(
@@ -74,6 +104,18 @@
 
         public override DynamicMetaObject BindSetIndex(SetIndexBinder binder, DynamicMetaObject[] indexes, DynamicMetaObject value)
         {
+            // Original:
+            //
+            // dyn[index1, index2] = value
+            //
+            //
+            // Result:
+            //
+            // {
+            //     ((IDynamicObject)dyn).SetIndex(new object[] { (object)index1, (object)index2 }, value);
+            //     return value;
+            // }
+
             var expression =
                 Expression.Block(
                     Expression.Call(

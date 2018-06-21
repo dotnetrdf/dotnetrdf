@@ -13,6 +13,19 @@
     {
         private readonly Uri baseUri;
 
+        //public object this[object index]
+        //{
+        //    get
+        //    {
+
+        //        /* return the specified index here */
+        //    }
+        //    set
+        //    {
+        //        /* set the specified index to value here */
+        //    }
+        //}
+
         Uri IUriNode.Uri =>
             this.Node is IUriNode uriNode ?
                 uriNode.Uri :
@@ -108,7 +121,7 @@
             switch (value)
             {
                 case INode nodeValue:
-                    return nodeValue;
+                    return nodeValue.CopyNode(this.Graph);
 
                 case Uri uriValue:
                     return this.Graph.CreateUriNode(uriValue);
@@ -150,7 +163,7 @@
                     return new TimeSpanNode(this.Graph, timeSpanValue);
 
                 default:
-                    throw new Exception($"Can't convert type {value.GetType()}");
+                    throw new InvalidOperationException($"Can't convert type {value.GetType()}");
             }
         }
     }

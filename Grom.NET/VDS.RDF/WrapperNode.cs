@@ -4,8 +4,6 @@
     using System.Runtime.Serialization;
     using System.Xml;
     using System.Xml.Schema;
-    using System.Xml.Serialization;
-    using VDS.RDF.Parsing;
     using VDS.RDF.Writing;
     using VDS.RDF.Writing.Formatting;
 

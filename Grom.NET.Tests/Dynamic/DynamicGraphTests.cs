@@ -464,6 +464,15 @@
         }
 
         [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Sett_index_requires_index()
+        {
+            var d = new Graph().AsDynamic();
+
+            d[null] = null;
+        }
+
+        [TestMethod]
         public void Setter_delegates_to_index_setter()
         {
             var d1 = new Graph().AsDynamic(exampleBase);
