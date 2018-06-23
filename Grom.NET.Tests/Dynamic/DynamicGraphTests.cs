@@ -1,5 +1,6 @@
 ﻿namespace Dynamic
 {
+    using Microsoft.CSharp.RuntimeBinder;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using System.Collections.Generic;
@@ -258,7 +259,7 @@
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(RuntimeBinderException))]
         public void Multidimensional_get_index_is_forbidden()
         {
             var d = GenerateSPOGraph().AsDynamic();
@@ -267,7 +268,7 @@
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(RuntimeBinderException))]
         public void Multidimensional_set_index_is_forbidden()
         {
             var d = GenerateSPOGraph().AsDynamic();

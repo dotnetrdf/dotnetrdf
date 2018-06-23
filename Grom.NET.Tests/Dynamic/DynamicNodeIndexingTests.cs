@@ -1,5 +1,6 @@
 ﻿namespace Dynamic
 {
+    using Microsoft.CSharp.RuntimeBinder;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using System.Collections.Generic;
@@ -52,7 +53,7 @@
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(RuntimeBinderException))]
         public void Indexing_requires_one_index()
         {
             var dynamic_s = new NodeFactory().CreateBlankNode().AsDynamic();
@@ -234,6 +235,15 @@
             var result = objects.Single();
 
             Assert.AreEqual(example_o, result);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Indexing_setter_requires_index()
+        {
+            var dynamic_s = new NodeFactory().CreateBlankNode().AsDynamic();
+
+            dynamic_s[null] = null;
         }
     }
 }
