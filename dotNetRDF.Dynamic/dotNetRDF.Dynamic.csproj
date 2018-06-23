@@ -7,8 +7,8 @@
     <ProjectGuid>{EA2360DE-55B2-47B5-9AA4-916F5467B8F9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Grom</RootNamespace>
-    <AssemblyName>Grom.NET</AssemblyName>
+    <RootNamespace>VDS.RDF.Dynamic</RootNamespace>
+    <AssemblyName>dotNetRDF.Dynamic</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
