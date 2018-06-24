@@ -59,7 +59,8 @@
                 {
                     foreach (DictionaryEntry entry in DynamicGraph.ConvertToDictionary(value))
                     {
-                        targetNode[entry.Key] = entry.Value;
+                        // TODO: What if value is s a node? Will we get properties for it? Shouldn't.
+                        targetNode[entry.Key.ToString()] = entry.Value;
                     }
                 }
             }
@@ -74,16 +75,6 @@
         DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)
         {
             return new MetaDynamic(parameter, this);
-        }
-
-        object IDynamicObject.GetMember(string name)
-        {
-            return this[name];
-        }
-
-        void IDynamicObject.SetMember(string name, object value)
-        {
-            this[name] = value;
         }
 
         IEnumerable<string> IDynamicObject.GetDynamicMemberNames()

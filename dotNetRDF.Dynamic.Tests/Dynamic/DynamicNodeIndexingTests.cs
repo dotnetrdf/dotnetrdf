@@ -37,7 +37,7 @@
         {
             var dynamic_s = new NodeFactory().CreateBlankNode().AsDynamic();
 
-            var result = dynamic_s[null];
+            var result = dynamic_s[null as INode];
         }
 
         [TestMethod]
@@ -243,7 +243,7 @@
         {
             var dynamic_s = new NodeFactory().CreateBlankNode().AsDynamic();
 
-            dynamic_s[null] = null;
+            dynamic_s[null as INode] = null;
         }
     }
 }

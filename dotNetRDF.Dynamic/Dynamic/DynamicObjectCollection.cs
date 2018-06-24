@@ -1,5 +1,6 @@
 ﻿namespace Dynamic
 {
+    using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
@@ -8,9 +9,9 @@
     internal class DynamicObjectCollection : ICollection<object>
     {
         private readonly DynamicNode subject;
-        private readonly IUriNode predicate;
+        private readonly INode predicate;
 
-        internal DynamicObjectCollection(DynamicNode subject, IUriNode predicate)
+        internal DynamicObjectCollection(DynamicNode subject, INode predicate)
         {
             this.subject = subject;
             this.predicate = predicate;
@@ -59,7 +60,7 @@
 
         public bool Remove(object item)
         {
-            return this.subject.Remove(new KeyValuePair<object, object>(this.predicate, item));
+            return this.subject.Remove(new KeyValuePair<INode, object>(this.predicate, item));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -69,6 +70,11 @@
 
         private IEnumerable<object> Get()
         {
+            if (this.subject.Graph == null)
+            {
+                throw new InvalidOperationException("graph missing");
+            }
+
             return
                 from triple
                 in this.subject.Graph.GetTriplesWithSubjectPredicate(this.subject, this.predicate)

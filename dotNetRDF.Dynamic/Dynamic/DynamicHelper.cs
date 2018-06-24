@@ -93,7 +93,7 @@
             return nodes.Select(node => DynamicHelper.ConvertToName(node, baseUri));
         }
 
-        private static string ConvertToName(IUriNode node, Uri baseUri)
+        internal static string ConvertToName(IUriNode node, Uri baseUri)
         {
             var nodeUri = node.Uri;
 

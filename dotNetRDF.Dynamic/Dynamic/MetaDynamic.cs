@@ -1,74 +1,45 @@
 ﻿namespace Dynamic
 {
-    using System;
     using System.Collections.Generic;
     using System.Dynamic;
-    using System.Linq;
     using System.Linq.Expressions;
 
-    // TODO: Remove fallback handling?
-    // TODO: 1. Fallback isn't "simple".
-    // TODO: 2. No point in our cases (node & graph)
     internal class MetaDynamic : DynamicMetaObject
     {
         internal MetaDynamic(Expression parameter, IDynamicObject value) : base(parameter, BindingRestrictions.Empty, value) { }
 
         public override DynamicMetaObject BindGetMember(GetMemberBinder binder)
         {
-            // Original:
-            //
-            // dyn.member;
-            //
-            //
-            // Result:
-            //
-            // ((IDynamicObject)dyn).GetMember("member");
+            // ((runtimeType)dyn).member -> dyn[(object)"member"]
 
-            var expression =
-                Expression.Call(
+            return new DynamicMetaObject(
+                Expression.Property(
                     Expression.Convert(
                         this.Expression,
-                        typeof(IDynamicObject)),
-                    "GetMember",
-                    new Type[0],
-                    Expression.Constant(binder.Name)
-                );
-
-            var suggestion = new DynamicMetaObject(expression, BindingRestrictions.GetTypeRestriction(this.Expression, this.LimitType));
-
-            return binder.FallbackGetMember(this, suggestion);
+                        this.RuntimeType),
+                    "Item",
+                    Expression.Convert(
+                        Expression.Constant(binder.Name),
+                        typeof(object))),
+                BindingRestrictions.GetTypeRestriction(this.Expression, this.LimitType));
         }
 
         public override DynamicMetaObject BindSetMember(SetMemberBinder binder, DynamicMetaObject value)
         {
-            // Original:
-            //
-            // dyn.member = value;
-            //
-            //
-            // Result:
-            //
-            // {
-            //      ((IDynamicObject)dyn).SetMember("member", new [] { value });
-            //      return value;
-            // }
+            // ((runtimeType)dyn).member -> dyn[(object)"member"] = value
 
-            var expression =
-                Expression.Block(
-                    Expression.Call(
+            return new DynamicMetaObject(
+                Expression.Assign(
+                    Expression.Property(
                         Expression.Convert(
                             this.Expression,
-                            typeof(IDynamicObject)),
-                        "SetMember",
-                        new Type[0],
-                        Expression.Constant(binder.Name),
-                        value.Expression
-                    ),
-                    value.Expression);
-
-            var suggestion = new DynamicMetaObject(expression, BindingRestrictions.GetTypeRestriction(this.Expression, this.LimitType));
-
-            return binder.FallbackSetMember(this, value, suggestion);
+                            this.RuntimeType),
+                        "Item",
+                        Expression.Convert(
+                            Expression.Constant(binder.Name),
+                            typeof(object))),
+                    value.Expression),
+                BindingRestrictions.GetTypeRestriction(this.Expression, this.LimitType));
         }
 
         public override IEnumerable<string> GetDynamicMemberNames()

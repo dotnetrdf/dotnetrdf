@@ -35,6 +35,10 @@
     <Compile Include="Dynamic\DynamicGraph.cs" />
     <Compile Include="Dynamic\DynamicHelper.cs" />
     <Compile Include="Dynamic\DynamicNode.cs" />
+    <Compile Include="Dynamic\DynamicNode.NodeDictionary.cs" />
+    <Compile Include="Dynamic\DynamicNode.Dictionary.cs" />
+    <Compile Include="Dynamic\DynamicNode.ObjectDictionary.cs" />
+    <Compile Include="Dynamic\DynamicNode.UriDictionary.cs" />
     <Compile Include="Dynamic\DynamicObjectCollection.cs" />
     <Compile Include="Dynamic\IDynamicObject.cs" />
     <Compile Include="Dynamic\MetaDynamic.cs" />
@@ -59,7 +63,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Dynamic\DynamicNode.Dictionary.cs" />
+    <Compile Include="Dynamic\DynamicNode.StringDictionary.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
