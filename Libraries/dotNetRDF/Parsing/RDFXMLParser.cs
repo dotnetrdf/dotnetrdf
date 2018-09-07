@@ -539,7 +539,7 @@ namespace VDS.RDF.Parsing
             if (_traceparsing) ProductionTracePartial(element);
             // Start a new namespace scope
             ApplyNamespaces(context, element);
-            if (!RdfXmlSpecsHelper.IsNodeElementUri(element.QName))
+            if (!RdfXmlSpecsHelper.IsNodeElementUri(context.Namespaces.GetNamespaceUri(element.Namespace), element.LocalName))
             {
                 throw ParserHelper.Error("A Node Element was encountered with an invalid URI '" + element.QName + "' \nCore Syntax Terms, Old Syntax Terms and rdf:li cannot be used as Node Element URIs", "Node Element", element);
             }
@@ -549,7 +549,7 @@ namespace VDS.RDF.Parsing
             String ID = String.Empty;
             foreach (AttributeEvent attr in element.Attributes)
             {
-                if (RdfXmlSpecsHelper.IsIDAttribute(attr))
+                if (RdfXmlSpecsHelper.IsIDAttribute(attr, context.Namespaces))
                 {
                     ID = attr.Value;
                     limitedAttributesFound++;
@@ -557,7 +557,7 @@ namespace VDS.RDF.Parsing
                     // Set the Subject
                     element.Subject = new UriReferenceEvent("#" + attr.Value, attr.SourceXml);
                 }
-                else if (RdfXmlSpecsHelper.IsNodeIDAttribute(attr))
+                else if (RdfXmlSpecsHelper.IsNodeIDAttribute(attr, context.Namespaces))
                 {
                     limitedAttributesFound++;
 
@@ -570,14 +570,14 @@ namespace VDS.RDF.Parsing
                     // Set the Subject
                     element.Subject = new BlankNodeIDEvent(attr.Value, attr.SourceXml);
                 }
-                else if (RdfXmlSpecsHelper.IsAboutAttribute(attr))
+                else if (RdfXmlSpecsHelper.IsAboutAttribute(attr, context.Namespaces))
                 {
                     limitedAttributesFound++;
 
                     // Set the Subject
                     element.Subject = new UriReferenceEvent(attr.Value, attr.SourceXml);
                 }
-                else if (RdfXmlSpecsHelper.IsPropertyAttribute(attr))
+                else if (RdfXmlSpecsHelper.IsPropertyAttribute(attr, context.Namespaces))
                 {
                     // Don't need to do anything here yet
                 }
@@ -656,7 +656,7 @@ namespace VDS.RDF.Parsing
             // Go back over Attributes looking for property attributes
             foreach (AttributeEvent attr in element.Attributes)
             {
-                if (RdfXmlSpecsHelper.IsPropertyAttribute(attr))
+                if (RdfXmlSpecsHelper.IsPropertyAttribute(attr, context.Namespaces))
                 {
                     if (attr.Namespace.Equals(NamespaceMapper.RDF) && attr.LocalName.Equals("type"))
                     //if (attr.QName.Equals("rdf:type"))
@@ -784,17 +784,17 @@ namespace VDS.RDF.Parsing
 
             // Start a new namespace scope
             ApplyNamespaces(context, element);
-            if (!RdfXmlSpecsHelper.IsPropertyElementURI(element.QName))
+            if (!RdfXmlSpecsHelper.IsPropertyElement(element, context.Namespaces))
             {
                 // Invalid Uri
                 throw ParserHelper.Error("A Property Element was encountered with an invalid URI '" + element.QName + "'\nCore Syntax Terms, Old Syntax Terms and rdf:Description cannot be used as Property Element URIs", "PropertyElement", element);
             }
 
             // List Expansion
-            if (element.Namespace.Equals(NamespaceMapper.RDF) && element.LocalName.Equals("li"))
+            if (RdfXmlSpecsHelper.IsLiElement(element, context.Namespaces))
             {
-                UriReferenceEvent u = ListExpand(parent);
-                element.SetUri(u);
+                var u = ListExpand(parent, context.Namespaces);
+                element.SetUri(u, context.Namespaces);
             }
 
             // Need to select what to do based on the Type of Property Element
@@ -894,7 +894,7 @@ namespace VDS.RDF.Parsing
             }
             else if (element.Attributes.Count == 1)
             {
-                if (!RdfXmlSpecsHelper.IsIDAttribute(element.Attributes.First()))
+                if (!RdfXmlSpecsHelper.IsIDAttribute(element.Attributes.First(), context.Namespaces))
                 {
                     throw ParserHelper.Error("A Resource Property Element was encountered with a single attribute which was not rdf:ID, only rdf:ID is permitted", element);
                 }
@@ -1022,10 +1022,10 @@ namespace VDS.RDF.Parsing
                 // Only rdf:ID and rdf:datatype allowed
                 foreach (AttributeEvent a in element.Attributes)
                 {
-                    if (RdfXmlSpecsHelper.IsIDAttribute(a)) {
+                    if (RdfXmlSpecsHelper.IsIDAttribute(a, context.Namespaces)) {
                         ID = "#" + a.Value;
                     }
-                    else if (RdfXmlSpecsHelper.IsDataTypeAttribute(a))
+                    else if (RdfXmlSpecsHelper.IsDataTypeAttribute(a, context.Namespaces))
                     {
                         datatype = a.Value;
                     } 
@@ -1128,11 +1128,11 @@ namespace VDS.RDF.Parsing
                 // Check the attributes that do exist
                 foreach (AttributeEvent a in element.Attributes)
                 {
-                    if (RdfXmlSpecsHelper.IsIDAttribute(a))
+                    if (RdfXmlSpecsHelper.IsIDAttribute(a, context.Namespaces))
                     {
                         ID = "#" + a.Value;
                     }
-                    else if (a.Namespace.Equals(NamespaceMapper.RDF) && a.LocalName.Equals("parseType"))
+                    else if (RdfXmlSpecsHelper.IsParseTypeAttribute(a, context.Namespaces))
                     {
                         // OK
                     }
@@ -1232,11 +1232,11 @@ namespace VDS.RDF.Parsing
                 // Check the attributes that do exist
                 foreach (AttributeEvent a in element.Attributes)
                 {
-                    if (RdfXmlSpecsHelper.IsIDAttribute(a))
+                    if (RdfXmlSpecsHelper.IsIDAttribute(a, context.Namespaces))
                     {
                         ID = "#" + a.Value;
                     }
-                    else if (a.Namespace.Equals(NamespaceMapper.RDF) && a.LocalName.Equals("parseType"))
+                    else if (RdfXmlSpecsHelper.IsParseTypeAttribute(a, context.Namespaces))
                     {
                         // OK
                     }
@@ -1293,15 +1293,16 @@ namespace VDS.RDF.Parsing
                 IEventQueue<IRdfXmlEvent> subEvents = new EventQueue<IRdfXmlEvent>();
 
                 // Create an rdf:Description event as the container
-                ElementEvent descrip = new ElementEvent("rdf:Description", element.BaseUri, String.Empty);
-                descrip.Subject = new BlankNodeIDEvent(String.Empty);
+                var prefix = context.Namespaces.GetPrefix(new Uri(NamespaceMapper.RDF));
+                var descrip = new ElementEvent(prefix+":Description", element.BaseUri, string.Empty);
+                descrip.Subject = new BlankNodeIDEvent(string.Empty);
                 descrip.SubjectNode = obj;
                 subEvents.Enqueue(descrip);
 
                 // Add the current element we were looking at
                 subEvents.Enqueue(next);
 
-                // Add rest of events in list (exceot the last)
+                // Add rest of events in list (except the last)
                 while (eventlist.Count > 1)
                 {
                     subEvents.Enqueue(eventlist.Dequeue());
@@ -1366,11 +1367,11 @@ namespace VDS.RDF.Parsing
                 // Check the attributes that do exist
                 foreach (AttributeEvent a in element.Attributes)
                 {
-                    if (RdfXmlSpecsHelper.IsIDAttribute(a))
+                    if (RdfXmlSpecsHelper.IsIDAttribute(a, context.Namespaces))
                     {
                         ID = "#" + a.Value;
                     }
-                    else if (a.Namespace.Equals(NamespaceMapper.RDF) && a.LocalName.Equals("parseType"))
+                    else if (RdfXmlSpecsHelper.IsParseTypeAttribute(a, context.Namespaces))
                     {
                         // OK
                     }
@@ -1541,7 +1542,7 @@ namespace VDS.RDF.Parsing
             ElementEvent parentEl;
 
             // Are there any attributes OR Only a rdf:ID attribute?
-            if (element.Attributes.Count == 0 || (element.Attributes.Count == 1 && RdfXmlSpecsHelper.IsIDAttribute(element.Attributes[0])))
+            if (element.Attributes.Count == 0 || (element.Attributes.Count == 1 && RdfXmlSpecsHelper.IsIDAttribute(element.Attributes[0], context.Namespaces)))
             {
                 // No Attributes/Only rdf:ID
 
@@ -1579,7 +1580,7 @@ namespace VDS.RDF.Parsing
                 }
 
             }
-            else if (element.Attributes.Count > 0 && element.Attributes.Where(a => RdfXmlSpecsHelper.IsDataTypeAttribute(a)).Count() == 1)
+            else if (element.Attributes.Count > 0 && element.Attributes.Where(a => RdfXmlSpecsHelper.IsDataTypeAttribute(a, context.Namespaces)).Count() == 1)
             {
                 // Should be processed as a Typed Literal Event instead
                 EventQueue<IRdfXmlEvent> temp = new EventQueue<IRdfXmlEvent>();
@@ -1599,13 +1600,13 @@ namespace VDS.RDF.Parsing
                 int limitedAttributes = 0;
                 foreach (AttributeEvent a in element.Attributes)
                 {
-                    if (RdfXmlSpecsHelper.IsResourceAttribute(a))
+                    if (RdfXmlSpecsHelper.IsResourceAttribute(a, context.Namespaces))
                     {
                         // An rdf:resource attribute so a Uri Reference
                         res = new UriReferenceEvent(a.Value, a.SourceXml);
                         limitedAttributes++;
                     }
-                    else if (RdfXmlSpecsHelper.IsNodeIDAttribute(a))
+                    else if (RdfXmlSpecsHelper.IsNodeIDAttribute(a, context.Namespaces))
                     {
                         // An rdf:nodeID attribute so a Blank Node
 
@@ -1618,7 +1619,7 @@ namespace VDS.RDF.Parsing
                         res = new BlankNodeIDEvent(a.Value, a.SourceXml);
                         limitedAttributes++;
                     }
-                    else if (RdfXmlSpecsHelper.IsIDAttribute(a))
+                    else if (RdfXmlSpecsHelper.IsIDAttribute(a, context.Namespaces))
                     {
                         // Set the ID for later use in reification
                         ID = "#" + a.Value;
@@ -1688,7 +1689,7 @@ namespace VDS.RDF.Parsing
                 // Process the rest of the Attributes
                 foreach (AttributeEvent a in element.Attributes)
                 {
-                    if (a.QName.Equals("rdf:type"))
+                    if (RdfXmlSpecsHelper.IsTypeAttribute(a, context.Namespaces))
                     {
                         // A Property Attribute giving a Type
 
@@ -1699,7 +1700,7 @@ namespace VDS.RDF.Parsing
 
                         if (!context.Handler.HandleTriple(new Triple(parentEl.SubjectNode, pred, obj))) ParserHelper.Stop();
                     }
-                    else if (RdfXmlSpecsHelper.IsPropertyAttribute(a))
+                    else if (RdfXmlSpecsHelper.IsPropertyAttribute(a, context.Namespaces))
                     {
                         // A Property Attribute
 
@@ -1727,7 +1728,7 @@ namespace VDS.RDF.Parsing
                             if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
                         }
                     }
-                    else if (RdfXmlSpecsHelper.IsIDAttribute(a) || RdfXmlSpecsHelper.IsNodeIDAttribute(a) || RdfXmlSpecsHelper.IsResourceAttribute(a))
+                    else if (RdfXmlSpecsHelper.IsIDAttribute(a, context.Namespaces) || RdfXmlSpecsHelper.IsNodeIDAttribute(a, context.Namespaces) || RdfXmlSpecsHelper.IsResourceAttribute(a, context.Namespaces))
                     {
                         // These have already been processed
                         // We test for them so that we can then throw ParserHelper.Errors in the final case for unexpected attributes
@@ -1856,15 +1857,16 @@ namespace VDS.RDF.Parsing
         /// <param name="evt">Element to apply List Expansion to</param>
         /// <returns>Uri Reference for the List Item</returns>
         /// <remarks>List Expansion only works on Element Events</remarks>
-        private UriReferenceEvent ListExpand(IRdfXmlEvent evt)
+        private UriReferenceEvent ListExpand(IRdfXmlEvent evt, INamespaceMapper nsMapper)
         {
             if (evt is ElementEvent)
             {
                 // Cast to an ElementEvent
-                ElementEvent e = (ElementEvent)evt;
+                var e = (ElementEvent)evt;
 
+                var nsPrefix = nsMapper.GetPrefix(new Uri(NamespaceMapper.RDF));
                 // Form a new Uri Reference
-                UriReferenceEvent u = new UriReferenceEvent("rdf:_" + e.ListCounter, String.Empty);
+                var u = new UriReferenceEvent(nsPrefix + ":_" + e.ListCounter, string.Empty);
 
                 // Increment the List Counter
                 e.ListCounter = e.ListCounter + 1;

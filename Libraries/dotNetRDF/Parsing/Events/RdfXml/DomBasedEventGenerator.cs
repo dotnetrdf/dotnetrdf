@@ -26,6 +26,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using VDS.RDF.Parsing.Contexts;
 
@@ -303,7 +304,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                 {
                     // Ignore other Reserved XML Names
                 }
-                else if (attr.Name == "rdf:parseType" && attr.Value == "Literal")
+                else if (RdfXmlSpecsHelper.IsRdfNamespace(attr.NamespaceURI) && attr.LocalName == "parseType" && attr.Value == "Literal")
                 {
                     // Literal Parse Type
                     parseTypeLiteral = true;
@@ -315,7 +316,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                     // Set ParseType property correctly
                     element.ParseType = RdfXmlParseType.Literal;
                 }
-                else if (attr.Name == "rdf:parseType")
+                else if (RdfXmlSpecsHelper.IsRdfNamespace(attr.NamespaceURI) && attr.LocalName == "parseType")
                 {
                     // Some other Parse Type
 
@@ -355,12 +356,12 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             foreach (AttributeEvent a in element.Attributes)
             {
                 // Namespace Confusion should only apply to Attributes without a Namespace specified
-                if (a.Namespace.Equals(String.Empty))
+                if (a.Namespace.Equals(string.Empty) && element.NamespaceAttributes.All(na => na.Prefix != string.Empty) && !context.Namespaces.HasNamespace(string.Empty))
                 {
                     if (RdfXmlSpecsHelper.IsAmbigiousAttributeName(a.LocalName))
                     {
                         // Can't use any of the RDF terms that mandate the rdf: prefix without it
-                        throw ParserHelper.Error("An Attribute with an ambigious name '" + a.LocalName + "' was encountered.  The following attribute names MUST have the rdf: prefix - about, aboutEach, ID, bagID, type, resource, parseType", element);
+                        throw ParserHelper.Error("An Attribute with an ambiguous name '" + a.LocalName + "' was encountered.  The following attribute names MUST have the rdf: prefix - about, aboutEach, ID, bagID, type, resource, parseType", element);
                     }
                 }
 

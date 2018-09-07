@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 
 namespace VDS.RDF.Parsing.Events.RdfXml
@@ -316,6 +317,11 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             }
             else
             {
+                if (string.IsNullOrEmpty(_reader.NamespaceURI) &&
+                    RdfXmlSpecsHelper.IsAmbigiousAttributeName(_reader.LocalName))
+                {
+                    throw new RdfParseException("An Attribute with an ambiguous name '" + _reader.LocalName + "' was encountered.  The following attribute names MUST have the rdf: prefix - about, aboutEach, ID, bagID, type, resource, parseType");
+                }
                 // Normal attribute
                 return new AttributeEvent(_reader.Name, _reader.Value, _reader.Value, GetPosition());
             }
@@ -348,7 +354,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                     else if (attr is ParseTypeAttributeEvent)
                     {
                         el.ParseType = ((ParseTypeAttributeEvent)attr).ParseType;
-                        el.Attributes.Add(new AttributeEvent( _reader.LocalName, _reader.NamespaceURI, _reader.Value, _reader.Value, GetPosition()));
+                        el.Attributes.Add(new AttributeEvent( _reader.LocalName, _reader.Prefix, _reader.Value, _reader.Value, GetPosition()));
                     }
                     else if (attr is XmlBaseAttributeEvent)
                     {
@@ -361,6 +367,8 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             // Validate generated Attributes for Namespace Confusion and URIRef encoding
             foreach (AttributeEvent a in el.Attributes)
             {
+                // KA - Cannot perform ambiguous attribute verification without the current element's namespace map which is not available here
+                /*
                 // Namespace Confusion should only apply to Attributes without a Namespace specified
                 if (a.Namespace.Equals(String.Empty))
                 {
@@ -370,7 +378,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                         throw new RdfParseException("An Attribute with an ambigious name '" + a.LocalName + "' was encountered.  The following attribute names MUST have the rdf: prefix - about, aboutEach, ID, bagID, type, resource, parseType");
                     }
                 }
-
+                */
                 // URIRef encoding check
                 if (!RdfXmlSpecsHelper.IsValidUriRefEncoding(a.Value))
                 {

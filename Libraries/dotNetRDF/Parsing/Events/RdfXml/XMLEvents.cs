@@ -413,6 +413,28 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         }
 
         /// <summary>
+        /// Method which sets the Uri for this Element Event
+        /// </summary>
+        /// <param name="u">Uri Reference to set Uri from</param>
+        /// <param name="nsMapper">Namespace prefix mappings to use for resolving the QName of this element event</param>
+        /// <remarks>This can only be used on Elements which are rdf:li and thus need expanding into actual list elements according to List Expansion rules.  Attempting to set the Uri on any other Element Event will cause an Error message.</remarks>
+        public void SetUri(UriReferenceEvent u, INamespaceMapper nsMapper)
+        {
+            if (RdfXmlSpecsHelper.IsLiElement(this, nsMapper))
+            {
+                // Split the QName into Namespace and Local Name
+                String qname = u.Identifier;
+                String[] parts = qname.Split(':');
+                _namespace = parts[0];
+                _localname = parts[1];
+            }
+            else
+            {
+                throw new RdfParseException("It is forbidden to change the URI of an Element Event unless it is a rdf:li Element and thus needs expanding to the form rdf:_X according to List Expansion rules");
+            }
+        }
+
+        /// <summary>
         /// Gets the String representation of the Event
         /// </summary>
         /// <returns></returns>

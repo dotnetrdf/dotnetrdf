@@ -203,8 +203,8 @@ namespace VDS.RDF.Parsing
 	    [Fact]
 	    public void EmptySameDocumentReferenceResolvesAgainstUriPartOfBaseUri()
 	    {
-	        var rdfXml1 = "<rdf:RDF xml:base='http://example.org#fragment' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:eg='http://example.org/'><eg:type rdf:about='' /></rdf:RDF>";
-	        var rdfXml2 = "<rdf:RDF xml:base='http://example.org' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:eg='http://example.org/'><eg:type rdf:about='' /></rdf:RDF>";
+	        const string rdfXml1 = "<rdf:RDF xml:base='http://example.org#fragment' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:eg='http://example.org/'><eg:type rdf:about='' /></rdf:RDF>";
+	        const string rdfXml2 = "<rdf:RDF xml:base='http://example.org' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:eg='http://example.org/'><eg:type rdf:about='' /></rdf:RDF>";
 
 	        var parser = new RdfXmlParser();
 
@@ -222,10 +222,9 @@ namespace VDS.RDF.Parsing
 	    [Fact]
 	    public void ItExpandsRdfListElementsRegardlessOfNamespacePrefix()
 	    {
-	        var rdfXml1 = "<RDF xmlns='http://www.w3.org/1999/02/22-rdf-syntax-ns#'><Seq><li>bar</li></Seq></RDF>";
-	        var rdfXml2 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'><rdf:Seq><rdf:li>bar</rdf:li></rdf:Seq></rdf:RDF>";
-	        var rdfXml3 =
-	            "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'><rdf:Seq><foo:li xmlns:foo='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>bar</foo:li></rdf:Seq></rdf:RDF>";
+	        const string rdfXml1 = "<RDF xmlns='http://www.w3.org/1999/02/22-rdf-syntax-ns#'><Seq><li>bar</li></Seq></RDF>";
+	        const string rdfXml2 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'><rdf:Seq><rdf:li>bar</rdf:li></rdf:Seq></rdf:RDF>";
+	        const string rdfXml3 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'><rdf:Seq><foo:li xmlns:foo='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>bar</foo:li></rdf:Seq></rdf:RDF>";
 
             var parser = new RdfXmlParser();
 	        var graph1 = new Graph();
@@ -244,14 +243,17 @@ namespace VDS.RDF.Parsing
             Assert.True(diff13.AreEqual);
         }
 
-        [Fact]
-	    public void ItHandlesRdfTypeAttributesRegardlessOfNamespacePrefix()
+	    
+        [Theory]
+        [InlineData(RdfXmlParserMode.Streaming)]
+        [InlineData(RdfXmlParserMode.DOM)]
+	    public void ItHandlesRdfTypeAttributesRegardlessOfNamespacePrefix(RdfXmlParserMode parserMode)
 	    {
-	        var rdfXml1 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:eg='http://example.org/'><eg:Example rdf:about='http://example.org/#us'><rdf:type rdf:Resource='http://example.org/SomeType'/></eg:Example></rdf:RDF>";
-	        var rdfXml2 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:eg='http://example.org/'><eg:Example rdf:about='http://example.org/#us'><eg:type  rdf:Resource='http://example.org/SomeType' xmlns:eg='http://www.w3.org/1999/02/22-rdf-syntax-ns#'/></eg:Example></rdf:RDF>";
-	        var rdfXml3 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:eg='http://example.org/'><eg:Example rdf:about='http://example.org/#us'><type     rdf:Resource='http://example.org/SomeType' xmlns='http://www.w3.org/1999/02/22-rdf-syntax-ns#' /></eg:Example></rdf:RDF>";
+	        const string rdfXml1 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:eg='http://example.org/'><eg:Example rdf:about='http://example.org/#us'><rdf:type rdf:Resource='http://example.org/SomeType'/></eg:Example></rdf:RDF>";
+	        const string rdfXml2 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:eg='http://example.org/'><eg:Example rdf:about='http://example.org/#us'><eg:type  rdf:Resource='http://example.org/SomeType' xmlns:eg='http://www.w3.org/1999/02/22-rdf-syntax-ns#'/></eg:Example></rdf:RDF>";
+	        const string rdfXml3 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:eg='http://example.org/'><eg:Example rdf:about='http://example.org/#us'><type     rdf:Resource='http://example.org/SomeType' xmlns='http://www.w3.org/1999/02/22-rdf-syntax-ns#' /></eg:Example></rdf:RDF>";
 
-            var parser = new RdfXmlParser();
+            var parser = new RdfXmlParser(parserMode);
 
 	        var graph1 = new Graph();
 	        graph1.LoadFromString(rdfXml1, parser);
@@ -269,13 +271,15 @@ namespace VDS.RDF.Parsing
 	        Assert.True(diff13.AreEqual);
         }
 
-        [Fact]
-        public void ItHandlesRdfParseTypeRegardlessOfNamespacePrefix()
+	    [Theory]
+	    [InlineData(RdfXmlParserMode.Streaming)]
+	    [InlineData(RdfXmlParserMode.DOM)]
+        public void ItHandlesRdfParseTypeLiteralRegardlessOfNamespacePrefix(RdfXmlParserMode parserMode)
         {
-            var rdfXml1 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:eg='http://example.org/'><eg:Example rdf:about='http://example.org/#us'><eg:prop rdf:parseType='Literal'/><eg:Value /></eg:Example></rdf:RDF>";
-            var rdfXml2 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:eg='http://example.org/'><eg:Example rdf:about='http://example.org/#us'><eg:prop  xx:parseType='Literal' xmlns:xx='http://www.w3.org/1999/02/22-rdf-syntax-ns#'/><eg:Value /></eg:Example></rdf:RDF>";
+            const string rdfXml1 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:eg='http://example.org/'><eg:Example rdf:about='http://example.org/#us'><eg:prop rdf:parseType='Literal'/><eg:Value /></eg:Example></rdf:RDF>";
+            const string rdfXml2 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:eg='http://example.org/'><eg:Example rdf:about='http://example.org/#us'><eg:prop  xx:parseType='Literal' xmlns:xx='http://www.w3.org/1999/02/22-rdf-syntax-ns#'/><eg:Value /></eg:Example></rdf:RDF>";
 
-            var parser = new RdfXmlParser();
+            var parser = new RdfXmlParser(parserMode);
 
             var graph1 = new Graph();
             graph1.LoadFromString(rdfXml1, parser);
@@ -288,30 +292,133 @@ namespace VDS.RDF.Parsing
             Assert.True(diff12.AreEqual);
         }
 
-	    [Fact]
-	    public void ItHandlesRdfDescriptionRegardessOfNamespacePrefix()
+	    [Theory]
+	    [InlineData(RdfXmlParserMode.Streaming)]
+	    [InlineData(RdfXmlParserMode.DOM)]
+	    public void ItHandlesRdfParseTypeResourceRegardlessOfNamespacePrefix(RdfXmlParserMode parserMode)
 	    {
-	        var rdfXml1 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:ex='http://example.org/'><rdf:Description rdf:about='http://example.org/#us'><ex:property rdf:Resource='http://example.org/object'/></rdf:Description></rdf:RDF>";
-	        var rdfXml2 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:ex='http://example.org/'><foo:Description rdf:about='http://example.org/#us' xmlns:foo='http://www.w3.org/1999/02/22-rdf-syntax-ns#'><ex:property rdf:Resource='http://example.org/object' xmlns:ex='http://example.org/'/></foo:Description></rdf:RDF>";
-	        var rdfXml3 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:ex='http://example.org/'><Description     rdf:about='http://example.org/#us' xmlns='http://www.w3.org/1999/02/22-rdf-syntax-ns#'><ex:property rdf:Resource='http://example.org/object'/></Description></rdf:RDF>";
+	        const string rdfXml1 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:eg='http://example.org/'><rdf:Description rdf:about='http://example.org/#us'><eg:prop rdf:parseType='Resource'><eg:value>ABC</eg:value></eg:prop></rdf:Description></rdf:RDF>";
+	        const string rdfXml2 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:eg='http://example.org/'><rdf:Description rdf:about='http://example.org/#us'><eg:prop  xx:parseType='Resource' xmlns:xx='http://www.w3.org/1999/02/22-rdf-syntax-ns#'><eg:value>ABC</eg:value></eg:prop></rdf:Description></rdf:RDF>";
+	        var expectGraph = new Graph();
+	        var bnode = expectGraph.CreateBlankNode();
+	        expectGraph.Assert(
+	            expectGraph.CreateUriNode(new Uri("http://example.org/#us")),
+	            expectGraph.CreateUriNode(new Uri("http://example.org/prop")),
+	            bnode);
+	        expectGraph.Assert(
+	            bnode,
+	            expectGraph.CreateUriNode(new Uri("http://example.org/value")),
+	            expectGraph.CreateLiteralNode("ABC"));
+            AssertGraphsAreEquivalent(parserMode, expectGraph, rdfXml1, rdfXml2);
+	    }
 
-	        var parser = new RdfXmlParser();
 
-	        var graph1 = new Graph();
-	        graph1.LoadFromString(rdfXml1, parser);
+	    [Theory]
+	    [InlineData(RdfXmlParserMode.Streaming)]
+	    [InlineData(RdfXmlParserMode.DOM)]
+	    public void ItHandlesRdfParseTypeCollectionRegardlessOfNamespacePrefix(RdfXmlParserMode parserMode)
+	    {
+	        const string rdfXml1 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:eg='http://example.org/'><rdf:Description rdf:about='http://example.org/#us'><eg:prop rdf:parseType='Collection'><rdf:Description rdf:about='http://example.org/1'/><rdf:Description rdf:about='http://example.org/2'/></eg:prop></rdf:Description></rdf:RDF>";
+	        const string rdfXml2 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:eg='http://example.org/'><rdf:Description rdf:about='http://example.org/#us'><eg:prop  xx:parseType='Collection' xmlns:xx='http://www.w3.org/1999/02/22-rdf-syntax-ns#'><rdf:Description rdf:about='http://example.org/1'/><rdf:Description rdf:about='http://example.org/2'/></eg:prop></rdf:Description></rdf:RDF>";
+	        var expectGraph = new Graph();
+	        var listNode1 = expectGraph.CreateBlankNode();
+	        var listNode2 = expectGraph.CreateBlankNode();
+	        var first = expectGraph.CreateUriNode(new Uri(NamespaceMapper.RDF + "first"));
+	        var rest = expectGraph.CreateUriNode(new Uri(NamespaceMapper.RDF + "rest"));
+	        var nil = expectGraph.CreateUriNode(new Uri(NamespaceMapper.RDF + "nil"));
+            expectGraph.Assert(
+	            expectGraph.CreateUriNode(new Uri("http://example.org/#us")),
+	            expectGraph.CreateUriNode(new Uri("http://example.org/prop")),
+	            listNode1);
+	        expectGraph.Assert(listNode1, first, expectGraph.CreateUriNode(new Uri("http://example.org/1")));
+            expectGraph.Assert(listNode1, rest, listNode2);
+	        expectGraph.Assert(listNode2, first, expectGraph.CreateUriNode(new Uri("http://example.org/2")));
+	        expectGraph.Assert(listNode2, rest, nil);
+	        AssertGraphsAreEquivalent(parserMode, expectGraph, rdfXml1, rdfXml2);
+	    }
 
-	        var graph2 = new Graph();
-	        graph2.LoadFromString(rdfXml2, parser);
-
-	        var graph3 = new Graph();
-	        graph3.LoadFromString(rdfXml3, parser);
-
-	        var diff12 = graph1.Difference(graph2);
-	        var diff13 = graph1.Difference(graph3);
-
-	        Assert.True(diff12.AreEqual);
-	        Assert.True(diff13.AreEqual);
-
+        [Theory]
+        [InlineData(RdfXmlParserMode.Streaming)]
+        [InlineData(RdfXmlParserMode.DOM)]
+        public void ItHandlesRdfLiRegardlessOfNamespacePrefix(RdfXmlParserMode parserMode)
+        {
+            const string rdfXml1 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:eg='http://example.org/'><rdf:Seq rdf:about='http://example.org/#us'><rdf:li rdf:resource='http://example.org/1'/><rdf:li rdf:resource='http://example.org/2'/></rdf:Seq></rdf:RDF>";
+            const string rdfXml2 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:eg='http://example.org/'><xx:Seq rdf:about='http://example.org/#us' xmlns:xx='http://www.w3.org/1999/02/22-rdf-syntax-ns#'><xx:li rdf:resource='http://example.org/1'/><xx:li rdf:resource='http://example.org/2'/></xx:Seq></rdf:RDF>";
+            const string rdfXml3 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:eg='http://example.org/'><Seq rdf:about='http://example.org/#us' xmlns='http://www.w3.org/1999/02/22-rdf-syntax-ns#'><li rdf:resource='http://example.org/1'/><li rdf:resource='http://example.org/2'/></Seq></rdf:RDF>";
+            var expectGraph = new Graph();
+            var type = expectGraph.CreateUriNode(new Uri(NamespaceMapper.RDF + "type"));
+            var first = expectGraph.CreateUriNode(new Uri(NamespaceMapper.RDF + "_1"));
+            var second = expectGraph.CreateUriNode(new Uri(NamespaceMapper.RDF + "_2"));
+            var seq = expectGraph.CreateUriNode(new Uri(NamespaceMapper.RDF + "Seq"));
+            var coll = expectGraph.CreateUriNode(new Uri("http://example.org/#us"));
+            expectGraph.Assert(coll, type, seq);
+            expectGraph.Assert(coll, first, expectGraph.CreateUriNode(new Uri("http://example.org/1")));
+            expectGraph.Assert(coll, second, expectGraph.CreateUriNode(new Uri("http://example.org/2")));
+            AssertGraphsAreEquivalent(parserMode, expectGraph, rdfXml1, rdfXml2, rdfXml3);
         }
+
+        [Theory]
+	    [InlineData(RdfXmlParserMode.Streaming)]
+	    [InlineData(RdfXmlParserMode.DOM)]
+        public void ItHandlesRdfDescriptionAndRdfAboutRegardlessOfNamespacePrefix(RdfXmlParserMode parserMode)
+	    {
+	        const string rdfXml1 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:ex='http://example.org/'><rdf:Description rdf:about='http://example.org/#us'><ex:property rdf:resource='http://example.org/object'/></rdf:Description></rdf:RDF>";
+	        const string rdfXml2 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:ex='http://example.org/'><foo:Description foo:about='http://example.org/#us' xmlns:foo='http://www.w3.org/1999/02/22-rdf-syntax-ns#'><ex:property rdf:resource='http://example.org/object' xmlns:ex='http://example.org/'/></foo:Description></rdf:RDF>";
+	        var expectGraph = new Graph();
+	        expectGraph.Assert(
+	            expectGraph.CreateUriNode(new Uri("http://example.org/#us")),
+	            expectGraph.CreateUriNode(new Uri("http://example.org/property")),
+	            expectGraph.CreateUriNode(new Uri("http://example.org/object")));
+            AssertGraphsAreEquivalent(parserMode, expectGraph, rdfXml1, rdfXml2);
+        }
+
+	    [Theory]
+	    [InlineData(RdfXmlParserMode.Streaming)]
+	    [InlineData(RdfXmlParserMode.DOM)]
+	    public void ItHandlesRdfDatatypeAttributeRegardlessOfNamespacePrefix(RdfXmlParserMode parserMode)
+	    {
+	        const string rdfXml1 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:ex='http://example.org/'><rdf:Description rdf:about='http://example.org/#us'><ex:property rdf:datatype='http://www.w3.org/2001/XMLSchema#int'>123</ex:property></rdf:Description></rdf:RDF>";
+	        const string rdfXml2 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:ex='http://example.org/'><rdf:Description rdf:about='http://example.org/#us'><ex:property foo:datatype='http://www.w3.org/2001/XMLSchema#int' xmlns:foo='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>123</ex:property></rdf:Description></rdf:RDF>";
+	        const string rdfXml3 = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:ex='http://example.org/'><rdf:Description rdf:about='http://example.org/#us'><ex:property datatype='http://www.w3.org/2001/XMLSchema#int' xmlns='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>123</ex:property></rdf:Description></rdf:RDF>";
+	        var expectGraph = new Graph();
+	        expectGraph.Assert(
+	            expectGraph.CreateUriNode(new Uri("http://example.org/#us")),
+	            expectGraph.CreateUriNode(new Uri("http://example.org/property")),
+	            expectGraph.CreateLiteralNode("123", new Uri("http://www.w3.org/2001/XMLSchema#int")));
+	        AssertGraphsAreEquivalent(parserMode, expectGraph, rdfXml1, rdfXml2, rdfXml3);
+	    }
+
+	    [Theory]
+	    [InlineData(RdfXmlParserMode.Streaming)]
+	    [InlineData(RdfXmlParserMode.DOM)]
+	    public void ItHandlesRdfNodeIdAttributeRegardlessOfNamespacePrefix(RdfXmlParserMode parserMode)
+	    {
+	        const string rdfXml1 =
+	            "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:ex='http://example.org/'><rdf:Description rdf:nodeID='abc' ex:fullName='John Smith'/></rdf:RDF>";
+	        const string rdfXml2 =
+                "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:ex='http://example.org/'><foo:Description foo:nodeID='abc' ex:fullName='John Smith' xmlns:foo='http://www.w3.org/1999/02/22-rdf-syntax-ns#'/></rdf:RDF>";
+	        const string rdfXml3 =
+	            "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:ex='http://example.org/'><Description nodeID='abc' ex:fullName='John Smith' xmlns='http://www.w3.org/1999/02/22-rdf-syntax-ns#'/></rdf:RDF>";
+
+	        var expectGraph = new Graph();
+	        expectGraph.Assert(
+	            expectGraph.CreateBlankNode("abc"),
+	            expectGraph.CreateUriNode(new Uri("http://example.org/fullName")),
+	            expectGraph.CreateLiteralNode("John Smith"));
+            AssertGraphsAreEquivalent(parserMode, expectGraph, rdfXml1, rdfXml2, rdfXml3);
+	    }
+
+
+        private void AssertGraphsAreEquivalent(RdfXmlParserMode parserMode, IGraph expectGraph, params string[] testRdfXmlGraphs )
+	    {
+	        var parser = new RdfXmlParser(parserMode);
+	        for (var i = 0; i < testRdfXmlGraphs.Length; i++)
+	        {
+                var testGraph = new Graph();
+                testGraph.LoadFromString(testRdfXmlGraphs[i], parser);
+	            var diff = expectGraph.Difference(testGraph);
+                Assert.True(diff.AreEqual, "Expected test graph #" + i + " to match expect graph but found differences.");
+	        }
+	    }
     }
 }
