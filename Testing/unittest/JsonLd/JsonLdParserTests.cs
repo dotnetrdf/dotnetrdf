@@ -42,7 +42,7 @@ namespace VDS.RDF.JsonLd
                     x.Subject.As<IUriNode>().Uri.ToString().Equals("http://dbpedia.org/resource/John_Lennon") &&
                     x.Predicate.As<IUriNode>().Uri.ToString().Equals("http://schema.org/birthDate") &&
                     x.Object.As<ILiteralNode>().Value.Equals("1940-10-09") &&
-                    x.Object.As<ILiteralNode>().DataType.ToString().Equals("http://www.w3.org/2001/XMLSchema#dateTime"));
+                    x.Object.As<ILiteralNode>().DataType.ToString().Equals("http://www.w3.org/2001/XMLSchema#date"));
             Assert.Contains(tStore.Triples, x =>
                     x.Subject.As<IUriNode>().Uri.ToString().Equals("http://dbpedia.org/resource/John_Lennon") &&
                     x.Predicate.As<IUriNode>().Uri.ToString().Equals("http://schema.org/spouse") &&
