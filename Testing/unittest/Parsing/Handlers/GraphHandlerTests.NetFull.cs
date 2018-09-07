@@ -37,7 +37,7 @@ namespace VDS.RDF.Parsing.Handlers
 {
     public partial class GraphHandlerTests
     {
-        [Fact]
+        [Fact(Skip="Replace test with a version that does not depend on an external service")]
         public void ParsingGraphHandlerImplicitBaseUriPropogation()
         {
             try
@@ -58,7 +58,7 @@ namespace VDS.RDF.Parsing.Handlers
             }
         }
 
-        [Fact]
+        [Fact(Skip = "Replace test with a version that does not depend on an external service")]
         public void ParsingGraphHandlerImplicitBaseUriPropogation2()
         {
             try
