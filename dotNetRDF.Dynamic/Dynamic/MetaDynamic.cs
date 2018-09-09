@@ -24,9 +24,7 @@
                         this.Expression,
                         this.RuntimeType),
                     "Item",
-                    Expression.Convert(
-                        Expression.Constant(binder.Name),
-                        typeof(string))));
+                    Expression.Constant(binder.Name, typeof(string))));
         }
 
         public override DynamicMetaObject BindSetIndex(SetIndexBinder binder, DynamicMetaObject[] indexes, DynamicMetaObject value)
@@ -43,9 +41,7 @@
                             this.Expression,
                             this.RuntimeType),
                         "Item",
-                        Expression.Convert(
-                            Expression.Constant(binder.Name),
-                            typeof(string))),
+                        Expression.Constant(binder.Name, typeof(string))),
                         value.Expression));
         }
 
