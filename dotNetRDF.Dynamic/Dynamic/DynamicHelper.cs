@@ -97,7 +97,7 @@
         {
             var nodeUri = node.Uri;
 
-            if (node.Graph.NamespaceMap.ReduceToQName(nodeUri.AbsoluteUri, out string qname))
+            if (node.Graph.NamespaceMap.ReduceToQName(nodeUri.AbsoluteUri, out var qname))
             {
                 return qname;
             }

@@ -31,7 +31,77 @@
             }
         }
 
-        public object this[object subject]
+        public object this[string subject]
+        {
+            get
+            {
+                if (subject == null)
+                {
+                    throw new ArgumentNullException("Can't work with null index", nameof(subject));
+                }
+
+                return this.GetDynamicNode(subject) ?? throw new Exception("index not found");
+            }
+            set
+            {
+                if (subject == null)
+                {
+                    throw new ArgumentNullException("Can't work with null index", nameof(subject));
+                }
+
+                var targetNode = this.GetDynamicNodeOrCreate(subject);
+
+                if (value == null)
+                {
+                    targetNode.Clear();
+                }
+                else
+                {
+                    foreach (DictionaryEntry entry in DynamicGraph.ConvertToDictionary(value))
+                    {
+                        // TODO: What if value is s a node? Will we get properties for it? Shouldn't.
+                        targetNode[entry.Key.ToString()] = entry.Value;
+                    }
+                }
+            }
+        }
+
+        public object this[Uri subject]
+        {
+            get
+            {
+                if (subject == null)
+                {
+                    throw new ArgumentNullException("Can't work with null index", nameof(subject));
+                }
+
+                return this.GetDynamicNode(subject) ?? throw new Exception("index not found");
+            }
+            set
+            {
+                if (subject == null)
+                {
+                    throw new ArgumentNullException("Can't work with null index", nameof(subject));
+                }
+
+                var targetNode = this.GetDynamicNodeOrCreate(subject);
+
+                if (value == null)
+                {
+                    targetNode.Clear();
+                }
+                else
+                {
+                    foreach (DictionaryEntry entry in DynamicGraph.ConvertToDictionary(value))
+                    {
+                        // TODO: What if value is s a node? Will we get properties for it? Shouldn't.
+                        targetNode[entry.Key.ToString()] = entry.Value;
+                    }
+                }
+            }
+        }
+
+        public object this[INode subject]
         {
             get
             {

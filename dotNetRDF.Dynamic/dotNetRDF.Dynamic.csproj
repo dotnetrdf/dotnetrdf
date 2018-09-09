@@ -37,7 +37,6 @@
     <Compile Include="Dynamic\DynamicNode.cs" />
     <Compile Include="Dynamic\DynamicNode.NodeDictionary.cs" />
     <Compile Include="Dynamic\DynamicNode.Dictionary.cs" />
-    <Compile Include="Dynamic\DynamicNode.ObjectDictionary.cs" />
     <Compile Include="Dynamic\DynamicNode.UriDictionary.cs" />
     <Compile Include="Dynamic\DynamicObjectCollection.cs" />
     <Compile Include="Dynamic\IDynamicObject.cs" />

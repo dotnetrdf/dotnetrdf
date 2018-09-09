@@ -1,10 +1,9 @@
 ﻿namespace Dynamic
 {
-    using Microsoft.CSharp.RuntimeBinder;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using VDS.RDF;
 
     [TestClass]
@@ -14,10 +13,7 @@
         [ExpectedException(typeof(InvalidOperationException))]
         public void Indexing_requires_base_uri_for_relative_uri()
         {
-            var g = new Graph();
-            g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
-
-            var dynamic_s = g.Triples.Single().Subject.AsDynamic();
+            var dynamic_s = new NodeFactory().CreateBlankNode().AsDynamic();
 
             var result = dynamic_s["p"];
         }
@@ -37,23 +33,20 @@
         {
             var dynamic_s = new NodeFactory().CreateBlankNode().AsDynamic();
 
-            var result = dynamic_s[null as INode];
+            var result = dynamic_s[null];
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void Indexing_requires_known_index_type()
         {
-            var g = new Graph();
-            g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
-
-            var dynamic_s = g.Triples.Single().Subject.AsDynamic();
+            var dynamic_s = new NodeFactory().CreateBlankNode().AsDynamic();
 
             var result = dynamic_s[0];
         }
 
         [TestMethod]
-        [ExpectedException(typeof(RuntimeBinderException))]
+        [ExpectedException(typeof(ArgumentException))]
         public void Indexing_requires_one_index()
         {
             var dynamic_s = new NodeFactory().CreateBlankNode().AsDynamic();
@@ -65,10 +58,7 @@
         [ExpectedException(typeof(FormatException))]
         public void Indexing_requires_valid_uri()
         {
-            var g = new Graph();
-            g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
-
-            var dynamic_s = g.Triples.Single().Subject.AsDynamic();
+            var dynamic_s = new NodeFactory().CreateBlankNode().AsDynamic();
 
             var result = dynamic_s["http:///"];
         }
@@ -243,7 +233,7 @@
         {
             var dynamic_s = new NodeFactory().CreateBlankNode().AsDynamic();
 
-            dynamic_s[null as INode] = null;
+            dynamic_s[null] = null;
         }
     }
 }

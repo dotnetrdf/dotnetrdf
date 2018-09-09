@@ -1,12 +1,12 @@
 ﻿namespace Dynamic
 {
-    using Microsoft.CSharp.RuntimeBinder;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using System.Collections.Generic;
     using System.Dynamic;
     using System.Linq;
     using System.Linq.Expressions;
+    using Microsoft.CSharp.RuntimeBinder;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using VDS.RDF;
     using VDS.RDF.Nodes;
 
@@ -53,8 +53,7 @@
         [ExpectedException(typeof(ArgumentNullException))]
         public void Cant_work_with_null_index()
         {
-            var g = GenerateSPOGraph();
-            var d = g.AsDynamic();
+            var d = new Graph().AsDynamic();
             var result = d[null];
         }
 
@@ -86,7 +85,7 @@
         [ExpectedException(typeof(ArgumentException))]
         public void Cant_set_index_without_readable_public_properties()
         {
-            var d = GenerateSPOGraph().AsDynamic(exampleBase);
+            var d = new Graph().AsDynamic(exampleBase);
 
             d["s"] = new { };
         }
@@ -259,28 +258,28 @@
         }
 
         [TestMethod]
-        [ExpectedException(typeof(RuntimeBinderException))]
+        [ExpectedException(typeof(ArgumentException))]
         public void Multidimensional_get_index_is_forbidden()
         {
-            var d = GenerateSPOGraph().AsDynamic();
+            var d = new Graph().AsDynamic();
 
-            var result = d[0, 0];
+            var result = d[null, null];
         }
 
         [TestMethod]
-        [ExpectedException(typeof(RuntimeBinderException))]
+        [ExpectedException(typeof(ArgumentException))]
         public void Multidimensional_set_index_is_forbidden()
         {
-            var d = GenerateSPOGraph().AsDynamic();
+            var d = new Graph().AsDynamic();
 
-            d[0, 0] = null;
+            d[null, null] = null;
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void Cant_get_index_with_unknown_type()
         {
-            var d = GenerateSPOGraph().AsDynamic();
+            var d = new Graph().AsDynamic();
 
             var result = d[0];
         }
@@ -451,7 +450,7 @@
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void Sett_index_requires_index()
+        public void Set_index_requires_index()
         {
             var d = new Graph().AsDynamic();
 
