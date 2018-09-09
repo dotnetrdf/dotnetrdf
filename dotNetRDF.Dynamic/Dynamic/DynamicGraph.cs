@@ -31,7 +31,7 @@
             }
         }
 
-        public object this[string subject]
+        private object this[string subject]
         {
             get
             {
@@ -66,7 +66,7 @@
             }
         }
 
-        public object this[Uri subject]
+        private object this[Uri subject]
         {
             get
             {
@@ -101,7 +101,7 @@
             }
         }
 
-        public object this[INode subject]
+        private object this[INode subject]
         {
             get
             {

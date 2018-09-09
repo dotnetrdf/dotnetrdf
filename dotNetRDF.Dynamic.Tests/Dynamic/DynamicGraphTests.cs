@@ -164,7 +164,7 @@
             var d = g.AsDynamic();
 
             var expected = g.Triples.First().Subject;
-            var actual = d[new Uri("<http://example.com/s>")];
+            var actual = d[new Uri("http://example.com/s")];
 
             Assert.AreEqual(expected, actual);
         }
@@ -317,7 +317,7 @@
             g.BaseUri = new Uri("http://example.com/");
             var d = g.AsDynamic();
 
-            var expected = exampleSubject;
+            var expected = g.Triples.SubjectNodes.Single();
             var actual = d.s;
 
             Assert.AreEqual(expected, actual);
