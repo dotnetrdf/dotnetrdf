@@ -10,7 +10,7 @@
     using VDS.RDF;
 
     // TODO: Remove subjectBaseUri in favour of just BaseUri?
-    public class DynamicGraph : WrapperGraph, IDynamicMetaObjectProvider, IDynamicObject
+    public partial class DynamicGraph : WrapperGraph, IDynamicMetaObjectProvider
     {
         private readonly Uri subjectBaseUri;
         private readonly Uri predicateBaseUri;
@@ -28,41 +28,6 @@
             get
             {
                 return this.predicateBaseUri ?? this.SubjectBaseUri;
-            }
-        }
-
-        private object this[string subject]
-        {
-            get
-            {
-                if (subject == null)
-                {
-                    throw new ArgumentNullException("Can't work with null index", nameof(subject));
-                }
-
-                return this.GetDynamicNode(subject) ?? throw new Exception("index not found");
-            }
-            set
-            {
-                if (subject == null)
-                {
-                    throw new ArgumentNullException("Can't work with null index", nameof(subject));
-                }
-
-                var targetNode = this.GetDynamicNodeOrCreate(subject);
-
-                if (value == null)
-                {
-                    targetNode.Clear();
-                }
-                else
-                {
-                    foreach (DictionaryEntry entry in DynamicGraph.ConvertToDictionary(value))
-                    {
-                        // TODO: What if value is s a node? Will we get properties for it? Shouldn't.
-                        targetNode[entry.Key.ToString()] = entry.Value;
-                    }
-                }
             }
         }
 
@@ -145,15 +110,6 @@
         DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)
         {
             return new MetaDynamic(parameter, this);
-        }
-
-        IEnumerable<string> IDynamicObject.GetDynamicMemberNames()
-        {
-            return DynamicHelper.ConvertToNames(
-                this.Triples
-                    .SubjectNodes
-                    .UriNodes(),
-                this.SubjectBaseUri);
         }
 
         private DynamicNode GetDynamicNode(object other)

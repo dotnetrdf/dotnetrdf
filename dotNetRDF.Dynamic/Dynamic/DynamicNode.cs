@@ -6,7 +6,7 @@
     using System.Linq.Expressions;
     using VDS.RDF;
 
-    public partial class DynamicNode : WrapperNode, IUriNode, IBlankNode, IDynamicMetaObjectProvider, IDynamicObject
+    public partial class DynamicNode : WrapperNode, IUriNode, IBlankNode, IDynamicMetaObjectProvider
     {
         private readonly Uri baseUri;
 
@@ -42,11 +42,6 @@
         DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)
         {
             return new MetaDynamic(parameter, this);
-        }
-
-        IEnumerable<string> IDynamicObject.GetDynamicMemberNames()
-        {
-            return this.Keys;
         }
     }
 }

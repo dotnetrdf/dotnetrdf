@@ -9,7 +9,7 @@
 
     internal class MetaDynamic : DynamicMetaObject
     {
-        internal MetaDynamic(Expression parameter, IDynamicObject value) : base(parameter, BindingRestrictions.Empty, value) { }
+        internal MetaDynamic(Expression parameter, object value) : base(parameter, BindingRestrictions.Empty, value) { }
 
         public override DynamicMetaObject BindGetIndex(GetIndexBinder binder, DynamicMetaObject[] indexes)
         {
@@ -50,7 +50,12 @@
 
         public override IEnumerable<string> GetDynamicMemberNames()
         {
-            return (this.Value as IDynamicObject).GetDynamicMemberNames();
+            if (this.Value is IDictionary<string, object> dictionary)
+            {
+                return dictionary.Keys;
+            }
+
+            return Enumerable.Empty<string>();
         }
 
         private DynamicMetaObject BindGetIndex(DynamicMetaObject[] indexes, Type type)
