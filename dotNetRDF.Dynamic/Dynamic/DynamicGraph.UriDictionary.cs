@@ -15,22 +15,22 @@
 
         ICollection<Uri> IDictionary<Uri, object>.Keys => this.Triples.SubjectNodes.UriNodes().Select(n => n.Uri).ToArray();
 
-        void IDictionary<Uri, object>.Add(Uri key, object value) => throw new NotImplementedException();
+        public void Add(Uri key, object value) => this.Add(DynamicHelper.Convert(key, this, this.SubjectBaseUri), value);
 
-        void ICollection<KeyValuePair<Uri, object>>.Add(KeyValuePair<Uri, object> item) => throw new NotImplementedException();
+        public void Add(KeyValuePair<Uri, object> item) => this.Add(item.Key, item.Value);
 
-        bool ICollection<KeyValuePair<Uri, object>>.Contains(KeyValuePair<Uri, object> item) => throw new NotImplementedException();
+        public bool Contains(KeyValuePair<Uri, object> item) => this.Contains(new KeyValuePair<INode, object>(DynamicHelper.Convert(item.Key, this, this.SubjectBaseUri), item.Value));
 
         public bool ContainsKey(Uri key) => this.ContainsKey(DynamicHelper.Convert(key, this, this.SubjectBaseUri));
 
-        void ICollection<KeyValuePair<Uri, object>>.CopyTo(KeyValuePair<Uri, object>[] array, int arrayIndex) => throw new NotImplementedException();
+        public void CopyTo(KeyValuePair<Uri, object>[] array, int arrayIndex) => throw new NotImplementedException();
 
         IEnumerator<KeyValuePair<Uri, object>> IEnumerable<KeyValuePair<Uri, object>>.GetEnumerator() => throw new NotImplementedException();
 
         public bool Remove(Uri key) => this.Remove(DynamicHelper.Convert(key, this, this.SubjectBaseUri));
 
-        bool ICollection<KeyValuePair<Uri, object>>.Remove(KeyValuePair<Uri, object> item) => throw new NotImplementedException();
+        public bool Remove(KeyValuePair<Uri, object> item) => this.Remove(new KeyValuePair<INode, object>(DynamicHelper.Convert(item.Key, this, this.SubjectBaseUri), item.Value));
 
-        bool IDictionary<Uri, object>.TryGetValue(Uri key, out object value) => throw new NotImplementedException();
+        public bool TryGetValue(Uri key, out object value) => this.TryGetValue(DynamicHelper.Convert(key, this, this.SubjectBaseUri), out value);
     }
 }

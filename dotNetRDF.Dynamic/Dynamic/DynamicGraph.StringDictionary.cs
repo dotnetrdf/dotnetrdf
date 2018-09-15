@@ -15,22 +15,22 @@
 
         ICollection<string> IDictionary<string, object>.Keys => this.Triples.SubjectNodes.UriNodes().Select(u => DynamicHelper.ConvertToName(u, this.SubjectBaseUri)).ToArray();
 
-        void IDictionary<string, object>.Add(string key, object value) => throw new NotImplementedException();
+        public void Add(string key, object value) => this.Add(DynamicHelper.Convert(key, this), value);
 
-        void ICollection<KeyValuePair<string, object>>.Add(KeyValuePair<string, object> item) => throw new NotImplementedException();
+        public void Add(KeyValuePair<string, object> item) => this.Add(item.Key, item.Value);
 
-        bool ICollection<KeyValuePair<string, object>>.Contains(KeyValuePair<string, object> item) => throw new NotImplementedException();
+        public bool Contains(KeyValuePair<string, object> item) => this.Contains(new KeyValuePair<Uri, object>(DynamicHelper.Convert(item.Key, this), item.Value));
 
-        bool IDictionary<string, object>.ContainsKey(string key) => throw new NotImplementedException();
+        public bool ContainsKey(string key) => this.ContainsKey(DynamicHelper.Convert(key, this));
 
-        void ICollection<KeyValuePair<string, object>>.CopyTo(KeyValuePair<string, object>[] array, int arrayIndex) => throw new NotImplementedException();
+        public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex) => throw new NotImplementedException();
 
         IEnumerator<KeyValuePair<string, object>> IEnumerable<KeyValuePair<string, object>>.GetEnumerator() => throw new NotImplementedException();
 
-        bool IDictionary<string, object>.Remove(string key) => throw new NotImplementedException();
+        public bool Remove(string key) => this.Remove(DynamicHelper.Convert(key, this));
 
-        bool ICollection<KeyValuePair<string, object>>.Remove(KeyValuePair<string, object> item) => throw new NotImplementedException();
+        public bool Remove(KeyValuePair<string, object> item) => this.Remove(new KeyValuePair<Uri, object>(DynamicHelper.Convert(item.Key, this), item.Value));
 
-        bool IDictionary<string, object>.TryGetValue(string key, out object value) => throw new NotImplementedException();
+        public bool TryGetValue(string key, out object value) => this.TryGetValue(DynamicHelper.Convert(key, this), out value);
     }
 }

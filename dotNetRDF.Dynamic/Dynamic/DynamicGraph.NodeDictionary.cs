@@ -64,13 +64,13 @@
             }
         }
 
-        void ICollection<KeyValuePair<INode, object>>.Add(KeyValuePair<INode, object> item) => this.Add(item.Key, item.Value);
+        public void Add(KeyValuePair<INode, object> item) => this.Add(item.Key, item.Value);
 
-        bool ICollection<KeyValuePair<INode, object>>.Contains(KeyValuePair<INode, object> item) => throw new NotImplementedException();
+        public bool Contains(KeyValuePair<INode, object> item) => throw new NotImplementedException();
 
         public bool ContainsKey(INode key) => this.Triples.SubjectNodes.Contains(key);
 
-        void ICollection<KeyValuePair<INode, object>>.CopyTo(KeyValuePair<INode, object>[] array, int arrayIndex) => throw new System.NotImplementedException();
+        public void CopyTo(KeyValuePair<INode, object>[] array, int arrayIndex) => throw new System.NotImplementedException();
 
         IEnumerator<KeyValuePair<INode, object>> IEnumerable<KeyValuePair<INode, object>>.GetEnumerator() => throw new System.NotImplementedException();
 
@@ -84,7 +84,7 @@
             return this.Retract(this.GetTriplesWithSubject(key).ToArray());
         }
 
-        bool ICollection<KeyValuePair<INode, object>>.Remove(KeyValuePair<INode, object> item) => throw new System.NotImplementedException();
+        public bool Remove(KeyValuePair<INode, object> item) => throw new NotImplementedException();
 
         public bool TryGetValue(INode key, out object value)
         {
