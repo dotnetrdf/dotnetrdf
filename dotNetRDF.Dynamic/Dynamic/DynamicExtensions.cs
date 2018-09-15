@@ -5,10 +5,7 @@
 
     public static class DynamicExtensions
     {
-        public static dynamic AsDynamic(this IGraph graph, Uri subjectBaseUri = null, Uri predicateBaseUri = null)
-        {
-            return new DynamicGraph(graph, subjectBaseUri, predicateBaseUri);
-        }
+        public static dynamic AsDynamic(this IGraph graph, Uri subjectBaseUri = null, Uri predicateBaseUri = null) => new DynamicGraph(graph, subjectBaseUri, predicateBaseUri);
 
         public static dynamic AsDynamic(this INode node, Uri baseUri = null)
         {

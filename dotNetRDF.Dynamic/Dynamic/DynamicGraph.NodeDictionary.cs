@@ -1,0 +1,101 @@
+﻿namespace Dynamic
+{
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
+    using VDS.RDF;
+
+    public partial class DynamicGraph : IDictionary<INode, object>
+    {
+        public object this[INode key]
+        {
+            get
+            {
+                if (key is null)
+                {
+                    throw new ArgumentNullException(nameof(key));
+                }
+
+                if (!this.TryGetValue(key, out var node))
+                {
+                    throw new KeyNotFoundException();
+                }
+
+                return node;
+            }
+            set
+            {
+                if (key is null)
+                {
+                    throw new ArgumentNullException("Can't work with null index", nameof(key));
+                }
+
+                this.Remove(key);
+
+                if (value is null)
+                {
+                    return;
+                }
+
+                this.Add(key, value);
+            }
+        }
+
+        ICollection<INode> IDictionary<INode, object>.Keys => this.Triples.SubjectNodes.UriNodes().ToArray();
+
+        public void Add(INode key, object value)
+        {
+            var targetNode = null as DynamicNode;
+            if (this.TryGetValue(key, out var node))
+            {
+                targetNode = (DynamicNode)node;
+            }
+            else
+            {
+                targetNode = key.AsDynamic(this.PredicateBaseUri) as DynamicNode;
+            }
+
+            // TODO: What if value is s a node? Will we get properties for it? Shouldn't.
+            foreach (DictionaryEntry entry in DynamicGraph.ConvertToDictionary(value))
+            {
+                // TODO: Handle key properly
+                targetNode[entry.Key.ToString()] = entry.Value;
+            }
+        }
+
+        void ICollection<KeyValuePair<INode, object>>.Add(KeyValuePair<INode, object> item) => this.Add(item.Key, item.Value);
+
+        bool ICollection<KeyValuePair<INode, object>>.Contains(KeyValuePair<INode, object> item) => throw new NotImplementedException();
+
+        public bool ContainsKey(INode key) => this.Triples.SubjectNodes.Contains(key);
+
+        void ICollection<KeyValuePair<INode, object>>.CopyTo(KeyValuePair<INode, object>[] array, int arrayIndex) => throw new System.NotImplementedException();
+
+        IEnumerator<KeyValuePair<INode, object>> IEnumerable<KeyValuePair<INode, object>>.GetEnumerator() => throw new System.NotImplementedException();
+
+        public bool Remove(INode key)
+        {
+            if (key is null)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
+            return this.Retract(this.GetTriplesWithSubject(key).ToArray());
+        }
+
+        bool ICollection<KeyValuePair<INode, object>>.Remove(KeyValuePair<INode, object> item) => throw new System.NotImplementedException();
+
+        public bool TryGetValue(INode key, out object value)
+        {
+            value = this.Triples
+                .SubjectNodes
+                .UriNodes()
+                .Where(node => node.Equals(key))
+                .Select(node => node.AsDynamic(this.PredicateBaseUri))
+                .SingleOrDefault();
+
+            return value != null;
+        }
+    }
+}

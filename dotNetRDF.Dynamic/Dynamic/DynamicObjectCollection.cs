@@ -17,60 +17,27 @@
             this.predicate = predicate;
         }
 
-        public int Count
-        {
-            get
-            {
-                return this.Get().Count();
-            }
-        }
+        public int Count => this.Get().Count();
 
-        public bool IsReadOnly
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool IsReadOnly => false;
 
-        public void Add(object item)
-        {
-            this.subject.Add(this.predicate, item);
-        }
+        public void Add(object item) => this.subject.Add(this.predicate, item);
 
-        public void Clear()
-        {
-            this.subject.Remove(this.predicate);
-        }
+        public void Clear() => this.subject.Remove(this.predicate);
 
-        public bool Contains(object item)
-        {
-            return this.subject.Contains(this.predicate, item);
-        }
+        public bool Contains(object item) => this.subject.Contains(this.predicate, item);
 
-        public void CopyTo(object[] array, int index)
-        {
-            this.Get().ToArray().CopyTo(array, index);
-        }
+        public void CopyTo(object[] array, int index) => this.Get().ToArray().CopyTo(array, index);
 
-        public IEnumerator<object> GetEnumerator()
-        {
-            return this.Get().GetEnumerator();
-        }
+        public IEnumerator<object> GetEnumerator() => this.Get().GetEnumerator();
 
-        public bool Remove(object item)
-        {
-            return this.subject.Remove(new KeyValuePair<INode, object>(this.predicate, item));
-        }
+        public bool Remove(object item) => this.subject.Remove(new KeyValuePair<INode, object>(this.predicate, item));
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
         private IEnumerable<object> Get()
         {
-            if (this.subject.Graph == null)
+            if (this.subject.Graph is null)
             {
                 throw new InvalidOperationException("graph missing");
             }

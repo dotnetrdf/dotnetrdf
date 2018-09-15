@@ -7,27 +7,30 @@
     using VDS.RDF;
     using VDS.RDF.Nodes;
 
-    partial class DynamicNode : IDictionary<INode, object>
+    public partial class DynamicNode : IDictionary<INode, object>
     {
         public object this[INode key]
         {
             get
             {
-                if (key == null)
+                if (key is null)
                 {
                     throw new ArgumentNullException(nameof(key));
                 }
 
-                if (this.Graph == null)
+                if (this.Graph is null)
                 {
                     throw new InvalidOperationException("Node must have graph");
                 }
+
+                // TODO: Throw KeyNotFoundException
+                // TODO: Use TryGetValue
 
                 return new DynamicObjectCollection(this, key);
             }
             set
             {
-                if (key == null)
+                if (key is null)
                 {
                     throw new ArgumentNullException(nameof(key));
                 }
@@ -37,23 +40,11 @@
             }
         }
 
-        ICollection<INode> IDictionary<INode, object>.Keys
-        {
-            get
-            {
-                return this.Graph.GetTriplesWithSubject(this).Select(t => t.Predicate).Distinct().ToArray();
-            }
-        }
+        ICollection<INode> IDictionary<INode, object>.Keys => this.Graph.GetTriplesWithSubject(this).Select(t => t.Predicate).Distinct().ToArray();
 
-        public void Add(INode key, object value)
-        {
-            this.Graph.Assert(this.ConvertToTriples(key, value));
-        }
+        public void Add(INode key, object value) => this.Graph.Assert(this.ConvertToTriples(key, value));
 
-        public void Add(KeyValuePair<INode, object> item)
-        {
-            this.Add(item.Key, item.Value);
-        }
+        public void Add(KeyValuePair<INode, object> item) => this.Add(item.Key, item.Value);
 
         public bool Contains(INode key, object value)
         {
@@ -62,30 +53,15 @@
             return this.Graph.GetTriplesWithSubjectPredicate(this, key).WithObject(objectNode).Any();
         }
 
-        public bool Contains(KeyValuePair<INode, object> item)
-        {
-            return this.Contains(item.Key, item.Value);
-        }
+        public bool Contains(KeyValuePair<INode, object> item) => this.Contains(item.Key, item.Value);
 
-        public bool ContainsKey(INode key)
-        {
-            return this.Graph.GetTriplesWithSubjectPredicate(this, key).Any();
-        }
+        public bool ContainsKey(INode key) => this.Graph.GetTriplesWithSubjectPredicate(this, key).Any();
 
-        public void CopyTo(KeyValuePair<INode, object>[] array, int arrayIndex)
-        {
-            (this as IEnumerable<KeyValuePair<INode, object>>).ToArray().CopyTo(array, arrayIndex);
-        }
+        public void CopyTo(KeyValuePair<INode, object>[] array, int arrayIndex) => (this as IEnumerable<KeyValuePair<INode, object>>).ToArray().CopyTo(array, arrayIndex);
 
-        IEnumerator<KeyValuePair<INode, object>> IEnumerable<KeyValuePair<INode, object>>.GetEnumerator()
-        {
-            return this.Graph.GetTriplesWithSubject(this).Select(t => t.Predicate).Distinct().ToDictionary(p => p, p => this[p]).GetEnumerator();
-        }
+        IEnumerator<KeyValuePair<INode, object>> IEnumerable<KeyValuePair<INode, object>>.GetEnumerator() => this.Graph.GetTriplesWithSubject(this).Select(t => t.Predicate).Distinct().ToDictionary(p => p, p => this[p]).GetEnumerator();
 
-        public bool Remove(INode key)
-        {
-            return this.Graph.Retract(this.Graph.GetTriplesWithSubjectPredicate(this, key).ToArray());
-        }
+        public bool Remove(INode key) => this.Graph.Retract(this.Graph.GetTriplesWithSubjectPredicate(this, key).ToArray());
 
         public bool Remove(INode key, object value)
         {
@@ -94,13 +70,12 @@
             return this.Graph.Retract(this.Graph.GetTriplesWithSubjectPredicate(this, key).WithObject(objectNode).ToArray());
         }
 
-        public bool Remove(KeyValuePair<INode, object> item)
-        {
-            return this.Remove(item.Key, item.Value);
-        }
+        public bool Remove(KeyValuePair<INode, object> item) => this.Remove(item.Key, item.Value);
 
         public bool TryGetValue(INode key, out object value)
         {
+            // TODO: Make independent of index
+
             var objects = this[key] as IEnumerable<object>;
 
             if (objects.Any())
@@ -115,7 +90,7 @@
 
         private IEnumerable<Triple> ConvertToTriples(INode predicateNode, object value)
         {
-            if (value == null)
+            if (value is null)
             {
                 yield break;
             }

@@ -1,57 +1,52 @@
 ﻿namespace Dynamic
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Text.RegularExpressions;
     using VDS.RDF;
     using VDS.RDF.Nodes;
 
     internal static class DynamicHelper
     {
-        internal static IUriNode ConvertToNode(object index, IGraph graph, Uri baseUri)
+        internal static Uri Convert(string key, IGraph graph)
         {
-            if (!(index is IUriNode indexNode))
+            if (!DynamicHelper.TryResolveQName(key, graph, out var uri))
             {
-                if (!(index is Uri indexUri))
+                if (!Uri.TryCreate(key, UriKind.RelativeOrAbsolute, out uri))
                 {
-                    if (!(index is string indexString))
-                    {
-                        throw new ArgumentException("Only IUriNode, Uri or string indices", "index");
-                    }
-
-                    if (!DynamicHelper.TryResolveQName(indexString, graph, out indexUri))
-                    {
-                        if (!Uri.TryCreate(indexString, UriKind.RelativeOrAbsolute, out indexUri))
-                        {
-                            throw new FormatException("Illegal Uri.");
-                        }
-                    }
+                    throw new FormatException("Illegal Uri.");
                 }
-
-                if (!indexUri.IsAbsoluteUri)
-                {
-                    if (baseUri == null)
-                    {
-                        throw new InvalidOperationException("Can't use relative uri index without baseUri.");
-                    }
-
-                    if (baseUri.AbsoluteUri.EndsWith("#"))
-                    {
-                        var builder = new UriBuilder(baseUri) { Fragment = indexUri.ToString() };
-
-                        indexUri = builder.Uri;
-                    }
-                    else
-                    {
-                        indexUri = new Uri(baseUri, indexUri);
-                    }
-                }
-
-                indexNode = graph.CreateUriNode(indexUri);
             }
 
-            return indexNode;
+            return uri;
+        }
+
+        internal static INode Convert(Uri key, IGraph graph, Uri baseUri)
+        {
+            if (graph is null)
+            {
+                throw new InvalidOperationException("missing graph");
+            }
+
+            if (!key.IsAbsoluteUri)
+            {
+                if (baseUri is null)
+                {
+                    throw new InvalidOperationException("Can't use relative uri without baseUri.");
+                }
+
+                if (baseUri.AbsoluteUri.EndsWith("#"))
+                {
+                    var builder = new UriBuilder(baseUri) { Fragment = key.ToString() };
+
+                    key = builder.Uri;
+                }
+                else
+                {
+                    key = new Uri(baseUri, key);
+                }
+            }
+
+            return graph.CreateUriNode(key);
         }
 
         internal static object ConvertToObject(INode objectNode, Uri baseUri)
@@ -88,11 +83,6 @@
             }
         }
 
-        internal static IEnumerable<string> ConvertToNames(IEnumerable<IUriNode> nodes, Uri baseUri)
-        {
-            return nodes.Select(node => DynamicHelper.ConvertToName(node, baseUri));
-        }
-
         internal static string ConvertToName(IUriNode node, Uri baseUri)
         {
             var nodeUri = node.Uri;
@@ -102,7 +92,7 @@
                 return qname;
             }
 
-            if (baseUri == null)
+            if (baseUri is null)
             {
                 return nodeUri.AbsoluteUri;
             }

@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Dynamic\DynamicGraph.Dictionary.cs" />
+    <Compile Include="Dynamic\DynamicGraph.NodeDictionary.cs" />
+    <Compile Include="Dynamic\DynamicGraph.UriDictionary.cs" />
     <Compile Include="Dynamic\DynamicGraph.StringDictionary.cs" />
     <Compile Include="Dynamic\DynamicExtensions.cs" />
     <Compile Include="Dynamic\DynamicGraph.cs" />

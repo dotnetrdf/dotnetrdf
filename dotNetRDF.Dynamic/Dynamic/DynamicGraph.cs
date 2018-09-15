@@ -15,91 +15,9 @@
         private readonly Uri subjectBaseUri;
         private readonly Uri predicateBaseUri;
 
-        private Uri SubjectBaseUri
-        {
-            get
-            {
-                return this.subjectBaseUri ?? this.BaseUri;
-            }
-        }
+        private Uri SubjectBaseUri => this.subjectBaseUri ?? this.BaseUri;
 
-        private Uri PredicateBaseUri
-        {
-            get
-            {
-                return this.predicateBaseUri ?? this.SubjectBaseUri;
-            }
-        }
-
-        private object this[Uri subject]
-        {
-            get
-            {
-                if (subject == null)
-                {
-                    throw new ArgumentNullException("Can't work with null index", nameof(subject));
-                }
-
-                return this.GetDynamicNode(subject) ?? throw new Exception("index not found");
-            }
-            set
-            {
-                if (subject == null)
-                {
-                    throw new ArgumentNullException("Can't work with null index", nameof(subject));
-                }
-
-                var targetNode = this.GetDynamicNodeOrCreate(subject);
-
-                if (value == null)
-                {
-                    targetNode.Clear();
-                }
-                else
-                {
-                    foreach (DictionaryEntry entry in DynamicGraph.ConvertToDictionary(value))
-                    {
-                        // TODO: What if value is s a node? Will we get properties for it? Shouldn't.
-                        targetNode[entry.Key.ToString()] = entry.Value;
-                    }
-                }
-            }
-        }
-
-        private object this[INode subject]
-        {
-            get
-            {
-                if (subject == null)
-                {
-                    throw new ArgumentNullException("Can't work with null index", nameof(subject));
-                }
-
-                return this.GetDynamicNode(subject) ?? throw new Exception("index not found");
-            }
-            set
-            {
-                if (subject == null)
-                {
-                    throw new ArgumentNullException("Can't work with null index", nameof(subject));
-                }
-
-                var targetNode = this.GetDynamicNodeOrCreate(subject);
-
-                if (value == null)
-                {
-                    targetNode.Clear();
-                }
-                else
-                {
-                    foreach (DictionaryEntry entry in DynamicGraph.ConvertToDictionary(value))
-                    {
-                        // TODO: What if value is s a node? Will we get properties for it? Shouldn't.
-                        targetNode[entry.Key.ToString()] = entry.Value;
-                    }
-                }
-            }
-        }
+        private Uri PredicateBaseUri => this.predicateBaseUri ?? this.SubjectBaseUri;
 
         public DynamicGraph(IGraph graph, Uri subjectBaseUri = null, Uri predicateBaseUri = null) : base(graph)
         {
@@ -107,29 +25,7 @@
             this.predicateBaseUri = predicateBaseUri;
         }
 
-        DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)
-        {
-            return new MetaDynamic(parameter, this);
-        }
-
-        private DynamicNode GetDynamicNode(object other)
-        {
-            var otherNode = DynamicHelper.ConvertToNode(other, this, this.SubjectBaseUri);
-
-            return this.Triples
-                .SubjectNodes
-                .UriNodes()
-                .Where(node => node.Equals(otherNode))
-                .Select(node => node.AsDynamic(this.PredicateBaseUri))
-                .SingleOrDefault();
-        }
-
-        private DynamicNode GetDynamicNodeOrCreate(object subjectIndex)
-        {
-            var indexNode = DynamicHelper.ConvertToNode(subjectIndex, this, this.SubjectBaseUri);
-
-            return this.GetDynamicNode(indexNode) ?? indexNode.AsDynamic(this.PredicateBaseUri);
-        }
+        DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter) => new MetaDynamic(parameter, this);
 
         private static IDictionary ConvertToDictionary(object value)
         {

@@ -235,7 +235,7 @@
         }
 
         [TestMethod]
-        [ExpectedException(typeof(Exception))]
+        [ExpectedException(typeof(KeyNotFoundException))]
         public void Cant_get_nonexistent_absolute_uri_string_index()
         {
             var d = new Graph().AsDynamic();
@@ -244,7 +244,7 @@
         }
 
         [TestMethod]
-        [ExpectedException(typeof(Exception))]
+        [ExpectedException(typeof(KeyNotFoundException))]
         public void Cant_get_nonexistent_relative_uri_string_index()
         {
             var d = new Graph().AsDynamic(new Uri("http://example.com/"));
@@ -253,7 +253,7 @@
         }
 
         [TestMethod]
-        [ExpectedException(typeof(Exception))]
+        [ExpectedException(typeof(KeyNotFoundException))]
         public void Cant_get_nonexistent_member()
         {
             var d = new Graph().AsDynamic(new Uri("http://example.com/"));

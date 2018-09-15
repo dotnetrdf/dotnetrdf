@@ -1,11 +1,11 @@
 ﻿namespace Experimental
 {
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using VDS.RDF;
     using VDS.RDF.Writing;
 
@@ -124,7 +124,7 @@
                         }
                         else
                         {
-                            if (!seen.TryGetValue(x, out INode bnode))
+                            if (!seen.TryGetValue(x, out var bnode))
                             {
                                 bnode = seen[x] = g.CreateBlankNode();
                                 process(g, bnode, x, seen);
@@ -140,7 +140,9 @@
         private static IEnumerable<object> Enumerate(object value)
         {
             if (value is string || !(value is IEnumerable enumerableValue)) // Strings are enumerable but not for our case
+            {
                 enumerableValue = value.AsEnumerable(); // When they're not enumerable, wrap them in an enumerable of one
+            }
 
             foreach (var item in enumerableValue)
             {

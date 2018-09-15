@@ -11,10 +11,7 @@
     {
         internal MetaDynamic(Expression parameter, object value) : base(parameter, BindingRestrictions.Empty, value) { }
 
-        public override DynamicMetaObject BindGetIndex(GetIndexBinder binder, DynamicMetaObject[] indexes)
-        {
-            return this.BindGetIndex(indexes, binder.ReturnType);
-        }
+        public override DynamicMetaObject BindGetIndex(GetIndexBinder binder, DynamicMetaObject[] indexes) => this.BindGetIndex(indexes, binder.ReturnType);
 
         public override DynamicMetaObject BindGetMember(GetMemberBinder binder)
         {
@@ -29,10 +26,7 @@
                 binder.ReturnType);
         }
 
-        public override DynamicMetaObject BindSetIndex(SetIndexBinder binder, DynamicMetaObject[] indexes, DynamicMetaObject value)
-        {
-            return this.BindSetIndex(indexes, binder.ReturnType, value);
-        }
+        public override DynamicMetaObject BindSetIndex(SetIndexBinder binder, DynamicMetaObject[] indexes, DynamicMetaObject value) => this.BindSetIndex(indexes, binder.ReturnType, value);
 
         public override DynamicMetaObject BindSetMember(SetMemberBinder binder, DynamicMetaObject value)
         {
@@ -115,7 +109,7 @@
 
             var value = indexes.Single().Value;
 
-            if (value == null)
+            if (value is null)
             {
                 // throw new ArgumentNullException("index can't be null");
                 return this.CreateMetaObject(
@@ -134,7 +128,7 @@
                 indexes.Select(index => index.RuntimeType).ToArray(),
                 null);
 
-            if (indexer == null)
+            if (indexer is null)
             {
                 // throw new ArgumentException("unknown type");
                 return this.CreateMetaObject(
