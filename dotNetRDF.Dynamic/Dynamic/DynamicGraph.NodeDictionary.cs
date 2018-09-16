@@ -75,7 +75,15 @@
 
         public bool Contains(KeyValuePair<INode, object> item) => throw new NotImplementedException();
 
-        public bool ContainsKey(INode key) => this.Triples.SubjectNodes.Contains(key);
+        public bool ContainsKey(INode key)
+        {
+            if (key is null)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
+            return this.Triples.SubjectNodes.Contains(key);
+        }
 
         public void CopyTo(KeyValuePair<INode, object>[] array, int arrayIndex) => throw new System.NotImplementedException();
 
