@@ -74,6 +74,7 @@
     <Compile Include="Dynamic\DynamicNodeIndexingTests.cs" />
     <Compile Include="Dynamic\DynamicNodeTests.cs" />
     <Compile Include="Dynamic\ExtensionTests.cs" />
+    <Compile Include="Dynamic\GraphDictionaryTests.cs" />
     <Compile Include="Dynamic\NodeOld.cs" />
     <Compile Include="Dynamic\WrapperNodeTests.cs" />
     <Compile Include="Experimental\RecursiveObjectTranslation.cs" />

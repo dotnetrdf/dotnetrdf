@@ -19,7 +19,7 @@
 
         private Uri PredicateBaseUri => this.predicateBaseUri ?? this.SubjectBaseUri;
 
-        public DynamicGraph(IGraph graph, Uri subjectBaseUri = null, Uri predicateBaseUri = null) : base(graph)
+        public DynamicGraph(IGraph graph = null, Uri subjectBaseUri = null, Uri predicateBaseUri = null) : base(graph ?? new Graph())
         {
             this.subjectBaseUri = subjectBaseUri;
             this.predicateBaseUri = predicateBaseUri;

@@ -289,13 +289,6 @@
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Requires_graph()
-        {
-            new DynamicGraph(null);
-        }
-
-        [TestMethod]
         public void Get_member()
         {
             var g = new Graph();

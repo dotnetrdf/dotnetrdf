@@ -42,19 +42,26 @@
             }
         }
 
-        ICollection<INode> IDictionary<INode, object>.Keys => this.Triples.SubjectNodes.UriNodes().ToArray();
+        ICollection<INode> IDictionary<INode, object>.Keys => this.Triples.SubjectNodes.UriNodes().Cast<INode>().ToList().AsReadOnly();
 
         public void Add(INode key, object value)
         {
-            var targetNode = null as DynamicNode;
-            if (this.TryGetValue(key, out var node))
+            if (key is null)
             {
-                targetNode = (DynamicNode)node;
+                throw new ArgumentNullException(nameof(key));
             }
-            else
+
+            if (value is null)
             {
-                targetNode = key.AsDynamic(this.PredicateBaseUri) as DynamicNode;
+                throw new ArgumentNullException(nameof(value));
             }
+
+            if (this.ContainsKey(key))
+            {
+                throw new ArgumentException("An item with the same key has already been added.");
+            }
+
+            var targetNode = new DynamicNode(key.CopyNode(this._g), this.PredicateBaseUri);
 
             // TODO: What if value is s a node? Will we get properties for it? Shouldn't.
             foreach (DictionaryEntry entry in DynamicGraph.ConvertToDictionary(value))
