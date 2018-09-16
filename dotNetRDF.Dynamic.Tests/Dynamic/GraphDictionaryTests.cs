@@ -40,8 +40,10 @@
             d.LoadFromString("<urn:s> <urn:p> <urn:o> .");
 
             var s = d.Triples.SubjectNodes.Single();
+            var o = d.Triples.ObjectNodes.Single();
 
             Assert.IsTrue(d.ContainsKey(s));
+            Assert.IsFalse(d.ContainsKey(o));
         }
 
         [TestMethod]
@@ -54,18 +56,22 @@
         }
 
         [TestMethod]
-        public void Remove_retracts_all_statements_with_subject()
+        public void Remove_retracts_statements_with_subject()
         {
             var g = new Graph();
-            g.LoadFromString("<urn:s2> <urn:p3> <urn:o5> .");
+            g.LoadFromString(@"
+<urn:s2> <urn:s> <urn:o5> .
+<urn:s2> <urn:p3> <urn:s> .
+");
 
             var d = new DynamicGraph();
             d.LoadFromString(@"
-<urn:s1> <urn:p1> <urn:o1> .
-<urn:s1> <urn:p1> <urn:o2> .
-<urn:s1> <urn:p2> <urn:o3> .
-<urn:s1> <urn:p2> <urn:o4> .
-<urn:s2> <urn:p3> <urn:o5> .
+<urn:s> <urn:p1> <urn:o1> .
+<urn:s> <urn:p1> <urn:o2> .
+<urn:s> <urn:p2> <urn:o3> .
+<urn:s> <urn:p2> <urn:o4> .
+<urn:s2> <urn:s> <urn:o5> .
+<urn:s2> <urn:p3> <urn:s> .
 ");
 
             var s = d.Triples.First().Subject;
