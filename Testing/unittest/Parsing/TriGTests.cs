@@ -237,5 +237,17 @@ namespace VDS.RDF.Parsing
             Assert.Equal(1, store.Graphs.Count);
             Assert.Equal(9, store.Triples.Count());
         }
+
+        [Fact]
+        public void ParsingTrigRecommendationSyntax1()
+        {
+            const string data = "@prefix : <http://example.com/> . { :1 :p :o . }";
+
+            var store = new TripleStore();
+            store.LoadFromString(data, new TriGParser(TriGSyntax.Recommendation));
+
+            Assert.Single(store.Graphs);
+            Assert.Single(store.Triples);
+        }
     }
 }
