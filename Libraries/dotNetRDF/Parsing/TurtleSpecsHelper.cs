@@ -64,7 +64,11 @@ namespace VDS.RDF.Parsing
         /// <remarks>
         /// @base is permitted and both @base and @prefix may occur both inside and outside graphs but the tokens use Turtle Team Submission rules i.e. newer escape sequences and other changes in the official W3C specification of Turtle do not apply.
         /// </remarks>
-        MemberSubmission
+        MemberSubmission,
+        /// <summary>
+        /// TriG as specified by the <a href="https://www.w3.org/TR/trig/">W3C Recommendation</a>
+        /// </summary>
+        Recommendation
     }
 
     /// <summary>
