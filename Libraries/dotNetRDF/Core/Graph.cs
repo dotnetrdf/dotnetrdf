@@ -219,17 +219,14 @@ namespace VDS.RDF
 
         private T GetNode<T>(T node) where T: INode
         {
-            var withSubject = Triples.WithSubject(node);
-            var withObject = Triples.WithObject(node);
+            var ret = (T) Triples.WithSubject(node).FirstOrDefault()?.Subject;
+            if (ret != null) return ret;
 
-            var firstWithSubject = withSubject.FirstOrDefault();
+            ret = (T) Triples.WithObject(node).FirstOrDefault()?.Object;
+            if (ret != null) return ret;
 
-            if (firstWithSubject != null)
-            {
-                return (T)firstWithSubject.Subject;
-            }
-
-            return (T)withObject.FirstOrDefault()?.Object;
+            ret = (T) Triples.WithPredicate(node).FirstOrDefault()?.Predicate;
+            return ret;
         }
 
         #endregion
