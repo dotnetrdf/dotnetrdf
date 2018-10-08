@@ -37,7 +37,7 @@ namespace VDS.RDF.Parsing.Tokens
     {
         private ParsingTextReader _in;
         private int _lasttokentype = -1;
-        private TriGSyntax _syntax = TriGSyntax.MemberSubmission;
+        private TriGSyntax _syntax = TriGSyntax.Recommendation;
 
         /// <summary>
         /// Creates a new TriG Tokeniser which reads Tokens from the given Stream
