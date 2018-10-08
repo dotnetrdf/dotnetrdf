@@ -143,6 +143,25 @@ namespace VDS.RDF
         }
 
         [Fact]
+        public void GetUriNode_ShouldReturnIfUsedAsPredicate()
+        {
+            // given
+            var graph = GetInstance();
+            var uri = new Uri("http://example.com/pred");
+            var node = graph.CreateUriNode(uri);
+            graph.Assert(
+                graph.CreateBlankNode(),
+                node,
+                graph.CreateBlankNode());
+
+            // subj
+            var uriNode = graph.GetUriNode(uri);
+
+            // then
+            Assert.Same(node, uriNode);
+        }
+
+        [Fact]
         public void GetUriNode_ShouldReturnNullWhenNotFound()
         {
             // given
