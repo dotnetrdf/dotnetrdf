@@ -5,8 +5,8 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using VDS.RDF.Writing;
+    using Xunit;
 
     public class Class1
     {
@@ -19,10 +19,9 @@
         public IEnumerable<Class1> EnumerableClassProperty { get; set; }
     }
 
-    [TestClass]
     public class RecursiveObjectTranslation
     {
-        [TestMethod]
+        [Fact]
         public void MyTestMethod1()
         {
             var c1 = new Class1
@@ -44,7 +43,7 @@
             g.SaveToStream(Console.Out, new NTriplesWriter());
         }
 
-        [TestMethod]
+        [Fact]
         public void MyTestMethod2()
         {
             var c1 = new Class1
@@ -58,7 +57,7 @@
             g.SaveToStream(Console.Out, new NTriplesWriter());
         }
 
-        [TestMethod]
+        [Fact]
         public void MyTestMethod3()
         {
             var c1 = new Class1
@@ -74,7 +73,7 @@
             g.SaveToStream(Console.Out, new NTriplesWriter());
         }
 
-        [TestMethod]
+        [Fact]
         public void MyTestMethod4()
         {
             var c1 = new Class1

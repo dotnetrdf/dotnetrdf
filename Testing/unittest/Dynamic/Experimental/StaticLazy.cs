@@ -4,8 +4,8 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using VDS.RDF.Dynamic;
+    using Xunit;
 
     public class C1 : DynamicNode
     {
@@ -96,10 +96,9 @@
         private ICollection<object> Objects => this.subject[this.predicate];
     }
 
-    [TestClass]
     public class StaticLazy
     {
-        [TestMethod]
+        [Fact]
         public void MyTestMethod()
         {
             var g1 = new Graph();
@@ -111,9 +110,9 @@ _:x <http://example.com/name> ""1"" .
 
             var c1 = new C1(g1.Triples.SubjectNodes.First(), new Uri("http://example.com/"));
 
-            Assert.AreEqual("0", c1.Names.First());
-            Assert.AreEqual(g1.Nodes.BlankNodes().Single(), c1.Children.First());
-            Assert.AreEqual("1", c1.Children.First().Names.Single());
+            Assert.Equal("0", c1.Names.First());
+            Assert.Equal(g1.Nodes.BlankNodes().Single(), c1.Children.First());
+            Assert.Equal("1", c1.Children.First().Names.Single());
 
             var g2 = new Graph();
             g2.LoadFromString(@"
@@ -122,7 +121,7 @@ _:x <http://example.com/name> ""1"" .
 ");
 
             c1.Names.Clear();
-            Assert.AreEqual(g2, g1);
+            Assert.Equal(g2, g1);
 
             var g3 = new Graph();
             g3.LoadFromString(@"
@@ -134,7 +133,7 @@ _:x <http://example.com/name> ""1"" .
 
             c1.Names.Add("n1");
             c1.Names.Add("n2");
-            Assert.AreEqual(g3, g1);
+            Assert.Equal(g3, g1);
         }
     }
 }

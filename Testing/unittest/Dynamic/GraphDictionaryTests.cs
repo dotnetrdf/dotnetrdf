@@ -3,21 +3,22 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
 
-    [TestClass]
     public class GraphDictionaryTests
     {
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [Fact]
         public void ContainsKey_requires_key()
         {
             var d = new DynamicGraph();
 
-            d.ContainsKey(null as INode);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                d.ContainsKey(null as INode);
+            });
         }
 
-        [TestMethod]
+        [Fact]
         public void ContainsKey_searches_subject_nodes()
         {
             var d = new DynamicGraph();
@@ -26,20 +27,22 @@
             var s = d.Triples.SubjectNodes.Single();
             var o = d.Triples.ObjectNodes.Single();
 
-            Assert.IsTrue(d.ContainsKey(s));
-            Assert.IsFalse(d.ContainsKey(o));
+            Assert.True(d.ContainsKey(s));
+            Assert.False(d.ContainsKey(o));
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [Fact]
         public void Remove_requires_key()
         {
             var d = new DynamicGraph();
 
-            d.Remove(null as INode);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                d.Remove(null as INode);
+            });
         }
 
-        [TestMethod]
+        [Fact]
         public void Remove_retracts_statements_with_subject()
         {
             var g = new Graph();
@@ -62,10 +65,10 @@
 
             d.Remove(s);
 
-            Assert.AreEqual(g, d);
+            Assert.Equal(g as IGraph, d as IGraph);
         }
 
-        [TestMethod]
+        [Fact]
         public void Remove_reports_retraction_success()
         {
             var d = new DynamicGraph();
@@ -73,30 +76,33 @@
 
             var s = d.Triples.First().Subject;
 
-            Assert.IsTrue(d.Remove(s));
-            Assert.IsFalse(d.Remove(s));
+            Assert.True(d.Remove(s));
+            Assert.False(d.Remove(s));
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [Fact]
         public void Add_requires_key()
         {
             var d = new DynamicGraph();
 
-            d.Add(null as INode, null);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                d.Add(null as INode, null);
+            });
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [Fact]
         public void Add_requires_value()
         {
             var d = new DynamicGraph();
 
-            d.Add(d.CreateBlankNode(), null);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                d.Add(d.CreateBlankNode(), null);
+            });
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [Fact]
         public void Add_cant_add_existing_key()
         {
             var d = new DynamicGraph();
@@ -104,10 +110,13 @@
 
             var s = d.Triples.SubjectNodes.Single();
 
-            d.Add(s, 0);
+            Assert.Throws<ArgumentException>(() =>
+            {
+                d.Add(s, 0);
+            });
         }
 
-        [TestMethod]
+        [Fact]
         public void Add_andles_nodes_from_other_graphs()
         {
             var other = new Graph();
@@ -120,10 +129,10 @@
 
             d[s] = new { p = o };
 
-            Assert.AreEqual(other, d);
+            Assert.Equal(other as IGraph, d as IGraph);
         }
 
-        [TestMethod]
+        [Fact]
         public void Keys_are_IRI_subject_nodes()
         {
             var d = new DynamicGraph();
@@ -135,19 +144,21 @@ _:s <urn:p> <urn:o> .
 
             var dict = d as IDictionary<INode, object>;
 
-            CollectionAssert.AreEqual(d.Triples.SubjectNodes.UriNodes().ToArray(), dict.Keys.ToArray());
+            Assert.Equal(d.Triples.SubjectNodes.UriNodes().ToArray(), dict.Keys.ToArray());
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [Fact]
         public void Set_index_requires_key()
         {
             var d = new DynamicGraph();
 
-            d[null as INode] = null;
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                d[null as INode] = null;
+            });
         }
 
-        [TestMethod]
+        [Fact]
         public void Set_index_null_value_removes_statements_with_subject()
         {
             var g = new Graph();
@@ -170,10 +181,10 @@ _:s <urn:p> <urn:o> .
 
             d[s] = null;
 
-            Assert.AreEqual(g, d);
+            Assert.Equal(g as IGraph, d as IGraph);
         }
 
-        [TestMethod]
+        [Fact]
         public void Set_index_replaces_statements_with_subject()
         {
             var g = new Graph();
@@ -197,10 +208,10 @@ _:s <urn:p> <urn:o> .
 
             d[s] = new { p = new Uri("urn:o") };
 
-            Assert.AreEqual(g, d);
+            Assert.Equal(g as IGraph, d as IGraph);
         }
 
-        [TestMethod]
+        [Fact]
         public void Contains_rejects_null_keys()
         {
             var d = new DynamicGraph();
@@ -209,11 +220,11 @@ _:s <urn:p> <urn:o> .
 
             var condition = dict.Contains(new KeyValuePair<INode, object>(null, o));
 
-            Assert.IsFalse(condition);
+            Assert.False(condition);
         }
 
 
-        [TestMethod]
+        [Fact]
         public void Contains_rejects_null_values()
         {
             var d = new DynamicGraph();
@@ -222,10 +233,10 @@ _:s <urn:p> <urn:o> .
 
             var condition = dict.Contains(new KeyValuePair<INode, object>(s, null));
 
-            Assert.IsFalse(condition);
+            Assert.False(condition);
         }
 
-        [TestMethod]
+        [Fact]
         public void Contains_rejects_missing_key()
         {
             var d = new DynamicGraph(predicateBaseUri: new Uri("urn:"));
@@ -234,10 +245,10 @@ _:s <urn:p> <urn:o> .
 
             var condition = dict.Contains(new KeyValuePair<INode, object>(s, new { p = "o" }));
 
-            Assert.IsFalse(condition);
+            Assert.False(condition);
         }
 
-        [TestMethod]
+        [Fact]
         public void Contains_rejects_missing_statement()
         {
             var d = new DynamicGraph(predicateBaseUri: new Uri("urn:"));
@@ -248,7 +259,7 @@ _:s <urn:p> <urn:o> .
 
             var condition = dict.Contains(new KeyValuePair<INode, object>(s, new { p = "o1" }));
 
-            Assert.IsFalse(condition);
+            Assert.False(condition);
         }
     }
 }

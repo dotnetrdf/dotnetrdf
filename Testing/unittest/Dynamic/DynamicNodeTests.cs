@@ -4,12 +4,11 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
 
-    [TestClass]
     public class ObjectCollectionTests
     {
-        [TestMethod]
+        [Fact]
         public void Supports_add()
         {
             var g = new Graph();
@@ -26,10 +25,10 @@
 <http://example.com/s> <http://example.com/p> <http://example.com/o2> .
 ");
 
-            Assert.AreEqual(control, g);
+            Assert.Equal(control, g);
         }
 
-        [TestMethod]
+        [Fact]
         public void Supports_blank_nodes()
         {
             var g = new Graph();
@@ -40,10 +39,10 @@
             var actual = ((dynamic_s["http://example.com/p"] as IEnumerable<object>).Single() as IBlankNode).InternalID;
             var expected = "o";
 
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestMethod]
+        [Fact]
         public void Supports_clear()
         {
             var g = new Graph();
@@ -54,10 +53,10 @@
             var objects = dynamic_s["http://example.com/p"] as ICollection<object>;
             objects.Clear();
 
-            Assert.IsTrue(g.IsEmpty);
+            Assert.True(g.IsEmpty);
         }
 
-        [TestMethod]
+        [Fact]
         public void Supports_contains()
         {
             var g = new Graph();
@@ -69,10 +68,10 @@
             var objects = dynamic_s["http://example.com/p"] as ICollection<object>;
             var result = objects.Contains(example_o);
 
-            Assert.IsTrue(result);
+            Assert.True(result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Supports_copy_to()
         {
             var g = new Graph();
@@ -86,10 +85,10 @@
             var objects = dynamic_s["http://example.com/p"] as ICollection<object>;
             objects.CopyTo(dynamicObjectArray, 0);
 
-            CollectionAssert.AreEqual(nodeObjectArray, dynamicObjectArray);
+            Assert.Equal(nodeObjectArray, dynamicObjectArray);
         }
 
-        [TestMethod]
+        [Fact]
         public void Supports_count()
         {
             var g = new Graph();
@@ -102,10 +101,10 @@
             var expected = g.GetTriplesWithSubjectPredicate(example_s, example_p).Count();
             var actual = (dynamic_s[example_p] as ICollection<object>).Count();
 
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
-        [TestMethod]
+        [Fact]
         public void Supports_get_enumerator()
         {
             var g = new Graph();
@@ -117,11 +116,11 @@
 
             foreach (var o in objects)
             {
-                Assert.IsInstanceOfType(o, typeof(DynamicNode));
+                Assert.IsType<DynamicNode>(o);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void Supports_native_data_types()
         {
             var g = new Graph();
@@ -138,17 +137,17 @@
 
             var dynamic_s = g.Triples.First().Subject.AsDynamic(new Uri("http://example.com/"));
 
-            Assert.IsInstanceOfType((dynamic_s.xsdDouble as IEnumerable<object>).Single(), typeof(double));
-            Assert.IsInstanceOfType((dynamic_s.xsdFloat as IEnumerable<object>).Single(), typeof(float));
-            Assert.IsInstanceOfType((dynamic_s.xsdDecimal as IEnumerable<object>).Single(), typeof(decimal));
-            Assert.IsInstanceOfType((dynamic_s.xsdBoolean as IEnumerable<object>).Single(), typeof(bool));
-            Assert.IsInstanceOfType((dynamic_s.xsdDatetime as IEnumerable<object>).Single(), typeof(DateTimeOffset));
-            Assert.IsInstanceOfType((dynamic_s.xsdTimespan as IEnumerable<object>).Single(), typeof(TimeSpan));
-            Assert.IsInstanceOfType((dynamic_s.xsdNumeric as IEnumerable<object>).Single(), typeof(long));
-            Assert.IsInstanceOfType((dynamic_s.xsdDefault as IEnumerable<object>).Single(), typeof(string));
+            Assert.IsType<double>((dynamic_s.xsdDouble as IEnumerable<object>).Single());
+            Assert.IsType<float>((dynamic_s.xsdFloat as IEnumerable<object>).Single());
+            Assert.IsType<decimal>((dynamic_s.xsdDecimal as IEnumerable<object>).Single());
+            Assert.IsType<bool>((dynamic_s.xsdBoolean as IEnumerable<object>).Single());
+            Assert.IsType<DateTimeOffset>((dynamic_s.xsdDatetime as IEnumerable<object>).Single());
+            Assert.IsType<TimeSpan>((dynamic_s.xsdTimespan as IEnumerable<object>).Single());
+            Assert.IsType<long>((dynamic_s.xsdNumeric as IEnumerable<object>).Single());
+            Assert.IsType<string>((dynamic_s.xsdDefault as IEnumerable<object>).Single());
         }
 
-        [TestMethod]
+        [Fact]
         public void Converts_native_data_types()
         {
             var eg = new Graph();
@@ -190,22 +189,24 @@
                 timespan = TimeSpan.MaxValue,
             };
 
-            Assert.AreEqual(eg, d);
+            Assert.Equal(eg as IGraph, d as IGraph);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
+        [Fact]
         public void Requires_known_native_data_types()
         {
             var d = new Graph().AsDynamic(new Uri("http://example.com/"));
 
-            d.s = new
+            Assert.Throws<InvalidOperationException>(() =>
             {
-                unknown = new object()
-            };
+                d.s = new
+                {
+                    unknown = new object()
+                };
+            });
         }
 
-        [TestMethod]
+        [Fact]
         public void Supports_read_write()
         {
             var g = new Graph();
@@ -215,10 +216,10 @@
 
             var result = dynamic_s["http://example.com/"] as ICollection<object>;
 
-            Assert.IsFalse(result.IsReadOnly);
+            Assert.False(result.IsReadOnly);
         }
 
-        [TestMethod]
+        [Fact]
         public void Supports_remove()
         {
             var g = new Graph();
@@ -230,11 +231,11 @@
             var objects = dynamic_s["http://example.com/p"] as ICollection<object>;
             var result = objects.Remove(example_o);
 
-            Assert.IsTrue(result);
-            Assert.IsTrue(g.IsEmpty);
+            Assert.True(result);
+            Assert.True(g.IsEmpty);
         }
 
-        [TestMethod]
+        [Fact]
         public void Supports_remove_with_missing_item()
         {
             var g = new Graph();
@@ -245,10 +246,10 @@
             var objects = dynamic_s["http://example.com/p"] as ICollection<object>;
             var result = objects.Remove(0);
 
-            Assert.IsFalse(result);
+            Assert.False(result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Supports_uri_nodes()
         {
             var g = new Graph();
@@ -259,7 +260,7 @@
             var actual = ((dynamic_s["http://example.com/p"] as IEnumerable<object>).Single() as IUriNode).Uri;
             var expected = new Uri("http://example.com/o");
 
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
     }
 }

@@ -1,32 +1,33 @@
 ﻿namespace VDS.RDF.Dynamic
 {
     using System;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
 
-    [TestClass]
     public class ExtensionTests
     {
-        [TestMethod]
+        [Fact]
         public void m1()
         {
             var value = new Graph().AsDynamic();
 
-            Assert.IsInstanceOfType(value, typeof(DynamicGraph));
+            Assert.IsType<DynamicGraph>(value);
         }
 
-        [TestMethod]
+        [Fact]
         public void m2()
         {
             var value = new NodeFactory().CreateBlankNode().AsDynamic();
 
-            Assert.IsInstanceOfType(value, typeof(DynamicNode));
+            Assert.IsType<DynamicNode>(value);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
+        [Fact]
         public void m3()
         {
-            var result = new NodeFactory().CreateLiteralNode(string.Empty).AsDynamic();
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                var result = new NodeFactory().CreateLiteralNode(string.Empty).AsDynamic();
+            });
         }
     }
 }

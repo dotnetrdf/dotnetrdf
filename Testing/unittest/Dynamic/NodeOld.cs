@@ -5,9 +5,8 @@
     using System.Dynamic;
     using System.Linq;
     using System.Linq.Expressions;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
 
-    [TestClass]
     public class NodeOld
     {
         private static readonly Uri exampleBase = new Uri("http://example.com/");
@@ -26,7 +25,7 @@
 
             return spoGraph;
         }
-        [TestMethod]
+        [Fact]
         public void Member_names_are_predicate_uris()
         {
             var s = spoGraph.GetTriplesWithSubject(ex_s).Single().Subject;
@@ -35,10 +34,10 @@
             var collection = meta.GetDynamicMemberNames().ToArray();
             var element = "http://example.com/p";
 
-            CollectionAssert.Contains(collection, element);
+            Assert.Contains(element, collection);
         }
 
-        [TestMethod]
+        [Fact]
         public void Member_names_reduce_to_qnames()
         {
             var g = GenerateSPOGraph();
@@ -49,10 +48,10 @@
             var collection = meta.GetDynamicMemberNames().ToArray();
             var element = "ex:p";
 
-            CollectionAssert.Contains(collection, element);
+            Assert.Contains(element, collection);
         }
 
-        [TestMethod]
+        [Fact]
         public void Member_names_reduce_to_qnames_with_empty_prefix()
         {
             var g = GenerateSPOGraph();
@@ -63,10 +62,10 @@
             var collection = meta.GetDynamicMemberNames().ToArray();
             var element = ":p";
 
-            CollectionAssert.Contains(collection, element);
+            Assert.Contains(element, collection);
         }
 
-        [TestMethod]
+        [Fact]
         public void Member_names_become_relative_to_base()
         {
             var s = spoGraph.GetTriplesWithSubject(ex_s).Single().Subject;
@@ -75,10 +74,10 @@
             var collection = meta.GetDynamicMemberNames().ToArray();
             var element = "p";
 
-            CollectionAssert.Contains(collection, element);
+            Assert.Contains(element, collection);
         }
 
-        [TestMethod]
+        [Fact]
         public void Member_names_become_relative_to_hash_base()
         {
             var g = new Graph();
@@ -89,10 +88,10 @@
             var collection = meta.GetDynamicMemberNames().ToArray();
             var element = "p";
 
-            CollectionAssert.Contains(collection, element);
+            Assert.Contains(element, collection);
         }
 
-        [TestMethod]
+        [Fact]
         public void Property_access_is_translated_to_indexing_with_relative_uri_strings()
         {
             var g = GenerateSPOGraph();
@@ -101,57 +100,59 @@
             var result = (d.p as ICollection<object>).Single();
             var expected = (d["p"] as ICollection<object>).Single();
 
-            Assert.AreEqual(result, expected);
+            Assert.Equal(result, expected);
         }
 
-        [TestMethod]
+        [Fact]
         public void ToString_delegates_to_graphNode()
         {
             var n = new NodeFactory().CreateBlankNode();
 
             dynamic d = n.AsDynamic();
 
-            Assert.AreEqual(
+            Assert.Equal(
                 n.ToString(),
                 d.ToString());
         }
 
-        [TestMethod]
+        [Fact]
         public void GetHashCode_delegates_to_node()
         {
             var n = new NodeFactory().CreateBlankNode();
 
             dynamic d = n.AsDynamic();
 
-            Assert.AreEqual(
+            Assert.Equal(
                 d.GetHashCode(),
                 d.GetHashCode());
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [Fact]
         public void Cant_construct_without_graph_node()
         {
-            new DynamicNode(null);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                new DynamicNode(null);
+            });
         }
 
-        [TestMethod]
+        [Fact]
         public void Subject_base_uri_defaults_to_graph_base_uri1()
         {
             var d = new DynamicNode(new NodeFactory().CreateBlankNode());
 
-            Assert.IsNull(d.BaseUri);
+            Assert.Null(d.BaseUri);
         }
 
-        [TestMethod]
+        [Fact]
         public void Subject_base_uri_defaults_to_graph_base_uri2()
         {
             var d = new DynamicNode(new Graph() { BaseUri = new Uri("http://example.com/") }.CreateBlankNode());
 
-            Assert.AreEqual(new Uri("http://example.com/"), d.BaseUri);
+            Assert.Equal(new Uri("http://example.com/"), d.BaseUri);
         }
 
-        [TestMethod]
+        [Fact]
         public void Setter_delegates_to_index_setter()
         {
             var g1 = GenerateSPOGraph();
@@ -165,18 +166,21 @@
             n2["p"] = "x"; // now;
             n1.p = "x"; // now;
 
-            Assert.AreEqual(g2, g1);
+            Assert.Equal(g2, g1);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
+        [Fact]
         public void Setter_requires_base_uri()
         {
             var a = new NodeFactory().CreateBlankNode().AsDynamic();
-            a.p = null;
+
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                a.p = null;
+            });
         }
 
-        [TestMethod]
+        [Fact]
         public void Dynamic_node_is_INode()
         {
             var g = new Graph();
@@ -184,10 +188,10 @@
 
             var result = g.Triples.Single().Subject.AsDynamic();
 
-            Assert.IsInstanceOfType(result, typeof(INode));
+            Assert.IsAssignableFrom<INode>(result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Dynamic_uri_node_is_IUriNode()
         {
             var g = new Graph();
@@ -196,10 +200,10 @@
             var result = (g.Triples.Single().Subject.AsDynamic() as IUriNode).Uri;
             var expected = (g.Triples.Single().Subject as IUriNode).Uri;
 
-            Assert.AreEqual(expected, result);
+            Assert.Equal(expected, result);
         }
 
-        [TestMethod]
+        [Fact]
         public void Dynamic_blank_node_is_IBlankNode()
         {
             var g = new Graph();
@@ -208,27 +212,31 @@
             var result = (g.Triples.Single().Subject.AsDynamic() as IBlankNode).InternalID;
             var expected = (g.Triples.Single().Subject as IBlankNode).InternalID;
 
-            Assert.AreEqual(expected, result);
+            Assert.Equal(expected, result);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
+        [Fact]
         public void Dynamic_uri_node_is_Not_IBlankNode()
         {
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
 
-            var result = (g.Triples.Single().Subject.AsDynamic() as IBlankNode).InternalID;
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                var result = (g.Triples.Single().Subject.AsDynamic() as IBlankNode).InternalID;
+            });
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
+        [Fact]
         public void Dynamic_blank_node_is_not_IUriNode()
         {
             var g = new Graph();
             g.LoadFromString("_:s <http://example.com/p> <http://example.com/o> .");
 
-            var result = (g.Triples.Single().Subject.AsDynamic() as IUriNode).Uri;
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                var result = (g.Triples.Single().Subject.AsDynamic() as IUriNode).Uri;
+            });
         }
     }
 }
