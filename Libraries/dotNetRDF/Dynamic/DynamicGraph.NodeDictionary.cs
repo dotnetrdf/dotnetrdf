@@ -166,14 +166,14 @@
                 return valueDictionary;
             }
 
-            return DynamicGraph.GetProperties(value).ToDictionary(p => p.Name, p => p.GetValue(value));
+            return DynamicGraph.GetProperties(value).ToDictionary(p => p.Name, p => p.GetValue(value, null));
         }
 
         private static IEnumerable<PropertyInfo> GetProperties(object value)
         {
             return value
                 .GetType()
-                .GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty)
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(p => !p.GetIndexParameters().Any());
         }
     }
