@@ -2,7 +2,6 @@
 {
     using System;
     using System.Text.RegularExpressions;
-    using VDS.RDF.Nodes;
 
     internal static class DynamicHelper
     {
@@ -46,40 +45,6 @@
             }
 
             return graph.CreateUriNode(key);
-        }
-
-        internal static object ConvertToObject(INode objectNode, Uri baseUri)
-        {
-            switch (objectNode.AsValuedNode())
-            {
-                case IUriNode uriNode:
-                case IBlankNode blankNode:
-                    return objectNode.AsDynamic(baseUri);
-
-                case DoubleNode doubleNode:
-                    return doubleNode.AsDouble();
-
-                case FloatNode floatNode:
-                    return floatNode.AsFloat();
-
-                case DecimalNode decimalNode:
-                    return decimalNode.AsDecimal();
-
-                case BooleanNode booleanNode:
-                    return booleanNode.AsBoolean();
-
-                case DateTimeNode dateTimeNode:
-                    return dateTimeNode.AsDateTimeOffset();
-
-                case TimeSpanNode timeSpanNode:
-                    return timeSpanNode.AsTimeSpan();
-
-                case NumericNode numericNode:
-                    return numericNode.AsInteger();
-
-                default:
-                    return objectNode.ToString();
-            }
         }
 
         internal static string ConvertToName(IUriNode node, Uri baseUri)

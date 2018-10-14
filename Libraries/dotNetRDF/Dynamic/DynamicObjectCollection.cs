@@ -4,6 +4,7 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
+    using VDS.RDF.Nodes;
 
     internal class DynamicObjectCollection : ICollection<object>
     {
@@ -32,7 +33,7 @@
 
         public bool Contains(object item)
         {
-            return this.subject.Contains(this.predicate, item);
+            return ((IDictionary<INode, object>)this.subject).Contains(new KeyValuePair<INode, object>(this.predicate, item));
         }
 
         public void CopyTo(object[] array, int index)
@@ -47,7 +48,7 @@
 
         public bool Remove(object item)
         {
-            return this.subject.Remove(new KeyValuePair<INode, object>(this.predicate, item));
+            return ((IDictionary<INode, object>)this.subject).Remove(new KeyValuePair<INode, object>(this.predicate, item));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -65,7 +66,42 @@
             return
                 from triple
                 in this.subject.Graph.GetTriplesWithSubjectPredicate(this.subject, this.predicate)
-                select DynamicHelper.ConvertToObject(triple.Object, this.subject.BaseUri);
+                select ConvertToObject(triple.Object);
+        }
+
+        private object ConvertToObject(INode node)
+        {
+            switch (node.AsValuedNode())
+            {
+                case IUriNode uriNode:
+                case IBlankNode blankNode:
+                    return new DynamicNode(node, subject.BaseUri);
+
+                case DoubleNode doubleNode:
+                    return doubleNode.AsDouble();
+
+                case FloatNode floatNode:
+                    return floatNode.AsFloat();
+
+                case DecimalNode decimalNode:
+                    return decimalNode.AsDecimal();
+
+                case BooleanNode booleanNode:
+                    return booleanNode.AsBoolean();
+
+                case DateTimeNode dateTimeNode:
+                    return dateTimeNode.AsDateTimeOffset();
+
+                case TimeSpanNode timeSpanNode:
+                    return timeSpanNode.AsTimeSpan();
+
+                case NumericNode numericNode:
+                    return numericNode.AsInteger();
+
+                default:
+                    // TODO: What happens with language tags?
+                    return node.ToString();
+            }
         }
     }
 }

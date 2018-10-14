@@ -1,6 +1,7 @@
 ﻿namespace VDS.RDF.Dynamic
 {
     using System;
+    using System.Collections.Generic;
     using System.Dynamic;
     using System.Linq.Expressions;
 
@@ -51,21 +52,28 @@
 
         internal bool Contains(object key, object value)
         {
+            var node = null as INode;
+
             switch (key)
             {
                 case string stringKey:
-                    return this.Contains(stringKey, value);
+                    node = Convert(Convert(stringKey));
+                    break;
 
                 case Uri uriKey:
-                    return this.Contains(uriKey, value);
+                    node = Convert(uriKey);
+                    break;
 
                 case INode nodeKey:
-                    return this.Contains(nodeKey, value);
+                    node = nodeKey;
+                    break;
 
                 default:
                     // TODO: Make more specific
                     throw new Exception();
             }
+
+            return NodeDictionary.Contains(new KeyValuePair<INode, object>(node, value));
         }
     }
 }

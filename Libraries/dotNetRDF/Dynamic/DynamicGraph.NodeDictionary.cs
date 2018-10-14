@@ -64,7 +64,13 @@
             }
         }
 
-        ICollection<INode> IDictionary<INode, object>.Keys => UriSubjectNodes.ToArray();
+        ICollection<INode> IDictionary<INode, object>.Keys
+        {
+            get
+            {
+                return UriSubjectNodes.ToArray();
+            }
+        }
 
         public void Add(INode key, object value)
         {

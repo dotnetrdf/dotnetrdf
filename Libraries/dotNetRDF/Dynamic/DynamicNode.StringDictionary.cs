@@ -6,6 +6,8 @@
 
     public partial class DynamicNode : IDictionary<string, object>
     {
+        private IDictionary<Uri, object> UriDictionary => this;
+
         public object this[string key]
         {
             get
@@ -23,8 +25,11 @@
         {
             get
             {
-                // TODO: Shorten string as much as possible
-                return this.Graph.GetTriplesWithSubject(this).Select(t => t.Predicate).Distinct().Select(p => DynamicHelper.ConvertToName(p as IUriNode, this.BaseUri)).ToArray();
+                var keys =
+                    from predicate in PredicateNodes
+                    select DynamicHelper.ConvertToName(predicate, BaseUri);
+
+                return keys.ToArray();
             }
         }
 
@@ -38,14 +43,9 @@
             Add(item.Key, item.Value);
         }
 
-        public bool Contains(string key, object value)
+        bool ICollection<KeyValuePair<string, object>>.Contains(KeyValuePair<string, object> item)
         {
-            return Contains(Convert(key), value);
-        }
-
-        public bool Contains(KeyValuePair<string, object> item)
-        {
-            return Contains(item.Key, item.Value);
+            return UriDictionary.Contains(Convert(item));
         }
 
         public bool ContainsKey(string key)
@@ -58,9 +58,14 @@
             (this as IEnumerable<KeyValuePair<string, object>>).ToArray().CopyTo(array, arrayIndex);
         }
 
-        public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
+        IEnumerator<KeyValuePair<string, object>> IEnumerable<KeyValuePair<string, object>>.GetEnumerator()
         {
-            return this.Graph.GetTriplesWithSubject(this).Select(t => t.Predicate.ToString()).Distinct().ToDictionary(p => p, p => this[p]).GetEnumerator();
+            return
+                PredicateNodes
+                .ToDictionary(
+                    predicate => DynamicHelper.ConvertToName(predicate, BaseUri),
+                    predicate => this[predicate])
+                .GetEnumerator();
         }
 
         public bool Remove(string key)
@@ -68,19 +73,19 @@
             return Remove(Convert(key));
         }
 
-        public bool Remove(string key, object value)
+        bool ICollection<KeyValuePair<string, object>>.Remove(KeyValuePair<string, object> item)
         {
-            return Remove(Convert(key), value);
-        }
-
-        public bool Remove(KeyValuePair<string, object> item)
-        {
-            return Remove(item.Key, item.Value);
+            return UriDictionary.Remove(Convert(item));
         }
 
         public bool TryGetValue(string key, out object value)
         {
             return TryGetValue(Convert(key), out value);
+        }
+
+        private KeyValuePair<Uri, object> Convert(KeyValuePair<string, object> item)
+        {
+            return new KeyValuePair<Uri, object>(Convert(item.Key), item.Value);
         }
 
         private Uri Convert(string key)

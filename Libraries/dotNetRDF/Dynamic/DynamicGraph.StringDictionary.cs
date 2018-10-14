@@ -8,16 +8,30 @@
     {
         private IDictionary<Uri, object> UriDictionary => this;
 
+        private IEnumerable<KeyValuePair<string, object>> StringPairs
+        {
+            get
+            {
+                return
+                    from subject in UriSubjectNodes
+                    select new KeyValuePair<string, object>(
+                        DynamicHelper.ConvertToName(subject, PredicateBaseUri),
+                        new DynamicNode(
+                            subject,
+                            predicateBaseUri));
+            }
+        }
+
         public object this[string key]
         {
             get
             {
-                return this[this.Convert(key)];
+                return this[Convert(key)];
             }
 
             set
             {
-                this[this.Convert(key)] = value;
+                this[Convert(key)] = value;
             }
         }
 
@@ -26,10 +40,8 @@
             get
             {
                 var keys =
-                    from node in UriSubjectNodes
-                    select DynamicHelper.ConvertToName(
-                        node,
-                        this.SubjectBaseUri);
+                    from pair in StringPairs
+                    select pair.Key;
 
                 return keys.ToArray();
             }
@@ -57,12 +69,12 @@
 
         public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            StringPairs.ToArray().CopyTo(array, arrayIndex);
         }
 
         IEnumerator<KeyValuePair<string, object>> IEnumerable<KeyValuePair<string, object>>.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return StringPairs.GetEnumerator();
         }
 
         public bool Remove(string key)

@@ -8,6 +8,8 @@
 
     public partial class DynamicNode : IDictionary<INode, object>
     {
+        private IEnumerable<IUriNode> PredicateNodes => Graph.GetTriplesWithSubject(this).Select(t => t.Predicate as IUriNode).Distinct();
+
         public object this[INode key]
         {
             get
@@ -17,18 +19,19 @@
                     throw new ArgumentNullException(nameof(key));
                 }
 
-                if (this.Graph is null)
+                if (Graph is null)
                 {
                     throw new InvalidOperationException("Node must have graph");
                 }
 
-                if (!this.TryGetValue(key, out var objects))
+                if (!TryGetValue(key, out var objects))
                 {
                     throw new KeyNotFoundException();
                 }
 
                 return objects;
             }
+
             set
             {
                 if (key is null)
@@ -47,7 +50,13 @@
             }
         }
 
-        ICollection<INode> IDictionary<INode, object>.Keys => this.Graph.GetTriplesWithSubject(this).Select(t => t.Predicate).Distinct().ToArray();
+        ICollection<INode> IDictionary<INode, object>.Keys
+        {
+            get
+            {
+                return PredicateNodes.ToArray();
+            }
+        }
 
         public void Add(INode key, object value)
         {
@@ -61,24 +70,22 @@
                 throw new ArgumentNullException(nameof(value));
             }
 
-            this.Graph.Assert(this.ConvertToTriples(key, value));
+            Graph.Assert(this.ConvertToTriples(key, value));
         }
 
-        public void Add(KeyValuePair<INode, object> item)
+        void ICollection<KeyValuePair<INode, object>>.Add(KeyValuePair<INode, object> item)
         {
-            this.Add(item.Key, item.Value);
+            Add(item.Key, item.Value);
         }
 
-        public bool Contains(INode key, object value)
+        bool ICollection<KeyValuePair<INode, object>>.Contains(KeyValuePair<INode, object> item)
         {
-            var objectNode = this.ConvertToNode(value);
+            if (item.Key is null)
+            {
+                throw new ArgumentNullException("key");
+            }
 
-            return this.Graph.GetTriplesWithSubjectPredicate(this, key).WithObject(objectNode).Any();
-        }
-
-        public bool Contains(KeyValuePair<INode, object> item)
-        {
-            return this.Contains(item.Key, item.Value);
+            return Graph.GetTriplesWithSubjectPredicate(this, item.Key).WithObject(ConvertToNode(item.Value)).Any();
         }
 
         public bool ContainsKey(INode key)
@@ -88,7 +95,10 @@
                 throw new ArgumentNullException(nameof(key));
             }
 
-            return this.Graph.GetTriplesWithSubjectPredicate(this, key).Any();
+            return 
+                Graph
+                .GetTriplesWithSubjectPredicate(this, key)
+                .Any();
         }
 
         public void CopyTo(KeyValuePair<INode, object>[] array, int arrayIndex)
@@ -98,7 +108,12 @@
 
         IEnumerator<KeyValuePair<INode, object>> IEnumerable<KeyValuePair<INode, object>>.GetEnumerator()
         {
-            return this.Graph.GetTriplesWithSubject(this).Select(t => t.Predicate).Distinct().ToDictionary(p => p, p => this[p]).GetEnumerator();
+            return 
+                PredicateNodes
+                .ToDictionary(
+                    predicate => predicate as INode,
+                    predicate => this[predicate])
+                .GetEnumerator();
         }
 
         public bool Remove(INode key)
@@ -108,19 +123,17 @@
                 throw new ArgumentNullException(nameof(key));
             }
 
-            return this.Graph.Retract(this.Graph.GetTriplesWithSubjectPredicate(this, key).ToArray());
+            return Graph.Retract(Graph.GetTriplesWithSubjectPredicate(this, key).ToArray());
         }
 
-        public bool Remove(INode key, object value)
+        bool ICollection<KeyValuePair<INode, object>>.Remove(KeyValuePair<INode, object> item)
         {
-            var objectNode = this.ConvertToNode(value);
+            if (item.Key is null)
+            {
+                throw new ArgumentNullException("key");
+            }
 
-            return this.Graph.Retract(this.Graph.GetTriplesWithSubjectPredicate(this, key).WithObject(objectNode).ToArray());
-        }
-
-        public bool Remove(KeyValuePair<INode, object> item)
-        {
-            return this.Remove(item.Key, item.Value);
+            return Graph.Retract(Graph.GetTriplesWithSubjectPredicate(this, item.Key).WithObject(ConvertToNode(item.Value)).ToArray());
         }
 
         public bool TryGetValue(INode key, out object value)
@@ -131,6 +144,7 @@
             }
 
             value = new DynamicObjectCollection(this, key);
+
             return true;
         }
 
@@ -152,10 +166,10 @@
                 if (item != null)
                 {
                     yield return new Triple(
-                        subj: this.Node,
+                        subj: Node,
                         pred: predicateNode,
-                        obj: this.ConvertToNode(item),
-                        g: this.Node.Graph);
+                        obj: ConvertToNode(item),
+                        g: Node.Graph);
                 }
             }
         }
@@ -165,46 +179,46 @@
             switch (value)
             {
                 case INode nodeValue:
-                    return nodeValue.CopyNode(this.Graph);
+                    return nodeValue.CopyNode(Graph);
 
                 case Uri uriValue:
-                    return this.Graph.CreateUriNode(uriValue);
+                    return Graph.CreateUriNode(uriValue);
 
                 case bool boolValue:
-                    return new BooleanNode(this.Graph, boolValue);
+                    return new BooleanNode(Graph, boolValue);
 
                 case byte byteValue:
-                    return new ByteNode(this.Graph, byteValue);
+                    return new ByteNode(Graph, byteValue);
 
                 case DateTime dateTimeValue:
-                    return new DateTimeNode(this.Graph, dateTimeValue);
+                    return new DateTimeNode(Graph, dateTimeValue);
 
                 case DateTimeOffset dateTimeOffsetValue:
-                    return new DateTimeNode(this.Graph, dateTimeOffsetValue);
+                    return new DateTimeNode(Graph, dateTimeOffsetValue);
 
                 case decimal decimalValue:
-                    return new DecimalNode(this.Graph, decimalValue);
+                    return new DecimalNode(Graph, decimalValue);
 
                 case double doubleValue:
-                    return new DoubleNode(this.Graph, doubleValue);
+                    return new DoubleNode(Graph, doubleValue);
 
                 case float floatValue:
-                    return new FloatNode(this.Graph, floatValue);
+                    return new FloatNode(Graph, floatValue);
 
                 case long longValue:
-                    return new LongNode(this.Graph, longValue);
+                    return new LongNode(Graph, longValue);
 
                 case int intValue:
-                    return new LongNode(this.Graph, intValue);
+                    return new LongNode(Graph, intValue);
 
                 case string stringValue:
-                    return new StringNode(this.Graph, stringValue);
+                    return new StringNode(Graph, stringValue);
 
                 case char charValue:
-                    return new StringNode(this.Graph, charValue.ToString());
+                    return new StringNode(Graph, charValue.ToString());
 
                 case TimeSpan timeSpanValue:
-                    return new TimeSpanNode(this.Graph, timeSpanValue);
+                    return new TimeSpanNode(Graph, timeSpanValue);
 
                 default:
                     throw new InvalidOperationException($"Can't convert type {value.GetType()}");
