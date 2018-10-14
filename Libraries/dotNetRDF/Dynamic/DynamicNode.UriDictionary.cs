@@ -8,35 +8,48 @@
     {
         public object this[Uri key]
         {
-            get => this[DynamicHelper.Convert(key, this.Graph, this.BaseUri)];
-            set => this[DynamicHelper.Convert(key, this.Graph, this.BaseUri)] = value;
+            get
+            {
+                return this[Convert(key)];
+            }
+
+            set
+            {
+                this[Convert(key)] = value;
+            }
         }
 
-        ICollection<Uri> IDictionary<Uri, object>.Keys => this.Graph.GetTriplesWithSubject(this).Select(t => (t.Predicate as IUriNode).Uri).Distinct().ToArray();
+        ICollection<Uri> IDictionary<Uri, object>.Keys
+        {
+            get
+            {
+                return Graph.GetTriplesWithSubject(this).Select(t => (t.Predicate as IUriNode).Uri).Distinct().ToArray();
+            }
+        }
 
         public void Add(Uri key, object value)
         {
-            this.Add(DynamicHelper.Convert(key, this.Graph, this.BaseUri), value);
+            Add(Convert(key), value);
         }
 
         public void Add(KeyValuePair<Uri, object> item)
         {
-            this.Add(item.Key, item.Value);
+            Add(item.Key, item.Value);
         }
 
         public bool Contains(Uri key, object value)
         {
-            return this.Contains(DynamicHelper.Convert(key, this.Graph, this.BaseUri), value);
+            return Contains(Convert(key), value);
         }
 
         public bool Contains(KeyValuePair<Uri, object> item)
         {
-            return this.Contains(item.Key, item.Value);
+            return Contains(item.Key, item.Value);
         }
 
         public bool ContainsKey(Uri key)
         {
-            return this.ContainsKey(DynamicHelper.Convert(key, this.Graph, this.BaseUri));
+            return ContainsKey(Convert(key));
         }
 
         public void CopyTo(KeyValuePair<Uri, object>[] array, int arrayIndex)
@@ -46,27 +59,32 @@
 
         IEnumerator<KeyValuePair<Uri, object>> IEnumerable<KeyValuePair<Uri, object>>.GetEnumerator()
         {
-            return this.Graph.GetTriplesWithSubject(this).Select(t => t.Predicate).Distinct().ToDictionary(p => (p as IUriNode).Uri, p => this[p]).GetEnumerator();
+            return Graph.GetTriplesWithSubject(this).Select(t => t.Predicate).Distinct().ToDictionary(p => (p as IUriNode).Uri, p => this[p]).GetEnumerator();
         }
 
         public bool Remove(Uri key)
         {
-            return this.Remove(DynamicHelper.Convert(key, this.Graph, this.BaseUri));
+            return Remove(Convert(key));
         }
 
         public bool Remove(Uri key, object value)
         {
-            return this.Remove(DynamicHelper.Convert(key, this.Graph, this.BaseUri), value);
+            return Remove(Convert(key), value);
         }
 
         public bool Remove(KeyValuePair<Uri, object> item)
         {
-            return this.Remove(item.Key, item.Value);
+            return Remove(item.Key, item.Value);
         }
 
         public bool TryGetValue(Uri key, out object value)
         {
-            return this.TryGetValue(DynamicHelper.Convert(key, this.Graph, this.BaseUri), out value);
+            return TryGetValue(Convert(key), out value);
+        }
+
+        private INode Convert(Uri key)
+        {
+            return DynamicHelper.Convert(key, this.Graph, this.BaseUri);
         }
     }
 }

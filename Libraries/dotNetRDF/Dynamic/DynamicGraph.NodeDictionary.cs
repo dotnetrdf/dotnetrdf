@@ -8,6 +8,28 @@
 
     public partial class DynamicGraph : IDictionary<INode, object>
     {
+        private IEnumerable<KeyValuePair<INode, object>> NodePairs
+        {
+            get
+            {
+                return
+                    from key in UriSubjectNodes
+                    select new KeyValuePair<INode, object>(
+                        key,
+                        new DynamicNode(
+                            key,
+                            this.predicateBaseUri));
+            }
+        }
+
+        private IEnumerable<IUriNode> UriSubjectNodes
+        {
+            get
+            {
+                return Triples.SubjectNodes.UriNodes();
+            }
+        }
+
         public object this[INode key]
         {
             get
@@ -17,7 +39,7 @@
                     throw new ArgumentNullException(nameof(key));
                 }
 
-                if (!this.TryGetValue(key, out var node))
+                if (!TryGetValue(key, out var node))
                 {
                     throw new KeyNotFoundException();
                 }
@@ -31,18 +53,18 @@
                     throw new ArgumentNullException(nameof(key));
                 }
 
-                this.Remove(key);
+                Remove(key);
 
                 if (value is null)
                 {
                     return;
                 }
 
-                this.Add(key, value);
+                Add(key, value);
             }
         }
 
-        ICollection<INode> IDictionary<INode, object>.Keys => this.Triples.SubjectNodes.UriNodes().ToArray();
+        ICollection<INode> IDictionary<INode, object>.Keys => UriSubjectNodes.ToArray();
 
         public void Add(INode key, object value)
         {
@@ -56,12 +78,13 @@
                 throw new ArgumentNullException(nameof(value));
             }
 
-            if (this.ContainsKey(key))
+            if (ContainsKey(key))
             {
                 throw new ArgumentException("An item with the same key has already been added.", nameof(key));
             }
 
-            var targetNode = new DynamicNode(key.CopyNode(this._g), this.PredicateBaseUri);
+            // Make a copy of the key node local to this graph
+            var targetNode = new DynamicNode(key.CopyNode(this._g), PredicateBaseUri);
 
             foreach (DictionaryEntry entry in DynamicGraph.ConvertToDictionary(value))
             {
@@ -71,7 +94,7 @@
 
         void ICollection<KeyValuePair<INode, object>>.Add(KeyValuePair<INode, object> item)
         {
-            this.Add(item.Key, item.Value);
+            Add(item.Key, item.Value);
         }
 
         bool ICollection<KeyValuePair<INode, object>>.Contains(KeyValuePair<INode, object> item)
@@ -88,7 +111,7 @@
                 return false;
             }
 
-            if (!this.TryGetValue(item.Key, out var value))
+            if (!TryGetValue(item.Key, out var value))
             {
                 return false;
             }
@@ -113,17 +136,17 @@
                 throw new ArgumentNullException(nameof(key));
             }
 
-            return this.Triples.SubjectNodes.Contains(key);
+            return UriSubjectNodes.Contains(key);
         }
 
         public void CopyTo(KeyValuePair<INode, object>[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            NodePairs.ToArray().CopyTo(array, arrayIndex);
         }
 
         IEnumerator<KeyValuePair<INode, object>> IEnumerable<KeyValuePair<INode, object>>.GetEnumerator()
         {
-            throw new System.NotImplementedException();
+            return NodePairs.GetEnumerator();
         }
 
         public bool Remove(INode key)
@@ -133,12 +156,25 @@
                 throw new ArgumentNullException(nameof(key));
             }
 
-            return this.Retract(this.GetTriplesWithSubject(key).ToArray());
+            return Retract(GetTriplesWithSubject(key).ToArray());
         }
 
         bool ICollection<KeyValuePair<INode, object>>.Remove(KeyValuePair<INode, object> item)
         {
-            throw new NotImplementedException();
+            if (item.Key is null)
+            {
+                throw new ArgumentNullException("key");
+            }
+
+            // Keys and values in this dictionary are actually the same node.
+            // We can't remove a pair where they're not equal.
+            if (!item.Key.Equals(item.Value))
+            {
+                return false;
+            }
+
+            // Otherwise just remove by key.
+            return Remove(item.Key);
         }
 
         public bool TryGetValue(INode key, out object value)
@@ -148,12 +184,9 @@
                 throw new ArgumentNullException(nameof(key));
             }
 
-            // TODO: CopyNode
-            value = this.Triples
-                .SubjectNodes
-                .UriNodes()
+            value = UriSubjectNodes
                 .Where(node => node.Equals(key))
-                .Select(node => node.AsDynamic(this.PredicateBaseUri))
+                .Select(node => new DynamicNode(node.CopyNode(this._g), this.PredicateBaseUri))
                 .SingleOrDefault();
 
             return value != null;

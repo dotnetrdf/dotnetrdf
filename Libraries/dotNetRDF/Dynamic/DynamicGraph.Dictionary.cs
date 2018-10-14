@@ -6,11 +6,35 @@
 
     public partial class DynamicGraph
     {
-        public ICollection<object> Values => this.Triples.SubjectNodes.UriNodes().Select(node => new DynamicNode(node, this.PredicateBaseUri)).ToArray();
+        public ICollection<object> Values
+        {
+            get
+            {
+                var values =
+                    from node in UriSubjectNodes
+                    select new DynamicNode(
+                        node,
+                        this.PredicateBaseUri);
 
-        public int Count => (this as IEnumerable<KeyValuePair<INode, object>>).Count();
+                return values.ToArray();
+            }
+        }
 
-        public bool IsReadOnly => false;
+        public int Count
+        {
+            get
+            {
+                return UriSubjectNodes.Count();
+            }
+        }
+
+        public bool IsReadOnly
+        {
+            get
+            {
+                return false;
+            }
+        }
 
         IEnumerator IEnumerable.GetEnumerator()
         {

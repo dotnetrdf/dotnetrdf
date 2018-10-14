@@ -1,5 +1,6 @@
 ﻿namespace VDS.RDF.Dynamic
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -7,37 +8,49 @@
     {
         public object this[string key]
         {
-            get => this[DynamicHelper.Convert(key, this.Graph)];
-            set => this[DynamicHelper.Convert(key, this.Graph)] = value;
+            get
+            {
+                return this[Convert(key)];
+            }
+
+            set
+            {
+                this[Convert(key)] = value;
+            }
         }
 
-        public ICollection<string> Keys =>
+        public ICollection<string> Keys
+        {
+            get
+            {
                 // TODO: Shorten string as much as possible
-                this.Graph.GetTriplesWithSubject(this).Select(t => t.Predicate).Distinct().Select(p => DynamicHelper.ConvertToName(p as IUriNode, this.BaseUri)).ToArray();
+                return this.Graph.GetTriplesWithSubject(this).Select(t => t.Predicate).Distinct().Select(p => DynamicHelper.ConvertToName(p as IUriNode, this.BaseUri)).ToArray();
+            }
+        }
 
         public void Add(string key, object value)
         {
-            this.Add(DynamicHelper.Convert(key, this.Graph), value);
+            Add(Convert(key), value);
         }
 
         public void Add(KeyValuePair<string, object> item)
         {
-            this.Add(item.Key, item.Value);
+            Add(item.Key, item.Value);
         }
 
         public bool Contains(string key, object value)
         {
-            return this.Contains(DynamicHelper.Convert(key, this.Graph), value);
+            return Contains(Convert(key), value);
         }
 
         public bool Contains(KeyValuePair<string, object> item)
         {
-            return this.Contains(item.Key, item.Value);
+            return Contains(item.Key, item.Value);
         }
 
         public bool ContainsKey(string key)
         {
-            return this.ContainsKey(DynamicHelper.Convert(key, this.Graph));
+            return ContainsKey(Convert(key));
         }
 
         public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
@@ -52,22 +65,27 @@
 
         public bool Remove(string key)
         {
-            return this.Remove(DynamicHelper.Convert(key, this.Graph));
+            return Remove(Convert(key));
         }
 
         public bool Remove(string key, object value)
         {
-            return this.Remove(DynamicHelper.Convert(key, this.Graph), value);
+            return Remove(Convert(key), value);
         }
 
         public bool Remove(KeyValuePair<string, object> item)
         {
-            return this.Remove(item.Key, item.Value);
+            return Remove(item.Key, item.Value);
         }
 
         public bool TryGetValue(string key, out object value)
         {
-            return this.TryGetValue(DynamicHelper.Convert(key, this.Graph), out value);
+            return TryGetValue(Convert(key), out value);
+        }
+
+        private Uri Convert(string key)
+        {
+            return DynamicHelper.Convert(key, this.Graph);
         }
     }
 }

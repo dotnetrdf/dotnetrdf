@@ -6,32 +6,53 @@
 
     public partial class DynamicGraph : IDictionary<string, object>
     {
+        private IDictionary<Uri, object> UriDictionary => this;
+
         public object this[string key]
         {
-            get => this[DynamicHelper.Convert(key, this)];
-            set => this[DynamicHelper.Convert(key, this)] = value;
+            get
+            {
+                return this[this.Convert(key)];
+            }
+
+            set
+            {
+                this[this.Convert(key)] = value;
+            }
         }
 
-        ICollection<string> IDictionary<string, object>.Keys => this.Triples.SubjectNodes.UriNodes().Select(u => DynamicHelper.ConvertToName(u, this.SubjectBaseUri)).ToArray();
+        public ICollection<string> Keys
+        {
+            get
+            {
+                var keys =
+                    from node in UriSubjectNodes
+                    select DynamicHelper.ConvertToName(
+                        node,
+                        this.SubjectBaseUri);
+
+                return keys.ToArray();
+            }
+        }
 
         public void Add(string key, object value)
         {
-            this.Add(DynamicHelper.Convert(key, this), value);
+            Add(Convert(key), value);
         }
 
         public void Add(KeyValuePair<string, object> item)
         {
-            this.Add(item.Key, item.Value);
+            Add(item.Key, item.Value);
         }
 
-        public bool Contains(KeyValuePair<string, object> item)
+        bool ICollection<KeyValuePair<string, object>>.Contains(KeyValuePair<string, object> item)
         {
-            return this.Contains(new KeyValuePair<Uri, object>(DynamicHelper.Convert(item.Key, this), item.Value));
+            return UriDictionary.Contains(Convert(item));
         }
 
         public bool ContainsKey(string key)
         {
-            return this.ContainsKey(DynamicHelper.Convert(key, this));
+            return ContainsKey(Convert(key));
         }
 
         public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
@@ -46,17 +67,27 @@
 
         public bool Remove(string key)
         {
-            return this.Remove(DynamicHelper.Convert(key, this));
+            return Remove(Convert(key));
         }
 
-        public bool Remove(KeyValuePair<string, object> item)
+        bool ICollection<KeyValuePair<string, object>>.Remove(KeyValuePair<string, object> item)
         {
-            return this.Remove(new KeyValuePair<Uri, object>(DynamicHelper.Convert(item.Key, this), item.Value));
+            return UriDictionary.Remove(Convert(item));
         }
 
         public bool TryGetValue(string key, out object value)
         {
-            return this.TryGetValue(DynamicHelper.Convert(key, this), out value);
+            return TryGetValue(Convert(key), out value);
+        }
+
+        private KeyValuePair<Uri, object> Convert(KeyValuePair<string, object> item)
+        {
+            return new KeyValuePair<Uri, object>(Convert(item.Key), item.Value);
+        }
+
+        private Uri Convert(string key)
+        {
+            return DynamicHelper.Convert(key, this);
         }
     }
 }

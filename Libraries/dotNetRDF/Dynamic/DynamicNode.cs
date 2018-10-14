@@ -26,23 +26,6 @@
 
         internal object this[object key]
         {
-            get
-            {
-                switch (key)
-                {
-                    case string stringKey:
-                        return this[stringKey];
-
-                    case Uri uriKey:
-                        return this[uriKey];
-
-                    case INode nodeKey:
-                        return this[nodeKey];
-
-                    default:
-                        throw new ArgumentException(nameof(key));
-                }
-            }
             set
             {
                 switch (key)
@@ -60,6 +43,7 @@
                         break;
 
                     default:
+                        // TODO: Make more specific
                         throw new Exception();
                 }
             }
@@ -79,6 +63,7 @@
                     return this.Contains(nodeKey, value);
 
                 default:
+                    // TODO: Make more specific
                     throw new Exception();
             }
         }

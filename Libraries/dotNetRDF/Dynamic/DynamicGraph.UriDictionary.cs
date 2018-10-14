@@ -6,57 +6,100 @@
 
     public partial class DynamicGraph : IDictionary<Uri, object>
     {
-        public object this[Uri key]
+        private IDictionary<INode, object> NodeDictionary => this;
+
+        private IEnumerable<KeyValuePair<Uri, object>> UriPairs
         {
-            get => this[DynamicHelper.Convert(key, this, this.SubjectBaseUri)];
-            set => this[DynamicHelper.Convert(key, this, this.SubjectBaseUri)] = value;
+            get
+            {
+                return
+                    from key in UriSubjectNodes
+                    select new KeyValuePair<Uri, object>(
+                        key.Uri,
+                        new DynamicNode(
+                            key,
+                            predicateBaseUri));
+            }
         }
 
-        ICollection<Uri> IDictionary<Uri, object>.Keys => this.Triples.SubjectNodes.UriNodes().Select(n => n.Uri).ToArray();
+        public object this[Uri key]
+        {
+            get
+            {
+                return this[Convert(key)];
+            }
+
+            set
+            {
+                this[Convert(key)] = value;
+            }
+        }
+
+        ICollection<Uri> IDictionary<Uri, object>.Keys
+        {
+            get
+            {
+                var keys =
+                    from pair in UriPairs
+                    select pair.Key;
+
+                return keys.ToArray();
+            }
+        }
 
         public void Add(Uri key, object value)
         {
-            this.Add(DynamicHelper.Convert(key, this, this.SubjectBaseUri), value);
+            Add(Convert(key), value);
         }
 
-        public void Add(KeyValuePair<Uri, object> item)
+        void ICollection<KeyValuePair<Uri, object>>.Add(KeyValuePair<Uri, object> item)
         {
-            this.Add(item.Key, item.Value);
+            Add(item.Key, item.Value);
         }
 
-        public bool Contains(KeyValuePair<Uri, object> item)
+        bool ICollection<KeyValuePair<Uri, object>>.Contains(KeyValuePair<Uri, object> item)
         {
-            return ((IDictionary<INode, object>)this).Contains(new KeyValuePair<INode, object>(DynamicHelper.Convert(item.Key, this, this.SubjectBaseUri), item.Value));
+            return NodeDictionary.Contains(Convert(item));
         }
 
         public bool ContainsKey(Uri key)
         {
-            return this.ContainsKey(DynamicHelper.Convert(key, this, this.SubjectBaseUri));
+            return ContainsKey(Convert(key));
         }
 
         public void CopyTo(KeyValuePair<Uri, object>[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            UriPairs.ToArray().CopyTo(array, arrayIndex);
         }
 
         IEnumerator<KeyValuePair<Uri, object>> IEnumerable<KeyValuePair<Uri, object>>.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return UriPairs.GetEnumerator();
         }
 
         public bool Remove(Uri key)
         {
-            return this.Remove(DynamicHelper.Convert(key, this, this.SubjectBaseUri));
+            return Remove(Convert(key));
         }
 
-        public bool Remove(KeyValuePair<Uri, object> item)
+        bool ICollection<KeyValuePair<Uri, object>>.Remove(KeyValuePair<Uri, object> item)
         {
-            return ((IDictionary<INode, object>)this).Remove(new KeyValuePair<INode, object>(DynamicHelper.Convert(item.Key, this, this.SubjectBaseUri), item.Value));
+            return NodeDictionary.Remove(Convert(item));
         }
 
         public bool TryGetValue(Uri key, out object value)
         {
-            return this.TryGetValue(DynamicHelper.Convert(key, this, this.SubjectBaseUri), out value);
+            return TryGetValue(Convert(key), out value);
+        }
+
+        private KeyValuePair<INode, object> Convert(KeyValuePair<Uri, object> item)
+        {
+            return new KeyValuePair<INode, object>(Convert(item.Key), item.Value);
+        }
+
+        private INode Convert(Uri key)
+        {
+            return DynamicHelper.Convert(key, this, this.SubjectBaseUri);
         }
     }
 }

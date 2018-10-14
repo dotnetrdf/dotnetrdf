@@ -223,7 +223,6 @@ _:s <urn:p> <urn:o> .
             Assert.False(condition);
         }
 
-
         [Fact]
         public void Contains_rejects_null_values()
         {
@@ -260,6 +259,38 @@ _:s <urn:p> <urn:o> .
             var condition = dict.Contains(new KeyValuePair<INode, object>(s, new { p = "o1" }));
 
             Assert.False(condition);
+        }
+
+        [Fact]
+        public void Get_index_rejects_missing_key()
+        {
+            var d = new DynamicGraph();
+            var s = d.CreateBlankNode();
+
+            Assert.Throws<KeyNotFoundException>(() =>
+                d[s]
+            );
+        }
+
+        [Fact]
+        public void Get_index_requires_key()
+        {
+            var d = new DynamicGraph();
+
+            Assert.Throws<ArgumentNullException>(() =>
+                d[null as INode]
+            );
+        }
+
+        [Fact]
+        public void x()
+        {
+            var a = new Dictionary<string, string>();
+            a.Add("a", "b");
+            //a.Remove(null);
+            var item = new KeyValuePair<string, string>("a", "b");
+            //var b = a.Remove(item);
+            //Assert.True(b);
         }
     }
 }
