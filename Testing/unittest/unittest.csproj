@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp1.1;net452;netcoreapp2.0</TargetFrameworks>
-    <IsPackable>false</IsPackable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,6 +13,18 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\dotNetRDF\dotNetRDF.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+    <Compile Include="**\*.cs" Exclude="obj\**\*cs;**\*.NetCore.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.0' ">
+    <Compile Include="**\*.cs" Exclude="obj\**\*cs;**\*.NetCore.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp1.1' ">
+    <Compile Include="**\*.cs" Exclude="obj\**\*cs;**\*.NetFull.cs" />
   </ItemGroup>
 
 </Project>

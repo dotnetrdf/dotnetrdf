@@ -1,13 +1,10 @@
 ﻿namespace VDS.RDF
 {
     using System;
-    using System.Runtime.Serialization;
-    using System.Xml;
-    using System.Xml.Schema;
     using VDS.RDF.Writing;
     using VDS.RDF.Writing.Formatting;
 
-    public abstract class WrapperNode : INode
+    public abstract partial class WrapperNode : INode
     {
         protected INode Node { get; private set; }
 
@@ -97,21 +94,6 @@
             return this.Node.Equals(other);
         }
 
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            throw new NotImplementedException();
-        }
-
-        public XmlSchema GetSchema()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ReadXml(XmlReader reader)
-        {
-            throw new NotImplementedException();
-        }
-
         public string ToString(INodeFormatter formatter)
         {
             return this.Node.ToString(formatter);
@@ -122,9 +104,5 @@
             return this.Node.ToString(formatter, segment);
         }
 
-        public void WriteXml(XmlWriter writer)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

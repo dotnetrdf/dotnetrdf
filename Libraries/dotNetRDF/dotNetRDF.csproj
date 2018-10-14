@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard1.4;net40;net40-client;netstandard2.0</TargetFrameworks>
     <AssemblyName>dotNetRDF.Dynamic</AssemblyName>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net40-client'">
@@ -13,6 +14,22 @@
 
   <ItemGroup>
     <PackageReference Include="dotNetRDF" Version="2.1.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.4' ">
+    <Compile Include="**\*.cs" Exclude="obj\**\*.cs;**\*.NetFull.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <Compile Include="**\*.cs" Exclude="obj\**\*.cs;**\*.NetCore.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
+    <Compile Include="**\*.cs" Exclude="obj\**\*.cs;**\*.NetCore.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net40-client' ">
+    <Compile Include="**\*.cs" Exclude="obj\**\*.cs;**\*.NetCore.cs" />
   </ItemGroup>
 
 </Project>
