@@ -5,6 +5,7 @@
     using System.Dynamic;
     using System.Linq;
     using System.Linq.Expressions;
+    using Microsoft.CSharp.RuntimeBinder;
     using VDS.RDF.Nodes;
     using Xunit;
 
@@ -65,17 +66,6 @@
             var condition = g.IsEmpty;
 
             Assert.True(condition);
-        }
-
-        [Fact]
-        public void Cant_set_index_without_readable_public_properties()
-        {
-            var d = new Graph().AsDynamic(new Uri("http://example.com/"));
-
-            Assert.Throws<ArgumentException>(() =>
-            {
-                d["s"] = new { };
-            });
         }
 
         [Fact]
@@ -283,9 +273,9 @@
         {
             var d = new Graph().AsDynamic();
 
-            Assert.Throws<ArgumentException>(() =>
+            Assert.Throws<RuntimeBinderException>(() =>
             {
-                var result = d[new { }];
+                var result = d[null];
             });
         }
 

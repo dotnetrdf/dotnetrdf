@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Microsoft.CSharp.RuntimeBinder;
     using Xunit;
 
     public class DynamicNodeIndexingTests
@@ -45,9 +46,9 @@
         {
             var dynamic_s = new NodeFactory().CreateBlankNode().AsDynamic();
 
-            Assert.Throws<ArgumentException>(() =>
+            Assert.Throws<RuntimeBinderException>(() =>
             {
-                var result = dynamic_s[0];
+                var result = dynamic_s[null];
             });
         }
 

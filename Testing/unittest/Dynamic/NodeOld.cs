@@ -25,6 +25,7 @@
 
             return spoGraph;
         }
+
         [Fact]
         public void Member_names_are_predicate_uris()
         {

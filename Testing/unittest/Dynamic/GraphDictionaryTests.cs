@@ -117,7 +117,7 @@
         }
 
         [Fact]
-        public void Add_andles_nodes_from_other_graphs()
+        public void Add_handles_nodes_from_other_graphs()
         {
             var other = new Graph();
             other.LoadFromString("<urn:s> <urn:p> <urn:o>.");

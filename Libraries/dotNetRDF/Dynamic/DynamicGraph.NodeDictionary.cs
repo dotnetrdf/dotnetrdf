@@ -46,6 +46,7 @@
 
                 return node;
             }
+
             set
             {
                 if (key is null)
