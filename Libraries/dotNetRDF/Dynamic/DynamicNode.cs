@@ -15,6 +15,7 @@
 
         public Uri BaseUri => this.baseUri ?? this.Graph?.BaseUri;
 
+        // TODO: Make sure all instantiations copy original node to appropriate host graph
         public DynamicNode(INode node, Uri baseUri = null) : base(node)
         {
             this.baseUri = baseUri;
@@ -25,29 +26,31 @@
             return new MetaDynamic(parameter, this);
         }
 
-        internal object this[object key]
+        // TODO: Clean this convert mess
+        public void Add(object key, object value)
         {
-            set
+            var node = null as INode;
+
+            switch (key)
             {
-                switch (key)
-                {
-                    case string stringKey:
-                        this[stringKey] = value;
-                        break;
+                case string stringKey:
+                    node = Convert(Convert(stringKey));
+                    break;
 
-                    case Uri uriKey:
-                        this[uriKey] = value;
-                        break;
+                case Uri uriKey:
+                    node = Convert(uriKey);
+                    break;
 
-                    case INode nodeKey:
-                        this[nodeKey] = value;
-                        break;
+                case INode nodeKey:
+                    node = nodeKey;
+                    break;
 
-                    default:
-                        // TODO: Make more specific
-                        throw new Exception();
-                }
+                default:
+                    // TODO: Make more specific
+                    throw new Exception();
             }
+            
+            this.Add(node, value);
         }
 
         internal bool Contains(object key, object value)
@@ -74,6 +77,32 @@
             }
 
             return NodeDictionary.Contains(new KeyValuePair<INode, object>(node, value));
+        }
+
+        internal bool Remove(object key, object value)
+        {
+            var node = null as INode;
+
+            switch (key)
+            {
+                case string stringKey:
+                    node = Convert(Convert(stringKey));
+                    break;
+
+                case Uri uriKey:
+                    node = Convert(uriKey);
+                    break;
+
+                case INode nodeKey:
+                    node = nodeKey;
+                    break;
+
+                default:
+                    // TODO: Make more specific
+                    throw new Exception();
+            }
+
+            return NodeDictionary.Remove(new KeyValuePair<INode, object>(node, value));
         }
     }
 }

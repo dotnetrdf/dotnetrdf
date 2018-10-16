@@ -8,7 +8,7 @@
     public partial class WrapperNodeTests
     {
         [Fact]
-        public void Requires_node()
+        public void Requires_underlying_node()
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
@@ -42,7 +42,7 @@
         }
 
         [Fact]
-        public void Delegates_to_string()
+        public void Delegates_ToString()
         {
             var node = new NodeFactory().CreateBlankNode();
             var wrapper = new MockWrapperNode(node);
@@ -68,7 +68,6 @@
         [Fact]
         public void Delegates_Graph()
         {
-
             var node = new Graph().CreateBlankNode();
             var wrapper = new MockWrapperNode(node);
 
@@ -117,7 +116,7 @@
         }
 
         [Fact]
-        public void Delegates__CompareTo_graphliteral()
+        public void Delegates__CompareTo_graphLiteral()
         {
             var node = new NodeFactory().CreateGraphLiteralNode();
             var wrapper = new MockWrapperNode(node);
@@ -189,7 +188,7 @@
         }
 
         [Fact]
-        public void Delegates_Equal_graphliteral()
+        public void Delegates_Equal_graphLiteral()
         {
             var node = new NodeFactory().CreateGraphLiteralNode();
             var wrapper = new MockWrapperNode(node);
@@ -259,12 +258,6 @@
             var actual = wrapper.ToString(formatter, TripleSegment.Subject);
 
             Assert.Equal(expected, actual);
-        }
-
-        [Serializable]
-        public class MockWrapperNode : WrapperNode
-        {
-            public MockWrapperNode(INode node) : base(node) { }
         }
     }
 }

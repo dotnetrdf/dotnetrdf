@@ -8,101 +8,46 @@
     {
         protected INode Node { get; private set; }
 
-        protected WrapperNode(INode node)
-        {
-            this.Node = node ?? throw new ArgumentNullException(nameof(node));
-        }
+        protected WrapperNode(INode node) => Node = node ?? throw new ArgumentNullException(nameof(node));
 
-        public override bool Equals(object obj)
-        {
-            return this.Node.Equals(obj);
-        }
+        public override bool Equals(object obj) => Node.Equals(obj);
 
-        public override int GetHashCode()
-        {
-            return this.Node.GetHashCode();
-        }
+        public override int GetHashCode() => Node.GetHashCode();
 
-        public override string ToString()
-        {
-            return this.Node.ToString();
-        }
+        public override string ToString() => Node.ToString();
 
-        public NodeType NodeType => this.Node.NodeType;
+        public NodeType NodeType => Node.NodeType;
 
-        public IGraph Graph => this.Node.Graph;
+        public IGraph Graph => Node.Graph;
 
-        public Uri GraphUri { get => this.Node.GraphUri; set => this.Node.GraphUri = value; }
+        public Uri GraphUri { get => Node.GraphUri; set => Node.GraphUri = value; }
 
-        public int CompareTo(INode other)
-        {
-            return this.Node.CompareTo(other);
-        }
+        public int CompareTo(INode other) => Node.CompareTo(other);
 
-        public int CompareTo(IBlankNode other)
-        {
-            return this.Node.CompareTo(other);
-        }
+        public int CompareTo(IBlankNode other) => Node.CompareTo(other);
 
-        public int CompareTo(IGraphLiteralNode other)
-        {
-            return this.Node.CompareTo(other);
-        }
+        public int CompareTo(IGraphLiteralNode other) => Node.CompareTo(other);
 
-        public int CompareTo(ILiteralNode other)
-        {
-            return this.Node.CompareTo(other);
-        }
+        public int CompareTo(ILiteralNode other) => Node.CompareTo(other);
 
-        public int CompareTo(IUriNode other)
-        {
-            return this.Node.CompareTo(other);
-        }
+        public int CompareTo(IUriNode other) => Node.CompareTo(other);
 
-        public int CompareTo(IVariableNode other)
-        {
-            return this.Node.CompareTo(other);
-        }
+        public int CompareTo(IVariableNode other) => Node.CompareTo(other);
 
-        public bool Equals(INode other)
-        {
-            return this.Node.Equals(other);
-        }
+        public bool Equals(INode other) => Node.Equals(other);
 
-        public bool Equals(IBlankNode other)
-        {
-            return this.Node.Equals(other);
-        }
+        public bool Equals(IBlankNode other) => Node.Equals(other);
 
-        public bool Equals(IGraphLiteralNode other)
-        {
-            return this.Node.Equals(other);
-        }
+        public bool Equals(IGraphLiteralNode other) => Node.Equals(other);
 
-        public bool Equals(ILiteralNode other)
-        {
-            return this.Node.Equals(other);
-        }
+        public bool Equals(ILiteralNode other) => Node.Equals(other);
 
-        public bool Equals(IUriNode other)
-        {
-            return this.Node.Equals(other);
-        }
+        public bool Equals(IUriNode other) => Node.Equals(other);
 
-        public bool Equals(IVariableNode other)
-        {
-            return this.Node.Equals(other);
-        }
+        public bool Equals(IVariableNode other) => Node.Equals(other);
 
-        public string ToString(INodeFormatter formatter)
-        {
-            return this.Node.ToString(formatter);
-        }
+        public string ToString(INodeFormatter formatter) => Node.ToString(formatter);
 
-        public string ToString(INodeFormatter formatter, TripleSegment segment)
-        {
-            return this.Node.ToString(formatter, segment);
-        }
-
+        public string ToString(INodeFormatter formatter, TripleSegment segment) => Node.ToString(formatter, segment);
     }
 }

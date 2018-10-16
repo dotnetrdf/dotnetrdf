@@ -91,11 +91,13 @@
             }
 
             // Make a copy of the key node local to this graph
+            // so dynamic references are resolved correctly
+            // (they depend on node's graph)
             var targetNode = new DynamicNode(key.CopyNode(this._g), PredicateBaseUri);
 
             foreach (DictionaryEntry entry in DynamicGraph.ConvertToDictionary(value))
             {
-                targetNode[entry.Key] = entry.Value;
+                targetNode.Add(entry.Key, entry.Value);
             }
         }
 
@@ -168,20 +170,19 @@
 
         bool ICollection<KeyValuePair<INode, object>>.Remove(KeyValuePair<INode, object> item)
         {
-            if (item.Key is null)
-            {
-                throw new ArgumentNullException("key");
-            }
-
-            // Keys and values in this dictionary are actually the same node.
-            // We can't remove a pair where they're not equal.
-            if (!item.Key.Equals(item.Value))
+            if (!NodeDictionary.Contains(item))
             {
                 return false;
             }
 
-            // Otherwise just remove by key.
-            return Remove(item.Key);
+            var node = (DynamicNode)this[item.Key];
+
+            foreach (DictionaryEntry entry in DynamicGraph.ConvertToDictionary(item.Value))
+            {
+                node.Remove(entry.Key, entry.Value);
+            }
+
+            return true;
         }
 
         public bool TryGetValue(INode key, out object value)
