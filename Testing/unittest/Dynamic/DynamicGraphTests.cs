@@ -32,43 +32,6 @@
         }
 
         [Fact]
-        public void Cant_work_with_null_index()
-        {
-            var d = new Graph().AsDynamic();
-
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                var result = d[null as string];
-            });
-        }
-
-        [Fact]
-        public void Index_set_null_deletes_by_subject()
-        {
-            var g = new Graph();
-            g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
-            var d = g.AsDynamic();
-            d["http://example.com/s"] = null;
-
-            var condition = g.IsEmpty;
-
-            Assert.True(condition);
-        }
-
-        [Fact]
-        public void Set_null_deletes_by_subject()
-        {
-            var g = new Graph();
-            g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
-            var d = g.AsDynamic(new Uri("http://example.com/"));
-            d["s"] = null;
-
-            var condition = g.IsEmpty;
-
-            Assert.True(condition);
-        }
-
-        [Fact]
         public void Get_index_with_absolute_uri_string()
         {
             var g = new Graph();
@@ -451,17 +414,6 @@
             Assert.Throws<InvalidOperationException>(() =>
             {
                 d.s = new { p = "o" };
-            });
-        }
-
-        [Fact]
-        public void Set_index_requires_index()
-        {
-            var d = new Graph().AsDynamic();
-
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                d[null as string] = null;
             });
         }
 
