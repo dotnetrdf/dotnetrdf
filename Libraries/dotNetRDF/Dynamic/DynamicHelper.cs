@@ -72,7 +72,7 @@
         private static bool TryResolveQName(string index, IGraph graph, out Uri indexUri)
         {
             // TODO: This is naive
-            if (!Regex.IsMatch(index, @"^\w*:\w+$"))
+            if (index.StartsWith("urn:") || !Regex.IsMatch(index, @"^\w*:\w+$"))
             {
                 indexUri = null;
                 return false;

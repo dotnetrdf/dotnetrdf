@@ -26,11 +26,21 @@
         {
             get
             {
+                if (key is null)
+                {
+                    throw new ArgumentNullException(nameof(key));
+                }
+
                 return this[Convert(key)];
             }
 
             set
             {
+                if (key is null)
+                {
+                    throw new ArgumentNullException(nameof(key));
+                }
+
                 this[Convert(key)] = value;
             }
         }
@@ -49,6 +59,16 @@
 
         public void Add(string key, object value)
         {
+            if (key == null)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
             Add(Convert(key), value);
         }
 
@@ -59,11 +79,26 @@
 
         bool ICollection<KeyValuePair<string, object>>.Contains(KeyValuePair<string, object> item)
         {
+            if (item.Key is null)
+            {
+                return false;
+            }
+
+            if (item.Value is null)
+            {
+                return false;
+            }
+
             return UriDictionary.Contains(Convert(item));
         }
 
         public bool ContainsKey(string key)
         {
+            if (key == null)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
             return ContainsKey(Convert(key));
         }
 
@@ -79,16 +114,31 @@
 
         public bool Remove(string key)
         {
+            if (key == null)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
             return Remove(Convert(key));
         }
 
         bool ICollection<KeyValuePair<string, object>>.Remove(KeyValuePair<string, object> item)
         {
+            if (item.Key is null)
+            {
+                return false;
+            }
+
             return UriDictionary.Remove(Convert(item));
         }
 
         public bool TryGetValue(string key, out object value)
         {
+            if (key == null)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
             return TryGetValue(Convert(key), out value);
         }
 
