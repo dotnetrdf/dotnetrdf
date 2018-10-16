@@ -7,6 +7,7 @@
     using System.Reflection;
     using VDS.RDF.Writing;
     using Xunit;
+    using Xunit.Abstractions;
 
     public class Class1
     {
@@ -21,6 +22,13 @@
 
     public class RecursiveObjectTranslation
     {
+        private readonly ITestOutputHelper output;
+
+        public RecursiveObjectTranslation(ITestOutputHelper output)
+        {
+            this.output = output;
+        }
+
         [Fact]
         public void MyTestMethod1()
         {
@@ -40,7 +48,8 @@
 
             var g = new Graph();
             process(g, g.CreateUriNode(new Uri("http://example.com/c1")), c1);
-            g.SaveToStream(Console.Out, new NTriplesWriter());
+
+            this.output.WriteLine(StringWriter.Write(g, new NTriplesWriter()));
         }
 
         [Fact]
@@ -54,7 +63,7 @@
 
             var g = new Graph();
             process(g, g.CreateUriNode(new Uri("http://example.com/c1")), c1);
-            g.SaveToStream(Console.Out, new NTriplesWriter());
+            this.output.WriteLine(StringWriter.Write(g, new NTriplesWriter()));
         }
 
         [Fact]
@@ -70,7 +79,7 @@
 
             var g = new Graph();
             process(g, g.CreateUriNode(new Uri("http://example.com/c1")), c1);
-            g.SaveToStream(Console.Out, new NTriplesWriter());
+            this.output.WriteLine(StringWriter.Write(g, new NTriplesWriter()));
         }
 
         [Fact]
@@ -90,7 +99,7 @@
 
             var g = new Graph();
             process(g, g.CreateUriNode(new Uri("http://example.com/c1")), c1);
-            g.SaveToStream(Console.Out, new NTriplesWriter());
+            this.output.WriteLine(StringWriter.Write(g, new NTriplesWriter()));
         }
 
         private static readonly Random r = new Random();
@@ -102,7 +111,7 @@
             seen[value] = subject;
 
             var properties = value.GetType()
-                .GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty)
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(p => !p.GetIndexParameters().Any());
 
             foreach (var property in properties)
@@ -111,24 +120,26 @@
 
                 if (propertyValue != null)
                 {
+                    // TODO: Proper predicate conversion
                     var predicate = g.CreateUriNode(new Uri(new Uri("http://example.com/"), property.Name));
 
-                    foreach (var x in Enumerate(propertyValue))
+                    foreach (var instance in Enumerate(propertyValue))
                     {
-                        if (x is string || x.GetType().IsPrimitive)
+                        if (instance is string || instance.GetType().IsPrimitive)
                         {
-                            var objectNode = g.CreateLiteralNode(x.ToString());
-                            g.Assert(subject, predicate, objectNode);
+                            // TODO: Proper object conversion
+                            var literalNode = g.CreateLiteralNode(instance.ToString());
+                            g.Assert(subject, predicate, literalNode);
                         }
                         else
                         {
-                            if (!seen.TryGetValue(x, out var bnode))
+                            if (!seen.TryGetValue(instance, out var blankNode))
                             {
-                                bnode = seen[x] = g.CreateBlankNode();
-                                process(g, bnode, x, seen);
+                                blankNode = seen[instance] = g.CreateBlankNode();
+                                process(g, blankNode, instance, seen);
                             }
 
-                            g.Assert(subject, predicate, bnode);
+                            g.Assert(subject, predicate, blankNode);
                         }
                     }
                 }

@@ -7,38 +7,31 @@
     using VDS.RDF.Dynamic;
     using Xunit;
 
-    public class C1 : DynamicNode
+    public class Container : DynamicNode
     {
-        private readonly Uri baseUri;
+        public Container(INode node, Uri baseUri) : base(node, baseUri) { }
 
-        public C1(INode node, Uri baseUri) : base(node, baseUri)
-        {
-            this.baseUri = baseUri;
-        }
+        public ICollection<string> Names => new DynamicObjectCollection<string>(this, "name");
 
-        public ICollection<string> Names => new x<string>(this, "name", null);
-
-        public ICollection<C2> Children => new x<C2>(this, "child", this.baseUri);
+        public ICollection<Item> Children => new DynamicObjectCollection<Item>(this, "child");
     }
 
-    public class C2 : DynamicNode
+    public class Item : DynamicNode
     {
-        public C2(INode node, Uri baseUri) : base(node, baseUri) { }
+        public Item(INode node, Uri baseUri) : base(node, baseUri) { }
 
-        public ICollection<string> Names => new x<string>(this, "name", null);
+        public ICollection<string> Names => new DynamicObjectCollection<string>(this, "name");
     }
 
-    internal class x<T> : ICollection<T>
+    internal class DynamicObjectCollection<T> : ICollection<T>
     {
-        private readonly dynamic subject;
+        private readonly DynamicNode subject;
         private readonly string predicate;
-        private readonly Uri baseUri;
 
-        public x(dynamic subject, string predicate, Uri baseUri)
+        public DynamicObjectCollection(DynamicNode subject, string predicate)
         {
             this.subject = subject;
             this.predicate = predicate;
-            this.baseUri = baseUri;
         }
 
         public int Count => this.Objects.Count();
@@ -87,13 +80,13 @@
             if (type.IsSubclassOf(typeof(DynamicNode)))
             {
                 var ctor = type.GetConstructor(new[] { typeof(INode), typeof(Uri) });
-                value = ctor.Invoke(new[] { value, this.baseUri });
+                value = ctor.Invoke(new[] { value, this.subject.BaseUri });
             }
 
             return (T)value;
         }
 
-        private ICollection<object> Objects => this.subject[this.predicate];
+        private ICollection<object> Objects => (ICollection<object>)this.subject[this.predicate];
     }
 
     public class StaticLazy
@@ -108,11 +101,11 @@
 _:x <http://example.com/name> ""1"" .
 ");
 
-            var c1 = new C1(g1.Triples.SubjectNodes.First(), new Uri("http://example.com/"));
+            var container = new Container(g1.Triples.SubjectNodes.First(), new Uri("http://example.com/"));
 
-            Assert.Equal("0", c1.Names.First());
-            Assert.Equal(g1.Nodes.BlankNodes().Single(), c1.Children.First());
-            Assert.Equal("1", c1.Children.First().Names.Single());
+            Assert.Equal("0", container.Names.First());
+            Assert.Equal(g1.Nodes.BlankNodes().Single(), container.Children.First());
+            Assert.Equal("1", container.Children.First().Names.Single());
 
             var g2 = new Graph();
             g2.LoadFromString(@"
@@ -120,7 +113,7 @@ _:x <http://example.com/name> ""1"" .
 _:x <http://example.com/name> ""1"" .
 ");
 
-            c1.Names.Clear();
+            container.Names.Clear();
             Assert.Equal(g2, g1);
 
             var g3 = new Graph();
@@ -131,8 +124,8 @@ _:x <http://example.com/name> ""1"" .
 _:x <http://example.com/name> ""1"" .
 ");
 
-            c1.Names.Add("n1");
-            c1.Names.Add("n2");
+            container.Names.Add("n1");
+            container.Names.Add("n2");
             Assert.Equal(g3, g1);
         }
     }
