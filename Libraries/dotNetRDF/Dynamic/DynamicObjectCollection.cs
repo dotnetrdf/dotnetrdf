@@ -6,68 +6,60 @@
     using System.Linq;
     using VDS.RDF.Nodes;
 
-    internal class DynamicObjectCollection : ICollection<object>
+    public class DynamicObjectCollection : ICollection<object>
     {
         private readonly DynamicNode subject;
         private readonly INode predicate;
 
-        internal DynamicObjectCollection(DynamicNode subject, INode predicate)
+        public DynamicObjectCollection(DynamicNode subject, INode predicate)
         {
+            if (subject is null)
+            {
+                throw new ArgumentNullException(nameof(subject));
+            }
+
+            if (predicate is null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
+
+            if (subject.Graph is null)
+            {
+                throw new InvalidOperationException();
+            }
+
             this.subject = subject;
             this.predicate = predicate;
         }
 
-        public int Count => this.Get().Count();
+        private IEnumerable<object> Objects
+        {
+            get
+            {
+                return
+                    from triple
+                    in subject.Graph.GetTriplesWithSubjectPredicate(subject, predicate)
+                    select ConvertToObject(triple.Object);
+            }
+        }
+
+        public int Count => Objects.Count();
 
         public bool IsReadOnly => false;
 
-        public void Add(object item)
-        {
-            this.subject.Add(this.predicate, item);
-        }
+        public void Add(object item) => subject.Add(predicate, item);
 
-        public void Clear()
-        {
-            this.subject.Remove(this.predicate);
-        }
+        public void Clear() => subject.Remove(predicate);
 
-        public bool Contains(object item)
-        {
-            return ((IDictionary<INode, object>)this.subject).Contains(new KeyValuePair<INode, object>(this.predicate, item));
-        }
+        public bool Contains(object item) => ((IDictionary<INode, object>)subject).Contains(new KeyValuePair<INode, object>(predicate, item));
 
-        public void CopyTo(object[] array, int index)
-        {
-            this.Get().ToArray().CopyTo(array, index);
-        }
+        public void CopyTo(object[] array, int index) => Objects.ToArray().CopyTo(array, index);
 
-        public IEnumerator<object> GetEnumerator()
-        {
-            return this.Get().GetEnumerator();
-        }
+        public IEnumerator<object> GetEnumerator() => Objects.GetEnumerator();
 
-        public bool Remove(object item)
-        {
-            return ((IDictionary<INode, object>)this.subject).Remove(new KeyValuePair<INode, object>(this.predicate, item));
-        }
+        public bool Remove(object item) => ((IDictionary<INode, object>)subject).Remove(new KeyValuePair<INode, object>(predicate, item));
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
-
-        private IEnumerable<object> Get()
-        {
-            if (this.subject.Graph is null)
-            {
-                throw new InvalidOperationException("graph missing");
-            }
-
-            return
-                from triple
-                in this.subject.Graph.GetTriplesWithSubjectPredicate(this.subject, this.predicate)
-                select ConvertToObject(triple.Object);
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         private object ConvertToObject(INode node)
         {
@@ -98,9 +90,11 @@
                 case NumericNode numericNode:
                     return numericNode.AsInteger();
 
+                case StringNode stringNode when stringNode.DataType is null && string.IsNullOrEmpty(stringNode.Language):
+                    return stringNode.AsString();
+
                 default:
-                    // TODO: What happens with language tags?
-                    return node.ToString();
+                    return node;
             }
         }
     }
