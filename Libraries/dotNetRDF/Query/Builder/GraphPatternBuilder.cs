@@ -37,6 +37,7 @@ namespace VDS.RDF.Query.Builder
 {
     public sealed class GraphPatternBuilder : IGraphPatternBuilder
     {
+        private readonly IList<InlineDataBuilder> _inlineDataBuilders = new List<InlineDataBuilder>();
         private readonly IList<GraphPatternBuilder> _childGraphPatternBuilders = new List<GraphPatternBuilder>();
         private readonly IList<Func<INamespaceMapper, ISparqlExpression>> _filterBuilders = new List<Func<INamespaceMapper, ISparqlExpression>>();
         private readonly IList<Func<INamespaceMapper, ITriplePattern[]>> _triplePatterns = new List<Func<INamespaceMapper, ITriplePattern[]>>();
@@ -81,6 +82,11 @@ namespace VDS.RDF.Query.Builder
             foreach (var buildFilter in _filterBuilders)
             {
                 graphPattern.AddFilter(new UnaryExpressionFilter(buildFilter(prefixes)));
+            }
+
+            foreach (var builder in _inlineDataBuilders)
+            {
+                builder.AppendTo(graphPattern);
             }
 
             return graphPattern;
@@ -272,6 +278,13 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
+        public IInlineDataBuilder InlineData(string variable)
+        {
+            var builder = new InlineDataBuilder(variable);
+            _inlineDataBuilders.Add(builder);
+            return builder;
+        }
+
         public IGraphPatternBuilder Filter(Func<INonAggregateExpressionBuilder, BooleanExpression> buildExpression)
         {
             _filterBuilders.Add(namespaceMapper =>
@@ -300,6 +313,35 @@ namespace VDS.RDF.Query.Builder
             var childBuilder = new GraphPatternBuilder(graphPatternType, graphSpecifier);
             buildGraphPattern(childBuilder);
             _childGraphPatternBuilders.Add(childBuilder);
+        }
+    }
+
+    public class InlineDataBuilder : IInlineDataBuilder
+    {
+        PatternItemFactory _patternItemFactory = new PatternItemFactory();
+        private readonly string _variable;
+        private int _value;
+
+        public InlineDataBuilder(string variable)
+        {
+            _variable = variable;
+        }
+
+        public void Values(int value)
+        {
+            _value = value;
+        }
+
+        public void AppendTo(GraphPattern graphPattern)
+        {
+            var bindingTuple = new BindingTuple(new List<string>  { _variable }, new List<PatternItem>
+            {
+                _patternItemFactory.CreateLiteralNodeMatchPattern(_value),
+            });
+            var bindingsPattern = new BindingsPattern(new [] { _variable });
+            bindingsPattern.AddTuple(bindingTuple);
+            graphPattern.AddInlineData(
+                bindingsPattern);
         }
     }
 }

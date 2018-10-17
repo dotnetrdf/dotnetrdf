@@ -72,6 +72,11 @@ namespace VDS.RDF.Query.Builder
             get { return _rootGraphPatternBuilder; }
         }
 
+        public IGraphPatternBuilder Root
+        {
+            get { return _rootGraphPatternBuilder; }
+        }
+
         public SparqlQueryType QueryType
         {
             get { return _sparqlQueryType; }
@@ -377,10 +382,7 @@ namespace VDS.RDF.Query.Builder
         {
             var rootGraphPattern = RootGraphPatternBuilder.BuildGraphPattern(Prefixes);
 
-            if (!rootGraphPattern.IsEmpty)
-            {
-                query.RootGraphPattern = rootGraphPattern;
-            }
+            query.RootGraphPattern = rootGraphPattern;
         }
 
         private void BuildReturnVariables(SparqlQuery query)

@@ -41,7 +41,12 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Gets the builder associated with the root graph pattern.
         /// </summary>
+        [Obsolete("Please use Root property")]
         GraphPatternBuilder RootGraphPatternBuilder { get; }
+        /// <summary>
+        /// Gets the builder associated with the root graph pattern.
+        /// </summary>
+        IGraphPatternBuilder Root { get; }
         /// <summary>
         /// Gets the prefix manager, which allows adding prefixes to the query or graph pattern
         /// </summary>
