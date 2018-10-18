@@ -62,23 +62,14 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        private IEnumerable<IToken> DescribeVariables
-        {
-            get { return _describeVariables; }
-        }
-
         protected override SparqlQuery BuildQuery(SparqlQuery query)
         {
-            BuildDescribeVariables(query);
-            return base.BuildQuery(query);
-        }
-
-        private void BuildDescribeVariables(SparqlQuery query)
-        {
-            foreach (var describeVariable in DescribeVariables)
+            foreach (var describeVariable in _describeVariables)
             {
                 query.AddDescribeVariable(describeVariable);
             }
+
+            return base.BuildQuery(query);
         }
     }
 }
