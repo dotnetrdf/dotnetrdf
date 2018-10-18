@@ -117,14 +117,6 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        internal IEnumerable<SparqlVariable> BuildVariables(INamespaceMapper prefixes)
-        {
-            foreach (var buildSelectVariable in _buildSelectVariables)
-            {
-                yield return buildSelectVariable(prefixes);
-            }
-        }
-
         protected override SparqlQuery BuildQuery(SparqlQuery query)
         {
             BuildReturnVariables(query);
@@ -134,7 +126,9 @@ namespace VDS.RDF.Query.Builder
 
         private void BuildReturnVariables(SparqlQuery query)
         {
-            foreach (SparqlVariable selectVariable in BuildVariables(Prefixes))
+            var variables = _buildSelectVariables.Select(buildSelectVariable => buildSelectVariable(Prefixes));
+
+            foreach (var selectVariable in variables)
             {
                 query.AddVariable(selectVariable);
             }
