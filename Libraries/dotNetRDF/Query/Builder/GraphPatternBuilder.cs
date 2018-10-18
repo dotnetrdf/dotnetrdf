@@ -35,7 +35,7 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
 {
-    public sealed class GraphPatternBuilder : IGraphPatternBuilder
+    public sealed class GraphPatternBuilder : IGraphPatternBuilder, IDescribeGraphPatternBuilder
     {
         private readonly IList<GraphPatternBuilder> _childGraphPatternBuilders = new List<GraphPatternBuilder>();
         private readonly IList<Func<INamespaceMapper, ISparqlExpression>> _filterBuilders = new List<Func<INamespaceMapper, ISparqlExpression>>();
@@ -155,6 +155,18 @@ namespace VDS.RDF.Query.Builder
         public IGraphPatternBuilder Where(params ITriplePattern[] triplePatterns)
         {
             _triplePatterns.Add(prefixes => triplePatterns);
+            return this;
+        }
+
+        IDescribeGraphPatternBuilder IDescribeGraphPatternBuilder.Where(Action<ITriplePatternBuilder> buildTriplePatterns)
+        {
+            Where(buildTriplePatterns);
+            return this;
+        }
+
+        IDescribeGraphPatternBuilder IDescribeGraphPatternBuilder.Where(params ITriplePattern[] triplePatterns)
+        {
+            Where(triplePatterns);
             return this;
         }
 

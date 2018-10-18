@@ -31,7 +31,7 @@ namespace VDS.RDF.Query.Builder
     /// <summary>
     /// Provides methods for creating DESCRIBE queries
     /// </summary>
-    public interface IDescribeBuilder : IQueryWithVariablesBuilder
+    public interface IDescribeBuilder : IQueryBuilder
     {
         /// <summary>
         /// Adds additional <paramref name="variables"/> to DESCRIBE

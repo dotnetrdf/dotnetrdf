@@ -32,7 +32,7 @@ namespace VDS.RDF.Query.Builder
     /// <summary>
     /// Interface for creating SELECT queries
     /// </summary>
-    public interface ISelectBuilder : IQueryWithVariablesBuilder
+    public interface ISelectBuilder : IQueryBuilder
     {
         /// <summary>
         /// Adds additional SELECT return <paramref name="variables"/>

@@ -30,9 +30,13 @@ using VDS.RDF.Parsing.Tokens;
 
 namespace VDS.RDF.Query.Builder
 {
-    sealed class DescribeBuilder : IDescribeBuilder
+    internal sealed class DescribeBuilder : QueryBuilder, IDescribeBuilder
     {
         readonly List<IToken> _describeVariables = new List<IToken>();
+
+        internal DescribeBuilder(SparqlQueryType sparqlQueryType) : base(sparqlQueryType)
+        {
+        }
 
         /// <summary>
         /// Adds additional <paramref name="variables"/> to DESCRIBE
@@ -58,19 +62,23 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        public IQueryBuilder GetQueryBuilder()
-        {
-            return new QueryBuilder(this);
-        }
-
-        internal SparqlQueryType SparqlQueryType
-        {
-            get { return SparqlQueryType.Describe; }
-        }
-
-        internal IEnumerable<IToken> DescribeVariables
+        private IEnumerable<IToken> DescribeVariables
         {
             get { return _describeVariables; }
+        }
+
+        protected override SparqlQuery BuildQuery(SparqlQuery query)
+        {
+            BuildDescribeVariables(query);
+            return base.BuildQuery(query);
+        }
+
+        private void BuildDescribeVariables(SparqlQuery query)
+        {
+            foreach (var describeVariable in DescribeVariables)
+            {
+                query.AddDescribeVariable(describeVariable);
+            }
         }
     }
 }

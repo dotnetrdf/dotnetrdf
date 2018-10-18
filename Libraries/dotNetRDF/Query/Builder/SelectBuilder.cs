@@ -31,19 +31,12 @@ using VDS.RDF.Query.Builder.Expressions;
 
 namespace VDS.RDF.Query.Builder
 {
-    sealed class SelectBuilder : ISelectBuilder
+    internal sealed class SelectBuilder : QueryBuilder, ISelectBuilder
     {
         private readonly IList<Func<INamespaceMapper, SparqlVariable>> _buildSelectVariables = new List<Func<INamespaceMapper, SparqlVariable>>();
-        private SparqlQueryType _sparqlQueryType;
 
-        internal SelectBuilder(SparqlQueryType sparqlQueryType)
+        internal SelectBuilder(SparqlQueryType queryType) : base(queryType)
         {
-            _sparqlQueryType = sparqlQueryType;
-        }
-
-        internal SparqlQueryType SparqlQueryType
-        {
-            get { return _sparqlQueryType; }
         }
 
         /// <summary>
@@ -106,19 +99,19 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         public ISelectBuilder Distinct()
         {
-            switch (_sparqlQueryType)
+            switch (QueryType)
             {
                 case SparqlQueryType.Select:
-                    _sparqlQueryType = SparqlQueryType.SelectDistinct;
+                    QueryType = SparqlQueryType.SelectDistinct;
                     break;
                 case SparqlQueryType.SelectAll:
-                    _sparqlQueryType = SparqlQueryType.SelectAllDistinct;
+                    QueryType = SparqlQueryType.SelectAllDistinct;
                     break;
                 case SparqlQueryType.SelectReduced:
-                    _sparqlQueryType = SparqlQueryType.SelectDistinct;
+                    QueryType = SparqlQueryType.SelectDistinct;
                     break;
                 case SparqlQueryType.SelectAllReduced:
-                    _sparqlQueryType = SparqlQueryType.SelectAllDistinct;
+                    QueryType = SparqlQueryType.SelectAllDistinct;
                     break;
             }
             return this;
@@ -132,9 +125,19 @@ namespace VDS.RDF.Query.Builder
             }
         }
 
-        public IQueryBuilder GetQueryBuilder()
+        protected override SparqlQuery BuildQuery(SparqlQuery query)
         {
-            return new QueryBuilder(this);
+            BuildReturnVariables(query);
+
+            return base.BuildQuery(query);
+        }
+
+        private void BuildReturnVariables(SparqlQuery query)
+        {
+            foreach (SparqlVariable selectVariable in BuildVariables(Prefixes))
+            {
+                query.AddVariable(selectVariable);
+            }
         }
     }
 }
