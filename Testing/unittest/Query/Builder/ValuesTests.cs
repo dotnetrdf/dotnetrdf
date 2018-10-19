@@ -117,5 +117,37 @@ namespace VDS.RDF.Query.Builder
                 .And.ContainTuple(new { x = "a", y = "b", z = "c" })
                 .And.ContainTuple(new { x = 123, y = 124, z = 125 });
         }
+
+        [Fact]
+        public void ShorthandMethod_MultipleVariables_UriValues_InRootGraphPattern_AddedSuccesfully()
+        {
+            // equivalent to
+            // SELECT *
+            // {
+            //    VALUES ( ?x, ?y, ?z )
+            //    {
+            //       ( <http://example.com/x>, <http://example.com/y>, <http://example.com/z> )
+            //    }
+            // }
+
+            // given
+            var select = QueryBuilder.Select("o").GetQueryBuilder();
+            select.InlineData("x", "y", "z")
+                .Values(new Uri("http://example.com/x"), new Uri("http://example.com/y"), new Uri("http://example.com/z"));
+            var query = select.BuildQuery();
+
+            // then
+            Console.Write(query);
+            query.RootGraphPattern.HasInlineData.Should().BeTrue();
+            query.RootGraphPattern.InlineData.Should()
+                .DeclareVariables("x", "y", "z")
+                .And.HasTuples(1)
+                .And.ContainTuple(new
+                {
+                    x = new Uri("http://example.com/x"),
+                    y = new Uri("http://example.com/y"),
+                    z = new Uri("http://example.com/z"),
+                });
+        }
     }
 }
