@@ -25,6 +25,7 @@
 */
 
 using System.Collections.Generic;
+using System.Linq;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
@@ -32,32 +33,25 @@ namespace VDS.RDF.Query.Builder
     internal class InlineDataBuilder : IInlineDataBuilder
     {
         private readonly PatternItemFactory _patternItemFactory = new PatternItemFactory();
-        private readonly string _variable;
-        private List<int> _values = new List<int>();
+        private readonly BindingsPattern _bindingsPattern;
+        private readonly List<string> _variables;
 
-        public InlineDataBuilder(string variable)
+        public InlineDataBuilder(IEnumerable<string> variables)
         {
-            _variable = variable;
+            _variables = variables.ToList();
+            _bindingsPattern = new BindingsPattern(_variables);
         }
 
-        public IInlineDataBuilder Values(int value)
+        public IInlineDataBuilder Values(params object[] values)
         {
-            _values.Add(value);
+            var patternItems = values.Select(value => _patternItemFactory.CreateLiteralNodeMatchPattern(value));
+            _bindingsPattern.AddTuple(new BindingTuple(_variables, patternItems.ToList()));
             return this;
         }
 
         public void AppendTo(GraphPattern graphPattern)
         {
-            var bindingsPattern = new BindingsPattern(new[] { _variable });
-            _values.ForEach(value => {
-                var bindingTuple = new BindingTuple(new List<string>  { _variable }, new List<PatternItem>
-                {
-                    _patternItemFactory.CreateLiteralNodeMatchPattern(value),
-                });
-                bindingsPattern.AddTuple(bindingTuple);
-            });
-
-            graphPattern.AddInlineData(bindingsPattern);
+            graphPattern.AddInlineData(_bindingsPattern);
         }
     }
 }

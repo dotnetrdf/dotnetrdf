@@ -15,9 +15,9 @@ namespace VDS.RDF.Query.Builder.Assertions
             Subject = pattern;
         }
 
-        public AndConstraint<BindingsPatternAssertions> DeclareVariables(string variable)
+        public AndConstraint<BindingsPatternAssertions> DeclareVariables(params string[] variables)
         {
-            Subject.Variables.Should().Contain(variable);
+            Subject.Variables.Should().ContainInOrder(variables);
 
             return new AndConstraint<BindingsPatternAssertions>(this);
         }

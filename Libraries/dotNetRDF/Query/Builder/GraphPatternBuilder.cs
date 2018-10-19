@@ -278,9 +278,9 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        public IInlineDataBuilder InlineData(string variable)
+        public IInlineDataBuilder InlineData(params string[] variables)
         {
-            var builder = new InlineDataBuilder(variable);
+            var builder = new InlineDataBuilder(variables);
             _inlineDataBuilders.Add(builder);
             return builder;
         }

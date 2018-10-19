@@ -195,9 +195,9 @@ namespace VDS.RDF.Query.Builder
             return queryBuilder;
         }
 
-        public static IInlineDataBuilder InlineData(this IQueryBuilder queryBuilder, string variable)
+        public static IInlineDataBuilder InlineData(this IQueryBuilder queryBuilder, params string[] variables)
         {
-            return queryBuilder.Root.InlineData(variable);
+            return queryBuilder.Root.InlineData(variables);
         }
     }
 }

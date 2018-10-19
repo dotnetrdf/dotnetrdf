@@ -107,6 +107,6 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         IGraphPatternBuilder Child(Action<IGraphPatternBuilder> buildGraphPattern);
 
-        IInlineDataBuilder InlineData(string variable);
+        IInlineDataBuilder InlineData(params string[] variables);
     }
 }

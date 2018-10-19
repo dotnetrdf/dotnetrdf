@@ -28,6 +28,6 @@ namespace VDS.RDF.Query.Builder
 {
     public interface IInlineDataBuilder
     {
-        IInlineDataBuilder Values(int values);
+        IInlineDataBuilder Values(params object[] values);
     }
 }
