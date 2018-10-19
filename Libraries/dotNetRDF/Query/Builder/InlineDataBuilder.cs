@@ -24,10 +24,40 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using VDS.RDF.Query.Patterns;
+
 namespace VDS.RDF.Query.Builder
 {
-    public interface IInlineDataBuilder
+    internal class InlineDataBuilder : IInlineDataBuilder
     {
-        IInlineDataBuilder Values(int values);
+        private readonly PatternItemFactory _patternItemFactory = new PatternItemFactory();
+        private readonly string _variable;
+        private List<int> _values = new List<int>();
+
+        public InlineDataBuilder(string variable)
+        {
+            _variable = variable;
+        }
+
+        public IInlineDataBuilder Values(int value)
+        {
+            _values.Add(value);
+            return this;
+        }
+
+        public void AppendTo(GraphPattern graphPattern)
+        {
+            var bindingsPattern = new BindingsPattern(new[] { _variable });
+            _values.ForEach(value => {
+                var bindingTuple = new BindingTuple(new List<string>  { _variable }, new List<PatternItem>
+                {
+                    _patternItemFactory.CreateLiteralNodeMatchPattern(value),
+                });
+                bindingsPattern.AddTuple(bindingTuple);
+            });
+
+            graphPattern.AddInlineData(bindingsPattern);
+        }
     }
 }

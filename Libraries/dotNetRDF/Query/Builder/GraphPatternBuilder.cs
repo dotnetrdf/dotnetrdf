@@ -315,33 +315,4 @@ namespace VDS.RDF.Query.Builder
             _childGraphPatternBuilders.Add(childBuilder);
         }
     }
-
-    public class InlineDataBuilder : IInlineDataBuilder
-    {
-        PatternItemFactory _patternItemFactory = new PatternItemFactory();
-        private readonly string _variable;
-        private int _value;
-
-        public InlineDataBuilder(string variable)
-        {
-            _variable = variable;
-        }
-
-        public void Values(int value)
-        {
-            _value = value;
-        }
-
-        public void AppendTo(GraphPattern graphPattern)
-        {
-            var bindingTuple = new BindingTuple(new List<string>  { _variable }, new List<PatternItem>
-            {
-                _patternItemFactory.CreateLiteralNodeMatchPattern(_value),
-            });
-            var bindingsPattern = new BindingsPattern(new [] { _variable });
-            bindingsPattern.AddTuple(bindingTuple);
-            graphPattern.AddInlineData(
-                bindingsPattern);
-        }
-    }
 }
