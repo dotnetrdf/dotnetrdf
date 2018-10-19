@@ -87,5 +87,35 @@ namespace VDS.RDF.Query.Builder
                 .And.HasTuples(1)
                 .And.ContainTuple(new { x = "a", y = "b", z = "c" });
         }
+
+        [Fact]
+        public void ShorthandMethod_MultipleVariables_MultipleTuples_InRootGraphPattern_AddedSuccesfully()
+        {
+            // equivalent to
+            // SELECT *
+            // {
+            //    VALUES ( ?x, ?y, ?z )
+            //    {
+            //       ( "a", "b", "c" ),
+            //       ( 123, 124, 125 )
+            //    }
+            // }
+
+            // given
+            var select = QueryBuilder.Select("o").GetQueryBuilder();
+            select.InlineData("x", "y", "z")
+                .Values("a", "b", "c")
+                .Values(123, 124, 125);
+            var query = select.BuildQuery();
+
+            // then
+            Console.Write(query);
+            query.RootGraphPattern.HasInlineData.Should().BeTrue();
+            query.RootGraphPattern.InlineData.Should()
+                .DeclareVariables("x", "y", "z")
+                .And.HasTuples(2)
+                .And.ContainTuple(new { x = "a", y = "b", z = "c" })
+                .And.ContainTuple(new { x = 123, y = 124, z = 125 });
+        }
     }
 }
