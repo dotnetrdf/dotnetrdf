@@ -28,9 +28,10 @@ using System;
 
 namespace VDS.RDF.Query.Builder
 {
-    public interface IInlineDataBuilder
+    public interface IBindingTupleBuilder
     {
-        IInlineDataBuilder Values(params object[] values);
-        IInlineDataBuilder Values(Action<IBindingTupleBuilder> builder);
+        IBindingTupleBuilder Value(object literal);
+        IBindingTupleBuilder Value(Uri literal);
+        IBindingTupleBuilder Undef();
     }
 }

@@ -25,12 +25,43 @@
 */
 
 using System;
+using System.Collections.Generic;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
 {
-    public interface IInlineDataBuilder
+    internal class BindingTupleBuilder : IBindingTupleBuilder
     {
-        IInlineDataBuilder Values(params object[] values);
-        IInlineDataBuilder Values(Action<IBindingTupleBuilder> builder);
+        private readonly List<string> _variables;
+        private readonly List<PatternItem> _patternItems = new List<PatternItem>();
+        private readonly PatternItemFactory _patternItemFactory = new PatternItemFactory();
+
+        public BindingTupleBuilder(List<string> variables)
+        {
+            _variables = variables;
+        }
+
+        public IBindingTupleBuilder Value(object literal)
+        {
+            _patternItems.Add(_patternItemFactory.CreateLiteralNodeMatchPattern(literal));
+            return this;
+        }
+
+        public IBindingTupleBuilder Value(Uri literal)
+        {
+            _patternItems.Add(_patternItemFactory.CreateNodeMatchPattern(literal));
+            return this;
+        }
+
+        public IBindingTupleBuilder Undef()
+        {
+            _patternItems.Add(null);
+            return this;
+        }
+
+        public BindingTuple GetTuple()
+        {
+            return new BindingTuple(_variables, _patternItems);
+        }
     }
 }

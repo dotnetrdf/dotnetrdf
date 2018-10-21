@@ -242,6 +242,35 @@ namespace VDS.RDF.Query.Builder
                 });
         }
 
+        [Fact]
+        public void VerboseMethod_UndefValues_InRootGraphPattern_AddedSuccesfully()
+        {
+            // equivalent to
+            // SELECT *
+            // {
+            //    VALUES ?x ?y ?z
+            //    {
+            //       ( UNDEF UNDEF UNDEF )
+            //    }
+            // }
+
+            // given
+            var select = QueryBuilder.SelectAll();
+            select.InlineData("x", "y", "z")
+                .Values(vb => vb.Undef().Undef().Undef());
+            var query = select.BuildQuery();
+
+            // then
+            query.RootGraphPattern.HasInlineData.Should().BeTrue();
+            query.RootGraphPattern.InlineData.Should()
+                .DeclareVariables("x", "y", "z")
+                .And.HasTuples(1)
+                .And.ContainTuple(new
+                {
+                    x = UNDEF, y = UNDEF, z = UNDEF
+                });
+        }
+
         private static IUriNode Uri(string uri)
         {
             return NodeFactory.CreateUriNode(new Uri(uri));

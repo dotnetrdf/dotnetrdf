@@ -33,7 +33,6 @@ namespace VDS.RDF.Query.Builder
 {
     internal class InlineDataBuilder : IInlineDataBuilder
     {
-        private readonly PatternItemFactory _patternItemFactory = new PatternItemFactory();
         private readonly BindingsPattern _bindingsPattern;
         private readonly List<string> _variables;
 
@@ -45,14 +44,12 @@ namespace VDS.RDF.Query.Builder
 
         public IInlineDataBuilder Values(params object[] values)
         {
-            var patternItems = values.Select(CreateValue);
-            _bindingsPattern.AddTuple(new BindingTuple(_variables, patternItems.ToList()));
-            return this;
+            return Values(builder => values.Aggregate(builder, CreateValue));
         }
 
-        public IInlineDataBuilder Values(Action<IInlineDataValuesBuilder> buildWith)
+        public IInlineDataBuilder Values(Action<IBindingTupleBuilder> buildWith)
         {
-            var builder = new InlineDataValuesBuilder(_variables);
+            var builder = new BindingTupleBuilder(_variables);
             buildWith(builder);
             _bindingsPattern.AddTuple(builder.GetTuple());
             return this;
@@ -63,61 +60,19 @@ namespace VDS.RDF.Query.Builder
             graphPattern.AddInlineData(_bindingsPattern);
         }
 
-        private PatternItem CreateValue(object value)
+        private static IBindingTupleBuilder CreateValue(IBindingTupleBuilder builder, object value)
         {
             if (value == null)
             {
-                return null;
+                return builder.Undef();
             }
-
+            
             if (value is Uri)
             {
-                return _patternItemFactory.CreateNodeMatchPattern((Uri) value);
+                return builder.Value((Uri) value);
             }
 
-            return _patternItemFactory.CreateLiteralNodeMatchPattern(value);
+            return builder.Value(value);
         }
-    }
-
-    internal class InlineDataValuesBuilder : IInlineDataValuesBuilder
-    {
-        private readonly List<string> _variables;
-        private readonly List<PatternItem> _patternItems = new List<PatternItem>();
-        private readonly PatternItemFactory _patternItemFactory = new PatternItemFactory();
-
-        public InlineDataValuesBuilder(List<string> variables)
-        {
-            _variables = variables;
-        }
-
-        public IInlineDataValuesBuilder Value(string literal)
-        {
-            _patternItems.Add(_patternItemFactory.CreateLiteralNodeMatchPattern(literal));
-            return this;
-        }
-
-        public IInlineDataValuesBuilder Value(int literal)
-        {
-            _patternItems.Add(_patternItemFactory.CreateLiteralNodeMatchPattern(literal));
-            return this;
-        }
-
-        public IInlineDataValuesBuilder Value(Uri literal)
-        {
-            _patternItems.Add(_patternItemFactory.CreateNodeMatchPattern(literal));
-            return this;
-        }
-
-        public BindingTuple GetTuple()
-        {
-            return new BindingTuple(_variables, _patternItems);
-        }
-    }
-
-    public interface IInlineDataValuesBuilder
-    {
-        IInlineDataValuesBuilder Value(string literal);
-        IInlineDataValuesBuilder Value(int literal);
-        IInlineDataValuesBuilder Value(Uri literal);
     }
 }
