@@ -47,9 +47,9 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        public IBindingTupleBuilder Value(Uri literal)
+        public IBindingTupleBuilder Value(Uri uri)
         {
-            _patternItems.Add(_patternItemFactory.CreateNodeMatchPattern(literal));
+            _patternItems.Add(_patternItemFactory.CreateNodeMatchPattern(uri));
             return this;
         }
 

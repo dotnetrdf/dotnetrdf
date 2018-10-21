@@ -31,7 +31,7 @@ namespace VDS.RDF.Query.Builder
     public interface IBindingTupleBuilder
     {
         IBindingTupleBuilder Value(object literal);
-        IBindingTupleBuilder Value(Uri literal);
+        IBindingTupleBuilder Value(Uri uri);
         IBindingTupleBuilder Undef();
     }
 }
