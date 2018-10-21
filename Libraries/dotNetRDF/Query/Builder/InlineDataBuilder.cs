@@ -50,6 +50,14 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
+        public IInlineDataBuilder Values(Action<IInlineDataValuesBuilder> buildWith)
+        {
+            var builder = new InlineDataValuesBuilder(_variables);
+            buildWith(builder);
+            _bindingsPattern.AddTuple(builder.GetTuple());
+            return this;
+        }
+
         public void AppendTo(GraphPattern graphPattern)
         {
             graphPattern.AddInlineData(_bindingsPattern);
@@ -69,5 +77,47 @@ namespace VDS.RDF.Query.Builder
 
             return _patternItemFactory.CreateLiteralNodeMatchPattern(value);
         }
+    }
+
+    internal class InlineDataValuesBuilder : IInlineDataValuesBuilder
+    {
+        private readonly List<string> _variables;
+        private readonly List<PatternItem> _patternItems = new List<PatternItem>();
+        private readonly PatternItemFactory _patternItemFactory = new PatternItemFactory();
+
+        public InlineDataValuesBuilder(List<string> variables)
+        {
+            _variables = variables;
+        }
+
+        public IInlineDataValuesBuilder Value(string literal)
+        {
+            _patternItems.Add(_patternItemFactory.CreateLiteralNodeMatchPattern(literal));
+            return this;
+        }
+
+        public IInlineDataValuesBuilder Value(int literal)
+        {
+            _patternItems.Add(_patternItemFactory.CreateLiteralNodeMatchPattern(literal));
+            return this;
+        }
+
+        public IInlineDataValuesBuilder Value(Uri literal)
+        {
+            _patternItems.Add(_patternItemFactory.CreateNodeMatchPattern(literal));
+            return this;
+        }
+
+        public BindingTuple GetTuple()
+        {
+            return new BindingTuple(_variables, _patternItems);
+        }
+    }
+
+    public interface IInlineDataValuesBuilder
+    {
+        IInlineDataValuesBuilder Value(string literal);
+        IInlineDataValuesBuilder Value(int literal);
+        IInlineDataValuesBuilder Value(Uri literal);
     }
 }

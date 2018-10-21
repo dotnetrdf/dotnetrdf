@@ -201,6 +201,47 @@ namespace VDS.RDF.Query.Builder
                 });
         }
 
+        [Fact]
+        public void VerboseMethod_SingleVariable_MultipleValues_InRootGraphPattern_AddedSuccesfully()
+        {
+            // equivalent to
+            // SELECT *
+            // {
+            //    VALUES ?x
+            //    {
+            //       ( "Tomasz" )
+            //       ( 20 )
+            //       ( <http://example.com> )
+            //    }
+            // }
+
+            // given
+            var select = QueryBuilder.SelectAll();
+            select.InlineData("x")
+                .Values(vb => vb.Value("Tomasz"))
+                .Values(vb => vb.Value(20))
+                .Values(vb => vb.Value(new Uri("http://example.com")));
+            var query = select.BuildQuery();
+
+            // then
+            query.RootGraphPattern.HasInlineData.Should().BeTrue();
+            query.RootGraphPattern.InlineData.Should()
+                .DeclareVariables("x")
+                .And.HasTuples(3)
+                .And.ContainTuple(new
+                {
+                    x = Lit("Tomasz"),
+                })
+                .And.ContainTuple(new
+                {
+                    x = Lit(20),
+                })
+                .And.ContainTuple(new
+                {
+                    x = Uri("http://example.com"),
+                });
+        }
+
         private static IUriNode Uri(string uri)
         {
             return NodeFactory.CreateUriNode(new Uri(uri));

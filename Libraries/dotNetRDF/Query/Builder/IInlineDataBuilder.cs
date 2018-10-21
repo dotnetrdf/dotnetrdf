@@ -24,10 +24,13 @@
 // </copyright>
 */
 
+using System;
+
 namespace VDS.RDF.Query.Builder
 {
     public interface IInlineDataBuilder
     {
         IInlineDataBuilder Values(params object[] values);
+        IInlineDataBuilder Values(Action<IInlineDataValuesBuilder> builder);
     }
 }
