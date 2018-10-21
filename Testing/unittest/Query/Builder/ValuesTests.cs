@@ -24,7 +24,6 @@ namespace VDS.RDF.Query.Builder
             var query = select.BuildQuery();
 
             // then
-            Console.Write(query);
             query.RootGraphPattern.HasInlineData.Should().BeTrue();
             query.RootGraphPattern.InlineData.Should()
                 .DeclareVariables("o")
@@ -53,7 +52,6 @@ namespace VDS.RDF.Query.Builder
             var query = select.BuildQuery();
 
             // then
-            Console.Write(query);
             query.RootGraphPattern.HasInlineData.Should().BeTrue();
             query.RootGraphPattern.InlineData.Should()
                 .DeclareVariables("o")
@@ -82,7 +80,6 @@ namespace VDS.RDF.Query.Builder
             var query = select.BuildQuery();
 
             // then
-            Console.Write(query);
             query.RootGraphPattern.HasInlineData.Should().BeTrue();
             query.RootGraphPattern.InlineData.Should()
                 .DeclareVariables("x", "y", "z")
@@ -116,7 +113,6 @@ namespace VDS.RDF.Query.Builder
             var query = select.BuildQuery();
 
             // then
-            Console.Write(query);
             query.RootGraphPattern.HasInlineData.Should().BeTrue();
             query.RootGraphPattern.InlineData.Should()
                 .DeclareVariables("x", "y", "z")
@@ -154,7 +150,6 @@ namespace VDS.RDF.Query.Builder
             var query = select.BuildQuery();
 
             // then
-            Console.Write(query);
             query.RootGraphPattern.HasInlineData.Should().BeTrue();
             query.RootGraphPattern.InlineData.Should()
                 .DeclareVariables("x", "y", "z")
