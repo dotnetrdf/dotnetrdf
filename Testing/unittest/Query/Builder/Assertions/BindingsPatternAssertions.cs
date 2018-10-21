@@ -8,8 +8,6 @@ namespace VDS.RDF.Query.Builder.Assertions
 {
     public class BindingsPatternAssertions : ReferenceTypeAssertions<BindingsPattern, BindingsPatternAssertions>
     {
-        private readonly PatternItemFactory _patternItemFactory = new PatternItemFactory();
-
         public BindingsPatternAssertions(BindingsPattern pattern)
         {
             Subject = pattern;
@@ -27,11 +25,15 @@ namespace VDS.RDF.Query.Builder.Assertions
             var type = tuple.GetType();
             var properties = type.GetProperties().ToList();
             var variables = properties.Select(prop => prop.Name).ToList();
-            var values = properties.Select(prop => _patternItemFactory.CreateLiteralNodeMatchPattern(prop.GetValue(tuple))).ToList();
-            var bindingTuple = new BindingTuple(variables, values);
+            var values = properties.ToDictionary(
+                prop => prop.Name,
+                prop => (INode) prop.GetValue(tuple));
 
             Subject.Tuples.Should()
-                .Contain(t => variables.All(v => t[v].Equals(bindingTuple[v])));
+                .Contain(
+                    t => variables.All(v => t[v].Equals(values[v])),
+                    "VALUES should contain tuple ( {0} )",
+                    string.Join(", ", values.Values));
 
             return new AndConstraint<BindingsPatternAssertions>(this);
         }

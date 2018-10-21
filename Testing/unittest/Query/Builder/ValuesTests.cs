@@ -7,6 +7,8 @@ namespace VDS.RDF.Query.Builder
 {
     public class ValuesTests
     {
+        private static readonly INodeFactory NodeFactory = new NodeFactory();
+
         [Fact]
         public void ShorthandMethod_SingleVariable_SingleValue_InRootGraphPattern_AddedSuccessfully()
         {
@@ -29,7 +31,7 @@ namespace VDS.RDF.Query.Builder
                 .And.HasTuples(1)
                 .And.ContainTuple(new
                 {
-                    o = 5
+                    o = Lit(5)
                 });
         }
 
@@ -56,9 +58,9 @@ namespace VDS.RDF.Query.Builder
             query.RootGraphPattern.InlineData.Should()
                 .DeclareVariables("o")
                 .And.HasTuples(3)
-                .And.ContainTuple(new { o = 5 })
-                .And.ContainTuple(new { o = 10 })
-                .And.ContainTuple(new { o = 15 });
+                .And.ContainTuple(new { o = Lit(5) })
+                .And.ContainTuple(new { o = Lit(10) })
+                .And.ContainTuple(new { o = Lit(15) });
         }
 
         [Fact]
@@ -85,7 +87,12 @@ namespace VDS.RDF.Query.Builder
             query.RootGraphPattern.InlineData.Should()
                 .DeclareVariables("x", "y", "z")
                 .And.HasTuples(1)
-                .And.ContainTuple(new { x = "a", y = "b", z = "c" });
+                .And.ContainTuple(new
+                {
+                    x = Lit("a"),
+                    y = Lit("b"),
+                    z = Lit("c")
+                });
         }
 
         [Fact]
@@ -114,8 +121,18 @@ namespace VDS.RDF.Query.Builder
             query.RootGraphPattern.InlineData.Should()
                 .DeclareVariables("x", "y", "z")
                 .And.HasTuples(2)
-                .And.ContainTuple(new { x = "a", y = "b", z = "c" })
-                .And.ContainTuple(new { x = 123, y = 124, z = 125 });
+                .And.ContainTuple(new
+                {
+                    x = Lit("a"),
+                    y = Lit("b"),
+                    z = Lit("c")
+                })
+                .And.ContainTuple(new
+                {
+                    x = Lit(123),
+                    y = Lit(124),
+                    z = Lit(125)
+                });
         }
 
         [Fact]
@@ -144,10 +161,20 @@ namespace VDS.RDF.Query.Builder
                 .And.HasTuples(1)
                 .And.ContainTuple(new
                 {
-                    x = new Uri("http://example.com/x"),
-                    y = new Uri("http://example.com/y"),
-                    z = new Uri("http://example.com/z"),
+                    x = Uri("http://example.com/x"),
+                    y = Uri("http://example.com/y"),
+                    z = Uri("http://example.com/z"),
                 });
+        }
+
+        private static IUriNode Uri(string uri)
+        {
+            return NodeFactory.CreateUriNode(new Uri(uri));
+        }
+
+        private static ILiteralNode Lit<T>(T literal)
+        {
+            return NodeFactory.CreateLiteralNode(literal.ToString());
         }
     }
 }

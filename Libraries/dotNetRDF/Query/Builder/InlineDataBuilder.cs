@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Query.Patterns;
@@ -44,7 +45,7 @@ namespace VDS.RDF.Query.Builder
 
         public IInlineDataBuilder Values(params object[] values)
         {
-            var patternItems = values.Select(value => _patternItemFactory.CreateLiteralNodeMatchPattern(value));
+            var patternItems = values.Select(CreateValue);
             _bindingsPattern.AddTuple(new BindingTuple(_variables, patternItems.ToList()));
             return this;
         }
@@ -52,6 +53,16 @@ namespace VDS.RDF.Query.Builder
         public void AppendTo(GraphPattern graphPattern)
         {
             graphPattern.AddInlineData(_bindingsPattern);
+        }
+
+        private PatternItem CreateValue(object value)
+        {
+            if (value is Uri)
+            {
+                return _patternItemFactory.CreateNodeMatchPattern((Uri) value);
+            }
+
+            return _patternItemFactory.CreateLiteralNodeMatchPattern(value);
         }
     }
 }
