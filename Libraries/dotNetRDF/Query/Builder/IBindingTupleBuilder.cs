@@ -33,5 +33,7 @@ namespace VDS.RDF.Query.Builder
         IBindingTupleBuilder Value(object literal);
         IBindingTupleBuilder Value(Uri uri);
         IBindingTupleBuilder Undef();
+        IBindingTupleBuilder Value(string literal, Uri dataType);
+        IBindingTupleBuilder Value(string literal, string languageTag);
     }
 }

@@ -267,7 +267,73 @@ namespace VDS.RDF.Query.Builder
                 .And.HasTuples(1)
                 .And.ContainTuple(new
                 {
-                    x = UNDEF, y = UNDEF, z = UNDEF
+                    x = UNDEF,
+                    y = UNDEF,
+                    z = UNDEF
+                });
+        }
+
+        [Fact]
+        public void VerboseMethod_TypedLiteral_InRootGraphPattern_AddedSuccesfully()
+        {
+            // equivalent to
+            // SELECT *
+            // {
+            //    VALUES ?name
+            //    {
+            //       ( "Tomasz"^^<https://schema.org/givenName> )
+            //    }
+            // }
+
+            // given
+            var select = QueryBuilder.SelectAll();
+            select.InlineData("name")
+                .Values(vb => vb.Value("Tomasz", new Uri("https://schema.org/givenName")));
+            var query = select.BuildQuery();
+
+            // then
+            query.RootGraphPattern.HasInlineData.Should().BeTrue();
+            query.RootGraphPattern.InlineData.Should()
+                .DeclareVariables("name")
+                .And.HasTuples(1)
+                .And.ContainTuple(new
+                {
+                    name = Lit("Tomasz", new Uri("https://schema.org/givenName"))
+                });
+        }
+
+        [Fact]
+        public void VerboseMethod_TaggedLiteral_InRootGraphPattern_AddedSuccesfully()
+        {
+            // equivalent to
+            // SELECT *
+            // {
+            //    VALUES ?name
+            //    {
+            //       ( "Tomasz"@pl )
+            //       ( "Thomas"@en )
+            //    }
+            // }
+
+            // given
+            var select = QueryBuilder.SelectAll();
+            select.InlineData("name")
+                .Values(vb => vb.Value("Tomasz", "pl"))
+                .Values(vb => vb.Value("Thomas", "en"));
+            var query = select.BuildQuery();
+
+            // then
+            query.RootGraphPattern.HasInlineData.Should().BeTrue();
+            query.RootGraphPattern.InlineData.Should()
+                .DeclareVariables("name")
+                .And.HasTuples(2)
+                .And.ContainTuple(new
+                {
+                    name = Lit("Tomasz", "pl")
+                })
+                .And.ContainTuple(new
+                {
+                    name = Lit("Thomas", "en")
                 });
         }
 
@@ -279,6 +345,16 @@ namespace VDS.RDF.Query.Builder
         private static ILiteralNode Lit<T>(T literal)
         {
             return NodeFactory.CreateLiteralNode(literal.ToString());
+        }
+
+        private static ILiteralNode Lit(object literal, Uri type)
+        {
+            return NodeFactory.CreateLiteralNode(literal.ToString(), type);
+        }
+
+        private static ILiteralNode Lit(object literal, string langugeTag)
+        {
+            return NodeFactory.CreateLiteralNode(literal.ToString(), langugeTag);
         }
 
         private static INode UNDEF => null;
