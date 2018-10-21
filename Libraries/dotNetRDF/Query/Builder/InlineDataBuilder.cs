@@ -57,6 +57,11 @@ namespace VDS.RDF.Query.Builder
 
         private PatternItem CreateValue(object value)
         {
+            if (value == null)
+            {
+                return null;
+            }
+
             if (value is Uri)
             {
                 return _patternItemFactory.CreateNodeMatchPattern((Uri) value);

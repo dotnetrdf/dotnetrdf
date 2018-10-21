@@ -31,9 +31,9 @@ namespace VDS.RDF.Query.Builder.Assertions
 
             Subject.Tuples.Should()
                 .Contain(
-                    t => variables.All(v => t[v].Equals(values[v])),
+                    t => variables.All(v => Equals(t[v], values[v])),
                     "VALUES should contain tuple ( {0} )",
-                    string.Join(", ", values.Values));
+                    string.Join(", ", values.Values.Select(v => v?.ToString() ?? "UNDEF")));
 
             return new AndConstraint<BindingsPatternAssertions>(this);
         }

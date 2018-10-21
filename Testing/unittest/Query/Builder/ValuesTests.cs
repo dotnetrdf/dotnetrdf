@@ -148,7 +148,7 @@ namespace VDS.RDF.Query.Builder
             // }
 
             // given
-            var select = QueryBuilder.Select("o").GetQueryBuilder();
+            var select = QueryBuilder.SelectAll();
             select.InlineData("x", "y", "z")
                 .Values(new Uri("http://example.com/x"), new Uri("http://example.com/y"), new Uri("http://example.com/z"));
             var query = select.BuildQuery();
@@ -167,6 +167,45 @@ namespace VDS.RDF.Query.Builder
                 });
         }
 
+        [Fact]
+        public void ShorthandMethod_MultipleVariables_MixedValuesWithUndef_InRootGraphPattern_AddedSuccesfully()
+        {
+            // equivalent to
+            // SELECT *
+            // {
+            //    VALUES ( ?x, ?y, ?z )
+            //    {
+            //       ( "Tomasz", <http://example.com/y>, UNDEF ),
+            //       ( "Tomasz", UNDEF, 6 )
+            //    }
+            // }
+
+            // given
+            var select = QueryBuilder.SelectAll();
+            select.InlineData("x", "y", "z")
+                .Values("Tomasz", new Uri("http://example.com/y"), null)
+                .Values("Rob", null, 6);
+            var query = select.BuildQuery();
+
+            // then
+            query.RootGraphPattern.HasInlineData.Should().BeTrue();
+            query.RootGraphPattern.InlineData.Should()
+                .DeclareVariables("x", "y", "z")
+                .And.HasTuples(2)
+                .And.ContainTuple(new
+                {
+                    x = Lit("Tomasz"),
+                    y = Uri("http://example.com/y"),
+                    z = UNDEF,
+                })
+                .And.ContainTuple(new
+                {
+                    x = Lit("Rob"),
+                    y = UNDEF,
+                    z = Lit(6),
+                });
+        }
+
         private static IUriNode Uri(string uri)
         {
             return NodeFactory.CreateUriNode(new Uri(uri));
@@ -176,5 +215,7 @@ namespace VDS.RDF.Query.Builder
         {
             return NodeFactory.CreateLiteralNode(literal.ToString());
         }
+
+        private static INode UNDEF => null;
     }
 }
