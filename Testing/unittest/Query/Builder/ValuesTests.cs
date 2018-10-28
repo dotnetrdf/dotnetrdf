@@ -1,5 +1,6 @@
 using System;
 using FluentAssertions;
+using VDS.RDF.Parsing;
 using VDS.RDF.Query.Builder.Assertions;
 using Xunit;
 
@@ -7,16 +8,16 @@ namespace VDS.RDF.Query.Builder
 {
     public class ValuesTests
     {
-        private static readonly INodeFactory NodeFactory = new NodeFactory();
+        private readonly SparqlQueryParser _parser = new SparqlQueryParser();
 
         [Fact]
         public void ShorthandMethod_SingleVariable_SingleValue_InRootGraphPattern_AddedSuccessfully()
         {
             // equivalent to
-            // SELECT ?o
-            // {
-            //    VALUES ?o { 5 }
-            // }
+            var expected = _parser.ParseFromString(@"SELECT ?o
+            {
+                VALUES ?o { 5 }
+            }");
 
             // given
             var select = QueryBuilder.Select("o").GetQueryBuilder();
@@ -26,22 +27,17 @@ namespace VDS.RDF.Query.Builder
             // then
             query.RootGraphPattern.HasInlineData.Should().BeTrue();
             query.RootGraphPattern.InlineData.Should()
-                .DeclareVariables("o")
-                .And.HasTuples(1)
-                .And.ContainTuple(new
-                {
-                    o = Lit(5)
-                });
+                .BeEquivalentTo(expected.RootGraphPattern.InlineData);
         }
 
         [Fact]
         public void ShorthandMethod_SingleVariable_MultipleValues_InRootGraphPattern_AddedSuccesfully()
         {
             // equivalent to
-            // SELECT ?o
-            // {
-            //    VALUES ?o { 5, 10, 15 }
-            // }
+            var expected = _parser.ParseFromString(@"SELECT ?o
+            {
+                VALUES ?o { 5 10 15 }
+            }");
 
             // given
             var select = QueryBuilder.Select("o").GetQueryBuilder();
@@ -54,24 +50,20 @@ namespace VDS.RDF.Query.Builder
             // then
             query.RootGraphPattern.HasInlineData.Should().BeTrue();
             query.RootGraphPattern.InlineData.Should()
-                .DeclareVariables("o")
-                .And.HasTuples(3)
-                .And.ContainTuple(new { o = Lit(5) })
-                .And.ContainTuple(new { o = Lit(10) })
-                .And.ContainTuple(new { o = Lit(15) });
+                .BeEquivalentTo(expected.RootGraphPattern.InlineData);
         }
 
         [Fact]
         public void ShorthandMethod_MultipleVariables_SingleTuple_InRootGraphPattern_AddedSuccesfully()
         {
             // equivalent to
-            // SELECT *
-            // {
-            //    VALUES ( ?x, ?y, ?z )
-            //    {
-            //       ( "a", "b", "c" )
-            //    }
-            // }
+            var expected = _parser.ParseFromString(@"SELECT *
+            {
+                VALUES ( ?x ?y ?z )
+                {
+                   ( ""a"" ""b"" ""c"" )
+                }
+            }");
 
             // given
             var select = QueryBuilder.Select("o").GetQueryBuilder();
@@ -82,28 +74,21 @@ namespace VDS.RDF.Query.Builder
             // then
             query.RootGraphPattern.HasInlineData.Should().BeTrue();
             query.RootGraphPattern.InlineData.Should()
-                .DeclareVariables("x", "y", "z")
-                .And.HasTuples(1)
-                .And.ContainTuple(new
-                {
-                    x = Lit("a"),
-                    y = Lit("b"),
-                    z = Lit("c")
-                });
+                .BeEquivalentTo(expected.RootGraphPattern.InlineData);
         }
 
         [Fact]
         public void ShorthandMethod_MultipleVariables_MultipleTuples_InRootGraphPattern_AddedSuccesfully()
         {
             // equivalent to
-            // SELECT *
-            // {
-            //    VALUES ( ?x, ?y, ?z )
-            //    {
-            //       ( "a", "b", "c" ),
-            //       ( 123, 124, 125 )
-            //    }
-            // }
+            var expected = _parser.ParseFromString(@"SELECT *
+            {
+                VALUES ( ?x ?y ?z )
+                {
+                   ( ""a"" ""b"" ""c"" )
+                   ( 123 124 125 )
+                }
+            }");
 
             // given
             var select = QueryBuilder.Select("o").GetQueryBuilder();
@@ -115,33 +100,20 @@ namespace VDS.RDF.Query.Builder
             // then
             query.RootGraphPattern.HasInlineData.Should().BeTrue();
             query.RootGraphPattern.InlineData.Should()
-                .DeclareVariables("x", "y", "z")
-                .And.HasTuples(2)
-                .And.ContainTuple(new
-                {
-                    x = Lit("a"),
-                    y = Lit("b"),
-                    z = Lit("c")
-                })
-                .And.ContainTuple(new
-                {
-                    x = Lit(123),
-                    y = Lit(124),
-                    z = Lit(125)
-                });
+                .BeEquivalentTo(expected.RootGraphPattern.InlineData);
         }
 
         [Fact]
         public void ShorthandMethod_MultipleVariables_UriValues_InRootGraphPattern_AddedSuccesfully()
         {
             // equivalent to
-            // SELECT *
-            // {
-            //    VALUES ( ?x, ?y, ?z )
-            //    {
-            //       ( <http://example.com/x>, <http://example.com/y>, <http://example.com/z> )
-            //    }
-            // }
+            var expected = _parser.ParseFromString(@"SELECT *
+            {
+                VALUES ( ?x ?y ?z )
+                {
+                   ( <http://example.com/x> <http://example.com/y> <http://example.com/z> )
+                }
+            }");
 
             // given
             var select = QueryBuilder.SelectAll();
@@ -152,28 +124,21 @@ namespace VDS.RDF.Query.Builder
             // then
             query.RootGraphPattern.HasInlineData.Should().BeTrue();
             query.RootGraphPattern.InlineData.Should()
-                .DeclareVariables("x", "y", "z")
-                .And.HasTuples(1)
-                .And.ContainTuple(new
-                {
-                    x = Uri("http://example.com/x"),
-                    y = Uri("http://example.com/y"),
-                    z = Uri("http://example.com/z"),
-                });
+                .BeEquivalentTo(expected.RootGraphPattern.InlineData);
         }
 
         [Fact]
         public void ShorthandMethod_MultipleVariables_MixedValuesWithUndef_InRootGraphPattern_AddedSuccesfully()
         {
             // equivalent to
-            // SELECT *
-            // {
-            //    VALUES ( ?x, ?y, ?z )
-            //    {
-            //       ( "Tomasz", <http://example.com/y>, UNDEF ),
-            //       ( "Tomasz", UNDEF, 6 )
-            //    }
-            // }
+            var expected = _parser.ParseFromString(@"SELECT *
+            {
+                VALUES ( ?x ?y ?z )
+                {
+                   ( ""Tomasz"" <http://example.com/y> UNDEF )
+                   ( ""Rob"" UNDEF 6 )
+                }
+            }");
 
             // given
             var select = QueryBuilder.SelectAll();
@@ -185,35 +150,22 @@ namespace VDS.RDF.Query.Builder
             // then
             query.RootGraphPattern.HasInlineData.Should().BeTrue();
             query.RootGraphPattern.InlineData.Should()
-                .DeclareVariables("x", "y", "z")
-                .And.HasTuples(2)
-                .And.ContainTuple(new
-                {
-                    x = Lit("Tomasz"),
-                    y = Uri("http://example.com/y"),
-                    z = UNDEF,
-                })
-                .And.ContainTuple(new
-                {
-                    x = Lit("Rob"),
-                    y = UNDEF,
-                    z = Lit(6),
-                });
+                .BeEquivalentTo(expected.RootGraphPattern.InlineData);
         }
 
         [Fact]
         public void VerboseMethod_SingleVariable_MultipleValues_InRootGraphPattern_AddedSuccesfully()
         {
             // equivalent to
-            // SELECT *
-            // {
-            //    VALUES ?x
-            //    {
-            //       ( "Tomasz" )
-            //       ( 20 )
-            //       ( <http://example.com> )
-            //    }
-            // }
+            var expected = _parser.ParseFromString(@"SELECT *
+            {
+                VALUES ( ?x )
+                {
+                   ( ""Tomasz"" )
+                   ( 20 )
+                   ( <http://example.com> )
+                }
+             }");
 
             // given
             var select = QueryBuilder.SelectAll();
@@ -226,33 +178,20 @@ namespace VDS.RDF.Query.Builder
             // then
             query.RootGraphPattern.HasInlineData.Should().BeTrue();
             query.RootGraphPattern.InlineData.Should()
-                .DeclareVariables("x")
-                .And.HasTuples(3)
-                .And.ContainTuple(new
-                {
-                    x = Lit("Tomasz"),
-                })
-                .And.ContainTuple(new
-                {
-                    x = Lit(20),
-                })
-                .And.ContainTuple(new
-                {
-                    x = Uri("http://example.com"),
-                });
+                .BeEquivalentTo(expected.RootGraphPattern.InlineData);
         }
 
         [Fact]
         public void VerboseMethod_UndefValues_InRootGraphPattern_AddedSuccesfully()
         {
             // equivalent to
-            // SELECT *
-            // {
-            //    VALUES ?x ?y ?z
-            //    {
-            //       ( UNDEF UNDEF UNDEF )
-            //    }
-            // }
+            var expected = _parser.ParseFromString(@"SELECT *
+             {
+                VALUES ( ?x ?y ?z )
+                {
+                    ( UNDEF UNDEF UNDEF )
+                }
+            }");
 
             // given
             var select = QueryBuilder.SelectAll();
@@ -263,27 +202,20 @@ namespace VDS.RDF.Query.Builder
             // then
             query.RootGraphPattern.HasInlineData.Should().BeTrue();
             query.RootGraphPattern.InlineData.Should()
-                .DeclareVariables("x", "y", "z")
-                .And.HasTuples(1)
-                .And.ContainTuple(new
-                {
-                    x = UNDEF,
-                    y = UNDEF,
-                    z = UNDEF
-                });
+                .BeEquivalentTo(expected.RootGraphPattern.InlineData);
         }
 
         [Fact]
         public void VerboseMethod_TypedLiteral_InRootGraphPattern_AddedSuccesfully()
         {
             // equivalent to
-            // SELECT *
-            // {
-            //    VALUES ?name
-            //    {
-            //       ( "Tomasz"^^<https://schema.org/givenName> )
-            //    }
-            // }
+            var expected = _parser.ParseFromString(@"SELECT *
+             {
+                VALUES ?name
+                {
+                    ""Tomasz""^^<https://schema.org/givenName>
+                }
+            }");
 
             // given
             var select = QueryBuilder.SelectAll();
@@ -294,26 +226,21 @@ namespace VDS.RDF.Query.Builder
             // then
             query.RootGraphPattern.HasInlineData.Should().BeTrue();
             query.RootGraphPattern.InlineData.Should()
-                .DeclareVariables("name")
-                .And.HasTuples(1)
-                .And.ContainTuple(new
-                {
-                    name = Lit("Tomasz", new Uri("https://schema.org/givenName"))
-                });
+                .BeEquivalentTo(expected.RootGraphPattern.InlineData);
         }
 
         [Fact]
         public void VerboseMethod_TaggedLiteral_InRootGraphPattern_AddedSuccesfully()
         {
             // equivalent to
-            // SELECT *
-            // {
-            //    VALUES ?name
-            //    {
-            //       ( "Tomasz"@pl )
-            //       ( "Thomas"@en )
-            //    }
-            // }
+            var expected = _parser.ParseFromString(@"SELECT *
+            {
+                VALUES ( ?name )
+                {
+                    ( ""Tomasz""@pl )
+                    ( ""Thomas""@en )
+                }
+            }");
 
             // given
             var select = QueryBuilder.SelectAll();
@@ -325,29 +252,20 @@ namespace VDS.RDF.Query.Builder
             // then
             query.RootGraphPattern.HasInlineData.Should().BeTrue();
             query.RootGraphPattern.InlineData.Should()
-                .DeclareVariables("name")
-                .And.HasTuples(2)
-                .And.ContainTuple(new
-                {
-                    name = Lit("Tomasz", "pl")
-                })
-                .And.ContainTuple(new
-                {
-                    name = Lit("Thomas", "en")
-                });
+                .BeEquivalentTo(expected.RootGraphPattern.InlineData);
         }
 
         [Fact]
         public void ShorthandMethod_OverEntireQuery_AddedSuccesfully()
         {
             // equivalent to
-            // SELECT *
-            // {
-            // }
-            // VALUES ?x ?y ?z
-            // {
-            //    ( 10 "Hello" <http://some.url> )
-            // }
+            var expected = _parser.ParseFromString(@"SELECT *
+            {
+            }
+            VALUES ( ?x ?y ?z )
+            {
+                ( 10 ""Hello"" <http://some.url> )
+            }");
 
             // given
             var select = QueryBuilder.SelectAll();
@@ -357,36 +275,28 @@ namespace VDS.RDF.Query.Builder
 
             // then
             query.Bindings.Should()
-                .DeclareVariables("x", "y", "z")
-                .And.HasTuples(1)
-                .And.ContainTuple(new
-                {
-                    x = Lit(10),
-                    y = Lit("Hello"),
-                    z = Uri("http://some.url")
-                });
+                .BeEquivalentTo(expected.Bindings);
         }
 
-        private static IUriNode Uri(string uri)
+        [Fact]
+        public void ShorthandMethod_BooleanValue_AddedSuccesfully()
         {
-            return NodeFactory.CreateUriNode(new Uri(uri));
-        }
+            // equivalent to
+            var expected = _parser.ParseFromString(@"SELECT *
+            {
+                VALUES ?bools { true false }
+            }");
 
-        private static ILiteralNode Lit<T>(T literal)
-        {
-            return NodeFactory.CreateLiteralNode(literal.ToString());
-        }
+            // given
+            var select = QueryBuilder.SelectAll();
+            select.InlineData("bools")
+                .Values(true)
+                .Values(false);
+            var query = select.BuildQuery();
 
-        private static ILiteralNode Lit(object literal, Uri type)
-        {
-            return NodeFactory.CreateLiteralNode(literal.ToString(), type);
+            // then
+            query.RootGraphPattern.InlineData.Should()
+                .BeEquivalentTo(expected.RootGraphPattern.InlineData);
         }
-
-        private static ILiteralNode Lit(object literal, string langugeTag)
-        {
-            return NodeFactory.CreateLiteralNode(literal.ToString(), langugeTag);
-        }
-
-        private static INode UNDEF => null;
     }
 }

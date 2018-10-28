@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using FluentAssertions.Primitives;
 using VDS.RDF.Query.Patterns;
 
@@ -13,27 +15,32 @@ namespace VDS.RDF.Query.Builder.Assertions
             Subject = pattern;
         }
 
-        public AndConstraint<BindingsPatternAssertions> DeclareVariables(params string[] variables)
+        public AndConstraint<BindingsPatternAssertions> BeEquivalentTo(BindingsPattern expected)
+        {
+            return Subject.Should()
+                .DeclareVariables(expected.Variables)
+                .And.HasTuples(expected.Tuples.Count())
+                .And.ContainTuples(expected.Tuples);
+        }
+
+        public AndConstraint<BindingsPatternAssertions> DeclareVariables(IEnumerable<string> variables)
         {
             Subject.Variables.Should().ContainInOrder(variables);
 
             return new AndConstraint<BindingsPatternAssertions>(this);
         }
 
-        public AndConstraint<BindingsPatternAssertions> ContainTuple(object tuple)
+        public AndConstraint<BindingsPatternAssertions> ContainTuples(IEnumerable<BindingTuple> tuples)
         {
-            var type = tuple.GetType();
-            var properties = type.GetProperties().ToList();
-            var variables = properties.Select(prop => prop.Name).ToList();
-            var values = properties.ToDictionary(
-                prop => prop.Name,
-                prop => (INode) prop.GetValue(tuple));
+            var variables = Subject.Variables;
 
-            Subject.Tuples.Should()
-                .Contain(
-                    t => variables.All(v => Equals(t[v], values[v])),
-                    "VALUES should contain tuple ( {0} )",
-                    string.Join(", ", values.Values.Select(v => v?.ToString() ?? "UNDEF")));
+            foreach (var tuple in tuples)
+            {
+                Execute.Assertion
+                    .Given(() => Subject.Tuples)
+                    .ForCondition(actual => actual.Any(t => variables.All(v => Equals(t[v], tuple[v]))))
+                    .FailWith("{0} should contain tuple {1}", Subject, tuple);
+            }
 
             return new AndConstraint<BindingsPatternAssertions>(this);
         }
