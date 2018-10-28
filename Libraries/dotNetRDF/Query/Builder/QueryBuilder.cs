@@ -57,6 +57,7 @@ namespace VDS.RDF.Query.Builder
         private int _queryLimit = -1;
         private int _queryOffset;
         private INamespaceMapper _prefixes = new NamespaceMapper(true);
+        private InlineDataBuilder _inlineDataOverQuery;
 
         /// <summary>
         /// Gets or sets the namespace mappings for the SPARQL query being built
@@ -353,6 +354,7 @@ namespace VDS.RDF.Query.Builder
             BuildGroupByClauses(query);
             BuildHavingClauses(query);
             BuildAndChainOrderings(query);
+            _inlineDataOverQuery?.AppendTo(query);
 
             query.NamespaceMap.Import(Prefixes);
 
@@ -444,6 +446,12 @@ namespace VDS.RDF.Query.Builder
         public IAssignmentVariableNamePart<IQueryBuilder> Bind(Func<INonAggregateExpressionBuilder, SparqlExpression> buildAssignmentExpression)
         {
             return new BindAssignmentVariableNamePart(this, buildAssignmentExpression);
+        }
+
+        public IInlineDataBuilder InlineDataOverQuery(params string[] variables)
+        {
+            _inlineDataOverQuery = new InlineDataBuilder(variables);
+            return _inlineDataOverQuery;
         }
     }
 }

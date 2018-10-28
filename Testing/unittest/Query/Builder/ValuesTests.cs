@@ -337,6 +337,36 @@ namespace VDS.RDF.Query.Builder
                 });
         }
 
+        [Fact]
+        public void ShorthandMethod_OverEntireQuery_AddedSuccesfully()
+        {
+            // equivalent to
+            // SELECT *
+            // {
+            // }
+            // VALUES ?x ?y ?z
+            // {
+            //    ( 10 "Hello" <http://some.url> )
+            // }
+
+            // given
+            var select = QueryBuilder.SelectAll();
+            select.InlineDataOverQuery("x", "y", "z")
+                .Values(10, "Hello", new Uri("http://some.url"));
+            var query = select.BuildQuery();
+
+            // then
+            query.Bindings.Should()
+                .DeclareVariables("x", "y", "z")
+                .And.HasTuples(1)
+                .And.ContainTuple(new
+                {
+                    x = Lit(10),
+                    y = Lit("Hello"),
+                    z = Uri("http://some.url")
+                });
+        }
+
         private static IUriNode Uri(string uri)
         {
             return NodeFactory.CreateUriNode(new Uri(uri));

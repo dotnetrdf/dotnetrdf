@@ -112,5 +112,7 @@ namespace VDS.RDF.Query.Builder
         /// Adds a BIND variable assignment to the root graph pattern
         /// </summary>
         IAssignmentVariableNamePart<IQueryBuilder> Bind(Func<INonAggregateExpressionBuilder, SparqlExpression> buildAssignmentExpression);
+
+        IInlineDataBuilder InlineDataOverQuery(params string[] variables);
     }
 }

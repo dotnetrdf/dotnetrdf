@@ -60,6 +60,11 @@ namespace VDS.RDF.Query.Builder
             graphPattern.AddInlineData(_bindingsPattern);
         }
 
+        public void AppendTo(SparqlQuery query)
+        {
+            query.Bindings = _bindingsPattern;
+        }
+
         private static IBindingTupleBuilder CreateValue(IBindingTupleBuilder builder, object value)
         {
             if (value == null)
