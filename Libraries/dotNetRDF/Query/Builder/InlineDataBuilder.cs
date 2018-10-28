@@ -72,12 +72,9 @@ namespace VDS.RDF.Query.Builder
                 return builder.Undef();
             }
 
-            switch (value)
+            if (value is Uri uri)
             {
-                case Uri uri:
-                    return builder.Value(uri);
-                case bool b:
-                    return builder.Value(b);
+                return builder.Value(uri);
             }
 
             return builder.Value(value);

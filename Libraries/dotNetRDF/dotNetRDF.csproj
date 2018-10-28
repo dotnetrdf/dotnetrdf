@@ -31,6 +31,7 @@
     <CodeAnalysisRuleSet>..\..\dotnetrdf.ruleset</CodeAnalysisRuleSet>
     <RootNamespace>VDS.RDF</RootNamespace>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net40-client'">

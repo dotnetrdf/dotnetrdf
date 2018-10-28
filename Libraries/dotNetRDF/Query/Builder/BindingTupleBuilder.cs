@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
@@ -43,7 +44,8 @@ namespace VDS.RDF.Query.Builder
 
         public IBindingTupleBuilder Value(object literal)
         {
-            _patternItems.Add(_patternItemFactory.CreateLiteralNodeMatchPattern(literal));
+            var node = LiteralExpressionExtensions.ToLiteral(literal);
+            _patternItems.Add(_patternItemFactory.CreateNodeMatchPattern(node));
             return this;
         }
 

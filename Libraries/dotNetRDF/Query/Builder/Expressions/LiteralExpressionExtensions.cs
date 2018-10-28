@@ -33,58 +33,37 @@ namespace VDS.RDF.Query.Builder.Expressions
     {
         private static readonly NodeFactory NodeFactory = new NodeFactory();
 
-        private static ILiteralNode ToLiteral<T>(T numericValue)
+        internal static ILiteralNode ToLiteral(object value)
         {
-            if (typeof(T) == typeof(int))
+            switch (value)
             {
-                return ((int)(object)numericValue).ToLiteral(NodeFactory);
+                case int i:
+                    return i.ToLiteral(NodeFactory);
+                case decimal d:
+                    return d.ToLiteral(NodeFactory);
+                case short s:
+                    return s.ToLiteral(NodeFactory);
+                case long l:
+                    return l.ToLiteral(NodeFactory);
+                case float f:
+                    return f.ToLiteral(NodeFactory);
+                case double d:
+                    return d.ToLiteral(NodeFactory);
+                case byte b:
+                    return b.ToLiteral(NodeFactory);
+                case sbyte s:
+                    return s.ToLiteral(NodeFactory);
+                case string s:
+                    return new LiteralNode(null, s);
+                case DateTime d:
+                    return d.ToLiteral(NodeFactory);
+                case TimeSpan t:
+                    return t.ToLiteral(NodeFactory);
+                case bool b:
+                    return b.ToLiteral(NodeFactory);
+                default:
+                    throw new ArgumentException(string.Format("Unsupported type for literal node: {0}", value.GetType()));
             }
-            if (typeof(T) == typeof(decimal))
-            {
-                return ((decimal)(object)numericValue).ToLiteral(NodeFactory);
-            }
-            if (typeof(T) == typeof(short))
-            {
-                return ((short)(object)numericValue).ToLiteral(NodeFactory);
-            }
-            if (typeof(T) == typeof(long))
-            {
-                return ((long)(object)numericValue).ToLiteral(NodeFactory);
-            }
-            if (typeof(T) == typeof(float))
-            {
-                return ((float)(object)numericValue).ToLiteral(NodeFactory);
-            }
-            if (typeof(T) == typeof(double))
-            {
-                return ((double)(object)numericValue).ToLiteral(NodeFactory);
-            }
-            if (typeof(T) == typeof(byte))
-            {
-                return ((byte)(object)numericValue).ToLiteral(NodeFactory);
-            }
-            if (typeof(T) == typeof(sbyte))
-            {
-                return ((sbyte)(object)numericValue).ToLiteral(NodeFactory);
-            }
-            if (typeof(T) == typeof(string))
-            {
-                return new LiteralNode(null, numericValue.ToString());
-            }
-            if (typeof(T) == typeof(DateTime))
-            {
-                return ((DateTime)(object)numericValue).ToLiteral(NodeFactory);
-            }
-            if (typeof(T) == typeof(TimeSpan))
-            {
-                return ((TimeSpan)(object)numericValue).ToLiteral(NodeFactory);
-            }
-            if (typeof(T) == typeof(bool))
-            {
-                return ((bool)(object)numericValue).ToLiteral(NodeFactory);
-            }
-
-            throw new ArgumentException(String.Format("Unsupported type for literal node: {0}", typeof(T)));
         }
 
         /// <summary>
