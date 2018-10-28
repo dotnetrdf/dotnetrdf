@@ -43,7 +43,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         public IInlineDataBuilder Values(params object[] values)
-        {
+        { 
             return Values(builder => values.Aggregate(builder, CreateValue));
         }
 

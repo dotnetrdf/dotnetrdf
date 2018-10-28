@@ -75,6 +75,11 @@ namespace VDS.RDF.Query.Builder
 
         public BindingTuple GetTuple()
         {
+            if (_variables.Count != _patternItems.Count)
+            {
+                throw new InvalidOperationException("The number of values does not match the number of variables");
+            }
+
             return new BindingTuple(_variables, _patternItems);
         }
     }

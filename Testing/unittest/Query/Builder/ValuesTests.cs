@@ -298,5 +298,63 @@ namespace VDS.RDF.Query.Builder
             query.RootGraphPattern.InlineData.Should()
                 .BeEquivalentTo(expected.RootGraphPattern.InlineData);
         }
+
+        [Fact]
+        public void ShorthandMethod_TooManyValues_ThrowsException()
+        {
+            // given
+            var select = QueryBuilder.SelectAll();
+            var inlineData = select.InlineData("a", "b");
+
+            // when
+            var ex = Assert.Throws<InvalidOperationException>(() => inlineData.Values(1, 2, 3));
+
+            // then
+            ex.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void ShorthandMethod_TooFewValues_ThrowsException()
+        {
+            // given
+            var select = QueryBuilder.SelectAll();
+            var inlineData = select.InlineData("a", "b");
+
+            // when
+            var ex = Assert.Throws<InvalidOperationException>(() => inlineData.Values(1));
+
+            // then
+            ex.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void VerboseMethod_TooManyValues_ThrowsException()
+        {
+            // given
+            var select = QueryBuilder.SelectAll();
+            var inlineData = select.InlineData("a", "b");
+
+            // when
+            var ex = Assert.Throws<InvalidOperationException>(() =>
+                inlineData.Values(builder => builder.Value(1).Value(2).Value(3)));
+
+            // then
+            ex.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void VerboseMethod_TooFewValues_ThrowsException()
+        {
+            // given
+            var select = QueryBuilder.SelectAll();
+            var inlineData = select.InlineData("a", "b");
+
+            // when
+            var ex = Assert.Throws<InvalidOperationException>(() =>
+                inlineData.Values(builder => builder.Value(1)));
+
+            // then
+            ex.Should().NotBeNull();
+        }
     }
 }
