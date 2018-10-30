@@ -5,7 +5,7 @@
     using System.Linq;
     using Xunit;
 
-    public class DynamicGraphDynamicGraph_Dictionary
+    public class DynamicGraphDictionaryTests
     {
         [Fact]
         public void Values()

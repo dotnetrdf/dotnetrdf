@@ -1,11 +1,11 @@
-﻿namespace VDS.RDF.Dynamic
+﻿namespace VDS.RDF.Dynamic.Old
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using Xunit;
 
-    public class ObjectCollectionTests
+    public class DynamicNodeTests
     {
         [Fact]
         public void Supports_blank_nodes()

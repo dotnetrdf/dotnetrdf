@@ -1,4 +1,4 @@
-﻿namespace VDS.RDF.Dynamic
+﻿namespace VDS.RDF.Dynamic.Old
 {
     using System;
     using Xunit;

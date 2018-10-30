@@ -1,4 +1,4 @@
-﻿namespace VDS.RDF.Dynamic
+﻿namespace VDS.RDF.Dynamic.Old
 {
     using System;
     using System.Collections.Generic;
@@ -7,7 +7,7 @@
     using System.Linq.Expressions;
     using Xunit;
 
-    public class NodeOld
+    public class NodeTests
     {
         private static readonly Uri exampleBase = new Uri("http://example.com/");
         private static readonly Uri exampleSubjectUri = new Uri(exampleBase, "s");

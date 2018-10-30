@@ -5,7 +5,7 @@
     using System.Linq;
     using Xunit;
 
-    public class DynamicGraphDynamicGraph_NodeDictionary
+    public class DynamicGraphNodeDictionaryTests
     {
         [Fact]
         public void Get_index_requires_key()

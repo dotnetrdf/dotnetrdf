@@ -5,7 +5,7 @@
     using System.Linq;
     using Xunit;
 
-    public class DynamicGraphDynamicGraph_UriDictionary
+    public class DynamicGraphStringDictionaryTests
     {
         [Fact]
         public void Get_index_requires_key()
@@ -13,7 +13,7 @@
             var d = new DynamicGraph();
 
             Assert.Throws<ArgumentNullException>(() =>
-                d[null as Uri]
+                d[null as string]
             );
         }
 
@@ -21,7 +21,7 @@
         public void Get_index_requires_existing_key()
         {
             var d = new DynamicGraph();
-            var s = new Uri("urn:s");
+            var s = "urn:s";
 
             Assert.Throws<KeyNotFoundException>(() =>
                 d[s]
@@ -34,9 +34,9 @@
             var d = new DynamicGraph();
             d.LoadFromString("<urn:s> <urn:p> <urn:o> .");
 
-            var s = new Uri("urn:s");
+            var s = "urn:s";
 
-            var expected = d.CreateUriNode(s);
+            var expected = d.CreateUriNode(new Uri(s));
             var actual = d[s];
 
             Assert.Equal(expected, actual);
@@ -49,7 +49,7 @@
             var d = new DynamicGraph();
 
             Assert.Throws<ArgumentNullException>(() =>
-                d[null as Uri] = null
+                d[null as string] = null
             );
         }
 
@@ -73,7 +73,7 @@
 <urn:s2> <urn:p3> <urn:s1> .
 ");
 
-            var s1 = new Uri("urn:s1");
+            var s1 = "urn:s1";
 
             actual[s1] = null;
 
@@ -101,7 +101,7 @@
 <urn:s2> <urn:p3> <urn:s1> .
 ");
 
-            var s1 = new Uri("urn:s1");
+            var s1 = "urn:s1";
 
             actual[s1] = new { p1 = "o" };
 
@@ -123,8 +123,8 @@
 <urn:s2> <urn:p4> <urn:o8> .
 ");
 
-            var actual = ((IDictionary<Uri, object>)g).Keys;
-            var expected = g.Triples.SubjectNodes.UriNodes().Select(n => n.Uri);
+            var actual = ((IDictionary<string, object>)g).Keys;
+            var expected = g.Triples.SubjectNodes.UriNodes().Select(n => n.Uri.AbsoluteUri);
 
             Assert.Equal(expected, actual);
         }
@@ -136,7 +136,7 @@
 
             Assert.Throws<ArgumentNullException>(() =>
             {
-                d.Add(null as Uri, null);
+                d.Add(null as string, null);
             });
         }
 
@@ -144,7 +144,7 @@
         public void Add_requires_value()
         {
             var d = new DynamicGraph();
-            var s = new Uri("urn:s");
+            var s = "urn:s";
 
             Assert.Throws<ArgumentNullException>(() =>
             {
@@ -158,7 +158,7 @@
             var d = new DynamicGraph();
             d.LoadFromString("<urn:s> <urn:p> <urn:o> .");
 
-            var s = new Uri("urn:s");
+            var s = "urn:s";
 
             Assert.Throws<ArgumentException>(() =>
             {
@@ -170,7 +170,7 @@
         public void Add_handles_public_properties()
         {
             var actual = new DynamicGraph(predicateBaseUri: new Uri("urn:"));
-            var s = new Uri("urn:s");
+            var s = "urn:s";
 
             var expected = new Graph();
             expected.LoadFromString(@"
@@ -194,7 +194,7 @@
         public void Add_handles_dictionaries()
         {
             var actual = new DynamicGraph(predicateBaseUri: new Uri("urn:"));
-            var s = new Uri("urn:s");
+            var s = "urn:s";
 
             var expected = new Graph();
             expected.LoadFromString(@"
@@ -216,13 +216,13 @@
         public void Add_handles_key_value_pairs()
         {
             var actual = new DynamicGraph(predicateBaseUri: new Uri("urn:"));
-            var s = new Uri("urn:s");
+            var s = "urn:s";
 
             var expected = new Graph();
             expected.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
 
-            ((IDictionary<Uri, object>)actual).Add(
-                new KeyValuePair<Uri, object>(
+            ((IDictionary<string, object>)actual).Add(
+                new KeyValuePair<string, object>(
                     s,
                     new
                     {
@@ -237,9 +237,9 @@
         [Fact]
         public void Contains_rejects_null_key()
         {
-            var d = new DynamicGraph() as IDictionary<Uri, object>;
+            var d = new DynamicGraph() as IDictionary<string, object>;
 
-            var condition = d.Contains(new KeyValuePair<Uri, object>(null, null));
+            var condition = d.Contains(new KeyValuePair<string, object>(null, null));
 
             Assert.False(condition);
         }
@@ -247,10 +247,10 @@
         [Fact]
         public void Contains_rejects_null_value()
         {
-            var d = new DynamicGraph() as IDictionary<Uri, object>;
-            var s = new Uri("urn:s");
+            var d = new DynamicGraph() as IDictionary<string, object>;
+            var s = "urn:s";
 
-            var condition = d.Contains(new KeyValuePair<Uri, object>(s, null));
+            var condition = d.Contains(new KeyValuePair<string, object>(s, null));
 
             Assert.False(condition);
         }
@@ -258,10 +258,10 @@
         [Fact]
         public void Contains_rejects_missing_key()
         {
-            var d = new DynamicGraph() as IDictionary<Uri, object>;
-            var s = new Uri("urn:s");
+            var d = new DynamicGraph() as IDictionary<string, object>;
+            var s = "urn:s";
 
-            var condition = d.Contains(new KeyValuePair<Uri, object>(s, 0));
+            var condition = d.Contains(new KeyValuePair<string, object>(s, 0));
 
             Assert.False(condition);
         }
@@ -271,10 +271,10 @@
         {
             var d = new DynamicGraph(predicateBaseUri: new Uri("urn:"));
             d.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var dict = ((IDictionary<Uri, object>)d);
-            var s = new Uri("urn:s");
+            var dict = ((IDictionary<string, object>)d);
+            var s = "urn:s";
 
-            var condition = dict.Contains(new KeyValuePair<Uri, object>(s, new { p = "o1" }));
+            var condition = dict.Contains(new KeyValuePair<string, object>(s, new { p = "o1" }));
 
             Assert.False(condition);
         }
@@ -284,10 +284,10 @@
         {
             var d = new DynamicGraph(predicateBaseUri: new Uri("urn:"));
             d.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var dict = ((IDictionary<Uri, object>)d);
-            var s = new Uri("urn:s");
+            var dict = ((IDictionary<string, object>)d);
+            var s = "urn:s";
 
-            var condition = dict.Contains(new KeyValuePair<Uri, object>(s, new { p = "o" }));
+            var condition = dict.Contains(new KeyValuePair<string, object>(s, new { p = "o" }));
 
             Assert.True(condition);
         }
@@ -299,7 +299,7 @@
 
             Assert.Throws<ArgumentNullException>(() =>
             {
-                d.ContainsKey(null as Uri);
+                d.ContainsKey(null as string);
             });
         }
 
@@ -309,8 +309,8 @@
             var d = new DynamicGraph();
             d.LoadFromString("<urn:s> <urn:p> <urn:o> .");
 
-            var s = new Uri("urn:s");
-            var o = new Uri("urn:o");
+            var s = "urn:s";
+            var o = "urn:o";
 
             Assert.True(d.ContainsKey(s));
             Assert.False(d.ContainsKey(o));
@@ -322,10 +322,10 @@
             var g = new DynamicGraph();
             g.LoadFromString("<urn:s> <urn:p> <urn:o> .");
 
-            var s = new Uri("urn:s");
+            var s = "urn:s";
 
-            var dict = g as IDictionary<Uri, object>;
-            var array = new KeyValuePair<Uri, object>[g.Triples.Count()];
+            var dict = g as IDictionary<string, object>;
+            var array = new KeyValuePair<string, object>[g.Triples.Count()];
 
             dict.CopyTo(array, 0);
 
@@ -334,7 +334,7 @@
             var value = pair.Value;
 
             Assert.Equal(key, s);
-            Assert.Equal(value, g.CreateUriNode(s));
+            Assert.Equal(value, g.CreateUriNode(new Uri(s)));
             Assert.IsType<DynamicNode>(value);
         }
 
@@ -344,9 +344,9 @@
             var g = new DynamicGraph();
             g.LoadFromString("<urn:s> <urn:p> <urn:o> .");
 
-            var s = new Uri("urn:s");
+            var s = "urn:s";
 
-            var dict = g as IDictionary<Uri, object>;
+            var dict = g as IDictionary<string, object>;
 
             using (var enumerator = dict.GetEnumerator())
             {
@@ -357,7 +357,7 @@
                 var value = pair.Value;
 
                 Assert.Equal(key, s);
-                Assert.Equal(value, g.CreateUriNode(s));
+                Assert.Equal(value, g.CreateUriNode(new Uri(s)));
                 Assert.IsType<DynamicNode>(value);
             }
         }
@@ -369,7 +369,7 @@
 
             Assert.Throws<ArgumentNullException>(() =>
             {
-                d.Remove(null as Uri);
+                d.Remove(null as string);
             });
         }
 
@@ -392,7 +392,7 @@
 <urn:s2> <urn:p3> <urn:s1> .
 ");
 
-            var s1 = new Uri("urn:s1");
+            var s1 = "urn:s1";
 
             actual.Remove(s1);
 
@@ -405,7 +405,7 @@
             var d = new DynamicGraph();
             d.LoadFromString("<urn:s> <urn:p> <urn:o> .");
 
-            var s = new Uri("urn:s");
+            var s = "urn:s";
 
             Assert.True(d.Remove(s));
             Assert.False(d.Remove(s));
@@ -414,9 +414,9 @@
         [Fact]
         public void Remove_pair_requires_key()
         {
-            var d = new DynamicGraph() as IDictionary<Uri, object>;
+            var d = new DynamicGraph() as IDictionary<string, object>;
 
-            var condition = d.Remove(new KeyValuePair<Uri, object>(null, null));
+            var condition = d.Remove(new KeyValuePair<string, object>(null, null));
 
             Assert.False(condition);
         }
@@ -424,10 +424,10 @@
         [Fact]
         public void Remove_pair_ignores_missing_statements()
         {
-            var d = new DynamicGraph() as IDictionary<Uri, object>;
-            var s = new Uri("urn:s");
+            var d = new DynamicGraph() as IDictionary<string, object>;
+            var s = "urn:s";
 
-            var condition = d.Remove(new KeyValuePair<Uri, object>(s, null));
+            var condition = d.Remove(new KeyValuePair<string, object>(s, null));
 
             Assert.False(condition);
         }
@@ -449,10 +449,10 @@
 <urn:s2> <urn:p3> <urn:s1> .
 ");
 
-            var s1 = new Uri("urn:s1");
+            var s1 = "urn:s1";
 
-            ((IDictionary<Uri, object>)actual).Remove(
-                new KeyValuePair<Uri, object>(
+            ((IDictionary<string, object>)actual).Remove(
+                new KeyValuePair<string, object>(
                     s1,
                     new
                     {
@@ -482,10 +482,10 @@
 <urn:s2> <urn:p3> <urn:s1> .
 ");
 
-            var s1 = new Uri("urn:s1");
+            var s1 = "urn:s1";
 
-            ((IDictionary<Uri, object>)actual).Remove(
-                new KeyValuePair<Uri, object>(
+            ((IDictionary<string, object>)actual).Remove(
+                new KeyValuePair<string, object>(
                     s1,
                     new Dictionary<object, object> {
                         { "p1" , "o1" },
@@ -504,7 +504,7 @@
             var d = new DynamicGraph();
 
             Assert.Throws<ArgumentNullException>(() =>
-                d.TryGetValue(null as Uri, out var value)
+                d.TryGetValue(null as string, out var value)
             );
         }
 
@@ -512,7 +512,7 @@
         public void TryGetValue_rejects_missing_key()
         {
             var d = new DynamicGraph();
-            var s = new Uri("urn:s");
+            var s = "urn:s";
 
             var condition = d.TryGetValue(s, out var value);
 
@@ -525,12 +525,12 @@
             var d = new DynamicGraph();
             d.LoadFromString("<urn:s> <urn:p> <urn:o> .");
 
-            var s = new Uri("urn:s");
+            var s = "urn:s";
 
             var condition = d.TryGetValue(s, out var value);
 
             Assert.True(condition);
-            Assert.Equal(value, d.CreateUriNode(s));
+            Assert.Equal(value, d.CreateUriNode(new Uri(s)));
             Assert.IsType<DynamicNode>(value);
         }
     }

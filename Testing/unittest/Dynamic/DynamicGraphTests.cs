@@ -6,7 +6,7 @@
     using System.Linq.Expressions;
     using Xunit;
 
-    public class DynamicGraphDynamicGraph
+    public class DynamicGraphTests
     {
         [Fact]
         public void Subject_base_uri_defaults_to_graph_base_uri()
