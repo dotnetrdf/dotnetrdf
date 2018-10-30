@@ -41,7 +41,7 @@
         }
 
         [Fact]
-        public void Count()
+        public void Counts_by_subject_and_predicate()
         {
             var g = new Graph();
             g.LoadFromString(@"
@@ -53,8 +53,9 @@
 <urn:s2> <urn:p3> <urn:s1> . # wrong subject
 ");
 
-            var s = g.Triples.First().Subject;
-            var p = g.Triples.First().Predicate;
+            var t = g.Triples.First();
+            var s = t.Subject;
+            var p = t.Predicate;
             var d = new DynamicNode(s);
             var c = new DynamicObjectCollection(d, p);
 
@@ -64,7 +65,7 @@
         }
 
         [Fact]
-        public void IsReadOnly()
+        public void Is_writable()
         {
             var g = new Graph();
             var s = g.CreateUriNode(new Uri("urn:s"));
@@ -76,7 +77,7 @@
         }
 
         [Fact]
-        public void Add()
+        public void Adds_triple_with_subject_predicate_and_argument_object()
         {
             var expected = new Graph();
             expected.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
@@ -93,7 +94,7 @@
         }
 
         [Fact]
-        public void Clear()
+        public void Clears_by_subject_and_predicate()
         {
             var expected = new Graph();
             expected.LoadFromString(@"
@@ -115,45 +116,54 @@
 <urn:s2> <urn:p3> <urn:s1> . # should remain - wrong subject
 ");
 
-            var s = g.Triples.First().Subject;
-            var p = g.Triples.First().Predicate;
+            var t = g.Triples.First();
+            var s = t.Subject;
+            var p = t.Predicate;
             var d = new DynamicNode(s);
             var c = new DynamicObjectCollection(d, p);
 
             c.Clear();
 
-            Assert.Equal(
-                expected,
-                g);
+            Assert.Equal(expected, g);
         }
 
         [Fact]
-        public void Contains()
+        public void Contains_reports_by_subject_predicate_and_argument_object()
         {
             var g = new Graph();
-            g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
+            g.LoadFromString(@"
+<urn:s1> <urn:p1> ""o1"" .
+<urn:s1> <urn:p1> ""o2"" .
+<urn:s1> <urn:p2> ""o3"" .
+<urn:s2> <urn:p1> ""o4"" .
+");
 
-            var s = g.Triples.First().Subject;
-            var p = g.Triples.First().Predicate;
-            var o = g.Triples.First().Object.AsValuedNode().AsString();
+            var t = g.Triples.First();
+            var s = t.Subject;
+            var p = t.Predicate;
             var d = new DynamicNode(s);
             var c = new DynamicObjectCollection(d, p);
 
 #pragma warning disable xUnit2017 // Contains is actually the method under test
-            Assert.True(c.Contains(o));
-            Assert.False(c.Contains("other"));
+            Assert.True(c.Contains("o1"));
+            Assert.True(c.Contains("o2"));
+
+            Assert.False(c.Contains("o3")); // wrong predicate
+            Assert.False(c.Contains("o4")); // wrong subject
+            Assert.False(c.Contains("o")); // nonexistent object
 #pragma warning restore xUnit2017
         }
 
         [Fact]
-        public void CopyTo()
+        public void Copies_objects_by_subject_predicate()
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
 
-            var s = g.Triples.First().Subject;
-            var p = g.Triples.First().Predicate;
-            var o = g.Triples.Single().Object.AsValuedNode().AsString();
+            var t = g.Triples.First();
+            var s = t.Subject;
+            var p = t.Predicate;
+            var o = t.Object.AsValuedNode().AsString();
             var d = new DynamicNode(s);
             var c = new DynamicObjectCollection(d, p);
 
@@ -166,14 +176,15 @@
         }
 
         [Fact]
-        public void GetEnumerator()
+        public void Enumerates_objects_by_subject_predicate()
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
 
-            var s = g.Triples.First().Subject;
-            var p = g.Triples.First().Predicate;
-            var o = g.Triples.Single().Object.AsValuedNode().AsString();
+            var t = g.Triples.First();
+            var s = t.Subject;
+            var p = t.Predicate;
+            var o = t.Object.AsValuedNode().AsString();
             var d = new DynamicNode(s);
             var c = new DynamicObjectCollection(d, p);
 
@@ -188,7 +199,7 @@
         }
 
         [Fact]
-        public void Remove()
+        public void Removes_by_subject_predicate()
         {
             var expected = new Graph();
             expected.LoadFromString(@"
@@ -209,9 +220,10 @@
 <urn:s2> <urn:p3> <urn:s1> .
 ");
 
-            var s = g.Triples.First().Subject;
-            var p = g.Triples.First().Predicate;
-            var o = g.Triples.First().Object.AsValuedNode().AsString();
+            var t = g.Triples.First();
+            var s = t.Subject;
+            var p = t.Predicate;
+            var o = t.Object.AsValuedNode().AsString();
             var d = new DynamicNode(s);
             var c = new DynamicObjectCollection(d, p);
 
@@ -223,7 +235,7 @@
         }
 
         [Fact]
-        public void IEnumerableGetEnumerator()
+        public void IEnumerable_enumerates_object_by_subject_predicate()
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
@@ -243,7 +255,7 @@
         }
 
         [Fact]
-        public void x()
+        public void Converts_objects_to_native_datatypes()
         {
             var g = new Graph();
             g.LoadFromString(@"
@@ -261,8 +273,9 @@
 <urn:s> <urn:p> ""s3""@en .
 ");
 
-            var s = g.Triples.First().Subject;
-            var p = g.Triples.First().Predicate;
+            var t = g.Triples.First();
+            var s = t.Subject;
+            var p = t.Predicate;
             var d = new DynamicNode(s);
             var c = new DynamicObjectCollection(d, p);
 

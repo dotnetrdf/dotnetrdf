@@ -10,9 +10,9 @@
         private readonly Uri subjectBaseUri;
         private readonly Uri predicateBaseUri;
 
-        private Uri SubjectBaseUri => this.subjectBaseUri ?? this.BaseUri;
+        public Uri SubjectBaseUri => this.subjectBaseUri ?? this.BaseUri;
 
-        private Uri PredicateBaseUri => this.predicateBaseUri ?? this.SubjectBaseUri;
+        public Uri PredicateBaseUri => this.predicateBaseUri ?? this.SubjectBaseUri;
 
         public DynamicGraph(IGraph graph = null, Uri subjectBaseUri = null, Uri predicateBaseUri = null) : base(graph ?? new Graph())
         {

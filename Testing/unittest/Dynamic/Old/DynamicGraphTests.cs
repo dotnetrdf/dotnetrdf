@@ -257,34 +257,6 @@
         }
 
         [Fact]
-        public void Subject_base_uri_defaults_to_graph_base_uri()
-        {
-            var g = new Graph();
-            g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
-            g.BaseUri = new Uri("http://example.com/");
-            var d = g.AsDynamic();
-
-            var expected = g.Triples.SubjectNodes.Single();
-            var actual = d.s;
-
-            Assert.Equal(expected, actual);
-        }
-
-        [Fact]
-        public void Predicate_base_uri_defaults_to_subject_base_uri()
-        {
-            var g = new Graph();
-            g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
-            var d = g.AsDynamic(new Uri("http://example.com/"));
-            var objects = d.s.p as IEnumerable<object>;
-
-            var expected = g.Triples.First().Object;
-            var actual = objects.First();
-
-            Assert.Equal(expected, actual);
-        }
-
-        [Fact]
         public void Dynamic_member_names_only_subject_nodes_are_exposed()
         {
             var g = new Graph();
