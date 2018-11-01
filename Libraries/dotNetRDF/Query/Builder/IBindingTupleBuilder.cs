@@ -28,12 +28,35 @@ using System;
 
 namespace VDS.RDF.Query.Builder
 {
+    /// <summary>
+    /// Provides methods for building tuples within an inline data block (VALUES)
+    /// </summary>
     public interface IBindingTupleBuilder
     {
+        /// <summary>
+        /// Appends a literal value to the inline data bock
+        /// </summary>
         IBindingTupleBuilder Value(object literal);
+
+        /// <summary>
+        /// Appends a URI value to the inline data block
+        /// </summary>
         IBindingTupleBuilder Value(Uri uri);
+
+        /// <summary>
+        /// Appends UNDEF to the inline data block
+        /// </summary>
         IBindingTupleBuilder Undef();
+
+
+        /// <summary>
+        /// Appends a typed literal value to the inline data bock
+        /// </summary>
         IBindingTupleBuilder Value(string literal, Uri dataType);
+
+        /// <summary>
+        /// Appends a tagged literal value to the inline data bock
+        /// </summary>
         IBindingTupleBuilder Value(string literal, string languageTag);
     }
 }
