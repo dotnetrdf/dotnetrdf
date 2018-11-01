@@ -37,6 +37,7 @@ namespace VDS.RDF.Query.Builder
 {
     public sealed class GraphPatternBuilder : IGraphPatternBuilder
     {
+        private readonly IList<InlineDataBuilder> _inlineDataBuilders = new List<InlineDataBuilder>();
         private readonly IList<GraphPatternBuilder> _childGraphPatternBuilders = new List<GraphPatternBuilder>();
         private readonly IList<Func<INamespaceMapper, ISparqlExpression>> _filterBuilders = new List<Func<INamespaceMapper, ISparqlExpression>>();
         private readonly IList<Func<INamespaceMapper, ITriplePattern[]>> _triplePatterns = new List<Func<INamespaceMapper, ITriplePattern[]>>();
@@ -81,6 +82,11 @@ namespace VDS.RDF.Query.Builder
             foreach (var buildFilter in _filterBuilders)
             {
                 graphPattern.AddFilter(new UnaryExpressionFilter(buildFilter(prefixes)));
+            }
+
+            foreach (var builder in _inlineDataBuilders)
+            {
+                builder.AppendTo(graphPattern);
             }
 
             return graphPattern;
@@ -270,6 +276,13 @@ namespace VDS.RDF.Query.Builder
         {
             AddChildGraphPattern(buildGraphPattern, GraphPatternType.Normal);
             return this;
+        }
+
+        public IInlineDataBuilder InlineData(params string[] variables)
+        {
+            var builder = new InlineDataBuilder(variables);
+            _inlineDataBuilders.Add(builder);
+            return builder;
         }
 
         public IGraphPatternBuilder Filter(Func<INonAggregateExpressionBuilder, BooleanExpression> buildExpression)

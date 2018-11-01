@@ -103,8 +103,12 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         IGraphPatternBuilder Child(GraphPatternBuilder buildGraphPattern);
         /// <summary>
-        /// Addsa "normal" child graph pattern
+        /// Adds a "normal" child graph pattern
         /// </summary>
         IGraphPatternBuilder Child(Action<IGraphPatternBuilder> buildGraphPattern);
+        /// <summary>
+        /// Adds a VALUES inline data block to the graph pattern
+        /// </summary>
+        IInlineDataBuilder InlineData(params string[] variables);
     }
 }
