@@ -28,11 +28,11 @@ using System;
 
 namespace VDS.RDF.Query.Builder
 {
-    internal sealed class ConstructBuilderBuilder : QueryBuilder
+    internal sealed class ConstructBuilder : QueryBuilder
     {
         private readonly GraphPatternBuilder _builder;
 
-        internal ConstructBuilderBuilder(Action<IDescribeGraphPatternBuilder> buildPattern) : base(SparqlQueryType.Construct)
+        internal ConstructBuilder(Action<IDescribeGraphPatternBuilder> buildPattern) : base(SparqlQueryType.Construct)
         {
             _builder = new GraphPatternBuilder();
             buildPattern(_builder);

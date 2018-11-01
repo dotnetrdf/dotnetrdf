@@ -97,7 +97,7 @@ namespace VDS.RDF.Query.Builder
                 return new QueryBuilder(SparqlQueryType.Construct);
             }
 
-            return new ConstructBuilderBuilder(buildConstructTemplate);
+            return new ConstructBuilder(buildConstructTemplate);
         }
 
         /// <summary>
