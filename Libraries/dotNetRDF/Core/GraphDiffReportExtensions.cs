@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Query.Builder;
@@ -40,9 +41,10 @@ namespace VDS.RDF
         /// Converts a <see cref="GraphDiffReport">diff</see> to an equivalent <see cref="ModifyCommand">SPARQL Update INSERT/DELETE command</see>
         /// </summary>
         /// <param name="diff">The <see cref="GraphDiffReport">diff</see> to convert</param>
-        /// <param name="prefixes">The <see cref="INamespaceMapper">mapper</see> used to resolve prefixes</param>
+        /// <param name="graphUri">Optional <see cref="Uri">URI</see> of the affected graph</param>
+        /// <param name="prefixes">Optional <see cref="INamespaceMapper">mapper</see> used to resolve prefixes</param>
         /// <returns>A <see cref="ModifyCommand">SPARQL Update INSERT/DELETE command</see> that represents the <see cref="GraphDiffReport">diff</see></returns>
-        public static ModifyCommand AsUpdate(this GraphDiffReport diff, INamespaceMapper prefixes = null)
+        public static ModifyCommand AsUpdate(this GraphDiffReport diff, Uri graphUri = null, INamespaceMapper prefixes = null)
         {
             var delete = new GraphPatternBuilder();
             var insert = new GraphPatternBuilder();
@@ -80,7 +82,8 @@ namespace VDS.RDF
             return new ModifyCommand(
                 delete.BuildGraphPattern(prefixes),
                 insert.BuildGraphPattern(prefixes),
-                where.BuildGraphPattern(prefixes));
+                where.BuildGraphPattern(prefixes),
+                graphUri);
         }
 
         private static void AddTriplePattern(this IGraphPatternBuilder builder, Triple t)

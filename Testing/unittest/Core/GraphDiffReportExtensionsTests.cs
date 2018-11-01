@@ -23,6 +23,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using System;
 using VDS.RDF.Storage;
 using Xunit;
 using Xunit.Abstractions;
@@ -44,9 +45,9 @@ namespace VDS.RDF
             var older = GraphFrom("<urn:s> <urn:p> <urn:o> .");
             var newer = new Graph();
 
-            ExecuteDiff(older, newer);
+            var result = ExecuteDiff(older, newer);
 
-            Assert.Equal(newer, older);
+            Assert.Equal(newer, result);
         }
 
         [Fact]
@@ -55,9 +56,9 @@ namespace VDS.RDF
             var older = GraphFrom("_:s <urn:p> <urn:o> .");
             var newer = new Graph();
 
-            ExecuteDiff(older, newer);
+            var result = ExecuteDiff(older, newer);
 
-            Assert.Equal(newer, older);
+            Assert.Equal(newer, result);
         }
 
         [Fact]
@@ -69,9 +70,50 @@ namespace VDS.RDF
 _:s <urn:p> <urn:o> .
 ");
 
-            ExecuteDiff(older, newer);
+            var result = ExecuteDiff(older, newer);
 
-            Assert.Equal(newer, older);
+            Assert.Equal(newer, result);
+        }
+
+        [Fact]
+        public void Supports_named_graph_in_with_clause()
+        {
+            var older = new Graph();
+            older.BaseUri = new Uri("urn:g");
+
+            var newer = GraphFrom("<urn:s> <urn:p> <urn:o> .");
+
+            var result = ExecuteDiff(older, newer, older.BaseUri);
+
+            Assert.Equal(newer, result);
+        }
+
+        [Fact]
+        public void Null_RHS_is_all_removals()
+        {
+            var older = GraphFrom("<urn:s> <urn:p> <urn:o> .");
+
+            var result = ExecuteDiff(older, null);
+
+            Assert.True(result.IsEmpty);
+        }
+
+        [Fact]
+        public void Null_LHS_is_all_additions()
+        {
+            var newer = GraphFrom("<urn:s> <urn:p> <urn:o> .");
+
+            var result = ExecuteDiff(null, newer);
+
+            Assert.Equal(newer, result);
+        }
+
+        [Fact]
+        public void Difference_between_nulls_is_NOOP()
+        {
+            var result = ExecuteDiff(null, null);
+
+            Assert.True(result.IsEmpty);
         }
 
         private static IGraph GraphFrom(string rdf)
@@ -82,20 +124,23 @@ _:s <urn:p> <urn:o> .
             return g;
         }
 
-        private void ExecuteDiff(IGraph older, IGraph newer)
+        private IGraph ExecuteDiff(IGraph older, IGraph newer, Uri graphUri = null)
         {
-            var ts = new TripleStore();
-            ts.Add(older);
-
-            var store = new InMemoryManager(ts) as IUpdateableStorage;
-
-            var diff = older.Difference(newer);
-            var update = diff.AsUpdate();
+            var diff = new GraphDiff().Difference(older, newer);
+            var update = diff.AsUpdate(graphUri);
             var sparql = update.ToString();
 
             output.WriteLine(sparql);
 
+            older = older ?? new Graph();
+
+            var ts = new TripleStore();
+            ts.Add(older);
+            
+            var store = new InMemoryManager(ts) as IUpdateableStorage;
             store.Update(sparql);
+
+            return older;
         }
     }
 }
