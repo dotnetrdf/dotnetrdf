@@ -37,6 +37,8 @@ namespace VDS.RDF
     /// </summary>
     public static class GraphDiffReportExtensions
     {
+        private static NodeFactory Factory { get; } = new NodeFactory();
+
         /// <summary>
         /// Converts a <see cref="GraphDiffReport">diff</see> to an equivalent <see cref="ModifyCommand">SPARQL Update INSERT/DELETE command</see>
         /// </summary>
@@ -114,7 +116,7 @@ namespace VDS.RDF
 
         private static INode AsVariable(this INode n)
         {
-            return n is IBlankNode blank ? new NodeFactory().CreateVariableNode(blank.InternalID) : n;
+            return n is IBlankNode blank ? Factory.CreateVariableNode(blank.InternalID) : n;
         }
 
         private static IEnumerable<IBlankNode> BlankNodes(this IGraph g)
