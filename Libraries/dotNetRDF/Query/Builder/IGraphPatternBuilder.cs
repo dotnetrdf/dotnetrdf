@@ -46,12 +46,12 @@ namespace VDS.RDF.Query.Builder
         IGraphPatternBuilder Group(Action<IGraphPatternBuilder> buildTriplePatterns);
         /// <summary>
         /// Creates a UNION of multiple graph patterns. If <paramref name="unionedGraphPatternBuilders"/> is null or empty,
-        /// acts as a call to the <see cref="Child"/> method.
+        /// acts as a call to the <see cref="Child(GraphPatternBuilder)"/> method.
         /// </summary>
         IGraphPatternBuilder Union(GraphPatternBuilder firstGraphPattern, params GraphPatternBuilder[] unionedGraphPatternBuilders);
         /// <summary>
         /// Creates a UNION of multiple graph patterns. If <paramref name="unionedGraphPatternBuilders"/> is null or empty,
-        /// acts as a call to the <see cref="Child"/> method.
+        /// acts as a call to the <see cref="Child(Action{IGraphPatternBuilder})"/> method.
         /// </summary>
         IGraphPatternBuilder Union(Action<IGraphPatternBuilder> buildFirstGraphPattern, params Action<IGraphPatternBuilder>[] unionedGraphPatternBuilders);
         /// <summary>
