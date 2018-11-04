@@ -70,6 +70,7 @@
                 throw new ArgumentException("An item with the same key has already been added.", nameof(key));
             }
 
+            // TODO: Handle lists
             Graph.Assert(this.ConvertToTriples(key, value));
         }
 

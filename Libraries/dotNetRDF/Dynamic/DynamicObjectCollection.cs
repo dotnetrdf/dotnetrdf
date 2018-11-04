@@ -58,6 +58,12 @@
 
         private object ConvertToObject(INode node)
         {
+            if (node.IsListRoot(node.Graph))
+            {
+                // TODO: Create dynamic list
+                return node.Graph.GetListItems(node).Select(ConvertToObject).ToList();
+            }
+
             switch (node.AsValuedNode())
             {
                 case IUriNode uriNode:

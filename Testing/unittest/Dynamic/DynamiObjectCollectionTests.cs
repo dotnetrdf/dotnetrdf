@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections;
+    using System.Collections.Generic;
     using System.Linq;
     using VDS.RDF;
     using VDS.RDF.Nodes;
@@ -250,41 +251,45 @@
         {
             var g = new Graph();
             g.LoadFromString(@"
-<urn:s> <urn:p> <uri:x> .
-<urn:s> <urn:p> _:blank .
-<urn:s> <urn:p> ""0""^^<http://www.w3.org/2001/XMLSchema#double> .
-<urn:s> <urn:p> ""0""^^<http://www.w3.org/2001/XMLSchema#float> .
-<urn:s> <urn:p> ""0""^^<http://www.w3.org/2001/XMLSchema#decimal> .
-<urn:s> <urn:p> ""false""^^<http://www.w3.org/2001/XMLSchema#boolean> .
-<urn:s> <urn:p> ""1900-01-01""^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<urn:s> <urn:p> ""P1D""^^<http://www.w3.org/2001/XMLSchema#duration> .
-<urn:s> <urn:p> ""0""^^<http://www.w3.org/2001/XMLSchema#int> .
-<urn:s> <urn:p> ""s1"" .
-<urn:s> <urn:p> ""s2""^^<http://example.com/datatype> .
-<urn:s> <urn:p> ""s3""@en .
+@prefix : <urn:> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:s
+    :p
+        :x ,
+        _:blank ,
+        0E0 ,
+        ""0""^^xsd:float ,
+        0.0 ,
+        false ,
+        ""1900-01-01""^^xsd:dateTime ,
+        ""P1D""^^xsd:duration ,
+        0 ,
+        """" ,
+        """"^^:datatype ,
+        """"@en ,
+        (0 1) .
 ");
 
-            var t = g.Triples.First();
-            var s = t.Subject;
-            var p = t.Predicate;
+            var s = g.CreateUriNode(":s");
+            var p = g.CreateUriNode(":p");
             var d = new DynamicNode(s);
             var c = new DynamicObjectCollection(d, p);
+            var o = c.ToArray();
 
-            var objects = new object[g.Triples.Count()];
-            c.CopyTo(objects, 0);
-
-            Assert.IsType<DynamicNode>(objects[0]);
-            Assert.IsType<DynamicNode>(objects[1]);
-            Assert.IsType<double>(objects[2]);
-            Assert.IsType<float>(objects[3]);
-            Assert.IsType<decimal>(objects[4]);
-            Assert.IsType<bool>(objects[5]);
-            Assert.IsType<DateTimeOffset>(objects[6]);
-            Assert.IsType<TimeSpan>(objects[7]);
-            Assert.IsType<long>(objects[8]);
-            Assert.IsType<string>(objects[9]);
-            Assert.IsType<LiteralNode>(objects[10]);
-            Assert.IsType<LiteralNode>(objects[11]);
+            Assert.IsType<DynamicNode>(o[0]);
+            Assert.IsType<DynamicNode>(o[1]);
+            Assert.IsType<double>(o[2]);
+            Assert.IsType<float>(o[3]);
+            Assert.IsType<decimal>(o[4]);
+            Assert.IsType<bool>(o[5]);
+            Assert.IsType<DateTimeOffset>(o[6]);
+            Assert.IsType<TimeSpan>(o[7]);
+            Assert.IsType<long>(o[8]);
+            Assert.IsType<string>(o[9]);
+            Assert.IsAssignableFrom<ILiteralNode>(o[10]);
+            Assert.IsAssignableFrom<ILiteralNode>(o[11]);
+            Assert.IsAssignableFrom<IList<object>>(o[12]);
         }
     }
 }
