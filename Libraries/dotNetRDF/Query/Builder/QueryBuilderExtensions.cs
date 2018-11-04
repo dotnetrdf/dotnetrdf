@@ -177,7 +177,7 @@ namespace VDS.RDF.Query.Builder
 
         internal static IQueryBuilder Where(this IQueryBuilder queryBuilder, Func<INamespaceMapper, ITriplePattern[]> buildTriplePatternFunc)
         {
-            queryBuilder.Root.Where(buildTriplePatternFunc);
+            queryBuilder.RootGraphPatternBuilder.Where(buildTriplePatternFunc);
             return queryBuilder;
         }
 
