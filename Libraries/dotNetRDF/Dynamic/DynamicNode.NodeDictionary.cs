@@ -4,7 +4,6 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-    using VDS.RDF.Nodes;
 
     public partial class DynamicNode : IDictionary<INode, object>
     {
@@ -86,7 +85,7 @@
                 throw new ArgumentNullException("key");
             }
 
-            return Graph.GetTriplesWithSubjectPredicate(this, item.Key).WithObject(ConvertToNode(item.Value)).Any();
+            return Graph.GetTriplesWithSubjectPredicate(this, item.Key).WithObject(DynamicHelper.ConvertObject(item.Value, Graph)).Any();
         }
 
         public bool ContainsKey(INode key)
@@ -134,7 +133,7 @@
                 throw new ArgumentNullException("key");
             }
 
-            return Graph.Retract(Graph.GetTriplesWithSubjectPredicate(this, item.Key).WithObject(ConvertToNode(item.Value)).ToArray());
+            return Graph.Retract(Graph.GetTriplesWithSubjectPredicate(this, item.Key).WithObject(DynamicHelper.ConvertObject(item.Value, Graph)).ToArray());
         }
 
         public bool TryGetValue(INode key, out object value)
@@ -173,60 +172,9 @@
                     yield return new Triple(
                         subj: Node,
                         pred: predicateNode,
-                        obj: ConvertToNode(item),
+                        obj: DynamicHelper.ConvertObject(item, Graph),
                         g: Node.Graph);
                 }
-            }
-        }
-
-        private INode ConvertToNode(object value)
-        {
-            switch (value)
-            {
-                case INode nodeValue:
-                    return nodeValue.CopyNode(Graph);
-
-                case Uri uriValue:
-                    return Graph.CreateUriNode(uriValue);
-
-                case bool boolValue:
-                    return new BooleanNode(Graph, boolValue);
-
-                case byte byteValue:
-                    return new ByteNode(Graph, byteValue);
-
-                case DateTime dateTimeValue:
-                    return new DateTimeNode(Graph, dateTimeValue);
-
-                case DateTimeOffset dateTimeOffsetValue:
-                    return new DateTimeNode(Graph, dateTimeOffsetValue);
-
-                case decimal decimalValue:
-                    return new DecimalNode(Graph, decimalValue);
-
-                case double doubleValue:
-                    return new DoubleNode(Graph, doubleValue);
-
-                case float floatValue:
-                    return new FloatNode(Graph, floatValue);
-
-                case long longValue:
-                    return new LongNode(Graph, longValue);
-
-                case int intValue:
-                    return new LongNode(Graph, intValue);
-
-                case string stringValue:
-                    return new StringNode(Graph, stringValue);
-
-                case char charValue:
-                    return new StringNode(Graph, charValue.ToString());
-
-                case TimeSpan timeSpanValue:
-                    return new TimeSpanNode(Graph, timeSpanValue);
-
-                default:
-                    throw new InvalidOperationException($"Can't convert type {value.GetType()}");
             }
         }
     }

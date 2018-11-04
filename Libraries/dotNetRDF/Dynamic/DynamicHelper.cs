@@ -2,10 +2,53 @@
 {
     using System;
     using System.Text.RegularExpressions;
+    using VDS.RDF.Nodes;
 
     internal static class DynamicHelper
     {
-        internal static Uri Convert(string key, IGraph graph)
+        internal static object ConvertNode(INode node, Uri baseUri)
+        {
+            if (node.IsListRoot(node.Graph))
+            {
+                return new DynamicCollectionList(node, baseUri);
+            }
+
+            switch (node.AsValuedNode())
+            {
+                case IUriNode uriNode:
+                case IBlankNode blankNode:
+                    return new DynamicNode(node, baseUri);
+
+                case DoubleNode doubleNode:
+                    return doubleNode.AsDouble();
+
+                case FloatNode floatNode:
+                    return floatNode.AsFloat();
+
+                case DecimalNode decimalNode:
+                    return decimalNode.AsDecimal();
+
+                case BooleanNode booleanNode:
+                    return booleanNode.AsBoolean();
+
+                case DateTimeNode dateTimeNode:
+                    return dateTimeNode.AsDateTimeOffset();
+
+                case TimeSpanNode timeSpanNode:
+                    return timeSpanNode.AsTimeSpan();
+
+                case NumericNode numericNode:
+                    return numericNode.AsInteger();
+
+                case StringNode stringNode when stringNode.DataType is null && string.IsNullOrEmpty(stringNode.Language):
+                    return stringNode.AsString();
+
+                default:
+                    return node;
+            }
+        }
+
+        internal static Uri ConvertPredicate(string key, IGraph graph)
         {
             if (!DynamicHelper.TryResolveQName(key, graph, out var uri))
             {
@@ -18,7 +61,7 @@
             return uri;
         }
 
-        internal static INode Convert(Uri key, IGraph graph, Uri baseUri)
+        internal static INode ConvertPredicate(Uri key, IGraph graph, Uri baseUri)
         {
             if (graph is null)
             {
@@ -45,6 +88,57 @@
             }
 
             return graph.CreateUriNode(key);
+        }
+
+        internal static INode ConvertObject(object value, IGraph graph)
+        {
+            switch (value)
+            {
+                case INode nodeValue:
+                    return nodeValue.CopyNode(graph);
+
+                case Uri uriValue:
+                    return graph.CreateUriNode(uriValue);
+
+                case bool boolValue:
+                    return new BooleanNode(graph, boolValue);
+
+                case byte byteValue:
+                    return new ByteNode(graph, byteValue);
+
+                case DateTime dateTimeValue:
+                    return new DateTimeNode(graph, dateTimeValue);
+
+                case DateTimeOffset dateTimeOffsetValue:
+                    return new DateTimeNode(graph, dateTimeOffsetValue);
+
+                case decimal decimalValue:
+                    return new DecimalNode(graph, decimalValue);
+
+                case double doubleValue:
+                    return new DoubleNode(graph, doubleValue);
+
+                case float floatValue:
+                    return new FloatNode(graph, floatValue);
+
+                case long longValue:
+                    return new LongNode(graph, longValue);
+
+                case int intValue:
+                    return new LongNode(graph, intValue);
+
+                case string stringValue:
+                    return new StringNode(graph, stringValue);
+
+                case char charValue:
+                    return new StringNode(graph, charValue.ToString());
+
+                case TimeSpan timeSpanValue:
+                    return new TimeSpanNode(graph, timeSpanValue);
+
+                default:
+                    throw new InvalidOperationException($"Can't convert type {value.GetType()}");
+            }
         }
 
         internal static string ConvertToName(IUriNode node, Uri baseUri)

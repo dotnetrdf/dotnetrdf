@@ -90,7 +90,7 @@
 
         private INode Convert(Uri key)
         {
-            return DynamicHelper.Convert(key, this.Graph, this.BaseUri);
+            return DynamicHelper.ConvertPredicate(key, this.Graph, this.BaseUri);
         }
     }
 }

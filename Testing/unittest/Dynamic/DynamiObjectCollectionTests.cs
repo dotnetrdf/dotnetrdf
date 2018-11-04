@@ -289,7 +289,7 @@
             Assert.IsType<string>(o[9]);
             Assert.IsAssignableFrom<ILiteralNode>(o[10]);
             Assert.IsAssignableFrom<ILiteralNode>(o[11]);
-            Assert.IsAssignableFrom<IList<object>>(o[12]);
+            Assert.IsType<DynamicCollectionList>(o[12]);
         }
     }
 }

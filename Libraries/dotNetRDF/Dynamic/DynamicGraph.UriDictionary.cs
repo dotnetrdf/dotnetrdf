@@ -149,7 +149,7 @@
 
         private INode Convert(Uri key)
         {
-            return DynamicHelper.Convert(key, this, this.SubjectBaseUri);
+            return DynamicHelper.ConvertPredicate(key, this, this.SubjectBaseUri);
         }
     }
 }

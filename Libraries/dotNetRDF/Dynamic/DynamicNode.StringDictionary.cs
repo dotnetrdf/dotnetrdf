@@ -90,7 +90,7 @@
 
         private Uri Convert(string key)
         {
-            return DynamicHelper.Convert(key, this.Graph);
+            return DynamicHelper.ConvertPredicate(key, this.Graph);
         }
     }
 }

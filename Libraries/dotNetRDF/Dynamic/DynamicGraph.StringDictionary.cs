@@ -149,7 +149,7 @@
 
         private Uri Convert(string key)
         {
-            return DynamicHelper.Convert(key, this);
+            return DynamicHelper.ConvertPredicate(key, this);
         }
     }
 }
