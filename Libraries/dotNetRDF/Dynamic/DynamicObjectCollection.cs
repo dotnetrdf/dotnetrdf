@@ -23,11 +23,6 @@
                 throw new ArgumentNullException(nameof(predicate));
             }
 
-            if (subject.Graph is null)
-            {
-                throw new InvalidOperationException();
-            }
-
             this.subject = subject;
             this.predicate = predicate;
         }

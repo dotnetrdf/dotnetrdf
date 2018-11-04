@@ -20,23 +20,14 @@
         [Fact]
         public void Requires_predicate()
         {
-            var s = new NodeFactory().CreateBlankNode();
+            var g = new Graph();
+            g.LoadFromString("<urn:s> <urn:p:> <urn:o> .");
+
+            var s = g.Triples.First().Subject;
             var d = new DynamicNode(s);
 
             Assert.Throws<ArgumentNullException>(() =>
                 new DynamicObjectCollection(d, null)
-            );
-        }
-
-        [Fact]
-        public void Requires_subject_graph()
-        {
-            var s = new NodeFactory().CreateBlankNode();
-            var p = new NodeFactory().CreateBlankNode();
-            var d = new DynamicNode(s);
-
-            Assert.Throws<InvalidOperationException>(() =>
-                new DynamicObjectCollection(d, p)
             );
         }
 
@@ -77,7 +68,7 @@
         }
 
         [Fact]
-        public void Adds_triple_with_subject_predicate_and_argument_object()
+        public void Add_asserts_with_subject_predicate_and_argument_object()
         {
             var expected = new Graph();
             expected.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
@@ -94,7 +85,7 @@
         }
 
         [Fact]
-        public void Clears_by_subject_and_predicate()
+        public void Clear_retracts_by_subject_and_predicate()
         {
             var expected = new Graph();
             expected.LoadFromString(@"
@@ -199,7 +190,7 @@
         }
 
         [Fact]
-        public void Removes_by_subject_predicate()
+        public void Remove_retracts_by_subject_predicate()
         {
             var expected = new Graph();
             expected.LoadFromString(@"

@@ -111,8 +111,8 @@
         [Fact]
         public void Keys_are_uri_subject_nodes()
         {
-            var g = new DynamicGraph();
-            g.LoadFromString(@"
+            var d = new DynamicGraph();
+            d.LoadFromString(@"
 <urn:s1> <urn:p1> <urn:o1> .
 <urn:s1> <urn:p1> <urn:o2> .
 <urn:s1> <urn:p2> <urn:o3> .
@@ -123,8 +123,8 @@
 <urn:s2> <urn:p4> <urn:o8> .
 ");
 
-            var actual = ((IDictionary<string, object>)g).Keys;
-            var expected = g.Triples.SubjectNodes.UriNodes().Select(n => n.Uri.AbsoluteUri);
+            var actual = d.Keys;
+            var expected = d.Triples.SubjectNodes.UriNodes().Select(n => n.Uri.AbsoluteUri);
 
             Assert.Equal(expected, actual);
         }

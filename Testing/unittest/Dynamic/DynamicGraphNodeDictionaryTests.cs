@@ -523,6 +523,7 @@
             var condition = d.TryGetValue(s, out var value);
 
             Assert.False(condition);
+            Assert.Null(value);
         }
 
         [Fact]
@@ -537,6 +538,7 @@
 
             Assert.True(condition);
             Assert.Equal(value, s);
+            Assert.NotNull(value);
             Assert.IsType<DynamicNode>(value);
         }
     }

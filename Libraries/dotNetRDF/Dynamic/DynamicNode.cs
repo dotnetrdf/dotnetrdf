@@ -18,6 +18,11 @@
         // TODO: Make sure all instantiations copy original node to appropriate host graph
         public DynamicNode(INode node, Uri baseUri = null) : base(node)
         {
+            if (Graph is null)
+            {
+                throw new InvalidOperationException("Node must have graph");
+            }
+
             this.baseUri = baseUri;
         }
 

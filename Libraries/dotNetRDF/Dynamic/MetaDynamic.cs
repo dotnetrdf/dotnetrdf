@@ -29,14 +29,13 @@
 
         private IndexExpression CreateIndexExpression(string name)
         {
-            return
-                Expression.Property(
-                    Expression.Convert(
-                        this.Expression,
-                        this.RuntimeType),
-                    "Item",
-                    new[] {
-                        Expression.Constant(name) });
+            return Expression.Property(
+                Expression.Convert(
+                    this.Expression,
+                    this.RuntimeType),
+                "Item",
+                new[] {
+                    Expression.Constant(name) });
         }
 
         private DynamicMetaObject CreateMetaObject(Expression expression)

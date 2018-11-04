@@ -19,11 +19,6 @@
                     throw new ArgumentNullException(nameof(key));
                 }
 
-                if (Graph is null)
-                {
-                    throw new InvalidOperationException("Node must have graph");
-                }
-
                 if (!TryGetValue(key, out var objects))
                 {
                     throw new KeyNotFoundException();
@@ -70,6 +65,11 @@
                 throw new ArgumentNullException(nameof(value));
             }
 
+            if (ContainsKey(key))
+            {
+                throw new ArgumentException("An item with the same key has already been added.", nameof(key));
+            }
+
             Graph.Assert(this.ConvertToTriples(key, value));
         }
 
@@ -95,7 +95,7 @@
                 throw new ArgumentNullException(nameof(key));
             }
 
-            return 
+            return
                 Graph
                 .GetTriplesWithSubjectPredicate(this, key)
                 .Any();
@@ -108,7 +108,7 @@
 
         IEnumerator<KeyValuePair<INode, object>> IEnumerable<KeyValuePair<INode, object>>.GetEnumerator()
         {
-            return 
+            return
                 PredicateNodes
                 .ToDictionary(
                     predicate => predicate as INode,
@@ -143,18 +143,22 @@
                 throw new ArgumentNullException(nameof(key));
             }
 
-            value = new DynamicObjectCollection(this, key);
+            var statementExists = Graph.GetTriplesWithSubjectPredicate(this, key).Any();
 
-            return true;
+            if (!statementExists)
+            {
+                value = null;
+            }
+            else
+            {
+                value = new DynamicObjectCollection(this, key);
+            }
+
+            return !(value is null);
         }
 
         private IEnumerable<Triple> ConvertToTriples(INode predicateNode, object value)
         {
-            if (value is null)
-            {
-                yield break;
-            }
-
             if (value is string || !(value is IEnumerable enumerableValue)) // Strings are enumerable but not for our case
             {
                 enumerableValue = value.AsEnumerable(); // When they're not enumerable, wrap them in an enumerable of one
@@ -163,7 +167,7 @@
             foreach (var item in enumerableValue)
             {
                 // TODO: Maybe this should throw on null
-                if (item != null)
+                if (!(item is null))
                 {
                     yield return new Triple(
                         subj: Node,
