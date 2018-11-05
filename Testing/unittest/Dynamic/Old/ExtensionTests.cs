@@ -16,7 +16,7 @@
         [Fact]
         public void m2()
         {
-            var value = new NodeFactory().CreateBlankNode().AsDynamic();
+            var value = new Graph().CreateBlankNode().AsDynamic();
 
             Assert.IsType<DynamicNode>(value);
         }

@@ -12,11 +12,21 @@
         {
             get
             {
+                if (key is null)
+                {
+                    throw new ArgumentNullException(nameof(key));
+                }
+
                 return this[Convert(key)];
             }
 
             set
             {
+                if (key is null)
+                {
+                    throw new ArgumentNullException(nameof(key));
+                }
+
                 this[Convert(key)] = value;
             }
         }

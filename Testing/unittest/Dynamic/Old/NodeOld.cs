@@ -107,7 +107,7 @@
         [Fact]
         public void ToString_delegates_to_graphNode()
         {
-            var n = new NodeFactory().CreateBlankNode();
+            var n = new Graph().CreateBlankNode();
 
             dynamic d = n.AsDynamic();
 
@@ -119,7 +119,7 @@
         [Fact]
         public void GetHashCode_delegates_to_node()
         {
-            var n = new NodeFactory().CreateBlankNode();
+            var n = new Graph().CreateBlankNode();
 
             dynamic d = n.AsDynamic();
 
@@ -140,7 +140,7 @@
         [Fact]
         public void Subject_base_uri_defaults_to_graph_base_uri1()
         {
-            var d = new DynamicNode(new NodeFactory().CreateBlankNode());
+            var d = new DynamicNode(new Graph().CreateBlankNode());
 
             Assert.Null(d.BaseUri);
         }
@@ -173,7 +173,7 @@
         [Fact]
         public void Setter_requires_base_uri()
         {
-            var a = new NodeFactory().CreateBlankNode().AsDynamic();
+            var a = new Graph().CreateBlankNode().AsDynamic();
 
             Assert.Throws<InvalidOperationException>(() =>
             {
