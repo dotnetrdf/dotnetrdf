@@ -7,22 +7,27 @@
 
     public class DynamicCollectionList : IList<object>
     {
-        private readonly INode root;
+        private readonly INode node;
         private readonly Uri baseUri;
 
-        public DynamicCollectionList(INode root, Uri baseUri)
+        public DynamicCollectionList(INode node, Uri baseUri=null)
         {
-            if (root is null)
+            if (node is null)
             {
-                throw new ArgumentNullException(nameof(root));
+                throw new ArgumentNullException(nameof(node));
             }
 
-            if (root.Graph is null)
+            if (node.Graph is null)
             {
                 throw new InvalidOperationException("Node must have graph");
             }
 
-            this.root = root;
+            if (!node.IsListRoot(node.Graph))
+            {
+                throw new InvalidOperationException("root must be list root");
+            }
+
+            this.node = node;
             this.baseUri = baseUri;
         }
 
@@ -30,7 +35,7 @@
         {
             get
             {
-                return root.Graph.GetListItems(root);
+                return node.Graph.GetListItems(node);
             }
         }
 
@@ -46,6 +51,11 @@
         {
             get
             {
+                if (index < 0 || !(index < Nodes.Count()))
+                {
+                    throw new ArgumentOutOfRangeException(nameof(index));
+                }
+
                 return Objects.ToList()[index];
             }
 
@@ -74,12 +84,12 @@
 
         public void Add(object item)
         {
-            root.Graph.AddToList(root, DynamicHelper.ConvertObject(item, root.Graph).AsEnumerable());
+            node.Graph.AddToList(node, DynamicHelper.ConvertObject(item, node.Graph).AsEnumerable());
         }
 
         public void Clear()
         {
-            root.Graph.RetractList(root);
+            node.Graph.RetractList(node);
         }
 
         public bool Contains(object item)
@@ -106,8 +116,8 @@
         {
             var nodes = Nodes.ToList();
             Clear();
-            nodes.Insert(index, DynamicHelper.ConvertObject(item, root.Graph));
-            root.Graph.AssertList(nodes);
+            nodes.Insert(index, DynamicHelper.ConvertObject(item, node.Graph));
+            node.Graph.AssertList(nodes);
         }
 
         public bool Remove(object item)
@@ -116,8 +126,8 @@
             {
                 var nodes = Nodes.ToList();
                 Clear();
-                nodes.Remove(DynamicHelper.ConvertObject(item, root.Graph));
-                root.Graph.AssertList(nodes);
+                nodes.Remove(DynamicHelper.ConvertObject(item, node.Graph));
+                node.Graph.AssertList(nodes);
 
                 return true;
             }

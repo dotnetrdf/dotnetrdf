@@ -187,6 +187,7 @@
             });
         }
 
+        // TODO: This fails because the array is ilist
         [Fact]
         public void Add_handles_enumerables()
         {
@@ -202,7 +203,7 @@ _:s <urn:p> ""o2"" .
             var s = new DynamicNode(n);
 
             s.Add(p, new[] { "o1", "o2" });
-
+            
             Assert.Equal(expected, g);
         }
 

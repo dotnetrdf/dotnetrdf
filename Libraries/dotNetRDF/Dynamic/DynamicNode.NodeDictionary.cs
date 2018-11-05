@@ -69,7 +69,12 @@
                 throw new ArgumentException("An item with the same key has already been added.", nameof(key));
             }
 
-            // TODO: Handle lists
+            // TODO: Support generic lists?
+            if (value is IList)
+            {
+                value = DynamicHelper.ConvertObject(value, Graph);
+            }
+
             Graph.Assert(this.ConvertToTriples(key, value));
         }
 

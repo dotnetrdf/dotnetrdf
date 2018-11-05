@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections;
-    using System.Collections.Generic;
     using System.Linq;
     using VDS.RDF;
     using VDS.RDF.Nodes;
@@ -136,14 +135,12 @@
             var d = new DynamicNode(s);
             var c = new DynamicObjectCollection(d, p);
 
-#pragma warning disable xUnit2017 // Contains is actually the method under test
-            Assert.True(c.Contains("o1"));
-            Assert.True(c.Contains("o2"));
+            Assert.Contains("o1", c);
+            Assert.Contains("o2", c);
 
-            Assert.False(c.Contains("o3")); // wrong predicate
-            Assert.False(c.Contains("o4")); // wrong subject
-            Assert.False(c.Contains("o")); // nonexistent object
-#pragma warning restore xUnit2017
+            Assert.DoesNotContain("o3", c); // wrong predicate
+            Assert.DoesNotContain("o4", c); // wrong subject
+            Assert.DoesNotContain("o", c); // nonexistent object
         }
 
         [Fact]
@@ -246,6 +243,7 @@
                 enumerator.Current);
         }
 
+        // TODO: Remove to separate test class
         [Fact]
         public void Converts_objects_to_native_datatypes()
         {
