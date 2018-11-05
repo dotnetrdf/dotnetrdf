@@ -243,13 +243,13 @@
             var d = new DynamicGraph(null, new Uri("urn:"));
             d["s"] = new
             {
-                p = new List<object> {
-                    "o1",
-                    new List<object> {
+                p = new RdfCollection(
+                    "o1" as object,
+                    new RdfCollection(
                         "o2"
-                    },
+                    ),
                     "o3"
-                }
+                )
             };
 
             Assert.Equal(expected as IGraph, d as IGraph);

@@ -69,12 +69,6 @@
                 throw new ArgumentException("An item with the same key has already been added.", nameof(key));
             }
 
-            // TODO: Support generic lists?
-            if (value is IList)
-            {
-                value = DynamicHelper.ConvertObject(value, Graph);
-            }
-
             Graph.Assert(this.ConvertToTriples(key, value));
         }
 
@@ -164,7 +158,7 @@
 
         private IEnumerable<Triple> ConvertToTriples(INode predicateNode, object value)
         {
-            if (value is string || !(value is IEnumerable enumerableValue)) // Strings are enumerable but not for our case
+            if (value is IRdfCollection || value is string || !(value is IEnumerable enumerableValue)) // Strings are enumerable but not for our case
             {
                 enumerableValue = value.AsEnumerable(); // When they're not enumerable, wrap them in an enumerable of one
             }

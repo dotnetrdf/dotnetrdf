@@ -1,7 +1,6 @@
 ﻿namespace VDS.RDF.Dynamic
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Text.RegularExpressions;
     using VDS.RDF.Nodes;
@@ -94,8 +93,7 @@
 
         internal static INode ConvertObject(object value, IGraph graph)
         {
-            // TODO: Support generic lists?
-            if (value is IList values)
+            if (value is IRdfCollection values)
             {
                 var list = new List<object>();
                 foreach (var item in values)

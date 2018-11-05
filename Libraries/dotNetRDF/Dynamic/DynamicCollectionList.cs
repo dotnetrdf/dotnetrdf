@@ -5,12 +5,12 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    public class DynamicCollectionList : IList<object>
+    public class DynamicCollectionList : IList<object>, IRdfCollection
     {
         private readonly INode node;
         private readonly Uri baseUri;
 
-        public DynamicCollectionList(INode node, Uri baseUri=null)
+        public DynamicCollectionList(INode node, Uri baseUri = null)
         {
             if (node is null)
             {
