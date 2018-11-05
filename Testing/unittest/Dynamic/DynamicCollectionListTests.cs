@@ -1,7 +1,7 @@
 ﻿namespace VDS.RDF.Dynamic
 {
     using System;
-    using System.Collections.Generic;
+    using System.Collections;
     using System.Linq;
     using Xunit;
 
@@ -76,8 +76,9 @@
             );
         }
 
+        // TODO: Rename
         [Fact]
-        public void Get_index_gets_index()
+        public void Get_index()
         {
             var g = new Graph();
             g.LoadFromString(@"
@@ -92,6 +93,94 @@
             var l = new DynamicCollectionList(r);
 
             Assert.Equal("o", l[0]);
+        }
+
+        [Fact]
+        public void Set_index_requires_positive_index()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+@prefix : <urn:> .
+
+:s :p ([]) .
+");
+
+            var s = g.CreateUriNode(":s");
+            var p = g.CreateUriNode(":p");
+            var f = g.GetTriplesWithSubjectPredicate(s, p).Single().Object;
+            var r = new DynamicCollectionList(f);
+
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                r[-1] = null
+            );
+        }
+
+        [Fact]
+        public void Set_index_requires_existing_index()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+@prefix : <urn:> .
+
+:s :p ([]) .
+");
+
+            var s = g.CreateUriNode(":s");
+            var p = g.CreateUriNode(":p");
+            var r = g.GetTriplesWithSubjectPredicate(s, p).Single().Object;
+            var l = new DynamicCollectionList(r);
+
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                l[1] = null
+            );
+        }
+
+        [Fact]
+        public void Set_index_requires_value()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+@prefix : <urn:> .
+
+:s :p ([]) .
+");
+
+            var s = g.CreateUriNode(":s");
+            var p = g.CreateUriNode(":p");
+            var r = g.GetTriplesWithSubjectPredicate(s, p).Single().Object;
+            var l = new DynamicCollectionList(r);
+
+            Assert.Throws<ArgumentNullException>(() =>
+                l[0] = null
+            );
+        }
+
+        // TODO: Rename
+        [Fact]
+        public void Set_index()
+        {
+            var expected = new Graph();
+            expected.LoadFromString(@"
+@prefix : <urn:> .
+
+:s :p (""o1"" ""oX"" ""o3"") .
+");
+
+            var g = new Graph();
+            g.LoadFromString(@"
+@prefix : <urn:> .
+
+:s :p (""o1"" ""o2"" ""o3"") .
+");
+
+            var s = g.CreateUriNode(":s");
+            var p = g.CreateUriNode(":p");
+            var r = g.GetTriplesWithSubjectPredicate(s, p).Single().Object;
+            var l = new DynamicCollectionList(r);
+
+            l[1] = "oX";
+
+            Assert.Equal(expected, g);
         }
 
         [Fact]
@@ -130,7 +219,7 @@
             Assert.False(l.IsReadOnly);
         }
 
-        // TODO: rename
+        // TODO: Rename
         [Fact]
         public void Add()
         {
@@ -206,15 +295,15 @@
             Assert.DoesNotContain("o1", l);
         }
 
-        // TODO: Remove to features
+        // TODO: Rename
         [Fact]
-        public void Handles_nested_lists1()
+        public void CopyTo()
         {
             var g = new Graph();
             g.LoadFromString(@"
 @prefix : <urn:> .
 
-:s :p (""o1"" (""o2"") ""o3"") .
+:s :p (""o"") .
 ");
 
             var s = g.CreateUriNode(":s");
@@ -222,37 +311,298 @@
             var r = g.GetTriplesWithSubjectPredicate(s, p).Single().Object;
             var l = new DynamicCollectionList(r);
 
-            Assert.Contains("o1", l);
-            Assert.Contains("o3", l);
-            Assert.DoesNotContain("o2", l);
-            Assert.IsAssignableFrom<IList<object>>(l[1]);
-            Assert.Contains("o2", l[1] as IList<object>);
+            var objects = new object[1];
+            l.CopyTo(objects, 0);
+
+            Assert.Equal(new[] { "o" }, objects);
         }
 
-        // TODO: Remove to features
+        // TODO: Rename
         [Fact]
-        public void Handles_nested_lists2()
+        public void GetEnumerator()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+@prefix : <urn:> .
+
+:s :p (""o"") .
+");
+
+            var s = g.CreateUriNode(":s");
+            var p = g.CreateUriNode(":p");
+            var r = g.GetTriplesWithSubjectPredicate(s, p).Single().Object;
+            var l = new DynamicCollectionList(r);
+
+            using (var enumerator = l.GetEnumerator())
+            {
+                enumerator.MoveNext();
+
+                Assert.Equal("o", enumerator.Current);
+            }
+        }
+
+        // TODO: Rename
+        [Fact]
+        public void IndexOf()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+@prefix : <urn:> .
+
+:s :p (""o"") .
+");
+
+            var s = g.CreateUriNode(":s");
+            var p = g.CreateUriNode(":p");
+            var r = g.GetTriplesWithSubjectPredicate(s, p).Single().Object;
+            var l = new DynamicCollectionList(r);
+
+            Assert.Equal(0, l.IndexOf("o"));
+            Assert.Equal(-1, l.IndexOf("o1"));
+        }
+
+        [Fact]
+        public void Insert_requires_positive_index()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+@prefix : <urn:> .
+
+:s :p ([]) .
+");
+
+            var s = g.CreateUriNode(":s");
+            var p = g.CreateUriNode(":p");
+            var f = g.GetTriplesWithSubjectPredicate(s, p).Single().Object;
+            var r = new DynamicCollectionList(f);
+
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                r.Insert(-1, null)
+            );
+        }
+
+        [Fact]
+        public void Insert_requires_existing_index()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+@prefix : <urn:> .
+
+:s :p ([]) .
+");
+
+            var s = g.CreateUriNode(":s");
+            var p = g.CreateUriNode(":p");
+            var f = g.GetTriplesWithSubjectPredicate(s, p).Single().Object;
+            var r = new DynamicCollectionList(f);
+
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                r.Insert(1, null)
+            );
+        }
+
+        [Fact]
+        public void Insert_requires_value()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+@prefix : <urn:> .
+
+:s :p ([]) .
+");
+
+            var s = g.CreateUriNode(":s");
+            var p = g.CreateUriNode(":p");
+            var f = g.GetTriplesWithSubjectPredicate(s, p).Single().Object;
+            var r = new DynamicCollectionList(f);
+
+            Assert.Throws<ArgumentNullException>(() =>
+                r.Insert(0, null)
+            );
+        }
+
+        // TODO: Rename
+        [Fact]
+        public void Insert()
         {
             var expected = new Graph();
             expected.LoadFromString(@"
 @prefix : <urn:> .
 
-:s :p (""o1"" (""o2"") ""o3"") .
+:s :p (""o"" []) .
 ");
 
-            var d = new DynamicGraph(null, new Uri("urn:"));
-            d["s"] = new
-            {
-                p = new RdfCollection(
-                    "o1" as object,
-                    new RdfCollection(
-                        "o2"
-                    ),
-                    "o3"
-                )
-            };
+            var g = new Graph();
+            g.LoadFromString(@"
+@prefix : <urn:> .
 
-            Assert.Equal(expected as IGraph, d as IGraph);
+:s :p ([]) .
+");
+
+            var s = g.CreateUriNode(":s");
+            var p = g.CreateUriNode(":p");
+            var f = g.GetTriplesWithSubjectPredicate(s, p).Single().Object;
+            var r = new DynamicCollectionList(f);
+
+            r.Insert(0, "o");
+
+            Assert.Equal(expected, g);
+        }
+
+        [Fact]
+        public void Remove_requires_value()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+@prefix : <urn:> .
+
+:s :p ([]) .
+");
+
+            var s = g.CreateUriNode(":s");
+            var p = g.CreateUriNode(":p");
+            var f = g.GetTriplesWithSubjectPredicate(s, p).Single().Object;
+            var r = new DynamicCollectionList(f);
+
+            Assert.Throws<ArgumentNullException>(() =>
+                r.Remove(null)
+            );
+        }
+
+        [Fact]
+        public void Remove_ignores_missing_value()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+@prefix : <urn:> .
+
+:s :p ([]) .
+");
+
+            var s = g.CreateUriNode(":s");
+            var p = g.CreateUriNode(":p");
+            var f = g.GetTriplesWithSubjectPredicate(s, p).Single().Object;
+            var r = new DynamicCollectionList(f);
+
+            Assert.False(r.Remove("o"));
+        }
+
+        // TODO: Rename
+        [Fact]
+        public void Remove()
+        {
+            var expected = new Graph();
+            expected.LoadFromString(@"
+@prefix : <urn:> .
+
+:s :p [] .
+");
+
+            var g = new Graph();
+            g.LoadFromString(@"
+@prefix : <urn:> .
+
+:s :p (""o"") .
+");
+
+            var s = g.CreateUriNode(":s");
+            var p = g.CreateUriNode(":p");
+            var f = g.GetTriplesWithSubjectPredicate(s, p).Single().Object;
+            var r = new DynamicCollectionList(f);
+
+            var result = r.Remove("o");
+
+            Assert.True(result);
+            Assert.Equal(expected, g);
+        }
+        [Fact]
+        public void Remove_at_requires_positive_index()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+@prefix : <urn:> .
+
+:s :p ([]) .
+");
+
+            var s = g.CreateUriNode(":s");
+            var p = g.CreateUriNode(":p");
+            var f = g.GetTriplesWithSubjectPredicate(s, p).Single().Object;
+            var r = new DynamicCollectionList(f);
+
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                r.RemoveAt(-1)
+            );
+        }
+
+        [Fact]
+        public void Remove_at_requires_existing_index()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+@prefix : <urn:> .
+
+:s :p ([]) .
+");
+
+            var s = g.CreateUriNode(":s");
+            var p = g.CreateUriNode(":p");
+            var f = g.GetTriplesWithSubjectPredicate(s, p).Single().Object;
+            var r = new DynamicCollectionList(f);
+
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                r.RemoveAt(1)
+            );
+        }
+
+        // TODO: Rename
+        [Fact]
+        public void Remove_at()
+        {
+            var expected = new Graph();
+            expected.LoadFromString(@"
+@prefix : <urn:> .
+
+:s :p (""o1"" ""o3"") .
+");
+
+            var g = new Graph();
+            g.LoadFromString(@"
+@prefix : <urn:> .
+
+:s :p (""o1"" ""o2"" ""o3"") .
+");
+
+            var s = g.CreateUriNode(":s");
+            var p = g.CreateUriNode(":p");
+            var f = g.GetTriplesWithSubjectPredicate(s, p).Single().Object;
+            var r = new DynamicCollectionList(f);
+
+            r.RemoveAt(1);
+
+            Assert.Equal(expected, g);
+        }
+
+        // TODO: Rename
+        [Fact]
+        public void EnumerableGetEnumerator()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+@prefix : <urn:> .
+
+:s :p (""o"") .
+");
+
+            var s = g.CreateUriNode(":s");
+            var p = g.CreateUriNode(":p");
+            var r = g.GetTriplesWithSubjectPredicate(s, p).Single().Object;
+            var l = new DynamicCollectionList(r) as IEnumerable;
+
+            var enumerator = l.GetEnumerator();
+            enumerator.MoveNext();
+
+            Assert.Equal("o", enumerator.Current);
         }
     }
 }

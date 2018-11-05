@@ -61,6 +61,16 @@
 
             set
             {
+                if (index < 0 || !(index < Nodes.Count()))
+                {
+                    throw new ArgumentOutOfRangeException(nameof(index));
+                }
+
+                if (value is null)
+                {
+                    throw new ArgumentNullException(nameof(value), "inserting a null into an RDF Collection makes no sense");
+                }
+
                 RemoveAt(index);
                 Insert(index, value);
             }
@@ -114,20 +124,35 @@
 
         public void Insert(int index, object item)
         {
+            if (index < 0 || !(index < Nodes.Count()))
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
+            if (item is null)
+            {
+                throw new ArgumentNullException(nameof(item), "inserting a null into an RDF Collection makes no sense");
+            }
+
             var nodes = Nodes.ToList();
             Clear();
             nodes.Insert(index, DynamicHelper.ConvertObject(item, node.Graph));
-            node.Graph.AssertList(nodes);
+            node.Graph.AssertList(node, nodes);
         }
 
         public bool Remove(object item)
         {
+            if (item is null)
+            {
+                throw new ArgumentNullException(nameof(item), "inserting a null into an RDF Collection makes no sense");
+            }
+
             if (Contains(item))
             {
                 var nodes = Nodes.ToList();
                 Clear();
                 nodes.Remove(DynamicHelper.ConvertObject(item, node.Graph));
-                node.Graph.AssertList(nodes);
+                node.Graph.AssertList(node, nodes);
 
                 return true;
             }
@@ -137,6 +162,11 @@
 
         public void RemoveAt(int index)
         {
+            if (index < 0 || !(index < Nodes.Count()))
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
             Remove(this[index]);
         }
 
