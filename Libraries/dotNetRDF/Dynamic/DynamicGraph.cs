@@ -22,7 +22,7 @@
 
         DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)
         {
-            return new MetaDynamic(parameter, this);
+            return new DictionaryMetaObject(parameter, this);
         }
     }
 }

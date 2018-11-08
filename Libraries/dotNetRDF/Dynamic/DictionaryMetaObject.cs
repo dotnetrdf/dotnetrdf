@@ -5,9 +5,9 @@
     using System.Linq;
     using System.Linq.Expressions;
 
-    internal class MetaDynamic : DynamicMetaObject
+    internal class DictionaryMetaObject : DynamicMetaObject
     {
-        internal MetaDynamic(Expression parameter, object value) : base(parameter, BindingRestrictions.Empty, value) { }
+        internal DictionaryMetaObject(Expression parameter, object value) : base(parameter, BindingRestrictions.Empty, value) { }
 
         public override DynamicMetaObject BindGetMember(GetMemberBinder binder)
         {

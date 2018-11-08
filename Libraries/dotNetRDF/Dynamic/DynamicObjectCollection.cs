@@ -3,9 +3,11 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Dynamic;
     using System.Linq;
+    using System.Linq.Expressions;
 
-    public class DynamicObjectCollection : ICollection<object>
+    public class DynamicObjectCollection : ICollection<object>, IDynamicMetaObjectProvider
     {
         private readonly DynamicNode subject;
         private readonly INode predicate;
@@ -54,5 +56,10 @@
         public bool Remove(object item) => ((IDictionary<INode, object>)subject).Remove(new KeyValuePair<INode, object>(predicate, item));
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)
+        {
+            return new EnumerableMetaObject(parameter, this);
+        }
     }
 }
