@@ -63,12 +63,12 @@ namespace VDS.RDF.Ontology
 
             // Find derived classes
             IUriNode subClassOf = _graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySubClassOf));
-            _resourceProperties.Add(PropertyDerivedClass, new List<INode>());
-            _resourceProperties.Add(PropertyDirectSubClass, new List<INode>());
+            _resourceProperties.Add(PropertyDerivedClass, new HashSet<INode>());
+            _resourceProperties.Add(PropertyDirectSubClass, new HashSet<INode>());
             foreach (Triple t in _graph.GetTriplesWithPredicateObject(subClassOf, _resource))
             {
-                if (!_resourceProperties[PropertyDerivedClass].Contains(t.Subject)) _resourceProperties[PropertyDerivedClass].Add(t.Subject);
-                if (!_resourceProperties[PropertyDirectSubClass].Contains(t.Subject)) _resourceProperties[PropertyDirectSubClass].Add(t.Subject);
+                _resourceProperties[PropertyDerivedClass].Add(t.Subject);
+                _resourceProperties[PropertyDirectSubClass].Add(t.Subject);
             }
             int c = 0; 
             do
@@ -78,16 +78,19 @@ namespace VDS.RDF.Ontology
                 {
                     foreach (Triple t in _graph.GetTriplesWithPredicateObject(subClassOf, n))
                     {
-                        if (!_resourceProperties[PropertyDerivedClass].Contains(t.Subject)) _resourceProperties[PropertyDerivedClass].Add(t.Subject);
+                        _resourceProperties[PropertyDerivedClass].Add(t.Subject);
                     }
                 }
             } while (c < _resourceProperties[PropertyDerivedClass].Count);
 
             // Find additional super classes
-            _resourceProperties.Add(PropertyDirectSuperClass, new List<INode>());
+            _resourceProperties.Add(PropertyDirectSuperClass, new HashSet<INode>());
             if (_resourceProperties.ContainsKey(OntologyHelper.PropertySubClassOf))
             {
-                _resourceProperties[PropertyDirectSuperClass].AddRange(_resourceProperties[OntologyHelper.PropertySubClassOf]);
+              foreach (var node in _resourceProperties[OntologyHelper.PropertySubClassOf])
+              {
+                _resourceProperties[PropertyDirectSuperClass].Add(node);
+              }
 
                 do
                 {
@@ -96,7 +99,7 @@ namespace VDS.RDF.Ontology
                     {
                         foreach (Triple t in _graph.GetTriplesWithSubjectPredicate(n, subClassOf))
                         {
-                            if (!_resourceProperties[OntologyHelper.PropertySubClassOf].Contains(t.Object)) _resourceProperties[OntologyHelper.PropertySubClassOf].Add(t.Object);
+                            _resourceProperties[OntologyHelper.PropertySubClassOf].Add(t.Object);
                         }
                     }
                 } while (c < _resourceProperties[OntologyHelper.PropertySubClassOf].Count);

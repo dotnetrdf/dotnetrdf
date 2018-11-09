@@ -48,7 +48,7 @@ namespace VDS.RDF.Ontology
         /// <summary>
         /// Storage of Resource Properties
         /// </summary>
-        protected Dictionary<String, List<INode>> _resourceProperties = new Dictionary<string, List<INode>>();
+        protected Dictionary<String, HashSet<INode>> _resourceProperties = new Dictionary<string, HashSet<INode>>();
         /// <summary>
         /// The Node which this Resource is a wrapper around
         /// </summary>
@@ -202,7 +202,7 @@ namespace VDS.RDF.Ontology
             }
             else
             {
-                _resourceProperties.Add(propertyUri, new List<INode>() { value });
+                _resourceProperties.Add(propertyUri, new HashSet<INode>() { value });
                 if (persist) _graph.Assert(new Triple(_resource, _graph.CreateUriNode(UriFactory.Create(propertyUri)), value));
                 return true;
             }

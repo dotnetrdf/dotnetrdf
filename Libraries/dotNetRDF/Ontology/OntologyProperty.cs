@@ -65,12 +65,12 @@ namespace VDS.RDF.Ontology
 
             // Find derived properties
             IUriNode subPropertyOf = _graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySubPropertyOf));
-            _resourceProperties.Add(PropertyDerivedProperty, new List<INode>());
-            _resourceProperties.Add(PropertyDirectSubProperty, new List<INode>());
+            _resourceProperties.Add(PropertyDerivedProperty, new HashSet<INode>());
+            _resourceProperties.Add(PropertyDirectSubProperty, new HashSet<INode>());
             foreach (Triple t in _graph.GetTriplesWithPredicateObject(subPropertyOf, _resource))
             {
-                if (!_resourceProperties[PropertyDerivedProperty].Contains(t.Subject)) _resourceProperties[PropertyDerivedProperty].Add(t.Subject);
-                if (!_resourceProperties[PropertyDirectSubProperty].Contains(t.Subject)) _resourceProperties[PropertyDirectSubProperty].Add(t.Subject);
+                _resourceProperties[PropertyDerivedProperty].Add(t.Subject);
+                _resourceProperties[PropertyDirectSubProperty].Add(t.Subject);
             }
             int c = 0;
             do
@@ -80,16 +80,19 @@ namespace VDS.RDF.Ontology
                 {
                     foreach (Triple t in _graph.GetTriplesWithPredicateObject(subPropertyOf, n))
                     {
-                        if (!_resourceProperties[PropertyDerivedProperty].Contains(t.Subject)) _resourceProperties[PropertyDerivedProperty].Add(t.Subject);
+                        _resourceProperties[PropertyDerivedProperty].Add(t.Subject);
                     }
                 }
             } while (c < _resourceProperties[PropertyDerivedProperty].Count);
 
             // Find additional super properties
-            _resourceProperties.Add(PropertyDirectSuperProperty, new List<INode>());
+            _resourceProperties.Add(PropertyDirectSuperProperty, new HashSet<INode>());
             if (_resourceProperties.ContainsKey(OntologyHelper.PropertySubPropertyOf))
             {
-                _resourceProperties[PropertyDirectSuperProperty].AddRange(_resourceProperties[OntologyHelper.PropertySubPropertyOf]);
+              foreach (var node in _resourceProperties[OntologyHelper.PropertySubPropertyOf])
+              {
+                _resourceProperties[PropertyDirectSuperProperty].Add(node);
+              }
 
                 do
                 {
@@ -98,17 +101,17 @@ namespace VDS.RDF.Ontology
                     {
                         foreach (Triple t in _graph.GetTriplesWithSubjectPredicate(n, subPropertyOf))
                         {
-                            if (!_resourceProperties[OntologyHelper.PropertySubPropertyOf].Contains(t.Object)) _resourceProperties[OntologyHelper.PropertySubPropertyOf].Add(t.Object);
+                            _resourceProperties[OntologyHelper.PropertySubPropertyOf].Add(t.Object);
                         }
                     }
                 } while (c < _resourceProperties[OntologyHelper.PropertySubPropertyOf].Count);
             }
 
             // Find additional inverses
-            if (!_resourceProperties.ContainsKey(OntologyHelper.PropertyInverseOf)) _resourceProperties.Add(OntologyHelper.PropertyInverseOf, new List<INode>());
+            if (!_resourceProperties.ContainsKey(OntologyHelper.PropertyInverseOf)) _resourceProperties.Add(OntologyHelper.PropertyInverseOf, new HashSet<INode>());
             foreach (Triple t in _graph.GetTriplesWithPredicateObject(graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyInverseOf)), _resource))
             {
-                if (!_resourceProperties[OntologyHelper.PropertyInverseOf].Contains(t.Subject)) _resourceProperties[OntologyHelper.PropertyInverseOf].Add(t.Subject);
+                _resourceProperties[OntologyHelper.PropertyInverseOf].Add(t.Subject);
             }
         }
 
