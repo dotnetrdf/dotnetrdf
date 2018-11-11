@@ -3,9 +3,11 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Dynamic;
     using System.Linq;
+    using System.Linq.Expressions;
 
-    public class DynamicCollectionList : IList<object>, IRdfCollection
+    public class DynamicCollectionList : IList<object>, IRdfCollection, IDynamicMetaObjectProvider
     {
         private readonly INode node;
         private readonly Uri baseUri;
@@ -173,6 +175,11 @@
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)
+        {
+            return new EnumerableMetaObject(parameter, this);
         }
     }
 }

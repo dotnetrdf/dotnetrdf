@@ -81,10 +81,24 @@
         {
             if (item.Key is null)
             {
-                throw new ArgumentNullException("key");
+                // All statements have subject
+                return false;
             }
 
-            return Graph.GetTriplesWithSubjectPredicate(this, item.Key).WithObject(DynamicHelper.ConvertObject(item.Value, Graph)).Any();
+            if (item.Value is null)
+            {
+                // All statements have object
+                return false;
+            }
+
+            if (!TryGetValue(item.Key, out var value))
+            {
+                return false;
+            }
+
+            var objects = (DynamicObjectCollection)value;
+
+            return objects.Contains(item.Value);
         }
 
         public bool ContainsKey(INode key)

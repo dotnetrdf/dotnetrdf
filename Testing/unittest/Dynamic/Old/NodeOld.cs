@@ -26,7 +26,6 @@
             return spoGraph;
         }
 
-        [Fact]
         public void Member_names_are_predicate_uris()
         {
             var s = spoGraph.GetTriplesWithSubject(ex_s).Single().Subject;
@@ -38,7 +37,6 @@
             Assert.Contains(element, collection);
         }
 
-        [Fact]
         public void Member_names_reduce_to_qnames()
         {
             var g = GenerateSPOGraph();
@@ -52,7 +50,6 @@
             Assert.Contains(element, collection);
         }
 
-        [Fact]
         public void Member_names_reduce_to_qnames_with_empty_prefix()
         {
             var g = GenerateSPOGraph();
@@ -66,7 +63,6 @@
             Assert.Contains(element, collection);
         }
 
-        [Fact]
         public void Member_names_become_relative_to_base()
         {
             var s = spoGraph.GetTriplesWithSubject(ex_s).Single().Subject;
@@ -78,7 +74,6 @@
             Assert.Contains(element, collection);
         }
 
-        [Fact]
         public void Member_names_become_relative_to_hash_base()
         {
             var g = new Graph();
@@ -92,7 +87,6 @@
             Assert.Contains(element, collection);
         }
 
-        [Fact]
         public void Property_access_is_translated_to_indexing_with_relative_uri_strings()
         {
             var g = GenerateSPOGraph();
@@ -104,7 +98,6 @@
             Assert.Equal(result, expected);
         }
 
-        [Fact]
         public void ToString_delegates_to_graphNode()
         {
             var n = new Graph().CreateBlankNode();
@@ -116,7 +109,6 @@
                 d.ToString());
         }
 
-        [Fact]
         public void GetHashCode_delegates_to_node()
         {
             var n = new Graph().CreateBlankNode();
@@ -128,7 +120,6 @@
                 d.GetHashCode());
         }
 
-        [Fact]
         public void Cant_construct_without_graph_node()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -137,7 +128,6 @@
             });
         }
 
-        [Fact]
         public void Subject_base_uri_defaults_to_graph_base_uri1()
         {
             var d = new DynamicNode(new Graph().CreateBlankNode());
@@ -145,7 +135,6 @@
             Assert.Null(d.BaseUri);
         }
 
-        [Fact]
         public void Subject_base_uri_defaults_to_graph_base_uri2()
         {
             var d = new DynamicNode(new Graph() { BaseUri = new Uri("http://example.com/") }.CreateBlankNode());
@@ -153,7 +142,6 @@
             Assert.Equal(new Uri("http://example.com/"), d.BaseUri);
         }
 
-        [Fact]
         public void Setter_delegates_to_index_setter()
         {
             var g1 = GenerateSPOGraph();
@@ -170,7 +158,6 @@
             Assert.Equal(g2, g1);
         }
 
-        [Fact]
         public void Setter_requires_base_uri()
         {
             var a = new Graph().CreateBlankNode().AsDynamic();
@@ -181,7 +168,6 @@
             });
         }
 
-        [Fact]
         public void Dynamic_node_is_INode()
         {
             var g = new Graph();
@@ -192,7 +178,6 @@
             Assert.IsAssignableFrom<INode>(result);
         }
 
-        [Fact]
         public void Dynamic_uri_node_is_IUriNode()
         {
             var g = new Graph();
@@ -204,7 +189,6 @@
             Assert.Equal(expected, result);
         }
 
-        [Fact]
         public void Dynamic_blank_node_is_IBlankNode()
         {
             var g = new Graph();
@@ -216,7 +200,6 @@
             Assert.Equal(expected, result);
         }
 
-        [Fact]
         public void Dynamic_uri_node_is_Not_IBlankNode()
         {
             var g = new Graph();
@@ -228,7 +211,6 @@
             });
         }
 
-        [Fact]
         public void Dynamic_blank_node_is_not_IUriNode()
         {
             var g = new Graph();

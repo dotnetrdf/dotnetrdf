@@ -29,7 +29,6 @@
             this.output = output;
         }
 
-        [Fact]
         public void MyTestMethod1()
         {
             var c1 = new Class1
@@ -52,7 +51,6 @@
             this.output.WriteLine(StringWriter.Write(g, new NTriplesWriter()));
         }
 
-        [Fact]
         public void MyTestMethod2()
         {
             var c1 = new Class1
@@ -66,7 +64,6 @@
             this.output.WriteLine(StringWriter.Write(g, new NTriplesWriter()));
         }
 
-        [Fact]
         public void MyTestMethod3()
         {
             var c1 = new Class1
@@ -82,7 +79,6 @@
             this.output.WriteLine(StringWriter.Write(g, new NTriplesWriter()));
         }
 
-        [Fact]
         public void MyTestMethod4()
         {
             var c1 = new Class1

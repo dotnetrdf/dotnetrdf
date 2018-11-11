@@ -515,6 +515,7 @@
             Assert.True(result);
             Assert.Equal(expected, g);
         }
+
         [Fact]
         public void Remove_at_requires_positive_index()
         {
@@ -604,5 +605,25 @@
 
             Assert.Equal("o", enumerator.Current);
         }
+
+        [Fact]
+        public void Provides_meta_object()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+@prefix : <urn:> .
+
+:s :p (:o) .
+");
+
+            var s = g.CreateUriNode(":s");
+            var p = g.CreateUriNode(":p");
+            var o = g.CreateUriNode(":o");
+            var r = g.GetTriplesWithSubjectPredicate(s, p).Single().Object;
+            dynamic l = new DynamicCollectionList(r);
+
+            Assert.Equal(o, l.Single());
+        }
+
     }
 }

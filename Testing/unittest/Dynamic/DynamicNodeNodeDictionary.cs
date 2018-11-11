@@ -207,6 +207,34 @@ _:s <urn:p> ""o2"" .
         }
 
         [Fact]
+        public void Add_rdf_collections_are_not_enumerables()
+        {
+            var unexpected = new Graph();
+            unexpected.LoadFromString(@"
+_:s <urn:p> ""a"" .
+_:s <urn:p> ""b"" .
+_:s <urn:p> ""c"" .
+");
+
+            var expected = new Graph();
+            expected.LoadFromString(@"
+@prefix : <urn:> .
+
+_:s <urn:p> (""a"" ""b"" ""c"") .
+");
+
+            var g = new Graph();
+            var n = g.CreateBlankNode();
+            var p = g.CreateUriNode(new Uri("urn:p"));
+            var s = new DynamicNode(n);
+
+            s.Add(p, new RdfCollection(new[] { "a", "b", "c" }));
+
+            Assert.NotEqual(unexpected, g);
+            Assert.Equal(expected, g);
+        }
+
+        [Fact]
         public void Add_strings_are_not_enumerables()
         {
             var unexpected = new Graph();
@@ -237,6 +265,22 @@ _:s <urn:p> ""abcdefghij"" .
 
             Assert.NotEqual(unexpected, g);
             Assert.Equal(expected, g);
+        }
+
+        [Fact]
+        public void Contains_rejects_null_key()
+        {
+            var g = new Graph();
+            g.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+
+            var t = g.Triples.First();
+            var n = t.Subject;
+            var p = t.Predicate;
+            var s = new DynamicNode(n);
+
+            var condition = s.Contains(new KeyValuePair<INode, object>(null, null));
+
+            Assert.False(condition);
         }
     }
 }

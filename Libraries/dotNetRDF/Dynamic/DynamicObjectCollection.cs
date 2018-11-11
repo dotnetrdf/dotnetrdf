@@ -9,7 +9,7 @@
 
     public class DynamicObjectCollection : ICollection<object>, IDynamicMetaObjectProvider
     {
-        private readonly DynamicNode subject;
+        protected readonly DynamicNode subject;
         private readonly INode predicate;
 
         public DynamicObjectCollection(DynamicNode subject, INode predicate)
@@ -28,7 +28,7 @@
             this.predicate = predicate;
         }
 
-        private IEnumerable<object> Objects
+        protected IEnumerable<object> Objects
         {
             get
             {
@@ -47,7 +47,7 @@
 
         public void Clear() => subject.Remove(predicate);
 
-        public bool Contains(object item) => ((IDictionary<INode, object>)subject).Contains(new KeyValuePair<INode, object>(predicate, item));
+        public bool Contains(object item) => Objects.Contains(item);
 
         public void CopyTo(object[] array, int index) => Objects.ToArray().CopyTo(array, index);
 

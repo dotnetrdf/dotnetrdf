@@ -91,7 +91,6 @@
 
     public class StaticLazy
     {
-        [Fact]
         public void MyTestMethod()
         {
             var g1 = new Graph();

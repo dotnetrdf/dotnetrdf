@@ -16,7 +16,6 @@
 
     public class DynamicGraphTests
     {
-        [Fact]
         public void Indexing_supports_setting_wrapper_index()
         {
             var g = new Graph();
@@ -31,7 +30,6 @@
             Assert.Equal(expected, actual);
         }
 
-        [Fact]
         public void Get_index_with_absolute_uri_string()
         {
             var g = new Graph();
@@ -44,7 +42,6 @@
             Assert.Equal(expected, actual);
         }
 
-        [Fact]
         public void Indexing_supports_qnames()
         {
             var g = new Graph();
@@ -58,7 +55,6 @@
             Assert.Equal(expected, actual);
         }
 
-        [Fact]
         public void Indexing_supports_empty_string()
         {
             var g = new Graph();
@@ -72,7 +68,6 @@
             Assert.Equal(expected, actual);
         }
 
-        [Fact]
         public void Indexing_supports_qnames_with_default_prefix()
         {
             var g = new Graph();
@@ -86,7 +81,6 @@
             Assert.Equal(expected, actual);
         }
 
-        [Fact]
         public void Get_index_with_relative_uri_string()
         {
             var g = new Graph();
@@ -99,7 +93,6 @@
             Assert.Equal(expected, actual);
         }
 
-        [Fact]
         public void Get_index_supports_hash_base()
         {
             var g = new Graph();
@@ -112,7 +105,6 @@
             Assert.Equal(expected, actual);
         }
 
-        [Fact]
         public void Indexing_supports_absolute_uris()
         {
             var g = new Graph();
@@ -125,7 +117,6 @@
             Assert.Equal(expected, actual);
         }
 
-        [Fact]
         public void Indexing_supports_relative_uris()
         {
             var g = new Graph();
@@ -139,7 +130,6 @@
             Assert.Equal(expected, actual);
         }
 
-        [Fact]
         public void Indexing_supports_uri_nodes()
         {
             var g = new Graph();
@@ -154,7 +144,6 @@
             Assert.Equal(expected, actual);
         }
 
-        [Fact]
         public void Relative_indexing_requires_base_uri()
         {
             var d = new Graph().AsDynamic();
@@ -165,7 +154,6 @@
             });
         }
 
-        [Fact]
         public void Property_access_requires_base_uri()
         {
             var d = new Graph().AsDynamic();
@@ -176,7 +164,6 @@
             });
         }
 
-        [Fact]
         public void Cant_get_index_with_unknown_qName()
         {
             var d = new Graph().AsDynamic();
@@ -187,7 +174,6 @@
             });
         }
 
-        [Fact]
         public void Cant_get_index_with_illegal_uri()
         {
             var d = new Graph().AsDynamic();
@@ -198,7 +184,6 @@
             });
         }
 
-        [Fact]
         public void Cant_get_nonexistent_absolute_uri_string_index()
         {
             var d = new Graph().AsDynamic();
@@ -209,7 +194,6 @@
             });
         }
 
-        [Fact]
         public void Cant_get_nonexistent_relative_uri_string_index()
         {
             var d = new Graph().AsDynamic(new Uri("http://example.com/"));
@@ -220,7 +204,6 @@
             });
         }
 
-        [Fact]
         public void Cant_get_nonexistent_member()
         {
             var d = new Graph().AsDynamic(new Uri("http://example.com/"));
@@ -231,7 +214,6 @@
             });
         }
 
-        [Fact]
         public void Indexing_requires_known_index_type()
         {
             var d = new Graph().AsDynamic();
@@ -242,7 +224,6 @@
             });
         }
 
-        [Fact]
         public void Get_member()
         {
             var g = new Graph();
@@ -256,7 +237,6 @@
             Assert.Equal(expected, actual);
         }
 
-        [Fact]
         public void Dynamic_member_names_only_subject_nodes_are_exposed()
         {
             var g = new Graph();
@@ -268,7 +248,6 @@
             Assert.DoesNotContain(element, collection);
         }
 
-        [Fact]
         public void Dynamic_member_names_only_uri_nodes_are_exposed()
         {
             var g = new Graph();
@@ -281,7 +260,6 @@
             Assert.False(condition);
         }
 
-        [Fact]
         public void Dynamic_member_names_become_relative_to_base()
         {
             var g = new Graph();
@@ -294,7 +272,6 @@
             Assert.Contains(element, collection);
         }
 
-        [Fact]
         public void Dynamic_member_names_without_base_remain_absolute()
         {
             var g = new Graph();
@@ -307,7 +284,6 @@
             Assert.Contains(element, collection);
         }
 
-        [Fact]
         public void Dynamic_member_names_unrelated_to_base_remain_absolute()
         {
             var g = new Graph();
@@ -320,7 +296,6 @@
             Assert.Contains(element, collection);
         }
 
-        [Fact]
         public void Dynamic_member_names_support_hash_base()
         {
             var g = new Graph();
@@ -335,7 +310,6 @@
         }
 
         // TODO: all kinds of dictionary entries
-        [Fact]
         public void Indexing_supports_setting_dictionaries()
         {
             var g = new Graph();
@@ -351,7 +325,6 @@
         }
 
         // TODO: all kinds of properties
-        [Fact]
         public void Indexing_supports_setting_anonymous_classes()
         {
             var g = new Graph();
@@ -365,7 +338,6 @@
         }
 
         // TODO: all kinds of properties
-        [Fact]
         public void Indexing_supports_setting_custom_classes()
         {
             var g = new Graph();
@@ -378,7 +350,6 @@
             Assert.Equal(g as IGraph, d as IGraph);
         }
 
-        [Fact]
         public void Setter_requires_base_uri()
         {
             var d = new Graph().AsDynamic();
@@ -389,7 +360,6 @@
             });
         }
 
-        [Fact]
         public void Setter_delegates_to_index_setter()
         {
             var d1 = new Graph().AsDynamic(new Uri("http://example.com/"));

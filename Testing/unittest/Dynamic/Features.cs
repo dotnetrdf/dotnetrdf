@@ -7,7 +7,6 @@
 
     public class Features
     {
-        [Fact]
         public void Handles_nested_lists1()
         {
             var g = new Graph();
@@ -29,7 +28,6 @@
             Assert.Contains("o2", l[1] as IList<object>);
         }
 
-        [Fact]
         public void Handles_nested_lists2()
         {
             var expected = new Graph();
@@ -54,7 +52,6 @@
             Assert.Equal(expected as IGraph, d as IGraph);
         }
 
-        [Fact]
         public void Converts_objects_to_native_datatypes()
         {
             var g = new Graph();

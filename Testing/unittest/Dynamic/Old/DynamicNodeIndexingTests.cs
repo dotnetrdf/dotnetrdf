@@ -8,7 +8,6 @@
 
     public class DynamicNodeIndexingTests
     {
-        [Fact]
         public void Indexing_requires_base_uri_for_relative_uri()
         {
             var dynamic_s = new Graph().CreateBlankNode().AsDynamic();
@@ -19,7 +18,6 @@
             });
         }
 
-        [Fact]
         public void Indexing_requires_index()
         {
             var dynamic_s = new Graph().CreateBlankNode().AsDynamic();
@@ -30,7 +28,6 @@
             });
         }
 
-        [Fact]
         public void Indexing_requires_known_index_type()
         {
             var dynamic_s = new Graph().CreateBlankNode().AsDynamic();
@@ -41,7 +38,6 @@
             });
         }
 
-        [Fact]
         public void Indexing_requires_valid_uri()
         {
             var dynamic_s = new Graph().CreateBlankNode().AsDynamic();
@@ -52,7 +48,6 @@
             });
         }
 
-        [Fact]
         public void Indexing_supports_absolute_uri_index()
         {
             var g = new Graph();
@@ -68,7 +63,6 @@
             Assert.Equal(example_o, result);
         }
 
-        [Fact]
         public void Indexing_supports_absolute_uri_string_index()
         {
             var g = new Graph();
@@ -83,7 +77,6 @@
             Assert.Equal(example_o, result);
         }
 
-        [Fact]
         public void Indexing_supports_dynamic_index()
         {
             var g = new Graph();
@@ -99,7 +92,6 @@
             Assert.Equal(example_o, result);
         }
 
-        [Fact]
         public void Indexing_supports_empty_string_index()
         {
             var g = new Graph();
@@ -115,7 +107,6 @@
             Assert.Equal(example_o, result);
         }
 
-        [Fact]
         public void Indexing_supports_hash_base_uri_index()
         {
             var g = new Graph();
@@ -131,7 +122,6 @@
             Assert.Equal(example_o, result);
         }
 
-        [Fact]
         public void Indexing_supports_node_index()
         {
             var g = new Graph();
@@ -147,7 +137,6 @@
             Assert.Equal(example_o, result);
         }
 
-        [Fact]
         public void Indexing_supports_qname_index()
         {
             var baseUri = new Uri("http://example.com/");
@@ -165,7 +154,6 @@
             Assert.Equal(example_o, result);
         }
 
-        [Fact]
         public void Indexing_supports_qname_index_with_empty_prefix()
         {
             var baseUri = new Uri("http://example.com/");
@@ -183,7 +171,6 @@
             Assert.Equal(example_o, result);
         }
 
-        [Fact]
         public void Indexing_supports_relative_uri_index()
         {
             var g = new Graph();
@@ -200,7 +187,6 @@
             Assert.Equal(example_o, result);
         }
 
-        [Fact]
         public void Indexing_supports_relative_uri_string_index()
         {
             var g = new Graph();
@@ -216,7 +202,6 @@
             Assert.Equal(example_o, result);
         }
 
-        [Fact]
         public void Indexing_setter_requires_index()
         {
             var dynamic_s = new Graph().CreateBlankNode().AsDynamic();

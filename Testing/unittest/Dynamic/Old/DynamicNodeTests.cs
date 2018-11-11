@@ -7,7 +7,6 @@
 
     public class DynamicNodeTests
     {
-        [Fact]
         public void Supports_blank_nodes()
         {
             var g = new Graph();
@@ -21,7 +20,6 @@
             Assert.Equal(expected, actual);
         }
 
-        [Fact]
         public void Converts_native_data_types()
         {
             var eg = new Graph();
@@ -66,7 +64,6 @@
             Assert.Equal(eg as IGraph, d as IGraph);
         }
 
-        [Fact]
         public void Requires_known_native_data_types()
         {
             var d = new Graph().AsDynamic(new Uri("http://example.com/"));
@@ -80,7 +77,6 @@
             });
         }
 
-        [Fact]
         public void Supports_remove_with_missing_item()
         {
             var g = new Graph();
