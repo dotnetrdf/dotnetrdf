@@ -54,7 +54,7 @@
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
 
             var dynamic_s = g.Triples.Single().Subject.AsDynamic();
-            var example_p = new Uri("http://example.com/p");
+            var example_p = UriFactory.Create("http://example.com/p");
             var example_o = g.Triples.Single().Object;
 
             var objects = dynamic_s[example_p] as IEnumerable<object>;
@@ -97,7 +97,7 @@
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
 
-            var baseUri = new Uri("http://example.com/p");
+            var baseUri = UriFactory.Create("http://example.com/p");
             var dynamic_s = g.Triples.Single().Subject.AsDynamic(baseUri);
             var example_o = g.Triples.Single().Object;
 
@@ -112,7 +112,7 @@
             var g = new Graph();
             g.LoadFromString("<http://example.com/#s> <http://example.com/#p> <http://example.com/#o> .");
 
-            var baseUri = new Uri("http://example.com/#");
+            var baseUri = UriFactory.Create("http://example.com/#");
             var dynamic_s = g.Triples.Single().Subject.AsDynamic(baseUri);
             var example_o = g.Triples.Single().Object;
 
@@ -139,7 +139,7 @@
 
         public void Indexing_supports_qname_index()
         {
-            var baseUri = new Uri("http://example.com/");
+            var baseUri = UriFactory.Create("http://example.com/");
 
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
@@ -156,7 +156,7 @@
 
         public void Indexing_supports_qname_index_with_empty_prefix()
         {
-            var baseUri = new Uri("http://example.com/");
+            var baseUri = UriFactory.Create("http://example.com/");
 
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
@@ -176,7 +176,7 @@
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
 
-            var baseUri = new Uri("http://example.com/");
+            var baseUri = UriFactory.Create("http://example.com/");
             var dynamic_s = g.Triples.Single().Subject.AsDynamic(baseUri);
             var example_p = new Uri("p", UriKind.Relative);
             var example_o = g.Triples.Single().Object;
@@ -192,7 +192,7 @@
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
 
-            var baseUri = new Uri("http://example.com/");
+            var baseUri = UriFactory.Create("http://example.com/");
             var dynamic_s = g.Triples.Single().Subject.AsDynamic(baseUri);
             var example_o = g.Triples.Single().Object;
 

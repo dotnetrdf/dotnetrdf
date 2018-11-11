@@ -12,11 +12,11 @@
         public void Get_index_requires_key()
         {
             var g = new Graph();
-            var n = g.CreateBlankNode();
-            var s = new DynamicNode(n);
+            var s = g.CreateBlankNode();
+            var d = new DynamicNode(s);
 
             Assert.Throws<ArgumentNullException>(() =>
-                s[null as INode]
+                d[null as INode]
             );
         }
 
@@ -24,12 +24,12 @@
         public void Get_index_requires_existing_key()
         {
             var g = new Graph();
-            var n = g.CreateBlankNode();
-            var s = new DynamicNode(n);
+            var s = g.CreateBlankNode();
             var p = g.CreateBlankNode();
+            var d = new DynamicNode(s);
 
             Assert.Throws<KeyNotFoundException>(() =>
-                s[p]
+                d[p]
             );
         }
 
@@ -37,14 +37,15 @@
         public void Get_index_returns_dynamic_collection()
         {
             var g = new Graph();
-            g.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+            g.LoadFromString(@"
+<urn:s> <urn:p> <urn:o> .
+");
 
-            var t = g.Triples.First();
-            var n = t.Subject;
-            var s = new DynamicNode(n);
-            var p = t.Predicate;
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var d = new DynamicNode(s);
 
-            var actual = s[p];
+            var actual = d[p];
 
             Assert.IsType<DynamicObjectCollection>(actual);
         }
@@ -53,16 +54,16 @@
         public void Set_index_requires_key()
         {
             var g = new Graph();
-            var n = g.CreateBlankNode();
-            var s = new DynamicNode(n);
+            var s = g.CreateBlankNode();
+            var d = new DynamicNode(s);
 
             Assert.Throws<ArgumentNullException>(() =>
-                s[null as INode] = null
+                d[null as INode] = null
             );
         }
 
         [Fact]
-        public void Set_index_with_null_value_retracts_by_subject_predicate()
+        public void Set_index_with_null_value_retracts_by_subject_and_predicate()
         {
             var expected = new Graph();
             expected.LoadFromString(@"
@@ -80,12 +81,11 @@
 <urn:s2> <urn:p3> <urn:s1> .
 ");
 
-            var t = actual.Triples.First();
-            var n = t.Subject;
-            var p = t.Predicate;
-            var s = new DynamicNode(n);
+            var s = actual.CreateUriNode(UriFactory.Create("urn:s1"));
+            var p = actual.CreateUriNode(UriFactory.Create("urn:p1"));
+            var d = new DynamicNode(s);
 
-            s[p] = null;
+            d[p] = null;
 
             Assert.Equal(expected, actual);
         }
@@ -110,12 +110,11 @@
 <urn:s2> <urn:p3> <urn:s1> .
 ");
 
-            var t = actual.Triples.First();
-            var n = t.Subject;
-            var p = t.Predicate;
-            var s = new DynamicNode(n);
+            var s = actual.CreateUriNode(UriFactory.Create("urn:s1"));
+            var p = actual.CreateUriNode(UriFactory.Create("urn:p1"));
+            var d = new DynamicNode(s);
 
-            s[p] = "o";
+            d[p] = "o";
 
             Assert.Equal(expected, actual);
         }
@@ -132,13 +131,12 @@
 <urn:s3> <urn:p3> <urn:s1> .
 ");
 
-            var t = g.Triples.First();
-            var n = t.Subject;
-            var p = t.Predicate;
-            var s = new DynamicNode(n);
+            var s = g.CreateUriNode(UriFactory.Create("urn:s1"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p1"));
+            var d = new DynamicNode(s);
 
-            var actual = ((IDictionary<INode, object>)s).Keys;
-            var expected = g.GetTriplesWithSubject(n).Select(triple => triple.Predicate).Distinct();
+            var actual = ((IDictionary<INode, object>)d).Keys;
+            var expected = g.GetTriplesWithSubject(s).Select(triple => triple.Predicate).Distinct();
 
             Assert.Equal(expected, actual);
         }
@@ -147,12 +145,12 @@
         public void Add_requires_key()
         {
             var g = new Graph();
-            var n = g.CreateBlankNode();
-            var s = new DynamicNode(n);
+            var s = g.CreateBlankNode();
+            var d = new DynamicNode(s);
 
             Assert.Throws<ArgumentNullException>(() =>
             {
-                s.Add(null as INode, null);
+                d.Add(null as INode, null);
             });
         }
 
@@ -160,13 +158,13 @@
         public void Add_requires_value()
         {
             var g = new Graph();
-            var n = g.CreateBlankNode();
-            var s = new DynamicNode(n);
+            var s = g.CreateBlankNode();
             var p = g.CreateBlankNode();
+            var d = new DynamicNode(s);
 
             Assert.Throws<ArgumentNullException>(() =>
             {
-                s.Add(p, null);
+                d.Add(p, null);
             });
         }
 
@@ -174,16 +172,17 @@
         public void Add_rejects_existing_key()
         {
             var g = new Graph();
-            g.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+            g.LoadFromString(@"
+<urn:s> <urn:p> <urn:o> .
+");
 
-            var t = g.Triples.First();
-            var n = t.Subject;
-            var p = t.Predicate;
-            var s = new DynamicNode(n);
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var d = new DynamicNode(s);
 
             Assert.Throws<ArgumentException>(() =>
             {
-                s.Add(p, 0);
+                d.Add(p, 0);
             });
         }
 
@@ -192,16 +191,16 @@
         {
             var expected = new Graph();
             expected.LoadFromString(@"
-_:s <urn:p> ""o1"" .
-_:s <urn:p> ""o2"" .
+<urn:s> <urn:p> ""o1"" .
+<urn:s> <urn:p> ""o2"" .
 ");
 
             var g = new Graph();
-            var n = g.CreateBlankNode();
-            var p = g.CreateUriNode(new Uri("urn:p"));
-            var s = new DynamicNode(n);
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var d = new DynamicNode(s);
 
-            s.Add(p, new[] { "o1", "o2" });
+            d.Add(p, new[] { "o1", "o2" });
 
             Assert.Equal(expected, g);
         }
@@ -211,24 +210,24 @@ _:s <urn:p> ""o2"" .
         {
             var unexpected = new Graph();
             unexpected.LoadFromString(@"
-_:s <urn:p> ""a"" .
-_:s <urn:p> ""b"" .
-_:s <urn:p> ""c"" .
+<urn:s> <urn:p> ""a"" .
+<urn:s> <urn:p> ""b"" .
+<urn:s> <urn:p> ""c"" .
 ");
 
             var expected = new Graph();
             expected.LoadFromString(@"
 @prefix : <urn:> .
 
-_:s <urn:p> (""a"" ""b"" ""c"") .
+<urn:s> <urn:p> (""a"" ""b"" ""c"") .
 ");
 
             var g = new Graph();
-            var n = g.CreateBlankNode();
-            var p = g.CreateUriNode(new Uri("urn:p"));
-            var s = new DynamicNode(n);
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var d = new DynamicNode(s);
 
-            s.Add(p, new RdfCollection(new[] { "a", "b", "c" }));
+            d.Add(p, new RdfCollection(new[] { "a", "b", "c" }));
 
             Assert.NotEqual(unexpected, g);
             Assert.Equal(expected, g);
@@ -239,31 +238,42 @@ _:s <urn:p> (""a"" ""b"" ""c"") .
         {
             var unexpected = new Graph();
             unexpected.LoadFromString(@"
-_:s <urn:p> ""a"" .
-_:s <urn:p> ""b"" .
-_:s <urn:p> ""c"" .
-_:s <urn:p> ""d"" .
-_:s <urn:p> ""e"" .
-_:s <urn:p> ""f"" .
-_:s <urn:p> ""g"" .
-_:s <urn:p> ""h"" .
-_:s <urn:p> ""i"" .
-_:s <urn:p> ""j"" .
+<urn:s> <urn:p> ""a"" .
+<urn:s> <urn:p> ""b"" .
+<urn:s> <urn:p> ""c"" .
 ");
 
             var expected = new Graph();
             expected.LoadFromString(@"
-_:s <urn:p> ""abcdefghij"" .
+<urn:s> <urn:p> ""abc"" .
 ");
 
             var g = new Graph();
-            var n = g.CreateBlankNode();
-            var p = g.CreateUriNode(new Uri("urn:p"));
-            var s = new DynamicNode(n);
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var d = new DynamicNode(s);
 
-            s.Add(p, "abcdefghij");
+            d.Add(p, "abc");
 
             Assert.NotEqual(unexpected, g);
+            Assert.Equal(expected, g);
+        }
+
+        [Fact]
+        public void Add_handles_key_value_pairs()
+        {
+            var expected = new Graph();
+            expected.LoadFromString(@"
+<urn:s> <urn:p> ""o"" .
+");
+
+            var g = new Graph();
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var d = new DynamicNode(s);
+
+            ((IDictionary<INode, object>)d).Add(new KeyValuePair<INode, object>(p, "o"));
+
             Assert.Equal(expected, g);
         }
 
@@ -271,14 +281,40 @@ _:s <urn:p> ""abcdefghij"" .
         public void Contains_rejects_null_key()
         {
             var g = new Graph();
-            g.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+            var s = g.CreateBlankNode();
+            var d = new DynamicNode(s);
 
-            var t = g.Triples.First();
-            var n = t.Subject;
-            var p = t.Predicate;
-            var s = new DynamicNode(n);
+            var condition = d.Contains(new KeyValuePair<INode, object>(null, null));
 
-            var condition = s.Contains(new KeyValuePair<INode, object>(null, null));
+            Assert.False(condition);
+        }
+
+        [Fact]
+        public void Contains_rejects_null_value()
+        {
+            var g = new Graph();
+            var s = g.CreateBlankNode();
+            var p = g.CreateBlankNode();
+            var d = new DynamicNode(s);
+
+            var condition = d.Contains(new KeyValuePair<INode, object>(p, null));
+
+            Assert.False(condition);
+        }
+
+        [Fact]
+        public void Contains_rejects_missing_key()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+<urn:s> <urn:p> <urn:o> .
+");
+
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:x"));
+            var d = new DynamicNode(s);
+
+            var condition = d.Contains(new KeyValuePair<INode, object>(p, null));
 
             Assert.False(condition);
         }

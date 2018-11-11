@@ -2,7 +2,9 @@
 {
     using System;
     using System.Collections;
+    using System.Dynamic;
     using System.Linq;
+    using System.Linq.Expressions;
     using VDS.RDF;
     using Xunit;
 
@@ -61,8 +63,8 @@
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var p = g.CreateUriNode(new Uri("urn:p"));
-            var o = g.CreateUriNode(new Uri("urn:o"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
             var d = new DynamicNode(o);
             var c = new DynamicSubjectCollection(p, d);
 
@@ -90,9 +92,9 @@
 ");
 
             var g = new Graph();
-            var s = g.CreateUriNode(new Uri("urn:s"));
-            var p = g.CreateUriNode(new Uri("urn:p"));
-            var o = g.CreateUriNode(new Uri("urn:o"));
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
             var d = new DynamicNode(o);
             var c = new DynamicSubjectCollection(p, d);
 
@@ -166,8 +168,8 @@
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var p = g.CreateUriNode(new Uri("urn:p"));
-            var o = g.CreateUriNode(new Uri("urn:o"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
             var d = new DynamicNode(o);
             var c = new DynamicSubjectCollection(p, d);
 
@@ -210,9 +212,9 @@
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(new Uri("urn:s"));
-            var p = g.CreateUriNode(new Uri("urn:p"));
-            var o = g.CreateUriNode(new Uri("urn:o"));
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
             var d = new DynamicNode(s);
             var c = new DynamicSubjectCollection(p, d);
 
@@ -256,9 +258,9 @@
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(new Uri("urn:s"));
-            var p = g.CreateUriNode(new Uri("urn:p"));
-            var o = g.CreateUriNode(new Uri("urn:o"));
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
             var d = new DynamicNode(s);
             var c = new DynamicSubjectCollection(p, d);
 
@@ -304,9 +306,9 @@
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(new Uri("urn:s"));
-            var p = g.CreateUriNode(new Uri("urn:p"));
-            var o = g.CreateUriNode(new Uri("urn:o"));
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
             var d = new DynamicNode(s);
             var c = new DynamicSubjectCollection(p, d);
 
@@ -389,9 +391,9 @@
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(new Uri("urn:s"));
-            var p = g.CreateUriNode(new Uri("urn:p"));
-            var o = g.CreateUriNode(new Uri("urn:o"));
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
             var d = new DynamicNode(o);
             var c = new DynamicSubjectCollection(p, d);
 
@@ -436,9 +438,9 @@
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(new Uri("urn:s"));
-            var p = g.CreateUriNode(new Uri("urn:p"));
-            var o = g.CreateUriNode(new Uri("urn:o"));
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
             var d = new DynamicNode(s);
             var c = new DynamicSubjectCollection(p, d) as IEnumerable;
 
@@ -460,13 +462,14 @@
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> <urn:o> .");
 
-            var s = g.CreateUriNode(new Uri("urn:s"));
-            var p = g.CreateUriNode(new Uri("urn:p"));
-            var o = g.CreateUriNode(new Uri("urn:o"));
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
             var d = new DynamicNode(o);
-            dynamic c = new DynamicSubjectCollection(p, d);
+            var l = new DynamicSubjectCollection(p, d) as IDynamicMetaObjectProvider;
+            var mo = l.GetMetaObject(Expression.Empty());
 
-            Assert.Equal(s, c.Single());
+            Assert.IsType<EnumerableMetaObject>(mo);
         }
     }
 }

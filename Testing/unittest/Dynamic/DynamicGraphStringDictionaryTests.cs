@@ -36,7 +36,7 @@
 
             var s = "urn:s";
 
-            var expected = d.CreateUriNode(new Uri(s));
+            var expected = d.CreateUriNode(UriFactory.Create(s));
             var actual = d[s];
 
             Assert.Equal(expected, actual);
@@ -90,7 +90,7 @@
 <urn:s2> <urn:p3> <urn:s1> .
 ");
 
-            var actual = new DynamicGraph(predicateBaseUri: new Uri("urn:"));
+            var actual = new DynamicGraph(predicateBaseUri: UriFactory.Create("urn:"));
             actual.LoadFromString(@"
 <urn:s1> <urn:p1> ""o1"" .
 <urn:s1> <urn:p1> ""o2"" .
@@ -169,7 +169,7 @@
         [Fact]
         public void Add_handles_public_properties()
         {
-            var actual = new DynamicGraph(predicateBaseUri: new Uri("urn:"));
+            var actual = new DynamicGraph(predicateBaseUri: UriFactory.Create("urn:"));
             var s = "urn:s";
 
             var expected = new Graph();
@@ -193,7 +193,7 @@
         [Fact]
         public void Add_handles_dictionaries()
         {
-            var actual = new DynamicGraph(predicateBaseUri: new Uri("urn:"));
+            var actual = new DynamicGraph(predicateBaseUri: UriFactory.Create("urn:"));
             var s = "urn:s";
 
             var expected = new Graph();
@@ -215,7 +215,7 @@
         [Fact]
         public void Add_handles_key_value_pairs()
         {
-            var actual = new DynamicGraph(predicateBaseUri: new Uri("urn:"));
+            var actual = new DynamicGraph(predicateBaseUri: UriFactory.Create("urn:"));
             var s = "urn:s";
 
             var expected = new Graph();
@@ -269,7 +269,7 @@
         [Fact]
         public void Contains_rejects_missing_statement()
         {
-            var d = new DynamicGraph(predicateBaseUri: new Uri("urn:"));
+            var d = new DynamicGraph(predicateBaseUri: UriFactory.Create("urn:"));
             d.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var dict = ((IDictionary<string, object>)d);
             var s = "urn:s";
@@ -282,7 +282,7 @@
         [Fact]
         public void Contains_searches_exisiting_statements()
         {
-            var d = new DynamicGraph(predicateBaseUri: new Uri("urn:"));
+            var d = new DynamicGraph(predicateBaseUri: UriFactory.Create("urn:"));
             d.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var dict = ((IDictionary<string, object>)d);
             var s = "urn:s";
@@ -334,7 +334,7 @@
             var value = pair.Value;
 
             Assert.Equal(key, s);
-            Assert.Equal(value, g.CreateUriNode(new Uri(s)));
+            Assert.Equal(value, g.CreateUriNode(UriFactory.Create(s)));
             Assert.IsType<DynamicNode>(value);
         }
 
@@ -357,7 +357,7 @@
                 var value = pair.Value;
 
                 Assert.Equal(key, s);
-                Assert.Equal(value, g.CreateUriNode(new Uri(s)));
+                Assert.Equal(value, g.CreateUriNode(UriFactory.Create(s)));
                 Assert.IsType<DynamicNode>(value);
             }
         }
@@ -441,7 +441,7 @@
 <urn:s2> <urn:p3> <urn:s1> .
 ");
 
-            var actual = new DynamicGraph(predicateBaseUri: new Uri("urn:"));
+            var actual = new DynamicGraph(predicateBaseUri: UriFactory.Create("urn:"));
             actual.LoadFromString(@"
 <urn:s1> <urn:p1> ""o1"" .
 <urn:s1> <urn:p2> ""o2"" .
@@ -474,7 +474,7 @@
 <urn:s2> <urn:p3> <urn:s1> .
 ");
 
-            var actual = new DynamicGraph(predicateBaseUri: new Uri("urn:"));
+            var actual = new DynamicGraph(predicateBaseUri: UriFactory.Create("urn:"));
             actual.LoadFromString(@"
 <urn:s1> <urn:p1> ""o1"" .
 <urn:s1> <urn:p2> ""o2"" .
@@ -530,7 +530,7 @@
             var condition = d.TryGetValue(s, out var value);
 
             Assert.True(condition);
-            Assert.Equal(value, d.CreateUriNode(new Uri(s)));
+            Assert.Equal(value, d.CreateUriNode(UriFactory.Create(s)));
             Assert.IsType<DynamicNode>(value);
         }
     }

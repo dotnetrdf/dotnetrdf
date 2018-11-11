@@ -37,7 +37,7 @@
 :s :p (""o1"" (""o2"") ""o3"") .
 ");
 
-            var d = new DynamicGraph(null, new Uri("urn:"));
+            var d = new DynamicGraph(null, UriFactory.Create("urn:"));
             d["s"] = new
             {
                 p = new RdfCollection(

@@ -40,13 +40,13 @@
 <http://example.com/s> <http://example.com/timespan> ""P10675199DT2H48M5.4775807S""^^<http://www.w3.org/2001/XMLSchema#duration> .
 ");
 
-            var d = new Graph().AsDynamic(new Uri("http://example.com/"));
+            var d = new Graph().AsDynamic(UriFactory.Create("http://example.com/"));
             var node = new NodeFactory().CreateBlankNode("blank");
 
             d.s = new
             {
                 node,
-                uri = new Uri("http://example.com/uri"),
+                uri = UriFactory.Create("http://example.com/uri"),
                 @bool = true,
                 @byte = byte.MaxValue,
                 dateTime = DateTime.MaxValue,
@@ -66,7 +66,7 @@
 
         public void Requires_known_native_data_types()
         {
-            var d = new Graph().AsDynamic(new Uri("http://example.com/"));
+            var d = new Graph().AsDynamic(UriFactory.Create("http://example.com/"));
 
             Assert.Throws<InvalidOperationException>(() =>
             {

@@ -83,7 +83,7 @@
             var node = new NodeFactory().CreateBlankNode();
             var wrapper = new MockWrapperNode(node);
 
-            wrapper.GraphUri = new Uri("http://example.com/");
+            wrapper.GraphUri = UriFactory.Create("http://example.com/");
 
             var expected = node.GraphUri;
             var actual = wrapper.GraphUri;
@@ -142,7 +142,7 @@
         [Fact]
         public void Delegates__CompareTo_uri()
         {
-            var node = new NodeFactory().CreateUriNode(new Uri("http://example.com/"));
+            var node = new NodeFactory().CreateUriNode(UriFactory.Create("http://example.com/"));
             var wrapper = new MockWrapperNode(node);
 
             var expected = node.CompareTo(node);
@@ -214,7 +214,7 @@
         [Fact]
         public void Delegates_Equal_uri()
         {
-            var node = new NodeFactory().CreateUriNode(new Uri("http://example.com/"));
+            var node = new NodeFactory().CreateUriNode(UriFactory.Create("http://example.com/"));
             var wrapper = new MockWrapperNode(node);
 
             var expected = node.Equals(node);

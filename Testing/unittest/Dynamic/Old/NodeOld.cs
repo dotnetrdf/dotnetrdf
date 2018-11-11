@@ -9,7 +9,7 @@
 
     public class NodeTests
     {
-        private static readonly Uri exampleBase = new Uri("http://example.com/");
+        private static readonly Uri exampleBase = UriFactory.Create("http://example.com/");
         private static readonly Uri exampleSubjectUri = new Uri(exampleBase, "s");
         private static readonly Uri ex_p_u = new Uri(exampleBase, "p");
         private static readonly Uri exampleObjectUri = new Uri(exampleBase, "o");
@@ -79,7 +79,7 @@
             var g = new Graph();
             g.LoadFromString("<http://example.com/#s> <http://example.com/#p> <http://example.com/#o> .");
             var s = g.Triples.Single().Subject;
-            var d = s.AsDynamic(new Uri("http://example.com/#")) as IDynamicMetaObjectProvider;
+            var d = s.AsDynamic(UriFactory.Create("http://example.com/#")) as IDynamicMetaObjectProvider;
             var meta = d.GetMetaObject(Expression.Parameter(typeof(object), "debug"));
             var collection = meta.GetDynamicMemberNames().ToArray();
             var element = "p";
@@ -137,9 +137,9 @@
 
         public void Subject_base_uri_defaults_to_graph_base_uri2()
         {
-            var d = new DynamicNode(new Graph() { BaseUri = new Uri("http://example.com/") }.CreateBlankNode());
+            var d = new DynamicNode(new Graph() { BaseUri = UriFactory.Create("http://example.com/") }.CreateBlankNode());
 
-            Assert.Equal(new Uri("http://example.com/"), d.BaseUri);
+            Assert.Equal(UriFactory.Create("http://example.com/"), d.BaseUri);
         }
 
         public void Setter_delegates_to_index_setter()

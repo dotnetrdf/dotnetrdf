@@ -2,7 +2,9 @@
 {
     using System;
     using System.Collections;
+    using System.Dynamic;
     using System.Linq;
+    using System.Linq.Expressions;
     using Xunit;
 
     public class DynamicCollectionListTests
@@ -618,12 +620,11 @@
 
             var s = g.CreateUriNode(":s");
             var p = g.CreateUriNode(":p");
-            var o = g.CreateUriNode(":o");
             var r = g.GetTriplesWithSubjectPredicate(s, p).Single().Object;
-            dynamic l = new DynamicCollectionList(r);
+            var l = new DynamicCollectionList(r) as IDynamicMetaObjectProvider;
+            var mo = l.GetMetaObject(Expression.Empty());
 
-            Assert.Equal(o, l.Single());
+            Assert.IsType<EnumerableMetaObject>(mo);
         }
-
     }
 }

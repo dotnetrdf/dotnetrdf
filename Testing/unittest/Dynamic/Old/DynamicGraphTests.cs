@@ -20,7 +20,7 @@
         {
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
-            var d = g.AsDynamic(new Uri("http://example.com/"));
+            var d = g.AsDynamic(UriFactory.Create("http://example.com/"));
             var s = d.s;
             d[s] = new { p = 0 };
 
@@ -46,7 +46,7 @@
         {
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
-            g.NamespaceMap.AddNamespace("ex", new Uri("http://example.com/"));
+            g.NamespaceMap.AddNamespace("ex", UriFactory.Create("http://example.com/"));
             var d = g.AsDynamic();
 
             var expected = g.Triples.SubjectNodes.Single();
@@ -59,7 +59,7 @@
         {
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
-            g.BaseUri = new Uri("http://example.com/s");
+            g.BaseUri = UriFactory.Create("http://example.com/s");
             var d = g.AsDynamic();
 
             var expected = g.Triples.SubjectNodes.Single();
@@ -72,7 +72,7 @@
         {
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
-            g.NamespaceMap.AddNamespace(string.Empty, new Uri("http://example.com/"));
+            g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Create("http://example.com/"));
             var d = g.AsDynamic();
 
             var expected = g.Triples.SubjectNodes.Single();
@@ -85,7 +85,7 @@
         {
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
-            var d = g.AsDynamic(new Uri("http://example.com/"));
+            var d = g.AsDynamic(UriFactory.Create("http://example.com/"));
 
             var expected = g.Triples.SubjectNodes.Single();
             var actual = d["s"];
@@ -97,7 +97,7 @@
         {
             var g = new Graph();
             g.LoadFromString("<http://example.com/#s> <http://example.com/p> <http://example.com/o> .");
-            var d = g.AsDynamic(new Uri("http://example.com/#"));
+            var d = g.AsDynamic(UriFactory.Create("http://example.com/#"));
 
             var expected = g.Triples.First().Subject;
             var actual = d["s"];
@@ -112,7 +112,7 @@
             var d = g.AsDynamic();
 
             var expected = g.Triples.First().Subject;
-            var actual = d[new Uri("http://example.com/s")];
+            var actual = d[UriFactory.Create("http://example.com/s")];
 
             Assert.Equal(expected, actual);
         }
@@ -122,7 +122,7 @@
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
 
-            var d = g.AsDynamic(new Uri("http://example.com/"));
+            var d = g.AsDynamic(UriFactory.Create("http://example.com/"));
 
             var expected = g.Triples.SubjectNodes.Single();
             var actual = d[new Uri("s", UriKind.Relative)];
@@ -135,7 +135,7 @@
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
 
-            var d = g.AsDynamic(new Uri("http://example.com/"));
+            var d = g.AsDynamic(UriFactory.Create("http://example.com/"));
             var s = g.Triples.SubjectNodes.Single();
 
             var expected = s;
@@ -196,7 +196,7 @@
 
         public void Cant_get_nonexistent_relative_uri_string_index()
         {
-            var d = new Graph().AsDynamic(new Uri("http://example.com/"));
+            var d = new Graph().AsDynamic(UriFactory.Create("http://example.com/"));
 
             Assert.Throws<KeyNotFoundException>(() =>
             {
@@ -206,7 +206,7 @@
 
         public void Cant_get_nonexistent_member()
         {
-            var d = new Graph().AsDynamic(new Uri("http://example.com/"));
+            var d = new Graph().AsDynamic(UriFactory.Create("http://example.com/"));
 
             Assert.Throws<KeyNotFoundException>(() =>
             {
@@ -229,7 +229,7 @@
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
 
-            var d = g.AsDynamic(new Uri("http://example.com/"));
+            var d = g.AsDynamic(UriFactory.Create("http://example.com/"));
 
             var expected = g.Triples.SubjectNodes.Single();
             var actual = d.s;
@@ -264,7 +264,7 @@
         {
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
-            var d = g.AsDynamic(new Uri("http://example.com/")) as IDynamicMetaObjectProvider;
+            var d = g.AsDynamic(UriFactory.Create("http://example.com/")) as IDynamicMetaObjectProvider;
             var meta = d.GetMetaObject(Expression.Parameter(typeof(object), "debug"));
             var collection = meta.GetDynamicMemberNames().ToArray();
             var element = "s";
@@ -288,7 +288,7 @@
         {
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
-            var d = g.AsDynamic(new Uri("http://example2.com/")) as IDynamicMetaObjectProvider;
+            var d = g.AsDynamic(UriFactory.Create("http://example2.com/")) as IDynamicMetaObjectProvider;
             var meta = d.GetMetaObject(Expression.Parameter(typeof(object), "debug"));
             var collection = meta.GetDynamicMemberNames().ToArray();
             var element = "http://example.com/s";
@@ -301,7 +301,7 @@
             var g = new Graph();
             g.LoadFromString("<http://example.com/#s> <http://example.com/p> <http://example.com/o> .");
 
-            var d = g.AsDynamic(new Uri("http://example.com/#")) as IDynamicMetaObjectProvider;
+            var d = g.AsDynamic(UriFactory.Create("http://example.com/#")) as IDynamicMetaObjectProvider;
             var meta = d.GetMetaObject(Expression.Parameter(typeof(object), "debug"));
             var collection = meta.GetDynamicMemberNames().ToArray();
             var element = "s";
@@ -318,7 +318,7 @@
             var d = new Graph().AsDynamic();
 
             d["http://example.com/s"] = new Dictionary<string, Uri> {
-                { "http://example.com/p", new Uri("http://example.com/o") }
+                { "http://example.com/p", UriFactory.Create("http://example.com/o") }
             };
 
             Assert.Equal(g as IGraph, d as IGraph);
@@ -330,9 +330,9 @@
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
 
-            var d = new Graph().AsDynamic(new Uri("http://example.com/"));
+            var d = new Graph().AsDynamic(UriFactory.Create("http://example.com/"));
 
-            d["s"] = new { p = new Uri("http://example.com/o") };
+            d["s"] = new { p = UriFactory.Create("http://example.com/o") };
 
             Assert.Equal(g as IGraph, d as IGraph);
         }
@@ -343,9 +343,9 @@
             var g = new Graph();
             g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
 
-            var d = new Graph().AsDynamic(new Uri("http://example.com/"));
+            var d = new Graph().AsDynamic(UriFactory.Create("http://example.com/"));
 
-            d["s"] = new CustomClass { p = new Uri("http://example.com/o") };
+            d["s"] = new CustomClass { p = UriFactory.Create("http://example.com/o") };
 
             Assert.Equal(g as IGraph, d as IGraph);
         }
@@ -362,12 +362,12 @@
 
         public void Setter_delegates_to_index_setter()
         {
-            var d1 = new Graph().AsDynamic(new Uri("http://example.com/"));
-            var d2 = new Graph().AsDynamic(new Uri("http://example.com/"));
+            var d1 = new Graph().AsDynamic(UriFactory.Create("http://example.com/"));
+            var d2 = new Graph().AsDynamic(UriFactory.Create("http://example.com/"));
 
             d1.s = new { p = "o" };
             d2["s"] = new { p = "o" };
-            
+
             Assert.Equal(d2 as Graph, d1 as Graph);
         }
     }
