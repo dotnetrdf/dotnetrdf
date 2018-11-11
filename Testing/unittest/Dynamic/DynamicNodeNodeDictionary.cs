@@ -284,9 +284,7 @@
             var s = g.CreateBlankNode();
             var d = new DynamicNode(s);
 
-            var condition = d.Contains(new KeyValuePair<INode, object>(null, null));
-
-            Assert.False(condition);
+            Assert.DoesNotContain(new KeyValuePair<INode, object>(null, null), d);
         }
 
         [Fact]
@@ -297,13 +295,23 @@
             var p = g.CreateBlankNode();
             var d = new DynamicNode(s);
 
-            var condition = d.Contains(new KeyValuePair<INode, object>(p, null));
-
-            Assert.False(condition);
+            Assert.DoesNotContain(new KeyValuePair<INode, object>(p, null), d);
         }
 
         [Fact]
         public void Contains_rejects_missing_key()
+        {
+            var g = new Graph();
+            var s = g.CreateBlankNode();
+            var p = g.CreateBlankNode();
+            var o = g.CreateBlankNode();
+            var d = new DynamicNode(s);
+
+            Assert.DoesNotContain(new KeyValuePair<INode, object>(p, o), d);
+        }
+
+        [Fact]
+        public void Contains_searches_objects_by_predicate()
         {
             var g = new Graph();
             g.LoadFromString(@"
@@ -311,12 +319,43 @@
 ");
 
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:x"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
             var d = new DynamicNode(s);
 
-            var condition = d.Contains(new KeyValuePair<INode, object>(p, null));
+            Assert.Contains(new KeyValuePair<INode, object>(p, o), d);
+            Assert.DoesNotContain(new KeyValuePair<INode, object>(p, s), d);
+        }
 
-            Assert.False(condition);
+        [Fact]
+        public void ContainsKey_requires_key()
+        {
+            var g = new Graph();
+            var s = g.CreateBlankNode();
+            var d = new DynamicNode(s);
+
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                d.ContainsKey(null as INode);
+            });
+        }
+
+        [Fact]
+        public void ContainsKey_searches_predicates_by_subject()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+<urn:s> <urn:p> <urn:o> .
+");
+
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
+            var d = new DynamicNode(s);
+
+            Assert.False(d.ContainsKey(s));
+            Assert.True(d.ContainsKey(p));
+            Assert.False(d.ContainsKey(o));
         }
     }
 }

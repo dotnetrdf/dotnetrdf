@@ -255,9 +255,7 @@
         {
             var d = new DynamicGraph() as IDictionary<INode, object>;
 
-            var condition = d.Contains(new KeyValuePair<INode, object>(null, null));
-
-            Assert.False(condition);
+            Assert.DoesNotContain(new KeyValuePair<INode, object>(null, null), d);
         }
 
         [Fact]
@@ -266,9 +264,7 @@
             var d = new DynamicGraph() as IDictionary<INode, object>;
             var s = new NodeFactory().CreateBlankNode();
 
-            var condition = d.Contains(new KeyValuePair<INode, object>(s, null));
-
-            Assert.False(condition);
+            Assert.DoesNotContain(new KeyValuePair<INode, object>(s, null), d);
         }
 
         [Fact]
@@ -277,9 +273,7 @@
             var d = new DynamicGraph() as IDictionary<INode, object>;
             var s = new NodeFactory().CreateBlankNode();
 
-            var condition = d.Contains(new KeyValuePair<INode, object>(s, 0));
-
-            Assert.False(condition);
+            Assert.DoesNotContain(new KeyValuePair<INode, object>(s, 0), d);
         }
 
         [Fact]
@@ -290,22 +284,21 @@
             var dict = ((IDictionary<INode, object>)d);
             var s = d.Nodes.First();
 
-            var condition = dict.Contains(new KeyValuePair<INode, object>(s, new { p = "o1" }));
-
-            Assert.False(condition);
+            Assert.DoesNotContain(new KeyValuePair<INode, object>(s, new { p = "o1" }), d);
         }
 
         [Fact]
         public void Contains_searches_exisiting_statements()
         {
             var d = new DynamicGraph(predicateBaseUri: UriFactory.Create("urn:"));
-            d.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
+            d.LoadFromString(@"
+<urn:s> <urn:p> ""o"" .
+");
+
             var dict = ((IDictionary<INode, object>)d);
             var s = d.Nodes.First();
 
-            var condition = dict.Contains(new KeyValuePair<INode, object>(s, new { p = "o" }));
-
-            Assert.True(condition);
+            Assert.Contains(new KeyValuePair<INode, object>(s, new { p = "o" }), d);
         }
 
         [Fact]
@@ -323,12 +316,16 @@
         public void ContainsKey_searches_subject_nodes()
         {
             var d = new DynamicGraph();
-            d.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+            d.LoadFromString(@"
+<urn:s> <urn:p> <urn:o> .
+");
 
-            var s = d.Nodes.First();
-            var o = d.Nodes.Last();
+            var s = d.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = d.CreateUriNode(UriFactory.Create("urn:p"));
+            var o = d.CreateUriNode(UriFactory.Create("urn:o"));
 
             Assert.True(d.ContainsKey(s));
+            Assert.False(d.ContainsKey(p));
             Assert.False(d.ContainsKey(o));
         }
 
@@ -336,7 +333,9 @@
         public void CopyTo_creates_pairs_with_dynamic_value()
         {
             var g = new DynamicGraph();
-            g.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+            g.LoadFromString(@"
+<urn:s> <urn:p> <urn:o> .
+");
 
             var s = g.Nodes.First();
 
@@ -430,7 +429,7 @@
         [Fact]
         public void Remove_pair_ignores_missing_statements()
         {
-            var d = new DynamicGraph() as IDictionary<INode,object>;
+            var d = new DynamicGraph() as IDictionary<INode, object>;
             var s = new NodeFactory().CreateBlankNode();
 
             var condition = d.Remove(new KeyValuePair<INode, object>(s, null));
