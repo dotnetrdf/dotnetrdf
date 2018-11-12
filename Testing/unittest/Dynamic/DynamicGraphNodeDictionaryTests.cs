@@ -330,7 +330,7 @@
         }
 
         [Fact]
-        public void CopyTo_creates_pairs_with_dynamic_value()
+        public void CopyTo_creates_pairs_with_dynamic_node_value()
         {
             var g = new DynamicGraph();
             g.LoadFromString(@"

@@ -7,7 +7,26 @@
 
     public partial class DynamicNode : IDictionary<INode, object>
     {
-        private IEnumerable<IUriNode> PredicateNodes => Graph.GetTriplesWithSubject(this).Select(t => t.Predicate as IUriNode).Distinct();
+        private IEnumerable<IUriNode> PredicateNodes
+        {
+            get
+            {
+                return Graph
+                    .GetTriplesWithSubject(this)
+                    .Select(t => t.Predicate as IUriNode)
+                    .Distinct();
+            }
+        }
+
+        private IDictionary<INode, object> Pairs
+        {
+            get
+            {
+                return PredicateNodes.ToDictionary(
+                    predicate => predicate as INode,
+                    predicate => this[predicate]);
+            }
+        }
 
         public object this[INode key]
         {
@@ -108,25 +127,17 @@
                 throw new ArgumentNullException(nameof(key));
             }
 
-            return
-                Graph
-                .GetTriplesWithSubjectPredicate(this, key)
-                .Any();
+            return Graph.GetTriplesWithSubjectPredicate(this, key).Any();
         }
 
         public void CopyTo(KeyValuePair<INode, object>[] array, int arrayIndex)
         {
-            (this as IEnumerable<KeyValuePair<INode, object>>).ToArray().CopyTo(array, arrayIndex);
+            Pairs.ToArray().CopyTo(array, arrayIndex);
         }
 
         IEnumerator<KeyValuePair<INode, object>> IEnumerable<KeyValuePair<INode, object>>.GetEnumerator()
         {
-            return
-                PredicateNodes
-                .ToDictionary(
-                    predicate => predicate as INode,
-                    predicate => this[predicate])
-                .GetEnumerator();
+            return Pairs.GetEnumerator();
         }
 
         public bool Remove(INode key)
@@ -172,7 +183,9 @@
 
         private IEnumerable<Triple> ConvertToTriples(INode predicateNode, object value)
         {
-            if (value is IRdfCollection || value is string || !(value is IEnumerable enumerableValue)) // Strings are enumerable but not for our case
+            // Strings are enumerable but not for our case
+            // RDF collections are also enumerable but have special treatment
+            if (value is IRdfCollection || value is string || !(value is IEnumerable enumerableValue))
             {
                 enumerableValue = value.AsEnumerable(); // When they're not enumerable, wrap them in an enumerable of one
             }

@@ -20,7 +20,7 @@
 
         public void Add(T item)
         {
-            this.Add(item as object);
+            base.Add(item);
         }
 
         public bool Contains(T item)
@@ -49,6 +49,7 @@
 
             if (type.IsSubclassOf(typeof(DynamicNode)))
             {
+                // TODO: Exception handling
                 var ctor = type.GetConstructor(new[] { typeof(INode) });
                 value = ctor.Invoke(new[] { value });
             }

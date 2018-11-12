@@ -8,25 +8,23 @@
 
     public partial class DynamicGraph : IDictionary<INode, object>
     {
-        private IEnumerable<KeyValuePair<INode, object>> NodePairs
-        {
-            get
-            {
-                return
-                    from key in UriSubjectNodes
-                    select new KeyValuePair<INode, object>(
-                        key,
-                        new DynamicNode(
-                            key,
-                            this.predicateBaseUri));
-            }
-        }
-
         private IEnumerable<IUriNode> UriSubjectNodes
         {
             get
             {
-                return Triples.SubjectNodes.UriNodes();
+                return Triples
+                    .SubjectNodes
+                    .UriNodes();
+            }
+        }
+
+        private IEnumerable<KeyValuePair<INode, object>> NodePairs
+        {
+            get
+            {
+                return UriSubjectNodes.ToDictionary(
+                    node => node as INode,
+                    node => this[node]);
             }
         }
 

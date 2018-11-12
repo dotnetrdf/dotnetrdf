@@ -357,5 +357,28 @@
             Assert.True(d.ContainsKey(p));
             Assert.False(d.ContainsKey(o));
         }
+
+        [Fact]
+        public void Copies_pairs_with_dynamic_object_collection_values()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+<urn:s> <urn:p> <urn:o> .
+");
+
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
+            var d = new DynamicNode(s);
+            
+            var array = new KeyValuePair<INode, object>[1];
+
+            (d as IDictionary<INode, object>).CopyTo(array, 0);
+            var pair = array.Single();
+            var objects = pair.Value as DynamicObjectCollection;
+
+            Assert.Equal(pair.Key, p);
+            Assert.Equal(o, objects.Single());
+        }
     }
 }
