@@ -30,7 +30,7 @@
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            base.CopyTo(array.Cast<object>().ToArray(), arrayIndex);
+            this.Objects.Select(Convert).ToArray().CopyTo(array, arrayIndex);
         }
 
         public bool Remove(T item)

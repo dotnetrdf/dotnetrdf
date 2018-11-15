@@ -49,13 +49,22 @@
 
         public bool Contains(object item) => Objects.Contains(item);
 
-        public void CopyTo(object[] array, int index) => Objects.ToArray().CopyTo(array, index);
+        public void CopyTo(object[] array, int index)
+        {
+            Objects.ToArray().CopyTo(array, index);
+        }
 
-        public IEnumerator<object> GetEnumerator() => Objects.GetEnumerator();
+        public IEnumerator<object> GetEnumerator()
+        {
+            return Objects.GetEnumerator();
+        }
 
         public bool Remove(object item) => ((IDictionary<INode, object>)subject).Remove(new KeyValuePair<INode, object>(predicate, item));
 
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
         DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)
         {

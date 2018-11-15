@@ -8,6 +8,8 @@
 
     public partial class DynamicGraph : IDictionary<INode, object>
     {
+        // TODO: This should probably be just UriNodes to facilitate reverse weird patterns
+        // TODO: like new get subjects by type - new DynamicSubjectCollection<ConceptScheme>("rdf:type", this[SkosHelper.ConceptScheme] as DynamicNode)
         private IEnumerable<IUriNode> UriSubjectNodes
         {
             get

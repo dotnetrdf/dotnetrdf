@@ -9,15 +9,17 @@
     {
         internal static object ConvertNode(INode node, Uri baseUri)
         {
-            if (node.IsListRoot(node.Graph))
-            {
-                return new DynamicCollectionList(node, baseUri);
-            }
-
             switch (node.AsValuedNode())
             {
                 case IUriNode uriNode:
+                    return new DynamicNode(node, baseUri);
+
                 case IBlankNode blankNode:
+                    if (node.IsListRoot(node.Graph))
+                    {
+                        return new DynamicCollectionList(node, baseUri);
+                    }
+
                     return new DynamicNode(node, baseUri);
 
                 case DoubleNode doubleNode:
