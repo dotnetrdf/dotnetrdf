@@ -7,6 +7,7 @@
 
     public class DynamicGraphDictionaryTests
     {
+        // TODO: Rename
         [Fact]
         public void Values()
         {
@@ -27,7 +28,7 @@ _:s3 <urn:p6> <urn:o12> .
 ");
 
 
-            Assert.Equal(d.Triples.SubjectNodes.UriNodes(), d.Values);
+            Assert.Equal(d.Nodes.UriNodes(), d.Values);
 
             foreach (var value in d.Values)
             {
@@ -35,6 +36,7 @@ _:s3 <urn:p6> <urn:o12> .
             }
         }
 
+        // TODO: Rename
         [Fact]
         public void Count()
         {
@@ -54,7 +56,7 @@ _:s3 <urn:p6> <urn:o11> .
 _:s3 <urn:p6> <urn:o12> .
 ");
 
-            Assert.Equal(d.Triples.SubjectNodes.UriNodes().Count(), d.Count);
+            Assert.Equal(d.Nodes.UriNodes().Count(), d.Count);
         }
 
         [Fact]

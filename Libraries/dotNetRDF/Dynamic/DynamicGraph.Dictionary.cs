@@ -11,7 +11,7 @@
             get
             {
                 var values =
-                    from node in UriSubjectNodes
+                    from node in UriNodes
                     select new DynamicNode(
                         node,
                         this.PredicateBaseUri);
@@ -24,7 +24,7 @@
         {
             get
             {
-                return UriSubjectNodes.Count();
+                return UriNodes.Count();
             }
         }
 

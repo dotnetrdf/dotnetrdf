@@ -13,7 +13,7 @@
             get
             {
                 return
-                    from key in UriSubjectNodes
+                    from key in UriNodes
                     select new KeyValuePair<Uri, object>(
                         key.Uri,
                         new DynamicNode(

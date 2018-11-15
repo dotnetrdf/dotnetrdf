@@ -13,7 +13,7 @@
             get
             {
                 return
-                    from subject in UriSubjectNodes
+                    from subject in UriNodes
                     select new KeyValuePair<string, object>(
                         DynamicHelper.ConvertToName(subject, PredicateBaseUri),
                         new DynamicNode(

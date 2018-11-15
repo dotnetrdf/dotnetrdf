@@ -109,7 +109,7 @@
         }
 
         [Fact]
-        public void Keys_are_uri_subject_nodes()
+        public void Keys_are_uri_nodes()
         {
             var g = new DynamicGraph();
             g.LoadFromString(@"
@@ -124,7 +124,7 @@
 ");
 
             var actual = ((IDictionary<Uri, object>)g).Keys;
-            var expected = g.Triples.SubjectNodes.UriNodes().Select(n => n.Uri);
+            var expected = g.Nodes.UriNodes().Select(n => n.Uri);
 
             Assert.Equal(expected, actual);
         }
@@ -304,16 +304,18 @@
         }
 
         [Fact]
-        public void ContainsKey_searches_subject_nodes()
+        public void ContainsKey_searches_uri_nodes()
         {
             var d = new DynamicGraph();
             d.LoadFromString("<urn:s> <urn:p> <urn:o> .");
 
             var s = UriFactory.Create("urn:s");
+            var p = UriFactory.Create("urn:p");
             var o = UriFactory.Create("urn:o");
 
             Assert.True(d.ContainsKey(s));
-            Assert.False(d.ContainsKey(o));
+            Assert.False(d.ContainsKey(p));
+            Assert.True(d.ContainsKey(o));
         }
 
         [Fact]
@@ -325,11 +327,11 @@
             var s = UriFactory.Create("urn:s");
 
             var dict = g as IDictionary<Uri, object>;
-            var array = new KeyValuePair<Uri, object>[g.Triples.Count()];
+            var array = new KeyValuePair<Uri, object>[2];
 
             dict.CopyTo(array, 0);
 
-            var pair = array.Single();
+            var pair = array.First();
             var key = pair.Key;
             var value = pair.Value;
 

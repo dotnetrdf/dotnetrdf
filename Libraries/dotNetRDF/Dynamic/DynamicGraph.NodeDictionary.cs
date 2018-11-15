@@ -8,15 +8,11 @@
 
     public partial class DynamicGraph : IDictionary<INode, object>
     {
-        // TODO: This should probably be just UriNodes to facilitate reverse weird patterns
-        // TODO: like new get subjects by type - new DynamicSubjectCollection<ConceptScheme>("rdf:type", this[SkosHelper.ConceptScheme] as DynamicNode)
-        private IEnumerable<IUriNode> UriSubjectNodes
+        private IEnumerable<IUriNode> UriNodes
         {
             get
             {
-                return Triples
-                    .SubjectNodes
-                    .UriNodes();
+                return Nodes.UriNodes();
             }
         }
 
@@ -24,7 +20,7 @@
         {
             get
             {
-                return UriSubjectNodes.ToDictionary(
+                return UriNodes.ToDictionary(
                     node => node as INode,
                     node => this[node]);
             }
@@ -69,7 +65,7 @@
         {
             get
             {
-                return UriSubjectNodes.ToArray();
+                return UriNodes.ToArray();
             }
         }
 
@@ -85,7 +81,7 @@
                 throw new ArgumentNullException(nameof(value));
             }
 
-            if (ContainsKey(key))
+            if (Triples.SubjectNodes.Contains(key))
             {
                 throw new ArgumentException("An item with the same key has already been added.", nameof(key));
             }
@@ -145,7 +141,7 @@
                 throw new ArgumentNullException(nameof(key));
             }
 
-            return UriSubjectNodes.Contains(key);
+            return UriNodes.Contains(key);
         }
 
         public void CopyTo(KeyValuePair<INode, object>[] array, int arrayIndex)
@@ -192,7 +188,7 @@
                 throw new ArgumentNullException(nameof(key));
             }
 
-            value = UriSubjectNodes
+            value = UriNodes
                 .Where(node => node.Equals(key))
                 .Select(node => new DynamicNode(node.CopyNode(this._g), this.PredicateBaseUri))
                 .SingleOrDefault();
