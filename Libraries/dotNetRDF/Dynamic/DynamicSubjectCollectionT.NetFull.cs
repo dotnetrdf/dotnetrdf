@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    public class DynamicSubjectCollection<T> : DynamicSubjectCollection, ICollection<T>
+    public class DynamicSubjectCollection<T> : DynamicSubjectCollection, ICollection<T> where T : INode
     {
         public DynamicSubjectCollection(string predicate, DynamicNode subject) :
             base(
@@ -18,7 +18,7 @@
 
         public void Add(T item)
         {
-            this.Add(item as object);
+            this.Add(item);
         }
 
         public bool Contains(T item)
@@ -28,7 +28,7 @@
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            base.CopyTo(array.Cast<object>().ToArray(), arrayIndex);
+            base.CopyTo(array.Cast<INode>().ToArray(), arrayIndex);
         }
 
         public bool Remove(T item)
@@ -41,14 +41,14 @@
             return this.Subjects.Select(Convert).GetEnumerator();
         }
 
-        private T Convert(object value)
+        private T Convert(INode value)
         {
             var type = typeof(T);
 
             if (type.IsSubclassOf(typeof(DynamicNode)))
             {
                 var ctor = type.GetConstructor(new[] { typeof(INode) });
-                value = ctor.Invoke(new[] { value });
+                value = ctor.Invoke(new[] { value }) as DynamicNode;
             }
 
             return (T)value;

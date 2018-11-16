@@ -264,7 +264,7 @@
             var d = new DynamicNode(s);
             var c = new DynamicSubjectCollection(p, d);
 
-            var objects = new object[5]; // +2 for padding on each side
+            var objects = new INode[5]; // +2 for padding on each side
             c.CopyTo(objects, 1); // start at the second item at destination
 
             Assert.Equal(

@@ -7,7 +7,7 @@
     using System.Linq;
     using System.Linq.Expressions;
 
-    public class DynamicSubjectCollection : ICollection<object>, IDynamicMetaObjectProvider
+    public class DynamicSubjectCollection : ICollection<INode>, IDynamicMetaObjectProvider
     {
         protected readonly DynamicNode @object;
         private readonly INode predicate;
@@ -28,14 +28,14 @@
             this.predicate = predicate;
         }
 
-        protected IEnumerable<object> Subjects
+        protected IEnumerable<INode> Subjects
         {
             get
             {
                 return
                     from triple
                     in @object.Graph.GetTriplesWithPredicateObject(predicate, @object)
-                    select DynamicHelper.ConvertNode(triple.Subject, @object.BaseUri);
+                    select DynamicHelper.ConvertNode(triple.Subject, @object.BaseUri) as INode;
             }
         }
 
@@ -43,7 +43,7 @@
 
         public bool IsReadOnly => false;
 
-        public void Add(object item)
+        public void Add(INode item)
         {
             @object.Graph.Assert(DynamicHelper.ConvertObject(item, @object.Graph), predicate, @object);
         }
@@ -53,16 +53,16 @@
             @object.Graph.Retract(@object.Graph.GetTriplesWithPredicateObject(predicate, @object).ToArray());
         }
 
-        public bool Contains(object item)
+        public bool Contains(INode item)
         {
             return Subjects.Contains(item);
         }
 
-        public void CopyTo(object[] array, int index) => Subjects.ToArray().CopyTo(array, index);
+        public void CopyTo(INode[] array, int index) => Subjects.ToArray().CopyTo(array, index);
 
-        public IEnumerator<object> GetEnumerator() => Subjects.GetEnumerator();
+        public IEnumerator<INode> GetEnumerator() => Subjects.GetEnumerator();
 
-        public bool Remove(object item)
+        public bool Remove(INode item)
         {
             return @object.Graph.Retract(@object.Graph.GetTriplesWithPredicateObject(predicate, @object).WithSubject(DynamicHelper.ConvertObject(item, @object.Graph)).ToArray());
         }
