@@ -35,12 +35,7 @@
                     throw new ArgumentNullException(nameof(key));
                 }
 
-                if (!TryGetValue(key, out var node))
-                {
-                    throw new KeyNotFoundException();
-                }
-
-                return node;
+                return new DynamicNode(key, PredicateBaseUri);
             }
 
             set
@@ -188,12 +183,14 @@
                 throw new ArgumentNullException(nameof(key));
             }
 
-            value = UriNodes
-                .Where(node => node.Equals(key))
-                .Select(node => new DynamicNode(node.CopyNode(this._g), this.PredicateBaseUri))
-                .SingleOrDefault();
+            value = null;
 
-            return value != null;
+            if (ContainsKey(key))
+            {
+                value = this[key];
+            }
+
+            return !(value is null);
         }
 
         private static IDictionary ConvertToDictionary(object value)

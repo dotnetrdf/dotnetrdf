@@ -37,12 +37,7 @@
                     throw new ArgumentNullException(nameof(key));
                 }
 
-                if (!TryGetValue(key, out var objects))
-                {
-                    throw new KeyNotFoundException();
-                }
-
-                return objects;
+                return new DynamicObjectCollection(this, key);
             }
 
             set
@@ -167,17 +162,12 @@
                 throw new ArgumentNullException(nameof(key));
             }
 
-            var statementExists = Graph.GetTriplesWithSubjectPredicate(this, key).Any();
+            value = null;
 
-            if (!statementExists)
+            if (ContainsKey(key))
             {
-                value = null;
+                value = this[key];
             }
-            else
-            {
-                value = new DynamicObjectCollection(this, key);
-            }
-
             return !(value is null);
         }
 

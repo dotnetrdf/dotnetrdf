@@ -18,17 +18,6 @@
         }
 
         [Fact]
-        public void Get_index_requires_existing_key()
-        {
-            var d = new DynamicGraph();
-            var s = UriFactory.Create("urn:s");
-
-            Assert.Throws<KeyNotFoundException>(() =>
-                d[s]
-            );
-        }
-
-        [Fact]
         public void Get_index_returns_dynamic_subject()
         {
             var d = new DynamicGraph();

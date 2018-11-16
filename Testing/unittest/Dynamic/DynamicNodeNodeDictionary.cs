@@ -21,19 +21,6 @@
         }
 
         [Fact]
-        public void Get_index_requires_existing_key()
-        {
-            var g = new Graph();
-            var s = g.CreateBlankNode();
-            var p = g.CreateBlankNode();
-            var d = new DynamicNode(s);
-
-            Assert.Throws<KeyNotFoundException>(() =>
-                d[p]
-            );
-        }
-
-        [Fact]
         public void Get_index_returns_dynamic_collection()
         {
             var g = new Graph();
