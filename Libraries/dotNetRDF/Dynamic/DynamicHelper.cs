@@ -103,6 +103,7 @@
                     list.Add(item);
                 }
 
+                // TODO: It's wrong (side-effect unexpected by caller) to assert at this point
                 return graph.AssertList(list, o => ConvertObject(o, graph));
             }
 

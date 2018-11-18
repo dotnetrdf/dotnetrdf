@@ -86,44 +86,26 @@
             Add(item.Key, item.Value);
         }
 
-        public bool Contains(INode predicate, object @object)
+        public bool Contains(INode predicate, object objects)
         {
             if (predicate is null)
             {
                 return false;
             }
 
-            if (@object is null)
+            if (objects is null)
             {
                 return false;
             }
 
-            if (!TryGetValue(predicate, out var objects))
-            {
-                return false;
-            }
-
-            return ((DynamicObjectCollection)objects).Contains(@object);
+            var g = new Graph();
+            g.Assert(ConvertToTriples(predicate.CopyNode(g), objects));
+            return Graph.HasSubGraph(g);
         }
 
         bool ICollection<KeyValuePair<INode, object>>.Contains(KeyValuePair<INode, object> item)
         {
-            if (item.Key is null)
-            {
-                return false;
-            }
-
-            if (item.Value is null)
-            {
-                return false;
-            }
-
-            if (!TryGetValue(item.Key, out var objects))
-            {
-                return false;
-            }
-
-            return ((DynamicObjectCollection)objects).Contains(item.Value);
+            return Contains(item.Key, item.Value);
         }
 
         public bool ContainsKey(INode predicate)
@@ -156,6 +138,7 @@
             return Graph.Retract(Graph.GetTriplesWithSubjectPredicate(this, predicate).ToArray());
         }
 
+        // TODO: Fails because wrong conversion of RDF collection objects
         public bool Remove(INode predicate, object objects)
         {
             if (predicate is null)
@@ -203,10 +186,11 @@
                 // TODO: Maybe this should throw on null
                 if (!(@object is null))
                 {
+                    // TODO: This is a mess
                     yield return new Triple(
-                        this,
+                        this.CopyNode(predicate.Graph),
                         predicate,
-                        DynamicHelper.ConvertObject(@object, Graph));
+                        DynamicHelper.ConvertObject(@object, predicate.Graph));
                 }
             }
         }

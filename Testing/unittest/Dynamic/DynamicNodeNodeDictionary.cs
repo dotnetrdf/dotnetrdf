@@ -9,7 +9,7 @@
     public class DynamicNodeNodeDictionary
     {
         [Fact]
-        public void Get_index_requires_key()
+        public void Get_index_requires_predicate()
         {
             var g = new Graph();
             var s = g.CreateBlankNode();
@@ -20,6 +20,7 @@
             );
         }
 
+        // TODO: Improve
         [Fact]
         public void Get_index_returns_dynamic_objects()
         {
@@ -38,7 +39,7 @@
         }
 
         [Fact]
-        public void Set_index_requires_key()
+        public void Set_index_requires_predicate()
         {
             var g = new Graph();
             var s = g.CreateBlankNode();
@@ -50,7 +51,7 @@
         }
 
         [Fact]
-        public void Set_index_with_null_value_retracts_by_subject_and_predicate()
+        public void Set_index_removes_predicate()
         {
             var expected = new Graph();
             expected.LoadFromString(@"
@@ -78,7 +79,7 @@
         }
 
         [Fact]
-        public void Set_index_overwrites_by_subject()
+        public void Set_index_adds_predicate_objects()
         {
             var expected = new Graph();
             expected.LoadFromString(@"
@@ -129,7 +130,7 @@
         }
 
         [Fact]
-        public void Add_requires_key()
+        public void Add_requires_predicate()
         {
             var g = new Graph();
             var s = g.CreateBlankNode();
@@ -142,7 +143,7 @@
         }
 
         [Fact]
-        public void Add_requires_value()
+        public void Add_requires_objects()
         {
             var g = new Graph();
             var s = g.CreateBlankNode();
@@ -160,30 +161,25 @@
         {
             var expected = new Graph();
             expected.LoadFromString(@"
-<urn:s> <urn:p> ""o1"" .
-<urn:s> <urn:p> ""o2"" .
+<urn:s> <urn:p> <urn:s> .
+<urn:s> <urn:p> <urn:p> .
+<urn:s> <urn:p> <urn:o> .
 ");
 
             var g = new Graph();
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
             var d = new DynamicNode(s);
 
-            d.Add(p, new[] { "o1", "o2" });
+            d.Add(p, new[] { s, p, o });
 
             Assert.Equal(expected, g);
         }
 
         [Fact]
-        public void Add_rdf_collections_are_not_enumerables()
+        public void Add_handles_collections()
         {
-            var unexpected = new Graph();
-            unexpected.LoadFromString(@"
-<urn:s> <urn:p> ""a"" .
-<urn:s> <urn:p> ""b"" .
-<urn:s> <urn:p> ""c"" .
-");
-
             var expected = new Graph();
             expected.LoadFromString(@"
 @prefix : <urn:> .
@@ -196,22 +192,14 @@
             var p = g.CreateUriNode(UriFactory.Create("urn:p"));
             var d = new DynamicNode(s);
 
-            d.Add(p, new RdfCollection(new[] { "a", "b", "c" }));
+            d.Add(p, new RdfCollection("a", "b", "c"));
 
-            Assert.NotEqual(unexpected, g);
             Assert.Equal(expected, g);
         }
 
         [Fact]
-        public void Add_strings_are_not_enumerables()
+        public void Add_handles_strings()
         {
-            var unexpected = new Graph();
-            unexpected.LoadFromString(@"
-<urn:s> <urn:p> ""a"" .
-<urn:s> <urn:p> ""b"" .
-<urn:s> <urn:p> ""c"" .
-");
-
             var expected = new Graph();
             expected.LoadFromString(@"
 <urn:s> <urn:p> ""abc"" .
@@ -224,12 +212,11 @@
 
             d.Add(p, "abc");
 
-            Assert.NotEqual(unexpected, g);
             Assert.Equal(expected, g);
         }
 
         [Fact]
-        public void Add_handles_key_value_pairs()
+        public void Add_handles_pairs()
         {
             var expected = new Graph();
             expected.LoadFromString(@"
@@ -239,36 +226,36 @@
             var g = new Graph();
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = g.CreateUriNode(UriFactory.Create("urn:p"));
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s) as IDictionary<INode, object>;
 
-            ((IDictionary<INode, object>)d).Add(new KeyValuePair<INode, object>(p, "o"));
+            d.Add(new KeyValuePair<INode, object>(p, "o"));
 
             Assert.Equal(expected, g);
         }
 
         [Fact]
-        public void Contains_rejects_null_key()
+        public void Contains_rejects_null_predicate()
         {
             var g = new Graph();
             var s = g.CreateBlankNode();
             var d = new DynamicNode(s);
 
-            Assert.DoesNotContain(new KeyValuePair<INode, object>(null, null), d);
+            Assert.False(d.Contains(null as INode, null));
         }
 
         [Fact]
-        public void Contains_rejects_null_value()
+        public void Contains_rejects_null_objects()
         {
             var g = new Graph();
             var s = g.CreateBlankNode();
             var p = g.CreateBlankNode();
             var d = new DynamicNode(s);
 
-            Assert.DoesNotContain(new KeyValuePair<INode, object>(p, null), d);
+            Assert.False(d.Contains(p, null));
         }
 
         [Fact]
-        public void Contains_rejects_missing_key()
+        public void Contains_rejects_missing_predicate()
         {
             var g = new Graph();
             var s = g.CreateBlankNode();
@@ -276,7 +263,23 @@
             var o = g.CreateBlankNode();
             var d = new DynamicNode(s);
 
-            Assert.DoesNotContain(new KeyValuePair<INode, object>(p, o), d);
+            Assert.False(d.Contains(p, o));
+        }
+
+        [Fact]
+        public void Contains_rejects_missing_objects()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+<urn:s> <urn:p> <urn:o> .
+");
+
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var o = g.CreateBlankNode();
+            var d = new DynamicNode(s);
+
+            Assert.False(d.Contains(p, o));
         }
 
         [Fact]
@@ -292,8 +295,83 @@
             var o = g.CreateUriNode(UriFactory.Create("urn:o"));
             var d = new DynamicNode(s);
 
+            Assert.True(d.Contains(p, o));
+        }
+
+        [Fact]
+        public void Contains_handles_enumerables()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+<urn:s> <urn:p> <urn:s> .
+<urn:s> <urn:p> <urn:p> .
+<urn:s> <urn:p> <urn:o> .
+");
+
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var d = new DynamicNode(s);
+
+            Assert.True(d.Contains(p, new[] { s, p }));
+        }
+
+        [Fact]
+        public void Contains_handles_strings()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+<urn:s> <urn:p> ""o"" .
+");
+
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var d = new DynamicNode(s);
+
+            Assert.True(d.Contains(p, "o"));
+        }
+
+        [Fact]
+        public void Contains_handles_collections()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+@prefix : <urn:> .
+
+:s :p (:s :p :o) .
+");
+
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
+            var d = new DynamicNode(s);
+
+            Assert.True(d.Contains(p, new RdfCollection(s, p, o)));
+        }
+
+        [Fact]
+        public void Contains_handles_pairs()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+<urn:s> <urn:p> <urn:o> .
+");
+
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
+            var d = new DynamicNode(s);
+
             Assert.Contains(new KeyValuePair<INode, object>(p, o), d);
-            Assert.DoesNotContain(new KeyValuePair<INode, object>(p, s), d);
+        }
+
+        [Fact]
+        public void ContainsKey_rejects_missing_key()
+        {
+            var g = new Graph();
+            var s = g.CreateBlankNode();
+            var d = new DynamicNode(s);
+
+            Assert.False(d.ContainsKey(null as INode));
         }
 
         [Fact]
@@ -436,7 +514,7 @@
         }
 
         [Fact]
-        public void Remove_rejects_missing_key()
+        public void Remove_p_rejects_missing_predicate()
         {
             var g = new Graph();
             var s = g.CreateBlankNode();
@@ -446,7 +524,7 @@
         }
 
         [Fact]
-        public void Remove_retracts_by_subject_and_predicate()
+        public void Remove_p_retracts_by_subject_and_predicate()
         {
             var expected = new Graph();
             expected.LoadFromString(@"
@@ -479,7 +557,7 @@
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var actual = new DynamicGraph();
+            var actual = new Graph();
             actual.LoadFromString(@"
 <urn:s> <urn:s> <urn:s> .
 <urn:s> <urn:s> <urn:p> .
@@ -516,13 +594,13 @@
 
             d.Remove(p);
 
-            Assert.Equal(expected as IGraph, actual as IGraph);
+            Assert.Equal(expected, actual);
         }
 
         [Fact]
-        public void Remove_reports_retraction_success()
+        public void Remove_p_reports_retraction_success()
         {
-            var actual = new DynamicGraph();
+            var actual = new Graph();
             actual.LoadFromString(@"
 <urn:s> <urn:s> <urn:s> .
 <urn:s> <urn:s> <urn:p> .
@@ -562,14 +640,345 @@
         }
 
         [Fact]
-        public void Remove_pair_ignores_missing_statements()
+        public void Remove_po_rejects_missing_predicate()
         {
-            var d = new DynamicGraph() as IDictionary<INode, object>;
-            var s = new NodeFactory().CreateBlankNode();
+            var g = new Graph();
+            var s = g.CreateBlankNode();
+            var d = new DynamicNode(s);
 
-            var condition = d.Remove(new KeyValuePair<INode, object>(s, null));
+            Assert.False(d.Remove(null as INode, null));
+        }
 
-            Assert.False(condition);
+        [Fact]
+        public void Remove_po_rejects_missing_object()
+        {
+            var g = new Graph();
+            var s = g.CreateBlankNode();
+            var p = g.CreateBlankNode();
+            var d = new DynamicNode(s);
+
+            Assert.False(d.Remove(p, null));
+        }
+
+        [Fact]
+        public void Remove_po_retracts_by_subject_predicate_and_objects()
+        {
+            var expected = new Graph();
+            expected.LoadFromString(@"
+<urn:s> <urn:s> <urn:s> .
+<urn:s> <urn:s> <urn:p> .
+<urn:s> <urn:s> <urn:o> .
+<urn:s> <urn:p> <urn:s> .
+<urn:s> <urn:p> <urn:p> .
+# <urn:s> <urn:p> <urn:o> .
+<urn:s> <urn:o> <urn:s> .
+<urn:s> <urn:o> <urn:p> .
+<urn:s> <urn:o> <urn:o> .
+<urn:p> <urn:s> <urn:s> .
+<urn:p> <urn:s> <urn:p> .
+<urn:p> <urn:s> <urn:o> .
+<urn:p> <urn:p> <urn:s> .
+<urn:p> <urn:p> <urn:p> .
+<urn:p> <urn:p> <urn:o> .
+<urn:p> <urn:o> <urn:s> .
+<urn:p> <urn:o> <urn:p> .
+<urn:p> <urn:o> <urn:o> .
+<urn:o> <urn:s> <urn:s> .
+<urn:o> <urn:s> <urn:p> .
+<urn:o> <urn:s> <urn:o> .
+<urn:o> <urn:p> <urn:s> .
+<urn:o> <urn:p> <urn:p> .
+<urn:o> <urn:p> <urn:o> .
+<urn:o> <urn:o> <urn:s> .
+<urn:o> <urn:o> <urn:p> .
+<urn:o> <urn:o> <urn:o> .
+");
+
+            var actual = new Graph();
+            actual.LoadFromString(@"
+<urn:s> <urn:s> <urn:s> .
+<urn:s> <urn:s> <urn:p> .
+<urn:s> <urn:s> <urn:o> .
+<urn:s> <urn:p> <urn:s> .
+<urn:s> <urn:p> <urn:p> .
+<urn:s> <urn:p> <urn:o> . # should retract
+<urn:s> <urn:o> <urn:s> .
+<urn:s> <urn:o> <urn:p> .
+<urn:s> <urn:o> <urn:o> .
+<urn:p> <urn:s> <urn:s> .
+<urn:p> <urn:s> <urn:p> .
+<urn:p> <urn:s> <urn:o> .
+<urn:p> <urn:p> <urn:s> .
+<urn:p> <urn:p> <urn:p> .
+<urn:p> <urn:p> <urn:o> .
+<urn:p> <urn:o> <urn:s> .
+<urn:p> <urn:o> <urn:p> .
+<urn:p> <urn:o> <urn:o> .
+<urn:o> <urn:s> <urn:s> .
+<urn:o> <urn:s> <urn:p> .
+<urn:o> <urn:s> <urn:o> .
+<urn:o> <urn:p> <urn:s> .
+<urn:o> <urn:p> <urn:p> .
+<urn:o> <urn:p> <urn:o> .
+<urn:o> <urn:o> <urn:s> .
+<urn:o> <urn:o> <urn:p> .
+<urn:o> <urn:o> <urn:o> .
+");
+
+            var s = actual.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = actual.CreateUriNode(UriFactory.Create("urn:p"));
+            var o = actual.CreateUriNode(UriFactory.Create("urn:o"));
+            var d = new DynamicNode(s);
+
+            d.Remove(p, o);
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void Remove_po_handles_enumerables()
+        {
+            var expected = new Graph();
+            expected.LoadFromString(@"
+<urn:s> <urn:s> <urn:s> .
+<urn:s> <urn:s> <urn:p> .
+<urn:s> <urn:s> <urn:o> .
+# <urn:s> <urn:p> <urn:s> .
+# <urn:s> <urn:p> <urn:p> .
+# <urn:s> <urn:p> <urn:o> .
+<urn:s> <urn:o> <urn:s> .
+<urn:s> <urn:o> <urn:p> .
+<urn:s> <urn:o> <urn:o> .
+<urn:p> <urn:s> <urn:s> .
+<urn:p> <urn:s> <urn:p> .
+<urn:p> <urn:s> <urn:o> .
+<urn:p> <urn:p> <urn:s> .
+<urn:p> <urn:p> <urn:p> .
+<urn:p> <urn:p> <urn:o> .
+<urn:p> <urn:o> <urn:s> .
+<urn:p> <urn:o> <urn:p> .
+<urn:p> <urn:o> <urn:o> .
+<urn:o> <urn:s> <urn:s> .
+<urn:o> <urn:s> <urn:p> .
+<urn:o> <urn:s> <urn:o> .
+<urn:o> <urn:p> <urn:s> .
+<urn:o> <urn:p> <urn:p> .
+<urn:o> <urn:p> <urn:o> .
+<urn:o> <urn:o> <urn:s> .
+<urn:o> <urn:o> <urn:p> .
+<urn:o> <urn:o> <urn:o> .
+");
+
+            var actual = new Graph();
+            actual.LoadFromString(@"
+<urn:s> <urn:s> <urn:s> .
+<urn:s> <urn:s> <urn:p> .
+<urn:s> <urn:s> <urn:o> .
+<urn:s> <urn:p> <urn:s> . # should retract
+<urn:s> <urn:p> <urn:p> . # should retract
+<urn:s> <urn:p> <urn:o> . # should retract
+<urn:s> <urn:o> <urn:s> .
+<urn:s> <urn:o> <urn:p> .
+<urn:s> <urn:o> <urn:o> .
+<urn:p> <urn:s> <urn:s> .
+<urn:p> <urn:s> <urn:p> .
+<urn:p> <urn:s> <urn:o> .
+<urn:p> <urn:p> <urn:s> .
+<urn:p> <urn:p> <urn:p> .
+<urn:p> <urn:p> <urn:o> .
+<urn:p> <urn:o> <urn:s> .
+<urn:p> <urn:o> <urn:p> .
+<urn:p> <urn:o> <urn:o> .
+<urn:o> <urn:s> <urn:s> .
+<urn:o> <urn:s> <urn:p> .
+<urn:o> <urn:s> <urn:o> .
+<urn:o> <urn:p> <urn:s> .
+<urn:o> <urn:p> <urn:p> .
+<urn:o> <urn:p> <urn:o> .
+<urn:o> <urn:o> <urn:s> .
+<urn:o> <urn:o> <urn:p> .
+<urn:o> <urn:o> <urn:o> .
+");
+
+            var s = actual.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = actual.CreateUriNode(UriFactory.Create("urn:p"));
+            var o = actual.CreateUriNode(UriFactory.Create("urn:o"));
+            var d = new DynamicNode(s);
+
+            d.Remove(p, new[] { s, p, o });
+
+            Assert.Equal(expected, actual);
+        }
+
+        // TODO: This really fails. Sort out removing collections
+        [Fact]
+        public void Remove_po_handles_collections()
+        {
+            var expected = new Graph();
+            expected.LoadFromString(@"
+@prefix : <urn:> .
+
+:s :s (:s :p :o) .
+# :s :p (:s :p :o) .
+:s :o (:s :p :o) .
+:p :s (:s :p :o) .
+:p :p (:s :p :o) .
+:p :o (:s :p :o) .
+:o :s (:s :p :o) .
+:o :p (:s :p :o) .
+:o :o (:s :p :o) .
+");
+
+            var actual = new Graph();
+            actual.LoadFromString(@"
+@prefix : <urn:> .
+
+:s :s (:s :p :o) .
+:s :p (:s :p :o) . # should retract
+:s :o (:s :p :o) .
+:p :s (:s :p :o) .
+:p :p (:s :p :o) .
+:p :o (:s :p :o) .
+:o :s (:s :p :o) .
+:o :p (:s :p :o) .
+:o :o (:s :p :o) .
+");
+
+            var s = actual.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = actual.CreateUriNode(UriFactory.Create("urn:p"));
+            var o = actual.CreateUriNode(UriFactory.Create("urn:o"));
+            var d = new DynamicNode(s);
+
+            d.Remove(p, new RdfCollection(s, p, o));
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void Remove_po_handles_strings()
+        {
+            var expected = new Graph();
+            expected.LoadFromString(@"
+<urn:s> <urn:p> ""s"" .
+<urn:s> <urn:p> ""p"" .
+# <urn:s> <urn:p> ""o"" .
+");
+
+            var actual = new Graph();
+            actual.LoadFromString(@"
+<urn:s> <urn:p> ""s"" .
+<urn:s> <urn:p> ""p"" .
+<urn:s> <urn:p> ""o"" . # should retract
+");
+
+            var s = actual.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = actual.CreateUriNode(UriFactory.Create("urn:p"));
+            var d = new DynamicNode(s);
+
+            d.Remove(p, "o");
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void Remove_po_handles_pairs()
+        {
+            var expected = new Graph();
+            expected.LoadFromString(@"
+<urn:s> <urn:s> <urn:s> .
+<urn:s> <urn:s> <urn:p> .
+<urn:s> <urn:s> <urn:o> .
+<urn:s> <urn:p> <urn:s> .
+<urn:s> <urn:p> <urn:p> .
+# <urn:s> <urn:p> <urn:o> .
+<urn:s> <urn:o> <urn:s> .
+<urn:s> <urn:o> <urn:p> .
+<urn:s> <urn:o> <urn:o> .
+<urn:p> <urn:s> <urn:s> .
+<urn:p> <urn:s> <urn:p> .
+<urn:p> <urn:s> <urn:o> .
+<urn:p> <urn:p> <urn:s> .
+<urn:p> <urn:p> <urn:p> .
+<urn:p> <urn:p> <urn:o> .
+<urn:p> <urn:o> <urn:s> .
+<urn:p> <urn:o> <urn:p> .
+<urn:p> <urn:o> <urn:o> .
+<urn:o> <urn:s> <urn:s> .
+<urn:o> <urn:s> <urn:p> .
+<urn:o> <urn:s> <urn:o> .
+<urn:o> <urn:p> <urn:s> .
+<urn:o> <urn:p> <urn:p> .
+<urn:o> <urn:p> <urn:o> .
+<urn:o> <urn:o> <urn:s> .
+<urn:o> <urn:o> <urn:p> .
+<urn:o> <urn:o> <urn:o> .
+");
+
+            var actual = new Graph();
+            actual.LoadFromString(@"
+<urn:s> <urn:s> <urn:s> .
+<urn:s> <urn:s> <urn:p> .
+<urn:s> <urn:s> <urn:o> .
+<urn:s> <urn:p> <urn:s> .
+<urn:s> <urn:p> <urn:p> .
+<urn:s> <urn:p> <urn:o> . # should retract
+<urn:s> <urn:o> <urn:s> .
+<urn:s> <urn:o> <urn:p> .
+<urn:s> <urn:o> <urn:o> .
+<urn:p> <urn:s> <urn:s> .
+<urn:p> <urn:s> <urn:p> .
+<urn:p> <urn:s> <urn:o> .
+<urn:p> <urn:p> <urn:s> .
+<urn:p> <urn:p> <urn:p> .
+<urn:p> <urn:p> <urn:o> .
+<urn:p> <urn:o> <urn:s> .
+<urn:p> <urn:o> <urn:p> .
+<urn:p> <urn:o> <urn:o> .
+<urn:o> <urn:s> <urn:s> .
+<urn:o> <urn:s> <urn:p> .
+<urn:o> <urn:s> <urn:o> .
+<urn:o> <urn:p> <urn:s> .
+<urn:o> <urn:p> <urn:p> .
+<urn:o> <urn:p> <urn:o> .
+<urn:o> <urn:o> <urn:s> .
+<urn:o> <urn:o> <urn:p> .
+<urn:o> <urn:o> <urn:o> .
+");
+
+            var s = actual.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = actual.CreateUriNode(UriFactory.Create("urn:p"));
+            var o = actual.CreateUriNode(UriFactory.Create("urn:o"));
+            var d = new DynamicNode(s);
+
+            ((IDictionary<INode, object>)d).Remove(new KeyValuePair<INode, object>(p, o));
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void TryGetValue_rejects_null_predicate()
+        {
+            var g = new Graph();
+            var s = g.CreateBlankNode();
+            var d = new DynamicNode(s);
+
+            Assert.False(d.TryGetValue(null as INode, out var objects));
+        }
+
+        [Fact]
+        public void TryGetValue_rejects_missing_predicate()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+<urn:s> <urn:p> <urn:o> .
+");
+
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var d = new DynamicNode(s);
+
+            Assert.True(d.TryGetValue(p, out var objects));
+            Assert.IsType<DynamicObjectCollection>(objects);
         }
     }
 }
