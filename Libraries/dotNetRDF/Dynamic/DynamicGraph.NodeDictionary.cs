@@ -16,7 +16,7 @@
             }
         }
 
-        private IEnumerable<KeyValuePair<INode, object>> NodePairs
+        private IDictionary<INode, object> NodePairs
         {
             get
             {
@@ -97,28 +97,28 @@
             Add(item.Key, item.Value);
         }
 
-        bool ICollection<KeyValuePair<INode, object>>.Contains(KeyValuePair<INode, object> item)
+        public bool Contains(INode subject, object @object)
         {
-            if (item.Key is null)
+            if (subject is null)
             {
                 // All statements have subject
                 return false;
             }
 
-            if (item.Value is null)
+            if (@object is null)
             {
                 // All statements have object
                 return false;
             }
 
-            if (!TryGetValue(item.Key, out var value))
+            if (!TryGetValue(subject, out var value))
             {
                 return false;
             }
 
             var node = (DynamicNode)value;
 
-            foreach (DictionaryEntry entry in DynamicGraph.ConvertToDictionary(item.Value))
+            foreach (DictionaryEntry entry in DynamicGraph.ConvertToDictionary(@object))
             {
                 if (!node.Contains(entry.Key, entry.Value))
                 {
@@ -127,6 +127,11 @@
             }
 
             return true;
+        }
+
+        bool ICollection<KeyValuePair<INode, object>>.Contains(KeyValuePair<INode, object> item)
+        {
+            return Contains(item.Key, item.Value);
         }
 
         public bool ContainsKey(INode key)
@@ -159,21 +164,26 @@
             return Retract(GetTriplesWithSubject(key).ToArray());
         }
 
-        bool ICollection<KeyValuePair<INode, object>>.Remove(KeyValuePair<INode, object> item)
+        public bool Remove(INode subject, object @object)
         {
-            if (!NodeDictionary.Contains(item))
+            if (!Contains(subject, @object))
             {
                 return false;
             }
 
-            var node = (DynamicNode)this[item.Key];
+            var node = (DynamicNode)this[subject];
 
-            foreach (DictionaryEntry entry in DynamicGraph.ConvertToDictionary(item.Value))
+            foreach (DictionaryEntry entry in DynamicGraph.ConvertToDictionary(@object))
             {
                 node.Remove(entry.Key, entry.Value);
             }
 
             return true;
+        }
+
+        bool ICollection<KeyValuePair<INode, object>>.Remove(KeyValuePair<INode, object> item)
+        {
+            return Remove(item.Key, item.Value);
         }
 
         public bool TryGetValue(INode key, out object value)
@@ -200,7 +210,10 @@
                 return valueDictionary;
             }
 
-            return DynamicGraph.GetProperties(value).ToDictionary(p => p.Name, p => p.GetValue(value, null));
+            return GetProperties(value)
+                .ToDictionary(
+                    p => p.Name,
+                    p => p.GetValue(value, null));
         }
 
         private static IEnumerable<PropertyInfo> GetProperties(object value)

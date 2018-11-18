@@ -10,12 +10,7 @@
         {
             get
             {
-                return Graph
-                    .GetTriplesWithSubject(this)
-                    .Select(t => t.Predicate)
-                    .Distinct()
-                    .Select(p => new DynamicObjectCollection(this, p))
-                    .ToArray();
+                return NodePairs.Values;
             }
         }
 
@@ -23,11 +18,7 @@
         {
             get
             {
-                return Graph
-                    .GetTriplesWithSubject(this)
-                    .Select(t => t.Predicate)
-                    .Distinct()
-                    .Count();
+                return PredicateNodes.Count();
             }
         }
 
@@ -46,7 +37,7 @@
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return NodeDictionary.GetEnumerator();
+            return this.Cast<KeyValuePair<INode, object>>().GetEnumerator();
         }
     }
 }

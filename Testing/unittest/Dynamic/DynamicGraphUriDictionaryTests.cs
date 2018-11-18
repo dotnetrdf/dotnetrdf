@@ -308,48 +308,123 @@
         }
 
         [Fact]
-        public void CopyTo_creates_pairs_with_dynamic_value()
+        public void Copies_pairs_with_subject_key_and_dynamic_subject_value()
         {
             var g = new DynamicGraph();
-            g.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+            g.LoadFromString(@"
+<urn:s> <urn:s> <urn:s> . # 1 (subject)
+<urn:s> <urn:s> <urn:p> .
+<urn:s> <urn:s> <urn:o> .
+<urn:s> <urn:p> <urn:s> .
+<urn:s> <urn:p> <urn:p> .
+<urn:s> <urn:p> <urn:o> .
+<urn:s> <urn:o> <urn:s> .
+<urn:s> <urn:o> <urn:p> .
+<urn:s> <urn:o> <urn:o> .
+<urn:p> <urn:s> <urn:s> . # 2 (subject)
+<urn:p> <urn:s> <urn:p> .
+<urn:p> <urn:s> <urn:o> .
+<urn:p> <urn:p> <urn:s> .
+<urn:p> <urn:p> <urn:p> .
+<urn:p> <urn:p> <urn:o> .
+<urn:p> <urn:o> <urn:s> .
+<urn:p> <urn:o> <urn:p> .
+<urn:p> <urn:o> <urn:o> .
+<urn:o> <urn:s> <urn:s> . # 3 (subject)
+<urn:o> <urn:s> <urn:p> .
+<urn:o> <urn:s> <urn:o> .
+<urn:o> <urn:p> <urn:s> .
+<urn:o> <urn:p> <urn:p> .
+<urn:o> <urn:p> <urn:o> .
+<urn:o> <urn:o> <urn:s> .
+<urn:o> <urn:o> <urn:p> .
+<urn:o> <urn:o> <urn:o> .
+");
 
             var s = UriFactory.Create("urn:s");
+            var p = UriFactory.Create("urn:p");
+            var o = UriFactory.Create("urn:o");
 
-            var dict = g as IDictionary<Uri, object>;
-            var array = new KeyValuePair<Uri, object>[2];
+            var array = new KeyValuePair<Uri, object>[5];
 
-            dict.CopyTo(array, 0);
+            var empty = new KeyValuePair<Uri, object>();
+            void isEmpty(KeyValuePair<Uri, object> expected)
+            {
+                Assert.Equal(empty, expected);
+            }
+            Action<KeyValuePair<Uri, object>> isKVWith(Uri expectedKey)
+            {
+                return actual =>
+                {
+                    var expectedNode = g.CreateUriNode(expectedKey);
 
-            var pair = array.First();
-            var key = pair.Key;
-            var value = pair.Value;
+                    Assert.Equal(new KeyValuePair<Uri, object>(expectedKey, expectedNode), actual);
+                    Assert.IsType<DynamicNode>(actual.Value);
+                };
+            }
 
-            Assert.Equal(key, s);
-            Assert.Equal(value, g.CreateUriNode(s));
-            Assert.IsType<DynamicNode>(value);
+            (g as IDictionary<Uri, object>).CopyTo(array, 1);
+
+            Assert.Collection(
+                array,
+                isEmpty,
+                isKVWith(s),
+                isKVWith(p),
+                isKVWith(o),
+                isEmpty
+            );
         }
 
         [Fact]
-        public void GetEnumerator_creates_pairs_with_dynamic_value()
+        public void Enumerates_pairs_with_subject_key_and_dynamic_subject_value()
         {
             var g = new DynamicGraph();
-            g.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+            g.LoadFromString(@"
+<urn:s> <urn:s> <urn:s> . # 1 (subject)
+<urn:s> <urn:s> <urn:p> .
+<urn:s> <urn:s> <urn:o> .
+<urn:s> <urn:p> <urn:s> .
+<urn:s> <urn:p> <urn:p> .
+<urn:s> <urn:p> <urn:o> .
+<urn:s> <urn:o> <urn:s> .
+<urn:s> <urn:o> <urn:p> .
+<urn:s> <urn:o> <urn:o> .
+<urn:p> <urn:s> <urn:s> . # 2 (subject)
+<urn:p> <urn:s> <urn:p> .
+<urn:p> <urn:s> <urn:o> .
+<urn:p> <urn:p> <urn:s> .
+<urn:p> <urn:p> <urn:p> .
+<urn:p> <urn:p> <urn:o> .
+<urn:p> <urn:o> <urn:s> .
+<urn:p> <urn:o> <urn:p> .
+<urn:p> <urn:o> <urn:o> .
+<urn:o> <urn:s> <urn:s> . # 3 (subject)
+<urn:o> <urn:s> <urn:p> .
+<urn:o> <urn:s> <urn:o> .
+<urn:o> <urn:p> <urn:s> .
+<urn:o> <urn:p> <urn:p> .
+<urn:o> <urn:p> <urn:o> .
+<urn:o> <urn:o> <urn:s> .
+<urn:o> <urn:o> <urn:p> .
+<urn:o> <urn:o> <urn:o> .
+");
 
             var s = UriFactory.Create("urn:s");
+            var p = UriFactory.Create("urn:p");
+            var o = UriFactory.Create("urn:o");
 
-            var dict = g as IDictionary<Uri, object>;
-
-            using (var enumerator = dict.GetEnumerator())
+            using (var actual = g.Cast<KeyValuePair<Uri, object>>().GetEnumerator())
             {
-                enumerator.MoveNext();
-                var pair = enumerator.Current;
+                using (var expected = new[] { s, p, o }.Cast<Uri>().GetEnumerator())
+                {
+                    while (expected.MoveNext() | actual.MoveNext())
+                    {
+                        var keyNode = g.CreateUriNode(expected.Current);
 
-                var key = pair.Key;
-                var value = pair.Value;
-
-                Assert.Equal(key, s);
-                Assert.Equal(value, g.CreateUriNode(s));
-                Assert.IsType<DynamicNode>(value);
+                        Assert.Equal(new KeyValuePair<Uri, object>(expected.Current, keyNode), actual.Current);
+                        Assert.IsType<DynamicNode>(actual.Current.Value);
+                    }
+                }
             }
         }
 
@@ -365,7 +440,7 @@
         }
 
         [Fact]
-        public void Remove_retracts_statements_with_subject()
+        public void Remove_retracts_by_subject()
         {
             var expected = new Graph();
             expected.LoadFromString(@"

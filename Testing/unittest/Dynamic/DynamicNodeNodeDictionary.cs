@@ -21,7 +21,7 @@
         }
 
         [Fact]
-        public void Get_index_returns_dynamic_collection()
+        public void Get_index_returns_dynamic_objects()
         {
             var g = new Graph();
             g.LoadFromString(@"
@@ -107,7 +107,7 @@
         }
 
         [Fact]
-        public void Keys_are_predicate_nodes()
+        public void Keys_are_predicates()
         {
             var g = new Graph();
             g.LoadFromString(@"
@@ -152,24 +152,6 @@
             Assert.Throws<ArgumentNullException>(() =>
             {
                 d.Add(p, null);
-            });
-        }
-
-        [Fact]
-        public void Add_rejects_existing_key()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
-<urn:s> <urn:p> <urn:o> .
-");
-
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
-            var d = new DynamicNode(s);
-
-            Assert.Throws<ArgumentException>(() =>
-            {
-                d.Add(p, 0);
             });
         }
 
@@ -315,19 +297,6 @@
         }
 
         [Fact]
-        public void ContainsKey_requires_key()
-        {
-            var g = new Graph();
-            var s = g.CreateBlankNode();
-            var d = new DynamicNode(s);
-
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                d.ContainsKey(null as INode);
-            });
-        }
-
-        [Fact]
         public void ContainsKey_searches_predicates_by_subject()
         {
             var g = new Graph();
@@ -346,26 +315,261 @@
         }
 
         [Fact]
-        public void Copies_pairs_with_dynamic_object_collection_values()
+        public void Copies_pairs_with_predicate_key_and_dynamic_objects_value()
         {
             var g = new Graph();
             g.LoadFromString(@"
-<urn:s> <urn:p> <urn:o> .
+<urn:s> <urn:s> <urn:s> . # 1.1
+<urn:s> <urn:s> <urn:p> . # 1.2
+<urn:s> <urn:s> <urn:o> . # 1.3
+<urn:s> <urn:p> <urn:s> . # 2.1
+<urn:s> <urn:p> <urn:p> . # 2.2
+<urn:s> <urn:p> <urn:o> . # 2.3
+<urn:s> <urn:o> <urn:s> . # 3.1
+<urn:s> <urn:o> <urn:p> . # 3.2
+<urn:s> <urn:o> <urn:o> . # 3.3
+<urn:p> <urn:s> <urn:s> .
+<urn:p> <urn:s> <urn:p> .
+<urn:p> <urn:s> <urn:o> .
+<urn:p> <urn:p> <urn:s> .
+<urn:p> <urn:p> <urn:p> .
+<urn:p> <urn:p> <urn:o> .
+<urn:p> <urn:o> <urn:s> .
+<urn:p> <urn:o> <urn:p> .
+<urn:p> <urn:o> <urn:o> .
+<urn:o> <urn:s> <urn:s> .
+<urn:o> <urn:s> <urn:p> .
+<urn:o> <urn:s> <urn:o> .
+<urn:o> <urn:p> <urn:s> .
+<urn:o> <urn:p> <urn:p> .
+<urn:o> <urn:p> <urn:o> .
+<urn:o> <urn:o> <urn:s> .
+<urn:o> <urn:o> <urn:p> .
+<urn:o> <urn:o> <urn:o> .
 ");
 
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = g.CreateUriNode(UriFactory.Create("urn:p"));
             var o = g.CreateUriNode(UriFactory.Create("urn:o"));
             var d = new DynamicNode(s);
-            
-            var array = new KeyValuePair<INode, object>[1];
+            var array = new KeyValuePair<INode, object>[5];
+            var empty = new KeyValuePair<INode, object>();
+            var spo = new[] { s, p, o };
+            void isEmpty(KeyValuePair<INode, object> actual)
+            {
+                Assert.Equal(empty, actual);
+            }
+            Action<KeyValuePair<INode, object>> isSPOWith(INode expected)
+            {
+                return actual =>
+                {
+                    Assert.Equal(expected, actual.Key);
+                    Assert.IsType<DynamicObjectCollection>(actual.Value);
+                    Assert.Equal(spo, actual.Value);
+                };
+            }
 
-            (d as IDictionary<INode, object>).CopyTo(array, 0);
-            var pair = array.Single();
-            var objects = pair.Value as DynamicObjectCollection;
+            ((IDictionary<INode, object>)d).CopyTo(array, 1);
 
-            Assert.Equal(pair.Key, p);
-            Assert.Equal(o, objects.Single());
+            Assert.Collection(
+                array,
+                isEmpty,
+                isSPOWith(s),
+                isSPOWith(p),
+                isSPOWith(o),
+                isEmpty
+            );
+        }
+
+        [Fact]
+        public void Enumerates_pairs_with_predicate_key_and_dynamic_objects_value()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+<urn:s> <urn:s> <urn:s> . # 1.1
+<urn:s> <urn:s> <urn:p> . # 1.2
+<urn:s> <urn:s> <urn:o> . # 1.3
+<urn:s> <urn:p> <urn:s> . # 2.1
+<urn:s> <urn:p> <urn:p> . # 2.2
+<urn:s> <urn:p> <urn:o> . # 2.3
+<urn:s> <urn:o> <urn:s> . # 3.1
+<urn:s> <urn:o> <urn:p> . # 3.2
+<urn:s> <urn:o> <urn:o> . # 3.3
+<urn:p> <urn:s> <urn:s> .
+<urn:p> <urn:s> <urn:p> .
+<urn:p> <urn:s> <urn:o> .
+<urn:p> <urn:p> <urn:s> .
+<urn:p> <urn:p> <urn:p> .
+<urn:p> <urn:p> <urn:o> .
+<urn:p> <urn:o> <urn:s> .
+<urn:p> <urn:o> <urn:p> .
+<urn:p> <urn:o> <urn:o> .
+<urn:o> <urn:s> <urn:s> .
+<urn:o> <urn:s> <urn:p> .
+<urn:o> <urn:s> <urn:o> .
+<urn:o> <urn:p> <urn:s> .
+<urn:o> <urn:p> <urn:p> .
+<urn:o> <urn:p> <urn:o> .
+<urn:o> <urn:o> <urn:s> .
+<urn:o> <urn:o> <urn:p> .
+<urn:o> <urn:o> <urn:o> .
+");
+
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
+            var d = new DynamicNode(s);
+            var spo = new[] { s, p, o };
+
+            using (var actual = d.Cast<KeyValuePair<INode, object>>().GetEnumerator())
+            {
+                using (var expected = spo.Cast<INode>().GetEnumerator())
+                {
+                    while (expected.MoveNext() | actual.MoveNext())
+                    {
+                        Assert.Equal(expected.Current, actual.Current.Key);
+                        Assert.IsType<DynamicObjectCollection>(actual.Current.Value);
+                        Assert.Equal(spo, actual.Current.Value);
+                    }
+                }
+            }
+        }
+
+        [Fact]
+        public void Remove_rejects_missing_key()
+        {
+            var g = new Graph();
+            var s = g.CreateBlankNode();
+            var d = new DynamicNode(s);
+
+            Assert.False(d.Remove(null as INode));
+        }
+
+        [Fact]
+        public void Remove_retracts_by_subject_and_predicate()
+        {
+            var expected = new Graph();
+            expected.LoadFromString(@"
+<urn:s> <urn:s> <urn:s> .
+<urn:s> <urn:s> <urn:p> .
+<urn:s> <urn:s> <urn:o> .
+# <urn:s> <urn:p> <urn:s> .
+# <urn:s> <urn:p> <urn:p> .
+# <urn:s> <urn:p> <urn:o> .
+<urn:s> <urn:o> <urn:s> .
+<urn:s> <urn:o> <urn:p> .
+<urn:s> <urn:o> <urn:o> .
+<urn:p> <urn:s> <urn:s> .
+<urn:p> <urn:s> <urn:p> .
+<urn:p> <urn:s> <urn:o> .
+<urn:p> <urn:p> <urn:s> .
+<urn:p> <urn:p> <urn:p> .
+<urn:p> <urn:p> <urn:o> .
+<urn:p> <urn:o> <urn:s> .
+<urn:p> <urn:o> <urn:p> .
+<urn:p> <urn:o> <urn:o> .
+<urn:o> <urn:s> <urn:s> .
+<urn:o> <urn:s> <urn:p> .
+<urn:o> <urn:s> <urn:o> .
+<urn:o> <urn:p> <urn:s> .
+<urn:o> <urn:p> <urn:p> .
+<urn:o> <urn:p> <urn:o> .
+<urn:o> <urn:o> <urn:s> .
+<urn:o> <urn:o> <urn:p> .
+<urn:o> <urn:o> <urn:o> .
+");
+
+            var actual = new DynamicGraph();
+            actual.LoadFromString(@"
+<urn:s> <urn:s> <urn:s> .
+<urn:s> <urn:s> <urn:p> .
+<urn:s> <urn:s> <urn:o> .
+<urn:s> <urn:p> <urn:s> . # should retract
+<urn:s> <urn:p> <urn:p> . # should retract
+<urn:s> <urn:p> <urn:o> . # should retract
+<urn:s> <urn:o> <urn:s> .
+<urn:s> <urn:o> <urn:p> .
+<urn:s> <urn:o> <urn:o> .
+<urn:p> <urn:s> <urn:s> .
+<urn:p> <urn:s> <urn:p> .
+<urn:p> <urn:s> <urn:o> .
+<urn:p> <urn:p> <urn:s> .
+<urn:p> <urn:p> <urn:p> .
+<urn:p> <urn:p> <urn:o> .
+<urn:p> <urn:o> <urn:s> .
+<urn:p> <urn:o> <urn:p> .
+<urn:p> <urn:o> <urn:o> .
+<urn:o> <urn:s> <urn:s> .
+<urn:o> <urn:s> <urn:p> .
+<urn:o> <urn:s> <urn:o> .
+<urn:o> <urn:p> <urn:s> .
+<urn:o> <urn:p> <urn:p> .
+<urn:o> <urn:p> <urn:o> .
+<urn:o> <urn:o> <urn:s> .
+<urn:o> <urn:o> <urn:p> .
+<urn:o> <urn:o> <urn:o> .
+");
+
+            var s = actual.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = actual.CreateUriNode(UriFactory.Create("urn:p"));
+            var d = new DynamicNode(s);
+
+            d.Remove(p);
+
+            Assert.Equal(expected as IGraph, actual as IGraph);
+        }
+
+        [Fact]
+        public void Remove_reports_retraction_success()
+        {
+            var actual = new DynamicGraph();
+            actual.LoadFromString(@"
+<urn:s> <urn:s> <urn:s> .
+<urn:s> <urn:s> <urn:p> .
+<urn:s> <urn:s> <urn:o> .
+<urn:s> <urn:p> <urn:s> . # should retract
+<urn:s> <urn:p> <urn:p> . # should retract
+<urn:s> <urn:p> <urn:o> . # should retract
+<urn:s> <urn:o> <urn:s> .
+<urn:s> <urn:o> <urn:p> .
+<urn:s> <urn:o> <urn:o> .
+<urn:p> <urn:s> <urn:s> .
+<urn:p> <urn:s> <urn:p> .
+<urn:p> <urn:s> <urn:o> .
+<urn:p> <urn:p> <urn:s> .
+<urn:p> <urn:p> <urn:p> .
+<urn:p> <urn:p> <urn:o> .
+<urn:p> <urn:o> <urn:s> .
+<urn:p> <urn:o> <urn:p> .
+<urn:p> <urn:o> <urn:o> .
+<urn:o> <urn:s> <urn:s> .
+<urn:o> <urn:s> <urn:p> .
+<urn:o> <urn:s> <urn:o> .
+<urn:o> <urn:p> <urn:s> .
+<urn:o> <urn:p> <urn:p> .
+<urn:o> <urn:p> <urn:o> .
+<urn:o> <urn:o> <urn:s> .
+<urn:o> <urn:o> <urn:p> .
+<urn:o> <urn:o> <urn:o> .
+");
+
+            var s = actual.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = actual.CreateUriNode(UriFactory.Create("urn:p"));
+            var d = new DynamicNode(s);
+
+            Assert.True(d.Remove(p));
+            Assert.False(d.Remove(p));
+        }
+
+        [Fact]
+        public void Remove_pair_ignores_missing_statements()
+        {
+            var d = new DynamicGraph() as IDictionary<INode, object>;
+            var s = new NodeFactory().CreateBlankNode();
+
+            var condition = d.Remove(new KeyValuePair<INode, object>(s, null));
+
+            Assert.False(condition);
         }
     }
 }

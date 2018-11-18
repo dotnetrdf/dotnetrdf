@@ -6,7 +6,16 @@
 
     public partial class DynamicNode : IDictionary<string, object>
     {
-        private IDictionary<Uri, object> UriDictionary => this;
+        private IDictionary<string, object> StringPairs
+        {
+            get
+            {
+                return PredicateNodes
+                    .ToDictionary(
+                        predicate => DynamicHelper.ConvertToName(predicate, BaseUri),
+                        predicate => this[predicate]);
+            }
+        }
 
         public object this[string key]
         {
@@ -35,11 +44,7 @@
         {
             get
             {
-                var keys =
-                    from predicate in PredicateNodes
-                    select DynamicHelper.ConvertToName(predicate, BaseUri);
-
-                return keys.ToArray();
+                return StringPairs.Keys;
             }
         }
 
@@ -53,9 +58,14 @@
             Add(item.Key, item.Value);
         }
 
+        public bool Contains(string predicate, object objects)
+        {
+            return Contains(Convert(predicate), objects);
+        }
+
         bool ICollection<KeyValuePair<string, object>>.Contains(KeyValuePair<string, object> item)
         {
-            return UriDictionary.Contains(Convert(item));
+            return Contains(item.Key, item.Value);
         }
 
         public bool ContainsKey(string key)
@@ -65,17 +75,12 @@
 
         public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
         {
-            (this as IEnumerable<KeyValuePair<string, object>>).ToArray().CopyTo(array, arrayIndex);
+            StringPairs.CopyTo(array, arrayIndex);
         }
 
         IEnumerator<KeyValuePair<string, object>> IEnumerable<KeyValuePair<string, object>>.GetEnumerator()
         {
-            return
-                PredicateNodes
-                .ToDictionary(
-                    predicate => DynamicHelper.ConvertToName(predicate, BaseUri),
-                    predicate => this[predicate])
-                .GetEnumerator();
+            return StringPairs.GetEnumerator();
         }
 
         public bool Remove(string key)
@@ -83,19 +88,19 @@
             return Remove(Convert(key));
         }
 
+        public bool Remove(string predicate, object objects)
+        {
+            return Remove(Convert(predicate), objects);
+        }
+
         bool ICollection<KeyValuePair<string, object>>.Remove(KeyValuePair<string, object> item)
         {
-            return UriDictionary.Remove(Convert(item));
+            return Remove(item.Key, item.Value);
         }
 
         public bool TryGetValue(string key, out object value)
         {
             return TryGetValue(Convert(key), out value);
-        }
-
-        private KeyValuePair<Uri, object> Convert(KeyValuePair<string, object> item)
-        {
-            return new KeyValuePair<Uri, object>(Convert(item.Key), item.Value);
         }
 
         private Uri Convert(string key)

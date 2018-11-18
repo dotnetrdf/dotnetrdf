@@ -10,13 +10,7 @@
         {
             get
             {
-                var values =
-                    from node in UriNodes
-                    select new DynamicNode(
-                        node,
-                        this.PredicateBaseUri);
-
-                return values.ToArray();
+                return NodePairs.Values;
             }
         }
 
@@ -38,7 +32,7 @@
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return (this as IEnumerable<KeyValuePair<INode, object>>).GetEnumerator();
+            return this.Cast<KeyValuePair<INode, object>>().GetEnumerator();
         }
     }
 }

@@ -261,7 +261,7 @@
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = g.CreateUriNode(UriFactory.Create("urn:p"));
             var o = g.CreateUriNode(UriFactory.Create("urn:o"));
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(o);
             var c = new DynamicSubjectCollection(p, d);
 
             var objects = new INode[5]; // +2 for padding on each side

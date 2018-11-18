@@ -6,19 +6,14 @@
 
     public partial class DynamicGraph : IDictionary<Uri, object>
     {
-        private IDictionary<INode, object> NodeDictionary => this;
-
         private IEnumerable<KeyValuePair<Uri, object>> UriPairs
         {
             get
             {
-                return
-                    from key in UriNodes
-                    select new KeyValuePair<Uri, object>(
-                        key.Uri,
-                        new DynamicNode(
-                            key,
-                            predicateBaseUri));
+                return UriNodes
+                    .ToDictionary(
+                        subject => subject.Uri,
+                        subject => this[subject]);
             }
         }
 
@@ -77,19 +72,24 @@
             Add(item.Key, item.Value);
         }
 
+        public bool Contains(Uri subject, object predicate)
+        {
+            if (subject == null)
+            {
+                throw new ArgumentNullException(nameof(subject));
+            }
+
+            if (predicate == null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
+
+            return Contains(Convert(subject), predicate);
+        }
+
         bool ICollection<KeyValuePair<Uri, object>>.Contains(KeyValuePair<Uri, object> item)
         {
-            if (item.Key is null)
-            {
-                return false;
-            }
-
-            if (item.Value is null)
-            {
-                return false;
-            }
-
-            return NodeDictionary.Contains(Convert(item));
+            return Contains(item.Key, item.Value);
         }
 
         public bool ContainsKey(Uri key)
@@ -122,14 +122,19 @@
             return Remove(Convert(key));
         }
 
-        bool ICollection<KeyValuePair<Uri, object>>.Remove(KeyValuePair<Uri, object> item)
+        public bool Remove(Uri subject, object predicate)
         {
-            if (item.Key is null)
+            if (subject is null)
             {
                 return false;
             }
 
-            return NodeDictionary.Remove(Convert(item));
+            return Remove(Convert(subject), predicate);
+        }
+
+        bool ICollection<KeyValuePair<Uri, object>>.Remove(KeyValuePair<Uri, object> item)
+        {
+            return Remove(item.Key, item.Value);
         }
 
         public bool TryGetValue(Uri key, out object value)
@@ -140,11 +145,6 @@
             }
 
             return TryGetValue(Convert(key), out value);
-        }
-
-        private KeyValuePair<INode, object> Convert(KeyValuePair<Uri, object> item)
-        {
-            return new KeyValuePair<INode, object>(Convert(item.Key), item.Value);
         }
 
         private INode Convert(Uri key)

@@ -6,7 +6,16 @@
 
     public partial class DynamicNode : IDictionary<Uri, object>
     {
-        private IDictionary<INode, object> NodeDictionary => this;
+        private IDictionary<Uri, object> UriPairs
+        {
+            get
+            {
+                return PredicateNodes
+                    .ToDictionary(
+                        predicate => predicate.Uri,
+                        predicate => this[predicate]);
+            }
+        }
 
         public object this[Uri key]
         {
@@ -25,27 +34,28 @@
         {
             get
             {
-                var keys =
-                    from predicate in PredicateNodes
-                    select predicate.Uri;
-
-                return keys.ToArray();
+                return UriPairs.Keys;
             }
         }
 
-        public void Add(Uri key, object value)
+        public void Add(Uri predicate, object objects)
         {
-            Add(Convert(key), value);
+            Add(Convert(predicate), objects);
         }
 
         void ICollection<KeyValuePair<Uri, object>>.Add(KeyValuePair<Uri, object> item)
         {
-            NodeDictionary.Add(Convert(item));
+            Add(item.Key, item.Value);
+        }
+
+        public bool Contains(Uri predicate, object objects)
+        {
+            return Contains(Convert(predicate), objects);
         }
 
         bool ICollection<KeyValuePair<Uri, object>>.Contains(KeyValuePair<Uri, object> item)
         {
-            return NodeDictionary.Contains(Convert(item));
+            return Contains(item.Key, item.Value);
         }
 
         public bool ContainsKey(Uri key)
@@ -55,17 +65,12 @@
 
         public void CopyTo(KeyValuePair<Uri, object>[] array, int arrayIndex)
         {
-            (this as IEnumerable<KeyValuePair<Uri, object>>).ToArray().CopyTo(array, arrayIndex);
+            UriPairs.CopyTo(array, arrayIndex);
         }
 
         IEnumerator<KeyValuePair<Uri, object>> IEnumerable<KeyValuePair<Uri, object>>.GetEnumerator()
         {
-            return
-                PredicateNodes
-                .ToDictionary(
-                    p => p.Uri,
-                    p => this[p])
-                .GetEnumerator();
+            return UriPairs.GetEnumerator();
         }
 
         public bool Remove(Uri key)
@@ -73,19 +78,19 @@
             return Remove(Convert(key));
         }
 
+        public bool Remove(Uri predicate, object @object)
+        {
+            return Remove(Convert(predicate), @object);
+        }
+
         bool ICollection<KeyValuePair<Uri, object>>.Remove(KeyValuePair<Uri, object> item)
         {
-            return NodeDictionary.Remove(Convert(item));
+            return Remove(item.Key, item.Value);
         }
 
         public bool TryGetValue(Uri key, out object value)
         {
             return TryGetValue(Convert(key), out value);
-        }
-
-        private KeyValuePair<INode, object> Convert(KeyValuePair<Uri, object> item)
-        {
-            return new KeyValuePair<INode, object>(Convert(item.Key), item.Value);
         }
 
         private INode Convert(Uri key)

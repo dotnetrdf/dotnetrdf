@@ -39,15 +39,36 @@
             }
         }
 
-        public int Count => Objects.Count();
+        public int Count
+        {
+            get
+            {
+                return Objects.Count();
+            }
+        }
 
-        public bool IsReadOnly => false;
+        public bool IsReadOnly
+        {
+            get
+            {
+                return false;
+            }
+        }
 
-        public void Add(object item) => subject.Add(predicate, item);
+        public void Add(object @object)
+        {
+            subject.Add(predicate, @object);
+        }
 
-        public void Clear() => subject.Remove(predicate);
+        public void Clear()
+        {
+            subject.Remove(predicate);
+        }
 
-        public bool Contains(object item) => Objects.Contains(item);
+        public bool Contains(object @object)
+        {
+            return Objects.Contains(@object);
+        }
 
         public void CopyTo(object[] array, int index)
         {
@@ -59,7 +80,10 @@
             return Objects.GetEnumerator();
         }
 
-        public bool Remove(object item) => ((IDictionary<INode, object>)subject).Remove(new KeyValuePair<INode, object>(predicate, item));
+        public bool Remove(object @object)
+        {
+            return subject.Remove(predicate, @object);
+        }
 
         IEnumerator IEnumerable.GetEnumerator()
         {

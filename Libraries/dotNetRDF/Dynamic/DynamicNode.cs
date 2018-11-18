@@ -1,7 +1,6 @@
 ﻿namespace VDS.RDF.Dynamic
 {
     using System;
-    using System.Collections.Generic;
     using System.Dynamic;
     using System.Linq.Expressions;
 
@@ -34,80 +33,63 @@
         // TODO: Clean this convert mess
         public void Add(object key, object value)
         {
-            var node = null as INode;
-
             switch (key)
             {
                 case string stringKey:
-                    node = Convert(Convert(stringKey));
-                    break;
+                    Add(stringKey, value);
+                    return;
 
                 case Uri uriKey:
-                    node = Convert(uriKey);
-                    break;
+                    Add(uriKey, value);
+                    return;
 
                 case INode nodeKey:
-                    node = nodeKey;
-                    break;
+                    Add(nodeKey, value);
+                    return;
 
                 default:
                     // TODO: Make more specific
                     throw new Exception();
             }
-            
-            this.Add(node, value);
         }
 
         internal bool Contains(object key, object value)
         {
-            var node = null as INode;
-
             switch (key)
             {
                 case string stringKey:
-                    node = Convert(Convert(stringKey));
-                    break;
+                    return Contains(stringKey, value);
 
                 case Uri uriKey:
-                    node = Convert(uriKey);
-                    break;
+                    return Contains(uriKey, value);
 
                 case INode nodeKey:
-                    node = nodeKey;
-                    break;
+                    return Contains(nodeKey, value);
 
                 default:
                     // TODO: Make more specific
                     throw new Exception();
             }
-
-            return NodeDictionary.Contains(new KeyValuePair<INode, object>(node, value));
         }
 
         internal bool Remove(object key, object value)
         {
-            var node = null as INode;
-
             switch (key)
             {
                 case string stringKey:
-                    node = Convert(Convert(stringKey));
-                    break;
+                    return Remove(stringKey, value);
 
                 case Uri uriKey:
-                    node = Convert(uriKey);
-                    break;
+                    return Remove(uriKey, value);
 
                 case INode nodeKey:
-                    node = nodeKey;
-                    break;
+                    return Remove(nodeKey, value);
 
                 default:
                     // TODO: Make more specific
                     throw new Exception();
             }
 
-            return NodeDictionary.Remove(new KeyValuePair<INode, object>(node, value));
         }
     }
 }

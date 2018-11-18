@@ -7,9 +7,6 @@
 
     public class EnumerableMetaObject : DynamicMetaObject
     {
-        private readonly Expression parameter;
-        private readonly DynamicObjectCollection dynamicObjectCollection;
-
         public EnumerableMetaObject(Expression parameter, IEnumerable<object> value) : base(parameter, BindingRestrictions.Empty, value) { }
 
         public override DynamicMetaObject BindInvokeMember(InvokeMemberBinder binder, DynamicMetaObject[] args)

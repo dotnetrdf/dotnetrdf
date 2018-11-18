@@ -6,19 +6,14 @@
 
     public partial class DynamicGraph : IDictionary<string, object>
     {
-        private IDictionary<Uri, object> UriDictionary => this;
-
-        private IEnumerable<KeyValuePair<string, object>> StringPairs
+        private IDictionary<string, object> StringPairs
         {
             get
             {
-                return
-                    from subject in UriNodes
-                    select new KeyValuePair<string, object>(
-                        DynamicHelper.ConvertToName(subject, PredicateBaseUri),
-                        new DynamicNode(
-                            subject,
-                            predicateBaseUri));
+                return UriNodes
+                    .ToDictionary(
+                        subject => DynamicHelper.ConvertToName(subject, BaseUri),
+                        subject => this[subject]);
             }
         }
 
@@ -49,11 +44,7 @@
         {
             get
             {
-                var keys =
-                    from pair in StringPairs
-                    select pair.Key;
-
-                return keys.ToArray();
+                return StringPairs.Keys;
             }
         }
 
@@ -77,19 +68,24 @@
             Add(item.Key, item.Value);
         }
 
+        public bool Contains(string key, object value)
+        {
+            if (key is null)
+            {
+                return false;
+            }
+
+            if (value is null)
+            {
+                return false;
+            }
+
+            return Contains(Convert(key), value);
+        }
+
         bool ICollection<KeyValuePair<string, object>>.Contains(KeyValuePair<string, object> item)
         {
-            if (item.Key is null)
-            {
-                return false;
-            }
-
-            if (item.Value is null)
-            {
-                return false;
-            }
-
-            return UriDictionary.Contains(Convert(item));
+            return Contains(item.Key, item.Value);
         }
 
         public bool ContainsKey(string key)
@@ -104,7 +100,7 @@
 
         public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
         {
-            StringPairs.ToArray().CopyTo(array, arrayIndex);
+            StringPairs.CopyTo(array, arrayIndex);
         }
 
         IEnumerator<KeyValuePair<string, object>> IEnumerable<KeyValuePair<string, object>>.GetEnumerator()
@@ -122,14 +118,14 @@
             return Remove(Convert(key));
         }
 
+        public bool Remove(string key, object value)
+        {
+            return Remove(Convert(key), value);
+        }
+
         bool ICollection<KeyValuePair<string, object>>.Remove(KeyValuePair<string, object> item)
         {
-            if (item.Key is null)
-            {
-                return false;
-            }
-
-            return UriDictionary.Remove(Convert(item));
+            return Remove(item.Key, item.Value);
         }
 
         public bool TryGetValue(string key, out object value)
@@ -140,11 +136,6 @@
             }
 
             return TryGetValue(Convert(key), out value);
-        }
-
-        private KeyValuePair<Uri, object> Convert(KeyValuePair<string, object> item)
-        {
-            return new KeyValuePair<Uri, object>(Convert(item.Key), item.Value);
         }
 
         private Uri Convert(string key)

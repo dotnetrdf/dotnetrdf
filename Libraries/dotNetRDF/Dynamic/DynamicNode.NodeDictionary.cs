@@ -11,50 +11,50 @@
         {
             get
             {
-                return Graph
-                    .GetTriplesWithSubject(this)
-                    .Select(t => t.Predicate as IUriNode)
-                    .Distinct();
+                var predicates =
+                    from t in Graph.GetTriplesWithSubject(this)
+                    select t.Predicate as IUriNode;
+
+                return predicates.Distinct();
             }
         }
 
-        private IDictionary<INode, object> Pairs
+        private IDictionary<INode, object> NodePairs
         {
             get
             {
-                return PredicateNodes.ToDictionary(
-                    predicate => predicate as INode,
-                    predicate => this[predicate]);
+                return PredicateNodes
+                    .ToDictionary(
+                        predicate => predicate as INode,
+                        predicate => this[predicate]);
             }
         }
 
-        public object this[INode key]
+        public object this[INode predicate]
         {
             get
             {
-                if (key is null)
+                if (predicate is null)
                 {
-                    throw new ArgumentNullException(nameof(key));
+                    throw new ArgumentNullException(nameof(predicate));
                 }
 
-                return new DynamicObjectCollection(this, key);
+                return new DynamicObjectCollection(this, predicate);
             }
 
             set
             {
-                if (key is null)
+                if (predicate is null)
                 {
-                    throw new ArgumentNullException(nameof(key));
+                    throw new ArgumentNullException(nameof(predicate));
                 }
 
-                this.Remove(key);
+                Remove(predicate);
 
-                if (value is null)
+                if (!(value is null))
                 {
-                    return;
+                    Add(predicate, value);
                 }
-
-                this.Add(key, value);
             }
         }
 
@@ -66,24 +66,19 @@
             }
         }
 
-        public void Add(INode key, object value)
+        public void Add(INode predicate, object objects)
         {
-            if (key is null)
+            if (predicate is null)
             {
-                throw new ArgumentNullException(nameof(key));
+                throw new ArgumentNullException(nameof(predicate));
             }
 
-            if (value is null)
+            if (objects is null)
             {
-                throw new ArgumentNullException(nameof(value));
+                throw new ArgumentNullException(nameof(objects));
             }
 
-            if (ContainsKey(key))
-            {
-                throw new ArgumentException("An item with the same key has already been added.", nameof(key));
-            }
-
-            Graph.Assert(this.ConvertToTriples(key, value));
+            Graph.Assert(ConvertToTriples(predicate, objects));
         }
 
         void ICollection<KeyValuePair<INode, object>>.Add(KeyValuePair<INode, object> item)
@@ -91,105 +86,127 @@
             Add(item.Key, item.Value);
         }
 
+        public bool Contains(INode predicate, object @object)
+        {
+            if (predicate is null)
+            {
+                return false;
+            }
+
+            if (@object is null)
+            {
+                return false;
+            }
+
+            if (!TryGetValue(predicate, out var objects))
+            {
+                return false;
+            }
+
+            return ((DynamicObjectCollection)objects).Contains(@object);
+        }
+
         bool ICollection<KeyValuePair<INode, object>>.Contains(KeyValuePair<INode, object> item)
         {
             if (item.Key is null)
             {
-                // All statements have subject
                 return false;
             }
 
             if (item.Value is null)
             {
-                // All statements have object
                 return false;
             }
 
-            if (!TryGetValue(item.Key, out var value))
+            if (!TryGetValue(item.Key, out var objects))
             {
                 return false;
             }
 
-            var objects = (DynamicObjectCollection)value;
-
-            return objects.Contains(item.Value);
+            return ((DynamicObjectCollection)objects).Contains(item.Value);
         }
 
-        public bool ContainsKey(INode key)
+        public bool ContainsKey(INode predicate)
         {
-            if (key is null)
+            if (predicate is null)
             {
-                throw new ArgumentNullException(nameof(key));
+                return false;
             }
 
-            return Graph.GetTriplesWithSubjectPredicate(this, key).Any();
+            return PredicateNodes.Contains(predicate);
         }
 
         public void CopyTo(KeyValuePair<INode, object>[] array, int arrayIndex)
         {
-            Pairs.ToArray().CopyTo(array, arrayIndex);
+            NodePairs.CopyTo(array, arrayIndex);
         }
 
         IEnumerator<KeyValuePair<INode, object>> IEnumerable<KeyValuePair<INode, object>>.GetEnumerator()
         {
-            return Pairs.GetEnumerator();
+            return NodePairs.GetEnumerator();
         }
 
-        public bool Remove(INode key)
+        public bool Remove(INode predicate)
         {
-            if (key is null)
+            if (predicate is null)
             {
-                throw new ArgumentNullException(nameof(key));
+                return false;
             }
 
-            return Graph.Retract(Graph.GetTriplesWithSubjectPredicate(this, key).ToArray());
+            return Graph.Retract(Graph.GetTriplesWithSubjectPredicate(this, predicate).ToArray());
+        }
+
+        public bool Remove(INode predicate, object objects)
+        {
+            if (predicate is null)
+            {
+                return false;
+            }
+
+            if (objects is null)
+            {
+                return false;
+            }
+
+            return Graph.Retract(ConvertToTriples(predicate, objects));
         }
 
         bool ICollection<KeyValuePair<INode, object>>.Remove(KeyValuePair<INode, object> item)
         {
-            if (item.Key is null)
-            {
-                throw new ArgumentNullException("key");
-            }
-
-            return Graph.Retract(Graph.GetTriplesWithSubjectPredicate(this, item.Key).WithObject(DynamicHelper.ConvertObject(item.Value, Graph)).ToArray());
+            return Remove(item.Key, item.Value);
         }
 
-        public bool TryGetValue(INode key, out object value)
+        public bool TryGetValue(INode predicate, out object objects)
         {
-            if (key is null)
+            objects = null;
+
+            if (predicate is null || !ContainsKey(predicate))
             {
-                throw new ArgumentNullException(nameof(key));
+                return false;
             }
 
-            value = null;
-
-            if (ContainsKey(key))
-            {
-                value = this[key];
-            }
-            return !(value is null);
+            objects = this[predicate];
+            return true;
         }
 
-        private IEnumerable<Triple> ConvertToTriples(INode predicateNode, object value)
+        private IEnumerable<Triple> ConvertToTriples(INode predicate, object value)
         {
             // Strings are enumerable but not for our case
             // RDF collections are also enumerable but have special treatment
-            if (value is IRdfCollection || value is string || !(value is IEnumerable enumerableValue))
+            if (value is IRdfCollection || value is string || !(value is IEnumerable enumerable))
             {
-                enumerableValue = value.AsEnumerable(); // When they're not enumerable, wrap them in an enumerable of one
+                enumerable = value.AsEnumerable(); // When they're not enumerable, wrap them in an enumerable of one
             }
 
-            foreach (var item in enumerableValue)
+            foreach (var @object in enumerable)
             {
                 // TODO: Maybe this should throw on null
-                if (!(item is null))
+                if (!(@object is null))
                 {
                     yield return new Triple(
-                        subj: Node,
-                        pred: predicateNode,
-                        obj: DynamicHelper.ConvertObject(item, Graph),
-                        g: Node.Graph);
+                        this,
+                        predicate,
+                        DynamicHelper.ConvertObject(@object, Graph));
                 }
             }
         }
