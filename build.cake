@@ -81,7 +81,8 @@ Task("Cover")
         if (DirectoryExists("coverage"))
             CleanDirectories("coverage");
     })
-    .Does(DotCover("net452", RunTests(unitTests, "net452")))
+    .Does(RunTests(unitTests, "net452", "Coverage=Skip"))
+    .Does(DotCover("net452", RunTests(unitTests, "net452", "Category!=explicit & Coverage!=Skip")))
     .Does(DotCover("fulltext", RunTests(unitTests, "net452", "Category=fulltext")))
     .Does(() => {
         DotCoverMerge(GetFiles("coverage\\*.dcvr"), "coverage\\merged.dcvr");

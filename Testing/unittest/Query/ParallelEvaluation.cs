@@ -180,6 +180,7 @@ namespace VDS.RDF.Query
         }
 
         [Fact]
+        [Trait("Coverage", "Skip")]
         public void SparqlParallelEvaluationOptional1()
         {
             String data = @"<http://a> <http://p> <http://x> .

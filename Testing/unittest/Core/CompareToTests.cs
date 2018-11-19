@@ -992,6 +992,7 @@ namespace VDS.RDF
         }
 
         [Fact]
+        [Trait("Coverage", "Skip")]
         public void NodeCompareSpeed2()
         {
             //Generate 100,000 node list of random integer nodes
@@ -1001,6 +1002,7 @@ namespace VDS.RDF
         }
 
         [Fact]
+        [Trait("Coverage", "Skip")]
         public void NodeCompareSpeed3()
         {
             //Generate 1,000,000 node list of random integer nodes
