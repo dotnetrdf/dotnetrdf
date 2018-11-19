@@ -15,10 +15,12 @@ install:
   - cmd: 7z x SHFBInstaller.zip -y
   - ps: msiexec /i InstallResources\SandcastleHelpFileBuilder.msi /quiet /qn /norestart /log install.log
 
+before_build:
+  - ps: gitversion /l console /output buildserver /updateassemblyinfo
+
 configuration: Release
 
 build_script:
-  - ps: gitversion /l console /output buildserver /updateassemblyinfo
   - ps: ./build.ps1 -Target Pack --configuration=Release --NuGetVersion=$env:GitVersion_NuGetVersion
 
 test_script:
