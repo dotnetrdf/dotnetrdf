@@ -3,7 +3,7 @@
 #tool nuget:?package=GitVersion.CommandLine&prerelease
 #addin nuget:?package=Cake.Codecov
 #tool "nuget:?package=JetBrains.dotCover.CommandLineTools"
-#tool "nuget:?package=ReportGenerator"
+#tool "nuget:?package=ReportGenerator&version=4.0.4"
 
 var target = Argument("target", "Build");
 var configuration = Argument("Configuration", "Debug");
