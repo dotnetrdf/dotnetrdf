@@ -51,6 +51,7 @@
             }
         }
 
+        // TODO: Rename, not just predicates
         internal static Uri ConvertPredicate(string key, IGraph graph)
         {
             if (!DynamicHelper.TryResolveQName(key, graph, out var uri))
@@ -64,6 +65,7 @@
             return uri;
         }
 
+        // TODO: Rename, not just predicates
         internal static INode ConvertPredicate(Uri key, IGraph graph, Uri baseUri)
         {
             if (graph is null)

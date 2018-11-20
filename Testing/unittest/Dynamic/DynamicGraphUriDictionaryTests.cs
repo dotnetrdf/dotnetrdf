@@ -142,20 +142,6 @@
         }
 
         [Fact]
-        public void Add_rejects_existing_key()
-        {
-            var d = new DynamicGraph();
-            d.LoadFromString("<urn:s> <urn:p> <urn:o> .");
-
-            var s = UriFactory.Create("urn:s");
-
-            Assert.Throws<ArgumentException>(() =>
-            {
-                d.Add(s, 0);
-            });
-        }
-
-        [Fact]
         public void Add_handles_public_properties()
         {
             var actual = new DynamicGraph(predicateBaseUri: UriFactory.Create("urn:"));
@@ -228,9 +214,7 @@
         {
             var d = new DynamicGraph() as IDictionary<Uri, object>;
 
-            var condition = d.Contains(new KeyValuePair<Uri, object>(null, null));
-
-            Assert.False(condition);
+            Assert.False(d.Contains(new KeyValuePair<Uri, object>(null, null)));
         }
 
         [Fact]
@@ -239,9 +223,7 @@
             var d = new DynamicGraph() as IDictionary<Uri, object>;
             var s = UriFactory.Create("urn:s");
 
-            var condition = d.Contains(new KeyValuePair<Uri, object>(s, null));
-
-            Assert.False(condition);
+            Assert.False(d.Contains(new KeyValuePair<Uri, object>(s, null)));
         }
 
         [Fact]
@@ -276,20 +258,15 @@
             var dict = ((IDictionary<Uri, object>)d);
             var s = UriFactory.Create("urn:s");
 
-            var condition = dict.Contains(new KeyValuePair<Uri, object>(s, new { p = "o" }));
-
-            Assert.True(condition);
+            Assert.True(dict.Contains(new KeyValuePair<Uri, object>(s, new { p = "o" })));
         }
 
         [Fact]
-        public void ContainsKey_requires_key()
+        public void ContainsKey_rejects_null_key()
         {
             var d = new DynamicGraph();
 
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                d.ContainsKey(null as Uri);
-            });
+            Assert.False(d.ContainsKey(null as Uri));
         }
 
         [Fact]
@@ -565,13 +542,11 @@
         }
 
         [Fact]
-        public void TryGetValue_requires_key()
+        public void TryGetValue_rejects_null_key()
         {
             var d = new DynamicGraph();
 
-            Assert.Throws<ArgumentNullException>(() =>
-                d.TryGetValue(null as Uri, out var value)
-            );
+            Assert.False(d.TryGetValue(null as Uri, out var value));
         }
 
         [Fact]
@@ -593,9 +568,7 @@
 
             var s = UriFactory.Create("urn:s");
 
-            var condition = d.TryGetValue(s, out var value);
-
-            Assert.True(condition);
+            Assert.True(d.TryGetValue(s, out var value));
             Assert.Equal(value, d.CreateUriNode(s));
             Assert.IsType<DynamicNode>(value);
         }

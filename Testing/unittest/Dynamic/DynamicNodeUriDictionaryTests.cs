@@ -6,7 +6,7 @@
     using VDS.RDF;
     using Xunit;
 
-    public class DynamicNodeNodeDictionary
+    public class DynamicNodeUriDictionaryTests
     {
         [Fact]
         public void Get_index_requires_predicate()
@@ -16,7 +16,7 @@
             var d = new DynamicNode(s);
 
             Assert.Throws<ArgumentNullException>(() =>
-                d[null as INode]
+                d[null as Uri]
             );
         }
 
@@ -30,7 +30,7 @@
 ");
 
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var p = UriFactory.Create("urn:p");
             var d = new DynamicNode(s);
 
             var actual = d[p];
@@ -46,7 +46,7 @@
             var d = new DynamicNode(s);
 
             Assert.Throws<ArgumentNullException>(() =>
-                d[null as INode] = null
+                d[null as Uri] = null
             );
         }
 
@@ -70,7 +70,7 @@
 ");
 
             var s = actual.CreateUriNode(UriFactory.Create("urn:s1"));
-            var p = actual.CreateUriNode(UriFactory.Create("urn:p1"));
+            var p = UriFactory.Create("urn:p1");
             var d = new DynamicNode(s);
 
             d[p] = null;
@@ -99,7 +99,7 @@
 ");
 
             var s = actual.CreateUriNode(UriFactory.Create("urn:s1"));
-            var p = actual.CreateUriNode(UriFactory.Create("urn:p1"));
+            var p = UriFactory.Create("urn:p1");
             var d = new DynamicNode(s);
 
             d[p] = "o";
@@ -120,11 +120,10 @@
 ");
 
             var s = g.CreateUriNode(UriFactory.Create("urn:s1"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p1"));
             var d = new DynamicNode(s);
 
-            var actual = ((IDictionary<INode, object>)d).Keys;
-            var expected = g.GetTriplesWithSubject(s).Select(triple => triple.Predicate).Distinct();
+            var actual = ((IDictionary<Uri, object>)d).Keys;
+            var expected = g.GetTriplesWithSubject(s).Select(triple => (triple.Predicate as IUriNode).Uri).Distinct();
 
             Assert.Equal(expected, actual);
         }
@@ -138,7 +137,7 @@
 
             Assert.Throws<ArgumentNullException>(() =>
             {
-                d.Add(null as INode, null);
+                d.Add(null as Uri, null);
             });
         }
 
@@ -147,7 +146,7 @@
         {
             var g = new Graph();
             var s = g.CreateBlankNode();
-            var p = g.CreateBlankNode();
+            var p = UriFactory.Create("urn:p");
             var d = new DynamicNode(s);
 
             Assert.Throws<ArgumentNullException>(() =>
@@ -167,10 +166,10 @@
 ");
 
             var g = new Graph();
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
-            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
-            var d = new DynamicNode(s);
+            var s = UriFactory.Create("urn:s");
+            var p = UriFactory.Create("urn:p");
+            var o = UriFactory.Create("urn:o");
+            var d = new DynamicNode(g.CreateUriNode(s));
 
             d.Add(p, new[] { s, p, o });
 
@@ -189,7 +188,7 @@
 
             var g = new Graph();
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var p = UriFactory.Create("urn:p");
             var d = new DynamicNode(s);
 
             d.Add(p, new RdfCollection("a", "b", "c"));
@@ -207,7 +206,7 @@
 
             var g = new Graph();
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var p = UriFactory.Create("urn:p");
             var d = new DynamicNode(s);
 
             d.Add(p, "abc");
@@ -225,10 +224,10 @@
 
             var g = new Graph();
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
-            var d = new DynamicNode(s) as IDictionary<INode, object>;
+            var p = UriFactory.Create("urn:p");
+            var d = new DynamicNode(s) as IDictionary<Uri, object>;
 
-            d.Add(new KeyValuePair<INode, object>(p, "o"));
+            d.Add(new KeyValuePair<Uri, object>(p, "o"));
 
             Assert.Equal(expected, g);
         }
@@ -240,7 +239,7 @@
             var s = g.CreateBlankNode();
             var d = new DynamicNode(s);
 
-            Assert.False(d.Contains(null as INode, null));
+            Assert.False(d.Contains(null as Uri, null));
         }
 
         [Fact]
@@ -248,7 +247,7 @@
         {
             var g = new Graph();
             var s = g.CreateBlankNode();
-            var p = g.CreateBlankNode();
+            var p = UriFactory.Create("urn:p");
             var d = new DynamicNode(s);
 
             Assert.False(d.Contains(p, null));
@@ -259,7 +258,7 @@
         {
             var g = new Graph();
             var s = g.CreateBlankNode();
-            var p = g.CreateBlankNode();
+            var p = UriFactory.Create("urn:p");
             var o = g.CreateBlankNode();
             var d = new DynamicNode(s);
 
@@ -275,7 +274,7 @@
 ");
 
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var p = UriFactory.Create("urn:p");
             var o = g.CreateBlankNode();
             var d = new DynamicNode(s);
 
@@ -291,7 +290,7 @@
 ");
 
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var p = UriFactory.Create("urn:p");
             var o = g.CreateUriNode(UriFactory.Create("urn:o"));
             var d = new DynamicNode(s);
 
@@ -308,9 +307,9 @@
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
-            var d = new DynamicNode(s);
+            var s = UriFactory.Create("urn:s");
+            var p = UriFactory.Create("urn:p");
+            var d = new DynamicNode(g.CreateUriNode(s));
 
             Assert.True(d.Contains(p, new[] { s, p }));
         }
@@ -324,7 +323,7 @@
 ");
 
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var p = UriFactory.Create("urn:p");
             var d = new DynamicNode(s);
 
             Assert.True(d.Contains(p, "o"));
@@ -340,10 +339,10 @@
 :s :p (:s :p :o) .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
-            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
-            var d = new DynamicNode(s);
+            var s = UriFactory.Create("urn:s");
+            var p = UriFactory.Create("urn:p");
+            var o = UriFactory.Create("urn:o");
+            var d = new DynamicNode(g.CreateUriNode(s));
 
             Assert.True(d.Contains(p, new RdfCollection(s, p, o)));
         }
@@ -357,11 +356,11 @@
 ");
 
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var p = UriFactory.Create("urn:p");
             var o = g.CreateUriNode(UriFactory.Create("urn:o"));
             var d = new DynamicNode(s);
 
-            Assert.Contains(new KeyValuePair<INode, object>(p, o), d);
+            Assert.Contains(new KeyValuePair<Uri, object>(p, o), d);
         }
 
         [Fact]
@@ -371,7 +370,7 @@
             var s = g.CreateBlankNode();
             var d = new DynamicNode(s);
 
-            Assert.False(d.ContainsKey(null as INode));
+            Assert.False(d.ContainsKey(null as Uri));
         }
 
         [Fact]
@@ -382,10 +381,10 @@
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
-            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
-            var d = new DynamicNode(s);
+            var s = UriFactory.Create("urn:s");
+            var o = UriFactory.Create("urn:o");
+            var p = UriFactory.Create("urn:p");
+            var d = new DynamicNode(g.CreateUriNode(s));
 
             Assert.False(d.ContainsKey(s));
             Assert.True(d.ContainsKey(p));
@@ -430,14 +429,14 @@
             var p = g.CreateUriNode(UriFactory.Create("urn:p"));
             var o = g.CreateUriNode(UriFactory.Create("urn:o"));
             var d = new DynamicNode(s);
-            var array = new KeyValuePair<INode, object>[5];
-            var empty = new KeyValuePair<INode, object>();
+            var array = new KeyValuePair<Uri, object>[5];
+            var empty = new KeyValuePair<Uri, object>();
             var spo = new[] { s, p, o };
-            void isEmpty(KeyValuePair<INode, object> actual)
+            void isEmpty(KeyValuePair<Uri, object> actual)
             {
                 Assert.Equal(empty, actual);
             }
-            Action<KeyValuePair<INode, object>> isSPOWith(INode expected)
+            Action<KeyValuePair<Uri, object>> isSPOWith(Uri expected)
             {
                 return actual =>
                 {
@@ -447,14 +446,14 @@
                 };
             }
 
-            ((IDictionary<INode, object>)d).CopyTo(array, 1);
+            ((IDictionary<Uri, object>)d).CopyTo(array, 1);
 
             Assert.Collection(
                 array,
                 isEmpty,
-                isSPOWith(s),
-                isSPOWith(p),
-                isSPOWith(o),
+                isSPOWith(s.Uri),
+                isSPOWith(p.Uri),
+                isSPOWith(o.Uri),
                 isEmpty
             );
         }
@@ -499,9 +498,9 @@
             var d = new DynamicNode(s);
             var spo = new[] { s, p, o };
 
-            using (var actual = d.Cast<KeyValuePair<INode, object>>().GetEnumerator())
+            using (var actual = d.Cast<KeyValuePair<Uri, object>>().GetEnumerator())
             {
-                using (var expected = spo.Cast<INode>().GetEnumerator())
+                using (var expected = spo.Select(n => n.Uri).GetEnumerator())
                 {
                     while (expected.MoveNext() | actual.MoveNext())
                     {
@@ -520,7 +519,7 @@
             var s = g.CreateBlankNode();
             var d = new DynamicNode(s);
 
-            Assert.False(d.Remove(null as INode));
+            Assert.False(d.Remove(null as Uri));
         }
 
         [Fact]
@@ -589,7 +588,7 @@
 ");
 
             var s = actual.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = actual.CreateUriNode(UriFactory.Create("urn:p"));
+            var p = UriFactory.Create("urn:p");
             var d = new DynamicNode(s);
 
             d.Remove(p);
@@ -632,7 +631,7 @@
 ");
 
             var s = actual.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = actual.CreateUriNode(UriFactory.Create("urn:p"));
+            var p = UriFactory.Create("urn:p");
             var d = new DynamicNode(s);
 
             Assert.True(d.Remove(p));
@@ -646,7 +645,7 @@
             var s = g.CreateBlankNode();
             var d = new DynamicNode(s);
 
-            Assert.False(d.Remove(null as INode, null));
+            Assert.False(d.Remove(null as Uri, null));
         }
 
         [Fact]
@@ -654,7 +653,7 @@
         {
             var g = new Graph();
             var s = g.CreateBlankNode();
-            var p = g.CreateBlankNode();
+            var p = UriFactory.Create("urn:p");
             var d = new DynamicNode(s);
 
             Assert.False(d.Remove(p, null));
@@ -726,7 +725,7 @@
 ");
 
             var s = actual.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = actual.CreateUriNode(UriFactory.Create("urn:p"));
+            var p = UriFactory.Create("urn:p");
             var o = actual.CreateUriNode(UriFactory.Create("urn:o"));
             var d = new DynamicNode(s);
 
@@ -800,10 +799,10 @@
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var s = actual.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = actual.CreateUriNode(UriFactory.Create("urn:p"));
-            var o = actual.CreateUriNode(UriFactory.Create("urn:o"));
-            var d = new DynamicNode(s);
+            var s = UriFactory.Create("urn:s");
+            var p = UriFactory.Create("urn:p");
+            var o = UriFactory.Create("urn:o");
+            var d = new DynamicNode(actual.CreateUriNode(s));
 
             d.Remove(p, new[] { s, p, o });
 
@@ -844,10 +843,10 @@
 :o :o (:s :p :o) .
 ");
 
-            var s = actual.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = actual.CreateUriNode(UriFactory.Create("urn:p"));
-            var o = actual.CreateUriNode(UriFactory.Create("urn:o"));
-            var d = new DynamicNode(s);
+            var s = UriFactory.Create("urn:s");
+            var p = UriFactory.Create("urn:p");
+            var o = UriFactory.Create("urn:o");
+            var d = new DynamicNode(actual.CreateUriNode(s));
 
             d.Remove(p, new RdfCollection(s, p, o));
 
@@ -872,7 +871,7 @@
 ");
 
             var s = actual.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = actual.CreateUriNode(UriFactory.Create("urn:p"));
+            var p = UriFactory.Create("urn:p");
             var d = new DynamicNode(s);
 
             d.Remove(p, "o");
@@ -946,11 +945,11 @@
 ");
 
             var s = actual.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = actual.CreateUriNode(UriFactory.Create("urn:p"));
+            var p = UriFactory.Create("urn:p");
             var o = actual.CreateUriNode(UriFactory.Create("urn:o"));
             var d = new DynamicNode(s);
 
-            ((IDictionary<INode, object>)d).Remove(new KeyValuePair<INode, object>(p, o));
+            ((IDictionary<Uri, object>)d).Remove(new KeyValuePair<Uri, object>(p, o));
 
             Assert.Equal(expected, actual);
         }
@@ -962,7 +961,7 @@
             var s = g.CreateBlankNode();
             var d = new DynamicNode(s);
 
-            Assert.False(d.TryGetValue(null as INode, out var objects));
+            Assert.False(d.TryGetValue(null as Uri, out var objects));
         }
 
         [Fact]
@@ -974,7 +973,7 @@
 ");
 
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var p = UriFactory.Create("urn:p");
             var d = new DynamicNode(s);
 
             Assert.True(d.TryGetValue(p, out var objects));

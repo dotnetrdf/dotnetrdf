@@ -17,26 +17,26 @@
             }
         }
 
-        public object this[string key]
+        public object this[string subject]
         {
             get
             {
-                if (key is null)
+                if (subject is null)
                 {
-                    throw new ArgumentNullException(nameof(key));
+                    throw new ArgumentNullException(nameof(subject));
                 }
 
-                return this[Convert(key)];
+                return this[Convert(subject)];
             }
 
             set
             {
-                if (key is null)
+                if (subject is null)
                 {
-                    throw new ArgumentNullException(nameof(key));
+                    throw new ArgumentNullException(nameof(subject));
                 }
 
-                this[Convert(key)] = value;
+                this[Convert(subject)] = value;
             }
         }
 
@@ -48,19 +48,19 @@
             }
         }
 
-        public void Add(string key, object value)
+        public void Add(string subject, object predicateAndObjects)
         {
-            if (key == null)
+            if (subject is null)
             {
-                throw new ArgumentNullException(nameof(key));
+                throw new ArgumentNullException(nameof(subject));
             }
 
-            if (value == null)
+            if (predicateAndObjects == null)
             {
-                throw new ArgumentNullException(nameof(value));
+                throw new ArgumentNullException(nameof(predicateAndObjects));
             }
 
-            Add(Convert(key), value);
+            Add(Convert(subject), predicateAndObjects);
         }
 
         public void Add(KeyValuePair<string, object> item)
@@ -68,19 +68,19 @@
             Add(item.Key, item.Value);
         }
 
-        public bool Contains(string key, object value)
+        public bool Contains(string subject, object predicateAndObjects)
         {
-            if (key is null)
+            if (subject is null)
             {
                 return false;
             }
 
-            if (value is null)
+            if (predicateAndObjects is null)
             {
                 return false;
             }
 
-            return Contains(Convert(key), value);
+            return Contains(Convert(subject), predicateAndObjects);
         }
 
         bool ICollection<KeyValuePair<string, object>>.Contains(KeyValuePair<string, object> item)
@@ -88,14 +88,14 @@
             return Contains(item.Key, item.Value);
         }
 
-        public bool ContainsKey(string key)
+        public bool ContainsKey(string subject)
         {
-            if (key == null)
+            if (subject is null)
             {
-                throw new ArgumentNullException(nameof(key));
+                return false;
             }
 
-            return ContainsKey(Convert(key));
+            return ContainsKey(Convert(subject));
         }
 
         public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
@@ -108,19 +108,24 @@
             return StringPairs.GetEnumerator();
         }
 
-        public bool Remove(string key)
+        public bool Remove(string subject)
         {
-            if (key == null)
+            if (subject is null)
             {
-                throw new ArgumentNullException(nameof(key));
+                return false;
             }
 
-            return Remove(Convert(key));
+            return Remove(Convert(subject));
         }
 
-        public bool Remove(string key, object value)
+        public bool Remove(string subject, object predicateAndObjects)
         {
-            return Remove(Convert(key), value);
+            if (subject is null)
+            {
+                return false;
+            }
+
+            return Remove(Convert(subject), predicateAndObjects);
         }
 
         bool ICollection<KeyValuePair<string, object>>.Remove(KeyValuePair<string, object> item)
@@ -128,19 +133,21 @@
             return Remove(item.Key, item.Value);
         }
 
-        public bool TryGetValue(string key, out object value)
+        public bool TryGetValue(string subject, out object predicateAndObjects)
         {
-            if (key == null)
+            predicateAndObjects = null;
+
+            if (subject is null)
             {
-                throw new ArgumentNullException(nameof(key));
+                return false;
             }
 
-            return TryGetValue(Convert(key), out value);
+            return TryGetValue(Convert(subject), out predicateAndObjects);
         }
 
-        private Uri Convert(string key)
+        private Uri Convert(string subject)
         {
-            return DynamicHelper.ConvertPredicate(key, this);
+            return DynamicHelper.ConvertPredicate(subject, this);
         }
     }
 }

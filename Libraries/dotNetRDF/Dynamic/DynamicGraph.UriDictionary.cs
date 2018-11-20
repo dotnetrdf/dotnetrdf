@@ -6,7 +6,7 @@
 
     public partial class DynamicGraph : IDictionary<Uri, object>
     {
-        private IEnumerable<KeyValuePair<Uri, object>> UriPairs
+        private IDictionary<Uri, object> UriPairs
         {
             get
             {
@@ -17,26 +17,26 @@
             }
         }
 
-        public object this[Uri key]
+        public object this[Uri predicate]
         {
             get
             {
-                if (key is null)
+                if (predicate is null)
                 {
-                    throw new ArgumentNullException(nameof(key));
+                    throw new ArgumentNullException(nameof(predicate));
                 }
 
-                return this[Convert(key)];
+                return this[Convert(predicate)];
             }
 
             set
             {
-                if (key is null)
+                if (predicate is null)
                 {
-                    throw new ArgumentNullException(nameof(key));
+                    throw new ArgumentNullException(nameof(predicate));
                 }
 
-                this[Convert(key)] = value;
+                this[Convert(predicate)] = value;
             }
         }
 
@@ -44,27 +44,18 @@
         {
             get
             {
-                var keys =
-                    from pair in UriPairs
-                    select pair.Key;
-
-                return keys.ToArray();
+                return UriPairs.Keys;
             }
         }
 
-        public void Add(Uri key, object value)
+        public void Add(Uri subject, object predicateAndObjects)
         {
-            if (key == null)
+            if (subject is null)
             {
-                throw new ArgumentNullException(nameof(key));
+                throw new ArgumentNullException(nameof(subject));
             }
 
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
-
-            Add(Convert(key), value);
+            Add(Convert(subject), predicateAndObjects);
         }
 
         void ICollection<KeyValuePair<Uri, object>>.Add(KeyValuePair<Uri, object> item)
@@ -72,19 +63,14 @@
             Add(item.Key, item.Value);
         }
 
-        public bool Contains(Uri subject, object predicate)
+        public bool Contains(Uri subject, object predicateAndObjects)
         {
-            if (subject == null)
+            if (subject is null)
             {
-                throw new ArgumentNullException(nameof(subject));
+                return false;
             }
 
-            if (predicate == null)
-            {
-                throw new ArgumentNullException(nameof(predicate));
-            }
-
-            return Contains(Convert(subject), predicate);
+            return Contains(Convert(subject), predicateAndObjects);
         }
 
         bool ICollection<KeyValuePair<Uri, object>>.Contains(KeyValuePair<Uri, object> item)
@@ -92,14 +78,14 @@
             return Contains(item.Key, item.Value);
         }
 
-        public bool ContainsKey(Uri key)
+        public bool ContainsKey(Uri subject)
         {
-            if (key == null)
+            if (subject is null)
             {
-                throw new ArgumentNullException(nameof(key));
+                return false;
             }
 
-            return ContainsKey(Convert(key));
+            return ContainsKey(Convert(subject));
         }
 
         public void CopyTo(KeyValuePair<Uri, object>[] array, int arrayIndex)
@@ -112,24 +98,24 @@
             return UriPairs.GetEnumerator();
         }
 
-        public bool Remove(Uri key)
+        public bool Remove(Uri subject)
         {
-            if (key == null)
+            if (subject is null)
             {
-                throw new ArgumentNullException(nameof(key));
+                throw new ArgumentNullException(nameof(subject));
             }
 
-            return Remove(Convert(key));
+            return Remove(Convert(subject));
         }
 
-        public bool Remove(Uri subject, object predicate)
+        public bool Remove(Uri subject, object predicateAndObjects)
         {
             if (subject is null)
             {
                 return false;
             }
 
-            return Remove(Convert(subject), predicate);
+            return Remove(Convert(subject), predicateAndObjects);
         }
 
         bool ICollection<KeyValuePair<Uri, object>>.Remove(KeyValuePair<Uri, object> item)
@@ -137,19 +123,21 @@
             return Remove(item.Key, item.Value);
         }
 
-        public bool TryGetValue(Uri key, out object value)
+        public bool TryGetValue(Uri subject, out object predicateAndObjects)
         {
-            if (key == null)
+            predicateAndObjects = null;
+
+            if (subject is null)
             {
-                throw new ArgumentNullException(nameof(key));
+                return false;
             }
 
-            return TryGetValue(Convert(key), out value);
+            return TryGetValue(Convert(subject), out predicateAndObjects);
         }
 
-        private INode Convert(Uri key)
+        private INode Convert(Uri subject)
         {
-            return DynamicHelper.ConvertPredicate(key, this, this.SubjectBaseUri);
+            return DynamicHelper.ConvertPredicate(subject, this, this.SubjectBaseUri);
         }
     }
 }

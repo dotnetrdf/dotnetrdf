@@ -142,20 +142,6 @@
         }
 
         [Fact]
-        public void Add_rejects_existing_key()
-        {
-            var d = new DynamicGraph();
-            d.LoadFromString("<urn:s> <urn:p> <urn:o> .");
-
-            var s = "urn:s";
-
-            Assert.Throws<ArgumentException>(() =>
-            {
-                d.Add(s, 0);
-            });
-        }
-
-        [Fact]
         public void Add_handles_public_properties()
         {
             var actual = new DynamicGraph(predicateBaseUri: UriFactory.Create("urn:"));
@@ -228,9 +214,7 @@
         {
             var d = new DynamicGraph() as IDictionary<string, object>;
 
-            var condition = d.Contains(new KeyValuePair<string, object>(null, null));
-
-            Assert.False(condition);
+            Assert.False(d.Contains(new KeyValuePair<string, object>(null, null)));
         }
 
         [Fact]
@@ -239,9 +223,7 @@
             var d = new DynamicGraph() as IDictionary<string, object>;
             var s = "urn:s";
 
-            var condition = d.Contains(new KeyValuePair<string, object>(s, null));
-
-            Assert.False(condition);
+            Assert.False(d.Contains(new KeyValuePair<string, object>(s, null)));
         }
 
         [Fact]
@@ -250,9 +232,7 @@
             var d = new DynamicGraph() as IDictionary<string, object>;
             var s = "urn:s";
 
-            var condition = d.Contains(new KeyValuePair<string, object>(s, 0));
-
-            Assert.False(condition);
+            Assert.False(d.Contains(new KeyValuePair<string, object>(s, 0)));
         }
 
         [Fact]
@@ -263,9 +243,7 @@
             var dict = ((IDictionary<string, object>)d);
             var s = "urn:s";
 
-            var condition = dict.Contains(new KeyValuePair<string, object>(s, new { p = "o1" }));
-
-            Assert.False(condition);
+            Assert.False(dict.Contains(new KeyValuePair<string, object>(s, new { p = "o1" })));
         }
 
         [Fact]
@@ -276,20 +254,15 @@
             var dict = ((IDictionary<string, object>)d);
             var s = "urn:s";
 
-            var condition = dict.Contains(new KeyValuePair<string, object>(s, new { p = "o" }));
-
-            Assert.True(condition);
+            Assert.True(dict.Contains(new KeyValuePair<string, object>(s, new { p = "o" })));
         }
 
         [Fact]
-        public void ContainsKey_requires_key()
+        public void ContainsKey_rejects_null_key()
         {
             var d = new DynamicGraph();
 
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                d.ContainsKey(null as string);
-            });
+            Assert.False(d.ContainsKey(null as string));
         }
 
         [Fact]
@@ -429,14 +402,11 @@
         }
 
         [Fact]
-        public void Remove_requires_key()
+        public void Remove_rejects_null_key()
         {
             var d = new DynamicGraph();
 
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                d.Remove(null as string);
-            });
+            Assert.False(d.Remove(null as string));
         }
 
         [Fact]
@@ -482,9 +452,7 @@
         {
             var d = new DynamicGraph() as IDictionary<string, object>;
 
-            var condition = d.Remove(new KeyValuePair<string, object>(null, null));
-
-            Assert.False(condition);
+            Assert.False(d.Remove(new KeyValuePair<string, object>(null, null)));
         }
 
         [Fact]
@@ -493,9 +461,7 @@
             var d = new DynamicGraph() as IDictionary<string, object>;
             var s = "urn:s";
 
-            var condition = d.Remove(new KeyValuePair<string, object>(s, null));
-
-            Assert.False(condition);
+            Assert.False(d.Remove(new KeyValuePair<string, object>(s, null)));
         }
 
         [Fact]
@@ -565,13 +531,11 @@
         }
 
         [Fact]
-        public void TryGetValue_requires_key()
+        public void TryGetValue_rejects_null_key()
         {
             var d = new DynamicGraph();
 
-            Assert.Throws<ArgumentNullException>(() =>
-                d.TryGetValue(null as string, out var value)
-            );
+            Assert.False(d.TryGetValue(null as string, out var value));
         }
 
         [Fact]
@@ -580,9 +544,7 @@
             var d = new DynamicGraph();
             var s = "urn:s";
 
-            var condition = d.TryGetValue(s, out var value);
-
-            Assert.False(condition);
+            Assert.False(d.TryGetValue(s, out var value));
         }
 
         [Fact]
@@ -593,9 +555,7 @@
 
             var s = "urn:s";
 
-            var condition = d.TryGetValue(s, out var value);
-
-            Assert.True(condition);
+            Assert.True(d.TryGetValue(s, out var value));
             Assert.Equal(value, d.CreateUriNode(UriFactory.Create(s)));
             Assert.IsType<DynamicNode>(value);
         }

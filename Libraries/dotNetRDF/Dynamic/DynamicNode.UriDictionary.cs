@@ -17,16 +17,26 @@
             }
         }
 
-        public object this[Uri key]
+        public object this[Uri predicate]
         {
             get
             {
-                return this[Convert(key)];
+                if (predicate is null)
+                {
+                    throw new ArgumentNullException(nameof(predicate));
+                }
+
+                return this[Convert(predicate)];
             }
 
             set
             {
-                this[Convert(key)] = value;
+                if (predicate is null)
+                {
+                    throw new ArgumentNullException(nameof(predicate));
+                }
+
+                this[Convert(predicate)] = value;
             }
         }
 
@@ -40,6 +50,11 @@
 
         public void Add(Uri predicate, object objects)
         {
+            if (predicate is null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
+
             Add(Convert(predicate), objects);
         }
 
@@ -50,6 +65,11 @@
 
         public bool Contains(Uri predicate, object objects)
         {
+            if (predicate is null)
+            {
+                return false;
+            }
+
             return Contains(Convert(predicate), objects);
         }
 
@@ -58,9 +78,14 @@
             return Contains(item.Key, item.Value);
         }
 
-        public bool ContainsKey(Uri key)
+        public bool ContainsKey(Uri predicate)
         {
-            return ContainsKey(Convert(key));
+            if (predicate is null)
+            {
+                return false;
+            }
+
+            return ContainsKey(Convert(predicate));
         }
 
         public void CopyTo(KeyValuePair<Uri, object>[] array, int arrayIndex)
@@ -73,13 +98,23 @@
             return UriPairs.GetEnumerator();
         }
 
-        public bool Remove(Uri key)
+        public bool Remove(Uri predicate)
         {
-            return Remove(Convert(key));
+            if (predicate is null)
+            {
+                return false;
+            }
+
+            return Remove(Convert(predicate));
         }
 
         public bool Remove(Uri predicate, object @object)
         {
+            if (predicate is null)
+            {
+                return false;
+            }
+
             return Remove(Convert(predicate), @object);
         }
 
@@ -88,9 +123,16 @@
             return Remove(item.Key, item.Value);
         }
 
-        public bool TryGetValue(Uri key, out object value)
+        public bool TryGetValue(Uri predicate, out object objects)
         {
-            return TryGetValue(Convert(key), out value);
+            objects = null;
+
+            if (predicate is null)
+            {
+                return false;
+            }
+
+            return TryGetValue(Convert(predicate), out objects);
         }
 
         private INode Convert(Uri key)

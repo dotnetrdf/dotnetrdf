@@ -142,20 +142,6 @@
         }
 
         [Fact]
-        public void Add_rejects_existing_key()
-        {
-            var d = new DynamicGraph();
-            d.LoadFromString("<urn:s> <urn:p> <urn:o> .");
-
-            var s = d.Nodes.First();
-
-            Assert.Throws<ArgumentException>(() =>
-            {
-                d.Add(s, 0);
-            });
-        }
-
-        [Fact]
         public void Add_handles_public_properties()
         {
             var actual = new DynamicGraph(predicateBaseUri: UriFactory.Create("urn:"));
@@ -291,14 +277,11 @@
         }
 
         [Fact]
-        public void ContainsKey_requires_key()
+        public void ContainsKey_rejects_null_key()
         {
             var d = new DynamicGraph();
 
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                d.ContainsKey(null as INode);
-            });
+            Assert.False(d.ContainsKey(null as INode));
         }
 
         [Fact]
@@ -436,14 +419,11 @@
         }
 
         [Fact]
-        public void Remove_requires_key()
+        public void Remove_rejects_null_key()
         {
             var d = new DynamicGraph();
 
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                d.Remove(null as INode);
-            });
+            Assert.False(d.Remove(null as INode));
         }
 
         [Fact]
@@ -562,13 +542,11 @@
         }
 
         [Fact]
-        public void TryGetValue_requires_key()
+        public void TryGetValue_rejects_null_key()
         {
             var d = new DynamicGraph();
 
-            Assert.Throws<ArgumentNullException>(() =>
-                d.TryGetValue(null as INode, out var value)
-            );
+            Assert.False(d.TryGetValue(null as INode, out var value));
         }
 
         [Fact]
@@ -591,9 +569,7 @@
 
             var s = d.Nodes.First();
 
-            var condition = d.TryGetValue(s, out var value);
-
-            Assert.True(condition);
+            Assert.True(d.TryGetValue(s, out var value));
             Assert.Equal(value, s);
             Assert.NotNull(value);
             Assert.IsType<DynamicNode>(value);

@@ -17,26 +17,26 @@
             }
         }
 
-        public object this[string key]
+        public object this[string predicate]
         {
             get
             {
-                if (key is null)
+                if (predicate is null)
                 {
-                    throw new ArgumentNullException(nameof(key));
+                    throw new ArgumentNullException(nameof(predicate));
                 }
 
-                return this[Convert(key)];
+                return this[Convert(predicate)];
             }
 
             set
             {
-                if (key is null)
+                if (predicate is null)
                 {
-                    throw new ArgumentNullException(nameof(key));
+                    throw new ArgumentNullException(nameof(predicate));
                 }
 
-                this[Convert(key)] = value;
+                this[Convert(predicate)] = value;
             }
         }
 
@@ -48,9 +48,14 @@
             }
         }
 
-        public void Add(string key, object value)
+        public void Add(string predicate, object objects)
         {
-            Add(Convert(key), value);
+            if (predicate == null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
+
+            Add(Convert(predicate), objects);
         }
 
         public void Add(KeyValuePair<string, object> item)
@@ -60,6 +65,11 @@
 
         public bool Contains(string predicate, object objects)
         {
+            if (predicate == null)
+            {
+                return false;
+            }
+
             return Contains(Convert(predicate), objects);
         }
 
@@ -68,9 +78,14 @@
             return Contains(item.Key, item.Value);
         }
 
-        public bool ContainsKey(string key)
+        public bool ContainsKey(string predicate)
         {
-            return ContainsKey(Convert(key));
+            if (predicate == null)
+            {
+                return false;
+            }
+
+            return ContainsKey(Convert(predicate));
         }
 
         public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
@@ -83,13 +98,23 @@
             return StringPairs.GetEnumerator();
         }
 
-        public bool Remove(string key)
+        public bool Remove(string predicate)
         {
-            return Remove(Convert(key));
+            if (predicate == null)
+            {
+                return false;
+            }
+
+            return Remove(Convert(predicate));
         }
 
         public bool Remove(string predicate, object objects)
         {
+            if (predicate == null)
+            {
+                return false;
+            }
+
             return Remove(Convert(predicate), objects);
         }
 
@@ -98,9 +123,16 @@
             return Remove(item.Key, item.Value);
         }
 
-        public bool TryGetValue(string key, out object value)
+        public bool TryGetValue(string predicate, out object objects)
         {
-            return TryGetValue(Convert(key), out value);
+            objects = null;
+
+            if (predicate is null)
+            {
+                return false;
+            }
+
+            return TryGetValue(Convert(predicate), out objects);
         }
 
         private Uri Convert(string key)

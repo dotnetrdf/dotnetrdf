@@ -26,33 +26,31 @@
             }
         }
 
-        public object this[INode key]
+        public object this[INode subject]
         {
             get
             {
-                if (key is null)
+                if (subject is null)
                 {
-                    throw new ArgumentNullException(nameof(key));
+                    throw new ArgumentNullException(nameof(subject));
                 }
 
-                return new DynamicNode(key, PredicateBaseUri);
+                return new DynamicNode(subject, PredicateBaseUri);
             }
 
             set
             {
-                if (key is null)
+                if (subject is null)
                 {
-                    throw new ArgumentNullException(nameof(key));
+                    throw new ArgumentNullException(nameof(subject));
                 }
 
-                Remove(key);
+                Remove(subject);
 
-                if (value is null)
+                if (!(value is null))
                 {
-                    return;
+                    Add(subject, value);
                 }
-
-                Add(key, value);
             }
         }
 
@@ -64,31 +62,44 @@
             }
         }
 
-        public void Add(INode key, object value)
+        public void Add(INode subject, object predicateAndObjects)
         {
-            if (key is null)
+            if (subject is null)
             {
-                throw new ArgumentNullException(nameof(key));
+                throw new ArgumentNullException(nameof(subject));
             }
 
-            if (value is null)
+            if (predicateAndObjects is null)
             {
-                throw new ArgumentNullException(nameof(value));
-            }
-
-            if (Triples.SubjectNodes.Contains(key))
-            {
-                throw new ArgumentException("An item with the same key has already been added.", nameof(key));
+                throw new ArgumentNullException(nameof(predicateAndObjects));
             }
 
             // Make a copy of the key node local to this graph
             // so dynamic references are resolved correctly
             // (they depend on node's graph)
-            var targetNode = new DynamicNode(key.CopyNode(this._g), PredicateBaseUri);
+            // TODO: Which graph exactly are we copying into?
+            var targetNode = new DynamicNode(subject.CopyNode(this._g), PredicateBaseUri);
 
-            foreach (DictionaryEntry entry in DynamicGraph.ConvertToDictionary(value))
+            foreach (DictionaryEntry entry in DynamicGraph.ConvertToDictionary(predicateAndObjects))
             {
-                targetNode.Add(entry.Key, entry.Value);
+                switch (entry.Key)
+                {
+                    case string stringKey:
+                        targetNode.Add(stringKey, entry.Value);
+                        break;
+
+                    case Uri uriKey:
+                        targetNode.Add(uriKey, entry.Value);
+                        break;
+
+                    case INode nodeKey:
+                        targetNode.Add(nodeKey, entry.Value);
+                        break;
+
+                    default:
+                        // TODO: Make more specific
+                        throw new Exception();
+                }
             }
         }
 
@@ -97,17 +108,15 @@
             Add(item.Key, item.Value);
         }
 
-        public bool Contains(INode subject, object @object)
+        public bool Contains(INode subject, object predicateAndObjects)
         {
             if (subject is null)
             {
-                // All statements have subject
                 return false;
             }
 
-            if (@object is null)
+            if (predicateAndObjects is null)
             {
-                // All statements have object
                 return false;
             }
 
@@ -118,9 +127,30 @@
 
             var node = (DynamicNode)value;
 
-            foreach (DictionaryEntry entry in DynamicGraph.ConvertToDictionary(@object))
+            foreach (DictionaryEntry entry in DynamicGraph.ConvertToDictionary(predicateAndObjects))
             {
-                if (!node.Contains(entry.Key, entry.Value))
+                var found = true;
+
+                switch (entry.Key)
+                {
+                    case string stringKey:
+                        found = node.Contains(stringKey, entry.Value);
+                        break;
+
+                    case Uri uriKey:
+                        found = node.Contains(uriKey, entry.Value);
+                        break;
+
+                    case INode nodeKey:
+                        found = node.Contains(nodeKey, entry.Value);
+                        break;
+
+                    default:
+                        // TODO: Make more specific
+                        throw new Exception();
+                }
+
+                if (!found)
                 {
                     return false;
                 }
@@ -134,14 +164,14 @@
             return Contains(item.Key, item.Value);
         }
 
-        public bool ContainsKey(INode key)
+        public bool ContainsKey(INode subject)
         {
-            if (key is null)
+            if (subject is null)
             {
-                throw new ArgumentNullException(nameof(key));
+                return false;
             }
 
-            return UriNodes.Contains(key);
+            return UriNodes.Contains(subject);
         }
 
         public void CopyTo(KeyValuePair<INode, object>[] array, int arrayIndex)
@@ -154,28 +184,55 @@
             return NodePairs.GetEnumerator();
         }
 
-        public bool Remove(INode key)
+        public bool Remove(INode subject)
         {
-            if (key is null)
+            if (subject is null)
             {
-                throw new ArgumentNullException(nameof(key));
+                return false;
             }
 
-            return Retract(GetTriplesWithSubject(key).ToArray());
+            return Retract(GetTriplesWithSubject(subject).ToArray());
         }
 
-        public bool Remove(INode subject, object @object)
+        public bool Remove(INode subject, object predicateAndObjects)
         {
-            if (!Contains(subject, @object))
+            if (subject is null)
+            {
+                return false;
+            }
+
+            if (predicateAndObjects is null)
+            {
+                return false;
+            }
+
+            if (!Contains(subject, predicateAndObjects))
             {
                 return false;
             }
 
             var node = (DynamicNode)this[subject];
 
-            foreach (DictionaryEntry entry in DynamicGraph.ConvertToDictionary(@object))
+            foreach (DictionaryEntry entry in DynamicGraph.ConvertToDictionary(predicateAndObjects))
             {
-                node.Remove(entry.Key, entry.Value);
+                switch (entry.Key)
+                {
+                    case string stringKey:
+                        node.Remove(stringKey, entry.Value);
+                        break;
+
+                    case Uri uriKey:
+                        node.Remove(uriKey, entry.Value);
+                        break;
+
+                    case INode nodeKey:
+                        node.Remove(nodeKey, entry.Value);
+                        break;
+
+                    default:
+                        // TODO: Make more specific
+                        throw new Exception();
+                }
             }
 
             return true;
@@ -186,21 +243,22 @@
             return Remove(item.Key, item.Value);
         }
 
-        public bool TryGetValue(INode key, out object value)
+        public bool TryGetValue(INode subject, out object predicateAndObjects)
         {
-            if (key is null)
+            predicateAndObjects = null;
+
+            if (subject is null)
             {
-                throw new ArgumentNullException(nameof(key));
+                return false;
             }
 
-            value = null;
-
-            if (ContainsKey(key))
+            if (!ContainsKey(subject))
             {
-                value = this[key];
+                return false;
             }
 
-            return !(value is null);
+            predicateAndObjects = this[subject];
+            return true;
         }
 
         private static IDictionary ConvertToDictionary(object value)
