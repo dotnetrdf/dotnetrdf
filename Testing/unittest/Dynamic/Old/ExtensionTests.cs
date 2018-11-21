@@ -22,9 +22,8 @@
         public void m3()
         {
             Assert.Throws<InvalidOperationException>(() =>
-            {
-                var result = new NodeFactory().CreateLiteralNode(string.Empty).AsDynamic();
-            });
+                new NodeFactory().CreateLiteralNode(string.Empty).AsDynamic()
+            );
         }
     }
 }

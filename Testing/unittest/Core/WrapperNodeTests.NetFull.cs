@@ -5,8 +5,6 @@
     using System.Runtime.Serialization;
     using System.Runtime.Serialization.Formatters.Binary;
     using System.Xml;
-    using VDS.RDF.Writing;
-    using VDS.RDF.Writing.Formatting;
     using Xunit;
 
     public partial class WrapperNodeTests
@@ -21,9 +19,8 @@
             using (var stream = new MemoryStream())
             {
                 Assert.Throws<NotImplementedException>(() =>
-                {
-                    serializer.Serialize(stream, wrapper);
-                });
+                    serializer.Serialize(stream, wrapper)
+                );
             }
         }
 
@@ -34,9 +31,8 @@
             var wrapper = new MockWrapperNode(node);
 
             Assert.Throws<NotImplementedException>(() =>
-            {
-                wrapper.GetSchema();
-            });
+                wrapper.GetSchema()
+            );
         }
 
         [Fact]
@@ -46,9 +42,8 @@
             var wrapper = new MockWrapperNode(node);
 
             Assert.Throws<NotImplementedException>(() =>
-            {
-                wrapper.ReadXml(XmlReader.Create(Stream.Null));
-            });
+                wrapper.ReadXml(XmlReader.Create(Stream.Null))
+            );
         }
 
         [Fact]
@@ -58,9 +53,8 @@
             var wrapper = new MockWrapperNode(node);
 
             Assert.Throws<NotImplementedException>(() =>
-            {
-                wrapper.WriteXml(XmlWriter.Create(Stream.Null));
-            });
+                wrapper.WriteXml(XmlWriter.Create(Stream.Null))
+            );
         }
     }
 }

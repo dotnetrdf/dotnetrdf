@@ -124,9 +124,8 @@
             var d = new DynamicGraph();
 
             Assert.Throws<ArgumentNullException>(() =>
-            {
-                d.Add(null as Uri, null);
-            });
+                d.Add(null as Uri, null)
+            );
         }
 
         [Fact]
@@ -136,9 +135,8 @@
             var s = UriFactory.Create("urn:s");
 
             Assert.Throws<ArgumentNullException>(() =>
-            {
-                d.Add(s, null);
-            });
+                d.Add(s, null)
+            );
         }
 
         [Fact]
@@ -411,9 +409,8 @@
             var d = new DynamicGraph();
 
             Assert.Throws<ArgumentNullException>(() =>
-            {
-                d.Remove(null as Uri);
-            });
+                d.Remove(null as Uri)
+            );
         }
 
         [Fact]

@@ -69,25 +69,11 @@
             var d = new Graph().AsDynamic(UriFactory.Create("http://example.com/"));
 
             Assert.Throws<InvalidOperationException>(() =>
-            {
                 d.s = new
                 {
                     unknown = new object()
-                };
-            });
-        }
-
-        public void Supports_remove_with_missing_item()
-        {
-            var g = new Graph();
-            g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
-
-            var dynamic_s = g.Triples.Single().Subject.AsDynamic();
-
-            var objects = dynamic_s["http://example.com/p"] as ICollection<object>;
-            var result = objects.Remove(0);
-
-            Assert.False(result);
+                }
+            );
         }
     }
 }

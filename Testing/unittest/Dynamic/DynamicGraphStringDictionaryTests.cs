@@ -124,9 +124,8 @@
             var d = new DynamicGraph();
 
             Assert.Throws<ArgumentNullException>(() =>
-            {
-                d.Add(null as string, null);
-            });
+                d.Add(null as string, null)
+            );
         }
 
         [Fact]
@@ -136,9 +135,8 @@
             var s = "urn:s";
 
             Assert.Throws<ArgumentNullException>(() =>
-            {
-                d.Add(s, null);
-            });
+                d.Add(s, null)
+            );
         }
 
         [Fact]

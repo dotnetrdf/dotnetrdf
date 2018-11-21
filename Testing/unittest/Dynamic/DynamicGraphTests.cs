@@ -24,10 +24,13 @@
         }
 
         [Fact]
-        public void Provides_meta_object()
+        public void Provides_dictionary_meta_object()
         {
             var d = new DynamicGraph();
-            d.LoadFromString(@"<urn:s> <urn:p> <urn:o> .");
+            d.LoadFromString(@"
+<urn:s> <urn:p> <urn:o> .
+");
+
             var p = (IDynamicMetaObjectProvider)d;
             var mo = p.GetMetaObject(Expression.Empty());
 

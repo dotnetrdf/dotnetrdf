@@ -13,19 +13,8 @@
             var dynamic_s = new Graph().CreateBlankNode().AsDynamic();
 
             Assert.Throws<InvalidOperationException>(() =>
-            {
-                var result = dynamic_s["p"];
-            });
-        }
-
-        public void Indexing_requires_index()
-        {
-            var dynamic_s = new Graph().CreateBlankNode().AsDynamic();
-
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                var result = dynamic_s[null as string];
-            });
+                dynamic_s["p"]
+            );
         }
 
         public void Indexing_requires_known_index_type()
@@ -33,9 +22,8 @@
             var dynamic_s = new Graph().CreateBlankNode().AsDynamic();
 
             Assert.Throws<RuntimeBinderException>(() =>
-            {
-                var result = dynamic_s[null];
-            });
+                dynamic_s[null]
+            );
         }
 
         public void Indexing_requires_valid_uri()
@@ -43,9 +31,8 @@
             var dynamic_s = new Graph().CreateBlankNode().AsDynamic();
 
             Assert.Throws<FormatException>(() =>
-            {
-                var result = dynamic_s["http:///"];
-            });
+                dynamic_s["http:///"]
+            );
         }
 
         public void Indexing_supports_absolute_uri_index()
@@ -207,9 +194,8 @@
             var dynamic_s = new Graph().CreateBlankNode().AsDynamic();
 
             Assert.Throws<ArgumentNullException>(() =>
-            {
-                dynamic_s[null as string] = null;
-            });
+                dynamic_s[null as string] = null
+            );
         }
     }
 }

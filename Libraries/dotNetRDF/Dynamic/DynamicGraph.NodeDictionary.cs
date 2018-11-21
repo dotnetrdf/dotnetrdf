@@ -80,7 +80,7 @@
             // TODO: Which graph exactly are we copying into?
             var targetNode = new DynamicNode(subject.CopyNode(this._g), PredicateBaseUri);
 
-            foreach (DictionaryEntry entry in DynamicGraph.ConvertToDictionary(predicateAndObjects))
+            foreach (DictionaryEntry entry in ConvertToDictionary(predicateAndObjects))
             {
                 switch (entry.Key)
                 {
@@ -127,7 +127,7 @@
 
             var node = (DynamicNode)value;
 
-            foreach (DictionaryEntry entry in DynamicGraph.ConvertToDictionary(predicateAndObjects))
+            foreach (DictionaryEntry entry in ConvertToDictionary(predicateAndObjects))
             {
                 var found = true;
 
@@ -213,7 +213,7 @@
 
             var node = (DynamicNode)this[subject];
 
-            foreach (DictionaryEntry entry in DynamicGraph.ConvertToDictionary(predicateAndObjects))
+            foreach (DictionaryEntry entry in ConvertToDictionary(predicateAndObjects))
             {
                 switch (entry.Key)
                 {
@@ -228,10 +228,6 @@
                     case INode nodeKey:
                         node.Remove(nodeKey, entry.Value);
                         break;
-
-                    default:
-                        // TODO: Make more specific
-                        throw new Exception();
                 }
             }
 

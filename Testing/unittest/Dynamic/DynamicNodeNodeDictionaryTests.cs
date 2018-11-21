@@ -136,9 +136,8 @@
             var d = new DynamicNode(s);
 
             Assert.Throws<ArgumentNullException>(() =>
-            {
-                d.Add(null as INode, null);
-            });
+                d.Add(null as INode, null)
+            );
         }
 
         [Fact]
@@ -150,9 +149,8 @@
             var d = new DynamicNode(s);
 
             Assert.Throws<ArgumentNullException>(() =>
-            {
-                d.Add(p, null);
-            });
+                d.Add(p, null)
+            );
         }
 
         [Fact]
@@ -513,7 +511,7 @@
         }
 
         [Fact]
-        public void Remove_p_rejects_missing_predicate()
+        public void Remove_p_rejects_null_predicate()
         {
             var g = new Graph();
             var s = g.CreateBlankNode();
@@ -639,7 +637,7 @@
         }
 
         [Fact]
-        public void Remove_po_rejects_missing_predicate()
+        public void Remove_po_rejects_null_predicate()
         {
             var g = new Graph();
             var s = g.CreateBlankNode();
@@ -649,7 +647,7 @@
         }
 
         [Fact]
-        public void Remove_po_rejects_missing_object()
+        public void Remove_po_rejects_null_object()
         {
             var g = new Graph();
             var s = g.CreateBlankNode();

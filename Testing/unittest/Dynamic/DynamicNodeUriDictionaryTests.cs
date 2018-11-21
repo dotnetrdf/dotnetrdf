@@ -136,9 +136,8 @@
             var d = new DynamicNode(s);
 
             Assert.Throws<ArgumentNullException>(() =>
-            {
-                d.Add(null as Uri, null);
-            });
+                d.Add(null as Uri, null)
+            );
         }
 
         [Fact]
@@ -150,9 +149,8 @@
             var d = new DynamicNode(s);
 
             Assert.Throws<ArgumentNullException>(() =>
-            {
-                d.Add(p, null);
-            });
+                d.Add(p, null)
+            );
         }
 
         [Fact]

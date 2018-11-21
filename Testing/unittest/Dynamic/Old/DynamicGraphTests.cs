@@ -149,9 +149,8 @@
             var d = new Graph().AsDynamic();
 
             Assert.Throws<InvalidOperationException>(() =>
-            {
-                var result = d["s"];
-            });
+                d["s"]
+            );
         }
 
         public void Property_access_requires_base_uri()
@@ -169,9 +168,8 @@
             var d = new Graph().AsDynamic();
 
             Assert.Throws<RdfException>(() =>
-            {
-                var result = d["ex:s"];
-            });
+                d["ex:s"]
+            );
         }
 
         public void Cant_get_index_with_illegal_uri()
@@ -179,9 +177,8 @@
             var d = new Graph().AsDynamic();
 
             Assert.Throws<FormatException>(() =>
-            {
-                var result = d["http:///"];
-            });
+                d["http:///"]
+            );
         }
 
         public void Cant_get_nonexistent_absolute_uri_string_index()
@@ -189,9 +186,8 @@
             var d = new Graph().AsDynamic();
 
             Assert.Throws<KeyNotFoundException>(() =>
-            {
-                var result = d["http://example.com/nonexistent"];
-            });
+                d["http://example.com/nonexistent"]
+            );
         }
 
         public void Cant_get_nonexistent_relative_uri_string_index()
@@ -209,9 +205,8 @@
             var d = new Graph().AsDynamic(UriFactory.Create("http://example.com/"));
 
             Assert.Throws<KeyNotFoundException>(() =>
-            {
-                var result = d.nonexistent;
-            });
+                d.nonexistent
+            );
         }
 
         public void Indexing_requires_known_index_type()
@@ -219,9 +214,8 @@
             var d = new Graph().AsDynamic();
 
             Assert.Throws<RuntimeBinderException>(() =>
-            {
-                var result = d[null];
-            });
+                d[null]
+            );
         }
 
         public void Get_member()
@@ -309,21 +303,6 @@
             Assert.Contains(element, collection);
         }
 
-        // TODO: all kinds of dictionary entries
-        public void Indexing_supports_setting_dictionaries()
-        {
-            var g = new Graph();
-            g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
-
-            var d = new Graph().AsDynamic();
-
-            d["http://example.com/s"] = new Dictionary<string, Uri> {
-                { "http://example.com/p", UriFactory.Create("http://example.com/o") }
-            };
-
-            Assert.Equal(g as IGraph, d as IGraph);
-        }
-
         // TODO: all kinds of properties
         public void Indexing_supports_setting_anonymous_classes()
         {
@@ -355,9 +334,8 @@
             var d = new Graph().AsDynamic();
 
             Assert.Throws<InvalidOperationException>(() =>
-            {
-                d.s = new { p = "o" };
-            });
+                d.s = new { p = "o" }
+            );
         }
 
         public void Setter_delegates_to_index_setter()

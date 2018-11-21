@@ -8,12 +8,6 @@
     {
         private readonly Uri baseUri;
 
-        Uri IUriNode.Uri => this.Node is IUriNode uriNode ? uriNode.Uri : throw new InvalidOperationException("is not a uri node");
-
-        string IBlankNode.InternalID => this.Node is IBlankNode blankNode ? blankNode.InternalID : throw new InvalidOperationException("is not a blank node");
-
-        public Uri BaseUri => this.baseUri ?? this.Graph?.BaseUri;
-
         // TODO: Make sure all instantiations copy original node to appropriate host graph
         public DynamicNode(INode node, Uri baseUri = null) : base(node)
         {
@@ -23,6 +17,34 @@
             }
 
             this.baseUri = baseUri;
+        }
+
+        public Uri BaseUri
+        {
+            get
+            {
+                return this.baseUri ?? this.Graph.BaseUri;
+            }
+        }
+
+        Uri IUriNode.Uri
+        {
+            get
+            {
+                return this.Node is IUriNode uriNode ?
+                    uriNode.Uri :
+                    throw new InvalidOperationException("is not a uri node");
+            }
+        }
+
+        string IBlankNode.InternalID
+        {
+            get
+            {
+                return this.Node is IBlankNode blankNode ?
+                    blankNode.InternalID :
+                    throw new InvalidOperationException("is not a blank node");
+            }
         }
 
         DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)

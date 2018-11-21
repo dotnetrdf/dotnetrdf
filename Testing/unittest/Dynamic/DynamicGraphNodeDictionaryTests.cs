@@ -8,7 +8,7 @@
     public class DynamicGraphNodeDictionaryTests
     {
         [Fact]
-        public void Get_index_requires_key()
+        public void Get_index_requires_subject()
         {
             var d = new DynamicGraph();
 
@@ -33,7 +33,7 @@
         }
 
         [Fact]
-        public void Set_index_requires_key()
+        public void Set_index_requires_subject()
         {
             var d = new DynamicGraph();
 
@@ -119,14 +119,13 @@
         }
 
         [Fact]
-        public void Add_requires_key()
+        public void Add_requires_subject()
         {
             var d = new DynamicGraph();
 
             Assert.Throws<ArgumentNullException>(() =>
-            {
-                d.Add(null as INode, null);
-            });
+                d.Add(null as INode, null)
+            );
         }
 
         [Fact]
@@ -136,9 +135,8 @@
             var s = d.CreateBlankNode();
 
             Assert.Throws<ArgumentNullException>(() =>
-            {
-                d.Add(s, null);
-            });
+                d.Add(s, null)
+            );
         }
 
         [Fact]
@@ -226,7 +224,7 @@
         }
 
         [Fact]
-        public void Contains_rejects_null_key()
+        public void Contains_rejects_null_subject()
         {
             var d = new DynamicGraph() as IDictionary<INode, object>;
 
@@ -243,7 +241,7 @@
         }
 
         [Fact]
-        public void Contains_rejects_missing_key()
+        public void Contains_rejects_missing_subject()
         {
             var d = new DynamicGraph() as IDictionary<INode, object>;
             var s = new NodeFactory().CreateBlankNode();
@@ -277,7 +275,7 @@
         }
 
         [Fact]
-        public void ContainsKey_rejects_null_key()
+        public void ContainsKey_rejects_null_subject()
         {
             var d = new DynamicGraph();
 
@@ -419,7 +417,7 @@
         }
 
         [Fact]
-        public void Remove_rejects_null_key()
+        public void Remove_p_rejects_null_subject()
         {
             var d = new DynamicGraph();
 
@@ -427,7 +425,7 @@
         }
 
         [Fact]
-        public void Remove_retracts_by_subject()
+        public void Remove_p_retracts_by_subject()
         {
             var expected = new Graph();
             expected.LoadFromString(@"
@@ -453,7 +451,7 @@
         }
 
         [Fact]
-        public void Remove_reports_retraction_success()
+        public void Remove_p_reports_retraction_success()
         {
             var d = new DynamicGraph();
             d.LoadFromString("<urn:s> <urn:p> <urn:o> .");
@@ -465,51 +463,34 @@
         }
 
         [Fact]
-        public void Remove_pair_ignores_missing_statements()
+        public void Remove_po_rejects_null_subject()
         {
-            var d = new DynamicGraph() as IDictionary<INode, object>;
-            var s = new NodeFactory().CreateBlankNode();
+            var d = new DynamicGraph();
 
-            var condition = d.Remove(new KeyValuePair<INode, object>(s, null));
-
-            Assert.False(condition);
+            Assert.False(d.Remove(null as INode, null));
         }
 
         [Fact]
-        public void Remove_pair_handles_public_properties()
+        public void Remove_po_rejects_null_predicate_and_object()
         {
-            var expected = new Graph();
-            expected.LoadFromString(@"
-<urn:s2> <urn:s1> ""o3"" .
-<urn:s2> <urn:p3> <urn:s1> .
-");
+            var d = new DynamicGraph();
+            var s = d.CreateBlankNode();
 
-            var actual = new DynamicGraph(predicateBaseUri: UriFactory.Create("urn:"));
-            actual.LoadFromString(@"
-<urn:s1> <urn:p1> ""o1"" .
-<urn:s1> <urn:p2> ""o2"" .
-<urn:s2> <urn:s1> ""o3"" .
-<urn:s2> <urn:p3> <urn:s1> .
-");
-
-            var s1 = actual.Nodes.First();
-
-            ((IDictionary<INode, object>)actual).Remove(
-                new KeyValuePair<INode, object>(
-                    s1,
-                    new
-                    {
-                        p1 = "o1",
-                        p2 = "o2"
-                    }
-                )
-            );
-
-            Assert.Equal(expected as IGraph, actual as IGraph);
+            Assert.False(d.Remove(s, null));
         }
 
         [Fact]
-        public void Remove_pair_handles_public_dictionaries()
+        public void Remove_po_rejects_missing_statements()
+        {
+            var d = new DynamicGraph();
+            var s = d.CreateBlankNode();
+            var p = d.CreateBlankNode();
+
+            Assert.False(d.Remove(s, p));
+        }
+
+        [Fact]
+        public void Remove_po_handles_public_properties()
         {
             var expected = new Graph();
             expected.LoadFromString(@"
@@ -527,22 +508,176 @@
 
             var s1 = actual.Nodes.First();
 
-            ((IDictionary<INode, object>)actual).Remove(
-                new KeyValuePair<INode, object>(
-                    s1,
-                    new Dictionary<object, object> {
-                        { "p1" , "o1" },
-                        { "p2" , "o2" }
-                    }
-                )
+            actual.Remove(
+                s1,
+                new
+                {
+                    p1 = "o1",
+                    p2 = "o2"
+                }
             );
-
 
             Assert.Equal(expected as IGraph, actual as IGraph);
         }
 
         [Fact]
-        public void TryGetValue_rejects_null_key()
+        public void Remove_po_handles_dictionaries()
+        {
+            var expected = new Graph();
+            expected.LoadFromString(@"
+# <urn:s> <urn:s> <urn:s> .
+<urn:s> <urn:s> <urn:p> .
+<urn:s> <urn:s> <urn:o> .
+<urn:s> <urn:p> <urn:s> .
+# <urn:s> <urn:p> <urn:p> .
+<urn:s> <urn:p> <urn:o> .
+<urn:s> <urn:o> <urn:s> .
+<urn:s> <urn:o> <urn:p> .
+# <urn:s> <urn:o> <urn:o> .
+<urn:p> <urn:s> <urn:s> .
+<urn:p> <urn:s> <urn:p> .
+<urn:p> <urn:s> <urn:o> .
+<urn:p> <urn:p> <urn:s> .
+<urn:p> <urn:p> <urn:p> .
+<urn:p> <urn:p> <urn:o> .
+<urn:p> <urn:o> <urn:s> .
+<urn:p> <urn:o> <urn:p> .
+<urn:p> <urn:o> <urn:o> .
+<urn:o> <urn:s> <urn:s> .
+<urn:o> <urn:s> <urn:p> .
+<urn:o> <urn:s> <urn:o> .
+<urn:o> <urn:p> <urn:s> .
+<urn:o> <urn:p> <urn:p> .
+<urn:o> <urn:p> <urn:o> .
+<urn:o> <urn:o> <urn:s> .
+<urn:o> <urn:o> <urn:p> .
+<urn:o> <urn:o> <urn:o> .
+");
+
+            var actual = new DynamicGraph();
+            actual.LoadFromString(@"
+<urn:s> <urn:s> <urn:s> . # should retract
+<urn:s> <urn:s> <urn:p> .
+<urn:s> <urn:s> <urn:o> .
+<urn:s> <urn:p> <urn:s> .
+<urn:s> <urn:p> <urn:p> . # should retract
+<urn:s> <urn:p> <urn:o> .
+<urn:s> <urn:o> <urn:s> .
+<urn:s> <urn:o> <urn:p> .
+<urn:s> <urn:o> <urn:o> . # should retract
+<urn:p> <urn:s> <urn:s> .
+<urn:p> <urn:s> <urn:p> .
+<urn:p> <urn:s> <urn:o> .
+<urn:p> <urn:p> <urn:s> .
+<urn:p> <urn:p> <urn:p> .
+<urn:p> <urn:p> <urn:o> .
+<urn:p> <urn:o> <urn:s> .
+<urn:p> <urn:o> <urn:p> .
+<urn:p> <urn:o> <urn:o> .
+<urn:o> <urn:s> <urn:s> .
+<urn:o> <urn:s> <urn:p> .
+<urn:o> <urn:s> <urn:o> .
+<urn:o> <urn:p> <urn:s> .
+<urn:o> <urn:p> <urn:p> .
+<urn:o> <urn:p> <urn:o> .
+<urn:o> <urn:o> <urn:s> .
+<urn:o> <urn:o> <urn:p> .
+<urn:o> <urn:o> <urn:o> .
+");
+
+            var s = actual.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = actual.CreateUriNode(UriFactory.Create("urn:p"));
+            var o = actual.CreateUriNode(UriFactory.Create("urn:o"));
+
+            actual.Remove(
+                s,
+                new Dictionary<object, object> {
+                    { s , s },
+                    { p.Uri , p },
+                    { o.Uri.AbsoluteUri , o }
+                }
+            );
+
+            Assert.Equal(expected as IGraph, actual as IGraph);
+        }
+
+        [Fact]
+        public void Remove_po_handles_pairs()
+        {
+            var expected = new Graph();
+            expected.LoadFromString(@"
+<urn:s> <urn:s> <urn:s> .
+<urn:s> <urn:s> <urn:p> .
+<urn:s> <urn:s> <urn:o> .
+<urn:s> <urn:p> <urn:s> .
+<urn:s> <urn:p> <urn:p> .
+# <urn:s> <urn:p> <urn:o> .
+<urn:s> <urn:o> <urn:s> .
+<urn:s> <urn:o> <urn:p> .
+<urn:s> <urn:o> <urn:o> .
+<urn:p> <urn:s> <urn:s> .
+<urn:p> <urn:s> <urn:p> .
+<urn:p> <urn:s> <urn:o> .
+<urn:p> <urn:p> <urn:s> .
+<urn:p> <urn:p> <urn:p> .
+<urn:p> <urn:p> <urn:o> .
+<urn:p> <urn:o> <urn:s> .
+<urn:p> <urn:o> <urn:p> .
+<urn:p> <urn:o> <urn:o> .
+<urn:o> <urn:s> <urn:s> .
+<urn:o> <urn:s> <urn:p> .
+<urn:o> <urn:s> <urn:o> .
+<urn:o> <urn:p> <urn:s> .
+<urn:o> <urn:p> <urn:p> .
+<urn:o> <urn:p> <urn:o> .
+<urn:o> <urn:o> <urn:s> .
+<urn:o> <urn:o> <urn:p> .
+<urn:o> <urn:o> <urn:o> .
+");
+
+            var g = new DynamicGraph(predicateBaseUri: new Uri("urn:"));
+            g.LoadFromString(@"
+<urn:s> <urn:s> <urn:s> .
+<urn:s> <urn:s> <urn:p> .
+<urn:s> <urn:s> <urn:o> .
+<urn:s> <urn:p> <urn:s> .
+<urn:s> <urn:p> <urn:p> .
+<urn:s> <urn:p> <urn:o> . # should retract
+<urn:s> <urn:o> <urn:s> .
+<urn:s> <urn:o> <urn:p> .
+<urn:s> <urn:o> <urn:o> .
+<urn:p> <urn:s> <urn:s> .
+<urn:p> <urn:s> <urn:p> .
+<urn:p> <urn:s> <urn:o> .
+<urn:p> <urn:p> <urn:s> .
+<urn:p> <urn:p> <urn:p> .
+<urn:p> <urn:p> <urn:o> .
+<urn:p> <urn:o> <urn:s> .
+<urn:p> <urn:o> <urn:p> .
+<urn:p> <urn:o> <urn:o> .
+<urn:o> <urn:s> <urn:s> .
+<urn:o> <urn:s> <urn:p> .
+<urn:o> <urn:s> <urn:o> .
+<urn:o> <urn:p> <urn:s> .
+<urn:o> <urn:p> <urn:p> .
+<urn:o> <urn:p> <urn:o> .
+<urn:o> <urn:o> <urn:s> .
+<urn:o> <urn:o> <urn:p> .
+<urn:o> <urn:o> <urn:o> .
+");
+
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
+            var d = (IDictionary<INode, object>)g;
+
+            d.Remove(new KeyValuePair<INode, object>(s, new { p = o }));
+
+            Assert.Equal(expected as IGraph, g as IGraph);
+        }
+
+        [Fact]
+        public void TryGetValue_rejects_null_subject()
         {
             var d = new DynamicGraph();
 
@@ -550,7 +685,7 @@
         }
 
         [Fact]
-        public void TryGetValue_rejects_missing_key()
+        public void TryGetValue_rejects_missing_subject()
         {
             var d = new DynamicGraph();
             var s = d.CreateBlankNode();

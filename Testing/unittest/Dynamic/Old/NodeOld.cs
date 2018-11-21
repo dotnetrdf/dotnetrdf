@@ -120,14 +120,6 @@
                 d.GetHashCode());
         }
 
-        public void Cant_construct_without_graph_node()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                new DynamicNode(null);
-            });
-        }
-
         public void Subject_base_uri_defaults_to_graph_base_uri1()
         {
             var d = new DynamicNode(new Graph().CreateBlankNode());
@@ -163,63 +155,8 @@
             var a = new Graph().CreateBlankNode().AsDynamic();
 
             Assert.Throws<InvalidOperationException>(() =>
-            {
-                a.p = null;
-            });
-        }
-
-        public void Dynamic_node_is_INode()
-        {
-            var g = new Graph();
-            g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
-
-            var result = g.Triples.Single().Subject.AsDynamic();
-
-            Assert.IsAssignableFrom<INode>(result);
-        }
-
-        public void Dynamic_uri_node_is_IUriNode()
-        {
-            var g = new Graph();
-            g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
-
-            var result = (g.Triples.Single().Subject.AsDynamic() as IUriNode).Uri;
-            var expected = (g.Triples.Single().Subject as IUriNode).Uri;
-
-            Assert.Equal(expected, result);
-        }
-
-        public void Dynamic_blank_node_is_IBlankNode()
-        {
-            var g = new Graph();
-            g.LoadFromString("_:s <http://example.com/p> <http://example.com/o> .");
-
-            var result = (g.Triples.Single().Subject.AsDynamic() as IBlankNode).InternalID;
-            var expected = (g.Triples.Single().Subject as IBlankNode).InternalID;
-
-            Assert.Equal(expected, result);
-        }
-
-        public void Dynamic_uri_node_is_Not_IBlankNode()
-        {
-            var g = new Graph();
-            g.LoadFromString("<http://example.com/s> <http://example.com/p> <http://example.com/o> .");
-
-            Assert.Throws<InvalidOperationException>(() =>
-            {
-                var result = (g.Triples.Single().Subject.AsDynamic() as IBlankNode).InternalID;
-            });
-        }
-
-        public void Dynamic_blank_node_is_not_IUriNode()
-        {
-            var g = new Graph();
-            g.LoadFromString("_:s <http://example.com/p> <http://example.com/o> .");
-
-            Assert.Throws<InvalidOperationException>(() =>
-            {
-                var result = (g.Triples.Single().Subject.AsDynamic() as IUriNode).Uri;
-            });
+                a.p = null
+            );
         }
     }
 }
