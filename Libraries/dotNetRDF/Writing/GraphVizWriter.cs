@@ -43,7 +43,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Gets/Sets whether to collapse distinct literal nodes
         /// </summary>
-        public bool CollapseLiterals { get; set; } = false;
+        public bool CollapseLiterals { get; set; } = true;
 
         /// <summary>
         /// Saves a Graph into GraphViz DOT Format
