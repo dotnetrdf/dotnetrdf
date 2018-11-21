@@ -26,6 +26,7 @@
 
 namespace VDS.RDF.Query.Builder
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public enum GraphPatternType
     {
         Normal,

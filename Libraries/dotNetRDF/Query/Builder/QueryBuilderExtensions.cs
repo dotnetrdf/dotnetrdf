@@ -31,22 +31,25 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
 {
+    /// <summary>
+    /// Provides methods to build root graph pattern directly from the query builder
+    /// </summary>
     public static class QueryBuilderExtensions
     {
         public static IAssignmentVariableNamePart<IQueryBuilder> Bind(this IQueryBuilder describeBuilder, Func<INonAggregateExpressionBuilder, SparqlExpression> buildAssignmentExpression)
         {
             return describeBuilder.Bind(buildAssignmentExpression);
+
         }
 
         /// <summary>
-        /// Add a group graph pattern or a sub query to the query.
+        /// See <see cref="IGraphPatternBuilder.Child(IQueryBuilder)"/>
         /// </summary>
-        /// <param name="childBuilder"></param>
         public static IQueryBuilder Child(this IQueryBuilder queryBuilder, IQueryBuilder childBuilder)
         {
             if ((childBuilder.QueryType & SparqlQueryType.Select) == SparqlQueryType.Select)
             {
-                queryBuilder.RootGraphPatternBuilder.Where(new SubQueryPattern(childBuilder.BuildQuery()));
+                queryBuilder.Root.Where(new SubQueryPattern(childBuilder.BuildQuery()));
                 return queryBuilder;
             }
             else
@@ -56,24 +59,29 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Add a group graph pattern or a sub query to the query.
+        /// See <see cref="IGraphPatternBuilder.Child(Action{IGraphPatternBuilder})"/>
         /// </summary>
-        /// <param name="buildGraphPattern"></param>
         public static IQueryBuilder Child(this IQueryBuilder queryBuilder, Action<IGraphPatternBuilder> buildGraphPattern)
         {
-            queryBuilder.RootGraphPatternBuilder.Child(buildGraphPattern);
+            queryBuilder.Root.Child(buildGraphPattern);
             return queryBuilder;
         }
 
+        /// <summary>
+        /// See <see cref="IGraphPatternBuilder.Where(VDS.RDF.Query.Patterns.ITriplePattern[])"/>
+        /// </summary>
         public static IQueryBuilder Where(this IQueryBuilder queryBuilder, params ITriplePattern[] triplePatterns)
         {
-            queryBuilder.RootGraphPatternBuilder.Where(triplePatterns);
+            queryBuilder.Root.Where(triplePatterns);
             return queryBuilder;
         }
 
+        /// <summary>
+        /// See <see cref="IGraphPatternBuilder.Where(Action{ITriplePatternBuilder})"/>
+        /// </summary>
         public static IQueryBuilder Where(this IQueryBuilder queryBuilder, Action<ITriplePatternBuilder> buildTriplePatterns)
         {
-            queryBuilder.RootGraphPatternBuilder.Where(buildTriplePatterns);
+            queryBuilder.Root.Where(buildTriplePatterns);
             return queryBuilder;
         }
 
@@ -83,60 +91,90 @@ namespace VDS.RDF.Query.Builder
             return queryBuilder;
         }
 
+        /// <summary>
+        /// See <see cref="IGraphPatternBuilder.Optional"/>
+        /// </summary>
         public static IQueryBuilder Optional(this IQueryBuilder queryBuilder, Action<IGraphPatternBuilder> buildGraphPattern)
         {
-            queryBuilder.RootGraphPatternBuilder.Optional(buildGraphPattern);
+            queryBuilder.Root.Optional(buildGraphPattern);
             return queryBuilder;
         }
 
+        /// <summary>
+        /// See <see cref="IGraphPatternBuilder.Filter(ISparqlExpression)"/>
+        /// </summary>
         public static IQueryBuilder Filter(this IQueryBuilder queryBuilder, ISparqlExpression expr)
         {
-            queryBuilder.RootGraphPatternBuilder.Filter(expr);
+            queryBuilder.Root.Filter(expr);
             return queryBuilder;
         }
 
+        /// <summary>
+        /// See <see cref="IGraphPatternBuilder.Minus"/>
+        /// </summary>
         public static IQueryBuilder Minus(this IQueryBuilder queryBuilder, Action<IGraphPatternBuilder> buildGraphPattern)
         {
-            queryBuilder.RootGraphPatternBuilder.Minus(buildGraphPattern);
+            queryBuilder.Root.Minus(buildGraphPattern);
             return queryBuilder;
         }
 
+        /// <summary>
+        /// See <see cref="IGraphPatternBuilder.Graph(Uri, Action{IGraphPatternBuilder})"/>
+        /// </summary>
         public static IQueryBuilder Graph(this IQueryBuilder queryBuilder, Uri graphUri, Action<IGraphPatternBuilder> buildGraphPattern)
         {
-            queryBuilder.RootGraphPatternBuilder.Graph(graphUri, buildGraphPattern);
+            queryBuilder.Root.Graph(graphUri, buildGraphPattern);
             return queryBuilder;
         }
 
+        /// <summary>
+        /// See <see cref="IGraphPatternBuilder.Graph(String, Action{IGraphPatternBuilder})"/>
+        /// </summary>
         public static IQueryBuilder Graph(this IQueryBuilder queryBuilder, string graphVariable, Action<IGraphPatternBuilder> buildGraphPattern)
         {
-            queryBuilder.RootGraphPatternBuilder.Graph(graphVariable, buildGraphPattern);
+            queryBuilder.Root.Graph(graphVariable, buildGraphPattern);
             return queryBuilder;
         }
 
+        /// <summary>
+        /// See <see cref="IGraphPatternBuilder.Service"/>
+        /// </summary>
         public static IQueryBuilder Service(this IQueryBuilder queryBuilder, Uri serviceUri, Action<IGraphPatternBuilder> buildGraphPattern)
         {
-            queryBuilder.RootGraphPatternBuilder.Service(serviceUri, buildGraphPattern);
+            queryBuilder.Root.Service(serviceUri, buildGraphPattern);
             return queryBuilder;
         }
 
+        /// <summary>
+        /// See <see cref="IGraphPatternBuilder.Filter(Func{INonAggregateExpressionBuilder, BooleanExpression})"/>
+        /// </summary>
         public static IQueryBuilder Filter(this IQueryBuilder queryBuilder, Func<INonAggregateExpressionBuilder, BooleanExpression> buildExpression)
         {
-            queryBuilder.RootGraphPatternBuilder.Filter(buildExpression);
+            queryBuilder.Root.Filter(buildExpression);
             return queryBuilder;
         }
 
+        /// <summary>
+        /// See <see cref="IGraphPatternBuilder.Union(Action{IGraphPatternBuilder},Action{IGraphPatternBuilder}[])"/>
+        /// </summary>
         public static IQueryBuilder Union(this IQueryBuilder queryBuilder, Action<IGraphPatternBuilder> firstGraphPattern, params Action<IGraphPatternBuilder>[] otherGraphPatterns)
         {
-            queryBuilder.RootGraphPatternBuilder.Union(firstGraphPattern, otherGraphPatterns);
+            queryBuilder.Root.Union(firstGraphPattern, otherGraphPatterns);
             return queryBuilder;
         }
 
+        /// <summary>
+        /// See <see cref="IGraphPatternBuilder.Union(GraphPatternBuilder,VDS.RDF.Query.Builder.GraphPatternBuilder[])"/>
+        /// </summary>
         public static IQueryBuilder Union(this IQueryBuilder queryBuilder, GraphPatternBuilder firstGraphPattern, params GraphPatternBuilder[] otherGraphPatterns)
         {
-            queryBuilder.RootGraphPatternBuilder.Union(firstGraphPattern, otherGraphPatterns);
+            queryBuilder.Root.Union(firstGraphPattern, otherGraphPatterns);
             return queryBuilder;
         }
 
+        /// <summary>
+        /// See <see cref="IGraphPatternBuilder.InlineData"/>
+        /// </summary>
         public static IInlineDataBuilder InlineData(this IQueryBuilder queryBuilder, params string[] variables)
         {
             return queryBuilder.Root.InlineData(variables);

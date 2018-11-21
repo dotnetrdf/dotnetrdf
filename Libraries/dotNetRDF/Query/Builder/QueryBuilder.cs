@@ -64,16 +64,19 @@ namespace VDS.RDF.Query.Builder
             set { _prefixes = value; }
         }
 
+        /// <inheritdoc/>
         public GraphPatternBuilder RootGraphPatternBuilder
         {
             get { return _rootGraphPatternBuilder; }
         }
 
+        /// <inheritdoc/>
         public IGraphPatternBuilder Root
         {
             get { return _rootGraphPatternBuilder; }
         }
 
+        /// <inheritdoc/>
         public SparqlQueryType QueryType
         {
             get { return _sparqlQueryType; }
@@ -367,6 +370,7 @@ namespace VDS.RDF.Query.Builder
             return new BindAssignmentVariableNamePart(this, buildAssignmentExpression);
         }
 
+        /// <inheritdoc/>
         public IInlineDataBuilder InlineDataOverQuery(params string[] variables)
         {
             _inlineDataOverQuery = new InlineDataBuilder(variables);
