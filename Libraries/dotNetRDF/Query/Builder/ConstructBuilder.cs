@@ -24,16 +24,24 @@
 // </copyright>
 */
 
+using System;
+
 namespace VDS.RDF.Query.Builder
 {
-    /// <summary>
-    /// Factory interface for getting an <see cref="IQueryBuilder"/>
-    /// </summary>
-    public interface IQueryWithVariablesBuilder
+    internal sealed class ConstructBuilder : QueryBuilder
     {
-        /// <summary>
-        /// Creates a <see cref="QueryBuilder"/>
-        /// </summary>
-        IQueryBuilder GetQueryBuilder();
+        private readonly GraphPatternBuilder _builder;
+
+        internal ConstructBuilder(Action<IDescribeGraphPatternBuilder> buildPattern) : base(SparqlQueryType.Construct)
+        {
+            _builder = new GraphPatternBuilder();
+            buildPattern(_builder);
+        }
+
+        protected override SparqlQuery BuildQuery(SparqlQuery query)
+        {
+            query.ConstructTemplate = _builder.BuildGraphPattern(Prefixes);
+            return base.BuildQuery(query);
+        }
     }
 }

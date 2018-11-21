@@ -33,62 +33,9 @@ namespace VDS.RDF.Query.Builder
 {
     public static class QueryBuilderExtensions
     {
-        public static IQueryBuilder Where(this IQueryWithVariablesBuilder describeBuilder, params ITriplePattern[] triplePatterns)
+        public static IAssignmentVariableNamePart<IQueryBuilder> Bind(this IQueryBuilder describeBuilder, Func<INonAggregateExpressionBuilder, SparqlExpression> buildAssignmentExpression)
         {
-            return describeBuilder.GetQueryBuilder().Where(triplePatterns);
-        }
-
-        public static IQueryBuilder Where(this IQueryWithVariablesBuilder describeBuilder, Action<ITriplePatternBuilder> buildTriplePatterns)
-        {
-            return describeBuilder.GetQueryBuilder().Where(buildTriplePatterns);
-        }
-
-        public static IQueryBuilder Optional(this IQueryWithVariablesBuilder describeBuilder, Action<IGraphPatternBuilder> buildGraphPattern)
-        {
-            return describeBuilder.GetQueryBuilder().Optional(buildGraphPattern);
-        }
-
-        public static IQueryBuilder Filter(this IQueryWithVariablesBuilder describeBuilder, Func<INonAggregateExpressionBuilder, BooleanExpression> expr)
-        {
-            return describeBuilder.GetQueryBuilder().Filter(expr);
-        }
-
-        public static IQueryBuilder Filter(this IQueryWithVariablesBuilder describeBuilder, ISparqlExpression expr)
-        {
-            return describeBuilder.GetQueryBuilder().Filter(expr);
-        }
-
-        public static IQueryBuilder Minus(this IQueryWithVariablesBuilder describeBuilder, Action<IGraphPatternBuilder> buildGraphPattern)
-        {
-            return describeBuilder.GetQueryBuilder().Minus(buildGraphPattern);
-        }
-
-        public static IQueryBuilder Graph(this IQueryWithVariablesBuilder describeBuilder, Uri graphUri, Action<IGraphPatternBuilder> buildGraphPattern)
-        {
-            return describeBuilder.GetQueryBuilder().Graph(graphUri, buildGraphPattern);
-        }
-
-        public static IQueryBuilder Graph(this IQueryWithVariablesBuilder describeBuilder, string graphVariable, Action<IGraphPatternBuilder> buildGraphPattern)
-        {
-            return describeBuilder.GetQueryBuilder().Graph(graphVariable, buildGraphPattern);
-        }
-
-        public static IQueryBuilder Service(this IQueryWithVariablesBuilder describeBuilder, Uri serviceUri, Action<IGraphPatternBuilder> buildGraphPattern)
-        {
-            return describeBuilder.GetQueryBuilder().Service(serviceUri, buildGraphPattern);
-        }
-
-        public static IAssignmentVariableNamePart<IQueryBuilder> Bind(this IDescribeBuilder describeBuilder, Func<INonAggregateExpressionBuilder, SparqlExpression> buildAssignmentExpression)
-        {
-            return describeBuilder.GetQueryBuilder().Bind(buildAssignmentExpression);
-        }
-
-        /// <summary>
-        /// Build a simple DESCRIBE query without the WHERE part.
-        /// </summary>
-        public static SparqlQuery BuildQuery(this IDescribeBuilder describeBuilder)
-        {
-            return describeBuilder.GetQueryBuilder().BuildQuery();
+            return describeBuilder.Bind(buildAssignmentExpression);
         }
 
         /// <summary>
@@ -116,11 +63,6 @@ namespace VDS.RDF.Query.Builder
         {
             queryBuilder.RootGraphPatternBuilder.Child(buildGraphPattern);
             return queryBuilder;
-        }
-
-        public static IQueryBuilder Child(this IDescribeBuilder describeBuilder, Action<IGraphPatternBuilder> buildGraphPattern)
-        {
-            return describeBuilder.GetQueryBuilder().Child(buildGraphPattern);
         }
 
         public static IQueryBuilder Where(this IQueryBuilder queryBuilder, params ITriplePattern[] triplePatterns)

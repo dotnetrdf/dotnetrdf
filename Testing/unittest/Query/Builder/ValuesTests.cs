@@ -20,7 +20,7 @@ namespace VDS.RDF.Query.Builder
             }");
 
             // given
-            var select = QueryBuilder.Select("o").GetQueryBuilder();
+            var select = QueryBuilder.Select("o");
             select.InlineData("o").Values(5);
             var query = select.BuildQuery();
 
@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Builder
             }");
 
             // given
-            var select = QueryBuilder.Select("o").GetQueryBuilder();
+            var select = QueryBuilder.Select("o");
             select.InlineData("o")
                 .Values(5)
                 .Values(10)
@@ -66,7 +66,7 @@ namespace VDS.RDF.Query.Builder
             }");
 
             // given
-            var select = QueryBuilder.Select("o").GetQueryBuilder();
+            var select = QueryBuilder.Select("o");
             select.InlineData("x", "y", "z")
                 .Values("a", "b", "c");
             var query = select.BuildQuery();
@@ -91,7 +91,7 @@ namespace VDS.RDF.Query.Builder
             }");
 
             // given
-            var select = QueryBuilder.Select("o").GetQueryBuilder();
+            var select = QueryBuilder.Select("o");
             select.InlineData("x", "y", "z")
                 .Values("a", "b", "c")
                 .Values(123, 124, 125);

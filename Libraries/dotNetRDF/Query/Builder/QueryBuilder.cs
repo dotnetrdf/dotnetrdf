@@ -32,7 +32,6 @@ using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Grouping;
 using VDS.RDF.Query.Ordering;
-using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
 {
@@ -44,16 +43,13 @@ namespace VDS.RDF.Query.Builder
     /// A <see cref="SparqlQuery"/> is mutable by definition so calling any of the extension methods in this API will cause the existing query it is called on to be changed.  You can call <see cref="SparqlQuery.Copy()"/> on an existing query to create a new copy if you want to make different queries starting from the same base query
     /// </para>
     /// </remarks>
-    public sealed class QueryBuilder : IQueryBuilder
+    public class QueryBuilder : IQueryBuilder
     {
-        private readonly DescribeBuilder _describeBuilder;
         private readonly GraphPatternBuilder _rootGraphPatternBuilder = new GraphPatternBuilder();
-        private DescribeGraphPatternBuilder _constructGraphPatternBuilder;
-        private readonly SelectBuilder _selectBuilder;
         private readonly IList<Func<INamespaceMapper, ISparqlOrderBy>> _buildOrderings = new List<Func<INamespaceMapper, ISparqlOrderBy>>();
         private readonly IList<Func<INamespaceMapper, ISparqlGroupBy>> _buildGroups = new List<Func<INamespaceMapper, ISparqlGroupBy>>();
         private readonly IList<Func<INamespaceMapper, ISparqlExpression>> _buildHavings = new List<Func<INamespaceMapper, ISparqlExpression>>();
-        private readonly SparqlQueryType _sparqlQueryType;
+        private SparqlQueryType _sparqlQueryType;
         private int _queryLimit = -1;
         private int _queryOffset;
         private INamespaceMapper _prefixes = new NamespaceMapper(true);
@@ -81,21 +77,10 @@ namespace VDS.RDF.Query.Builder
         public SparqlQueryType QueryType
         {
             get { return _sparqlQueryType; }
+            protected set { _sparqlQueryType = value; }
         }
 
-        internal QueryBuilder(SelectBuilder selectBuilder)
-            : this(selectBuilder.SparqlQueryType)
-        {
-            _selectBuilder = selectBuilder;
-        }
-
-        internal QueryBuilder(DescribeBuilder describeBuilder)
-            : this(describeBuilder.SparqlQueryType)
-        {
-            _describeBuilder = describeBuilder;
-        }
-
-        private QueryBuilder(SparqlQueryType sparqlQueryType)
+        protected internal QueryBuilder(SparqlQueryType sparqlQueryType)
         {
             _sparqlQueryType = sparqlQueryType;
         }
@@ -115,13 +100,10 @@ namespace VDS.RDF.Query.Builder
         {
             if (buildConstructTemplate == null)
             {
-                return Construct();
+                return new QueryBuilder(SparqlQueryType.Construct);
             }
 
-            var queryBuilder = new QueryBuilder(SparqlQueryType.Construct);
-            DescribeGraphPatternBuilder graphPatternBuilder = new DescribeGraphPatternBuilder(new GraphPatternBuilder());
-            buildConstructTemplate(graphPatternBuilder);
-            return queryBuilder.Construct(graphPatternBuilder);
+            return new ConstructBuilder(buildConstructTemplate);
         }
 
         /// <summary>
@@ -129,21 +111,15 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         public static IQueryBuilder Construct()
         {
-            return new QueryBuilder(SparqlQueryType.Construct);
-        }
-
-        private IQueryBuilder Construct(DescribeGraphPatternBuilder graphPatternBuilder)
-        {
-            _constructGraphPatternBuilder = graphPatternBuilder;
-            return this;
+            return Construct(null);
         }
 
         /// <summary>
         /// Creates a new SELECT * query
         /// </summary>
-        public static IQueryBuilder SelectAll()
+        public static ISelectBuilder SelectAll()
         {
-            return new QueryBuilder(new SelectBuilder(SparqlQueryType.SelectAll));
+            return new SelectBuilder(SparqlQueryType.SelectAll);
         }
 
         /// <summary>
@@ -181,7 +157,7 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         public static IDescribeBuilder Describe(params Uri[] uris)
         {
-            return new DescribeBuilder().And(uris);
+            return new DescribeBuilder(SparqlQueryType.Describe).And(uris);
         }
 
         /// <summary>
@@ -189,19 +165,7 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         public static IDescribeBuilder Describe(params string[] variables)
         {
-            return new DescribeBuilder().And(variables);
-        }
-
-        /// <summary>
-        /// Applies the DISTINCT modifier if the Query is a SELECT, otherwise leaves query unchanged (since results from any other query are DISTINCT by default)
-        /// </summary>
-        public IQueryBuilder Distinct()
-        {
-            if (_selectBuilder != null)
-            {
-                _selectBuilder.Distinct();
-            }
-            return this;
+            return new DescribeBuilder(SparqlQueryType.Describe).And(variables);
         }
 
         /// <summary>
@@ -331,25 +295,11 @@ namespace VDS.RDF.Query.Builder
                 Offset = _queryOffset,
             };
 
-            switch (_sparqlQueryType)
-            {
-                case SparqlQueryType.Construct:
-                    BuildConstructGraphPattern(query);
-                    break;
-                case SparqlQueryType.Describe:
-                case SparqlQueryType.DescribeAll:
-                    BuildDescribeVariables(query);
-                    break;
-                case SparqlQueryType.Select:
-                case SparqlQueryType.SelectAll:
-                case SparqlQueryType.SelectAllDistinct:
-                case SparqlQueryType.SelectAllReduced:
-                case SparqlQueryType.SelectDistinct:
-                case SparqlQueryType.SelectReduced:
-                    BuildReturnVariables(query);
-                    break;
-            }
+            return BuildQuery(query);
+        }
 
+        protected virtual SparqlQuery  BuildQuery(SparqlQuery query)
+        {
             BuildRootGraphPattern(query);
             BuildGroupByClauses(query);
             BuildHavingClauses(query);
@@ -361,42 +311,11 @@ namespace VDS.RDF.Query.Builder
             return query;
         }
 
-        private void BuildDescribeVariables(SparqlQuery query)
-        {
-            if (_describeBuilder == null) return;
-
-            query.QueryType = _describeBuilder.SparqlQueryType;
-
-            foreach (var describeVariable in _describeBuilder.DescribeVariables)
-            {
-                query.AddDescribeVariable(describeVariable);
-            }
-        }
-
-        private void BuildConstructGraphPattern(SparqlQuery query)
-        {
-            if (_constructGraphPatternBuilder == null) return;
-
-            query.ConstructTemplate = _constructGraphPatternBuilder.BuildGraphPattern(Prefixes);
-        }
-
         private void BuildRootGraphPattern(SparqlQuery query)
         {
             var rootGraphPattern = RootGraphPatternBuilder.BuildGraphPattern(Prefixes);
 
             query.RootGraphPattern = rootGraphPattern;
-        }
-
-        private void BuildReturnVariables(SparqlQuery query)
-        {
-            if (_selectBuilder == null) return;
-
-            query.QueryType = _selectBuilder.SparqlQueryType;
-
-            foreach (SparqlVariable selectVariable in _selectBuilder.BuildVariables(Prefixes))
-            {
-                query.AddVariable(selectVariable);
-            }
         }
 
         private void BuildGroupByClauses(SparqlQuery query)
