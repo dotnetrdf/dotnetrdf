@@ -56,6 +56,7 @@ namespace VDS.RDF.Parsing
         }
 
         [Theory]
+        [Trait("Coverage", "Skip")]
         [InlineData(1000, 100)]
         public void ParsingTriXPerformance_LargeDataset(int numGraphs, int triplesPerGraph)
         {

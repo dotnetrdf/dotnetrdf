@@ -504,6 +504,7 @@ namespace VDS.RDF.Parsing
         }
 
         [Fact]
+        [Trait("Coverage", "Skip")]
         public void ParsingBlockingVsNonBlocking1()
         {
             this.EnsureNIOData();
@@ -558,6 +559,7 @@ namespace VDS.RDF.Parsing
         }
 
         [Fact]
+        [Trait("Coverage", "Skip")]
         public void ParsingBlockingVsNonBlocking2()
         {
             this.EnsureNIOData();
@@ -669,6 +671,7 @@ namespace VDS.RDF.Parsing
         }
 
         [Fact]
+        [Trait("Coverage", "Skip")]
         public void ParsingBlockingVsNonBlocking4()
         {
             this.EnsureNIOData();
@@ -723,6 +726,7 @@ namespace VDS.RDF.Parsing
         }
 
         [Fact]
+        [Trait("Coverage", "Skip")]
         public void ParsingBlockingVsNonBlocking5()
         {
             this.EnsureNIOData();
