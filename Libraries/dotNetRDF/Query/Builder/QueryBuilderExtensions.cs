@@ -136,5 +136,10 @@ namespace VDS.RDF.Query.Builder
             queryBuilder.RootGraphPatternBuilder.Union(firstGraphPattern, otherGraphPatterns);
             return queryBuilder;
         }
+
+        public static IInlineDataBuilder InlineData(this IQueryBuilder queryBuilder, params string[] variables)
+        {
+            return queryBuilder.Root.InlineData(variables);
+        }
     }
 }

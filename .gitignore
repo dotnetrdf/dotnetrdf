@@ -15,7 +15,11 @@ _UpgradeReport*
 UpgradeLog*
 log-file.txt
 Backup/
-
+Tools/
+nugets/
+coverage
+test-*.xml
+dotcover.xml
 
 # Files not to version control
 *.suo

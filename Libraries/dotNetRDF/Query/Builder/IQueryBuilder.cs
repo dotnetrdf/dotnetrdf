@@ -41,7 +41,12 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Gets the builder associated with the root graph pattern.
         /// </summary>
+        [Obsolete("Please use Root property")]
         GraphPatternBuilder RootGraphPatternBuilder { get; }
+        /// <summary>
+        /// Gets the builder associated with the root graph pattern.
+        /// </summary>
+        IGraphPatternBuilder Root { get; }
         /// <summary>
         /// Gets the prefix manager, which allows adding prefixes to the query or graph pattern
         /// </summary>
@@ -103,5 +108,9 @@ namespace VDS.RDF.Query.Builder
         /// Adds a BIND variable assignment to the root graph pattern
         /// </summary>
         IAssignmentVariableNamePart<IQueryBuilder> Bind(Func<INonAggregateExpressionBuilder, SparqlExpression> buildAssignmentExpression);
+        /// <summary>
+        /// Adds a VALUES inline data block to the entire query (outside graph patterns)
+        /// </summary>
+        IInlineDataBuilder InlineDataOverQuery(params string[] variables);
     }
 }

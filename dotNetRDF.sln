@@ -20,7 +20,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRDF.Web", "Libraries\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRDF.Data.DataTables", "Libraries\dotNetRDF.Data.DataTables\dotNetRDF.Data.DataTables.csproj", "{63FDB648-1631-4452-8B60-E5A4225341FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.MockServerTests", "Testing\dotNetRDF.MockServerTests\dotNetRDF.MockServerTests.csproj", "{1BFD4521-51CF-4949-8C12-717BBA44D3FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRDF.MockServerTests", "Testing\dotNetRDF.MockServerTests\dotNetRDF.MockServerTests.csproj", "{1BFD4521-51CF-4949-8C12-717BBA44D3FC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8A1831D5-14EF-4956-8F35-800960B16115}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		appveyor.yml = appveyor.yml
+		build.cake = build.cake
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

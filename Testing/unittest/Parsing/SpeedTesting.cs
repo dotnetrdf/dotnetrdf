@@ -37,6 +37,7 @@ using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Parsing
 {
+    [Trait("Coverage", "Skip")]
     [Trait("Category", "parsing speed")]
     public class SpeedTesting
     {
