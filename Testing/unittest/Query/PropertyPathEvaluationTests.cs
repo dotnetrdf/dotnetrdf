@@ -390,6 +390,7 @@ WHERE
         }
 
         [Fact]
+        [Trait("Coverage", "Skip")]
         public void SparqlPropertyPathEvaluationDuplicates()
         {
             IGraph g = new Graph();

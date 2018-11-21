@@ -866,6 +866,7 @@ WHERE
         }
 
         [Fact]
+        [Trait("Coverage", "Skip")]
         public void SparqlOrderByComplexLazyPerformance()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . } ORDER BY ?s DESC(?p) LIMIT 5";
@@ -1305,6 +1306,7 @@ WHERE
         }
 
         [Fact]
+        [Trait("Coverage", "Skip")]
         public void SparqlSubQueryGraphInteractionCore416_Serial()
         {
             try
@@ -1353,6 +1355,7 @@ WHERE
         }
 
         [Fact]
+        [Trait("Coverage", "Skip")]
         public void SparqlSubQueryGraphInteractionCore416_Parallel()
         {
             try

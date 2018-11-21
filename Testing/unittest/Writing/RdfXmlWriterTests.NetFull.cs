@@ -51,6 +51,7 @@ namespace VDS.RDF.Writing
         }
 
         [Fact]
+        [Trait("Coverage", "Skip")]
         public void WritingRdfXmlComplex()
         {
             Graph g = new Graph();

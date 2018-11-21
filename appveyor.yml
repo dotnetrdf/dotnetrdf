@@ -15,40 +15,21 @@ install:
   - cmd: 7z x SHFBInstaller.zip -y
   - ps: msiexec /i InstallResources\SandcastleHelpFileBuilder.msi /quiet /qn /norestart /log install.log
 
-
 before_build:
-  - dotnet restore dotNetRDF.sln
   - ps: gitversion /l console /output buildserver /updateassemblyinfo
 
 configuration: Release
 
 build_script:
-  - dotnet build -c Release dotNetRDF.sln
-  - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF /p:Version=%GitVersion_NuGetVersion%
-  - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF.Data.DataTables /p:Version=%GitVersion_NuGetVersion%
-  - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF.Data.Virtuoso /p:Version=%GitVersion_NuGetVersion%
-  - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF.Query.FullText /p:Version=%GitVersion_NuGetVersion%
-  - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF.Query.Spin /p:Version=%GitVersion_NuGetVersion%
-  - dotnet pack -c Release -o %APPVEYOR_BUILD_FOLDER%\nugets Libraries/dotNetRDF.Web /p:Version=%GitVersion_NuGetVersion%
+  - ps: ./build.ps1 -Target Pack --configuration=Release --NuGetVersion=$env:GitVersion_NuGetVersion
 
 test_script:
-  - ps: |
-      cd Testing\unittest
-      dotnet xunit -configuration %CONFIGURATION% -notrait "Category=explicit" | Out-File test.log
-      Push-AppveyorArtifact test.log
-      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
-      dotnet xunit -configuration %CONFIGURATION% -trait "Category=fulltext" | Out-File fulltext.log
-      Push-AppveyorArtifact fulltext.log
-      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
-      cd ..\dotNetRdf.MockServerTests
-      dotnet xunit -configuration %CONFIGURATION% -notrait "Category=explicit" | Out-File mockservertests.log
-      Push-AppveyorArtifact mockservertests.log
-      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
-      cd ..\..\
+  - ps: ./build.ps1 -Target Cover --configuration=Release *> test.log
+  - ps: ./build.ps1 -Target Codecov --configuration=Release -no-build=true
 
 before_deploy:
   - cmd: msbuild Build\shfb\dotnetrdf.shfbproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /p:Configuration=%CONFIGURATION% /p:HelpFileVersion=%GitVersion_NuGetVersion%
-      
+
 deploy:
   - provider: GitHub
     description: 'dotNetRDF $(GitVersion_SemVer)'
@@ -68,6 +49,7 @@ artifacts:
   - path: 'nugets\*.nupkg'
   - path: 'Build\shfb\Help\dotNetRDFApi.chm'
   - path: 'Build\shfb\Help'
-  - path: 'Testing\unittest\*.log'
-  - path: 'Testing\dotNetRdf.MockServerTests\*.log'
+  - path: 'opencover.xml'
 
+on_finish:
+  - ps: Push-AppveyorArtifact 'test.log'

@@ -30,6 +30,8 @@
     <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
     <CodeAnalysisRuleSet>..\..\dotnetrdf.ruleset</CodeAnalysisRuleSet>
     <RootNamespace>VDS.RDF.Data.DataTables</RootNamespace>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net40-client'">
