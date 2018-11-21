@@ -138,6 +138,7 @@ namespace VDS.RDF.Query.Builder
             return graphPattern;
         }
 
+        /// <inheritdoc />
         public IGraphPatternBuilder Group(GraphPatternBuilder groupBuilder)
         {
             if (!_childGraphPatternBuilders.Contains(groupBuilder))
@@ -148,6 +149,7 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
+        /// <inheritdoc />
         public IGraphPatternBuilder Group(Action<IGraphPatternBuilder> buildGraphPattern)
         {
             GraphPatternBuilder groupBuilder = new GraphPatternBuilder();
@@ -158,24 +160,28 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
+        /// <inheritdoc />
         public IGraphPatternBuilder Where(params ITriplePattern[] triplePatterns)
         {
             _triplePatterns.Add(prefixes => triplePatterns);
             return this;
         }
 
+        /// <inheritdoc />
         IDescribeGraphPatternBuilder IDescribeGraphPatternBuilder.Where(Action<ITriplePatternBuilder> buildTriplePatterns)
         {
             Where(buildTriplePatterns);
             return this;
         }
 
+        /// <inheritdoc />
         IDescribeGraphPatternBuilder IDescribeGraphPatternBuilder.Where(params ITriplePattern[] triplePatterns)
         {
             Where(triplePatterns);
             return this;
         }
 
+        /// <inheritdoc />
         public IGraphPatternBuilder Where(Action<ITriplePatternBuilder> buildTriplePatterns)
         {
             return Where(prefixes =>
@@ -192,30 +198,35 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
+        /// <inheritdoc />
         public IGraphPatternBuilder Optional(Action<IGraphPatternBuilder> buildGraphPattern)
         {
             AddChildGraphPattern(buildGraphPattern, GraphPatternType.Optional);
             return this;
         }
 
+        /// <inheritdoc />
         public IGraphPatternBuilder Minus(Action<IGraphPatternBuilder> buildGraphPattern)
         {
             AddChildGraphPattern(buildGraphPattern, GraphPatternType.Minus);
             return this;
         }
 
+        /// <inheritdoc />
         public IGraphPatternBuilder Graph(Uri graphUri, Action<IGraphPatternBuilder> buildGraphPattern)
         {
             AddChildGraphPattern(buildGraphPattern, GraphPatternType.Graph, new UriToken(string.Format("<{0}>", graphUri), 0, 0, 0));
             return this;
         }
 
+        /// <inheritdoc />
         public IGraphPatternBuilder Graph(string graphVariable, Action<IGraphPatternBuilder> buildGraphPattern)
         {
             AddChildGraphPattern(buildGraphPattern, GraphPatternType.Graph, new VariableToken(graphVariable, 0, 0, 0));
             return this;
         }
 
+        /// <inheritdoc />
         public IGraphPatternBuilder Service(Uri serviceUri, Action<IGraphPatternBuilder> buildGraphPattern)
         {
             AddChildGraphPattern(buildGraphPattern, GraphPatternType.Service,
@@ -223,6 +234,7 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
+        /// <inheritdoc />
         public IGraphPatternBuilder Union(GraphPatternBuilder firstGraphPattern, params GraphPatternBuilder[] unionedGraphPatternBuilders)
         {
             if (unionedGraphPatternBuilders == null || unionedGraphPatternBuilders.Length == 0)
@@ -243,6 +255,7 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
+        /// <inheritdoc />
         public IGraphPatternBuilder Union(Action<IGraphPatternBuilder> firstGraphPattern, params Action<IGraphPatternBuilder>[] unionedGraphPatternBuilders)
         {
             if (unionedGraphPatternBuilders == null || unionedGraphPatternBuilders.Length == 0)
@@ -262,11 +275,13 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
+        /// <inheritdoc />
         public IAssignmentVariableNamePart<IGraphPatternBuilder> Bind(Func<INonAggregateExpressionBuilder, SparqlExpression> buildAssignmentExpression)
         {
             return new BindAssignmentVariableNamePart(this, buildAssignmentExpression);
         }
 
+        /// <inheritdoc />
         public IGraphPatternBuilder Child(IQueryBuilder queryBuilder)
         {
             SparqlQuery subquery = queryBuilder.BuildQuery();
@@ -278,18 +293,21 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
+        /// <inheritdoc />
         public IGraphPatternBuilder Child(GraphPatternBuilder childBuilder)
         {
             _childGraphPatternBuilders.Add(childBuilder);
             return this;
         }
 
+        /// <inheritdoc />
         public IGraphPatternBuilder Child(Action<IGraphPatternBuilder> buildGraphPattern)
         {
             AddChildGraphPattern(buildGraphPattern, GraphPatternType.Normal);
             return this;
         }
 
+        /// <inheritdoc />
         public IInlineDataBuilder InlineData(params string[] variables)
         {
             var builder = new InlineDataBuilder(variables);
@@ -297,6 +315,7 @@ namespace VDS.RDF.Query.Builder
             return builder;
         }
 
+        /// <inheritdoc />
         public IGraphPatternBuilder Filter(Func<INonAggregateExpressionBuilder, BooleanExpression> buildExpression)
         {
             _filterBuilders.Add(namespaceMapper =>
@@ -307,6 +326,7 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
+        /// <inheritdoc />
         public IGraphPatternBuilder Filter(ISparqlExpression expr)
         {
             _filterBuilders.Add(namespaceMapper => expr);

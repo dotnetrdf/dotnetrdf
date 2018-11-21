@@ -31,53 +31,70 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
 {
+    /// <inheritdoc />
     public class TriplePatternBuilder : ITriplePatternBuilder
     {
         private readonly IList<ITriplePattern> _patterns = new List<ITriplePattern>();
         private readonly PatternItemFactory _patternItemFactory;
         private readonly INamespaceMapper _prefixes;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="prefixes"></param>
         public TriplePatternBuilder(INamespaceMapper prefixes)
         {
             _prefixes = prefixes;
             _patternItemFactory = new PatternItemFactory();
         }
 
+        /// <inheritdoc />
         public TriplePatternPredicatePart Subject(SparqlVariable subjectVariable)
         {
             return Subject(PatternItemFactory.CreateVariablePattern(subjectVariable.Name));
         }
 
+        /// <inheritdoc />
         public TriplePatternPredicatePart Subject(string subjectVariableName)
         {
             return Subject(PatternItemFactory.CreateVariablePattern(subjectVariableName));
         }
 
+        /// <inheritdoc/>
         public TriplePatternPredicatePart Subject<TNode>(string subject) where TNode : INode
         {
             return Subject(PatternItemFactory.CreatePatternItem(typeof(TNode), subject, _prefixes));
         }
 
+        /// <inheritdoc/>
         public TriplePatternPredicatePart Subject(INode subjectNode)
         {
             return Subject(PatternItemFactory.CreateNodeMatchPattern(subjectNode));
         }
 
+        /// <inheritdoc/>
         public TriplePatternPredicatePart Subject(Uri subject)
         {
             return Subject(PatternItemFactory.CreateNodeMatchPattern(subject));
         }
 
+        /// <inheritdoc/>
         public TriplePatternPredicatePart Subject(PatternItem subject)
         {
             return new TriplePatternPredicatePart(this, subject, _prefixes);
         }
 
+        /// <summary>
+        /// Gets the triple patterns
+        /// </summary>
         public ITriplePattern[] Patterns
         {
             get { return _patterns.ToArray(); }
         }
 
+        /// <summary>
+        /// Gets the pattern item factory
+        /// </summary>
         internal PatternItemFactory PatternItemFactory
         {
             get { return _patternItemFactory; }
