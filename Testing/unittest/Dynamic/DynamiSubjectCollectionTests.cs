@@ -469,7 +469,7 @@
             var l = new DynamicSubjectCollection(p, d) as IDynamicMetaObjectProvider;
             var mo = l.GetMetaObject(Expression.Empty());
 
-            Assert.IsType<EnumerableMetaObject>(mo);
+            Assert.NotNull(mo);
         }
     }
 }
