@@ -1,37 +1,40 @@
 ﻿namespace VDS.RDF.Dynamic
 {
     using System;
-    using System.Collections.Generic;
     using System.Dynamic;
     using System.Linq;
     using System.Linq.Expressions;
 
     internal class EnumerableMetaObject : DynamicMetaObject
     {
-        internal EnumerableMetaObject(Expression parameter, IEnumerable<object> value) : base(parameter, BindingRestrictions.Empty, value) { }
+        internal EnumerableMetaObject(Expression parameter, object value) : base(parameter, BindingRestrictions.Empty, value) { }
 
         public override DynamicMetaObject BindInvokeMember(InvokeMemberBinder binder, DynamicMetaObject[] args)
         {
-            var enumerable = typeof(Enumerable);
-            var @this = Expression.Convert(this.Expression, this.RuntimeType).AsEnumerable();
-            var argParams = args.Select(arg => arg.Expression);
-            var allParams = @this.Union(argParams).ToArray();
-            var method = FindMethod(enumerable, binder.Name, allParams);
-            var restrictions = BindingRestrictions.GetTypeRestriction(this.Expression, this.LimitType);
-            return new DynamicMetaObject(method, restrictions);
+            return binder.FallbackInvokeMember(
+                this,
+                args,
+                new DynamicMetaObject(
+                    this.FindMethod(
+                        binder.Name,
+                        args),
+                    BindingRestrictions.GetTypeRestriction(
+                        this.Expression, 
+                        this.LimitType
+                    )
+                )
+            );
         }
 
-        private static MethodCallExpression FindMethod(Type type, string methodName, Expression[] arguments)
+        private Expression FindMethod(string methodName, DynamicMetaObject[] args)
         {
             InvalidOperationException invalid = null;
 
             for (var i = 1; i < 4; i++)
             {
-                var typeArguments = Enumerable.Repeat(typeof(object), i).ToArray();
-
                 try
                 {
-                    return Expression.Call(type, methodName, typeArguments, arguments);
+                    return Expression.Call(typeof(Enumerable), methodName, Enumerable.Repeat(typeof(object), i).ToArray(), Expression.Convert(this.Expression, this.RuntimeType).AsEnumerable().Union(args.Select(arg => arg.Expression)).ToArray());
                 }
                 catch (InvalidOperationException e)
                 {
@@ -39,7 +42,7 @@
                 }
             }
 
-            throw invalid;
+            return Expression.Throw(Expression.Constant(invalid), typeof(object));
         }
     }
 }

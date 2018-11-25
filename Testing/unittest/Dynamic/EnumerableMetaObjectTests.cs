@@ -4,17 +4,16 @@
     using System.Collections.Generic;
     using System.Linq;
     using VDS.RDF;
-    using VDS.RDF.Dynamic;
     using Xunit;
 
     public class EnumerableMetaObjectTests
     {
         [Fact]
-        public void No_generic_type_arguments()
+        public void Fails_no_generic_type_arguments()
         {
-            var g = new DynamicGraph();
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var g = new Graph();
+            var s = g.CreateBlankNode();
+            var p = g.CreateBlankNode();
             var d = new DynamicNode(s);
             dynamic objects = new DynamicObjectCollection(d, p);
 
@@ -24,9 +23,9 @@
         }
 
         [Fact]
-        public void One_generic_type_argument()
+        public void Handles_one_generic_type_argument()
         {
-            var g = new DynamicGraph();
+            var g = new Graph();
             g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
@@ -41,9 +40,9 @@
         }
 
         [Fact]
-        public void Two_generic_type_arguments()
+        public void Handles_two_generic_type_arguments()
         {
-            var g = new DynamicGraph();
+            var g = new Graph();
             g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
@@ -59,9 +58,9 @@
         }
 
         [Fact]
-        public void Three_generic_type_arguments()
+        public void Handles_three_generic_type_arguments()
         {
-            var g = new DynamicGraph();
+            var g = new Graph();
             g.LoadFromString(@"
 <urn:s> <urn:p> ""a""@en .
 <urn:s> <urn:p> ""b""@en .
@@ -78,7 +77,7 @@
             Func<object, string> elementSelector = n => ((ILiteralNode)n).Value;
 
             var result = objects.GroupBy(keySelector, elementSelector);
-            
+
             Assert.Collection(
                 (IEnumerable<IGrouping<object, object>>)result,
                 group =>
@@ -92,6 +91,30 @@
                     Assert.Equal(new[] { "c", "d" }, group);
                 }
             );
+        }
+
+        [Fact]
+        public void Existing_methods_pass_through()
+        {
+            var expected = new Graph();
+            expected.LoadFromString(@"
+<urn:s> <urn:s> <urn:o> .
+");
+
+            var g = new Graph();
+            g.LoadFromString(@"
+<urn:s> <urn:p> <urn:o> .
+<urn:s> <urn:s> <urn:o> .
+");
+
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var d = new DynamicNode(s);
+            dynamic objects = new DynamicObjectCollection(d, p);
+
+            objects.Clear();
+
+            Assert.Equal(expected, g);
         }
     }
 }

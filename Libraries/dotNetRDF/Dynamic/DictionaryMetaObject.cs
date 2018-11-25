@@ -2,29 +2,35 @@
 {
     using System.Collections.Generic;
     using System.Dynamic;
-    using System.Linq;
     using System.Linq.Expressions;
 
-    public class DictionaryMetaObject : DynamicMetaObject
+    internal class DictionaryMetaObject : EnumerableMetaObject
     {
-        public DictionaryMetaObject(Expression parameter, object value) : base(parameter, BindingRestrictions.Empty, value) { }
+        internal DictionaryMetaObject(Expression parameter, object value) : base(parameter, value) { }
 
         public override DynamicMetaObject BindGetMember(GetMemberBinder binder)
         {
-            return this.CreateMetaObject(this.CreateIndexExpression(binder.Name));
+            return binder.FallbackGetMember(
+                this,
+                CreateMetaObject(
+                    this.CreateIndexExpression(
+                        binder.Name)));
         }
 
         public override DynamicMetaObject BindSetMember(SetMemberBinder binder, DynamicMetaObject value)
         {
-            return this.CreateMetaObject(
-                Expression.Assign(
-                    this.CreateIndexExpression(binder.Name),
-                    value.Expression));
+            return binder.FallbackSetMember(
+                this,
+                value,
+                CreateMetaObject(
+                    Expression.Assign(
+                        this.CreateIndexExpression(binder.Name),
+                        value.Expression)));
         }
 
         public override IEnumerable<string> GetDynamicMemberNames()
         {
-            return (this.Value as IDictionary<string, object>)?.Keys ?? Enumerable.Empty<string>();
+            return ((IDictionary<string, object>)Value).Keys;
         }
 
         private IndexExpression CreateIndexExpression(string name)

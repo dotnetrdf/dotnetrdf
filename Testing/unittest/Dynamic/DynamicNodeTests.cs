@@ -45,7 +45,7 @@
             var s = g.CreateBlankNode();
             var d = new DynamicNode(s);
 
-            Assert.Throws<InvalidOperationException>(() => 
+            Assert.Throws<InvalidOperationException>(() =>
                 ((IUriNode)d).Uri
             );
         }
@@ -86,7 +86,7 @@
             var p = (IDynamicMetaObjectProvider)d;
             var mo = p.GetMetaObject(Expression.Empty());
 
-            Assert.IsType<DictionaryMetaObject>(mo);
+            Assert.NotNull(mo);
         }
     }
 }
