@@ -1,6 +1,18 @@
 ﻿Change Log
 ==========
 
+2.2
+---
+
+This release pulls together a number of minor features and enhancements provided by the user community.
+
+NEW: Performance improvements for the ontology builder classes (OntologyClass and OntologyProperty). Thanks to @DFinnh for the PR (#221)
+NEW: The TriG parser now supports the syntax of the most recent TriG recommendation. This is now the default syntax supported by the TriG parser. Thanks to @langsamu for the PR (#205, #208)
+NEW: SPARQL QueryBuilder now supports SPARQL VALUES clauses. Thanks to @tpluscode for the PR (#214)
+NEW: The Get...Node methods of the Graph class now include nodes used as predicates as well as those used as subjects and objects in the graph. (#209)
+FIX: Fix for the RDF/XML parser to better handle XML namespaces. Thanks to @glebkozh for the report. (#203)
+
+
 2.1
 ---
 
