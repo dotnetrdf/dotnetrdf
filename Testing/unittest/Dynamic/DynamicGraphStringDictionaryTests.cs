@@ -66,7 +66,7 @@
 
             actual[s1] = null;
 
-            Assert.Equal(expected as IGraph, actual as IGraph);
+            Assert.Equal<IGraph>(expected, actual);
         }
 
         [Fact]
@@ -94,7 +94,7 @@
 
             actual[s1] = new { p1 = "o" };
 
-            Assert.Equal(expected as IGraph, actual as IGraph);
+            Assert.Equal<IGraph>(expected, actual);
         }
 
         [Fact]
@@ -160,7 +160,7 @@
                 }
             );
 
-            Assert.Equal(expected as IGraph, actual as IGraph);
+            Assert.Equal<IGraph>(expected, actual);
         }
 
         [Fact]
@@ -182,7 +182,7 @@
                     { "p2" , "o2" }
             });
 
-            Assert.Equal(expected as IGraph, actual as IGraph);
+            Assert.Equal<IGraph>(expected, actual);
         }
 
         [Fact]
@@ -204,7 +204,7 @@
                 )
             );
 
-            Assert.Equal(expected as IGraph, actual as IGraph);
+            Assert.Equal<IGraph>(expected, actual);
         }
 
         [Fact]
@@ -430,7 +430,7 @@
 
             actual.Remove(s1);
 
-            Assert.Equal(expected as IGraph, actual as IGraph);
+            Assert.Equal<IGraph>(expected, actual);
         }
 
         [Fact]
@@ -492,7 +492,7 @@
                 )
             );
 
-            Assert.Equal(expected as IGraph, actual as IGraph);
+            Assert.Equal<IGraph>(expected, actual);
         }
 
         [Fact]
@@ -525,7 +525,7 @@
             );
 
 
-            Assert.Equal(expected as IGraph, actual as IGraph);
+            Assert.Equal<IGraph>(expected, actual);
         }
 
         [Fact]

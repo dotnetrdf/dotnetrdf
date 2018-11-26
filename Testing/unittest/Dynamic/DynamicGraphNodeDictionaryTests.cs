@@ -110,7 +110,7 @@
 
             d[s] = null;
 
-            Assert.Equal(expected as IGraph, d as IGraph);
+            Assert.Equal<IGraph>(expected, d);
         }
 
         [Fact]
@@ -187,7 +187,7 @@
                 o = new[] { "s", "p", "o" },
             };
 
-            Assert.Equal(expected as IGraph, d as IGraph);
+            Assert.Equal<IGraph>(expected, d);
         }
 
         [Fact]
@@ -280,7 +280,7 @@
                 }
             );
 
-            Assert.Equal(expected as IGraph, d as IGraph);
+            Assert.Equal<IGraph>(expected, d);
         }
 
         [Fact]
@@ -312,7 +312,7 @@
                     { d.CreateUriNode(new Uri("urn:o")) , new[] { s, p, o } }
             });
 
-            Assert.Equal(expected as IGraph, d as IGraph);
+            Assert.Equal<IGraph>(expected, d);
         }
 
         [Fact]
@@ -363,7 +363,7 @@
                 )
             );
 
-            Assert.Equal(expected as IGraph, d as IGraph);
+            Assert.Equal<IGraph>(expected, d);
         }
 
         [Fact]
@@ -380,7 +380,7 @@
 
             d.Add(s, new { p = o });
 
-            Assert.Equal(expected as IGraph, d as IGraph);
+            Assert.Equal<IGraph>(expected, d);
         }
 
         [Fact]
@@ -641,7 +641,7 @@
 
             actual.Remove(s1);
 
-            Assert.Equal(expected as IGraph, actual as IGraph);
+            Assert.Equal<IGraph>(expected, actual);
         }
 
         [Fact]
@@ -711,7 +711,7 @@
                 }
             );
 
-            Assert.Equal(expected as IGraph, actual as IGraph);
+            Assert.Equal<IGraph>(expected, actual);
         }
 
         [Fact]
@@ -792,7 +792,7 @@
                 }
             );
 
-            Assert.Equal(expected as IGraph, actual as IGraph);
+            Assert.Equal<IGraph>(expected, actual);
         }
 
         [Fact]
@@ -867,7 +867,7 @@
 
             d.Remove(new KeyValuePair<INode, object>(s, new { p = o }));
 
-            Assert.Equal(expected as IGraph, g as IGraph);
+            Assert.Equal<IGraph>(expected, g);
         }
 
         [Fact]

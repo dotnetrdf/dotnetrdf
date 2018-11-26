@@ -196,7 +196,7 @@ u:s u:p u:o .
                 }
             };
 
-            Assert.Equal(expected as IGraph, d as IGraph);
+            Assert.Equal<IGraph>(expected, d);
         }
 
         [Fact]

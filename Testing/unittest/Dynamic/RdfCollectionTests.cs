@@ -11,7 +11,7 @@
             var original = new object[] { 0, "a", 'a' };
             var collection = new RdfCollection(original);
 
-            Assert.Equal(original as IEnumerable, collection as IEnumerable);
+            Assert.Equal<IEnumerable>(original, collection);
         }
 
         [Fact]
@@ -20,7 +20,7 @@
             var original = string.Empty;
             var collection = new RdfCollection(original);
 
-            Assert.Equal(new[] { original } as object, collection as object);
+            Assert.Equal<object>(new[] { original }, collection);
         }
 
         [Fact]
@@ -29,7 +29,7 @@
             var original = new object[] { 0, "a", 'a' };
             var collection = new RdfCollection(original[0], original[1], original[2]);
 
-            Assert.Equal(original as IEnumerable, collection as IEnumerable);
+            Assert.Equal<IEnumerable>(original, collection);
         }
     }
 }

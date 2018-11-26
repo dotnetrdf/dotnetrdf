@@ -40,7 +40,7 @@
 
             d.s = new { p = "o" };
 
-            Assert.Equal(expected as IGraph, g as IGraph);
+            Assert.Equal<IGraph>(expected, g);
         }
 
         [Fact]
@@ -69,7 +69,7 @@
 
             dynamic d = g;
 
-            Assert.Equal(new Uri("urn:") as object, d.BaseUri as object);
+            Assert.Equal<object>(new Uri("urn:"), d.BaseUri);
         }
 
         [Fact]

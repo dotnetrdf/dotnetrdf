@@ -22,8 +22,8 @@
 
         public void Converts_native_data_types()
         {
-            var eg = new Graph();
-            eg.LoadFromString(@"
+            var g = new Graph();
+            g.LoadFromString(@"
 <http://example.com/s> <http://example.com/node> _:blank .
 <http://example.com/s> <http://example.com/uri> <http://example.com/uri> .
 <http://example.com/s> <http://example.com/bool> ""true""^^<http://www.w3.org/2001/XMLSchema#boolean> .
@@ -61,7 +61,7 @@
                 timespan = TimeSpan.MaxValue,
             };
 
-            Assert.Equal(eg as IGraph, d as IGraph);
+            Assert.Equal<IGraph>(g, d);
         }
 
         public void Requires_known_native_data_types()

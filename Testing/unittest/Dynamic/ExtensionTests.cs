@@ -1,34 +1,45 @@
 ﻿namespace VDS.RDF.Dynamic
 {
+    using System.Collections;
     using Xunit;
 
     public class ExtensionTests
     {
         [Fact]
-        public void m1()
+        public void Augments_graph()
         {
-            var value = new Graph().AsDynamic();
+            var g = new Graph();
+            g.LoadFromString(@"
+<urn:s> <urn:p> <urn:o> .
+");
+            var d = g.AsDynamic();
 
-            Assert.NotNull(value);
-            Assert.IsType<DynamicGraph>(value);
+            Assert.Equal<IGraph>(g, d);
+            Assert.IsType<DynamicGraph>(d);
         }
 
         [Fact]
-        public void m2()
+        public void Augments_node()
         {
-            var value = new Graph().CreateBlankNode().AsDynamic();
+            var g = new Graph();
+            g.LoadFromString(@"
+<urn:s> <urn:p> <urn:o> .
+");
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var d = s.AsDynamic();
 
-            Assert.NotNull(value);
-            Assert.IsType<DynamicNode>(value);
+            Assert.Equal<INode>(s, d);
+            Assert.IsType<DynamicNode>(d);
         }
 
         [Fact]
-        public void m3()
+        public void Augments_enumerable()
         {
-            var value = new[] { 0, 1, 2 }.AsRdfCollection();
+            var enumerable = new[] { 0, 1, 2 };
+            var d = enumerable.AsRdfCollection();
 
-            Assert.NotNull(value);
-            Assert.IsType<RdfCollection>(value);
+            Assert.Equal<IEnumerable>(enumerable, d);
+            Assert.IsType<RdfCollection>(d);
         }
     }
 }

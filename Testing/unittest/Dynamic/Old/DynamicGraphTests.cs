@@ -313,7 +313,7 @@
 
             d["s"] = new { p = UriFactory.Create("http://example.com/o") };
 
-            Assert.Equal(g as IGraph, d as IGraph);
+            Assert.Equal<IGraph>(g, d);
         }
 
         // TODO: all kinds of properties
@@ -326,7 +326,7 @@
 
             d["s"] = new CustomClass { p = UriFactory.Create("http://example.com/o") };
 
-            Assert.Equal(g as IGraph, d as IGraph);
+            Assert.Equal<IGraph>(g, d);
         }
 
         public void Setter_requires_base_uri()
@@ -346,7 +346,7 @@
             d1.s = new { p = "o" };
             d2["s"] = new { p = "o" };
 
-            Assert.Equal(d2 as Graph, d1 as Graph);
+            Assert.Equal<IGraph>(d2, d1);
         }
     }
 }
