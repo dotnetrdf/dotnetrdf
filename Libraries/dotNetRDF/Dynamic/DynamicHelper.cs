@@ -68,11 +68,6 @@
         // TODO: Rename, not just predicates
         internal static INode ConvertPredicate(Uri key, IGraph graph, Uri baseUri)
         {
-            if (graph is null)
-            {
-                throw new InvalidOperationException("missing graph");
-            }
-
             if (!key.IsAbsoluteUri)
             {
                 if (baseUri is null)
