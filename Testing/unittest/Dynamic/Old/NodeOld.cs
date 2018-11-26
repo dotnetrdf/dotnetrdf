@@ -98,42 +98,6 @@
             Assert.Equal(result, expected);
         }
 
-        public void ToString_delegates_to_graphNode()
-        {
-            var n = new Graph().CreateBlankNode();
-
-            dynamic d = n.AsDynamic();
-
-            Assert.Equal(
-                n.ToString(),
-                d.ToString());
-        }
-
-        public void GetHashCode_delegates_to_node()
-        {
-            var n = new Graph().CreateBlankNode();
-
-            dynamic d = n.AsDynamic();
-
-            Assert.Equal(
-                d.GetHashCode(),
-                d.GetHashCode());
-        }
-
-        public void Subject_base_uri_defaults_to_graph_base_uri1()
-        {
-            var d = new DynamicNode(new Graph().CreateBlankNode());
-
-            Assert.Null(d.BaseUri);
-        }
-
-        public void Subject_base_uri_defaults_to_graph_base_uri2()
-        {
-            var d = new DynamicNode(new Graph() { BaseUri = UriFactory.Create("http://example.com/") }.CreateBlankNode());
-
-            Assert.Equal(UriFactory.Create("http://example.com/"), d.BaseUri);
-        }
-
         public void Setter_delegates_to_index_setter()
         {
             var g1 = GenerateSPOGraph();

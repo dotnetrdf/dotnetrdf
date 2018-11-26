@@ -1,6 +1,7 @@
 ﻿namespace VDS.RDF.Dynamic
 {
     using System;
+    using System.Collections;
 
     public static class DynamicExtensions
     {
@@ -11,12 +12,13 @@
 
         public static dynamic AsDynamic(this INode node, Uri baseUri = null)
         {
-            if (!(node is IUriNode || node is IBlankNode))
-            {
-                throw new InvalidOperationException("Only URI and blank nodes.");
-            }
-
             return new DynamicNode(node, baseUri);
         }
+
+        public static IRdfCollection AsRdfCollection(this IEnumerable original)
+        {
+            return new RdfCollection(original);
+        }
+
     }
 }
