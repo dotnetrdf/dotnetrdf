@@ -18,7 +18,7 @@
 
         public void Add(T item)
         {
-            this.Add(item);
+            base.Add(item);
         }
 
         public bool Contains(T item)
@@ -28,7 +28,7 @@
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            base.CopyTo(array.Cast<INode>().ToArray(), arrayIndex);
+            this.Subjects.Select(Convert).ToArray().CopyTo(array, arrayIndex);
         }
 
         public bool Remove(T item)
