@@ -101,6 +101,7 @@
                 }
 
                 // TODO: It's wrong (side-effect unexpected by caller) to assert at this point
+                // TODO: Perhaps return a new derived INode representing collection?
                 return graph.AssertList(list, o => ConvertObject(o, graph));
             }
 

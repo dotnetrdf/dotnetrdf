@@ -16,17 +16,17 @@
                 args,
                 new DynamicMetaObject(
                     this.FindMethod(
-                        binder.Name,
+                        binder,
                         args),
                     BindingRestrictions.GetTypeRestriction(
-                        this.Expression, 
+                        this.Expression,
                         this.LimitType
                     )
                 )
             );
         }
 
-        private Expression FindMethod(string methodName, DynamicMetaObject[] args)
+        private Expression FindMethod(InvokeMemberBinder binder, DynamicMetaObject[] args)
         {
             InvalidOperationException invalid = null;
 
@@ -34,7 +34,17 @@
             {
                 try
                 {
-                    return Expression.Call(typeof(Enumerable), methodName, Enumerable.Repeat(typeof(object), i).ToArray(), Expression.Convert(this.Expression, this.RuntimeType).AsEnumerable().Union(args.Select(arg => arg.Expression)).ToArray());
+                    return
+                        Expression.Convert(
+                            Expression.Call(
+                                typeof(Enumerable),
+                                binder.Name,
+                                Enumerable.Repeat(typeof(object), i).ToArray(),
+                                Expression.Convert(
+                                    this.Expression,
+                                    this.RuntimeType).AsEnumerable().Union(args.Select(arg => arg.Expression)).ToArray()),
+                            binder.ReturnType
+                        );
                 }
                 catch (InvalidOperationException e)
                 {
