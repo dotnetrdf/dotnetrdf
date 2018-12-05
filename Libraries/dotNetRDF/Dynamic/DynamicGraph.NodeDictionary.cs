@@ -58,7 +58,7 @@
         {
             get
             {
-                return UriNodes.ToArray();
+                return UriNodes.Cast<INode>().ToList();
             }
         }
 
@@ -191,7 +191,7 @@
                 return false;
             }
 
-            return Retract(GetTriplesWithSubject(subject).ToArray());
+            return Retract(GetTriplesWithSubject(subject).ToList());
         }
 
         public bool Remove(INode subject, object predicateAndObjects)

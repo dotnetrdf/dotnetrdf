@@ -62,7 +62,7 @@
         {
             get
             {
-                return PredicateNodes.ToArray();
+                return PredicateNodes.Cast<INode>().ToList();
             }
         }
 
@@ -135,7 +135,7 @@
                 return false;
             }
 
-            return Graph.Retract(Graph.GetTriplesWithSubjectPredicate(this, predicate).ToArray());
+            return Graph.Retract(Graph.GetTriplesWithSubjectPredicate(this, predicate).ToList());
         }
 
         // TODO: Fails because wrong conversion of RDF collection objects

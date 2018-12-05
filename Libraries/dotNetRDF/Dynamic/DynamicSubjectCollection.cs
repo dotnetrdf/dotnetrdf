@@ -50,7 +50,7 @@
 
         public void Clear()
         {
-            @object.Graph.Retract(@object.Graph.GetTriplesWithPredicateObject(predicate, @object).ToArray());
+            @object.Graph.Retract(@object.Graph.GetTriplesWithPredicateObject(predicate, @object).ToList());
         }
 
         public bool Contains(INode item)
@@ -64,7 +64,7 @@
 
         public bool Remove(INode item)
         {
-            return @object.Graph.Retract(@object.Graph.GetTriplesWithPredicateObject(predicate, @object).WithSubject(DynamicHelper.ConvertObject(item, @object.Graph)).ToArray());
+            return @object.Graph.Retract(@object.Graph.GetTriplesWithPredicateObject(predicate, @object).WithSubject(DynamicHelper.ConvertObject(item, @object.Graph)).ToList());
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
