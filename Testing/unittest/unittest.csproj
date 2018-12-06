@@ -27,4 +27,10 @@
     <Compile Include="**\*.cs" Exclude="obj\**\*cs;**\*.NetFull.cs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="resources\**\*.*;resources\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

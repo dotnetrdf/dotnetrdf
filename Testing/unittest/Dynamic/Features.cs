@@ -51,50 +51,5 @@
 
             Assert.Equal<IGraph>(expected, d);
         }
-
-        public void Converts_objects_to_native_datatypes()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
-@prefix : <urn:> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-
-:s
-    :p
-        :x ,
-        _:blank ,
-        0E0 ,
-        ""0""^^xsd:float ,
-        0.0 ,
-        false ,
-        ""1900-01-01""^^xsd:dateTime ,
-        ""P1D""^^xsd:duration ,
-        0 ,
-        """" ,
-        """"^^:datatype ,
-        """"@en ,
-        (0 1) .
-");
-
-            var s = g.CreateUriNode(":s");
-            var p = g.CreateUriNode(":p");
-            var d = new DynamicNode(s);
-            var c = new DynamicObjectCollection(d, p);
-            var o = c.ToArray();
-
-            Assert.IsType<DynamicNode>(o[0]);
-            Assert.IsType<DynamicNode>(o[1]);
-            Assert.IsType<double>(o[2]);
-            Assert.IsType<float>(o[3]);
-            Assert.IsType<decimal>(o[4]);
-            Assert.IsType<bool>(o[5]);
-            Assert.IsType<DateTimeOffset>(o[6]);
-            Assert.IsType<TimeSpan>(o[7]);
-            Assert.IsType<long>(o[8]);
-            Assert.IsType<string>(o[9]);
-            Assert.IsAssignableFrom<ILiteralNode>(o[10]);
-            Assert.IsAssignableFrom<ILiteralNode>(o[11]);
-            Assert.IsType<DynamicCollectionList>(o[12]);
-        }
     }
 }
