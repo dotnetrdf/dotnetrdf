@@ -96,7 +96,16 @@
 
         public void Add(object item)
         {
-            node.Graph.AddToList(node, DynamicHelper.ConvertObject(item, node.Graph).AsEnumerable());
+            var nodes = DynamicHelper.ConvertObject(item, node.Graph).AsEnumerable();
+
+            if (node.IsListRoot(node.Graph))
+            {
+                this.node.Graph.AddToList(this.node, nodes);
+            }
+            else
+            {
+                node.Graph.AssertList(node, nodes);
+            }
         }
 
         public void Clear()
@@ -137,24 +146,22 @@
             }
 
             var nodes = Nodes.ToList();
+
             Clear();
             nodes.Insert(index, DynamicHelper.ConvertObject(item, node.Graph));
-            node.Graph.AssertList(node, nodes);
+            nodes.ForEach(Add);
         }
 
         public bool Remove(object item)
         {
             if (item is null)
             {
-                throw new ArgumentNullException(nameof(item), "inserting a null into an RDF Collection makes no sense");
+                throw new ArgumentNullException(nameof(item), "removing a null from an RDF Collection makes no sense");
             }
 
             if (Contains(item))
             {
-                var nodes = Nodes.ToList();
-                Clear();
-                nodes.Remove(DynamicHelper.ConvertObject(item, node.Graph));
-                node.Graph.AssertList(node, nodes);
+                this.node.Graph.RemoveFromList(this.node, DynamicHelper.ConvertObject(item, this.node.Graph).AsEnumerable());
 
                 return true;
             }

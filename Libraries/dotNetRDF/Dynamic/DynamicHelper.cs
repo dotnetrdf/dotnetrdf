@@ -92,18 +92,18 @@
 
         internal static INode ConvertObject(object value, IGraph graph)
         {
-            if (value is IRdfCollection values)
-            {
-                var list = new List<object>();
-                foreach (var item in values)
-                {
-                    list.Add(item);
-                }
+            //if (value is IRdfCollection values)
+            //{
+            //    var list = new List<object>();
+            //    foreach (var item in values)
+            //    {
+            //        list.Add(item);
+            //    }
 
-                // TODO: It's wrong (side-effect unexpected by caller) to assert at this point
-                // TODO: Perhaps return a new derived INode representing collection?
-                return graph.AssertList(list, o => ConvertObject(o, graph));
-            }
+            //    // TODO: It's wrong (side-effect unexpected by caller) to assert at this point
+            //    // TODO: Perhaps return a new derived INode representing collection?
+            //    return graph.AssertList(list, o => ConvertObject(o, graph));
+            //}
 
             switch (value)
             {

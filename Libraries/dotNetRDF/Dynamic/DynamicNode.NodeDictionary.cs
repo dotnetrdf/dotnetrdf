@@ -78,7 +78,21 @@
                 throw new ArgumentNullException(nameof(objects));
             }
 
-            Graph.Assert(ConvertToTriples(predicate, objects));
+            if (objects is IRdfCollection collection)
+            {
+                var list = new List<object>();
+                foreach (var item in collection)
+                {
+                    list.Add(item);
+                }
+
+                var root = Graph.AssertList(list, x => DynamicHelper.ConvertObject(x, Graph));
+                Graph.Assert(this, predicate, root);
+            }
+            else
+            {
+                Graph.Assert(ConvertToTriples(predicate, objects));
+            }
         }
 
         void ICollection<KeyValuePair<INode, object>>.Add(KeyValuePair<INode, object> item)
@@ -98,9 +112,16 @@
                 return false;
             }
 
-            var g = new Graph();
-            g.Assert(ConvertToTriples(predicate.CopyNode(g), objects));
-            return Graph.HasSubGraph(g);
+            if (objects is IRdfCollection collection)
+            {
+                return FindListRoots(collection).Any();
+            }
+            else
+            {
+                var g = new Graph();
+                g.Assert(ConvertToTriples(predicate.CopyNode(g), objects));
+                return Graph.HasSubGraph(g);
+            }
         }
 
         bool ICollection<KeyValuePair<INode, object>>.Contains(KeyValuePair<INode, object> item)
@@ -151,7 +172,21 @@
                 return false;
             }
 
-            return Graph.Retract(ConvertToTriples(predicate, objects));
+            if (objects is IRdfCollection collection)
+            {
+                var collectionTriples = Graph.GetTriplesWithSubjectPredicate(this, predicate).Where(t => t.Object.IsListRoot(Graph) && SameList(t.Object, collection));
+                foreach (var collectionTriple in collectionTriples.ToList())
+                {
+                    Graph.RetractList(collectionTriple.Object);
+                    Graph.Retract(collectionTriple);
+                }
+
+                return collectionTriples.Any();
+            }
+            else
+            {
+                return Graph.Retract(ConvertToTriples(predicate, objects));
+            }
         }
 
         bool ICollection<KeyValuePair<INode, object>>.Remove(KeyValuePair<INode, object> item)
@@ -175,8 +210,7 @@
         private IEnumerable<Triple> ConvertToTriples(INode predicate, object value)
         {
             // Strings are enumerable but not for our case
-            // RDF collections are also enumerable but have special treatment
-            if (value is IRdfCollection || value is string || !(value is IEnumerable enumerable))
+            if (value is string || value is IRdfCollection || !(value is IEnumerable enumerable))
             {
                 enumerable = value.AsEnumerable(); // When they're not enumerable, wrap them in an enumerable of one
             }
@@ -194,5 +228,55 @@
                 }
             }
         }
+
+
+
+
+
+        public IEnumerable<INode> FindListRoots(IRdfCollection items)
+        {
+            return ListRoots().Where(n => SameList(n, items));
+        }
+
+        public IEnumerable<INode> ListRoots()
+        {
+            return Graph.Triples.SubjectNodes.BlankNodes().Where(n => n.IsListRoot(Graph));
+        }
+
+        private bool SameList(INode root, IRdfCollection items)
+        {
+            if (root.Graph is null)
+            {
+                throw new InvalidOperationException("Root node must have Graph");
+            }
+
+            var originalList = root.Graph.GetListItems(root).GetEnumerator();
+            var list = items.GetEnumerator();
+
+            while (true)
+            {
+                var originalListMoved = originalList.MoveNext();
+                var listMoved = list.MoveNext();
+
+                // different list lengths
+                if (originalListMoved != listMoved)
+                {
+                    return false;
+                }
+
+                // both finished
+                if (!originalListMoved)
+                {
+                    return true;
+                }
+
+                // items differ
+                if (!originalList.Current.Equals(DynamicHelper.ConvertObject(list.Current, root.Graph)))
+                {
+                    return false;
+                }
+            }
+        }
+
     }
 }
