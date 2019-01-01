@@ -7,9 +7,8 @@
 
     public class DynamicGraphDictionaryTests
     {
-        // TODO: Rename
         [Fact]
-        public void Values()
+        public void Values_are_dynamic_uri_nodes()
         {
             var d = new DynamicGraph();
             d.LoadFromString(@"
@@ -36,9 +35,8 @@ _:s3 <urn:p6> <urn:o12> .
             }
         }
 
-        // TODO: Rename
         [Fact]
-        public void Count()
+        public void Counts_uri_nodes()
         {
             var d = new DynamicGraph();
             d.LoadFromString(@"

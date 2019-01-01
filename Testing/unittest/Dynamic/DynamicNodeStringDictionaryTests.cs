@@ -20,7 +20,6 @@
             );
         }
 
-        // TODO: Improve
         [Fact]
         public void Get_index_returns_dynamic_objects()
         {
@@ -31,11 +30,15 @@
 
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = "urn:p";
+            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
             var d = new DynamicNode(s);
 
             var actual = d[p];
 
-            Assert.IsType<DynamicObjectCollection>(actual);
+            var objects = Assert.IsType<DynamicObjectCollection>(actual);
+            Assert.Collection(
+                objects,
+                @object => Assert.Equal(o, @object));
         }
 
         [Fact]
