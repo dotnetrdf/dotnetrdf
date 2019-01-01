@@ -27,8 +27,7 @@
         0 ,
         """" ,
         """"^^:datatype ,
-        """"@en ,
-        (0 1) .
+        """"@en .
 ");
 
             var s = g.CreateUriNode(":s");
@@ -49,8 +48,7 @@
                 item => Assert.IsType<long>(item),
                 item => Assert.IsType<string>(item),
                 item => Assert.IsAssignableFrom<ILiteralNode>(item),
-                item => Assert.IsAssignableFrom<ILiteralNode>(item),
-                item => Assert.IsType<DynamicCollectionList>(item)
+                item => Assert.IsAssignableFrom<ILiteralNode>(item)
             );
         }
 
@@ -169,8 +167,7 @@ u:s u:p u:o .
         ""2147483647""^^xsd:integer ,
         """" ,
         ""\uFFFF"" ,
-        ""P10675199DT2H48M5.4775807S""^^xsd:duration ,
-        (0 1) .
+        ""P10675199DT2H48M5.4775807S""^^xsd:duration .
 ");
 
             var d = new DynamicGraph { BaseUri = UriFactory.Create("urn:") };
@@ -191,8 +188,7 @@ u:s u:p u:o .
                     int.MaxValue,
                     string.Empty,
                     char.MaxValue,
-                    TimeSpan.MaxValue,
-                    new RdfCollection(0, 1)
+                    TimeSpan.MaxValue
                 }
             };
 

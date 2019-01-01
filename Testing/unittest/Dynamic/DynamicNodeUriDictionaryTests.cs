@@ -175,26 +175,6 @@
         }
 
         [Fact]
-        public void Add_handles_collections()
-        {
-            var expected = new Graph();
-            expected.LoadFromString(@"
-@prefix : <urn:> .
-
-<urn:s> <urn:p> (""a"" ""b"" ""c"") .
-");
-
-            var g = new Graph();
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = UriFactory.Create("urn:p");
-            var d = new DynamicNode(s);
-
-            d.Add(p, new RdfCollection("a", "b", "c"));
-
-            Assert.Equal(expected, g);
-        }
-
-        [Fact]
         public void Add_handles_strings()
         {
             var expected = new Graph();
@@ -325,24 +305,6 @@
             var d = new DynamicNode(s);
 
             Assert.True(d.Contains(p, "o"));
-        }
-
-        [Fact]
-        public void Contains_handles_collections()
-        {
-            var g = new Graph();
-            g.LoadFromString(@"
-@prefix : <urn:> .
-
-:s :p (:s :p :o) .
-");
-
-            var s = UriFactory.Create("urn:s");
-            var p = UriFactory.Create("urn:p");
-            var o = UriFactory.Create("urn:o");
-            var d = new DynamicNode(g.CreateUriNode(s));
-
-            Assert.True(d.Contains(p, new RdfCollection(s, p, o)));
         }
 
         [Fact]
@@ -803,50 +765,6 @@
             var d = new DynamicNode(actual.CreateUriNode(s));
 
             d.Remove(p, new[] { s, p, o });
-
-            Assert.Equal(expected, actual);
-        }
-
-        // TODO: This really fails. Sort out removing collections
-        [Fact]
-        public void Remove_po_handles_collections()
-        {
-            var expected = new Graph();
-            expected.LoadFromString(@"
-@prefix : <urn:> .
-
-:s :s (:s :p :o) .
-# :s :p (:s :p :o) .
-:s :o (:s :p :o) .
-:p :s (:s :p :o) .
-:p :p (:s :p :o) .
-:p :o (:s :p :o) .
-:o :s (:s :p :o) .
-:o :p (:s :p :o) .
-:o :o (:s :p :o) .
-");
-
-            var actual = new Graph();
-            actual.LoadFromString(@"
-@prefix : <urn:> .
-
-:s :s (:s :p :o) .
-:s :p (:s :p :o) . # should retract
-:s :o (:s :p :o) .
-:p :s (:s :p :o) .
-:p :p (:s :p :o) .
-:p :o (:s :p :o) .
-:o :s (:s :p :o) .
-:o :p (:s :p :o) .
-:o :o (:s :p :o) .
-");
-
-            var s = UriFactory.Create("urn:s");
-            var p = UriFactory.Create("urn:p");
-            var o = UriFactory.Create("urn:o");
-            var d = new DynamicNode(actual.CreateUriNode(s));
-
-            d.Remove(p, new RdfCollection(s, p, o));
 
             Assert.Equal(expected, actual);
         }

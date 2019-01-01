@@ -1,7 +1,6 @@
 ﻿namespace VDS.RDF.Dynamic
 {
     using System;
-    using System.Collections.Generic;
     using System.Text.RegularExpressions;
     using VDS.RDF.Nodes;
 
@@ -12,14 +11,7 @@
             switch (node.AsValuedNode())
             {
                 case IUriNode uriNode:
-                    return new DynamicNode(node, baseUri);
-
                 case IBlankNode blankNode:
-                    if (node.IsListRoot(node.Graph))
-                    {
-                        return new DynamicCollectionList(node, baseUri);
-                    }
-
                     return new DynamicNode(node, baseUri);
 
                 case DoubleNode doubleNode:
@@ -92,19 +84,6 @@
 
         internal static INode ConvertObject(object value, IGraph graph)
         {
-            //if (value is IRdfCollection values)
-            //{
-            //    var list = new List<object>();
-            //    foreach (var item in values)
-            //    {
-            //        list.Add(item);
-            //    }
-
-            //    // TODO: It's wrong (side-effect unexpected by caller) to assert at this point
-            //    // TODO: Perhaps return a new derived INode representing collection?
-            //    return graph.AssertList(list, o => ConvertObject(o, graph));
-            //}
-
             switch (value)
             {
                 case INode nodeValue:

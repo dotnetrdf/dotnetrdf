@@ -1,7 +1,6 @@
 ﻿namespace VDS.RDF.Dynamic
 {
     using System;
-    using System.Collections;
 
     public static class DynamicExtensions
     {
@@ -14,11 +13,5 @@
         {
             return new DynamicNode(node, baseUri);
         }
-
-        public static IRdfCollection AsRdfCollection(this IEnumerable original)
-        {
-            return new RdfCollection(original);
-        }
-
     }
 }

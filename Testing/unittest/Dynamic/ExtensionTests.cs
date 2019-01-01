@@ -1,6 +1,5 @@
 ﻿namespace VDS.RDF.Dynamic
 {
-    using System.Collections;
     using Xunit;
 
     public class ExtensionTests
@@ -30,16 +29,6 @@
 
             Assert.Equal<INode>(s, d);
             Assert.IsType<DynamicNode>(d);
-        }
-
-        [Fact]
-        public void Augments_enumerable()
-        {
-            var enumerable = new[] { 0, 1, 2 };
-            var d = enumerable.AsRdfCollection();
-
-            Assert.Equal<IEnumerable>(enumerable, d);
-            Assert.IsType<RdfCollection>(d);
         }
     }
 }
