@@ -174,7 +174,7 @@
         private IEnumerable<Triple> ConvertToTriples(INode predicate, object value)
         {
             // Strings are enumerable but not for our case
-            if (value is string || !(value is IEnumerable enumerable))
+            if (value is string || value is DynamicNode || !(value is IEnumerable enumerable))
             {
                 enumerable = value.AsEnumerable(); // When they're not enumerable, wrap them in an enumerable of one
             }
