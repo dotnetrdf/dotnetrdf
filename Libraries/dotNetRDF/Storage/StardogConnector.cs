@@ -457,7 +457,7 @@ namespace VDS.RDF.Storage
                     if (reasoning)
                     {
                         postData.Append("reasoning=");
-                        postData.Append(reasoning.ToString()+"&");
+                        postData.Append(reasoning.ToString() + "&");
                     }
                     postData.Append("query=");
                     postData.Append(HttpUtility.UrlEncode(sparqlQuery));
@@ -471,7 +471,7 @@ namespace VDS.RDF.Storage
                 Tools.HttpDebugRequest(request);
 
                 // Get the Response and process based on the Content Type
-                using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
 
@@ -578,7 +578,7 @@ namespace VDS.RDF.Storage
 
                 Tools.HttpDebugRequest(request);
 
-                using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
 
@@ -636,7 +636,7 @@ namespace VDS.RDF.Storage
 
                 Tools.HttpDebugRequest(request);
 
-                using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
                     // If we get here then it was OK
@@ -716,7 +716,7 @@ namespace VDS.RDF.Storage
                         store.Add(g);
                         _writer.Save(store, new StreamWriter(request.GetRequestStream()));
 
-                        using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
+                        using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                         {
                             response.Close();
                         }
@@ -740,7 +740,7 @@ namespace VDS.RDF.Storage
                         store.Add(g);
                         _writer.Save(store, new StreamWriter(request.GetRequestStream()));
 
-                        using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
+                        using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                         {
                             response.Close();
                         }
@@ -792,7 +792,7 @@ namespace VDS.RDF.Storage
         {
             if (graphUri == null || graphUri.Equals(string.Empty))
             {
-                UpdateGraph((Uri) null, additions, removals);
+                UpdateGraph((Uri)null, additions, removals);
             }
             else
             {
@@ -835,7 +835,7 @@ namespace VDS.RDF.Storage
 
                 Tools.HttpDebugRequest(request);
 
-                using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
                     // If we get here then the Delete worked OK
@@ -889,14 +889,14 @@ namespace VDS.RDF.Storage
                 if (results is SparqlResultSet)
                 {
                     List<Uri> graphs = new List<Uri>();
-                    foreach (SparqlResult r in ((SparqlResultSet) results))
+                    foreach (SparqlResult r in ((SparqlResultSet)results))
                     {
                         if (r.HasValue("g"))
                         {
                             INode temp = r["g"];
                             if (temp.NodeType == NodeType.Uri)
                             {
-                                graphs.Add(((IUriNode) temp).Uri);
+                                graphs.Add(((IUriNode)temp).Uri);
                             }
                         }
                     }
@@ -1013,7 +1013,7 @@ namespace VDS.RDF.Storage
                         {
                             try
                             {
-                                var response = (HttpWebResponse) request.EndGetResponse(r2);
+                                var response = (HttpWebResponse)request.EndGetResponse(r2);
                                 Tools.HttpDebugResponse(response);
 
                                 // If we get here then it was OK
@@ -1151,7 +1151,7 @@ namespace VDS.RDF.Storage
                 {
                     try
                     {
-                        HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(r);
+                        HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
                         Tools.HttpDebugResponse(response);
 
                         IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
@@ -1278,7 +1278,7 @@ namespace VDS.RDF.Storage
                             // Save the Data as TriG to the Request Stream
                             var stream = request.EndGetRequestStream(r);
                             var store = new TripleStore();
-                            var g = new Graph {BaseUri = graphUri.ToSafeUri()};
+                            var g = new Graph { BaseUri = graphUri.ToSafeUri() };
                             g.Assert(removals);
                             store.Add(g);
                             _writer.Save(store, new StreamWriter(stream));
@@ -1288,7 +1288,7 @@ namespace VDS.RDF.Storage
                             {
                                 try
                                 {
-                                    HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(r2);
+                                    HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
                                     Tools.HttpDebugResponse(response);
 
                                     // If we get here then it was OK
@@ -1308,7 +1308,7 @@ namespace VDS.RDF.Storage
                                                 // Save the Data as TriG to the Request Stream
                                                 stream = request.EndGetRequestStream(r3);
                                                 store = new TripleStore();
-                                                g = new Graph {BaseUri = graphUri.ToSafeUri()};
+                                                g = new Graph { BaseUri = graphUri.ToSafeUri() };
                                                 g.Assert(additions);
                                                 store.Add(g);
                                                 _writer.Save(store, new StreamWriter(stream));
@@ -1319,7 +1319,7 @@ namespace VDS.RDF.Storage
                                                 {
                                                     try
                                                     {
-                                                        response = (HttpWebResponse) request.EndGetResponse(r4);
+                                                        response = (HttpWebResponse)request.EndGetResponse(r4);
                                                         Tools.HttpDebugResponse(response);
 
                                                         // If we get here then it was OK
@@ -1512,7 +1512,7 @@ namespace VDS.RDF.Storage
                             {
                                 try
                                 {
-                                    HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(r2);
+                                    HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
                                     Tools.HttpDebugResponse(response);
 
                                     // If we get here then it was OK
@@ -1685,7 +1685,7 @@ namespace VDS.RDF.Storage
                 {
                     try
                     {
-                        HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(r);
+                        HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
 
                         Tools.HttpDebugResponse(response);
                         // If we get here then the Delete worked OK
@@ -1840,7 +1840,7 @@ namespace VDS.RDF.Storage
                         {
                             try
                             {
-                                HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(r2);
+                                HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
                                 Tools.HttpDebugResponse(response);
 
                                 StreamReader data = new StreamReader(response.GetResponseStream());
@@ -1932,10 +1932,10 @@ namespace VDS.RDF.Storage
                 }
             }
 
-            requestUri += GetReasoningParameter();
+            if (Reasoning != StardogReasoningMode.DatabaseControlled) requestUri += GetReasoningParameter();
 
             // Create our Request
-            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(requestUri);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
             request.Accept = accept;
             request.Method = method;
             request = ApplyRequestOptions(request);
@@ -2021,19 +2021,23 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Start a transaction
         /// </summary>
+        /// <param name="enableReasoning">Opens the transaction with reasoning enabled.</param>
         /// <returns>A transaction ID for the new transaction</returns>
-        protected virtual string BeginTransaction()
+        protected virtual string BeginTransaction(bool enableReasoning = false)
         {
             string tID = null;
 
+            var queryParams = new Dictionary<string, string>();
+            if (enableReasoning) queryParams.Add("reasoning", "true");
+
             HttpWebRequest request = CreateRequest(_kb + "/transaction/begin", "text/plain"
-                /*MimeTypesHelper.Any*/, "POST", new Dictionary<string, string>());
+                /*MimeTypesHelper.Any*/, "POST", queryParams);
             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
             try
             {
                 Tools.HttpDebugRequest(request);
 
-                using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                     {
@@ -2069,7 +2073,7 @@ namespace VDS.RDF.Storage
 
             Tools.HttpDebugRequest(request);
 
-            using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
             {
                 Tools.HttpDebugResponse(response);
                 response.Close();
@@ -2091,7 +2095,7 @@ namespace VDS.RDF.Storage
             var request = CreateRequest(_kb + "/transaction/rollback/" + tID, MimeTypesHelper.Any,
                 "POST", new Dictionary<string, string>());
             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
-            using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
             {
                 response.Close();
             }
@@ -2111,6 +2115,17 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public virtual void Begin()
         {
+            Begin(false);
+        }
+        /// <summary>
+        /// Begins a new Transaction
+        /// </summary>
+        /// <param name="enableReasoning">Opens the transaction with reasoning enabled.</param>
+        /// <remarks>
+        /// A single transaction
+        /// </remarks>
+        public virtual void Begin(bool enableReasoning)
+        {
             try
             {
                 Monitor.Enter(this);
@@ -2119,7 +2134,7 @@ namespace VDS.RDF.Storage
                     throw new RdfStorageException(
                         "Cannot start a new Transaction as there is already an active Transaction");
                 }
-                _activeTrans = BeginTransaction();
+                _activeTrans = BeginTransaction(enableReasoning);
             }
             finally
             {
@@ -2205,7 +2220,7 @@ namespace VDS.RDF.Storage
                         {
                             try
                             {
-                                HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(r);
+                                HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
                                 string tID;
                                 using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                                 {
@@ -2298,7 +2313,7 @@ namespace VDS.RDF.Storage
                         {
                             try
                             {
-                                HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(r);
+                                HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
 
                                 Tools.HttpDebugResponse(response);
                                 response.Close();
@@ -2377,7 +2392,7 @@ namespace VDS.RDF.Storage
                         {
                             try
                             {
-                                HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(r);
+                                HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
                                 response.Close();
                                 _activeTrans = null;
                                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.TransactionRollback),
@@ -2786,7 +2801,7 @@ namespace VDS.RDF.Storage
                 Tools.HttpDebugRequest(request);
 
                 // Check the response
-                using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
 
@@ -2839,7 +2854,7 @@ namespace VDS.RDF.Storage
                         {
                             try
                             {
-                                using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(r2))
+                                using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2))
                                 {
                                     Tools.HttpDebugResponse(response);
                                     // If we get here the update completed OK
@@ -3020,6 +3035,6 @@ namespace VDS.RDF.Storage
             : base(baseUri, kbID, username, password, proxy)
         {
         }
-        
+
     }
 }
