@@ -5,15 +5,6 @@
     using VDS.RDF;
     using Xunit;
 
-    internal class Test : DynamicNode
-    {
-        public Test(INode node) : base(node, new Uri("urn:")) { }
-
-        public ICollection<Test> ComplexProperty => new DynamicObjectCollection<Test>(this, "complex");
-
-        public ICollection<string> PrimitiveProperty => new DynamicObjectCollection<string>(this, "primitive");
-    }
-
     public class DynamiObjectCollectionTTests
     {
         [Fact]
@@ -119,6 +110,15 @@
             Assert.Equal(
                 expected,
                 g);
+        }
+
+        internal class Test : DynamicNode
+        {
+            public Test(INode node) : base(node, new Uri("urn:")) { }
+
+            public ICollection<Test> ComplexProperty => new DynamicObjectCollection<Test>(this, "complex");
+
+            public ICollection<string> PrimitiveProperty => new DynamicObjectCollection<string>(this, "primitive");
         }
     }
 }

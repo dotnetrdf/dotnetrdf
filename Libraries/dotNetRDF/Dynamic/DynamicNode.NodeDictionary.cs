@@ -99,7 +99,7 @@
             }
 
             var g = new Graph();
-            g.Assert(ConvertToTriples(predicate.CopyNode(g), objects));
+            g.Assert(ConvertToTriples(predicate, objects));
             return Graph.HasSubGraph(g);
         }
 

@@ -36,7 +36,7 @@
                     "mailto:rvesse@vdesign-studios.com",
                     "mailto:rvesse@yarcdata.com"
                 },
-                ((DynamicObjectCollection)mbox).Select(mb => mb.ToString())
+                ((IEnumerable<object>)mbox).Select(mb => mb.ToString())
             );
             Assert.Equal("6E2497EB", hex_id);
         }

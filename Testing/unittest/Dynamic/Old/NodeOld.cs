@@ -86,41 +86,5 @@
 
             Assert.Contains(element, collection);
         }
-
-        public void Property_access_is_translated_to_indexing_with_relative_uri_strings()
-        {
-            var g = GenerateSPOGraph();
-            var s = g.GetTriplesWithSubject(ex_s).Single().Subject;
-            dynamic d = s.AsDynamic(exampleBase);
-            var result = (d.p as ICollection<object>).Single();
-            var expected = (d["p"] as ICollection<object>).Single();
-
-            Assert.Equal(result, expected);
-        }
-
-        public void Setter_delegates_to_index_setter()
-        {
-            var g1 = GenerateSPOGraph();
-            var g2 = GenerateSPOGraph();
-            var n1 = g1.Triples.SubjectNodes.First().AsDynamic(exampleBase);
-            var n2 = g2.Triples.SubjectNodes.First().AsDynamic(exampleBase);
-
-            // TODO: Add support for value types
-            //var now = DateTimeOffset.Now;
-
-            n2["p"] = "x"; // now;
-            n1.p = "x"; // now;
-
-            Assert.Equal(g2, g1);
-        }
-
-        public void Setter_requires_base_uri()
-        {
-            var a = new Graph().CreateBlankNode().AsDynamic();
-
-            Assert.Throws<InvalidOperationException>(() =>
-                a.p = null
-            );
-        }
     }
 }

@@ -4,7 +4,6 @@
     using System.Dynamic;
     using System.Linq.Expressions;
 
-    // TODO: Remove subjectBaseUri in favour of just BaseUri?
     public partial class DynamicGraph : WrapperGraph, IDynamicMetaObjectProvider
     {
         private readonly Uri subjectBaseUri;
