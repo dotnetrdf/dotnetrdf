@@ -39,8 +39,7 @@ namespace VDS.RDF.Dynamic
         public void Requires_predicate()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                new DynamicSubjectCollection(null, null)
-            );
+                new DynamicSubjectCollection(null, null));
         }
 
         [Fact]
@@ -50,8 +49,7 @@ namespace VDS.RDF.Dynamic
             var p = g.CreateBlankNode();
 
             Assert.Throws<ArgumentNullException>(() =>
-                new DynamicSubjectCollection(p, null)
-            );
+                new DynamicSubjectCollection(p, null));
         }
 
         [Fact]

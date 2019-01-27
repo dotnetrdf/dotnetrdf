@@ -53,7 +53,8 @@ namespace VDS.RDF.Dynamic
             Assert.Equal("RobVesse", accountName);
             Assert.Equal(2, currentProjects.Count());
             Assert.Equal(
-                new[] {
+                new[]
+                {
                     "mailto:rav08r@ecs.soton.ac.uk",
                     "mailto:rvesse@apache.org",
                     "mailto:rvesse@cray.com",
@@ -61,8 +62,7 @@ namespace VDS.RDF.Dynamic
                     "mailto:rvesse@vdesign-studios.com",
                     "mailto:rvesse@yarcdata.com"
                 },
-                ((IEnumerable<object>)mbox).Select(mb => mb.ToString())
-            );
+                ((IEnumerable<object>)mbox).Select(mb => mb.ToString()));
             Assert.Equal("6E2497EB", hex_id);
         }
 
@@ -74,19 +74,21 @@ namespace VDS.RDF.Dynamic
 
             var g = new DynamicGraph();
             g.BaseUri = UriFactory.Create("http://example.org/");
-            g.NamespaceMap.AddNamespace("", UriFactory.Create("http://example.org/"));
+            g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Create("http://example.org/"));
             g.NamespaceMap.AddNamespace("rdfs", UriFactory.Create("http://www.w3.org/2000/01/rdf-schema#"));
 
             dynamic d = g;
 
-            d.one = new Dictionary<object, object> {
+            d.one = new Dictionary<object, object>
+            {
                 {
                     "rdf:type",
                     d.CreateUriNode("rdfs:Class")
                 },
                 {
                     "rdfs:label",
-                    new[] {
+                    new[]
+                    {
                         "Example Literal",
                         @"Example
      
@@ -97,7 +99,8 @@ Long Literal"
 
             d.two = new
             {
-                age = new object[] {
+                age = new object[]
+                {
                     23,
                     23.6m
                 }
@@ -105,7 +108,8 @@ Long Literal"
 
             d.three = new
             {
-                name = new object[] {
+                name = new object[]
+                {
                     "Name",
                     d.CreateLiteralNode("Nom", "fr")
                 }
@@ -124,8 +128,10 @@ Long Literal"
 
             d.six = new
             {
-                property = new object[] {
+                property = new object[]
+                {
                     d.CreateLiteralNode("value", d.CreateUriNode(":customDataType").Uri),
+                    
                     // Can't use DateTime because DateTimeNode default serialization is not as source
                     d.CreateLiteralNode("2009-08-25T13:15:00+01:00", d.CreateUriNode("xsd:dateTime").Uri)
                 }
@@ -134,13 +140,15 @@ Long Literal"
             d[d.CreateBlankNode()]["rdf:type"] = d.CreateUriNode(":BlankNode");
 
             var blankNodeCollection = d[d.CreateBlankNode()];
-            blankNodeCollection.property = new[] {
+            blankNodeCollection.property = new[]
+            {
                 d.CreateUriNode(":value"),
                 d.CreateUriNode(":otherValue")
             };
             blankNodeCollection["rdf:type"] = d.CreateUriNode(":BlankNodeCollection");
 
-            var collection = g.AssertList(new[] {
+            var collection = g.AssertList(new[]
+            {
                 g.CreateUriNode(":item1"),
                 g.CreateUriNode(":item2"),
                 g.CreateUriNode(":item3")

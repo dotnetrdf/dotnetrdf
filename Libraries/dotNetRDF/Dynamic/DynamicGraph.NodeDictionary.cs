@@ -34,6 +34,14 @@ namespace VDS.RDF.Dynamic
 
     public partial class DynamicGraph : IDictionary<INode, object>
     {
+        ICollection<INode> IDictionary<INode, object>.Keys
+        {
+            get
+            {
+                return UriNodes.Cast<INode>().ToList();
+            }
+        }
+
         private IEnumerable<IUriNode> UriNodes
         {
             get
@@ -73,18 +81,10 @@ namespace VDS.RDF.Dynamic
 
                 Remove(subject);
 
-                if (!(value is null))
+                if (value != null)
                 {
                     Add(subject, value);
                 }
-            }
-        }
-
-        ICollection<INode> IDictionary<INode, object>.Keys
-        {
-            get
-            {
-                return UriNodes.Cast<INode>().ToList();
             }
         }
 

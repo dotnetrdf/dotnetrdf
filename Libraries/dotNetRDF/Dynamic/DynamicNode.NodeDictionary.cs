@@ -33,6 +33,14 @@ namespace VDS.RDF.Dynamic
 
     public partial class DynamicNode : IDictionary<INode, object>
     {
+        ICollection<INode> IDictionary<INode, object>.Keys
+        {
+            get
+            {
+                return PredicateNodes.Cast<INode>().ToList();
+            }
+        }
+
         private IEnumerable<IUriNode> PredicateNodes
         {
             get
@@ -77,18 +85,10 @@ namespace VDS.RDF.Dynamic
 
                 Remove(predicate);
 
-                if (!(value is null))
+                if (value != null)
                 {
                     Add(predicate, value);
                 }
-            }
-        }
-
-        ICollection<INode> IDictionary<INode, object>.Keys
-        {
-            get
-            {
-                return PredicateNodes.Cast<INode>().ToList();
             }
         }
 
@@ -208,7 +208,7 @@ namespace VDS.RDF.Dynamic
             foreach (var @object in enumerable)
             {
                 // TODO: Maybe this should throw on null
-                if (!(@object is null))
+                if (@object != null)
                 {
                     // TODO: This is a mess
                     yield return new Triple(

@@ -34,11 +34,6 @@ namespace VDS.RDF.Dynamic.Old
     using VDS.RDF.Nodes;
     using Xunit;
 
-    public class CustomClass
-    {
-        public Uri p { get; set; }
-    }
-
     public class DynamicGraphTests
     {
         public void Indexing_supports_setting_wrapper_index()
@@ -174,8 +169,7 @@ namespace VDS.RDF.Dynamic.Old
             var d = new Graph().AsDynamic();
 
             Assert.Throws<InvalidOperationException>(() =>
-                d["s"]
-            );
+                d["s"]);
         }
 
         public void Property_access_requires_base_uri()
@@ -193,8 +187,7 @@ namespace VDS.RDF.Dynamic.Old
             var d = new Graph().AsDynamic();
 
             Assert.Throws<RdfException>(() =>
-                d["ex:s"]
-            );
+                d["ex:s"]);
         }
 
         public void Cant_get_index_with_illegal_uri()
@@ -202,8 +195,7 @@ namespace VDS.RDF.Dynamic.Old
             var d = new Graph().AsDynamic();
 
             Assert.Throws<FormatException>(() =>
-                d["http:///"]
-            );
+                d["http:///"]);
         }
 
         public void Cant_get_nonexistent_absolute_uri_string_index()
@@ -211,8 +203,7 @@ namespace VDS.RDF.Dynamic.Old
             var d = new Graph().AsDynamic();
 
             Assert.Throws<KeyNotFoundException>(() =>
-                d["http://example.com/nonexistent"]
-            );
+                d["http://example.com/nonexistent"]);
         }
 
         public void Cant_get_nonexistent_relative_uri_string_index()
@@ -230,8 +221,7 @@ namespace VDS.RDF.Dynamic.Old
             var d = new Graph().AsDynamic(UriFactory.Create("http://example.com/"));
 
             Assert.Throws<KeyNotFoundException>(() =>
-                d.nonexistent
-            );
+                d.nonexistent);
         }
 
         public void Indexing_requires_known_index_type()
@@ -239,8 +229,7 @@ namespace VDS.RDF.Dynamic.Old
             var d = new Graph().AsDynamic();
 
             Assert.Throws<RuntimeBinderException>(() =>
-                d[null]
-            );
+                d[null]);
         }
 
         public void Get_member()
@@ -349,7 +338,7 @@ namespace VDS.RDF.Dynamic.Old
 
             var d = new Graph().AsDynamic(UriFactory.Create("http://example.com/"));
 
-            d["s"] = new CustomClass { p = UriFactory.Create("http://example.com/o") };
+            d["s"] = new CustomClass { P = UriFactory.Create("http://example.com/o") };
 
             Assert.Equal<IGraph>(g, d);
         }
@@ -359,8 +348,7 @@ namespace VDS.RDF.Dynamic.Old
             var d = new Graph().AsDynamic();
 
             Assert.Throws<InvalidOperationException>(() =>
-                d.s = new { p = "o" }
-            );
+                d.s = new { p = "o" });
         }
 
         public void Setter_delegates_to_index_setter()
@@ -372,6 +360,11 @@ namespace VDS.RDF.Dynamic.Old
             d2["s"] = new { p = "o" };
 
             Assert.Equal<IGraph>(d2, d1);
+        }
+
+        public class CustomClass
+        {
+            public Uri P { get; set; }
         }
     }
 }

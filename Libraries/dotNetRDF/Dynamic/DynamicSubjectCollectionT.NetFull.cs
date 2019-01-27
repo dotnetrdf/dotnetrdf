@@ -29,10 +29,11 @@ namespace VDS.RDF.Dynamic
     using System.Collections.Generic;
     using System.Linq;
 
-    public class DynamicSubjectCollection<T> : DynamicSubjectCollection, ICollection<T> where T : INode
+    public class DynamicSubjectCollection<T> : DynamicSubjectCollection, ICollection<T>
+        where T : INode
     {
-        public DynamicSubjectCollection(string predicate, DynamicNode subject) :
-            base(
+        public DynamicSubjectCollection(string predicate, DynamicNode subject)
+            : base(
                 DynamicHelper.ConvertPredicate(
                     DynamicHelper.ConvertPredicate(
                         predicate,
@@ -40,7 +41,8 @@ namespace VDS.RDF.Dynamic
                     subject.Graph,
                     subject.BaseUri),
                 subject)
-        { }
+        {
+        }
 
         public void Add(T item)
         {

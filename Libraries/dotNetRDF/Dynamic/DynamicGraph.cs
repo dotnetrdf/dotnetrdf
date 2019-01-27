@@ -35,6 +35,13 @@ namespace VDS.RDF.Dynamic
         private readonly Uri subjectBaseUri;
         private readonly Uri predicateBaseUri;
 
+        public DynamicGraph(IGraph graph = null, Uri subjectBaseUri = null, Uri predicateBaseUri = null)
+            : base(graph ?? new Graph())
+        {
+            this.subjectBaseUri = subjectBaseUri;
+            this.predicateBaseUri = predicateBaseUri;
+        }
+
         public Uri SubjectBaseUri
         {
             get
@@ -49,12 +56,6 @@ namespace VDS.RDF.Dynamic
             {
                 return this.predicateBaseUri ?? this.SubjectBaseUri;
             }
-        }
-
-        public DynamicGraph(IGraph graph = null, Uri subjectBaseUri = null, Uri predicateBaseUri = null) : base(graph ?? new Graph())
-        {
-            this.subjectBaseUri = subjectBaseUri;
-            this.predicateBaseUri = predicateBaseUri;
         }
 
         DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)

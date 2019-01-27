@@ -43,8 +43,7 @@ namespace VDS.RDF.Dynamic
             dynamic objects = new DynamicObjectCollection(d, p);
 
             Assert.Throws<InvalidOperationException>(() =>
-                objects.Average()
-            );
+                objects.Average());
         }
 
         [Fact]
@@ -114,8 +113,7 @@ namespace VDS.RDF.Dynamic
                 {
                     Assert.Equal("fr", group.Key);
                     Assert.Equal(new[] { "c", "d" }, group);
-                }
-            );
+                });
         }
 
         [Fact]

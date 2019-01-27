@@ -81,8 +81,7 @@ namespace VDS.RDF.Dynamic
                 d.Values,
                 isSPO,
                 isSPO,
-                isSPO
-            );
+                isSPO);
         }
 
         [Fact]

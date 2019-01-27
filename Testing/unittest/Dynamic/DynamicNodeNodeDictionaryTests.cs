@@ -41,8 +41,7 @@ namespace VDS.RDF.Dynamic
             var d = new DynamicNode(s);
 
             Assert.Throws<ArgumentNullException>(() =>
-                d[null as INode]
-            );
+                d[null as INode]);
         }
 
         [Fact]
@@ -74,8 +73,7 @@ namespace VDS.RDF.Dynamic
             var d = new DynamicNode(s);
 
             Assert.Throws<ArgumentNullException>(() =>
-                d[null as INode] = null
-            );
+                d[null as INode] = null);
         }
 
         [Fact]
@@ -164,8 +162,7 @@ namespace VDS.RDF.Dynamic
             var d = new DynamicNode(s);
 
             Assert.Throws<ArgumentNullException>(() =>
-                d.Add(null as INode, null)
-            );
+                d.Add(null as INode, null));
         }
 
         [Fact]
@@ -177,8 +174,7 @@ namespace VDS.RDF.Dynamic
             var d = new DynamicNode(s);
 
             Assert.Throws<ArgumentNullException>(() =>
-                d.Add(p, null)
-            );
+                d.Add(p, null));
         }
 
         [Fact]
@@ -418,12 +414,12 @@ namespace VDS.RDF.Dynamic
             var o = g.CreateUriNode(UriFactory.Create("urn:o"));
             var d = new DynamicNode(s);
             var array = new KeyValuePair<INode, object>[5];
-            var empty = new KeyValuePair<INode, object>();
             var spo = new[] { s, p, o };
             void isEmpty(KeyValuePair<INode, object> actual)
             {
-                Assert.Equal(empty, actual);
+                Assert.Equal(default(KeyValuePair<INode, object>), actual);
             }
+
             Action<KeyValuePair<INode, object>> isSPOWith(INode expected)
             {
                 return actual =>
@@ -442,8 +438,7 @@ namespace VDS.RDF.Dynamic
                 isSPOWith(s),
                 isSPOWith(p),
                 isSPOWith(o),
-                isEmpty
-            );
+                isEmpty);
         }
 
         [Fact]

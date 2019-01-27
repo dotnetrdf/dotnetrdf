@@ -35,7 +35,7 @@ namespace VDS.RDF.Dynamic
 
     public class DynamicObjectCollection : ICollection<object>, IDynamicMetaObjectProvider
     {
-        protected readonly DynamicNode subject;
+        private readonly DynamicNode subject;
         private readonly INode predicate;
 
         public DynamicObjectCollection(DynamicNode subject, INode predicate)
@@ -54,17 +54,6 @@ namespace VDS.RDF.Dynamic
             this.predicate = predicate;
         }
 
-        protected IEnumerable<object> Objects
-        {
-            get
-            {
-                return
-                    from triple
-                    in subject.Graph.GetTriplesWithSubjectPredicate(subject, predicate)
-                    select DynamicHelper.ConvertNode(triple.Object, subject.BaseUri);
-            }
-        }
-
         public int Count
         {
             get
@@ -78,6 +67,17 @@ namespace VDS.RDF.Dynamic
             get
             {
                 return false;
+            }
+        }
+
+        protected IEnumerable<object> Objects
+        {
+            get
+            {
+                return
+                    from triple
+                    in subject.Graph.GetTriplesWithSubjectPredicate(subject, predicate)
+                    select DynamicHelper.ConvertNode(triple.Object, subject.BaseUri);
             }
         }
 

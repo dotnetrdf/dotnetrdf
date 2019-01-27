@@ -38,8 +38,7 @@ namespace VDS.RDF.Dynamic.Old
             var dynamic_s = new Graph().CreateBlankNode().AsDynamic();
 
             Assert.Throws<InvalidOperationException>(() =>
-                dynamic_s["p"]
-            );
+                dynamic_s["p"]);
         }
 
         public void Indexing_requires_known_index_type()
@@ -47,8 +46,7 @@ namespace VDS.RDF.Dynamic.Old
             var dynamic_s = new Graph().CreateBlankNode().AsDynamic();
 
             Assert.Throws<RuntimeBinderException>(() =>
-                dynamic_s[null]
-            );
+                dynamic_s[null]);
         }
 
         public void Indexing_requires_valid_uri()
@@ -56,8 +54,7 @@ namespace VDS.RDF.Dynamic.Old
             var dynamic_s = new Graph().CreateBlankNode().AsDynamic();
 
             Assert.Throws<FormatException>(() =>
-                dynamic_s["http:///"]
-            );
+                dynamic_s["http:///"]);
         }
 
         public void Indexing_supports_absolute_uri_index()
@@ -219,8 +216,7 @@ namespace VDS.RDF.Dynamic.Old
             var dynamic_s = new Graph().CreateBlankNode().AsDynamic();
 
             Assert.Throws<ArgumentNullException>(() =>
-                dynamic_s[null as string] = null
-            );
+                dynamic_s[null as string] = null);
         }
     }
 }

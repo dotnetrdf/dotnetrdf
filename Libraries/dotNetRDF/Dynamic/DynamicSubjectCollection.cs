@@ -35,7 +35,7 @@ namespace VDS.RDF.Dynamic
 
     public class DynamicSubjectCollection : ICollection<INode>, IDynamicMetaObjectProvider
     {
-        protected readonly DynamicNode @object;
+        private readonly DynamicNode @object;
         private readonly INode predicate;
 
         public DynamicSubjectCollection(INode predicate, DynamicNode @object)
@@ -54,6 +54,10 @@ namespace VDS.RDF.Dynamic
             this.predicate = predicate;
         }
 
+        public int Count => Subjects.Count();
+
+        public bool IsReadOnly => false;
+
         protected IEnumerable<INode> Subjects
         {
             get
@@ -64,10 +68,6 @@ namespace VDS.RDF.Dynamic
                     select DynamicHelper.ConvertNode(triple.Subject, @object.BaseUri) as INode;
             }
         }
-
-        public int Count => Subjects.Count();
-
-        public bool IsReadOnly => false;
 
         public void Add(INode item)
         {

@@ -32,21 +32,21 @@ namespace VDS.RDF
 
     public abstract partial class WrapperNode : INode
     {
-        protected INode Node { get; private set; }
-
         protected WrapperNode(INode node) => Node = node ?? throw new ArgumentNullException(nameof(node));
-
-        public override bool Equals(object obj) => Node.Equals(obj);
-
-        public override int GetHashCode() => Node.GetHashCode();
-
-        public override string ToString() => Node.ToString();
 
         public NodeType NodeType => Node.NodeType;
 
         public IGraph Graph => Node.Graph;
 
         public Uri GraphUri { get => Node.GraphUri; set => Node.GraphUri = value; }
+
+        protected INode Node { get; private set; }
+
+        public override bool Equals(object obj) => Node.Equals(obj);
+
+        public override int GetHashCode() => Node.GetHashCode();
+
+        public override string ToString() => Node.ToString();
 
         public int CompareTo(INode other) => Node.CompareTo(other);
 

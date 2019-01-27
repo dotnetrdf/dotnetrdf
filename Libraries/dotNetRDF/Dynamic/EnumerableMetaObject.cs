@@ -33,23 +33,18 @@ namespace VDS.RDF.Dynamic
 
     internal class EnumerableMetaObject : DynamicMetaObject
     {
-        internal EnumerableMetaObject(Expression parameter, object value) : base(parameter, BindingRestrictions.Empty, value) { }
+        internal EnumerableMetaObject(Expression parameter, object value)
+            : base(parameter, BindingRestrictions.Empty, value)
+        {
+        }
 
         public override DynamicMetaObject BindInvokeMember(InvokeMemberBinder binder, DynamicMetaObject[] args)
         {
-            return binder.FallbackInvokeMember(
-                this,
-                args,
-                new DynamicMetaObject(
-                    this.FindMethod(
-                        binder,
-                        args),
-                    BindingRestrictions.GetTypeRestriction(
-                        this.Expression,
-                        this.LimitType
-                    )
-                )
-            );
+            var expression = this.FindMethod(binder, args);
+            var restrictions = BindingRestrictions.GetTypeRestriction(this.Expression, this.LimitType);
+            var errorSuggestion = new DynamicMetaObject(expression, restrictions);
+
+            return binder.FallbackInvokeMember(this, args, errorSuggestion);
         }
 
         private Expression FindMethod(InvokeMemberBinder binder, DynamicMetaObject[] args)
@@ -60,17 +55,11 @@ namespace VDS.RDF.Dynamic
             {
                 try
                 {
-                    return
-                        Expression.Convert(
-                            Expression.Call(
-                                typeof(Enumerable),
-                                binder.Name,
-                                Enumerable.Repeat(typeof(object), i).ToArray(),
-                                Expression.Convert(
-                                    this.Expression,
-                                    this.RuntimeType).AsEnumerable().Union(args.Select(arg => arg.Expression)).ToArray()),
-                            binder.ReturnType
-                        );
+                    var arguments = Expression.Convert(this.Expression, this.RuntimeType).AsEnumerable().Union(args.Select(arg => arg.Expression)).ToArray();
+                    var typeArguments = Enumerable.Repeat(typeof(object), i).ToArray();
+                    var expression = Expression.Call(typeof(Enumerable), binder.Name, typeArguments, arguments);
+
+                    return Expression.Convert(expression, binder.ReturnType);
                 }
                 catch (InvalidOperationException e)
                 {

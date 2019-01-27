@@ -1,7 +1,6 @@
 ﻿namespace VDS.RDF.Dynamic.Old
 {
     using System;
-    using System.Collections.Generic;
     using System.Dynamic;
     using System.Linq;
     using System.Linq.Expressions;
@@ -11,24 +10,16 @@
     {
         private static readonly Uri exampleBase = UriFactory.Create("http://example.com/");
         private static readonly Uri exampleSubjectUri = new Uri(exampleBase, "s");
-        private static readonly Uri ex_p_u = new Uri(exampleBase, "p");
+        private static readonly Uri expu = new Uri(exampleBase, "p");
         private static readonly Uri exampleObjectUri = new Uri(exampleBase, "o");
-        private static readonly IUriNode ex_s = new NodeFactory().CreateUriNode(exampleSubjectUri);
-        private static readonly IUriNode ex_p = new NodeFactory().CreateUriNode(ex_p_u);
-        private static readonly IUriNode example_o = new NodeFactory().CreateUriNode(exampleObjectUri);
+        private static readonly IUriNode exs = new NodeFactory().CreateUriNode(exampleSubjectUri);
+        private static readonly IUriNode exp = new NodeFactory().CreateUriNode(expu);
+        private static readonly IUriNode exampleo = new NodeFactory().CreateUriNode(exampleObjectUri);
         private static readonly IGraph spoGraph = GenerateSPOGraph();
-
-        private static IGraph GenerateSPOGraph()
-        {
-            var spoGraph = new Graph();
-            spoGraph.Assert(ex_s, ex_p, example_o);
-
-            return spoGraph;
-        }
 
         public void Member_names_are_predicate_uris()
         {
-            var s = spoGraph.GetTriplesWithSubject(ex_s).Single().Subject;
+            var s = spoGraph.GetTriplesWithSubject(exs).Single().Subject;
             var d = s.AsDynamic() as IDynamicMetaObjectProvider;
             var meta = d.GetMetaObject(Expression.Parameter(typeof(object), "debug"));
             var collection = meta.GetDynamicMemberNames().ToArray();
@@ -41,7 +32,7 @@
         {
             var g = GenerateSPOGraph();
             g.NamespaceMap.AddNamespace("ex", exampleBase);
-            var s = g.GetTriplesWithSubject(ex_s).Single().Subject;
+            var s = g.GetTriplesWithSubject(exs).Single().Subject;
             var d = s.AsDynamic() as IDynamicMetaObjectProvider;
             var meta = d.GetMetaObject(Expression.Parameter(typeof(object), "debug"));
             var collection = meta.GetDynamicMemberNames().ToArray();
@@ -54,7 +45,7 @@
         {
             var g = GenerateSPOGraph();
             g.NamespaceMap.AddNamespace(string.Empty, exampleBase);
-            var s = g.GetTriplesWithSubject(ex_s).Single().Subject;
+            var s = g.GetTriplesWithSubject(exs).Single().Subject;
             var d = s.AsDynamic() as IDynamicMetaObjectProvider;
             var meta = d.GetMetaObject(Expression.Parameter(typeof(object), "debug"));
             var collection = meta.GetDynamicMemberNames().ToArray();
@@ -65,7 +56,7 @@
 
         public void Member_names_become_relative_to_base()
         {
-            var s = spoGraph.GetTriplesWithSubject(ex_s).Single().Subject;
+            var s = spoGraph.GetTriplesWithSubject(exs).Single().Subject;
             var d = s.AsDynamic(exampleBase) as IDynamicMetaObjectProvider;
             var meta = d.GetMetaObject(Expression.Parameter(typeof(object), "debug"));
             var collection = meta.GetDynamicMemberNames().ToArray();
@@ -85,6 +76,14 @@
             var element = "p";
 
             Assert.Contains(element, collection);
+        }
+
+        private static IGraph GenerateSPOGraph()
+        {
+            var spoGraph = new Graph();
+            spoGraph.Assert(exs, exp, exampleo);
+
+            return spoGraph;
         }
     }
 }

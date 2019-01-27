@@ -73,8 +73,7 @@ namespace VDS.RDF.Dynamic
                 item => Assert.IsType<long>(item),
                 item => Assert.IsType<string>(item),
                 item => Assert.IsAssignableFrom<ILiteralNode>(item),
-                item => Assert.IsAssignableFrom<ILiteralNode>(item)
-            );
+                item => Assert.IsAssignableFrom<ILiteralNode>(item));
         }
 
         [Fact]
@@ -124,8 +123,7 @@ u:s u:p u:o .
             var d = new DynamicGraph();
 
             Assert.Throws<FormatException>(() =>
-                d["http:///"]
-            );
+                d["http:///"]);
         }
 
         [Fact]
@@ -139,8 +137,7 @@ u:s u:p u:o .
             var s = d.CreateUriNode(UriFactory.Create("urn:s"));
 
             Assert.Throws<InvalidOperationException>(() =>
-                Assert.Equal(s, d["/s"])
-            );
+                Assert.Equal(s, d["/s"]));
         }
 
         [Fact]
@@ -199,7 +196,8 @@ u:s u:p u:o .
 
             d["s"] = new
             {
-                p = new object[] {
+                p = new object[]
+                {
                     new NodeFactory().CreateBlankNode(),
                     UriFactory.Create("urn:o"),
                     true,
@@ -229,8 +227,7 @@ u:s u:p u:o .
                 d["s"] = new
                 {
                     p = new { }
-                }
-            );
+                });
         }
 
         [Fact]

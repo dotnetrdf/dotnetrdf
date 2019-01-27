@@ -32,7 +32,10 @@ namespace VDS.RDF.Dynamic
 
     internal class DictionaryMetaObject : EnumerableMetaObject
     {
-        internal DictionaryMetaObject(Expression parameter, object value) : base(parameter, value) { }
+        internal DictionaryMetaObject(Expression parameter, object value)
+            : base(parameter, value)
+        {
+        }
 
         public override DynamicMetaObject BindGetMember(GetMemberBinder binder)
         {
@@ -66,8 +69,7 @@ namespace VDS.RDF.Dynamic
                     this.Expression,
                     this.RuntimeType),
                 "Item",
-                new[] {
-                    Expression.Constant(name) });
+                new[] { Expression.Constant(name) });
         }
 
         private DynamicMetaObject CreateMetaObject(Expression expression)

@@ -30,6 +30,9 @@ namespace VDS.RDF
     [Serializable]
     public class MockWrapperNode : WrapperNode
     {
-        public MockWrapperNode(INode node) : base(node) { }
+        public MockWrapperNode(INode node)
+            : base(node)
+        {
+        }
     }
 }

@@ -36,8 +36,7 @@ namespace VDS.RDF
         public void Requires_underlying_node()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                new MockWrapperNode(null)
-            );
+                new MockWrapperNode(null));
         }
 
         [Fact]

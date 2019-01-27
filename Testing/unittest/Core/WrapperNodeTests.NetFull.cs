@@ -39,13 +39,12 @@ namespace VDS.RDF
         {
             var node = new NodeFactory().CreateBlankNode();
             var wrapper = new MockWrapperNode(node);
-            var serializer = new BinaryFormatter(null, new StreamingContext());
+            var serializer = new BinaryFormatter(null, default(StreamingContext));
 
             using (var stream = new MemoryStream())
             {
                 Assert.Throws<NotImplementedException>(() =>
-                    serializer.Serialize(stream, wrapper)
-                );
+                    serializer.Serialize(stream, wrapper));
             }
         }
 
@@ -56,8 +55,7 @@ namespace VDS.RDF
             var wrapper = new MockWrapperNode(node);
 
             Assert.Throws<NotImplementedException>(() =>
-                wrapper.GetSchema()
-            );
+                wrapper.GetSchema());
         }
 
         [Fact]
@@ -67,8 +65,7 @@ namespace VDS.RDF
             var wrapper = new MockWrapperNode(node);
 
             Assert.Throws<NotImplementedException>(() =>
-                wrapper.ReadXml(XmlReader.Create(Stream.Null))
-            );
+                wrapper.ReadXml(XmlReader.Create(Stream.Null)));
         }
 
         [Fact]
@@ -78,8 +75,7 @@ namespace VDS.RDF
             var wrapper = new MockWrapperNode(node);
 
             Assert.Throws<NotImplementedException>(() =>
-                wrapper.WriteXml(XmlWriter.Create(Stream.Null))
-            );
+                wrapper.WriteXml(XmlWriter.Create(Stream.Null)));
         }
     }
 }

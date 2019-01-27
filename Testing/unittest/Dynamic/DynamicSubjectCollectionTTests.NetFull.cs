@@ -141,7 +141,10 @@ namespace VDS.RDF.Dynamic
 
         internal class Test : DynamicNode
         {
-            public Test(INode node) : base(node, new Uri("urn:")) { }
+            public Test(INode node)
+                : base(node, new Uri("urn:"))
+            {
+            }
 
             public ICollection<Test> P => new DynamicSubjectCollection<Test>("p", this);
         }

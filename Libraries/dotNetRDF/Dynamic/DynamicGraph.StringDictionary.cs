@@ -32,6 +32,14 @@ namespace VDS.RDF.Dynamic
 
     public partial class DynamicGraph : IDictionary<string, object>
     {
+        public ICollection<string> Keys
+        {
+            get
+            {
+                return StringPairs.Keys;
+            }
+        }
+
         private IDictionary<string, object> StringPairs
         {
             get
@@ -63,14 +71,6 @@ namespace VDS.RDF.Dynamic
                 }
 
                 this[Convert(subject)] = value;
-            }
-        }
-
-        public ICollection<string> Keys
-        {
-            get
-            {
-                return StringPairs.Keys;
             }
         }
 

@@ -38,8 +38,7 @@ namespace VDS.RDF.Dynamic
             var d = new DynamicGraph();
 
             Assert.Throws<ArgumentNullException>(() =>
-                d[null as INode]
-            );
+                d[null as INode]);
         }
 
         [Fact]
@@ -62,8 +61,7 @@ namespace VDS.RDF.Dynamic
             var d = new DynamicGraph();
 
             Assert.Throws<ArgumentNullException>(() =>
-                d[null as INode] = null
-            );
+                d[null as INode] = null);
         }
 
         [Fact]
@@ -249,7 +247,6 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:o> <urn:o> .
 ");
 
-
             Assert.Equal(d.Nodes.UriNodes(), ((IDictionary<INode, object>)d).Keys);
         }
 
@@ -259,8 +256,7 @@ namespace VDS.RDF.Dynamic
             var d = new DynamicGraph();
 
             Assert.Throws<ArgumentNullException>(() =>
-                d.Add(null as INode, null)
-            );
+                d.Add(null as INode, null));
         }
 
         [Fact]
@@ -270,8 +266,7 @@ namespace VDS.RDF.Dynamic
             var s = d.CreateBlankNode();
 
             Assert.Throws<ArgumentNullException>(() =>
-                d.Add(s, null)
-            );
+                d.Add(s, null));
         }
 
         [Fact]
@@ -294,16 +289,14 @@ namespace VDS.RDF.Dynamic
             var s = d.CreateUriNode(UriFactory.Create("urn:s"));
             var p = d.CreateUriNode(UriFactory.Create("urn:p"));
             var o = d.CreateUriNode(UriFactory.Create("urn:o"));
+            var predicateAndObjects = new
+            {
+                s = new[] { s, p, o },
+                p = new[] { s, p, o },
+                o = new[] { s, p, o },
+            };
 
-            d.Add(
-                s,
-                new
-                {
-                    s = new[] { s, p, o },
-                    p = new[] { s, p, o },
-                    o = new[] { s, p, o },
-                }
-            );
+            d.Add(s, predicateAndObjects);
 
             Assert.Equal<IGraph>(expected, d);
         }
@@ -328,14 +321,14 @@ namespace VDS.RDF.Dynamic
             var s = d.CreateUriNode(UriFactory.Create("urn:s"));
             var p = d.CreateUriNode(UriFactory.Create("urn:p"));
             var o = d.CreateUriNode(UriFactory.Create("urn:o"));
+            var predicateAndObjects = new Dictionary<object, object>
+            {
+                { "s", new[] { s, p, o } },
+                { new Uri("urn:p"), new[] { s, p, o } },
+                { d.CreateUriNode(new Uri("urn:o")), new[] { s, p, o } }
+            };
 
-            d.Add(
-                s,
-                new Dictionary<object, object> {
-                    { "s" , new[] { s, p, o } },
-                    { new Uri("urn:p") , new[] { s, p, o } },
-                    { d.CreateUriNode(new Uri("urn:o")) , new[] { s, p, o } }
-            });
+            d.Add(s, predicateAndObjects);
 
             Assert.Equal<IGraph>(expected, d);
         }
@@ -345,14 +338,13 @@ namespace VDS.RDF.Dynamic
         {
             var g = new DynamicGraph(predicateBaseUri: UriFactory.Create("urn:"));
             var s = g.CreateBlankNode();
+            var predicateAndObjects = new Dictionary<object, object>
+            {
+                { 0, "o" }
+            };
 
             Assert.Throws<Exception>(() =>
-                g.Add(
-                    s,
-                    new Dictionary<object, object> {
-                        { 0 , "o" }
-                })
-            );
+                g.Add(s, predicateAndObjects));
         }
 
         [Fact]
@@ -376,17 +368,15 @@ namespace VDS.RDF.Dynamic
             var p = d.CreateUriNode(UriFactory.Create("urn:p"));
             var o = d.CreateUriNode(UriFactory.Create("urn:o"));
 
+            var value = new
+            {
+                s = new[] { s, p, o },
+                p = new[] { s, p, o },
+                o = new[] { s, p, o }
+            };
+
             ((IDictionary<INode, object>)d).Add(
-                new KeyValuePair<INode, object>(
-                    s,
-                    new
-                    {
-                        s = new[] { s, p, o },
-                        p = new[] { s, p, o },
-                        o = new[] { s, p, o }
-                    }
-                )
-            );
+                new KeyValuePair<INode, object>(s, value));
 
             Assert.Equal<IGraph>(expected, d);
         }
@@ -469,14 +459,13 @@ namespace VDS.RDF.Dynamic
 <urn:s> <urn:p> <urn:o> .
 ");
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var predicateAndObjects = new Dictionary<object, object>
+            {
+                { 0, "o" }
+            };
 
             Assert.Throws<Exception>(() =>
-                g.Contains(
-                    s,
-                    new Dictionary<object, object> {
-                        { 0 , "o" }
-                })
-            );
+                g.Contains(s, predicateAndObjects));
         }
 
         [Fact]
@@ -558,11 +547,11 @@ namespace VDS.RDF.Dynamic
 
             var array = new KeyValuePair<INode, object>[5];
 
-            var empty = new KeyValuePair<INode, object>();
             void isEmpty(KeyValuePair<INode, object> actual)
             {
-                Assert.Equal(empty, actual);
+                Assert.Equal(default(KeyValuePair<INode, object>), actual);
             }
+
             Action<KeyValuePair<INode, object>> isKVWith(INode expected)
             {
                 return actual =>
@@ -580,8 +569,7 @@ namespace VDS.RDF.Dynamic
                 isKVWith(s),
                 isKVWith(p),
                 isKVWith(o),
-                isEmpty
-            );
+                isEmpty);
         }
 
         [Fact]
@@ -726,15 +714,13 @@ namespace VDS.RDF.Dynamic
 ");
 
             var s1 = actual.Nodes.First();
+            var predicateAndObjects = new
+            {
+                p1 = "o1",
+                p2 = "o2"
+            };
 
-            actual.Remove(
-                s1,
-                new
-                {
-                    p1 = "o1",
-                    p2 = "o2"
-                }
-            );
+            actual.Remove(s1, predicateAndObjects);
 
             Assert.Equal<IGraph>(expected, actual);
         }
@@ -807,15 +793,14 @@ namespace VDS.RDF.Dynamic
             var s = actual.CreateUriNode(UriFactory.Create("urn:s"));
             var p = actual.CreateUriNode(UriFactory.Create("urn:p"));
             var o = actual.CreateUriNode(UriFactory.Create("urn:o"));
+            var predicateAndObjects = new Dictionary<object, object>
+            {
+                { s, s },
+                { p.Uri, p },
+                { o.Uri.AbsoluteUri, o }
+            };
 
-            actual.Remove(
-                s,
-                new Dictionary<object, object> {
-                    { s , s },
-                    { p.Uri , p },
-                    { o.Uri.AbsoluteUri , o }
-                }
-            );
+            actual.Remove(s, predicateAndObjects);
 
             Assert.Equal<IGraph>(expected, actual);
         }

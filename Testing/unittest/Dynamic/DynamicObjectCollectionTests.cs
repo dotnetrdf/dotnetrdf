@@ -39,8 +39,7 @@ namespace VDS.RDF.Dynamic
         public void Requires_subject()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                new DynamicObjectCollection(null, null)
-            );
+                new DynamicObjectCollection(null, null));
         }
 
         [Fact]
@@ -51,8 +50,7 @@ namespace VDS.RDF.Dynamic
             var d = new DynamicNode(s);
 
             Assert.Throws<ArgumentNullException>(() =>
-                new DynamicObjectCollection(d, null)
-            );
+                new DynamicObjectCollection(d, null));
         }
 
         [Fact]

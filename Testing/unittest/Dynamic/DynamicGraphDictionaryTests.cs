@@ -51,7 +51,6 @@ _:s3 <urn:p6> <urn:o11> .
 _:s3 <urn:p6> <urn:o12> .
 ");
 
-
             Assert.Equal(d.Nodes.UriNodes(), d.Values);
 
             foreach (var value in d.Values)

@@ -41,8 +41,7 @@ namespace VDS.RDF.Dynamic
             var d = new DynamicNode(s);
 
             Assert.Throws<ArgumentNullException>(() =>
-                d[null as string]
-            );
+                d[null as string]);
         }
 
         [Fact]
@@ -74,8 +73,7 @@ namespace VDS.RDF.Dynamic
             var d = new DynamicNode(s);
 
             Assert.Throws<ArgumentNullException>(() =>
-                d[null as string] = null
-            );
+                d[null as string] = null);
         }
 
         [Fact]
@@ -164,8 +162,7 @@ namespace VDS.RDF.Dynamic
             var d = new DynamicNode(s);
 
             Assert.Throws<ArgumentNullException>(() =>
-                d.Add(null as string, null)
-            );
+                d.Add(null as string, null));
         }
 
         [Fact]
@@ -177,8 +174,7 @@ namespace VDS.RDF.Dynamic
             var d = new DynamicNode(s);
 
             Assert.Throws<ArgumentNullException>(() =>
-                d.Add(p, null)
-            );
+                d.Add(p, null));
         }
 
         [Fact]
@@ -418,12 +414,12 @@ namespace VDS.RDF.Dynamic
             var o = g.CreateUriNode(UriFactory.Create("urn:o"));
             var d = new DynamicNode(s) as IDictionary<string, object>;
             var array = new KeyValuePair<string, object>[5];
-            var empty = new KeyValuePair<string, object>();
             var spo = new[] { s, p, o };
             void isEmpty(KeyValuePair<string, object> actual)
             {
-                Assert.Equal(empty, actual);
+                Assert.Equal(default(KeyValuePair<string, object>), actual);
             }
+
             Action<KeyValuePair<string, object>> isSPOWith(string expected)
             {
                 return actual =>
@@ -442,8 +438,7 @@ namespace VDS.RDF.Dynamic
                 isSPOWith(s.Uri.AbsoluteUri),
                 isSPOWith(p.Uri.AbsoluteUri),
                 isSPOWith(o.Uri.AbsoluteUri),
-                isEmpty
-            );
+                isEmpty);
         }
 
         [Fact]

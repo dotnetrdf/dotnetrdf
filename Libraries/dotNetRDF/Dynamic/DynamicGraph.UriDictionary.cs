@@ -32,6 +32,14 @@ namespace VDS.RDF.Dynamic
 
     public partial class DynamicGraph : IDictionary<Uri, object>
     {
+        ICollection<Uri> IDictionary<Uri, object>.Keys
+        {
+            get
+            {
+                return UriPairs.Keys;
+            }
+        }
+
         private IDictionary<Uri, object> UriPairs
         {
             get
@@ -63,14 +71,6 @@ namespace VDS.RDF.Dynamic
                 }
 
                 this[Convert(predicate)] = value;
-            }
-        }
-
-        ICollection<Uri> IDictionary<Uri, object>.Keys
-        {
-            get
-            {
-                return UriPairs.Keys;
             }
         }
 

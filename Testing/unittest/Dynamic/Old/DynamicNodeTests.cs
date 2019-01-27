@@ -97,8 +97,7 @@ namespace VDS.RDF.Dynamic.Old
                 d.s = new
                 {
                     unknown = new object()
-                }
-            );
+                });
         }
     }
 }

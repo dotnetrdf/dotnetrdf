@@ -31,8 +31,8 @@ namespace VDS.RDF.Dynamic
 
     public class DynamicObjectCollection<T> : DynamicObjectCollection, ICollection<T>
     {
-        public DynamicObjectCollection(DynamicNode subject, string predicate) :
-            base(
+        public DynamicObjectCollection(DynamicNode subject, string predicate)
+            : base(
                 subject,
                 DynamicHelper.ConvertPredicate(
                     DynamicHelper.ConvertPredicate(
@@ -40,7 +40,8 @@ namespace VDS.RDF.Dynamic
                         subject.Graph),
                     subject.Graph,
                     subject.BaseUri))
-        { }
+        {
+        }
 
         public void Add(T item)
         {

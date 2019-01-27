@@ -38,8 +38,7 @@ namespace VDS.RDF.Dynamic
             var s = new NodeFactory().CreateBlankNode();
 
             Assert.Throws<InvalidOperationException>(() =>
-                new DynamicNode(s)
-            );
+                new DynamicNode(s));
         }
 
         [Fact]
@@ -71,8 +70,7 @@ namespace VDS.RDF.Dynamic
             var d = new DynamicNode(s);
 
             Assert.Throws<InvalidOperationException>(() =>
-                ((IUriNode)d).Uri
-            );
+                ((IUriNode)d).Uri);
         }
 
         [Fact]
@@ -94,8 +92,7 @@ namespace VDS.RDF.Dynamic
             var d = new DynamicNode(s);
 
             Assert.Throws<InvalidOperationException>(() =>
-                ((IBlankNode)d).InternalID
-            );
+                ((IBlankNode)d).InternalID);
         }
 
         [Fact]

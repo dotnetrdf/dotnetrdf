@@ -31,22 +31,11 @@ namespace VDS.RDF.Dynamic.Experimental
     using System.Linq;
     using System.Reflection;
     using VDS.RDF.Writing;
-    using Xunit;
     using Xunit.Abstractions;
-
-    public class Class1
-    {
-        public string SingleStringProperty { get; set; }
-
-        public Class1 SingleClassProperty { get; set; }
-
-        public IEnumerable<string> EnumerableStringProperty { get; set; }
-
-        public IEnumerable<Class1> EnumerableClassProperty { get; set; }
-    }
 
     public class RecursiveObjectTranslation
     {
+        private static readonly Random r = new Random();
         private readonly ITestOutputHelper output;
 
         public RecursiveObjectTranslation(ITestOutputHelper output)
@@ -71,7 +60,7 @@ namespace VDS.RDF.Dynamic.Experimental
             c1.SingleClassProperty.SingleClassProperty.SingleClassProperty = c1;
 
             var g = new Graph();
-            process(g, g.CreateUriNode(new Uri("http://example.com/c1")), c1);
+            Process(g, g.CreateUriNode(new Uri("http://example.com/c1")), c1);
 
             this.output.WriteLine(StringWriter.Write(g, new NTriplesWriter()));
         }
@@ -85,7 +74,7 @@ namespace VDS.RDF.Dynamic.Experimental
             c1.SingleClassProperty = c1;
 
             var g = new Graph();
-            process(g, g.CreateUriNode(new Uri("http://example.com/c1")), c1);
+            Process(g, g.CreateUriNode(new Uri("http://example.com/c1")), c1);
             this.output.WriteLine(StringWriter.Write(g, new NTriplesWriter()));
         }
 
@@ -93,14 +82,15 @@ namespace VDS.RDF.Dynamic.Experimental
         {
             var c1 = new Class1
             {
-                EnumerableStringProperty = new[] {
+                EnumerableStringProperty = new[]
+                {
                     "s1",
                     "s2"
                 }
             };
 
             var g = new Graph();
-            process(g, g.CreateUriNode(new Uri("http://example.com/c1")), c1);
+            Process(g, g.CreateUriNode(new Uri("http://example.com/c1")), c1);
             this.output.WriteLine(StringWriter.Write(g, new NTriplesWriter()));
         }
 
@@ -108,24 +98,25 @@ namespace VDS.RDF.Dynamic.Experimental
         {
             var c1 = new Class1
             {
-                EnumerableClassProperty = new[] {
-                    new Class1 {
+                EnumerableClassProperty = new[]
+                {
+                    new Class1
+                    {
                         SingleStringProperty = "s1"
                     },
-                    new Class1 {
+                    new Class1
+                    {
                         SingleStringProperty = "s2"
                     }
                 }
             };
 
             var g = new Graph();
-            process(g, g.CreateUriNode(new Uri("http://example.com/c1")), c1);
+            Process(g, g.CreateUriNode(new Uri("http://example.com/c1")), c1);
             this.output.WriteLine(StringWriter.Write(g, new NTriplesWriter()));
         }
 
-        private static readonly Random r = new Random();
-
-        private static void process(IGraph g, INode subject, object value, Dictionary<object, INode> seen = null)
+        private static void Process(IGraph g, INode subject, object value, Dictionary<object, INode> seen = null)
         {
             seen = seen ?? new Dictionary<object, INode>();
 
@@ -157,7 +148,7 @@ namespace VDS.RDF.Dynamic.Experimental
                             if (!seen.TryGetValue(instance, out var blankNode))
                             {
                                 blankNode = seen[instance] = g.CreateBlankNode();
-                                process(g, blankNode, instance, seen);
+                                Process(g, blankNode, instance, seen);
                             }
 
                             g.Assert(subject, predicate, blankNode);
@@ -169,15 +160,28 @@ namespace VDS.RDF.Dynamic.Experimental
 
         private static IEnumerable<object> Enumerate(object value)
         {
-            if (value is string || !(value is IEnumerable enumerableValue)) // Strings are enumerable but not for our case
+            // Strings are enumerable but not for our case
+            if (value is string || !(value is IEnumerable enumerableValue))
             {
-                enumerableValue = value.AsEnumerable(); // When they're not enumerable, wrap them in an enumerable of one
+                // When they're not enumerable, wrap them in an enumerable of one
+                enumerableValue = value.AsEnumerable();
             }
 
             foreach (var item in enumerableValue)
             {
                 yield return item;
             }
+        }
+
+        public class Class1
+        {
+            public string SingleStringProperty { get; set; }
+
+            public Class1 SingleClassProperty { get; set; }
+
+            public IEnumerable<string> EnumerableStringProperty { get; set; }
+
+            public IEnumerable<Class1> EnumerableClassProperty { get; set; }
         }
     }
 }

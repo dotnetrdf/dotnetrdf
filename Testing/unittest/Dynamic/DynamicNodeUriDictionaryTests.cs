@@ -41,8 +41,7 @@ namespace VDS.RDF.Dynamic
             var d = new DynamicNode(s);
 
             Assert.Throws<ArgumentNullException>(() =>
-                d[null as Uri]
-            );
+                d[null as Uri]);
         }
 
         [Fact]
@@ -74,8 +73,7 @@ namespace VDS.RDF.Dynamic
             var d = new DynamicNode(s);
 
             Assert.Throws<ArgumentNullException>(() =>
-                d[null as Uri] = null
-            );
+                d[null as Uri] = null);
         }
 
         [Fact]
@@ -164,8 +162,7 @@ namespace VDS.RDF.Dynamic
             var d = new DynamicNode(s);
 
             Assert.Throws<ArgumentNullException>(() =>
-                d.Add(null as Uri, null)
-            );
+                d.Add(null as Uri, null));
         }
 
         [Fact]
@@ -177,8 +174,7 @@ namespace VDS.RDF.Dynamic
             var d = new DynamicNode(s);
 
             Assert.Throws<ArgumentNullException>(() =>
-                d.Add(p, null)
-            );
+                d.Add(p, null));
         }
 
         [Fact]
@@ -418,12 +414,12 @@ namespace VDS.RDF.Dynamic
             var o = g.CreateUriNode(UriFactory.Create("urn:o"));
             var d = new DynamicNode(s);
             var array = new KeyValuePair<Uri, object>[5];
-            var empty = new KeyValuePair<Uri, object>();
             var spo = new[] { s, p, o };
             void isEmpty(KeyValuePair<Uri, object> actual)
             {
-                Assert.Equal(empty, actual);
+                Assert.Equal(default(KeyValuePair<Uri, object>), actual);
             }
+
             Action<KeyValuePair<Uri, object>> isSPOWith(Uri expected)
             {
                 return actual =>
@@ -442,8 +438,7 @@ namespace VDS.RDF.Dynamic
                 isSPOWith(s.Uri),
                 isSPOWith(p.Uri),
                 isSPOWith(o.Uri),
-                isEmpty
-            );
+                isEmpty);
         }
 
         [Fact]

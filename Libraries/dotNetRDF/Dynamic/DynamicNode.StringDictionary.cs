@@ -32,6 +32,14 @@ namespace VDS.RDF.Dynamic
 
     public partial class DynamicNode : IDictionary<string, object>
     {
+        public ICollection<string> Keys
+        {
+            get
+            {
+                return StringPairs.Keys;
+            }
+        }
+
         private IDictionary<string, object> StringPairs
         {
             get
@@ -63,14 +71,6 @@ namespace VDS.RDF.Dynamic
                 }
 
                 this[Convert(predicate)] = value;
-            }
-        }
-
-        public ICollection<string> Keys
-        {
-            get
-            {
-                return StringPairs.Keys;
             }
         }
 

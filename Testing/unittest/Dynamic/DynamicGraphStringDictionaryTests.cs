@@ -38,8 +38,7 @@ namespace VDS.RDF.Dynamic
             var d = new DynamicGraph();
 
             Assert.Throws<ArgumentNullException>(() =>
-                d[null as string]
-            );
+                d[null as string]);
         }
 
         [Fact]
@@ -63,8 +62,7 @@ namespace VDS.RDF.Dynamic
             var d = new DynamicGraph();
 
             Assert.Throws<ArgumentNullException>(() =>
-                d[null as string] = null
-            );
+                d[null as string] = null);
         }
 
         [Fact]
@@ -149,8 +147,7 @@ namespace VDS.RDF.Dynamic
             var d = new DynamicGraph();
 
             Assert.Throws<ArgumentNullException>(() =>
-                d.Add(null as string, null)
-            );
+                d.Add(null as string, null));
         }
 
         [Fact]
@@ -160,8 +157,7 @@ namespace VDS.RDF.Dynamic
             var s = "urn:s";
 
             Assert.Throws<ArgumentNullException>(() =>
-                d.Add(s, null)
-            );
+                d.Add(s, null));
         }
 
         [Fact]
@@ -176,14 +172,13 @@ namespace VDS.RDF.Dynamic
 <urn:s> <urn:p2> ""o2"" .
 ");
 
-            actual.Add(
-                s,
-                new
-                {
-                    p1 = "o1",
-                    p2 = "o2"
-                }
-            );
+            var predicateAndObjects = new
+            {
+                p1 = "o1",
+                p2 = "o2"
+            };
+
+            actual.Add(s, predicateAndObjects);
 
             Assert.Equal<IGraph>(expected, actual);
         }
@@ -200,12 +195,13 @@ namespace VDS.RDF.Dynamic
 <urn:s> <urn:p2> ""o2"" .
 ");
 
-            actual.Add(
-                s,
-                new Dictionary<object, object> {
-                    { "p1" , "o1" },
-                    { "p2" , "o2" }
-            });
+            var predicateAndObjects = new Dictionary<object, object>
+            {
+                { "p1", "o1" },
+                { "p2", "o2" }
+            };
+
+            actual.Add(s, predicateAndObjects);
 
             Assert.Equal<IGraph>(expected, actual);
         }
@@ -219,15 +215,13 @@ namespace VDS.RDF.Dynamic
             var expected = new Graph();
             expected.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
 
+            var value = new
+            {
+                p = "o"
+            };
+
             ((IDictionary<string, object>)actual).Add(
-                new KeyValuePair<string, object>(
-                    s,
-                    new
-                    {
-                        p = "o"
-                    }
-                )
-            );
+                new KeyValuePair<string, object>(s, value));
 
             Assert.Equal<IGraph>(expected, actual);
         }
@@ -263,7 +257,7 @@ namespace VDS.RDF.Dynamic
         {
             var d = new DynamicGraph(predicateBaseUri: UriFactory.Create("urn:"));
             d.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var dict = ((IDictionary<string, object>)d);
+            var dict = (IDictionary<string, object>)d;
             var s = "urn:s";
 
             Assert.False(dict.Contains(new KeyValuePair<string, object>(s, new { p = "o1" })));
@@ -274,7 +268,7 @@ namespace VDS.RDF.Dynamic
         {
             var d = new DynamicGraph(predicateBaseUri: UriFactory.Create("urn:"));
             d.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var dict = ((IDictionary<string, object>)d);
+            var dict = (IDictionary<string, object>)d;
             var s = "urn:s";
 
             Assert.True(dict.Contains(new KeyValuePair<string, object>(s, new { p = "o" })));
@@ -343,11 +337,11 @@ namespace VDS.RDF.Dynamic
 
             var array = new KeyValuePair<string, object>[5];
 
-            var empty = new KeyValuePair<string, object>();
             void isEmpty(KeyValuePair<string, object> expected)
             {
-                Assert.Equal(empty, expected);
+                Assert.Equal(default(KeyValuePair<string, object>), expected);
             }
+
             Action<KeyValuePair<string, object>> isKVWith(string expected)
             {
                 return actual =>
@@ -359,7 +353,7 @@ namespace VDS.RDF.Dynamic
                 };
             }
 
-            (g as IDictionary<string, object>).CopyTo(array, 1);
+            ((IDictionary<string, object>)g).CopyTo(array, 1);
 
             Assert.Collection(
                 array,
@@ -367,8 +361,7 @@ namespace VDS.RDF.Dynamic
                 isKVWith(s),
                 isKVWith(p),
                 isKVWith(o),
-                isEmpty
-            );
+                isEmpty);
         }
 
         [Fact]
@@ -505,17 +498,13 @@ namespace VDS.RDF.Dynamic
 ");
 
             var s1 = "urn:s1";
+            var value = new
+            {
+                p1 = "o1",
+                p2 = "o2"
+            };
 
-            ((IDictionary<string, object>)actual).Remove(
-                new KeyValuePair<string, object>(
-                    s1,
-                    new
-                    {
-                        p1 = "o1",
-                        p2 = "o2"
-                    }
-                )
-            );
+            ((IDictionary<string, object>)actual).Remove(new KeyValuePair<string, object>(s1, value));
 
             Assert.Equal<IGraph>(expected, actual);
         }
@@ -538,17 +527,13 @@ namespace VDS.RDF.Dynamic
 ");
 
             var s1 = "urn:s1";
+            var value = new Dictionary<object, object>
+            {
+                { "p1", "o1" },
+                { "p2", "o2" }
+            };
 
-            ((IDictionary<string, object>)actual).Remove(
-                new KeyValuePair<string, object>(
-                    s1,
-                    new Dictionary<object, object> {
-                        { "p1" , "o1" },
-                        { "p2" , "o2" }
-                    }
-                )
-            );
-
+            ((IDictionary<string, object>)actual).Remove(new KeyValuePair<string, object>(s1, value));
 
             Assert.Equal<IGraph>(expected, actual);
         }

@@ -35,7 +35,8 @@ namespace VDS.RDF.Dynamic
         private readonly Uri baseUri;
 
         // TODO: Make sure all instantiations copy original node to appropriate host graph
-        public DynamicNode(INode node, Uri baseUri = null) : base(node)
+        public DynamicNode(INode node, Uri baseUri = null)
+            : base(node)
         {
             if (Graph is null)
             {

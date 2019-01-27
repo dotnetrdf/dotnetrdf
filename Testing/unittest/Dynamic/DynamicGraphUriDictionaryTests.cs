@@ -38,8 +38,7 @@ namespace VDS.RDF.Dynamic
             var d = new DynamicGraph();
 
             Assert.Throws<ArgumentNullException>(() =>
-                d[null as Uri]
-            );
+                d[null as Uri]);
         }
 
         [Fact]
@@ -63,8 +62,7 @@ namespace VDS.RDF.Dynamic
             var d = new DynamicGraph();
 
             Assert.Throws<ArgumentNullException>(() =>
-                d[null as Uri] = null
-            );
+                d[null as Uri] = null);
         }
 
         [Fact]
@@ -149,8 +147,7 @@ namespace VDS.RDF.Dynamic
             var d = new DynamicGraph();
 
             Assert.Throws<ArgumentNullException>(() =>
-                d.Add(null as Uri, null)
-            );
+                d.Add(null as Uri, null));
         }
 
         [Fact]
@@ -160,8 +157,7 @@ namespace VDS.RDF.Dynamic
             var s = UriFactory.Create("urn:s");
 
             Assert.Throws<ArgumentNullException>(() =>
-                d.Add(s, null)
-            );
+                d.Add(s, null));
         }
 
         [Fact]
@@ -176,14 +172,13 @@ namespace VDS.RDF.Dynamic
 <urn:s> <urn:p2> ""o2"" .
 ");
 
-            actual.Add(
-                s,
-                new
-                {
-                    p1 = "o1",
-                    p2 = "o2"
-                }
-            );
+            var predicateAndObjects = new
+            {
+                p1 = "o1",
+                p2 = "o2"
+            };
+
+            actual.Add(s, predicateAndObjects);
 
             Assert.Equal<IGraph>(expected, actual);
         }
@@ -200,12 +195,13 @@ namespace VDS.RDF.Dynamic
 <urn:s> <urn:p2> ""o2"" .
 ");
 
-            actual.Add(
-                s,
-                new Dictionary<object, object> {
-                    { "p1" , "o1" },
-                    { "p2" , "o2" }
-            });
+            var predicateAndObjects = new Dictionary<object, object>
+            {
+                { "p1", "o1" },
+                { "p2", "o2" }
+            };
+
+            actual.Add(s, predicateAndObjects);
 
             Assert.Equal<IGraph>(expected, actual);
         }
@@ -219,15 +215,12 @@ namespace VDS.RDF.Dynamic
             var expected = new Graph();
             expected.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
 
-            ((IDictionary<Uri, object>)actual).Add(
-                new KeyValuePair<Uri, object>(
-                    s,
-                    new
-                    {
-                        p = "o"
-                    }
-                )
-            );
+            var value = new
+            {
+                p = "o"
+            };
+
+            ((IDictionary<Uri, object>)actual).Add(new KeyValuePair<Uri, object>(s, value));
 
             Assert.Equal<IGraph>(expected, actual);
         }
@@ -265,7 +258,7 @@ namespace VDS.RDF.Dynamic
         {
             var d = new DynamicGraph(predicateBaseUri: UriFactory.Create("urn:"));
             d.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var dict = ((IDictionary<Uri, object>)d);
+            var dict = (IDictionary<Uri, object>)d;
             var s = UriFactory.Create("urn:s");
 
             var condition = dict.Contains(new KeyValuePair<Uri, object>(s, new { p = "o1" }));
@@ -278,7 +271,7 @@ namespace VDS.RDF.Dynamic
         {
             var d = new DynamicGraph(predicateBaseUri: UriFactory.Create("urn:"));
             d.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var dict = ((IDictionary<Uri, object>)d);
+            var dict = (IDictionary<Uri, object>)d;
             var s = UriFactory.Create("urn:s");
 
             Assert.True(dict.Contains(new KeyValuePair<Uri, object>(s, new { p = "o" })));
@@ -347,11 +340,11 @@ namespace VDS.RDF.Dynamic
 
             var array = new KeyValuePair<Uri, object>[5];
 
-            var empty = new KeyValuePair<Uri, object>();
             void isEmpty(KeyValuePair<Uri, object> expected)
             {
-                Assert.Equal(empty, expected);
+                Assert.Equal(default(KeyValuePair<Uri, object>), expected);
             }
+
             Action<KeyValuePair<Uri, object>> isKVWith(Uri expectedKey)
             {
                 return actual =>
@@ -371,8 +364,7 @@ namespace VDS.RDF.Dynamic
                 isKVWith(s),
                 isKVWith(p),
                 isKVWith(o),
-                isEmpty
-            );
+                isEmpty);
         }
 
         [Fact]
@@ -434,8 +426,7 @@ namespace VDS.RDF.Dynamic
             var d = new DynamicGraph();
 
             Assert.Throws<ArgumentNullException>(() =>
-                d.Remove(null as Uri)
-            );
+                d.Remove(null as Uri));
         }
 
         [Fact]
@@ -516,16 +507,13 @@ namespace VDS.RDF.Dynamic
 
             var s1 = UriFactory.Create("urn:s1");
 
-            ((IDictionary<Uri, object>)actual).Remove(
-                new KeyValuePair<Uri, object>(
-                    s1,
-                    new
-                    {
-                        p1 = "o1",
-                        p2 = "o2"
-                    }
-                )
-            );
+            var value = new
+            {
+                p1 = "o1",
+                p2 = "o2"
+            };
+
+            ((IDictionary<Uri, object>)actual).Remove(new KeyValuePair<Uri, object>(s1, value));
 
             Assert.Equal<IGraph>(expected, actual);
         }
@@ -549,16 +537,13 @@ namespace VDS.RDF.Dynamic
 
             var s1 = UriFactory.Create("urn:s1");
 
-            ((IDictionary<Uri, object>)actual).Remove(
-                new KeyValuePair<Uri, object>(
-                    s1,
-                    new Dictionary<object, object> {
-                        { "p1" , "o1" },
-                        { "p2" , "o2" }
-                    }
-                )
-            );
+            var value = new Dictionary<object, object>
+            {
+                { "p1", "o1" },
+                { "p2", "o2" }
+            };
 
+            ((IDictionary<Uri, object>)actual).Remove(new KeyValuePair<Uri, object>(s1, value));
 
             Assert.Equal<IGraph>(expected, actual);
         }
