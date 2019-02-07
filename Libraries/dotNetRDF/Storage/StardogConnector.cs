@@ -1932,7 +1932,7 @@ namespace VDS.RDF.Storage
                 }
             }
 
-            if (Reasoning != StardogReasoningMode.DatabaseControlled) requestUri += GetReasoningParameter();
+            requestUri += GetReasoningParameter();
 
             // Create our Request
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
@@ -2021,7 +2021,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Start a transaction
         /// </summary>
-        /// <param name="enableReasoning">Opens the transaction with reasoning enabled.</param>
+        /// <param name="enableReasoning">Opens the transaction with reasoning enabled (requires StarDog v5.3.0 or later).</param>
         /// <returns>A transaction ID for the new transaction</returns>
         protected virtual string BeginTransaction(bool enableReasoning = false)
         {
