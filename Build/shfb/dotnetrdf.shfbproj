@@ -35,7 +35,7 @@
     <NamingMethod>MemberName</NamingMethod>
     <HelpTitle>dotNetRDF API Documentation</HelpTitle>
     <FooterText>Please report any bugs or issues with this documentation at http://github.com/dotnetrdf/dotnetrdf/issues</FooterText>
-    <CopyrightText>Copyright %28c%29 2009 - 2018 dotNetRDF Project</CopyrightText>
+    <CopyrightText>Copyright %28c%29 2009 - 2019 dotNetRDF Project</CopyrightText>
     <CopyrightHref>https://raw.githubusercontent.com/dotnetrdf/dotnetrdf/develop/License.txt</CopyrightHref>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <DocumentationSources>
