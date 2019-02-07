@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>Package which allow integrating dotNetRDF with System.Data.DataTable</Description>
-    <Copyright>Copyright © dotNetRDF Project 2009-2017</Copyright>
+    <Copyright>Copyright © dotNetRDF Project 2009-2019</Copyright>
     <AssemblyTitle>dotNetRDF.Data.DataTables</AssemblyTitle>
     <VersionPrefix>$(Version)</VersionPrefix>
     <Authors>RobVesse;tpluscode;kal_ahmed;ronmichael;dotnetrdf</Authors>
