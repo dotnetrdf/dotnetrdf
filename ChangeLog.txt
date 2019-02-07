@@ -11,7 +11,7 @@ NEW: The TriG parser now supports the syntax of the most recent TriG recommendat
 NEW: SPARQL QueryBuilder now supports SPARQL VALUES clauses. Thanks to @tpluscode for the PR (#214)
 NEW: The Get...Node methods of the Graph class now include nodes used as predicates as well as those used as subjects and objects in the graph. (#209)
 FIX: Fix for the RDF/XML parser to better handle XML namespaces. Thanks to @glebkozh for the report. (#203)
-
+NEW: StardogConnector now supports opening a transaction with reasoning enabled. Thanks to @DarthStem for the PR (#226)
 
 2.1
 ---
