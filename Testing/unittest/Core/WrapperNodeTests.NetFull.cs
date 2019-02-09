@@ -30,6 +30,7 @@ namespace VDS.RDF
     using System.Runtime.Serialization;
     using System.Runtime.Serialization.Formatters.Binary;
     using System.Xml;
+    using System.Xml.Serialization;
     using Xunit;
 
     public partial class WrapperNodeTests
@@ -52,7 +53,7 @@ namespace VDS.RDF
         public void Doesnt_implement_GetSchema()
         {
             var node = new NodeFactory().CreateBlankNode();
-            var wrapper = new MockWrapperNode(node);
+            IXmlSerializable wrapper = new MockWrapperNode(node);
 
             Assert.Throws<NotImplementedException>(() =>
                 wrapper.GetSchema());
@@ -62,7 +63,7 @@ namespace VDS.RDF
         public void Doesnt_implement_ReadXml()
         {
             var node = new NodeFactory().CreateBlankNode();
-            var wrapper = new MockWrapperNode(node);
+            IXmlSerializable wrapper = new MockWrapperNode(node);
 
             Assert.Throws<NotImplementedException>(() =>
                 wrapper.ReadXml(XmlReader.Create(Stream.Null)));
@@ -72,7 +73,7 @@ namespace VDS.RDF
         public void Doesnt_implement_WriteXml()
         {
             var node = new NodeFactory().CreateBlankNode();
-            var wrapper = new MockWrapperNode(node);
+            IXmlSerializable wrapper = new MockWrapperNode(node);
 
             Assert.Throws<NotImplementedException>(() =>
                 wrapper.WriteXml(XmlWriter.Create(Stream.Null)));
