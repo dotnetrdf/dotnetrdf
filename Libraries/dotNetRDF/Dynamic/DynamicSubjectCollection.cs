@@ -68,13 +68,13 @@ namespace VDS.RDF.Dynamic
                 return
                     from triple
                     in @object.Graph.GetTriplesWithPredicateObject(predicate, @object)
-                    select DynamicHelper.ConvertNode(triple.Subject, @object.BaseUri) as INode;
+                    select triple.Subject.AsObject(@object.BaseUri) as INode;
             }
         }
 
         public void Add(INode item)
         {
-            @object.Graph.Assert(DynamicHelper.ConvertObject(item, @object.Graph), predicate, @object);
+            @object.Graph.Assert(item.AsNode(@object.Graph), predicate, @object);
         }
 
         public void Clear()
@@ -93,7 +93,7 @@ namespace VDS.RDF.Dynamic
 
         public bool Remove(INode item)
         {
-            return @object.Graph.Retract(@object.Graph.GetTriplesWithPredicateObject(predicate, @object).WithSubject(DynamicHelper.ConvertObject(item, @object.Graph)).ToList());
+            return @object.Graph.Retract(@object.Graph.GetTriplesWithPredicateObject(predicate, @object).WithSubject(item.AsNode(@object.Graph)).ToList());
         }
 
         /// <inheritdoc/>

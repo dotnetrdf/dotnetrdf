@@ -32,15 +32,10 @@ namespace VDS.RDF.Dynamic
     public class DynamicSubjectCollection<T> : DynamicSubjectCollection, ICollection<T>
         where T : INode
     {
-        public DynamicSubjectCollection(string predicate, DynamicNode subject)
+        public DynamicSubjectCollection(string predicate, DynamicNode @object)
             : base(
-                DynamicHelper.ConvertPredicate(
-                    DynamicHelper.ConvertPredicate(
-                        predicate,
-                        subject.Graph),
-                    subject.Graph,
-                    subject.BaseUri),
-                subject)
+                predicate.AsUriNode(@object.Graph, @object.BaseUri),
+                @object)
         {
         }
 

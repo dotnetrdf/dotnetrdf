@@ -168,7 +168,7 @@ namespace VDS.RDF.Dynamic
 
         private INode Convert(Uri subject)
         {
-            return DynamicHelper.ConvertPredicate(subject, this, this.SubjectBaseUri);
+            return subject.AsUriNode(this, this.SubjectBaseUri);
         }
     }
 }

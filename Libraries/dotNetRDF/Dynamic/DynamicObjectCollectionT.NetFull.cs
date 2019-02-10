@@ -34,12 +34,7 @@ namespace VDS.RDF.Dynamic
         public DynamicObjectCollection(DynamicNode subject, string predicate)
             : base(
                 subject,
-                DynamicHelper.ConvertPredicate(
-                    DynamicHelper.ConvertPredicate(
-                        predicate,
-                        subject.Graph),
-                    subject.Graph,
-                    subject.BaseUri))
+                predicate.AsUriNode(subject.Graph, subject.BaseUri))
         {
         }
 
