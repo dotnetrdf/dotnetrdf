@@ -193,6 +193,12 @@ namespace VDS.RDF.Update.Commands
 
             try
             {
+                // If there is a WITH clause and no matching graph, and the delete pattern doesn't contain child graph patterns then there is nothing to do
+                if (_graphUri != null && !context.Data.HasGraph(_graphUri) && !_deletePattern.HasChildGraphPatterns)
+                {
+                    return;
+                }
+
                 // First evaluate the WHERE pattern to get the affected bindings
                 ISparqlAlgebra where = _wherePattern.ToAlgebra();
                 if (context.Commands != null)
@@ -257,35 +263,40 @@ namespace VDS.RDF.Update.Commands
                 }
 
                 // Get the Graph from which we are deleting
-                IGraph g = context.Data.GetModifiableGraph(_graphUri);
+                IGraph g = context.Data.HasGraph(_graphUri) ? context.Data.GetModifiableGraph(_graphUri) : null;
 
                 // Delete the Triples for each Solution
                 foreach (ISet s in results.Sets)
                 {
                     List<Triple> deletedTriples = new List<Triple>();
 
-                    // Triples from raw Triple Patterns
-                    try
+                    if (g != null)
                     {
-                        ConstructContext constructContext = new ConstructContext(g, s, true);
-                        foreach (IConstructTriplePattern p in _deletePattern.TriplePatterns.OfType<IConstructTriplePattern>())
+                        // Triples from raw Triple Patterns
+                        try
                         {
-                            try
+                            ConstructContext constructContext = new ConstructContext(g, s, true);
+                            foreach (IConstructTriplePattern p in _deletePattern.TriplePatterns
+                                .OfType<IConstructTriplePattern>())
                             {
-                                deletedTriples.Add(p.Construct(constructContext));
+                                try
+                                {
+                                    deletedTriples.Add(p.Construct(constructContext));
+                                }
+                                catch (RdfQueryException)
+                                {
+                                    // If we get an error here then we couldn't construct a specific Triple
+                                    // so we continue anyway
+                                }
                             }
-                            catch (RdfQueryException)
-                            {
-                                // If we get an error here then we couldn't construct a specific Triple
-                                // so we continue anyway
-                            }
+
+                            g.Retract(deletedTriples);
                         }
-                        g.Retract(deletedTriples);
-                    }
-                    catch (RdfQueryException)
-                    {
-                        // If we throw an error this means we couldn't construct for this solution so the
-                        // solution is ignored this graph
+                        catch (RdfQueryException)
+                        {
+                            // If we throw an error this means we couldn't construct for this solution so the
+                            // solution is ignored this graph
+                        }
                     }
 
                     // Triples from GRAPH clauses
