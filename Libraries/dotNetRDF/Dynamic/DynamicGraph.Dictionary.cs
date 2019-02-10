@@ -32,6 +32,9 @@ namespace VDS.RDF.Dynamic
 
     public partial class DynamicGraph
     {
+        /// <summary>
+        /// Gets a collection of <see cref="DynamicNode"/>s representing URI nodes in this graph.
+        /// </summary>
         public ICollection<object> Values
         {
             get
@@ -40,6 +43,9 @@ namespace VDS.RDF.Dynamic
             }
         }
 
+        /// <summary>
+        /// Gets the number of URI nodes in this graph.
+        /// </summary>
         public int Count
         {
             get
@@ -48,6 +54,9 @@ namespace VDS.RDF.Dynamic
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether this graph dictionary is read only (always false).
+        /// </summary>
         public bool IsReadOnly
         {
             get
@@ -56,6 +65,7 @@ namespace VDS.RDF.Dynamic
             }
         }
 
+        /// <inheritdoc/>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.Cast<KeyValuePair<INode, object>>().GetEnumerator();

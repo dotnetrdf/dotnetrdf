@@ -33,6 +33,7 @@ namespace VDS.RDF.Dynamic
 
     public partial class DynamicNode : IDictionary<INode, object>
     {
+        /// <inheritdoc/>
         ICollection<INode> IDictionary<INode, object>.Keys
         {
             get
@@ -107,6 +108,7 @@ namespace VDS.RDF.Dynamic
             Graph.Assert(ConvertToTriples(predicate, objects));
         }
 
+        /// <inheritdoc/>
         void ICollection<KeyValuePair<INode, object>>.Add(KeyValuePair<INode, object> item)
         {
             Add(item.Key, item.Value);
@@ -129,6 +131,7 @@ namespace VDS.RDF.Dynamic
             return Graph.HasSubGraph(g);
         }
 
+        /// <inheritdoc/>
         bool ICollection<KeyValuePair<INode, object>>.Contains(KeyValuePair<INode, object> item)
         {
             return Contains(item.Key, item.Value);
@@ -149,6 +152,7 @@ namespace VDS.RDF.Dynamic
             NodePairs.CopyTo(array, arrayIndex);
         }
 
+        /// <inheritdoc/>
         IEnumerator<KeyValuePair<INode, object>> IEnumerable<KeyValuePair<INode, object>>.GetEnumerator()
         {
             return NodePairs.GetEnumerator();
@@ -179,6 +183,7 @@ namespace VDS.RDF.Dynamic
             return Graph.Retract(ConvertToTriples(predicate, objects));
         }
 
+        /// <inheritdoc/>
         bool ICollection<KeyValuePair<INode, object>>.Remove(KeyValuePair<INode, object> item)
         {
             return Remove(item.Key, item.Value);

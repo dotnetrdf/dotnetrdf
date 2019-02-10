@@ -34,6 +34,7 @@ namespace VDS.RDF.Dynamic
 
     public partial class DynamicGraph : IDictionary<INode, object>
     {
+        /// <inheritdoc/>
         ICollection<INode> IDictionary<INode, object>.Keys
         {
             get
@@ -60,34 +61,58 @@ namespace VDS.RDF.Dynamic
             }
         }
 
-        public object this[INode subject]
+        /// <summary>
+        /// Treats the graph as a dictionary of node keys and dynamic node values.
+        /// </summary>
+        /// <param name="node">The node to wrap dynamically.</param>
+        /// <returns>A <see cref="DynamicNode"/> wrapped around the <paramref name="node"/>.</returns>
+        /// <remarks>
+        /// <para>
+        /// <paramref name="node"/>s don't have to exist in the wrapped graph.
+        /// </para>
+        /// <para>
+        /// Null <paramref name="value"/>s retract statements where <paramref name="node"/> is the subject.
+        /// </para>
+        /// <para>
+        /// Non null <paramref name="value"/>s are converted to statements and replace existing statements where <paramref name="node"/> is the subject.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">When <paramref name="node"/> is null.</exception>
+        public object this[INode node]
         {
             get
             {
-                if (subject is null)
+                if (node is null)
                 {
-                    throw new ArgumentNullException(nameof(subject));
+                    throw new ArgumentNullException(nameof(node));
                 }
 
-                return new DynamicNode(subject, PredicateBaseUri);
+                return new DynamicNode(node, PredicateBaseUri);
             }
 
             set
             {
-                if (subject is null)
+                if (node is null)
                 {
-                    throw new ArgumentNullException(nameof(subject));
+                    throw new ArgumentNullException(nameof(node));
                 }
 
-                Remove(subject);
+                Remove(node);
 
                 if (value != null)
                 {
-                    Add(subject, value);
+                    Add(node, value);
                 }
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="subject"></param>
+        /// <param name="predicateAndObjects"></param>
+        /// <exception cref="ArgumentNullException">when <paramref name="subject"/> or <paramref name="predicateAndObjects"/> is null.</exception>
+        /// <exception cref="Exception">when <paramref name="predicateAndObjects"/> is a dictionary with keys other than <see cref="INode"/>, <see cref="Uri"/> or <see cref="string"/>.</exception>
         public void Add(INode subject, object predicateAndObjects)
         {
             if (subject is null)
@@ -129,6 +154,7 @@ namespace VDS.RDF.Dynamic
             }
         }
 
+        /// <inheritdoc/>
         void ICollection<KeyValuePair<INode, object>>.Add(KeyValuePair<INode, object> item)
         {
             Add(item.Key, item.Value);
@@ -185,6 +211,7 @@ namespace VDS.RDF.Dynamic
             return true;
         }
 
+        /// <inheritdoc/>
         bool ICollection<KeyValuePair<INode, object>>.Contains(KeyValuePair<INode, object> item)
         {
             return Contains(item.Key, item.Value);
@@ -205,6 +232,7 @@ namespace VDS.RDF.Dynamic
             NodePairs.ToArray().CopyTo(array, arrayIndex);
         }
 
+        /// <inheritdoc/>
         IEnumerator<KeyValuePair<INode, object>> IEnumerable<KeyValuePair<INode, object>>.GetEnumerator()
         {
             return NodePairs.GetEnumerator();
@@ -260,6 +288,7 @@ namespace VDS.RDF.Dynamic
             return true;
         }
 
+        /// <inheritdoc/>
         bool ICollection<KeyValuePair<INode, object>>.Remove(KeyValuePair<INode, object> item)
         {
             return Remove(item.Key, item.Value);

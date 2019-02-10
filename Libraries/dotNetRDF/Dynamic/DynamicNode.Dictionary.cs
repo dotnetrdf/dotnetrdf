@@ -48,6 +48,9 @@ namespace VDS.RDF.Dynamic
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether this node is read only (always false).
+        /// </summary>
         public bool IsReadOnly
         {
             get
@@ -61,6 +64,7 @@ namespace VDS.RDF.Dynamic
             new DynamicGraph(Graph).Remove(this);
         }
 
+        /// <inheritdoc/>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.Cast<KeyValuePair<INode, object>>().GetEnumerator();

@@ -109,6 +109,7 @@ namespace VDS.RDF.Dynamic
             return Contains(Convert(subject), predicateAndObjects);
         }
 
+        /// <inheritdoc/>
         bool ICollection<KeyValuePair<string, object>>.Contains(KeyValuePair<string, object> item)
         {
             return Contains(item.Key, item.Value);
@@ -129,6 +130,7 @@ namespace VDS.RDF.Dynamic
             StringPairs.CopyTo(array, arrayIndex);
         }
 
+        /// <inheritdoc/>
         IEnumerator<KeyValuePair<string, object>> IEnumerable<KeyValuePair<string, object>>.GetEnumerator()
         {
             return StringPairs.GetEnumerator();
@@ -154,6 +156,7 @@ namespace VDS.RDF.Dynamic
             return Remove(Convert(subject), predicateAndObjects);
         }
 
+        /// <inheritdoc/>
         bool ICollection<KeyValuePair<string, object>>.Remove(KeyValuePair<string, object> item)
         {
             return Remove(item.Key, item.Value);

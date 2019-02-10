@@ -34,12 +34,16 @@ namespace VDS.RDF
 
     public abstract partial class WrapperNode
     {
+        /// <inheritdoc/>
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context) => throw new NotImplementedException("This INode implementation does not support Serialization.");
 
+        /// <inheritdoc/>
         XmlSchema IXmlSerializable.GetSchema() => throw new NotImplementedException("This INode implementation does not support XML Serialization");
 
+        /// <inheritdoc/>
         void IXmlSerializable.ReadXml(XmlReader reader) => throw new NotImplementedException("This INode implementation does not support XML Serialization");
 
+        /// <inheritdoc/>
         void IXmlSerializable.WriteXml(XmlWriter writer) => throw new NotImplementedException("This INode implementation does not support XML Serialization");
     }
 }

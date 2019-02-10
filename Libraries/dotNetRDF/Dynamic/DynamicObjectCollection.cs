@@ -62,6 +62,9 @@ namespace VDS.RDF.Dynamic
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether this collection is read only (always false).
+        /// </summary>
         public bool IsReadOnly
         {
             get
@@ -101,6 +104,10 @@ namespace VDS.RDF.Dynamic
             Objects.ToArray().CopyTo(array, index);
         }
 
+        /// <summary>
+        /// Returns an enumerator that iterates through statement objects in this collection.
+        /// </summary>
+        /// <returns>An enumerator that can be used to iterate throught the collection.</returns>
         public IEnumerator<object> GetEnumerator()
         {
             return Objects.GetEnumerator();
@@ -111,11 +118,13 @@ namespace VDS.RDF.Dynamic
             return subject.Remove(predicate, @object);
         }
 
+        /// <inheritdoc/>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
 
+        /// <inheritdoc/>
         DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)
         {
             return new EnumerableMetaObject(parameter, this);

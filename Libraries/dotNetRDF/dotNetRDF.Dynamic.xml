@@ -1,0 +1,266 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>dotNetRDF.Dynamic</name>
+    </assembly>
+    <members>
+        <member name="T:VDS.RDF.WrapperNode">
+            <summary>
+            Abstract decorator for Nodes to make it easier to layer functionality on top of existing implementations.
+            </summary>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.#ctor(VDS.RDF.INode)">
+            <summary>
+            Initializes a new instance of the <see cref="T:VDS.RDF.WrapperNode"/> class.
+            </summary>
+            <param name="node">The node this is a wrapper around.</param>
+        </member>
+        <member name="P:VDS.RDF.WrapperNode.NodeType">
+            <inheritdoc/>
+        </member>
+        <member name="P:VDS.RDF.WrapperNode.Graph">
+            <inheritdoc/>
+        </member>
+        <member name="P:VDS.RDF.WrapperNode.GraphUri">
+            <inheritdoc/>
+        </member>
+        <member name="P:VDS.RDF.WrapperNode.Node">
+            <summary>
+            Gets the underlying node this is a wrapper around.
+            </summary>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.CompareTo(VDS.RDF.INode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.CompareTo(VDS.RDF.IBlankNode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.CompareTo(VDS.RDF.IGraphLiteralNode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.CompareTo(VDS.RDF.ILiteralNode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.CompareTo(VDS.RDF.IUriNode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.CompareTo(VDS.RDF.IVariableNode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.Equals(VDS.RDF.INode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.Equals(VDS.RDF.IBlankNode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.Equals(VDS.RDF.IGraphLiteralNode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.Equals(VDS.RDF.ILiteralNode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.Equals(VDS.RDF.IUriNode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.Equals(VDS.RDF.IVariableNode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.ToString(VDS.RDF.Writing.Formatting.INodeFormatter)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.ToString(VDS.RDF.Writing.Formatting.INodeFormatter,VDS.RDF.Writing.TripleSegment)">
+            <inheritdoc/>
+        </member>
+        <member name="T:VDS.RDF.Dynamic.DynamicGraph">
+            <summary>
+            A <see cref="T:VDS.RDF.WrapperGraph"/> that provides read/write dictionary and dynamic functionality.
+            </summary>
+            <remarks>
+            <para>
+            Dictionary entry values are <see cref="T:VDS.RDF.Dynamic.DynamicNode"/>s representing URI and blank subject nodes.
+            </para>
+            <para>
+            The graph can be indexed by URI nodes, blank nodes, absolute URIs, relative URIs, absolute URI strings, relative URI strings and QNames.
+            </para>
+            <para>
+            Assignment and other write methods accept classes with public properties, dictionaries and null as values.
+            </para>
+            </remarks>
+            <seealso cref="T:System.Collections.Generic.IDictionary`2"/>
+            <seealso cref="T:System.Collections.Generic.IDictionary`2"/>
+            <seealso cref="T:System.Collections.Generic.IDictionary`2"/>
+            <seealso cref="T:System.Dynamic.IDynamicMetaObjectProvider"/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.#ctor(VDS.RDF.IGraph,System.Uri,System.Uri)">
+            <summary>
+            Initializes a new instance of the <see cref="T:VDS.RDF.Dynamic.DynamicGraph"/> class.
+            </summary>
+            <param name="graph">The <see cref="T:VDS.RDF.IGraph"/> to wrap.</param>
+            <param name="subjectBaseUri">The <see cref="T:System.Uri"/> used for resolving relative subject references.</param>
+            <param name="predicateBaseUri">The <see cref="T:System.Uri"/> used for resolving relative predicate references.</param>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicGraph.SubjectBaseUri">
+            <summary>
+            Gets the <see cref="T:System.Uri"/> used for resolving relative subject references.
+            </summary>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicGraph.PredicateBaseUri">
+            <summary>
+            Gets the URI used for resolving relative predicate references.
+            </summary>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Dynamic#IDynamicMetaObjectProvider#GetMetaObject(System.Linq.Expressions.Expression)">
+            <inheritdoc/>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicGraph.Values">
+            <summary>
+            Gets a collection of <see cref="T:VDS.RDF.Dynamic.DynamicNode"/>s representing URI nodes in this graph.
+            </summary>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicGraph.Count">
+            <summary>
+            Gets the number of URI nodes in this graph.
+            </summary>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicGraph.IsReadOnly">
+            <summary>
+            Gets a value indicating whether this graph dictionary is read only (always false).
+            </summary>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#IDictionary{VDS#RDF#INode,System#Object}#Keys">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{VDS#RDF#INode,System#Object}}#Add(System.Collections.Generic.KeyValuePair{VDS.RDF.INode,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{VDS#RDF#INode,System#Object}}#Contains(System.Collections.Generic.KeyValuePair{VDS.RDF.INode,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{VDS#RDF#INode,System#Object}}#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{VDS#RDF#INode,System#Object}}#Remove(System.Collections.Generic.KeyValuePair{VDS.RDF.INode,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#String,System#Object}}#Contains(System.Collections.Generic.KeyValuePair{System.String,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{System#String,System#Object}}#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#String,System#Object}}#Remove(System.Collections.Generic.KeyValuePair{System.String,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#IDictionary{System#Uri,System#Object}#Keys">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Uri,System#Object}}#Add(System.Collections.Generic.KeyValuePair{System.Uri,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Uri,System#Object}}#Contains(System.Collections.Generic.KeyValuePair{System.Uri,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{System#Uri,System#Object}}#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Uri,System#Object}}#Remove(System.Collections.Generic.KeyValuePair{System.Uri,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicNode.VDS#RDF#IUriNode#Uri">
+            <inheritdoc/>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicNode.VDS#RDF#IBlankNode#InternalID">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Dynamic#IDynamicMetaObjectProvider#GetMetaObject(System.Linq.Expressions.Expression)">
+            <inheritdoc/>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicNode.IsReadOnly">
+            <summary>
+            Gets a value indicating whether this node is read only (always false).
+            </summary>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#IDictionary{VDS#RDF#INode,System#Object}#Keys">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{VDS#RDF#INode,System#Object}}#Add(System.Collections.Generic.KeyValuePair{VDS.RDF.INode,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{VDS#RDF#INode,System#Object}}#Contains(System.Collections.Generic.KeyValuePair{VDS.RDF.INode,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{VDS#RDF#INode,System#Object}}#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{VDS#RDF#INode,System#Object}}#Remove(System.Collections.Generic.KeyValuePair{VDS.RDF.INode,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#String,System#Object}}#Contains(System.Collections.Generic.KeyValuePair{System.String,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{System#String,System#Object}}#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#String,System#Object}}#Remove(System.Collections.Generic.KeyValuePair{System.String,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#IDictionary{System#Uri,System#Object}#Keys">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Uri,System#Object}}#Add(System.Collections.Generic.KeyValuePair{System.Uri,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Uri,System#Object}}#Contains(System.Collections.Generic.KeyValuePair{System.Uri,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{System#Uri,System#Object}}#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Uri,System#Object}}#Remove(System.Collections.Generic.KeyValuePair{System.Uri,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicObjectCollection.IsReadOnly">
+            <summary>
+            Gets a value indicating whether this collection is read only (always false).
+            </summary>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicObjectCollection.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through statement objects in this collection.
+            </summary>
+            <returns>An enumerator that can be used to iterate throught the collection.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicObjectCollection.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicObjectCollection.System#Dynamic#IDynamicMetaObjectProvider#GetMetaObject(System.Linq.Expressions.Expression)">
+            <inheritdoc/>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicSubjectCollection.IsReadOnly">
+            <summary>
+            Gets a value indicating whether this collection is read only (always false).
+            </summary>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicSubjectCollection.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicSubjectCollection.System#Dynamic#IDynamicMetaObjectProvider#GetMetaObject(System.Linq.Expressions.Expression)">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

@@ -56,6 +56,9 @@ namespace VDS.RDF.Dynamic
 
         public int Count => Subjects.Count();
 
+        /// <summary>
+        /// Gets a value indicating whether this collection is read only (always false).
+        /// </summary>
         public bool IsReadOnly => false;
 
         protected IEnumerable<INode> Subjects
@@ -93,8 +96,10 @@ namespace VDS.RDF.Dynamic
             return @object.Graph.Retract(@object.Graph.GetTriplesWithPredicateObject(predicate, @object).WithSubject(DynamicHelper.ConvertObject(item, @object.Graph)).ToList());
         }
 
+        /// <inheritdoc/>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+        /// <inheritdoc/>
         DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)
         {
             return new EnumerableMetaObject(parameter, this);

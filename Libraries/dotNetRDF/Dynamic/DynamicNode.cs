@@ -54,6 +54,7 @@ namespace VDS.RDF.Dynamic
             }
         }
 
+        /// <inheritdoc/>
         Uri IUriNode.Uri
         {
             get
@@ -64,6 +65,7 @@ namespace VDS.RDF.Dynamic
             }
         }
 
+        /// <inheritdoc/>
         string IBlankNode.InternalID
         {
             get
@@ -74,6 +76,7 @@ namespace VDS.RDF.Dynamic
             }
         }
 
+        /// <inheritdoc/>
         DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)
         {
             return new DictionaryMetaObject(parameter, this);

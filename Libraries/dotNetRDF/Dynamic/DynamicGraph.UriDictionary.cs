@@ -32,6 +32,7 @@ namespace VDS.RDF.Dynamic
 
     public partial class DynamicGraph : IDictionary<Uri, object>
     {
+        /// <inheritdoc/>
         ICollection<Uri> IDictionary<Uri, object>.Keys
         {
             get
@@ -84,6 +85,7 @@ namespace VDS.RDF.Dynamic
             Add(Convert(subject), predicateAndObjects);
         }
 
+        /// <inheritdoc/>
         void ICollection<KeyValuePair<Uri, object>>.Add(KeyValuePair<Uri, object> item)
         {
             Add(item.Key, item.Value);
@@ -99,6 +101,7 @@ namespace VDS.RDF.Dynamic
             return Contains(Convert(subject), predicateAndObjects);
         }
 
+        /// <inheritdoc/>
         bool ICollection<KeyValuePair<Uri, object>>.Contains(KeyValuePair<Uri, object> item)
         {
             return Contains(item.Key, item.Value);
@@ -119,6 +122,7 @@ namespace VDS.RDF.Dynamic
             UriPairs.ToArray().CopyTo(array, arrayIndex);
         }
 
+        /// <inheritdoc/>
         IEnumerator<KeyValuePair<Uri, object>> IEnumerable<KeyValuePair<Uri, object>>.GetEnumerator()
         {
             return UriPairs.GetEnumerator();
@@ -144,6 +148,7 @@ namespace VDS.RDF.Dynamic
             return Remove(Convert(subject), predicateAndObjects);
         }
 
+        /// <inheritdoc/>
         bool ICollection<KeyValuePair<Uri, object>>.Remove(KeyValuePair<Uri, object> item)
         {
             return Remove(item.Key, item.Value);
