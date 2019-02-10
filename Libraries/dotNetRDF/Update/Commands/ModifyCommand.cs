@@ -259,13 +259,17 @@ namespace VDS.RDF.Update.Commands
 
                 // Get the Graph to which we are deleting and inserting
                 IGraph g;
+                bool newGraph = false;
                 if (context.Data.HasGraph(_graphUri))
                 {
                     g = context.Data.GetModifiableGraph(_graphUri);
                 }
                 else
                 {
-                    g = null;
+                    // Inserting into a new graph. This will raise an exception if the dataset is immutable
+                    context.Data.AddGraph(new Graph { BaseUri = _graphUri });
+                    g = context.Data.GetModifiableGraph(_graphUri);
+                    newGraph = true;
                 }
 
                 // Delete the Triples for each Solution
@@ -395,6 +399,12 @@ namespace VDS.RDF.Update.Commands
                     {
                         // If we get an error here this means we couldn't construct for this solution so the
                         // solution is ignored for this graph
+                    }
+
+                    if (insertedTriples.Count == 0 && newGraph && _graphUri != null)
+                    {
+                        // Remove the named graph we added as we did not insert any triples
+                        context.Data.RemoveGraph(_graphUri);
                     }
 
                     // Triples from GRAPH clauses
