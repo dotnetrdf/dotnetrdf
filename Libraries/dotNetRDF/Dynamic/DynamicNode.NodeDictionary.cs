@@ -214,7 +214,7 @@ namespace VDS.RDF.Dynamic
                     yield return new Triple(
                         this.CopyNode(predicate.Graph),
                         predicate,
-                        DynamicHelper.ConvertObject(@object, predicate.Graph));
+                        @object.AsNode(predicate.Graph));
                 }
             }
         }

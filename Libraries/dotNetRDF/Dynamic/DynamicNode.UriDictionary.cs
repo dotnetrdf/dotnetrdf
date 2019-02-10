@@ -161,9 +161,9 @@ namespace VDS.RDF.Dynamic
             return TryGetValue(Convert(predicate), out objects);
         }
 
-        private INode Convert(Uri key)
+        private INode Convert(Uri predicate)
         {
-            return DynamicHelper.ConvertPredicate(key, this.Graph, this.BaseUri);
+            return predicate.AsUriNode(this.Graph, this.BaseUri);
         }
     }
 }

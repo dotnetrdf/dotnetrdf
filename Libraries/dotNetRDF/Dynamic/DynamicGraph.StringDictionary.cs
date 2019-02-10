@@ -46,7 +46,7 @@ namespace VDS.RDF.Dynamic
             {
                 return UriNodes
                     .ToDictionary(
-                        subject => DynamicHelper.ConvertToName(subject, BaseUri),
+                        subject => subject.AsName(BaseUri),
                         subject => this[subject]);
             }
         }
@@ -171,9 +171,9 @@ namespace VDS.RDF.Dynamic
             return TryGetValue(Convert(subject), out predicateAndObjects);
         }
 
-        private Uri Convert(string subject)
+        private INode Convert(string subject)
         {
-            return DynamicHelper.ConvertPredicate(subject, this);
+            return subject.AsUriNode(this, SubjectBaseUri);
         }
     }
 }

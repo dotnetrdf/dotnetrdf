@@ -46,7 +46,7 @@ namespace VDS.RDF.Dynamic
             {
                 return PredicateNodes
                     .ToDictionary(
-                        predicate => DynamicHelper.ConvertToName(predicate, BaseUri),
+                        predicate => predicate.AsName(BaseUri),
                         predicate => this[predicate]);
             }
         }
@@ -161,9 +161,9 @@ namespace VDS.RDF.Dynamic
             return TryGetValue(Convert(predicate), out objects);
         }
 
-        private Uri Convert(string key)
+        private INode Convert(string predicate)
         {
-            return DynamicHelper.ConvertPredicate(key, this.Graph);
+            return predicate.AsUriNode(this.Graph, BaseUri);
         }
     }
 }
