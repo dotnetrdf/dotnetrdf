@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using FluentAssertions;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -484,5 +485,55 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
             Assert.True(dataset.HasGraph(UriFactory.Create("http://object")));
             Assert.Equal(0, dataset[UriFactory.Create("http://subject")].Triples.Count);
         }
+
+        [Fact]
+        public void SparqlUpdateModifyCommandWithNoMatchingGraph()
+        {
+            var dataset = new InMemoryDataset();
+            var egGraph = new Uri("http://example.org/graph");
+            dataset.HasGraph(egGraph).Should().BeFalse();
+            var processor = new LeviathanUpdateProcessor(dataset);
+            var cmdSet = new SparqlUpdateParser().ParseFromString(
+                "WITH <" + egGraph +"> DELETE {} INSERT {} WHERE {}");
+            processor.ProcessCommandSet(cmdSet);
+            dataset.HasGraph(egGraph).Should().BeFalse(); // No triples got added
+
+            cmdSet = new SparqlUpdateParser().ParseFromString(
+                "WITH <" + egGraph + "> DELETE {} INSERT { <http://example.org/s> <http://example.org/p> <http://example.org/o> } WHERE {}");
+            processor.ProcessCommandSet(cmdSet);
+            dataset.HasGraph(egGraph).Should().BeTrue(); // Triples got added
+        }
+
+        [Fact]
+        public void SparqlUpdateInsertCommandWithNoMatchingGraph()
+        {
+            var dataset = new InMemoryDataset();
+            var egGraph = new Uri("http://example.org/graph");
+            dataset.HasGraph(egGraph).Should().BeFalse();
+            var processor = new LeviathanUpdateProcessor(dataset);
+            var cmdSet = new SparqlUpdateParser().ParseFromString(
+                "WITH <" + egGraph + "> INSERT {} WHERE {}");
+            processor.ProcessCommandSet(cmdSet);
+            dataset.HasGraph(egGraph).Should().BeFalse(); // No triples got added
+
+            cmdSet = new SparqlUpdateParser().ParseFromString(
+                "WITH <" + egGraph + "> INSERT { <http://example.org/s> <http://example.org/p> <http://example.org/o> } WHERE {}");
+            processor.ProcessCommandSet(cmdSet);
+            dataset.HasGraph(egGraph).Should().BeTrue(); // Triples got added
+        }
+
+        [Fact]
+        public void SparqlUpdateDeleteCommandWithNoMatchingGraph()
+        {
+            var dataset = new InMemoryDataset();
+            var egGraph = new Uri("http://example.org/graph");
+            dataset.HasGraph(egGraph).Should().BeFalse();
+            var processor = new LeviathanUpdateProcessor(dataset);
+            var cmdSet = new SparqlUpdateParser().ParseFromString(
+                "WITH <" + egGraph + "> DELETE {} WHERE {}");
+            processor.ProcessCommandSet(cmdSet);
+            dataset.HasGraph(egGraph).Should().BeFalse();
+        }
+
     }
 }
