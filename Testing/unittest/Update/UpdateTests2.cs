@@ -535,5 +535,30 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
             dataset.HasGraph(egGraph).Should().BeFalse();
         }
 
+        [Fact]
+        public void SparqlUpdateDeleteCommandWithNoMatchingGraphAndChildGraphPatterns()
+        {
+            var dataset = new InMemoryDataset();
+            var updateGraphUri = new Uri("http://example.org/g2");
+            var updateGraph = new Graph{BaseUri = updateGraphUri };
+            updateGraph.Assert(new Triple(updateGraph.CreateUriNode(new Uri("http://example.org/s")),
+                updateGraph.CreateUriNode(new Uri("http://example.org/p")),
+                updateGraph.CreateUriNode(new Uri("http://example.org/o"))));
+            dataset.AddGraph(updateGraph);
+
+            var egGraph = new Uri("http://example.org/graph");
+            dataset.HasGraph(egGraph).Should().BeFalse();
+            var processor = new LeviathanUpdateProcessor(dataset);
+            var cmdSet = new SparqlUpdateParser().ParseFromString(
+                "WITH <" + egGraph +
+                "> DELETE { GRAPH <http://example.org/g2> { <http://example.org/s> <http://example.org/p> <http://example.org/o> }} WHERE {}");
+            processor.ProcessCommandSet(cmdSet);
+
+            dataset.HasGraph(egGraph).Should().BeFalse(because:"Update command should not create an empty graph for a DELETE operation");
+            dataset[updateGraphUri].IsEmpty.Should()
+                .BeTrue("Triples should be deleted by child graph pattern");
+
+        }
+
     }
 }
