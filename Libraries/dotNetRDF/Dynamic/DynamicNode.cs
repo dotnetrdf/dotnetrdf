@@ -30,10 +30,19 @@ namespace VDS.RDF.Dynamic
     using System.Dynamic;
     using System.Linq.Expressions;
 
+    /// <summary>
+    /// A <see cref="WrapperNode">wrapper</see> that provides read/write dictionary and dynamic functionality.
+    /// </summary>
     public partial class DynamicNode : WrapperNode, IUriNode, IBlankNode, IDynamicMetaObjectProvider
     {
         private readonly Uri baseUri;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DynamicNode"/> class.
+        /// </summary>
+        /// <param name="node">The node to wrap.</param>
+        /// <param name="baseUri">The URI used to resolve relative predicate references.</param>
+        /// <exception cref="InvalidOperationException">When <paramref name="node"/> has no graph.</exception>
         // TODO: Make sure all instantiations copy original node to appropriate host graph
         public DynamicNode(INode node, Uri baseUri = null)
             : base(node)
@@ -46,6 +55,9 @@ namespace VDS.RDF.Dynamic
             this.baseUri = baseUri;
         }
 
+        /// <summary>
+        /// Gets the URI used to resolve relative predicate references.
+        /// </summary>
         public Uri BaseUri
         {
             get
@@ -54,6 +66,7 @@ namespace VDS.RDF.Dynamic
             }
         }
 
+        /// <inheritdoc/>
         Uri IUriNode.Uri
         {
             get
@@ -64,6 +77,7 @@ namespace VDS.RDF.Dynamic
             }
         }
 
+        /// <inheritdoc/>
         string IBlankNode.InternalID
         {
             get
@@ -74,6 +88,7 @@ namespace VDS.RDF.Dynamic
             }
         }
 
+        /// <inheritdoc/>
         DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)
         {
             return new DictionaryMetaObject(parameter, this);

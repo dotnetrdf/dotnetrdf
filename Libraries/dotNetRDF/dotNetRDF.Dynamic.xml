@@ -1,0 +1,784 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>dotNetRDF.Dynamic</name>
+    </assembly>
+    <members>
+        <member name="T:VDS.RDF.WrapperNode">
+            <summary>
+            Abstract decorator for Nodes to make it easier to layer functionality on top of existing implementations.
+            </summary>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.#ctor(VDS.RDF.INode)">
+            <summary>
+            Initializes a new instance of the <see cref="T:VDS.RDF.WrapperNode"/> class.
+            </summary>
+            <param name="node">The node this is a wrapper around.</param>
+            <exception cref="T:System.ArgumentNullException">When <paramref name="node"/> is null.</exception>
+        </member>
+        <member name="P:VDS.RDF.WrapperNode.NodeType">
+            <inheritdoc/>
+        </member>
+        <member name="P:VDS.RDF.WrapperNode.Graph">
+            <inheritdoc/>
+        </member>
+        <member name="P:VDS.RDF.WrapperNode.GraphUri">
+            <inheritdoc/>
+        </member>
+        <member name="P:VDS.RDF.WrapperNode.Node">
+            <summary>
+            Gets the underlying node this is a wrapper around.
+            </summary>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.CompareTo(VDS.RDF.INode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.CompareTo(VDS.RDF.IBlankNode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.CompareTo(VDS.RDF.IGraphLiteralNode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.CompareTo(VDS.RDF.ILiteralNode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.CompareTo(VDS.RDF.IUriNode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.CompareTo(VDS.RDF.IVariableNode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.Equals(VDS.RDF.INode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.Equals(VDS.RDF.IBlankNode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.Equals(VDS.RDF.IGraphLiteralNode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.Equals(VDS.RDF.ILiteralNode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.Equals(VDS.RDF.IUriNode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.Equals(VDS.RDF.IVariableNode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.ToString(VDS.RDF.Writing.Formatting.INodeFormatter)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.WrapperNode.ToString(VDS.RDF.Writing.Formatting.INodeFormatter,VDS.RDF.Writing.TripleSegment)">
+            <inheritdoc/>
+        </member>
+        <member name="T:VDS.RDF.Dynamic.DynamicExtensions">
+            <summary>
+            Contains helper extension methods for dynamic graphs and nodes.
+            </summary>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicExtensions.AsDynamic(VDS.RDF.IGraph,System.Uri,System.Uri)">
+            <summary>
+            Dynamically wraps a graph.
+            </summary>
+            <param name="graph">The graph to wrap dynamically.</param>
+            <param name="subjectBaseUri">The Uri to use for resolving relative subject references.</param>
+            <param name="predicateBaseUri">The Uri used to resolve relative predicate references.</param>
+            <returns>A dynamic graph that wrappes <paramref name="graph"/>.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicExtensions.AsDynamic(VDS.RDF.INode,System.Uri)">
+            <summary>
+            Dynamically wraps a node.
+            </summary>
+            <param name="node">The node to wrap dynamically.</param>
+            <param name="baseUri">The Uri to use for resolving relative predicate references.</param>
+            <returns>A dynamic node that wraps <paramref name="node"/>.</returns>
+        </member>
+        <member name="T:VDS.RDF.Dynamic.DynamicGraph">
+            <summary>
+            A <see cref="T:VDS.RDF.WrapperGraph">wrapper</see> that provides read/write dictionary and dynamic functionality.
+            </summary>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.#ctor(VDS.RDF.IGraph,System.Uri,System.Uri)">
+            <summary>
+            Initializes a new instance of the <see cref="T:VDS.RDF.Dynamic.DynamicGraph"/> class.
+            </summary>
+            <param name="graph">The <see cref="T:VDS.RDF.IGraph"/> to wrap.</param>
+            <param name="subjectBaseUri">The <see cref="T:System.Uri"/> used for resolving relative subject references.</param>
+            <param name="predicateBaseUri">The <see cref="T:System.Uri"/> used for resolving relative predicate references.</param>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicGraph.SubjectBaseUri">
+            <summary>
+            Gets the <see cref="T:System.Uri"/> used for resolving relative subject references.
+            </summary>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicGraph.PredicateBaseUri">
+            <summary>
+            Gets the URI used for resolving relative predicate references.
+            </summary>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Dynamic#IDynamicMetaObjectProvider#GetMetaObject(System.Linq.Expressions.Expression)">
+            <inheritdoc/>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicGraph.Values">
+            <summary>
+            Gets a collection of <see cref="T:VDS.RDF.Dynamic.DynamicNode"/>s representing URI nodes in this graph.
+            </summary>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicGraph.Count">
+            <summary>
+            Gets the number of URI nodes in this graph.
+            </summary>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicGraph.IsReadOnly">
+            <summary>
+            Gets a value indicating whether this graph dictionary is read only (always false).
+            </summary>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#IDictionary{VDS#RDF#INode,System#Object}#Keys">
+            <inheritdoc/>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicGraph.Item(VDS.RDF.INode)">
+            <summary>
+            Gets nodes equal to <paramref name="node"/> or sets statements with subject equal to <paramref name="node"/> and predicate and objects equivalent to <paramref name="value"/>.
+            </summary>
+            <param name="node">The node to wrap dynamically.</param>
+            <returns>A <see cref="T:VDS.RDF.Dynamic.DynamicNode"/> wrapped around the <paramref name="node"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">When <paramref name="node"/> is null.</exception>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.Add(VDS.RDF.INode,System.Object)">
+            <summary>
+            Asserts statements equivalent to the parameters.
+            </summary>
+            <param name="subject">The subject to assert.</param>
+            <param name="predicateAndObjects">An object with public properties or a dictionary representing predicates and objects to assert.</param>
+            <exception cref="T:System.ArgumentNullException">When <paramref name="subject"/> or <paramref name="predicateAndObjects"/> is null.</exception>
+            <exception cref="T:System.InvalidOperationException">When <paramref name="predicateAndObjects"/> is a dictionary with keys other than <see cref="T:VDS.RDF.INode"/>, <see cref="T:System.Uri"/> or <see cref="T:System.String"/>.</exception>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{VDS#RDF#INode,System#Object}}#Add(System.Collections.Generic.KeyValuePair{VDS.RDF.INode,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.Contains(VDS.RDF.INode,System.Object)">
+            <summary>
+            Checks whether statements exist equivalent to the parameters.
+            </summary>
+            <param name="subject">The subject to check.</param>
+            <param name="predicateAndObjects">An object with public properties or a dictionary representing predicates and objects to check.</param>
+            <returns>Whether statements exist equivalent to the parameters.</returns>
+            <exception cref="T:System.InvalidOperationException">When <paramref name="predicateAndObjects"/> is a dictionary with keys other than <see cref="T:VDS.RDF.INode"/>, <see cref="T:System.Uri"/> or <see cref="T:System.String"/>.</exception>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{VDS#RDF#INode,System#Object}}#Contains(System.Collections.Generic.KeyValuePair{VDS.RDF.INode,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.ContainsKey(VDS.RDF.INode)">
+            <summary>
+            Checks whether a URI node equal to <paramref name="key"/> exists.
+            </summary>
+            <param name="key">The node to check.</param>
+            <returns>Whether a URI node equal to <paramref name="key"/> exists.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{VDS#RDF#INode,System#Object}}#CopyTo(System.Collections.Generic.KeyValuePair{VDS.RDF.INode,System.Object}[],System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{VDS#RDF#INode,System#Object}}#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.Remove(VDS.RDF.INode)">
+            <summary>
+            Retracts statements with <paramref name="subject"/>.
+            </summary>
+            <param name="subject">The subject to retract.</param>
+            <returns>Whether any statements were retracted.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.Remove(VDS.RDF.INode,System.Object)">
+            <summary>
+            Retracts statements equivalent to the parameters.
+            </summary>
+            <param name="subject">The subject to retract.</param>
+            <param name="predicateAndObjects">An object with public properties or a dictionary representing predicates and objects to retract.</param>
+            <returns>Whether any statements were retracted.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{VDS#RDF#INode,System#Object}}#Remove(System.Collections.Generic.KeyValuePair{VDS.RDF.INode,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.TryGetValue(VDS.RDF.INode,System.Object@)">
+            <summary>
+            Tries to get a node from the graph.
+            </summary>
+            <param name="node">The node to try.</param>
+            <param name="value">A <see cref="T:VDS.RDF.Dynamic.DynamicNode"/> wrapped around the <paramref name="node"/>.</param>
+            <returns>A value representing whether a <paramref name="value"/> was set or not.</returns>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicGraph.Keys">
+            <summary>
+            Gets an <see cref="T:System.Collections.Generic.ICollection`1"/> containing Uri subject node names shortened as much as possible.
+            </summary>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicGraph.Item(System.String)">
+            <summary>
+            Gets nodes equivalent to <paramref name="node"/> or sets statements with subject equivalent to <paramref name="node"/> and predicate and objects equivalent to <paramref name="value"/>.
+            </summary>
+            <param name="node">The node to wrap dynamically.</param>
+            <returns>A <see cref="T:VDS.RDF.Dynamic.DynamicNode"/> wrapped around the <paramref name="node"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">When <paramref name="node"/> is null.</exception>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.Add(System.String,System.Object)">
+            <summary>
+            Asserts statements equivalent to the parameters.
+            </summary>
+            <param name="subject">The subject to assert.</param>
+            <param name="predicateAndObjects">An object with public properties or a dictionary representing predicates and objects to assert.</param>
+            <exception cref="T:System.ArgumentNullException">When <paramref name="subject"/> or <paramref name="predicateAndObjects"/> is null.</exception>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#String,System#Object}}#Add(System.Collections.Generic.KeyValuePair{System.String,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.Contains(System.String,System.Object)">
+            <summary>
+            Checks whether statements exist equivalent to the parameters.
+            </summary>
+            <param name="subject">The subject to check.</param>
+            <param name="predicateAndObjects">An object with public properties or a dictionary representing predicates and objects to check.</param>
+            <returns>Whether statements exist equivalent to the parameters.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#String,System#Object}}#Contains(System.Collections.Generic.KeyValuePair{System.String,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.ContainsKey(System.String)">
+            <summary>
+            Checks whether a URI node equivalent to <paramref name="key"/> exists.
+            </summary>
+            <param name="key">The node to check.</param>
+            <returns>Whether a URI node equivalent to <paramref name="key"/> exists.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#String,System#Object}}#CopyTo(System.Collections.Generic.KeyValuePair{System.String,System.Object}[],System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{System#String,System#Object}}#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.Remove(System.String)">
+            <summary>
+            Retracts statements with <paramref name="subject"/>.
+            </summary>
+            <param name="subject">The subject to retract.</param>
+            <returns>Whether any statements were retracted.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.Remove(System.String,System.Object)">
+            <summary>
+            Retracts statements equivalent to the parameters.
+            </summary>
+            <param name="subject">The subject to retract.</param>
+            <param name="predicateAndObjects">An object with public properties or a dictionary representing predicates and objects to retract.</param>
+            <returns>Whether any statements were retracted.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#String,System#Object}}#Remove(System.Collections.Generic.KeyValuePair{System.String,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.TryGetValue(System.String,System.Object@)">
+            <summary>
+            Tries to get a node from the graph.
+            </summary>
+            <param name="node">The node to try.</param>
+            <param name="value">A <see cref="T:VDS.RDF.Dynamic.DynamicNode"/> wrapped around the <paramref name="node"/>.</param>
+            <returns>A value representing whether a <paramref name="value"/> was set or not.</returns>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#IDictionary{System#Uri,System#Object}#Keys">
+            <inheritdoc/>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicGraph.Item(System.Uri)">
+            <summary>
+            Gets nodes equivalent to <paramref name="node"/> or sets statements with subject equivalent to <paramref name="node"/> and predicate and objects equivalent to <paramref name="value"/>.
+            </summary>
+            <param name="node">The node to wrap dynamically.</param>
+            <returns>A <see cref="T:VDS.RDF.Dynamic.DynamicNode"/> wrapped around the <paramref name="node"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">When <paramref name="node"/> is null.</exception>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.Add(System.Uri,System.Object)">
+            <summary>
+            Asserts statements equivalent to the parameters.
+            </summary>
+            <param name="subject">The subject to assert.</param>
+            <param name="predicateAndObjects">An object with public properties or a dictionary representing predicates and objects to assert.</param>
+            <exception cref="T:System.ArgumentNullException">When <paramref name="subject"/>.</exception>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Uri,System#Object}}#Add(System.Collections.Generic.KeyValuePair{System.Uri,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.Contains(System.Uri,System.Object)">
+            <summary>
+            Checks whether statements exist equivalent to the parameters.
+            </summary>
+            <param name="subject">The subject to check.</param>
+            <param name="predicateAndObjects">An object with public properties or a dictionary representing predicates and objects to check.</param>
+            <returns>Whether statements exist equivalent to the parameters.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Uri,System#Object}}#Contains(System.Collections.Generic.KeyValuePair{System.Uri,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.ContainsKey(System.Uri)">
+            <summary>
+            Checks whether a URI node equivalent to <paramref name="key"/> exists.
+            </summary>
+            <param name="key">The node to check.</param>
+            <returns>Whether a URI node equivalent to <paramref name="key"/> exists.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Uri,System#Object}}#CopyTo(System.Collections.Generic.KeyValuePair{System.Uri,System.Object}[],System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{System#Uri,System#Object}}#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.Remove(System.Uri)">
+            <summary>
+            Retracts statements with <paramref name="subject"/>.
+            </summary>
+            <param name="subject">The subject to retract.</param>
+            <returns>Whether any statements were retracted.</returns>
+            <exception cref="T:System.ArgumentNullException">When <paramref name="subject"/> is null</exception>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.Remove(System.Uri,System.Object)">
+            <summary>
+            Retracts statements equivalent to  parameters.
+            </summary>
+            <param name="subject">The subject to retract.</param>
+            <param name="predicateAndObjects">An object with public properties or a dictionary representing predicates and objects to retract.</param>
+            <returns>Whether any statements were retracted.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Uri,System#Object}}#Remove(System.Collections.Generic.KeyValuePair{System.Uri,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicGraph.TryGetValue(System.Uri,System.Object@)">
+            <summary>
+            Tries to get a node from the graph.
+            </summary>
+            <param name="node">The node to try.</param>
+            <param name="value">A <see cref="T:VDS.RDF.Dynamic.DynamicNode"/> wrapped around the <paramref name="node"/>.</param>
+            <returns>A value representing whether a <paramref name="value"/> was set or not.</returns>
+        </member>
+        <member name="T:VDS.RDF.Dynamic.DynamicNode">
+            <summary>
+            A <see cref="T:VDS.RDF.WrapperNode">wrapper</see> that provides read/write dictionary and dynamic functionality.
+            </summary>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.#ctor(VDS.RDF.INode,System.Uri)">
+            <summary>
+            Initializes a new instance of the <see cref="T:VDS.RDF.Dynamic.DynamicNode"/> class.
+            </summary>
+            <param name="node">The node to wrap.</param>
+            <param name="baseUri">The URI used to resolve relative predicate references.</param>
+            <exception cref="T:System.InvalidOperationException">When <paramref name="node"/> has no graph.</exception>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicNode.BaseUri">
+            <summary>
+            Gets the URI used to resolve relative predicate references.
+            </summary>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicNode.VDS#RDF#IUriNode#Uri">
+            <inheritdoc/>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicNode.VDS#RDF#IBlankNode#InternalID">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Dynamic#IDynamicMetaObjectProvider#GetMetaObject(System.Linq.Expressions.Expression)">
+            <inheritdoc/>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicNode.Values">
+            <summary>
+            Gets a collection of <see cref="T:VDS.RDF.Dynamic.DynamicObjectCollection">dynamic object collections</see>, one per distinct outgoing predicate from this node.
+            </summary>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicNode.Count">
+            <summary>
+            Gets the number of distinct outgoing predicates from this node.
+            </summary>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicNode.IsReadOnly">
+            <summary>
+            Gets a value indicating whether this node is read only (always false).
+            </summary>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.Clear">
+            <summary>
+            Retracts statements with this subject.
+            </summary>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#IDictionary{VDS#RDF#INode,System#Object}#Keys">
+            <inheritdoc/>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicNode.Item(VDS.RDF.INode)">
+            <summary>
+            Gets statement objects with this subject and <paramref name="predicate"/> or sets staements with this subject, <paramref name="predicate"/> and objects equivalent to <paramref name="value"/>.
+            </summary>
+            <param name="predicate">The predicate to use.</param>
+            <returns>A <see cref="T:VDS.RDF.Dynamic.DynamicObjectCollection"/> with this subject and <paramref name="predicate"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">When <paramref name="predicate"/> is null.</exception>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.Add(VDS.RDF.INode,System.Object)">
+            <summary>
+            Asserts statements with this subject, <paramref name="predicate"/> and equivalent to <paramref name="objects"/>.
+            </summary>
+            <param name="predicate">The predicate to assert.</param>
+            <param name="objects">An object or enumerable representing objects to assert.</param>
+            <exception cref="T:System.ArgumentNullException">When <paramref name="predicate"/> or <paramref name="objects"/> is null.</exception>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{VDS#RDF#INode,System#Object}}#Add(System.Collections.Generic.KeyValuePair{VDS.RDF.INode,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.Contains(VDS.RDF.INode,System.Object)">
+            <summary>
+            Checks whether statements exist with this subject, <paramref name="predicate"/> and objects equivalent to <paramref name="objects"/>.
+            </summary>
+            <param name="predicate">The predicate to assert.</param>
+            <param name="objects">An object or enumerable representing objects to assert.</param>
+            <returns>Whether statements exist with this subject, <paramref name="predicate"/> and objects equivalent to <paramref name="objects"/>.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{VDS#RDF#INode,System#Object}}#Contains(System.Collections.Generic.KeyValuePair{VDS.RDF.INode,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.ContainsKey(VDS.RDF.INode)">
+            <summary>
+            Checks whether this node has an outgoing predicate equal to <paramref name="key"/>.
+            </summary>
+            <param name="key">The node to check.</param>
+            <returns>Whether this node has an outgoing predicate equal to <paramref name="key"/>.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{VDS#RDF#INode,System#Object}}#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.Remove(VDS.RDF.INode)">
+            <summary>
+            Retracts statements with this subject and <paramref name="predicate"/>.
+            </summary>
+            <param name="predicate">The predicate to retract.</param>
+            <returns>Whether any statements were retracted.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.Remove(VDS.RDF.INode,System.Object)">
+            <summary>
+            Retracts statements with this subject, <paramref name="predicate"/> and objects equivalent to <paramref name="objects"/>.
+            </summary>
+            <param name="predicate">The predicate to retract.</param>
+            <param name="objects">An object with public properties or a dictionary representing predicates and objects to retract.</param>
+            <returns>Whether any statements were retracted.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{VDS#RDF#INode,System#Object}}#Remove(System.Collections.Generic.KeyValuePair{VDS.RDF.INode,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.TryGetValue(VDS.RDF.INode,System.Object@)">
+            <summary>
+            Tries to get an object collection.
+            </summary>
+            <param name="predicate">The predicate to try.</param>
+            <param name="value">A <see cref="T:VDS.RDF.Dynamic.DynamicObjectCollection"/>.</param>
+            <returns>A value representing whether a <paramref name="value"/> was set or not.</returns>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicNode.Keys">
+            <summary>
+            Gets an <see cref="T:System.Collections.Generic.ICollection`1"/> containing outgoing predicate node names shortened as much as possible.
+            </summary>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicNode.Item(System.String)">
+            <summary>
+            Gets statement objects with this subject and predicate equivalent to <paramref name="predicate"/> or sets staements with this subject, predicate equivalent to <paramref name="predicate"/> and objects equivalent to <paramref name="value"/>.
+            </summary>
+            <param name="predicate">The predicate to use.</param>
+            <returns>A <see cref="T:VDS.RDF.Dynamic.DynamicObjectCollection"/> with this subject and <paramref name="predicate"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">When <paramref name="predicate"/> is null.</exception>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.Add(System.String,System.Object)">
+            <summary>
+            Asserts statements with this subject and predicate and objects equivalent to parameters.
+            </summary>
+            <param name="predicate">The predicate to assert.</param>
+            <param name="objects">An object or enumerable representing objects to assert.</param>
+            <exception cref="T:System.ArgumentNullException">When <paramref name="predicate"/> is null.</exception>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.Contains(System.String,System.Object)">
+            <summary>
+            Checks whether statements exist with this subject, predicate equivalent to <paramref name="predicate"/> and objects equivalent to <paramref name="objects"/>.
+            </summary>
+            <param name="predicate">The predicate to assert.</param>
+            <param name="objects">An object or enumerable representing objects to assert.</param>
+            <returns>Whether statements exist with this subject, predicate equivalent to <paramref name="predicate"/> and objects equivalent to <paramref name="objects"/>.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#String,System#Object}}#Contains(System.Collections.Generic.KeyValuePair{System.String,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.ContainsKey(System.String)">
+            <summary>
+            Checks whether this node has an outgoing predicate equivalent to <paramref name="key"/>.
+            </summary>
+            <param name="key">The node to check.</param>
+            <returns>Whether this node has an outgoing predicate equivalent to <paramref name="key"/>.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#String,System#Object}}#CopyTo(System.Collections.Generic.KeyValuePair{System.String,System.Object}[],System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{System#String,System#Object}}#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.Remove(System.String)">
+            <summary>
+            Retracts statements with this subject and equivalent to <paramref name="predicate"/>.
+            </summary>
+            <param name="predicate">The predicate to retract.</param>
+            <returns>Whether any statements were retracted.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.Remove(System.String,System.Object)">
+            <summary>
+            Retracts statements with this subject, predicate equivalent to <paramref name="predicate"/> and objects equivalent to <paramref name="objects"/>.
+            </summary>
+            <param name="predicate">The predicate to retract.</param>
+            <param name="objects">An object with public properties or a dictionary representing predicates and objects to retract.</param>
+            <returns>Whether any statements were retracted.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#String,System#Object}}#Remove(System.Collections.Generic.KeyValuePair{System.String,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.TryGetValue(System.String,System.Object@)">
+            <summary>
+            Tries to get an object collection.
+            </summary>
+            <param name="predicate">The predicate to try.</param>
+            <param name="value">A <see cref="T:VDS.RDF.Dynamic.DynamicObjectCollection"/>.</param>
+            <returns>A value representing whether a <paramref name="value"/> was set or not.</returns>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#IDictionary{System#Uri,System#Object}#Keys">
+            <inheritdoc/>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicNode.Item(System.Uri)">
+            <summary>
+            Gets statement objects with this subject and predicate equivalent to <paramref name="predicate"/> or sets staements with this subject, predicate equivalent to <paramref name="predicate"/> and objects equivalent to <paramref name="value"/>.
+            </summary>
+            <param name="predicate">The predicate to use.</param>
+            <returns>A <see cref="T:VDS.RDF.Dynamic.DynamicObjectCollection"/> with this subject and <paramref name="predicate"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">When <paramref name="predicate"/> is null.</exception>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.Add(System.Uri,System.Object)">
+            <summary>
+            Asserts statements with this subject and predicate and objects equivalent to parameters.
+            </summary>
+            <param name="predicate">The predicate to assert.</param>
+            <param name="objects">An object or enumerable representing objects to assert.</param>
+            <exception cref="T:System.ArgumentNullException">When <paramref name="predicate"/> is null.</exception>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Uri,System#Object}}#Add(System.Collections.Generic.KeyValuePair{System.Uri,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.Contains(System.Uri,System.Object)">
+            <summary>
+            Checks whether statements exist with this subject, predicate equivalent to <paramref name="predicate"/> and objects equivalent to <paramref name="objects"/>.
+            </summary>
+            <param name="predicate">The predicate to assert.</param>
+            <param name="objects">An object or enumerable representing objects to assert.</param>
+            <returns>Whether statements exist with this subject, predicate equivalent to <paramref name="predicate"/> and objects equivalent to <paramref name="objects"/>.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Uri,System#Object}}#Contains(System.Collections.Generic.KeyValuePair{System.Uri,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.ContainsKey(System.Uri)">
+            <summary>
+            Checks whether this node has an outgoing predicate equivalent to <paramref name="key"/>.
+            </summary>
+            <param name="key">The node to check.</param>
+            <returns>Whether this node has an outgoing predicate equivalent to <paramref name="key"/>.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Uri,System#Object}}#CopyTo(System.Collections.Generic.KeyValuePair{System.Uri,System.Object}[],System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{System#Uri,System#Object}}#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.Remove(System.Uri)">
+            <summary>
+            Retracts statements with this subject and equivalent to <paramref name="predicate"/>.
+            </summary>
+            <param name="predicate">The predicate to retract.</param>
+            <returns>Whether any statements were retracted.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.Remove(System.Uri,System.Object)">
+            <summary>
+            Retracts statements with this subject, predicate equivalent to <paramref name="predicate"/> and objects equivalent to <paramref name="objects"/>.
+            </summary>
+            <param name="predicate">The predicate to retract.</param>
+            <param name="objects">An object with public properties or a dictionary representing predicates and objects to retract.</param>
+            <returns>Whether any statements were retracted.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{System#Uri,System#Object}}#Remove(System.Collections.Generic.KeyValuePair{System.Uri,System.Object})">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicNode.TryGetValue(System.Uri,System.Object@)">
+            <summary>
+            Tries to get an object collection.
+            </summary>
+            <param name="predicate">The predicate to try.</param>
+            <param name="value">A <see cref="T:VDS.RDF.Dynamic.DynamicObjectCollection"/>.</param>
+            <returns>A value representing whether a <paramref name="value"/> was set or not.</returns>
+        </member>
+        <member name="T:VDS.RDF.Dynamic.DynamicObjectCollection">
+            <summary>
+            Represents a read/write dynamic collection of objects by subject and predicate.
+            </summary>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicObjectCollection.#ctor(VDS.RDF.Dynamic.DynamicNode,VDS.RDF.INode)">
+            <summary>
+            Initializes a new instance of the <see cref="T:VDS.RDF.Dynamic.DynamicObjectCollection"/> class.
+            </summary>
+            <param name="subject">The subject to use.</param>
+            <param name="predicate">The predicate to use.</param>
+            <exception cref="T:System.ArgumentNullException">When <paramref name="subject"/> or <paramref name="predicate"/> are null.</exception>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicObjectCollection.Count">
+            <summary>
+            Gets the number of statements with given subject and predicate.
+            </summary>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicObjectCollection.IsReadOnly">
+            <summary>
+            Gets a value indicating whether this collection is read only (always false).
+            </summary>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicObjectCollection.Objects">
+            <summary>
+            Gets objects of statements with given subject and predicate.
+            </summary>
+            <remarks>Known literal nodes are converted to native primitives, URI and blank nodes are wrapped in <see cref="T:VDS.RDF.Dynamic.DynamicNode"/>.</remarks>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicObjectCollection.Add(System.Object)">
+            <summary>
+            Asserts statements equivalent to given subject and predicate and <paramref name="object"/>.
+            </summary>
+            <param name="object">The object to assert.</param>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicObjectCollection.Clear">
+            <summary>
+            Retracts statements with given subject and predicate.
+            </summary>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicObjectCollection.Contains(System.Object)">
+            <summary>
+            Checks whether a statement exists equivalent to given subject and predicate and <paramref name="object"/>.
+            </summary>
+            <param name="object">The object to assert.</param>
+            <returns>Whether a statement exists equivalent to given subject and predicate and <paramref name="object"/>.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicObjectCollection.CopyTo(System.Object[],System.Int32)">
+            <summary>
+            Copies objects of statements with given subject and predicate <paramref name="array"/> starting at <paramref name="index"/>.
+            </summary>
+            <param name="array">The destination of subjects copied.</param>
+            <param name="index">The index at which copying begins.</param>
+            <remarks>Known literal nodes are converted to native primitives, URI and blank nodes are wrapped in <see cref="T:VDS.RDF.Dynamic.DynamicNode"/>.</remarks>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicObjectCollection.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through objects of statements with given subject and predicate.
+            </summary>
+            <returns>An enumerator that iterates through objects of statements with given subject and predicate.</returns>
+            <remarks>Known literal nodes are converted to native primitives, URI and blank nodes are wrapped in <see cref="T:VDS.RDF.Dynamic.DynamicNode"/>.</remarks>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicObjectCollection.Remove(System.Object)">
+            <summary>
+            Retracts statements equivalent to given subject and predicate and <paramref name="object"/>.
+            </summary>
+            <param name="object">The object to retract.</param>
+            <returns>Whether any statements were retracted.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicObjectCollection.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicObjectCollection.System#Dynamic#IDynamicMetaObjectProvider#GetMetaObject(System.Linq.Expressions.Expression)">
+            <inheritdoc/>
+        </member>
+        <member name="T:VDS.RDF.Dynamic.DynamicSubjectCollection">
+            <summary>
+            Represents a read/write dynamic collection of subjects by predicate and object.
+            </summary>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicSubjectCollection.#ctor(VDS.RDF.INode,VDS.RDF.Dynamic.DynamicNode)">
+            <summary>
+            Initializes a new instance of the <see cref="T:VDS.RDF.Dynamic.DynamicSubjectCollection"/> class.
+            </summary>
+            <param name="predicate">The predicate to use.</param>
+            <param name="object">The object to use.</param>
+            <exception cref="T:System.ArgumentNullException">When <paramref name="predicate"/> or <paramref name="object"/> are null.</exception>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicSubjectCollection.Count">
+            <summary>
+            Gets the number of statements with given predicate and object.
+            </summary>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicSubjectCollection.IsReadOnly">
+            <summary>
+            Gets a value indicating whether this collection is read only (always false).
+            </summary>
+        </member>
+        <member name="P:VDS.RDF.Dynamic.DynamicSubjectCollection.Subjects">
+            <summary>
+            Gets subjects of statements with given predicate and object.
+            </summary>
+            <remarks>Nodes are wrapped in a <see cref="T:VDS.RDF.Dynamic.DynamicNode"/>.</remarks>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicSubjectCollection.Add(VDS.RDF.INode)">
+            <summary>
+            Asserts a statement with <paramref name="subject"/> and given predicate and object.
+            </summary>
+            <param name="subject">The subject to assert.</param>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicSubjectCollection.Clear">
+            <summary>
+            Retracts statements with given predicate and object.
+            </summary>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicSubjectCollection.Contains(VDS.RDF.INode)">
+            <summary>
+            Checks whether a statement exists with <paramref name="subject"/> and given predicate and object.
+            </summary>
+            <param name="subject">The subject to check.</param>
+            <returns>Whether a statement exists with <paramref name="subject"/> and given predicate and object.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicSubjectCollection.CopyTo(VDS.RDF.INode[],System.Int32)">
+            <summary>
+            Copies subjects of statements with given predicate and object to <paramref name="array"/> starting at <paramref name="index"/>.
+            </summary>
+            <param name="array">The destination of subjects copied.</param>
+            <param name="index">The index at which copying begins.</param>
+            <remarks>Nodes are wrapped in a <see cref="T:VDS.RDF.Dynamic.DynamicNode"/>.</remarks>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicSubjectCollection.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through subjects of statements with given predicate and object.
+            </summary>
+            <returns>An enumerator that can be used to iterate through subjects of statements with given predicate and object.</returns>
+            <remarks>Nodes are wrapped in a <see cref="T:VDS.RDF.Dynamic.DynamicNode"/>.</remarks>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicSubjectCollection.Remove(VDS.RDF.INode)">
+            <summary>
+            Retracts statements with <paramref name="subject"/> and given predicate and object.
+            </summary>
+            <param name="subject">The subject to retract.</param>
+            <returns>Whether any statements were retracted.</returns>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicSubjectCollection.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:VDS.RDF.Dynamic.DynamicSubjectCollection.System#Dynamic#IDynamicMetaObjectProvider#GetMetaObject(System.Linq.Expressions.Expression)">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

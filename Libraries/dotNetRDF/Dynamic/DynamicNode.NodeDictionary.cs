@@ -33,6 +33,7 @@ namespace VDS.RDF.Dynamic
 
     public partial class DynamicNode : IDictionary<INode, object>
     {
+        /// <inheritdoc/>
         ICollection<INode> IDictionary<INode, object>.Keys
         {
             get
@@ -64,6 +65,12 @@ namespace VDS.RDF.Dynamic
             }
         }
 
+        /// <summary>
+        /// Gets statement objects with this subject and <paramref name="predicate"/> or sets staements with this subject, <paramref name="predicate"/> and objects equivalent to <paramref name="value"/>.
+        /// </summary>
+        /// <param name="predicate">The predicate to use.</param>
+        /// <returns>A <see cref="DynamicObjectCollection"/> with this subject and <paramref name="predicate"/>.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="predicate"/> is null.</exception>
         public object this[INode predicate]
         {
             get
@@ -92,6 +99,12 @@ namespace VDS.RDF.Dynamic
             }
         }
 
+        /// <summary>
+        /// Asserts statements with this subject, <paramref name="predicate"/> and equivalent to <paramref name="objects"/>.
+        /// </summary>
+        /// <param name="predicate">The predicate to assert.</param>
+        /// <param name="objects">An object or enumerable representing objects to assert.</param>
+        /// <exception cref="ArgumentNullException">When <paramref name="predicate"/> or <paramref name="objects"/> is null.</exception>
         public void Add(INode predicate, object objects)
         {
             if (predicate is null)
@@ -107,11 +120,18 @@ namespace VDS.RDF.Dynamic
             Graph.Assert(ConvertToTriples(predicate, objects));
         }
 
+        /// <inheritdoc/>
         void ICollection<KeyValuePair<INode, object>>.Add(KeyValuePair<INode, object> item)
         {
             Add(item.Key, item.Value);
         }
 
+        /// <summary>
+        /// Checks whether statements exist with this subject, <paramref name="predicate"/> and objects equivalent to <paramref name="objects"/>.
+        /// </summary>
+        /// <param name="predicate">The predicate to assert.</param>
+        /// <param name="objects">An object or enumerable representing objects to assert.</param>
+        /// <returns>Whether statements exist with this subject, <paramref name="predicate"/> and objects equivalent to <paramref name="objects"/>.</returns>
         public bool Contains(INode predicate, object objects)
         {
             if (predicate is null)
@@ -129,31 +149,43 @@ namespace VDS.RDF.Dynamic
             return Graph.HasSubGraph(g);
         }
 
+        /// <inheritdoc/>
         bool ICollection<KeyValuePair<INode, object>>.Contains(KeyValuePair<INode, object> item)
         {
             return Contains(item.Key, item.Value);
         }
 
-        public bool ContainsKey(INode predicate)
+        /// <summary>
+        /// Checks whether this node has an outgoing predicate equal to <paramref name="key"/>.
+        /// </summary>
+        /// <param name="key">The node to check.</param>
+        /// <returns>Whether this node has an outgoing predicate equal to <paramref name="key"/>.</returns>
+        public bool ContainsKey(INode key)
         {
-            if (predicate is null)
+            if (key is null)
             {
                 return false;
             }
 
-            return PredicateNodes.Contains(predicate);
+            return PredicateNodes.Contains(key);
         }
 
-        public void CopyTo(KeyValuePair<INode, object>[] array, int arrayIndex)
+        void ICollection<KeyValuePair<INode, object>>.CopyTo(KeyValuePair<INode, object>[] array, int arrayIndex)
         {
             NodePairs.CopyTo(array, arrayIndex);
         }
 
+        /// <inheritdoc/>
         IEnumerator<KeyValuePair<INode, object>> IEnumerable<KeyValuePair<INode, object>>.GetEnumerator()
         {
             return NodePairs.GetEnumerator();
         }
 
+        /// <summary>
+        /// Retracts statements with this subject and <paramref name="predicate"/>.
+        /// </summary>
+        /// <param name="predicate">The predicate to retract.</param>
+        /// <returns>Whether any statements were retracted.</returns>
         public bool Remove(INode predicate)
         {
             if (predicate is null)
@@ -164,6 +196,12 @@ namespace VDS.RDF.Dynamic
             return Graph.Retract(Graph.GetTriplesWithSubjectPredicate(this, predicate).ToList());
         }
 
+        /// <summary>
+        /// Retracts statements with this subject, <paramref name="predicate"/> and objects equivalent to <paramref name="objects"/>.
+        /// </summary>
+        /// <param name="predicate">The predicate to retract.</param>
+        /// <param name="objects">An object with public properties or a dictionary representing predicates and objects to retract.</param>
+        /// <returns>Whether any statements were retracted.</returns>
         public bool Remove(INode predicate, object objects)
         {
             if (predicate is null)
@@ -179,21 +217,33 @@ namespace VDS.RDF.Dynamic
             return Graph.Retract(ConvertToTriples(predicate, objects));
         }
 
+        /// <inheritdoc/>
         bool ICollection<KeyValuePair<INode, object>>.Remove(KeyValuePair<INode, object> item)
         {
             return Remove(item.Key, item.Value);
         }
 
-        public bool TryGetValue(INode predicate, out object objects)
+        /// <summary>
+        /// Tries to get an object collection.
+        /// </summary>
+        /// <param name="predicate">The predicate to try.</param>
+        /// <param name="value">A <see cref="DynamicObjectCollection"/>.</param>
+        /// <returns>A value representing whether a <paramref name="value"/> was set or not.</returns>
+        public bool TryGetValue(INode predicate, out object value)
         {
-            objects = null;
+            value = null;
 
-            if (predicate is null || !ContainsKey(predicate))
+            if (predicate is null)
             {
                 return false;
             }
 
-            objects = this[predicate];
+            if (!ContainsKey(predicate))
+            {
+                return false;
+            }
+
+            value = this[predicate];
             return true;
         }
 
@@ -210,7 +260,6 @@ namespace VDS.RDF.Dynamic
                 // TODO: Maybe this should throw on null
                 if (@object != null)
                 {
-                    // TODO: This is a mess
                     yield return new Triple(
                         this.CopyNode(predicate.Graph),
                         predicate,

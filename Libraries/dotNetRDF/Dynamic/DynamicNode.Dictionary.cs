@@ -32,6 +32,9 @@ namespace VDS.RDF.Dynamic
 
     public partial class DynamicNode
     {
+        /// <summary>
+        /// Gets a collection of <see cref="DynamicObjectCollection">dynamic object collections</see>, one per distinct outgoing predicate from this node.
+        /// </summary>
         public ICollection<object> Values
         {
             get
@@ -40,6 +43,9 @@ namespace VDS.RDF.Dynamic
             }
         }
 
+        /// <summary>
+        /// Gets the number of distinct outgoing predicates from this node.
+        /// </summary>
         public int Count
         {
             get
@@ -48,6 +54,9 @@ namespace VDS.RDF.Dynamic
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether this node is read only (always false).
+        /// </summary>
         public bool IsReadOnly
         {
             get
@@ -56,11 +65,15 @@ namespace VDS.RDF.Dynamic
             }
         }
 
+        /// <summary>
+        /// Retracts statements with this subject.
+        /// </summary>
         public void Clear()
         {
             new DynamicGraph(Graph).Remove(this);
         }
 
+        /// <inheritdoc/>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.Cast<KeyValuePair<INode, object>>().GetEnumerator();

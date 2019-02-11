@@ -32,6 +32,7 @@ namespace VDS.RDF.Dynamic
 
     public partial class DynamicNode : IDictionary<Uri, object>
     {
+        /// <inheritdoc/>
         ICollection<Uri> IDictionary<Uri, object>.Keys
         {
             get
@@ -51,6 +52,12 @@ namespace VDS.RDF.Dynamic
             }
         }
 
+        /// <summary>
+        /// Gets statement objects with this subject and predicate equivalent to <paramref name="predicate"/> or sets staements with this subject, predicate equivalent to <paramref name="predicate"/> and objects equivalent to <paramref name="value"/>.
+        /// </summary>
+        /// <param name="predicate">The predicate to use.</param>
+        /// <returns>A <see cref="DynamicObjectCollection"/> with this subject and <paramref name="predicate"/>.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="predicate"/> is null.</exception>
         public object this[Uri predicate]
         {
             get
@@ -74,6 +81,12 @@ namespace VDS.RDF.Dynamic
             }
         }
 
+        /// <summary>
+        /// Asserts statements with this subject and predicate and objects equivalent to parameters.
+        /// </summary>
+        /// <param name="predicate">The predicate to assert.</param>
+        /// <param name="objects">An object or enumerable representing objects to assert.</param>
+        /// <exception cref="ArgumentNullException">When <paramref name="predicate"/> is null.</exception>
         public void Add(Uri predicate, object objects)
         {
             if (predicate is null)
@@ -84,11 +97,18 @@ namespace VDS.RDF.Dynamic
             Add(Convert(predicate), objects);
         }
 
+        /// <inheritdoc/>
         void ICollection<KeyValuePair<Uri, object>>.Add(KeyValuePair<Uri, object> item)
         {
             Add(item.Key, item.Value);
         }
 
+        /// <summary>
+        /// Checks whether statements exist with this subject, predicate equivalent to <paramref name="predicate"/> and objects equivalent to <paramref name="objects"/>.
+        /// </summary>
+        /// <param name="predicate">The predicate to assert.</param>
+        /// <param name="objects">An object or enumerable representing objects to assert.</param>
+        /// <returns>Whether statements exist with this subject, predicate equivalent to <paramref name="predicate"/> and objects equivalent to <paramref name="objects"/>.</returns>
         public bool Contains(Uri predicate, object objects)
         {
             if (predicate is null)
@@ -99,31 +119,44 @@ namespace VDS.RDF.Dynamic
             return Contains(Convert(predicate), objects);
         }
 
+        /// <inheritdoc/>
         bool ICollection<KeyValuePair<Uri, object>>.Contains(KeyValuePair<Uri, object> item)
         {
             return Contains(item.Key, item.Value);
         }
 
-        public bool ContainsKey(Uri predicate)
+        /// <summary>
+        /// Checks whether this node has an outgoing predicate equivalent to <paramref name="key"/>.
+        /// </summary>
+        /// <param name="key">The node to check.</param>
+        /// <returns>Whether this node has an outgoing predicate equivalent to <paramref name="key"/>.</returns>
+        public bool ContainsKey(Uri key)
         {
-            if (predicate is null)
+            if (key is null)
             {
                 return false;
             }
 
-            return ContainsKey(Convert(predicate));
+            return ContainsKey(Convert(key));
         }
 
-        public void CopyTo(KeyValuePair<Uri, object>[] array, int arrayIndex)
+        /// <inheritdoc/>
+        void ICollection<KeyValuePair<Uri, object>>.CopyTo(KeyValuePair<Uri, object>[] array, int arrayIndex)
         {
             UriPairs.CopyTo(array, arrayIndex);
         }
 
+        /// <inheritdoc/>
         IEnumerator<KeyValuePair<Uri, object>> IEnumerable<KeyValuePair<Uri, object>>.GetEnumerator()
         {
             return UriPairs.GetEnumerator();
         }
 
+        /// <summary>
+        /// Retracts statements with this subject and equivalent to <paramref name="predicate"/>.
+        /// </summary>
+        /// <param name="predicate">The predicate to retract.</param>
+        /// <returns>Whether any statements were retracted.</returns>
         public bool Remove(Uri predicate)
         {
             if (predicate is null)
@@ -134,31 +167,44 @@ namespace VDS.RDF.Dynamic
             return Remove(Convert(predicate));
         }
 
-        public bool Remove(Uri predicate, object @object)
+        /// <summary>
+        /// Retracts statements with this subject, predicate equivalent to <paramref name="predicate"/> and objects equivalent to <paramref name="objects"/>.
+        /// </summary>
+        /// <param name="predicate">The predicate to retract.</param>
+        /// <param name="objects">An object with public properties or a dictionary representing predicates and objects to retract.</param>
+        /// <returns>Whether any statements were retracted.</returns>
+        public bool Remove(Uri predicate, object objects)
         {
             if (predicate is null)
             {
                 return false;
             }
 
-            return Remove(Convert(predicate), @object);
+            return Remove(Convert(predicate), objects);
         }
 
+        /// <inheritdoc/>
         bool ICollection<KeyValuePair<Uri, object>>.Remove(KeyValuePair<Uri, object> item)
         {
             return Remove(item.Key, item.Value);
         }
 
-        public bool TryGetValue(Uri predicate, out object objects)
+        /// <summary>
+        /// Tries to get an object collection.
+        /// </summary>
+        /// <param name="predicate">The predicate to try.</param>
+        /// <param name="value">A <see cref="DynamicObjectCollection"/>.</param>
+        /// <returns>A value representing whether a <paramref name="value"/> was set or not.</returns>
+        public bool TryGetValue(Uri predicate, out object value)
         {
-            objects = null;
+            value = null;
 
             if (predicate is null)
             {
                 return false;
             }
 
-            return TryGetValue(Convert(predicate), out objects);
+            return TryGetValue(Convert(predicate), out value);
         }
 
         private INode Convert(Uri predicate)

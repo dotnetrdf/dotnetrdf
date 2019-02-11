@@ -32,6 +32,7 @@ namespace VDS.RDF.Dynamic
 
     public partial class DynamicGraph : IDictionary<Uri, object>
     {
+        /// <inheritdoc/>
         ICollection<Uri> IDictionary<Uri, object>.Keys
         {
             get
@@ -51,29 +52,41 @@ namespace VDS.RDF.Dynamic
             }
         }
 
-        public object this[Uri predicate]
+        /// <summary>
+        /// Gets nodes equivalent to <paramref name="node"/> or sets statements with subject equivalent to <paramref name="node"/> and predicate and objects equivalent to <paramref name="value"/>.
+        /// </summary>
+        /// <param name="node">The node to wrap dynamically.</param>
+        /// <returns>A <see cref="DynamicNode"/> wrapped around the <paramref name="node"/>.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="node"/> is null.</exception>
+        public object this[Uri node]
         {
             get
             {
-                if (predicate is null)
+                if (node is null)
                 {
-                    throw new ArgumentNullException(nameof(predicate));
+                    throw new ArgumentNullException(nameof(node));
                 }
 
-                return this[Convert(predicate)];
+                return this[Convert(node)];
             }
 
             set
             {
-                if (predicate is null)
+                if (node is null)
                 {
-                    throw new ArgumentNullException(nameof(predicate));
+                    throw new ArgumentNullException(nameof(node));
                 }
 
-                this[Convert(predicate)] = value;
+                this[Convert(node)] = value;
             }
         }
 
+        /// <summary>
+        /// Asserts statements equivalent to the parameters.
+        /// </summary>
+        /// <param name="subject">The subject to assert.</param>
+        /// <param name="predicateAndObjects">An object with public properties or a dictionary representing predicates and objects to assert.</param>
+        /// <exception cref="ArgumentNullException">When <paramref name="subject"/>.</exception>
         public void Add(Uri subject, object predicateAndObjects)
         {
             if (subject is null)
@@ -84,11 +97,18 @@ namespace VDS.RDF.Dynamic
             Add(Convert(subject), predicateAndObjects);
         }
 
+        /// <inheritdoc/>
         void ICollection<KeyValuePair<Uri, object>>.Add(KeyValuePair<Uri, object> item)
         {
             Add(item.Key, item.Value);
         }
 
+        /// <summary>
+        /// Checks whether statements exist equivalent to the parameters.
+        /// </summary>
+        /// <param name="subject">The subject to check.</param>
+        /// <param name="predicateAndObjects">An object with public properties or a dictionary representing predicates and objects to check.</param>
+        /// <returns>Whether statements exist equivalent to the parameters.</returns>
         public bool Contains(Uri subject, object predicateAndObjects)
         {
             if (subject is null)
@@ -99,31 +119,45 @@ namespace VDS.RDF.Dynamic
             return Contains(Convert(subject), predicateAndObjects);
         }
 
+        /// <inheritdoc/>
         bool ICollection<KeyValuePair<Uri, object>>.Contains(KeyValuePair<Uri, object> item)
         {
             return Contains(item.Key, item.Value);
         }
 
-        public bool ContainsKey(Uri subject)
+        /// <summary>
+        /// Checks whether a URI node equivalent to <paramref name="key"/> exists.
+        /// </summary>
+        /// <param name="key">The node to check.</param>
+        /// <returns>Whether a URI node equivalent to <paramref name="key"/> exists.</returns>
+        public bool ContainsKey(Uri key)
         {
-            if (subject is null)
+            if (key is null)
             {
                 return false;
             }
 
-            return ContainsKey(Convert(subject));
+            return ContainsKey(Convert(key));
         }
 
-        public void CopyTo(KeyValuePair<Uri, object>[] array, int arrayIndex)
+        /// <inheritdoc/>
+        void ICollection<KeyValuePair<Uri, object>>.CopyTo(KeyValuePair<Uri, object>[] array, int arrayIndex)
         {
             UriPairs.ToArray().CopyTo(array, arrayIndex);
         }
 
+        /// <inheritdoc/>
         IEnumerator<KeyValuePair<Uri, object>> IEnumerable<KeyValuePair<Uri, object>>.GetEnumerator()
         {
             return UriPairs.GetEnumerator();
         }
 
+        /// <summary>
+        /// Retracts statements with <paramref name="subject"/>.
+        /// </summary>
+        /// <param name="subject">The subject to retract.</param>
+        /// <returns>Whether any statements were retracted.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="subject"/> is null</exception>
         public bool Remove(Uri subject)
         {
             if (subject is null)
@@ -134,6 +168,12 @@ namespace VDS.RDF.Dynamic
             return Remove(Convert(subject));
         }
 
+        /// <summary>
+        /// Retracts statements equivalent to  parameters.
+        /// </summary>
+        /// <param name="subject">The subject to retract.</param>
+        /// <param name="predicateAndObjects">An object with public properties or a dictionary representing predicates and objects to retract.</param>
+        /// <returns>Whether any statements were retracted.</returns>
         public bool Remove(Uri subject, object predicateAndObjects)
         {
             if (subject is null)
@@ -144,21 +184,28 @@ namespace VDS.RDF.Dynamic
             return Remove(Convert(subject), predicateAndObjects);
         }
 
+        /// <inheritdoc/>
         bool ICollection<KeyValuePair<Uri, object>>.Remove(KeyValuePair<Uri, object> item)
         {
             return Remove(item.Key, item.Value);
         }
 
-        public bool TryGetValue(Uri subject, out object predicateAndObjects)
+        /// <summary>
+        /// Tries to get a node from the graph.
+        /// </summary>
+        /// <param name="node">The node to try.</param>
+        /// <param name="value">A <see cref="DynamicNode"/> wrapped around the <paramref name="node"/>.</param>
+        /// <returns>A value representing whether a <paramref name="value"/> was set or not.</returns>
+        public bool TryGetValue(Uri node, out object value)
         {
-            predicateAndObjects = null;
+            value = null;
 
-            if (subject is null)
+            if (node is null)
             {
                 return false;
             }
 
-            return TryGetValue(Convert(subject), out predicateAndObjects);
+            return TryGetValue(Convert(node), out value);
         }
 
         private INode Convert(Uri subject)

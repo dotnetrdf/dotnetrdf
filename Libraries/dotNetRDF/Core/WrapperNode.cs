@@ -30,50 +30,158 @@ namespace VDS.RDF
     using VDS.RDF.Writing;
     using VDS.RDF.Writing.Formatting;
 
+    /// <summary>
+    /// Abstract decorator for Nodes to make it easier to layer functionality on top of existing implementations.
+    /// </summary>
     public abstract partial class WrapperNode : INode
     {
-        protected WrapperNode(INode node) => Node = node ?? throw new ArgumentNullException(nameof(node));
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WrapperNode"/> class.
+        /// </summary>
+        /// <param name="node">The node this is a wrapper around.</param>
+        /// <exception cref="ArgumentNullException">When <paramref name="node"/> is null.</exception>
+        protected WrapperNode(INode node)
+        {
+            Node = node ?? throw new ArgumentNullException(nameof(node));
+        }
 
-        public NodeType NodeType => Node.NodeType;
+        /// <inheritdoc/>
+        public NodeType NodeType
+        {
+            get
+            {
+                return Node.NodeType;
+            }
+        }
 
-        public IGraph Graph => Node.Graph;
+        /// <inheritdoc/>
+        public IGraph Graph
+        {
+            get
+            {
+                return Node.Graph;
+            }
+        }
 
-        public Uri GraphUri { get => Node.GraphUri; set => Node.GraphUri = value; }
+        /// <inheritdoc/>
+        public Uri GraphUri
+        {
+            get
+            {
+                return Node.GraphUri;
+            }
 
+            set
+            {
+                Node.GraphUri = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the underlying node this is a wrapper around.
+        /// </summary>
         protected INode Node { get; private set; }
 
-        public override bool Equals(object obj) => Node.Equals(obj);
+        /// <inheritdoc/>
+        public override bool Equals(object obj)
+        {
+            return Node.Equals(obj);
+        }
 
-        public override int GetHashCode() => Node.GetHashCode();
+        /// <inheritdoc/>
+        public override int GetHashCode()
+        {
+            return Node.GetHashCode();
+        }
 
-        public override string ToString() => Node.ToString();
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return Node.ToString();
+        }
 
-        public int CompareTo(INode other) => Node.CompareTo(other);
+        /// <inheritdoc/>
+        public int CompareTo(INode other)
+        {
+            return Node.CompareTo(other);
+        }
 
-        public int CompareTo(IBlankNode other) => Node.CompareTo(other);
+        /// <inheritdoc/>
+        public int CompareTo(IBlankNode other)
+        {
+            return Node.CompareTo(other);
+        }
 
-        public int CompareTo(IGraphLiteralNode other) => Node.CompareTo(other);
+        /// <inheritdoc/>
+        public int CompareTo(IGraphLiteralNode other)
+        {
+            return Node.CompareTo(other);
+        }
 
-        public int CompareTo(ILiteralNode other) => Node.CompareTo(other);
+        /// <inheritdoc/>
+        public int CompareTo(ILiteralNode other)
+        {
+            return Node.CompareTo(other);
+        }
 
-        public int CompareTo(IUriNode other) => Node.CompareTo(other);
+        /// <inheritdoc/>
+        public int CompareTo(IUriNode other)
+        {
+            return Node.CompareTo(other);
+        }
 
-        public int CompareTo(IVariableNode other) => Node.CompareTo(other);
+        /// <inheritdoc/>
+        public int CompareTo(IVariableNode other)
+        {
+            return Node.CompareTo(other);
+        }
 
-        public bool Equals(INode other) => Node.Equals(other);
+        /// <inheritdoc/>
+        public bool Equals(INode other)
+        {
+            return Node.Equals(other);
+        }
 
-        public bool Equals(IBlankNode other) => Node.Equals(other);
+        /// <inheritdoc/>
+        public bool Equals(IBlankNode other)
+        {
+            return Node.Equals(other);
+        }
 
-        public bool Equals(IGraphLiteralNode other) => Node.Equals(other);
+        /// <inheritdoc/>
+        public bool Equals(IGraphLiteralNode other)
+        {
+            return Node.Equals(other);
+        }
 
-        public bool Equals(ILiteralNode other) => Node.Equals(other);
+        /// <inheritdoc/>
+        public bool Equals(ILiteralNode other)
+        {
+            return Node.Equals(other);
+        }
 
-        public bool Equals(IUriNode other) => Node.Equals(other);
+        /// <inheritdoc/>
+        public bool Equals(IUriNode other)
+        {
+            return Node.Equals(other);
+        }
 
-        public bool Equals(IVariableNode other) => Node.Equals(other);
+        /// <inheritdoc/>
+        public bool Equals(IVariableNode other)
+        {
+            return Node.Equals(other);
+        }
 
-        public string ToString(INodeFormatter formatter) => Node.ToString(formatter);
+        /// <inheritdoc/>
+        public string ToString(INodeFormatter formatter)
+        {
+            return Node.ToString(formatter);
+        }
 
-        public string ToString(INodeFormatter formatter, TripleSegment segment) => Node.ToString(formatter, segment);
+        /// <inheritdoc/>
+        public string ToString(INodeFormatter formatter, TripleSegment segment)
+        {
+            return Node.ToString(formatter, segment);
+        }
     }
 }

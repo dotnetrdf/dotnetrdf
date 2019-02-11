@@ -343,7 +343,7 @@ namespace VDS.RDF.Dynamic
                 { 0, "o" }
             };
 
-            Assert.Throws<Exception>(() =>
+            Assert.Throws<InvalidOperationException>(() =>
                 g.Add(s, predicateAndObjects));
         }
 
@@ -464,7 +464,7 @@ namespace VDS.RDF.Dynamic
                 { 0, "o" }
             };
 
-            Assert.Throws<Exception>(() =>
+            Assert.Throws<InvalidOperationException>(() =>
                 g.Contains(s, predicateAndObjects));
         }
 

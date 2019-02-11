@@ -4,6 +4,7 @@
     <TargetFrameworks>netstandard1.4;net40;net40-client;netstandard2.0</TargetFrameworks>
     <AssemblyName>dotNetRDF.Dynamic</AssemblyName>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <CodeAnalysisRuleSet>..\..\dotnetrdf.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net40-client'">
@@ -12,8 +13,16 @@
     <TargetFrameworkProfile>client</TargetFrameworkProfile>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard1.4|AnyCPU'">
+    <DocumentationFile>C:\Users\samu\source\repos\dotNetRDF.Dynamic\Libraries\dotNetRDF\dotNetRDF.Dynamic.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="dotNetRDF" Version="2.1.0" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.4' ">

@@ -33,27 +33,29 @@ namespace VDS.RDF.Dynamic
     using System.Linq;
     using System.Linq.Expressions;
 
+    /// <summary>
+    /// Represents a read/write dynamic collection of objects by subject and predicate.
+    /// </summary>
     public class DynamicObjectCollection : ICollection<object>, IDynamicMetaObjectProvider
     {
         private readonly DynamicNode subject;
         private readonly INode predicate;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DynamicObjectCollection"/> class.
+        /// </summary>
+        /// <param name="subject">The subject to use.</param>
+        /// <param name="predicate">The predicate to use.</param>
+        /// <exception cref="ArgumentNullException">When <paramref name="subject"/> or <paramref name="predicate"/> are null.</exception>
         public DynamicObjectCollection(DynamicNode subject, INode predicate)
         {
-            if (subject is null)
-            {
-                throw new ArgumentNullException(nameof(subject));
-            }
-
-            if (predicate is null)
-            {
-                throw new ArgumentNullException(nameof(predicate));
-            }
-
-            this.subject = subject;
-            this.predicate = predicate;
+            this.subject = subject ?? throw new ArgumentNullException(nameof(subject));
+            this.predicate = predicate ?? throw new ArgumentNullException(nameof(predicate));
         }
 
+        /// <summary>
+        /// Gets the number of statements with given subject and predicate.
+        /// </summary>
         public int Count
         {
             get
@@ -62,6 +64,9 @@ namespace VDS.RDF.Dynamic
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether this collection is read only (always false).
+        /// </summary>
         public bool IsReadOnly
         {
             get
@@ -70,6 +75,10 @@ namespace VDS.RDF.Dynamic
             }
         }
 
+        /// <summary>
+        /// Gets objects of statements with given subject and predicate.
+        /// </summary>
+        /// <remarks>Known literal nodes are converted to native primitives, URI and blank nodes are wrapped in <see cref="DynamicNode"/>.</remarks>
         protected IEnumerable<object> Objects
         {
             get
@@ -81,41 +90,71 @@ namespace VDS.RDF.Dynamic
             }
         }
 
+        /// <summary>
+        /// Asserts statements equivalent to given subject and predicate and <paramref name="object"/>.
+        /// </summary>
+        /// <param name="object">The object to assert.</param>
         public void Add(object @object)
         {
             subject.Add(predicate, @object);
         }
 
+        /// <summary>
+        /// Retracts statements with given subject and predicate.
+        /// </summary>
         public void Clear()
         {
             subject.Remove(predicate);
         }
 
+        /// <summary>
+        /// Checks whether a statement exists equivalent to given subject and predicate and <paramref name="object"/>.
+        /// </summary>
+        /// <param name="object">The object to assert.</param>
+        /// <returns>Whether a statement exists equivalent to given subject and predicate and <paramref name="object"/>.</returns>
         public bool Contains(object @object)
         {
             return Objects.Contains(@object);
         }
 
+        /// <summary>
+        /// Copies objects of statements with given subject and predicate <paramref name="array"/> starting at <paramref name="index"/>.
+        /// </summary>
+        /// <param name="array">The destination of subjects copied.</param>
+        /// <param name="index">The index at which copying begins.</param>
+        /// <remarks>Known literal nodes are converted to native primitives, URI and blank nodes are wrapped in <see cref="DynamicNode"/>.</remarks>
         public void CopyTo(object[] array, int index)
         {
             Objects.ToArray().CopyTo(array, index);
         }
 
+        /// <summary>
+        /// Returns an enumerator that iterates through objects of statements with given subject and predicate.
+        /// </summary>
+        /// <returns>An enumerator that iterates through objects of statements with given subject and predicate.</returns>
+        /// <remarks>Known literal nodes are converted to native primitives, URI and blank nodes are wrapped in <see cref="DynamicNode"/>.</remarks>
         public IEnumerator<object> GetEnumerator()
         {
             return Objects.GetEnumerator();
         }
 
+        /// <summary>
+        /// Retracts statements equivalent to given subject and predicate and <paramref name="object"/>.
+        /// </summary>
+        /// <param name="object">The object to retract.</param>
+        /// <returns>Whether any statements were retracted.</returns>
         public bool Remove(object @object)
         {
             return subject.Remove(predicate, @object);
         }
 
+        /// <inheritdoc/>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
 
+        /// <inheritdoc/>
         DynamicMetaObject IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)
         {
             return new EnumerableMetaObject(parameter, this);

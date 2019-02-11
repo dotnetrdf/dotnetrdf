@@ -30,13 +30,29 @@ namespace VDS.RDF.Dynamic
     using System.Text.RegularExpressions;
     using VDS.RDF.Nodes;
 
+    /// <summary>
+    /// Contains helper extension methods for dynamic graphs and nodes.
+    /// </summary>
     public static class DynamicExtensions
     {
+        /// <summary>
+        /// Dynamically wraps a graph.
+        /// </summary>
+        /// <param name="graph">The graph to wrap dynamically.</param>
+        /// <param name="subjectBaseUri">The Uri to use for resolving relative subject references.</param>
+        /// <param name="predicateBaseUri">The Uri used to resolve relative predicate references.</param>
+        /// <returns>A dynamic graph that wrappes <paramref name="graph"/>.</returns>
         public static dynamic AsDynamic(this IGraph graph, Uri subjectBaseUri = null, Uri predicateBaseUri = null)
         {
             return new DynamicGraph(graph, subjectBaseUri, predicateBaseUri);
         }
 
+        /// <summary>
+        /// Dynamically wraps a node.
+        /// </summary>
+        /// <param name="node">The node to wrap dynamically.</param>
+        /// <param name="baseUri">The Uri to use for resolving relative predicate references.</param>
+        /// <returns>A dynamic node that wraps <paramref name="node"/>.</returns>
         public static dynamic AsDynamic(this INode node, Uri baseUri = null)
         {
             return new DynamicNode(node, baseUri);
@@ -48,7 +64,7 @@ namespace VDS.RDF.Dynamic
             {
                 case IUriNode uriNode:
                 case IBlankNode blankNode:
-                    return new DynamicNode(node, baseUri);
+                    return node.AsDynamic(baseUri);
 
                 case DoubleNode doubleNode:
                     return doubleNode.AsDouble();
@@ -191,7 +207,6 @@ namespace VDS.RDF.Dynamic
 
         private static bool TryResolveQName(string index, IGraph graph, out Uri indexUri)
         {
-            // TODO: This is naive
             if (index.StartsWith("urn:") || !Regex.IsMatch(index, @"^\w*:\w+$"))
             {
                 indexUri = null;
