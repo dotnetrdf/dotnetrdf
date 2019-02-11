@@ -62,21 +62,10 @@ namespace VDS.RDF.Dynamic
         }
 
         /// <summary>
-        /// Treats the graph as a dictionary of node keys and dynamic node values.
+        /// Gets nodes equal to <paramref name="node"/> or sets statements with subject equal to <paramref name="node"/> and predicate and objects equivalent to <paramref name="value"/>.
         /// </summary>
         /// <param name="node">The node to wrap dynamically.</param>
         /// <returns>A <see cref="DynamicNode"/> wrapped around the <paramref name="node"/>.</returns>
-        /// <remarks>
-        /// <para>
-        /// <paramref name="node"/>s don't have to exist in the wrapped graph.
-        /// </para>
-        /// <para>
-        /// Null <paramref name="value"/>s retract statements where <paramref name="node"/> is the subject.
-        /// </para>
-        /// <para>
-        /// Non null <paramref name="value"/>s are converted to statements and replace existing statements where <paramref name="node"/> is the subject.
-        /// </para>
-        /// </remarks>
         /// <exception cref="ArgumentNullException">When <paramref name="node"/> is null.</exception>
         public object this[INode node]
         {
@@ -107,12 +96,12 @@ namespace VDS.RDF.Dynamic
         }
 
         /// <summary>
-        /// 
+        /// Asserts statements equivalent to the parameters.
         /// </summary>
-        /// <param name="subject"></param>
-        /// <param name="predicateAndObjects"></param>
-        /// <exception cref="ArgumentNullException">when <paramref name="subject"/> or <paramref name="predicateAndObjects"/> is null.</exception>
-        /// <exception cref="Exception">when <paramref name="predicateAndObjects"/> is a dictionary with keys other than <see cref="INode"/>, <see cref="Uri"/> or <see cref="string"/>.</exception>
+        /// <param name="subject">The subject to assert.</param>
+        /// <param name="predicateAndObjects">An object with public properties or a dictionary representing predicates and objects to assert.</param>
+        /// <exception cref="ArgumentNullException">When <paramref name="subject"/> or <paramref name="predicateAndObjects"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">When <paramref name="predicateAndObjects"/> is a dictionary with keys other than <see cref="INode"/>, <see cref="Uri"/> or <see cref="string"/>.</exception>
         public void Add(INode subject, object predicateAndObjects)
         {
             if (subject is null)
@@ -148,8 +137,7 @@ namespace VDS.RDF.Dynamic
                         break;
 
                     default:
-                        // TODO: Make more specific
-                        throw new Exception();
+                        throw new InvalidOperationException("Only INode, Uri and string keys are allowed.");
                 }
             }
         }
@@ -160,6 +148,13 @@ namespace VDS.RDF.Dynamic
             Add(item.Key, item.Value);
         }
 
+        /// <summary>
+        /// Checks whether statements exist equivalent to the parameters.
+        /// </summary>
+        /// <param name="subject">The subject to check.</param>
+        /// <param name="predicateAndObjects">An object with public properties or a dictionary representing predicates and objects to check.</param>
+        /// <returns>Whether statements exist equivalent to the parameters.</returns>
+        /// <exception cref="InvalidOperationException">When <paramref name="predicateAndObjects"/> is a dictionary with keys other than <see cref="INode"/>, <see cref="Uri"/> or <see cref="string"/>.</exception>
         public bool Contains(INode subject, object predicateAndObjects)
         {
             if (subject is null)
@@ -198,8 +193,7 @@ namespace VDS.RDF.Dynamic
                         break;
 
                     default:
-                        // TODO: Make more specific
-                        throw new Exception();
+                        throw new InvalidOperationException("Only INode, Uri and string keys are allowed.");
                 }
 
                 if (!found)
@@ -217,17 +211,23 @@ namespace VDS.RDF.Dynamic
             return Contains(item.Key, item.Value);
         }
 
-        public bool ContainsKey(INode subject)
+        /// <summary>
+        /// Checks whether a URI node equal to <paramref name="key"/> exists.
+        /// </summary>
+        /// <param name="key">The node to check.</param>
+        /// <returns>Whether a URI node equal to <paramref name="key"/> exists.</returns>
+        public bool ContainsKey(INode key)
         {
-            if (subject is null)
+            if (key is null)
             {
                 return false;
             }
 
-            return UriNodes.Contains(subject);
+            return UriNodes.Contains(key);
         }
 
-        public void CopyTo(KeyValuePair<INode, object>[] array, int arrayIndex)
+        /// <inheritdoc/>
+        void ICollection<KeyValuePair<INode, object>>.CopyTo(KeyValuePair<INode, object>[] array, int arrayIndex)
         {
             NodePairs.ToArray().CopyTo(array, arrayIndex);
         }
@@ -238,6 +238,11 @@ namespace VDS.RDF.Dynamic
             return NodePairs.GetEnumerator();
         }
 
+        /// <summary>
+        /// Retracts statements with <paramref name="subject"/>.
+        /// </summary>
+        /// <param name="subject">The subject to retract.</param>
+        /// <returns>Whether any statements were retracted.</returns>
         public bool Remove(INode subject)
         {
             if (subject is null)
@@ -248,6 +253,12 @@ namespace VDS.RDF.Dynamic
             return Retract(GetTriplesWithSubject(subject).ToList());
         }
 
+        /// <summary>
+        /// Retracts statements equivalent to the parameters.
+        /// </summary>
+        /// <param name="subject">The subject to retract.</param>
+        /// <param name="predicateAndObjects">An object with public properties or a dictionary representing predicates and objects to retract.</param>
+        /// <returns>Whether any statements were retracted.</returns>
         public bool Remove(INode subject, object predicateAndObjects)
         {
             if (subject is null)
@@ -294,21 +305,27 @@ namespace VDS.RDF.Dynamic
             return Remove(item.Key, item.Value);
         }
 
-        public bool TryGetValue(INode subject, out object predicateAndObjects)
+        /// <summary>
+        /// Tries to get a node from the graph.
+        /// </summary>
+        /// <param name="node">The node to try.</param>
+        /// <param name="value">A <see cref="DynamicNode"/> wrapped around the <paramref name="node"/>.</param>
+        /// <returns>A value representing whether a <paramref name="value"/> was set or not.</returns>
+        public bool TryGetValue(INode node, out object value)
         {
-            predicateAndObjects = null;
+            value = null;
 
-            if (subject is null)
+            if (node is null)
             {
                 return false;
             }
 
-            if (!ContainsKey(subject))
+            if (!ContainsKey(node))
             {
                 return false;
             }
 
-            predicateAndObjects = this[subject];
+            value = this[node];
             return true;
         }
 

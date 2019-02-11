@@ -27,28 +27,12 @@
 namespace VDS.RDF.Dynamic
 {
     using System;
-    using System.Collections.Generic;
     using System.Dynamic;
     using System.Linq.Expressions;
 
     /// <summary>
     /// A <see cref="WrapperGraph">wrapper</see> that provides read/write dictionary and dynamic functionality.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// Dictionary entry values are <see cref="DynamicNode">dynamic nodes</see>s representing Uri and blank nodes.
-    /// </para>
-    /// <para>
-    /// The graph can be indexed by <see cref="this[INode]">nodes</see> (Uri and blank), <see cref="this[Uri]">Uris</see> (relative and absolute) and <see cref="this[string]">strings</see> (absolute Uris, relative Uris and QNames).
-    /// </para>
-    /// <para>
-    /// Assignment and other write methods accept classes with public properties, dictionaries and null as values.
-    /// </para>
-    /// </remarks>
-    /// <seealso cref="IDictionary{INode, Object}"/>
-    /// <seealso cref="IDictionary{Uri, Object}"/>
-    /// <seealso cref="IDictionary{String, Object}"/>
-    /// <seealso cref="IDynamicMetaObjectProvider"/>
     public partial class DynamicGraph : WrapperGraph, IDynamicMetaObjectProvider
     {
         private readonly Uri subjectBaseUri;

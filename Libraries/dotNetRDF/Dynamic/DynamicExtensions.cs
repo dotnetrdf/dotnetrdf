@@ -64,7 +64,7 @@ namespace VDS.RDF.Dynamic
             {
                 case IUriNode uriNode:
                 case IBlankNode blankNode:
-                    return new DynamicNode(node, baseUri);
+                    return node.AsDynamic(baseUri);
 
                 case DoubleNode doubleNode:
                     return doubleNode.AsDouble();
@@ -207,7 +207,6 @@ namespace VDS.RDF.Dynamic
 
         private static bool TryResolveQName(string index, IGraph graph, out Uri indexUri)
         {
-            // TODO: This is naive
             if (index.StartsWith("urn:") || !Regex.IsMatch(index, @"^\w*:\w+$"))
             {
                 indexUri = null;

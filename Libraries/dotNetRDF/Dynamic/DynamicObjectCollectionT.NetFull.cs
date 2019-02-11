@@ -29,8 +29,17 @@ namespace VDS.RDF.Dynamic
     using System.Collections.Generic;
     using System.Linq;
 
+    /// <summary>
+    /// Represents a strongly typed read/write dynamic collection of objects by subject and predicate.
+    /// </summary>
+    /// <typeparam name="T">The type of statement objects.</typeparam>
     public class DynamicObjectCollection<T> : DynamicObjectCollection, ICollection<T>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DynamicObjectCollection{T}"/> class.
+        /// </summary>
+        /// <param name="subject">The subject to use.</param>
+        /// <param name="predicate">The predicate to use.</param>
         public DynamicObjectCollection(DynamicNode subject, string predicate)
             : base(
                 subject,
@@ -38,26 +47,47 @@ namespace VDS.RDF.Dynamic
         {
         }
 
-        public void Add(T item)
+        /// <summary>
+        /// Asserts statements equivalent to given subject and predicate and <paramref name="object"/>.
+        /// </summary>
+        /// <param name="object">The object to assert.</param>
+        public void Add(T @object)
         {
-            base.Add(item);
+            base.Add(@object);
         }
 
-        public bool Contains(T item)
+        /// <summary>
+        /// Checks whether a statement exists equivalent to given subject and predicate and <paramref name="object"/>.
+        /// </summary>
+        /// <param name="object">The object to assert.</param>
+        /// <returns>Whether a statement exists equivalent to given subject and predicate and <paramref name="object"/>.</returns>
+        public bool Contains(T @object)
         {
-            return base.Contains(item);
+            return base.Contains(@object);
         }
 
-        public void CopyTo(T[] array, int arrayIndex)
+        /// <summary>
+        /// Copies objects of statements with given subject and predicate <paramref name="array"/> starting at <paramref name="index"/>.
+        /// </summary>
+        /// <param name="array">The destination of subjects copied.</param>
+        /// <param name="index">The index at which copying begins.</param>
+        /// <remarks>Known literal nodes are converted to native primitives, URI and blank nodes are wrapped in <see cref="DynamicNode"/>.</remarks>
+        public void CopyTo(T[] array, int index)
         {
-            this.Objects.Select(Convert).ToArray().CopyTo(array, arrayIndex);
+            this.Objects.Select(Convert).ToArray().CopyTo(array, index);
         }
 
-        public bool Remove(T item)
+        /// <summary>
+        /// Retracts statements equivalent to given subject and predicate and <paramref name="object"/>.
+        /// </summary>
+        /// <param name="object">The object to retract.</param>
+        /// <returns>Whether any statements were retracted.</returns>
+        public bool Remove(T @object)
         {
-            return base.Remove(item);
+            return base.Remove(@object);
         }
 
+        /// <inheritdoc/>
         IEnumerator<T> IEnumerable<T>.GetEnumerator()
         {
             return this.Objects.Select(Convert).GetEnumerator();
