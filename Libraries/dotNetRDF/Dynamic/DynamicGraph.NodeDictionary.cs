@@ -56,7 +56,7 @@ namespace VDS.RDF.Dynamic
             get
             {
                 return UriNodes.ToDictionary(
-                    node => node as INode,
+                    node => (INode)node,
                     node => this[node]);
             }
         }

@@ -96,7 +96,7 @@ namespace VDS.RDF.Dynamic
                 return
                     from triple
                     in @object.Graph.GetTriplesWithPredicateObject(predicate, @object)
-                    select triple.Subject.AsObject(@object.BaseUri) as INode;
+                    select (INode)triple.Subject.AsObject(@object.BaseUri);
             }
         }
 

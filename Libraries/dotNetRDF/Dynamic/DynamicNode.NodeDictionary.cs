@@ -48,7 +48,7 @@ namespace VDS.RDF.Dynamic
             {
                 var predicates =
                     from t in Graph.GetTriplesWithSubject(this)
-                    select t.Predicate as IUriNode;
+                    select (IUriNode)t.Predicate;
 
                 return predicates.Distinct();
             }
@@ -60,7 +60,7 @@ namespace VDS.RDF.Dynamic
             {
                 return PredicateNodes
                     .ToDictionary(
-                        predicate => predicate as INode,
+                        predicate => (INode)predicate,
                         predicate => this[predicate]);
             }
         }
