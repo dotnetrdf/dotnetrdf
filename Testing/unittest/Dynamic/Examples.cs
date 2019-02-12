@@ -25,8 +25,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace VDS.RDF.Dynamic
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
+    using VDS.RDF;
     using Xunit;
 
     public class Examples
@@ -156,6 +158,623 @@ Long Literal"
             d[collection]["rdf:type"] = d.CreateUriNode(":Collection");
 
             Assert.Equal<IGraph>(expected, g);
+        }
+
+        [Fact]
+        public void Graph_get_index_with_dynamic_node()
+        {
+            var g = new Graph();
+            g.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+
+            var d = g.AsDynamic();
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+
+            Assert.Equal(
+                s,
+                d[s.AsDynamic()]);
+        }
+
+        [Fact]
+        public void Graph_get_index_with_node()
+        {
+            var g = new Graph();
+            g.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+
+            var d = g.AsDynamic();
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+
+            Assert.Equal(
+                s,
+                d[s]);
+        }
+
+        [Fact]
+        public void Graph_get_index_with_absolute_uri()
+        {
+            var g = new Graph();
+            g.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+
+            var d = g.AsDynamic();
+
+            Assert.Equal(
+                g.CreateUriNode(UriFactory.Create("urn:s")),
+                d[UriFactory.Create("urn:s")]);
+        }
+
+        [Fact]
+        public void Graph_get_index_with_relative_uri()
+        {
+            var g = new Graph { BaseUri = UriFactory.Create("urn:") };
+            g.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+
+            var d = g.AsDynamic();
+
+            Assert.Equal(
+                g.CreateUriNode(UriFactory.Create("urn:s")),
+                d[new Uri("s", UriKind.Relative)]);
+        }
+
+        [Fact]
+        public void Graph_get_index_with_absolute_uri_string()
+        {
+            var g = new Graph();
+            g.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+
+            var d = g.AsDynamic();
+
+            Assert.Equal(
+                g.CreateUriNode(UriFactory.Create("urn:s")),
+                d["urn:s"]);
+        }
+
+        [Fact]
+        public void Graph_get_index_with_relative_uri_string()
+        {
+            var g = new Graph { BaseUri = UriFactory.Create("urn:") };
+            g.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+
+            var d = g.AsDynamic();
+
+            Assert.Equal(
+                g.CreateUriNode(UriFactory.Create("urn:s")),
+                d["s"]);
+        }
+
+        [Fact]
+        public void Graph_get_index_with_hash_string()
+        {
+            var g = new Graph { BaseUri = UriFactory.Create("http://example.com#") };
+            g.LoadFromString("<http://example.com#s> <http://example.com#p> <http://example.com#o> .");
+
+            var d = g.AsDynamic();
+
+            Assert.Equal(
+                g.CreateUriNode(UriFactory.Create("http://example.com#s")),
+                d["s"]);
+        }
+
+        [Fact]
+        public void Graph_get_index_with_qname()
+        {
+            var g = new Graph();
+            g.NamespaceMap.AddNamespace("u", UriFactory.Create("urn:"));
+            g.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+
+            var d = g.AsDynamic();
+
+            Assert.Equal(
+                g.CreateUriNode(UriFactory.Create("urn:s")),
+                d["u:s"]);
+        }
+
+        [Fact]
+        public void Graph_get_index_with_empty_string()
+        {
+            var g = new Graph { BaseUri = UriFactory.Create("urn:s") };
+            g.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+
+            var d = g.AsDynamic();
+
+            Assert.Equal(
+                g.CreateUriNode(UriFactory.Create("urn:s")),
+                d[""]);
+        }
+
+        [Fact]
+        public void Graph_get_member()
+        {
+            var g = new Graph { BaseUri = UriFactory.Create("urn:") };
+            g.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+
+            var d = g.AsDynamic();
+
+            Assert.Equal(
+                g.CreateUriNode(UriFactory.Create("urn:s")),
+                d.s);
+        }
+
+        [Fact]
+        public void Graph_set_index_with_custom_class()
+        {
+            var expected = new Graph();
+            expected.LoadFromString(@"
+@prefix : <urn:> .
+
+:s
+    :p1 ""o1"" ;
+    :p2 ""o2"", 0, true, :o3 ;
+    :p3 [] .
+");
+
+            var g = new Graph { BaseUri = UriFactory.Create("urn:") };
+            var d = g.AsDynamic();
+
+            d["s"] = new C
+            {
+                p1 = "o1",
+                p2 = new object[]
+                {
+                    "o2",
+                    0,
+                    true,
+                    UriFactory.Create("urn:o3")
+                },
+                p3 = g.CreateBlankNode()
+            };
+
+            Assert.Equal(
+                expected,
+                g);
+        }
+
+        [Fact]
+        public void Graph_set_index_with_dictionary()
+        {
+            var expected = new Graph();
+            expected.LoadFromString(@"
+@prefix : <urn:> .
+
+:s
+    :p1 ""o1"" ;
+    :p2 ""o2"", 0, true, :o3 ;
+    :p3 [] .
+");
+
+            var g = new Graph { BaseUri = UriFactory.Create("urn:") };
+            var d = g.AsDynamic();
+
+            d["s"] = new Dictionary<object, object>
+            {
+                {
+                    "p1",
+                    "o1"
+                },
+                {
+                    UriFactory.Create("urn:p2"),
+                    new object[]
+                    {
+                        "o2",
+                        0,
+                        true,
+                        UriFactory.Create("urn:o3")
+                    }
+                },
+                {
+                    g.CreateUriNode(UriFactory.Create("urn:p3")),
+                    g.CreateBlankNode()
+                }
+            };
+
+            Assert.Equal(
+                expected,
+                g);
+        }
+
+        [Fact]
+        public void Graph_set_index_with_anonymous_class()
+        {
+            var expected = new Graph();
+            expected.LoadFromString(@"
+@prefix : <urn:> .
+
+:s
+    :p1 ""o1"" ;
+    :p2 ""o2"", 0, true, :o3 ;
+    :p3 [] .
+");
+
+            var g = new Graph { BaseUri = UriFactory.Create("urn:") };
+            var d = g.AsDynamic();
+
+            d["s"] = new
+            {
+                p1 = "o1",
+                p2 = new object[]
+                {
+                    "o2",
+                    0,
+                    true,
+                    UriFactory.Create("urn:o3")
+                },
+                p3 = g.CreateBlankNode()
+            };
+
+            Assert.Equal(
+                expected,
+                g);
+        }
+
+        [Fact]
+        public void Graph_set_index_with_null()
+        {
+            var g = new Graph { BaseUri = UriFactory.Create("urn:") };
+            g.LoadFromString(@"<urn:s> <urn:p> <urn:o> .");
+
+            var d = g.AsDynamic();
+
+            d["s"] = null;
+
+            Assert.True(g.IsEmpty);
+        }
+
+        [Fact]
+        public void Graph_set_member_with_custom_class()
+        {
+            var expected = new Graph();
+            expected.LoadFromString(@"
+@prefix : <urn:> .
+
+:s
+    :p1 ""o1"" ;
+    :p2 ""o2"", 0, true, :o3 ;
+    :p3 [] .
+");
+
+            var g = new Graph { BaseUri = UriFactory.Create("urn:") };
+            var d = g.AsDynamic();
+
+            d.s = new C
+            {
+                p1 = "o1",
+                p2 = new object[]
+                {
+                    "o2",
+                    0,
+                    true,
+                    UriFactory.Create("urn:o3")
+                },
+                p3 = g.CreateBlankNode()
+            };
+
+            Assert.Equal(
+                expected,
+                g);
+        }
+
+        [Fact]
+        public void Graph_set_member_with_dictionary()
+        {
+            var expected = new Graph();
+            expected.LoadFromString(@"
+@prefix : <urn:> .
+
+:s
+    :p1 ""o1"" ;
+    :p2 ""o2"", 0, true, :o3 ;
+    :p3 [] .
+");
+
+            var g = new Graph { BaseUri = UriFactory.Create("urn:") };
+            var d = g.AsDynamic();
+
+            d.s = new Dictionary<object, object>
+            {
+                {
+                    "p1",
+                    "o1"
+                },
+                {
+                    UriFactory.Create("urn:p2"),
+                    new object[]
+                    {
+                        "o2",
+                        0,
+                        true,
+                        UriFactory.Create("urn:o3")
+                    }
+                },
+                {
+                    g.CreateUriNode(UriFactory.Create("urn:p3")),
+                    g.CreateBlankNode()
+                }
+            };
+
+            Assert.Equal(
+                expected,
+                g);
+        }
+
+        [Fact]
+        public void Graph_set_member_with_anonymous_class()
+        {
+            var expected = new Graph();
+            expected.LoadFromString(@"
+@prefix : <urn:> .
+
+:s
+    :p1 ""o1"" ;
+    :p2 ""o2"", 0, true, :o3 ;
+    :p3 [] .
+");
+
+            var g = new Graph { BaseUri = UriFactory.Create("urn:") };
+            var d = g.AsDynamic();
+
+            d.s = new
+            {
+                p1 = "o1",
+                p2 = new object[]
+                {
+                    "o2",
+                    0,
+                    true,
+                    UriFactory.Create("urn:o3")
+                },
+                p3 = g.CreateBlankNode()
+            };
+
+            Assert.Equal(
+                expected,
+                g);
+        }
+
+        [Fact]
+        public void Graph_set_member_with_null()
+        {
+            var g = new Graph { BaseUri = UriFactory.Create("urn:") };
+            g.LoadFromString(@"<urn:s> <urn:p> <urn:o> .");
+
+            var d = g.AsDynamic();
+
+            d.s = null;
+
+            Assert.True(g.IsEmpty);
+        }
+
+        [Fact]
+        public void Node_get_index_with_dynamic_node()
+        {
+            var g = new Graph { BaseUri = UriFactory.Create("urn:") };
+            g.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+
+            var d = g.AsDynamic();
+            var s = d.s;
+
+            Assert.Equal(
+                g.CreateUriNode(UriFactory.Create("urn:o")),
+                s[d.p].Single());
+        }
+
+        [Fact]
+        public void Node_get_index_with_node()
+        {
+            var g = new Graph { BaseUri = UriFactory.Create("urn:") };
+            g.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+
+            var d = g.AsDynamic();
+            var s = d.s;
+
+            Assert.Equal(
+                g.CreateUriNode(UriFactory.Create("urn:o")),
+                s[g.CreateUriNode(UriFactory.Create("urn:p"))].Single());
+        }
+
+        [Fact]
+        public void Node_get_index_with_absolute_uri()
+        {
+            var g = new Graph { BaseUri = UriFactory.Create("urn:") };
+            g.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+
+            var d = g.AsDynamic();
+            var s = d.s;
+
+            Assert.Equal(
+                g.CreateUriNode(UriFactory.Create("urn:o")),
+                s[UriFactory.Create("urn:p")].Single());
+        }
+
+        [Fact]
+        public void Node_get_index_with_relative_uri()
+        {
+            var g = new Graph { BaseUri = UriFactory.Create("urn:") };
+            g.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+
+            var d = g.AsDynamic();
+            var s = d.s;
+
+            Assert.Equal(
+                g.CreateUriNode(UriFactory.Create("urn:o")),
+                s[new Uri("p", UriKind.Relative)].Single());
+        }
+
+        [Fact]
+        public void Node_get_index_with_absolute_uri_string()
+        {
+            var g = new Graph { BaseUri = UriFactory.Create("urn:") };
+            g.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+
+            var d = g.AsDynamic();
+            var s = d.s;
+
+            Assert.Equal(
+                g.CreateUriNode(UriFactory.Create("urn:o")),
+                s["urn:p"].Single());
+        }
+
+        [Fact]
+        public void Node_get_index_with_relative_uri_string()
+        {
+            var g = new Graph { BaseUri = UriFactory.Create("urn:") };
+            g.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+
+            var d = g.AsDynamic();
+            var s = d.s;
+
+            Assert.Equal(
+                g.CreateUriNode(UriFactory.Create("urn:o")),
+                s["p"].Single());
+        }
+
+        [Fact]
+        public void Node_get_index_with_hash_string()
+        {
+            var g = new Graph { BaseUri = UriFactory.Create("http://example.com#") };
+            g.LoadFromString("<http://example.com#s> <http://example.com#p> <http://example.com#o> .");
+
+            var d = g.AsDynamic();
+            var s = d.s;
+
+            Assert.Equal(
+                g.CreateUriNode(UriFactory.Create("http://example.com#o")),
+                s["p"].Single());
+        }
+
+        [Fact]
+        public void Node_get_index_with_qname()
+        {
+            var g = new Graph { BaseUri = UriFactory.Create("urn:") };
+            g.NamespaceMap.AddNamespace("u", UriFactory.Create("urn:"));
+            g.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+
+            var d = g.AsDynamic();
+            var s = d.s;
+
+            Assert.Equal(
+                g.CreateUriNode(UriFactory.Create("urn:o")),
+                s["u:p"].Single());
+        }
+
+        [Fact]
+        public void Node_get_index_with_empty_string()
+        {
+            var g = new Graph { BaseUri = UriFactory.Create("urn:") };
+            g.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+
+            var d = g.AsDynamic(predicateBaseUri: UriFactory.Create("urn:p"));
+            var s = d.s;
+
+            Assert.Equal(
+                g.CreateUriNode(UriFactory.Create("urn:o")),
+                s[""].Single());
+        }
+
+        [Fact]
+        public void Node_get_member()
+        {
+            var g = new Graph { BaseUri = UriFactory.Create("urn:") };
+            g.LoadFromString("<urn:s> <urn:p> <urn:o> .");
+
+            var d = g.AsDynamic();
+            var s = d.s;
+
+            Assert.Equal(
+                g.CreateUriNode(UriFactory.Create("urn:o")),
+                s.p.Single());
+        }
+
+        [Fact]
+        public void Node_set_index_with_single()
+        {
+            var expected = new Graph();
+            expected.LoadFromString(@"
+<urn:s> <urn:p> ""o"" .
+");
+
+            var g = new Graph { BaseUri = UriFactory.Create("urn:") };
+            var d = g.AsDynamic();
+            var s = d.s;
+
+            s["p"] = "o";
+
+            Assert.Equal(
+                expected,
+                g);
+        }
+
+        [Fact]
+        public void Node_set_index_with_enumerable()
+        {
+            var expected = new Graph();
+            expected.LoadFromString(@"
+<urn:s> <urn:p> ""o"" .
+<urn:s> <urn:p> <urn:o> .
+");
+
+            var g = new Graph { BaseUri = UriFactory.Create("urn:") };
+            var d = g.AsDynamic();
+            var s = d.s;
+
+            s["p"] = new object[]
+            {
+                "o",
+                UriFactory.Create("urn:o")
+            };
+
+            Assert.Equal(
+                expected,
+                g);
+        }
+
+        [Fact]
+        public void Node_set_member_with_single()
+        {
+            var expected = new Graph();
+            expected.LoadFromString(@"
+<urn:s> <urn:p> ""o"" .
+");
+
+            var g = new Graph { BaseUri = UriFactory.Create("urn:") };
+            var d = g.AsDynamic();
+            var s = d.s;
+
+            s.p = "o";
+
+            Assert.Equal(
+                expected,
+                g);
+        }
+
+        [Fact]
+        public void Node_set_member_with_enumerable()
+        {
+            var expected = new Graph();
+            expected.LoadFromString(@"
+<urn:s> <urn:p> ""o"" .
+<urn:s> <urn:p> <urn:o> .
+");
+
+            var g = new Graph { BaseUri = UriFactory.Create("urn:") };
+            var d = g.AsDynamic();
+            var s = d.s;
+
+            s.p = new object[]
+            {
+                "o",
+                UriFactory.Create("urn:o")
+            };
+
+            Assert.Equal(
+                expected,
+                g);
+        }
+
+        private class C
+        {
+            public string p1 { get; set; }
+
+            public object[] p2 { get; set; }
+
+            public IBlankNode p3 { get; set; }
         }
     }
 }
