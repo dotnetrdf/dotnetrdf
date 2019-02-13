@@ -100,7 +100,7 @@ namespace VDS.RDF.Dynamic
             Assert.Equal("6E2497EB", hex_id);
         }
 
-        //[Fact]
+        [Fact]
         public void Example2()
         {
             var expected = new Graph();
@@ -124,9 +124,7 @@ namespace VDS.RDF.Dynamic
                     new[]
                     {
                         "Example Literal",
-                        @"Example
-     
-Long Literal"
+                        "Example\r\n     \r\nLong Literal"
                     }
                 },
             };
