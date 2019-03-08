@@ -32,7 +32,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // - absolute URIs
 // - nodes
 
-// 2. Allowed types for objects (see DynamicExtensions.AsNode()):
+// 2. Allowed types for objects (see DynamicExtensions.AsNode(this object value, IGraph graph)):
 // - null
 // - INode
 // - Uri
@@ -56,13 +56,29 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // - anonymous class instances with values from 2.
 // - custom class instances with public properties with values from 2.
 
+// 4. Allowed types for SPARQL result bindings (see DynamicExtensions.AsNode(this object value)):
+// - null
+// - INode
+// - Uri
+// - bool
+// - byte
+// - DateTime
+// - DateTimeOffset
+// - decimal
+// - double
+// - float
+// - long
+// - int
+// - string
+// - char
+// - TimeSpan
+
 namespace VDS.RDF.Dynamic
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using VDS.RDF;
-    using VDS.RDF.Parsing;
+    using VDS.RDF.Query;
     using Xunit;
 
     public partial class Examples
@@ -543,6 +559,140 @@ namespace VDS.RDF.Dynamic
             var actual = sp.Single();
 
             Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void SparqlResultSet_linq()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
+            var set = ((SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }")).AsDynamic();
+
+            var result = set.Single();
+
+            Assert.IsType<DynamicSparqlResult>(result);
+        }
+
+        [Fact]
+        public void SparqlResult_get_index()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
+            var results = ((SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }")).AsDynamic();
+            var result = results.Single();
+
+            var actual = result["o"];
+
+            Xunit.Assert.Equal("o", actual);
+        }
+
+        [Fact]
+        public void SparqlResult_get_member()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
+            var results = ((SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }")).AsDynamic();
+            var result = results.Single();
+
+            var actual = result.o;
+
+            Xunit.Assert.Equal("o", actual);
+        }
+
+        [Fact]
+        public void SparqlResult_set_index()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
+            var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
+            var result = results.Single();
+            var dynamicResults = results.AsDynamic();
+            var dynamicResult = dynamicResults.Single();
+            var expected = new NodeFactory().CreateLiteralNode("o1");
+
+            // See 4. for other value options
+            dynamicResult["o"] = "o1";
+
+            Assert.Equal(expected, result["o"]);
+        }
+
+        [Fact]
+        public void SparqlResult_set_member()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
+            var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
+            var result = results.Single();
+            var dynamicResults = results.AsDynamic();
+            var dynamicResult = dynamicResults.Single();
+            var expected = new NodeFactory().CreateLiteralNode("o1");
+
+            // See 2. for other value options
+            dynamicResult.o = "o1";
+
+            Assert.Equal(expected, result["o"]);
+        }
+
+        [Fact]
+        public void SparqlResult_add()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
+            var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
+            var result = results.Single();
+            var dynamicResults = results.AsDynamic();
+            var dynamicResult = dynamicResults.Single();
+            var expected = new NodeFactory().CreateLiteralNode("y");
+
+            // See 2. for other value options
+            dynamicResult.Add("x", "y");
+
+            Assert.Equal(expected, result["x"]);
+        }
+
+        [Fact]
+        public void SparqlResult_clear()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
+            var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
+            var result = results.Single();
+            var dynamicResults = results.AsDynamic();
+            var dynamicResult = dynamicResults.Single();
+
+            dynamicResult.Clear();
+
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public void SparqlResult_contains_key()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
+            var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
+            var result = results.Single();
+            var dynamicResults = results.AsDynamic();
+            var dynamicResult = dynamicResults.Single();
+
+            var condition = dynamicResult.ContainsKey("s");
+
+            Assert.True(condition);
+        }
+
+        [Fact]
+        public void SparqlResult_remove()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
+            var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
+            var result = results.Single();
+            var dynamicResults = results.AsDynamic();
+            var dynamicResult = dynamicResults.Single();
+
+            dynamicResult.Remove("s");
+
+            Assert.False(result.HasValue("s"));
         }
     }
 }

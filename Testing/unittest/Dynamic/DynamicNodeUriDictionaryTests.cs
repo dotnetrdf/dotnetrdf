@@ -904,7 +904,7 @@ namespace VDS.RDF.Dynamic
         }
 
         [Fact]
-        public void TryGetValue_rejects_missing_predicate()
+        public void TryGetValue_outputs_objects_by_predicate()
         {
             var g = new Graph();
             g.LoadFromString(@"

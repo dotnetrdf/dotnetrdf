@@ -912,6 +912,21 @@ namespace VDS.RDF.Dynamic
 ");
 
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var x = g.CreateUriNode(UriFactory.Create("urn:x"));
+            var d = new DynamicNode(s);
+
+            Assert.False(d.TryGetValue(x, out var objects));
+        }
+
+        [Fact]
+        public void TryGetValue_outputs_objects_by_predicate()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+<urn:s> <urn:p> <urn:o> .
+");
+
+            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = g.CreateUriNode(UriFactory.Create("urn:p"));
             var d = new DynamicNode(s);
 

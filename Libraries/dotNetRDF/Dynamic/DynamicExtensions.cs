@@ -29,6 +29,7 @@ namespace VDS.RDF.Dynamic
     using System;
     using System.Text.RegularExpressions;
     using VDS.RDF.Nodes;
+    using VDS.RDF.Query;
 
     /// <summary>
     /// Contains helper extension methods for dynamic graphs and nodes.
@@ -58,6 +59,26 @@ namespace VDS.RDF.Dynamic
             return new DynamicNode(node, baseUri);
         }
 
+        /// <summary>
+        /// Dynamically wraps a SPARQL result set.
+        /// </summary>
+        /// <param name="set">The SPARQL result set to wrap dynamically.</param>
+        /// <returns>A dynamic result set that wraps <paramref name="set"/>.</returns>
+        public static dynamic AsDynamic(this SparqlResultSet set)
+        {
+            return new DynamicSparqlResultSet(set);
+        }
+
+        /// <summary>
+        /// Dynamically wraps a SPARQL result.
+        /// </summary>
+        /// <param name="result">The SPARQL result to wrap dynamically.</param>
+        /// <returns>A dynamic result that wraps <paramref name="result"/>.</returns>
+        public static dynamic AsDynamic(this SparqlResult result)
+        {
+            return new DynamicSparqlResult(result);
+        }
+
         internal static object AsObject(this INode node, Uri baseUri)
         {
             switch (node.AsValuedNode())
@@ -65,6 +86,24 @@ namespace VDS.RDF.Dynamic
                 case IUriNode uriNode:
                 case IBlankNode blankNode:
                     return node.AsDynamic(baseUri);
+
+                default:
+                    return node.AsObject();
+            }
+        }
+
+        internal static object AsObject(this INode node)
+        {
+            switch (node.AsValuedNode())
+            {
+                case null:
+                    return null;
+
+                case IUriNode uriNode:
+                    return uriNode.Uri;
+
+                case IBlankNode blankNode:
+                    return node;
 
                 case DoubleNode doubleNode:
                     return doubleNode.AsDouble();
@@ -140,7 +179,7 @@ namespace VDS.RDF.Dynamic
                     return nodeValue.CopyNode(graph);
 
                 case Uri uriValue:
-                    return graph.CreateUriNode(uriValue);
+                    return ((INodeFactory)graph ?? new NodeFactory()).CreateUriNode(uriValue);
 
                 case bool boolValue:
                     return new BooleanNode(graph, boolValue);
@@ -180,6 +219,21 @@ namespace VDS.RDF.Dynamic
 
                 default:
                     throw new InvalidOperationException($"Can't convert type {value.GetType()}");
+            }
+        }
+
+        internal static INode AsNode(this object value)
+        {
+            switch (value)
+            {
+                case null:
+                    return null;
+
+                case INode nodeValue:
+                    return nodeValue;
+
+                default:
+                    return value.AsNode(null);
             }
         }
 

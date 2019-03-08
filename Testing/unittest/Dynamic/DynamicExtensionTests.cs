@@ -26,7 +26,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace VDS.RDF.Dynamic
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using VDS.RDF;
+    using VDS.RDF.Query;
     using Xunit;
 
     public class DynamicExtensionTests
@@ -56,6 +59,56 @@ namespace VDS.RDF.Dynamic
 
             Assert.Equal<INode>(s, d);
             Assert.IsType<DynamicNode>(d);
+        }
+
+        [Fact]
+        public void Augments_sparql_result_set()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+<urn:s> <urn:p> <urn:o> .
+");
+
+            var results = (SparqlResultSet)g.ExecuteQuery(@"
+SELECT *
+WHERE {
+    ?s ?p ?o .
+}
+");
+
+            var d = results.AsDynamic();
+
+            Assert.Equal<DynamicSparqlResult>(d, results.Select(x => new DynamicSparqlResult(x)));
+            Assert.IsType<DynamicSparqlResultSet>(d);
+        }
+
+        [Fact]
+        public void Augments_sparql_result()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+<urn:s> <urn:p> <urn:o> .
+");
+
+            var results = (SparqlResultSet)g.ExecuteQuery(@"
+SELECT *
+WHERE {
+    ?s ?p ?o .
+}
+");
+
+            var d = results.Single().AsDynamic();
+
+            Assert.Equal(
+                d,
+                new Dictionary<string, object>
+                {
+                    { "s", UriFactory.Create("urn:s") },
+                    { "p", UriFactory.Create("urn:p") },
+                    { "o", UriFactory.Create("urn:o") }
+                });
+
+            Assert.IsType<DynamicSparqlResult>(d);
         }
 
         [Fact]
@@ -101,6 +154,82 @@ namespace VDS.RDF.Dynamic
                 item => Assert.IsType<string>(item),
                 item => Assert.IsAssignableFrom<ILiteralNode>(item),
                 item => Assert.IsAssignableFrom<ILiteralNode>(item));
+        }
+
+        [Fact]
+        public void Converts_bindings_to_native_datatypes()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+@prefix : <urn:> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:s
+    :p
+        :x ,
+        _:blank ,
+        0E0 ,
+        ""0""^^xsd:float ,
+        0.0 ,
+        false ,
+        ""1900-01-01""^^xsd:dateTime ,
+        ""P1D""^^xsd:duration ,
+        0 ,
+        """" ,
+        """"^^:datatype ,
+        """"@en .
+");
+
+            var results = (SparqlResultSet)g.ExecuteQuery(@"
+SELECT ?o
+WHERE {
+    ?s ?p ?o .
+}
+");
+
+            var d = new DynamicSparqlResultSet(results);
+
+            Assert.Collection(
+                d,
+                item => Assert.IsType<Uri>(item["o"]),
+                item => Assert.IsAssignableFrom<IBlankNode>(item["o"]),
+                item => Assert.IsType<double>(item["o"]),
+                item => Assert.IsType<float>(item["o"]),
+                item => Assert.IsType<decimal>(item["o"]),
+                item => Assert.IsType<bool>(item["o"]),
+                item => Assert.IsType<DateTimeOffset>(item["o"]),
+                item => Assert.IsType<TimeSpan>(item["o"]),
+                item => Assert.IsType<long>(item["o"]),
+                item => Assert.IsType<string>(item["o"]),
+                item => Assert.IsAssignableFrom<ILiteralNode>(item["o"]),
+                item => Assert.IsAssignableFrom<ILiteralNode>(item["o"]));
+
+        }
+
+        [Fact]
+        public void Converts_unbound_variables_to_null()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"
+<urn:s> <urn:p> <urn:o> .
+");
+
+            var results = (SparqlResultSet)g.ExecuteQuery(@"
+SELECT ?x
+WHERE {
+    ?s ?p ?o .
+
+    VALUES ?x {
+        UNDEF
+    }
+}
+");
+
+            var result = results.Single();
+            var d = new DynamicSparqlResult(result);
+
+            Assert.Null(d["x"]);
+
         }
 
         [Fact]
