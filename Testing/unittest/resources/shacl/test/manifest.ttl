@@ -1,0 +1,8 @@
+@prefix mf:      <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sht:     <http://www.w3.org/ns/shacl-test#> .
+
+[
+	mf:include <datatype-pass.ttl> ;
+	mf:include <datatype-fail.ttl> ;
+] .

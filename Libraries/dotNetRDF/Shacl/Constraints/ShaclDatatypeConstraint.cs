@@ -26,29 +26,16 @@
 
 namespace VDS.RDF.Shacl
 {
-    using System;
-    using System.Collections.Generic;
-
-    internal abstract class ShaclConstraint : WrapperNode
+    internal class ShaclDatatypeConstraint : ShaclConstraint
     {
-        protected ShaclConstraint(INode node)
+        public ShaclDatatypeConstraint(INode node)
             : base(node)
         {
         }
 
-        public abstract bool Validate(INode node);
-
-        internal static ShaclConstraint Parse(INode type, INode value)
+        public override bool Validate(INode node)
         {
-            var constraints = new Dictionary<INode, Func<INode, ShaclConstraint>>()
-            {
-                { Shacl.Class, n => new ShaclClassConstraint(n) },
-                { Shacl.Node, n => new ShaclNodeConstraint(n) },
-                { Shacl.Property, n => new ShaclPropertyConstraint(n) },
-                { Shacl.Datatype, n => new ShaclDatatypeConstraint(n) },
-            };
-
-            return constraints[type](value);
+            return EqualityHelper.AreUrisEqual(((ILiteralNode)node).DataType, ((IUriNode)this).Uri);
         }
     }
 }

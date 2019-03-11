@@ -37,6 +37,9 @@ namespace VDS.RDF.Shacl
 
     public class ShaclTestSuit
     {
+        //private const string basePath = "resources\\shacl\\test-suite\\manifest.ttl";
+        private const string basePath = "resources\\shacl\\test\\manifest.ttl";
+
         private readonly ITestOutputHelper output;
 
         private static readonly NodeFactory factory = new NodeFactory();
@@ -64,7 +67,7 @@ namespace VDS.RDF.Shacl
                 if (store is null)
                 {
                     store = new DiskDemandTripleStore();
-                    Populate(new Uri(Path.GetFullPath("resources\\shacl\\manifest.ttl")));
+                    Populate(new Uri(Path.GetFullPath(basePath)));
                 }
 
                 return store;
@@ -73,14 +76,14 @@ namespace VDS.RDF.Shacl
 
         public static IEnumerable<object[]> TestNameData =>
             from entries in Store.GetTriplesWithPredicate(mf_entries)
-            let name = new Uri(Path.GetFullPath("resources\\shacl\\")).MakeRelativeUri(((IUriNode)entries.Subject).Uri).ToString()
+            let name = new Uri(Path.GetFullPath(basePath)).MakeRelativeUri(((IUriNode)entries.Subject).Uri).ToString()
             select new[] { name };
 
         [Theory]
         [MemberData(nameof(TestNameData))]
         public void Validate(string name)
         {
-            var b = new Uri(new Uri(Path.GetFullPath("resources\\shacl\\")), name);
+            var b = new Uri(new Uri(Path.GetFullPath(basePath)), name);
             output.WriteLine(b.ToString());
 
             var g = Store[b];

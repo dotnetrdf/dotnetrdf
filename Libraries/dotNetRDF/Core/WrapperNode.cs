@@ -33,7 +33,7 @@ namespace VDS.RDF
     /// <summary>
     /// Abstract decorator for Nodes to make it easier to layer functionality on top of existing implementations.
     /// </summary>
-    public abstract partial class WrapperNode : INode, IBlankNode, IUriNode
+    public abstract partial class WrapperNode : INode, IBlankNode, IUriNode, ILiteralNode
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="WrapperNode"/> class.
@@ -82,9 +82,15 @@ namespace VDS.RDF
         /// </summary>
         protected INode Node { get; private set; }
 
-        public string InternalID => (this.Node as IBlankNode)?.InternalID ?? throw new InvalidCastException();
+        public string InternalID => (this.Node as IBlankNode ?? throw new InvalidCastException()).InternalID;
 
-        public Uri Uri => (this.Node as IUriNode)?.Uri ?? throw new InvalidCastException();
+        public Uri Uri => (this.Node as IUriNode ?? throw new InvalidCastException()).Uri;
+
+        public string Value => (this.Node as ILiteralNode ?? throw new InvalidCastException()).Value;
+
+        public string Language => (this.Node as ILiteralNode ?? throw new InvalidCastException()).Language;
+
+        public Uri DataType => (this.Node as ILiteralNode ?? throw new InvalidCastException())?.DataType;
 
         /// <inheritdoc/>
         public override bool Equals(object obj)
