@@ -17,4 +17,6 @@
 	mf:include <nodeKind-pass.ttl> ;
 	mf:include <minLength-fail.ttl> ;
 	mf:include <minLength-pass.ttl> ;
+	mf:include <maxLength-fail.ttl> ;
+	mf:include <maxLength-pass.ttl> ;
 ] .

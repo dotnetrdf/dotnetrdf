@@ -26,36 +26,18 @@
 
 namespace VDS.RDF.Shacl
 {
-    using System;
-    using System.Collections.Generic;
+    using VDS.RDF.Nodes;
 
-    internal abstract class ShaclConstraint : WrapperNode
+    internal class ShaclMaxLengthConstraint : ShaclConstraint
     {
-        protected ShaclConstraint(INode node)
+        public ShaclMaxLengthConstraint(INode node)
             : base(node)
         {
         }
 
-        public abstract bool Validate(INode node);
-
-        internal static ShaclConstraint Parse(INode type, INode value)
+        public override bool Validate(INode node)
         {
-            var constraints = new Dictionary<INode, Func<INode, ShaclConstraint>>()
-            {
-                { Shacl.Class, n => new ShaclClassConstraint(n) },
-                { Shacl.Node, n => new ShaclNodeConstraint(n) },
-                { Shacl.Property, n => new ShaclPropertyConstraint(n) },
-                { Shacl.Datatype, n => new ShaclDatatypeConstraint(n) },
-                { Shacl.And, n => new ShaclAndConstraint(n) },
-                { Shacl.Or, n => new ShaclOrConstraint(n) },
-                { Shacl.Not, n => new ShaclNotConstraint(n) },
-                { Shacl.Xone, n => new ShaclXoneConstraint(n) },
-                { Shacl.NodeKind, n => new ShaclNodeKindConstraint(n) },
-                { Shacl.MinLength, n => new ShaclMinLengthConstraint(n) },
-                { Shacl.MaxLength, n => new ShaclMaxLengthConstraint(n) },
-            };
-
-            return constraints[type](value);
+            return node.NodeType != NodeType.Blank && node.ToString().Length <= this.AsValuedNode().AsInteger();
         }
     }
 }
