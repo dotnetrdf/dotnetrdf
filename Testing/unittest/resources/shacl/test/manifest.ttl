@@ -15,4 +15,6 @@
 	mf:include <xone-pass.ttl> ;
 	mf:include <nodeKind-fail.ttl> ;
 	mf:include <nodeKind-pass.ttl> ;
+	mf:include <minLength-fail.ttl> ;
+	mf:include <minLength-pass.ttl> ;
 ] .
