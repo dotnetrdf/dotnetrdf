@@ -9,4 +9,6 @@
 	mf:include <and-pass.ttl> ;
 	mf:include <or-fail.ttl> ;
 	mf:include <or-pass.ttl> ;
+	mf:include <not-fail.ttl> ;
+	mf:include <not-pass.ttl> ;
 ] .
