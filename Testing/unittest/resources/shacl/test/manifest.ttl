@@ -7,4 +7,6 @@
 	mf:include <datatype-pass.ttl> ;
 	mf:include <and-fail.ttl> ;
 	mf:include <and-pass.ttl> ;
+	mf:include <or-fail.ttl> ;
+	mf:include <or-pass.ttl> ;
 ] .

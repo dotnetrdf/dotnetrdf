@@ -47,6 +47,7 @@ namespace VDS.RDF.Shacl
         public static IUriNode Property => factory.CreateUriNode(UriFactory.Create($"{BaseUri}property"));
         public static IUriNode Datatype => factory.CreateUriNode(UriFactory.Create($"{BaseUri}datatype"));
         public static IUriNode And => factory.CreateUriNode(UriFactory.Create($"{BaseUri}and"));
+        public static IUriNode Or => factory.CreateUriNode(UriFactory.Create($"{BaseUri}or"));
 
         public static IUriNode NodeShape => factory.CreateUriNode(UriFactory.Create($"{BaseUri}NodeShape"));
         public static IUriNode PropertyShape => factory.CreateUriNode(UriFactory.Create($"{BaseUri}PropertyShape"));
@@ -88,6 +89,7 @@ namespace VDS.RDF.Shacl
                 yield return Property;
                 yield return Datatype;
                 yield return And;
+                yield return Or;
             }
         }
     }
