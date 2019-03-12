@@ -13,4 +13,6 @@
 	mf:include <not-pass.ttl> ;
 	mf:include <xone-fail.ttl> ;
 	mf:include <xone-pass.ttl> ;
+	mf:include <nodeKind-fail.ttl> ;
+	mf:include <nodeKind-pass.ttl> ;
 ] .

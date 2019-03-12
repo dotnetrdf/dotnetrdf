@@ -50,6 +50,7 @@ namespace VDS.RDF.Shacl
         public static IUriNode Or => factory.CreateUriNode(UriFactory.Create($"{BaseUri}or"));
         public static IUriNode Not => factory.CreateUriNode(UriFactory.Create($"{BaseUri}not"));
         public static IUriNode Xone => factory.CreateUriNode(UriFactory.Create($"{BaseUri}xone"));
+        public static IUriNode NodeKind => factory.CreateUriNode(UriFactory.Create($"{BaseUri}nodeKind"));
 
         public static IUriNode NodeShape => factory.CreateUriNode(UriFactory.Create($"{BaseUri}NodeShape"));
         public static IUriNode PropertyShape => factory.CreateUriNode(UriFactory.Create($"{BaseUri}PropertyShape"));
@@ -60,6 +61,13 @@ namespace VDS.RDF.Shacl
         public static IUriNode ZeroOrMorePath => factory.CreateUriNode(UriFactory.Create($"{BaseUri}zeroOrMorePath"));
         public static IUriNode ZeroOrOnePath => factory.CreateUriNode(UriFactory.Create($"{BaseUri}zeroOrOnePath"));
 
+        public static IUriNode BlankNode => factory.CreateUriNode(UriFactory.Create($"{BaseUri}BlankNode"));
+        public static IUriNode Iri => factory.CreateUriNode(UriFactory.Create($"{BaseUri}IRI"));
+        public static IUriNode Literal => factory.CreateUriNode(UriFactory.Create($"{BaseUri}Literal"));
+        public static IUriNode BlankNodeOrIri => factory.CreateUriNode(UriFactory.Create($"{BaseUri}BlankNodeOrIRI"));
+        public static IUriNode BlankNodeOrLiteral => factory.CreateUriNode(UriFactory.Create($"{BaseUri}BlankNodeOrLiteral"));
+        public static IUriNode IriOrLiteral => factory.CreateUriNode(UriFactory.Create($"{BaseUri}IRIOrLiteral"));
+        
         public static IUriNode Conforms => factory.CreateUriNode(UriFactory.Create($"{BaseUri}conforms"));
 
         public static IEnumerable<IUriNode> Shapes
@@ -94,6 +102,7 @@ namespace VDS.RDF.Shacl
                 yield return Or;
                 yield return Not;
                 yield return Xone;
+                yield return NodeKind;
             }
         }
     }

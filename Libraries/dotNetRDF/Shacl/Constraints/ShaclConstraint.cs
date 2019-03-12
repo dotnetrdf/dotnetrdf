@@ -50,6 +50,7 @@ namespace VDS.RDF.Shacl
                 { Shacl.Or, n => new ShaclOrConstraint(n) },
                 { Shacl.Not, n => new ShaclNotConstraint(n) },
                 { Shacl.Xone, n => new ShaclXoneConstraint(n) },
+                { Shacl.NodeKind, n => new ShaclNodeKindConstraint(n) },
             };
 
             return constraints[type](value);

@@ -24,52 +24,28 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Linq;
+
 namespace VDS.RDF.Shacl
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using VDS.RDF.Parsing;
-
-    internal class ShaclClassConstraint : ShaclConstraint
+    internal class ShaclNodeKindConstraint : ShaclConstraint
     {
-        private static readonly NodeFactory factory = new NodeFactory();
-        private static readonly INode rdfs_subClassOf = factory.CreateUriNode(UriFactory.Create("http://www.w3.org/2000/01/rdf-schema#subClassOf"));
-        private static readonly INode rdf_type = factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-
-        internal ShaclClassConstraint(INode node)
+        public ShaclNodeKindConstraint(INode node)
             : base(node)
         {
         }
 
         public override bool Validate(INode node)
         {
-            bool hasType(INode type)
+            var mappings = new Dictionary<NodeType, IEnumerable<INode>>
             {
-                return node.Graph.GetTriplesWithSubjectPredicate(node, rdf_type).WithObject(type).Any();
-            }
+                { NodeType.Blank, new[] { Shacl.BlankNode, Shacl.BlankNodeOrIri, Shacl.BlankNodeOrLiteral } },
+                { NodeType.Literal, new[] { Shacl.Literal, Shacl.BlankNodeOrLiteral, Shacl.IriOrLiteral} },
+                { NodeType.Uri, new[] { Shacl.Iri, Shacl.BlankNodeOrIri, Shacl.IriOrLiteral} },
+            };
 
-            return InferSubclasses(node.Graph, this).Any(hasType);
-        }
-
-        private static IEnumerable<INode> InferSubclasses(IGraph dataGraph, INode node, HashSet<INode> seen = null)
-        {
-            if (seen is null)
-            {
-                seen = new HashSet<INode>();
-            }
-
-            if (seen.Add(node))
-            {
-                yield return node;
-
-                foreach (var subclass in dataGraph.GetTriplesWithPredicateObject(rdfs_subClassOf, node).Select(t => t.Subject))
-                {
-                    foreach (var inferred in InferSubclasses(dataGraph, subclass, seen))
-                    {
-                        yield return inferred;
-                    }
-                }
-            }
+            return mappings[node.NodeType].Contains(this);
         }
     }
 }
