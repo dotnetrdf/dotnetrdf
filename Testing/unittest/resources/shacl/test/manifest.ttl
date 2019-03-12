@@ -3,6 +3,8 @@
 @prefix sht:     <http://www.w3.org/ns/shacl-test#> .
 
 [
-	mf:include <datatype-pass.ttl> ;
 	mf:include <datatype-fail.ttl> ;
+	mf:include <datatype-pass.ttl> ;
+	mf:include <and-fail.ttl> ;
+	mf:include <and-pass.ttl> ;
 ] .
