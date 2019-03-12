@@ -21,4 +21,6 @@
 	mf:include <maxLength-pass.ttl> ;
 	mf:include <languageIn-fail.ttl> ;
 	mf:include <languageIn-pass.ttl> ;
+	mf:include <in-fail.ttl> ;
+	mf:include <in-pass.ttl> ;
 ] .

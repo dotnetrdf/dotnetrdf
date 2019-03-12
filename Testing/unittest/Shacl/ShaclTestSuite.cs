@@ -35,7 +35,7 @@ namespace VDS.RDF.Shacl
     using Xunit;
     using Xunit.Abstractions;
 
-    public class ShaclTestSuit
+    public class ShaclTestSuite
     {
         //private const string basePath = "resources\\shacl\\test-suite\\manifest.ttl";
         private const string basePath = "resources\\shacl\\test\\manifest.ttl";
@@ -54,7 +54,7 @@ namespace VDS.RDF.Shacl
         private static readonly INode sht_shapesGraph = factory.CreateUriNode(UriFactory.Create("http://www.w3.org/ns/shacl-test#shapesGraph"));
         private static readonly INode rdf_type = factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
 
-        public ShaclTestSuit(ITestOutputHelper output)
+        public ShaclTestSuite(ITestOutputHelper output)
         {
             this.output = output;
         }
@@ -113,6 +113,7 @@ namespace VDS.RDF.Shacl
             catch
             {
                 validationFailure = true;
+                throw;
             }
 
             if (failure)
@@ -134,7 +135,6 @@ namespace VDS.RDF.Shacl
                 var g = Store[u];
                 foreach (var t in g.GetTriplesWithPredicate(mf_include).ToList())
                 {
-                    g.Retract(t);
                     Populate(((IUriNode)t.Object).Uri);
                 }
             }
