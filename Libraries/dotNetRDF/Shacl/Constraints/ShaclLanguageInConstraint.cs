@@ -26,37 +26,38 @@
 
 namespace VDS.RDF.Shacl
 {
-    using System;
-    using System.Collections.Generic;
+    using System.Linq;
+    using VDS.RDF;
+    using VDS.RDF.Query;
 
-    internal abstract class ShaclConstraint : WrapperNode
+    internal class ShaclLanguageInConstraint : ShaclConstraint
     {
-        protected ShaclConstraint(INode node)
+        public ShaclLanguageInConstraint(INode node)
             : base(node)
         {
         }
 
-        public abstract bool Validate(INode node);
-
-        internal static ShaclConstraint Parse(INode type, INode value)
+        public override bool Validate(INode node)
         {
-            var constraints = new Dictionary<INode, Func<INode, ShaclConstraint>>()
+            var items = this.Graph.GetListItems(this);
+            foreach (var item in items)
             {
-                { Shacl.Class, n => new ShaclClassConstraint(n) },
-                { Shacl.Node, n => new ShaclNodeConstraint(n) },
-                { Shacl.Property, n => new ShaclPropertyConstraint(n) },
-                { Shacl.Datatype, n => new ShaclDatatypeConstraint(n) },
-                { Shacl.And, n => new ShaclAndConstraint(n) },
-                { Shacl.Or, n => new ShaclOrConstraint(n) },
-                { Shacl.Not, n => new ShaclNotConstraint(n) },
-                { Shacl.Xone, n => new ShaclXoneConstraint(n) },
-                { Shacl.NodeKind, n => new ShaclNodeKindConstraint(n) },
-                { Shacl.MinLength, n => new ShaclMinLengthConstraint(n) },
-                { Shacl.MaxLength, n => new ShaclMaxLengthConstraint(n) },
-                { Shacl.LanguageIn, n => new ShaclLanguageInConstraint(n) },
-            };
+                var query = new SparqlParameterizedString(@"
+ASK {
+    FILTER(LANGMATCHES(LANG(?value), ?language))
+}
+");
+                query.SetVariable("value", node);
+                query.SetVariable("language", item);
 
-            return constraints[type](value);
+                var result = (SparqlResultSet)node.Graph.ExecuteQuery(query);
+                if (!result.Result)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }
