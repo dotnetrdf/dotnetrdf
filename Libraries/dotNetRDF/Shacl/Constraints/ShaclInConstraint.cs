@@ -24,11 +24,10 @@
 // </copyright>
 */
 
-using System.Linq;
-
 namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
+    using System.Linq;
 
     internal class ShaclInConstraint : ShaclConstraint
     {

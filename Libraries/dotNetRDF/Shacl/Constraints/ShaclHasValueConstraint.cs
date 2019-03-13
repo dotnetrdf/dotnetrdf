@@ -27,17 +27,18 @@
 namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
+    using System.Linq;
 
-    internal class ShaclNotConstraint : ShaclConstraint
+    internal class ShaclHasValueConstraint : ShaclConstraint
     {
-        public ShaclNotConstraint(INode node)
+        public ShaclHasValueConstraint(INode node)
             : base(node)
         {
         }
 
         public override bool Validate(IEnumerable<INode> nodes)
         {
-            return !ShaclShape.Parse(this).Validate(nodes);
+            return nodes.Contains(this);
         }
     }
 }
