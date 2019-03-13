@@ -57,6 +57,7 @@ namespace VDS.RDF.Shacl
         public static IUriNode In => factory.CreateUriNode(UriFactory.Create($"{BaseUri}in"));
         public static IUriNode MinCount => factory.CreateUriNode(UriFactory.Create($"{BaseUri}minCount"));
         public static IUriNode MaxCount => factory.CreateUriNode(UriFactory.Create($"{BaseUri}maxCount"));
+        public static IUriNode UniqueLang => factory.CreateUriNode(UriFactory.Create($"{BaseUri}uniqueLang"));
 
         public static IUriNode NodeShape => factory.CreateUriNode(UriFactory.Create($"{BaseUri}NodeShape"));
         public static IUriNode PropertyShape => factory.CreateUriNode(UriFactory.Create($"{BaseUri}PropertyShape"));
@@ -115,7 +116,8 @@ namespace VDS.RDF.Shacl
                 yield return In;
                 yield return MinCount;
                 yield return MaxCount;
-            }
+                yield return UniqueLang;
+           }
         }
     }
 }

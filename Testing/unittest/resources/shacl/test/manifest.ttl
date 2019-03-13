@@ -27,4 +27,6 @@
 	mf:include <minCount-pass.ttl> ;
 	mf:include <maxCount-fail.ttl> ;
 	mf:include <maxCount-pass.ttl> ;
+	mf:include <uniqueLang-fail.ttl> ;
+	mf:include <uniqueLang-pass.ttl> ;
 ] .

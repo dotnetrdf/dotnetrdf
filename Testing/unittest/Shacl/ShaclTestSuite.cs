@@ -130,9 +130,9 @@ namespace VDS.RDF.Shacl
 
         private static void Populate(Uri u)
         {
-            if (Store.HasGraph(u))
+            if (store.HasGraph(u))
             {
-                var g = Store[u];
+                var g = store[u];
                 foreach (var t in g.GetTriplesWithPredicate(mf_include).ToList())
                 {
                     Populate(((IUriNode)t.Object).Uri);
