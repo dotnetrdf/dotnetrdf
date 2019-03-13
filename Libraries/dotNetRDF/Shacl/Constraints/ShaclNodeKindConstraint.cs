@@ -24,11 +24,11 @@
 // </copyright>
 */
 
-using System.Collections.Generic;
-using System.Linq;
-
 namespace VDS.RDF.Shacl
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     internal class ShaclNodeKindConstraint : ShaclConstraint
     {
         public ShaclNodeKindConstraint(INode node)
@@ -36,7 +36,7 @@ namespace VDS.RDF.Shacl
         {
         }
 
-        public override bool Validate(INode node)
+        public override bool Validate(IEnumerable<INode> nodes)
         {
             var mappings = new Dictionary<NodeType, IEnumerable<INode>>
             {
@@ -45,7 +45,7 @@ namespace VDS.RDF.Shacl
                 { NodeType.Uri, new[] { Shacl.Iri, Shacl.BlankNodeOrIri, Shacl.IriOrLiteral} },
             };
 
-            return mappings[node.NodeType].Contains(this);
+            return nodes.All(node => mappings[node.NodeType].Contains(this));
         }
     }
 }

@@ -36,7 +36,7 @@ namespace VDS.RDF.Shacl
         {
         }
 
-        public abstract bool Validate(INode node);
+        public abstract bool Validate(IEnumerable<INode> nodes);
 
         internal static ShaclConstraint Parse(INode type, INode value)
         {

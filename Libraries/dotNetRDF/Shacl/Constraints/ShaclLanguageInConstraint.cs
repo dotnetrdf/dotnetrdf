@@ -26,6 +26,7 @@
 
 namespace VDS.RDF.Shacl
 {
+    using System.Collections.Generic;
     using System.Linq;
     using VDS.RDF;
     using VDS.RDF.Query;
@@ -37,27 +38,26 @@ namespace VDS.RDF.Shacl
         {
         }
 
-        public override bool Validate(INode node)
+        public override bool Validate(IEnumerable<INode> nodes)
         {
             var items = this.Graph.GetListItems(this);
-            foreach (var item in items)
-            {
-                var query = new SparqlParameterizedString(@"
+
+            return nodes.All(node => items.Any(item => LanguageIn(node, item)));
+        }
+
+        private static bool LanguageIn(INode node, INode item)
+        {
+            var query = new SparqlParameterizedString(@"
 ASK {
     FILTER(LANGMATCHES(LANG(?value), ?language))
 }
 ");
-                query.SetVariable("value", node);
-                query.SetVariable("language", item);
+            query.SetVariable("value", node);
+            query.SetVariable("language", item);
 
-                var result = (SparqlResultSet)node.Graph.ExecuteQuery(query);
-                if (!result.Result)
-                {
-                    return false;
-                }
-            }
+            var result = (SparqlResultSet)node.Graph.ExecuteQuery(query);
 
-            return true;
+            return result.Result;
         }
     }
 }

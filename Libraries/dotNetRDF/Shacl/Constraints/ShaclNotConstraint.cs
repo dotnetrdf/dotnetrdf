@@ -26,6 +26,9 @@
 
 namespace VDS.RDF.Shacl
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     internal class ShaclNotConstraint : ShaclConstraint
     {
         public ShaclNotConstraint(INode node) 
@@ -33,9 +36,9 @@ namespace VDS.RDF.Shacl
         {
         }
 
-        public override bool Validate(INode node)
+        public override bool Validate(IEnumerable<INode> nodes)
         {
-            return !ShaclShape.Parse(this).Validate(node);
+            return !ShaclShape.Parse(this).Validate(nodes);
         }
     }
 }

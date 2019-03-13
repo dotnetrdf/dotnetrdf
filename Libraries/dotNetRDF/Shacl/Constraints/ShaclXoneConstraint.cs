@@ -26,6 +26,9 @@
 
 namespace VDS.RDF.Shacl
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     internal class ShaclXoneConstraint : ShaclConstraint
     {
         public ShaclXoneConstraint(INode node)
@@ -33,23 +36,10 @@ namespace VDS.RDF.Shacl
         {
         }
 
-        public override bool Validate(INode node)
+        public override bool Validate(IEnumerable<INode> nodes)
         {
-            var x = 0;
-            foreach (var item in this.Graph.GetListItems(this))
-            {
-                if (!ShaclShape.Parse(item).Validate(node))
-                {
-                    x++;
-                }
-
-                if (x > 1)
-                {
-                    return false;
-                }
-            }
-
-            return x > 0;
+            var shapes = this.Graph.GetListItems(this).Select(ShaclShape.Parse);
+            return shapes.TakeWhile((shape, index) => index <= 2 && shape.Validate(nodes)).Count() == 1;
         }
     }
 }

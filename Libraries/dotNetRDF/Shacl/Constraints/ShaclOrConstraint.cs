@@ -26,24 +26,19 @@
 
 namespace VDS.RDF.Shacl
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     internal class ShaclOrConstraint : ShaclConstraint
     {
-        public ShaclOrConstraint(INode node) 
+        public ShaclOrConstraint(INode node)
             : base(node)
         {
         }
 
-        public override bool Validate(INode node)
+        public override bool Validate(IEnumerable<INode> nodes)
         {
-            foreach (var item in this.Graph.GetListItems(this))
-            {
-                if (ShaclShape.Parse(item).Validate(node))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return this.Graph.GetListItems(this).Select(ShaclShape.Parse).Any(shape => shape.Validate(nodes));
         }
     }
 }

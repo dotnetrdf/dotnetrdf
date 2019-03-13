@@ -26,6 +26,9 @@
 
 namespace VDS.RDF.Shacl
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     internal class ShaclDatatypeConstraint : ShaclConstraint
     {
         public ShaclDatatypeConstraint(INode node)
@@ -33,9 +36,9 @@ namespace VDS.RDF.Shacl
         {
         }
 
-        public override bool Validate(INode node)
+        public override bool Validate(IEnumerable<INode> nodes)
         {
-            return EqualityHelper.AreUrisEqual(((ILiteralNode)node).DataType, ((IUriNode)this).Uri);
+            return nodes.All(node => EqualityHelper.AreUrisEqual(((ILiteralNode)node).DataType, ((IUriNode)this).Uri));
         }
     }
 }

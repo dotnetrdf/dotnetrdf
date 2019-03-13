@@ -28,16 +28,19 @@ using System.Linq;
 
 namespace VDS.RDF.Shacl
 {
+    using System.Collections.Generic;
+
     internal class ShaclInConstraint : ShaclConstraint
     {
-        public ShaclInConstraint(INode node) 
+        public ShaclInConstraint(INode node)
             : base(node)
         {
         }
 
-        public override bool Validate(INode node)
+        public override bool Validate(IEnumerable<INode> nodes)
         {
-            return this.Graph.GetListItems(this).Contains(node);
+            var items = this.Graph.GetListItems(this);
+            return nodes.All(node => items.Contains(node));
         }
     }
 }

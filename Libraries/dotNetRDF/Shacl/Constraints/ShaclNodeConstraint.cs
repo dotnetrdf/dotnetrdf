@@ -26,16 +26,18 @@
 
 namespace VDS.RDF.Shacl
 {
+    using System.Collections.Generic;
+
     internal class ShaclNodeConstraint : ShaclConstraint
     {
-        public ShaclNodeConstraint(INode node) 
+        public ShaclNodeConstraint(INode node)
             : base(node)
         {
         }
 
-        public override bool Validate(INode node)
+        public override bool Validate(IEnumerable<INode> nodes)
         {
-            return ShaclShape.Parse(this).Validate(node);
+            return ShaclShape.Parse(this).Validate(nodes);
         }
     }
 }

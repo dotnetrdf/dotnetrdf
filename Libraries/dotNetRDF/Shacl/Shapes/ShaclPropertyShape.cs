@@ -26,6 +26,7 @@
 
 namespace VDS.RDF.Shacl
 {
+    using System.Collections.Generic;
     using System.Linq;
 
     public class ShaclPropertyShape : ShaclShape
@@ -46,17 +47,9 @@ namespace VDS.RDF.Shacl
             }
         }
 
-        internal override bool Validate(INode focusNode)
+        internal override bool Validate(IEnumerable<INode> nodes)
         {
-            foreach (var node in this.Path.SelectFocusNodes(focusNode))
-            {
-                if (!base.Validate(node))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return nodes.All(node => base.Validate(this.Path.SelectFocusNodes(node)));
         }
     }
 }

@@ -26,6 +26,8 @@
 
 namespace VDS.RDF.Shacl
 {
+    using System.Collections.Generic;
+    using System.Linq;
     using VDS.RDF.Nodes;
 
     internal class ShaclMaxLengthConstraint : ShaclConstraint
@@ -35,9 +37,9 @@ namespace VDS.RDF.Shacl
         {
         }
 
-        public override bool Validate(INode node)
+        public override bool Validate(IEnumerable<INode> nodes)
         {
-            return node.NodeType != NodeType.Blank && node.ToString().Length <= this.AsValuedNode().AsInteger();
+            return nodes.All(node => node.NodeType != NodeType.Blank && node.ToString().Length <= this.AsValuedNode().AsInteger());
         }
     }
 }
