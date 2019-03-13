@@ -28,9 +28,14 @@ namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
     using System.Linq;
+    using VDS.RDF.Parsing;
 
     internal class ShaclClassTarget : ShaclTarget
     {
+        private static readonly NodeFactory factory = new NodeFactory();
+        private static readonly INode rdfs_subClassOf = factory.CreateUriNode(UriFactory.Create("http://www.w3.org/2000/01/rdf-schema#subClassOf"));
+        private static readonly INode rdf_type = factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+
         public ShaclClassTarget(INode node)
             : base(node)
         {
@@ -38,11 +43,28 @@ namespace VDS.RDF.Shacl
 
         internal override IEnumerable<INode> SelectFocusNodes(IGraph dataGragh)
         {
-            var rdf_type = this.Graph.CreateUriNode("rdf:type");
+            return InferSubclasses(dataGragh, this).SelectMany(c => dataGragh.GetTriplesWithPredicateObject(rdf_type, c).Select(t => t.Subject));
+        }
 
-            return 
-                from t in this.Graph.GetTriplesWithPredicateObject(rdf_type, this)
-                select t.Subject;
+        private static IEnumerable<INode> InferSubclasses(IGraph dataGraph, INode node, HashSet<INode> seen = null)
+        {
+            if (seen is null)
+            {
+                seen = new HashSet<INode>();
+            }
+
+            if (seen.Add(node))
+            {
+                yield return node;
+
+                foreach (var subclass in dataGraph.GetTriplesWithPredicateObject(rdfs_subClassOf, node).Select(t => t.Subject))
+                {
+                    foreach (var inferred in InferSubclasses(dataGraph, subclass, seen))
+                    {
+                        yield return inferred;
+                    }
+                }
+            }
         }
     }
 }
