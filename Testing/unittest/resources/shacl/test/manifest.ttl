@@ -25,4 +25,6 @@
 	mf:include <in-pass.ttl> ;
 	mf:include <minCount-fail.ttl> ;
 	mf:include <minCount-pass.ttl> ;
+	mf:include <maxCount-fail.ttl> ;
+	mf:include <maxCount-pass.ttl> ;
 ] .
