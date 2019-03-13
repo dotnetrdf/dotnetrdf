@@ -31,4 +31,6 @@
 	mf:include <uniqueLang-pass.ttl> ;
 	mf:include <hasValue-fail.ttl> ;
 	mf:include <hasValue-pass.ttl> ;
+	mf:include <pattern-fail.ttl> ;
+	mf:include <pattern-pass.ttl> ;
 ] .

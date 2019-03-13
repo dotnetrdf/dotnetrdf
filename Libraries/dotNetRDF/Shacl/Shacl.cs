@@ -59,6 +59,8 @@ namespace VDS.RDF.Shacl
         public static IUriNode MaxCount => factory.CreateUriNode(UriFactory.Create($"{BaseUri}maxCount"));
         public static IUriNode UniqueLang => factory.CreateUriNode(UriFactory.Create($"{BaseUri}uniqueLang"));
         public static IUriNode HasValue => factory.CreateUriNode(UriFactory.Create($"{BaseUri}hasValue"));
+        public static IUriNode Pattern => factory.CreateUriNode(UriFactory.Create($"{BaseUri}pattern"));
+        public static IUriNode Flags => factory.CreateUriNode(UriFactory.Create($"{BaseUri}flags"));
 
         public static IUriNode NodeShape => factory.CreateUriNode(UriFactory.Create($"{BaseUri}NodeShape"));
         public static IUriNode PropertyShape => factory.CreateUriNode(UriFactory.Create($"{BaseUri}PropertyShape"));
@@ -75,7 +77,7 @@ namespace VDS.RDF.Shacl
         public static IUriNode BlankNodeOrIri => factory.CreateUriNode(UriFactory.Create($"{BaseUri}BlankNodeOrIRI"));
         public static IUriNode BlankNodeOrLiteral => factory.CreateUriNode(UriFactory.Create($"{BaseUri}BlankNodeOrLiteral"));
         public static IUriNode IriOrLiteral => factory.CreateUriNode(UriFactory.Create($"{BaseUri}IRIOrLiteral"));
-        
+
         public static IUriNode Conforms => factory.CreateUriNode(UriFactory.Create($"{BaseUri}conforms"));
 
         public static IEnumerable<IUriNode> Shapes
@@ -119,7 +121,8 @@ namespace VDS.RDF.Shacl
                 yield return MaxCount;
                 yield return UniqueLang;
                 yield return HasValue;
-           }
+                yield return Pattern;
+            }
         }
     }
 }
