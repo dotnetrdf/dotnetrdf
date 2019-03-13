@@ -28,18 +28,18 @@ namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
     using System.Linq;
+    using VDS.RDF.Nodes;
 
-    internal class ShaclXoneConstraint : ShaclConstraint
+    internal class ShaclMinCountConstraint : ShaclConstraint
     {
-        public ShaclXoneConstraint(INode node)
+        public ShaclMinCountConstraint(INode node)
             : base(node)
         {
         }
 
         public override bool Validate(IEnumerable<INode> nodes)
         {
-            var shapes = this.Graph.GetListItems(this).Select(ShaclShape.Parse);
-            return shapes.TakeWhile((shape, index) => index < 2 && shape.Validate(nodes)).Count() == 1;
+            return nodes.Skip((int)this.AsValuedNode().AsInteger() - 1).Any();
         }
     }
 }

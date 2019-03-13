@@ -55,6 +55,7 @@ namespace VDS.RDF.Shacl
                 { Shacl.MaxLength, n => new ShaclMaxLengthConstraint(n) },
                 { Shacl.LanguageIn, n => new ShaclLanguageInConstraint(n) },
                 { Shacl.In, n => new ShaclInConstraint(n) },
+                { Shacl.MinCount, n => new ShaclMinCountConstraint(n) },
             };
 
             return constraints[type](value);

@@ -23,4 +23,6 @@
 	mf:include <languageIn-pass.ttl> ;
 	mf:include <in-fail.ttl> ;
 	mf:include <in-pass.ttl> ;
+	mf:include <minCount-fail.ttl> ;
+	mf:include <minCount-pass.ttl> ;
 ] .
