@@ -42,7 +42,7 @@ namespace VDS.RDF.Shacl
             {
                 IEnumerable<ShaclConstraint> selectConstraints(INode parameter) =>
                     from t in this.Graph.GetTriplesWithSubjectPredicate(this, parameter)
-                    select ShaclConstraint.Parse(parameter, t.Object);
+                    select ShaclConstraint.Parse(t);
 
                 return Shacl.Constraints.SelectMany(selectConstraints);
             }
