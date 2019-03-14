@@ -62,6 +62,7 @@ namespace VDS.RDF.Shacl
         public static IUriNode Pattern => factory.CreateUriNode(UriFactory.Create($"{BaseUri}pattern"));
         public static IUriNode Flags => factory.CreateUriNode(UriFactory.Create($"{BaseUri}flags"));
         public static IUriNode Equals => factory.CreateUriNode(UriFactory.Create($"{BaseUri}equals"));
+        public static IUriNode Disjoint => factory.CreateUriNode(UriFactory.Create($"{BaseUri}disjoint"));
 
         public static IUriNode NodeShape => factory.CreateUriNode(UriFactory.Create($"{BaseUri}NodeShape"));
         public static IUriNode PropertyShape => factory.CreateUriNode(UriFactory.Create($"{BaseUri}PropertyShape"));
@@ -124,6 +125,7 @@ namespace VDS.RDF.Shacl
                 yield return HasValue;
                 yield return Pattern;
                 yield return Equals;
+                yield return Disjoint;
             }
         }
     }
