@@ -29,32 +29,39 @@ namespace VDS.RDF.Shacl
     using System.Collections.Generic;
     using System.Linq;
 
-    public class ShaclPropertyShape : ShaclShape
+    internal class ShaclEqualsConstraint : ShaclConstraint
     {
-        internal ShaclPropertyShape(INode node)
+        private readonly INode shapeNode;
+
+        public ShaclEqualsConstraint(INode shapeNode, INode node)
             : base(node)
         {
+            this.shapeNode = shapeNode;
         }
 
-        private ShaclPath Path
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
         {
-            get
+            return
+                valueNodes.All(valueNode => HasObject(focusNode, valueNode))
+                && SelectValues(focusNode).All(valueNodes.Contains);
+        }
+
+        private bool HasObject(INode focusNode, INode valueNode)
+        {
+            return focusNode.Graph.GetTriplesWithSubjectPredicate(focusNode, this).WithObject(valueNode).Any();
+        }
+
+        private IEnumerable<INode> SelectValues(INode focusNode)
+        {
+            var shape = ShaclShape.Parse(this.shapeNode);
+            switch (shape)
             {
-                return this.Graph.GetTriplesWithSubjectPredicate(this, Shacl.Path)
-                    .Select(t => t.Object)
-                    .Select(ShaclPath.Parse)
-                    .Single();
+                case ShaclPropertyShape propertyShape:
+                    return propertyShape.SelectValueNodes(focusNode);
+
+                default:
+                    return shape.SelectFocusNodes(focusNode.Graph);
             }
-        }
-
-        internal IEnumerable<INode> SelectValueNodes(INode focusNode)
-        {
-            return Path.SelectValueNodes(focusNode);
-        }
-
-        internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
-        {
-            return valueNodes.All(valueNode => base.Validate(valueNode, SelectValueNodes(valueNode)));
         }
     }
 }

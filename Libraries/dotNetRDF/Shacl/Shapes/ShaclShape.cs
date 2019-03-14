@@ -36,7 +36,7 @@ namespace VDS.RDF.Shacl
         {
         }
 
-        internal IEnumerable<ShaclConstraint> Constraints
+        private IEnumerable<ShaclConstraint> Constraints
         {
             get
             {
@@ -48,7 +48,7 @@ namespace VDS.RDF.Shacl
             }
         }
 
-        internal IEnumerable<ShaclTarget> Targets
+        private IEnumerable<ShaclTarget> Targets
         {
             get
             {
@@ -99,7 +99,12 @@ namespace VDS.RDF.Shacl
 
         internal bool Validate(IGraph dataGragh)
         {
-            return this.Targets.SelectMany(target => target.SelectFocusNodes(dataGragh)).All(focusNode => Validate(focusNode, focusNode.AsEnumerable()));
+            return SelectFocusNodes(dataGragh).All(focusNode => this.Validate(focusNode, focusNode.AsEnumerable()));
+        }
+
+        internal IEnumerable<INode> SelectFocusNodes(IGraph dataGragh)
+        {
+            return this.Targets.SelectMany(target => target.SelectFocusNodes(dataGragh));
         }
 
         internal virtual bool Validate(INode focusNode, IEnumerable<INode> valueNodes)

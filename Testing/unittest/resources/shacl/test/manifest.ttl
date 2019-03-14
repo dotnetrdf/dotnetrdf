@@ -33,4 +33,6 @@
 	mf:include <hasValue-pass.ttl> ;
 	mf:include <pattern-fail.ttl> ;
 	mf:include <pattern-pass.ttl> ;
+	mf:include <equals-fail.ttl> ;
+	mf:include <equals-pass.ttl> ;
 ] .

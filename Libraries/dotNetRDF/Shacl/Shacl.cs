@@ -61,6 +61,7 @@ namespace VDS.RDF.Shacl
         public static IUriNode HasValue => factory.CreateUriNode(UriFactory.Create($"{BaseUri}hasValue"));
         public static IUriNode Pattern => factory.CreateUriNode(UriFactory.Create($"{BaseUri}pattern"));
         public static IUriNode Flags => factory.CreateUriNode(UriFactory.Create($"{BaseUri}flags"));
+        public static IUriNode Equals => factory.CreateUriNode(UriFactory.Create($"{BaseUri}equals"));
 
         public static IUriNode NodeShape => factory.CreateUriNode(UriFactory.Create($"{BaseUri}NodeShape"));
         public static IUriNode PropertyShape => factory.CreateUriNode(UriFactory.Create($"{BaseUri}PropertyShape"));
@@ -122,6 +123,7 @@ namespace VDS.RDF.Shacl
                 yield return UniqueLang;
                 yield return HasValue;
                 yield return Pattern;
+                yield return Equals;
             }
         }
     }
