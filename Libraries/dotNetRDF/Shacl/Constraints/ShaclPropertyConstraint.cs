@@ -35,9 +35,9 @@ namespace VDS.RDF.Shacl
         {
         }
 
-        public override bool Validate(IEnumerable<INode> nodes)
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
         {
-            return new ShaclPropertyShape(this).Validate(nodes);
+            return new ShaclPropertyShape(this).Validate(focusNode, valueNodes);
         }
     }
 }

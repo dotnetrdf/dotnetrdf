@@ -36,9 +36,9 @@ namespace VDS.RDF.Shacl
         {
         }
 
-        public override bool Validate(IEnumerable<INode> nodes)
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
         {
-            return this.Graph.GetListItems(this).Select(ShaclShape.Parse).Any(shape => shape.Validate(nodes));
+            return this.Graph.GetListItems(this).Select(ShaclShape.Parse).Any(shape => shape.Validate(focusNode, valueNodes));
         }
     }
 }

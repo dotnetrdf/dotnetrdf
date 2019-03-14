@@ -37,8 +37,9 @@ namespace VDS.RDF.Shacl
 
     public class ShaclTestSuite
     {
-        //private const string basePath = "resources\\shacl\\test-suite\\manifest.ttl";
-        private const string basePath = "resources\\shacl\\test\\manifest.ttl";
+        private const string basePath = "resources\\shacl\\test-suite\\core\\manifest.ttl";
+        //private const string basePath = "resources\\shacl\\test-suite\\core\\path\\path-strange-001.ttl";
+        //private const string basePath = "resources\\shacl\\test\\manifest.ttl";
 
         private readonly ITestOutputHelper output;
 

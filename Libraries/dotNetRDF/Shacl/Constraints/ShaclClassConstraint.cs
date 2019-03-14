@@ -41,15 +41,15 @@ namespace VDS.RDF.Shacl
         {
         }
 
-        public override bool Validate(IEnumerable<INode> nodes)
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
         {
             bool hasType(INode node, INode type)
             {
                 return node.Graph.GetTriplesWithSubjectPredicate(node, rdf_type).WithObject(type).Any();
             }
 
-            var classes = InferSubclasses(nodes.First().Graph, this);
-            return nodes.All(node => classes.Any(type => hasType(node, type)));
+            var classes = InferSubclasses(valueNodes.First().Graph, this);
+            return valueNodes.All(node => classes.Any(type => hasType(node, type)));
         }
 
         private static IEnumerable<INode> InferSubclasses(IGraph dataGraph, INode node, HashSet<INode> seen = null)

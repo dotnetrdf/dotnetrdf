@@ -36,7 +36,7 @@ namespace VDS.RDF.Shacl
         {
         }
 
-        public override bool Validate(IEnumerable<INode> nodes)
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
         {
             var mappings = new Dictionary<NodeType, IEnumerable<INode>>
             {
@@ -45,7 +45,7 @@ namespace VDS.RDF.Shacl
                 { NodeType.Uri, new[] { Shacl.Iri, Shacl.BlankNodeOrIri, Shacl.IriOrLiteral} },
             };
 
-            return nodes.All(node => mappings[node.NodeType].Contains(this));
+            return valueNodes.All(node => mappings[node.NodeType].Contains(this));
         }
     }
 }

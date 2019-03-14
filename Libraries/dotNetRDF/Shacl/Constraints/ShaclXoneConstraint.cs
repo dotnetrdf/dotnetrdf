@@ -36,10 +36,10 @@ namespace VDS.RDF.Shacl
         {
         }
 
-        public override bool Validate(IEnumerable<INode> nodes)
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
         {
             var shapes = this.Graph.GetListItems(this).Select(ShaclShape.Parse);
-            return shapes.TakeWhile((shape, index) => index < 2 && shape.Validate(nodes)).Count() == 1;
+            return shapes.TakeWhile((shape, index) => index < 2 && shape.Validate(focusNode, valueNodes)).Count() == 1;
         }
     }
 }

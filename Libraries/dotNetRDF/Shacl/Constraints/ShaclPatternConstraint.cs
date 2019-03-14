@@ -42,7 +42,7 @@ namespace VDS.RDF.Shacl
 
         public INode Flags => this.Graph.GetTriplesWithSubjectPredicate(this.shape, Shacl.Flags).Select(t => t.Object).SingleOrDefault();
 
-        public override bool Validate(IEnumerable<INode> nodes)
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
         {
             var query = new SparqlParameterizedString(@"
 ASK {
@@ -64,7 +64,7 @@ ASK {
                 return ((SparqlResultSet)node.Graph.ExecuteQuery(query)).Result;
             }
 
-            return nodes.All(matches);
+            return valueNodes.All(matches);
         }
     }
 }

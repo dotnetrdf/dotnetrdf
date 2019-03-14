@@ -38,11 +38,10 @@ namespace VDS.RDF.Shacl
         {
         }
 
-        public override bool Validate(IEnumerable<INode> nodes)
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
         {
             var items = this.Graph.GetListItems(this);
-
-            return nodes.All(node => items.Any(item => LanguageIn(node, item)));
+            return valueNodes.All(node => items.Any(item => LanguageIn(node, item)));
         }
 
         private static bool LanguageIn(INode node, INode item)

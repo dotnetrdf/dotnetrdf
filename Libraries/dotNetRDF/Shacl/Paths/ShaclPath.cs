@@ -43,7 +43,7 @@ namespace VDS.RDF.Shacl
 
         internal abstract ISparqlPath SparqlPath { get; }
 
-        internal IEnumerable<INode> SelectFocusNodes(INode node)
+        internal IEnumerable<INode> SelectValueNodes(INode node)
         {
             var a = QueryBuilder.Select("x").Distinct().Where(new PropertyPathPattern(new NodeMatchPattern(node), this.SparqlPath, new VariablePattern("x"))).BuildQuery();
             var b = node.Graph.ExecuteQuery(a);

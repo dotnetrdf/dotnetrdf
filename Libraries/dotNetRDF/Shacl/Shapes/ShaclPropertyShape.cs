@@ -40,16 +40,16 @@ namespace VDS.RDF.Shacl
         {
             get
             {
-                return ShaclPath.Parse(
-                    this.Graph.GetTriplesWithSubjectPredicate(this, Shacl.Path)
+                return this.Graph.GetTriplesWithSubjectPredicate(this, Shacl.Path)
                     .Select(t => t.Object)
-                    .Single());
+                    .Select(ShaclPath.Parse)
+                    .Single();
             }
         }
 
-        internal override bool Validate(IEnumerable<INode> nodes)
+        internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
         {
-            return nodes.All(node => base.Validate(this.Path.SelectFocusNodes(node)));
+            return valueNodes.All(valueNode => base.Validate(valueNode, Path.SelectValueNodes(valueNode)));
         }
     }
 }

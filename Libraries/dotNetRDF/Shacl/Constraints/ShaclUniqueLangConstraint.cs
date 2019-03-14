@@ -37,9 +37,9 @@ namespace VDS.RDF.Shacl
         {
         }
 
-        public override bool Validate(IEnumerable<INode> nodes)
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
         {
-            return !this.AsValuedNode().AsBoolean() || !nodes.GroupBy(node => ((ILiteralNode)node).Language).Any(group => group.Count() > 1);
+            return !this.AsValuedNode().AsBoolean() || !valueNodes.GroupBy(node => ((ILiteralNode)node).Language).Any(group => group.Count() > 1);
         }
     }
 }

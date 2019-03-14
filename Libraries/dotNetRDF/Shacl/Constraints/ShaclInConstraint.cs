@@ -36,10 +36,10 @@ namespace VDS.RDF.Shacl
         {
         }
 
-        public override bool Validate(IEnumerable<INode> nodes)
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
         {
             var items = this.Graph.GetListItems(this);
-            return nodes.All(node => items.Contains(node));
+            return valueNodes.All(node => items.Contains(node));
         }
     }
 }

@@ -99,12 +99,12 @@ namespace VDS.RDF.Shacl
 
         internal bool Validate(IGraph dataGragh)
         {
-            return this.Targets.All(target => Validate(target.SelectFocusNodes(dataGragh)));
+            return this.Targets.SelectMany(target => target.SelectFocusNodes(dataGragh)).All(focusNode => Validate(focusNode, focusNode.AsEnumerable()));
         }
 
-        internal virtual bool Validate(IEnumerable<INode> focusNodes)
+        internal virtual bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
         {
-            return this.Constraints.All(constraint => constraint.Validate(focusNodes));
+            return this.Constraints.All(constraint => constraint.Validate(focusNode, valueNodes));
         }
     }
 }

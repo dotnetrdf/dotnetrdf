@@ -36,9 +36,9 @@ namespace VDS.RDF.Shacl
         {
         }
 
-        public override bool Validate(IEnumerable<INode> nodes)
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
         {
-            return nodes.All(node => node.NodeType == NodeType.Literal && EqualityHelper.AreUrisEqual(((ILiteralNode)node).DataType, ((IUriNode)this).Uri));
+            return valueNodes.All(node => node.NodeType == NodeType.Literal && EqualityHelper.AreUrisEqual(((ILiteralNode)node).DataType, ((IUriNode)this).Uri));
         }
     }
 }
