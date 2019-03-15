@@ -65,6 +65,7 @@ namespace VDS.RDF.Shacl
                 { Shacl.LessThan, t => new ShaclLessThanConstraint(t.Object) },
                 { Shacl.LessThanOrEquals, t => new ShaclLessThanOrEqualsConstraint(t.Object) },
                 { Shacl.MinExclusive, t => new ShaclMinExclusiveConstraint(t.Object) },
+                { Shacl.MinInclusive, t => new ShaclMinInclusiveConstraint(t.Object) },
            };
 
             return constraints[triple.Predicate](triple);

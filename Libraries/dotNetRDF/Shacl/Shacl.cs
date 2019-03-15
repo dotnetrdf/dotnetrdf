@@ -66,6 +66,7 @@ namespace VDS.RDF.Shacl
         public static IUriNode LessThan => factory.CreateUriNode(UriFactory.Create($"{BaseUri}lessThan"));
         public static IUriNode LessThanOrEquals => factory.CreateUriNode(UriFactory.Create($"{BaseUri}lessThanOrEquals"));
         public static IUriNode MinExclusive => factory.CreateUriNode(UriFactory.Create($"{BaseUri}minExclusive"));
+        public static IUriNode MinInclusive => factory.CreateUriNode(UriFactory.Create($"{BaseUri}minInclusive"));
 
         public static IUriNode NodeShape => factory.CreateUriNode(UriFactory.Create($"{BaseUri}NodeShape"));
         public static IUriNode PropertyShape => factory.CreateUriNode(UriFactory.Create($"{BaseUri}PropertyShape"));
@@ -132,6 +133,7 @@ namespace VDS.RDF.Shacl
                 yield return LessThan;
                 yield return LessThanOrEquals;
                 yield return MinExclusive;
+                yield return MinInclusive;
             }
         }
     }

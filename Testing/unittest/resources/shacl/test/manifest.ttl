@@ -43,4 +43,6 @@
 	mf:include <lessThanOrEquals-pass.ttl> ;
 	mf:include <minExclusive-fail.ttl> ;
 	mf:include <minExclusive-pass.ttl> ;
+	mf:include <minInclusive-fail.ttl> ;
+	mf:include <minInclusive-pass.ttl> ;
 ] .
