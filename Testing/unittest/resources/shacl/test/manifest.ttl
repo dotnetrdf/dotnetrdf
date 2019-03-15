@@ -47,4 +47,6 @@
 	mf:include <minInclusive-pass.ttl> ;
 	mf:include <maxExclusive-fail.ttl> ;
 	mf:include <maxExclusive-pass.ttl> ;
+	mf:include <maxInclusive-fail.ttl> ;
+	mf:include <maxInclusive-pass.ttl> ;
 ] .
