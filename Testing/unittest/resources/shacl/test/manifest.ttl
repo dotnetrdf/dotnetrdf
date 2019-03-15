@@ -39,4 +39,6 @@
 	mf:include <disjoint-pass.ttl> ;
 	mf:include <lessThan-fail.ttl> ;
 	mf:include <lessThan-pass.ttl> ;
+	mf:include <lessThanOrEquals-fail.ttl> ;
+	mf:include <lessThanOrEquals-pass.ttl> ;
 ] .
