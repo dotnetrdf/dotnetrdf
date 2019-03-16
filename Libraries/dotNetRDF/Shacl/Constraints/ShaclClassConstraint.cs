@@ -48,7 +48,7 @@ namespace VDS.RDF.Shacl
                 return node.Graph.GetTriplesWithSubjectPredicate(node, rdf_type).WithObject(type).Any();
             }
 
-            var classes = InferSubclasses(valueNodes.First().Graph, this);
+            var classes = InferSubclasses(focusNode.Graph, this);
             return valueNodes.All(node => classes.Any(type => hasType(node, type)));
         }
 
