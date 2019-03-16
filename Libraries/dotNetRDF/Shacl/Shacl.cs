@@ -73,6 +73,8 @@ namespace VDS.RDF.Shacl
         public static IUriNode QualifiedMaxCount => factory.CreateUriNode(UriFactory.Create($"{BaseUri}qualifiedMaxCount"));
         public static IUriNode QualifiedValueShape => factory.CreateUriNode(UriFactory.Create($"{BaseUri}qualifiedValueShape"));
         public static IUriNode QualifiedValueShapesDisjoint => factory.CreateUriNode(UriFactory.Create($"{BaseUri}qualifiedValueShapesDisjoint"));
+        public static IUriNode Closed => factory.CreateUriNode(UriFactory.Create($"{BaseUri}closed"));
+        public static IUriNode IgnoredProperties => factory.CreateUriNode(UriFactory.Create($"{BaseUri}ignoredProperties"));
 
         public static IUriNode NodeShape => factory.CreateUriNode(UriFactory.Create($"{BaseUri}NodeShape"));
         public static IUriNode PropertyShape => factory.CreateUriNode(UriFactory.Create($"{BaseUri}PropertyShape"));
@@ -144,6 +146,7 @@ namespace VDS.RDF.Shacl
                 yield return MaxInclusive;
                 yield return QualifiedMinCount;
                 yield return QualifiedMaxCount;
+                yield return Closed;
             }
         }
     }

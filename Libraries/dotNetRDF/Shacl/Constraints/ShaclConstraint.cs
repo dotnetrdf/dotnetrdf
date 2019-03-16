@@ -70,6 +70,7 @@ namespace VDS.RDF.Shacl
                 { Shacl.MaxInclusive, t => new ShaclMaxInclusiveConstraint(t.Object) },
                 { Shacl.QualifiedMinCount, t => new ShaclQualifiedMinCountConstraint(t.Subject, t.Object) },
                 { Shacl.QualifiedMaxCount, t => new ShaclQualifiedMaxCountConstraint(t.Subject, t.Object) },
+                { Shacl.Closed, t => new ShaclClosedConstraint(t.Subject, t.Object) },
            };
 
             return constraints[triple.Predicate](triple);

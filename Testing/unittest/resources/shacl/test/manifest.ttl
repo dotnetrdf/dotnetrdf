@@ -53,4 +53,6 @@
 	mf:include <qualifiedMinCount-pass.ttl> ;
 	mf:include <qualifiedMaxCount-fail.ttl> ;
 	mf:include <qualifiedMaxCount-pass.ttl> ;
+	mf:include <closed-fail.ttl> ;
+	mf:include <closed-pass.ttl> ;
 ] .
