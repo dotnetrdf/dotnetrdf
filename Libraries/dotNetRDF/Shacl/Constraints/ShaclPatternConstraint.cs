@@ -32,15 +32,15 @@ namespace VDS.RDF.Shacl
 
     internal class ShaclPatternConstraint : ShaclConstraint
     {
-        private readonly INode shape;
+        private readonly INode shapeNode;
 
-        public ShaclPatternConstraint(INode shape, INode node)
+        public ShaclPatternConstraint(INode shapeNode, INode node)
             : base(node)
         {
-            this.shape = shape;
+            this.shapeNode = shapeNode;
         }
 
-        public INode Flags => this.Graph.GetTriplesWithSubjectPredicate(this.shape, Shacl.Flags).Select(t => t.Object).SingleOrDefault();
+        public INode Flags => Shacl.Flags.ObjectsOf(shapeNode).SingleOrDefault();
 
         public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
         {

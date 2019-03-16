@@ -57,7 +57,7 @@ namespace VDS.RDF.Shacl
             {
                 yield return node;
 
-                foreach (var subclass in dataGraph.GetTriplesWithPredicateObject(rdfs_subClassOf, node).Select(t => t.Subject))
+                foreach (var subclass in rdfs_subClassOf.SubjectsOf(node))
                 {
                     foreach (var inferred in InferSubclasses(dataGraph, subclass, seen))
                     {

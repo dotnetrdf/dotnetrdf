@@ -71,8 +71,8 @@ namespace VDS.RDF.Shacl
                 }
 
                 IEnumerable<ShaclTarget> selectTargets(INode type) =>
-                    from t in this.Graph.GetTriplesWithSubjectPredicate(this, type)
-                    select ShaclTarget.Parse(type, t.Object);
+                    from target in type.ObjectsOf(this)
+                    select ShaclTarget.Parse(type, target);
 
                 var targets = Shacl.Targets.SelectMany(selectTargets);
 
@@ -87,7 +87,7 @@ namespace VDS.RDF.Shacl
 
         internal static ShaclShape Parse(INode node)
         {
-            if (node.Graph.GetTriplesWithSubjectPredicate(node, Shacl.Path).Any())
+            if (Shacl.Path.ObjectsOf(node).Any())
             {
                 return new ShaclPropertyShape(node);
             }

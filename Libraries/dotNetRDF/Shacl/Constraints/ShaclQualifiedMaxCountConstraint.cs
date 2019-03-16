@@ -28,49 +28,20 @@ namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
     using System.Linq;
-    using VDS.RDF.Parsing;
+    using VDS.RDF.Nodes;
 
-    internal class ShaclClassConstraint : ShaclConstraint
+    internal class ShaclQualifiedMaxCountConstraint : ShaclQualifiedConstraint
     {
-        private static readonly NodeFactory factory = new NodeFactory();
-        private static readonly INode rdfs_subClassOf = factory.CreateUriNode(UriFactory.Create("http://www.w3.org/2000/01/rdf-schema#subClassOf"));
-        private static readonly INode rdf_type = factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-
-        internal ShaclClassConstraint(INode node)
-            : base(node)
+        public ShaclQualifiedMaxCountConstraint(INode shapeNode, INode node)
+            : base(shapeNode, node)
         {
         }
 
         public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
         {
-            bool hasType(INode node, INode type)
-            {
-                return node.Graph.GetTriplesWithSubjectPredicate(node, rdf_type).WithObject(type).Any();
-            }
+            bool thereAreNoMoreThan(int x) => !DisjointConformingValueNodes(focusNode, valueNodes).Skip(x).Any();
 
-            var classes = InferSubclasses(valueNodes.First().Graph, this);
-            return valueNodes.All(node => classes.Any(type => hasType(node, type)));
-        }
-
-        private static IEnumerable<INode> InferSubclasses(IGraph dataGraph, INode node, HashSet<INode> seen = null)
-        {
-            if (seen is null)
-            {
-                seen = new HashSet<INode>();
-            }
-
-            if (seen.Add(node))
-            {
-                yield return node;
-
-                foreach (var subclass in rdfs_subClassOf.SubjectsOf(node))
-                {
-                    foreach (var inferred in InferSubclasses(dataGraph, subclass, seen))
-                    {
-                        yield return inferred;
-                    }
-                }
-            }
+            return thereAreNoMoreThan(ThereShouldBe);
         }
     }
 }

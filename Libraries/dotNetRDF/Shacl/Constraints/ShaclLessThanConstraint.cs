@@ -42,7 +42,7 @@ namespace VDS.RDF.Shacl
             try
             {
                 var comparer = new SparqlNodeComparer();
-                var values = focusNode.Graph.GetTriplesWithSubjectPredicate(focusNode, this).Select(t => t.Object);
+                var values = this.ObjectsOf(focusNode);
                 return valueNodes.All(valueNode => values.All(value => comparer.Compare(valueNode, value) == -1));
             }
             catch

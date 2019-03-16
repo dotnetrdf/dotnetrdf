@@ -29,31 +29,14 @@ namespace VDS.RDF.Shacl
     using System.Collections.Generic;
     using System.Linq;
 
-    public class ShaclPropertyShape : ShaclShape
+    internal static class ShaclExtensions
     {
-        internal ShaclPropertyShape(INode node)
-            : base(node)
-        {
-        }
+        internal static IEnumerable<INode> SubjectsOf(this INode predicate, INode @object) =>
+            from t in @object.Graph.GetTriplesWithPredicateObject(predicate, @object)
+            select t.Subject;
 
-        private ShaclPath Path
-        {
-            get
-            {
-                return Shacl.Path.ObjectsOf(this)
-                    .Select(ShaclPath.Parse)
-                    .Single();
-            }
-        }
-
-        internal IEnumerable<INode> SelectValueNodes(INode focusNode)
-        {
-            return Path.SelectValueNodes(focusNode);
-        }
-
-        internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
-        {
-            return valueNodes.All(valueNode => base.Validate(valueNode, SelectValueNodes(valueNode)));
-        }
+        internal static IEnumerable<INode> ObjectsOf(this INode predicate, INode subject) =>
+            from t in subject.Graph.GetTriplesWithSubjectPredicate(subject, predicate)
+            select t.Object;
     }
 }
