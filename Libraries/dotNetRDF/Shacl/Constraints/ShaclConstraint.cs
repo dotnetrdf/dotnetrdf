@@ -31,49 +31,54 @@ namespace VDS.RDF.Shacl
 
     internal abstract class ShaclConstraint : WrapperNode
     {
-        protected ShaclConstraint(INode node)
-            : base(node)
+        protected ShaclConstraint(ShaclShape shape, INode value)
+            : base(value)
         {
+            this.Shape = shape;
         }
 
-        public abstract bool Validate(INode focusNode, IEnumerable<INode> valueNodes);
+        internal abstract INode Component { get; }
 
-        internal static ShaclConstraint Parse(Triple triple)
+        protected ShaclShape Shape { get; private set; }
+
+        public abstract bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report);
+
+        internal static ShaclConstraint Parse(ShaclShape shape, INode type, INode value)
         {
-            var constraints = new Dictionary<INode, Func<Triple, ShaclConstraint>>()
+            var constraints = new Dictionary<INode, Func<INode, ShaclConstraint>>()
             {
-                { Shacl.Class, t => new ShaclClassConstraint(t.Object) },
-                { Shacl.Node, t => new ShaclNodeConstraint(t.Object) },
-                { Shacl.Property, t => new ShaclPropertyConstraint(t.Object) },
-                { Shacl.Datatype, t => new ShaclDatatypeConstraint(t.Object) },
-                { Shacl.And, t => new ShaclAndConstraint(t.Object) },
-                { Shacl.Or, t => new ShaclOrConstraint(t.Object) },
-                { Shacl.Not, t => new ShaclNotConstraint(t.Object) },
-                { Shacl.Xone, t => new ShaclXoneConstraint(t.Object) },
-                { Shacl.NodeKind, t => new ShaclNodeKindConstraint(t.Object) },
-                { Shacl.MinLength, t => new ShaclMinLengthConstraint(t.Object) },
-                { Shacl.MaxLength, t => new ShaclMaxLengthConstraint(t.Object) },
-                { Shacl.LanguageIn, t => new ShaclLanguageInConstraint(t.Object) },
-                { Shacl.In, t => new ShaclInConstraint(t.Object) },
-                { Shacl.MinCount, t => new ShaclMinCountConstraint(t.Object) },
-                { Shacl.MaxCount, t => new ShaclMaxCountConstraint(t.Object) },
-                { Shacl.UniqueLang, t => new ShaclUniqueLangConstraint(t.Object) },
-                { Shacl.HasValue, t => new ShaclHasValueConstraint(t.Object) },
-                { Shacl.Pattern, t => new ShaclPatternConstraint(t.Subject, t.Object) },
-                { Shacl.Equals, t => new ShaclEqualsConstraint(t.Subject, t.Object) },
-                { Shacl.Disjoint, t => new ShaclDisjointConstraint(t.Subject, t.Object) },
-                { Shacl.LessThan, t => new ShaclLessThanConstraint(t.Object) },
-                { Shacl.LessThanOrEquals, t => new ShaclLessThanOrEqualsConstraint(t.Object) },
-                { Shacl.MinExclusive, t => new ShaclMinExclusiveConstraint(t.Object) },
-                { Shacl.MinInclusive, t => new ShaclMinInclusiveConstraint(t.Object) },
-                { Shacl.MaxExclusive, t => new ShaclMaxExclusiveConstraint(t.Object) },
-                { Shacl.MaxInclusive, t => new ShaclMaxInclusiveConstraint(t.Object) },
-                { Shacl.QualifiedMinCount, t => new ShaclQualifiedMinCountConstraint(t.Subject, t.Object) },
-                { Shacl.QualifiedMaxCount, t => new ShaclQualifiedMaxCountConstraint(t.Subject, t.Object) },
-                { Shacl.Closed, t => new ShaclClosedConstraint(t.Subject, t.Object) },
+                { Shacl.Class, n => new ShaclClassConstraint(shape, n) },
+                { Shacl.Node, n => new ShaclNodeConstraint(shape, n) },
+                { Shacl.Property, n => new ShaclPropertyConstraint(shape, n) },
+                { Shacl.Datatype, n => new ShaclDatatypeConstraint(shape, n) },
+                { Shacl.And, n => new ShaclAndConstraint(shape, n) },
+                { Shacl.Or, n => new ShaclOrConstraint(shape, n) },
+                { Shacl.Not, n => new ShaclNotConstraint(shape, n) },
+                { Shacl.Xone, n => new ShaclXoneConstraint(shape, n) },
+                { Shacl.NodeKind, n => new ShaclNodeKindConstraint(shape, n) },
+                { Shacl.MinLength, n => new ShaclMinLengthConstraint(shape, n) },
+                { Shacl.MaxLength, n => new ShaclMaxLengthConstraint(shape, n) },
+                { Shacl.LanguageIn, n => new ShaclLanguageInConstraint(shape, n) },
+                { Shacl.In, n => new ShaclInConstraint(shape, n) },
+                { Shacl.MinCount, n => new ShaclMinCountConstraint(shape, n) },
+                { Shacl.MaxCount, n => new ShaclMaxCountConstraint(shape, n) },
+                { Shacl.UniqueLang, n => new ShaclUniqueLangConstraint(shape, n) },
+                { Shacl.HasValue, n => new ShaclHasValueConstraint(shape, n) },
+                { Shacl.Pattern, n => new ShaclPatternConstraint(shape, n) },
+                { Shacl.Equals, n => new ShaclEqualsConstraint(shape, n) },
+                { Shacl.Disjoint, n => new ShaclDisjointConstraint(shape, n) },
+                { Shacl.LessThan, n => new ShaclLessThanConstraint(shape, n) },
+                { Shacl.LessThanOrEquals, n => new ShaclLessThanOrEqualsConstraint(shape, n) },
+                { Shacl.MinExclusive, n => new ShaclMinExclusiveConstraint(shape, n) },
+                { Shacl.MinInclusive, n => new ShaclMinInclusiveConstraint(shape, n) },
+                { Shacl.MaxExclusive, n => new ShaclMaxExclusiveConstraint(shape, n) },
+                { Shacl.MaxInclusive, n => new ShaclMaxInclusiveConstraint(shape, n) },
+                { Shacl.QualifiedMinCount, n => new ShaclQualifiedMinCountConstraint(shape, n) },
+                { Shacl.QualifiedMaxCount, n => new ShaclQualifiedMaxCountConstraint(shape, n) },
+                { Shacl.Closed, n => new ShaclClosedConstraint(shape, n) },
            };
 
-            return constraints[triple.Predicate](triple);
+            return constraints[type](value);
         }
     }
 }

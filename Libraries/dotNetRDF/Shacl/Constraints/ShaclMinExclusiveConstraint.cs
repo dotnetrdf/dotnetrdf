@@ -32,12 +32,14 @@ namespace VDS.RDF.Shacl
 
     internal class ShaclMinExclusiveConstraint : ShaclConstraint
     {
-        public ShaclMinExclusiveConstraint(INode node)
-            : base(node)
+        public ShaclMinExclusiveConstraint(ShaclShape shape, INode node)
+            : base(shape, node)
         {
         }
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
+        internal override INode Component => Shacl.MinExclusiveConstraintComponent;
+
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
             try
             {

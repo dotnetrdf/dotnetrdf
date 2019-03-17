@@ -32,12 +32,14 @@ namespace VDS.RDF.Shacl
 
     internal class ShaclMaxExclusiveConstraint : ShaclConstraint
     {
-        public ShaclMaxExclusiveConstraint(INode node)
-            : base(node)
+        public ShaclMaxExclusiveConstraint(ShaclShape shape, INode node)
+            : base(shape, node)
         {
         }
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
+        internal override INode Component => Shacl.MaxExclusiveConstraintComponent;
+
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
             try
             {

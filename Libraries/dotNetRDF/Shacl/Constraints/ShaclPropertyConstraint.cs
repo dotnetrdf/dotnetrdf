@@ -30,14 +30,16 @@ namespace VDS.RDF.Shacl
 
     internal class ShaclPropertyConstraint : ShaclConstraint
     {
-        public ShaclPropertyConstraint(INode node)
-            : base(node)
+        public ShaclPropertyConstraint(ShaclShape shape, INode node)
+            : base(shape, node)
         {
         }
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
+        internal override INode Component => Shacl.PropertyConstraintComponent;
+
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
-            return new ShaclPropertyShape(this).Validate(focusNode, valueNodes);
+            return new ShaclPropertyShape(this).Validate(focusNode, valueNodes, report);
         }
     }
 }

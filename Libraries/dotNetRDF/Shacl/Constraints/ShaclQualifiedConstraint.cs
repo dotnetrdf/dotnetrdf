@@ -32,19 +32,16 @@ namespace VDS.RDF.Shacl
 
     internal abstract class ShaclQualifiedConstraint : ShaclConstraint
     {
-        private readonly INode shapeNode;
-
-        public ShaclQualifiedConstraint(INode shapeNode, INode node)
-            : base(node)
+        public ShaclQualifiedConstraint(ShaclShape shape, INode node)
+            : base(shape, node)
         {
-            this.shapeNode = shapeNode;
         }
 
         protected int ThereShouldBe => (int)this.AsValuedNode().AsInteger();
 
-        public IEnumerable<INode> DisjointConformingValueNodes(INode focusNode, IEnumerable<INode> valueNodes)
+        public IEnumerable<INode> DisjointConformingValueNodes(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
-            var currentShape = ShaclShape.Parse(shapeNode);
+            var currentShape = Shape;
 
             IEnumerable<ShaclShape> selectSiblingShapes()
             {
@@ -64,13 +61,14 @@ namespace VDS.RDF.Shacl
 
             var siblingShapes = isDisjoint ? selectSiblingShapes() : Enumerable.Empty<ShaclShape>();
 
+            // TODO: shouldn't pass report?
             return
-                from qualified in Shacl.QualifiedValueShape.ObjectsOf(shapeNode)
+                from qualified in Shacl.QualifiedValueShape.ObjectsOf(Shape)
                 let qualifiedShape = ShaclShape.Parse(qualified)
                 from valueNode in valueNodes
                 let v = valueNode.AsEnumerable()
-                let conformsToQualifiedShape = qualifiedShape.Validate(focusNode, v)
-                let doesNotConformToSiblingShapes = !siblingShapes.Any(siblingShape => siblingShape.Validate(focusNode, v))
+                let conformsToQualifiedShape = qualifiedShape.Validate(focusNode, v, report)
+                let doesNotConformToSiblingShapes = !siblingShapes.Any(siblingShape => siblingShape.Validate(focusNode, v, report))
                 where conformsToQualifiedShape && doesNotConformToSiblingShapes
                 select valueNode;
         }

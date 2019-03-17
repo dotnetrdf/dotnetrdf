@@ -32,15 +32,14 @@ namespace VDS.RDF.Shacl
 
     internal class ShaclClosedConstraint : ShaclConstraint
     {
-        private readonly INode shapeNode;
-
-        public ShaclClosedConstraint(INode shapeNode, INode node)
-            : base(node)
+        public ShaclClosedConstraint(ShaclShape shape, INode node)
+            : base(shape, node)
         {
-            this.shapeNode = shapeNode;
         }
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
+        internal override INode Component => Shacl.ClosedConstraintComponent;
+
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
             if (!this.AsValuedNode().AsBoolean())
             {
@@ -48,12 +47,12 @@ namespace VDS.RDF.Shacl
             }
 
             var ignoredProperties =
-                from ignoredProperty in Shacl.IgnoredProperties.ObjectsOf(shapeNode)
+                from ignoredProperty in Shacl.IgnoredProperties.ObjectsOf(Shape)
                 from member in Graph.GetListItems(ignoredProperty)
                 select member;
 
             var properties =
-                from parent in Shacl.Property.SubjectsOf(shapeNode)
+                from parent in Shacl.Property.SubjectsOf(Shape)
                 from property in Shacl.Property.ObjectsOf(parent)
                 from path in Shacl.Path.ObjectsOf(property)
                 select path;

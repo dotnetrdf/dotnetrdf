@@ -28,9 +28,12 @@ namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
     using System.Linq;
+    using VDS.RDF.Parsing;
 
     internal static class ShaclExtensions
     {
+        private static readonly INode rdf_type = new NodeFactory().CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+
         internal static IEnumerable<INode> SubjectsOf(this INode predicate, INode @object) =>
             from t in @object.Graph.GetTriplesWithPredicateObject(predicate, @object)
             select t.Subject;
@@ -38,5 +41,10 @@ namespace VDS.RDF.Shacl
         internal static IEnumerable<INode> ObjectsOf(this INode predicate, INode subject) =>
             from t in subject.Graph.GetTriplesWithSubjectPredicate(subject, predicate)
             select t.Object;
+
+        internal static bool IsInstance(this INode @class, INode node)
+        {
+            return node.Graph.GetTriplesWithSubjectPredicate(node, rdf_type).WithObject(@class).Any();
+        }
     }
 }

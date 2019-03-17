@@ -31,15 +31,14 @@ namespace VDS.RDF.Shacl
 
     internal class ShaclEqualsConstraint : ShaclConstraint
     {
-        private readonly INode shapeNode;
-
-        public ShaclEqualsConstraint(INode shapeNode, INode node)
-            : base(node)
+        public ShaclEqualsConstraint(ShaclShape shape, INode node)
+            : base(shape, node)
         {
-            this.shapeNode = shapeNode;
         }
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
+        internal override INode Component => Shacl.EqualsConstraintComponent;
+
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
             return
                 valueNodes.All(valueNode => HasObject(focusNode, valueNode))
@@ -53,14 +52,13 @@ namespace VDS.RDF.Shacl
 
         private IEnumerable<INode> SelectValues(INode focusNode)
         {
-            var shape = ShaclShape.Parse(this.shapeNode);
-            switch (shape)
+            switch (Shape)
             {
                 case ShaclPropertyShape propertyShape:
                     return propertyShape.SelectValueNodes(focusNode);
 
                 default:
-                    return shape.SelectFocusNodes(focusNode.Graph);
+                    return Shape.SelectFocusNodes(focusNode.Graph);
             }
         }
     }

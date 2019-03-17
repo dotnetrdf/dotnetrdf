@@ -31,12 +31,14 @@ namespace VDS.RDF.Shacl
 
     internal class ShaclNodeKindConstraint : ShaclConstraint
     {
-        public ShaclNodeKindConstraint(INode node)
-            : base(node)
+        public ShaclNodeKindConstraint(ShaclShape shape, INode node)
+            : base(shape, node)
         {
         }
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
+        internal override INode Component => Shacl.NodeKindConstraintComponent;
+
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
             var mappings = new Dictionary<NodeType, IEnumerable<INode>>
             {

@@ -31,14 +31,16 @@ namespace VDS.RDF.Shacl
 
     internal class ShaclAndConstraint : ShaclConstraint
     {
-        public ShaclAndConstraint(INode node)
-            : base(node)
+        public ShaclAndConstraint(ShaclShape shape, INode node)
+            : base(shape, node)
         {
         }
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
+        internal override INode Component => Shacl.AndConstraintComponent;
+
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
-            return this.Graph.GetListItems(this).Select(ShaclShape.Parse).All(shape => shape.Validate(focusNode, valueNodes));
+            return this.Graph.GetListItems(this).Select(ShaclShape.Parse).All(shape => shape.Validate(focusNode, valueNodes, report));
         }
     }
 }

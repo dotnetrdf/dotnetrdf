@@ -31,15 +31,17 @@ namespace VDS.RDF.Shacl
 
     internal class ShaclXoneConstraint : ShaclConstraint
     {
-        public ShaclXoneConstraint(INode node)
-            : base(node)
+        public ShaclXoneConstraint(ShaclShape shape, INode node)
+            : base(shape, node)
         {
         }
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
+        internal override INode Component => Shacl.XoneConstraintComponent;
+
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
             var shapes = this.Graph.GetListItems(this).Select(ShaclShape.Parse);
-            return shapes.TakeWhile((shape, index) => index < 2 && shape.Validate(focusNode, valueNodes)).Count() == 1;
+            return shapes.TakeWhile((shape, index) => index < 2 && shape.Validate(focusNode, valueNodes, report)).Count() == 1;
         }
     }
 }

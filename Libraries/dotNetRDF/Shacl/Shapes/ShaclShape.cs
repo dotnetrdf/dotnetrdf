@@ -42,7 +42,7 @@ namespace VDS.RDF.Shacl
             {
                 IEnumerable<ShaclConstraint> selectConstraints(INode parameter) =>
                     from t in this.Graph.GetTriplesWithSubjectPredicate(this, parameter)
-                    select ShaclConstraint.Parse(t);
+                    select ShaclConstraint.Parse(this, t.Predicate, t.Object);
 
                 return Shacl.Constraints.SelectMany(selectConstraints);
             }
@@ -97,9 +97,9 @@ namespace VDS.RDF.Shacl
             }
         }
 
-        internal bool Validate(IGraph dataGragh)
+        internal bool Validate(IGraph dataGragh, ShaclValidationReport report)
         {
-            return SelectFocusNodes(dataGragh).All(focusNode => this.Validate(focusNode, focusNode.AsEnumerable()));
+            return SelectFocusNodes(dataGragh).All(focusNode => this.Validate(focusNode, focusNode.AsEnumerable(), report));
         }
 
         internal IEnumerable<INode> SelectFocusNodes(IGraph dataGragh)
@@ -107,9 +107,9 @@ namespace VDS.RDF.Shacl
             return this.Targets.SelectMany(target => target.SelectFocusNodes(dataGragh));
         }
 
-        internal virtual bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
+        internal virtual bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
-            return this.Constraints.All(constraint => constraint.Validate(focusNode, valueNodes));
+            return this.Constraints.All(constraint => constraint.Validate(focusNode, valueNodes, report));
         }
     }
 }

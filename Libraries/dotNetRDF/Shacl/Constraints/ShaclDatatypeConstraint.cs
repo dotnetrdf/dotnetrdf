@@ -31,12 +31,14 @@ namespace VDS.RDF.Shacl
 
     internal class ShaclDatatypeConstraint : ShaclConstraint
     {
-        public ShaclDatatypeConstraint(INode node)
-            : base(node)
+        public ShaclDatatypeConstraint(ShaclShape shape, INode node)
+            : base(shape, node)
         {
         }
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
+        internal override INode Component => Shacl.DatatypeConstraintComponent;
+
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
             return valueNodes.All(node => node.NodeType == NodeType.Literal && EqualityHelper.AreUrisEqual(((ILiteralNode)node).DataType, ((IUriNode)this).Uri));
         }

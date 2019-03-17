@@ -28,18 +28,19 @@ namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
     using System.Linq;
-    using VDS.RDF.Nodes;
 
     internal class ShaclQualifiedMaxCountConstraint : ShaclQualifiedConstraint
     {
-        public ShaclQualifiedMaxCountConstraint(INode shapeNode, INode node)
-            : base(shapeNode, node)
+        public ShaclQualifiedMaxCountConstraint(ShaclShape shape, INode node)
+            : base(shape, node)
         {
         }
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
+        internal override INode Component => Shacl.QualifiedMaxCountConstraintComponent;
+
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
-            bool thereAreNoMoreThan(int x) => !DisjointConformingValueNodes(focusNode, valueNodes).Skip(x).Any();
+            bool thereAreNoMoreThan(int x) => !DisjointConformingValueNodes(focusNode, valueNodes, report).Skip(x).Any();
 
             return thereAreNoMoreThan(ThereShouldBe);
         }

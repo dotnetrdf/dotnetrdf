@@ -32,17 +32,16 @@ namespace VDS.RDF.Shacl
 
     internal class ShaclPatternConstraint : ShaclConstraint
     {
-        private readonly INode shapeNode;
-
-        public ShaclPatternConstraint(INode shapeNode, INode node)
-            : base(node)
+        public ShaclPatternConstraint(ShaclShape shape, INode node)
+            : base(shape, node)
         {
-            this.shapeNode = shapeNode;
         }
 
-        public INode Flags => Shacl.Flags.ObjectsOf(shapeNode).SingleOrDefault();
+        public INode Flags => Shacl.Flags.ObjectsOf(Shape).SingleOrDefault();
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
+        internal override INode Component => Shacl.PatternConstraintComponent;
+
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
             var query = new SparqlParameterizedString(@"
 ASK {

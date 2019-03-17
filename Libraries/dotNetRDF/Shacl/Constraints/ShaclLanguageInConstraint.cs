@@ -33,12 +33,14 @@ namespace VDS.RDF.Shacl
 
     internal class ShaclLanguageInConstraint : ShaclConstraint
     {
-        public ShaclLanguageInConstraint(INode node)
-            : base(node)
+        public ShaclLanguageInConstraint(ShaclShape shape, INode node)
+            : base(shape, node)
         {
         }
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
+        internal override INode Component => Shacl.LanguageInConstraintComponent;
+
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
             var items = this.Graph.GetListItems(this);
             return valueNodes.All(node => items.Any(item => LanguageIn(node, item)));

@@ -32,12 +32,14 @@ namespace VDS.RDF.Shacl
 
     internal class ShaclUniqueLangConstraint : ShaclConstraint
     {
-        public ShaclUniqueLangConstraint(INode node)
-            : base(node)
+        public ShaclUniqueLangConstraint(ShaclShape shape, INode node)
+            : base(shape, node)
         {
         }
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
+        internal override INode Component => Shacl.UniqueLangConstraintComponent;
+
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
             return !this.AsValuedNode().AsBoolean() || !valueNodes.GroupBy(node => ((ILiteralNode)node).Language).Any(group => group.Count() > 1);
         }

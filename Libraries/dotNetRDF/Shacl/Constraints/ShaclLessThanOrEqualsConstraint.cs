@@ -32,12 +32,14 @@ namespace VDS.RDF.Shacl
 
     internal class ShaclLessThanOrEqualsConstraint : ShaclConstraint
     {
-        public ShaclLessThanOrEqualsConstraint(INode node)
-            : base(node)
+        public ShaclLessThanOrEqualsConstraint(ShaclShape shape, INode node)
+            : base(shape, node)
         {
         }
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
+        internal override INode Component => Shacl.LessThanOrEqualsConstraintComponent;
+
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
             try
             {

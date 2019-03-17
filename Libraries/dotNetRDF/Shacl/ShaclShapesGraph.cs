@@ -40,7 +40,7 @@ namespace VDS.RDF.Shacl
         public IEnumerable<ShaclShape> TargetedShapes
         {
             get
-            { 
+            {
                 var results = (SparqlResultSet)this.ExecuteQuery(@"
 PREFIX : <http://www.w3.org/ns/shacl#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -70,11 +70,15 @@ SELECT DISTINCT ?shape {
             }
         }
 
-        public bool Validate(IGraph dataGragh)
+        public bool Validate(IGraph dataGragh, out ShaclValidationReport report)
         {
+            var g = new Graph();
+            g.NamespaceMap.AddNamespace("sh", UriFactory.Create(Shacl.BaseUri));
+            report = ShaclValidationReport.Create(g);
+
             foreach (var targetedShape in this.TargetedShapes)
             {
-                if (!targetedShape.Validate(dataGragh))
+                if (!targetedShape.Validate(dataGragh, report))
                 {
                     return false;
                 }

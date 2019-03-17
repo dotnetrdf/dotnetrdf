@@ -36,12 +36,14 @@ namespace VDS.RDF.Shacl
         private static readonly INode rdfs_subClassOf = factory.CreateUriNode(UriFactory.Create("http://www.w3.org/2000/01/rdf-schema#subClassOf"));
         private static readonly INode rdf_type = factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
 
-        internal ShaclClassConstraint(INode node)
-            : base(node)
+        internal ShaclClassConstraint(ShaclShape shape, INode node)
+            : base(shape, node)
         {
         }
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
+        internal override INode Component => Shacl.ClassConstraintComponent;
+
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
             bool hasType(INode node, INode type)
             {

@@ -32,12 +32,14 @@ namespace VDS.RDF.Shacl
 
     internal class ShaclMaxCountConstraint : ShaclConstraint
     {
-        public ShaclMaxCountConstraint(INode node)
-            : base(node)
+        public ShaclMaxCountConstraint(ShaclShape shape, INode node)
+            : base(shape, node)
         {
         }
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
+        internal override INode Component => Shacl.MaxCountConstraintComponent;
+
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
             return !valueNodes.Skip((int)this.AsValuedNode().AsInteger()).Any();
         }

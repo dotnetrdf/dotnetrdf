@@ -31,19 +31,21 @@ namespace VDS.RDF.Shacl
 
     internal class ShaclQualifiedMinCountConstraint : ShaclQualifiedConstraint
     {
-        public ShaclQualifiedMinCountConstraint(INode shapeNode, INode node)
-            : base(shapeNode, node)
+        public ShaclQualifiedMinCountConstraint(ShaclShape shape, INode node)
+            : base(shape, node)
         {
         }
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
+        internal override INode Component => Shacl.QualifiedMinCountConstraintComponent;
+
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
             if (ThereShouldBe == 0)
             {
                 return true;
             }
 
-            bool thereAreNoLessThan(int x) => DisjointConformingValueNodes(focusNode, valueNodes).Skip(x - 1).Any();
+            bool thereAreNoLessThan(int x) => DisjointConformingValueNodes(focusNode, valueNodes, report).Skip(x - 1).Any();
 
             return thereAreNoLessThan(ThereShouldBe);
         }

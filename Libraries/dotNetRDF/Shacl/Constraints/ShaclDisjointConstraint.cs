@@ -31,15 +31,14 @@ namespace VDS.RDF.Shacl
 
     internal class ShaclDisjointConstraint : ShaclConstraint
     {
-        private readonly INode shapeNode;
-
-        public ShaclDisjointConstraint(INode shapeNode, INode node)
-            : base(node)
+        public ShaclDisjointConstraint(ShaclShape shape, INode node)
+            : base(shape, node)
         {
-            this.shapeNode = shapeNode;
         }
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
+        internal override INode Component => Shacl.DisjointConstraintComponent;
+
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
             return !valueNodes.Any(valueNode => HasObject(focusNode, valueNode));
         }

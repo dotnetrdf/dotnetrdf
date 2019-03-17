@@ -27,21 +27,24 @@
 namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
-    using System.Linq;
+    using VDS.RDF.Parsing;
 
-    internal class ShaclInConstraint : ShaclConstraint
+    public class ShaclValidationReport : WrapperNode
     {
-        public ShaclInConstraint(ShaclShape shape, INode node)
-            : base(shape, node)
+        private static readonly INode rdf_type = new NodeFactory().CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+
+        private ShaclValidationReport(INode node)
+            : base(node)
         {
         }
 
-        internal override INode Component => Shacl.InConstraintComponent;
+        internal ICollection<ShaclValidationResult> Results => new ShaclValidationResultCollection(this);
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
+        internal static ShaclValidationReport Create(IGraph g)
         {
-            var items = this.Graph.GetListItems(this);
-            return valueNodes.All(node => items.Contains(node));
+            var report = new ShaclValidationReport(g.CreateBlankNode());
+            g.Assert(report, rdf_type, Shacl.ValidationReport);
+            return report;
         }
     }
 }

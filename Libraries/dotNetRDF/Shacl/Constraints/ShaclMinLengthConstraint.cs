@@ -32,12 +32,14 @@ namespace VDS.RDF.Shacl
 
     internal class ShaclMinLengthConstraint : ShaclConstraint
     {
-        public ShaclMinLengthConstraint(INode node)
-            : base(node)
+        public ShaclMinLengthConstraint(ShaclShape shape, INode node)
+            : base(shape, node)
         {
         }
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes)
+        internal override INode Component => Shacl.MinLengthConstraintComponent;
+
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
             return valueNodes.All(node => node.NodeType != NodeType.Blank && node.ToString().Length >= this.AsValuedNode().AsInteger());
         }

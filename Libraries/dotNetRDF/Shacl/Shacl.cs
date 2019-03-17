@@ -31,69 +31,187 @@ namespace VDS.RDF.Shacl
 
     public class Shacl
     {
+        public const string BaseUri = "http://www.w3.org/ns/shacl#";
         private static NodeFactory factory = new NodeFactory();
 
-        public const string BaseUri = "http://www.w3.org/ns/shacl#";
+        public static IUriNode Path => ShaclNode("path");
 
-        public static IUriNode Path => factory.CreateUriNode(UriFactory.Create($"{BaseUri}path"));
+        public static IUriNode Conforms => ShaclNode("conforms");
 
-        public static IUriNode TargetClass => factory.CreateUriNode(UriFactory.Create($"{BaseUri}targetClass"));
-        public static IUriNode TargetNode => factory.CreateUriNode(UriFactory.Create($"{BaseUri}targetNode"));
-        public static IUriNode TargetObjectsOf => factory.CreateUriNode(UriFactory.Create($"{BaseUri}targetObjectsOf"));
-        public static IUriNode TargetSubjectsOf => factory.CreateUriNode(UriFactory.Create($"{BaseUri}targetSubjectsOf"));
+        #region Targets
+        public static IUriNode TargetClass => ShaclNode("targetClass");
 
-        public static IUriNode Class => factory.CreateUriNode(UriFactory.Create($"{BaseUri}class"));
-        public static IUriNode Node => factory.CreateUriNode(UriFactory.Create($"{BaseUri}node"));
-        public static IUriNode Property => factory.CreateUriNode(UriFactory.Create($"{BaseUri}property"));
-        public static IUriNode Datatype => factory.CreateUriNode(UriFactory.Create($"{BaseUri}datatype"));
-        public static IUriNode And => factory.CreateUriNode(UriFactory.Create($"{BaseUri}and"));
-        public static IUriNode Or => factory.CreateUriNode(UriFactory.Create($"{BaseUri}or"));
-        public static IUriNode Not => factory.CreateUriNode(UriFactory.Create($"{BaseUri}not"));
-        public static IUriNode Xone => factory.CreateUriNode(UriFactory.Create($"{BaseUri}xone"));
-        public static IUriNode NodeKind => factory.CreateUriNode(UriFactory.Create($"{BaseUri}nodeKind"));
-        public static IUriNode MinLength => factory.CreateUriNode(UriFactory.Create($"{BaseUri}minLength"));
-        public static IUriNode MaxLength => factory.CreateUriNode(UriFactory.Create($"{BaseUri}maxLength"));
-        public static IUriNode LanguageIn => factory.CreateUriNode(UriFactory.Create($"{BaseUri}languageIn"));
-        public static IUriNode In => factory.CreateUriNode(UriFactory.Create($"{BaseUri}in"));
-        public static IUriNode MinCount => factory.CreateUriNode(UriFactory.Create($"{BaseUri}minCount"));
-        public static IUriNode MaxCount => factory.CreateUriNode(UriFactory.Create($"{BaseUri}maxCount"));
-        public static IUriNode UniqueLang => factory.CreateUriNode(UriFactory.Create($"{BaseUri}uniqueLang"));
-        public static IUriNode HasValue => factory.CreateUriNode(UriFactory.Create($"{BaseUri}hasValue"));
-        public static IUriNode Pattern => factory.CreateUriNode(UriFactory.Create($"{BaseUri}pattern"));
-        public static IUriNode Flags => factory.CreateUriNode(UriFactory.Create($"{BaseUri}flags"));
-        public static IUriNode Equals => factory.CreateUriNode(UriFactory.Create($"{BaseUri}equals"));
-        public static IUriNode Disjoint => factory.CreateUriNode(UriFactory.Create($"{BaseUri}disjoint"));
-        public static IUriNode LessThan => factory.CreateUriNode(UriFactory.Create($"{BaseUri}lessThan"));
-        public static IUriNode LessThanOrEquals => factory.CreateUriNode(UriFactory.Create($"{BaseUri}lessThanOrEquals"));
-        public static IUriNode MinExclusive => factory.CreateUriNode(UriFactory.Create($"{BaseUri}minExclusive"));
-        public static IUriNode MinInclusive => factory.CreateUriNode(UriFactory.Create($"{BaseUri}minInclusive"));
-        public static IUriNode MaxExclusive => factory.CreateUriNode(UriFactory.Create($"{BaseUri}maxExclusive"));
-        public static IUriNode MaxInclusive => factory.CreateUriNode(UriFactory.Create($"{BaseUri}maxInclusive"));
-        public static IUriNode QualifiedMinCount => factory.CreateUriNode(UriFactory.Create($"{BaseUri}qualifiedMinCount"));
-        public static IUriNode QualifiedMaxCount => factory.CreateUriNode(UriFactory.Create($"{BaseUri}qualifiedMaxCount"));
-        public static IUriNode QualifiedValueShape => factory.CreateUriNode(UriFactory.Create($"{BaseUri}qualifiedValueShape"));
-        public static IUriNode QualifiedValueShapesDisjoint => factory.CreateUriNode(UriFactory.Create($"{BaseUri}qualifiedValueShapesDisjoint"));
-        public static IUriNode Closed => factory.CreateUriNode(UriFactory.Create($"{BaseUri}closed"));
-        public static IUriNode IgnoredProperties => factory.CreateUriNode(UriFactory.Create($"{BaseUri}ignoredProperties"));
+        public static IUriNode TargetNode => ShaclNode("targetNode");
 
-        public static IUriNode NodeShape => factory.CreateUriNode(UriFactory.Create($"{BaseUri}NodeShape"));
-        public static IUriNode PropertyShape => factory.CreateUriNode(UriFactory.Create($"{BaseUri}PropertyShape"));
+        public static IUriNode TargetObjectsOf => ShaclNode("targetObjectsOf");
 
-        public static IUriNode AlternativePath => factory.CreateUriNode(UriFactory.Create($"{BaseUri}alternativePath"));
-        public static IUriNode InversePath => factory.CreateUriNode(UriFactory.Create($"{BaseUri}inversePath"));
-        public static IUriNode OneOrMorePath => factory.CreateUriNode(UriFactory.Create($"{BaseUri}oneOrMorePath"));
-        public static IUriNode ZeroOrMorePath => factory.CreateUriNode(UriFactory.Create($"{BaseUri}zeroOrMorePath"));
-        public static IUriNode ZeroOrOnePath => factory.CreateUriNode(UriFactory.Create($"{BaseUri}zeroOrOnePath"));
+        public static IUriNode TargetSubjectsOf => ShaclNode("targetSubjectsOf");
+        #endregion
+        #region Constraints
+        public static IUriNode Class => ShaclNode("class");
 
-        public static IUriNode BlankNode => factory.CreateUriNode(UriFactory.Create($"{BaseUri}BlankNode"));
-        public static IUriNode Iri => factory.CreateUriNode(UriFactory.Create($"{BaseUri}IRI"));
-        public static IUriNode Literal => factory.CreateUriNode(UriFactory.Create($"{BaseUri}Literal"));
-        public static IUriNode BlankNodeOrIri => factory.CreateUriNode(UriFactory.Create($"{BaseUri}BlankNodeOrIRI"));
-        public static IUriNode BlankNodeOrLiteral => factory.CreateUriNode(UriFactory.Create($"{BaseUri}BlankNodeOrLiteral"));
-        public static IUriNode IriOrLiteral => factory.CreateUriNode(UriFactory.Create($"{BaseUri}IRIOrLiteral"));
+        public static IUriNode Node => ShaclNode("node");
 
-        public static IUriNode Conforms => factory.CreateUriNode(UriFactory.Create($"{BaseUri}conforms"));
+        public static IUriNode Property => ShaclNode("property");
 
+        public static IUriNode Datatype => ShaclNode("datatype");
+
+        public static IUriNode And => ShaclNode("and");
+
+        public static IUriNode Or => ShaclNode("or");
+
+        public static IUriNode Not => ShaclNode("not");
+
+        public static IUriNode Xone => ShaclNode("xone");
+
+        public static IUriNode NodeKind => ShaclNode("nodeKind");
+
+        public static IUriNode MinLength => ShaclNode("minLength");
+
+        public static IUriNode MaxLength => ShaclNode("maxLength");
+
+        public static IUriNode LanguageIn => ShaclNode("languageIn");
+
+        public static IUriNode In => ShaclNode("in");
+
+        public static IUriNode MinCount => ShaclNode("minCount");
+
+        public static IUriNode MaxCount => ShaclNode("maxCount");
+
+        public static IUriNode UniqueLang => ShaclNode("uniqueLang");
+
+        public static IUriNode HasValue => ShaclNode("hasValue");
+
+        public static IUriNode Pattern => ShaclNode("pattern");
+
+        public static IUriNode Flags => ShaclNode("flags");
+
+        public static IUriNode Equals => ShaclNode("equals");
+
+        public static IUriNode Disjoint => ShaclNode("disjoint");
+
+        public static IUriNode LessThan => ShaclNode("lessThan");
+
+        public static IUriNode LessThanOrEquals => ShaclNode("lessThanOrEquals");
+
+        public static IUriNode MinExclusive => ShaclNode("minExclusive");
+
+        public static IUriNode MinInclusive => ShaclNode("minInclusive");
+
+        public static IUriNode MaxExclusive => ShaclNode("maxExclusive");
+
+        public static IUriNode MaxInclusive => ShaclNode("maxInclusive");
+
+        public static IUriNode QualifiedMinCount => ShaclNode("qualifiedMinCount");
+
+        public static IUriNode QualifiedMaxCount => ShaclNode("qualifiedMaxCount");
+
+        public static IUriNode QualifiedValueShape => ShaclNode("qualifiedValueShape");
+
+        public static IUriNode QualifiedValueShapesDisjoint => ShaclNode("qualifiedValueShapesDisjoint");
+
+        public static IUriNode Closed => ShaclNode("closed");
+
+        public static IUriNode IgnoredProperties => ShaclNode("ignoredProperties");
+        #endregion
+        #region Constraint components
+        public static IUriNode ClassConstraintComponent => ShaclNode("ClassConstraintComponent");
+
+        public static IUriNode NodeConstraintComponent => ShaclNode("NodeConstraintComponent");
+
+        public static IUriNode PropertyConstraintComponent => ShaclNode("PropertyConstraintComponent");
+
+        public static IUriNode DatatypeConstraintComponent => ShaclNode("DatatypeConstraintComponent");
+
+        public static IUriNode AndConstraintComponent => ShaclNode("AndConstraintComponent");
+
+        public static IUriNode OrConstraintComponent => ShaclNode("OrConstraintComponent");
+
+        public static IUriNode NotConstraintComponent => ShaclNode("NotConstraintComponent");
+
+        public static IUriNode XoneConstraintComponent => ShaclNode("XoneConstraintComponent");
+
+        public static IUriNode NodeKindConstraintComponent => ShaclNode("NodeKindConstraintComponent");
+
+        public static IUriNode MinLengthConstraintComponent => ShaclNode("MinLengthConstraintComponent");
+
+        public static IUriNode MaxLengthConstraintComponent => ShaclNode("MaxLengthConstraintComponent");
+
+        public static IUriNode LanguageInConstraintComponent => ShaclNode("LanguageInConstraintComponent");
+
+        public static IUriNode InConstraintComponent => ShaclNode("InConstraintComponent");
+
+        public static IUriNode MinCountConstraintComponent => ShaclNode("MinCountConstraintComponent");
+
+        public static IUriNode MaxCountConstraintComponent => ShaclNode("MaxCountConstraintComponent");
+
+        public static IUriNode UniqueLangConstraintComponent => ShaclNode("UniqueLangConstraintComponent");
+
+        public static IUriNode HasValueConstraintComponent => ShaclNode("HasValueConstraintComponent");
+
+        public static IUriNode PatternConstraintComponent => ShaclNode("PatternConstraintComponent");
+
+        public static IUriNode EqualsConstraintComponent => ShaclNode("EqualsConstraintComponent");
+
+        public static IUriNode DisjointConstraintComponent => ShaclNode("DisjointConstraintComponent");
+
+        public static IUriNode LessThanConstraintComponent => ShaclNode("LessThanConstraintComponent");
+
+        public static IUriNode LessThanOrEqualsConstraintComponent => ShaclNode("LessThanOrEqualsConstraintComponent");
+
+        public static IUriNode MinExclusiveConstraintComponent => ShaclNode("MinExclusiveConstraintComponent");
+
+        public static IUriNode MinInclusiveConstraintComponent => ShaclNode("MinInclusiveConstraintComponent");
+
+        public static IUriNode MaxExclusiveConstraintComponent => ShaclNode("MaxExclusiveConstraintComponent");
+
+        public static IUriNode MaxInclusiveConstraintComponent => ShaclNode("MaxInclusiveConstraintComponent");
+
+        public static IUriNode QualifiedMinCountConstraintComponent => ShaclNode("QualifiedMinCountConstraintComponent");
+
+        public static IUriNode QualifiedMaxCountConstraintComponent => ShaclNode("QualifiedMaxCountConstraintComponent");
+
+        public static IUriNode ClosedConstraintComponent => ShaclNode("ClosedConstraintComponent");
+        #endregion
+        #region Shapes
+        public static IUriNode NodeShape => ShaclNode("NodeShape");
+
+        public static IUriNode PropertyShape => ShaclNode("PropertyShape");
+        #endregion
+        #region Paths
+        public static IUriNode AlternativePath => ShaclNode("alternativePath");
+
+        public static IUriNode InversePath => ShaclNode("inversePath");
+
+        public static IUriNode OneOrMorePath => ShaclNode("oneOrMorePath");
+
+        public static IUriNode ZeroOrMorePath => ShaclNode("zeroOrMorePath");
+
+        public static IUriNode ZeroOrOnePath => ShaclNode("zeroOrOnePath");
+        #endregion
+        #region Node kinds
+        public static IUriNode BlankNode => ShaclNode("BlankNode");
+
+        public static IUriNode Iri => ShaclNode("IRI");
+
+        public static IUriNode Literal => ShaclNode("Literal");
+
+        public static IUriNode BlankNodeOrIri => ShaclNode("BlankNodeOrIRI");
+
+        public static IUriNode BlankNodeOrLiteral => ShaclNode("BlankNodeOrLiteral");
+
+        public static IUriNode IriOrLiteral => ShaclNode("IRIOrLiteral");
+        #endregion
+        #region Report
+        public static IUriNode Result => ShaclNode("result");
+        public static IUriNode ValidationReport => ShaclNode("ValidationReport");
+        public static IUriNode ValidationResult => ShaclNode("ValidationResult");
+        public static IUriNode FocusNode => ShaclNode("focusNode");
+        public static IUriNode Value => ShaclNode("value");
+        public static IUriNode SourceShape => ShaclNode("sourceShape");
+        public static IUriNode SourceConstraintComponent => ShaclNode("sourceConstraintComponent");
+        #endregion
+        #region Collections
         public static IEnumerable<IUriNode> Shapes
         {
             get
@@ -149,5 +267,8 @@ namespace VDS.RDF.Shacl
                 yield return Closed;
             }
         }
+        #endregion
+
+        private static IUriNode ShaclNode(string name) => factory.CreateUriNode(UriFactory.Create($"{BaseUri}{name}"));
     }
 }
