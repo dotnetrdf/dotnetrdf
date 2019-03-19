@@ -61,8 +61,6 @@ SELECT DISTINCT ?shape {
             ?shape a rdfs:Class, ?class.
         }
     }
-
-    MINUS { ?shape :deactivated true . }
 }
 ");
 

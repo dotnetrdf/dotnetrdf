@@ -31,11 +31,45 @@ namespace VDS.RDF.Shacl
 
     internal class ShaclValidationResult : WrapperNode
     {
-        private static readonly INode rdf_type = new NodeFactory().CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-
         private ShaclValidationResult(INode node)
             : base(node)
         {
+        }
+
+        internal INode Type
+        {
+            get
+            {
+                return rdf_type.ObjectsOf(this).SingleOrDefault();
+            }
+
+            set
+            {
+                foreach (var type in rdf_type.ObjectsOf(this).ToList())
+                {
+                    Graph.Retract(this, rdf_type, type);
+                }
+
+                Graph.Assert(this, rdf_type, value);
+            }
+        }
+
+        internal INode Severity
+        {
+            get
+            {
+                return Shacl.ResultSeverity.ObjectsOf(this).SingleOrDefault();
+            }
+
+            set
+            {
+                foreach (var severity in Shacl.ResultSeverity.ObjectsOf(this).ToList())
+                {
+                    Graph.Retract(this, Shacl.ResultSeverity, severity);
+                }
+
+                Graph.Assert(this, Shacl.ResultSeverity, value);
+            }
         }
 
         internal INode FocusNode
@@ -47,7 +81,11 @@ namespace VDS.RDF.Shacl
 
             set
             {
-                Graph.Retract(this, Shacl.FocusNode, FocusNode ?? Graph.CreateVariableNode("FocusNode"));
+                foreach (var focusNode in Shacl.FocusNode.ObjectsOf(this).ToList())
+                {
+                    Graph.Retract(this, Shacl.FocusNode, focusNode);
+                }
+
                 Graph.Assert(this, Shacl.FocusNode, value);
             }
         }
@@ -61,7 +99,11 @@ namespace VDS.RDF.Shacl
 
             set
             {
-                Graph.Retract(this, Shacl.Value, Value ?? Graph.CreateVariableNode("Value"));
+                foreach (var valueNode in Shacl.Value.ObjectsOf(this).ToList())
+                {
+                    Graph.Retract(this, Shacl.Value, valueNode);
+                }
+
                 Graph.Assert(this, Shacl.Value, value);
             }
         }
@@ -75,7 +117,11 @@ namespace VDS.RDF.Shacl
 
             set
             {
-                Graph.Retract(this, Shacl.SourceShape, SourceShape ?? Graph.CreateVariableNode("SourceShape"));
+                foreach (var sourceShape in Shacl.SourceShape.ObjectsOf(this).ToList())
+                {
+                    Graph.Retract(this, Shacl.SourceShape, sourceShape);
+                }
+
                 Graph.Assert(this, Shacl.SourceShape, value);
             }
         }
@@ -89,15 +135,41 @@ namespace VDS.RDF.Shacl
 
             set
             {
-                Graph.Retract(this, Shacl.SourceConstraintComponent, SourceConstraintComponent ?? Graph.CreateVariableNode("SourceConstraintComponent"));
+                foreach (var sourceConstraintComponent in Shacl.SourceConstraintComponent.ObjectsOf(this).ToList())
+                {
+                    Graph.Retract(this, Shacl.SourceConstraintComponent, sourceConstraintComponent);
+                }
+
                 Graph.Assert(this, Shacl.SourceConstraintComponent, value);
             }
         }
 
+        internal ShaclPath ResultPath
+        {
+            get
+            {
+                return Shacl.ResultPath.ObjectsOf(this).Select(ShaclPath.Parse).SingleOrDefault();
+            }
+
+            set
+            {
+                foreach (var sourceConstraintComponent in Shacl.ResultPath.ObjectsOf(this).ToList())
+                {
+                    Graph.Retract(this, Shacl.ResultPath, sourceConstraintComponent);
+                }
+
+                Graph.Assert(this, Shacl.ResultPath, value);
+            }
+        }
+
+        private INode rdf_type => Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+
         internal static ShaclValidationResult Create(IGraph g)
         {
             var report = new ShaclValidationResult(g.CreateBlankNode());
-            g.Assert(report, rdf_type, Shacl.ValidationResult);
+            report.Type = Shacl.ValidationResult;
+            report.Severity = Shacl.Violation;
+
             return report;
         }
 

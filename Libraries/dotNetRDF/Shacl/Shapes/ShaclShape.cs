@@ -28,6 +28,7 @@ namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
     using System.Linq;
+    using VDS.RDF.Nodes;
 
     public abstract class ShaclShape : WrapperNode
     {
@@ -85,6 +86,8 @@ namespace VDS.RDF.Shacl
             }
         }
 
+        protected bool Deactivated => Shacl.Deactivated.ObjectsOf(this).SingleOrDefault()?.AsValuedNode().AsBoolean() ?? false;
+
         internal static ShaclShape Parse(INode node)
         {
             if (Shacl.Path.ObjectsOf(node).Any())
@@ -99,7 +102,9 @@ namespace VDS.RDF.Shacl
 
         internal bool Validate(IGraph dataGragh, ShaclValidationReport report)
         {
-            return SelectFocusNodes(dataGragh).All(focusNode => this.Validate(focusNode, focusNode.AsEnumerable(), report));
+            return SelectFocusNodes(dataGragh)
+                .Select(focusNode => Validate(focusNode, focusNode.AsEnumerable(), report))
+                .Aggregate(true, (a, b) => a && b);
         }
 
         internal IEnumerable<INode> SelectFocusNodes(IGraph dataGragh)
@@ -107,9 +112,26 @@ namespace VDS.RDF.Shacl
             return this.Targets.SelectMany(target => target.SelectFocusNodes(dataGragh));
         }
 
-        internal virtual bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
+        internal bool Validate(INode focusNode, ShaclValidationReport report = null)
         {
-            return this.Constraints.All(constraint => constraint.Validate(focusNode, valueNodes, report));
+            return Validate(focusNode, focusNode.AsEnumerable(), report);
+        }
+
+        internal bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report = null)
+        {
+            if (Deactivated)
+            {
+                return true;
+            }
+
+            return ValidateInternal(focusNode, valueNodes, report);
+        }
+
+        internal virtual bool ValidateInternal(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
+        {
+            return Constraints
+                .Select(constraint => constraint.Validate(focusNode, valueNodes, report))
+                .Aggregate(true, (a, b) => a && b);
         }
     }
 }

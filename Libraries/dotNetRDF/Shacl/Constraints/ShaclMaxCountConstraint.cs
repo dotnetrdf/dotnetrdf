@@ -41,7 +41,9 @@ namespace VDS.RDF.Shacl
 
         public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
-            return !valueNodes.Skip((int)this.AsValuedNode().AsInteger()).Any();
+            var invalidValues = valueNodes.Skip((int)this.AsValuedNode().AsInteger());
+
+            return Y(focusNode, invalidValues, report);
         }
     }
 }

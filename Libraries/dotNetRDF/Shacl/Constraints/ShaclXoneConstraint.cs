@@ -40,8 +40,18 @@ namespace VDS.RDF.Shacl
 
         public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
-            var shapes = this.Graph.GetListItems(this).Select(ShaclShape.Parse);
-            return shapes.TakeWhile((shape, index) => index < 2 && shape.Validate(focusNode, valueNodes, report)).Count() == 1;
+            var invalidValues =
+                from valueNode in valueNodes
+                from member in this.Graph.GetListItems(this)
+                let shape = ShaclShape.Parse(member)
+                group shape.Validate(valueNode) by valueNode into results
+                let valid = from result in results
+                         where result
+                         select result
+                where !valid.Any() || valid.Skip(1).Any()
+                select results.Key;
+
+            return ReportValueNodes(focusNode, invalidValues, report);
         }
     }
 }

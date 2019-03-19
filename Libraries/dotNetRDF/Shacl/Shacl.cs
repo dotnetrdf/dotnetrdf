@@ -35,6 +35,7 @@ namespace VDS.RDF.Shacl
         private static NodeFactory factory = new NodeFactory();
 
         public static IUriNode Path => ShaclNode("path");
+        public static IUriNode Deactivated => ShaclNode("deactivated");
 
         public static IUriNode Conforms => ShaclNode("conforms");
 
@@ -210,6 +211,9 @@ namespace VDS.RDF.Shacl
         public static IUriNode Value => ShaclNode("value");
         public static IUriNode SourceShape => ShaclNode("sourceShape");
         public static IUriNode SourceConstraintComponent => ShaclNode("sourceConstraintComponent");
+        public static IUriNode ResultSeverity => ShaclNode("resultSeverity");
+        public static IUriNode Violation => ShaclNode("Violation");
+        public static IUriNode ResultPath => ShaclNode("resultPath");
         #endregion
         #region Collections
         public static IEnumerable<IUriNode> Shapes

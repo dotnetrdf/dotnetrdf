@@ -52,18 +52,17 @@ namespace VDS.RDF.Shacl
                 select member;
 
             var properties =
-                from parent in Shacl.Property.SubjectsOf(Shape)
-                from property in Shacl.Property.ObjectsOf(parent)
+                from property in Shacl.Property.ObjectsOf(Shape)
                 from path in Shacl.Path.ObjectsOf(property)
                 select path;
 
-            return !valueNodes.Any(valueNode =>
-                valueNode.Graph
-                .GetTriplesWithSubject(valueNode)
-                .Select(t => t.Predicate)
-                .Except(ignoredProperties)
-                .Except(properties)
-                .Any());
+            var invalidValues =
+                from valueNode in valueNodes
+                from x in valueNode.Graph.GetTriplesWithSubject(valueNode)
+                where !ignoredProperties.Contains(x.Predicate) && !properties.Contains(x.Predicate)
+                select x;
+
+            return ReportValueNodes(invalidValues, report);
         }
     }
 }

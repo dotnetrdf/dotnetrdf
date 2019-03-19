@@ -27,15 +27,61 @@
 namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
+    using System.Linq;
+    using VDS.RDF.Nodes;
     using VDS.RDF.Parsing;
 
     public class ShaclValidationReport : WrapperNode
     {
-        private static readonly INode rdf_type = new NodeFactory().CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-
         private ShaclValidationReport(INode node)
             : base(node)
         {
+            Graph.TripleAsserted += TripleAsserted;
+            Graph.TripleRetracted += TripleRetracted;
+        }
+
+        private INode rdf_type => Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+
+        internal INode Type
+        {
+            get
+            {
+                return rdf_type.ObjectsOf(this).SingleOrDefault();
+            }
+
+            set
+            {
+                foreach (var type in rdf_type.ObjectsOf(this).ToList())
+                {
+                    Graph.Retract(this, rdf_type, type);
+                }
+
+                Graph.Assert(this, rdf_type, value);
+            }
+        }
+
+        internal bool Conforms
+        {
+            get
+            {
+                var conforms = Shacl.Conforms.ObjectsOf(this).SingleOrDefault();
+                if (conforms is null)
+                {
+                    return true;
+                }
+
+                return conforms.AsValuedNode().AsBoolean();
+            }
+
+            set
+            {
+                foreach (var conforms in Shacl.Conforms.ObjectsOf(this).ToList())
+                {
+                    Graph.Retract(this, Shacl.Conforms, conforms);
+                }
+
+                Graph.Assert(this, Shacl.Conforms, value.ToLiteral(Graph));
+            }
         }
 
         internal ICollection<ShaclValidationResult> Results => new ShaclValidationResultCollection(this);
@@ -43,8 +89,26 @@ namespace VDS.RDF.Shacl
         internal static ShaclValidationReport Create(IGraph g)
         {
             var report = new ShaclValidationReport(g.CreateBlankNode());
-            g.Assert(report, rdf_type, Shacl.ValidationReport);
+            report.Type = Shacl.ValidationReport;
+            report.Conforms = true;
+
             return report;
+        }
+
+        private void TripleRetracted(object sender, TripleEventArgs args)
+        {
+            if (args.Triple.Predicate.Equals(Shacl.Result))
+            {
+                Conforms = !Results.Any();
+            }
+        }
+
+        private void TripleAsserted(object sender, TripleEventArgs args)
+        {
+            if (args.Triple.Predicate.Equals(Shacl.Result))
+            {
+                Conforms = false;
+            }
         }
     }
 }

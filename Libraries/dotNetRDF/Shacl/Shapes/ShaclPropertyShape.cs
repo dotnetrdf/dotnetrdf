@@ -36,7 +36,7 @@ namespace VDS.RDF.Shacl
         {
         }
 
-        private ShaclPath Path
+        internal ShaclPath Path
         {
             get
             {
@@ -51,9 +51,9 @@ namespace VDS.RDF.Shacl
             return Path.SelectValueNodes(focusNode);
         }
 
-        internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
+        internal override bool ValidateInternal(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
-            return valueNodes.All(valueNode => base.Validate(valueNode, SelectValueNodes(valueNode), report));
+            return valueNodes.All(valueNode => base.ValidateInternal(valueNode, SelectValueNodes(valueNode), report));
         }
     }
 }

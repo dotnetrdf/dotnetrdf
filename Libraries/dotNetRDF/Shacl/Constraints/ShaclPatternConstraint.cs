@@ -51,19 +51,20 @@ ASK {
             query.SetVariable("pattern", this);
             query.SetVariable("flags", Flags);
 
-            bool matches(INode node)
+            bool isInvalid(INode node)
             {
                 if (node.NodeType == NodeType.Blank)
                 {
-                    return false;
+                    return true;
                 }
 
                 query.SetVariable("value", node);
-
-                return ((SparqlResultSet)node.Graph.ExecuteQuery(query)).Result;
+                return !((SparqlResultSet)node.Graph.ExecuteQuery(query)).Result;
             }
 
-            return valueNodes.All(matches);
+            var invalidValues = valueNodes.Where(isInvalid);
+
+            return ReportValueNodes(focusNode, invalidValues, report);
         }
     }
 }

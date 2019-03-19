@@ -27,6 +27,7 @@
 namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
+    using System.Linq;
 
     internal class ShaclNotConstraint : ShaclConstraint
     {
@@ -39,7 +40,13 @@ namespace VDS.RDF.Shacl
 
         public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
-            return !ShaclShape.Parse(this).Validate(focusNode, valueNodes, report);
+            var invalidValues =
+                from valueNode in valueNodes
+                let shape = ShaclShape.Parse(this)
+                where shape.Validate(valueNode)
+                select valueNode;
+
+            return ReportValueNodes(focusNode, invalidValues, report);
         }
     }
 }

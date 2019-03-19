@@ -28,6 +28,7 @@ namespace VDS.RDF.Shacl
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     internal abstract class ShaclConstraint : WrapperNode
     {
@@ -42,6 +43,98 @@ namespace VDS.RDF.Shacl
         protected ShaclShape Shape { get; private set; }
 
         public abstract bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report);
+
+        protected bool ReportValueNodes(INode focusNode, IEnumerable<INode> invalidValues, ShaclValidationReport report = null)
+        {
+            var allValid = !invalidValues.Any();
+
+            if (report is null)
+            {
+                return allValid;
+            }
+
+            if (allValid)
+            {
+                return true;
+            }
+
+            foreach (var invalidValue in invalidValues.Distinct())
+            {
+                var result = ShaclValidationResult.Create(report.Graph);
+                result.SourceConstraintComponent = Component;
+                result.SourceShape = Shape;
+                result.FocusNode = focusNode;
+
+                if (Shape is ShaclPropertyShape propertyShape)
+                {
+                    result.ResultPath = propertyShape.Path;
+                }
+
+                result.Value = invalidValue;
+
+                report.Results.Add(result);
+            }
+
+            return false;
+        }
+
+        protected bool ReportValueNodes(IEnumerable<Triple> invalidValues, ShaclValidationReport report)
+        {
+            var allValid = !invalidValues.Any();
+
+            if (report is null)
+            {
+                return allValid;
+            }
+
+            if (allValid)
+            {
+                return true;
+            }
+
+            foreach (var invalidValue in invalidValues.Distinct())
+            {
+                var result = ShaclValidationResult.Create(report.Graph);
+                result.SourceConstraintComponent = Component;
+                result.SourceShape = Shape;
+                result.FocusNode = invalidValue.Subject;
+                result.ResultPath = ShaclPath.Parse(invalidValue.Predicate);
+                result.Value = invalidValue.Object;
+
+                report.Results.Add(result);
+            }
+
+            return false;
+        }
+
+        protected bool Y(INode focusNode, IEnumerable<INode> invalidValues, ShaclValidationReport report)
+        {
+            var allValid = !invalidValues.Any();
+
+            if (report is null)
+            {
+                return allValid;
+            }
+
+            if (allValid)
+            {
+                return true;
+            }
+
+            var result = ShaclValidationResult.Create(report.Graph);
+            result.SourceConstraintComponent = Component;
+            result.SourceShape = Shape;
+            result.FocusNode = focusNode;
+
+            if (Shape is ShaclPropertyShape propertyShape)
+            {
+                result.ResultPath = propertyShape.Path;
+            }
+
+            report.Results.Add(result);
+
+            return false;
+        }
 
         internal static ShaclConstraint Parse(ShaclShape shape, INode type, INode value)
         {
