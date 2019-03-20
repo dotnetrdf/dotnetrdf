@@ -32,14 +32,13 @@ namespace VDS.RDF.Shacl
     using System.Linq;
     using VDS.RDF.Nodes;
     using VDS.RDF.Parsing;
+    using VDS.RDF.Writing;
     using Xunit;
     using Xunit.Abstractions;
 
     public class ShaclTestSuite
     {
-        private const string basePath = "resources\\shacl\\test-suite\\core\\manifest.ttl";
-        //private const string basePath = "resources\\shacl\\test-suite\\core\\path\\path-strange-001.ttl";
-        //private const string basePath = "resources\\shacl\\test\\manifest.ttl";
+        private const string basePath = "resources\\shacl\\manifest.ttl";
 
         private readonly ITestOutputHelper output;
 
@@ -85,7 +84,6 @@ namespace VDS.RDF.Shacl
         public void Validate(string name)
         {
             var b = new Uri(new Uri(Path.GetFullPath(basePath)), name);
-            output.WriteLine(b.ToString());
 
             var g = Store[b];
             var entries = g.GetTriplesWithPredicate(mf_entries).Single().Object;
@@ -109,7 +107,8 @@ namespace VDS.RDF.Shacl
             var validationFailure = false;
             try
             {
-                validationResult = new ShaclShapesGraph(shapesGraph).Validate(dataGraph);
+                validationResult = new ShaclShapesGraph(shapesGraph).Validate(dataGraph, out var report);
+                output.WriteLine(Writing.StringWriter.Write(report.Graph, new CompressingTurtleWriter()));
             }
             catch
             {
@@ -120,12 +119,10 @@ namespace VDS.RDF.Shacl
             if (failure)
             {
                 Assert.True(validationFailure);
-                output.WriteLine("Failure, {0}", validationFailure);
             }
             else
             {
                 Assert.Equal(conforms, validationResult);
-                output.WriteLine("Success, {0}", conforms = validationResult);
             }
         }
 

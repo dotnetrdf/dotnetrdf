@@ -58,10 +58,12 @@ namespace VDS.RDF.Shacl
                 return true;
             }
 
-            foreach (var invalidValue in invalidValues.Distinct())
+            foreach (var invalidValue in invalidValues)
             {
                 var result = ShaclValidationResult.Create(report.Graph);
                 result.SourceConstraintComponent = Component;
+                result.Severity = Shape.Severity;
+                result.Message = Shape.Message;
                 result.SourceShape = Shape;
                 result.FocusNode = focusNode;
 
@@ -70,7 +72,7 @@ namespace VDS.RDF.Shacl
                     result.ResultPath = propertyShape.Path;
                 }
 
-                result.Value = invalidValue;
+                result.ResultValue = invalidValue;
 
                 report.Results.Add(result);
             }
@@ -92,14 +94,16 @@ namespace VDS.RDF.Shacl
                 return true;
             }
 
-            foreach (var invalidValue in invalidValues.Distinct())
+            foreach (var invalidValue in invalidValues)
             {
                 var result = ShaclValidationResult.Create(report.Graph);
                 result.SourceConstraintComponent = Component;
+                result.Severity = Shape.Severity;
+                result.Message = Shape.Message;
                 result.SourceShape = Shape;
                 result.FocusNode = invalidValue.Subject;
                 result.ResultPath = ShaclPath.Parse(invalidValue.Predicate);
-                result.Value = invalidValue.Object;
+                result.ResultValue = invalidValue.Object;
 
                 report.Results.Add(result);
             }
@@ -107,7 +111,7 @@ namespace VDS.RDF.Shacl
             return false;
         }
 
-        protected bool Y(INode focusNode, IEnumerable<INode> invalidValues, ShaclValidationReport report)
+        protected bool ReportFocusNode(INode focusNode, IEnumerable<INode> invalidValues, ShaclValidationReport report)
         {
             var allValid = !invalidValues.Any();
 
@@ -123,6 +127,8 @@ namespace VDS.RDF.Shacl
 
             var result = ShaclValidationResult.Create(report.Graph);
             result.SourceConstraintComponent = Component;
+            result.Severity = Shape.Severity;
+            result.Message = Shape.Message;
             result.SourceShape = Shape;
             result.FocusNode = focusNode;
 

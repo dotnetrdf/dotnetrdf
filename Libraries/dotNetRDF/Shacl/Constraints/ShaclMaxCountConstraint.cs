@@ -43,7 +43,7 @@ namespace VDS.RDF.Shacl
         {
             var invalidValues = valueNodes.Skip((int)this.AsValuedNode().AsInteger());
 
-            return Y(focusNode, invalidValues, report);
+            return ReportFocusNode(focusNode, invalidValues, report);
         }
     }
 }

@@ -26,8 +26,10 @@
 
 namespace VDS.RDF.Shacl
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
+    using VDS.RDF.Parsing;
 
     internal class ShaclDatatypeConstraint : ShaclConstraint
     {
@@ -38,9 +40,17 @@ namespace VDS.RDF.Shacl
 
         internal override INode Component => Shacl.DatatypeConstraintComponent;
 
+        private Uri DataTypeParameter => ((IUriNode)this).Uri;
+
         public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
-            return valueNodes.All(node => node.NodeType == NodeType.Literal && EqualityHelper.AreUrisEqual(((ILiteralNode)node).DataType, ((IUriNode)this).Uri));
+            var xsd_string = UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
+            var invalidValues =
+                from valueNode in valueNodes
+                where valueNode.NodeType != NodeType.Literal || !EqualityHelper.AreUrisEqual(((ILiteralNode)valueNode).DataType ?? xsd_string, DataTypeParameter)
+                select valueNode;
+
+            return ReportValueNodes(focusNode, invalidValues, report);
         }
     }
 }

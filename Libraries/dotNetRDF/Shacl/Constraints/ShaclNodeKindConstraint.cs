@@ -42,12 +42,17 @@ namespace VDS.RDF.Shacl
         {
             var mappings = new Dictionary<NodeType, IEnumerable<INode>>
             {
-                { NodeType.Blank, new[] { Shacl.BlankNode, Shacl.BlankNodeOrIri, Shacl.BlankNodeOrLiteral } },
-                { NodeType.Literal, new[] { Shacl.Literal, Shacl.BlankNodeOrLiteral, Shacl.IriOrLiteral} },
-                { NodeType.Uri, new[] { Shacl.Iri, Shacl.BlankNodeOrIri, Shacl.IriOrLiteral} },
+                { NodeType.Blank, Shacl.BlankNodeKinds },
+                { NodeType.Literal, Shacl.LiteralNodeKinds },
+                { NodeType.Uri, Shacl.IriNodeKinds },
             };
 
-            return valueNodes.All(node => mappings[node.NodeType].Contains(this));
+            var invalidValues = 
+                from valueNode in valueNodes
+                where !mappings[valueNode.NodeType].Contains(this)
+                select valueNode;
+
+            return ReportValueNodes(focusNode, invalidValues, report);
         }
     }
 }

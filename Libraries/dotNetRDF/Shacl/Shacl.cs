@@ -35,7 +35,12 @@ namespace VDS.RDF.Shacl
         private static NodeFactory factory = new NodeFactory();
 
         public static IUriNode Path => ShaclNode("path");
+
         public static IUriNode Deactivated => ShaclNode("deactivated");
+
+        public static IUriNode Severity => ShaclNode("severity");
+
+        public static IUriNode Message => ShaclNode("message");
 
         public static IUriNode Conforms => ShaclNode("conforms");
 
@@ -48,6 +53,7 @@ namespace VDS.RDF.Shacl
 
         public static IUriNode TargetSubjectsOf => ShaclNode("targetSubjectsOf");
         #endregion
+
         #region Constraints
         public static IUriNode Class => ShaclNode("class");
 
@@ -115,6 +121,7 @@ namespace VDS.RDF.Shacl
 
         public static IUriNode IgnoredProperties => ShaclNode("ignoredProperties");
         #endregion
+
         #region Constraint components
         public static IUriNode ClassConstraintComponent => ShaclNode("ClassConstraintComponent");
 
@@ -174,11 +181,13 @@ namespace VDS.RDF.Shacl
 
         public static IUriNode ClosedConstraintComponent => ShaclNode("ClosedConstraintComponent");
         #endregion
+
         #region Shapes
         public static IUriNode NodeShape => ShaclNode("NodeShape");
 
         public static IUriNode PropertyShape => ShaclNode("PropertyShape");
         #endregion
+
         #region Paths
         public static IUriNode AlternativePath => ShaclNode("alternativePath");
 
@@ -190,6 +199,7 @@ namespace VDS.RDF.Shacl
 
         public static IUriNode ZeroOrOnePath => ShaclNode("zeroOrOnePath");
         #endregion
+
         #region Node kinds
         public static IUriNode BlankNode => ShaclNode("BlankNode");
 
@@ -203,19 +213,33 @@ namespace VDS.RDF.Shacl
 
         public static IUriNode IriOrLiteral => ShaclNode("IRIOrLiteral");
         #endregion
+
         #region Report
         public static IUriNode Result => ShaclNode("result");
+
         public static IUriNode ValidationReport => ShaclNode("ValidationReport");
+
         public static IUriNode ValidationResult => ShaclNode("ValidationResult");
+
         public static IUriNode FocusNode => ShaclNode("focusNode");
+
         public static IUriNode Value => ShaclNode("value");
+
         public static IUriNode SourceShape => ShaclNode("sourceShape");
+
         public static IUriNode SourceConstraintComponent => ShaclNode("sourceConstraintComponent");
+
         public static IUriNode ResultSeverity => ShaclNode("resultSeverity");
+
         public static IUriNode Violation => ShaclNode("Violation");
+
         public static IUriNode ResultPath => ShaclNode("resultPath");
+
+        public static IUriNode ResultMessage => ShaclNode("resultMessage");
         #endregion
+
         #region Collections
+
         public static IEnumerable<IUriNode> Shapes
         {
             get
@@ -271,6 +295,37 @@ namespace VDS.RDF.Shacl
                 yield return Closed;
             }
         }
+
+        public static IEnumerable<IUriNode> BlankNodeKinds
+        {
+            get
+            {
+                yield return Shacl.BlankNode;
+                yield return Shacl.BlankNodeOrIri;
+                yield return Shacl.BlankNodeOrLiteral;
+            }
+        }
+
+        public static IEnumerable<IUriNode> LiteralNodeKinds
+        {
+            get
+            {
+                yield return Shacl.Literal;
+                yield return Shacl.BlankNodeOrLiteral;
+                yield return Shacl.IriOrLiteral;
+            }
+        }
+
+        public static IEnumerable<IUriNode> IriNodeKinds
+        {
+            get
+            {
+                yield return Shacl.Iri;
+                yield return Shacl.IriOrLiteral;
+                yield return Shacl.BlankNodeOrIri;
+            }
+        }
+
         #endregion
 
         private static IUriNode ShaclNode(string name) => factory.CreateUriNode(UriFactory.Create($"{BaseUri}{name}"));

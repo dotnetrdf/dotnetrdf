@@ -58,9 +58,10 @@ namespace VDS.RDF.Shacl
 
             var invalidValues =
                 from valueNode in valueNodes
-                from x in valueNode.Graph.GetTriplesWithSubject(valueNode)
-                where !ignoredProperties.Contains(x.Predicate) && !properties.Contains(x.Predicate)
-                select x;
+                from outgoing in valueNode.Graph.GetTriplesWithSubject(valueNode)
+                let property = outgoing.Predicate
+                where !ignoredProperties.Contains(property) && !properties.Contains(property)
+                select outgoing;
 
             return ReportValueNodes(invalidValues, report);
         }

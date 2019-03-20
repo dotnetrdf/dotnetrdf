@@ -37,38 +37,34 @@ namespace VDS.RDF.Shacl
         {
         }
 
-        private IEnumerable<ShaclConstraint> Constraints
-        {
-            get
-            {
-                IEnumerable<ShaclConstraint> selectConstraints(INode parameter) =>
-                    from t in this.Graph.GetTriplesWithSubjectPredicate(this, parameter)
-                    select ShaclConstraint.Parse(this, t.Predicate, t.Object);
+        public INode Severity => 
+            Shacl.Severity.ObjectsOf(this).SingleOrDefault() ?? Shacl.Violation;
 
-                return Shacl.Constraints.SelectMany(selectConstraints);
-            }
-        }
+        public bool Deactivated =>
+            Shacl.Deactivated.ObjectsOf(this).SingleOrDefault()?.AsValuedNode().AsBoolean() ?? false;
+
+        public INode Message =>
+            Shacl.Message.ObjectsOf(this).SingleOrDefault();
+
+        private IEnumerable<ShaclConstraint> Constraints =>
+            Shacl.Constraints.SelectMany(constraint =>
+                from t in Graph.GetTriplesWithSubjectPredicate(this, constraint)
+                select ShaclConstraint.Parse(this, t.Predicate, t.Object));
 
         private IEnumerable<ShaclTarget> Targets
         {
             get
             {
-                var rdf_type = this.Graph.CreateUriNode("rdf:type");
-                var rdfs_Class = this.Graph.CreateUriNode("rdfs:Class");
-
-                bool hasType(INode node, INode type)
-                {
-                    return node.Graph.GetTriplesWithSubjectPredicate(this, rdf_type).WithObject(type).Any();
-                }
+                var rdfs_Class = Graph.CreateUriNode("rdfs:Class");
 
                 bool isShape(INode node)
                 {
-                    return Shacl.Shapes.Any(shape => hasType(node, shape));
+                    return Shacl.Shapes.Any(shapeClass => shapeClass.IsInstance(node));
                 }
 
                 bool isClass(INode node)
                 {
-                    return hasType(node, rdfs_Class);
+                    return rdfs_Class.IsInstance(node);
                 }
 
                 IEnumerable<ShaclTarget> selectTargets(INode type) =>
@@ -85,8 +81,6 @@ namespace VDS.RDF.Shacl
                 return targets.Union(implicitClassTargets);
             }
         }
-
-        protected bool Deactivated => Shacl.Deactivated.ObjectsOf(this).SingleOrDefault()?.AsValuedNode().AsBoolean() ?? false;
 
         internal static ShaclShape Parse(INode node)
         {
@@ -109,7 +103,7 @@ namespace VDS.RDF.Shacl
 
         internal IEnumerable<INode> SelectFocusNodes(IGraph dataGragh)
         {
-            return this.Targets.SelectMany(target => target.SelectFocusNodes(dataGragh));
+            return Targets.SelectMany(target => target.SelectFocusNodes(dataGragh));
         }
 
         internal bool Validate(INode focusNode, ShaclValidationReport report = null)

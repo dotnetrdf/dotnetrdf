@@ -41,16 +41,26 @@ namespace VDS.RDF.Shacl
 
         public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
-            try
+            var comparer = new SparqlNodeComparer();
+            bool isValid(INode first, INode second)
             {
-                var comparer = new SparqlNodeComparer();
-                var values = this.ObjectsOf(focusNode);
-                return valueNodes.All(valueNode => values.All(value => comparer.Compare(valueNode, value) == -1));
+                try
+                {
+                    return comparer.Compare(first, second) == -1;
+                }
+                catch (RdfQueryException)
+                {
+                    return false;
+                }
             }
-            catch
-            {
-                return false;
-            }
+
+            var invalidValues =
+                from valueNode in valueNodes
+                from value in this.ObjectsOf(focusNode)
+                where !isValid(valueNode, value)
+                select valueNode;
+
+            return ReportValueNodes(focusNode, invalidValues, report);
         }
     }
 }

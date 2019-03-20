@@ -40,12 +40,13 @@ namespace VDS.RDF.Shacl
 
         public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
-            return !valueNodes.Any(valueNode => HasObject(focusNode, valueNode));
-        }
+            var invalidValues =
+                from valueNode in valueNodes
+                from sibling in this.ObjectsOf(focusNode)
+                where valueNode.Equals(sibling)
+                select valueNode;
 
-        private bool HasObject(INode focusNode, INode valueNode)
-        {
-            return focusNode.Graph.GetTriplesWithSubjectPredicate(focusNode, this).WithObject(valueNode).Any();
+            return ReportValueNodes(focusNode, invalidValues, report);
         }
     }
 }

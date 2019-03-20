@@ -40,7 +40,12 @@ namespace VDS.RDF.Shacl
 
         public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
-            return valueNodes.Contains(this);
+            var invalidValues =
+                from value in this.AsEnumerable()
+                where !valueNodes.Contains(this)
+                select value;
+
+            return ReportFocusNode(focusNode, invalidValues, report);
         }
     }
 }

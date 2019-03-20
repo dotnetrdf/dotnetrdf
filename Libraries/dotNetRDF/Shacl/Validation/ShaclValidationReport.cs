@@ -56,6 +56,11 @@ namespace VDS.RDF.Shacl
                     Graph.Retract(this, rdf_type, type);
                 }
 
+                if (value is null)
+                {
+                    return;
+                }
+
                 Graph.Assert(this, rdf_type, value);
             }
         }

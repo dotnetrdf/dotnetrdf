@@ -50,6 +50,11 @@ namespace VDS.RDF.Shacl
                     Graph.Retract(this, rdf_type, type);
                 }
 
+                if (value is null)
+                {
+                    return;
+                }
+
                 Graph.Assert(this, rdf_type, value);
             }
         }
@@ -66,6 +71,11 @@ namespace VDS.RDF.Shacl
                 foreach (var severity in Shacl.ResultSeverity.ObjectsOf(this).ToList())
                 {
                     Graph.Retract(this, Shacl.ResultSeverity, severity);
+                }
+
+                if (value is null)
+                {
+                    return;
                 }
 
                 Graph.Assert(this, Shacl.ResultSeverity, value);
@@ -86,11 +96,16 @@ namespace VDS.RDF.Shacl
                     Graph.Retract(this, Shacl.FocusNode, focusNode);
                 }
 
+                if (value is null)
+                {
+                    return;
+                }
+
                 Graph.Assert(this, Shacl.FocusNode, value);
             }
         }
 
-        internal INode Value
+        internal INode ResultValue
         {
             get
             {
@@ -102,6 +117,11 @@ namespace VDS.RDF.Shacl
                 foreach (var valueNode in Shacl.Value.ObjectsOf(this).ToList())
                 {
                     Graph.Retract(this, Shacl.Value, valueNode);
+                }
+
+                if (value is null)
+                {
+                    return;
                 }
 
                 Graph.Assert(this, Shacl.Value, value);
@@ -122,7 +142,35 @@ namespace VDS.RDF.Shacl
                     Graph.Retract(this, Shacl.SourceShape, sourceShape);
                 }
 
+                if (value is null)
+                {
+                    return;
+                }
+
                 Graph.Assert(this, Shacl.SourceShape, value);
+            }
+        }
+
+        internal INode Message
+        {
+            get
+            {
+                return Shacl.ResultMessage.ObjectsOf(this).SingleOrDefault();
+            }
+
+            set
+            {
+                foreach (var sourceShape in Shacl.ResultMessage.ObjectsOf(this).ToList())
+                {
+                    Graph.Retract(this, Shacl.ResultMessage, sourceShape);
+                }
+
+                if (value is null)
+                {
+                    return;
+                }
+
+                Graph.Assert(this, Shacl.ResultMessage, value);
             }
         }
 
@@ -138,6 +186,11 @@ namespace VDS.RDF.Shacl
                 foreach (var sourceConstraintComponent in Shacl.SourceConstraintComponent.ObjectsOf(this).ToList())
                 {
                     Graph.Retract(this, Shacl.SourceConstraintComponent, sourceConstraintComponent);
+                }
+
+                if (value is null)
+                {
+                    return;
                 }
 
                 Graph.Assert(this, Shacl.SourceConstraintComponent, value);
@@ -158,6 +211,11 @@ namespace VDS.RDF.Shacl
                     Graph.Retract(this, Shacl.ResultPath, sourceConstraintComponent);
                 }
 
+                if (value is null)
+                {
+                    return;
+                }
+
                 Graph.Assert(this, Shacl.ResultPath, value);
             }
         }
@@ -168,7 +226,6 @@ namespace VDS.RDF.Shacl
         {
             var report = new ShaclValidationResult(g.CreateBlankNode());
             report.Type = Shacl.ValidationResult;
-            report.Severity = Shacl.Violation;
 
             return report;
         }
