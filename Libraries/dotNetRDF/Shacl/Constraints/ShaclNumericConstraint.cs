@@ -26,23 +26,15 @@
 
 namespace VDS.RDF.Shacl
 {
-    using System.Collections.Generic;
-    using System.Linq;
+    using VDS.RDF.Nodes;
 
-    internal class ShaclQualifiedMaxCountConstraint : ShaclQualifiedConstraint
+    internal abstract class ShaclNumericConstraint : ShaclConstraint
     {
-        public ShaclQualifiedMaxCountConstraint(ShaclShape shape, INode node)
+        public ShaclNumericConstraint(ShaclShape shape, INode node)
             : base(shape, node)
         {
         }
 
-        internal override INode Component => Shacl.QualifiedMaxCountConstraintComponent;
-
-        protected override bool ValidateInternal(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
-        {
-            var invalidValues = QualifiedValueNodes(focusNode, valueNodes).Skip(NumericValue);
-
-            return ReportFocusNode(focusNode, invalidValues, report);
-        }
+        protected int NumericValue => (int)this.AsValuedNode().AsInteger();
     }
 }

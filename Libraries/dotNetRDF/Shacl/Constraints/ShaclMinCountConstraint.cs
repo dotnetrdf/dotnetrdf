@@ -28,9 +28,8 @@ namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
     using System.Linq;
-    using VDS.RDF.Nodes;
 
-    internal class ShaclMinCountConstraint : ShaclConstraint
+    internal class ShaclMinCountConstraint : ShaclNumericConstraint
     {
         public ShaclMinCountConstraint(ShaclShape shape, INode node)
             : base(shape, node)
@@ -41,8 +40,17 @@ namespace VDS.RDF.Shacl
 
         public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
-            var value = (int)this.AsValuedNode().AsInteger();
-            return value == 0 || valueNodes.Skip(value - 1).Any();
+            if (NumericValue == 0)
+            {
+                return true;
+            }
+
+            var invalidValues =
+                from valueNode in focusNode.AsEnumerable()
+                where !valueNodes.Skip(NumericValue - 1).Any()
+                select valueNode;
+
+            return ReportFocusNode(focusNode, invalidValues, report);
         }
     }
 }

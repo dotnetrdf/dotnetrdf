@@ -28,9 +28,8 @@ namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
     using System.Linq;
-    using VDS.RDF.Nodes;
 
-    internal class ShaclMaxCountConstraint : ShaclConstraint
+    internal class ShaclMaxCountConstraint : ShaclNumericConstraint
     {
         public ShaclMaxCountConstraint(ShaclShape shape, INode node)
             : base(shape, node)
@@ -41,7 +40,7 @@ namespace VDS.RDF.Shacl
 
         public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
-            var invalidValues = valueNodes.Skip((int)this.AsValuedNode().AsInteger());
+            var invalidValues = valueNodes.Skip(NumericValue);
 
             return ReportFocusNode(focusNode, invalidValues, report);
         }

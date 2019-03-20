@@ -38,16 +38,19 @@ namespace VDS.RDF.Shacl
 
         internal override INode Component => Shacl.QualifiedMinCountConstraintComponent;
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
+        protected override bool ValidateInternal(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
-            if (ThereShouldBe == 0)
+            if (NumericValue == 0)
             {
                 return true;
             }
 
-            bool thereAreNoLessThan(int x) => DisjointConformingValueNodes(focusNode, valueNodes, report).Skip(x - 1).Any();
+            var invalidValues =
+                from valueNode in focusNode.AsEnumerable()
+                where !QualifiedValueNodes(focusNode, valueNodes).Skip(NumericValue - 1).Any()
+                select valueNode;
 
-            return thereAreNoLessThan(ThereShouldBe);
+            return ReportFocusNode(focusNode, invalidValues, report);
         }
     }
 }

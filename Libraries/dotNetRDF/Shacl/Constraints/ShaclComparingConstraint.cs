@@ -32,7 +32,7 @@ namespace VDS.RDF.Shacl
     {
         private readonly SparqlNodeComparer comparer = new SparqlNodeComparer();
 
-        public ShaclComparingConstraint(ShaclShape shape, INode node)
+        protected ShaclComparingConstraint(ShaclShape shape, INode node)
             : base(shape, node)
         {
         }

@@ -26,11 +26,7 @@
 
 namespace VDS.RDF.Shacl
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using VDS.RDF.Nodes;
-
-    internal class ShaclMinLengthConstraint : ShaclConstraint
+    internal class ShaclMinLengthConstraint : ShaclLengthConstraint
     {
         public ShaclMinLengthConstraint(ShaclShape shape, INode node)
             : base(shape, node)
@@ -39,9 +35,6 @@ namespace VDS.RDF.Shacl
 
         internal override INode Component => Shacl.MinLengthConstraintComponent;
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
-        {
-            return valueNodes.All(node => node.NodeType != NodeType.Blank && node.ToString().Length >= this.AsValuedNode().AsInteger());
-        }
+        protected override bool ValidateInternal(int v) => v > -1;
     }
 }

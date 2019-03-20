@@ -30,16 +30,19 @@ namespace VDS.RDF.Shacl
     using System.Linq;
     using VDS.RDF.Nodes;
 
-    internal abstract class ShaclQualifiedConstraint : ShaclConstraint
+    internal abstract class ShaclQualifiedConstraint : ShaclNumericConstraint
     {
         public ShaclQualifiedConstraint(ShaclShape shape, INode node)
             : base(shape, node)
         {
         }
 
-        protected int ThereShouldBe => (int)this.AsValuedNode().AsInteger();
+        protected ShaclShape QualifiedValueShape => (
+            from shape in Shacl.QualifiedValueShape.ObjectsOf(Shape)
+            select ShaclShape.Parse(shape))
+            .SingleOrDefault();
 
-        public IEnumerable<INode> DisjointConformingValueNodes(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
+        public IEnumerable<INode> QualifiedValueNodes(INode focusNode, IEnumerable<INode> valueNodes)
         {
             var currentShape = Shape;
 
@@ -67,10 +70,22 @@ namespace VDS.RDF.Shacl
                 let qualifiedShape = ShaclShape.Parse(qualified)
                 from valueNode in valueNodes
                 let v = valueNode.AsEnumerable()
-                let conformsToQualifiedShape = qualifiedShape.Validate(focusNode, v, report)
-                let doesNotConformToSiblingShapes = !siblingShapes.Any(siblingShape => siblingShape.Validate(focusNode, v, report))
+                let conformsToQualifiedShape = qualifiedShape.Validate(focusNode, v)
+                let doesNotConformToSiblingShapes = !siblingShapes.Any(siblingShape => siblingShape.Validate(focusNode, v))
                 where conformsToQualifiedShape && doesNotConformToSiblingShapes
                 select valueNode;
         }
+
+        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
+        {
+            if (QualifiedValueShape is null)
+            {
+                return true;
+            }
+
+            return ValidateInternal(focusNode, valueNodes, report);
+        }
+
+        protected abstract bool ValidateInternal(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report);
     }
 }
