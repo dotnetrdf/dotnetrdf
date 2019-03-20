@@ -26,11 +26,7 @@
 
 namespace VDS.RDF.Shacl
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using VDS.RDF.Query;
-
-    internal class ShaclLessThanConstraint : ShaclConstraint
+    internal class ShaclLessThanConstraint : ShaclPropertyComparingConstraint
     {
         public ShaclLessThanConstraint(ShaclShape shape, INode node)
             : base(shape, node)
@@ -39,28 +35,6 @@ namespace VDS.RDF.Shacl
 
         internal override INode Component => Shacl.LessThanConstraintComponent;
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
-        {
-            var comparer = new SparqlNodeComparer();
-            bool isValid(INode first, INode second)
-            {
-                try
-                {
-                    return comparer.Compare(first, second) == -1;
-                }
-                catch (RdfQueryException)
-                {
-                    return false;
-                }
-            }
-
-            var invalidValues =
-                from valueNode in valueNodes
-                from value in this.ObjectsOf(focusNode)
-                where !isValid(valueNode, value)
-                select valueNode;
-
-            return ReportValueNodes(focusNode, invalidValues, report);
-        }
+        protected override bool IsValidInternal(int v) => v == -1;
     }
 }

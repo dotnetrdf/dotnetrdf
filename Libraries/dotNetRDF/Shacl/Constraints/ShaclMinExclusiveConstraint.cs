@@ -26,11 +26,7 @@
 
 namespace VDS.RDF.Shacl
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using VDS.RDF.Query;
-
-    internal class ShaclMinExclusiveConstraint : ShaclConstraint
+    internal class ShaclMinExclusiveConstraint : ShaclValueComparingConstraint
     {
         public ShaclMinExclusiveConstraint(ShaclShape shape, INode node)
             : base(shape, node)
@@ -39,17 +35,6 @@ namespace VDS.RDF.Shacl
 
         internal override INode Component => Shacl.MinExclusiveConstraintComponent;
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
-        {
-            try
-            {
-                var comparer = new SparqlNodeComparer();
-                return valueNodes.All(valueNode => comparer.Compare(valueNode, this) == -1);
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        protected override bool IsValidInternal(int v) => v == -1;
     }
 }
