@@ -30,7 +30,7 @@ namespace VDS.RDF.Shacl
     using System.Linq;
     using VDS.RDF.Nodes;
 
-    internal class ShaclClosedConstraint : ShaclConstraint
+    internal class ShaclClosedConstraint : ShaclBooleanConstraint
     {
         public ShaclClosedConstraint(ShaclShape shape, INode node)
             : base(shape, node)
@@ -41,7 +41,7 @@ namespace VDS.RDF.Shacl
 
         public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
-            if (!this.AsValuedNode().AsBoolean())
+            if (!BooleanValue)
             {
                 return true;
             }

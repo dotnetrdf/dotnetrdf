@@ -35,7 +35,7 @@ namespace VDS.RDF.Shacl
         {
         }
 
-        internal override INode Component => Shacl.PropertyConstraintComponent;
+        internal override INode Component => Shacl.PropertyShapeComponent;
 
         public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {

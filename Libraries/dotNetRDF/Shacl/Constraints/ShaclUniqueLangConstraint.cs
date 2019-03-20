@@ -28,9 +28,8 @@ namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
     using System.Linq;
-    using VDS.RDF.Nodes;
 
-    internal class ShaclUniqueLangConstraint : ShaclConstraint
+    internal class ShaclUniqueLangConstraint : ShaclBooleanConstraint
     {
         public ShaclUniqueLangConstraint(ShaclShape shape, INode node)
             : base(shape, node)
@@ -41,7 +40,18 @@ namespace VDS.RDF.Shacl
 
         public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
-            return !this.AsValuedNode().AsBoolean() || !valueNodes.GroupBy(node => ((ILiteralNode)node).Language).Any(group => group.Count() > 1);
+            if (!BooleanValue)
+            {
+                return true;
+            }
+
+            var invalidValues =
+                from valueNode in valueNodes
+                group valueNode by ((ILiteralNode)valueNode).Language into langNodes
+                where langNodes.Skip(1).Any()
+                select Graph.CreateLiteralNode(langNodes.Key);
+
+            return ReportFocusNode(focusNode, invalidValues, report);
         }
     }
 }

@@ -26,20 +26,15 @@
 
 namespace VDS.RDF.Shacl
 {
-    using System.Collections.Generic;
+    using VDS.RDF.Nodes;
 
-    internal class ShaclNodeConstraint : ShaclConstraint
+    internal abstract class ShaclBooleanConstraint : ShaclConstraint
     {
-        public ShaclNodeConstraint(ShaclShape shape, INode node)
-            : base(shape, node)
+        public ShaclBooleanConstraint(ShaclShape shape, INode value)
+            : base(shape, value)
         {
         }
 
-        internal override INode Component => Shacl.NodeConstraintComponent;
-
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
-        {
-            return new ShaclNodeShape(this).Validate(focusNode, valueNodes, report);
-        }
+        protected bool BooleanValue => this.AsValuedNode().AsBoolean();
     }
 }

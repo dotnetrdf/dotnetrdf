@@ -45,9 +45,10 @@ namespace VDS.RDF.Shacl
                 from member in this.Graph.GetListItems(this)
                 let shape = ShaclShape.Parse(member)
                 group shape.Validate(valueNode) by valueNode into results
-                let valid = from result in results
-                         where result
-                         select result
+                let valid =
+                    from result in results
+                    where result
+                    select result
                 where !valid.Any() || valid.Skip(1).Any()
                 select results.Key;
 

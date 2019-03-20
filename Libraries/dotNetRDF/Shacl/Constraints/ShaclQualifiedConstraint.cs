@@ -64,7 +64,6 @@ namespace VDS.RDF.Shacl
 
             var siblingShapes = isDisjoint ? selectSiblingShapes() : Enumerable.Empty<ShaclShape>();
 
-            // TODO: shouldn't pass report?
             return
                 from qualified in Shacl.QualifiedValueShape.ObjectsOf(Shape)
                 let qualifiedShape = ShaclShape.Parse(qualified)
