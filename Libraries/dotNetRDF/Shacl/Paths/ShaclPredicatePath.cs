@@ -37,6 +37,11 @@ namespace VDS.RDF.Shacl
         {
         }
 
+        internal override IEnumerable<Triple> AsTriples()
+        {
+            return Enumerable.Empty<Triple>();
+        }
+
         internal override ISparqlPath SparqlPath
         {
             get

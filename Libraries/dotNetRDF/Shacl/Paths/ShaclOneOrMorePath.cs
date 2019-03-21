@@ -27,6 +27,7 @@
 namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
+    using System.Linq;
     using VDS.RDF.Query.Paths;
 
     internal class ShaclOneOrMorePath : ShaclUnaryPath
@@ -34,6 +35,14 @@ namespace VDS.RDF.Shacl
         internal ShaclOneOrMorePath(INode node)
             : base(node)
         {
+        }
+
+        internal override IEnumerable<Triple> AsTriples()
+        {
+            return
+                new Triple(this, Shacl.OneOrMorePath.CopyNode(Graph), Argument).AsEnumerable()
+                .Union(
+                Argument.AsTriples());
         }
 
         internal override ISparqlPath SparqlPath

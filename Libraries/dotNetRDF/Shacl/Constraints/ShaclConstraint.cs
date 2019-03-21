@@ -70,6 +70,7 @@ namespace VDS.RDF.Shacl
                 if (Shape is ShaclPropertyShape propertyShape)
                 {
                     result.ResultPath = propertyShape.Path;
+                    report.Graph.Assert(propertyShape.Path.AsTriples().Select(t => t.CopyTriple(report.Graph)));
                 }
 
                 result.ResultValue = invalidValue;
@@ -103,6 +104,7 @@ namespace VDS.RDF.Shacl
                 result.SourceShape = Shape;
                 result.FocusNode = invalidValue.Subject;
                 result.ResultPath = ShaclPath.Parse(invalidValue.Predicate);
+                report.Graph.Assert(result.ResultPath.AsTriples().Select(t => t.CopyTriple(report.Graph)));
                 result.ResultValue = invalidValue.Object;
 
                 report.Results.Add(result);
@@ -135,6 +137,7 @@ namespace VDS.RDF.Shacl
             if (Shape is ShaclPropertyShape propertyShape)
             {
                 result.ResultPath = propertyShape.Path;
+                report.Graph.Assert(propertyShape.Path.AsTriples().Select(t => t.CopyTriple(report.Graph)));
             }
 
             report.Results.Add(result);

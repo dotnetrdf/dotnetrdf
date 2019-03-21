@@ -26,6 +26,7 @@
 
 namespace VDS.RDF.Shacl
 {
+    using System.Collections.Generic;
     using System.Linq;
     using VDS.RDF.Query.Paths;
 
@@ -34,6 +35,14 @@ namespace VDS.RDF.Shacl
         internal ShaclSequencePath(INode node)
             : base(node)
         {
+        }
+
+        internal override IEnumerable<Triple> AsTriples()
+        {
+            return 
+                Graph.GetListAsTriples(this)
+                .Union(
+                Graph.GetListItems(this).SelectMany(member => ShaclPath.Parse(member).AsTriples()));
         }
 
         internal override ISparqlPath SparqlPath

@@ -36,6 +36,12 @@ namespace VDS.RDF.Shacl
         {
         }
 
+        internal override IEnumerable<Triple> AsTriples()
+        {
+            return
+                new Triple(this, Shacl.ZeroOrOnePath.CopyNode(Graph), Argument).AsEnumerable();
+        }
+
         internal override ISparqlPath SparqlPath
         {
             get

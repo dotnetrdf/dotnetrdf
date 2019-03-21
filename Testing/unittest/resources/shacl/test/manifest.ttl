@@ -55,4 +55,5 @@
 	mf:include <qualifiedMaxCount-pass.ttl> ;
 	mf:include <closed-fail.ttl> ;
 	mf:include <closed-pass.ttl> ;
+	mf:include <path-complex.ttl> ;
 ] .
