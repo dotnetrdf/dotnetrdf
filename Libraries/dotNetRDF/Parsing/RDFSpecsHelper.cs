@@ -77,7 +77,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// URI for rdf:langString the implicit type of language specified literals
         /// </summary>
-        public const String RdfLangString = "http://www.w3.org/1999/02/22-rdf-syntax-ns#rdfLangString";
+        public const String RdfLangString = "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString";
 
         /// <summary>
         /// Pattern for Valid Language Specifiers
