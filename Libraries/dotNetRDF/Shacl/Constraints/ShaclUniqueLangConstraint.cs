@@ -47,11 +47,14 @@ namespace VDS.RDF.Shacl
 
             var invalidValues =
                 from valueNode in valueNodes
-                group valueNode by ((ILiteralNode)valueNode).Language into langNodes
+                where valueNode.NodeType == NodeType.Literal
+                let literal = (ILiteralNode)valueNode
+                where !string.IsNullOrEmpty(literal.Language)
+                group valueNode by literal.Language into langNodes
                 where langNodes.Skip(1).Any()
                 select Graph.CreateLiteralNode(langNodes.Key);
 
-            return ReportFocusNode(focusNode, invalidValues, report);
+            return ReportFocusNodes(focusNode, invalidValues, report);
         }
     }
 }
