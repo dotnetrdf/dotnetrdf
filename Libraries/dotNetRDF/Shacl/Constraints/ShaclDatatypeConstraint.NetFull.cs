@@ -26,51 +26,46 @@
 
 namespace VDS.RDF.Shacl
 {
-    using System;
-    using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
+    using System.Xml;
+    using System.Xml.Linq;
+    using System.Xml.Schema;
     using VDS.RDF.Parsing;
+    using VDS.RDF.Query;
 
-    internal partial class ShaclDatatypeConstraint : ShaclConstraint
+    internal partial class ShaclDatatypeConstraint
     {
-        public ShaclDatatypeConstraint(ShaclShape shape, INode node)
-            : base(shape, node)
+        private static bool IsIllformed(ILiteralNode n)
         {
-        }
-
-        internal override INode Component => Shacl.DatatypeConstraintComponent;
-
-        private Uri DataTypeParameter => ((IUriNode)this).Uri;
-
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
-        {
-            var invalidValues =
-                from valueNode in valueNodes
-                where IsInvalid(valueNode)
-                select valueNode;
-
-            return ReportValueNodes(focusNode, invalidValues, report);
-        }
-
-        private bool IsInvalid(INode n)
-        {
-            if (n.NodeType != NodeType.Literal)
+            if (n.DataType is null)
             {
-                return true;
+                return false;
             }
 
-            var literal = (ILiteralNode)n;
-            var xsd_string = UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
-            var rdf_langString = UriFactory.Create("http://www.w3.org/1999/02/22-rdf-syntax-ns#langString");
-            var stringDatatype = string.IsNullOrEmpty(literal.Language) ? xsd_string : rdf_langString;
-            var datatype = literal.DataType ?? stringDatatype;
+            var supportedDatatypes = SparqlSpecsHelper.SupportedCastFunctions.Union(SparqlSpecsHelper.IntegerDataTypes);
 
-            if (!EqualityHelper.AreUrisEqual(datatype, DataTypeParameter))
+            if (!supportedDatatypes.Contains(n.DataType.AbsoluteUri))
             {
-                return true;
+                return false;
             }
 
-            return IsIllformed(literal);
+            var datatypeLocalPart = n.DataType.AbsoluteUri.Replace(XmlSpecsHelper.NamespaceXmlSchema, string.Empty);
+
+            const string root = "root";
+            var doc = new XDocument(new XElement(root, n.Value));
+            var schemas = new XmlSchemaSet();
+
+            schemas.Add(string.Empty, XmlReader.Create(new StringReader($@"
+<schema xmlns=""http://www.w3.org/2001/XMLSchema"">
+    <element name=""{root}"" type=""{datatypeLocalPart}""/>
+</schema>
+")));
+
+            var result = false;
+            doc.Validate(schemas, (object sender, ValidationEventArgs e) => result = true);
+
+            return result;
         }
     }
 }
