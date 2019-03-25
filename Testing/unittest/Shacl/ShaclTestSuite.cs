@@ -38,7 +38,7 @@ namespace VDS.RDF.Shacl
 
     public class ShaclTestSuite
     {
-        private const string basePath = "resources\\shacl\\manifest.ttl";
+        private const string basePath = "resources\\shacl\\test-suite\\core\\manifest.ttl";
 
         private readonly ITestOutputHelper output;
 
@@ -105,10 +105,11 @@ namespace VDS.RDF.Shacl
 
             var validationResult = false;
             var validationFailure = false;
+            IGraph resultReport;
             try
             {
                 validationResult = new ShaclShapesGraph(shapesGraph).Validate(dataGraph, out var report);
-                output.WriteLine(Writing.StringWriter.Write(report.Graph, new CompressingTurtleWriter()));
+                resultReport = ExtractReportGraph(report.Graph);
             }
             catch
             {
@@ -122,7 +123,12 @@ namespace VDS.RDF.Shacl
             }
             else
             {
-                Assert.Equal(conforms, validationResult);
+                var testReport = ExtractReportGraph(result.Graph);
+
+                output.WriteLine(Writing.StringWriter.Write(testReport, new CompressingTurtleWriter(WriterCompressionLevel.High)));
+                output.WriteLine(Writing.StringWriter.Write(resultReport, new CompressingTurtleWriter(WriterCompressionLevel.High)));
+
+                Assert.Equal(testReport, resultReport);
             }
         }
 
@@ -136,6 +142,21 @@ namespace VDS.RDF.Shacl
                     Populate(((IUriNode)t.Object).Uri);
                 }
             }
+        }
+
+        private static IGraph ExtractReportGraph(IGraph g)
+        {
+            var q = new SparqlQueryParser().ParseFromString(@"
+PREFIX sh: <http://www.w3.org/ns/shacl#> 
+
+DESCRIBE ?s
+WHERE {
+    ?s a sh:ValidationReport .
+}
+");
+            q.Describer = new ShaclValidationReportDescribe();
+
+            return (IGraph)g.ExecuteQuery(q);
         }
     }
 }

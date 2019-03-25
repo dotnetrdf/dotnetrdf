@@ -326,6 +326,19 @@ namespace VDS.RDF.Shacl
             }
         }
 
+        public static IEnumerable<IUriNode> Paths
+        {
+            get
+            {
+                yield return AlternativePath;
+                yield return InversePath;
+                yield return OneOrMorePath;
+                yield return ZeroOrMorePath;
+                yield return ZeroOrOnePath;
+
+            }
+        }
+
         #endregion
 
         private static IUriNode ShaclNode(string name) => factory.CreateUriNode(UriFactory.Create($"{BaseUri}{name}"));
