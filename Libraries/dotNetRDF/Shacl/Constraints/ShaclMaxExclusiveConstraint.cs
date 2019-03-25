@@ -35,6 +35,6 @@ namespace VDS.RDF.Shacl
 
         internal override INode Component => Shacl.MaxExclusiveConstraintComponent;
 
-        protected override bool IsValidInternal(int v) => v == 1;
+        protected override bool IsValidInternal(int v) => v == -1;
     }
 }
