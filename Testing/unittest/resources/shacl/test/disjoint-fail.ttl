@@ -7,4 +7,4 @@
 :s :p :s.
 [sh:targetNode :s; sh:disjoint :p].
 
-<> mf:entries ([mf:action [sht:dataGraph <>; sht:shapesGraph <>]; mf:result [sh:conforms false]]).
+<> mf:entries ([mf:action [sht:dataGraph <>; sht:shapesGraph <>]; mf:result [a sh:ValidationReport; sh:conforms false]]).

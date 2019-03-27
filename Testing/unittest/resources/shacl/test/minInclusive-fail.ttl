@@ -6,4 +6,4 @@
 
 [sh:targetNode 0; sh:minInclusive 1].
 
-<> mf:entries ([mf:action [sht:dataGraph <>; sht:shapesGraph <>]; mf:result [sh:conforms false]]).
+<> mf:entries ([mf:action [sht:dataGraph <>; sht:shapesGraph <>]; mf:result [a sh:ValidationReport; sh:conforms false]]).

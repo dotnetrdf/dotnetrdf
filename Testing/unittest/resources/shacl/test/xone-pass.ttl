@@ -6,4 +6,4 @@
 
 [sh:targetNode [a :C1]; sh:xone ([sh:class :C1] [sh:class :C2])].
 
-<> mf:entries ([mf:action [sht:dataGraph <>; sht:shapesGraph <>]; mf:result [sh:conforms true]]).
+<> mf:entries ([mf:action [sht:dataGraph <>; sht:shapesGraph <>]; mf:result [a sh:ValidationReport; sh:conforms true]]).

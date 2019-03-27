@@ -43,10 +43,15 @@ namespace VDS.RDF.Shacl
 
         internal override IEnumerable<INode> SelectFocusNodes(IGraph dataGragh)
         {
-            return InferSubclasses(dataGragh, this).SelectMany(c => dataGragh.GetTriplesWithPredicateObject(rdf_type, c).Select(t => t.Subject));
+            return
+                InferSubclasses(this)
+                .SelectMany(c =>
+                    dataGragh.GetTriplesWithPredicateObject(rdf_type, c)
+                    .Select(t => t.Subject)
+                );
         }
 
-        private static IEnumerable<INode> InferSubclasses(IGraph dataGraph, INode node, HashSet<INode> seen = null)
+        private static IEnumerable<INode> InferSubclasses(INode node, HashSet<INode> seen = null)
         {
             if (seen is null)
             {
@@ -59,7 +64,7 @@ namespace VDS.RDF.Shacl
 
                 foreach (var subclass in rdfs_subClassOf.SubjectsOf(node))
                 {
-                    foreach (var inferred in InferSubclasses(dataGraph, subclass, seen))
+                    foreach (var inferred in InferSubclasses(subclass, seen))
                     {
                         yield return inferred;
                     }

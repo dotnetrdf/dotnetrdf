@@ -103,7 +103,7 @@ namespace VDS.RDF.Shacl
 
         internal IEnumerable<INode> SelectFocusNodes(IGraph dataGragh)
         {
-            return Targets.SelectMany(target => target.SelectFocusNodes(dataGragh));
+            return Targets.SelectMany(target => target.SelectFocusNodes(dataGragh)).Distinct();
         }
 
         internal bool Validate(INode focusNode, ShaclValidationReport report = null)

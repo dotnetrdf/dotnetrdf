@@ -41,7 +41,7 @@ namespace VDS.RDF.Shacl
         public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
             var invalidValues =
-                from value in this.AsEnumerable()
+                from value in focusNode.AsEnumerable()
                 where !valueNodes.Contains(this)
                 select value;
 

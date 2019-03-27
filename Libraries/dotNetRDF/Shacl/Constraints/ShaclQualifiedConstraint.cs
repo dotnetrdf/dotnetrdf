@@ -52,7 +52,7 @@ namespace VDS.RDF.Shacl
                     from parent in Shacl.Property.SubjectsOf(currentShape)
                     from property in Shacl.Property.ObjectsOf(parent)
                     from qulifiedShape in Shacl.QualifiedValueShape.ObjectsOf(property)
-                    where qulifiedShape != currentShape
+                    where !QualifiedValueShape.Equals(qulifiedShape)
                     select ShaclShape.Parse(qulifiedShape);
             }
 

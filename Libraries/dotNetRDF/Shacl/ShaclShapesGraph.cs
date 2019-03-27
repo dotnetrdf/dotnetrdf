@@ -72,17 +72,12 @@ SELECT DISTINCT ?shape {
         {
             var g = new Graph();
             g.NamespaceMap.AddNamespace("sh", UriFactory.Create(Shacl.BaseUri));
-            report = ShaclValidationReport.Create(g);
+            var r = ShaclValidationReport.Create(g);
+            report = r;
 
-            foreach (var targetedShape in this.TargetedShapes)
-            {
-                if (!targetedShape.Validate(dataGragh, report))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return TargetedShapes
+                .Select(shape => shape.Validate(dataGragh, r))
+                .Aggregate(true, (a, b) => a && b);
         }
     }
 }

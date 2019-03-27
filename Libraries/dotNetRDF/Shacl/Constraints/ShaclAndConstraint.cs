@@ -44,8 +44,10 @@ namespace VDS.RDF.Shacl
                 from valueNode in valueNodes
                 from member in this.Graph.GetListItems(this)
                 let shape = ShaclShape.Parse(member)
-                where !shape.Validate(valueNode)
-                select valueNode;
+                let isValid = shape.Validate(valueNode)
+                group isValid by valueNode into validation
+                where !validation.All(valid => valid)
+                select validation.Key;
 
             return ReportValueNodes(focusNode, invalidValues, report);
         }

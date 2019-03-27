@@ -145,6 +145,41 @@ namespace VDS.RDF.Shacl
             return false;
         }
 
+        protected bool ReportFocusNodes(INode focusNode, IEnumerable<INode> invalidValues, ShaclValidationReport report)
+        {
+            var allValid = !invalidValues.Any();
+
+            if (report is null)
+            {
+                return allValid;
+            }
+
+            if (allValid)
+            {
+                return true;
+            }
+
+            foreach (var invalidValue in invalidValues)
+            {
+                var result = ShaclValidationResult.Create(report.Graph);
+                result.SourceConstraintComponent = Component;
+                result.Severity = Shape.Severity;
+                result.Message = Shape.Message;
+                result.SourceShape = Shape;
+                result.FocusNode = focusNode;
+
+                if (Shape is ShaclPropertyShape propertyShape)
+                {
+                    result.ResultPath = propertyShape.Path;
+                    report.Graph.Assert(propertyShape.Path.AsTriples().Select(t => t.CopyTriple(report.Graph)));
+                }
+
+                report.Results.Add(result);
+            }
+
+            return false;
+        }
+
         internal static ShaclConstraint Parse(ShaclShape shape, INode type, INode value)
         {
             var constraints = new Dictionary<INode, Func<INode, ShaclConstraint>>()

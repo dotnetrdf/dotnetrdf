@@ -41,6 +41,11 @@ namespace VDS.RDF.Shacl
 
         protected bool IsValid(INode first, INode second)
         {
+            if (first.NodeType != NodeType.Literal)
+            {
+                return false;
+            }
+
             try
             {
                 return IsValidInternal(comparer.Compare(first, second));

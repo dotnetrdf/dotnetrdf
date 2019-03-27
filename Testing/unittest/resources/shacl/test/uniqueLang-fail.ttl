@@ -8,4 +8,4 @@
 [sh:targetClass :C; sh:property [sh:path :p; sh:uniqueLang true]].
 [a :C; :p "o1"@en, "o2"@en].
 
-<> mf:entries ([mf:action [sht:dataGraph <>; sht:shapesGraph <>]; mf:result [sh:conforms false]]).
+<> mf:entries ([mf:action [sht:dataGraph <>; sht:shapesGraph <>]; mf:result [a sh:ValidationReport; sh:conforms false]]).

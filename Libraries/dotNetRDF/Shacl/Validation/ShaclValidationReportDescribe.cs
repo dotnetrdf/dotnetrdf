@@ -48,24 +48,20 @@ namespace VDS.RDF.Shacl
             {
                 foreach (var original in context.Data.GetTriplesWithSubject(originalSubject))
                 {
-                    // TODO: Remove after clarifying sh:value inconsistencies in test-suite reports
-                    if (!original.Predicate.Equals(Shacl.Value))
+                    var @object = original.Object;
+                    if (@object.NodeType == NodeType.Blank && !done.Contains(@object))
                     {
-                        var @object = original.Object;
-                        if (@object.NodeType == NodeType.Blank && !done.Contains(@object))
+                        if (PredicatesToExpand.Contains(original.Predicate))
                         {
-                            if (PredicatesToExpand.Contains(original.Predicate))
-                            {
-                                @object = @object.Graph.CreateBlankNode();
-                                map.Add(@object, original.Object);
-                                outstanding.Enqueue(@object);
-                            }
+                            @object = @object.Graph.CreateBlankNode();
+                            map.Add(@object, original.Object);
+                            outstanding.Enqueue(@object);
                         }
+                    }
 
-                        if (!handler.HandleTriple(new Triple(mappedSubject ?? originalSubject, original.Predicate, @object, original.Graph)))
-                        {
-                            ParserHelper.Stop();
-                        }
+                    if (!handler.HandleTriple(new Triple(mappedSubject ?? originalSubject, original.Predicate, @object, original.Graph)))
+                    {
+                        ParserHelper.Stop();
                     }
                 }
             }
@@ -99,6 +95,8 @@ namespace VDS.RDF.Shacl
             {
                 yield return Shacl.Result;
                 yield return Shacl.ResultPath;
+                yield return Shacl.ResultMessage;
+                yield return Shacl.ResultSeverity;
 
                 foreach (var item in Shacl.Paths)
                 {

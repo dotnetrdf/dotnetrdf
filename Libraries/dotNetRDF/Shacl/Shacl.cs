@@ -127,6 +127,7 @@ namespace VDS.RDF.Shacl
 
         public static IUriNode NodeConstraintComponent { get; } = ShaclNode("NodeConstraintComponent");
 
+        // See https://github.com/w3c/data-shapes/issues/103 (spec says sh:PropertyShapeComponent)
         public static IUriNode PropertyShapeComponent { get; } = ShaclNode("PropertyConstraintComponent");
 
         public static IUriNode DatatypeConstraintComponent { get; } = ShaclNode("DatatypeConstraintComponent");

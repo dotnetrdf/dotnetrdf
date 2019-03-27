@@ -45,16 +45,17 @@ namespace VDS.RDF.Shacl
 
         public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
-            var invalidValues = 
+            var invalidValues =
                 from valueNode in valueNodes
-                from @class in InferSubclasses(focusNode.Graph, this)
-                where !@class.IsInstance(valueNode)
-                select valueNode;
+                from @class in InferSubclasses(this)
+                group @class.IsInstance(valueNode) by valueNode into valid
+                where !valid.Any(isValid => isValid)
+                select valid.Key;
 
-            return ReportValueNodes(focusNode, invalidValues, report);
+                return ReportValueNodes(focusNode, invalidValues, report);
         }
 
-        private static IEnumerable<INode> InferSubclasses(IGraph dataGraph, INode node, HashSet<INode> seen = null)
+        private static IEnumerable<INode> InferSubclasses(INode node, HashSet<INode> seen = null)
         {
             if (seen is null)
             {
@@ -67,7 +68,7 @@ namespace VDS.RDF.Shacl
 
                 foreach (var subclass in rdfs_subClassOf.SubjectsOf(node))
                 {
-                    foreach (var inferred in InferSubclasses(dataGraph, subclass, seen))
+                    foreach (var inferred in InferSubclasses(subclass, seen))
                     {
                         yield return inferred;
                     }

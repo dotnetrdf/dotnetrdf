@@ -7,4 +7,4 @@
 [sh:targetNode "x"; sh:minLength 1].
 [sh:targetNode :s; sh:minLength 1].
 
-<> mf:entries ([mf:action [sht:dataGraph <>; sht:shapesGraph <>]; mf:result [sh:conforms true]]).
+<> mf:entries ([mf:action [sht:dataGraph <>; sht:shapesGraph <>]; mf:result [a sh:ValidationReport; sh:conforms true]]).
