@@ -40,6 +40,7 @@ namespace VDS.RDF.Shacl
 
         protected override void DescribeInternal(IRdfHandler handler, SparqlEvaluationContext context, IEnumerable<INode> nodes)
         {
+            var bnodeMapping = new Dictionary<string, INode>();
             var map = new Dictionary<INode, INode>();
             var outstanding = new Queue<INode>();
             var done = new HashSet<INode>();
@@ -59,7 +60,7 @@ namespace VDS.RDF.Shacl
                         }
                     }
 
-                    if (!handler.HandleTriple(new Triple(mappedSubject ?? originalSubject, original.Predicate, @object, original.Graph)))
+                    if (!handler.HandleTriple((RewriteDescribeBNodes(new Triple(mappedSubject ?? originalSubject, original.Predicate, @object, original.Graph), bnodeMapping, handler))))
                     {
                         ParserHelper.Stop();
                     }
