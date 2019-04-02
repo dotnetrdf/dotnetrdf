@@ -2,21 +2,21 @@
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
-// 
+//
 // Copyright (c) 2009-2017 dotNetRDF Project (http://dotnetrdf.org/)
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is furnished
 // to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
@@ -44,7 +44,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="t">Triple to add</param>
         /// <remarks>Adding a Triple that already exists should be permitted though it is not necessary to persist the duplicate to underlying storage</remarks>
-        protected abstract internal bool Add(Triple t);
+        protected internal abstract bool Add(Triple t);
 
         /// <summary>
         /// Determines whether a given Triple is in the Triple Collection
@@ -56,9 +56,9 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the Number of Triples in the Triple Collection
         /// </summary>
-        public abstract int Count 
-        { 
-            get; 
+        public abstract int Count
+        {
+            get;
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="t">Triple to remove</param>
         /// <remarks>Deleting something that doesn't exist should have no effect and give no error</remarks>
-        protected abstract internal bool Delete(Triple t);
+        protected internal abstract bool Delete(Triple t);
 
         /// <summary>
         /// Gets the given Triple
@@ -82,24 +82,24 @@ namespace VDS.RDF
         /// <summary>
         /// Gets all the Nodes which are Objects of Triples in the Triple Collection
         /// </summary>
-        public abstract IEnumerable<INode> ObjectNodes 
-        { 
-            get; 
+        public abstract IEnumerable<INode> ObjectNodes
+        {
+            get;
         }
 
         /// <summary>
         /// Gets all the Nodes which are Predicates of Triples in the Triple Collection
         /// </summary>
-        public abstract IEnumerable<INode> PredicateNodes 
+        public abstract IEnumerable<INode> PredicateNodes
         {
-            get; 
+            get;
         }
 
         /// <summary>
         /// Gets all the Nodes which are Subjects of Triples in the Triple Collection
         /// </summary>
-        public abstract IEnumerable<INode> SubjectNodes 
-        { 
+        public abstract IEnumerable<INode> SubjectNodes
+        {
             get;
         }
 
@@ -110,9 +110,14 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IEnumerable<Triple> WithSubject(INode subj)
         {
-            return (from t in this
-                    where t.Subject.Equals(subj)
-                    select t);
+            foreach (var t in this)
+            {
+                if (t.Subject.Equals(subj))
+                {
+                    yield return t;
+                }
+            }
+            yield break;
         }
 
         /// <summary>
@@ -122,9 +127,15 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IEnumerable<Triple> WithPredicate(INode pred)
         {
-            return (from t in this
-                    where t.Predicate.Equals(pred)
-                    select t);
+            foreach (var t in this)
+            {
+                if (t.Predicate.Equals(pred))
+                {
+                    yield return t;
+                }
+            }
+
+            yield break;
         }
 
         /// <summary>
@@ -134,9 +145,15 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IEnumerable<Triple> WithObject(INode obj)
         {
-            return (from t in this
-                    where t.Object.Equals(obj)
-                    select t);
+            foreach (var t in this)
+            {
+                if (t.Object.Equals(obj))
+                {
+                    yield return t;
+                }
+            }
+
+            yield break;
         }
 
         /// <summary>
@@ -147,9 +164,15 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
         {
-            return (from t in WithSubject(subj)
-                    where t.Predicate.Equals(pred)
-                    select t);
+            foreach (var t in this)
+            {
+                if (t.Subject.Equals(subj) && t.Predicate.Equals(pred))
+                {
+                    yield return t;
+                }
+            }
+
+            yield break;
         }
 
         /// <summary>
@@ -160,9 +183,15 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
         {
-            return (from t in WithPredicate(pred)
-                    where t.Object.Equals(obj)
-                    select t);
+            foreach (var t in this)
+            {
+                if (t.Predicate.Equals(pred) && t.Object.Equals(obj))
+                {
+                    yield return t;
+                }
+            }
+
+            yield break;
         }
 
         /// <summary>
@@ -173,9 +202,15 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
         {
-            return (from t in WithSubject(subj)
-                    where t.Object.Equals(obj)
-                    select t);
+            foreach (var t in this)
+            {
+                if (t.Subject.Equals(subj) && t.Object.Equals(obj))
+                {
+                    yield return t;
+                }
+            }
+
+            yield break;
         }
 
         /// <summary>
