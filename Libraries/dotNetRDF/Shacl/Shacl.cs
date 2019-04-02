@@ -120,6 +120,18 @@ namespace VDS.RDF.Shacl
         public static IUriNode Closed { get; } = ShaclNode("closed");
 
         public static IUriNode IgnoredProperties { get; } = ShaclNode("ignoredProperties");
+
+        public static IUriNode Sparql { get; } = ShaclNode("sparql");
+
+        public static IUriNode Select { get; } = ShaclNode("select");
+
+        public static IUriNode Prefixes { get; } = ShaclNode("prefixes");
+
+        public static IUriNode Declare { get; } = ShaclNode("declare");
+
+        public static IUriNode Prefix { get; } = ShaclNode("prefix");
+
+        public static IUriNode Namespace { get; } = ShaclNode("namespace");
         #endregion
 
         #region Constraint components
@@ -128,7 +140,7 @@ namespace VDS.RDF.Shacl
         public static IUriNode NodeConstraintComponent { get; } = ShaclNode("NodeConstraintComponent");
 
         // See https://github.com/w3c/data-shapes/issues/103 (spec says sh:PropertyShapeComponent)
-        public static IUriNode PropertyShapeComponent { get; } = ShaclNode("PropertyConstraintComponent");
+        public static IUriNode PropertyConstraintComponent { get; } = ShaclNode("PropertyShapeComponent");
 
         public static IUriNode DatatypeConstraintComponent { get; } = ShaclNode("DatatypeConstraintComponent");
 
@@ -181,6 +193,8 @@ namespace VDS.RDF.Shacl
         public static IUriNode QualifiedMaxCountConstraintComponent { get; } = ShaclNode("QualifiedMaxCountConstraintComponent");
 
         public static IUriNode ClosedConstraintComponent { get; } = ShaclNode("ClosedConstraintComponent");
+
+        public static IUriNode SparqlConstraintComponent { get; } = ShaclNode("SPARQLConstraintComponent");
         #endregion
 
         #region Shapes
@@ -237,6 +251,8 @@ namespace VDS.RDF.Shacl
         public static IUriNode ResultPath { get; } = ShaclNode("resultPath");
 
         public static IUriNode ResultMessage { get; } = ShaclNode("resultMessage");
+ 
+        public static IUriNode SourceConstraint { get; } = ShaclNode("sourceConstraint");
         #endregion
 
         #region Collections
@@ -294,6 +310,7 @@ namespace VDS.RDF.Shacl
                 yield return QualifiedMinCount;
                 yield return QualifiedMaxCount;
                 yield return Closed;
+                yield return Sparql;
             }
         }
 

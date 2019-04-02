@@ -26,20 +26,19 @@
 
 namespace VDS.RDF.Shacl
 {
-    using System.Collections.Generic;
+    using System;
+    using System.Linq;
+    using VDS.RDF.Nodes;
 
-    internal class ShaclPropertyConstraint : ShaclConstraint
+    internal class ShaclPrefixDeclaration : WrapperNode
     {
-        public ShaclPropertyConstraint(ShaclShape shape, INode node)
-            : base(shape, node)
+        public ShaclPrefixDeclaration(INode node)
+            : base(node)
         {
         }
 
-        internal override INode Component => Shacl.PropertyConstraintComponent;
+        internal string Prefix => Shacl.Prefix.ObjectsOf(this).Single().AsValuedNode().AsString();
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
-        {
-            return new ShaclPropertyShape(this).Validate(focusNode, valueNodes, report);
-        }
+        internal Uri Namespace => UriFactory.Create(((ILiteralNode)Shacl.Namespace.ObjectsOf(this).Single()).Value);
     }
 }

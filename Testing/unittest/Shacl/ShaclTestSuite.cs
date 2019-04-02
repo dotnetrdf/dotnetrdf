@@ -38,7 +38,7 @@ namespace VDS.RDF.Shacl
 
     public class ShaclTestSuite
     {
-        private const string basePath = "resources\\shacl\\test-suite\\core\\manifest.ttl";
+        private const string basePath = "resources\\shacl\\test-suite\\manifest.ttl";
 
         private readonly ITestOutputHelper output;
 
@@ -78,8 +78,10 @@ namespace VDS.RDF.Shacl
             from entries in Store.GetTriplesWithPredicate(mf_entries)
             let name = new Uri(Path.GetFullPath(basePath)).MakeRelativeUri(((IUriNode)entries.Subject).Uri).ToString()
             where !new[] {
-                "path/path-complex-002.ttl", // TODO: why does this hang?
-                "property/nodeKind-001.ttl", // TODO: see https://github.com/dotnetrdf/dotnetrdf/issues/235
+                "core/path/path-complex-002.ttl", // TODO: see https://github.com/dotnetrdf/dotnetrdf/issues/235
+                "core/property/nodeKind-001.ttl", // TODO: see https://github.com/dotnetrdf/dotnetrdf/issues/235
+                "sparql/pre-binding/pre-binding-003.ttl", // TODO: see https://github.com/dotnetrdf/dotnetrdf/issues/237
+                "sparql/pre-binding/pre-binding-005.ttl", // TODO: see https://github.com/dotnetrdf/dotnetrdf/issues/237
             }.Contains(name)
             select new[] { name };
 
@@ -128,6 +130,14 @@ namespace VDS.RDF.Shacl
             else
             {
                 var testReport = ExtractReportGraph(result.Graph);
+
+                foreach (var t in resultReport.GetTriplesWithPredicate(Shacl.ResultMessage).ToList())
+                {
+                    if(!testReport.GetTriplesWithPredicateObject(Shacl.ResultMessage, t.Object).Any())
+                    {
+                        resultReport.Retract(t);
+                    }
+                }
 
                 output.WriteLine(Writing.StringWriter.Write(testReport, new CompressingTurtleWriter()));
                 output.WriteLine(Writing.StringWriter.Write(resultReport, new CompressingTurtleWriter()));

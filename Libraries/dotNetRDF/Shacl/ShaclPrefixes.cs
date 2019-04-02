@@ -26,20 +26,35 @@
 
 namespace VDS.RDF.Shacl
 {
+    using System.Collections;
     using System.Collections.Generic;
+    using System.Linq;
+    using VDS.RDF.Ontology;
 
-    internal class ShaclPropertyConstraint : ShaclConstraint
+    internal class ShaclPrefixes : WrapperNode, IEnumerable<ShaclPrefixDeclaration>
     {
-        public ShaclPropertyConstraint(ShaclShape shape, INode node)
-            : base(shape, node)
+        private static readonly INode owl_imports = new NodeFactory().CreateUriNode(UriFactory.Create(OntologyHelper.PropertyImports));
+        public ShaclPrefixes(INode node)
+            : base(node)
         {
         }
 
-        internal override INode Component => Shacl.PropertyConstraintComponent;
-
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
+        public IEnumerator<ShaclPrefixDeclaration> GetEnumerator()
         {
-            return new ShaclPropertyShape(this).Validate(focusNode, valueNodes, report);
+            return Declarations.GetEnumerator();
+        }
+
+        private IEnumerable<ShaclPrefixDeclaration> Declarations
+        {
+            get
+            {
+                return Shacl.Declare.ObjectsOf(this).Union(owl_imports.ObjectsOf(this).SelectMany(Shacl.Declare.ObjectsOf)).Select(d => new ShaclPrefixDeclaration(d));
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

@@ -220,6 +220,29 @@ namespace VDS.RDF.Shacl
             }
         }
 
+        internal INode SourceConstraint
+        {
+            get
+            {
+                return Shacl.SourceConstraint.ObjectsOf(this).SingleOrDefault();
+            }
+
+            set
+            {
+                foreach (var sourceConstraint in Shacl.SourceConstraint.ObjectsOf(this).ToList())
+                {
+                    Graph.Retract(this, Shacl.SourceConstraint, sourceConstraint);
+                }
+
+                if (value is null)
+                {
+                    return;
+                }
+
+                Graph.Assert(this, Shacl.SourceConstraint, value);
+            }
+        }
+
         private INode rdf_type => Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
 
         internal static ShaclValidationResult Create(IGraph g)
