@@ -2,21 +2,21 @@
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
-// 
+//
 // Copyright (c) 2009-2017 dotNetRDF Project (http://dotnetrdf.org/)
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is furnished
 // to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
@@ -46,7 +46,10 @@ namespace VDS.RDF
         /// <returns></returns>
         public int Compare(INode x, INode y)
         {
-            if (ReferenceEquals(x, y)) return 0;
+            if (ReferenceEquals(x, y))
+            {
+                return 0;
+            }
 
             if (x == null)
             {
@@ -66,12 +69,15 @@ namespace VDS.RDF
 
             if (x is IVirtualIdComparable && y is IVirtualIdComparable)
             {
-                if ((x as IVirtualIdComparable).TryCompareVirtualId(y, out int result)) return result;
+                if ((x as IVirtualIdComparable).TryCompareVirtualId(y, out int result))
+                {
+                    return result;
+                }
             }
 
             if (x.NodeType == NodeType.Literal && y.NodeType == NodeType.Literal)
             {
-                // Use faster comparison for literals - standard comparison is valued based 
+                // Use faster comparison for literals - standard comparison is valued based
                 // and so gets slower as amount of nodes to compare gets larger
 
                 // Sort order for literals is as follows
@@ -100,9 +106,9 @@ namespace VDS.RDF
                         return 1;
                     }
                 }
-                else if (!a.Language.Equals(String.Empty))
+                else if (!a.Language.Equals(string.Empty))
                 {
-                    if (!b.Language.Equals(String.Empty))
+                    if (!b.Language.Equals(string.Empty))
                     {
                         // Compare language specifiers
                         int c = a.Language.CompareTo(b.Language);
@@ -165,7 +171,10 @@ namespace VDS.RDF
         /// <returns></returns>
         public int Compare(INode x, INode y)
         {
-            if (ReferenceEquals(x, y)) return 0;
+            if (ReferenceEquals(x, y))
+            {
+                return 0;
+            }
 
             if (x == null)
             {
@@ -185,7 +194,7 @@ namespace VDS.RDF
 
             if (x.NodeType == NodeType.Literal && y.NodeType == NodeType.Literal)
             {
-                // Use faster comparison for literals - standard comparison is valued based 
+                // Use faster comparison for literals - standard comparison is valued based
                 // and so gets slower as amount of nodes to compare gets larger
 
                 // Sort order for literals is as follows
@@ -214,9 +223,9 @@ namespace VDS.RDF
                         return 1;
                     }
                 }
-                else if (!a.Language.Equals(String.Empty))
+                else if (!a.Language.Equals(string.Empty))
                 {
-                    if (!b.Language.Equals(String.Empty))
+                    if (!b.Language.Equals(string.Empty))
                     {
                         // Compare language specifiers
                         int c = a.Language.CompareTo(b.Language);
@@ -250,7 +259,7 @@ namespace VDS.RDF
         /// <inheritdoc />
         public bool Equals(INode x, INode y)
         {
-            return Compare(x,y)==0;
+            return Compare(x, y) == 0;
         }
 
         /// <inheritdoc />
@@ -264,7 +273,7 @@ namespace VDS.RDF
     /// Compares triples for equality
     /// </summary>
     public class TripleEqualityComparer : IEqualityComparer<Triple>
-    { 
+    {
 
         /// <summary>
         /// Returns whether two Triples are equal
@@ -292,7 +301,7 @@ namespace VDS.RDF
     /// Abstract base class for Triple Comparers which provide for comparisons using different node comparers
     /// </summary>
     public abstract class BaseTripleComparer
-        : IComparer<Triple>
+        : TripleEqualityComparer, IComparer<Triple>
     {
         /// <summary>
         /// Node Comparer
@@ -430,7 +439,7 @@ namespace VDS.RDF
     /// <summary>
     /// Triple comparer which compares only on objects
     /// </summary>
-    public class ObjectComparer 
+    public class ObjectComparer
         : BaseTripleComparer
     {
         /// <summary>
