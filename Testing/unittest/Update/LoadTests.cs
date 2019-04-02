@@ -25,9 +25,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.IO;
 using System.Linq;
-using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
+using Xunit;
 
 namespace VDS.RDF.Update
 {
@@ -98,8 +98,8 @@ namespace VDS.RDF.Update
         {
             var tripleStore = new TripleStore();
 
-            String g1 = Path.GetFullPath(@"resources\core-421\g1.nq").Replace('\\','/');
-            String g2 = Path.GetFullPath(@"resources\core-421\g2.nq").Replace('\\','/');
+            string g1 = Path.GetFullPath(@"resources\core-421\g1.nq").Replace('\\', '/').Replace(" ", "%20");
+            string g2 = Path.GetFullPath(@"resources\core-421\g2.nq").Replace('\\', '/').Replace(" ", "%20");
 
             tripleStore.ExecuteUpdate("LOAD <file:///" + g1 + "> into graph <http://test.org/user>");
             tripleStore.ExecuteUpdate("LOAD <file:///" + g2 + "> into graph <http://test.org/prodList/>");

@@ -170,16 +170,28 @@ namespace VDS.RDF
                 if (_triplesSubjects.ContainsKey(t.Subject))
                 {
                     _triplesSubjects[t.Subject].Remove(t);
+                    if (_triplesSubjects[t.Subject].Count == 0)
+                    {
+                        _triplesSubjects.Remove(t.Subject);
+                    }
                 }
 
                 if (_triplesObjects.ContainsKey(t.Object))
                 {
                     _triplesObjects[t.Object].Remove(t);
+                    if (_triplesObjects[t.Object].Count == 0)
+                    {
+                        _triplesObjects.Remove(t.Object);
+                    }
                 }
 
                 if (_triplesPredicates.ContainsKey(t.Predicate))
                 {
                     _triplesPredicates[t.Predicate].Remove(t);
+                    if (_triplesPredicates[t.Predicate].Count == 0)
+                    {
+                        _triplesPredicates.Remove(t.Predicate);
+                    }
                 }
 
                 if (_triplesSubjectsPredicates.ContainsKey(t.Subject))
@@ -187,6 +199,15 @@ namespace VDS.RDF
                     if (_triplesSubjectsPredicates[t.Subject].ContainsKey(t.Predicate))
                     {
                         _triplesSubjectsPredicates[t.Subject][t.Predicate].Remove(t);
+                        if (_triplesSubjectsPredicates[t.Subject][t.Predicate].Count == 0)
+                        {
+                            _triplesSubjectsPredicates[t.Subject].Remove(t.Predicate);
+                        }
+
+                        if (_triplesSubjectsPredicates[t.Subject].Count == 0)
+                        {
+                            _triplesSubjectsPredicates.Remove(t.Subject);
+                        }
                     }
                 }
 
@@ -195,6 +216,15 @@ namespace VDS.RDF
                     if (_triplesPredicatesObjects[t.Predicate].ContainsKey(t.Object))
                     {
                         _triplesPredicatesObjects[t.Predicate][t.Object].Remove(t);
+                        if (_triplesPredicatesObjects[t.Predicate][t.Object].Count == 0)
+                        {
+                            _triplesPredicatesObjects[t.Predicate].Remove(t.Object);
+                        }
+
+                        if (_triplesPredicatesObjects[t.Predicate].Count == 0)
+                        {
+                            _triplesPredicatesObjects.Remove(t.Predicate);
+                        }
                     }
                 }
 
@@ -203,6 +233,15 @@ namespace VDS.RDF
                     if (_triplesSubjectsObjects[t.Subject].ContainsKey(t.Object))
                     {
                         _triplesSubjectsObjects[t.Subject][t.Object].Remove(t);
+                        if (_triplesSubjectsObjects[t.Subject][t.Object].Count == 0)
+                        {
+                            _triplesSubjectsObjects[t.Subject].Remove(t.Object);
+                        }
+
+                        if (_triplesSubjectsObjects[t.Subject].Count == 0)
+                        {
+                            _triplesSubjectsObjects.Remove(t.Subject);
+                        }
                     }
                 }
                 RaiseTripleRemoved(t);
