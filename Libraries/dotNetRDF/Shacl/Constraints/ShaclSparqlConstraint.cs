@@ -61,6 +61,8 @@ namespace VDS.RDF.Shacl
 
             var query = new SparqlQueryParser().ParseFromString(queryString);
             query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("this", new ConstantTerm(focusNode)));
+            query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("currentShape", new ConstantTerm(Shape)));
+            query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("shapesGraph", new ConstantTerm(Shape.Graph.CreateUriNode(Shape.GraphUri))));
 
             var propertyShape = Shape as ShaclPropertyShape;
 
