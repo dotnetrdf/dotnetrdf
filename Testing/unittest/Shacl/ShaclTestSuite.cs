@@ -111,7 +111,7 @@ namespace VDS.RDF.Shacl
 
             var validationResult = false;
             var validationFailure = false;
-            IGraph resultReport;
+            var resultReport = (IGraph)null;
             try
             {
                 validationResult = new ShaclShapesGraph(shapesGraph).Validate(dataGraph, out var report);
@@ -120,7 +120,6 @@ namespace VDS.RDF.Shacl
             catch
             {
                 validationFailure = true;
-                throw;
             }
 
             if (failure)
@@ -133,7 +132,7 @@ namespace VDS.RDF.Shacl
 
                 foreach (var t in resultReport.GetTriplesWithPredicate(Shacl.ResultMessage).ToList())
                 {
-                    if(!testReport.GetTriplesWithPredicateObject(Shacl.ResultMessage, t.Object).Any())
+                    if (!testReport.GetTriplesWithPredicateObject(Shacl.ResultMessage, t.Object).Any())
                     {
                         resultReport.Retract(t);
                     }

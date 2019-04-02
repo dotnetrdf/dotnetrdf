@@ -26,6 +26,7 @@
 
 namespace VDS.RDF.Shacl
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using VDS.RDF.Nodes;
@@ -60,6 +61,9 @@ namespace VDS.RDF.Shacl
             }
 
             var query = new SparqlQueryParser().ParseFromString(queryString);
+
+            Validate(query.RootGraphPattern);
+
             query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("this", new ConstantTerm(focusNode)));
             query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("currentShape", new ConstantTerm(Shape)));
             query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("shapesGraph", new ConstantTerm(Shape.Graph.CreateUriNode(Shape.GraphUri))));
@@ -122,6 +126,29 @@ namespace VDS.RDF.Shacl
             }
 
             return false;
+        }
+
+        private void Validate(GraphPattern pattern)
+        {
+            if (pattern.IsMinus || pattern.InlineData != null || pattern.IsService)
+            {
+                throw new Exception();
+            }
+
+            foreach (var subPattern in pattern.ChildGraphPatterns)
+            {
+                Validate(subPattern);
+            }
+
+            foreach (var subQueryPattern in pattern.TriplePatterns.OfType<SubQueryPattern>())
+            {
+                if (!(subQueryPattern.Variables.Contains("this") && subQueryPattern.Variables.Contains("value")))
+                {
+                    throw new Exception();
+                }
+
+                Validate(subQueryPattern.SubQuery.RootGraphPattern);
+            }
         }
 
         private static void BindPath(GraphPattern pattern, ISparqlPath path)
