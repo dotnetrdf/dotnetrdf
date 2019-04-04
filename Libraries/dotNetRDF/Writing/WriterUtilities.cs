@@ -458,7 +458,7 @@ namespace VDS.RDF.Writing
                     // See if this thing is the rdf:rest of anything else
                     do
                     {
-                        Triple[] ts = context.Graph.GetTriplesWithPredicateObject(rest, temp?.Subject).ToArray();
+                        Triple[] ts = context.Graph.GetTriplesWithPredicateObject(rest, firsts.First().Subject).ToArray();
 
                         // Stop when there isn't a rdf:rest
                         if (ts.Length == 0)
@@ -582,7 +582,7 @@ namespace VDS.RDF.Writing
             cs = context.Collections.OrderByDescending(kvp => kvp.Value.Triples.Count).ToList();
 
             // First build up a dependencies table
-            Dictionary<INode, List<INode>> dependencies = new Dictionary<INode, List<INode>>();
+            Dictionary<INode, HashSet<INode>> dependencies = new Dictionary<INode, HashSet<INode>>();
             foreach (KeyValuePair<INode, OutputRdfCollection> kvp in cs)
             {
                 OutputRdfCollection c = kvp.Value;
@@ -594,7 +594,7 @@ namespace VDS.RDF.Writing
                 }
 
                 // Otherwise check each Object of the Triples for other Blank Nodes
-                List<INode> ds = new List<INode>();
+                HashSet<INode> ds = new HashSet<INode>(new FastNodeComparer());
                 foreach (Triple t in c.Triples)
                 {
                     // Only care about Blank Nodes which aren't the collection root but are the root for another collection
@@ -612,7 +612,8 @@ namespace VDS.RDF.Writing
             // Now go back through that table looking for cycles
             foreach (INode n in dependencies.Keys)
             {
-                HashSet<INode> ds = new HashSet<INode>(dependencies[n]);//, new FastNodeComparer());
+                HashSet<INode> ds = dependencies[n];
+
                 if (ds.Count == 0)
                 {
                     continue;
@@ -629,7 +630,7 @@ namespace VDS.RDF.Writing
                     }
                 }
 
-                // We can tell if there is a cycle since ds will now contain n
+                //We can tell if there is a cycle since ds will now contain n
                 if (ds.Contains(n))
                 {
                     context.Collections.Remove(n);
