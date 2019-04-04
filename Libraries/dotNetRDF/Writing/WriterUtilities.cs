@@ -522,7 +522,7 @@ namespace VDS.RDF.Writing
                     }
                     else
                     {
-                        if (ts.Count == 1)
+                        if (context.Graph.GetTriplesWithObject(b).Count() == 1)
                         {
                             ts.RemoveAll(t => t.Object.Equals(b));
                         }
@@ -612,7 +612,7 @@ namespace VDS.RDF.Writing
             // Now go back through that table looking for cycles
             foreach (INode n in dependencies.Keys)
             {
-                HashSet<INode> ds = new HashSet<INode>(dependencies[n], new FastNodeComparer());
+                HashSet<INode> ds = new HashSet<INode>(dependencies[n]);//, new FastNodeComparer());
                 if (ds.Count == 0)
                 {
                     continue;
