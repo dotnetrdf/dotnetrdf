@@ -46,14 +46,14 @@ namespace VDS.RDF.Shacl
 
         internal IEnumerable<ShaclConstraint> Constraints(ShaclShape shape)
         {
-
+            // TODO: Local part extraction @56
             return
                 CartesianProduct(
                     from p in this.Parameters
                     let path = p.Path
                     select
                         from o in path.ObjectsOf(shape)
-                        select new KeyValuePair<string, INode>(path.ToString().Split('/','#').Last(), o))
+                        select new KeyValuePair<string, INode>(path.ToString().Split('/', '#').Last(), o))
                 .Select(
                     x => new ShaclComponentConstraint(shape, this, x));
         }

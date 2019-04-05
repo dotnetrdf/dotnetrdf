@@ -33,7 +33,6 @@ namespace VDS.RDF.Shacl
     using VDS.RDF.Parsing;
     using VDS.RDF.Query;
     using VDS.RDF.Query.Expressions.Primary;
-    using VDS.RDF.Query.Paths;
     using VDS.RDF.Query.Patterns;
 
     internal class ShaclSparqlAskConstraint : ShaclConstraint
@@ -76,12 +75,21 @@ namespace VDS.RDF.Shacl
                 query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern(parameter.Key, new ConstantTerm(parameter.Value)));
             }
 
-            var invalidValues =
-                from valueNode in valueNodes
-                where !((SparqlResultSet)focusNode.Graph.ExecuteQuery(query)).Result
-                select valueNode;
+            IEnumerable<INode> execute()
+            {
+                foreach (var valueNode in valueNodes)
+                {
+                    var q = query.Copy();
+                    q.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("value", new ConstantTerm(valueNode)));
 
-            return ReportValueNodes(focusNode, invalidValues, report);
+                    if (!((SparqlResultSet)focusNode.Graph.ExecuteQuery(q)).Result)
+                    {
+                        yield return valueNode;
+                    }
+                }
+            }
+
+            return ReportValueNodes(focusNode, execute(), report);
         }
 
         private void Validate(GraphPattern pattern)
@@ -104,28 +112,6 @@ namespace VDS.RDF.Shacl
                 }
 
                 Validate(subQueryPattern.SubQuery.RootGraphPattern);
-            }
-        }
-
-        private static void BindPath(GraphPattern pattern, ISparqlPath path)
-        {
-            for (var i = 0; i < pattern.TriplePatterns.Count(); i++)
-            {
-                if (pattern.TriplePatterns[i] is TriplePattern triplePattern && triplePattern.Predicate.VariableName == "PATH")
-                {
-                    pattern.TriplePatterns.RemoveAt(i);
-                    pattern.TriplePatterns.Insert(i, new PropertyPathPattern(triplePattern.Subject, path, triplePattern.Object));
-                }
-            }
-
-            foreach (var subPattern in pattern.ChildGraphPatterns)
-            {
-                BindPath(subPattern, path);
-            }
-
-            foreach (var subQueryPattern in pattern.TriplePatterns.OfType<SubQueryPattern>())
-            {
-                BindPath(subQueryPattern.SubQuery.RootGraphPattern, path);
             }
         }
     }

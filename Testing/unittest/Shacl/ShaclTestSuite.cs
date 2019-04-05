@@ -79,9 +79,6 @@ namespace VDS.RDF.Shacl
             let name = new Uri(Path.GetFullPath(basePath)).MakeRelativeUri(((IUriNode)entries.Subject).Uri).ToString()
             where !new[] {
                 "core/path/path-complex-002.ttl", // TODO: see https://github.com/dotnetrdf/dotnetrdf/issues/235
-                "core/property/nodeKind-001.ttl", // TODO: see https://github.com/dotnetrdf/dotnetrdf/issues/235
-                "sparql/pre-binding/pre-binding-003.ttl", // TODO: see https://github.com/dotnetrdf/dotnetrdf/issues/237
-                "sparql/pre-binding/pre-binding-005.ttl", // TODO: see https://github.com/dotnetrdf/dotnetrdf/issues/237
             }.Contains(name)
             select new[] { name };
 
