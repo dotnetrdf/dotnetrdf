@@ -26,7 +26,7 @@
 
 namespace VDS.RDF.Shacl
 {
-    public class ShaclNodeShape : ShaclShape
+    internal class ShaclNodeShape : ShaclShape
     {
         internal ShaclNodeShape(INode node)
             : base(node)

@@ -30,32 +30,44 @@ namespace VDS.RDF.Shacl
     using System.Diagnostics;
     using System.Linq;
 
-    internal class ShaclPropertyShape : ShaclShape
+    internal class ShaclConstraintComponent : WrapperNode
     {
         [DebuggerStepThrough]
-        internal ShaclPropertyShape(INode node)
+        internal ShaclConstraintComponent(INode node)
             : base(node)
         {
         }
 
-        internal ShaclPath Path
+        internal IEnumerable<ShaclParameter> Parameters =>
+            from parameter in Shacl.Parameter.ObjectsOf(this)
+            select new ShaclParameter(parameter);
+
+        internal bool Matches(ShaclShape shape) => Parameters.All(p => p.Optional || p.Matches(shape));
+
+        internal IEnumerable<ShaclConstraint> Constraints(ShaclShape shape)
         {
-            get
-            {
-                return Shacl.Path.ObjectsOf(this)
-                    .Select(ShaclPath.Parse)
-                    .Single();
-            }
+
+            return
+                CartesianProduct(
+                    from p in this.Parameters
+                    let path = p.Path
+                    select
+                        from o in path.ObjectsOf(shape)
+                        select new KeyValuePair<string, INode>(path.ToString().Split('/','#').Last(), o))
+                .Select(
+                    x => new ShaclComponentConstraint(shape, this, x));
         }
 
-        internal IEnumerable<INode> SelectValueNodes(INode focusNode)
+        // See https://web.archive.org/web/20190405023324/https://ericlippert.com/2010/06/28/computing-a-cartesian-product-with-linq/
+        private static IEnumerable<IEnumerable<T>> CartesianProduct<T>(IEnumerable<IEnumerable<T>> sequences)
         {
-            return Path.SelectValueNodes(focusNode);
-        }
-
-        internal override bool ValidateInternal(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
-        {
-            return valueNodes.All(valueNode => base.ValidateInternal(valueNode, SelectValueNodes(valueNode), report));
+            IEnumerable<IEnumerable<T>> emptyProduct = new[] { Enumerable.Empty<T>() };
+            return sequences.Aggregate(
+                emptyProduct,
+                (accumulator, sequence) =>
+                    from accseq in accumulator
+                    from item in sequence
+                    select accseq.Concat(new[] { item }));
         }
     }
 }

@@ -29,22 +29,56 @@ namespace VDS.RDF.Shacl
     using System.Collections.Generic;
     using System.Linq;
 
-    internal class ShaclClassConstraint : ShaclConstraint
+    internal class ShaclComponentConstraint : ShaclConstraint
     {
-        internal ShaclClassConstraint(ShaclShape shape, INode node)
-            : base(shape, node)
+        private readonly IEnumerable<KeyValuePair<string, INode>> parameters;
+
+        // value has to be the ConstraintComponent, not the object of the constraint predicate statement
+        // in which case parameter values have to be passed into constructor
+        public ShaclComponentConstraint(ShaclShape shape, INode value, IEnumerable<KeyValuePair<string, INode>> parameters)
+            : base(shape, value)
         {
+            this.parameters = parameters;
         }
 
-        internal override INode Component => Shacl.ClassConstraintComponent;
+        public ShaclConstraint Validator
+        {
+            get
+            {
+                if (Shape is ShaclNodeShape)
+                {
+                    var nodeValidator = Shacl.NodeValidator.ObjectsOf(this).SingleOrDefault();
+
+                    if (nodeValidator != null)
+                    {
+                        return new ShaclSparqlSelectConstraint(Shape, nodeValidator, parameters);
+                    }
+                }
+
+                if (Shape is ShaclPropertyShape)
+                {
+                    var propertyValidator = Shacl.PropertyValidator.ObjectsOf(this).SingleOrDefault();
+
+                    if (propertyValidator != null)
+                    {
+                        return new ShaclSparqlSelectConstraint(Shape, propertyValidator, parameters);
+                    }
+                }
+
+                return Shacl.Validator.ObjectsOf(this).Select(v => new ShaclSparqlAskConstraint(Shape, v, parameters)).SingleOrDefault();
+            }
+        }
+
+        internal override INode Component => this;
 
         public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
+            var constraint = Validator;
+
             var invalidValues =
                 from valueNode in valueNodes
-                group this.IsShaclInstance(valueNode) by valueNode into valid
-                where !valid.Any(isValid => isValid)
-                select valid.Key;
+                where !constraint.Validate(focusNode, valueNode.AsEnumerable(), null)
+                select valueNode;
 
             return ReportValueNodes(focusNode, invalidValues, report);
         }

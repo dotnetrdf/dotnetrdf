@@ -110,21 +110,25 @@ namespace VDS.RDF.Shacl
 
 
             var validationResult = false;
-            var validationFailure = false;
             var resultReport = (IGraph)null;
+            var e = (Exception)null;
             try
             {
                 validationResult = new ShaclShapesGraph(shapesGraph).Validate(dataGraph, out var report);
                 resultReport = ExtractReportGraph(report.Graph);
             }
-            catch
+            catch (Exception ex)
             {
-                validationFailure = true;
+                e = ex;
             }
 
             if (failure)
             {
-                Assert.True(validationFailure);
+                Assert.NotNull(e);
+            }
+            else if (e != null)
+            {
+                throw e;
             }
             else
             {

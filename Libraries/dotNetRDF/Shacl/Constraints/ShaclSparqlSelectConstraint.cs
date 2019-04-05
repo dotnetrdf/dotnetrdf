@@ -36,11 +36,19 @@ namespace VDS.RDF.Shacl
     using VDS.RDF.Query.Paths;
     using VDS.RDF.Query.Patterns;
 
-    internal class ShaclSparqlConstraint : ShaclConstraint
+    internal class ShaclSparqlSelectConstraint : ShaclConstraint
     {
-        public ShaclSparqlConstraint(ShaclShape shape, INode value)
+        private readonly IEnumerable<KeyValuePair<string, INode>> parameters;
+
+        public ShaclSparqlSelectConstraint(ShaclShape shape, INode value)
+            : this(shape, value, Enumerable.Empty<KeyValuePair<string, INode>>())
+        {
+        }
+
+        public ShaclSparqlSelectConstraint(ShaclShape shape, INode value, IEnumerable<KeyValuePair<string, INode>> parameters)
             : base(shape, value)
         {
+            this.parameters = parameters;
         }
 
         internal override INode Component => Shacl.SparqlConstraintComponent;
@@ -68,6 +76,11 @@ namespace VDS.RDF.Shacl
             query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("currentShape", new ConstantTerm(Shape)));
             query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("shapesGraph", new ConstantTerm(Shape.Graph.CreateUriNode(Shape.GraphUri))));
 
+            foreach (var parameter in parameters)
+            {
+                query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern(parameter.Key, new ConstantTerm(parameter.Value)));
+            }
+
             var propertyShape = Shape as ShaclPropertyShape;
 
             if (propertyShape != null)
@@ -80,6 +93,11 @@ namespace VDS.RDF.Shacl
             if (solutions.IsEmpty)
             {
                 return true;
+            }
+
+            if (report is null)
+            {
+                return false;
             }
 
             foreach (var solution in solutions)
@@ -132,7 +150,7 @@ namespace VDS.RDF.Shacl
         {
             if (pattern.IsMinus || pattern.InlineData != null || pattern.IsService)
             {
-                throw new Exception();
+                throw new Exception("illegal clauses");
             }
 
             foreach (var subPattern in pattern.ChildGraphPatterns)
@@ -142,9 +160,9 @@ namespace VDS.RDF.Shacl
 
             foreach (var subQueryPattern in pattern.TriplePatterns.OfType<SubQueryPattern>())
             {
-                if (!(subQueryPattern.Variables.Contains("this") && subQueryPattern.Variables.Contains("value")))
+                if (!subQueryPattern.Variables.Contains("this"))
                 {
-                    throw new Exception();
+                    throw new Exception("missing projection");
                 }
 
                 Validate(subQueryPattern.SubQuery.RootGraphPattern);

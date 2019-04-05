@@ -27,29 +27,33 @@
 namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using VDS.RDF.Nodes;
 
-    public abstract class ShaclShape : WrapperNode
+    internal abstract class ShaclShape : WrapperNode
     {
+        [DebuggerStepThrough]
         protected ShaclShape(INode node)
             : base(node)
         {
         }
 
-        public INode Severity => 
+        internal INode Severity =>
             Shacl.Severity.ObjectsOf(this).SingleOrDefault() ?? Shacl.Violation;
 
-        public bool Deactivated =>
+        internal bool Deactivated =>
             Shacl.Deactivated.ObjectsOf(this).SingleOrDefault()?.AsValuedNode().AsBoolean() ?? false;
 
-        public INode Message =>
+        internal INode Message =>
             Shacl.Message.ObjectsOf(this).SingleOrDefault();
+
+        private new ShaclShapesGraph Graph => new ShaclShapesGraph(base.Graph);
 
         private IEnumerable<ShaclConstraint> Constraints =>
             Shacl.Constraints.SelectMany(constraint =>
-                from t in Graph.GetTriplesWithSubjectPredicate(this, constraint)
-                select ShaclConstraint.Parse(this, t.Predicate, t.Object));
+                from o in constraint.ObjectsOf(this)
+                select ShaclConstraint.Parse(this, constraint, o));
 
         private IEnumerable<ShaclTarget> Targets
         {
@@ -101,11 +105,6 @@ namespace VDS.RDF.Shacl
                 .Aggregate(true, (a, b) => a && b);
         }
 
-        internal IEnumerable<INode> SelectFocusNodes(IGraph dataGragh)
-        {
-            return Targets.SelectMany(target => target.SelectFocusNodes(dataGragh)).Distinct();
-        }
-
         internal bool Validate(INode focusNode, ShaclValidationReport report = null)
         {
             return Validate(focusNode, focusNode.AsEnumerable(), report);
@@ -123,9 +122,16 @@ namespace VDS.RDF.Shacl
 
         internal virtual bool ValidateInternal(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
-            return Constraints
+            var components = Graph.ConstraintComponents.Where(component => component.Matches(this)).SelectMany(c => c.Constraints(this));
+
+            return Constraints.Concat(components)
                 .Select(constraint => constraint.Validate(focusNode, valueNodes, report))
                 .Aggregate(true, (a, b) => a && b);
+        }
+
+        private IEnumerable<INode> SelectFocusNodes(IGraph dataGragh)
+        {
+            return Targets.SelectMany(target => target.SelectFocusNodes(dataGragh)).Distinct();
         }
     }
 }

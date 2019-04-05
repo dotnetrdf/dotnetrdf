@@ -44,6 +44,20 @@ namespace VDS.RDF.Shacl
 
         public static IUriNode Conforms { get; } = ShaclNode("conforms");
 
+        public static IUriNode ConstraintComponent { get; } = ShaclNode("ConstraintComponent");
+
+        public static IUriNode Parameter { get; } = ShaclNode("parameter");
+
+        public static IUriNode Optional { get; } = ShaclNode("optional");
+
+        public static IUriNode NodeValidator { get; } = ShaclNode("nodeValidator");
+
+        public static IUriNode PropertyValidator { get; } = ShaclNode("propertyValidator");
+
+        public static IUriNode Validator { get; } = ShaclNode("validator");
+
+        public static IUriNode SparqlAskValidato { get; } = ShaclNode("SPARQLAskValidator");
+
         #region Targets
         public static IUriNode TargetClass { get; } = ShaclNode("targetClass");
 
@@ -124,6 +138,8 @@ namespace VDS.RDF.Shacl
         public static IUriNode Sparql { get; } = ShaclNode("sparql");
 
         public static IUriNode Select { get; } = ShaclNode("select");
+
+        public static IUriNode Ask { get; } = ShaclNode("ask");
 
         public static IUriNode Prefixes { get; } = ShaclNode("prefixes");
 
@@ -251,7 +267,7 @@ namespace VDS.RDF.Shacl
         public static IUriNode ResultPath { get; } = ShaclNode("resultPath");
 
         public static IUriNode ResultMessage { get; } = ShaclNode("resultMessage");
- 
+
         public static IUriNode SourceConstraint { get; } = ShaclNode("sourceConstraint");
         #endregion
 

@@ -37,7 +37,7 @@ namespace VDS.RDF.Shacl
         {
         }
 
-        public IEnumerable<ShaclShape> TargetedShapes
+        internal IEnumerable<ShaclShape> TargetedShapes
         {
             get
             {
@@ -67,6 +67,10 @@ SELECT DISTINCT ?shape {
                 return results.Select(result => result["shape"]).Select(ShaclShape.Parse);
             }
         }
+
+        internal IEnumerable<ShaclConstraintComponent> ConstraintComponents =>
+            from constraintComponent in this.ShaclInstancesOf(Shacl.ConstraintComponent.CopyNode(this))
+            select new ShaclConstraintComponent(constraintComponent);
 
         public bool Validate(IGraph dataGragh, out ShaclValidationReport report)
         {

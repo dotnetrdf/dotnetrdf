@@ -213,7 +213,7 @@ namespace VDS.RDF.Shacl
                 { Shacl.QualifiedMinCount, n => new ShaclQualifiedMinCountConstraint(shape, n) },
                 { Shacl.QualifiedMaxCount, n => new ShaclQualifiedMaxCountConstraint(shape, n) },
                 { Shacl.Closed, n => new ShaclClosedConstraint(shape, n) },
-                { Shacl.Sparql, n => new ShaclSparqlConstraint(shape, n) },
+                { Shacl.Sparql, n => new ShaclSparqlSelectConstraint(shape, n) },
            };
 
             return constraints[type](value);

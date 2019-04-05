@@ -32,7 +32,9 @@ namespace VDS.RDF.Shacl
 
     internal static class ShaclExtensions
     {
-        private static readonly INode rdf_type = new NodeFactory().CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+        private static readonly NodeFactory factory = new NodeFactory();
+        private static readonly INode rdfs_subClassOf = factory.CreateUriNode(UriFactory.Create("http://www.w3.org/2000/01/rdf-schema#subClassOf"));
+        private static readonly INode rdf_type = factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
 
         internal static IEnumerable<INode> SubjectsOf(this INode predicate, INode @object) =>
             from t in @object.Graph.GetTriplesWithPredicateObject(predicate, @object)
@@ -41,6 +43,36 @@ namespace VDS.RDF.Shacl
         internal static IEnumerable<INode> ObjectsOf(this INode predicate, INode subject) =>
             from t in subject.Graph.GetTriplesWithSubjectPredicate(subject, predicate)
             select t.Object;
+
+        internal static IEnumerable<INode> InstancesOf(this IGraph g, INode @class) =>
+            rdf_type.SubjectsOf(@class.CopyNode(g));
+
+        internal static IEnumerable<INode> ShaclInstancesOf(this IGraph g, INode @class) =>
+            InferSubclasses(@class).SelectMany(c => g.InstancesOf(c));
+
+        internal static bool IsShaclInstance(this INode @class, INode node) =>
+            InferSubclasses(@class).Any(c => c.IsInstance(node));
+
+        private static IEnumerable<INode> InferSubclasses(INode node, HashSet<INode> seen = null)
+        {
+            if (seen is null)
+            {
+                seen = new HashSet<INode>();
+            }
+
+            if (seen.Add(node))
+            {
+                yield return node;
+
+                foreach (var subclass in rdfs_subClassOf.SubjectsOf(node))
+                {
+                    foreach (var inferred in InferSubclasses(subclass, seen))
+                    {
+                        yield return inferred;
+                    }
+                }
+            }
+        }
 
         internal static bool IsInstance(this INode @class, INode node)
         {
