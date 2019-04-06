@@ -46,16 +46,20 @@ namespace VDS.RDF.Shacl
 
         internal IEnumerable<ShaclConstraint> Constraints(ShaclShape shape)
         {
-            // TODO: Local part extraction @56
+            // TODO: Local part extraction @54
             return
                 CartesianProduct(
-                    from p in this.Parameters
-                    let path = p.Path
+                    from parameter in Parameters
+                    let path = parameter.Path
+                    let name = path.ToString().Split('/', '#').Last()
+                    let required = !parameter.Optional
+                    let values = path.ObjectsOf(shape)
+                    let adjustedValues = required ? values : values.DefaultIfEmpty(null)
                     select
-                        from o in path.ObjectsOf(shape)
-                        select new KeyValuePair<string, INode>(path.ToString().Split('/', '#').Last(), o))
+                        from value in adjustedValues
+                        select new KeyValuePair<string, INode>(name, value))
                 .Select(
-                    x => new ShaclComponentConstraint(shape, this, x));
+                    parameters => new ShaclComponentConstraint(shape, this, parameters));
         }
 
         // See https://web.archive.org/web/20190405023324/https://ericlippert.com/2010/06/28/computing-a-cartesian-product-with-linq/
@@ -67,7 +71,7 @@ namespace VDS.RDF.Shacl
                 (accumulator, sequence) =>
                     from accseq in accumulator
                     from item in sequence
-                    select accseq.Concat(new[] { item }));
+                    select accseq.Concat(item.AsEnumerable()));
         }
     }
 }
