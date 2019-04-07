@@ -26,9 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace VDS.RDF.Shacl
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using VDS.RDF.Nodes;
     using VDS.RDF.Parsing;
@@ -38,122 +35,70 @@ namespace VDS.RDF.Shacl
 
     public class ShaclTestSuite
     {
-        private const string basePath = "resources\\shacl\\test-suite\\manifest.ttl";
-
         private readonly ITestOutputHelper output;
-
-        private static readonly NodeFactory factory = new NodeFactory();
-        private static readonly INode mf_Manifest = factory.CreateUriNode(UriFactory.Create("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#Manifest"));
-        private static readonly INode mf_action = factory.CreateUriNode(UriFactory.Create("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action"));
-        private static readonly INode mf_include = factory.CreateUriNode(UriFactory.Create("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#include"));
-        private static readonly INode mf_entries = factory.CreateUriNode(UriFactory.Create("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#entries"));
-        private static readonly INode mf_result = factory.CreateUriNode(UriFactory.Create("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result"));
-        private static readonly INode sht_Validate = factory.CreateUriNode(UriFactory.Create("http://www.w3.org/ns/shacl-test#Validate"));
-        private static readonly INode sht_Failure = factory.CreateUriNode(UriFactory.Create("http://www.w3.org/ns/shacl-test#Failure"));
-        private static readonly INode sht_dataGraph = factory.CreateUriNode(UriFactory.Create("http://www.w3.org/ns/shacl-test#dataGraph"));
-        private static readonly INode sht_shapesGraph = factory.CreateUriNode(UriFactory.Create("http://www.w3.org/ns/shacl-test#shapesGraph"));
-        private static readonly INode rdf_type = factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
 
         public ShaclTestSuite(ITestOutputHelper output)
         {
             this.output = output;
         }
 
-        private static TripleStore store;
-        public static TripleStore Store
+        [Theory]
+        [MemberData(nameof(ShaclTestSuiteData.CoreTestNames), MemberType = typeof(ShaclTestSuiteData))]
+        public void CorePartialCompliance(string name)
         {
-            get
-            {
-                if (store is null)
-                {
-                    store = new DiskDemandTripleStore();
-                    Populate(new Uri(Path.GetFullPath(basePath)));
-                }
-
-                return store;
-            }
+            Conforms(name);
         }
-
-        public static IEnumerable<object[]> TestNameData =>
-            from entries in Store.GetTriplesWithPredicate(mf_entries)
-            let name = new Uri(Path.GetFullPath(basePath)).MakeRelativeUri(((IUriNode)entries.Subject).Uri).ToString()
-            where !new[] {
-                "core/path/path-complex-002.ttl", // TODO: see https://github.com/dotnetrdf/dotnetrdf/issues/235
-            }.Contains(name)
-            select new[] { name };
 
         [Theory]
-        [MemberData(nameof(TestNameData))]
-        public void Validate(string name)
+        [MemberData(nameof(ShaclTestSuiteData.CoreTestNames), MemberType = typeof(ShaclTestSuiteData))]
+        public void CoreFullCompliance(string name)
         {
-            var b = new Uri(new Uri(Path.GetFullPath(basePath)), name);
+            if (name == "core/path/path-complex-002.ttl")
+            {
+                Assert.False(true, "See https://github.com/dotnetrdf/dotnetrdf/issues/235");
+            }
 
-            var g = Store[b];
-            var entries = g.GetTriplesWithPredicate(mf_entries).Single().Object;
-            var entry = g.GetListItems(entries).Single();
-            var action = g.GetTriplesWithSubjectPredicate(entry, mf_action).Single().Object;
-            var dataGraphNode = (IUriNode)g.GetTriplesWithSubjectPredicate(action, sht_dataGraph).Single().Object;
-            var shapesGraphNode = (IUriNode)g.GetTriplesWithSubjectPredicate(action, sht_shapesGraph).Single().Object;
+            Validates(name);
+        }
 
-            Store.HasGraph(dataGraphNode.Uri);
-            Store.HasGraph(shapesGraphNode.Uri);
+        [Theory]
+        [MemberData(nameof(ShaclTestSuiteData.SparqlTestNames), MemberType = typeof(ShaclTestSuiteData))]
+        public void SparqlPartialCompliance(string name)
+        {
+            Conforms(name);
+        }
 
-            var dataGraph = Store[dataGraphNode.Uri];
-            var shapesGraph = Store[shapesGraphNode.Uri];
+        [Theory]
+        [MemberData(nameof(ShaclTestSuiteData.SparqlTestNames), MemberType = typeof(ShaclTestSuiteData))]
+        public void SparqlFullCompliance(string name)
+        {
+            Validates(name);
+        }
 
-            var result = entries.Graph.GetTriplesWithSubjectPredicate(entry, mf_result).Single().Object;
-            var failure = result.Equals(sht_Failure);
-            var conforms = !failure && entries.Graph.GetTriplesWithSubjectPredicate(result, Shacl.Conforms).Single().Object.AsValuedNode().AsBoolean();
+        private static void Conforms(string name)
+        {
+            ShaclTestSuiteData.ExtractTestData(name, out var testGraph, out var failure, out var dataGraph, out var shapesGraph);
 
-
-            var validationResult = false;
-            var resultReport = (IGraph)null;
-            var e = (Exception)null;
             try
             {
-                validationResult = new ShaclShapesGraph(shapesGraph).Validate(dataGraph, out var report);
-                resultReport = ExtractReportGraph(report.Graph);
-            }
-            catch (Exception ex)
-            {
-                e = ex;
-            }
+                var actual = new ShaclShapesGraph(shapesGraph).Validate(dataGraph);
+                var expected = testGraph.GetTriplesWithPredicate(Shacl.Conforms).Single().Object.AsValuedNode().AsBoolean();
 
-            if (failure)
-            {
-                Assert.NotNull(e);
+                Assert.Equal(expected, actual);
             }
-            else if (e != null)
+            catch
             {
-                throw e;
-            }
-            else
-            {
-                var testReport = ExtractReportGraph(result.Graph);
-
-                foreach (var t in resultReport.GetTriplesWithPredicate(Shacl.ResultMessage).ToList())
-                {
-                    if (!testReport.GetTriplesWithPredicateObject(Shacl.ResultMessage, t.Object).Any())
-                    {
-                        resultReport.Retract(t);
-                    }
-                }
-
-                output.WriteLine(Writing.StringWriter.Write(testReport, new CompressingTurtleWriter()));
-                output.WriteLine(Writing.StringWriter.Write(resultReport, new CompressingTurtleWriter()));
-
-                Assert.Equal(testReport, resultReport);
+                Assert.True(failure);
             }
         }
 
-        private static void Populate(Uri u)
+        private static void RemoveUnnecessaryResultMessages(IGraph resultReport, IGraph testReport)
         {
-            if (store.HasGraph(u))
+            foreach (var t in resultReport.GetTriplesWithPredicate(Shacl.ResultMessage).ToList())
             {
-                var g = store[u];
-                foreach (var t in g.GetTriplesWithPredicate(mf_include).ToList())
+                if (!testReport.GetTriplesWithPredicateObject(Shacl.ResultMessage, t.Object).Any())
                 {
-                    Populate(((IUriNode)t.Object).Uri);
+                    resultReport.Retract(t);
                 }
             }
         }
@@ -171,6 +116,31 @@ WHERE {
             q.Describer = new ShaclValidationReportDescribe();
 
             return (IGraph)g.ExecuteQuery(q);
+        }
+
+        private void Validates(string name)
+        {
+            ShaclTestSuiteData.ExtractTestData(name, out var testGraph, out var failure, out var dataGraph, out var shapesGraph);
+
+            try
+            {
+                new ShaclShapesGraph(shapesGraph).Validate(dataGraph, out var report);
+
+                var actual = ExtractReportGraph(report.Graph);
+                var expected = ExtractReportGraph(testGraph);
+
+                RemoveUnnecessaryResultMessages(actual, expected);
+
+                var writer = new CompressingTurtleWriter();
+                output.WriteLine(Writing.StringWriter.Write(expected, writer));
+                output.WriteLine(Writing.StringWriter.Write(actual, writer));
+
+                Assert.Equal(expected, actual);
+            }
+            catch
+            {
+                Assert.True(failure);
+            }
         }
     }
 }

@@ -83,5 +83,15 @@ SELECT DISTINCT ?shape {
                 .Select(shape => shape.Validate(dataGragh, r))
                 .Aggregate(true, (a, b) => a && b);
         }
+
+        public bool Validate(IGraph dataGragh)
+        {
+            var g = new Graph();
+            g.NamespaceMap.AddNamespace("sh", UriFactory.Create(Shacl.BaseUri));
+
+            return TargetedShapes
+                .Select(shape => shape.Validate(dataGragh, null))
+                .Aggregate(true, (a, b) => a && b);
+        }
     }
 }
