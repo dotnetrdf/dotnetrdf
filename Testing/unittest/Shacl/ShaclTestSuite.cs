@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace VDS.RDF.Shacl
 {
+    using System;
     using System.Linq;
     using VDS.RDF.Nodes;
     using VDS.RDF.Parsing;
@@ -79,16 +80,21 @@ namespace VDS.RDF.Shacl
         {
             ShaclTestSuiteData.ExtractTestData(name, out var testGraph, out var failure, out var dataGraph, out var shapesGraph);
 
-            try
+            void conforms()
             {
                 var actual = new ShaclShapesGraph(shapesGraph).Validate(dataGraph);
                 var expected = testGraph.GetTriplesWithPredicate(Shacl.Conforms).Single().Object.AsValuedNode().AsBoolean();
 
                 Assert.Equal(expected, actual);
             }
-            catch
+
+            if (failure)
             {
-                Assert.True(failure);
+                Assert.ThrowsAny<Exception>((Action)conforms);
+            }
+            else
+            {
+                conforms();
             }
         }
 
@@ -122,7 +128,7 @@ WHERE {
         {
             ShaclTestSuiteData.ExtractTestData(name, out var testGraph, out var failure, out var dataGraph, out var shapesGraph);
 
-            try
+            void validates()
             {
                 new ShaclShapesGraph(shapesGraph).Validate(dataGraph, out var report);
 
@@ -132,14 +138,19 @@ WHERE {
                 RemoveUnnecessaryResultMessages(actual, expected);
 
                 var writer = new CompressingTurtleWriter();
-                output.WriteLine(Writing.StringWriter.Write(expected, writer));
-                output.WriteLine(Writing.StringWriter.Write(actual, writer));
+                output.WriteLine(StringWriter.Write(expected, writer));
+                output.WriteLine(StringWriter.Write(actual, writer));
 
                 Assert.Equal(expected, actual);
             }
-            catch
+
+            if (failure)
             {
-                Assert.True(failure);
+                Assert.ThrowsAny<Exception>((Action)validates);
+            }
+            else
+            {
+                validates();
             }
         }
     }

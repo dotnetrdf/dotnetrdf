@@ -26,55 +26,24 @@
 
 namespace VDS.RDF.Shacl
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using VDS.RDF.Nodes;
-    using VDS.RDF.Parsing;
     using VDS.RDF.Query;
     using VDS.RDF.Query.Expressions.Primary;
     using VDS.RDF.Query.Patterns;
 
-    internal class ShaclSparqlAskConstraint : ShaclConstraint
+    internal class ShaclSparqlAskConstraint : ShaclSparqlConstraint
     {
-        private readonly IEnumerable<KeyValuePair<string, INode>> parameters;
-
         public ShaclSparqlAskConstraint(ShaclShape shape, INode value, IEnumerable<KeyValuePair<string, INode>> parameters)
-            : base(shape, value)
+            : base(shape, value, parameters)
         {
-            this.parameters = parameters;
         }
 
-        internal override INode Component => null;
+        protected override string Query => Shacl.Ask.ObjectsOf(this).Single().AsValuedNode().AsString();
 
-        private string Ask => Shacl.Ask.ObjectsOf(this).Single().AsValuedNode().AsString();
-
-        private IEnumerable<ShaclPrefixDeclaration> Prefixes => Shacl.Prefixes.ObjectsOf(this).Select(p => new ShaclPrefixes(p)).SingleOrDefault() ?? Enumerable.Empty<ShaclPrefixDeclaration>();
-
-        private INode Message => Shacl.Message.ObjectsOf(this).SingleOrDefault();
-
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
+        protected override bool ValidateInternal(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report, SparqlQuery query)
         {
-            var queryString = new SparqlParameterizedString(Ask);
-
-            foreach (var item in Prefixes)
-            {
-                queryString.Namespaces.AddNamespace(item.Prefix, item.Namespace);
-            }
-
-            var query = new SparqlQueryParser().ParseFromString(queryString);
-
-            Validate(query.RootGraphPattern);
-
-            query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("this", new ConstantTerm(focusNode)));
-            query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("currentShape", new ConstantTerm(Shape)));
-            query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("shapesGraph", new ConstantTerm(Shape.Graph.CreateUriNode(Shape.GraphUri))));
-
-            foreach (var parameter in parameters)
-            {
-                query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern(parameter.Key, new ConstantTerm(parameter.Value)));
-            }
-
             IEnumerable<INode> execute()
             {
                 foreach (var valueNode in valueNodes)
@@ -90,29 +59,6 @@ namespace VDS.RDF.Shacl
             }
 
             return ReportValueNodes(focusNode, execute(), report);
-        }
-
-        private void Validate(GraphPattern pattern)
-        {
-            if (pattern.IsMinus || pattern.InlineData != null || pattern.IsService)
-            {
-                throw new Exception("illegal clauses");
-            }
-
-            foreach (var subPattern in pattern.ChildGraphPatterns)
-            {
-                Validate(subPattern);
-            }
-
-            foreach (var subQueryPattern in pattern.TriplePatterns.OfType<SubQueryPattern>())
-            {
-                if (!subQueryPattern.Variables.Contains("this"))
-                {
-                    throw new Exception("missing projection");
-                }
-
-                Validate(subQueryPattern.SubQuery.RootGraphPattern);
-            }
         }
     }
 }

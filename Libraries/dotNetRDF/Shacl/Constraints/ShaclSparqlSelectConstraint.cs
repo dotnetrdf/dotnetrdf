@@ -26,61 +26,41 @@
 
 namespace VDS.RDF.Shacl
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using VDS.RDF.Nodes;
-    using VDS.RDF.Parsing;
     using VDS.RDF.Query;
-    using VDS.RDF.Query.Expressions.Primary;
     using VDS.RDF.Query.Paths;
     using VDS.RDF.Query.Patterns;
 
-    internal class ShaclSparqlSelectConstraint : ShaclConstraint
+    internal class ShaclSparqlSelectConstraint : ShaclSparqlConstraint
     {
-        private readonly IEnumerable<KeyValuePair<string, INode>> parameters;
-
         public ShaclSparqlSelectConstraint(ShaclShape shape, INode value)
-            : this(shape, value, Enumerable.Empty<KeyValuePair<string, INode>>())
+            : base(shape, value)
         {
         }
 
         public ShaclSparqlSelectConstraint(ShaclShape shape, INode value, IEnumerable<KeyValuePair<string, INode>> parameters)
-            : base(shape, value)
+            : base(shape, value, parameters)
         {
-            this.parameters = parameters;
         }
 
-        internal override INode Component => Shacl.SparqlConstraintComponent;
-
-        private string Select => Shacl.Select.ObjectsOf(this).Single().AsValuedNode().AsString();
-
-        private IEnumerable<ShaclPrefixDeclaration> Prefixes => Shacl.Prefixes.ObjectsOf(this).Select(p => new ShaclPrefixes(p)).SingleOrDefault() ?? Enumerable.Empty<ShaclPrefixDeclaration>();
-
-        private INode Message => Shacl.Message.ObjectsOf(this).SingleOrDefault();
-
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
+        protected override string Query
         {
-            var queryString = new SparqlParameterizedString(Select);
-
-            foreach (var item in Prefixes)
+            get
             {
-                queryString.Namespaces.AddNamespace(item.Prefix, item.Namespace);
+                var query = Shacl.Select.ObjectsOf(this).Single().AsValuedNode().AsString();
+
+                // TODO: Ths is a workaround for https://github.com/dotnetrdf/dotnetrdf/issues/237
+                query = Regex.Replace(query, @"(FILTER.+)\.(\s*)", "$1$2");
+
+                return query;
             }
+        }
 
-            var query = new SparqlQueryParser().ParseFromString(queryString);
-
-            Validate(query.RootGraphPattern);
-
-            query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("this", new ConstantTerm(focusNode)));
-            query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("currentShape", new ConstantTerm(Shape)));
-            query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("shapesGraph", new ConstantTerm(Shape.Graph.CreateUriNode(Shape.GraphUri))));
-
-            foreach (var parameter in parameters)
-            {
-                query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern(parameter.Key, new ConstantTerm(parameter.Value)));
-            }
-
+        protected override bool ValidateInternal(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report, SparqlQuery query)
+        {
             var propertyShape = Shape as ShaclPropertyShape;
 
             if (propertyShape != null)
@@ -144,29 +124,6 @@ namespace VDS.RDF.Shacl
             }
 
             return false;
-        }
-
-        private void Validate(GraphPattern pattern)
-        {
-            if (pattern.IsMinus || pattern.InlineData != null || pattern.IsService)
-            {
-                throw new Exception("illegal clauses");
-            }
-
-            foreach (var subPattern in pattern.ChildGraphPatterns)
-            {
-                Validate(subPattern);
-            }
-
-            foreach (var subQueryPattern in pattern.TriplePatterns.OfType<SubQueryPattern>())
-            {
-                if (!subQueryPattern.Variables.Contains("this"))
-                {
-                    throw new Exception("missing projection");
-                }
-
-                Validate(subQueryPattern.SubQuery.RootGraphPattern);
-            }
         }
 
         private static void BindPath(GraphPattern pattern, ISparqlPath path)
