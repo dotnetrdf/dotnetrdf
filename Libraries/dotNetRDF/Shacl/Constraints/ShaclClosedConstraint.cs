@@ -28,7 +28,6 @@ namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
     using System.Linq;
-    using VDS.RDF.Nodes;
 
     internal class ShaclClosedConstraint : ShaclBooleanConstraint
     {
@@ -46,21 +45,20 @@ namespace VDS.RDF.Shacl
                 return true;
             }
 
-            var ignoredProperties =
-                from ignoredProperty in Shacl.IgnoredProperties.ObjectsOf(Shape)
-                from member in Graph.GetListItems(ignoredProperty)
-                select member;
-
-            var properties =
-                from property in Shacl.Property.ObjectsOf(Shape)
-                from path in Shacl.Path.ObjectsOf(property)
-                select path;
-
             var invalidValues =
                 from valueNode in valueNodes
                 from outgoing in valueNode.Graph.GetTriplesWithSubject(valueNode)
                 let property = outgoing.Predicate
-                where !ignoredProperties.Contains(property) && !properties.Contains(property)
+                let ignoredProperties =
+                    from ignoredProperty in Shacl.IgnoredProperties.ObjectsOf(Shape)
+                    from member in Graph.GetListItems(ignoredProperty)
+                    select member
+                let definedProperties =
+                    from property in Shacl.Property.ObjectsOf(Shape)
+                    from path in Shacl.Path.ObjectsOf(property)
+                    select path
+                let allProperties = definedProperties.Concat(ignoredProperties)
+                where !allProperties.Contains(property)
                 select outgoing;
 
             return ReportValueNodes(invalidValues, report);
