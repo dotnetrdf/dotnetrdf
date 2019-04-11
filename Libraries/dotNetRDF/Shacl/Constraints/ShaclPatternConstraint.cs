@@ -27,21 +27,23 @@
 namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using VDS.RDF.Query;
 
     internal class ShaclPatternConstraint : ShaclConstraint
     {
-        public ShaclPatternConstraint(ShaclShape shape, INode node)
+        [DebuggerStepThrough]
+        internal ShaclPatternConstraint(ShaclShape shape, INode node)
             : base(shape, node)
         {
         }
 
-        public INode Flags => Shacl.Flags.ObjectsOf(Shape).SingleOrDefault();
-
         internal override INode Component => Shacl.PatternConstraintComponent;
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
+        private INode Flags => Shacl.Flags.ObjectsOf(Shape).SingleOrDefault();
+
+        internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
             var query = new SparqlParameterizedString(@"
 ASK {

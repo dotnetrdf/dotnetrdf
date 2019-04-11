@@ -27,18 +27,20 @@
 namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
 
     internal class ShaclNodeKindConstraint : ShaclConstraint
     {
-        public ShaclNodeKindConstraint(ShaclShape shape, INode node)
+        [DebuggerStepThrough]
+        internal ShaclNodeKindConstraint(ShaclShape shape, INode node)
             : base(shape, node)
         {
         }
 
         internal override INode Component => Shacl.NodeKindConstraintComponent;
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
+        internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
             var mappings = new Dictionary<NodeType, IEnumerable<INode>>
             {

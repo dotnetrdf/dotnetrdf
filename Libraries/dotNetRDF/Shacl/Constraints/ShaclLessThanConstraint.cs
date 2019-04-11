@@ -26,9 +26,12 @@
 
 namespace VDS.RDF.Shacl
 {
+    using System.Diagnostics;
+
     internal class ShaclLessThanConstraint : ShaclPropertyComparingConstraint
     {
-        public ShaclLessThanConstraint(ShaclShape shape, INode node)
+        [DebuggerStepThrough]
+        internal ShaclLessThanConstraint(ShaclShape shape, INode node)
             : base(shape, node)
         {
         }

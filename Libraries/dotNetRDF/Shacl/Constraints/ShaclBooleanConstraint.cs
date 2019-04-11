@@ -26,15 +26,17 @@
 
 namespace VDS.RDF.Shacl
 {
+    using System.Diagnostics;
     using VDS.RDF.Nodes;
 
     internal abstract class ShaclBooleanConstraint : ShaclConstraint
     {
-        public ShaclBooleanConstraint(ShaclShape shape, INode value)
+        [DebuggerStepThrough]
+        internal ShaclBooleanConstraint(ShaclShape shape, INode value)
             : base(shape, value)
         {
         }
 
-        protected bool BooleanValue => this.AsValuedNode().AsBoolean();
+        internal bool BooleanValue => this.AsValuedNode().AsBoolean();
     }
 }

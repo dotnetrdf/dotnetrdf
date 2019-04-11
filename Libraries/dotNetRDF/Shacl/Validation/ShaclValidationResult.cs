@@ -26,37 +26,16 @@
 
 namespace VDS.RDF.Shacl
 {
+    using System.Diagnostics;
     using System.Linq;
     using VDS.RDF.Parsing;
 
     internal class ShaclValidationResult : WrapperNode
     {
+        [DebuggerStepThrough]
         private ShaclValidationResult(INode node)
             : base(node)
         {
-        }
-
-        internal INode Type
-        {
-            get
-            {
-                return rdf_type.ObjectsOf(this).SingleOrDefault();
-            }
-
-            set
-            {
-                foreach (var type in rdf_type.ObjectsOf(this).ToList())
-                {
-                    Graph.Retract(this, rdf_type, type);
-                }
-
-                if (value is null)
-                {
-                    return;
-                }
-
-                Graph.Assert(this, rdf_type, value);
-            }
         }
 
         internal INode Severity
@@ -243,7 +222,30 @@ namespace VDS.RDF.Shacl
             }
         }
 
-        private INode rdf_type => Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+        private INode Type
+        {
+            get
+            {
+                return RdfType.ObjectsOf(this).SingleOrDefault();
+            }
+
+            set
+            {
+                foreach (var type in RdfType.ObjectsOf(this).ToList())
+                {
+                    Graph.Retract(this, RdfType, type);
+                }
+
+                if (value is null)
+                {
+                    return;
+                }
+
+                Graph.Assert(this, RdfType, value);
+            }
+        }
+
+        private INode RdfType => Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
 
         internal static ShaclValidationResult Create(IGraph g)
         {

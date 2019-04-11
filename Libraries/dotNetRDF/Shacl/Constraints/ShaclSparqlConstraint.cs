@@ -28,6 +28,7 @@ namespace VDS.RDF.Shacl
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using VDS.RDF.Parsing;
     using VDS.RDF.Query;
@@ -36,11 +37,13 @@ namespace VDS.RDF.Shacl
 
     internal abstract class ShaclSparqlConstraint : ShaclConstraint
     {
+        [DebuggerStepThrough]
         protected ShaclSparqlConstraint(ShaclShape shape, INode value)
             : this(shape, value, Enumerable.Empty<KeyValuePair<string, INode>>())
         {
         }
 
+        [DebuggerStepThrough]
         protected ShaclSparqlConstraint(ShaclShape shape, INode value, IEnumerable<KeyValuePair<string, INode>> parameters)
             : base(shape, value)
         {
@@ -49,15 +52,15 @@ namespace VDS.RDF.Shacl
 
         internal override INode Component => Shacl.SparqlConstraintComponent;
 
-        protected IEnumerable<KeyValuePair<string, INode>> Parameters { get; private set; }
-
         protected abstract string Query { get; }
 
         protected INode Message => Shacl.Message.ObjectsOf(this).SingleOrDefault();
 
+        private IEnumerable<KeyValuePair<string, INode>> Parameters { get; set; }
+
         private IEnumerable<ShaclPrefixDeclaration> Prefixes => Shacl.Prefixes.ObjectsOf(this).Select(p => new ShaclPrefixes(p)).SingleOrDefault() ?? Enumerable.Empty<ShaclPrefixDeclaration>();
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
+        internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
             var queryString = new SparqlParameterizedString(Query);
 

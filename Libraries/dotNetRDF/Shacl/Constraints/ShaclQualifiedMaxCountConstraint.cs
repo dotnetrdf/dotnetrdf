@@ -27,11 +27,13 @@
 namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
 
     internal class ShaclQualifiedMaxCountConstraint : ShaclQualifiedConstraint
     {
-        public ShaclQualifiedMaxCountConstraint(ShaclShape shape, INode node)
+        [DebuggerStepThrough]
+        internal ShaclQualifiedMaxCountConstraint(ShaclShape shape, INode node)
             : base(shape, node)
         {
         }

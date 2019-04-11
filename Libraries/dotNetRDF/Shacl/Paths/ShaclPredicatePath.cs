@@ -27,19 +27,16 @@
 namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using VDS.RDF.Query.Paths;
 
     internal class ShaclPredicatePath : ShaclPath
     {
+        [DebuggerStepThrough]
         internal ShaclPredicatePath(INode node)
             : base(node)
         {
-        }
-
-        internal override IEnumerable<Triple> AsTriples()
-        {
-            return Enumerable.Empty<Triple>();
         }
 
         internal override ISparqlPath SparqlPath
@@ -48,6 +45,11 @@ namespace VDS.RDF.Shacl
             {
                 return new Property(this);
             }
+        }
+
+        internal override IEnumerable<Triple> AsTriples()
+        {
+            return Enumerable.Empty<Triple>();
         }
     }
 }

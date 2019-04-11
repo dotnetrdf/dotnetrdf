@@ -28,6 +28,7 @@ namespace VDS.RDF.Shacl
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using VDS.RDF.Query;
     using VDS.RDF.Query.Builder;
@@ -36,23 +37,13 @@ namespace VDS.RDF.Shacl
 
     internal abstract class ShaclPath : WrapperNode
     {
+        [DebuggerStepThrough]
         protected ShaclPath(INode node)
             : base(node)
         {
         }
 
         internal abstract ISparqlPath SparqlPath { get; }
-
-        internal abstract IEnumerable<Triple> AsTriples();
-
-            internal IEnumerable<INode> SelectValueNodes(INode focusNode)
-        {
-            const string value = "value";
-            var query = QueryBuilder.Select(value).Distinct().Where(new PropertyPathPattern(new NodeMatchPattern(focusNode), this.SparqlPath, new VariablePattern(value))).BuildQuery();
-            var results = focusNode.Graph.ExecuteQuery(query);
-
-            return ((SparqlResultSet)results).Select(result => result[value]);
-        }
 
         internal static ShaclPath Parse(INode node)
         {
@@ -78,6 +69,17 @@ namespace VDS.RDF.Shacl
             }
 
             return new ShaclPredicatePath(node);
+        }
+
+        internal abstract IEnumerable<Triple> AsTriples();
+
+        internal IEnumerable<INode> SelectValueNodes(INode focusNode)
+        {
+            const string value = "value";
+            var query = QueryBuilder.Select(value).Distinct().Where(new PropertyPathPattern(new NodeMatchPattern(focusNode), this.SparqlPath, new VariablePattern(value))).BuildQuery();
+            var results = focusNode.Graph.ExecuteQuery(query);
+
+            return ((SparqlResultSet)results).Select(result => result[value]);
         }
     }
 }

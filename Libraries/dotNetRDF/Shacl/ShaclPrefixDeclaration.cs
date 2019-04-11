@@ -27,12 +27,14 @@
 namespace VDS.RDF.Shacl
 {
     using System;
+    using System.Diagnostics;
     using System.Linq;
     using VDS.RDF.Nodes;
 
     internal class ShaclPrefixDeclaration : WrapperNode
     {
-        public ShaclPrefixDeclaration(INode node)
+        [DebuggerStepThrough]
+        internal ShaclPrefixDeclaration(INode node)
             : base(node)
         {
         }

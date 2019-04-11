@@ -27,12 +27,14 @@
 namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using VDS.RDF.Nodes;
 
     internal abstract class ShaclQualifiedConstraint : ShaclNumericConstraint
     {
-        public ShaclQualifiedConstraint(ShaclShape shape, INode node)
+        [DebuggerStepThrough]
+        internal ShaclQualifiedConstraint(ShaclShape shape, INode node)
             : base(shape, node)
         {
         }
@@ -42,7 +44,17 @@ namespace VDS.RDF.Shacl
             select ShaclShape.Parse(shape))
             .SingleOrDefault();
 
-        public IEnumerable<INode> QualifiedValueNodes(INode focusNode, IEnumerable<INode> valueNodes)
+        internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
+        {
+            if (QualifiedValueShape is null)
+            {
+                return true;
+            }
+
+            return ValidateInternal(focusNode, valueNodes, report);
+        }
+
+        protected IEnumerable<INode> QualifiedValueNodes(INode focusNode, IEnumerable<INode> valueNodes)
         {
             var currentShape = Shape;
 
@@ -73,16 +85,6 @@ namespace VDS.RDF.Shacl
                 let doesNotConformToSiblingShapes = !siblingShapes.Any(siblingShape => siblingShape.Validate(focusNode, v))
                 where conformsToQualifiedShape && doesNotConformToSiblingShapes
                 select valueNode;
-        }
-
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
-        {
-            if (QualifiedValueShape is null)
-            {
-                return true;
-            }
-
-            return ValidateInternal(focusNode, valueNodes, report);
         }
 
         protected abstract bool ValidateInternal(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report);

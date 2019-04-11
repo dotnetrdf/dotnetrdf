@@ -42,11 +42,11 @@ namespace VDS.RDF.Shacl
         internal INode Severity =>
             Shacl.Severity.ObjectsOf(this).SingleOrDefault() ?? Shacl.Violation;
 
-        internal bool Deactivated =>
-            Shacl.Deactivated.ObjectsOf(this).SingleOrDefault()?.AsValuedNode().AsBoolean() ?? false;
-
         internal INode Message =>
             Shacl.Message.ObjectsOf(this).SingleOrDefault();
+
+        private bool Deactivated =>
+            Shacl.Deactivated.ObjectsOf(this).SingleOrDefault()?.AsValuedNode().AsBoolean() ?? false;
 
         private new ShaclShapesGraph Graph => new ShaclShapesGraph(base.Graph);
 
@@ -120,7 +120,7 @@ namespace VDS.RDF.Shacl
             return ValidateInternal(focusNode, valueNodes, report);
         }
 
-        internal virtual bool ValidateInternal(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
+        protected virtual bool ValidateInternal(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
             var components = Graph.ConstraintComponents.Where(component => component.Matches(this)).SelectMany(c => c.Constraints(this));
 

@@ -27,6 +27,7 @@
 namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Text.RegularExpressions;
     using VDS.RDF.Nodes;
@@ -36,12 +37,14 @@ namespace VDS.RDF.Shacl
 
     internal class ShaclSparqlSelectConstraint : ShaclSparqlConstraint
     {
-        public ShaclSparqlSelectConstraint(ShaclShape shape, INode value)
+        [DebuggerStepThrough]
+        internal ShaclSparqlSelectConstraint(ShaclShape shape, INode value)
             : base(shape, value)
         {
         }
 
-        public ShaclSparqlSelectConstraint(ShaclShape shape, INode value, IEnumerable<KeyValuePair<string, INode>> parameters)
+        [DebuggerStepThrough]
+        internal ShaclSparqlSelectConstraint(ShaclShape shape, INode value, IEnumerable<KeyValuePair<string, INode>> parameters)
             : base(shape, value, parameters)
         {
         }

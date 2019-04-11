@@ -26,8 +26,11 @@
 
 namespace VDS.RDF.Shacl
 {
+    using System.Diagnostics;
+
     internal class ShaclNodeShape : ShaclShape
     {
+        [DebuggerStepThrough]
         internal ShaclNodeShape(INode node)
             : base(node)
         {

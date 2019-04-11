@@ -27,18 +27,20 @@
 namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
 
     internal class ShaclMinCountConstraint : ShaclNumericConstraint
     {
-        public ShaclMinCountConstraint(ShaclShape shape, INode node)
+        [DebuggerStepThrough]
+        internal ShaclMinCountConstraint(ShaclShape shape, INode node)
             : base(shape, node)
         {
         }
 
         internal override INode Component => Shacl.MinCountConstraintComponent;
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
+        internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
             if (NumericValue == 0)
             {

@@ -26,9 +26,12 @@
 
 namespace VDS.RDF.Shacl
 {
+    using System.Diagnostics;
+
     internal class ShaclMaxLengthConstraint : ShaclLengthConstraint
     {
-        public ShaclMaxLengthConstraint(ShaclShape shape, INode node)
+        [DebuggerStepThrough]
+        internal ShaclMaxLengthConstraint(ShaclShape shape, INode node)
             : base(shape, node)
         {
         }

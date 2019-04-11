@@ -27,20 +27,22 @@
 namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using VDS.RDF;
     using VDS.RDF.Query;
 
     internal class ShaclLanguageInConstraint : ShaclConstraint
     {
-        public ShaclLanguageInConstraint(ShaclShape shape, INode node)
+        [DebuggerStepThrough]
+        internal ShaclLanguageInConstraint(ShaclShape shape, INode node)
             : base(shape, node)
         {
         }
 
         internal override INode Component => Shacl.LanguageInConstraintComponent;
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
+        internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
             var items = Graph.GetListItems(this);
             var invalidValues =

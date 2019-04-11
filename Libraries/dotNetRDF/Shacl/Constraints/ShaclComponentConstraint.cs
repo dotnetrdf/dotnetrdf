@@ -27,6 +27,7 @@
 namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
 
     internal class ShaclComponentConstraint : ShaclConstraint
@@ -35,13 +36,16 @@ namespace VDS.RDF.Shacl
 
         // value has to be the ConstraintComponent, not the object of the constraint predicate statement
         // in which case parameter values have to be passed into constructor
-        public ShaclComponentConstraint(ShaclShape shape, INode value, IEnumerable<KeyValuePair<string, INode>> parameters)
+        [DebuggerStepThrough]
+        internal ShaclComponentConstraint(ShaclShape shape, INode value, IEnumerable<KeyValuePair<string, INode>> parameters)
             : base(shape, value)
         {
             this.parameters = parameters;
         }
 
-        public ShaclConstraint Validator
+        internal override INode Component => this;
+
+        private ShaclConstraint Validator
         {
             get
             {
@@ -69,9 +73,7 @@ namespace VDS.RDF.Shacl
             }
         }
 
-        internal override INode Component => this;
-
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
+        internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
             var constraint = Validator;
 

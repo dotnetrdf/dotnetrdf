@@ -28,24 +28,26 @@ namespace VDS.RDF.Shacl
 {
     using System.Collections;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
 
     internal class ShaclValidationResultCollection : ICollection<ShaclValidationResult>
     {
         private readonly ShaclValidationReport report;
 
-        public ShaclValidationResultCollection(ShaclValidationReport shaclValidationReport)
+        [DebuggerStepThrough]
+        internal ShaclValidationResultCollection(ShaclValidationReport shaclValidationReport)
         {
-            this.report = shaclValidationReport;
+            report = shaclValidationReport;
         }
-
-        private IEnumerable<ShaclValidationResult> Results =>
-            from result in Shacl.Result.ObjectsOf(report)
-            select ShaclValidationResult.Parse(result);
 
         int ICollection<ShaclValidationResult>.Count => Results.Count();
 
         bool ICollection<ShaclValidationResult>.IsReadOnly => false;
+
+        private IEnumerable<ShaclValidationResult> Results =>
+            from result in Shacl.Result.ObjectsOf(report)
+            select ShaclValidationResult.Parse(result);
 
         void ICollection<ShaclValidationResult>.Add(ShaclValidationResult item) => report.Graph.Assert(report, Shacl.Result, item);
 

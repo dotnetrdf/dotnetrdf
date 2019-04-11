@@ -28,33 +28,36 @@ namespace VDS.RDF.Shacl
 {
     using System.Collections;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using VDS.RDF.Ontology;
 
     internal class ShaclPrefixes : WrapperNode, IEnumerable<ShaclPrefixDeclaration>
     {
-        private static readonly INode owl_imports = new NodeFactory().CreateUriNode(UriFactory.Create(OntologyHelper.PropertyImports));
-        public ShaclPrefixes(INode node)
+        private static readonly INode OwlImports = new NodeFactory().CreateUriNode(UriFactory.Create(OntologyHelper.PropertyImports));
+
+        [DebuggerStepThrough]
+        internal ShaclPrefixes(INode node)
             : base(node)
         {
-        }
-
-        public IEnumerator<ShaclPrefixDeclaration> GetEnumerator()
-        {
-            return Declarations.GetEnumerator();
         }
 
         private IEnumerable<ShaclPrefixDeclaration> Declarations
         {
             get
             {
-                return Shacl.Declare.ObjectsOf(this).Union(owl_imports.ObjectsOf(this).SelectMany(Shacl.Declare.ObjectsOf)).Select(d => new ShaclPrefixDeclaration(d));
+                return Shacl.Declare.ObjectsOf(this).Union(OwlImports.ObjectsOf(this).SelectMany(Shacl.Declare.ObjectsOf)).Select(d => new ShaclPrefixDeclaration(d));
             }
+        }
+
+        IEnumerator<ShaclPrefixDeclaration> IEnumerable<ShaclPrefixDeclaration>.GetEnumerator()
+        {
+            return Declarations.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable<ShaclPrefixDeclaration>)this).GetEnumerator();
         }
     }
 }

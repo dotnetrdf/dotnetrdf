@@ -34,9 +34,28 @@ namespace VDS.RDF.Shacl
 
     public class ShaclValidationReportDescribe : BaseDescribeAlgorithm
     {
-        private static readonly NodeFactory factory = new NodeFactory();
-        private static readonly INode rdf_first = factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst));
-        private static readonly INode rdf_rest = factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest));
+        private static readonly NodeFactory Factory = new NodeFactory();
+        private static readonly INode RdfFirst = Factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst));
+        private static readonly INode RdfRest = Factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest));
+
+        private static IEnumerable<INode> PredicatesToExpand
+        {
+            get
+            {
+                yield return Shacl.Result;
+                yield return Shacl.ResultPath;
+                yield return Shacl.ResultMessage;
+                yield return Shacl.ResultSeverity;
+
+                foreach (var item in Shacl.Paths)
+                {
+                    yield return item;
+                }
+
+                yield return RdfFirst;
+                yield return RdfRest;
+            }
+        }
 
         protected override void DescribeInternal(IRdfHandler handler, SparqlEvaluationContext context, IEnumerable<INode> nodes)
         {
@@ -87,25 +106,6 @@ namespace VDS.RDF.Shacl
                         }
                     }
                 }
-            }
-        }
-
-        private static IEnumerable<INode> PredicatesToExpand
-        {
-            get
-            {
-                yield return Shacl.Result;
-                yield return Shacl.ResultPath;
-                yield return Shacl.ResultMessage;
-                yield return Shacl.ResultSeverity;
-
-                foreach (var item in Shacl.Paths)
-                {
-                    yield return item;
-                }
-
-                yield return rdf_first;
-                yield return rdf_rest;
             }
         }
     }

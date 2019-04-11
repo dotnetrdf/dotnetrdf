@@ -27,11 +27,13 @@
 namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using VDS.RDF.Query;
 
     public class ShaclShapesGraph : WrapperGraph
     {
+        [DebuggerStepThrough]
         public ShaclShapesGraph(IGraph g)
             : base(g)
         {

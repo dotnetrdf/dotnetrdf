@@ -40,20 +40,18 @@ namespace VDS.RDF.Shacl
             Graph.TripleRetracted += TripleRetracted;
         }
 
-        private INode rdf_type => Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-
         internal INode Type
         {
             get
             {
-                return rdf_type.ObjectsOf(this).SingleOrDefault();
+                return RdfType.ObjectsOf(this).SingleOrDefault();
             }
 
             set
             {
-                foreach (var type in rdf_type.ObjectsOf(this).ToList())
+                foreach (var type in RdfType.ObjectsOf(this).ToList())
                 {
-                    Graph.Retract(this, rdf_type, type);
+                    Graph.Retract(this, RdfType, type);
                 }
 
                 if (value is null)
@@ -61,7 +59,7 @@ namespace VDS.RDF.Shacl
                     return;
                 }
 
-                Graph.Assert(this, rdf_type, value);
+                Graph.Assert(this, RdfType, value);
             }
         }
 
@@ -90,6 +88,8 @@ namespace VDS.RDF.Shacl
         }
 
         internal ICollection<ShaclValidationResult> Results => new ShaclValidationResultCollection(this);
+
+        private INode RdfType => Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
 
         internal static ShaclValidationReport Create(IGraph g)
         {

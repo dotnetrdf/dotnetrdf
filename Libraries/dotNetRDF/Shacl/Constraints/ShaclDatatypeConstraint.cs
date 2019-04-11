@@ -28,12 +28,14 @@ namespace VDS.RDF.Shacl
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using VDS.RDF.Parsing;
 
     internal partial class ShaclDatatypeConstraint : ShaclConstraint
     {
-        public ShaclDatatypeConstraint(ShaclShape shape, INode node)
+        [DebuggerStepThrough]
+        internal ShaclDatatypeConstraint(ShaclShape shape, INode node)
             : base(shape, node)
         {
         }
@@ -42,7 +44,7 @@ namespace VDS.RDF.Shacl
 
         private Uri DataTypeParameter => ((IUriNode)this).Uri;
 
-        public override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
+        internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, ShaclValidationReport report)
         {
             var invalidValues =
                 from valueNode in valueNodes

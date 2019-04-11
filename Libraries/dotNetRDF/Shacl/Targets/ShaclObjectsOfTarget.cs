@@ -27,11 +27,13 @@
 namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
 
     internal class ShaclObjectsOfTarget : ShaclTarget
     {
-        public ShaclObjectsOfTarget(INode node)
+        [DebuggerStepThrough]
+        internal ShaclObjectsOfTarget(INode node)
             : base(node)
         {
         }

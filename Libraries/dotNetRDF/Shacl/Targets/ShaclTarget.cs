@@ -24,19 +24,19 @@
 // </copyright>
 */
 
-using System;
-using System.Collections.Generic;
-
 namespace VDS.RDF.Shacl
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+
     internal abstract class ShaclTarget : WrapperNode
     {
-        public ShaclTarget(INode node)
+        [DebuggerStepThrough]
+        protected ShaclTarget(INode node)
             : base(node)
         {
         }
-
-        internal abstract IEnumerable<INode> SelectFocusNodes(IGraph dataGragh);
 
         internal static ShaclTarget Parse(INode type, INode value)
         {
@@ -50,5 +50,7 @@ namespace VDS.RDF.Shacl
 
             return targets[type](value);
         }
+
+        internal abstract IEnumerable<INode> SelectFocusNodes(IGraph dataGragh);
     }
 }

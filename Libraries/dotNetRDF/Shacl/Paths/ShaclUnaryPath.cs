@@ -26,10 +26,12 @@
 
 namespace VDS.RDF.Shacl
 {
+    using System.Diagnostics;
     using System.Linq;
 
     internal abstract class ShaclUnaryPath : ShaclPath
     {
+        [DebuggerStepThrough]
         protected ShaclUnaryPath(INode node)
             : base(node)
         {

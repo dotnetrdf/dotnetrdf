@@ -31,8 +31,8 @@ namespace VDS.RDF.Shacl
 
     public static class Shacl
     {
-        public const string BaseUri = "http://www.w3.org/ns/shacl#";
-        private static readonly NodeFactory factory = new NodeFactory();
+        internal const string BaseUri = "http://www.w3.org/ns/shacl#";
+        private static readonly NodeFactory Factory = new NodeFactory();
 
         public static IUriNode Path { get; } = ShaclNode("path");
 
@@ -107,7 +107,7 @@ namespace VDS.RDF.Shacl
 
         public static IUriNode Flags { get; } = ShaclNode("flags");
 
-        public static IUriNode Equals { get; } = ShaclNode("equals");
+        public static IUriNode EqualsNode { get; } = ShaclNode("equals");
 
         public static IUriNode Disjoint { get; } = ShaclNode("disjoint");
 
@@ -315,7 +315,7 @@ namespace VDS.RDF.Shacl
                 yield return UniqueLang;
                 yield return HasValue;
                 yield return Pattern;
-                yield return Equals;
+                yield return EqualsNode;
                 yield return Disjoint;
                 yield return LessThan;
                 yield return LessThanOrEquals;
@@ -369,12 +369,11 @@ namespace VDS.RDF.Shacl
                 yield return OneOrMorePath;
                 yield return ZeroOrMorePath;
                 yield return ZeroOrOnePath;
-
             }
         }
 
         #endregion
 
-        private static IUriNode ShaclNode(string name) => factory.CreateUriNode(UriFactory.Create($"{BaseUri}{name}"));
+        private static IUriNode ShaclNode(string name) => Factory.CreateUriNode(UriFactory.Create($"{BaseUri}{name}"));
     }
 }

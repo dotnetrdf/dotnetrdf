@@ -27,16 +27,18 @@
 namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using VDS.RDF.Parsing;
 
     internal class ShaclClassTarget : ShaclTarget
     {
-        private static readonly NodeFactory factory = new NodeFactory();
-        private static readonly INode rdfs_subClassOf = factory.CreateUriNode(UriFactory.Create("http://www.w3.org/2000/01/rdf-schema#subClassOf"));
-        private static readonly INode rdf_type = factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+        private static readonly NodeFactory Factory = new NodeFactory();
+        private static readonly INode RdfsSubClassOf = Factory.CreateUriNode(UriFactory.Create("http://www.w3.org/2000/01/rdf-schema#subClassOf"));
+        private static readonly INode RdfType = Factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
 
-        public ShaclClassTarget(INode node)
+        [DebuggerStepThrough]
+        internal ShaclClassTarget(INode node)
             : base(node)
         {
         }
@@ -46,9 +48,8 @@ namespace VDS.RDF.Shacl
             return
                 InferSubclasses(this)
                 .SelectMany(c =>
-                    dataGragh.GetTriplesWithPredicateObject(rdf_type, c)
-                    .Select(t => t.Subject)
-                );
+                    dataGragh.GetTriplesWithPredicateObject(RdfType, c)
+                    .Select(t => t.Subject));
         }
 
         private static IEnumerable<INode> InferSubclasses(INode node, HashSet<INode> seen = null)
@@ -62,7 +63,7 @@ namespace VDS.RDF.Shacl
             {
                 yield return node;
 
-                foreach (var subclass in rdfs_subClassOf.SubjectsOf(node))
+                foreach (var subclass in RdfsSubClassOf.SubjectsOf(node))
                 {
                     foreach (var inferred in InferSubclasses(subclass, seen))
                     {

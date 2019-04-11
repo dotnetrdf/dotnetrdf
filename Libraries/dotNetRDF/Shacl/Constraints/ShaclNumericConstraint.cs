@@ -26,11 +26,13 @@
 
 namespace VDS.RDF.Shacl
 {
+    using System.Diagnostics;
     using VDS.RDF.Nodes;
 
     internal abstract class ShaclNumericConstraint : ShaclConstraint
     {
-        public ShaclNumericConstraint(ShaclShape shape, INode node)
+        [DebuggerStepThrough]
+        internal ShaclNumericConstraint(ShaclShape shape, INode node)
             : base(shape, node)
         {
         }

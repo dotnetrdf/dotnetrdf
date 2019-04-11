@@ -26,12 +26,14 @@
 
 namespace VDS.RDF.Shacl
 {
+    using System.Diagnostics;
     using VDS.RDF.Query;
 
     internal abstract class ShaclComparingConstraint : ShaclConstraint
     {
         private readonly SparqlNodeComparer comparer = new SparqlNodeComparer();
 
+        [DebuggerStepThrough]
         protected ShaclComparingConstraint(ShaclShape shape, INode node)
             : base(shape, node)
         {

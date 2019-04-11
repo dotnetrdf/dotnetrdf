@@ -32,9 +32,9 @@ namespace VDS.RDF.Shacl
 
     internal static class ShaclExtensions
     {
-        private static readonly NodeFactory factory = new NodeFactory();
-        private static readonly INode rdfs_subClassOf = factory.CreateUriNode(UriFactory.Create("http://www.w3.org/2000/01/rdf-schema#subClassOf"));
-        private static readonly INode rdf_type = factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+        private static readonly NodeFactory Factory = new NodeFactory();
+        private static readonly INode RdfsSubClassOf = Factory.CreateUriNode(UriFactory.Create("http://www.w3.org/2000/01/rdf-schema#subClassOf"));
+        private static readonly INode RdfType = Factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
 
         internal static IEnumerable<INode> SubjectsOf(this INode predicate, INode @object) =>
             from t in @object.Graph.GetTriplesWithPredicateObject(predicate, @object)
@@ -45,13 +45,18 @@ namespace VDS.RDF.Shacl
             select t.Object;
 
         internal static IEnumerable<INode> InstancesOf(this IGraph g, INode @class) =>
-            rdf_type.SubjectsOf(@class.CopyNode(g));
+            RdfType.SubjectsOf(@class.CopyNode(g));
 
         internal static IEnumerable<INode> ShaclInstancesOf(this IGraph g, INode @class) =>
             InferSubclasses(@class).SelectMany(c => g.InstancesOf(c));
 
         internal static bool IsShaclInstance(this INode @class, INode node) =>
             InferSubclasses(@class).Any(c => c.IsInstance(node));
+
+        internal static bool IsInstance(this INode @class, INode node)
+        {
+            return node.Graph.GetTriplesWithSubjectPredicate(node, RdfType).WithObject(@class).Any();
+        }
 
         private static IEnumerable<INode> InferSubclasses(INode node, HashSet<INode> seen = null)
         {
@@ -64,7 +69,7 @@ namespace VDS.RDF.Shacl
             {
                 yield return node;
 
-                foreach (var subclass in rdfs_subClassOf.SubjectsOf(node))
+                foreach (var subclass in RdfsSubClassOf.SubjectsOf(node))
                 {
                     foreach (var inferred in InferSubclasses(subclass, seen))
                     {
@@ -72,11 +77,6 @@ namespace VDS.RDF.Shacl
                     }
                 }
             }
-        }
-
-        internal static bool IsInstance(this INode @class, INode node)
-        {
-            return node.Graph.GetTriplesWithSubjectPredicate(node, rdf_type).WithObject(@class).Any();
         }
     }
 }
