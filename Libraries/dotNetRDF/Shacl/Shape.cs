@@ -61,16 +61,14 @@ namespace VDS.RDF.Shacl
         {
             get
             {
-                var rdfs_Class = Graph.CreateUriNode("rdfs:Class");
-
                 bool isShape(INode node)
                 {
-                    return Vocabulary.Shapes.Any(shapeClass => shapeClass.IsInstance(node));
+                    return Vocabulary.Shapes.Any(node.IsInstanceOf);
                 }
 
                 bool isClass(INode node)
                 {
-                    return rdfs_Class.IsInstance(node);
+                    return node.IsInstanceOf(Vocabulary.RdfsClass);
                 }
 
                 IEnumerable<Target> selectTargets(INode type) =>

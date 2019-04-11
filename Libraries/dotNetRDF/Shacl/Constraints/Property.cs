@@ -38,6 +38,7 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
+        // This is never used since validation is delegated to the constraints of this property shape.
         internal override INode ConstraintComponent => Vocabulary.PropertyConstraintComponent;
 
         internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)

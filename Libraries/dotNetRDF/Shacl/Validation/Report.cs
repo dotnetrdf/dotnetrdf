@@ -29,7 +29,6 @@ namespace VDS.RDF.Shacl.Validation
     using System.Collections.Generic;
     using System.Linq;
     using VDS.RDF.Nodes;
-    using VDS.RDF.Parsing;
 
     public class Report : WrapperNode
     {
@@ -44,14 +43,14 @@ namespace VDS.RDF.Shacl.Validation
         {
             get
             {
-                return RdfType.ObjectsOf(this).SingleOrDefault();
+                return Vocabulary.RdfType.ObjectsOf(this).SingleOrDefault();
             }
 
             set
             {
-                foreach (var type in RdfType.ObjectsOf(this).ToList())
+                foreach (var type in Vocabulary.RdfType.ObjectsOf(this).ToList())
                 {
-                    Graph.Retract(this, RdfType, type);
+                    Graph.Retract(this, Vocabulary.RdfType, type);
                 }
 
                 if (value is null)
@@ -59,7 +58,7 @@ namespace VDS.RDF.Shacl.Validation
                     return;
                 }
 
-                Graph.Assert(this, RdfType, value);
+                Graph.Assert(this, Vocabulary.RdfType, value);
             }
         }
 
@@ -88,8 +87,6 @@ namespace VDS.RDF.Shacl.Validation
         }
 
         internal ICollection<Result> Results => new ResultCollection(this);
-
-        private INode RdfType => Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
 
         internal static Report Create(IGraph g)
         {

@@ -30,12 +30,9 @@ namespace VDS.RDF.Shacl
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
-    using VDS.RDF.Ontology;
 
     internal class Prefixes : WrapperNode, IEnumerable<PrefixDeclaration>
     {
-        private static readonly INode OwlImports = new NodeFactory().CreateUriNode(UriFactory.Create(OntologyHelper.PropertyImports));
-
         [DebuggerStepThrough]
         internal Prefixes(INode node)
             : base(node)
@@ -46,7 +43,7 @@ namespace VDS.RDF.Shacl
         {
             get
             {
-                return Vocabulary.Declare.ObjectsOf(this).Union(OwlImports.ObjectsOf(this).SelectMany(Vocabulary.Declare.ObjectsOf)).Select(d => new PrefixDeclaration(d));
+                return Vocabulary.Declare.ObjectsOf(this).Union(Vocabulary.OwlImports.ObjectsOf(this).SelectMany(Vocabulary.Declare.ObjectsOf)).Select(d => new PrefixDeclaration(d));
             }
         }
 

@@ -34,10 +34,6 @@ namespace VDS.RDF.Shacl.Validation
 
     public class ReportDescribeAlgorithm : BaseDescribeAlgorithm
     {
-        private static readonly NodeFactory Factory = new NodeFactory();
-        private static readonly INode RdfFirst = Factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst));
-        private static readonly INode RdfRest = Factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest));
-
         private static IEnumerable<INode> PredicatesToExpand
         {
             get
@@ -52,8 +48,8 @@ namespace VDS.RDF.Shacl.Validation
                     yield return item;
                 }
 
-                yield return RdfFirst;
-                yield return RdfRest;
+                yield return Vocabulary.RdfFirst;
+                yield return Vocabulary.RdfRest;
             }
         }
 

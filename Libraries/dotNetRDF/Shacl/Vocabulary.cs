@@ -28,11 +28,25 @@ namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
     using VDS.RDF;
+    using VDS.RDF.Ontology;
+    using VDS.RDF.Parsing;
 
     public static class Vocabulary
     {
         internal const string BaseUri = "http://www.w3.org/ns/shacl#";
         private static readonly NodeFactory Factory = new NodeFactory();
+
+        public static IUriNode RdfType { get; } = AnyNode(RdfSpecsHelper.RdfType);
+
+        public static IUriNode RdfFirst { get; } = Factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst));
+
+        public static IUriNode RdfRest { get; } = Factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest));
+
+        public static IUriNode RdfsClass { get; } = AnyNode("http://www.w3.org/2000/01/rdf-schema#Class");
+
+        public static IUriNode RdfsSubClassOf { get; } = AnyNode("http://www.w3.org/2000/01/rdf-schema#subClassOf");
+
+        public static IUriNode OwlImports { get; } = AnyNode(OntologyHelper.PropertyImports);
 
         public static IUriNode Path { get; } = ShaclNode("path");
 
@@ -375,5 +389,7 @@ namespace VDS.RDF.Shacl
         #endregion
 
         private static IUriNode ShaclNode(string name) => Factory.CreateUriNode(UriFactory.Create($"{BaseUri}{name}"));
+
+        private static IUriNode AnyNode(string uri) => Factory.CreateUriNode(UriFactory.Create(uri));
     }
 }

@@ -28,14 +28,9 @@ namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
     using System.Linq;
-    using VDS.RDF.Parsing;
 
     internal static class Extensions
     {
-        private static readonly NodeFactory Factory = new NodeFactory();
-        private static readonly INode RdfsSubClassOf = Factory.CreateUriNode(UriFactory.Create("http://www.w3.org/2000/01/rdf-schema#subClassOf"));
-        private static readonly INode RdfType = Factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-
         internal static IEnumerable<INode> SubjectsOf(this INode predicate, INode @object) =>
             from t in @object.Graph.GetTriplesWithPredicateObject(predicate, @object)
             select t.Subject;
@@ -44,19 +39,19 @@ namespace VDS.RDF.Shacl
             from t in subject.Graph.GetTriplesWithSubjectPredicate(subject, predicate)
             select t.Object;
 
-        internal static IEnumerable<INode> InstancesOf(this IGraph g, INode @class) =>
-            RdfType.SubjectsOf(@class.CopyNode(g));
-
         internal static IEnumerable<INode> ShaclInstancesOf(this IGraph g, INode @class) =>
-            InferSubclasses(@class).SelectMany(c => g.InstancesOf(c));
+            InferSubclasses(@class).SelectMany(g.InstancesOf);
 
         internal static bool IsShaclInstance(this INode @class, INode node) =>
-            InferSubclasses(@class).Any(c => c.IsInstance(node));
+            InferSubclasses(@class).Any(node.IsInstanceOf);
 
-        internal static bool IsInstance(this INode @class, INode node)
+        internal static bool IsInstanceOf(this INode node, INode @class)
         {
-            return node.Graph.GetTriplesWithSubjectPredicate(node, RdfType).WithObject(@class).Any();
+            return node.Graph.GetTriplesWithSubjectPredicate(node, Vocabulary.RdfType).WithObject(@class).Any();
         }
+
+        private static IEnumerable<INode> InstancesOf(this IGraph g, INode @class) =>
+            Vocabulary.RdfType.SubjectsOf(@class.CopyNode(g));
 
         private static IEnumerable<INode> InferSubclasses(INode node, HashSet<INode> seen = null)
         {
@@ -69,7 +64,7 @@ namespace VDS.RDF.Shacl
             {
                 yield return node;
 
-                foreach (var subclass in RdfsSubClassOf.SubjectsOf(node))
+                foreach (var subclass in Vocabulary.RdfsSubClassOf.SubjectsOf(node))
                 {
                     foreach (var inferred in InferSubclasses(subclass, seen))
                     {

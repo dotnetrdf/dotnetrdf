@@ -28,49 +28,15 @@ namespace VDS.RDF.Shacl.Targets
 {
     using System.Collections.Generic;
     using System.Diagnostics;
-    using System.Linq;
-    using VDS.RDF.Parsing;
 
     internal class Class : Target
     {
-        private static readonly NodeFactory Factory = new NodeFactory();
-        private static readonly INode RdfsSubClassOf = Factory.CreateUriNode(UriFactory.Create("http://www.w3.org/2000/01/rdf-schema#subClassOf"));
-        private static readonly INode RdfType = Factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-
         [DebuggerStepThrough]
         internal Class(INode node)
             : base(node)
         {
         }
 
-        internal override IEnumerable<INode> SelectFocusNodes(IGraph dataGragh)
-        {
-            return
-                InferSubclasses(this)
-                .SelectMany(c =>
-                    dataGragh.GetTriplesWithPredicateObject(RdfType, c)
-                    .Select(t => t.Subject));
-        }
-
-        private static IEnumerable<INode> InferSubclasses(INode node, HashSet<INode> seen = null)
-        {
-            if (seen is null)
-            {
-                seen = new HashSet<INode>();
-            }
-
-            if (seen.Add(node))
-            {
-                yield return node;
-
-                foreach (var subclass in RdfsSubClassOf.SubjectsOf(node))
-                {
-                    foreach (var inferred in InferSubclasses(subclass, seen))
-                    {
-                        yield return inferred;
-                    }
-                }
-            }
-        }
+        internal override IEnumerable<INode> SelectFocusNodes(IGraph dataGragh) => dataGragh.ShaclInstancesOf(this);
     }
 }
