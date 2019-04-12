@@ -28,8 +28,8 @@ namespace VDS.RDF.Shacl
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
+    using IO = System.IO;
     using VDS.RDF;
 
     internal static class TestSuiteData
@@ -54,7 +54,7 @@ namespace VDS.RDF.Shacl
                 if (store is null)
                 {
                     store = new DiskDemandTripleStore();
-                    Populate(new Uri(Path.GetFullPath(basePath)));
+                    Populate(new Uri(System.IO.Path.GetFullPath(basePath)));
                 }
 
                 return store;
@@ -73,11 +73,11 @@ namespace VDS.RDF.Shacl
 
         private static IEnumerable<string> TestNames =>
             from entries in Store.GetTriplesWithPredicate(mf_entries)
-            select new Uri(Path.GetFullPath(basePath)).MakeRelativeUri(((IUriNode)entries.Subject).Uri).ToString();
+            select new Uri(IO.Path.GetFullPath(basePath)).MakeRelativeUri(((IUriNode)entries.Subject).Uri).ToString();
 
         internal static void ExtractTestData(string name, out IGraph testGraph, out bool failure, out IGraph dataGraph, out IGraph shapesGraph)
         {
-            testGraph = Store[new Uri(new Uri(Path.GetFullPath(basePath)), name)];
+            testGraph = Store[new Uri(new Uri(IO.Path.GetFullPath(basePath)), name)];
 
             var entries = testGraph.GetTriplesWithPredicate(mf_entries).Single().Object;
             var entry = testGraph.GetListItems(entries).Single();

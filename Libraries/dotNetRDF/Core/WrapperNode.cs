@@ -27,6 +27,7 @@
 namespace VDS.RDF
 {
     using System;
+    using System.Diagnostics;
     using VDS.RDF.Writing;
     using VDS.RDF.Writing.Formatting;
 
@@ -40,6 +41,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="node">The node this is a wrapper around.</param>
         /// <exception cref="ArgumentNullException">When <paramref name="node"/> is null.</exception>
+        [DebuggerStepThrough]
         protected WrapperNode(INode node)
         {
             Node = node ?? throw new ArgumentNullException(nameof(node));
@@ -77,20 +79,80 @@ namespace VDS.RDF
             }
         }
 
+        /// <inheritdoc/>
+        string IBlankNode.InternalID
+        {
+            get
+            {
+                if (Node.NodeType != NodeType.Blank)
+                {
+                    throw new InvalidCastException();
+                }
+
+                return ((IBlankNode)Node).InternalID;
+            }
+        }
+
+        /// <inheritdoc/>
+        Uri IUriNode.Uri
+        {
+            get
+            {
+                if (Node.NodeType != NodeType.Uri)
+                {
+                    throw new InvalidCastException();
+                }
+
+                return ((IUriNode)Node).Uri;
+            }
+        }
+
+        /// <inheritdoc/>
+        string ILiteralNode.Value
+        {
+            get
+            {
+                if (Node.NodeType != NodeType.Literal)
+                {
+                    throw new InvalidCastException();
+                }
+
+                return ((ILiteralNode)Node).Value;
+            }
+        }
+
+        /// <inheritdoc/>
+        string ILiteralNode.Language
+        {
+            get
+            {
+                if (Node.NodeType != NodeType.Literal)
+                {
+                    throw new InvalidCastException();
+                }
+
+                return ((ILiteralNode)Node).Language;
+            }
+        }
+
+        /// <inheritdoc/>
+        Uri ILiteralNode.DataType
+        {
+            get
+            {
+                if (Node.NodeType != NodeType.Literal)
+                {
+                    throw new InvalidCastException();
+                }
+
+                return ((ILiteralNode)Node).DataType;
+            }
+        }
+
         /// <summary>
         /// Gets the underlying node this is a wrapper around.
         /// </summary>
         protected INode Node { get; private set; }
-
-        public string InternalID => (this.Node as IBlankNode ?? throw new InvalidCastException()).InternalID;
-
-        public Uri Uri => (this.Node as IUriNode ?? throw new InvalidCastException()).Uri;
-
-        public string Value => (this.Node as ILiteralNode ?? throw new InvalidCastException()).Value;
-
-        public string Language => (this.Node as ILiteralNode ?? throw new InvalidCastException()).Language;
-
-        public Uri DataType => (this.Node as ILiteralNode ?? throw new InvalidCastException())?.DataType;
 
         /// <inheritdoc/>
         public override bool Equals(object obj)
