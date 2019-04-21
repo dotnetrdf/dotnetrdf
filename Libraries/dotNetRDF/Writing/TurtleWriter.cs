@@ -42,7 +42,7 @@ namespace VDS.RDF.Writing
     /// Similar in speed to the <see cref="CompressingTurtleWriter">CompressingTurtleWriter</see> but doesn't use the full Blank Node and Collection syntax compressions
     /// </remarks>
     /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call the Save() method from multiple threads on different Graphs without issue</threadsafety>
-    [Obsolete("Deprecated in favour of the CompressionTurtleWriter which uses a much fuller range of syntax compressions", false)]
+    [Obsolete("Deprecated in favour of the CompressingTurtleWriter which uses a much fuller range of syntax compressions", false)]
     public class TurtleWriter
         : BaseRdfWriter, IPrettyPrintingWriter, IHighSpeedWriter, IFormatterBasedWriter
     {
@@ -166,44 +166,7 @@ namespace VDS.RDF.Writing
             {
 
                 // Get the Triples as a Sorted List
-                List<Triple> ts = context.Graph.Triples.ToList();
-                int capacity = ts.Count;
-                Dictionary<INode, Dictionary<INode, Dictionary<INode, List<Triple>>>> sortHelperDictionary = new Dictionary<INode, Dictionary<INode, Dictionary<INode, List<Triple>>>>(capacity);
-                // Fill dictionary
-                foreach (Triple triple in ts)
-                {
-                    if (!sortHelperDictionary.ContainsKey(triple.Subject)) { sortHelperDictionary.Add(triple.Subject, new Dictionary<INode, Dictionary<INode, List<Triple>>>()); }
-
-                    if (!sortHelperDictionary[triple.Subject].ContainsKey(triple.Predicate)) { sortHelperDictionary[triple.Subject].Add(triple.Predicate, new Dictionary<INode, List<Triple>>()); }
-
-                    if (!sortHelperDictionary[triple.Subject][triple.Predicate].ContainsKey(triple.Object)) { sortHelperDictionary[triple.Subject][triple.Predicate].Add(triple.Object, new List<Triple>()); }
-
-                    sortHelperDictionary[triple.Subject][triple.Predicate][triple.Object].Add(triple);
-                }
-
-                ts.Clear();
-                var keys = sortHelperDictionary.Keys.ToArray();
-                Array.Sort(keys, new FastNodeComparer());
-                foreach (var subjectKey in keys)
-                {
-                    var predicateKeys = sortHelperDictionary[subjectKey].Keys.ToArray();
-                    Array.Sort(predicateKeys, new FastNodeComparer());
-                    foreach (var predicatekey in predicateKeys)
-                    {
-                        var objectKeys = sortHelperDictionary[subjectKey][predicatekey].Keys.ToArray();
-                        Array.Sort(objectKeys, new FastNodeComparer());
-                        foreach (var objectKey in objectKeys)
-                        {
-                            var triplesSubset = sortHelperDictionary[subjectKey][predicatekey][objectKey];
-                            if (triplesSubset.Count > 1)
-                            {
-                                triplesSubset.Sort(new FullTripleComparer(new FastNodeComparer()));
-                            }
-
-                            ts.AddRange(triplesSubset);
-                        }
-                    }
-                }
+                var ts = WriterHelper.GetTriplesSortedBySubjectPredicate(context.Graph);
 
                 // Variables we need to track our writing
                 INode lastSubj, lastPred;

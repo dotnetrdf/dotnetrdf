@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace VDS.RDF.Writing
@@ -78,5 +79,7 @@ namespace VDS.RDF.Writing
         /// <param name="graph">The graph to be saved</param>
         /// <param name="output">The <see cref="TextWriter"/> to save the graph to.</param>
         protected abstract void SaveInternal(IGraph graph, TextWriter output);
+
+        
     }
 }
