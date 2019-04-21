@@ -718,5 +718,56 @@ namespace VDS.RDF.Writing
                 .Replace("'", "&apos;")
                 .Replace("\"", "&quot;");
         }
+
+        /// <summary>
+        /// Get a list of all triples in the specified graph, sorted by subject and then predicate.
+        /// </summary>
+        /// <param name="graph">The graph whose triples are to be returned</param>
+        /// <returns>A list of the triples in <paramref name="graph"/> sorted by their subject and then predicate.</returns>
+        public static List<Triple> GetTriplesSortedBySubjectPredicate(IGraph graph)
+        {
+            var ts = graph.Triples.ToList();
+            SortTriplesBySubjectPredicate(ts);
+            return ts;
+        }
+
+        /// <summary>
+        /// Sort the provided list of triples by subject and then predicate. The list is modified in-place
+        /// </summary>
+        /// <param name="ts">The list of triples to be sorted</param>
+        public static void SortTriplesBySubjectPredicate(List<Triple> ts)
+        {
+            var capacity = ts.Count;
+            var sortHelperDictionary = new Dictionary<INode, Dictionary<INode, List<Triple>>>(capacity);
+            // Fill dictionary
+            foreach (var triple in ts)
+            {
+                if (!sortHelperDictionary.ContainsKey(triple.Subject))
+                {
+                    sortHelperDictionary.Add(triple.Subject, new Dictionary<INode, List<Triple>>());
+                }
+
+                if (!sortHelperDictionary[triple.Subject].ContainsKey(triple.Predicate))
+                {
+                    sortHelperDictionary[triple.Subject].Add(triple.Predicate, new List<Triple>());
+                }
+
+                sortHelperDictionary[triple.Subject][triple.Predicate].Add(triple);
+            }
+
+            ts.Clear();
+            var keys = sortHelperDictionary.Keys.ToArray();
+            Array.Sort(keys, new FastNodeComparer());
+            foreach (var subjectKey in keys)
+            {
+                var predicateKeys = sortHelperDictionary[subjectKey].Keys.ToArray();
+                Array.Sort(predicateKeys, new FastNodeComparer());
+                foreach (var predicateKey in predicateKeys)
+                {
+                    ts.AddRange(sortHelperDictionary[subjectKey][predicateKey]);
+                }
+            }
+
+        }
     }
 }
