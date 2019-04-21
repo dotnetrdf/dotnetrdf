@@ -29,12 +29,12 @@ namespace VDS.RDF.Shacl
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using IO = System.IO;
     using VDS.RDF;
+    using IO = System.IO;
 
     internal static class TestSuiteData
     {
-        private const string basePath = "resources\\shacl\\test-suite\\manifest.ttl";
+        private static readonly Uri baseUri = UriFactory.Create(IO.Path.GetFullPath("resources\\shacl\\test-suite\\manifest.ttl"));
 
         private static readonly NodeFactory factory = new NodeFactory();
         private static readonly INode mf_include = factory.CreateUriNode(UriFactory.Create("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#include"));
@@ -47,14 +47,18 @@ namespace VDS.RDF.Shacl
 
         private static TripleStore store;
 
-        public static TripleStore Store
+        private static TripleStore Store
         {
             get
             {
                 if (store is null)
                 {
                     store = new DiskDemandTripleStore();
-                    Populate(new Uri(System.IO.Path.GetFullPath(basePath)));
+
+                    Populate(baseUri);
+
+                    // Add proposed nodeValidator test missing from component manifest
+                    Populate(new Uri(baseUri, "sparql/component/nodeValidator-001.ttl"));
                 }
 
                 return store;
@@ -71,13 +75,13 @@ namespace VDS.RDF.Shacl
             where name.StartsWith("sparql")
             select new[] { name };
 
-        private static IEnumerable<string> TestNames =>
+        public static IEnumerable<string> TestNames =>
             from entries in Store.GetTriplesWithPredicate(mf_entries)
-            select new Uri(IO.Path.GetFullPath(basePath)).MakeRelativeUri(((IUriNode)entries.Subject).Uri).ToString();
+            select baseUri.MakeRelativeUri(((IUriNode)entries.Subject).Uri).ToString();
 
         internal static void ExtractTestData(string name, out IGraph testGraph, out bool failure, out IGraph dataGraph, out IGraph shapesGraph)
         {
-            testGraph = Store[new Uri(new Uri(IO.Path.GetFullPath(basePath)), name)];
+            testGraph = Store[new Uri(baseUri, name)];
 
             var entries = testGraph.GetTriplesWithPredicate(mf_entries).Single().Object;
             var entry = testGraph.GetListItems(entries).Single();
