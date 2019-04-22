@@ -65,7 +65,7 @@ namespace VDS.RDF.Writing
         public void Save(ITripleStore store, string filename)
         {
             var jsonArray = SerializeStore(store);
-            using (var writer = new StreamWriter(File.Open(filename, FileMode.CreateNew, FileAccess.Write),
+            using (var writer = new StreamWriter(File.Open(filename, FileMode.Create, FileAccess.Write),
                 Encoding.UTF8))
             {
                 writer.Write(jsonArray);
