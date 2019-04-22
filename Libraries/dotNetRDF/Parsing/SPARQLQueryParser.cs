@@ -1327,6 +1327,7 @@ namespace VDS.RDF.Parsing
                 // this.TryParseTriplePatterns(context, child);
                 pattern.AddGraphPattern(child);
                 child = new GraphPattern();
+                IToken lastToken = null;
 
                 // Keep Parsing Graph Patterns until we hit a Right Curly Bracket
                 do
@@ -1349,19 +1350,19 @@ namespace VDS.RDF.Parsing
                                     pattern.AddGraphPattern(child);
                                     child = new GraphPattern();
                                 }
-                                context.Tokens.Dequeue();
+                                lastToken = context.Tokens.Dequeue();
                                 TryParseUnionClause(context, pattern);
                                 break;
 
                             case Token.FILTER:
                                 // FILTER Clause
-                                context.Tokens.Dequeue();
+                                lastToken = context.Tokens.Dequeue();
                                 TryParseFilterClause(context, pattern);
                                 break;
 
                             case Token.BIND:
                                 // BIND Clause
-                                context.Tokens.Dequeue();
+                                lastToken = context.Tokens.Dequeue();
                                 TryParseBindAssignment(context, pattern);
                                 break;
 
@@ -1372,7 +1373,7 @@ namespace VDS.RDF.Parsing
                                     pattern.AddGraphPattern(child);
                                     child = new GraphPattern();
                                 }
-                                context.Tokens.Dequeue();
+                                lastToken = context.Tokens.Dequeue();
                                 TryParseOptionalClause(context, pattern);
                                 break;
 
@@ -1383,7 +1384,7 @@ namespace VDS.RDF.Parsing
                                     pattern.AddGraphPattern(child);
                                     child = new GraphPattern();
                                 }
-                                context.Tokens.Dequeue();
+                                lastToken = context.Tokens.Dequeue();
                                 TryParseGraphClause(context, pattern);
                                 break;
 
@@ -1397,7 +1398,7 @@ namespace VDS.RDF.Parsing
                                     pattern.AddGraphPattern(child);
                                     child = new GraphPattern();
                                 }
-                                context.Tokens.Dequeue();
+                                lastToken = context.Tokens.Dequeue();
                                 TryParseExistsClause(context, pattern, (next.TokenType == Token.EXISTS));
                                 break;
 
@@ -1408,7 +1409,7 @@ namespace VDS.RDF.Parsing
                                     pattern.AddGraphPattern(child);
                                     child = new GraphPattern();
                                 }
-                                context.Tokens.Dequeue();
+                                lastToken = context.Tokens.Dequeue();
                                 TryParseMinusClause(context, pattern);
                                 break;
 
@@ -1419,7 +1420,7 @@ namespace VDS.RDF.Parsing
                                     pattern.AddGraphPattern(child);
                                     child = new GraphPattern();
                                 }
-                                context.Tokens.Dequeue();
+                                lastToken = context.Tokens.Dequeue();
                                 TryParseServiceClause(context, pattern);
                                 break;
 
@@ -1431,8 +1432,18 @@ namespace VDS.RDF.Parsing
                                     pattern.AddGraphPattern(child);
                                     child = new GraphPattern();
                                 }
-                                context.Tokens.Dequeue();
+                                lastToken = context.Tokens.Dequeue();
                                 pattern.AddInlineData(TryParseInlineData(context));
+                                break;
+
+                            case Token.DOT:
+                                // Allowed after non-triple patterns
+                                if (lastToken == null)
+                                {
+                                    throw ParserHelper.Error("Unexpected DOT in graph pattern.", next);
+                                }
+                                context.Tokens.Dequeue();
+                                lastToken = null;
                                 break;
 
                             case Token.VARIABLE:
@@ -1449,6 +1460,7 @@ namespace VDS.RDF.Parsing
                                 // Start of some Triple Patterns
                                 context.GraphPatternID++;
                                 TryParseTriplePatterns(context, child);
+                                lastToken = null;
                                 break;
 
                             default:
