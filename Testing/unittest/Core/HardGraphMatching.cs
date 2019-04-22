@@ -491,5 +491,35 @@ namespace VDS.RDF
             IGraph g = new Graph();
             Assert.False(g.Equals((IGraph)null));
         }
+
+        [Fact]
+        public void GraphMatchIssue235()
+        {
+            var g1 = new Graph();
+            g1.LoadFromString(@"
+@prefix : <urn:> .
+
+[ :p 
+    [ :p :X ] ,
+    [ :p :X ] ,
+    [ :p :Y ] ,
+    [ :p :Y ]
+].
+");
+
+            var g2 = new Graph();
+            g2.LoadFromString(@"
+@prefix : <urn:> .
+
+[ :p 
+    [ :p :X ] ,
+    [ :p :Y ] ,
+    [ :p :X ] ,
+    [ :p :Y ]
+].
+");
+
+            Assert.Equal(g1, g2);
+        }
     }
 }

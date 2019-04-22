@@ -933,10 +933,17 @@ namespace VDS.RDF
                 if (!_mapping.ContainsKey(gPair.Key))
                 {
                     possibleMappings.Add(gPair.Key, new List<INode>());
-                    foreach (KeyValuePair<INode, int> hPair in hNodes.Where(p => p.Value == gPair.Value && !_bound.Contains(p.Key)))
+                    foreach (var hPair in hNodes)
                     {
-                        possibleMappings[gPair.Key].Add(hPair.Key);
+                        if (hPair.Value == gPair.Value && !_bound.Contains(hPair.Key))
+                        {
+                            possibleMappings[gPair.Key].Add(hPair.Key);
+                        }
                     }
+                    //foreach (KeyValuePair<INode, int> hPair in hNodes.Where(p => p.Value == gPair.Value && !_bound.Contains(p.Key)))
+                    //{
+                    //    possibleMappings[gPair.Key].Add(hPair.Key);
+                    //}
 
                     // If there's no possible matches for the Node we fail
                     if (possibleMappings[gPair.Key].Count == 0)
@@ -986,12 +993,21 @@ namespace VDS.RDF
         /// <param name="possibleMappings">Possible Mappings</param>
         /// <returns></returns>
         /// <remarks>
-        /// The base mapping at the time of the initial call shoudl contain known good mappings
+        /// The base mapping at the time of the initial call should contain known good mappings
         /// </remarks>
         public static IEnumerable<Dictionary<INode, INode>> GenerateMappings(Dictionary<INode, INode> baseMapping, Dictionary<INode, List<INode>> possibleMappings)
         {
+            // Remove any explicit base mappings from possible mappings
+            foreach (var p in baseMapping)
+            {
+                if (possibleMappings.TryGetValue(p.Key, out var mappings))
+                {
+                    mappings.Remove(p.Value);
+                    if (mappings.Count == 0) possibleMappings.Remove(p.Key);
+                }
+            }
             INode x = possibleMappings.Keys.First();
-            foreach (Dictionary<INode, INode> mapping in GenerateMappingsInternal(baseMapping, possibleMappings, x))
+            foreach (Dictionary<INode, INode> mapping in GenerateMappingsInternal(baseMapping, possibleMappings, x, baseMapping.Count + possibleMappings.Count))
             {
                 yield return mapping;
             }
@@ -1007,7 +1023,7 @@ namespace VDS.RDF
         /// <remarks>
         /// The base mapping contains known good mappings
         /// </remarks>
-        private static IEnumerable<Dictionary<INode, INode>> GenerateMappingsInternal(Dictionary<INode, INode> baseMapping, Dictionary<INode, List<INode>> possibleMappings, INode x)
+        private static IEnumerable<Dictionary<INode, INode>> GenerateMappingsInternal(Dictionary<INode, INode> baseMapping, Dictionary<INode, List<INode>> possibleMappings, INode x, int targetCount)
         {
             List<INode> possibles = possibleMappings[x];
 
@@ -1017,7 +1033,7 @@ namespace VDS.RDF
                 Dictionary<INode, INode> test = new Dictionary<INode, INode>(baseMapping);
                 if (!test.ContainsKey(x)) test.Add(x, y);
 
-                if (test.Count == possibleMappings.Count)
+                if (test.Count == targetCount)
                 {
                     yield return test;
                 }
@@ -1027,7 +1043,7 @@ namespace VDS.RDF
                     foreach (INode x2 in possibleMappings.Keys)
                     {
                         if (test.ContainsKey(x2)) continue;
-                        foreach (Dictionary<INode, INode> mapping in GenerateMappingsInternal(test, possibleMappings, x2))
+                        foreach (Dictionary<INode, INode> mapping in GenerateMappingsInternal(test, possibleMappings, x2, targetCount))
                         {
                             yield return mapping;
                         }
