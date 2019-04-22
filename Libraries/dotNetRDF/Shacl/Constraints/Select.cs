@@ -29,7 +29,6 @@ namespace VDS.RDF.Shacl.Constraints
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
-    using System.Text.RegularExpressions;
     using VDS.RDF.Nodes;
     using VDS.RDF.Query;
     using VDS.RDF.Query.Paths;
@@ -55,12 +54,7 @@ namespace VDS.RDF.Shacl.Constraints
         {
             get
             {
-                var query = Vocabulary.Select.ObjectsOf(this).Single().AsValuedNode().AsString();
-
-                // TODO: Ths is a workaround for https://github.com/dotnetrdf/dotnetrdf/issues/237
-                query = Regex.Replace(query, @"(FILTER.+)\.(\s*)", "$1$2");
-
-                return query;
+                return Vocabulary.Select.ObjectsOf(this).Single().AsValuedNode().AsString();
             }
         }
 

@@ -341,5 +341,17 @@ WHERE
             String output = q.ToString();
             SparqlQuery q2 = parser.ParseFromString(output);
         }
+
+        [Fact]
+        public void SparqlParsingFilterWithTrailingDotInGroupGraphPatternSub()
+        {
+            new SparqlQueryParser().ParseFromString(@"
+ASK 
+{
+    { }
+    FILTER(true) .
+}
+");
+        }
     }
 }

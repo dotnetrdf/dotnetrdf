@@ -252,8 +252,8 @@ namespace VDS.RDF.Writing
                 }
 
                 // Get the Triples as a Sorted List
-                List<Triple> ts = context.Graph.Triples.Where(t => !context.TriplesDone.Contains(t)).ToList();
-                ts.Sort(new FullTripleComparer(new FastNodeComparer()));
+                var ts = context.Graph.Triples.Where(t => !context.TriplesDone.Contains(t)).ToList();
+                WriterHelper.SortTriplesBySubjectPredicate(ts);
 
                 // Variables we need to track our writing
                 INode lastSubj, lastPred;

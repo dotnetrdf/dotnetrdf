@@ -2,21 +2,21 @@
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
-// 
+//
 // Copyright (c) 2009-2017 dotNetRDF Project (http://dotnetrdf.org/)
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is furnished
 // to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
@@ -36,7 +36,7 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// Possible URI Reference Types
     /// </summary>
-    enum UriRefType : int
+    internal enum UriRefType : int
     {
         /// <summary>
         /// Must be a QName
@@ -96,52 +96,52 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Error message produced when a User attempts to serialize a Graph containing Graph Literals
         /// </summary>
-        private const String GraphLiteralsUnserializableError = "Graph Literal Nodes are not serializable in {0}";
+        private const string GraphLiteralsUnserializableError = "Graph Literal Nodes are not serializable in {0}";
         /// <summary>
         /// Error message produced when a User attempts to serialize a Graph containing Unknown Node Types
         /// </summary>
-        private const String UnknownNodeTypeUnserializableError = "Unknown Node Types cannot be serialized as {0}";
+        private const string UnknownNodeTypeUnserializableError = "Unknown Node Types cannot be serialized as {0}";
         /// <summary>
         /// Error message produced when a User attempts to serialize a Graph containing Triples with Literal Subjects
         /// </summary>
-        private const String LiteralSubjectsUnserializableError = "Triples with a Literal Subject are not serializable in {0}";
+        private const string LiteralSubjectsUnserializableError = "Triples with a Literal Subject are not serializable in {0}";
         /// <summary>
         /// Error message produced when a User attempts to serialize a Graph containing Triples with Literal Predicates
         /// </summary>
-        private const String LiteralPredicatesUnserializableError = "Triples with a Literal Predicate are not serializable in {0}";
+        private const string LiteralPredicatesUnserializableError = "Triples with a Literal Predicate are not serializable in {0}";
         /// <summary>
         /// Error message produced when a User attempts to serialized a Graph containing Triples with Graph Literal Predicates
         /// </summary>
-        private const String GraphLiteralPredicatesUnserializableError = "Triples with a Graph Literal Predicate are not serializable in {0}";
+        private const string GraphLiteralPredicatesUnserializableError = "Triples with a Graph Literal Predicate are not serializable in {0}";
         /// <summary>
         /// Error message produced when a User attempts to serialize a Graph containing Triples with Blank Node Predicates
         /// </summary>
-        private const String BlankPredicatesUnserializableError = "Triples with a Blank Node Predicate are not serializable in {0}";
+        private const string BlankPredicatesUnserializableError = "Triples with a Blank Node Predicate are not serializable in {0}";
         /// <summary>
         /// Error message produced when a User attempts to serialize a Graph containing URIs which cannot be reduced to a URIRef or QName as required by the serialization
         /// </summary>
-        public const String UnreducablePropertyURIUnserializable = "Unable to serialize this Graph since a Property has an unreducable URI";
+        public const string UnreducablePropertyURIUnserializable = "Unable to serialize this Graph since a Property has an unreducable URI";
         /// <summary>
         /// Error message produced when a User attempts to serialize a Graph containing collections where a collection item has more than one rdf:first triple
         /// </summary>
-        public const String MalformedCollectionWithMultipleFirsts = "This RDF Graph contains more than one rdf:first Triple for an Item in a Collection which means the Graph is not serializable";
+        public const string MalformedCollectionWithMultipleFirsts = "This RDF Graph contains more than one rdf:first Triple for an Item in a Collection which means the Graph is not serializable";
         /// <summary>
         /// Error messages produced when errors occur in a multi-threaded writing process
         /// </summary>
-        public const String ThreadedOutputError = "One/more errors occurred while outputting RDF in {0} using a multi-threaded writing process";
+        public const string ThreadedOutputError = "One/more errors occurred while outputting RDF in {0} using a multi-threaded writing process";
         /// <summary>
         /// Error message produced when a User attempts to serialize a Variable Node in a format which does not support it
         /// </summary>
-        public const String VariableNodesUnserializableError = "Variable Nodes cannot be serialized as {0}";
+        public const string VariableNodesUnserializableError = "Variable Nodes cannot be serialized as {0}";
 
         /// <summary>
         /// Gets an Error message indicating that Graph Literals are not serializable with the appropriate RDF format name inserted in the error
         /// </summary>
         /// <param name="format">RDF format (syntax)</param>
         /// <returns></returns>
-        public static String GraphLiteralsUnserializable(String format)
+        public static string GraphLiteralsUnserializable(string format)
         {
-            return String.Format(GraphLiteralsUnserializableError, format);
+            return string.Format(GraphLiteralsUnserializableError, format);
         }
 
         /// <summary>
@@ -149,9 +149,9 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="format">RDF format (syntax)</param>
         /// <returns></returns>
-        public static String UnknownNodeTypeUnserializable(String format)
+        public static string UnknownNodeTypeUnserializable(string format)
         {
-            return String.Format(UnknownNodeTypeUnserializableError, format);
+            return string.Format(UnknownNodeTypeUnserializableError, format);
         }
 
         /// <summary>
@@ -159,9 +159,9 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="format">RDF format (syntax)</param>
         /// <returns></returns>
-        public static String VariableNodesUnserializable(String format)
+        public static string VariableNodesUnserializable(string format)
         {
-            return String.Format(VariableNodesUnserializableError, format);
+            return string.Format(VariableNodesUnserializableError, format);
         }
 
         /// <summary>
@@ -169,9 +169,9 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="format">RDF format (syntax)</param>
         /// <returns></returns>
-        public static String LiteralSubjectsUnserializable(String format)
+        public static string LiteralSubjectsUnserializable(string format)
         {
-            return String.Format(LiteralSubjectsUnserializableError, format);
+            return string.Format(LiteralSubjectsUnserializableError, format);
         }
 
         /// <summary>
@@ -179,9 +179,9 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="format">RDF format (syntax)</param>
         /// <returns></returns>
-        public static String LiteralPredicatesUnserializable(String format)
+        public static string LiteralPredicatesUnserializable(string format)
         {
-            return String.Format(LiteralPredicatesUnserializableError, format);
+            return string.Format(LiteralPredicatesUnserializableError, format);
         }
 
         /// <summary>
@@ -189,9 +189,9 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="format">RDF format (syntax)</param>
         /// <returns></returns>
-        public static String GraphLiteralPredicatesUnserializable(String format)
+        public static string GraphLiteralPredicatesUnserializable(string format)
         {
-            return String.Format(GraphLiteralPredicatesUnserializableError, format);
+            return string.Format(GraphLiteralPredicatesUnserializableError, format);
         }
 
         /// <summary>
@@ -199,9 +199,9 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="format">RDF format (syntax)</param>
         /// <returns></returns>
-        public static String BlankPredicatesUnserializable(String format)
+        public static string BlankPredicatesUnserializable(string format)
         {
-            return String.Format(BlankPredicatesUnserializableError, format);
+            return string.Format(BlankPredicatesUnserializableError, format);
         }
 
         /// <summary>
@@ -209,9 +209,9 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="format">RDF format (syntax)</param>
         /// <returns></returns>
-        public static String ThreadedOutputFailure(String format)
+        public static string ThreadedOutputFailure(string format)
         {
-            return String.Format(ThreadedOutputError, format);
+            return string.Format(ThreadedOutputError, format);
         }
     }
 
@@ -277,39 +277,21 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Gets whether this is an Explicit collection (specified using square bracket notation)
         /// </summary>
-        public bool IsExplicit
-        {
-            get
-            {
-                return _explicit;
-            }
-        }
+        public bool IsExplicit => _explicit;
 
         /// <summary>
         /// Gets/Sets whether the Collection has been written
         /// </summary>
         public bool HasBeenWritten
         {
-            get
-            {
-                return _written;
-            }
-            set
-            {
-                _written = value;
-            }
+            get => _written;
+            set => _written = value;
         }
 
         /// <summary>
         /// Gets the Triples that make up the Collection
         /// </summary>
-        public List<Triple> Triples
-        {
-            get
-            {
-                return _triples;
-            }
-        }
+        public List<Triple> Triples => _triples;
     }
 
     /// <summary>
@@ -344,7 +326,7 @@ namespace VDS.RDF.Writing
     /// </summary>
     public static class WriterHelper
     {
-        private static String _uriEncodeForXmlPattern = @"&([^;&\s]*)(?=\s|$|&)";
+        private static string _uriEncodeForXmlPattern = @"&([^;&\s]*)(?=\s|$|&)";
 
         /// <summary>
         /// Determines whether a Blank Node ID is valid as-is when serialised in NTriple like syntaxes (Turtle/N3/SPARQL)
@@ -352,14 +334,14 @@ namespace VDS.RDF.Writing
         /// <param name="id">ID to test</param>
         /// <returns></returns>
         /// <remarks>If false is returned then the writer will alter the ID in some way</remarks>
-        public static bool IsValidBlankNodeID(String id)
+        public static bool IsValidBlankNodeID(string id)
         {
-            if (id == null) 
+            if (id == null)
             {
                 // Can't be null
                 return false;
             }
-            else if (id.Equals(String.Empty))
+            else if (id.Equals(string.Empty))
             {
                 // Can't be empty
                 return false;
@@ -367,7 +349,7 @@ namespace VDS.RDF.Writing
             else
             {
                 char[] cs = id.ToCharArray();
-                if (Char.IsDigit(cs[0]) || cs[0] == '-' || cs[0] == '_')
+                if (char.IsDigit(cs[0]) || cs[0] == '-' || cs[0] == '_')
                 {
                     // Can't start with a Digit, Hyphen or Underscore
                     return false;
@@ -378,7 +360,7 @@ namespace VDS.RDF.Writing
                     return true;
                 }
             }
-            
+
         }
 
         /// <summary>
@@ -386,14 +368,14 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static bool IsValidStrictBlankNodeID(String id)
+        public static bool IsValidStrictBlankNodeID(string id)
         {
             if (id == null)
             {
                 // Can't be null
                 return false;
             }
-            else if (id.Equals(String.Empty))
+            else if (id.Equals(string.Empty))
             {
                 // Can't be empty
                 return false;
@@ -402,7 +384,7 @@ namespace VDS.RDF.Writing
             {
                 // All characters must be alphanumeric and not start with a digit in NTriples
                 char[] cs = id.ToCharArray();
-                return Char.IsLetter(cs[0]) && cs.All(c => Char.IsLetterOrDigit(c) && c <= 127);
+                return char.IsLetter(cs[0]) && cs.All(c => char.IsLetterOrDigit(c) && c <= 127);
             }
         }
 
@@ -441,7 +423,7 @@ namespace VDS.RDF.Writing
             rest = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest));
             nil = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
 
-            // First we're going to look for implicit collections we can represent using the 
+            // First we're going to look for implicit collections we can represent using the
             // brackets syntax of (a b c)
 
             if (mode == CollectionSearchMode.All || mode == CollectionSearchMode.ImplicitOnly)
@@ -450,52 +432,59 @@ namespace VDS.RDF.Writing
                 foreach (Triple t in context.Graph.GetTriplesWithPredicateObject(rest, nil))
                 {
                     // If has named list node cannot compress
-                    if (t.Subject.NodeType != NodeType.Blank) break;
+                    if (t.Subject.NodeType != NodeType.Blank)
+                    {
+                        break;
+                    }
 
                     // Build the collection recursively
                     OutputRdfCollection c = new OutputRdfCollection(false);
 
                     // Get the thing that is the rdf:first related to this rdf:rest
-                    IEnumerable<Triple> firsts = context.Graph.GetTriplesWithSubjectPredicate(t.Subject, first);//context.Graph.GetTriples(relfirstsel).Distinct();
-                    Triple temp;
-                    if (firsts.Count() > 1)
+                    Triple[] firsts = context.Graph.GetTriplesWithSubjectPredicate(t.Subject, first).ToArray();//context.Graph.GetTriples(relfirstsel).Distinct();
+                    Triple temp = null;
+                    if (firsts.Length > 1)
                     {
                         // Strange error
                         throw new RdfOutputException(WriterErrorMessages.MalformedCollectionWithMultipleFirsts);
                     }
-                    else
+                    else if (firsts.Length == 1)
                     {
                         // Stick this item onto the Stack
-                        temp = firsts.First();
+                        temp = firsts[0];
                         c.Triples.Add(temp);
                     }
 
                     // See if this thing is the rdf:rest of anything else
                     do
                     {
-                        IEnumerable<Triple> ts = context.Graph.GetTriplesWithPredicateObject(rest, firsts.First().Subject);
+                        Triple[] ts = context.Graph.GetTriplesWithPredicateObject(rest, firsts.First().Subject).ToArray();
 
                         // Stop when there isn't a rdf:rest
-                        if (ts.Count() == 0)
+                        if (ts.Length == 0)
                         {
                             break;
                         }
 
                         foreach (Triple t2 in ts)
                         {
-                            firsts = context.Graph.GetTriplesWithSubjectPredicate(t2.Subject, first).Distinct();
+                            firsts = context.Graph.GetTriplesWithSubjectPredicate(t2.Subject, first).Distinct(new FullTripleComparer(new FastNodeComparer())).ToArray();
 
-                            if (firsts.Count() > 1)
+                            if (firsts.Length > 1)
                             {
                                 // Strange error
                                 throw new RdfOutputException(WriterErrorMessages.MalformedCollectionWithMultipleFirsts);
                             }
-                            else
+                            else if (firsts.Length == 1)
                             {
                                 // Stick this item onto the Stack
-                                temp = firsts.First();
+                                temp = firsts[0];
                                 // If Item is a named list node cannot compress
-                                if (temp.Subject.NodeType != NodeType.Blank) break;
+                                if (temp.Subject.NodeType != NodeType.Blank)
+                                {
+                                    break;
+                                }
+
                                 c.Triples.Add(temp);
                             }
                         }
@@ -504,7 +493,7 @@ namespace VDS.RDF.Writing
                     // Can only compress if every List Node has a Blank Node Subject
                     if (c.Triples.All(x => x.Subject.NodeType == NodeType.Blank))
                     {
-                        context.Collections.Add(firsts.First().Subject, c);
+                        context.Collections.Add(firsts[0].Subject, c);
                     }
                 }
             }
@@ -516,7 +505,10 @@ namespace VDS.RDF.Writing
                 List<IBlankNode> bnodes = context.Graph.Nodes.BlankNodes().ToList();
                 foreach (IBlankNode b in bnodes)
                 {
-                    if (context.Collections.ContainsKey(b)) continue;
+                    if (context.Collections.ContainsKey(b))
+                    {
+                        continue;
+                    }
 
                     List<Triple> ts = context.Graph.GetTriples(b).ToList();
                     ts.RemoveAll(t => t.Predicate.Equals(first));
@@ -542,7 +534,10 @@ namespace VDS.RDF.Writing
             }
 
             // If no collections found then no further processing
-            if (context.Collections.Count == 0) return;
+            if (context.Collections.Count == 0)
+            {
+                return;
+            }
 
             // Once we've found all the Collections we need to check which are actually eligible for compression
             List<KeyValuePair<INode, OutputRdfCollection>> cs = context.Collections.ToList();
@@ -572,28 +567,34 @@ namespace VDS.RDF.Writing
                     // can't compress i.e. the collection is linked to more than one thing
                     int mentions = context.Graph.GetTriples(kvp.Key).Count();
                     int expectedMentions = ((c.Triples.Count * 3) - 1);
-                    if (expectedMentions == mentions || mentions-expectedMentions != 1)
+                    if (expectedMentions == mentions || mentions - expectedMentions != 1)
                     {
                         context.Collections.Remove(kvp.Key);
                     }
                 }
             }
-            if (context.Collections.Count == 0) return;
+            if (context.Collections.Count == 0)
+            {
+                return;
+            }
 
             // 2 - Look for cyclic collection dependencies
             cs = context.Collections.OrderByDescending(kvp => kvp.Value.Triples.Count).ToList();
 
             // First build up a dependencies table
-            Dictionary<INode,List<INode>> dependencies = new Dictionary<INode, List<INode>>();
+            Dictionary<INode, HashSet<INode>> dependencies = new Dictionary<INode, HashSet<INode>>();
             foreach (KeyValuePair<INode, OutputRdfCollection> kvp in cs)
             {
                 OutputRdfCollection c = kvp.Value;
 
                 // Empty Blank Node Collections cannot be cyclic i.e. []
-                if (c.Triples.Count == 0) continue;
+                if (c.Triples.Count == 0)
+                {
+                    continue;
+                }
 
                 // Otherwise check each Object of the Triples for other Blank Nodes
-                List<INode> ds = new List<INode>();
+                HashSet<INode> ds = new HashSet<INode>(new FastNodeComparer());
                 foreach (Triple t in c.Triples)
                 {
                     // Only care about Blank Nodes which aren't the collection root but are the root for another collection
@@ -611,24 +612,34 @@ namespace VDS.RDF.Writing
             // Now go back through that table looking for cycles
             foreach (INode n in dependencies.Keys)
             {
-                List<INode> ds = dependencies[n];
-                if (ds.Count == 0) continue;
+                HashSet<INode> ds = dependencies[n];
+
+                if (ds.Count == 0)
+                {
+                    continue;
+                }
 
                 foreach (INode d in ds.ToList())
                 {
                     if (dependencies.ContainsKey(d))
                     {
-                        ds.AddRange(dependencies[d]);
+                        foreach (INode dd in dependencies[d])
+                        {
+                            ds.Add(dd);
+                        }
                     }
                 }
 
-                // We can tell if there is a cycle since ds will now contain n
+                //We can tell if there is a cycle since ds will now contain n
                 if (ds.Contains(n))
                 {
                     context.Collections.Remove(n);
                 }
             }
-            if (context.Collections.Count == 0) return;
+            if (context.Collections.Count == 0)
+            {
+                return;
+            }
 
             // Finally fill out the TriplesDone for each Collection
             foreach (KeyValuePair<INode, OutputRdfCollection> kvp in context.Collections)
@@ -666,8 +677,8 @@ namespace VDS.RDF.Writing
                 OutputRdfCollection c = kvp.Value;
                 if (c.IsExplicit)
                 {
-                    int mentions = context.Graph.GetTriples(kvp.Key).Where(t => !context.TriplesDone.Contains(t)).Count();
-                    if (mentions-1 > c.Triples.Count)
+                    int mentions = context.Graph.GetTriples(kvp.Key).Count(t => !context.TriplesDone.Contains(t));
+                    if (mentions - 1 > c.Triples.Count)
                     {
                         context.Collections.Remove(kvp.Key);
                     }
@@ -691,17 +702,72 @@ namespace VDS.RDF.Writing
         /// <returns>
         /// The value with any ampersands escaped to &amp;
         /// </returns>
-        public static String EncodeForXml(String value)
+        public static string EncodeForXml(string value)
         {
             while (Regex.IsMatch(value, _uriEncodeForXmlPattern))
             {
                 value = Regex.Replace(value, _uriEncodeForXmlPattern, "&amp;$1");
             }
-            if (value.EndsWith("&")) value += "amp;";
+            if (value.EndsWith("&"))
+            {
+                value += "amp;";
+            }
+
             return value.Replace("<", "&lt;")
                 .Replace(">", "&gt;")
                 .Replace("'", "&apos;")
                 .Replace("\"", "&quot;");
+        }
+
+        /// <summary>
+        /// Get a list of all triples in the specified graph, sorted by subject and then predicate.
+        /// </summary>
+        /// <param name="graph">The graph whose triples are to be returned</param>
+        /// <returns>A list of the triples in <paramref name="graph"/> sorted by their subject and then predicate.</returns>
+        public static List<Triple> GetTriplesSortedBySubjectPredicate(IGraph graph)
+        {
+            var ts = graph.Triples.ToList();
+            SortTriplesBySubjectPredicate(ts);
+            return ts;
+        }
+
+        /// <summary>
+        /// Sort the provided list of triples by subject and then predicate. The list is modified in-place
+        /// </summary>
+        /// <param name="ts">The list of triples to be sorted</param>
+        public static void SortTriplesBySubjectPredicate(List<Triple> ts)
+        {
+            var capacity = ts.Count;
+            var sortHelperDictionary = new Dictionary<INode, Dictionary<INode, List<Triple>>>(capacity);
+            // Fill dictionary
+            foreach (var triple in ts)
+            {
+                if (!sortHelperDictionary.ContainsKey(triple.Subject))
+                {
+                    sortHelperDictionary.Add(triple.Subject, new Dictionary<INode, List<Triple>>());
+                }
+
+                if (!sortHelperDictionary[triple.Subject].ContainsKey(triple.Predicate))
+                {
+                    sortHelperDictionary[triple.Subject].Add(triple.Predicate, new List<Triple>());
+                }
+
+                sortHelperDictionary[triple.Subject][triple.Predicate].Add(triple);
+            }
+
+            ts.Clear();
+            var keys = sortHelperDictionary.Keys.ToArray();
+            Array.Sort(keys, new FastNodeComparer());
+            foreach (var subjectKey in keys)
+            {
+                var predicateKeys = sortHelperDictionary[subjectKey].Keys.ToArray();
+                Array.Sort(predicateKeys, new FastNodeComparer());
+                foreach (var predicateKey in predicateKeys)
+                {
+                    ts.AddRange(sortHelperDictionary[subjectKey][predicateKey]);
+                }
+            }
+
         }
     }
 }
