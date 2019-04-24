@@ -51,19 +51,16 @@ namespace VDS.RDF.Parsing.Suites
             if (AreEqual(expected, actual))
             {
                 Console.WriteLine("Parsed Dataset matches Expected Dataset (Test Passed)");
-                this.Passed++;
+                PassedTest(testName);
             }
             else
             {
                 Console.WriteLine("Parsed Dataset did not match Expected Dataset (Test Failed)");
-                this.Failed++;
+                FailedTest(testName);
             }
         }
 
-        protected override string FileExtension
-        {
-            get { return ".nt"; }
-        }
+        protected override string FileExtension => ".nt";
 
         private static bool AreEqual(TripleStore expected, TripleStore actual)
         {

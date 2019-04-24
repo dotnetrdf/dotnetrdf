@@ -24,94 +24,56 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Xunit;
 using VDS.RDF.Query;
+using Xunit;
 
 namespace VDS.RDF.Parsing.Suites
 {
     public abstract class BaseParserSuite<TParser, TResult> where TParser : class
     {
-        private readonly String _baseDir;
-        private bool _check = true;
-        private int _count;
-        private int _pass;
-        private int _fail;
-        private int _indeterminate;
+        private readonly string _baseDir;
         public static Uri BaseUri = new Uri("http://www.w3.org/2001/sw/DataAccess/df1/tests/");
-        private readonly TParser _parser;
-        private readonly TParser _resultsParser;
+        private readonly List<string> _passedTests;
+        private readonly List<string> _failedTests;
+        private readonly List<string> _indeterminateTests;
 
         protected BaseParserSuite(TParser testParser, TParser resultsParser, string baseDir)
         {
             if (baseDir == null) throw new ArgumentNullException("baseDir");
-            if (testParser == null) throw new ArgumentNullException("testParser");
-            if (resultsParser == null) throw new ArgumentNullException("resultsParser");
 
-            this._parser = testParser;
-            this._resultsParser = resultsParser;
-            this._baseDir = string.Format("resources\\{0}", baseDir);
+            Parser = testParser ?? throw new ArgumentNullException("testParser");
+            ResultsParser = resultsParser ?? throw new ArgumentNullException("resultsParser");
+            _baseDir = $"resources\\{baseDir}";
+            _passedTests = new List<string>();
+            _failedTests = new List<string>();
+            _indeterminateTests = new List<string>();
         }
 
         /// <summary>
         /// Gets/Sets whether the suite needs to check result files for tests that should parse
         /// </summary>
-        public bool CheckResults
-        {
-            get
-            {
-                return this._check;
-            }
-            set
-            {
-                this._check = value;
-            }
-        }
+        public bool CheckResults { get; set; } = true;
 
-        public int Count
-        {
-            get
-            {
-                return this._count;
-            }
-        }
+        public int Count { get; private set; }
 
-        public int Passed
-        {
-            get
-            {
-                return this._pass;
-            }
-            set { _pass = value; }
-        }
+        public int Passed => _passedTests.Count;
 
-        public int Failed
-        {
-            get
-            {
-                return this._fail;
-            }
-            protected set { this._fail = value; }
-        }
+        public int Failed => _failedTests.Count;
 
-        public int Indeterminate
-        {
-            get
-            {
-                return this._indeterminate;
-            }
-        }
+        public int Indeterminate => _indeterminateTests.Count;
 
-        public BaseParserSuite()
-        {
-            this._count = 0;
-            this._pass = 0;
-            this._fail = 0;
-            this._indeterminate = 0;
-        }
+        public IReadOnlyList<string> PassedTests => _passedTests.AsReadOnly();
+        public IReadOnlyList<string> FailedTests => _failedTests.AsReadOnly();
+        public IReadOnlyList<string> IndeterminateTests => _indeterminateTests.AsReadOnly();
 
-        protected String GetFile(INode n)
+        protected void PassedTest(string testName) { _passedTests.Add(testName);}
+        protected void FailedTest(string testName) { _failedTests.Add(testName);}
+        protected void IndeterminateTest(string testName) { _indeterminateTests.Add(testName);}
+
+        protected string GetFile(INode n)
         {
             switch (n.NodeType)
             {
@@ -123,8 +85,8 @@ namespace VDS.RDF.Parsing.Suites
                     }
                     else
                     {
-                        String lastSegment = u.Segments[u.Segments.Length - 1];
-                        return Path.Combine(this._baseDir, lastSegment);
+                        string lastSegment = u.Segments[u.Segments.Length - 1];
+                        return Path.Combine(_baseDir, lastSegment);
                     }
                 default:
                     Assert.True(false, "Malformed manifest file, input file must be a  URI");
@@ -134,47 +96,47 @@ namespace VDS.RDF.Parsing.Suites
             return null;
         }
 
-        protected void RunDirectory(String pattern, bool shouldParse)
+        protected void RunDirectory(string pattern, bool shouldParse)
         {
-            this.RunDirectory(this._baseDir, pattern, shouldParse);
+            RunDirectory(_baseDir, pattern, shouldParse);
         }
 
-        protected void RunDirectory(Func<String, bool> isTest, bool shouldParse)
+        protected void RunDirectory(Func<string, bool> isTest, bool shouldParse)
         {
-            this.RunDirectory(this._baseDir, isTest, shouldParse);
+            RunDirectory(_baseDir, isTest, shouldParse);
         }
 
-        protected void RunDirectory(String dir, String pattern, bool shouldParse)
+        protected void RunDirectory(string dir, string pattern, bool shouldParse)
         {
-            foreach (String file in Directory.GetFiles(dir, pattern))
+            foreach (string file in Directory.GetFiles(dir, pattern))
             {
-                this.RunTest(Path.GetFileName(file), null, file, Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file) + ".nt"), shouldParse);
+                RunTest(Path.GetFileName(file), null, file, Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file) + ".nt"), shouldParse);
             }
         }
 
-        protected void RunAllDirectories(Func<String, bool> isTest, bool shouldParse)
+        protected void RunAllDirectories(Func<string, bool> isTest, bool shouldParse)
         {
-            this.RunAllDirectories(this._baseDir, isTest, shouldParse);
+            RunAllDirectories(_baseDir, isTest, shouldParse);
         }
 
-        protected void RunAllDirectories(String dir, Func<String, bool> isTest, bool shouldParse)
+        protected void RunAllDirectories(string dir, Func<string, bool> isTest, bool shouldParse)
         {
-            foreach (String subdir in Directory.GetDirectories(dir))
+            foreach (string subdir in Directory.GetDirectories(dir))
             {
-                this.RunDirectory(subdir, isTest, shouldParse);
-                this.RunAllDirectories(subdir, isTest, shouldParse);
+                RunDirectory(subdir, isTest, shouldParse);
+                RunAllDirectories(subdir, isTest, shouldParse);
             }
         }
 
-        protected void RunDirectory(String dir, Func<String, bool> isTest, bool shouldParse)
+        protected void RunDirectory(string dir, Func<string, bool> isTest, bool shouldParse)
         {
-            foreach (String file in Directory.GetFiles(dir).Where(isTest))
+            foreach (string file in Directory.GetFiles(dir).Where(isTest))
             {
-                this.RunTest(Path.GetFileName(file), null, file, Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file) + FileExtension), shouldParse);
+                RunTest(Path.GetFileName(file), null, file, Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file) + FileExtension), shouldParse);
             }
         }
 
-        protected void RunManifest(String file, bool shouldParse)
+        protected void RunManifest(string file, bool shouldParse)
         {
             Assert.True(File.Exists(file), "Manifest file " + file + " not found");
 
@@ -209,24 +171,24 @@ WHERE
             foreach (SparqlResult test in tests)
             {
                 INode nameNode, commentNode, resultNode;
-                String name = test.TryGetBoundValue("name", out nameNode) ? nameNode.ToString() : null;
+                string name = test.TryGetBoundValue("name", out nameNode) ? nameNode.ToString() : null;
                 INode inputNode = test["input"];
-                String input = this.GetFile(inputNode);
-                String comment = test.TryGetBoundValue("comment", out commentNode) ? commentNode.ToString() : null;
-                String results = test.TryGetBoundValue("result", out resultNode) ? this.GetFile(resultNode) : null;
+                string input = GetFile(inputNode);
+                string comment = test.TryGetBoundValue("comment", out commentNode) ? commentNode.ToString() : null;
+                string results = test.TryGetBoundValue("result", out resultNode) ? GetFile(resultNode) : null;
 
-                this.RunTest(name, comment, input, results, shouldParse);
+                RunTest(name, comment, input, results, shouldParse);
             }
         }/// <summary>
         /// Runs all tests found in the manifest, determines whether a test should pass/fail based on the test information
         /// </summary>
         /// <param name="file">Manifest file</param>
-        protected void RunManifest(String file, INode positiveSyntaxTest, INode negativeSyntaxTest)
+        protected void RunManifest(string file, INode positiveSyntaxTest, INode negativeSyntaxTest)
         {
-            this.RunManifest(file, new INode[] { positiveSyntaxTest }, new INode[] { negativeSyntaxTest });
+            RunManifest(file, new[] { positiveSyntaxTest }, new[] { negativeSyntaxTest });
         }
 
-        protected void RunManifest(String file, INode[] positiveSyntaxTests, INode[] negativeSyntaxTests)
+        protected void RunManifest(string file, INode[] positiveSyntaxTests, INode[] negativeSyntaxTests)
         {
             Assert.True(File.Exists(file), "Manifest file " + file + " not found");
             
@@ -244,7 +206,7 @@ WHERE
             }
             manifest.NamespaceMap.AddNamespace("rdf", UriFactory.Create("http://www.w3.org/ns/rdftest#"));
 
-            String findTests = @"prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+            string findTests = @"prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
 prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> 
 prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> 
 prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> 
@@ -267,11 +229,11 @@ WHERE
             foreach (SparqlResult test in tests)
             {
                 INode nameNode, inputNode, commentNode, resultNode;
-                String name = test.TryGetBoundValue("name", out nameNode) ? nameNode.ToString() : null;
+                string name = test.TryGetBoundValue("name", out nameNode) ? nameNode.ToString() : null;
                 inputNode = test["input"];
-                String input = this.GetFile(inputNode);
-                String comment = test.TryGetBoundValue("comment", out commentNode) ? commentNode.ToString() : null;
-                String results = test.TryGetBoundValue("result", out resultNode) ? this.GetFile(resultNode) : null;
+                string input = GetFile(inputNode);
+                string comment = test.TryGetBoundValue("comment", out commentNode) ? commentNode.ToString() : null;
+                string results = test.TryGetBoundValue("result", out resultNode) ? GetFile(resultNode) : null;
 
                 //Determine expected outcome
                 //Evaluation tests will have results and should always parse succesfully
@@ -299,13 +261,13 @@ WHERE
                     }
                 }
 
-                this.RunTest(name, comment, input, results, shouldParse);
+                RunTest(name, comment, input, results, shouldParse);
             }
         }
 
-        private void RunTest(String name, String comment, String file, String resultFile, bool? shouldParse)
+        private void RunTest(string name, string comment, string file, string resultFile, bool? shouldParse)
         {
-            Console.WriteLine("### Running Test #" + this._count);
+            Console.WriteLine("### Running Test #" + Count);
             if (name != null) Console.WriteLine("Test Name " + name);
             if (comment != null) Console.WriteLine(comment);
             Console.WriteLine();
@@ -317,7 +279,7 @@ WHERE
             {
                 Console.WriteLine("Input File not found");
                 Console.Error.WriteLine("Test " + name + " - Input File not found: " + file);
-                this._fail++;
+                FailedTest(name);
                 return;
             }
 
@@ -328,20 +290,20 @@ WHERE
                 if (!shouldParse.HasValue)
                 {
                     Console.WriteLine("Unable to determine whether the test should pass/fail based on manifest information (Test Indeterminate)");
-                    this._indeterminate++;
+                    IndeterminateTest(name);
                 }
                 else if (shouldParse.Value)
                 {
                     Console.WriteLine("Parsed input in OK");
 
                     //Validate if necessary
-                    if (this.CheckResults && resultFile != null)
+                    if (CheckResults && resultFile != null)
                     {
                         if (!File.Exists(resultFile))
                         {
                             Console.WriteLine("Expected Output File not found");
                             Console.Error.WriteLine("Test " + name + " - Expected Output File not found: " + resultFile);
-                            this._fail++;
+                            FailedTest(name);
                         }
                         else
                         {
@@ -352,21 +314,21 @@ WHERE
                             catch (RdfParseException)
                             {
                                 Console.WriteLine("Expected Output File could not be parsed (Test Indeterminate)");
-                                this._indeterminate++;
+                                IndeterminateTest(name);
                             }
                         }
                     }
                     else
                     {
                         Console.WriteLine("No Validation Required (Test Passed)");
-                        this._pass++;
+                        PassedTest(name);
                     }
                 }
                 else
                 {
                     Console.WriteLine("Parsed when failure was expected (Test Failed)");
                     Console.Error.WriteLine("Test " + name + " - Parsed when failure was expected");
-                    this._fail++;
+                    FailedTest(name);
                 }
             }
             catch (RdfParseException parseEx)
@@ -378,12 +340,12 @@ WHERE
 
                     //Repeat parsing with tracing enabled if appropriate
                     //This gives us more useful debugging output for failed tests
-                    if (this._parser is ITraceableTokeniser)
+                    if (Parser is ITraceableTokeniser)
                     {
                         try
                         {
-                            ((ITraceableTokeniser)this._parser).TraceTokeniser = true;
-                            ((IRdfReader)this._parser).Load(new Graph(), Path.GetFileName(file));
+                            ((ITraceableTokeniser)Parser).TraceTokeniser = true;
+                            ((IRdfReader)Parser).Load(new Graph(), Path.GetFileName(file));
                         }
                         catch
                         {
@@ -391,22 +353,22 @@ WHERE
                         }
                         finally
                         {
-                            ((ITraceableTokeniser)this._parser).TraceTokeniser = false;
+                            ((ITraceableTokeniser)Parser).TraceTokeniser = false;
                         }
                     }
 
                     TestTools.ReportError("Parse Error", parseEx);
-                    this._fail++;
+                    FailedTest(name);
                 }
                 else
                 {
                     Console.WriteLine("Parsing Failed as expected (Test Passed)");
-                    this._pass++;
+                    PassedTest(name);
                 }
             }
-            Console.WriteLine("### End Test #" + this._count);
+            Console.WriteLine("### End Test #" + Count);
             Console.WriteLine();
-            this._count++;
+            Count++;
         }
 
         protected abstract TResult TryParseTestInput(string file);
@@ -415,14 +377,8 @@ WHERE
 
         protected abstract string FileExtension { get; }
 
-        protected TParser Parser
-        {
-            get { return _parser; }
-        }
+        protected TParser Parser { get; }
 
-        protected TParser ResultsParser
-        {
-            get { return _resultsParser; }
-        }
+        protected TParser ResultsParser { get; }
     }
 }
