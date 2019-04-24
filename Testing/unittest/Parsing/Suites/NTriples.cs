@@ -27,6 +27,7 @@ using System;
 using System.IO;
 using VDS.RDF.XunitExtensions;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Parsing.Suites
 {
@@ -34,32 +35,35 @@ namespace VDS.RDF.Parsing.Suites
     public class NTriples
         : BaseRdfParserSuite
     {
-        public NTriples()
+        private readonly ITestOutputHelper _testOutputHelper;
+
+        public NTriples(ITestOutputHelper testOutputHelper)
             : base(new NTriplesParser(NTriplesSyntax.Original), new NTriplesParser(NTriplesSyntax.Original), @"ntriples\")
         {
-            this.CheckResults = false;
+            _testOutputHelper = testOutputHelper;
+            CheckResults = false;
         }
 
-        [SkippableFact]
+        [Fact]
         public void ParsingSuiteNTriples()
         {
             //Run manifests
-            this.RunDirectory(f => Path.GetExtension(f).Equals(".nt"), true);
+            RunDirectory(f => Path.GetExtension(f).Equals(".nt"), true);
 
-            if (this.Count == 0) Assert.True(false, "No tests found");
+            if (Count == 0) Assert.True(false, "No tests found");
 
-            Console.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed");
-            Console.WriteLine((((double) this.Passed/(double) this.Count)*100) + "% Passed");
+            _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
+            _testOutputHelper.WriteLine(((Passed/(double) Count)*100) + "% Passed");
 
-            if (this.Failed > 0) Assert.True(false, this.Failed + " Tests failed");
-            if (this.Indeterminate > 0) throw new SkipTestException(this.Indeterminate + " Tests are indeterminate");
+            if (Failed > 0) Assert.True(false, Failed + " Tests failed");
+            if (Indeterminate > 0) throw new SkipTestException(Indeterminate + " Tests are indeterminate");
         }
 
         [Fact]
         public void ParsingNTriplesUnicodeEscapes1()
         {
             Graph g = new Graph();
-            g.LoadFromFile(@"resources\turtle11\localName_with_assigned_nfc_bmp_PN_CHARS_BASE_character_boundaries.nt", this.Parser);
+            g.LoadFromFile(@"resources\turtle11\localName_with_assigned_nfc_bmp_PN_CHARS_BASE_character_boundaries.nt", Parser);
             Assert.False(g.IsEmpty);
             Assert.Equal(1, g.Triples.Count);
         }
@@ -71,7 +75,7 @@ namespace VDS.RDF.Parsing.Suites
 <http://s> <http://p> _:node.id.";
 
             Graph g = new Graph();
-            Assert.Throws<RdfParseException>(() => g.LoadFromString(data, this.Parser));
+            Assert.Throws<RdfParseException>(() => g.LoadFromString(data, Parser));
         }
 
         [Fact]
@@ -80,7 +84,7 @@ namespace VDS.RDF.Parsing.Suites
             const String data = @"<http://s> <http://p> ""literal\'quote"" .";
 
             Graph g = new Graph();
-            Assert.Throws<RdfParseException>(() => g.LoadFromString(data, this.Parser));
+            Assert.Throws<RdfParseException>(() => g.LoadFromString(data, Parser));
         }
 
         [Fact]
@@ -89,7 +93,7 @@ namespace VDS.RDF.Parsing.Suites
             const String data = @"<http://s> <http://p> ""literal\""quote"" .";
 
             Graph g = new Graph();
-            g.LoadFromString(data, this.Parser);
+            g.LoadFromString(data, Parser);
 
             Assert.False(g.IsEmpty);
             Assert.Equal(1, g.Triples.Count);
@@ -103,8 +107,8 @@ namespace VDS.RDF.Parsing.Suites
         public NTriples11()
             : base(new NTriplesParser(), new NTriplesParser(), @"ntriples11\")
         {
-            this.CheckResults = false;
-            this.Parser.Warning += TestTools.WarningPrinter;
+            CheckResults = false;
+            Parser.Warning += TestTools.WarningPrinter;
         }
 
         [SkippableFact]
@@ -117,15 +121,15 @@ namespace VDS.RDF.Parsing.Suites
             INode negSyntaxTest = g.CreateUriNode("rdft:TestNTriplesNegativeSyntax");
 
             //Run manifests
-            this.RunManifest(@"resources\ntriples11\manifest.ttl", posSyntaxTest, negSyntaxTest);
+            RunManifest(@"resources\ntriples11\manifest.ttl", posSyntaxTest, negSyntaxTest);
 
-            if (this.Count == 0) Assert.True(false, "No tests found");
+            if (Count == 0) Assert.True(false, "No tests found");
 
-            Console.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed");
-            Console.WriteLine((((double) this.Passed/(double) this.Count)*100) + "% Passed");
+            Console.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
+            Console.WriteLine(((Passed/(double) Count)*100) + "% Passed");
 
-            if (this.Failed > 0) Assert.True(false, this.Failed + " Tests failed");
-            if (this.Indeterminate > 0) throw new SkipTestException(this.Indeterminate + " Tests are indeterminate");
+            if (Failed > 0) Assert.True(false, Failed + " Tests failed");
+            if (Indeterminate > 0) throw new SkipTestException(Indeterminate + " Tests are indeterminate");
         }
 
         [Fact]
@@ -135,7 +139,7 @@ namespace VDS.RDF.Parsing.Suites
 <http://s> <http://p> _:node.id.";
 
             Graph g = new Graph();
-            g.LoadFromString(data, this.Parser);
+            g.LoadFromString(data, Parser);
             Assert.False(g.IsEmpty);
             Assert.Equal(2, g.Triples.Count);
         }
@@ -146,7 +150,7 @@ namespace VDS.RDF.Parsing.Suites
             const String data = @"<http://s> <http://p> ""literal\'quote"" .";
 
             Graph g = new Graph();
-            g.LoadFromString(data, this.Parser);
+            g.LoadFromString(data, Parser);
 
             Assert.False(g.IsEmpty);
             Assert.Equal(1, g.Triples.Count);
@@ -158,7 +162,7 @@ namespace VDS.RDF.Parsing.Suites
             const String data = @"<http://s> <http://p> ""literal\""quote"" .";
 
             Graph g = new Graph();
-            g.LoadFromString(data, this.Parser);
+            g.LoadFromString(data, Parser);
 
             Assert.False(g.IsEmpty);
             Assert.Equal(1, g.Triples.Count);

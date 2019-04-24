@@ -23,16 +23,10 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.IO;
-using System.Text;
-using Xunit;
-using VDS.RDF.Parsing;
-using VDS.RDF.Query;
-using VDS.RDF.Writing.Formatting;
 using VDS.RDF.XunitExtensions;
+using Xunit;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Parsing.Suites
 {
@@ -40,67 +34,73 @@ namespace VDS.RDF.Parsing.Suites
     public class RdfXmlDomParser
         : BaseRdfParserSuite
     {
-        public RdfXmlDomParser()
+        private readonly ITestOutputHelper _testOutputHelper;
+
+        public RdfXmlDomParser(ITestOutputHelper testOutputHelper)
             : base(new RdfXmlParser(RdfXmlParserMode.DOM), new NTriplesParser(), "rdfxml\\")
         {
-            this.CheckResults = false;
+            _testOutputHelper = testOutputHelper;
+            CheckResults = false;
         }
 
-        [SkippableFact]
+        [Fact]
         public void ParsingSuiteRdfXmlDOM()
         {
             //Run manifests
-            this.RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && !f.Contains("error"), true);
-            this.RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && f.Contains("error"), false);
+            RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && !f.Contains("error"), true);
+            RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && f.Contains("error"), false);
 
-            if (this.Count == 0) Assert.True(false, "No tests found");
+            if (Count == 0) Assert.True(false, "No tests found");
 
-            Console.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed");
-            Console.WriteLine((((double)this.Passed / (double)this.Count) * 100) + "% Passed");
+            _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
+            _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
 
-            if (this.Failed > 0) Assert.True(false, this.Failed + " Tests failed");
-            if (this.Indeterminate > 0) throw new SkipTestException(this.Indeterminate + " Tests are indeterminate");
+            if (Failed > 0) Assert.True(false, Failed + " Tests failed");
+            if (Indeterminate > 0) throw new SkipTestException(Indeterminate + " Tests are indeterminate");
         }
 
         [Fact]
         public void ParsingRdfXmlIDsDOM()
         {
             IGraph g = new Graph();
-            g.BaseUri = BaseRdfParserSuite.BaseUri;
-            this.Parser.Load(g, "resources\\rdfxml\\xmlbase\\test014.rdf");
+            g.BaseUri = BaseUri;
+            Parser.Load(g, "resources\\rdfxml\\xmlbase\\test014.rdf");
         }
     }
 
     public class RdfXmlStreamingParser
         : BaseRdfParserSuite
     {
-        public RdfXmlStreamingParser()
+        private readonly ITestOutputHelper _testOutputHelper;
+
+        public RdfXmlStreamingParser(ITestOutputHelper testOutputHelper)
             : base(new RdfXmlParser(RdfXmlParserMode.Streaming), new NTriplesParser(), "rdfxml\\")
         {
-            this.CheckResults = false;
+            _testOutputHelper = testOutputHelper;
+            CheckResults = false;
         }
 
-        [SkippableFact]
+        [Fact]
         public void ParsingSuiteRdfXmlStreaming()
         {
             //Run manifests
-            this.RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && !f.Contains("error"), true);
-            this.RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && f.Contains("error"), false);
-            if (this.Count == 0) Assert.True(false, "No tests found");
+            RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && !f.Contains("error"), true);
+            RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && f.Contains("error"), false);
+            if (Count == 0) Assert.True(false, "No tests found");
 
-            Console.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed");
-            Console.WriteLine((((double)this.Passed / (double)this.Count) * 100) + "% Passed");
+            _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
+            _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
 
-            if (this.Failed > 0) Assert.True(false, this.Failed + " Tests failed");
-            if (this.Indeterminate > 0) throw new SkipTestException(this.Indeterminate + " Tests are indeterminate");
+            if (Failed > 0) Assert.True(false, Failed + " Tests failed");
+            if (Indeterminate > 0) throw new SkipTestException(Indeterminate + " Tests are indeterminate");
         }
 
         [Fact]
         public void ParsingRdfXmlIDsStreaming()
         {
             IGraph g = new Graph();
-            g.BaseUri = BaseRdfParserSuite.BaseUri;
-            this.Parser.Load(g, "resources\\rdfxml\\xmlbase\\test014.rdf");
+            g.BaseUri = BaseUri;
+            Parser.Load(g, "resources\\rdfxml\\xmlbase\\test014.rdf");
         }
     }
 }
