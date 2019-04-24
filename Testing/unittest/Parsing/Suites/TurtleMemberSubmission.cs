@@ -24,15 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.IO;
-using System.Text;
-using Xunit;
-using VDS.RDF.Parsing;
-using VDS.RDF.Query;
-using VDS.RDF.Writing.Formatting;
 using VDS.RDF.XunitExtensions;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace VDS.RDF.Parsing.Suites
@@ -44,7 +38,9 @@ namespace VDS.RDF.Parsing.Suites
         private readonly ITestOutputHelper _testOutputHelper;
 
         public TurtleMemberSubmission(ITestOutputHelper testOutputHelper)
-            : base(new TurtleParser(TurtleSyntax.Original), new NTriplesParser(), "turtle\\")
+            : base(new TurtleParser(TurtleSyntax.Original), 
+                new NTriplesParser(NTriplesSyntax.Original), //KA: test-29 will be indeterminate if using NTriples 1.1 syntax due to \t escape in the expected output result file
+                "turtle\\")
         {
             _testOutputHelper = testOutputHelper;
         }
@@ -53,25 +49,31 @@ namespace VDS.RDF.Parsing.Suites
         public void ParsingSuiteTurtleOriginal()
         {
             //Run manifests
-            this.RunManifest("resources/turtle/manifest.ttl", true);
-            this.RunManifest("resources/turtle/manifest-bad.ttl", false);
+            RunManifest("resources/turtle/manifest.ttl", true);
+            RunManifest("resources/turtle/manifest-bad.ttl", false);
 
-            if (this.Count == 0) Assert.True(false, "No tests found");
+            if (Count == 0) Assert.True(false, "No tests found");
 
-            _testOutputHelper.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed");
-            _testOutputHelper.WriteLine((((double)this.Passed / (double)this.Count) * 100) + "% Passed");
+            _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
+            _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
 
-            if (this.Failed > 0) Assert.True(false, this.Failed + " Tests failed");
-            if (this.Indeterminate > 0) throw new SkipTestException(this.Indeterminate + " Tests are indeterminate");
+            if (Failed > 0)
+            {
+                Assert.True(false, Failed + " Tests failed: " + string.Join(", ", FailedTests));
+            }
+            if (Indeterminate > 0)
+            {
+                throw new SkipTestException(Indeterminate + " Tests are indeterminate: " + string.Join(", ", IndeterminateTests));
+            }
         }
 
         [Fact]
         public void ParsingTurtleOriginalBaseTurtleStyle1()
         {
             //Dot required
-            String graph = "@base <http://example.org/> .";
-            Graph g = new Graph();
-            this.Parser.Load(g, new StringReader(graph));
+            var graph = "@base <http://example.org/> .";
+            var g = new Graph();
+            Parser.Load(g, new StringReader(graph));
 
             Assert.Equal(new Uri("http://example.org"), g.BaseUri);
         }
@@ -80,9 +82,9 @@ namespace VDS.RDF.Parsing.Suites
         public void ParsingTurtleOriginalBaseTurtleStyle2()
         {
             //Missing dot
-            String graph = "@base <http://example.org/>";
-            Graph g = new Graph();
-            Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
+            var graph = "@base <http://example.org/>";
+            var g = new Graph();
+            Assert.Throws<RdfParseException>(() => Parser.Load(g, new StringReader(graph)));
 
             Assert.Equal(new Uri("http://example.org"), g.BaseUri);
         }
@@ -91,27 +93,27 @@ namespace VDS.RDF.Parsing.Suites
         public void ParsingTurtleOriginalBaseSparqlStyle1()
         {
             //Forbidden in Original Turtle
-            String graph = "BASE <http://example.org/> .";
-            Graph g = new Graph();
-            Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
+            var graph = "BASE <http://example.org/> .";
+            var g = new Graph();
+            Assert.Throws<RdfParseException>(() => Parser.Load(g, new StringReader(graph)));
         }
 
         [Fact]
         public void ParsingTurtleOriginalBaseSparqlStyle2()
         {
             //Forbidden in Original Turtle
-            String graph = "BASE <http://example.org/>";
-            Graph g = new Graph();
-            Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
+            var graph = "BASE <http://example.org/>";
+            var g = new Graph();
+            Assert.Throws<RdfParseException>(() => Parser.Load(g, new StringReader(graph)));
         }
 
         [Fact]
         public void ParsingTurtleOriginalPrefixTurtleStyle1()
         {
             //Dot required
-            String graph = "@prefix ex: <http://example.org/> .";
-            Graph g = new Graph();
-            this.Parser.Load(g, new StringReader(graph));
+            var graph = "@prefix ex: <http://example.org/> .";
+            var g = new Graph();
+            Parser.Load(g, new StringReader(graph));
             Assert.Equal(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
 
@@ -119,9 +121,9 @@ namespace VDS.RDF.Parsing.Suites
         public void ParsingTurtleOriginalPrefixTurtleStyle2()
         {
             //Missing dot
-            String graph = "@prefix ex: <http://example.org/>";
-            Graph g = new Graph();
-            Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
+            var graph = "@prefix ex: <http://example.org/>";
+            var g = new Graph();
+            Assert.Throws<RdfParseException>(() => Parser.Load(g, new StringReader(graph)));
 
             Assert.Equal(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
@@ -130,18 +132,18 @@ namespace VDS.RDF.Parsing.Suites
         public void ParsingTurtleOriginalPrefixSparqlStyle1()
         {
             //Forbidden in Original Turtle
-            String graph = "PREFIX ex: <http://example.org/> .";
-            Graph g = new Graph();
-            Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
+            var graph = "PREFIX ex: <http://example.org/> .";
+            var g = new Graph();
+            Assert.Throws<RdfParseException>(() => Parser.Load(g, new StringReader(graph)));
         }
 
         [Fact]
         public void ParsingTurtleOriginalPrefixSparqlStyle2()
         {
             //Forbidden in Original Turtle
-            String graph = "PREFIX ex: <http://example.org/>";
-            Graph g = new Graph();
-            Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
+            var graph = "PREFIX ex: <http://example.org/>";
+            var g = new Graph();
+            Assert.Throws<RdfParseException>(() => Parser.Load(g, new StringReader(graph)));
         }
 
         [Fact]
@@ -153,7 +155,7 @@ namespace VDS.RDF.Parsing.Suites
         [Fact]
         public void ParsingTurtleOriginalPrefixedNames2()
         {
-            this.Parser.Load(new Graph(), @"resources\turtle\test-14.ttl");
+            Parser.Load(new Graph(), @"resources\turtle\test-14.ttl");
         }
     }
 }
