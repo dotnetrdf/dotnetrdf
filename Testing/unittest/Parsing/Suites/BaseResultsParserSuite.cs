@@ -58,7 +58,7 @@ namespace VDS.RDF.Parsing.Suites
             else
             {
                 Console.WriteLine("Parsed Results did not match Expected Graph (Test Failed)");
-                FailedTest(testName);
+                FailedTest(testName, "Parsed Results did not match Expected Graph ");
                 Console.WriteLine("Expected:");
                 TestTools.ShowResults(expected);
                 Console.WriteLine();

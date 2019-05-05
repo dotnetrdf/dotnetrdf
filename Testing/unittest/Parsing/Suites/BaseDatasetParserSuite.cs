@@ -56,7 +56,7 @@ namespace VDS.RDF.Parsing.Suites
             else
             {
                 Console.WriteLine("Parsed Dataset did not match Expected Dataset (Test Failed)");
-                FailedTest(testName);
+                FailedTest(testName, "Parsed Dataset did not match Expected Dataset");
             }
         }
 

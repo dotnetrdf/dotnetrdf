@@ -29,15 +29,35 @@ using System.IO;
 using System.Linq;
 using VDS.RDF.Query;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Parsing.Suites
 {
+    public class TestFailure
+    {
+        public string TestFile;
+        public string FailureMessage;
+        public Exception FailureException;
+
+        public TestFailure(string fileName, string message, Exception failureException)
+        {
+            TestFile = fileName;
+            FailureMessage = message;
+            FailureException = failureException;
+        }
+
+        public override string ToString()
+        {
+            return FailureException != null ? $"{TestFile}: {FailureMessage}\n\tCause: {FailureException}" : $"{TestFile}: {FailureMessage}";
+        }
+    }
+
     public abstract class BaseParserSuite<TParser, TResult> where TParser : class
     {
         private readonly string _baseDir;
         public static Uri BaseUri = new Uri("http://www.w3.org/2001/sw/DataAccess/df1/tests/");
         private readonly List<string> _passedTests;
-        private readonly List<string> _failedTests;
+        private readonly List<TestFailure> _failedTests;
         private readonly List<string> _indeterminateTests;
 
         protected BaseParserSuite(TParser testParser, TParser resultsParser, string baseDir)
@@ -48,7 +68,7 @@ namespace VDS.RDF.Parsing.Suites
             ResultsParser = resultsParser ?? throw new ArgumentNullException("resultsParser");
             _baseDir = $"resources\\{baseDir}";
             _passedTests = new List<string>();
-            _failedTests = new List<string>();
+            _failedTests = new List<TestFailure>();
             _indeterminateTests = new List<string>();
         }
 
@@ -66,11 +86,16 @@ namespace VDS.RDF.Parsing.Suites
         public int Indeterminate => _indeterminateTests.Count;
 
         public IReadOnlyList<string> PassedTests => _passedTests.AsReadOnly();
-        public IReadOnlyList<string> FailedTests => _failedTests.AsReadOnly();
+        public IReadOnlyList<TestFailure> FailedTests => _failedTests.AsReadOnly();
         public IReadOnlyList<string> IndeterminateTests => _indeterminateTests.AsReadOnly();
 
         protected void PassedTest(string testName) { _passedTests.Add(testName);}
-        protected void FailedTest(string testName) { _failedTests.Add(testName);}
+
+        protected void FailedTest(string testName, string failureReason, Exception failureException = null)
+        {
+            _failedTests.Add(new TestFailure(testName, failureReason, failureException));
+        }
+
         protected void IndeterminateTest(string testName) { _indeterminateTests.Add(testName);}
 
         protected string GetFile(INode n)
@@ -279,7 +304,7 @@ WHERE
             {
                 Console.WriteLine("Input File not found");
                 Console.Error.WriteLine("Test " + name + " - Input File not found: " + file);
-                FailedTest(name);
+                FailedTest(file, "Input file not found");
                 return;
             }
 
@@ -303,7 +328,7 @@ WHERE
                         {
                             Console.WriteLine("Expected Output File not found");
                             Console.Error.WriteLine("Test " + name + " - Expected Output File not found: " + resultFile);
-                            FailedTest(name);
+                            FailedTest(name, "Expected output file not found:" + resultFile );
                         }
                         else
                         {
@@ -328,7 +353,7 @@ WHERE
                 {
                     Console.WriteLine("Parsed when failure was expected (Test Failed)");
                     Console.Error.WriteLine("Test " + name + " - Parsed when failure was expected");
-                    FailedTest(name);
+                    FailedTest(name, "File parsed successfully when a failure was expected");
                 }
             }
             catch (RdfParseException parseEx)
@@ -358,7 +383,7 @@ WHERE
                     }
 
                     TestTools.ReportError("Parse Error", parseEx);
-                    FailedTest(name);
+                    FailedTest(file, "Parsing failed when a success was expected." + parseEx );
                 }
                 else
                 {
