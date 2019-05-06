@@ -51,7 +51,11 @@ namespace VDS.RDF.Parsing.Suites
             _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
             _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
 
-            if (Failed > 0) Assert.True(false, Failed + " Tests failed");
+            if (Failed > 0)
+            {
+                foreach(var failure in FailedTests) { _testOutputHelper.WriteLine(failure.ToString());}
+                Assert.True(false, Failed + " Tests failed");
+            }
             if (Indeterminate > 0) throw new SkipTestException(Indeterminate + " Tests are indeterminate");
         }
     }
