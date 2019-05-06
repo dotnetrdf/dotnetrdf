@@ -41,11 +41,11 @@ namespace VDS.RDF.Parsing.Suites
             : base(new TurtleParser(TurtleSyntax.W3C), new NTriplesParser(), "turtle11-unofficial\\") { }
 
         [SkippableFact]
-        public void ParsingSuiteTurtleW3CUnofficalTests()
+        public void ParsingSuiteTurtleW3CUnofficialTests()
         {
             //Run manifests
-            RunManifest("..\\resources/turtle11-unofficial/manifest.ttl", true);
-            RunManifest("..\\resources/turtle11-unofficial/manifest-bad.ttl", false);
+            RunManifest("resources/turtle11-unofficial/manifest.ttl", true);
+            RunManifest("resources/turtle11-unofficial/manifest-bad.ttl", false);
 
             if (Count == 0) Assert.True(false, "No tests found");
 
@@ -86,7 +86,7 @@ namespace VDS.RDF.Parsing.Suites
                 INode negEvalTest = g.CreateUriNode("rdft:TestTurtleNegativeEval");
 
                 //Run manifests
-                RunManifest("..\\resources/turtle11/manifest.ttl", new[] { posSyntaxTest }, new[] { negSyntaxTest, negEvalTest });
+                RunManifest("resources/turtle11/manifest.ttl", new[] { posSyntaxTest }, new[] { negSyntaxTest, negEvalTest });
 
                 if (Count == 0) Assert.True(false, "No tests found");
 
