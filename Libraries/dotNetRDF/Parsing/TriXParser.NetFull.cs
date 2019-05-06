@@ -65,18 +65,24 @@ namespace VDS.RDF.Parsing
                 throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
             }
 
-            // Load source XML
-            using (var xmlReader = XmlReader.Create(input, GetSettings()))
+            try { 
+                // Load source XML
+                using (var xmlReader = XmlReader.Create(input, GetSettings()))
+                {
+                    var source = XDocument.Load(xmlReader);
+                    foreach (var pi in source.Nodes().OfType<XProcessingInstruction>().Where(pi=>pi.Target.Equals("xml-stylesheet")))
+                    {
+                        source = ApplyTransform(source, pi);
+                    }
+                    using(var transformedXmlReader = source.CreateReader())
+                    {
+                        TryParseGraphset(transformedXmlReader, handler);
+                    }
+                }
+            }
+            finally
             {
-                var source = XDocument.Load(xmlReader);
-                foreach (var pi in source.Nodes().OfType<XProcessingInstruction>().Where(pi=>pi.Target.Equals("xml-stylesheet")))
-                {
-                    source = ApplyTransform(source, pi);
-                }
-                using(var transformedXmlReader = source.CreateReader())
-                {
-                    TryParseGraphset(transformedXmlReader, handler);
-                }
+        input.Close();
             }
         }
 
