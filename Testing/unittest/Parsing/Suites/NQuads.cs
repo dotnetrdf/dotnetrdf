@@ -28,7 +28,7 @@ namespace VDS.RDF.Parsing.Suites
             INode negSyntaxTest = g.CreateUriNode("rdft:TestNQuadsNegativeSyntax");
 
             //Run manifests
-            RunManifest(@"..\\resources\nquads11\manifest.ttl", posSyntaxTest, negSyntaxTest);
+            RunManifest(@"resources\nquads11\manifest.ttl", posSyntaxTest, negSyntaxTest);
 
             if (Count == 0) Assert.True(false, "No tests found");
 
