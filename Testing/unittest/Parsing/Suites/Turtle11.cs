@@ -26,9 +26,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.IO;
 using System.Linq;
-using Xunit;
 using VDS.RDF.Writing.Formatting;
 using VDS.RDF.XunitExtensions;
+using Xunit;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Parsing.Suites
 {
@@ -40,19 +41,19 @@ namespace VDS.RDF.Parsing.Suites
             : base(new TurtleParser(TurtleSyntax.W3C), new NTriplesParser(), "turtle11-unofficial\\") { }
 
         [SkippableFact]
-        public void ParsingSuiteTurtleW3CUnofficalTests()
+        public void ParsingSuiteTurtleW3CUnofficialTests()
         {
             //Run manifests
-            this.RunManifest("..\\resources/turtle11-unofficial/manifest.ttl", true);
-            this.RunManifest("..\\resources/turtle11-unofficial/manifest-bad.ttl", false);
+            RunManifest("resources/turtle11-unofficial/manifest.ttl", true);
+            RunManifest("resources/turtle11-unofficial/manifest-bad.ttl", false);
 
-            if (this.Count == 0) Assert.True(false, "No tests found");
+            if (Count == 0) Assert.True(false, "No tests found");
 
-            Console.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed");
-            Console.WriteLine((((double)this.Passed / (double)this.Count) * 100) + "% Passed");
+            Console.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
+            Console.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
 
-            if (this.Failed > 0) Assert.True(false, this.Failed + " Tests failed");
-            if (this.Indeterminate > 0) throw new SkipTestException(this.Indeterminate + " Tests are indeterminate");
+            if (Failed > 0) Assert.True(false, Failed + " Tests failed");
+            if (Indeterminate > 0) throw new SkipTestException(Indeterminate + " Tests are indeterminate");
         }
     }
 
@@ -61,10 +62,15 @@ namespace VDS.RDF.Parsing.Suites
     public class Turtle11
         : BaseRdfParserSuite
     {
-        public Turtle11()
-            : base(new TurtleParser(TurtleSyntax.W3C), new NTriplesParser(), "turtle11\\") { }
+        private readonly ITestOutputHelper _testOutputHelper;
 
-        [SkippableFact]
+        public Turtle11(ITestOutputHelper testOutputHelper)
+            : base(new TurtleParser(TurtleSyntax.W3C), new NTriplesParser(), "turtle11\\")
+        {
+            _testOutputHelper = testOutputHelper;
+        }
+
+        [Fact]
         public void ParsingSuiteTurtleW3C()
         {
             try
@@ -80,25 +86,25 @@ namespace VDS.RDF.Parsing.Suites
                 INode negEvalTest = g.CreateUriNode("rdft:TestTurtleNegativeEval");
 
                 //Run manifests
-                this.RunManifest("..\\resources/turtle11/manifest.ttl", new INode[] { posSyntaxTest }, new INode[] { negSyntaxTest, negEvalTest });
+                RunManifest("resources/turtle11/manifest.ttl", new[] { posSyntaxTest }, new[] { negSyntaxTest, negEvalTest });
 
-                if (this.Count == 0) Assert.True(false, "No tests found");
+                if (Count == 0) Assert.True(false, "No tests found");
 
-                Console.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed - " + this.Indeterminate + " Indeterminate");
-                Console.WriteLine((((double)this.Passed / (double)this.Count) * 100) + "% Passed");
+                _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed - " + Indeterminate + " Indeterminate");
+                _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
 
-                if (this.Failed > 0)
+                if (Failed > 0)
                 {
-                    if (this.Indeterminate == 0)
+                    if (Indeterminate == 0)
                     {
-                        Assert.True(false, this.Failed + " Tests failed and " + this.Passed + " Tests Passed");
+                        Assert.True(false, Failed + " Tests failed and " + Passed + " Tests Passed");
                     }
                     else
                     {
-                        Assert.True(false, this.Failed + " Test failed, " + this.Indeterminate + " Tests are indeterminate and " + this.Passed + " Tests Passed");
+                        Assert.True(false, Failed + " Test failed, " + Indeterminate + " Tests are indeterminate and " + Passed + " Tests Passed");
                     }
                 }
-                if (this.Indeterminate > 0) throw new SkipTestException(this.Indeterminate + " Tests are indeterminate and " + this.Passed + " Tests Passed");
+                if (Indeterminate > 0) throw new SkipTestException(Indeterminate + " Tests are indeterminate and " + Passed + " Tests Passed");
             }
             finally
             {
@@ -252,7 +258,7 @@ namespace VDS.RDF.Parsing.Suites
             //Dot required
             String graph = "@base <http://example.org/> .";
             Graph g = new Graph();
-            this.Parser.Load(g, new StringReader(graph));
+            Parser.Load(g, new StringReader(graph));
 
             Assert.Equal(new Uri("http://example.org"), g.BaseUri);
         }
@@ -263,7 +269,7 @@ namespace VDS.RDF.Parsing.Suites
             //Missing dot
             String graph = "@base <http://example.org/>";
             Graph g = new Graph();
-            Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
+            Assert.Throws<RdfParseException>(() => Parser.Load(g, new StringReader(graph)));
 
             Assert.Equal(new Uri("http://example.org"), g.BaseUri);
         }
@@ -275,7 +281,7 @@ namespace VDS.RDF.Parsing.Suites
             String graph = "@BASE <http://example.org/> .";
             Graph g = new Graph();
 
-            Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
+            Assert.Throws<RdfParseException>(() => Parser.Load(g, new StringReader(graph)));
         }
 
         [Fact]
@@ -284,7 +290,7 @@ namespace VDS.RDF.Parsing.Suites
             //Forbidden dot
             String graph = "BASE <http://example.org/> .";
             Graph g = new Graph();
-            Assert.Throws<RdfParseException>(() =>  this.Parser.Load(g, new StringReader(graph)));
+            Assert.Throws<RdfParseException>(() =>  Parser.Load(g, new StringReader(graph)));
 
             Assert.Equal(new Uri("http://example.org"), g.BaseUri);
         }
@@ -295,7 +301,7 @@ namespace VDS.RDF.Parsing.Suites
             //No dot required
             String graph = "BASE <http://example.org/>";
             Graph g = new Graph();
-            this.Parser.Load(g, new StringReader(graph));
+            Parser.Load(g, new StringReader(graph));
 
             Assert.Equal(new Uri("http://example.org"), g.BaseUri);
         }
@@ -306,7 +312,7 @@ namespace VDS.RDF.Parsing.Suites
             //No dot required and case insensitive
             String graph = "BaSe <http://example.org/>";
             Graph g = new Graph();
-            this.Parser.Load(g, new StringReader(graph));
+            Parser.Load(g, new StringReader(graph));
 
             Assert.Equal(new Uri("http://example.org"), g.BaseUri);
         }
@@ -317,7 +323,7 @@ namespace VDS.RDF.Parsing.Suites
             //Dot required
             String graph = "@prefix ex: <http://example.org/> .";
             Graph g = new Graph();
-            this.Parser.Load(g, new StringReader(graph));
+            Parser.Load(g, new StringReader(graph));
 
             Assert.Equal(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
@@ -328,7 +334,7 @@ namespace VDS.RDF.Parsing.Suites
             //Missing dot
             String graph = "@prefix ex: <http://example.org/>";
             Graph g = new Graph();
-            Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
+            Assert.Throws<RdfParseException>(() => Parser.Load(g, new StringReader(graph)));
 
             Assert.Equal(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
@@ -340,7 +346,7 @@ namespace VDS.RDF.Parsing.Suites
             String graph = "@PREFIX ex: <http://example.org/> .";
             Graph g = new Graph();
 
-            Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
+            Assert.Throws<RdfParseException>(() => Parser.Load(g, new StringReader(graph)));
         }
 
         [Fact]
@@ -349,7 +355,7 @@ namespace VDS.RDF.Parsing.Suites
             //Forbidden dot
             String graph = "PREFIX ex: <http://example.org/> .";
             Graph g = new Graph();
-            Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
+            Assert.Throws<RdfParseException>(() => Parser.Load(g, new StringReader(graph)));
 
             Assert.Equal(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
@@ -360,7 +366,7 @@ namespace VDS.RDF.Parsing.Suites
             //No dot required and case insensitive
             String graph = "PrEfIx ex: <http://example.org/>";
             Graph g = new Graph();
-            this.Parser.Load(g, new StringReader(graph));
+            Parser.Load(g, new StringReader(graph));
 
             Assert.Equal(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
@@ -371,7 +377,7 @@ namespace VDS.RDF.Parsing.Suites
             // No white space between prefix and URI
             const String graph = "@prefix pre:<http://example.org> .";
             Graph g = new Graph();
-            this.Parser.Load(g, new StringReader(graph));
+            Parser.Load(g, new StringReader(graph));
 
             Assert.Equal(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("pre"));
         }
@@ -381,7 +387,7 @@ namespace VDS.RDF.Parsing.Suites
         {
             const String graph = "@prefix pre: <http://example.org> .";
             Graph g = new Graph();
-            this.Parser.Load(g, new StringReader(graph));
+            Parser.Load(g, new StringReader(graph));
 
             Assert.Equal(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("pre"));
         }
@@ -392,7 +398,7 @@ namespace VDS.RDF.Parsing.Suites
             // Multiple : are not supported
             const String graph = "@prefix pre:pre: <http://example.org> .";
             Graph g = new Graph();
-            Assert.Throws<RdfParseException>(() => this.Parser.Load(g, new StringReader(graph)));
+            Assert.Throws<RdfParseException>(() => Parser.Load(g, new StringReader(graph)));
         }
 
         [Fact]
@@ -422,7 +428,7 @@ namespace VDS.RDF.Parsing.Suites
             const String data = @"<http://s> <http://p> ""literal\'quote"" .";
 
             Graph g = new Graph();
-            g.LoadFromString(data, this.Parser);
+            g.LoadFromString(data, Parser);
 
             Assert.False(g.IsEmpty);
             Assert.Equal(1, g.Triples.Count);
@@ -434,7 +440,7 @@ namespace VDS.RDF.Parsing.Suites
             const String data = @"<http://s> <http://p> ""literal\""quote"" .";
 
             Graph g = new Graph();
-            g.LoadFromString(data, this.Parser);
+            g.LoadFromString(data, Parser);
 
             Assert.False(g.IsEmpty);
             Assert.Equal(1, g.Triples.Count);

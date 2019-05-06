@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VDS.RDF.XunitExtensions;
+﻿using VDS.RDF.XunitExtensions;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Parsing.Suites
 {
@@ -11,14 +8,17 @@ namespace VDS.RDF.Parsing.Suites
     public class NQuads
         : BaseDatasetParserSuite
     {
-        public NQuads()
+        private readonly ITestOutputHelper _testOutputHelper;
+
+        public NQuads(ITestOutputHelper testOutputHelper)
             : base(new NQuadsParser(), new NQuadsParser(), @"nquads11\")
         {
-            this.CheckResults = false;
-            this.Parser.Warning += TestTools.WarningPrinter;
+            _testOutputHelper = testOutputHelper;
+            CheckResults = false;
+            Parser.Warning += TestTools.WarningPrinter;
         }
 
-        [SkippableFact]
+        [Fact]
         public void ParsingSuitesNQuads11()
         {
             //Nodes for positive and negative tests
@@ -28,15 +28,15 @@ namespace VDS.RDF.Parsing.Suites
             INode negSyntaxTest = g.CreateUriNode("rdft:TestNQuadsNegativeSyntax");
 
             //Run manifests
-            this.RunManifest(@"..\\resources\nquads11\manifest.ttl", posSyntaxTest, negSyntaxTest);
+            RunManifest(@"resources\nquads11\manifest.ttl", posSyntaxTest, negSyntaxTest);
 
-            if (this.Count == 0) Assert.True(false, "No tests found");
+            if (Count == 0) Assert.True(false, "No tests found");
 
-            Console.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed");
-            Console.WriteLine((((double)this.Passed / (double)this.Count) * 100) + "% Passed");
+            _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
+            _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
 
-            if (this.Failed > 0) Assert.True(false, this.Failed + " Tests failed");
-            if (this.Indeterminate > 0) throw new SkipTestException(Indeterminate + " Tests are indeterminate");
+            if (Failed > 0) Assert.True(false, Failed + " Tests failed");
+            if (Indeterminate > 0) throw new SkipTestException(Indeterminate + " Tests are indeterminate");
         }
     }
 }

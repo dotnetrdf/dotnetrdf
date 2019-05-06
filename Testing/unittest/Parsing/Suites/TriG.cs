@@ -33,6 +33,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 using VDS.RDF.XunitExtensions;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Parsing.Suites
 {
@@ -41,13 +42,16 @@ namespace VDS.RDF.Parsing.Suites
     public class TriG
         : BaseDatasetParserSuite
     {
-        public TriG()
+        private readonly ITestOutputHelper _testOutputHelper;
+
+        public TriG(ITestOutputHelper testOutputHelper)
             : base(new TriGParser(), new NQuadsParser(), "trig\\")
         {
+            _testOutputHelper = testOutputHelper;
             this.CheckResults = false;
         }
 
-        [SkippableFact]
+        [Fact]
         public void ParsingSuiteTriG()
         {
             //Run manifests
@@ -56,8 +60,8 @@ namespace VDS.RDF.Parsing.Suites
 
             if (this.Count == 0) Assert.True(false, "No tests found");
 
-            Console.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed");
-            Console.WriteLine((((double)this.Passed / (double)this.Count) * 100) + "% Passed");
+            _testOutputHelper.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed");
+            _testOutputHelper.WriteLine((((double)this.Passed / (double)this.Count) * 100) + "% Passed");
 
             if (this.Failed > 0) Assert.True(false, this.Failed + " Tests failed");
             if (this.Indeterminate > 0) throw new SkipTestException(this.Indeterminate + " Tests are indeterminate");
