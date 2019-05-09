@@ -26,11 +26,13 @@
 
 namespace VDS.RDF.Shacl.Constraints
 {
+    using System;
+
     internal partial class Datatype
     {
         private static bool IsIllformed(ILiteralNode n)
         {
-            return false;
+            throw new PlatformNotSupportedException();
         }
     }
 }

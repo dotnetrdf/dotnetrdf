@@ -34,6 +34,7 @@ namespace VDS.RDF.Shacl
     using VDS.RDF.Writing;
     using Xunit;
     using Xunit.Abstractions;
+    using static TestSuiteData;
 
     public class TestSuite
     {
@@ -45,14 +46,14 @@ namespace VDS.RDF.Shacl
         }
 
         [Theory]
-        [MemberData(nameof(TestSuiteData.CoreTestNames), MemberType = typeof(TestSuiteData))]
+        [MemberData(nameof(CoreTests), MemberType = typeof(TestSuiteData))]
         public void CorePartialCompliance(string name)
         {
             Conforms(name);
         }
 
         [Theory]
-        [MemberData(nameof(TestSuiteData.CoreTestNames), MemberType = typeof(TestSuiteData))]
+        [MemberData(nameof(CoreFullTests), MemberType = typeof(TestSuiteData))]
         public void CoreFullCompliance(string name)
         {
             if (name == "core/path/path-complex-002.ttl")
@@ -64,14 +65,14 @@ namespace VDS.RDF.Shacl
         }
 
         [Theory]
-        [MemberData(nameof(TestSuiteData.SparqlTestNames), MemberType = typeof(TestSuiteData))]
+        [MemberData(nameof(SparqlTests), MemberType = typeof(TestSuiteData))]
         public void SparqlPartialCompliance(string name)
         {
             Conforms(name);
         }
 
         [Theory]
-        [MemberData(nameof(TestSuiteData.SparqlTestNames), MemberType = typeof(TestSuiteData))]
+        [MemberData(nameof(SparqlTests), MemberType = typeof(TestSuiteData))]
         public void SparqlFullCompliance(string name)
         {
             Validates(name);
@@ -79,7 +80,7 @@ namespace VDS.RDF.Shacl
 
         private static void Conforms(string name)
         {
-            TestSuiteData.ExtractTestData(name, out var testGraph, out var failure, out var dataGraph, out var shapesGraph);
+            ExtractTestData(name, out var testGraph, out var failure, out var dataGraph, out var shapesGraph);
 
             void conforms()
             {
@@ -127,7 +128,7 @@ WHERE {
 
         private void Validates(string name)
         {
-            TestSuiteData.ExtractTestData(name, out var testGraph, out var failure, out var dataGraph, out var shapesGraph);
+            ExtractTestData(name, out var testGraph, out var failure, out var dataGraph, out var shapesGraph);
 
             void validates()
             {

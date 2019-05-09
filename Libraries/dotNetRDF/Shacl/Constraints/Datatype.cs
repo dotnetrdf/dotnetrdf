@@ -31,6 +31,7 @@ namespace VDS.RDF.Shacl.Constraints
     using System.Diagnostics;
     using System.Linq;
     using VDS.RDF.Parsing;
+    using VDS.RDF.Query;
     using VDS.RDF.Shacl.Validation;
 
     internal partial class Datatype : Constraint
@@ -76,7 +77,7 @@ namespace VDS.RDF.Shacl.Constraints
 
             var literal = (ILiteralNode)n;
             var xsd_string = UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
-            
+
             // TODO: Replace with RdfSpecsHelper.RdfLangString, see https://github.com/dotnetrdf/dotnetrdf/issues/233
             var rdf_langString = UriFactory.Create("http://www.w3.org/1999/02/22-rdf-syntax-ns#langString");
             var stringDatatype = string.IsNullOrEmpty(literal.Language) ? xsd_string : rdf_langString;
@@ -85,6 +86,18 @@ namespace VDS.RDF.Shacl.Constraints
             if (!EqualityHelper.AreUrisEqual(datatype, DataTypeParameter))
             {
                 return true;
+            }
+
+            if (literal.DataType is null)
+            {
+                return false;
+            }
+
+            var supportedDatatypes = SparqlSpecsHelper.SupportedCastFunctions.Union(SparqlSpecsHelper.IntegerDataTypes);
+
+            if (!supportedDatatypes.Contains(literal.DataType.AbsoluteUri))
+            {
+                return false;
             }
 
             return IsIllformed(literal);

@@ -27,29 +27,15 @@
 namespace VDS.RDF.Shacl.Constraints
 {
     using System.IO;
-    using System.Linq;
     using System.Xml;
     using System.Xml.Linq;
     using System.Xml.Schema;
     using VDS.RDF.Parsing;
-    using VDS.RDF.Query;
 
     internal partial class Datatype
     {
         private static bool IsIllformed(ILiteralNode n)
         {
-            if (n.DataType is null)
-            {
-                return false;
-            }
-
-            var supportedDatatypes = SparqlSpecsHelper.SupportedCastFunctions.Union(SparqlSpecsHelper.IntegerDataTypes);
-
-            if (!supportedDatatypes.Contains(n.DataType.AbsoluteUri))
-            {
-                return false;
-            }
-
             var datatypeLocalPart = n.DataType.AbsoluteUri.Replace(XmlSpecsHelper.NamespaceXmlSchema, string.Empty);
 
             const string root = "root";
