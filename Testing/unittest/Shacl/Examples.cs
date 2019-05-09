@@ -74,9 +74,8 @@ namespace VDS.RDF.Shacl
 ");
 
             var processor = new ShapesGraph(shapesGraph);
-            var isValid = processor.Validate(dataGraph, out var report);
+            var report = processor.Validate(dataGraph);
 
-            Assert.False(isValid);
             Assert.Equal(reportGraph, report.Graph);
         }
     }

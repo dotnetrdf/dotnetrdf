@@ -43,13 +43,16 @@ namespace VDS.RDF.Shacl.Paths
         {
             get
             {
-                return new Query.Paths.Property(this);
+                return new Property(this);
             }
         }
 
-        internal override IEnumerable<Triple> AsTriples()
+        internal override IEnumerable<Triple> AsTriples
         {
-            return Enumerable.Empty<Triple>();
+            get
+            {
+                return Enumerable.Empty<Triple>();
+            }
         }
     }
 }

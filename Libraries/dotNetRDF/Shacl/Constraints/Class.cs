@@ -39,13 +39,20 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
-        internal override INode ConstraintComponent => Vocabulary.ClassConstraintComponent;
+        internal override INode ConstraintComponent
+        {
+            get
+            {
+                return Vocabulary.ClassConstraintComponent;
+            }
+        }
 
         internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
             var invalidValues =
                 from valueNode in valueNodes
-                group this.IsShaclInstance(valueNode) by valueNode into valid
+                let isInstance = this.IsShaclInstance(valueNode)
+                group isInstance by valueNode into valid
                 where !valid.Any(isValid => isValid)
                 select valid.Key;
 

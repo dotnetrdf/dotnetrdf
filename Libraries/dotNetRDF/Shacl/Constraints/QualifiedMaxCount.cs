@@ -39,7 +39,13 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
-        internal override INode ConstraintComponent => Vocabulary.QualifiedMaxCountConstraintComponent;
+        internal override INode ConstraintComponent
+        {
+            get
+            {
+                return Vocabulary.QualifiedMaxCountConstraintComponent;
+            }
+        }
 
         protected override bool ValidateInternal(INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {

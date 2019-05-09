@@ -41,7 +41,11 @@ namespace VDS.RDF.Shacl.Paths
         {
             get
             {
-                return this.Graph.GetTriplesWithSubject(this).Select(t => Path.Parse(t.Object)).Single();
+                return
+                    Graph.GetTriplesWithSubject(this)
+                    .Select(t => t.Object)
+                    .Select(Path.Parse)
+                    .Single();
             }
         }
     }

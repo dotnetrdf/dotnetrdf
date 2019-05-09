@@ -65,19 +65,37 @@ namespace VDS.RDF.Shacl
             }
         }
 
-        public static IEnumerable<object[]> CoreTestNames =>
-           from name in TestNames
-           where name.StartsWith("core")
-           select new[] { name };
+        public static IEnumerable<object[]> CoreTestNames
+        {
+            get
+            {
+                return
+                    from name in TestNames
+                    where name.StartsWith("core")
+                    select new[] { name };
+            }
+        }
 
-        public static IEnumerable<object[]> SparqlTestNames =>
-            from name in TestNames
-            where name.StartsWith("sparql")
-            select new[] { name };
+        public static IEnumerable<object[]> SparqlTestNames
+        {
+            get
+            {
+                return
+                    from name in TestNames
+                    where name.StartsWith("sparql")
+                    select new[] { name };
+            }
+        }
 
-        public static IEnumerable<string> TestNames =>
-            from entries in Store.GetTriplesWithPredicate(mf_entries)
-            select baseUri.MakeRelativeUri(((IUriNode)entries.Subject).Uri).ToString();
+        public static IEnumerable<string> TestNames
+        {
+            get
+            {
+                return
+                    from entries in Store.GetTriplesWithPredicate(mf_entries)
+                    select baseUri.MakeRelativeUri(((IUriNode)entries.Subject).Uri).ToString();
+            }
+        }
 
         internal static void ExtractTestData(string name, out IGraph testGraph, out bool failure, out IGraph dataGraph, out IGraph shapesGraph)
         {

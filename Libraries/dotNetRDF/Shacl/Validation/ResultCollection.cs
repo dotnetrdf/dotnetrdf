@@ -41,15 +41,36 @@ namespace VDS.RDF.Shacl.Validation
             report = shaclValidationReport;
         }
 
-        int ICollection<Result>.Count => Results.Count();
+        int ICollection<Result>.Count
+        {
+            get
+            {
+                return Results.Count();
+            }
+        }
 
-        bool ICollection<Result>.IsReadOnly => false;
+        bool ICollection<Result>.IsReadOnly
+        {
+            get
+            {
+                return false;
+            }
+        }
 
-        private IEnumerable<Result> Results =>
-            from result in Vocabulary.Result.ObjectsOf(report)
-            select Result.Parse(result);
+        private IEnumerable<Result> Results
+        {
+            get
+            {
+                return
+                    from result in Vocabulary.Result.ObjectsOf(report)
+                    select Result.Parse(result);
+            }
+        }
 
-        void ICollection<Result>.Add(Result item) => report.Graph.Assert(report, Vocabulary.Result, item);
+        void ICollection<Result>.Add(Result item)
+        {
+            report.Graph.Assert(report, Vocabulary.Result, item);
+        }
 
         void ICollection<Result>.Clear()
         {
@@ -59,19 +80,31 @@ namespace VDS.RDF.Shacl.Validation
             }
         }
 
-        bool ICollection<Result>.Contains(Result item) => Results.Contains(item);
+        bool ICollection<Result>.Contains(Result item)
+        {
+            return Results.Contains(item);
+        }
 
-        void ICollection<Result>.CopyTo(Result[] array, int arrayIndex) => Results.ToList().CopyTo(array, arrayIndex);
+        void ICollection<Result>.CopyTo(Result[] array, int arrayIndex)
+        {
+            Results.ToList().CopyTo(array, arrayIndex);
+        }
 
-        IEnumerator<Result> IEnumerable<Result>.GetEnumerator() => Results.GetEnumerator();
+        IEnumerator<Result> IEnumerable<Result>.GetEnumerator()
+        {
+            return Results.GetEnumerator();
+        }
 
-        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<Result>)this).GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable<Result>)this).GetEnumerator();
+        }
 
         bool ICollection<Result>.Remove(Result result)
         {
-            var contains = ((ICollection<Result>)this).Contains(result);
+            var contained = ((ICollection<Result>)this).Contains(result);
             report.Graph.Retract(report, Vocabulary.Result, result);
-            return contains;
+            return contained;
         }
     }
 }

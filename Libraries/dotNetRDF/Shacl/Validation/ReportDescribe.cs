@@ -34,25 +34,6 @@ namespace VDS.RDF.Shacl.Validation
 
     public class ReportDescribeAlgorithm : BaseDescribeAlgorithm
     {
-        private static IEnumerable<INode> PredicatesToExpand
-        {
-            get
-            {
-                yield return Vocabulary.Result;
-                yield return Vocabulary.ResultPath;
-                yield return Vocabulary.ResultMessage;
-                yield return Vocabulary.ResultSeverity;
-
-                foreach (var item in Vocabulary.Paths)
-                {
-                    yield return item;
-                }
-
-                yield return Vocabulary.RdfFirst;
-                yield return Vocabulary.RdfRest;
-            }
-        }
-
         protected override void DescribeInternal(IRdfHandler handler, SparqlEvaluationContext context, IEnumerable<INode> nodes)
         {
             var bnodeMapping = new Dictionary<string, INode>();
@@ -62,20 +43,20 @@ namespace VDS.RDF.Shacl.Validation
 
             void process(INode originalSubject, INode mappedSubject = null)
             {
-                foreach (var original in context.Data.GetTriplesWithSubject(originalSubject))
+                foreach (var t in context.Data.GetTriplesWithSubject(originalSubject))
                 {
-                    var @object = original.Object;
+                    var @object = t.Object;
                     if (@object.NodeType == NodeType.Blank && !done.Contains(@object))
                     {
-                        if (PredicatesToExpand.Contains(original.Predicate))
+                        if (Vocabulary.PredicatesToExpandInReport.Contains(t.Predicate))
                         {
                             @object = @object.Graph.CreateBlankNode();
-                            map.Add(@object, original.Object);
+                            map.Add(@object, t.Object);
                             outstanding.Enqueue(@object);
                         }
                     }
 
-                    if (!handler.HandleTriple((RewriteDescribeBNodes(new Triple(mappedSubject ?? originalSubject, original.Predicate, @object, original.Graph), bnodeMapping, handler))))
+                    if (!handler.HandleTriple(RewriteDescribeBNodes(new Triple(mappedSubject ?? originalSubject, t.Predicate, @object, t.Graph), bnodeMapping, handler)))
                     {
                         ParserHelper.Stop();
                     }

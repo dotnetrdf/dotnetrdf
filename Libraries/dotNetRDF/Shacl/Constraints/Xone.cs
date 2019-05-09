@@ -39,7 +39,13 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
-        internal override INode ConstraintComponent => Vocabulary.XoneConstraintComponent;
+        internal override INode ConstraintComponent
+        {
+            get
+            {
+                return Vocabulary.XoneConstraintComponent;
+            }
+        }
 
         internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {

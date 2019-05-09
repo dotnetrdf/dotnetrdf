@@ -71,23 +71,30 @@ SELECT DISTINCT ?shape {
             }
         }
 
-        internal IEnumerable<ConstraintComponent> ConstraintComponents =>
-            from constraintComponent in this.ShaclInstancesOf(Vocabulary.ConstraintComponent.CopyNode(this))
-            select new ConstraintComponent(constraintComponent);
+        internal IEnumerable<ConstraintComponent> ConstraintComponents
+        {
+            get
+            {
+                return
+                    from constraintComponent in this.ShaclInstancesOf(Vocabulary.ConstraintComponent.CopyNode(this))
+                    select new ConstraintComponent(constraintComponent);
+            }
+        }
 
-        public bool Validate(IGraph dataGragh, out Report report)
+        public Report Validate(IGraph dataGragh)
         {
             var g = new Graph();
             g.NamespaceMap.AddNamespace("sh", UriFactory.Create(Vocabulary.BaseUri));
-            var r = Report.Create(g);
-            report = r;
+            var report = Report.Create(g);
 
-            return TargetedShapes
-                .Select(shape => shape.Validate(dataGragh, r))
+            TargetedShapes
+                .Select(shape => shape.Validate(dataGragh, report))
                 .Aggregate(true, (a, b) => a && b);
+
+            return report;
         }
 
-        public bool Validate(IGraph dataGragh)
+        public bool Conforms(IGraph dataGragh)
         {
             var g = new Graph();
             g.NamespaceMap.AddNamespace("sh", UriFactory.Create(Vocabulary.BaseUri));

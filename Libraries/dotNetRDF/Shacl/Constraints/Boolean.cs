@@ -37,6 +37,12 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
-        internal bool BooleanValue => this.AsValuedNode().AsBoolean();
+        internal bool BooleanValue
+        {
+            get
+            {
+                return this.AsValuedNode().AsBoolean();
+            }
+        }
     }
 }

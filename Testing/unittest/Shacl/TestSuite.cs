@@ -83,7 +83,7 @@ namespace VDS.RDF.Shacl
 
             void conforms()
             {
-                var actual = new ShapesGraph(shapesGraph).Validate(dataGraph);
+                var actual = new ShapesGraph(shapesGraph).Conforms(dataGraph);
                 var expected = testGraph.GetTriplesWithPredicate(Vocabulary.Conforms).Single().Object.AsValuedNode().AsBoolean();
 
                 Assert.Equal(expected, actual);
@@ -131,7 +131,7 @@ WHERE {
 
             void validates()
             {
-                new ShapesGraph(shapesGraph).Validate(dataGraph, out var report);
+                var report = new ShapesGraph(shapesGraph).Validate(dataGraph);
 
                 var actual = ExtractReportGraph(report.Graph);
                 var expected = ExtractReportGraph(testGraph);

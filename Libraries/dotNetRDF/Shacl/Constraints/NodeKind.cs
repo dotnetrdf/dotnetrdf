@@ -26,6 +26,7 @@
 
 namespace VDS.RDF.Shacl.Constraints
 {
+    using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
@@ -39,23 +40,41 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
-        internal override INode ConstraintComponent => Vocabulary.NodeKindConstraintComponent;
+        internal override INode ConstraintComponent
+        {
+            get
+            {
+                return Vocabulary.NodeKindConstraintComponent;
+            }
+        }
 
         internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
-            var mappings = new Dictionary<NodeType, IEnumerable<INode>>
-            {
-                { NodeType.Blank, Vocabulary.BlankNodeKinds },
-                { NodeType.Literal, Vocabulary.LiteralNodeKinds },
-                { NodeType.Uri, Vocabulary.IriNodeKinds },
-            };
-
-            var invalidValues = 
+            var invalidValues =
                 from valueNode in valueNodes
-                where !mappings[valueNode.NodeType].Contains(this)
+                let kinds = Convert(valueNode.NodeType)
+                where !kinds.Contains(this)
                 select valueNode;
 
             return ReportValueNodes(focusNode, invalidValues, report);
+        }
+
+        private static IEnumerable<INode> Convert(NodeType type)
+        {
+            switch (type)
+            {
+                case NodeType.Blank:
+                    return Vocabulary.BlankNodeKinds;
+
+                case NodeType.Uri:
+                    return Vocabulary.IriNodeKinds;
+
+                case NodeType.Literal:
+                    return Vocabulary.LiteralNodeKinds;
+
+                default:
+                    throw new Exception();
+            }
         }
     }
 }

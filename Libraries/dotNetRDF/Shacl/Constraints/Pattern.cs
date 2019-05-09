@@ -40,9 +40,21 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
-        internal override INode ConstraintComponent => Vocabulary.PatternConstraintComponent;
+        internal override INode ConstraintComponent
+        {
+            get
+            {
+                return Vocabulary.PatternConstraintComponent;
+            }
+        }
 
-        private INode Flags => Vocabulary.Flags.ObjectsOf(Shape).SingleOrDefault();
+        private INode Flags
+        {
+            get
+            {
+                return Vocabulary.Flags.ObjectsOf(Shape).SingleOrDefault();
+            }
+        }
 
         internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {

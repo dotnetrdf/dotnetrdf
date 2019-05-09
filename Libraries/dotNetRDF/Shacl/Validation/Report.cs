@@ -67,6 +67,7 @@ namespace VDS.RDF.Shacl.Validation
             get
             {
                 var conforms = Vocabulary.Conforms.ObjectsOf(this).SingleOrDefault();
+
                 if (conforms is null)
                 {
                     return true;
@@ -86,13 +87,21 @@ namespace VDS.RDF.Shacl.Validation
             }
         }
 
-        internal ICollection<Result> Results => new ResultCollection(this);
+        internal ICollection<Result> Results
+        {
+            get
+            {
+                return new ResultCollection(this);
+            }
+        }
 
         internal static Report Create(IGraph g)
         {
-            var report = new Report(g.CreateBlankNode());
-            report.Type = Vocabulary.ValidationReport;
-            report.Conforms = true;
+            var report = new Report(g.CreateBlankNode())
+            {
+                Type = Vocabulary.ValidationReport,
+                Conforms = true,
+            };
 
             return report;
         }

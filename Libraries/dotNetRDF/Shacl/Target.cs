@@ -41,15 +41,15 @@ namespace VDS.RDF.Shacl
 
         internal static Target Parse(INode type, INode value)
         {
-            var targets = new Dictionary<INode, Func<INode, Target>>()
+            switch (type)
             {
-                { Vocabulary.TargetClass, n => new Class(n) },
-                { Vocabulary.TargetNode, n => new Node(n) },
-                { Vocabulary.TargetObjectsOf, n => new ObjectsOf(n) },
-                { Vocabulary.TargetSubjectsOf, n => new SubjectsOf(n) }
-            };
+                case INode t when t.Equals(Vocabulary.TargetNode): return new Node(value);
+                case INode t when t.Equals(Vocabulary.TargetClass): return new Class(value);
+                case INode t when t.Equals(Vocabulary.TargetSubjectsOf): return new SubjectsOf(value);
+                case INode t when t.Equals(Vocabulary.TargetObjectsOf): return new ObjectsOf(value);
 
-            return targets[type](value);
+                default: throw new Exception();
+            }
         }
 
         internal abstract IEnumerable<INode> SelectFocusNodes(IGraph dataGragh);

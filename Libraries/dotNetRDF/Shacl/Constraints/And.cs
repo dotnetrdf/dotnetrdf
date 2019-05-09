@@ -39,18 +39,24 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
-        internal override INode ConstraintComponent => Vocabulary.AndConstraintComponent;
+        internal override INode ConstraintComponent
+        {
+            get
+            {
+                return Vocabulary.AndConstraintComponent;
+            }
+        }
 
         internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
             var invalidValues =
                 from valueNode in valueNodes
-                from member in this.Graph.GetListItems(this)
+                from member in Graph.GetListItems(this)
                 let shape = Shape.Parse(member)
-                let isValid = shape.Validate(valueNode)
-                group isValid by valueNode into validation
-                where !validation.All(valid => valid)
-                select validation.Key;
+                let conforms = shape.Validate(valueNode)
+                group conforms by valueNode into conform
+                where !conform.All(valid => valid)
+                select conform.Key;
 
             return ReportValueNodes(focusNode, invalidValues, report);
         }

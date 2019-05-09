@@ -36,8 +36,17 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
-        internal override INode ConstraintComponent => Vocabulary.MinLengthConstraintComponent;
+        internal override INode ConstraintComponent
+        {
+            get
+            {
+                return Vocabulary.MinLengthConstraintComponent;
+            }
+        }
 
-        protected override bool ValidateInternal(int v) => v > -1;
+        protected override bool ValidateInternal(int v)
+        {
+            return v > -1;
+        }
     }
 }

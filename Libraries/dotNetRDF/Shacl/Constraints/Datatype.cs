@@ -41,9 +41,21 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
-        internal override INode ConstraintComponent => Vocabulary.DatatypeConstraintComponent;
+        internal override INode ConstraintComponent
+        {
+            get
+            {
+                return Vocabulary.DatatypeConstraintComponent;
+            }
+        }
 
-        private Uri DataTypeParameter => ((IUriNode)this).Uri;
+        private Uri DataTypeParameter
+        {
+            get
+            {
+                return ((IUriNode)this).Uri;
+            }
+        }
 
         internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
@@ -64,6 +76,8 @@ namespace VDS.RDF.Shacl.Constraints
 
             var literal = (ILiteralNode)n;
             var xsd_string = UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
+            
+            // TODO: Replace with RdfSpecsHelper.RdfLangString, see https://github.com/dotnetrdf/dotnetrdf/issues/233
             var rdf_langString = UriFactory.Create("http://www.w3.org/1999/02/22-rdf-syntax-ns#langString");
             var stringDatatype = string.IsNullOrEmpty(literal.Language) ? xsd_string : rdf_langString;
             var datatype = literal.DataType ?? stringDatatype;

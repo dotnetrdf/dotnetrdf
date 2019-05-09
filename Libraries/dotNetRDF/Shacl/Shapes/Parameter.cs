@@ -38,8 +38,17 @@ namespace VDS.RDF.Shacl.Shapes
         {
         }
 
-        internal bool Optional => Vocabulary.Optional.ObjectsOf(this).SingleOrDefault()?.AsValuedNode().AsBoolean() ?? false;
+        internal bool Optional
+        {
+            get
+            {
+                return Vocabulary.Optional.ObjectsOf(this).SingleOrDefault()?.AsValuedNode().AsBoolean() ?? false;
+            }
+        }
 
-        internal bool Matches(Shape shape) => !this.Equals((INode)shape) && ValidateInternal(shape, shape.AsEnumerable(), null);
+        internal bool Matches(Shape shape)
+        {
+            return !this.Equals((INode)shape) && ValidateInternal(shape, shape.AsEnumerable(), null);
+        }
     }
 }

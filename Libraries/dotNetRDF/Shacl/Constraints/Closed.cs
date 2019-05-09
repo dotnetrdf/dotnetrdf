@@ -39,7 +39,13 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
-        internal override INode ConstraintComponent => Vocabulary.ClosedConstraintComponent;
+        internal override INode ConstraintComponent
+        {
+            get
+            {
+                return Vocabulary.ClosedConstraintComponent;
+            }
+        }
 
         internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
@@ -54,8 +60,8 @@ namespace VDS.RDF.Shacl.Constraints
                 let property = outgoing.Predicate
                 let ignoredProperties =
                     from ignoredProperty in Vocabulary.IgnoredProperties.ObjectsOf(Shape)
-                    from member in Graph.GetListItems(ignoredProperty)
-                    select member
+                    from ignoredMember in Graph.GetListItems(ignoredProperty)
+                    select ignoredMember
                 let definedProperties =
                     from property in Vocabulary.Property.ObjectsOf(Shape)
                     from path in Vocabulary.Path.ObjectsOf(property)

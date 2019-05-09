@@ -43,25 +43,32 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
-        protected override string Query => Vocabulary.Ask.ObjectsOf(this).Single().AsValuedNode().AsString();
+        protected override string Query
+        {
+            get
+            {
+                return Vocabulary.Ask.ObjectsOf(this).Single().AsValuedNode().AsString();
+            }
+        }
 
         protected override bool ValidateInternal(INode focusNode, IEnumerable<INode> valueNodes, Report report, SparqlQuery query)
         {
-            IEnumerable<INode> execute()
-            {
-                foreach (var valueNode in valueNodes)
-                {
-                    var q = query.Copy();
-                    q.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("value", new ConstantTerm(valueNode)));
+            var invalidValues =
+                from valueNode in valueNodes
+                let q = BindValue(query, valueNode)
+                let result = ((SparqlResultSet)focusNode.Graph.ExecuteQuery(q)).Result
+                where !result
+                select valueNode;
 
-                    if (!((SparqlResultSet)focusNode.Graph.ExecuteQuery(q)).Result)
-                    {
-                        yield return valueNode;
-                    }
-                }
-            }
+            return ReportValueNodes(focusNode, invalidValues, report);
+        }
 
-            return ReportValueNodes(focusNode, execute(), report);
+        private static SparqlQuery BindValue(SparqlQuery query, INode valueNode)
+        {
+            var q = query.Copy();
+            q.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("value", new ConstantTerm(valueNode)));
+
+            return q;
         }
     }
 }

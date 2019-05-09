@@ -41,21 +41,47 @@ namespace VDS.RDF.Shacl
         {
         }
 
-        internal INode Severity =>
-            Vocabulary.Severity.ObjectsOf(this).SingleOrDefault() ?? Vocabulary.Violation;
+        internal INode Severity
+        {
+            get
+            {
+                return Vocabulary.Severity.ObjectsOf(this).SingleOrDefault() ?? Vocabulary.Violation;
+            }
+        }
 
-        internal INode Message =>
-            Vocabulary.Message.ObjectsOf(this).SingleOrDefault();
+        internal INode Message
+        {
+            get
+            {
+                return Vocabulary.Message.ObjectsOf(this).SingleOrDefault();
+            }
+        }
 
-        private bool Deactivated =>
-            Vocabulary.Deactivated.ObjectsOf(this).SingleOrDefault()?.AsValuedNode().AsBoolean() ?? false;
+        private bool Deactivated
+        {
+            get
+            {
+                return Vocabulary.Deactivated.ObjectsOf(this).SingleOrDefault()?.AsValuedNode().AsBoolean() ?? false;
+            }
+        }
 
-        private new ShapesGraph Graph => new ShapesGraph(base.Graph);
+        private new ShapesGraph Graph
+        {
+            get
+            {
+                return new ShapesGraph(base.Graph);
+            }
+        }
 
-        private IEnumerable<Constraint> Constraints =>
-            Vocabulary.Constraints.SelectMany(constraint =>
-                from o in constraint.ObjectsOf(this)
-                select Constraint.Parse(this, constraint, o));
+        private IEnumerable<Constraint> Constraints
+        {
+            get
+            {
+                return Vocabulary.Constraints.SelectMany(constraint =>
+                    from o in constraint.ObjectsOf(this)
+                    select Constraint.Parse(this, constraint, o));
+            }
+        }
 
         private IEnumerable<Target> Targets
         {
@@ -105,9 +131,9 @@ namespace VDS.RDF.Shacl
                 .Aggregate(true, (a, b) => a && b);
         }
 
-        internal bool Validate(INode focusNode, Report report = null)
+        internal bool Validate(INode focusNode)
         {
-            return Validate(focusNode, focusNode.AsEnumerable(), report);
+            return Validate(focusNode, focusNode.AsEnumerable());
         }
 
         internal bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report = null)
@@ -122,11 +148,16 @@ namespace VDS.RDF.Shacl
 
         protected virtual bool ValidateInternal(INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
-            var components = Graph.ConstraintComponents.Where(component => component.Matches(this)).SelectMany(c => c.Constraints(this));
+            var components = (
+                from component in Graph.ConstraintComponents
+                where component.Matches(this)
+                select component.Constraints(this))
+                .Aggregate(Enumerable.Empty<Constraint>(), (first, second) => first.Concat(second));
 
-            return Constraints.Concat(components)
-                .Select(constraint => constraint.Validate(focusNode, valueNodes, report))
-                .Aggregate(true, (a, b) => a && b);
+            return (
+                from constraint in Constraints.Concat(components)
+                select constraint.Validate(focusNode, valueNodes, report))
+                .Aggregate(true, (first, second) => first && second);
         }
 
         private IEnumerable<INode> SelectFocusNodes(IGraph dataGragh)

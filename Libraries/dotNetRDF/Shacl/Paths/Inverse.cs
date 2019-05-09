@@ -47,12 +47,15 @@ namespace VDS.RDF.Shacl.Paths
             }
         }
 
-        internal override IEnumerable<Triple> AsTriples()
+        internal override IEnumerable<Triple> AsTriples
         {
-            return
-                new Triple(this, Vocabulary.InversePath.CopyNode(Graph), Argument).AsEnumerable()
-                .Union(
-                Argument.AsTriples());
+            get
+            {
+                return
+                    new Triple(this, Vocabulary.InversePath.CopyNode(Graph), Argument).AsEnumerable()
+                    .Union(
+                    Argument.AsTriples);
+            }
         }
     }
 }

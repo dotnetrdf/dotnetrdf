@@ -31,27 +31,39 @@ namespace VDS.RDF.Shacl
 
     internal static class Extensions
     {
-        internal static IEnumerable<INode> SubjectsOf(this INode predicate, INode @object) =>
-            from t in @object.Graph.GetTriplesWithPredicateObject(predicate, @object)
-            select t.Subject;
+        internal static IEnumerable<INode> SubjectsOf(this INode predicate, INode @object)
+        {
+            return
+                from t in @object.Graph.GetTriplesWithPredicateObject(predicate, @object)
+                select t.Subject;
+        }
 
-        internal static IEnumerable<INode> ObjectsOf(this INode predicate, INode subject) =>
-            from t in subject.Graph.GetTriplesWithSubjectPredicate(subject, predicate)
-            select t.Object;
+        internal static IEnumerable<INode> ObjectsOf(this INode predicate, INode subject)
+        {
+            return
+                from t in subject.Graph.GetTriplesWithSubjectPredicate(subject, predicate)
+                select t.Object;
+        }
 
-        internal static IEnumerable<INode> ShaclInstancesOf(this IGraph g, INode @class) =>
-            InferSubclasses(@class).SelectMany(g.InstancesOf);
+        internal static IEnumerable<INode> ShaclInstancesOf(this IGraph g, INode @class)
+        {
+            return InferSubclasses(@class).SelectMany(g.InstancesOf);
+        }
 
-        internal static bool IsShaclInstance(this INode @class, INode node) =>
-            InferSubclasses(@class).Any(node.IsInstanceOf);
+        internal static bool IsShaclInstance(this INode @class, INode node)
+        {
+            return InferSubclasses(@class).Any(node.IsInstanceOf);
+        }
 
         internal static bool IsInstanceOf(this INode node, INode @class)
         {
             return node.Graph.GetTriplesWithSubjectPredicate(node, Vocabulary.RdfType).WithObject(@class).Any();
         }
 
-        private static IEnumerable<INode> InstancesOf(this IGraph g, INode @class) =>
-            Vocabulary.RdfType.SubjectsOf(@class.CopyNode(g));
+        private static IEnumerable<INode> InstancesOf(this IGraph g, INode @class)
+        {
+            return Vocabulary.RdfType.SubjectsOf(@class.CopyNode(g));
+        }
 
         private static IEnumerable<INode> InferSubclasses(INode node, HashSet<INode> seen = null)
         {

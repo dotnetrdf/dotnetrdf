@@ -39,8 +39,20 @@ namespace VDS.RDF.Shacl
         {
         }
 
-        internal string Prefix => Vocabulary.Prefix.ObjectsOf(this).Single().AsValuedNode().AsString();
+        internal string Prefix
+        {
+            get
+            {
+                return Vocabulary.Prefix.ObjectsOf(this).Single().AsValuedNode().AsString();
+            }
+        }
 
-        internal Uri Namespace => UriFactory.Create(((ILiteralNode)Vocabulary.Namespace.ObjectsOf(this).Single()).Value);
+        internal Uri Namespace
+        {
+            get
+            {
+                return UriFactory.Create(((ILiteralNode)Vocabulary.Namespace.ObjectsOf(this).Single()).Value);
+            }
+        }
     }
 }

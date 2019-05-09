@@ -40,10 +40,16 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
-        protected Shape QualifiedValueShape => (
-            from shape in Vocabulary.QualifiedValueShape.ObjectsOf(Shape)
-            select Shape.Parse(shape))
-            .SingleOrDefault();
+        protected Shape QualifiedValueShape
+        {
+            get
+            {
+                return (
+                    from shape in Vocabulary.QualifiedValueShape.ObjectsOf(Shape)
+                    select Shape.Parse(shape))
+                    .SingleOrDefault();
+            }
+        }
 
         internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {

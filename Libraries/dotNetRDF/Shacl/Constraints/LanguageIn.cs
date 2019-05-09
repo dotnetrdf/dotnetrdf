@@ -41,11 +41,18 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
-        internal override INode ConstraintComponent => Vocabulary.LanguageInConstraintComponent;
+        internal override INode ConstraintComponent
+        {
+            get
+            {
+                return Vocabulary.LanguageInConstraintComponent;
+            }
+        }
 
         internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
             var items = Graph.GetListItems(this);
+
             var invalidValues =
                 from valueNode in valueNodes
                 where !items.Any(item => LangMatches(valueNode, item))

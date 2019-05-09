@@ -51,15 +51,33 @@ namespace VDS.RDF.Shacl.Constraints
             Parameters = parameters;
         }
 
-        internal override INode ConstraintComponent => Vocabulary.SparqlConstraintComponent;
+        internal override INode ConstraintComponent
+        {
+            get
+            {
+                return Vocabulary.SparqlConstraintComponent;
+            }
+        }
 
         protected abstract string Query { get; }
 
-        protected INode Message => Vocabulary.Message.ObjectsOf(this).SingleOrDefault();
+        protected INode Message
+        {
+            get
+            {
+                return Vocabulary.Message.ObjectsOf(this).SingleOrDefault();
+            }
+        }
 
         private IEnumerable<KeyValuePair<string, INode>> Parameters { get; set; }
 
-        private IEnumerable<PrefixDeclaration> Prefixes => Vocabulary.Prefixes.ObjectsOf(this).Select(p => new Prefixes(p)).SingleOrDefault() ?? Enumerable.Empty<PrefixDeclaration>();
+        private IEnumerable<PrefixDeclaration> Prefixes
+        {
+            get
+            {
+                return Vocabulary.Prefixes.ObjectsOf(this).Select(p => new Prefixes(p)).SingleOrDefault() ?? Enumerable.Empty<PrefixDeclaration>();
+            }
+        }
 
         internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {

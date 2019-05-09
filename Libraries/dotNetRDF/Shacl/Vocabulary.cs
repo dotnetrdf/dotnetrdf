@@ -38,9 +38,9 @@ namespace VDS.RDF.Shacl
 
         public static IUriNode RdfType { get; } = AnyNode(RdfSpecsHelper.RdfType);
 
-        public static IUriNode RdfFirst { get; } = Factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst));
+        public static IUriNode RdfFirst { get; } = AnyNode(RdfSpecsHelper.RdfListFirst);
 
-        public static IUriNode RdfRest { get; } = Factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest));
+        public static IUriNode RdfRest { get; } = AnyNode(RdfSpecsHelper.RdfListRest);
 
         public static IUriNode RdfsClass { get; } = AnyNode("http://www.w3.org/2000/01/rdf-schema#Class");
 
@@ -300,10 +300,10 @@ namespace VDS.RDF.Shacl
         {
             get
             {
-                yield return TargetClass;
                 yield return TargetNode;
-                yield return TargetObjectsOf;
+                yield return TargetClass;
                 yield return TargetSubjectsOf;
+                yield return TargetObjectsOf;
             }
         }
 
@@ -311,36 +311,36 @@ namespace VDS.RDF.Shacl
         {
             get
             {
-                yield return Class;
-                yield return Node;
                 yield return Property;
+                yield return MaxCount;
+                yield return NodeKind;
+                yield return MinCount;
+                yield return Node;
                 yield return Datatype;
-                yield return And;
+                yield return Closed;
+                yield return HasValue;
                 yield return Or;
+                yield return Class;
                 yield return Not;
                 yield return Xone;
-                yield return NodeKind;
-                yield return MinLength;
-                yield return MaxLength;
-                yield return LanguageIn;
                 yield return In;
-                yield return MinCount;
-                yield return MaxCount;
-                yield return UniqueLang;
-                yield return HasValue;
+                yield return Sparql;
                 yield return Pattern;
-                yield return EqualsNode;
-                yield return Disjoint;
-                yield return LessThan;
-                yield return LessThanOrEquals;
-                yield return MinExclusive;
                 yield return MinInclusive;
+                yield return MinExclusive;
                 yield return MaxExclusive;
+                yield return MinLength;
                 yield return MaxInclusive;
+                yield return And;
                 yield return QualifiedMinCount;
                 yield return QualifiedMaxCount;
-                yield return Closed;
-                yield return Sparql;
+                yield return EqualsNode;
+                yield return LanguageIn;
+                yield return LessThan;
+                yield return Disjoint;
+                yield return LessThanOrEquals;
+                yield return UniqueLang;
+                yield return MaxLength;
             }
         }
 
@@ -374,21 +374,27 @@ namespace VDS.RDF.Shacl
             }
         }
 
-        public static IEnumerable<IUriNode> Paths
+        public static IEnumerable<INode> PredicatesToExpandInReport
         {
             get
             {
+                yield return Result;
+                yield return ResultPath;
+
+                yield return RdfRest;
+                yield return RdfFirst;
+
+                yield return ZeroOrMorePath;
+                yield return OneOrMorePath;
                 yield return AlternativePath;
                 yield return InversePath;
-                yield return OneOrMorePath;
-                yield return ZeroOrMorePath;
                 yield return ZeroOrOnePath;
             }
         }
 
         #endregion
 
-        private static IUriNode ShaclNode(string name) => Factory.CreateUriNode(UriFactory.Create($"{BaseUri}{name}"));
+        private static IUriNode ShaclNode(string name) => AnyNode($"{BaseUri}{name}");
 
         private static IUriNode AnyNode(string uri) => Factory.CreateUriNode(UriFactory.Create(uri));
     }

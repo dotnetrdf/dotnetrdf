@@ -246,8 +246,10 @@ namespace VDS.RDF.Shacl.Validation
 
         internal static Result Create(IGraph g)
         {
-            var report = new Result(g.CreateBlankNode());
-            report.Type = Vocabulary.ValidationResult;
+            var report = new Result(g.CreateBlankNode())
+            {
+                Type = Vocabulary.ValidationResult,
+            };
 
             return report;
         }

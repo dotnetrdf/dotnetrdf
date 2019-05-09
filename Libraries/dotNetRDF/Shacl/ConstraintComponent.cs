@@ -40,15 +40,24 @@ namespace VDS.RDF.Shacl
         {
         }
 
-        internal IEnumerable<Parameter> Parameters =>
-            from parameter in Vocabulary.Parameter.ObjectsOf(this)
-            select new Parameter(parameter);
+        internal IEnumerable<Parameter> Parameters
+        {
+            get
+            {
+                return
+                    from parameter in Vocabulary.Parameter.ObjectsOf(this)
+                    select new Parameter(parameter);
+            }
+        }
 
-        internal bool Matches(Shape shape) => Parameters.All(p => p.Optional || p.Matches(shape));
+        internal bool Matches(Shape shape)
+        {
+            return Parameters.All(p => p.Optional || p.Matches(shape));
+        }
 
         internal IEnumerable<Constraint> Constraints(Shape shape)
         {
-            // TODO: Local part extraction @54
+            // TODO: Local part extraction
             return
                 CartesianProduct(
                     from parameter in Parameters

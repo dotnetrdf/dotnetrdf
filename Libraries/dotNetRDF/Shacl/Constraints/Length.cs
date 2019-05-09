@@ -29,6 +29,8 @@ namespace VDS.RDF.Shacl.Constraints
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
+    using VDS.RDF.Nodes;
+    using VDS.RDF.Query;
     using VDS.RDF.Shacl.Validation;
 
     internal abstract class Length : Numeric
@@ -43,12 +45,22 @@ namespace VDS.RDF.Shacl.Constraints
         {
             var invalidValues =
                 from valueNode in valueNodes
-                where valueNode.NodeType == NodeType.Blank || !ValidateInternal(valueNode.ToString().Length.CompareTo(NumericValue))
+                where valueNode.NodeType == NodeType.Blank || !ValidateInternal(SparqlLength(valueNode).CompareTo(NumericValue))
                 select valueNode;
-            
+
             return ReportValueNodes(focusNode, invalidValues, report);
         }
 
         protected abstract bool ValidateInternal(int comparison);
+
+        private static int SparqlLength(INode node)
+        {
+            var query = new SparqlParameterizedString(@"
+SELECT (STRLEN(STR($value)) AS ?length) {}
+");
+            query.SetVariable("value", node);
+
+            return (int)((SparqlResultSet)node.Graph.ExecuteQuery(query)).Single()["length"].AsValuedNode().AsInteger();
+        }
     }
 }

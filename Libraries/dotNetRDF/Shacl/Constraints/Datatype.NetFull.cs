@@ -56,6 +56,8 @@ namespace VDS.RDF.Shacl.Constraints
             var doc = new XDocument(new XElement(root, n.Value));
             var schemas = new XmlSchemaSet();
 
+            // TODO: Replace with XLinq
+            // TODO: Replace with schema constructs
             schemas.Add(string.Empty, XmlReader.Create(new StringReader($@"
 <schema xmlns=""http://www.w3.org/2001/XMLSchema"">
     <element name=""{root}"" type=""{datatypeLocalPart}""/>

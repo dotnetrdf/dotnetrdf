@@ -37,6 +37,9 @@ namespace VDS.RDF.Shacl.Targets
         {
         }
 
-        internal override IEnumerable<INode> SelectFocusNodes(IGraph dataGragh) => dataGragh.ShaclInstancesOf(this);
+        internal override IEnumerable<INode> SelectFocusNodes(IGraph dataGragh)
+        {
+            return dataGragh.ShaclInstancesOf(this);
+        }
     }
 }

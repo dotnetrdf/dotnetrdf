@@ -44,7 +44,13 @@ namespace VDS.RDF.Shacl.Constraints
             this.parameters = parameters;
         }
 
-        internal override INode ConstraintComponent => this;
+        internal override INode ConstraintComponent
+        {
+            get
+            {
+                return this;
+            }
+        }
 
         private Constraint Validator
         {
@@ -76,11 +82,11 @@ namespace VDS.RDF.Shacl.Constraints
 
         internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
-            var constraint = Validator;
+            var validator = Validator;
 
             var invalidValues =
                 from valueNode in valueNodes
-                where !constraint.Validate(focusNode, valueNode.AsEnumerable(), null)
+                where !validator.Validate(focusNode, valueNode.AsEnumerable(), null)
                 select valueNode;
 
             return ReportValueNodes(focusNode, invalidValues, report);

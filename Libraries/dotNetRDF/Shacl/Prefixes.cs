@@ -43,7 +43,10 @@ namespace VDS.RDF.Shacl
         {
             get
             {
-                return Vocabulary.Declare.ObjectsOf(this).Union(Vocabulary.OwlImports.ObjectsOf(this).SelectMany(Vocabulary.Declare.ObjectsOf)).Select(d => new PrefixDeclaration(d));
+                return 
+                    Vocabulary.Declare.ObjectsOf(this)
+                    .Union(
+                    Vocabulary.OwlImports.ObjectsOf(this).SelectMany(Vocabulary.Declare.ObjectsOf)).Select(d => new PrefixDeclaration(d));
             }
         }
 

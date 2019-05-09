@@ -43,23 +43,23 @@ namespace VDS.RDF.Shacl.Paths
         {
             get
             {
-                var members = this.Graph.GetListItems(Argument).Select(Path.Parse).Reverse();
-                var path = members.First().SparqlPath;
-                foreach (var member in members.Skip(1))
-                {
-                    path = new AlternativePath(member.SparqlPath, path);
-                }
-
-                return path;
+                return (
+                    from member in Graph.GetListItems(Argument)
+                    let path = Path.Parse(member)
+                    select path.SparqlPath)
+                    .Aggregate((first, second) => new AlternativePath(first, second));
             }
         }
 
-        internal override IEnumerable<Triple> AsTriples()
+        internal override IEnumerable<Triple> AsTriples
         {
-            return
-                new Triple(this, Vocabulary.AlternativePath.CopyNode(Graph), Argument).AsEnumerable()
-                .Union(
-                Graph.GetListAsTriples(Argument));
+            get
+            {
+                return
+                    new Triple(this, Vocabulary.AlternativePath.CopyNode(Graph), Argument).AsEnumerable()
+                    .Concat(
+                    Graph.GetListAsTriples(Argument));
+            }
         }
     }
 }

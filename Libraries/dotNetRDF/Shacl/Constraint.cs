@@ -48,41 +48,41 @@ namespace VDS.RDF.Shacl
 
         internal static Constraint Parse(Shape shape, INode type, INode value)
         {
-            var constraints = new Dictionary<INode, Func<INode, Constraint>>()
+            switch (type)
             {
-                { Vocabulary.Class, n => new Class(shape, n) },
-                { Vocabulary.Node, n => new Node(shape, n) },
-                { Vocabulary.Property, n => new Property(shape, n) },
-                { Vocabulary.Datatype, n => new Datatype(shape, n) },
-                { Vocabulary.And, n => new And(shape, n) },
-                { Vocabulary.Or, n => new Or(shape, n) },
-                { Vocabulary.Not, n => new Not(shape, n) },
-                { Vocabulary.Xone, n => new Xone(shape, n) },
-                { Vocabulary.NodeKind, n => new NodeKind(shape, n) },
-                { Vocabulary.MinLength, n => new MinLength(shape, n) },
-                { Vocabulary.MaxLength, n => new MaxLength(shape, n) },
-                { Vocabulary.LanguageIn, n => new LanguageIn(shape, n) },
-                { Vocabulary.In, n => new In(shape, n) },
-                { Vocabulary.MinCount, n => new MinCount(shape, n) },
-                { Vocabulary.MaxCount, n => new MaxCount(shape, n) },
-                { Vocabulary.UniqueLang, n => new UniqueLang(shape, n) },
-                { Vocabulary.HasValue, n => new HasValue(shape, n) },
-                { Vocabulary.Pattern, n => new Pattern(shape, n) },
-                { Vocabulary.EqualsNode, n => new Equals(shape, n) },
-                { Vocabulary.Disjoint, n => new Disjoint(shape, n) },
-                { Vocabulary.LessThan, n => new LessThan(shape, n) },
-                { Vocabulary.LessThanOrEquals, n => new LessThanOrEquals(shape, n) },
-                { Vocabulary.MinExclusive, n => new MinExclusive(shape, n) },
-                { Vocabulary.MinInclusive, n => new MinInclusive(shape, n) },
-                { Vocabulary.MaxExclusive, n => new MaxExclusive(shape, n) },
-                { Vocabulary.MaxInclusive, n => new MaxInclusive(shape, n) },
-                { Vocabulary.QualifiedMinCount, n => new QualifiedMinCount(shape, n) },
-                { Vocabulary.QualifiedMaxCount, n => new QualifiedMaxCount(shape, n) },
-                { Vocabulary.Closed, n => new Closed(shape, n) },
-                { Vocabulary.Sparql, n => new Select(shape, n) },
-           };
+                case INode t when t.Equals(Vocabulary.Property): return new Property(shape, value);
+                case INode t when t.Equals(Vocabulary.MaxCount): return new MaxCount(shape, value);
+                case INode t when t.Equals(Vocabulary.NodeKind): return new NodeKind(shape, value);
+                case INode t when t.Equals(Vocabulary.MinCount): return new MinCount(shape, value);
+                case INode t when t.Equals(Vocabulary.Node): return new Node(shape, value);
+                case INode t when t.Equals(Vocabulary.Datatype): return new Datatype(shape, value);
+                case INode t when t.Equals(Vocabulary.Closed): return new Closed(shape, value);
+                case INode t when t.Equals(Vocabulary.HasValue): return new HasValue(shape, value);
+                case INode t when t.Equals(Vocabulary.Or): return new Or(shape, value);
+                case INode t when t.Equals(Vocabulary.Class): return new Class(shape, value);
+                case INode t when t.Equals(Vocabulary.Not): return new Not(shape, value);
+                case INode t when t.Equals(Vocabulary.Xone): return new Xone(shape, value);
+                case INode t when t.Equals(Vocabulary.In): return new In(shape, value);
+                case INode t when t.Equals(Vocabulary.Sparql): return new Select(shape, value);
+                case INode t when t.Equals(Vocabulary.Pattern): return new Pattern(shape, value);
+                case INode t when t.Equals(Vocabulary.MinInclusive): return new MinInclusive(shape, value);
+                case INode t when t.Equals(Vocabulary.MinExclusive): return new MinExclusive(shape, value);
+                case INode t when t.Equals(Vocabulary.MaxExclusive): return new MaxExclusive(shape, value);
+                case INode t when t.Equals(Vocabulary.MinLength): return new MinLength(shape, value);
+                case INode t when t.Equals(Vocabulary.MaxInclusive): return new MaxInclusive(shape, value);
+                case INode t when t.Equals(Vocabulary.And): return new And(shape, value);
+                case INode t when t.Equals(Vocabulary.QualifiedMinCount): return new QualifiedMinCount(shape, value);
+                case INode t when t.Equals(Vocabulary.QualifiedMaxCount): return new QualifiedMaxCount(shape, value);
+                case INode t when t.Equals(Vocabulary.EqualsNode): return new Equals(shape, value);
+                case INode t when t.Equals(Vocabulary.LanguageIn): return new LanguageIn(shape, value);
+                case INode t when t.Equals(Vocabulary.LessThan): return new LessThan(shape, value);
+                case INode t when t.Equals(Vocabulary.Disjoint): return new Disjoint(shape, value);
+                case INode t when t.Equals(Vocabulary.LessThanOrEquals): return new LessThanOrEquals(shape, value);
+                case INode t when t.Equals(Vocabulary.UniqueLang): return new UniqueLang(shape, value);
+                case INode t when t.Equals(Vocabulary.MaxLength): return new MaxLength(shape, value);
 
-            return constraints[type](value);
+                default: throw new Exception();
+            }
         }
 
         internal abstract bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report);
@@ -113,7 +113,7 @@ namespace VDS.RDF.Shacl
                 if (Shape is Shapes.Property propertyShape)
                 {
                     result.ResultPath = propertyShape.Path;
-                    report.Graph.Assert(propertyShape.Path.AsTriples().Select(t => t.CopyTriple(report.Graph)));
+                    report.Graph.Assert(propertyShape.Path.AsTriples.Select(t => t.CopyTriple(report.Graph)));
                 }
 
                 result.ResultValue = invalidValue;
@@ -147,7 +147,7 @@ namespace VDS.RDF.Shacl
                 result.SourceShape = Shape;
                 result.FocusNode = invalidValue.Subject;
                 result.ResultPath = Path.Parse(invalidValue.Predicate);
-                report.Graph.Assert(result.ResultPath.AsTriples().Select(t => t.CopyTriple(report.Graph)));
+                report.Graph.Assert(result.ResultPath.AsTriples.Select(t => t.CopyTriple(report.Graph)));
                 result.ResultValue = invalidValue.Object;
 
                 report.Results.Add(result);
@@ -180,7 +180,7 @@ namespace VDS.RDF.Shacl
             if (Shape is Shapes.Property propertyShape)
             {
                 result.ResultPath = propertyShape.Path;
-                report.Graph.Assert(propertyShape.Path.AsTriples().Select(t => t.CopyTriple(report.Graph)));
+                report.Graph.Assert(propertyShape.Path.AsTriples.Select(t => t.CopyTriple(report.Graph)));
             }
 
             report.Results.Add(result);
@@ -214,7 +214,7 @@ namespace VDS.RDF.Shacl
                 if (Shape is Shapes.Property propertyShape)
                 {
                     result.ResultPath = propertyShape.Path;
-                    report.Graph.Assert(propertyShape.Path.AsTriples().Select(t => t.CopyTriple(report.Graph)));
+                    report.Graph.Assert(propertyShape.Path.AsTriples.Select(t => t.CopyTriple(report.Graph)));
                 }
 
                 report.Results.Add(result);

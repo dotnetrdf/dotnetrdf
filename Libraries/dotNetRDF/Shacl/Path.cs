@@ -45,33 +45,33 @@ namespace VDS.RDF.Shacl
 
         internal abstract Query.Paths.ISparqlPath SparqlPath { get; }
 
-        internal static Path Parse(INode node)
+        internal abstract IEnumerable<Triple> AsTriples { get; }
+
+        internal static Path Parse(INode value)
         {
-            if (node.IsListRoot(node.Graph))
+            if (value.NodeType == NodeType.Uri)
             {
-                return new Sequence(node);
+                return new Predicate(value);
             }
 
-            if (node is IBlankNode)
+            if (value.IsListRoot(value.Graph))
             {
-                var predicate = node.Graph.GetTriplesWithSubject(node).Single().Predicate;
-
-                var paths = new Dictionary<INode, Func<INode, Path>>()
-                {
-                    { Vocabulary.AlternativePath, n => new Alternative(n) },
-                    { Vocabulary.InversePath, n => new Inverse(n) },
-                    { Vocabulary.ZeroOrMorePath, n => new Paths.ZeroOrMore(n) },
-                    { Vocabulary.OneOrMorePath, n => new OneOrMore(n) },
-                    { Vocabulary.ZeroOrOnePath, n => new ZeroOrOne(n) },
-                };
-
-                return paths[predicate](node);
+                return new Sequence(value);
             }
 
-            return new Predicate(node);
+            var predicate = value.Graph.GetTriplesWithSubject(value).Single().Predicate;
+
+            switch (predicate)
+            {
+                case INode t when t.Equals(Vocabulary.ZeroOrMorePath): return new ZeroOrMore(value);
+                case INode t when t.Equals(Vocabulary.OneOrMorePath): return new OneOrMore(value);
+                case INode t when t.Equals(Vocabulary.AlternativePath): return new Alternative(value);
+                case INode t when t.Equals(Vocabulary.InversePath): return new Inverse(value);
+                case INode t when t.Equals(Vocabulary.ZeroOrOnePath): return new ZeroOrOne(value);
+
+                default: throw new Exception();
+            }
         }
-
-        internal abstract IEnumerable<Triple> AsTriples();
 
         internal IEnumerable<INode> SelectValueNodes(INode focusNode)
         {

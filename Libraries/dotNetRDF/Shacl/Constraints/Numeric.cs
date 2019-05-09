@@ -37,6 +37,12 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
-        protected int NumericValue => (int)this.AsValuedNode().AsInteger();
+        protected int NumericValue
+        {
+            get
+            {
+                return (int)this.AsValuedNode().AsInteger();
+            }
+        }
     }
 }
