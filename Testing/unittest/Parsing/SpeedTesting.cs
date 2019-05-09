@@ -38,7 +38,8 @@ using VDS.RDF.XunitExtensions;
 namespace VDS.RDF.Parsing
 {
     [Trait("Coverage", "Skip")]
-    [Trait("Category", "parsing speed")]
+    [Trait("Category", "explicit")]
+    [Trait("Category", "performance")]
     public class SpeedTesting
     {
         private void EnsureTestData(int triples, String file, ITripleFormatter formatter)
@@ -275,7 +276,8 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [SkippableFact]
+        [Fact]
+        [Trait("Category", "explicit")]
         public void ParsingSpeedNTriples1Million()
         {
             try

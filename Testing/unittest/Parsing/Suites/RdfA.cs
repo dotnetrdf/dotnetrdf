@@ -24,26 +24,30 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using Xunit;
-using VDS.RDF;
-using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
+using Xunit;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Parsing.Suites
 {
     public class RdfA
     {
+        private readonly ITestOutputHelper _testOutputHelper;
+
+        public RdfA(ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
+        }
+
         private void reportError(String header, Exception ex)
         {
-            Console.WriteLine(header);
-            Console.WriteLine(ex.Message);
-            Console.WriteLine(ex.StackTrace);
+            _testOutputHelper.WriteLine(header);
+            _testOutputHelper.WriteLine(ex.Message);
+            _testOutputHelper.WriteLine(ex.StackTrace);
         }
 
         [Fact]
@@ -81,7 +85,7 @@ namespace VDS.RDF.Parsing.Suites
                                      "0100.xhtml",
                                      "0101.xhtml",
                                      "0102.xhtml",
-                                     "0103.xhtml",
+                                     "0103.xhtml"
                                  };
 
             String[] falseTests = {
@@ -100,10 +104,10 @@ namespace VDS.RDF.Parsing.Suites
             {
                 int testsPassed = 0;
                 int testsFailed = 0;
-                String[] files = Directory.GetFiles("rdfa\\");
+                String[] files = Directory.GetFiles("resources\\rdfa\\");
                 RdfAParser parser = new RdfAParser(RdfASyntax.AutoDetectLegacy);
                 //XHtmlPlusRdfAParser parser = new XHtmlPlusRdfAParser();
-                parser.Warning += new RdfReaderWarning(parser_Warning);
+                parser.Warning += parser_Warning;
                 SparqlQueryParser queryparser = new SparqlQueryParser();
                 bool passed, passDesired;
                 Graph g = new Graph();
@@ -117,8 +121,8 @@ namespace VDS.RDF.Parsing.Suites
 
                     if (skipTests.Contains(Path.GetFileName(file)))
                     {
-                        Console.WriteLine("## Skipping Test of File " + Path.GetFileName(file));
-                        Console.WriteLine();
+                        _testOutputHelper.WriteLine("## Skipping Test of File " + Path.GetFileName(file));
+                        _testOutputHelper.WriteLine("");
                         continue;
                     }
 
@@ -127,35 +131,37 @@ namespace VDS.RDF.Parsing.Suites
                         continue;
                     }
 
-                    Debug.WriteLine("Testing File " + Path.GetFileName(file));
-                    Console.WriteLine("## Testing File " + Path.GetFileName(file));
-                    Console.WriteLine("# Test Started at " + DateTime.Now.ToString());
+                    _testOutputHelper.WriteLine("## Testing File " + Path.GetFileName(file));
+                    _testOutputHelper.WriteLine("# Test Started at " + DateTime.Now);
 
                     passed = false;
                     passDesired = true;
 
                     try
                     {
-                        g = new Graph();
-                        g.BaseUri = new Uri("http://www.w3.org/2006/07/SWD/RDFa/testsuite/xhtml1-testcases/" + Path.GetFileName(file));
+                        g = new Graph
+                        {
+                            BaseUri = new Uri("http://www.w3.org/2006/07/SWD/RDFa/testsuite/xhtml1-testcases/" +
+                                              Path.GetFileName(file))
+                        };
                         if (Path.GetFileNameWithoutExtension(file).StartsWith("bad"))
                         {
                             passDesired = false;
-                            Console.WriteLine("# Desired Result = Parsing Failed");
+                            _testOutputHelper.WriteLine("# Desired Result = Parsing Failed");
                         }
                         else
                         {
-                            Console.WriteLine("# Desired Result = Parses OK");
+                            _testOutputHelper.WriteLine("# Desired Result = Parses OK");
                         }
 
                         timer.Start();
                         parser.Load(g, file);
                         timer.Stop();
 
-                        Console.WriteLine("Parsing took " + timer.ElapsedMilliseconds + "ms");
+                        _testOutputHelper.WriteLine("Parsing took " + timer.ElapsedMilliseconds + "ms");
 
                         passed = true;
-                        Console.WriteLine("Parsed OK");
+                        _testOutputHelper.WriteLine("Parsed OK");
 
                         if (outputAll || wantOutput.Contains(Path.GetFileName(file)))
                         {
@@ -187,7 +193,7 @@ namespace VDS.RDF.Parsing.Suites
                         //Write the Triples to the Output
                         foreach (Triple t in g.Triples)
                         {
-                            Console.WriteLine(t.ToString());
+                            _testOutputHelper.WriteLine(t.ToString());
                         }
 
                         //Now we run the Test SPARQL (if present)
@@ -195,8 +201,8 @@ namespace VDS.RDF.Parsing.Suites
                         {
                             if (skipCheck.Contains(Path.GetFileName(file)))
                             {
-                                Console.WriteLine("## Skipping Check of File " + Path.GetFileName(file));
-                                Console.WriteLine();
+                                _testOutputHelper.WriteLine("## Skipping Check of File " + Path.GetFileName(file));
+                                _testOutputHelper.WriteLine("");
                             }
                             else
                             {
@@ -228,7 +234,7 @@ namespace VDS.RDF.Parsing.Suites
                         {
                             //Passed and we wanted to Pass
                             testsPassed++;
-                            Console.WriteLine("# Result = Test Passed");
+                            _testOutputHelper.WriteLine("# Result = Test Passed");
                             totalTime += timer.ElapsedMilliseconds;
                             totalTriples += g.Triples.Count;
                         }
@@ -236,49 +242,50 @@ namespace VDS.RDF.Parsing.Suites
                         {
                             //Failed when we should have Passed
                             testsFailed++;
-                            Console.WriteLine("# Result = Test Failed");
+                            _testOutputHelper.WriteLine("# Result = Test Failed");
                         }
                         else if (passed && !passDesired)
                         {
                             //Passed when we should have Failed
                             testsFailed++;
-                            Console.WriteLine("# Result = Test Failed");
+                            _testOutputHelper.WriteLine("# Result = Test Failed");
                         }
                         else
                         {
                             //Failed and we wanted to Fail
                             testsPassed++;
-                            Console.WriteLine("# Result = Test Passed");
+                            _testOutputHelper.WriteLine("# Result = Test Passed");
                         }
 
-                        Console.WriteLine("# Triples Generated = " + g.Triples.Count());
-                        Console.WriteLine("# Test Ended at " + DateTime.Now.ToString());
+                        _testOutputHelper.WriteLine("# Triples Generated = " + g.Triples.Count());
+                        _testOutputHelper.WriteLine("# Test Ended at " + DateTime.Now);
                     }
 
-                    Console.WriteLine();
+                    _testOutputHelper.WriteLine("");
                 }
 
-                Console.WriteLine(testsPassed + " Tests Passed");
-                Console.WriteLine(testsFailed + " Tests Failed");
-                Console.WriteLine();
-                Console.Write("Total Parsing Time was " + totalTime + " ms");
+                _testOutputHelper.WriteLine(testsPassed + " Tests Passed");
+                _testOutputHelper.WriteLine(testsFailed + " Tests Failed");
+                _testOutputHelper.WriteLine("");
+                _testOutputHelper.WriteLine($"Total Parsing Time was {totalTime} ms");
                 if (totalTime > 1000)
                 {
-                    Console.WriteLine(" (" + totalTime / 1000d + " seconds)");
+                    _testOutputHelper.WriteLine(" (" + totalTime / 1000d + " seconds)");
                 }
-                Console.WriteLine("Average Parsing Speed was " + totalTriples / (totalTime / 1000d) + " triples/second");
+                _testOutputHelper.WriteLine("Average Parsing Speed was " + totalTriples / (totalTime / 1000d) + " triples/second");
 
                 if (testsFailed > 0) Assert.True(false, testsFailed + " Tests Failed");
             }
             catch (Exception ex)
             {
                 reportError("Other Exception", ex);
+                throw;
             }
         }
 
-        static void parser_Warning(string warning)
+        void parser_Warning(string warning)
         {
-            Console.WriteLine("Warning: " + warning);
+            _testOutputHelper.WriteLine("Warning: " + warning);
         }
     }
 }

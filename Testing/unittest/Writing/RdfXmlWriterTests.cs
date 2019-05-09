@@ -27,19 +27,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Xunit;
-using VDS.RDF;
 using VDS.RDF.Parsing;
-using VDS.RDF.Parsing.Handlers;
-using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
     public partial class RdfXmlWriterTests
     {
-        private List<IRdfWriter> _writers = new List<IRdfWriter>()
+        private readonly List<IRdfWriter> _writers = new List<IRdfWriter>()
         {
             new RdfXmlWriter(WriterCompressionLevel.High),
             new RdfXmlWriter(WriterCompressionLevel.High, false),
@@ -48,8 +44,8 @@ namespace VDS.RDF.Writing
             new PrettyRdfXmlWriter(WriterCompressionLevel.High, true, false)
         };
 
-        private IRdfReader _parser = new RdfXmlParser();
-        private NTriplesFormatter _formatter = new NTriplesFormatter();
+        private readonly IRdfReader _parser = new RdfXmlParser();
+        private readonly NTriplesFormatter _formatter = new NTriplesFormatter();
 
         private void CheckRoundTrip(IGraph g, IEnumerable<Type> exceptions)
         {
@@ -317,10 +313,27 @@ namespace VDS.RDF.Writing
             RdfXmlWriter writer = new RdfXmlWriter();
             writer.CompressionLevel = WriterCompressionLevel.High;
             String outData = StringWriter.Write(g, writer);
-            Console.WriteLine(outData);
 
             Assert.Contains("rdf:about=\"&ex;1s\"", outData);
             Assert.Contains("rdf:resource=\"&ex;2o\"", outData);
+        }
+
+        /// <summary>
+        /// Reproduces issue #243
+        /// </summary>
+        [Fact]
+        public void RdfXmlEntityEscapesApostrophes()
+        {
+            const string data =
+                "@prefix ex: <http://dbpedia.org/resource/Buyer's_Remorse:> . ex:s <http://example.org/p> <http://example.org/o> .";
+            var g = new Graph();
+            g.LoadFromString(data, new TurtleParser());
+
+            var writer = new RdfXmlWriter {CompressionLevel = WriterCompressionLevel.High};
+            var outData = StringWriter.Write(g, writer);
+            Assert.Contains("<!ENTITY ex 'http://dbpedia.org/resource/Buyer&apos;s_Remorse:'>", outData);
+            Assert.Contains("xmlns:ex=\"http://dbpedia.org/resource/Buyer&apos;s_Remorse:\"", outData);
+            Assert.Contains("rdf:about=\"&ex;s", outData);
         }
     }
 }

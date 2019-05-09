@@ -24,7 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using Xunit;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Parsing.Suites
@@ -35,31 +34,31 @@ namespace VDS.RDF.Parsing.Suites
         protected BaseResultsParserSuite(ISparqlResultsReader testParser, ISparqlResultsReader resultsParser, String baseDir)
             : base(testParser, resultsParser, baseDir)
         {
-            this.Parser.Warning += TestTools.WarningPrinter;
-            this.ResultsParser.Warning += TestTools.WarningPrinter;
+            Parser.Warning += TestTools.WarningPrinter;
+            ResultsParser.Warning += TestTools.WarningPrinter;
         }
 
         protected override SparqlResultSet TryParseTestInput(string file)
         {
             SparqlResultSet actual = new SparqlResultSet();
-            this.Parser.Load(actual, file);
+            Parser.Load(actual, file);
             return actual;
         }
 
         protected override void TryValidateResults(string testName, string resultFile, SparqlResultSet actual)
         {
             SparqlResultSet expected = new SparqlResultSet();
-            this.ResultsParser.Load(expected, resultFile);
+            ResultsParser.Load(expected, resultFile);
 
             if (expected.Equals(actual))
             {
                 Console.WriteLine("Parsed Results matches Expected Results (Test Passed)");
-                this.Passed++;
+                PassedTest(testName);
             }
             else
             {
                 Console.WriteLine("Parsed Results did not match Expected Graph (Test Failed)");
-                this.Failed++;
+                FailedTest(testName, "Parsed Results did not match Expected Graph ");
                 Console.WriteLine("Expected:");
                 TestTools.ShowResults(expected);
                 Console.WriteLine();
@@ -68,9 +67,6 @@ namespace VDS.RDF.Parsing.Suites
             }
         }
 
-        protected override string FileExtension
-        {
-            get { return ".srx"; }
-        }
+        protected override string FileExtension => ".srx";
     }
 }

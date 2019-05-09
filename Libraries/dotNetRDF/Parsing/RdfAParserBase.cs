@@ -822,7 +822,7 @@ namespace VDS.RDF.Parsing
                     {
                         // It's an XML Literal - this is now RDFa 1.0 Only
                         // This is an incompatability with RDFa 1.1
-                        foreach (var child in GetChildren(currElement).OfType<TElement>())
+                        foreach (var child in GetChildren(currElement).OfType<TElement>().Where(c=>!IsTextNode(c)))
                         {
                             ProcessXmlLiteral(evalContext, child, noDefaultNamespace);
                         }
@@ -862,7 +862,7 @@ namespace VDS.RDF.Parsing
                     else if (!datatype || (datatype && GetAttribute(currElement, "datatype").Equals(string.Empty)))
                     {
                         // Value is an XML Literal
-                        foreach (var child in GetChildren(currElement).OfType<TElement>())
+                        foreach (var child in GetChildren(currElement).OfType<TElement>().Where(c=>!IsTextNode(c)))
                         {
                             ProcessXmlLiteral(evalContext, child, noDefaultNamespace);
                         }
@@ -1484,7 +1484,7 @@ namespace VDS.RDF.Parsing
             }
 
             // Recurse on any child nodes
-            foreach (var child in GetChildren(n).OfType<TElement>())
+            foreach (var child in GetChildren(n).OfType<TElement>().Where(c=>!IsTextNode(c)))
             {
                 ProcessXmlLiteral(evalContext, child, noDefaultNamespace);
             }

@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Contexts;
 using VDS.RDF.Writing.Formatting;
@@ -215,7 +216,8 @@ namespace VDS.RDF.Writing
                     }
                     if (!prefix.Equals(String.Empty))
                     {
-                        entities.AppendLine("\t<!ENTITY " + prefix + " '" + uri + "'>");
+                        var escapedUri = WriterHelper.EncodeForXml(uri);
+                        entities.AppendLine("\t<!ENTITY " + prefix + " '" + escapedUri + "'>");
                     }
                 }
                 if (context.UseDtd) context.Writer.WriteDocType("rdf:RDF", null, null, entities.ToString());

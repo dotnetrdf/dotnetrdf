@@ -56,13 +56,13 @@ namespace VDS.RDF.Parsing.Suites
             if (diff.AreEqual)
             {
                 Console.WriteLine("Parsed Graph matches Expected Graph (Test Passed)");
-                this.Passed++;
+                PassedTest(testName);
             }
             else
             {
                 Console.WriteLine("Parsed Graph did not match Expected Graph (Test Failed)");
                 Console.Error.WriteLine("Test " + testName + " - Parsed Graph did not match Expected Graph");
-                this.Failed++;
+                FailedTest(testName, "Parsed Graph did not match Expected Graph");
                 TestTools.ShowDifferences(diff, "Expected (" + this.ResultsParser.ToString() + ")", "Actual (" + this.Parser.ToString() + ")");
             }
         }

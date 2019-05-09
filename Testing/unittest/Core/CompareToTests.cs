@@ -27,7 +27,6 @@ using System;
 using System.Globalization;
 using System.Text;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Xunit;
 using VDS.RDF.Parsing;
@@ -91,8 +90,10 @@ namespace VDS.RDF
                         }
                     }
                 }
+
                 Console.WriteLine();
             }
+
             Console.WriteLine();
         }
 
@@ -132,8 +133,10 @@ namespace VDS.RDF
                         }
                     }
                 }
+
                 Console.WriteLine();
             }
+
             Console.WriteLine();
         }
 
@@ -145,13 +148,15 @@ namespace VDS.RDF
             {
                 Console.WriteLine(n.ToString(formatter));
             }
+
             Console.WriteLine();
 
             Console.WriteLine("SPARQL Ordering");
-            foreach (INode n in nodes.OrderBy(x => x, (IComparer<INode>)new SparqlOrderingComparer()))
+            foreach (INode n in nodes.OrderBy(x => x, (IComparer<INode>) new SparqlOrderingComparer()))
             {
                 Console.WriteLine(n.ToString(formatter));
             }
+
             Console.WriteLine();
         }
 
@@ -163,6 +168,7 @@ namespace VDS.RDF
             {
                 Console.WriteLine(n.ToString(formatter));
             }
+
             Console.WriteLine();
 
             Console.WriteLine(comparer.GetType().Name + " Ordering");
@@ -170,47 +176,8 @@ namespace VDS.RDF
             {
                 Console.WriteLine(n.ToString(formatter));
             }
+
             Console.WriteLine();
-        }
-
-        private void TestSpeed(IEnumerable<INode> nodes, IComparer<INode> comparer, bool expectFaster)
-        {
-            List<INode> defaultSorted = new List<INode>(nodes);
-            Stopwatch timer = new Stopwatch();
-            timer.Start();
-            defaultSorted.Sort();
-            timer.Stop();
-
-            Console.WriteLine("Default Sort: " + timer.Elapsed);
-            long defTime = timer.ElapsedTicks;
-
-            defaultSorted.Clear();
-            defaultSorted = null;
-            GC.GetTotalMemory(true);
-
-            List<INode> custSorted = new List<INode>(nodes);
-            timer.Reset();
-            timer.Start();
-            custSorted.Sort(comparer);
-            timer.Stop();
-
-            custSorted.Clear();
-            custSorted = null;
-            GC.GetTotalMemory(true);
-
-            Console.WriteLine(comparer.GetType().Name + " Sort: " + timer.Elapsed);
-            long custTime = timer.ElapsedTicks;
-
-            if (expectFaster)
-            {
-                Console.WriteLine("Speed Up: " + ((double)defTime) / ((double)custTime));
-                Assert.True(custTime <= defTime, comparer.GetType().Name + " should be faster");
-            }
-            else
-            {
-                Console.WriteLine("Slow Down: " + ((double)defTime) / ((double)custTime));
-                Assert.True(defTime <= custTime, comparer.GetType().Name + " should be slower");
-            }
         }
 
         [Fact]
@@ -246,8 +213,8 @@ namespace VDS.RDF
             List<INode> nodes = new List<INode>()
             {
                 plain,
-                g.CreateLiteralNode("plain english","en"),
-                g.CreateLiteralNode("plain french","fr"),
+                g.CreateLiteralNode("plain english", "en"),
+                g.CreateLiteralNode("plain french", "fr"),
                 g.CreateLiteralNode("typed", new Uri(XmlSpecsHelper.XmlSchemaDataTypeString)),
                 (1234).ToLiteral(g),
                 (12.34m).ToLiteral(g),
@@ -302,7 +269,7 @@ namespace VDS.RDF
             try
             {
                 // Test each comparison mode
-                foreach (CompareOptions comparison in Enum.GetValues(typeof (StringComparison)))
+                foreach (CompareOptions comparison in Enum.GetValues(typeof(StringComparison)))
                 {
                     Options.DefaultComparisonOptions = comparison;
                     this.ShowOrdering(nodes);
@@ -686,7 +653,8 @@ namespace VDS.RDF
                 DateTime.Now.AddYears(3).AddDays(1).ToLiteral(g),
                 DateTime.Now.AddYears(-25).AddMinutes(-17).ToLiteral(g),
                 new DateTime(1, 2, 3, 4, 5, 6).ToLiteral(g),
-                new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second, DateTimeKind.Utc).ToLiteral(g),
+                new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour,
+                    DateTime.Now.Minute, DateTime.Now.Second, DateTimeKind.Utc).ToLiteral(g),
                 g.CreateLiteralNode("thing", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDateTime)),
                 g.CreateLiteralNode("1", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDateTime)),
                 g.CreateLiteralNode("-3", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDateTime)),
@@ -746,8 +714,8 @@ namespace VDS.RDF
                 h.CreateBlankNode("id"),
                 b,
                 plain,
-                g.CreateLiteralNode("plain english","en"),
-                g.CreateLiteralNode("plain french","fr"),
+                g.CreateLiteralNode("plain english", "en"),
+                g.CreateLiteralNode("plain french", "fr"),
                 g.CreateLiteralNode("typed", new Uri(XmlSpecsHelper.XmlSchemaDataTypeString)),
                 (1234).ToLiteral(g),
                 (12.34m).ToLiteral(g),
@@ -804,10 +772,10 @@ namespace VDS.RDF
                 h.CreateBlankNode("id"),
                 b,
                 plain,
-                g.CreateLiteralNode("plain english","en"),
+                g.CreateLiteralNode("plain english", "en"),
                 g.CreateLiteralNode("1", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)),
                 g.CreateLiteralNode("10", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)),
-                g.CreateLiteralNode("plain french","fr"),
+                g.CreateLiteralNode("plain french", "fr"),
                 g.CreateLiteralNode("typed", new Uri(XmlSpecsHelper.XmlSchemaDataTypeString)),
                 (1234).ToLiteral(g),
                 (12.34m).ToLiteral(g),
@@ -909,12 +877,13 @@ namespace VDS.RDF
         {
             Graph g = new Graph();
             ILiteralNode canonical = (1).ToLiteral(g);
-            ILiteralNode alternate = g.CreateLiteralNode("01", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
+            ILiteralNode alternate =
+                g.CreateLiteralNode("01", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
 
             List<INode> ns = new List<INode>()
             {
                 canonical,
-                alternate                
+                alternate
             };
 
             Assert.NotEqual(canonical, alternate);
@@ -931,12 +900,13 @@ namespace VDS.RDF
         {
             Graph g = new Graph();
             ILiteralNode canonical = (true).ToLiteral(g);
-            ILiteralNode alternate = g.CreateLiteralNode("TRUE", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
+            ILiteralNode alternate =
+                g.CreateLiteralNode("TRUE", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
 
             List<INode> ns = new List<INode>()
             {
                 canonical,
-                alternate                
+                alternate
             };
 
             Assert.NotEqual(canonical, alternate);
@@ -953,12 +923,13 @@ namespace VDS.RDF
         {
             Graph g = new Graph();
             ILiteralNode canonical = (1d).ToLiteral(g);
-            ILiteralNode alternate = g.CreateLiteralNode("1.00000", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble));
+            ILiteralNode alternate =
+                g.CreateLiteralNode("1.00000", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble));
 
             List<INode> ns = new List<INode>()
             {
                 canonical,
-                alternate                
+                alternate
             };
 
             Assert.NotEqual(canonical, alternate);
@@ -968,47 +939,6 @@ namespace VDS.RDF
             this.CheckCombinations(ns);
             this.CheckCombinations<ILiteralNode>(ns.OfType<ILiteralNode>().ToList());
             this.CheckCombinations(ns, new FastNodeComparer());
-        }
-
-        private List<INode> GenerateIntegerNodes(int amount)
-        {
-            Graph g = new Graph();
-            List<INode> ns = new List<INode>(amount);
-            Random rnd = new Random();
-            while (ns.Count < amount)
-            {
-                ns.Add(rnd.Next(Int32.MaxValue).ToLiteral(g));
-            }
-            return ns;
-        }
-
-        [Fact]
-        public void NodeCompareSpeed1()
-        {
-            //Generate 10,000 node list of random integer nodes
-            List<INode> ns = this.GenerateIntegerNodes(10000);
-
-            this.TestSpeed(ns, new FastNodeComparer(), true);
-        }
-
-        [Fact]
-        [Trait("Coverage", "Skip")]
-        public void NodeCompareSpeed2()
-        {
-            //Generate 100,000 node list of random integer nodes
-            List<INode> ns = this.GenerateIntegerNodes(100000);
-
-            this.TestSpeed(ns, new FastNodeComparer(), true);
-        }
-
-        [Fact]
-        [Trait("Coverage", "Skip")]
-        public void NodeCompareSpeed3()
-        {
-            //Generate 1,000,000 node list of random integer nodes
-            List<INode> ns = this.GenerateIntegerNodes(1000000);
-
-            this.TestSpeed(ns, new FastNodeComparer(), true);
         }
     }
 }
