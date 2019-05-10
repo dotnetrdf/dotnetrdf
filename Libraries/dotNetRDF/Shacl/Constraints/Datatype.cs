@@ -78,8 +78,7 @@ namespace VDS.RDF.Shacl.Constraints
             var literal = (ILiteralNode)n;
             var xsd_string = UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
 
-            // TODO: Replace with RdfSpecsHelper.RdfLangString, see https://github.com/dotnetrdf/dotnetrdf/issues/233
-            var rdf_langString = UriFactory.Create("http://www.w3.org/1999/02/22-rdf-syntax-ns#langString");
+            var rdf_langString = UriFactory.Create(RdfSpecsHelper.RdfLangString);
             var stringDatatype = string.IsNullOrEmpty(literal.Language) ? xsd_string : rdf_langString;
             var datatype = literal.DataType ?? stringDatatype;
 
