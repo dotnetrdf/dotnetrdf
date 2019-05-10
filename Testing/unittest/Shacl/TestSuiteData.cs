@@ -118,11 +118,6 @@ namespace VDS.RDF.Shacl
             }
         }
 
-        public static IEnumerable<object[]> Convert(IEnumerable<string> x)
-        {
-            return x.Select(xx => new[] { xx });
-        }
-
         internal static void ExtractTestData(string name, out IGraph testGraph, out bool failure, out IGraph dataGraph, out IGraph shapesGraph)
         {
             testGraph = store[new Uri(baseUri, name)];

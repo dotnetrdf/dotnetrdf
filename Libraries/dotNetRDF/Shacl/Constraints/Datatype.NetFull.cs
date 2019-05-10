@@ -26,7 +26,6 @@
 
 namespace VDS.RDF.Shacl.Constraints
 {
-    using System.IO;
     using System.Xml;
     using System.Xml.Linq;
     using System.Xml.Schema;
@@ -34,26 +33,44 @@ namespace VDS.RDF.Shacl.Constraints
 
     internal partial class Datatype
     {
-        private static bool IsIllformed(ILiteralNode n)
+        private const string Root = "root";
+
+        private static bool IsIllformed(ILiteralNode literal)
         {
-            var datatypeLocalPart = n.DataType.AbsoluteUri.Replace(XmlSpecsHelper.NamespaceXmlSchema, string.Empty);
+            var type = literal.DataType.AbsoluteUri.Replace(XmlSpecsHelper.NamespaceXmlSchema, string.Empty);
+            var schemas = GenerateSchema(type);
 
-            const string root = "root";
-            var doc = new XDocument(new XElement(root, n.Value));
+            var isIllformed = false;
+            void handler(object sender, ValidationEventArgs e)
+            {
+                isIllformed = true;
+            }
+
+            var doc = new XDocument(new XElement(Root, literal.Value));
+            doc.Validate(schemas, handler);
+
+            return isIllformed;
+        }
+
+        // Equivalent to the following:
+        // <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+        //    <xsd:element name="{Root}" type="xsd:{type}"/>
+        // </schema>
+        private static XmlSchemaSet GenerateSchema(string type)
+        {
             var schemas = new XmlSchemaSet();
+            var schema = new XmlSchema();
 
-            // TODO: Replace with XLinq
-            // TODO: Replace with schema constructs
-            schemas.Add(string.Empty, XmlReader.Create(new StringReader($@"
-<schema xmlns=""http://www.w3.org/2001/XMLSchema"">
-    <element name=""{root}"" type=""{datatypeLocalPart}""/>
-</schema>
-")));
+            schema.Items.Add(
+                new XmlSchemaElement
+                {
+                    Name = Root,
+                    SchemaTypeName = new XmlQualifiedName(type, XmlSchema.Namespace),
+                });
 
-            var result = false;
-            doc.Validate(schemas, (object sender, ValidationEventArgs e) => result = true);
+            schemas.Add(schema);
 
-            return result;
+            return schemas;
         }
     }
 }

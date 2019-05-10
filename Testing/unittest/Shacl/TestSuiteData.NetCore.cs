@@ -33,6 +33,7 @@ namespace VDS.RDF.Shacl
         {
             get
             {
+                // Illformedness testing of datatype contraint is not supported in NETCORE.
                 yield return "core/complex/shacl-shacl.ttl";
                 yield return "core/node/datatype-001.ttl";
                 yield return "core/property/datatype-001.ttl";
