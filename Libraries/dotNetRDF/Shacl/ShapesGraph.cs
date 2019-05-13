@@ -29,46 +29,24 @@ namespace VDS.RDF.Shacl
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
+    using VDS.RDF.Parsing;
     using VDS.RDF.Query;
     using VDS.RDF.Shacl.Validation;
 
+    /// <summary>
+    /// Represents a SHACL shapes graph that acts as a fully compliant SHACL Core and SHACL-SPARQL processor.
+    /// </summary>
+    /// <remarks>The Datatype constraint component is not supported under .NET Standard 1.4.</remarks>
     public class ShapesGraph : WrapperGraph
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ShapesGraph"/> class.
+        /// </summary>
+        /// <param name="shapesGraph">The original graph containing SHACL shapes.</param>
         [DebuggerStepThrough]
-        public ShapesGraph(IGraph g)
-            : base(g)
+        public ShapesGraph(IGraph shapesGraph)
+            : base(shapesGraph)
         {
-        }
-
-        internal IEnumerable<Shape> TargetedShapes
-        {
-            get
-            {
-                var results = (SparqlResultSet)this.ExecuteQuery(@"
-PREFIX : <http://www.w3.org/ns/shacl#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-
-SELECT DISTINCT ?shape {
-    {
-        SELECT * {
-            VALUES ?target { :targetNode :targetClass :targetSubjectsOf :targetObjectsOf }
-
-            ?shape ?target ?any .
-        }
-    }
-
-    UNION {
-        SELECT * {
-            VALUES ?class { :NodeShape :PropertyShape }
-
-            ?shape a rdfs:Class, ?class.
-        }
-    }
-}
-");
-
-                return results.Select(result => result["shape"]).Select(Shape.Parse);
-            }
         }
 
         internal IEnumerable<ConstraintComponent> ConstraintComponents
@@ -81,26 +59,80 @@ SELECT DISTINCT ?shape {
             }
         }
 
+        private IEnumerable<Shape> TargetedShapes
+        {
+            get
+            {
+                var query = new SparqlParameterizedString(@"
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sh: @shacl
+
+SELECT DISTINCT ?shape {
+    {
+        SELECT * {
+            VALUES ?target {
+                sh:targetNode
+                sh:targetClass
+                sh:targetSubjectsOf
+                sh:targetObjectsOf
+            }
+
+            ?shape ?target ?any .
+        }
+    }
+
+    UNION {
+        SELECT * {
+            VALUES ?class {
+                sh:NodeShape
+                sh:PropertyShape
+            }
+
+            ?shape a rdfs:Class, ?class .
+        }
+    }
+}
+");
+                query.SetUri("shacl", UriFactory.Create(Vocabulary.BaseUri));
+                
+                return
+                    from result in (SparqlResultSet)this.ExecuteQuery(query)
+                    let shape = result["shape"]
+                    select Shape.Parse(shape);
+            }
+        }
+
+        /// <summary>
+        /// Checks the given data graph against this shapes graph for SHACL conformance and reports validation results.
+        /// </summary>
+        /// <param name="dataGragh">The data graph to check for SHACL conformance.</param>
+        /// <returns>A SHACL validation report containing possible validation results.</returns>
         public Report Validate(IGraph dataGragh)
         {
             var g = new Graph();
             g.NamespaceMap.AddNamespace("sh", UriFactory.Create(Vocabulary.BaseUri));
             var report = Report.Create(g);
 
-            TargetedShapes
-                .Select(shape => shape.Validate(dataGragh, report))
-                .Aggregate(true, (a, b) => a && b);
+            Validate(dataGragh, report);
 
             return report;
         }
 
+        /// <summary>
+        /// Checks the given data graph against this shapes graph for SHACL conformance.
+        /// </summary>
+        /// <param name="dataGragh">The data graph to check for SHACL conformance.</param>
+        /// <returns>Whether the data graph SHACL conforms to this shapes graph.</returns>
         public bool Conforms(IGraph dataGragh)
         {
-            var g = new Graph();
-            g.NamespaceMap.AddNamespace("sh", UriFactory.Create(Vocabulary.BaseUri));
+            return Validate(dataGragh, null);
+        }
 
-            return TargetedShapes
-                .Select(shape => shape.Validate(dataGragh, null))
+        private bool Validate(IGraph dataGragh, Report report)
+        {
+            return (
+                from shape in TargetedShapes
+                select shape.Validate(dataGragh, report))
                 .Aggregate(true, (a, b) => a && b);
         }
     }

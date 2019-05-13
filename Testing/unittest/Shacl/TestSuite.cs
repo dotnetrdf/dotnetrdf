@@ -28,8 +28,6 @@ namespace VDS.RDF.Shacl
 {
     using System;
     using System.Linq;
-    using VDS.RDF.Nodes;
-    using VDS.RDF.Parsing;
     using VDS.RDF.Shacl.Validation;
     using VDS.RDF.Writing;
     using Xunit;
@@ -85,7 +83,7 @@ namespace VDS.RDF.Shacl
             void conforms()
             {
                 var actual = new ShapesGraph(shapesGraph).Conforms(dataGraph);
-                var expected = testGraph.GetTriplesWithPredicate(Vocabulary.Conforms).Single().Object.AsValuedNode().AsBoolean();
+                var expected = Report.Parse(testGraph).Conforms;
 
                 Assert.Equal(expected, actual);
             }
@@ -111,31 +109,14 @@ namespace VDS.RDF.Shacl
             }
         }
 
-        private static IGraph ExtractReportGraph(IGraph g)
-        {
-            var q = new SparqlQueryParser().ParseFromString(@"
-PREFIX sh: <http://www.w3.org/ns/shacl#> 
-
-DESCRIBE ?s
-WHERE {
-    ?s a sh:ValidationReport .
-}
-");
-            q.Describer = new ReportDescribeAlgorithm();
-
-            return (IGraph)g.ExecuteQuery(q);
-        }
-
         private void Validates(string name)
         {
             ExtractTestData(name, out var testGraph, out var failure, out var dataGraph, out var shapesGraph);
 
             void validates()
             {
-                var report = new ShapesGraph(shapesGraph).Validate(dataGraph);
-
-                var actual = ExtractReportGraph(report.Graph);
-                var expected = ExtractReportGraph(testGraph);
+                var actual = new ShapesGraph(shapesGraph).Validate(dataGraph).Normalised;
+                var expected = Report.Parse(testGraph).Normalised;
 
                 RemoveUnnecessaryResultMessages(actual, expected);
 

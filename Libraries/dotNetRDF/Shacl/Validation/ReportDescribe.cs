@@ -32,7 +32,7 @@ namespace VDS.RDF.Shacl.Validation
     using VDS.RDF.Query;
     using VDS.RDF.Query.Describe;
 
-    public class ReportDescribeAlgorithm : BaseDescribeAlgorithm
+    internal class ReportDescribeAlgorithm : BaseDescribeAlgorithm
     {
         protected override void DescribeInternal(IRdfHandler handler, SparqlEvaluationContext context, IEnumerable<INode> nodes)
         {

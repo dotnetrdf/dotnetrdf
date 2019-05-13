@@ -1,9 +1,0 @@
-@prefix : <urn:> .
-@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix sht: <http://www.w3.org/ns/shacl-test#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-
-[sh:targetNode [:p [a :C]]; sh:path :p; sh:qualifiedValueShape [sh:class :C]; sh:qualifiedMinCount 2].
-
-<> mf:entries ([mf:action [sht:dataGraph <>; sht:shapesGraph <>]; mf:result [a sh:ValidationReport; sh:conforms false]]).

@@ -29,7 +29,12 @@ namespace VDS.RDF.Shacl.Validation
     using System.Collections.Generic;
     using System.Linq;
     using VDS.RDF.Nodes;
+    using VDS.RDF.Parsing;
+    using VDS.RDF.Query.Builder;
 
+    /// <summary>
+    /// Represents a SHACL validation report.
+    /// </summary>
     public class Report : WrapperNode
     {
         private Report(INode node)
@@ -37,6 +42,56 @@ namespace VDS.RDF.Shacl.Validation
         {
             Graph.TripleAsserted += TripleAsserted;
             Graph.TripleRetracted += TripleRetracted;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether conformance checking was successful.
+        /// </summary>
+        public bool Conforms
+        {
+            get
+            {
+                var conforms = Vocabulary.Conforms.ObjectsOf(this).SingleOrDefault();
+
+                if (conforms is null)
+                {
+                    return true;
+                }
+
+                return conforms.AsValuedNode().AsBoolean();
+            }
+
+            internal set
+            {
+                foreach (var conforms in Vocabulary.Conforms.ObjectsOf(this).ToList())
+                {
+                    Graph.Retract(this, Vocabulary.Conforms, conforms);
+                }
+
+                Graph.Assert(this, Vocabulary.Conforms, value.ToLiteral(Graph));
+            }
+        }
+
+        /// <summary>
+        /// Gets a normalised graph containing validation report data as required for SHACL compliance testing.
+        /// </summary>
+        public IGraph Normalised
+        {
+            get
+            {
+                var q = new SparqlQueryParser().ParseFromString(@"
+PREFIX sh: <http://www.w3.org/ns/shacl#> 
+
+DESCRIBE ?s
+WHERE {
+    ?s a sh:ValidationReport .
+}
+");
+
+                q.Describer = new ReportDescribeAlgorithm();
+
+                return (IGraph)Graph.ExecuteQuery(q);
+            }
         }
 
         internal INode Type
@@ -62,37 +117,22 @@ namespace VDS.RDF.Shacl.Validation
             }
         }
 
-        internal bool Conforms
-        {
-            get
-            {
-                var conforms = Vocabulary.Conforms.ObjectsOf(this).SingleOrDefault();
-
-                if (conforms is null)
-                {
-                    return true;
-                }
-
-                return conforms.AsValuedNode().AsBoolean();
-            }
-
-            set
-            {
-                foreach (var conforms in Vocabulary.Conforms.ObjectsOf(this).ToList())
-                {
-                    Graph.Retract(this, Vocabulary.Conforms, conforms);
-                }
-
-                Graph.Assert(this, Vocabulary.Conforms, value.ToLiteral(Graph));
-            }
-        }
-
         internal ICollection<Result> Results
         {
             get
             {
                 return new ResultCollection(this);
             }
+        }
+
+        /// <summary>
+        /// Wraps a graph with SHACL validation report data.
+        /// </summary>
+        /// <param name="g">The graph containing SHACL validation report statements.</param>
+        /// <returns>A report representing the SHACL validation report in the erapped graph.</returns>
+        public static Report Parse(IGraph g)
+        {
+            return new Report(g.InstancesOf(Vocabulary.ValidationReport).Single());
         }
 
         internal static Report Create(IGraph g)

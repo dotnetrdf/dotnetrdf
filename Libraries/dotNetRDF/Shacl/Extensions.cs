@@ -60,7 +60,7 @@ namespace VDS.RDF.Shacl
             return node.Graph.GetTriplesWithSubjectPredicate(node, Vocabulary.RdfType).WithObject(@class).Any();
         }
 
-        private static IEnumerable<INode> InstancesOf(this IGraph g, INode @class)
+        internal static IEnumerable<INode> InstancesOf(this IGraph g, INode @class)
         {
             return Vocabulary.RdfType.SubjectsOf(@class.CopyNode(g));
         }

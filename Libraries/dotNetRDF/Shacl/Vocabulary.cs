@@ -31,262 +31,579 @@ namespace VDS.RDF.Shacl
     using VDS.RDF.Ontology;
     using VDS.RDF.Parsing;
 
+    /// <summary>
+    /// Represents the SHACL vocabulary.
+    /// </summary>
     public static class Vocabulary
     {
-        internal const string BaseUri = "http://www.w3.org/ns/shacl#";
+        /// <summary>
+        /// The SHACL base URI.
+        /// </summary>
+        public const string BaseUri = "http://www.w3.org/ns/shacl#";
+
         private static readonly NodeFactory Factory = new NodeFactory();
 
-        public static IUriNode RdfType { get; } = AnyNode(RdfSpecsHelper.RdfType);
+        /// <summary>
+        /// Gets a node representing alternativePath.
+        /// </summary>
+        public static IUriNode AlternativePath { get; } = ShaclNode("alternativePath");
 
-        public static IUriNode RdfFirst { get; } = AnyNode(RdfSpecsHelper.RdfListFirst);
-
-        public static IUriNode RdfRest { get; } = AnyNode(RdfSpecsHelper.RdfListRest);
-
-        public static IUriNode RdfsClass { get; } = AnyNode("http://www.w3.org/2000/01/rdf-schema#Class");
-
-        public static IUriNode RdfsSubClassOf { get; } = AnyNode("http://www.w3.org/2000/01/rdf-schema#subClassOf");
-
-        public static IUriNode OwlImports { get; } = AnyNode(OntologyHelper.PropertyImports);
-
-        public static IUriNode Path { get; } = ShaclNode("path");
-
-        public static IUriNode Deactivated { get; } = ShaclNode("deactivated");
-
-        public static IUriNode Severity { get; } = ShaclNode("severity");
-
-        public static IUriNode Message { get; } = ShaclNode("message");
-
-        public static IUriNode Conforms { get; } = ShaclNode("conforms");
-
-        public static IUriNode ConstraintComponent { get; } = ShaclNode("ConstraintComponent");
-
-        public static IUriNode Parameter { get; } = ShaclNode("parameter");
-
-        public static IUriNode Optional { get; } = ShaclNode("optional");
-
-        public static IUriNode NodeValidator { get; } = ShaclNode("nodeValidator");
-
-        public static IUriNode PropertyValidator { get; } = ShaclNode("propertyValidator");
-
-        public static IUriNode Validator { get; } = ShaclNode("validator");
-
-        public static IUriNode SparqlAskValidato { get; } = ShaclNode("SPARQLAskValidator");
-
-        #region Targets
-        public static IUriNode TargetClass { get; } = ShaclNode("targetClass");
-
-        public static IUriNode TargetNode { get; } = ShaclNode("targetNode");
-
-        public static IUriNode TargetObjectsOf { get; } = ShaclNode("targetObjectsOf");
-
-        public static IUriNode TargetSubjectsOf { get; } = ShaclNode("targetSubjectsOf");
-        #endregion
-
-        #region Constraints
-        public static IUriNode Class { get; } = ShaclNode("class");
-
-        public static IUriNode Node { get; } = ShaclNode("node");
-
-        public static IUriNode Property { get; } = ShaclNode("property");
-
-        public static IUriNode Datatype { get; } = ShaclNode("datatype");
-
+        /// <summary>
+        /// Gets a node representing and.
+        /// </summary>
         public static IUriNode And { get; } = ShaclNode("and");
 
-        public static IUriNode Or { get; } = ShaclNode("or");
+        /// <summary>
+        /// Gets a node representing AndConstraintComponent.
+        /// </summary>
+        public static IUriNode AndConstraintComponent { get; } = ShaclNode("AndConstraintComponent");
 
-        public static IUriNode Not { get; } = ShaclNode("not");
-
-        public static IUriNode Xone { get; } = ShaclNode("xone");
-
-        public static IUriNode NodeKind { get; } = ShaclNode("nodeKind");
-
-        public static IUriNode MinLength { get; } = ShaclNode("minLength");
-
-        public static IUriNode MaxLength { get; } = ShaclNode("maxLength");
-
-        public static IUriNode LanguageIn { get; } = ShaclNode("languageIn");
-
-        public static IUriNode In { get; } = ShaclNode("in");
-
-        public static IUriNode MinCount { get; } = ShaclNode("minCount");
-
-        public static IUriNode MaxCount { get; } = ShaclNode("maxCount");
-
-        public static IUriNode UniqueLang { get; } = ShaclNode("uniqueLang");
-
-        public static IUriNode HasValue { get; } = ShaclNode("hasValue");
-
-        public static IUriNode Pattern { get; } = ShaclNode("pattern");
-
-        public static IUriNode Flags { get; } = ShaclNode("flags");
-
-        public static IUriNode EqualsNode { get; } = ShaclNode("equals");
-
-        public static IUriNode Disjoint { get; } = ShaclNode("disjoint");
-
-        public static IUriNode LessThan { get; } = ShaclNode("lessThan");
-
-        public static IUriNode LessThanOrEquals { get; } = ShaclNode("lessThanOrEquals");
-
-        public static IUriNode MinExclusive { get; } = ShaclNode("minExclusive");
-
-        public static IUriNode MinInclusive { get; } = ShaclNode("minInclusive");
-
-        public static IUriNode MaxExclusive { get; } = ShaclNode("maxExclusive");
-
-        public static IUriNode MaxInclusive { get; } = ShaclNode("maxInclusive");
-
-        public static IUriNode QualifiedMinCount { get; } = ShaclNode("qualifiedMinCount");
-
-        public static IUriNode QualifiedMaxCount { get; } = ShaclNode("qualifiedMaxCount");
-
-        public static IUriNode QualifiedValueShape { get; } = ShaclNode("qualifiedValueShape");
-
-        public static IUriNode QualifiedValueShapesDisjoint { get; } = ShaclNode("qualifiedValueShapesDisjoint");
-
-        public static IUriNode Closed { get; } = ShaclNode("closed");
-
-        public static IUriNode IgnoredProperties { get; } = ShaclNode("ignoredProperties");
-
-        public static IUriNode Sparql { get; } = ShaclNode("sparql");
-
-        public static IUriNode Select { get; } = ShaclNode("select");
-
+        /// <summary>
+        /// Gets a node representing ask.
+        /// </summary>
         public static IUriNode Ask { get; } = ShaclNode("ask");
 
-        public static IUriNode Prefixes { get; } = ShaclNode("prefixes");
+        /// <summary>
+        /// Gets a node representing BlankNode.
+        /// </summary>
+        public static IUriNode BlankNode { get; } = ShaclNode("BlankNode");
 
-        public static IUriNode Declare { get; } = ShaclNode("declare");
+        /// <summary>
+        /// Gets a node representing BlankNodeOrIRI.
+        /// </summary>
+        public static IUriNode BlankNodeOrIri { get; } = ShaclNode("BlankNodeOrIRI");
 
-        public static IUriNode Prefix { get; } = ShaclNode("prefix");
+        /// <summary>
+        /// Gets a node representing BlankNodeOrLiteral.
+        /// </summary>
+        public static IUriNode BlankNodeOrLiteral { get; } = ShaclNode("BlankNodeOrLiteral");
 
-        public static IUriNode Namespace { get; } = ShaclNode("namespace");
-        #endregion
+        /// <summary>
+        /// Gets a node representing class.
+        /// </summary>
+        public static IUriNode Class { get; } = ShaclNode("class");
 
-        #region Constraint components
+        /// <summary>
+        /// Gets a node representing ClassConstraintComponent.
+        /// </summary>
         public static IUriNode ClassConstraintComponent { get; } = ShaclNode("ClassConstraintComponent");
 
+        /// <summary>
+        /// Gets a node representing closed.
+        /// </summary>
+        public static IUriNode Closed { get; } = ShaclNode("closed");
+
+        /// <summary>
+        /// Gets a node representing ClosedConstraintComponent.
+        /// </summary>
+        public static IUriNode ClosedConstraintComponent { get; } = ShaclNode("ClosedConstraintComponent");
+
+        /// <summary>
+        /// Gets a node representing conforms.
+        /// </summary>
+        public static IUriNode Conforms { get; } = ShaclNode("conforms");
+
+        /// <summary>
+        /// Gets a node representing ConstraintComponent.
+        /// </summary>
+        public static IUriNode ConstraintComponent { get; } = ShaclNode("ConstraintComponent");
+
+        /// <summary>
+        /// Gets a node representing datatype.
+        /// </summary>
+        public static IUriNode Datatype { get; } = ShaclNode("datatype");
+
+        /// <summary>
+        /// Gets a node representing DatatypeConstraintComponent.
+        /// </summary>
+        public static IUriNode DatatypeConstraintComponent { get; } = ShaclNode("DatatypeConstraintComponent");
+
+        /// <summary>
+        /// Gets a node representing deactivated.
+        /// </summary>
+        public static IUriNode Deactivated { get; } = ShaclNode("deactivated");
+
+        /// <summary>
+        /// Gets a node representing declare.
+        /// </summary>
+        public static IUriNode Declare { get; } = ShaclNode("declare");
+
+        /// <summary>
+        /// Gets a node representing disjoint.
+        /// </summary>
+        public static IUriNode Disjoint { get; } = ShaclNode("disjoint");
+
+        /// <summary>
+        /// Gets a node representing DisjointConstraintComponent.
+        /// </summary>
+        public static IUriNode DisjointConstraintComponent { get; } = ShaclNode("DisjointConstraintComponent");
+
+        /// <summary>
+        /// Gets a node representing EqualsConstraintComponent.
+        /// </summary>
+        public static IUriNode EqualsConstraintComponent { get; } = ShaclNode("EqualsConstraintComponent");
+
+        /// <summary>
+        /// Gets a node representing equals.
+        /// </summary>
+        public static IUriNode EqualsNode { get; } = ShaclNode("equals");
+
+        /// <summary>
+        /// Gets a node representing flags.
+        /// </summary>
+        public static IUriNode Flags { get; } = ShaclNode("flags");
+
+        /// <summary>
+        /// Gets a node representing focusNode.
+        /// </summary>
+        public static IUriNode FocusNode { get; } = ShaclNode("focusNode");
+
+        /// <summary>
+        /// Gets a node representing hasValue.
+        /// </summary>
+        public static IUriNode HasValue { get; } = ShaclNode("hasValue");
+
+        /// <summary>
+        /// Gets a node representing HasValueConstraintComponent.
+        /// </summary>
+        public static IUriNode HasValueConstraintComponent { get; } = ShaclNode("HasValueConstraintComponent");
+
+        /// <summary>
+        /// Gets a node representing ignoredProperties.
+        /// </summary>
+        public static IUriNode IgnoredProperties { get; } = ShaclNode("ignoredProperties");
+
+        /// <summary>
+        /// Gets a node representing in.
+        /// </summary>
+        public static IUriNode In { get; } = ShaclNode("in");
+
+        /// <summary>
+        /// Gets a node representing InConstraintComponent.
+        /// </summary>
+        public static IUriNode InConstraintComponent { get; } = ShaclNode("InConstraintComponent");
+
+        /// <summary>
+        /// Gets a node representing inversePath.
+        /// </summary>
+        public static IUriNode InversePath { get; } = ShaclNode("inversePath");
+
+        /// <summary>
+        /// Gets a node representing IRI.
+        /// </summary>
+        public static IUriNode Iri { get; } = ShaclNode("IRI");
+
+        /// <summary>
+        /// Gets a node representing IRIOrLiteral.
+        /// </summary>
+        public static IUriNode IriOrLiteral { get; } = ShaclNode("IRIOrLiteral");
+
+        /// <summary>
+        /// Gets a node representing languageIn.
+        /// </summary>
+        public static IUriNode LanguageIn { get; } = ShaclNode("languageIn");
+
+        /// <summary>
+        /// Gets a node representing LanguageInConstraintComponent.
+        /// </summary>
+        public static IUriNode LanguageInConstraintComponent { get; } = ShaclNode("LanguageInConstraintComponent");
+
+        /// <summary>
+        /// Gets a node representing lessThan.
+        /// </summary>
+        public static IUriNode LessThan { get; } = ShaclNode("lessThan");
+
+        /// <summary>
+        /// Gets a node representing LessThanConstraintComponent.
+        /// </summary>
+        public static IUriNode LessThanConstraintComponent { get; } = ShaclNode("LessThanConstraintComponent");
+
+        /// <summary>
+        /// Gets a node representing lessThanOrEquals.
+        /// </summary>
+        public static IUriNode LessThanOrEquals { get; } = ShaclNode("lessThanOrEquals");
+
+        /// <summary>
+        /// Gets a node representing LessThanOrEqualsConstraintComponent.
+        /// </summary>
+        public static IUriNode LessThanOrEqualsConstraintComponent { get; } = ShaclNode("LessThanOrEqualsConstraintComponent");
+
+        /// <summary>
+        /// Gets a node representing Literal.
+        /// </summary>
+        public static IUriNode Literal { get; } = ShaclNode("Literal");
+
+        /// <summary>
+        /// Gets a node representing maxCount.
+        /// </summary>
+        public static IUriNode MaxCount { get; } = ShaclNode("maxCount");
+
+        /// <summary>
+        /// Gets a node representing MaxCountConstraintComponent.
+        /// </summary>
+        public static IUriNode MaxCountConstraintComponent { get; } = ShaclNode("MaxCountConstraintComponent");
+
+        /// <summary>
+        /// Gets a node representing maxExclusive.
+        /// </summary>
+        public static IUriNode MaxExclusive { get; } = ShaclNode("maxExclusive");
+
+        /// <summary>
+        /// Gets a node representing MaxExclusiveConstraintComponent.
+        /// </summary>
+        public static IUriNode MaxExclusiveConstraintComponent { get; } = ShaclNode("MaxExclusiveConstraintComponent");
+
+        /// <summary>
+        /// Gets a node representing maxInclusive.
+        /// </summary>
+        public static IUriNode MaxInclusive { get; } = ShaclNode("maxInclusive");
+
+        /// <summary>
+        /// Gets a node representing MaxInclusiveConstraintComponent.
+        /// </summary>
+        public static IUriNode MaxInclusiveConstraintComponent { get; } = ShaclNode("MaxInclusiveConstraintComponent");
+
+        /// <summary>
+        /// Gets a node representing maxLength.
+        /// </summary>
+        public static IUriNode MaxLength { get; } = ShaclNode("maxLength");
+
+        /// <summary>
+        /// Gets a node representing MaxLengthConstraintComponent.
+        /// </summary>
+        public static IUriNode MaxLengthConstraintComponent { get; } = ShaclNode("MaxLengthConstraintComponent");
+
+        /// <summary>
+        /// Gets a node representing message.
+        /// </summary>
+        public static IUriNode Message { get; } = ShaclNode("message");
+
+        /// <summary>
+        /// Gets a node representing minCount.
+        /// </summary>
+        public static IUriNode MinCount { get; } = ShaclNode("minCount");
+
+        /// <summary>
+        /// Gets a node representing MinCountConstraintComponent.
+        /// </summary>
+        public static IUriNode MinCountConstraintComponent { get; } = ShaclNode("MinCountConstraintComponent");
+
+        /// <summary>
+        /// Gets a node representing minExclusive.
+        /// </summary>
+        public static IUriNode MinExclusive { get; } = ShaclNode("minExclusive");
+
+        /// <summary>
+        /// Gets a node representing MinExclusiveConstraintComponent.
+        /// </summary>
+        public static IUriNode MinExclusiveConstraintComponent { get; } = ShaclNode("MinExclusiveConstraintComponent");
+
+        /// <summary>
+        /// Gets a node representing minInclusive.
+        /// </summary>
+        public static IUriNode MinInclusive { get; } = ShaclNode("minInclusive");
+
+        /// <summary>
+        /// Gets a node representing MinInclusiveConstraintComponent.
+        /// </summary>
+        public static IUriNode MinInclusiveConstraintComponent { get; } = ShaclNode("MinInclusiveConstraintComponent");
+
+        /// <summary>
+        /// Gets a node representing minLength.
+        /// </summary>
+        public static IUriNode MinLength { get; } = ShaclNode("minLength");
+
+        /// <summary>
+        /// Gets a node representing MinLengthConstraintComponent.
+        /// </summary>
+        public static IUriNode MinLengthConstraintComponent { get; } = ShaclNode("MinLengthConstraintComponent");
+
+        /// <summary>
+        /// Gets a node representing namespace.
+        /// </summary>
+        public static IUriNode Namespace { get; } = ShaclNode("namespace");
+
+        /// <summary>
+        /// Gets a node representing node.
+        /// </summary>
+        public static IUriNode Node { get; } = ShaclNode("node");
+
+        /// <summary>
+        /// Gets a node representing NodeConstraintComponent.
+        /// </summary>
         public static IUriNode NodeConstraintComponent { get; } = ShaclNode("NodeConstraintComponent");
 
+        /// <summary>
+        /// Gets a node representing nodeKind.
+        /// </summary>
+        public static IUriNode NodeKind { get; } = ShaclNode("nodeKind");
+
+        /// <summary>
+        /// Gets a node representing NodeKindConstraintComponent.
+        /// </summary>
+        public static IUriNode NodeKindConstraintComponent { get; } = ShaclNode("NodeKindConstraintComponent");
+
+        /// <summary>
+        /// Gets a node representing NodeShape.
+        /// </summary>
+        public static IUriNode NodeShape { get; } = ShaclNode("NodeShape");
+
+        /// <summary>
+        /// Gets a node representing nodeValidator.
+        /// </summary>
+        public static IUriNode NodeValidator { get; } = ShaclNode("nodeValidator");
+
+        /// <summary>
+        /// Gets a node representing not.
+        /// </summary>
+        public static IUriNode Not { get; } = ShaclNode("not");
+
+        /// <summary>
+        /// Gets a node representing NotConstraintComponent.
+        /// </summary>
+        public static IUriNode NotConstraintComponent { get; } = ShaclNode("NotConstraintComponent");
+
+        /// <summary>
+        /// Gets a node representing oneOrMorePath.
+        /// </summary>
+        public static IUriNode OneOrMorePath { get; } = ShaclNode("oneOrMorePath");
+
+        /// <summary>
+        /// Gets a node representing optional.
+        /// </summary>
+        public static IUriNode Optional { get; } = ShaclNode("optional");
+
+        /// <summary>
+        /// Gets a node representing or.
+        /// </summary>
+        public static IUriNode Or { get; } = ShaclNode("or");
+
+        /// <summary>
+        /// Gets a node representing OrConstraintComponent.
+        /// </summary>
+        public static IUriNode OrConstraintComponent { get; } = ShaclNode("OrConstraintComponent");
+
+        /// <summary>
+        /// Gets a node representing parameter.
+        /// </summary>
+        public static IUriNode Parameter { get; } = ShaclNode("parameter");
+
+        /// <summary>
+        /// Gets a node representing path.
+        /// </summary>
+        public static IUriNode Path { get; } = ShaclNode("path");
+
+        /// <summary>
+        /// Gets a node representing pattern.
+        /// </summary>
+        public static IUriNode Pattern { get; } = ShaclNode("pattern");
+
+        /// <summary>
+        /// Gets a node representing PatternConstraintComponent.
+        /// </summary>
+        public static IUriNode PatternConstraintComponent { get; } = ShaclNode("PatternConstraintComponent");
+
+        /// <summary>
+        /// Gets a node representing prefix.
+        /// </summary>
+        public static IUriNode Prefix { get; } = ShaclNode("prefix");
+
+        /// <summary>
+        /// Gets a node representing prefixes.
+        /// </summary>
+        public static IUriNode Prefixes { get; } = ShaclNode("prefixes");
+
+        /// <summary>
+        /// Gets a node representing property.
+        /// </summary>
+        public static IUriNode Property { get; } = ShaclNode("property");
+
+        /// <summary>
+        /// Gets a node representing PropertyShapeComponent.
+        /// </summary>
         // See https://github.com/w3c/data-shapes/issues/103 (spec says sh:PropertyShapeComponent)
         public static IUriNode PropertyConstraintComponent { get; } = ShaclNode("PropertyShapeComponent");
 
-        public static IUriNode DatatypeConstraintComponent { get; } = ShaclNode("DatatypeConstraintComponent");
+        /// <summary>
+        /// Gets a node representing PropertyShape.
+        /// </summary>
+        public static IUriNode PropertyShape { get; } = ShaclNode("PropertyShape");
 
-        public static IUriNode AndConstraintComponent { get; } = ShaclNode("AndConstraintComponent");
+        /// <summary>
+        /// Gets a node representing propertyValidator.
+        /// </summary>
+        public static IUriNode PropertyValidator { get; } = ShaclNode("propertyValidator");
 
-        public static IUriNode OrConstraintComponent { get; } = ShaclNode("OrConstraintComponent");
+        /// <summary>
+        /// Gets a node representing qualifiedMaxCount.
+        /// </summary>
+        public static IUriNode QualifiedMaxCount { get; } = ShaclNode("qualifiedMaxCount");
 
-        public static IUriNode NotConstraintComponent { get; } = ShaclNode("NotConstraintComponent");
-
-        public static IUriNode XoneConstraintComponent { get; } = ShaclNode("XoneConstraintComponent");
-
-        public static IUriNode NodeKindConstraintComponent { get; } = ShaclNode("NodeKindConstraintComponent");
-
-        public static IUriNode MinLengthConstraintComponent { get; } = ShaclNode("MinLengthConstraintComponent");
-
-        public static IUriNode MaxLengthConstraintComponent { get; } = ShaclNode("MaxLengthConstraintComponent");
-
-        public static IUriNode LanguageInConstraintComponent { get; } = ShaclNode("LanguageInConstraintComponent");
-
-        public static IUriNode InConstraintComponent { get; } = ShaclNode("InConstraintComponent");
-
-        public static IUriNode MinCountConstraintComponent { get; } = ShaclNode("MinCountConstraintComponent");
-
-        public static IUriNode MaxCountConstraintComponent { get; } = ShaclNode("MaxCountConstraintComponent");
-
-        public static IUriNode UniqueLangConstraintComponent { get; } = ShaclNode("UniqueLangConstraintComponent");
-
-        public static IUriNode HasValueConstraintComponent { get; } = ShaclNode("HasValueConstraintComponent");
-
-        public static IUriNode PatternConstraintComponent { get; } = ShaclNode("PatternConstraintComponent");
-
-        public static IUriNode EqualsConstraintComponent { get; } = ShaclNode("EqualsConstraintComponent");
-
-        public static IUriNode DisjointConstraintComponent { get; } = ShaclNode("DisjointConstraintComponent");
-
-        public static IUriNode LessThanConstraintComponent { get; } = ShaclNode("LessThanConstraintComponent");
-
-        public static IUriNode LessThanOrEqualsConstraintComponent { get; } = ShaclNode("LessThanOrEqualsConstraintComponent");
-
-        public static IUriNode MinExclusiveConstraintComponent { get; } = ShaclNode("MinExclusiveConstraintComponent");
-
-        public static IUriNode MinInclusiveConstraintComponent { get; } = ShaclNode("MinInclusiveConstraintComponent");
-
-        public static IUriNode MaxExclusiveConstraintComponent { get; } = ShaclNode("MaxExclusiveConstraintComponent");
-
-        public static IUriNode MaxInclusiveConstraintComponent { get; } = ShaclNode("MaxInclusiveConstraintComponent");
-
-        public static IUriNode QualifiedMinCountConstraintComponent { get; } = ShaclNode("QualifiedMinCountConstraintComponent");
-
+        /// <summary>
+        /// Gets a node representing QualifiedMaxCountConstraintComponent.
+        /// </summary>
         public static IUriNode QualifiedMaxCountConstraintComponent { get; } = ShaclNode("QualifiedMaxCountConstraintComponent");
 
-        public static IUriNode ClosedConstraintComponent { get; } = ShaclNode("ClosedConstraintComponent");
+        /// <summary>
+        /// Gets a node representing qualifiedMinCount.
+        /// </summary>
+        public static IUriNode QualifiedMinCount { get; } = ShaclNode("qualifiedMinCount");
 
-        public static IUriNode SparqlConstraintComponent { get; } = ShaclNode("SPARQLConstraintComponent");
-        #endregion
+        /// <summary>
+        /// Gets a node representing QualifiedMinCountConstraintComponent.
+        /// </summary>
+        public static IUriNode QualifiedMinCountConstraintComponent { get; } = ShaclNode("QualifiedMinCountConstraintComponent");
 
-        #region Shapes
-        public static IUriNode NodeShape { get; } = ShaclNode("NodeShape");
+        /// <summary>
+        /// Gets a node representing qualifiedValueShape.
+        /// </summary>
+        public static IUriNode QualifiedValueShape { get; } = ShaclNode("qualifiedValueShape");
 
-        public static IUriNode PropertyShape { get; } = ShaclNode("PropertyShape");
-        #endregion
+        /// <summary>
+        /// Gets a node representing qualifiedValueShapesDisjoint.
+        /// </summary>
+        public static IUriNode QualifiedValueShapesDisjoint { get; } = ShaclNode("qualifiedValueShapesDisjoint");
 
-        #region Paths
-        public static IUriNode AlternativePath { get; } = ShaclNode("alternativePath");
-
-        public static IUriNode InversePath { get; } = ShaclNode("inversePath");
-
-        public static IUriNode OneOrMorePath { get; } = ShaclNode("oneOrMorePath");
-
-        public static IUriNode ZeroOrMorePath { get; } = ShaclNode("zeroOrMorePath");
-
-        public static IUriNode ZeroOrOnePath { get; } = ShaclNode("zeroOrOnePath");
-        #endregion
-
-        #region Node kinds
-        public static IUriNode BlankNode { get; } = ShaclNode("BlankNode");
-
-        public static IUriNode Iri { get; } = ShaclNode("IRI");
-
-        public static IUriNode Literal { get; } = ShaclNode("Literal");
-
-        public static IUriNode BlankNodeOrIri { get; } = ShaclNode("BlankNodeOrIRI");
-
-        public static IUriNode BlankNodeOrLiteral { get; } = ShaclNode("BlankNodeOrLiteral");
-
-        public static IUriNode IriOrLiteral { get; } = ShaclNode("IRIOrLiteral");
-        #endregion
-
-        #region Report
+        /// <summary>
+        /// Gets a node representing result.
+        /// </summary>
         public static IUriNode Result { get; } = ShaclNode("result");
 
-        public static IUriNode ValidationReport { get; } = ShaclNode("ValidationReport");
-
-        public static IUriNode ValidationResult { get; } = ShaclNode("ValidationResult");
-
-        public static IUriNode FocusNode { get; } = ShaclNode("focusNode");
-
-        public static IUriNode Value { get; } = ShaclNode("value");
-
-        public static IUriNode SourceShape { get; } = ShaclNode("sourceShape");
-
-        public static IUriNode SourceConstraintComponent { get; } = ShaclNode("sourceConstraintComponent");
-
-        public static IUriNode ResultSeverity { get; } = ShaclNode("resultSeverity");
-
-        public static IUriNode Violation { get; } = ShaclNode("Violation");
-
-        public static IUriNode ResultPath { get; } = ShaclNode("resultPath");
-
+        /// <summary>
+        /// Gets a node representing resultMessage.
+        /// </summary>
         public static IUriNode ResultMessage { get; } = ShaclNode("resultMessage");
 
+        /// <summary>
+        /// Gets a node representing resultPath.
+        /// </summary>
+        public static IUriNode ResultPath { get; } = ShaclNode("resultPath");
+
+        /// <summary>
+        /// Gets a node representing resultSeverity.
+        /// </summary>
+        public static IUriNode ResultSeverity { get; } = ShaclNode("resultSeverity");
+
+        /// <summary>
+        /// Gets a node representing select.
+        /// </summary>
+        public static IUriNode Select { get; } = ShaclNode("select");
+
+        /// <summary>
+        /// Gets a node representing severity.
+        /// </summary>
+        public static IUriNode Severity { get; } = ShaclNode("severity");
+
+        /// <summary>
+        /// Gets a node representing sourceConstraint.
+        /// </summary>
         public static IUriNode SourceConstraint { get; } = ShaclNode("sourceConstraint");
-        #endregion
+
+        /// <summary>
+        /// Gets a node representing sourceConstraintComponent.
+        /// </summary>
+        public static IUriNode SourceConstraintComponent { get; } = ShaclNode("sourceConstraintComponent");
+
+        /// <summary>
+        /// Gets a node representing sourceShape.
+        /// </summary>
+        public static IUriNode SourceShape { get; } = ShaclNode("sourceShape");
+
+        /// <summary>
+        /// Gets a node representing sparql.
+        /// </summary>
+        public static IUriNode Sparql { get; } = ShaclNode("sparql");
+
+        /// <summary>
+        /// Gets a node representing SPARQLAskValidator.
+        /// </summary>
+        public static IUriNode SparqlAskValidato { get; } = ShaclNode("SPARQLAskValidator");
+
+        /// <summary>
+        /// Gets a node representing SPARQLConstraintComponent.
+        /// </summary>
+        public static IUriNode SparqlConstraintComponent { get; } = ShaclNode("SPARQLConstraintComponent");
+
+        /// <summary>
+        /// Gets a node representing targetClass.
+        /// </summary>
+        public static IUriNode TargetClass { get; } = ShaclNode("targetClass");
+
+        /// <summary>
+        /// Gets a node representing targetNode.
+        /// </summary>
+        public static IUriNode TargetNode { get; } = ShaclNode("targetNode");
+
+        /// <summary>
+        /// Gets a node representing targetObjectsOf.
+        /// </summary>
+        public static IUriNode TargetObjectsOf { get; } = ShaclNode("targetObjectsOf");
+
+        /// <summary>
+        /// Gets a node representing targetSubjectsOf.
+        /// </summary>
+        public static IUriNode TargetSubjectsOf { get; } = ShaclNode("targetSubjectsOf");
+
+        /// <summary>
+        /// Gets a node representing uniqueLang.
+        /// </summary>
+        public static IUriNode UniqueLang { get; } = ShaclNode("uniqueLang");
+
+        /// <summary>
+        /// Gets a node representing UniqueLangConstraintComponent.
+        /// </summary>
+        public static IUriNode UniqueLangConstraintComponent { get; } = ShaclNode("UniqueLangConstraintComponent");
+
+        /// <summary>
+        /// Gets a node representing ValidationReport.
+        /// </summary>
+        public static IUriNode ValidationReport { get; } = ShaclNode("ValidationReport");
+
+        /// <summary>
+        /// Gets a node representing ValidationResult.
+        /// </summary>
+        public static IUriNode ValidationResult { get; } = ShaclNode("ValidationResult");
+
+        /// <summary>
+        /// Gets a node representing validator.
+        /// </summary>
+        public static IUriNode Validator { get; } = ShaclNode("validator");
+
+        /// <summary>
+        /// Gets a node representing value.
+        /// </summary>
+        public static IUriNode Value { get; } = ShaclNode("value");
+
+        /// <summary>
+        /// Gets a node representing Violation.
+        /// </summary>
+        public static IUriNode Violation { get; } = ShaclNode("Violation");
+
+        /// <summary>
+        /// Gets a node representing xone.
+        /// </summary>
+        public static IUriNode Xone { get; } = ShaclNode("xone");
+
+        /// <summary>
+        /// Gets a node representing XoneConstraintComponent.
+        /// </summary>
+        public static IUriNode XoneConstraintComponent { get; } = ShaclNode("XoneConstraintComponent");
+
+        /// <summary>
+        /// Gets a node representing zeroOrMorePath.
+        /// </summary>
+        public static IUriNode ZeroOrMorePath { get; } = ShaclNode("zeroOrMorePath");
+
+        /// <summary>
+        /// Gets a node representing zeroOrOnePath.
+        /// </summary>
+        public static IUriNode ZeroOrOnePath { get; } = ShaclNode("zeroOrOnePath");
 
         #region Collections
 
+        /// <summary>
+        /// Gets the list of shapes.
+        /// </summary>
         public static IEnumerable<IUriNode> Shapes
         {
             get
@@ -296,6 +613,9 @@ namespace VDS.RDF.Shacl
             }
         }
 
+        /// <summary>
+        /// Gets the list of targets.
+        /// </summary>
         public static IEnumerable<IUriNode> Targets
         {
             get
@@ -307,6 +627,9 @@ namespace VDS.RDF.Shacl
             }
         }
 
+        /// <summary>
+        /// Gets the list of constraints
+        /// </summary>
         public static IEnumerable<IUriNode> Constraints
         {
             get
@@ -344,6 +667,9 @@ namespace VDS.RDF.Shacl
             }
         }
 
+        /// <summary>
+        /// Gets the list of blank node kinds.
+        /// </summary>
         public static IEnumerable<IUriNode> BlankNodeKinds
         {
             get
@@ -354,6 +680,9 @@ namespace VDS.RDF.Shacl
             }
         }
 
+        /// <summary>
+        /// Gets the list of literal node kinds.
+        /// </summary>
         public static IEnumerable<IUriNode> LiteralNodeKinds
         {
             get
@@ -364,6 +693,9 @@ namespace VDS.RDF.Shacl
             }
         }
 
+        /// <summary>
+        /// Gets the list of IRI node kinds.
+        /// </summary>
         public static IEnumerable<IUriNode> IriNodeKinds
         {
             get
@@ -374,6 +706,9 @@ namespace VDS.RDF.Shacl
             }
         }
 
+        /// <summary>
+        /// Gets the list of predicates to expand in validation reports.
+        /// </summary>
         public static IEnumerable<INode> PredicatesToExpandInReport
         {
             get
@@ -391,6 +726,22 @@ namespace VDS.RDF.Shacl
                 yield return ZeroOrOnePath;
             }
         }
+
+        #endregion
+
+        #region Related vocabularies
+
+        internal static IUriNode RdfType { get; } = AnyNode(RdfSpecsHelper.RdfType);
+
+        internal static IUriNode RdfFirst { get; } = AnyNode(RdfSpecsHelper.RdfListFirst);
+
+        internal static IUriNode RdfRest { get; } = AnyNode(RdfSpecsHelper.RdfListRest);
+
+        internal static IUriNode RdfsClass { get; } = AnyNode("http://www.w3.org/2000/01/rdf-schema#Class");
+
+        internal static IUriNode RdfsSubClassOf { get; } = AnyNode("http://www.w3.org/2000/01/rdf-schema#subClassOf");
+
+        internal static IUriNode OwlImports { get; } = AnyNode(OntologyHelper.PropertyImports);
 
         #endregion
 

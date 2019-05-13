@@ -87,7 +87,7 @@ namespace VDS.RDF.Shacl
 
         internal abstract bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report);
 
-        protected bool ReportValueNodes(INode focusNode, IEnumerable<INode> invalidValues, Report report = null)
+        protected bool ReportValueNodes(INode focusNode, IEnumerable<INode> invalidValues, Report report)
         {
             var allValid = !invalidValues.Any();
 
