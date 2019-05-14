@@ -30,7 +30,7 @@ namespace VDS.RDF.Shacl
     public class Examples
     {
         [Fact]
-        public void Example1()
+        public void Validation()
         {
             var dataGraph = new Graph();
             dataGraph.LoadFromString(@"
@@ -77,6 +77,33 @@ namespace VDS.RDF.Shacl
             var report = processor.Validate(dataGraph);
 
             Assert.Equal(reportGraph, report.Graph);
+        }
+
+        [Fact]
+        public void Conformance()
+        {
+            var dataGraph = new Graph();
+            dataGraph.LoadFromString(@"
+@prefix : <urn:> .
+
+:s :p :o .
+");
+
+            var shapesGraph = new Graph();
+            shapesGraph.LoadFromString(@"
+@prefix : <urn:> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+[
+    sh:targetNode :s ;
+    sh:class :C ;
+] .
+");
+
+            var processor = new ShapesGraph(shapesGraph);
+            var conforms = processor.Conforms(dataGraph);
+
+            Assert.False(conforms);
         }
     }
 }

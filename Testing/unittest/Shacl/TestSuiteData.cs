@@ -137,6 +137,17 @@ namespace VDS.RDF.Shacl
             shapesGraph = store[shapesGraphUri];
         }
 
+        internal static void RemoveUnnecessaryResultMessages(IGraph resultReport, IGraph testReport)
+        {
+            foreach (var t in resultReport.GetTriplesWithPredicate(Vocabulary.ResultMessage).ToList())
+            {
+                if (!testReport.GetTriplesWithPredicateObject(Vocabulary.ResultMessage, t.Object).Any())
+                {
+                    resultReport.Retract(t);
+                }
+            }
+        }
+
         private static void Populate(Uri u)
         {
             if (store.HasGraph(u))

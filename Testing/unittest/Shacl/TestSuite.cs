@@ -27,7 +27,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace VDS.RDF.Shacl
 {
     using System;
-    using System.Linq;
     using VDS.RDF.Shacl.Validation;
     using VDS.RDF.Writing;
     using Xunit;
@@ -54,11 +53,6 @@ namespace VDS.RDF.Shacl
         [MemberData(nameof(CoreFullTests), MemberType = typeof(TestSuiteData))]
         public void CoreFullCompliance(string name)
         {
-            if (name == "core/path/path-complex-002.ttl")
-            {
-                Assert.False(true, "See https://github.com/dotnetrdf/dotnetrdf/issues/235");
-            }
-
             Validates(name);
         }
 
@@ -95,17 +89,6 @@ namespace VDS.RDF.Shacl
             else
             {
                 conforms();
-            }
-        }
-
-        private static void RemoveUnnecessaryResultMessages(IGraph resultReport, IGraph testReport)
-        {
-            foreach (var t in resultReport.GetTriplesWithPredicate(Vocabulary.ResultMessage).ToList())
-            {
-                if (!testReport.GetTriplesWithPredicateObject(Vocabulary.ResultMessage, t.Object).Any())
-                {
-                    resultReport.Retract(t);
-                }
             }
         }
 
