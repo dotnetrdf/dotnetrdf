@@ -27,6 +27,7 @@ dotNetRDF is developed by the following people:
 - Kal Ahmed
 - Graham Moore
 - Tomasz Plusekiewicz
+- Samu Lang
 
 Contributors
 ------------
