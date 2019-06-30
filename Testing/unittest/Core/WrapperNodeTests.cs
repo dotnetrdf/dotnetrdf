@@ -127,7 +127,7 @@ namespace VDS.RDF
         }
 
         [Fact]
-        public void Delegates__CompareTo_blank()
+        public void Delegates_CompareTo_blank()
         {
             var node = new NodeFactory().CreateBlankNode();
             var wrapper = new MockWrapperNode(node);
@@ -139,7 +139,7 @@ namespace VDS.RDF
         }
 
         [Fact]
-        public void Delegates__CompareTo_graphLiteral()
+        public void Delegates_CompareTo_graphLiteral()
         {
             var node = new NodeFactory().CreateGraphLiteralNode();
             var wrapper = new MockWrapperNode(node);
@@ -151,7 +151,7 @@ namespace VDS.RDF
         }
 
         [Fact]
-        public void Delegates__CompareTo_literal()
+        public void Delegates_CompareTo_literal()
         {
             var node = new NodeFactory().CreateLiteralNode(string.Empty);
             var wrapper = new MockWrapperNode(node);
@@ -163,7 +163,7 @@ namespace VDS.RDF
         }
 
         [Fact]
-        public void Delegates__CompareTo_uri()
+        public void Delegates_CompareTo_uri()
         {
             var node = new NodeFactory().CreateUriNode(UriFactory.Create("http://example.com/"));
             var wrapper = new MockWrapperNode(node);
@@ -175,7 +175,7 @@ namespace VDS.RDF
         }
 
         [Fact]
-        public void Delegates__CompareTo_variable()
+        public void Delegates_CompareTo_variable()
         {
             var node = new NodeFactory().CreateVariableNode(string.Empty);
             var wrapper = new MockWrapperNode(node);
@@ -187,7 +187,7 @@ namespace VDS.RDF
         }
 
         [Fact]
-        public void Delegates_Equal_node()
+        public void Delegates_Equals_node()
         {
             var node = new NodeFactory().CreateBlankNode() as INode;
             var wrapper = new MockWrapperNode(node);
@@ -199,7 +199,7 @@ namespace VDS.RDF
         }
 
         [Fact]
-        public void Delegates_Equal_blank()
+        public void Delegates_Equals_blank()
         {
             var node = new NodeFactory().CreateBlankNode();
             var wrapper = new MockWrapperNode(node);
@@ -211,7 +211,7 @@ namespace VDS.RDF
         }
 
         [Fact]
-        public void Delegates_Equal_graphLiteral()
+        public void Delegates_Equals_graphLiteral()
         {
             var node = new NodeFactory().CreateGraphLiteralNode();
             var wrapper = new MockWrapperNode(node);
@@ -223,7 +223,7 @@ namespace VDS.RDF
         }
 
         [Fact]
-        public void Delegates_Equal_literal()
+        public void Delegates_Equals_literal()
         {
             var node = new NodeFactory().CreateLiteralNode(string.Empty);
             var wrapper = new MockWrapperNode(node);
@@ -235,7 +235,7 @@ namespace VDS.RDF
         }
 
         [Fact]
-        public void Delegates_Equal_uri()
+        public void Delegates_Equals_uri()
         {
             var node = new NodeFactory().CreateUriNode(UriFactory.Create("http://example.com/"));
             var wrapper = new MockWrapperNode(node);
@@ -247,7 +247,7 @@ namespace VDS.RDF
         }
 
         [Fact]
-        public void Delegates_Equal_variable()
+        public void Delegates_Equals_variable()
         {
             var node = new NodeFactory().CreateVariableNode(string.Empty);
             var wrapper = new MockWrapperNode(node);
@@ -279,6 +279,116 @@ namespace VDS.RDF
 
             var expected = node.ToString(formatter, TripleSegment.Subject);
             var actual = wrapper.ToString(formatter, TripleSegment.Subject);
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void Fails_invalid_InternalID()
+        {
+            var node = new NodeFactory().CreateLiteralNode(string.Empty);
+            var wrapper = new MockWrapperNode(node);
+
+            Assert.Throws<InvalidCastException>(() =>
+                ((IBlankNode)wrapper).InternalID);
+        }
+
+        [Fact]
+        public void Delegates_InternalID()
+        {
+            var expected = new Guid().ToString();
+            var node = new NodeFactory().CreateBlankNode(expected);
+            var wrapper = new MockWrapperNode(node);
+
+            var actual = ((IBlankNode)wrapper).InternalID;
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void Fails_invalid_Uri()
+        {
+            var node = new NodeFactory().CreateBlankNode();
+            var wrapper = new MockWrapperNode(node);
+
+            Assert.Throws<InvalidCastException>(() =>
+                ((IUriNode)wrapper).Uri);
+        }
+
+        [Fact]
+        public void Delegates_Uri()
+        {
+            var expected = UriFactory.Create("urn:s");
+            var node = new NodeFactory().CreateUriNode(expected);
+            var wrapper = new MockWrapperNode(node);
+
+            var actual = ((IUriNode)wrapper).Uri;
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void Fails_invalid_Value()
+        {
+            var node = new NodeFactory().CreateBlankNode();
+            var wrapper = new MockWrapperNode(node);
+
+            Assert.Throws<InvalidCastException>(() =>
+                ((ILiteralNode)wrapper).Value);
+        }
+
+        [Fact]
+        public void Delegates_Value()
+        {
+            var expected = string.Empty;
+            var node = new NodeFactory().CreateLiteralNode(expected);
+            var wrapper = new MockWrapperNode(node);
+
+            var actual = ((ILiteralNode)wrapper).Value;
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void Fails_invalid_Language()
+        {
+            var node = new NodeFactory().CreateBlankNode();
+            var wrapper = new MockWrapperNode(node);
+
+            Assert.Throws<InvalidCastException>(() =>
+                ((ILiteralNode)wrapper).Language);
+        }
+
+        [Fact]
+        public void Delegates_Language()
+        {
+            var expected = "en";
+            var node = new NodeFactory().CreateLiteralNode(string.Empty, expected);
+            var wrapper = new MockWrapperNode(node);
+
+            var actual = ((ILiteralNode)wrapper).Language;
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void Fails_invalid_DataType()
+        {
+            var node = new NodeFactory().CreateBlankNode();
+            var wrapper = new MockWrapperNode(node);
+
+            Assert.Throws<InvalidCastException>(() =>
+                ((ILiteralNode)wrapper).DataType);
+        }
+
+        [Fact]
+        public void Delegates_DataType()
+        {
+            var expected = UriFactory.Create("urn:s");
+            var node = new NodeFactory().CreateLiteralNode(string.Empty, expected);
+            var wrapper = new MockWrapperNode(node);
+
+            var actual = ((ILiteralNode)wrapper).DataType;
 
             Assert.Equal(expected, actual);
         }

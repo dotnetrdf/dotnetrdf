@@ -27,19 +27,21 @@
 namespace VDS.RDF
 {
     using System;
+    using System.Diagnostics;
     using VDS.RDF.Writing;
     using VDS.RDF.Writing.Formatting;
 
     /// <summary>
     /// Abstract decorator for Nodes to make it easier to layer functionality on top of existing implementations.
     /// </summary>
-    public abstract partial class WrapperNode : INode
+    public abstract partial class WrapperNode : INode, IBlankNode, IUriNode, ILiteralNode
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="WrapperNode"/> class.
         /// </summary>
         /// <param name="node">The node this is a wrapper around.</param>
         /// <exception cref="ArgumentNullException">When <paramref name="node"/> is null.</exception>
+        [DebuggerStepThrough]
         protected WrapperNode(INode node)
         {
             Node = node ?? throw new ArgumentNullException(nameof(node));
@@ -74,6 +76,76 @@ namespace VDS.RDF
             set
             {
                 Node.GraphUri = value;
+            }
+        }
+
+        /// <inheritdoc/>
+        string IBlankNode.InternalID
+        {
+            get
+            {
+                if (Node.NodeType != NodeType.Blank)
+                {
+                    throw new InvalidCastException();
+                }
+
+                return ((IBlankNode)Node).InternalID;
+            }
+        }
+
+        /// <inheritdoc/>
+        Uri IUriNode.Uri
+        {
+            get
+            {
+                if (Node.NodeType != NodeType.Uri)
+                {
+                    throw new InvalidCastException();
+                }
+
+                return ((IUriNode)Node).Uri;
+            }
+        }
+
+        /// <inheritdoc/>
+        string ILiteralNode.Value
+        {
+            get
+            {
+                if (Node.NodeType != NodeType.Literal)
+                {
+                    throw new InvalidCastException();
+                }
+
+                return ((ILiteralNode)Node).Value;
+            }
+        }
+
+        /// <inheritdoc/>
+        string ILiteralNode.Language
+        {
+            get
+            {
+                if (Node.NodeType != NodeType.Literal)
+                {
+                    throw new InvalidCastException();
+                }
+
+                return ((ILiteralNode)Node).Language;
+            }
+        }
+
+        /// <inheritdoc/>
+        Uri ILiteralNode.DataType
+        {
+            get
+            {
+                if (Node.NodeType != NodeType.Literal)
+                {
+                    throw new InvalidCastException();
+                }
+
+                return ((ILiteralNode)Node).DataType;
             }
         }
 
