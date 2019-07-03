@@ -33,7 +33,6 @@ using Xunit;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
-using VDS.RDF.XunitExtensions;
 using VDS.RDF.Data.DataTables;
 
 namespace VDS.RDF
@@ -42,10 +41,7 @@ namespace VDS.RDF
     {
         [SkippableFact]
         public void GraphEquality() {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
-            {
-                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             try
             {
@@ -101,7 +97,7 @@ namespace VDS.RDF
                 TestTools.ReportError("Web Exception", webEx);
                 Console.WriteLine();
                 Console.WriteLine("Unable to retrieve the Graphs from the Web successfully!");
-                throw new SkipTestException("Unable to retrieve the graphs from the web successfully.");
+                Skip.If(true, "Unable to retrieve the graphs from the web successfully.");
             }
             finally
             {
@@ -196,10 +192,7 @@ namespace VDS.RDF
         [SkippableFact]
         public void ParsingUriLoader()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
-            {
-                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             int defaultTimeout = Options.UriLoaderTimeout;
             try

@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.IO;
 using System.Linq;
-using VDS.RDF.XunitExtensions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -51,7 +50,7 @@ namespace VDS.RDF.Parsing.Suites
             CheckResults = false;
         }
 
-        [Fact]
+        [SkippableFact]
         public void ParsingSuiteRdfXmlDom()
         {
             //Run manifests
@@ -71,10 +70,7 @@ namespace VDS.RDF.Parsing.Suites
                 Assert.True(false, Failed + " Tests failed: \n\t" + string.Join("\n\t", FailedTests));
             }
 
-            if (Indeterminate > 0)
-            {
-                throw new SkipTestException(Indeterminate + " Tests are indeterminate: " + string.Join(", ", IndeterminateTests));
-            }
+            Skip.If(Indeterminate> 0,$"{Indeterminate} Tests are indeterminate: " + string.Join(", ", IndeterminateTests));
         }
 
         [Fact]
@@ -117,7 +113,7 @@ namespace VDS.RDF.Parsing.Suites
             _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
 
             if (Failed > 0) Assert.True(false, Failed + " Tests failed: " + string.Join(", ", FailedTests));
-            if (Indeterminate > 0) throw new SkipTestException(Indeterminate + " Tests are indeterminate" + string.Join(", ", PassedTests));
+            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate" + string.Join(", ", PassedTests));
         }
 
         [Fact]

@@ -23,7 +23,6 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using VDS.RDF.XunitExtensions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -41,7 +40,7 @@ namespace VDS.RDF.Parsing.Suites
             CheckResults = false;
         }
 
-        [Fact]
+        [SkippableFact]
         public void ParsingSuiteTriX()
         {
             RunManifests();
@@ -56,7 +55,7 @@ namespace VDS.RDF.Parsing.Suites
                 foreach(var failure in FailedTests) { _testOutputHelper.WriteLine(failure.ToString());}
                 Assert.True(false, Failed + " Tests failed");
             }
-            if (Indeterminate > 0) throw new SkipTestException(Indeterminate + " Tests are indeterminate");
+            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
         }
     }
 }

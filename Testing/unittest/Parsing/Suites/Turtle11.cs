@@ -27,7 +27,6 @@ using System;
 using System.IO;
 using System.Linq;
 using VDS.RDF.Writing.Formatting;
-using VDS.RDF.XunitExtensions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -53,7 +52,7 @@ namespace VDS.RDF.Parsing.Suites
             Console.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
 
             if (Failed > 0) Assert.True(false, Failed + " Tests failed");
-            if (Indeterminate > 0) throw new SkipTestException(Indeterminate + " Tests are indeterminate");
+            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
         }
     }
 
@@ -104,7 +103,7 @@ namespace VDS.RDF.Parsing.Suites
                         Assert.True(false, Failed + " Test failed, " + Indeterminate + " Tests are indeterminate and " + Passed + " Tests Passed");
                     }
                 }
-                if (Indeterminate > 0) throw new SkipTestException(Indeterminate + " Tests are indeterminate and " + Passed + " Tests Passed");
+                Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate and " + Passed + " Tests Passed");
             }
             finally
             {

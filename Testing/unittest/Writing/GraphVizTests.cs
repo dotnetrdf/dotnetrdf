@@ -23,13 +23,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Xunit;
-using VDS.RDF.Writing;
-using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Writing
 {
@@ -39,10 +33,8 @@ namespace VDS.RDF.Writing
         [SkippableFact]
         public void WritingGraphViz1()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseGraphViz))
-            {
-                throw new SkipTestException("Test Config marks GraphViz as unavailable, test cannot be run");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseGraphViz),
+                "Test Config marks GraphViz as unavailable, test cannot be run");
 
             Graph g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
@@ -55,10 +47,7 @@ namespace VDS.RDF.Writing
         [SkippableFact]
         public void WritingGraphViz2()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseGraphViz))
-            {
-                throw new SkipTestException("Test Config marks GraphViz as unavailable, test cannot be run");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseGraphViz), "Test Config marks GraphViz as unavailable, test cannot be run");
 
             Graph g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
@@ -70,10 +59,7 @@ namespace VDS.RDF.Writing
         [SkippableFact]
         public void WritingGraphViz3()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseGraphViz))
-            {
-                throw new SkipTestException("Test Config marks GraphViz as unavailable, test cannot be run");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseGraphViz), "Test Config marks GraphViz as unavailable, test cannot be run");
 
             Graph g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");

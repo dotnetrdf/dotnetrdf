@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.IO;
-using VDS.RDF.XunitExtensions;
 using Xunit;
 
 namespace VDS.RDF
@@ -101,9 +100,9 @@ namespace VDS.RDF
             if (_init) return;
             if (_failed) Fail();
 
-            if (File.Exists(@"..\\resources\UnitTestConfig.properties"))
+            if (File.Exists(@"resources\UnitTestConfig.properties"))
             {
-                using (StreamReader reader = File.OpenText(@"..\\resources\UnitTestConfig.properties"))
+                using (StreamReader reader = File.OpenText(@"resources\UnitTestConfig.properties"))
                 {
                     do
                     {
@@ -139,7 +138,7 @@ namespace VDS.RDF
 
         private static void Fail()
         {
-            throw new SkipTestException("UnitTestConfig.properties cannot be found, to configure your test environment please make a copy of UnitTestConfig.template under the resources directory, add it to this project as a Content item and then edit it to match your test environment");
+            Skip.IfNot(true, "UnitTestConfig.properties cannot be found, to configure your test environment please make a copy of UnitTestConfig.template under the resources directory, add it to this project as a Content item and then edit it to match your test environment");
         }
 
         /// <summary>

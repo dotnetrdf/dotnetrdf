@@ -39,7 +39,7 @@ using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Writing.Formatting;
-using VDS.RDF.XunitExtensions;
+
 
 namespace VDS.RDF.Query
 {
@@ -1119,10 +1119,8 @@ WHERE
         [SkippableFact]
         public void SparqlFilterLazyDBPedia()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
-            {
-                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
+                "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             try
             {

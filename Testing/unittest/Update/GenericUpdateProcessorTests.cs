@@ -31,7 +31,6 @@ using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using VDS.RDF.Update;
-using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Update
 {

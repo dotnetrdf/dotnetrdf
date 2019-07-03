@@ -35,7 +35,6 @@ using VDS.RDF.Storage;
 using VDS.RDF.Update;
 using VDS.RDF.Writing;
 using StringWriter = System.IO.StringWriter;
-using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Storage
 {

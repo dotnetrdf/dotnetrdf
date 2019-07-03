@@ -32,7 +32,6 @@ using Xunit;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
-using VDS.RDF.XunitExtensions;
 
 #pragma warning disable CS1718 // Comparison made to same variable
 

@@ -32,7 +32,6 @@ using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing.Formatting;
-using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Storage
 {
@@ -47,10 +46,7 @@ namespace VDS.RDF.Storage
 
         public static FourStoreConnector GetConnection()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseFourStore))
-            {
-                throw new SkipTestException("Test Config marks 4store as unavailable, test cannot be run");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseFourStore), "Test Config marks 4store as unavailable, test cannot be run");
             return new FourStoreConnector(TestConfigManager.GetSetting(TestConfigManager.FourStoreServer));
         }
 

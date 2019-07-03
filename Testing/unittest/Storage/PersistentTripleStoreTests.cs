@@ -35,7 +35,6 @@ using VDS.RDF.Storage;
 using VDS.RDF.Update;
 using VDS.RDF.Writing;
 using StringWriter = System.IO.StringWriter;
-using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Storage
 {
@@ -68,14 +67,8 @@ namespace VDS.RDF.Storage
 
         private void EnsureGraphDeleted(IStorageProvider manager, Uri graphUri)
         {
-            if (manager.DeleteSupported)
-            {
-                manager.DeleteGraph(graphUri);
-            }
-            else
-            {
-                throw new SkipTestException("Unable to conduct this test as it requires ensuring a Graph is deleted from the underlying store which the IStorageProvider instance does not support");
-            }
+            Skip.IfNot(manager.DeleteSupported, "Unable to conduct this test as it requires ensuring a Graph is deleted from the underlying store which the IStorageProvider instance does not support");
+            manager.DeleteGraph(graphUri);
         }
 
         [SkippableFact]
@@ -782,10 +775,8 @@ namespace VDS.RDF.Storage
         {
             this.EnsureTestDataset(manager);
 
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
-            {
-                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
+                "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             PersistentTripleStore store = new PersistentTripleStore(manager);
             try

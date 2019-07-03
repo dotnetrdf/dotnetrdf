@@ -30,7 +30,6 @@ using System.Text;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
-using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF
 {
@@ -149,7 +148,7 @@ namespace VDS.RDF
 
             //Remove MSG from 2nd Graph
             INode toRemove = h.Nodes.BlankNodes().FirstOrDefault();
-            if (toRemove == null) throw new SkipTestException("No MSGs in test graph");
+            Skip.If(toRemove == null, "No MSGs in test graph");
             h.Retract(h.GetTriplesWithSubject(toRemove).ToList());
 
             GraphDiffReport report = g.Difference(h);
