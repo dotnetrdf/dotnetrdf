@@ -54,17 +54,26 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// URI of the Protocol Server
         /// </summary>
-        protected String _serviceUri;
+        protected string _serviceUri;
+
+        protected MimeTypeDefinition _writerMimeTypeDefinition;
 
         /// <summary>
         /// Creates a new SPARQL Graph Store HTTP Protocol Connector
         /// </summary>
         /// <param name="serviceUri">URI of the Protocol Server</param>
-        public SparqlHttpProtocolConnector(String serviceUri)
+        /// <param name="writerMimeTypeDefinition">The MIME type specifying the syntax to use when sending RDF data to the server. Defaults to "application/rdf+xml"</param>
+        public SparqlHttpProtocolConnector(string serviceUri, MimeTypeDefinition writerMimeTypeDefinition = null)
         {
-            if (serviceUri == null) throw new ArgumentNullException("serviceUri", "Cannot create a connection to a Graph Store HTTP Protocol store if the Service URI is null");
-            if (serviceUri.Equals(String.Empty)) throw new ArgumentException("Cannot create a connection to a Graph Store HTTP Protocol store if the Service URI is null/empty", "serviceUri");
-
+            if (serviceUri == null)
+                throw new ArgumentNullException(nameof(serviceUri),
+                    "Cannot create a connection to a Graph Store HTTP Protocol store if the Service URI is null");
+            if (serviceUri.Equals(string.Empty))
+                throw new ArgumentException(
+                    "Cannot create a connection to a Graph Store HTTP Protocol store if the Service URI is null/empty",
+                    nameof(serviceUri));
+            _writerMimeTypeDefinition = writerMimeTypeDefinition ??
+                                        MimeTypesHelper.GetDefinitions("application/rdf+xml").First();
             _serviceUri = serviceUri;
         }
 
@@ -320,10 +329,12 @@ namespace VDS.RDF.Storage
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(saveUri));
                 request.Method = "PUT";
-                request.ContentType = MimeTypesHelper.RdfXml[0];
+                //request.ContentType = MimeTypesHelper.RdfXml[0];
+                request.ContentType = _writerMimeTypeDefinition.CanonicalMimeType;
                 request = ApplyRequestOptions(request);
 
-                RdfXmlWriter writer = new RdfXmlWriter();
+                //RdfXmlWriter writer = new RdfXmlWriter();
+                IRdfWriter writer = _writerMimeTypeDefinition.GetRdfWriter();
                 writer.Save(g, new StreamWriter(request.GetRequestStream()));
 
                 Tools.HttpDebugRequest(request);
@@ -384,11 +395,13 @@ namespace VDS.RDF.Storage
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(updateUri));
                 request.Method = "POST";
-                request.ContentType = MimeTypesHelper.RdfXml[0];
+                //request.ContentType = MimeTypesHelper.RdfXml[0];
+                request.ContentType = _writerMimeTypeDefinition.CanonicalMimeType;
                 request = ApplyRequestOptions(request);
 
-                RdfXmlWriter writer = new RdfXmlWriter();
-                Graph g = new Graph();
+                //RdfXmlWriter writer = new RdfXmlWriter();
+                var writer = _writerMimeTypeDefinition.GetRdfWriter();
+                var g = new Graph();
                 g.Assert(additions);
                 writer.Save(g, new StreamWriter(request.GetRequestStream()));
 

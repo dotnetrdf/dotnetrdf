@@ -61,15 +61,17 @@ namespace VDS.RDF.Storage
         /// Creates a new connection to a Fuseki Server
         /// </summary>
         /// <param name="serviceUri">The /data URI of the Fuseki Server</param>
-        public FusekiConnector(Uri serviceUri)
-            : this(serviceUri.ToSafeString()) { }
+        /// <param name="writerMimeTypeDefinition">The MIME type of the syntax to use when sending RDF data to the server. Defaults to RDF/XML</param>
+        public FusekiConnector(Uri serviceUri, MimeTypeDefinition writerMimeTypeDefinition = null)
+            : this(serviceUri.ToSafeString(), writerMimeTypeDefinition) { }
 
         /// <summary>
         /// Creates a new connection to a Fuseki Server
         /// </summary>
         /// <param name="serviceUri">The /data URI of the Fuseki Server</param>
-        public FusekiConnector(String serviceUri)
-            : base(serviceUri) 
+        /// <param name="writerMimeTypeDefinition">The MIME type of the syntax to use when sending RDF data to the server. Defaults to RDF/XML</param>
+        public FusekiConnector(String serviceUri, MimeTypeDefinition writerMimeTypeDefinition = null)
+            : base(serviceUri, writerMimeTypeDefinition) 
         {
             if (!serviceUri.ToString().EndsWith("/data")) throw new ArgumentException("This does not appear to be a valid Fuseki Server URI, you must provide the URI that ends with /data", "serviceUri");
 
