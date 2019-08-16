@@ -33,6 +33,7 @@ using VDS.RDF.Storage;
 namespace VDS.RDF.Storage.Async
 {
 
+#if !NETCOREAPP
     public class InMemoryAsync
         : BaseAsyncTests
     {
@@ -41,4 +42,5 @@ namespace VDS.RDF.Storage.Async
             return new InMemoryManager();
         }
     }
+#endif
 }
