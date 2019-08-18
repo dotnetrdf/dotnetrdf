@@ -150,12 +150,14 @@ namespace VDS.RDF
         {
             if (!_init) Init();
 
+            if (_failed) return null;
             if (_settings.ContainsKey(key))
             {
                 String value = _settings[key];
                 if (String.IsNullOrEmpty(value))
                 {
-                    Assert.True(false, "Configuration setting '" + key + "' in your UnitTestConfig.properties file is empty/null");
+                    Assert.True(false,
+                        "Configuration setting '" + key + "' in your UnitTestConfig.properties file is empty/null");
                     return null;
                 }
                 else
@@ -165,9 +167,12 @@ namespace VDS.RDF
             }
             else
             {
-                Assert.True(false, "Required configuration setting '" + key + "' not found in your UnitTestConfig.properties file");
+                Assert.True(false,
+                    "Required configuration setting '" + key +
+                    "' not found in your UnitTestConfig.properties file");
                 return null;
             }
+
         }
 
         /// <summary>
@@ -178,6 +183,7 @@ namespace VDS.RDF
         public static int GetSettingAsInt(String key)
         {
             String value = GetSetting(key);
+            if (_failed) return 0;
             int i;
             if (Int32.TryParse(value, out i))
             {
@@ -185,9 +191,12 @@ namespace VDS.RDF
             }
             else
             {
-                Assert.True(false, "Configuration setting '" + key + "' in your UnitTestConfig.properties file is not a valid integer");
+                Assert.True(false,
+                    "Configuration setting '" + key +
+                    "' in your UnitTestConfig.properties file is not a valid integer");
                 return 0;
             }
+
         }
 
         /// <summary>
@@ -198,6 +207,7 @@ namespace VDS.RDF
         public static bool GetSettingAsBoolean(String key)
         {
             String value = GetSetting(key);
+            if (_failed) return false;
             bool b;
             if (Boolean.TryParse(value, out b))
             {
@@ -205,9 +215,12 @@ namespace VDS.RDF
             }
             else
             {
-                Assert.True(false, "Configuration setting '" + key + "' in your UnitTestConfig.properties file is not a valid boolean");
+                Assert.True(false,
+                    "Configuration setting '" + key +
+                    "' in your UnitTestConfig.properties file is not a valid boolean");
                 return false;
             }
+
         }
     }
 }
