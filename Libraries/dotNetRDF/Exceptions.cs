@@ -51,6 +51,18 @@ namespace VDS.RDF
             : base(errorMsg, cause) { }
     }
 
+    /// <summary>
+    /// Class for errors in mapping an IRdfWriter instance to its associated MIME type for HTTP interactions
+    /// </summary>
+    public class UnregisteredRdfWriterTypeException : RdfException
+    {
+        /// <summary>
+        /// Creates a new UnregisteredRdfWriterTypeException with the given message
+        /// </summary>
+        /// <param name="msg">Error message</param>
+        public UnregisteredRdfWriterTypeException(string msg) : base(msg) { }
+    }
+
 }
 
 namespace VDS.RDF.Configuration
@@ -638,6 +650,7 @@ namespace VDS.RDF.Update.Protocol
         public SparqlHttpProtocolUriInvalidException()
             : base("Unable to perform a HTTP Protocol operation as the request specified a URI which was invalid") { }
     }
+
 }
 
 namespace VDS.RDF.Writing

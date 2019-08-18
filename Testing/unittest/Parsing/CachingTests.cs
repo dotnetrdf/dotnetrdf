@@ -31,7 +31,6 @@ using System.Text;
 using Xunit;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
-using VDS.RDF.XunitExtensions;
 using System.Reflection;
 
 namespace VDS.RDF.Parsing
@@ -95,10 +94,8 @@ namespace VDS.RDF.Parsing
         [SkippableFact]
         public void ParsingUriLoaderResponseUriCaching()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
-            {
-                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
+                "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             int defaultTimeout = Options.UriLoaderTimeout;
             try

@@ -33,7 +33,6 @@ using Xunit;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
-using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Parsing
 {
@@ -116,10 +115,7 @@ namespace VDS.RDF.Parsing
         [SkippableFact]
         public void ParsingDBPedia()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
-            {
-                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://dbpedia.org/resource/London");
             request.Accept = "application/rdf+xml";
@@ -202,10 +198,7 @@ namespace VDS.RDF.Parsing
         [SkippableFact]
         public void ParsingUriLoaderDBPedia1()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
-            {
-                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             int defaultTimeout = Options.UriLoaderTimeout;
             try
@@ -234,10 +227,7 @@ namespace VDS.RDF.Parsing
         [SkippableFact]
         public void ParsingUriLoaderDBPedia2()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
-            {
-                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             IGraph g = new Graph();
             UriLoader.Load(g, new Uri("http://de.dbpedia.org/resource/Disillusion"));
@@ -254,10 +244,7 @@ namespace VDS.RDF.Parsing
         [SkippableFact]
         public void ParsingUriLoaderDBPedia3()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
-            {
-                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             int defaultTimeout = Options.UriLoaderTimeout;
             try

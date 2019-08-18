@@ -35,7 +35,6 @@ using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing.Formatting;
-using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Query
 {
@@ -233,10 +232,7 @@ namespace VDS.RDF.Query
         {
             if (this._remote == null)
             {
-                if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS))
-                {
-                    throw new SkipTestException("Test Config marks IIS as unavailabe, cannot run test");
-                }
+                Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS), "Test Config marks IIS as unavailable, cannot run test");
                 this._remote = new RemoteQueryProcessor(new SparqlRemoteEndpoint(new Uri(TestConfigManager.GetSetting(TestConfigManager.LocalQueryUri))));
             }
         }

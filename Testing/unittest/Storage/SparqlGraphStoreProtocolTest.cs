@@ -35,7 +35,6 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
-using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Storage
 {
@@ -46,10 +45,7 @@ namespace VDS.RDF.Storage
 
         public static SparqlHttpProtocolConnector GetConnection()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS))
-            {
-                throw new SkipTestException("Test Config marks IIS as unavailable, cannot run test");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS), "Test Config marks IIS as unavailable, cannot run test");
             return new SparqlHttpProtocolConnector(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri));
         }
 

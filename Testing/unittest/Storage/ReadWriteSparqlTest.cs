@@ -37,7 +37,6 @@ using VDS.RDF.Query;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
-using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Storage
 {
@@ -361,10 +360,8 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StorageReadWriteSparqlUpdate()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
-            {
-                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
+                "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             try
             {

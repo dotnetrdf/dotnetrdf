@@ -40,7 +40,6 @@ using VDS.RDF.Query.Datasets;
 using VDS.RDF.Storage;
 using VDS.RDF.Update;
 using VDS.RDF.Writing;
-using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Query
 {
@@ -158,10 +157,7 @@ namespace VDS.RDF.Query
         [SkippableFact]
         public void SparqlDBPedia()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
-            {
-                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),"Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             try
             {
@@ -196,10 +192,7 @@ namespace VDS.RDF.Query
         [SkippableFact]
         public void SparqlRemoteVirtuosoWithSponging()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseVirtuoso))
-            {
-                throw new SkipTestException("Test Config marks Virtuoso as unavailable, cannot run test");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseVirtuoso), "Test Config marks Virtuoso as unavailable, cannot run test");
             SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(TestConfigManager.GetSetting(TestConfigManager.VirtuosoEndpoint) + "?should-sponge=soft"));
             endpoint.HttpMode = "POST";
             String query = "CONSTRUCT { ?s ?p ?o } FROM <http://www.dotnetrdf.org/configuration#> WHERE { ?s ?p ?o }";
@@ -212,10 +205,7 @@ namespace VDS.RDF.Query
         [SkippableFact]
         public void SparqlDbPediaDotIssue()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
-            {
-                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             try
             {
@@ -434,10 +424,7 @@ SELECT * WHERE {
         [SkippableFact]
         public void SparqlEndpointWithExtensions()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteSparql))
-            {
-                throw new SkipTestException("Test Config marks Remote SPARQL as unavailable, test cannot be run");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteSparql), "Test Config marks Remote SPARQL as unavailable, test cannot be run");
 
             SparqlConnector endpoint = new SparqlConnector(new Uri(TestConfigManager.GetSetting(TestConfigManager.RemoteSparqlQuery)));
 
@@ -555,11 +542,9 @@ WHERE
         [SkippableFact]
         public void SparqlSimpleQuery1()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
-            {
-                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
-            }
-
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
+                "Test Config marks Remote Parsing as unavailable, test cannot be run");
+        
             TripleStore store = new TripleStore();
             store.AddFromUri(new Uri("http://dbpedia.org/resource/Barack_Obama"));
             const string sparqlQuery = "SELECT * WHERE {?s ?p ?o}";

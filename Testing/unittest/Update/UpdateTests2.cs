@@ -35,7 +35,6 @@ using VDS.RDF.Query.Datasets;
 using VDS.RDF.Storage;
 using VDS.RDF.Update;
 using VDS.RDF.Update.Commands;
-using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Update
 {
@@ -111,10 +110,7 @@ namespace VDS.RDF.Update
         [SkippableFact]
         public void SparqlUpdateLoad()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
-            {
-                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             TripleStore store = new TripleStore();
 

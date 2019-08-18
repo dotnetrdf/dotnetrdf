@@ -35,7 +35,6 @@ using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Update;
 using VDS.RDF.Writing.Formatting;
-using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Query
 {
@@ -76,10 +75,8 @@ namespace VDS.RDF.Query
         [SkippableFact]
         public void SparqlRemoteEndpointAsyncApiUpdate()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
-            {
-                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
+                "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             SparqlRemoteUpdateEndpoint endpoint = RemoteEndpoints.GetUpdateEndpoint();
             ManualResetEvent signal = new ManualResetEvent(false);
@@ -101,10 +98,8 @@ namespace VDS.RDF.Query
         [SkippableFact]
         public void SparqlRemoteEndpointSyncVsAsyncTimeDBPedia()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
-            {
-                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
+                "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             String query;
             using (StreamReader reader = File.OpenText("resources\\dbpedia-query-time.rq"))
@@ -316,10 +311,8 @@ namespace VDS.RDF.Query
         [SkippableFact]
         public void SparqlRemoteEndpointSyncVsAsyncTimeLocalVirtuoso()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseVirtuoso))
-            {
-                throw new SkipTestException("Test Config marks Virtuoso as unavailable, test cannot be run");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
+                "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             String query;
             using (StreamReader reader = File.OpenText("dbpedia-query-time.rq"))

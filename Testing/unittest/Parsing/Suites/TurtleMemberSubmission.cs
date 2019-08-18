@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.IO;
-using VDS.RDF.XunitExtensions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -61,10 +60,7 @@ namespace VDS.RDF.Parsing.Suites
             {
                 Assert.True(false, Failed + " Tests failed: " + string.Join(", ", FailedTests));
             }
-            if (Indeterminate > 0)
-            {
-                throw new SkipTestException(Indeterminate + " Tests are indeterminate: " + string.Join(", ", IndeterminateTests));
-            }
+            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate: " + string.Join(", ", IndeterminateTests));
         }
 
         [Fact]

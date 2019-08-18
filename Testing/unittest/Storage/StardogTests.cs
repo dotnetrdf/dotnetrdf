@@ -36,7 +36,6 @@ using VDS.RDF.Storage.Management;
 using VDS.RDF.Storage.Management.Provisioning;
 using VDS.RDF.Update;
 using VDS.RDF.Writing.Formatting;
-using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Storage
 {
@@ -46,10 +45,7 @@ namespace VDS.RDF.Storage
     {
         public static StardogConnector GetConnection()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseStardog))
-            {
-                throw new SkipTestException("Test Config marks Stardog as unavailable, test cannot be run");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseStardog), "Test Config marks Stardog as unavailable, test cannot be run");
             return new StardogConnector(TestConfigManager.GetSetting(TestConfigManager.StardogServer),
                 TestConfigManager.GetSetting(TestConfigManager.StardogDatabase),
                 TestConfigManager.GetSetting(TestConfigManager.StardogUser),
@@ -58,10 +54,7 @@ namespace VDS.RDF.Storage
 
         public static StardogServer GetServer()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseStardog))
-            {
-                throw new SkipTestException("Test Config marks Stardog as unavailable, test cannot be run");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseStardog), "Test Config marks Stardog as unavailable, test cannot be run");
             return new StardogServer(TestConfigManager.GetSetting(TestConfigManager.StardogServer),
                 TestConfigManager.GetSetting(TestConfigManager.StardogUser),
                 TestConfigManager.GetSetting(TestConfigManager.StardogPassword));
@@ -350,11 +343,8 @@ namespace VDS.RDF.Storage
         public void StorageStardogReasoningQL()
         {
             StardogConnector stardog = StardogTests.GetConnection();
-            if (stardog.Reasoning == StardogReasoningMode.DatabaseControlled)
-            {
-                throw new SkipTestException(
+            Skip.If(stardog.Reasoning == StardogReasoningMode.DatabaseControlled, 
                     "Version of Stardog being tested does not support configuring reasoning mode at connection level");
-            }
 
             Graph g = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
@@ -395,11 +385,8 @@ namespace VDS.RDF.Storage
         public void StorageStardogReasoningByQuery1()
         {
             StardogConnector stardog = StardogTests.GetConnection();
-            if (stardog.Reasoning == StardogReasoningMode.DatabaseControlled)
-            {
-                throw new SkipTestException(
+            Skip.If(stardog.Reasoning == StardogReasoningMode.DatabaseControlled, 
                     "Version of Stardog being tested does not support configuring reasoning mode at connection level");
-            }
 
             Graph g = new Graph();
             g.LoadFromFile("resources\\stardog-reasoning-test.rdf");
@@ -431,11 +418,8 @@ namespace VDS.RDF.Storage
         public void StorageStardogReasoningByQuery2()
         {
             StardogConnector stardog = StardogTests.GetConnection();
-            if (stardog.Reasoning == StardogReasoningMode.DatabaseControlled)
-            {
-                throw new SkipTestException(
+            Skip.If(stardog.Reasoning == StardogReasoningMode.DatabaseControlled, 
                     "Version of Stardog being tested does not support configuring reasoning mode at connection level");
-            }
 
             Graph g = new Graph();
             g.LoadFromFile("resources\\stardog-reasoning-test.rdf");

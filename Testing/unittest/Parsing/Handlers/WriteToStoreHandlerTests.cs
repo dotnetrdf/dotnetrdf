@@ -28,10 +28,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Xunit;
-using VDS.RDF.Parsing;
-using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage;
-using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Parsing.Handlers
 {
