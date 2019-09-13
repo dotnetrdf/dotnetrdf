@@ -1465,6 +1465,11 @@ namespace VDS.RDF.Parsing
 
                             default:
                                 // Otherwise we'll expect a new Graph Pattern
+                                if (!child.IsEmpty)
+                                {
+                                    pattern.AddGraphPattern(child);
+                                    child = new GraphPattern();
+                                }
                                 pattern.AddGraphPattern(TryParseGraphPattern(context, true));
                                 break;
                         }
