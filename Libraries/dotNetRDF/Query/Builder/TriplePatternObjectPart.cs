@@ -133,7 +133,7 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Depending on the generic parameter type, sets a literal, a QName or a blank node as <see cref="IMatchTriplePattern.Object"/>
         /// </summary>
-        /// <param name="object">Either a variable name, a literal, a QName or a blank node identifier</param>
+        /// <param name="objectUri">Either a variable name, a literal, a QName or a blank node identifier</param>
         /// <remarks>A relevant prefix/base URI must be added to <see cref="IQueryBuilder.Prefixes"/> to accept a QName</remarks>
         public ITriplePatternBuilder ObjectUri(string objectUri)
         {
