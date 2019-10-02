@@ -129,5 +129,13 @@ namespace VDS.RDF.Query.Builder
             _triplePatternBuilder.AddPattern(new TriplePattern(_subjectPatternItem, _predicatePatternItem, objectPattern));
             return _triplePatternBuilder;
         }
+
+        /// <summary>
+        /// Sets a <see cref="Uri"/> as <see cref="IMatchTriplePattern.Object"/>
+        /// </summary>
+        public ITriplePatternBuilder ObjectUri(string objectUri)
+        {
+            return Object<IUriNode>(objectUri);
+        }
     }
 }
