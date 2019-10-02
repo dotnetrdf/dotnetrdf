@@ -34,7 +34,28 @@ namespace VDS.RDF
 {    
     public abstract partial class BaseEndpoint
     {
+        private String _userAgent;
         private bool _useCredentialsForProxy;
+
+        /// <summary>
+        /// Gets or sets the value of the User-agent HTTP header.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The value of the User-agent HTTP header. The default value is null. The value  for this property is stored in System.Net.WebHeaderCollection. If WebHeaderCollection is set, the property value is lost.
+        /// </para>
+        /// </remarks>
+        public String UserAgent
+        {
+            get
+            {
+                return _userAgent; 
+            }
+            set
+            {
+                _userAgent = value;
+            }
+        }
 
         #region Credentials and Proxy Server
 
@@ -209,7 +230,7 @@ namespace VDS.RDF
 
             // Disable Keep Alive since it can cause errors when carrying out high volumes of operations or when performing long running operations
             httpRequest.KeepAlive = false;
-
+            httpRequest.UserAgent = UserAgent;
             // Allow derived classes to provide further customisation
             ApplyCustomRequestOptions(httpRequest);
         }
