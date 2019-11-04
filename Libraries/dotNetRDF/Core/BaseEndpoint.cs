@@ -65,6 +65,14 @@ namespace VDS.RDF
         /// </summary>
         public NetworkCredential Credentials { get; set; }
 
+        /// <summary>
+        /// Gets/Sets the user agent
+        /// </summary>
+        /// <value></value>
+        public String UserAgent
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Gets/Sets the HTTP Mode used for requests
@@ -186,7 +194,10 @@ namespace VDS.RDF
         /// </remarks>
         protected virtual void ApplyCustomRequestOptions(HttpWebRequest httpRequest)
         {
-
+            if (httpRequest != null && UserAgent != null)
+            {
+                httpRequest.Headers["User-Agent"] = UserAgent;
+            }
         }
     }
 }
