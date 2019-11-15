@@ -66,10 +66,10 @@ namespace VDS.RDF
         public NetworkCredential Credentials { get; set; }
 
         /// <summary>
-        /// Gets/Sets the user agent
+        /// Gets/Sets the user agent string to pass in the request header
         /// </summary>
-        /// <value></value>
-        public String UserAgent
+        /// <remarks>Defaults to null, which will not set the header</remarks>
+        public string UserAgent
         {
             get; set;
         }
@@ -194,10 +194,7 @@ namespace VDS.RDF
         /// </remarks>
         protected virtual void ApplyCustomRequestOptions(HttpWebRequest httpRequest)
         {
-            if (httpRequest != null && UserAgent != null)
-            {
-                httpRequest.Headers["User-Agent"] = UserAgent;
-            }
+            
         }
     }
 }

@@ -89,6 +89,12 @@ namespace VDS.RDF
                 }
             }
 
+            // Set the user agent if a non-null value is provided
+            if (UserAgent != null)
+            {
+                httpRequest.Headers["User-Agent"] = UserAgent;
+            }
+
             // Allow derived classes to provide further customisation
             ApplyCustomRequestOptions(httpRequest);
         }
