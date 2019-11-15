@@ -27,6 +27,7 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Web;
 using FluentAssertions;
 using Moq;
@@ -42,7 +43,7 @@ using Xunit;
 
 namespace dotNetRDF.MockServerTests
 {
-    public partial class SparqlRemoteEndpointTests : IDisposable
+    public class SparqlRemoteEndpointTests : IDisposable
     {
         private readonly FluentMockServer _server;
 
@@ -212,6 +213,39 @@ namespace dotNetRDF.MockServerTests
             resultsHandler.Verify(x => x.EndResults(true), Times.Exactly(1));
         }
 
-        
+        [Fact]
+        public void SparqlRemoteEndpointAsyncApiQueryWithResultSet()
+        {
+            RegisterSelectQueryGetHandler();
+            SparqlRemoteEndpoint endpoint = GetQueryEndpoint();
+            ManualResetEvent signal = new ManualResetEvent(false);
+            endpoint.QueryWithResultSet("SELECT * WHERE {?s ?p ?o}", (r, s) =>
+            {
+                signal.Set();
+                signal.Close();
+            }, null);
+
+            signal.WaitOne(10000);
+            signal.SafeWaitHandle.IsClosed.Should().BeTrue();
+        }
+
+
+        [Fact]
+        public void SparqlRemoteEndpointAsyncApiQueryWithResultGraph()
+        {
+            RegisterConstructQueryGetHandler();
+            SparqlRemoteEndpoint endpoint = GetQueryEndpoint();
+            ManualResetEvent signal = new ManualResetEvent(false);
+            endpoint.QueryWithResultGraph("CONSTRUCT WHERE { ?s ?p ?o }", (r, s) =>
+            {
+                signal.Set();
+                signal.Close();
+            }, null);
+
+            signal.WaitOne(10000);
+            signal.SafeWaitHandle.IsClosed.Should().BeTrue();
+        }
+
+
     }
 }

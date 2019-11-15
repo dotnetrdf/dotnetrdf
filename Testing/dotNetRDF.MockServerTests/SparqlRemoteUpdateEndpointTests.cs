@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Linq;
-using System.Net;
 using System.Text;
-using System.Web;
+using System.Threading;
 using FluentAssertions;
 using VDS.RDF.Update;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
-using WireMock.RequestBuilders;
-using WireMock.ResponseBuilders;
-using WireMock.Server;
 using Xunit;
 
 namespace dotNetRDF.MockServerTests
@@ -53,28 +49,22 @@ namespace dotNetRDF.MockServerTests
             logEntries.Should().HaveCount(1);
             logEntries[0].RequestMessage.Method.Should().BeEquivalentTo("post");
         }
-        
-    }
 
-    public class MockRemoteUpdateEndpointFixture : IDisposable
-    {
-        public readonly FluentMockServer Server;
-
-        public MockRemoteUpdateEndpointFixture()
+        [Fact]
+        public void SparqlRemoteEndpointAsyncApiUpdate()
         {
-            Server = FluentMockServer.Start();
-            Server.Given(Request.Create()
-                                .WithPath("/update")
-                                .UsingPost()
-                                .WithBody(body=>HttpUtility.UrlDecode(body).StartsWith("update=LOAD <http://dbpedia.org/resource/Ilkeston>")))
-                  .RespondWith(Response.Create().WithStatusCode(HttpStatusCode.OK));
+
+            SparqlRemoteUpdateEndpoint endpoint = GetUpdateEndpoint();
+            ManualResetEvent signal = new ManualResetEvent(false);
+            endpoint.Update("LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/async/graph>", s =>
+            {
+                signal.Set();
+                signal.Close();
+            }, null);
+
+            signal.WaitOne(TimeSpan.FromSeconds(10.0));
+            Assert.True(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
         }
 
-        public void Dispose()
-        {
-            Server.Stop();
-        }
-
-        
     }
 }

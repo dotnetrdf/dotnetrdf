@@ -39,7 +39,7 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// Class for serializing a Triple Store in JSON-LD syntax
     /// </summary>
-    public partial class JsonLdWriter : IStoreWriter
+    public class JsonLdWriter : IStoreWriter
     {
         private readonly JsonLdWriterOptions _options;
 

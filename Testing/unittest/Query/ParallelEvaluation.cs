@@ -39,7 +39,7 @@ using Xunit;
 
 namespace VDS.RDF.Query
 {
-    public partial class ParallelEvaluation
+    public class ParallelEvaluation
     {
         private InMemoryDataset _dataset;
         private SparqlQueryParser _parser = new SparqlQueryParser();
@@ -213,5 +213,26 @@ namespace VDS.RDF.Query
             Console.WriteLine("Took " + timer.Elapsed);
 
         }
+
+#if !NETCOREAPP2_0 // Not currently supported for .NET Standard. See issue #137
+        [Fact]
+        public void SparqlParallelEvaluationJoin1()
+        {
+            this.TestQuery("SELECT * WHERE { ?s ?p ?o { ?x ?y ?z } }");
+        }
+
+        [Fact]
+        public void SparqlParallelEvaluationJoin2()
+        {
+            try
+            {
+                this.TestQuery("SELECT * WHERE { ?s ?p ?o { ?x ?y ?z } { ?a ?b ?c } }");
+            }
+            catch (OutOfMemoryException outEx)
+            {
+                TestTools.ReportError("Out of Memory", outEx);
+            }
+        }
+#endif
     }
 }

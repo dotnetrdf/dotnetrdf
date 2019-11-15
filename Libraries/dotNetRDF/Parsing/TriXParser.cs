@@ -26,8 +26,12 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml;
+using System.Xml.Linq;
+using System.Xml.Xsl;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing;
 
@@ -44,7 +48,7 @@ namespace VDS.RDF.Parsing
     /// TriX permits Graphs to be named with Blank Node IDs, since the library only supports Graphs named with URIs these are converted to URIs of the form <strong>trix:local:ID</strong>
     /// </para>
     /// </remarks>
-    public partial class TriXParser
+    public class TriXParser
         : IStoreReader
     {
         /// <summary>
@@ -355,6 +359,69 @@ namespace VDS.RDF.Parsing
             }
 
             throw Error("Unexpected element <" + reader.Name + "> encountered, expected a <id>/<uri>/<plainLiteral>/<typedLiteral> element as part of a Triple", reader);
+        }
+
+        private static XmlReaderSettings GetSettings()
+        {
+            return new XmlReaderSettings
+            {
+                DtdProcessing = DtdProcessing.Parse,
+                ConformanceLevel = ConformanceLevel.Document,
+                IgnoreComments = true,
+                IgnoreProcessingInstructions = false,
+                IgnoreWhitespace = true,
+            };
+        }
+
+        /// <inheritdoc />
+        public void Load(IRdfHandler handler, TextReader input)
+        {
+            if (handler == null)
+            {
+                throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
+            }
+
+            if (input == null)
+            {
+                throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
+            }
+
+            try
+            {
+                // Load source XML
+                using (var xmlReader = XmlReader.Create(input, GetSettings()))
+                {
+                    var source = XDocument.Load(xmlReader);
+                    foreach (var pi in source.Nodes().OfType<XProcessingInstruction>().Where(pi => pi.Target.Equals("xml-stylesheet")))
+                    {
+                        source = ApplyTransform(source, pi);
+                    }
+                    using (var transformedXmlReader = source.CreateReader())
+                    {
+                        TryParseGraphset(transformedXmlReader, handler);
+                    }
+                }
+            }
+            finally
+            {
+                input.Close();
+            }
+        }
+
+        private XDocument ApplyTransform(XDocument input, XProcessingInstruction pi)
+        {
+            var match = Regex.Match(pi.Data, @"href\s*=\s*""([^""]*)""");
+            if (match == null) throw new RdfParseException("Expected href value in xml-stylesheet PI");
+            var xslRef = match.Groups[1].Value;
+            var xslt = new XslCompiledTransform();
+            var xmlStringBuilder = new StringBuilder();
+            xslt.Load(XmlReader.Create(new StreamReader(xslRef), GetSettings()));
+            var output = new XDocument();
+            using (var writer = output.CreateWriter())
+            {
+                xslt.Transform(input.CreateReader(), writer);
+            }
+            return output;
         }
 
         /// <summary>

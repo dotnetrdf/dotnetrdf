@@ -23,12 +23,13 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using System.IO;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace VDS.RDF.Parsing.Suites
 {
-    public partial class TriX
+    public class TriX
         : BaseDatasetParserSuite
     {
         private readonly ITestOutputHelper _testOutputHelper;
@@ -56,6 +57,12 @@ namespace VDS.RDF.Parsing.Suites
                 Assert.True(false, Failed + " Tests failed");
             }
             Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
+        }
+
+        private void RunManifests()
+        {
+            this.RunDirectory(f => Path.GetExtension(f).Equals(".xml") && !f.Contains("bad"), true);
+            this.RunDirectory(f => Path.GetExtension(f).Equals(".xml") && f.Contains("bad"), false);
         }
     }
 }

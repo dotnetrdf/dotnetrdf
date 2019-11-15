@@ -24,6 +24,11 @@
 // </copyright>
 */
 
+using System.Runtime.Serialization;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
+
 namespace VDS.RDF
 {
     using System;
@@ -34,7 +39,7 @@ namespace VDS.RDF
     /// <summary>
     /// Abstract decorator for Nodes to make it easier to layer functionality on top of existing implementations.
     /// </summary>
-    public abstract partial class WrapperNode : INode, IBlankNode, IUriNode, ILiteralNode
+    public abstract class WrapperNode : INode, IBlankNode, IUriNode, ILiteralNode
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="WrapperNode"/> class.
@@ -254,6 +259,30 @@ namespace VDS.RDF
         public string ToString(INodeFormatter formatter, TripleSegment segment)
         {
             return Node.ToString(formatter, segment);
+        }
+
+        /// <inheritdoc/>
+        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            throw new NotImplementedException("This INode implementation does not support Serialization.");
+        }
+
+        /// <inheritdoc/>
+        XmlSchema IXmlSerializable.GetSchema()
+        {
+            throw new NotImplementedException("This INode implementation does not support XML Serialization");
+        }
+
+        /// <inheritdoc/>
+        void IXmlSerializable.ReadXml(XmlReader reader)
+        {
+            throw new NotImplementedException("This INode implementation does not support XML Serialization");
+        }
+
+        /// <inheritdoc/>
+        void IXmlSerializable.WriteXml(XmlWriter writer)
+        {
+            throw new NotImplementedException("This INode implementation does not support XML Serialization");
         }
     }
 }

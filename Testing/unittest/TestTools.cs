@@ -27,19 +27,15 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.IO;
-using System.Reflection;
 using Xunit;
-using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
 {
-    public partial class TestTools
+    public class TestTools
     {
         public static void ReportError(String title, Exception ex)
         {
@@ -331,6 +327,31 @@ namespace VDS.RDF
             else
             {
                 test();
+            }
+        }
+
+        public static void TestInMTAThread(Action action)
+        {
+            Exception ex = null;
+            Thread t = new Thread(() => ThreadExecute(action, out ex));
+            t.SetApartmentState(ApartmentState.MTA);
+            t.Start();
+            t.Join();
+            if (ex != null) throw ex;
+        }
+
+        public static void ExecuteWithChangedCulture(CultureInfo cultureInfoOverride, Action test)
+        {
+            var currentCulture = Thread.CurrentThread.CurrentCulture;
+            Thread.CurrentThread.CurrentCulture = cultureInfoOverride;
+
+            try
+            {
+                test();
+            }
+            finally
+            {
+                Thread.CurrentThread.CurrentCulture = currentCulture;
             }
         }
     }

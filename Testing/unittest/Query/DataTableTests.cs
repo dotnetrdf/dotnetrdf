@@ -24,15 +24,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.IO;
 using System.Linq;
-using System.Text;
 using Xunit;
-using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 using VDS.RDF.Data.DataTables;
+using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query
 {
