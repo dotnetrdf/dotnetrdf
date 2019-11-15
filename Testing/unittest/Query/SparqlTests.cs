@@ -157,7 +157,7 @@ namespace VDS.RDF.Query
         [SkippableFact]
         public void SparqlDBPedia()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),"Test Config marks Remote Parsing as unavailable, test cannot be run");
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             try
             {
@@ -166,6 +166,42 @@ namespace VDS.RDF.Query
                 String query = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT * WHERE {?s a rdfs:Class } LIMIT 50";
 
                 SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("http://dbpedia.org/sparql"), "http://dbpedia.org");
+                SparqlResultSet results = endpoint.QueryWithResultSet(query);
+                TestTools.ShowResults(results);
+
+                using (HttpWebResponse response = endpoint.QueryRaw(query))
+                {
+                    using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                    {
+                        while (!reader.EndOfStream)
+                        {
+                            Console.WriteLine(reader.ReadLine());
+                        }
+                        reader.Close();
+                    }
+                    response.Close();
+                }
+
+            }
+            finally
+            {
+                Options.HttpDebugging = false;
+            }
+        }
+
+        [SkippableFact]
+        public void SparqlWikidata()
+        {
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
+
+            try
+            {
+                Options.HttpDebugging = true;
+
+                String query = "SELECT * WHERE {?s ?p ?o } LIMIT 1";
+
+                SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("https://query.wikidata.org/sparql"), "https://www.wikidata.org");
+                endpoint.UserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36";
                 SparqlResultSet results = endpoint.QueryWithResultSet(query);
                 TestTools.ShowResults(results);
 
@@ -544,7 +580,7 @@ WHERE
         {
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
                 "Test Config marks Remote Parsing as unavailable, test cannot be run");
-        
+
             TripleStore store = new TripleStore();
             store.AddFromUri(new Uri("http://dbpedia.org/resource/Barack_Obama"));
             const string sparqlQuery = "SELECT * WHERE {?s ?p ?o}";

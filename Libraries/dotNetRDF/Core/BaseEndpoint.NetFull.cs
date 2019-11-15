@@ -210,6 +210,12 @@ namespace VDS.RDF
             // Disable Keep Alive since it can cause errors when carrying out high volumes of operations or when performing long running operations
             httpRequest.KeepAlive = false;
 
+            // Set the user agent if a non-null value is provided
+            if (UserAgent != null)
+            {
+                httpRequest.UserAgent = UserAgent;
+            }
+
             // Allow derived classes to provide further customisation
             ApplyCustomRequestOptions(httpRequest);
         }
