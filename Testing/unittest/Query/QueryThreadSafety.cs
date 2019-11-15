@@ -34,7 +34,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    public partial class QueryThreadSafety
+    public class QueryThreadSafety
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
         private SparqlFormatter _formatter = new SparqlFormatter();
@@ -111,6 +111,25 @@ namespace VDS.RDF.Query
             this.CheckThreadSafety(query, true);
 
         }
+
+#if !NETCOREAPP2_0 // Parallel query evaluation is currently unsupported in .NET Core
+        [Fact]
+        public void SparqlQueryThreadSafeEvaluation()
+        {
+            TestTools.TestInMTAThread(this.SparqlQueryThreadSafeEvaluationActual);
+        }
+
+        [Fact]
+        public void SparqlQueryAndUpdateThreadSafeEvaluation()
+        {
+            for (int i = 1; i <= 10; i++)
+            {
+                Console.WriteLine("Run #" + i);
+                TestTools.TestInMTAThread(this.SparqlQueryAndUpdateThreadSafeEvaluationActual);
+                Console.WriteLine();
+            }
+        }
+#endif
 
         private void SparqlQueryThreadSafeEvaluationActual()
         {

@@ -24,20 +24,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Xunit;
-using VDS.RDF.Parsing;
-using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Handlers
 {
-    public partial class ResultSetHandlerTests
+    public class ResultSetHandlerTests
     {
         private void EnsureTestData(String file)
         {
@@ -331,6 +327,44 @@ namespace VDS.RDF.Parsing.Handlers
             Console.WriteLine("Round Trip Result Count: " + results.Count);
 
             Assert.Equal(original, results);
+        }
+
+        [Fact]
+        public void ParsingResultSetHandlerImplicitSparqlRdfXml()
+        {
+            this.EnsureTestData("test.sparql.rdf", new SparqlRdfWriter(new RdfXmlWriter()));
+
+            SparqlRdfParser parser = new SparqlRdfParser(new RdfXmlParser());
+            SparqlResultSet results = new SparqlResultSet();
+            parser.Load(results, "test.sparql.rdf");
+
+            NTriplesFormatter formatter = new NTriplesFormatter();
+            foreach (SparqlResult r in results)
+            {
+                Console.WriteLine(r.ToString(formatter));
+            }
+
+            Assert.False(results.IsEmpty, "Result Set should not be empty");
+            Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
+        }
+
+        [Fact]
+        public void ParsingResultSetHandlerExplicitSparqlRdfXml()
+        {
+            this.EnsureTestData("test.sparql.rdf", new SparqlRdfWriter(new RdfXmlWriter()));
+
+            SparqlRdfParser parser = new SparqlRdfParser(new RdfXmlParser());
+            SparqlResultSet results = new SparqlResultSet();
+            parser.Load(new ResultSetHandler(results), "test.sparql.rdf");
+
+            NTriplesFormatter formatter = new NTriplesFormatter();
+            foreach (SparqlResult r in results)
+            {
+                Console.WriteLine(r.ToString(formatter));
+            }
+
+            Assert.False(results.IsEmpty, "Result Set should not be empty");
+            Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
         }
     }
 }

@@ -35,7 +35,7 @@ using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Parsing
 {
-    public partial class BlockingTextReaderTests
+    public class BlockingTextReaderTests
     {
         private const String TestData = "abcdefghijklmnopqrstuvwxyz0123456789";
         private const String TestData2 = "abcdefghijklmnopqrstuvwxyz\n0123456789";
@@ -65,6 +65,22 @@ namespace VDS.RDF.Parsing
                 stream.Close();
             }
         }
+
+        [Fact]
+        public void ParsingTextReaderCreation3()
+        {
+            using (WebClient client = new WebClient())
+            {
+                using (Stream stream = client.OpenRead(new Uri("http://www.dotnetrdf.org")))
+                {
+                    ParsingTextReader reader = ParsingTextReader.Create(stream);
+                    Assert.IsType<BlockingTextReader>(reader);
+                    stream.Close();
+                }
+                client.Dispose();
+            }
+        }
+
 
         [Fact]
         public void ParsingTextReaderCreation4()
@@ -160,6 +176,7 @@ namespace VDS.RDF.Parsing
             String s = new string(cs, 0, read);
             Assert.Equal(TestData, s);
         }
+
 
         [Fact]
         public void ParsingTextReaderBlockingSimpleReadBlock()

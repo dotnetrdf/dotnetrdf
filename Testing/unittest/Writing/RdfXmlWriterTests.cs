@@ -29,11 +29,12 @@ using System.IO;
 using System.Linq;
 using Xunit;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
-    public partial class RdfXmlWriterTests
+    public class RdfXmlWriterTests
     {
         private readonly List<IRdfWriter> _writers = new List<IRdfWriter>()
         {
@@ -334,6 +335,38 @@ namespace VDS.RDF.Writing
             Assert.Contains("<!ENTITY ex 'http://dbpedia.org/resource/Buyer&apos;s_Remorse:'>", outData);
             Assert.Contains("xmlns:ex=\"http://dbpedia.org/resource/Buyer&apos;s_Remorse:\"", outData);
             Assert.Contains("rdf:about=\"&ex;s", outData);
+        }
+
+        [Fact]
+        public void WritingRdfXmlSimpleCollection()
+        {
+            String fragment = "@prefix : <http://example.org/>. :subj :pred ( 1 2 3 ).";
+
+            Graph g = new Graph();
+            g.LoadFromString(fragment);
+
+            this.CheckRoundTrip(g);
+        }
+
+        [Fact]
+        [Trait("Coverage", "Skip")]
+        public void WritingRdfXmlComplex()
+        {
+            Graph g = new Graph();
+            TurtleParser parser = new TurtleParser();
+            parser.Load(new PagingHandler(new GraphHandler(g), 1000), "resources\\chado-in-owl.ttl");
+
+            this.CheckRoundTrip(g);
+        }
+
+        [Fact]
+        public void WritingRdfXmlWithDtds()
+        {
+            String fragment = "@prefix xsd: <" + NamespaceMapper.XMLSCHEMA + ">. @prefix : <http://example.org/>. :subj a :obj ; :has \"string\"^^xsd:string ; :has 23 .";
+            Graph g = new Graph();
+            g.LoadFromString(fragment);
+
+            this.CheckRoundTrip(g);
         }
     }
 }

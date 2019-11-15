@@ -30,77 +30,80 @@ namespace VDS.RDF.Dynamic
     using VDS.RDF;
     using Xunit;
 
-    public class DynamiObjectCollectionTTests
+    public class DynamicSubjectCollectionTTests
     {
         [Fact]
-        public void Add_asserts_with_subject_predicate_and_argument_object()
+        public void Add_asserts_with_predicate_object_and_argument_subject()
         {
             var expected = new Graph();
             expected.LoadFromString(@"
-<urn:s> <urn:primitive> ""o"" .
+<urn:s> <urn:p> <urn:o> .
 ");
 
             var g = new Graph();
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var test = new Test(s);
+            var s = new Test(g.CreateUriNode(UriFactory.Create("urn:s")));
+            var o = new Test(g.CreateUriNode(UriFactory.Create("urn:o")));
 
-            test.PrimitiveProperty.Add("o");
+            o.P.Add(s);
 
             Assert.Equal(expected, g);
         }
 
         [Fact]
-        public void Contains_reports_by_subject_predicate_and_argument_object()
+        public void Contains_reports_by_predicate_object_and_argument_subject()
         {
             var g = new Graph();
             g.LoadFromString(@"
-<urn:s> <urn:primitive> ""s"" .
-<urn:s> <urn:primitive> ""p"" .
-<urn:s> <urn:primitive> ""o"" .
+<urn:s> <urn:p> <urn:o> .
+<urn:p> <urn:p> <urn:o> .
+<urn:o> <urn:p> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var test = new Test(s);
+            var s = new Test(g.CreateUriNode(UriFactory.Create("urn:s")));
+            var p = new Test(g.CreateUriNode(UriFactory.Create("urn:p")));
+            var o = new Test(g.CreateUriNode(UriFactory.Create("urn:o")));
 
-            Assert.Contains("s", test.PrimitiveProperty);
-            Assert.Contains("p", test.PrimitiveProperty);
-            Assert.Contains("o", test.PrimitiveProperty);
+            Assert.Contains(s, o.P);
+            Assert.Contains(p, o.P);
+            Assert.Contains(o, o.P);
         }
 
         [Fact]
-        public void Copies_objects_by_subject_and_predicate()
+        public void Copies_subjects_by_predicate_and_object()
         {
             var g = new Graph();
             g.LoadFromString(@"
-<urn:s> <urn:primitive> ""s"" .
-<urn:s> <urn:primitive> ""p"" .
-<urn:s> <urn:primitive> ""o"" .
+<urn:s> <urn:p> <urn:o> .
+<urn:p> <urn:p> <urn:o> .
+<urn:o> <urn:p> <urn:o> .
 ");
 
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var test = new Test(s);
+            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
+            var testO = new Test(o);
 
-            var objects = new string[5]; // +2 for padding on each side
-            test.PrimitiveProperty.CopyTo(objects, 1); // start at the second item at destination
+            var subjects = new Test[5]; // +2 for padding on each side
+            testO.P.CopyTo(subjects, 1); // start at the second item at destination
 
             Assert.Equal(
-                new[] { null, "s", "p", "o", null },
-                objects);
+                new[] { null, s, p, o, null },
+                subjects);
         }
 
         [Fact]
-        public void Enumerates_objects_by_subject_and_predicate()
+        public void Enumerates_subjects_by_predicate_and_object()
         {
             var g = new Graph();
             g.LoadFromString(@"
-<urn:s> <urn:complex> <urn:s> .
+<urn:s> <urn:p> <urn:s> .
 ");
 
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var test = new Test(s);
 
             var expected = new[] { s }.GetEnumerator();
-            using (var actual = test.ComplexProperty.GetEnumerator())
+            using (var actual = test.P.GetEnumerator())
             {
                 while (expected.MoveNext() | actual.MoveNext())
                 {
@@ -112,25 +115,24 @@ namespace VDS.RDF.Dynamic
         }
 
         [Fact]
-        public void Remove_retracts_by_subject_predicate_and_argument_object()
+        public void Remove_retracts_by_predicate_object_and_argument_subject()
         {
             var expected = new Graph();
             expected.LoadFromString(@"
-<urn:s> <urn:primitive> ""s"" .
-<urn:s> <urn:primitive> ""p"" .
+<urn:s> <urn:p> <urn:o> .
+<urn:p> <urn:p> <urn:o> .
 ");
 
             var g = new Graph();
             g.LoadFromString(@"
-<urn:s> <urn:primitive> ""s"" .
-<urn:s> <urn:primitive> ""p"" .
-<urn:s> <urn:primitive> ""o"" .
+<urn:s> <urn:p> <urn:o> .
+<urn:p> <urn:p> <urn:o> .
+<urn:o> <urn:p> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var test = new Test(s);
+            var o = new Test(g.CreateUriNode(UriFactory.Create("urn:o")));
 
-            test.PrimitiveProperty.Remove("o");
+            o.P.Remove(o);
 
             Assert.Equal(
                 expected,
@@ -144,9 +146,7 @@ namespace VDS.RDF.Dynamic
             {
             }
 
-            public ICollection<Test> ComplexProperty => new DynamicObjectCollection<Test>(this, "complex");
-
-            public ICollection<string> PrimitiveProperty => new DynamicObjectCollection<string>(this, "primitive");
+            public ICollection<Test> P => new DynamicSubjectCollection<Test>("p", this);
         }
     }
 }

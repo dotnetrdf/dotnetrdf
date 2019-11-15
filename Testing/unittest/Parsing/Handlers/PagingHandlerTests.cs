@@ -34,7 +34,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Handlers
 {
-    public partial class PagingHandlerTests
+    public class PagingHandlerTests
     {
         private static void ParsingUsingPagingHandler(String tempFile, IRdfReader parser)
         {
@@ -207,5 +207,23 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         #endregion
+
+        [Fact]
+        public void ParsingPagingHandlerRdfXml()
+        {
+            ParsingUsingPagingHandler("paging_handler_tests_temp.rdf", new RdfXmlParser());
+        }
+
+        [Fact]
+        public void ParsingPagingHandlerRdfXml2()
+        {
+            ParsingUsingPagingHandler2("paging_handler_tests_temp.rdf", new RdfXmlParser());
+        }
+
+        [Fact]
+        public void ParsingPagingHandlerRdfXml3()
+        {
+            ParsingUsingPagingHandler3("paging_handler_tests_temp.rdf", new RdfXmlParser());
+        }
     }
 }
