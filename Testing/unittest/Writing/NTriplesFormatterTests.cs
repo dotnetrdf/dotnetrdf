@@ -13,7 +13,23 @@ namespace VDS.RDF.Writing
         {
             var formatter = new NTriplesFormatter(NTriplesSyntax.Rdf11);
             var formatOutput = formatter.FormatUri(new Uri("http://example.org/foo bar"));
-            formatOutput.Should().Be("http://example.org/foo\\u0020bar");
+            formatOutput.Should().Be("http://example.org/foo%20bar");
+        }
+
+        [Fact]
+        public void EscapedSpacesInIrisMustNotBeDoubleEscaped()
+        {
+            var formatter = new NTriplesFormatter(NTriplesSyntax.Rdf11);
+            var formatOutput = formatter.FormatUri(new Uri("http://example.org/foo%20bar"));
+            formatOutput.Should().Be("http://example.org/foo%20bar");
+        }
+
+        [Fact]
+        public void EscapedSpacesInIrisMustNotBeDoubleEscaped2()
+        {
+            var formatter = new NTriplesFormatter(NTriplesSyntax.Rdf11);
+            var formatOutput = formatter.FormatUri(new Uri("http://example.org/foo+bar"));
+            formatOutput.Should().Be("http://example.org/foo+bar");
         }
 
         [Fact]
