@@ -1,6 +1,26 @@
 ﻿Change Log
 ==========
 
+2.3
+---
+
+The main updates of this release are the addition of a SHACL validator and SHACL API for dotNetRDF; the addition of a new Dynamic API for RDF graphs; and the removal of support for .NET Core 1.0 and the NETStandard 1.0 API.
+
+BREAKING: Removed NETStandard 1.4 target framework (#273). Please migrate applications to target NETStandard 2.0.
+NEW: SHACL Processor - a fully compliant SHACL Core and SHACL-SPARQL processor. Thanks to @langsamu for this amazing contribution! (#236)
+NEW: Dynamic API for RDF graphs and nodes. See https://github.com/dotnetrdf/dotnetrdf/wiki/UserGuide-Dynamic-API for details. Thanks to @langsamu for the PR (#228)
+
+FIX: Reinstated RDF parser test suites (#252)
+FIX: Fix to ensure that the RdfXmlWriter properly escapes XML entity declarations. Thanks to @cygri for the report (#245)
+FIX: Update JsonLdWriter to default to opening files with `FileMode.Create` for consistency with other writers. Thanks to @bergdahl for the report (#232)
+FIX: Fix for an edge-case in the GraphMatcher brute-force matching algorithm. Thanks to @langsamu for the report (#235)
+FIX: Fix to SPARQL query parser to allow a DOT token to appear after a FILTER. Thanks to @langsamu for the report (#237)
+FIX: Update to allow BaseTripleComparer to be used as an IEqualityComparer paramter. Thanks to @MischaVreeburg for the PR (#241)
+FIX: Performance enhancement for sorting nodes in the TurtleWriter. Thanks to @MischaVreeburg for the PR (#239)
+FIX: Fix for incorrect IRI for the RDF langString datatype. Thanks to @langsamu for the report and PR (#223) 
+FIX: Fix for Leviathan SPARQL update on a named graph that does not exist in the store. Thanks to @langsamu for the report (#216)
+
+
 2.2
 ---
 

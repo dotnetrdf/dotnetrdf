@@ -22,7 +22,6 @@ We currently provide support for the following .NET frameworks:
 
 - .NET 4.0
 - .NET 4.0 Client Profile
-- .NET Standard 1.4
 - .NET Standard 2.0
 	
 ## Read The Docs!
@@ -49,6 +48,7 @@ dotNetRDF is developed by the following people:
  - Khalil Ahmed
  - Graham Moore
  - Tomasz Pluskiewicz
+ - Samu Lang
 
 dotNetRDF also benefits from many community contributors who contribute in the form of bug reports, patches, suggestions and other feedback, 
 please see the [Acknowledgements](https://github.com/dotnetrdf/dotnetrdf/blob/master/Acknowledgments.txt) file for a full list.
