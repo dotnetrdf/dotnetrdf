@@ -242,6 +242,24 @@ namespace VDS.RDF.Writing
         }
 
         [Fact]
+        public void WritingRdfXmlBNodes3()
+        {
+            Graph g = new Graph();
+            INode s = g.CreateUriNode(new Uri("http://example.org/subject"));
+            INode p = g.CreateUriNode(new Uri("http://example.org/predicate"));
+            INode o = g.CreateBlankNode("foo");
+            g.Assert(s, p, o);
+
+            s = o;
+            p = g.CreateUriNode(new Uri("http://example.org/nextPredicate"));
+            o = g.CreateLiteralNode("string");
+
+            g.Assert(s, p, o);
+
+            this.CheckRoundTrip(g);
+        }
+
+        [Fact]
         public void WritingRdfXmlSimpleBNodeCollection()
         {
             String fragment = "@prefix : <http://example.org/>. :subj :pred [ :something :else ].";
