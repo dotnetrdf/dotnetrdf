@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.IO;
 using VDS.RDF.Query;
-using VDS.RDF.XunitExtensions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -59,7 +58,7 @@ namespace VDS.RDF.Parsing.Suites
             _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
 
             if (Failed > 0) Assert.True(false, Failed + " Tests failed");
-            if (Indeterminate > 0) throw new SkipTestException(Indeterminate + " Tests are indeterminate");
+            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
         }
 
         [Fact]

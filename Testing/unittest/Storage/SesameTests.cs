@@ -30,7 +30,6 @@ using System.Text;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
-using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Storage
 {
@@ -39,10 +38,7 @@ namespace VDS.RDF.Storage
     {
         public static SesameHttpProtocolConnector GetConnection()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseSesame))
-            {
-                throw new SkipTestException("Test Config marks Sesame as unavailable, cannot run test");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseSesame), "Test Config marks Sesame as unavailable, cannot run test");
             return new SesameHttpProtocolConnector(TestConfigManager.GetSetting(TestConfigManager.SesameServer), TestConfigManager.GetSetting(TestConfigManager.SesameRepository));
         }
 
@@ -394,10 +390,7 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StorageSesameSparqlUpdate1()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
-            {
-                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
             sesame.Update(@"DROP GRAPH <http://example.org/sparqlUpdateLoad>;

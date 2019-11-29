@@ -32,7 +32,6 @@ using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
-using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Storage
 {

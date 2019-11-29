@@ -934,6 +934,29 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Get the preferred MIME type that is registered for a specific writer
+        /// </summary>
+        /// <param name="writer">RDF Writer</param>
+        /// <returns>The preferred MIME type associated with the parser</returns>
+        /// <exception cref="UnregisteredRdfWriterTypeException">Raised if the specific writer is of a type that is not associated with any registered MIME type</exception>
+        public static string GetMimeType(IRdfWriter writer)
+        {
+            if (writer == null) throw new ArgumentNullException(nameof(writer));
+            if (!_init) Init();
+            var requiredType = writer.GetType();
+            foreach (var definition in Definitions)
+            {
+                if (requiredType == definition.RdfWriterType)
+                {
+                    return definition.MimeTypes.First();
+                }
+            }
+
+            throw new UnregisteredRdfWriterTypeException($"The type {requiredType} is not associated with a registered MIME Type.");
+        }
+
+
+        /// <summary>
         /// Gets the Enumeration of supported MIME Types for RDF Graphs
         /// </summary>
         public static IEnumerable<String> SupportedRdfMimeTypes
@@ -1734,7 +1757,6 @@ namespace VDS.RDF
 
             // Unknown File Extension
             throw new RdfParserSelectionException("Unable to determine the appropriate MIME Type for the File Extension '" + fileExt + "' as this is not a standard extension for an RDF format");
-
         }
 
 

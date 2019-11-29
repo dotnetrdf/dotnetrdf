@@ -25,6 +25,7 @@
 */
 
 using System;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using Newtonsoft.Json;
@@ -340,13 +341,36 @@ namespace VDS.RDF.Parsing
                             context.Input.Read();
                             if (context.Input.TokenType != JsonToken.String)
                             {
-                                throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected a Property Value describing one of the properties of an Object Node", startPos);
+                                if (token.Equals("value") && context.Input.TokenType == JsonToken.Integer || context.Input.TokenType == JsonToken.Float)
+                                {
+                                    RaiseWarning("Unexpected Token '" + context.Input.TokenType + "' encountered. Expected a string value. Value will be converted to a string for parsing.");
+                                }
+                                else
+                                {
+                                    throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected a Property Value describing one of the properties of an Object Node", startPos);
+                                }
                             }
 
                             // Extract the Information from the Object
                             if (token.Equals("value"))
                             {
-                                nodeValue = context.Input.Value.ToString();
+                                if (context.Input.TokenType == JsonToken.String)
+                                {
+                                    nodeValue = context.Input.Value.ToString();
+                                }
+                                else if (context.Input.TokenType == JsonToken.Float ||
+                                         context.Input.TokenType == JsonToken.Integer)
+                                {
+                                    nodeValue = Convert.ToString(context.Input.Value, CultureInfo.InvariantCulture);
+                                }
+                                else
+                                {
+                                    // Shouldn't end up here as it should have been caught in the initial token type check
+                                    throw Error(context,
+                                        "Unexpected Token '" + context.Input.TokenType.ToString() +
+                                        "' encountered, expected a Property Value describing one of the properties of an Object Node",
+                                        startPos);
+                                }
                             }
                             else if (token.Equals("type"))
                             {

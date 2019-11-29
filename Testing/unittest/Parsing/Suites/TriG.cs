@@ -23,16 +23,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.IO;
-using System.Text;
 using Xunit;
-using VDS.RDF.Parsing;
-using VDS.RDF.Query;
-using VDS.RDF.Writing.Formatting;
-using VDS.RDF.XunitExtensions;
 using Xunit.Abstractions;
 
 namespace VDS.RDF.Parsing.Suites
@@ -64,7 +56,7 @@ namespace VDS.RDF.Parsing.Suites
             _testOutputHelper.WriteLine((((double)this.Passed / (double)this.Count) * 100) + "% Passed");
 
             if (this.Failed > 0) Assert.True(false, this.Failed + " Tests failed");
-            if (this.Indeterminate > 0) throw new SkipTestException(this.Indeterminate + " Tests are indeterminate");
+            Skip.If(Indeterminate > 0, this.Indeterminate + " Tests are indeterminate");
         }
     }
 }

@@ -218,8 +218,6 @@ namespace VDS.RDF.Writing.Formatting
             return "_:" + _bnodeMapper.GetOutputID(b.InternalID);
         }
 
-        private static readonly char[] IriEscapeChars = { '<', '>', '"', '{', '}', '|', '^', '`', '\\' };
-
         /// <inheritdoc/>
         public override string FormatUri(Uri u)
         {
@@ -227,27 +225,20 @@ namespace VDS.RDF.Writing.Formatting
             {
                 throw new ArgumentException("IRIs to be formatted by the NTriplesFormatter must be absolute IRIs");
             }
-            return FormatUri(u.ToString());
+
+            //if (u.IsWellFormedOriginalString())
+            //{
+            //    return FormatUri(u.ToString());
+            //}
+
+            return FormatUri(Rfc3987Formatter.EscapeUriString(u.ToString()));
         }
 
         /// <inheritdoc />
         public override string FormatUri(string u)
         {
-            var output = new StringBuilder();
-            foreach (var c in u)
-            {
-                if (c <= 0x20 || c < 0x0061 && IriEscapeChars.Contains(c))
-                {
-                    output.AppendFormat("\\u{0:X4}", (ushort)c);
-                }
-                else
-                {
-                    output.Append(c);
-                }
-            }
-            return output.ToString();
+            return FormatChar(base.FormatUri(u).ToCharArray());
         }
-
     }
 
     /// <summary>

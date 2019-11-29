@@ -25,17 +25,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.IO;
-using System.Text;
-using System.Collections.Generic;
 using System.Linq;
 using Xunit;
-using VDS.RDF.Parsing;
-using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Handlers
 {
-    public partial class GraphHandlerTests
+    public class GraphHandlerTests
     {
         [Fact]
         public void ParsingGraphHandlerImplicitTurtle()
@@ -196,6 +192,55 @@ namespace VDS.RDF.Parsing.Handlers
 
             Assert.False(g.IsEmpty, "Graph should not be empty");
             Assert.Equal(1, g.Triples.Count);
+        }
+
+        [Fact(Skip = "Replace test with a version that does not depend on an external service")]
+        public void ParsingGraphHandlerImplicitBaseUriPropogation()
+        {
+            try
+            {
+                Options.UriLoaderCaching = false;
+
+                Graph g = new Graph();
+                UriLoader.Load(g, new Uri("http://wiki.rkbexplorer.com/id/void"));
+                NTriplesFormatter formatter = new NTriplesFormatter();
+                foreach (Triple t in g.Triples)
+                {
+                    Console.WriteLine(t.ToString());
+                }
+            }
+            finally
+            {
+                Options.UriLoaderCaching = true;
+            }
+        }
+
+        [Fact(Skip = "Replace test with a version that does not depend on an external service")]
+        public void ParsingGraphHandlerImplicitBaseUriPropogation2()
+        {
+            try
+            {
+                Options.UriLoaderCaching = false;
+
+                Graph g = new Graph();
+                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+                UriLoader.Load(g, new Uri("http://wiki.rkbexplorer.com/id/void"));
+                NTriplesFormatter formatter = new NTriplesFormatter();
+                foreach (Triple t in g.Triples)
+                {
+                    Console.WriteLine(t.ToString());
+                }
+            }
+            finally
+            {
+                Options.UriLoaderCaching = true;
+            }
+        }
+
+        [Fact]
+        public void ParsingGraphHandlerExplicitRdfXml()
+        {
+            this.ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.rdf", new RdfXmlParser(), true);
         }
     }
 }

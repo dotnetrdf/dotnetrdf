@@ -28,17 +28,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Xunit;
-using VDS.RDF.Parsing;
-using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage;
-using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
     /// Summary description for WriteToStoreHandlerTests
     /// </summary>
-    public partial class WriteToStoreHandlerTests
+    public class WriteToStoreHandlerTests
     {
         private readonly Uri TestGraphUri = new Uri("http://example.org/WriteToStoreHandlerTest");
         private readonly Uri TestBNodeUri = new Uri("http://example.org/WriteToStoreHandlerTest/BNodes");
@@ -220,5 +217,64 @@ namespace VDS.RDF.Parsing.Handlers
             InMemoryManager manager = new InMemoryManager();
             this.TestWriteToStoreHandlerWithBNodes(manager);
         }
+
+#if !NO_VIRTUOSO
+        [SkippableFact]
+        public void ParsingWriteToStoreHandlerVirtuoso()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            this.TestWriteToStoreHandler(virtuoso);
+        }
+
+        [SkippableFact]
+        public void ParsingWriteToStoreHandlerDatasetsVirtuoso()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            this.TestWriteToStoreDatasetsHandler(virtuoso);
+        }
+
+        [SkippableFact]
+        public void ParsingWriteToStoreHandlerBNodesAcrossBatchesVirtuoso()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            this.TestWriteToStoreHandlerWithBNodes(virtuoso);
+        }
+#endif
+        [SkippableFact]
+        public void ParsingWriteToStoreHandlerAllegroGraph()
+        {
+            AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
+            this.TestWriteToStoreHandler(agraph);
+        }
+
+        [SkippableFact]
+        public void ParsingWriteToStoreHandlerFuseki()
+        {
+            try
+            {
+                Options.UriLoaderCaching = false;
+                FusekiConnector fuseki = FusekiTest.GetConnection();
+                this.TestWriteToStoreHandler(fuseki);
+            }
+            finally
+            {
+                Options.UriLoaderCaching = true;
+            }
+        }
+
+        [SkippableFact]
+        public void ParsingWriteToStoreHandlerBNodesAcrossBatchesAllegroGraph()
+        {
+            AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
+            this.TestWriteToStoreHandlerWithBNodes(agraph);
+        }
+
+        [SkippableFact]
+        public void ParsingWriteToStoreHandlerBNodesAcrossBatchesFuseki()
+        {
+            FusekiConnector fuseki = FusekiTest.GetConnection();
+            this.TestWriteToStoreHandlerWithBNodes(fuseki);
+        }
+
     }
 }

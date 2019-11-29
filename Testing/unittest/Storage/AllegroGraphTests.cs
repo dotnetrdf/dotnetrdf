@@ -30,7 +30,6 @@ using System.Text;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
-using VDS.RDF.XunitExtensions;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Storage
@@ -40,10 +39,7 @@ namespace VDS.RDF.Storage
     {
         public static AllegroGraphConnector GetConnection()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseAllegroGraph))
-            {
-                throw new SkipTestException("Test Config marks AllegroGraph as unavailable, cannot run this test");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseAllegroGraph), "Test Config marks AllegroGraph as unavailable, cannot run this test");
 
             return new AllegroGraphConnector(TestConfigManager.GetSetting(TestConfigManager.AllegroGraphServer), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphCatalog), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphRepository), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphUser), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphPassword));
         }

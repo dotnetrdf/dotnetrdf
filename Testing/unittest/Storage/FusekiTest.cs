@@ -36,26 +36,33 @@ using VDS.RDF.Query;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
-using VDS.RDF.XunitExtensions;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Storage
 {
-
     public class FusekiTest
     {
+        private readonly ITestOutputHelper _testOutputHelper;
         private readonly NTriplesFormatter _formatter = new NTriplesFormatter();
 
-        public static FusekiConnector GetConnection()
+        public FusekiTest(ITestOutputHelper testOutputHelper)
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseFuseki))
-            {
-                throw new SkipTestException("Test Configuration marks Fuseki as unavailable, test cannot be run");
-            }
-            return new FusekiConnector(TestConfigManager.GetSetting(TestConfigManager.FusekiServer));
+            _testOutputHelper = testOutputHelper;
         }
 
-        [SkippableFact]
-        public void StorageFusekiSaveGraph()
+        public static FusekiConnector GetConnection(string uploadMimeType = null)
+        {
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseFuseki),
+                "Test Configuration marks Fuseki as unavailable, test cannot be run");
+            var mimeTypeDescription =
+                uploadMimeType == null ? null : MimeTypesHelper.GetDefinitions(uploadMimeType).First();
+            return new FusekiConnector(TestConfigManager.GetSetting(TestConfigManager.FusekiServer), mimeTypeDescription);
+        }
+
+        [SkippableTheory]
+        [InlineData("application/rdf+xml")]
+        [InlineData("application/n-triples")]
+        public void StorageFusekiSaveGraph(string mimeType = null)
         {
             try
             {
@@ -65,18 +72,18 @@ namespace VDS.RDF.Storage
                 g.BaseUri = new Uri("http://example.org/fusekiTest");
 
                 //Save Graph to Fuseki
-                FusekiConnector fuseki = FusekiTest.GetConnection();
+                FusekiConnector fuseki = FusekiTest.GetConnection(mimeType);
                 fuseki.SaveGraph(g);
-                Console.WriteLine("Graph saved to Fuseki OK");
+                _testOutputHelper.WriteLine("Graph saved to Fuseki OK");
 
                 //Now retrieve Graph from Fuseki
                 Graph h = new Graph();
                 fuseki.LoadGraph(h, "http://example.org/fusekiTest");
 
-                Console.WriteLine();
+                _testOutputHelper.WriteLine("");
                 foreach (Triple t in h.Triples)
                 {
-                    Console.WriteLine(t.ToString(this._formatter));
+                    _testOutputHelper.WriteLine(t.ToString(this._formatter));
                 }
 
                 Assert.Equal(g, h);
@@ -384,10 +391,8 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StorageFusekiUpdate()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
-            {
-                throw new SkipTestException("Test Config marks Remote Parsing as unavailable, test cannot be run");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
+                "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             try
             {

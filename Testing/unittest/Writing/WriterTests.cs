@@ -26,19 +26,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Text;
 using Xunit;
-using VDS.RDF;
 using VDS.RDF.Parsing;
-using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 #pragma warning disable 618
 
 namespace VDS.RDF.Writing
 {
-    public partial class WriterTests
+    public class WriterTests
         : CompressionTests
     {
         // private String prefix = "@prefix : <http://example.org>.\n";
@@ -260,6 +256,31 @@ namespace VDS.RDF.Writing
                     Assert.Equal(g.BaseUri, h.BaseUri);
                 }
             }
+        }
+
+        [Fact]
+        public void WritingQNameValidation()
+        {
+            Graph g = new Graph();
+            g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
+            INode subj = g.CreateUriNode("ex:subject");
+            INode pred = g.CreateUriNode("ex:predicate");
+            List<INode> objects = new List<INode>()
+            {
+                g.CreateUriNode("ex:123"),
+                g.CreateBlankNode("a_blank_node"),
+                g.CreateBlankNode("_blank"),
+                g.CreateBlankNode("-blank"),
+                g.CreateBlankNode("123blank"),
+                g.CreateUriNode("ex:_object"),
+                g.CreateUriNode("ex:-object")
+            };
+            foreach (INode obj in objects)
+            {
+                g.Assert(subj, pred, obj);
+            }
+
+            this.CheckCompressionRoundTrip(g);
         }
 
         [Theory]

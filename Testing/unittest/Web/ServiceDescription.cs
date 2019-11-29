@@ -32,7 +32,6 @@ using System.Net;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
-using VDS.RDF.XunitExtensions;
 
 namespace VDS.RDF.Web
 {
@@ -44,10 +43,7 @@ namespace VDS.RDF.Web
     {
         private void EnsureIIS()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS))
-            {
-                throw new SkipTestException("Test Config marks IIS as unavailable, cannot run this test");
-            }
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS), "Test Config marks IIS as unavailable, cannot run this test");
         }
 
         [SkippableFact]

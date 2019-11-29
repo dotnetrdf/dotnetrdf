@@ -23,15 +23,15 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using IO = System.IO;
+
 namespace VDS.RDF.Shacl
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using VDS.RDF;
-    using IO = System.IO;
 
-    internal static partial class TestSuiteData
+    internal static class TestSuiteData
     {
         private static readonly Uri baseUri = UriFactory.Create(IO.Path.GetFullPath("resources\\shacl\\test-suite\\manifest.ttl"));
         private static readonly TripleStore store;
@@ -55,58 +55,27 @@ namespace VDS.RDF.Shacl
             Populate(new Uri(baseUri, "sparql/component/nodeValidator-001.ttl"));
         }
 
-        public static IEnumerable<object[]> CoreTests
-        {
-            get
-            {
-                return
-                    from name in CoreTestNames
-                    select new[] { name };
-            }
-        }
+        public static IEnumerable<object[]> CoreTests =>
+            from name in CoreTestNames
+            select new[] { name };
 
-        public static IEnumerable<object[]> CoreFullTests
-        {
-            get
-            {
-                return
-                    from name in CoreTestNames.Except(CoreFullExcludedTests)
-                    select new[] { name };
-            }
-        }
+        public static IEnumerable<object[]> CoreFullTests =>
+            from name in CoreTestNames.Except(CoreFullExcludedTests)
+            select new[] { name };
 
-        public static IEnumerable<object[]> SparqlTests
-        {
-            get
-            {
-                return
-                    from name in Tests
-                    where name.StartsWith("sparql")
-                    select new[] { name };
-            }
-        }
+        public static IEnumerable<object[]> SparqlTests =>
+            from name in Tests
+            where name.StartsWith("sparql")
+            select new[] { name };
 
-        public static IEnumerable<string> CoreTestNames
-        {
-            get
-            {
-                return
-                    from name in Tests
-                    where name.StartsWith("core")
-                    select name;
-            }
-        }
+        public static IEnumerable<string> CoreTestNames =>
+            from name in Tests
+            where name.StartsWith("core")
+            select name;
 
-        private static IEnumerable<string> Tests
-        {
-            get
-            {
-                return (
-                    from entries in store.GetTriplesWithPredicate(mf_entries)
-                    select baseUri.MakeRelativeUri(((IUriNode)entries.Subject).Uri).ToString())
-                    .Except(ExcludedTests);
-            }
-        }
+        private static IEnumerable<string> Tests =>
+            from entries in store.GetTriplesWithPredicate(mf_entries)
+            select baseUri.MakeRelativeUri(((IUriNode) entries.Subject).Uri).ToString();
 
         private static IEnumerable<string> CoreFullExcludedTests
         {
@@ -164,5 +133,6 @@ namespace VDS.RDF.Shacl
         {
             return factory.CreateUriNode(UriFactory.Create(uri));
         }
+
     }
 }
