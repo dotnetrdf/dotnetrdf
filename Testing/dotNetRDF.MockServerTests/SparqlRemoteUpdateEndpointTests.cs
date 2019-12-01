@@ -21,7 +21,7 @@ namespace dotNetRDF.MockServerTests
 
         private SparqlRemoteUpdateEndpoint GetUpdateEndpoint()
         {
-            return new SparqlRemoteUpdateEndpoint(new Uri(_fixture.Server.Urls[0] + "update"));
+            return new SparqlRemoteUpdateEndpoint(new Uri(_fixture.Server.Urls[0] + "/update"));
         }
 
         [Fact]

@@ -116,7 +116,7 @@ namespace dotNetRDF.MockServerTests
         }
         private SparqlRemoteEndpoint GetQueryEndpoint()
         {
-            return new SparqlRemoteEndpoint(new Uri(_server.Urls[0] + "sparql"));
+            return new SparqlRemoteEndpoint(new Uri(_server.Urls[0] + "/sparql"));
         }
 
         [Fact]
