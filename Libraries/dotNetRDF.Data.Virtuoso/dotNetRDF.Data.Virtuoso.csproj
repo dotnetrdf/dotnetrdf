@@ -40,7 +40,7 @@
 
   <ItemGroup>
     <PackageReference Include="OpenLink.Data.Virtuoso" Version="7.20.3214.1" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta001">
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
   </ItemGroup>
