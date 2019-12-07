@@ -30,6 +30,8 @@ using System.Text;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
+using Xunit.Abstractions;
+
 #pragma warning disable 618
 
 namespace VDS.RDF.Writing
@@ -37,7 +39,7 @@ namespace VDS.RDF.Writing
     public class WriterTests
         : CompressionTests
     {
-        // private String prefix = "@prefix : <http://example.org>.\n";
+        public WriterTests(ITestOutputHelper output): base(output) { }
         
         [Fact]
         public void WritingBlankNodeOutput()

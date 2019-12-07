@@ -30,18 +30,26 @@ using System.Text;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Writing
 {
     public abstract class CompressionTests
     {
+        protected ITestOutputHelper _output;
+
+        protected CompressionTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
         readonly List<KeyValuePair<IRdfWriter, IRdfReader>> _compressers = new List<KeyValuePair<IRdfWriter, IRdfReader>>()
         {
-            new KeyValuePair<IRdfWriter, IRdfReader>(new CompressingTurtleWriter(), new TurtleParser()),
+            //new KeyValuePair<IRdfWriter, IRdfReader>(new CompressingTurtleWriter(), new TurtleParser()),
             new KeyValuePair<IRdfWriter, IRdfReader>(new CompressingTurtleWriter(TurtleSyntax.W3C), new TurtleParser(TurtleSyntax.W3C)),
-            new KeyValuePair<IRdfWriter, IRdfReader>(new Notation3Writer(), new Notation3Parser()),
-            new KeyValuePair<IRdfWriter, IRdfReader>(new RdfXmlWriter(), new RdfXmlParser()),
-            new KeyValuePair<IRdfWriter, IRdfReader>(new PrettyRdfXmlWriter(), new RdfXmlParser())
+            //new KeyValuePair<IRdfWriter, IRdfReader>(new Notation3Writer(), new Notation3Parser()),
+            //new KeyValuePair<IRdfWriter, IRdfReader>(new RdfXmlWriter(), new RdfXmlParser()),
+            //new KeyValuePair<IRdfWriter, IRdfReader>(new PrettyRdfXmlWriter(), new RdfXmlParser())
         };
 
         protected void CheckCompressionRoundTrip(IGraph g)
@@ -61,9 +69,9 @@ namespace VDS.RDF.Writing
                 System.IO.StringWriter strWriter = new System.IO.StringWriter();
                 writer.Save(g, strWriter);
 
-                Console.WriteLine("Compressed Output using " + kvp.Key.GetType().Name);
-                Console.WriteLine(strWriter.ToString());
-                Console.WriteLine();
+                _output.WriteLine("Compressed Output using " + kvp.Key.GetType().Name);
+                _output.WriteLine(strWriter.ToString());
+                _output.WriteLine("");
 
                 Graph h = new Graph();
                 StringParser.Parse(h, strWriter.ToString(), kvp.Value);

@@ -32,12 +32,17 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing.Contexts;
 using VDS.RDF.Writing.Formatting;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Writing
 {
     public class CollectionCompressionTests
         : CompressionTests
     {
+        public CollectionCompressionTests(ITestOutputHelper output):base(output)
+        {
+        }
+
         [Fact(Skip = "Commented out before, now fails (?)")]
         public void WritingCollectionCompressionSimple7()
         {
@@ -49,11 +54,10 @@ namespace VDS.RDF.Writing
             g.Assert(n, rdfType, g.CreateUriNode("ex:Obj"));
             g.Assert(n, rdfType, g.CreateUriNode("ex:Test"));
 
-            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
-            WriterHelper.FindCollections(context);
+            var collections = FindCollections(g);
 
-            Assert.Single(context.Collections);
-            Assert.Single(context.Collections.First().Value.Triples);
+            Assert.Single(collections);
+            Assert.Single(collections.First().Value.Triples);
 
             CheckCompressionRoundTrip(g);
         }
@@ -82,34 +86,36 @@ namespace VDS.RDF.Writing
             g.Assert(root, g.CreateUriNode(new Uri("http://list")), listEntry2);
 
             NTriplesFormatter formatter = new NTriplesFormatter();
-            Console.WriteLine("Original Graph");
+            _output.WriteLine("Original Graph");
             foreach (Triple t in g.Triples)
             {
-                Console.WriteLine(t.ToString(formatter));
+                _output.WriteLine(t.ToString(formatter));
             }
-            Console.WriteLine();
+            _output.WriteLine("");
 
-            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
+            var sw = new System.IO.StringWriter();
+            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, sw);
             WriterHelper.FindCollections(context);
-            Console.WriteLine(context.Collections.Count + " Collections Found");
-            Console.WriteLine();
+            _output.WriteLine(sw.ToString());
+            _output.WriteLine(context.Collections.Count + " Collections Found");
+            _output.WriteLine("");
 
             System.IO.StringWriter strWriter = new System.IO.StringWriter();
             CompressingTurtleWriter writer = new CompressingTurtleWriter();
             writer.CompressionLevel = WriterCompressionLevel.High;
             writer.Save(g, strWriter);
 
-            Console.WriteLine("Compressed Turtle");
-            Console.WriteLine(strWriter.ToString());
-            Console.WriteLine();
+            _output.WriteLine("Compressed Turtle");
+            _output.WriteLine(strWriter.ToString());
+            _output.WriteLine("");
 
             Graph h = new Graph();
             TurtleParser parser = new TurtleParser();
             StringParser.Parse(h, strWriter.ToString());
-            Console.WriteLine("Graph after Round Trip to Compressed Turtle");
+            _output.WriteLine("Graph after Round Trip to Compressed Turtle");
             foreach (Triple t in h.Triples)
             {
-                Console.WriteLine(t.ToString(formatter));
+                _output.WriteLine(t.ToString(formatter));
             }
 
             Assert.Equal(g, h);
@@ -118,14 +124,14 @@ namespace VDS.RDF.Writing
         [Fact]
         public void WritingCollectionCompressionCyclic()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
             g.NamespaceMap.AddNamespace("dnr", new Uri(ConfigurationLoader.ConfigurationNamespace));
             INode a = g.CreateBlankNode();
             INode b = g.CreateBlankNode();
             INode c = g.CreateBlankNode();
 
-            INode pred = g.CreateUriNode("ex:pred");
+            var pred = g.CreateUriNode("ex:pred");
 
             g.Assert(a, pred, b);
             g.Assert(a, pred, g.CreateLiteralNode("Value for A"));
@@ -134,10 +140,9 @@ namespace VDS.RDF.Writing
             g.Assert(c, pred, a);
             g.Assert(c, pred, g.CreateLiteralNode("Value for C"));
 
-            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
-            WriterHelper.FindCollections(context);
+            var collections = FindCollections(g);
 
-            Assert.Equal(2, context.Collections.Count);
+            Assert.Equal(2, collections.Count);
 
             this.CheckCompressionRoundTrip(g);
         }
@@ -164,10 +169,9 @@ namespace VDS.RDF.Writing
             g.Assert(c, pred, a);
             g.Assert(c, pred, g.CreateLiteralNode("C"));
 
-            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
-            WriterHelper.FindCollections(context);
+            var collections = FindCollections(g);
 
-            Assert.Equal(2, context.Collections.Count);
+            Assert.Equal(2, collections.Count);
 
             this.CheckCompressionRoundTrip(g);
         }
@@ -196,10 +200,9 @@ namespace VDS.RDF.Writing
             g.Assert(c, pred, g.CreateLiteralNode("C"));
             g.Assert(e, pred, g.CreateLiteralNode("E"));
 
-            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
-            WriterHelper.FindCollections(context);
+            var collections = FindCollections(g);
 
-            Assert.Equal(3, context.Collections.Count);
+            Assert.Equal(3, collections.Count);
 
             this.CheckCompressionRoundTrip(g);
         }
@@ -213,11 +216,10 @@ namespace VDS.RDF.Writing
 
             g.Assert(g.CreateUriNode("ex:subj"), g.CreateUriNode("ex:pred"), n);
 
-            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
-            WriterHelper.FindCollections(context);
+            var collections = FindCollections(g);
 
-            Assert.Single(context.Collections);
-            Assert.Empty(context.Collections.First().Value.Triples);
+            Assert.Single(collections);
+            Assert.Empty(collections.First().Value.Triples);
 
             this.CheckCompressionRoundTrip(g);
         }
@@ -231,10 +233,9 @@ namespace VDS.RDF.Writing
 
             g.Assert(g.CreateUriNode("ex:subj"), g.CreateUriNode("ex:pred"), g.CreateUriNode("rdf:nil"));
 
-            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
-            WriterHelper.FindCollections(context);
+            var collections = FindCollections(g);
 
-            Assert.Empty(context.Collections);
+            Assert.Empty(collections);
 
             this.CheckCompressionRoundTrip(g);
         }
@@ -250,13 +251,21 @@ namespace VDS.RDF.Writing
             g.Assert(g.CreateUriNode("ex:subj"), g.CreateUriNode("ex:pred"), n);
             g.Assert(n, rdfType, g.CreateUriNode("ex:BlankNode"));
 
-            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
-            WriterHelper.FindCollections(context);
+            var collections = FindCollections(g);
 
-            Assert.Single(context.Collections);
-            Assert.Single(context.Collections.First().Value.Triples);
+            Assert.Single(collections);
+            Assert.Single(collections.First().Value.Triples);
 
             this.CheckCompressionRoundTrip(g);
+        }
+
+        private Dictionary<INode, OutputRdfCollection> FindCollections(IGraph g)
+        {
+            var sw = new System.IO.StringWriter();
+            var context = new CompressingTurtleWriterContext(g, sw);
+            _output.WriteLine(sw.ToString());
+            WriterHelper.FindCollections(context);
+            return context.Collections;
         }
 
         [Fact]
@@ -271,10 +280,9 @@ namespace VDS.RDF.Writing
             g.Assert(g.CreateUriNode("ex:subj"), g.CreateUriNode("ex:pred2"), n);
             g.Assert(n, rdfType, g.CreateUriNode("ex:BlankNode"));
 
-            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
-            WriterHelper.FindCollections(context);
+            var collections = FindCollections(g);
 
-            Assert.Empty(context.Collections);
+            Assert.Empty(collections);
 
             this.CheckCompressionRoundTrip(g);
         }
@@ -294,10 +302,9 @@ namespace VDS.RDF.Writing
             g.Assert(n, rdfFirst, g.CreateLiteralNode("first"));
             g.Assert(n, rdfRest, rdfNil);
 
-            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
-            WriterHelper.FindCollections(context);
+            var collections = FindCollections(g);
 
-            Assert.Single(context.Collections);
+            Assert.Single(collections);
 
             this.CheckCompressionRoundTrip(g);
         }
@@ -316,10 +323,9 @@ namespace VDS.RDF.Writing
             g.Assert(n, rdfFirst, g.CreateLiteralNode("first"));
             g.Assert(n, rdfRest, rdfNil);
 
-            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
-            WriterHelper.FindCollections(context);
+            var collections = FindCollections(g);
 
-            Assert.Empty(context.Collections);
+            Assert.Empty(collections);
 
             this.CheckCompressionRoundTrip(g);
         }
@@ -340,10 +346,9 @@ namespace VDS.RDF.Writing
             g.Assert(n, rdfFirst, g.CreateLiteralNode("first"));
             g.Assert(n, rdfRest, rdfNil);
 
-            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
-            WriterHelper.FindCollections(context);
+            var collections = FindCollections(g);
 
-            Assert.Empty(context.Collections);
+            Assert.Empty(collections);
 
             this.CheckCompressionRoundTrip(g);
         }
@@ -358,11 +363,10 @@ namespace VDS.RDF.Writing
 
             g.Assert(n, rdfType, g.CreateUriNode("ex:Obj"));
 
-            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
-            WriterHelper.FindCollections(context);
+            var collections = FindCollections(g);
 
-            Assert.Single(context.Collections);
-            Assert.Empty(context.Collections.First().Value.Triples);
+            Assert.Single(collections);
+            Assert.Empty(collections.First().Value.Triples);
 
             this.CheckCompressionRoundTrip(g);
         }
@@ -381,10 +385,9 @@ namespace VDS.RDF.Writing
             sContext.NextSubject = n;
             connector.SerializeConfiguration(sContext);
 
-            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
-            WriterHelper.FindCollections(context);
+            var collections = FindCollections(g);
 
-            Assert.Equal(2, context.Collections.Count);
+            Assert.Equal(2, collections.Count);
 
             this.CheckCompressionRoundTrip(g);
         }
@@ -401,13 +404,13 @@ namespace VDS.RDF.Writing
             NTriplesFormatter formatter = new NTriplesFormatter();
             foreach (KeyValuePair<INode, OutputRdfCollection> kvp in context.Collections)
             {
-                Console.WriteLine("Collection Root - " + kvp.Key.ToString(formatter));
-                Console.WriteLine("Collection Triples (" + kvp.Value.Triples.Count + ")");
+                _output.WriteLine("Collection Root - " + kvp.Key.ToString(formatter));
+                _output.WriteLine("Collection Triples (" + kvp.Value.Triples.Count + ")");
                 foreach (Triple t in kvp.Value.Triples)
                 {
-                    Console.WriteLine(t.ToString(formatter));
+                    _output.WriteLine(t.ToString(formatter));
                 }
-                Console.WriteLine();
+                _output.WriteLine("");
             }
 
             this.CheckCompressionRoundTrip(g);
@@ -428,10 +431,9 @@ namespace VDS.RDF.Writing
             g.Assert(n, rdfFirst, g.CreateLiteralNode("first"));
             g.Assert(n, rdfRest, rdfNil);
 
-            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
-            WriterHelper.FindCollections(context);
+            var collections = FindCollections(g);
 
-            Assert.Empty(context.Collections);
+            Assert.Empty(collections);
 
             this.CheckCompressionRoundTrip(g);
         }
@@ -454,12 +456,116 @@ namespace VDS.RDF.Writing
             g.Assert(m, rdfFirst, g.CreateLiteralNode("second"));
             g.Assert(m, rdfRest, rdfNil);
 
-            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
-            WriterHelper.FindCollections(context);
+            var collections = FindCollections(g);
 
-            Assert.Empty(context.Collections);
+            Assert.Empty(collections);
 
             this.CheckCompressionRoundTrip(g);
         }
+
+        [Fact]
+        public void WritingBlankNodeCollectionIssue279()
+        {
+            var g = new Graph();
+            INode b1 = g.CreateBlankNode("b1");
+            INode b2 = g.CreateBlankNode("b2");
+            INode b3 = g.CreateBlankNode("b3");
+            INode b4 = g.CreateBlankNode("b4");
+            INode rdfType = g.CreateUriNode("rdf:type");
+            INode rdfFirst = g.CreateUriNode("rdf:first");
+            INode rdfRest = g.CreateUriNode("rdf:rest");
+            INode rdfNil = g.CreateUriNode("rdf:nil");
+
+            g.Assert(b1, rdfType, b2);
+            g.Assert(b2, rdfFirst, b3);
+            g.Assert(b2, rdfRest, rdfNil);
+            g.Assert(b3, rdfType, b4);
+
+            FindCollections(g);
+
+            CheckCompressionRoundTrip(g);
+        }
+
+        [Fact]
+        public void WritingBlankNodeCollection2()
+        {
+            var g = new Graph();
+            INode b1 = g.CreateBlankNode("b1");
+            INode b2 = g.CreateBlankNode("b2");
+            INode b3 = g.CreateBlankNode("b3");
+            INode b4 = g.CreateBlankNode("b4");
+            INode b5 = g.CreateBlankNode("b5");
+            INode rdfType = g.CreateUriNode("rdf:type");
+            INode rdfFirst = g.CreateUriNode("rdf:first");
+            INode rdfRest = g.CreateUriNode("rdf:rest");
+            INode rdfNil = g.CreateUriNode("rdf:nil");
+
+            g.Assert(b1, rdfType, b2);
+            g.Assert(b2, rdfFirst, b3);
+            g.Assert(b2, rdfRest, rdfNil);
+            g.Assert(b3, rdfType, b4);
+            g.Assert(b4, rdfType, b5);
+
+            FindCollections(g);
+
+            CheckCompressionRoundTrip(g);
+
+        }
+
+        [Fact]
+        public void WritingBlankNodeCollection3()
+        {
+            var g = new Graph();
+            INode b1 = g.CreateBlankNode("b1");
+            INode b2 = g.CreateBlankNode("b2");
+            INode b3 = g.CreateBlankNode("b3");
+            INode b4 = g.CreateBlankNode("b4");
+            INode b5 = g.CreateBlankNode("b5");
+            INode rdfType = g.CreateUriNode("rdf:type");
+            INode rdfFirst = g.CreateUriNode("rdf:first");
+            INode rdfRest = g.CreateUriNode("rdf:rest");
+            INode rdfNil = g.CreateUriNode("rdf:nil");
+
+            g.Assert(b1, rdfType, b2);
+            g.Assert(b2, rdfFirst, b3);
+            g.Assert(b2, rdfRest, rdfNil);
+            g.Assert(b3, rdfType, b4);
+            g.Assert(b3, rdfType, b5);
+
+            FindCollections(g);
+
+            CheckCompressionRoundTrip(g);
+
+        }
+
+        [Fact]
+        public void WritingBlankNodeCollection4()
+        {
+            var g = new Graph();
+            INode b1 = g.CreateBlankNode("b1");
+            INode b2 = g.CreateBlankNode("b2");
+            INode b3 = g.CreateBlankNode("b3");
+            INode b4 = g.CreateBlankNode("b4");
+            INode b5 = g.CreateBlankNode("b5");
+            INode b6 = g.CreateBlankNode("b6");
+            INode rdfType = g.CreateUriNode("rdf:type");
+            INode rdfFirst = g.CreateUriNode("rdf:first");
+            INode rdfRest = g.CreateUriNode("rdf:rest");
+            INode rdfNil = g.CreateUriNode("rdf:nil");
+
+            g.Assert(b1, rdfType, b2);
+            g.Assert(b2, rdfFirst, b3);
+            g.Assert(b2, rdfRest, b4);
+            g.Assert(b3, rdfType, b5);
+            g.Assert(b4, rdfFirst, b6);
+            g.Assert(b4, rdfRest, rdfNil);
+
+            FindCollections(g);
+
+            CheckCompressionRoundTrip(g);
+
+        }
+
+
     }
 }
